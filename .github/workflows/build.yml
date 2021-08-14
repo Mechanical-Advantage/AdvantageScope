@@ -8,9 +8,12 @@ jobs:
     strategy:
       matrix:
         config:
-          - {os: macos-latest, displayName: "macOS", artifactPath-x86: "out/make/zip/darwin/x64/6328 Log Viewer-darwin-x64-*.zip", artifactPath-arm: "out/make/zip/darwin/arm64/6328 Log Viewer-darwin-arm64-*.zip"}
-          - {os: ubuntu-latest, displayName: "Linux", artifactPath-x86: "out/make/**/*.*", artifactPath-arm: "out/make/**/*.*"}
-          - {os: windows-latest, displayName: "Windows", artifactPath-x86: "out/make/squirrel.windows/x64/", artifactPath-arm: "out/make/squirrel.windows/arm64/"}
+          - {os: macos-latest, displayName: "macOS", arch: "x64", artifactPath: "out/make/zip/darwin/x64/6328 Log Viewer-darwin-x64-*.zip"}
+          - {os: macos-latest, displayName: "macOS", arch: "arm64", artifactPath: "out/make/zip/darwin/arm64/6328 Log Viewer-darwin-arm64-*.zip"}
+          - {os: ubuntu-latest, displayName: "Linux", arch: "x64", artifactPath: "out/make/**/*.*"}
+          - {os: ubuntu-latest, displayName: "Linux", arch: "arm64", artifactPath: "out/make/**/*.*"}
+          - {os: windows-latest, displayName: "Windows", arch: "x64", artifactPath: "out/make/squirrel.windows/x64/"}
+          - {os: windows-latest, displayName: "Windows", arch: "arm64", artifactPath: "out/make/squirrel.windows/arm64/"}
 
     name: Build for ${{ matrix.config.displayName }}
     runs-on: ${{ matrix.config.os }}
@@ -31,19 +34,10 @@ jobs:
         cache: 'npm'
     - name: Install Node.js dependencies
       run: npm install
-    - name: Build app (x86_64)
-      run: npx electron-forge make --arch x64
-    - name: Upload artifacts (x86_64)
+    - name: Build app
+      run: npx electron-forge make --arch {{ matrix.config.arch }}
+    - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.config.displayName }}-x86_64
-        path: ${{ matrix.config.artifactPath-x86 }}
-    - name: Reset artifacts
-      run: rm -r out
-    - name: Build app (arm64)
-      run: npx electron-forge make --arch arm64
-    - name: Upload artifacts (arm64)
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ matrix.config.displayName }}-arm64
-        path: ${{ matrix.config.artifactPath-arm }}
+        name: ${{ matrix.config.displayName }}-{{ matrix.config.arch }}
+        path: ${{ matrix.config.artifactPath }}
