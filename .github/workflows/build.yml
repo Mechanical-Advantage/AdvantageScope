@@ -5,11 +5,14 @@ on: workflow_dispatch
 jobs:
   build:
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.config.os }}
 
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        config:
+          - {os: macos-latest, display: "macos", artifact: "out/**.app"}
+          - {os: ubuntu-latest, display: "linux", artifact: "out/make/**.*"}
+          - {os: windows-latest, display: "windows", artifact: "out/**.exe"}
 
     steps:
     - uses: actions/checkout@v2
@@ -25,8 +28,8 @@ jobs:
     - name: Upload artifacts (x86_64)
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}-x86_64
-        path: out/make/*.*
+        name: ${{ matrix.config.display }}-x86_64
+        path: ${{ matrix.config.artifact }}
     - name: Reset artifacts
       run: rm -r out/make
     - name: Build app (arm64)
@@ -34,5 +37,5 @@ jobs:
     - name: Upload artifacts (arm64)
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.os }}-arm64
-        path: out/make/*.*
+        name: ${{ matrix.config.display }}-arm64
+        path: ${{ matrix.config.artifact }}

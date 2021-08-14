@@ -33,7 +33,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "org.littletonrobotics.logvisualizer"
+            "name": "6328-log-viewer"
           }
         },
         {
