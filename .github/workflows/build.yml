@@ -1,32 +1,24 @@
 name: Build App
 
-on: workflow_dispatch
+on: [push]
 
 jobs:
   build:
 
     strategy:
       matrix:
-        config:
-          - {os: macos-latest, displayName: "macOS", arch: "x64", artifactPath: "out/make/zip/darwin/x64/6328 Log Viewer-darwin-x64-*.zip"}
-          - {os: macos-latest, displayName: "macOS", arch: "arm64", artifactPath: "out/make/zip/darwin/arm64/6328 Log Viewer-darwin-arm64-*.zip"}
-          - {os: ubuntu-latest, displayName: "Linux", arch: "x64", artifactPath: "out/make/**/*.*"}
-          - {os: ubuntu-latest, displayName: "Linux", arch: "arm64", artifactPath: "out/make/**/*.*"}
-          - {os: windows-latest, displayName: "Windows", arch: "x64", artifactPath: "out/make/squirrel.windows/x64/"}
-          - {os: windows-latest, displayName: "Windows", arch: "arm64", artifactPath: "out/make/squirrel.windows/arm64/"}
+        host:
+          - {os: macos-latest, displayName: "macOS", artifactPath: "dist/6328 Log Viewer-*.dmg"}
+          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm"}
+          - {os: windows-latest, displayName: "Windows", artifactPath: "dist/6328 Log Viewer Setup *.exe"}
+        arch: ["x64", "arm64"]
 
-    name: Build for ${{ matrix.config.displayName }} (${{ matrix.config.arch }})
-    runs-on: ${{ matrix.config.os }}
+    name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.host.os }}
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Set timezone
-      uses: szenius/set-timezone@v1.0
-      with:
-        timezoneLinux: "America/New_York"
-        timezoneMacos: "America/New_York"
-        timezoneWindows: "Eastern Standard Time"
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
@@ -34,10 +26,15 @@ jobs:
         cache: 'npm'
     - name: Install Node.js dependencies
       run: npm install
+    - name: Prepare macOS certificate
+      if: matrix.host.os == 'macos-latest'
+      run: |
+        echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+        echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
     - name: Build app
-      run: npx electron-forge make --arch ${{ matrix.config.arch }}
+      run: npx electron-builder build --${{ matrix.arch }} --publish never
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.config.displayName }}-${{ matrix.config.arch }}
-        path: ${{ matrix.config.artifactPath }}
+        name: ${{ matrix.host.displayName }}-${{ matrix.arch }}
+        path: ${{ matrix.host.artifactPath }}
