@@ -1,0 +1,38 @@
+ame: Build App
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+        cache: 'npm'
+    - name: Install Node.js dependencies
+      run: npm install
+    - name: Build app (x86_64)
+      run: npx electron-forge make --arch x64
+    - name: Upload artifacts (x86_64)
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.os }}-x86_64
+        path: out/make/*.*
+    - name: Reset artifacts
+      run: rm -r out/make
+    - name: Build app (arm64)
+      run: npx electron-forge make --arch arm64
+    - name: Upload artifacts (arm64)
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.os }}-arm64
+        path: out/make/*.*
