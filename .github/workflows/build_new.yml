@@ -4,8 +4,17 @@ on: workflow_dispatch
 
 jobs:
   build:
-    name: Run build
-    runs-on: macos-latest # Required for macOS signing
+
+    strategy:
+      matrix:
+        arch: ["x64", "arm64"]
+        host:
+          - {os: macos-latest, displayName: "macOS", artifactPath: "dist/6328 Log Viewer-*.dmg"}
+          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/6328-log-viewer_*.deb\ndist/6328-log-viewer_*.rpm"}
+          - {os: windows-latest, displayName: "Windows", artifactPath: "dist/6328 Log Viewer Setup *.exe"}
+
+    name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.config.os }}
 
     steps:
     - name: Checkout repository
@@ -18,9 +27,9 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
     - name: Build app
-      run: npx electron-builder build -mlw --x64 --arm64
+      run: npx electron-builder build --${{ matrix.arch }}
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: all-artiffacts
-        path: dist
+        name: ${{ matrix.host.displayName }}-${{ matrix.arch }}
+        path: ${{ matrix.host.artifactPath }}
