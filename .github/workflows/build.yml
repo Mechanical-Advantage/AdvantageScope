@@ -8,9 +8,9 @@ jobs:
     strategy:
       matrix:
         config:
-          - {os: macos-latest, displayName: "macOS", artifactPath_x86_64: "out/6328 Log Viewer-darwin-x64/6328 Log Viewer.app", artifactPath_arm64: "out/6328 Log Viewer-darwin-arm64/6328 Log Viewer.app"}
-          - {os: ubuntu-latest, displayName: "Linux", artifactPath_x86_64: "out/make/deb/x64/6328-log-viewer_*_amd64.deb\nout/make/rpm/x64/6328-log-viewer-*-1.x86_64.rpm", artifactPath_arm64: "out/make/deb/arm64/6328-log-viewer_*_amd64.deb\nout/make/rpm/arm64/6328-log-viewer-*-1.x86_64.rpm"}}
-          - {os: windows-latest, displayName: "Windows", artifactPath_x86_64: "out/make/squirrel.windows/x64/6328 Log Viewer-* Setup.exe", artifactPath_arm64: "out/make/squirrel.windows/arm64/6328 Log Viewer-* Setup.exe"}}
+          - {os: macos-latest, displayName: "macOS", artifactPath-x86: "out/6328 Log Viewer-darwin-x64/6328 Log Viewer.app", artifactPath-arm: "out/6328 Log Viewer-darwin-arm64/6328 Log Viewer.app"}
+          - {os: ubuntu-latest, displayName: "Linux", artifactPath-x86: "out/make/deb/x64/6328-log-viewer_*_amd64.deb\nout/make/rpm/x64/6328-log-viewer-*-1.x86_64.rpm", artifactPath-arm: "out/make/deb/arm64/6328-log-viewer_*_arm64.deb\nout/make/rpm/arm64/6328-log-viewer-*-1.arm64.rpm"}}
+          - {os: windows-latest, displayName: "Windows", artifactPath-x86: "out/make/squirrel.windows/x64/6328 Log Viewer-* Setup.exe", artifactPath-arm: "out/make/squirrel.windows/arm64/6328 Log Viewer-* Setup.exe"}}
 
     name: Build for ${{ matrix.config.displayName }}
     runs-on: ${{ matrix.config.os }}
@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.config.displayName }}-x86_64
-        path: ${{ matrix.config.artifactPath_x86_64 }}
+        path: ${{ matrix.config.artifactPath-x86 }}
     - name: Reset artifacts
       run: rm -r out
     - name: Build app (arm64)
@@ -39,4 +39,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.config.displayName }}-arm64
-        path: ${{ matrix.config.artifactPath_arm64 }}
+        path: ${{ matrix.config.artifactPath-arm }}
