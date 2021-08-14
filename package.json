@@ -12,11 +12,12 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^13.1.9",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "electron-publisher-s3": "^20.17.2"
   },
   "build": {
     "appId": "org.littletonrobotics.logviewer",
-    "publish": "never",
+    "publish": [],
     "mac": {
       "target": "dmg",
       "icon": "assets/icon-native.icns"
