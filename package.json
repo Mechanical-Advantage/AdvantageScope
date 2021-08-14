@@ -16,6 +16,7 @@
   },
   "build": {
     "appId": "org.littletonrobotics.logviewer",
+    "publish": "never",
     "mac": {
       "target": "dmg",
       "icon": "assets/icon-native.icns"
