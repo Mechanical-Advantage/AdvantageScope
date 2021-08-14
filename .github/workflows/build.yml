@@ -12,7 +12,7 @@ jobs:
           - {os: ubuntu-latest, displayName: "Linux", artifactPath: "out/make/**/*.*"}
           - {os: windows-latest, displayName: "Windows", artifactPath: "out/make/**/*.exe"}
 
-    name: ${{ matrix.config.displayName }}
+    name: Build for ${{ matrix.config.displayName }}
     runs-on: ${{ matrix.config.os }}
 
     steps:
