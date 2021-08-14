@@ -16,7 +16,14 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Set timezone
+      uses: szenius/set-timezone@v1.0
+      with:
+        timezoneLinux: "America/New_York"
+        timezoneMacos: "America/New_York"
+        timezoneWindows: "Eastern Standard Time"
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
