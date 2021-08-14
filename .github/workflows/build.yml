@@ -30,7 +30,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.config.displayName }}-x86_64
-        path: ${{ matrix.config.artifactPath }}
+        path: ${{ matrix.config.artifactPath_x86_64 }}
     - name: Reset artifacts
       run: rm -r out
     - name: Build app (arm64)
@@ -39,4 +39,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.config.displayName }}-arm64
-        path: ${{ matrix.config.artifactPath }}
+        path: ${{ matrix.config.artifactPath_arm64 }}
