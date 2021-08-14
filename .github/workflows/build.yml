@@ -1,4 +1,4 @@
-ame: Build App
+name: Build App
 
 on: workflow_dispatch
 
