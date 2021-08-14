@@ -27,10 +27,10 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
     - name: Build app
-      run: npx electron-builder build --${{ matrix.arch }}
+      run: npx electron-builder build --${{ matrix.arch }} --publish never
       env:
-        CSC_LINK: ${{ secrets.MACOS_CERTIFICATE }}
-        CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+        CSC_LINK: "${{ matrix.host.os == 'macos-latest' && secrets.MACOS_CERTIFICATE || '' }}"
+        CSC_KEY_PASSWORD: "${{ matrix.host.os == 'macos-latest' && secrets.MACOS_CERTIFICATE_PWD || '' }}"
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
