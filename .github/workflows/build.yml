@@ -15,7 +15,7 @@ jobs:
           - {os: windows-latest, displayName: "Windows", arch: "x64", artifactPath: "out/make/squirrel.windows/x64/"}
           - {os: windows-latest, displayName: "Windows", arch: "arm64", artifactPath: "out/make/squirrel.windows/arm64/"}
 
-    name: Build for ${{ matrix.config.displayName }}
+    name: Build for ${{ matrix.config.displayName }} (${{ matrix.config.arch }})
     runs-on: ${{ matrix.config.os }}
 
     steps:
