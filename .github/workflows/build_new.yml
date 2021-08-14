@@ -28,6 +28,9 @@ jobs:
       run: npm install
     - name: Build app
       run: npx electron-builder build --${{ matrix.arch }}
+      env:
+        CSC_LINK: ${{ secrets.MACOS_CERTIFICATE }}
+        CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
     - name: Upload artifacts
       uses: actions/upload-artifact@v2
       with:
