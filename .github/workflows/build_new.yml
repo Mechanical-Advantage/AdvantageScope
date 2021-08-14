@@ -27,7 +27,7 @@ jobs:
     - name: Install Node.js dependencies
       run: npm install
     - name: Prepare macOS certificate
-      if: ${{ matrix.host.os }} == "macos-latest"
+      if: matrix.host.os == 'macos-latest'
       run: |
         echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
         echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
