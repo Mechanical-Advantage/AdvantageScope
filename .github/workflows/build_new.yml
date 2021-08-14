@@ -10,7 +10,7 @@ jobs:
         arch: ["x64", "arm64"]
         host:
           - {os: macos-latest, displayName: "macOS", artifactPath: "dist/6328 Log Viewer-*.dmg"}
-          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/6328-log-viewer_*.deb\ndist/6328-log-viewer_*.rpm"}
+          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm"}
           - {os: windows-latest, displayName: "Windows", artifactPath: "dist/6328 Log Viewer Setup *.exe"}
 
     name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
