@@ -20,7 +20,7 @@ function setupMenu() {
   const isMac = process.platform === "darwin"
 
   const template = [
-    { role: "appMenu" },
+    ...(isMac ? [{ role: "appMenu" }] : []),
     {
       label: "File",
       submenu: [
