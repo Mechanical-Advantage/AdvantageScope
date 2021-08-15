@@ -82,14 +82,27 @@ function setupMenu() {
 var firstOpenPath = null
 app.whenReady().then(() => {
   setupMenu()
-
   var window = createWindow()
+
+  // Check for file path given as argument
+  if (process.defaultApp) {
+    if (process.argv.length > 2) {
+      firstOpenPath = "ARG: " + process.argv[2]
+    }
+  } else {
+    if (process.argv.length > 1) {
+      firstOpenPath = "ARG: " + process.argv[1]
+    }
+  }
+
+  // Open file if exists
   if (firstOpenPath != null) {
     window.webContents.once("dom-ready", () => {
       window.send("open-file", firstOpenPath + " (first open)")
     })
   }
 
+  // Create new window if activated while none exist
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
@@ -99,6 +112,7 @@ app.on("window-all-closed", function () {
   if (process.platform !== "darwin") app.quit()
 })
 
+// macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (event, path) => {
   if (app.isReady()) { // Already running, create a new window
     var window = createWindow()
