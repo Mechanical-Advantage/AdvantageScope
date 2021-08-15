@@ -18,22 +18,35 @@
   "build": {
     "appId": "org.littletonrobotics.logviewer",
     "publish": [],
+    "directories": {
+      "buildResources": "./"
+    },
+    "fileAssociations": [
+      {
+        "ext": "rlog",
+        "name": "Robot log",
+        "description": "Log file for an FRC robot.",
+        "mimeType": "application/octet-stream",
+        "role": "Viewer",
+        "icon": "assets/rlog-icon"
+      }
+    ],
     "mac": {
       "target": "dmg",
-      "icon": "assets/icon-native.icns"
+      "icon": "assets/app-icon.icns"
     },
     "linux": {
       "target": [
         "deb",
         "rpm"
       ],
-      "icon": "assets/icon-native.icns",
+      "icon": "assets/app-icon.icns",
       "maintainer": "FRC 6328",
       "category": "Utility"
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/icon-native.ico"
+      "icon": "assets/app-icon.ico"
     }
   }
 }
