@@ -37,7 +37,7 @@ function setupMenu() {
           click() {
             var window = BrowserWindow.getFocusedWindow()
             var files = dialog.showOpenDialog(window, {
-              title: "Select log file to open:",
+              title: "Select a robot log file to open",
               properties: ["openFile"],
               filters: [
                 { name: "Robot logs", extensions: ["rlog"] }
