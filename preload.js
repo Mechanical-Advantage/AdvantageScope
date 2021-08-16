@@ -1,9 +1,19 @@
 const { ipcRenderer } = require("electron")
+const fs = require("fs")
 
-ipcRenderer.on("open-file", (event, path) => {
-  window.dispatchEvent(new CustomEvent("open-file", {
-    detail: { path: path }
-  }))
+ipcRenderer.on("open-file", (_, path) => {
+  fs.open(path, "r", function (err, file) {
+    if (err) throw err
+
+    fs.readFile(file, function (err, buffer) {
+      window.dispatchEvent(new CustomEvent("open-file", {
+        detail: {
+          path: path,
+          data: buffer
+        }
+      }))
+    })
+  })
 })
 
 window.addEventListener("DOMContentLoaded", () => {

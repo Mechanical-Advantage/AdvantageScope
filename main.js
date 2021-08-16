@@ -6,12 +6,14 @@ function createWindow() {
     width: 800,
     height: 600,
     icon: path.join(__dirname, "assets/icon-256.png"),
+    show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
   })
 
-  // win.webContents.openDevTools()
+  if (process.defaultApp) window.webContents.openDevTools()
+  window.once("ready-to-show", window.show)
   window.loadFile("www/index.html")
   return window
 }
@@ -45,7 +47,7 @@ function setupMenu() {
             })
             files.then((files) => {
               if (files.filePaths.length > 0) {
-                window.webContents.send("open-file", files.filePaths[0] + " (existing window)")
+                window.webContents.send("open-file", files.filePaths[0])
               }
             })
           }
@@ -87,18 +89,18 @@ app.whenReady().then(() => {
   // Check for file path given as argument
   if (process.defaultApp) {
     if (process.argv.length > 2) {
-      firstOpenPath = "ARG: " + process.argv[2]
+      firstOpenPath = process.argv[2]
     }
   } else {
     if (process.argv.length > 1) {
-      firstOpenPath = "ARG: " + process.argv[1]
+      firstOpenPath = process.argv[1]
     }
   }
 
   // Open file if exists
   if (firstOpenPath != null) {
     window.webContents.once("dom-ready", () => {
-      window.send("open-file", firstOpenPath + " (first open)")
+      window.send("open-file", firstOpenPath)
     })
   }
 
@@ -117,7 +119,7 @@ app.on("open-file", (event, path) => {
   if (app.isReady()) { // Already running, create a new window
     var window = createWindow()
     window.webContents.once("dom-ready", () => {
-      window.send("open-file", path + " (new window)")
+      window.send("open-file", path)
     })
   } else { // Not running yet, open in first window
     firstOpenPath = path

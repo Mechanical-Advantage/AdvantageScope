@@ -1,3 +1,8 @@
+var log = null
+
 window.addEventListener("open-file", function (event) {
-  alert(event.detail.path)
+  console.log("Opening file '" + event.detail.path + "'")
+  log = new Log()
+  decodeBytes(log, event.detail.data)
+  console.log("Log decoded")
 })
