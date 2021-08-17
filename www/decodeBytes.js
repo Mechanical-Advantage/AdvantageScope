@@ -13,7 +13,7 @@ function decodeBytes(log, dataArray) {
   try {
     mainLoop:
     while (true) {
-      var entry = { timestamp: dataBuffer.getFloat64(shiftOffset(8)), data: {} }
+      var entry = { timestamp: dataBuffer.getFloat64(shiftOffset(8)), data: [] }
 
       readLoop:
       while (true) {
@@ -35,28 +35,36 @@ function decodeBytes(log, dataArray) {
           case 2: // Updated field
             var key = keyIDs[dataBuffer.getInt16(shiftOffset(2))]
             var value = null
+            var type = null
 
             switch (dataArray[shiftOffset(1)]) {
               case 0: // null
+                type = "null"
                 break;
               case 1: // Boolean
+                type = "Boolean"
                 value = dataArray[shiftOffset(1)] != 0
                 break;
               case 9: // Byte
+                type = "Byte"
                 value = dataArray[shiftOffset(1)]
                 break;
               case 3: // Integer
+                type = "Integer"
                 value = dataBuffer.getInt32(shiftOffset(4))
                 break;
               case 5: // Double
+                type = "Double"
                 value = dataBuffer.getFloat64(shiftOffset(8))
                 break;
               case 7: // String
+                type = "String"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = decoder.decode(dataArray.slice(offset, offset + length))
                 offset += length
                 break;
               case 2: // BooleanArray
+                type = "BooleanArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
                 for (i = 0; i < length; i++) {
@@ -64,6 +72,7 @@ function decodeBytes(log, dataArray) {
                 }
                 break;
               case 10: // ByteArray
+                type = "ByteArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
                 for (i = 0; i < length; i++) {
@@ -71,6 +80,7 @@ function decodeBytes(log, dataArray) {
                 }
                 break;
               case 4: // IntegerArray
+                type = "IntegerArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
                 for (i = 0; i < length; i++) {
@@ -78,6 +88,7 @@ function decodeBytes(log, dataArray) {
                 }
                 break;
               case 6: // DoubleArray
+                type = "DoubleArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
                 for (i = 0; i < length; i++) {
@@ -85,6 +96,7 @@ function decodeBytes(log, dataArray) {
                 }
                 break;
               case 8: // StringArray
+                type = "StringArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
                 for (i = 0; i < length; i++) {
@@ -94,7 +106,11 @@ function decodeBytes(log, dataArray) {
                 }
                 break;
             }
-            entry.data[key] = value
+            entry.data.push({
+              key: key,
+              type: type,
+              value: value
+            })
             break;
         }
       }
@@ -103,4 +119,5 @@ function decodeBytes(log, dataArray) {
   } catch (error) {
     console.error(error.message)
   }
+  log.updateDisplayKeys()
 }

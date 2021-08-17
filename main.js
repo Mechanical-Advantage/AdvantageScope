@@ -3,8 +3,8 @@ const path = require("path")
 
 function createWindow() {
   const window = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 900,
+    height: 650,
     icon: path.join(__dirname, "assets/icon-256.png"),
     show: false,
     webPreferences: {
