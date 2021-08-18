@@ -1,9 +1,11 @@
 import { Log } from "./modules/log.mjs"
 
+window.platform = null
+window.platformRelease = null
+window.isFullscreen = false
+
 window.logPath = null
 window.log = null
-window.platform = null
-window.isFullscreen = false
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle
@@ -11,7 +13,7 @@ function setTitle(newTitle) {
 }
 
 function updateToolbar() {
-  if (platform == "darwin" && !isFullscreen) {
+  if (platform == "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !isFullscreen) {
     document.getElementsByClassName("main-view")[0].style.top = "40px"
     document.getElementsByClassName("title-bar")[0].hidden = false
   } else {
@@ -26,7 +28,8 @@ window.addEventListener("set-fullscreen", function (event) {
 })
 
 window.addEventListener("set-platform", function (event) {
-  window.platform = event.detail
+  window.platform = event.detail.platform
+  window.platformRelease = event.detail.release
   updateToolbar()
 })
 

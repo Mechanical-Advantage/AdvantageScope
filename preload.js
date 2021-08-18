@@ -1,5 +1,6 @@
 const { ipcRenderer } = require("electron")
 const fs = require("fs")
+const os = require("os")
 
 ipcRenderer.on("set-fullscreen", (_, isFullscreen) => {
   window.dispatchEvent(new CustomEvent("set-fullscreen", {
@@ -24,7 +25,10 @@ ipcRenderer.on("open-file", (_, path) => {
 
 window.addEventListener("DOMContentLoaded", () => {
   window.dispatchEvent(new CustomEvent("set-platform", {
-    detail: process.platform
+    detail: {
+      platform: process.platform,
+      release: os.release()
+    }
   }))
 
   const replaceText = (selector, text) => {

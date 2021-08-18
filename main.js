@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog } = require("electron")
 const windowStateKeeper = require('electron-window-state');
 const path = require("path")
+const os = require("os")
 
 var firstOpenPath = null
 app.whenReady().then(() => {
@@ -75,7 +76,7 @@ function createWindow() {
     minHeight: 200,
     icon: path.join(__dirname, "assets/icon-256.png"),
     show: false,
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: (process.platform == "darwin" && Number(os.release().split(".")[0]) >= 20) ? "hiddenInset" : "default",
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
