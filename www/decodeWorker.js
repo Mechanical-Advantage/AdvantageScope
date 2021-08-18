@@ -1,7 +1,10 @@
-// Decodes a series of bytes from an RLOG file and adds the data to a log
-function decodeBytes(log, dataArray) {
-  window.dataArray = dataArray
-  window.dataBuffer = new DataView(dataArray.buffer)
+import { Log } from "./modules/log.mjs"
+
+// Decodes a series of bytes from an RLOG file and returns serializable data for a Log()
+onmessage = function (event) {
+  var log = new Log()
+  var dataArray = event.data
+  var dataBuffer = new DataView(dataArray.buffer)
   var decoder = new TextDecoder("UTF-8")
   var offset = 1 // Skip first byte (timestamp)
   var keyIDs = {}
@@ -67,7 +70,7 @@ function decodeBytes(log, dataArray) {
                 type = "BooleanArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
-                for (i = 0; i < length; i++) {
+                for (let i = 0; i < length; i++) {
                   value.push(dataArray[shiftOffset(1)] != 0)
                 }
                 break;
@@ -75,7 +78,7 @@ function decodeBytes(log, dataArray) {
                 type = "ByteArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
-                for (i = 0; i < length; i++) {
+                for (let i = 0; i < length; i++) {
                   value.push(dataArray[shiftOffset(1)])
                 }
                 break;
@@ -83,7 +86,7 @@ function decodeBytes(log, dataArray) {
                 type = "IntegerArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
-                for (i = 0; i < length; i++) {
+                for (let i = 0; i < length; i++) {
                   value.push(dataBuffer.getInt32(shiftOffset(4)))
                 }
                 break;
@@ -91,7 +94,7 @@ function decodeBytes(log, dataArray) {
                 type = "DoubleArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
-                for (i = 0; i < length; i++) {
+                for (let i = 0; i < length; i++) {
                   value.push(dataBuffer.getFloat64(shiftOffset(8)))
                 }
                 break;
@@ -99,7 +102,7 @@ function decodeBytes(log, dataArray) {
                 type = "StringArray"
                 var length = dataBuffer.getInt16(shiftOffset(2))
                 value = []
-                for (i = 0; i < length; i++) {
+                for (let i = 0; i < length; i++) {
                   var stringLength = dataBuffer.getInt16(shiftOffset(2))
                   value.push(decoder.decode(dataArray.slice(offset, offset + stringLength)))
                   offset += stringLength
@@ -120,4 +123,5 @@ function decodeBytes(log, dataArray) {
     console.error(error.message)
   }
   log.updateDisplayKeys()
+  this.postMessage(log.rawData)
 }

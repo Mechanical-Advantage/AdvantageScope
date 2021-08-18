@@ -1,19 +1,92 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog } = require("electron")
+const windowStateKeeper = require('electron-window-state');
 const path = require("path")
 
+var firstOpenPath = null
+app.whenReady().then(() => {
+  setupMenu()
+  var window = createWindow()
+
+  // Check for file path given as argument
+  if (process.defaultApp) {
+    if (process.argv.length > 2) {
+      firstOpenPath = process.argv[2]
+    }
+  } else {
+    if (process.argv.length > 1) {
+      firstOpenPath = process.argv[1]
+    }
+  }
+
+  // Open file if exists
+  if (firstOpenPath != null) {
+    window.webContents.once("dom-ready", () => {
+      window.send("open-file", firstOpenPath)
+    })
+  }
+
+  // Create new window if activated while none exist
+  app.on("activate", function () {
+    if (BrowserWindow.getAllWindows().length == 0) createWindow()
+  })
+})
+
+app.on("window-all-closed", function () {
+  if (process.platform !== "darwin") app.quit()
+})
+
+// macOS only, Linux & Windows start a new process and pass the file as an argument
+app.on("open-file", (_, path) => {
+  if (app.isReady()) { // Already running, create a new window
+    var window = createWindow()
+    window.webContents.once("dom-ready", () => {
+      window.send("open-file", path)
+    })
+  } else { // Not running yet, open in first window
+    firstOpenPath = path
+  }
+})
+
 function createWindow() {
+  var windowState = windowStateKeeper({
+    defaultWidth: 900,
+    defaultHeight: 650,
+    fullScreen: false
+  })
+
+  if (BrowserWindow.getFocusedWindow() == null) {
+    var position = [windowState.x, windowState.y, windowState.width, windowState.height]
+  } else {
+    var focusedWindow = BrowserWindow.getFocusedWindow()
+    var position = [
+      focusedWindow.getPosition()[0] + 30,
+      focusedWindow.getPosition()[1] + 30,
+      focusedWindow.getSize()[0],
+      focusedWindow.getSize()[1]
+    ]
+  }
+
   const window = new BrowserWindow({
-    width: 900,
-    height: 650,
+    x: position[0],
+    y: position[1],
+    width: position[2],
+    height: position[3],
+    minWidth: 400,
+    minHeight: 200,
     icon: path.join(__dirname, "assets/icon-256.png"),
     show: false,
+    titleBarStyle: "hiddenInset",
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
   })
 
+  windowState.manage(window)
+
   if (process.defaultApp) window.webContents.openDevTools()
   window.once("ready-to-show", window.show)
+  window.on("enter-full-screen", () => window.send("set-fullscreen", true))
+  window.on("leave-full-screen", () => window.send("set-fullscreen", false))
   window.loadFile("www/index.html")
   return window
 }
@@ -80,48 +153,3 @@ function setupMenu() {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
-
-var firstOpenPath = null
-app.whenReady().then(() => {
-  setupMenu()
-  var window = createWindow()
-
-  // Check for file path given as argument
-  if (process.defaultApp) {
-    if (process.argv.length > 2) {
-      firstOpenPath = process.argv[2]
-    }
-  } else {
-    if (process.argv.length > 1) {
-      firstOpenPath = process.argv[1]
-    }
-  }
-
-  // Open file if exists
-  if (firstOpenPath != null) {
-    window.webContents.once("dom-ready", () => {
-      window.send("open-file", firstOpenPath)
-    })
-  }
-
-  // Create new window if activated while none exist
-  app.on("activate", function () {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-})
-
-app.on("window-all-closed", function () {
-  if (process.platform !== "darwin") app.quit()
-})
-
-// macOS only, Linux & Windows start a new process and pass the file as an argument
-app.on("open-file", (event, path) => {
-  if (app.isReady()) { // Already running, create a new window
-    var window = createWindow()
-    window.webContents.once("dom-ready", () => {
-      window.send("open-file", path)
-    })
-  } else { // Not running yet, open in first window
-    firstOpenPath = path
-  }
-})

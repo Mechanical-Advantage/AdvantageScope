@@ -1,0 +1,45 @@
+html {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+}
+
+body {
+  color: #222;
+  background-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eee;
+    background-color: #222;
+  }
+}
+
+div.title-bar {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  height: 38px;
+
+  user-select: none;
+  -webkit-app-region: drag;
+}
+
+div.title-bar-text {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 80px;
+  right: 80px;
+
+  text-align: center;
+  line-height: 38px;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+div.main-view {
+  position: absolute;
+  max-width: 100%;
+  margin: 5px;
+}
