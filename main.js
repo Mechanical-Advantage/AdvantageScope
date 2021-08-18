@@ -49,41 +49,46 @@ app.on("open-file", (_, path) => {
 })
 
 function createWindow() {
+  var prefs = {
+    minWidth: 400,
+    minHeight: 200,
+    icon: path.join(__dirname, "assets/icon-256.png"),
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  }
+
+  // Manage window state
   var windowState = windowStateKeeper({
     defaultWidth: 900,
     defaultHeight: 650,
     fullScreen: false
   })
-
   if (BrowserWindow.getFocusedWindow() == null) {
-    var position = [windowState.x, windowState.y, windowState.width, windowState.height]
+    prefs.x = windowState.x
+    prefs.y = windowState.y
+    prefs.width = windowState.width
+    prefs.height = windowState.height
   } else {
     var focusedWindow = BrowserWindow.getFocusedWindow()
-    var position = [
-      focusedWindow.getPosition()[0] + 30,
-      focusedWindow.getPosition()[1] + 30,
-      focusedWindow.getSize()[0],
-      focusedWindow.getSize()[1]
-    ]
+    prefs.x = focusedWindow.getPosition()[0] + 30
+    prefs.y = focusedWindow.getPosition()[1] + 30
+    prefs.width = focusedWindow.getSize()[0]
+    prefs.height = focusedWindow.getSize()[1]
   }
 
-  const window = new BrowserWindow({
-    x: position[0],
-    y: position[1],
-    width: position[2],
-    height: position[3],
-    minWidth: 400,
-    minHeight: 200,
-    icon: path.join(__dirname, "assets/icon-256.png"),
-    show: false,
-    titleBarStyle: (process.platform == "darwin" && Number(os.release().split(".")[0]) >= 20) ? "hiddenInset" : "default",
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  })
+  // Set fancy window effects
+  if (process.platform == "darwin") {
+    prefs.vibrancy = "sidebar"
+    if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"
+  }
 
+  // Create window
+  const window = new BrowserWindow(prefs)
   windowState.manage(window)
 
+  // Finish setup
   if (process.defaultApp) window.webContents.openDevTools()
   window.once("ready-to-show", window.show)
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))

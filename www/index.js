@@ -12,25 +12,33 @@ function setTitle(newTitle) {
   document.getElementsByClassName("title-bar-text")[0].innerText = newTitle
 }
 
-function updateToolbar() {
-  if (platform == "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !isFullscreen) {
-    document.getElementsByClassName("main-view")[0].style.top = "40px"
+function updateFancyWindow() {
+  // Using fancy title bar?
+  if (platform == "darwin" && Number(platformRelease.split(".")[0]) >= 20 && !isFullscreen) {
+    document.getElementsByClassName("main-view")[0].style.top = "38px"
     document.getElementsByClassName("title-bar")[0].hidden = false
   } else {
-    document.getElementsByClassName("main-view")[0].style.top = null
+    document.getElementsByClassName("main-view")[0].style.top = "0px"
     document.getElementsByClassName("title-bar")[0].hidden = true
+  }
+
+  // Using fancy side bar?
+  if (platform == "darwin") {
+    document.getElementsByClassName("side-bar-background")[0].hidden = true
+  } else {
+    document.getElementsByClassName("side-bar-background")[0].hidden = false
   }
 }
 
 window.addEventListener("set-fullscreen", function (event) {
   window.isFullscreen = event.detail
-  updateToolbar()
+  updateFancyWindow()
 })
 
 window.addEventListener("set-platform", function (event) {
   window.platform = event.detail.platform
   window.platformRelease = event.detail.release
-  updateToolbar()
+  updateFancyWindow()
 })
 
 window.addEventListener("open-file", function (event) {

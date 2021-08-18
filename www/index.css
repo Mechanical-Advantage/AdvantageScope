@@ -1,21 +1,19 @@
-html {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
-}
-
 body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
   color: #222;
-  background-color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
   body {
     color: #eee;
-    background-color: #222;
   }
 }
 
+/* Title bar layout */
+
 div.title-bar {
   position: absolute;
+  z-index: 1;
   left: 0px;
   right: 0px;
   top: 0px;
@@ -29,10 +27,10 @@ div.title-bar-text {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 80px;
-  right: 80px;
+  left: 220px;
+  right: 0px;
 
-  text-align: center;
+  text-align: left;
   line-height: 38px;
   font-weight: 600;
   overflow: hidden;
@@ -40,6 +38,62 @@ div.title-bar-text {
 
 div.main-view {
   position: absolute;
-  max-width: 100%;
-  margin: 5px;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+/* Side bar */
+
+div.side-bar-background {
+  position: absolute;
+  left: 0px;
+  width: 200px;
+  top: 0px;
+  bottom: 0px;
+
+  background-color: #e9e9e9;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.side-bar-background {
+    background-color: #292929;
+  }
+}
+
+div.side-bar {
+  position: absolute;
+  left: 0px;
+  width: 200px;
+  top: 0px;
+  bottom: 0px;
+}
+
+/* Viewing area */
+
+div.viewer-background {
+  position: absolute;
+  left: 200px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+
+  box-shadow: 0px 0px 6px 0px #ddd;
+  background-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.viewer-background {
+    box-shadow: 0px 0px 0px 1px #000;
+    background-color: #333;
+  }
+}
+
+div.viewer {
+  position: absolute;
+  left: 200px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
 }

@@ -41,8 +41,7 @@
     },
     "linux": {
       "target": [
-        "deb",
-        "rpm"
+        "deb"
       ],
       "icon": "assets/app-icon.icns",
       "maintainer": "FRC 6328",

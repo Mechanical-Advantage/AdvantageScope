@@ -49,21 +49,31 @@ export class Log {
 
   // Gets info for a field based on its index
   getFieldInfo(index) {
+    var field = this.#fields[index]
     return {
-      displayKey: this.#fields[index].displayKey,
-      type: this.#fields[index].type
+      displayKey: field.displayKey,
+      type: "arrayParent" in field ? this.#fields[field.arrayParent].type.slice(0, -5) : field.type
     }
   }
 
   // Gets all data from a field in the given range
   getDataInRange(fieldIndex, startTime, endTime) {
     var field = this.#fields[fieldIndex]
-    console.log(field)
+
+    // Array item, get data from parent
+    if ("arrayParent" in field) {
+      var parentData = this.getDataInRange(field.arrayParent, startTime, endTime)
+      return {
+        timestamps: parentData.timestamps,
+        values: parentData.values.map((value) => field.arrayIndex >= value.length ? null : value[field.arrayIndex])
+      }
+    }
+
+    // Not an array item
     var timestamps = []
     var values = []
 
     var startValueIndex = field.timestampIndexes.findIndex((timestampIndex) => this.#timestamps[timestampIndex] > startTime)
-    console.log(startValueIndex)
     if (startValueIndex == -1) {
       startValueIndex = field.timestampIndexes.length - 1
     } else if (startValueIndex != 0) {
@@ -71,7 +81,6 @@ export class Log {
     }
 
     var endValueIndex = field.timestampIndexes.findIndex((timestampIndex) => this.#timestamps[timestampIndex] >= endTime)
-    console.log(endValueIndex)
     if (endValueIndex == -1 || endValueIndex == field.timestampIndexes.length - 1) { // Extend to end of timestamps
       timestamps = field.timestampIndexes.slice(startValueIndex)
       values = field.values.slice(startValueIndex)
