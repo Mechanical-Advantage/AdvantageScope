@@ -58,3 +58,17 @@ window.addEventListener("open-file", function (event) {
     console.log("Log decoded in " + length.toString() + "ms")
   }
 })
+
+const sideBarHandle = document.getElementsByClassName("side-bar-handle")[0]
+var sideBarHandleActive = false
+
+sideBarHandle.addEventListener("mousedown", (_) => sideBarHandleActive = true)
+window.addEventListener("mouseup", (_) => sideBarHandleActive = false)
+window.addEventListener("mousemove", (event) => {
+  if (sideBarHandleActive) {
+    var width = event.clientX
+    if (width < 130) width = 130
+    if (width > 500) width = 500
+    document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px")
+  }
+})

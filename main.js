@@ -50,8 +50,8 @@ app.on("open-file", (_, path) => {
 
 function createWindow() {
   var prefs = {
-    minWidth: 400,
-    minHeight: 200,
+    minWidth: 700,
+    minHeight: 400,
     icon: path.join(__dirname, "assets/icon-256.png"),
     show: false,
     webPreferences: {

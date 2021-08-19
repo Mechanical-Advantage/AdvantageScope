@@ -9,16 +9,20 @@ body {
   }
 }
 
+:root {
+  --side-bar-width: 200px;
+}
+
 /* Title bar layout */
 
 div.title-bar {
   position: absolute;
-  z-index: 1;
   left: 0px;
   right: 0px;
   top: 0px;
   height: 38px;
 
+  z-index: 1;
   user-select: none;
   -webkit-app-region: drag;
 }
@@ -27,7 +31,7 @@ div.title-bar-text {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: 220px;
+  left: calc(var(--side-bar-width) + 20px);
   right: 0px;
 
   text-align: left;
@@ -49,7 +53,7 @@ div.main-view {
 div.side-bar-background {
   position: absolute;
   left: 0px;
-  width: 200px;
+  width: var(--side-bar-width);
   top: 0px;
   bottom: 0px;
 
@@ -65,16 +69,28 @@ div.side-bar-background {
 div.side-bar {
   position: absolute;
   left: 0px;
-  width: 200px;
+  width: var(--side-bar-width);
   top: 0px;
   bottom: 0px;
+}
+
+div.side-bar-handle {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: calc(var(--side-bar-width) - 2px);
+  width: 4px;
+
+  z-index: 2;
+  cursor: col-resize;
+  user-select: none;
 }
 
 /* Viewing area */
 
 div.viewer-background {
   position: absolute;
-  left: 200px;
+  left: var(--side-bar-width);
   right: 0px;
   top: 0px;
   bottom: 0px;
@@ -92,7 +108,7 @@ div.viewer-background {
 
 div.viewer {
   position: absolute;
-  left: 200px;
+  left: var(--side-bar-width);
   right: 0px;
   top: 0px;
   bottom: 0px;
