@@ -96,6 +96,12 @@ export class SideBar {
       label.innerText = title
       label.style.fontStyle = field.field == null ? "normal" : "italic"
       label.style.cursor = field.field == null ? "auto" : "grab"
+      if (field.field != null) {
+        label.addEventListener("mousedown", (event) => {
+          document.getElementById("dragItem").innerText = title
+          startDrag(event.clientX, event.clientY, event.offsetX, event.offsetY)
+        })
+      }
 
       if (hasChildren) {
         var childSpan = document.createElement("span")

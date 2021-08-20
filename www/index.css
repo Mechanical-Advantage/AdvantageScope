@@ -191,3 +191,13 @@ div.field-item-label {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Dragged items */
+
+#dragItem {
+  position: absolute;
+  z-index: 7;
+  white-space: nowrap;
+  font-size: 15px;
+  font-style: italic;
+}

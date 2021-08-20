@@ -66,3 +66,31 @@ window.addEventListener("open-file", function (event) {
     sideBar.update()
   }
 })
+
+// MANAGE DRAGGING
+
+var dragItem = document.getElementById("dragItem")
+var dragActive = false
+var dragOffsetX = 0
+var dragOffsetY = 0
+
+window.startDrag = (x, y, offsetX, offsetY) => {
+  dragActive = true
+  dragOffsetX = offsetX
+  dragOffsetY = offsetY
+  dragItem.style.left = (x - dragOffsetX).toString() + "px"
+  dragItem.style.top = (y - dragOffsetY).toString() + "px"
+  dragItem.hidden = false
+}
+
+window.addEventListener("mousemove", (event) => {
+  if (dragActive) {
+    dragItem.style.left = (event.clientX - dragOffsetX).toString() + "px"
+    dragItem.style.top = (event.clientY - dragOffsetY).toString() + "px"
+  }
+})
+
+window.addEventListener("mouseup", () => {
+  dragActive = false
+  dragItem.hidden = true
+})
