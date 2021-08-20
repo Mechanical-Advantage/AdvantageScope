@@ -5,10 +5,8 @@ window.platform = null
 window.platformRelease = null
 window.isFullscreen = false
 
-window.sideBar = new SideBar()
-
-window.logPath = null
 window.log = null
+window.sideBar = new SideBar()
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle
@@ -49,14 +47,15 @@ window.addEventListener("set-platform", function (event) {
 })
 
 window.addEventListener("open-file", function (event) {
-  window.logPath = event.detail.path
-  setTitle(logPath.split(/[\\/]+/).reverse()[0] + " \u2014 6328 Log Viewer")
-  console.log("Opening file '" + logPath + "'")
+  var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
+  if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
+  setTitle(logName + " \u2014 6328 Log Viewer")
+
+  console.log("Opening file '" + logName + "'")
   var startTime = new Date().getTime()
 
   var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   decodeWorker.postMessage(event.detail.data)
-
   decodeWorker.onmessage = function (event) {
     window.log = new Log()
     window.log.rawData = event.data

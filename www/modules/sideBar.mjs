@@ -27,7 +27,12 @@ export class SideBar {
     })
   }
 
-  // Update the list of fields
+  // Displays a loading message in the side bar title
+  startLoading(name) {
+    this.#sideBarTitle.innerText = "Reading " + name + " ..."
+  }
+
+  // Updates the list of fields
   update() {
     // Remove old list
     while (this.#fieldList.firstChild) {
