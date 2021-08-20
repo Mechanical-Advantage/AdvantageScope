@@ -61,7 +61,7 @@ function createWindow() {
 
   // Manage window state
   var windowState = windowStateKeeper({
-    defaultWidth: 900,
+    defaultWidth: 1100,
     defaultHeight: 650,
     fullScreen: false
   })
@@ -91,6 +91,7 @@ function createWindow() {
   // Finish setup
   if (process.defaultApp) window.webContents.openDevTools()
   window.once("ready-to-show", window.show)
+  window.webContents.on("dom-ready", () => window.send("set-fullscreen", window.isFullScreen()))
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
   window.on("leave-full-screen", () => window.send("set-fullscreen", false))
   window.loadFile("www/index.html")

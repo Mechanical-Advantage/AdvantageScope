@@ -17,9 +17,11 @@ function updateFancyWindow() {
   if (platform == "darwin" && Number(platformRelease.split(".")[0]) >= 20 && !isFullscreen) {
     document.getElementsByClassName("main-view")[0].style.top = "38px"
     document.getElementsByClassName("title-bar")[0].hidden = false
+    document.getElementsByClassName("side-bar-shadow")[0].hidden = false
   } else {
     document.getElementsByClassName("main-view")[0].style.top = "0px"
     document.getElementsByClassName("title-bar")[0].hidden = true
+    document.getElementsByClassName("side-bar-shadow")[0].hidden = true
   }
 
   // Using fancy side bar?
@@ -29,6 +31,8 @@ function updateFancyWindow() {
     document.getElementsByClassName("side-bar-background")[0].hidden = false
   }
 }
+
+// COMMUNICATION WITH PRELOAD
 
 window.addEventListener("set-fullscreen", function (event) {
   window.isFullscreen = event.detail
@@ -59,6 +63,8 @@ window.addEventListener("open-file", function (event) {
   }
 })
 
+// SIDE BAR HANDLE
+
 const sideBarHandle = document.getElementsByClassName("side-bar-handle")[0]
 var sideBarHandleActive = false
 
@@ -71,4 +77,12 @@ window.addEventListener("mousemove", (event) => {
     if (width > 500) width = 500
     document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px")
   }
+})
+
+// FIELD LIST RENDERING
+
+var sideBar = document.getElementsByClassName("side-bar")[0]
+var sideBarShadow = document.getElementsByClassName("side-bar-shadow")[0]
+sideBar.addEventListener("scroll", (event) => {
+  sideBarShadow.style.opacity = sideBar.scrollTop == 0 ? 0 : 1
 })

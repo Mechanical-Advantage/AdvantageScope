@@ -56,6 +56,24 @@ export class Log {
     }
   }
 
+  // Organizes fields into a tree structure
+  getFieldTree() {
+    var root = {}
+    for (let i in this.#fields) {
+      var tableNames = this.#fields[i].displayKey.slice(1).split("/")
+      var pos = { children: root }
+      for (let x in tableNames) {
+        var tableName = tableNames[x]
+        if (!(tableName in pos.children)) {
+          pos.children[tableName] = { field: null, children: {} }
+        }
+        pos = pos.children[tableName]
+      }
+      pos.field = Number(i)
+    }
+    return root
+  }
+
   // Gets all data from a field in the given range
   getDataInRange(fieldIndex, startTime, endTime) {
     var field = this.#fields[fieldIndex]
