@@ -120,7 +120,7 @@ div.viewer-background {
   top: 0px;
   bottom: 0px;
 
-  box-shadow: 0px 0px 6px 0px #ddd;
+  box-shadow: 0px 0px 3px 2px #ddd;
   background-color: #fff;
 }
 
@@ -144,7 +144,9 @@ div.viewer {
 div.side-bar-title {
   position: relative;
   margin-top: 5px;
-  width: 100%;
+  margin-bottom: 5px;
+  margin-left: 18px;
+  margin-right: 18px;
   height: 20px;
 
   font-size: 12px;
@@ -164,7 +166,7 @@ div.field-item {
   height: 30px;
 }
 
-svg.field-item-arrow {
+svg.field-item-icon {
   position: absolute;
   left: calc(17px + var(--indent, 0px));
   top: 9px;
@@ -172,7 +174,7 @@ svg.field-item-arrow {
 }
 
 @media (prefers-color-scheme: dark) {
-  svg.field-item-arrow {
+  svg.field-item-icon {
     fill: #eee;
   }
 }
@@ -180,7 +182,7 @@ svg.field-item-arrow {
 div.field-item-label {
   position: absolute;
   left: calc(35px + var(--indent, 0px));
-  right: 18px;
+  max-width: calc(100% - 35px - var(--indent, 0px) - 18px);
   top: 5px;
   height: 20px;
 

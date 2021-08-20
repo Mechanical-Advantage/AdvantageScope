@@ -3,22 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="index.css">
   <title>6328 Log Viewer</title>
-
-  <!-- <svg hidden id="arrowClosed" class="field-item-arrow" height="12" width="12">
-    <polygon points="1,0 1,12 11,6"></polygon>
-  </svg>
-  <svg hidden id="arrowOpen" class="field-item-arrow" height="12" width="12">
-    <polygon points="12,1 0,1 6,11"></polygon>
-  </svg>
-  <svg hidden id="arrowBlank" class="field-item-arrow" height="12" width="12">
-    <rect x="0" y="5" width="12" height="2"></rect>
-  </svg> -->
 </head>
 
 <body>
@@ -33,119 +22,25 @@
   <div class="side-bar-handle"></div>
   <div class="main-view">
     <div class="side-bar">
-      <div class="side-bar-title">
-        No data available
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
+      <div class="side-bar-title">No data available</div>
+
+      <span id="fieldItemIconTemplates" hidden>
+        <svg class="field-item-icon" height="12" width="12">
           <polygon points="1,0 1,12 11,6"></polygon>
         </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
+        <svg class="field-item-icon" height="12" width="12">
+          <polygon points="12,1 0,1 6,11"></polygon>
         </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
+        <svg class="field-item-icon" height="12" width="12">
+          <rect x="1" y="5" width="10" height="2"></rect>
         </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
-      <div class="field-item">
-        <svg id="arrowClosed" class="field-item-arrow" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <div class="field-item-label">DriverStation/DriverStation/DriverStation</div>
-      </div>
+      </span>
+
+      <span id="fieldList"></span>
     </div>
+
     <div class="viewer"></div>
+
     <script type="module" src="index.js"></script>
   </div>
 </body>

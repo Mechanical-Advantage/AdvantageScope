@@ -1,8 +1,11 @@
 import { Log } from "./modules/log.mjs"
+import { SideBar } from "./modules/sideBar.mjs"
 
 window.platform = null
 window.platformRelease = null
 window.isFullscreen = false
+
+window.sideBar = new SideBar()
 
 window.logPath = null
 window.log = null
@@ -60,29 +63,7 @@ window.addEventListener("open-file", function (event) {
 
     var length = new Date().getTime() - startTime
     console.log("Log decoded in " + length.toString() + "ms")
+
+    sideBar.update()
   }
-})
-
-// SIDE BAR HANDLE
-
-const sideBarHandle = document.getElementsByClassName("side-bar-handle")[0]
-var sideBarHandleActive = false
-
-sideBarHandle.addEventListener("mousedown", (_) => sideBarHandleActive = true)
-window.addEventListener("mouseup", (_) => sideBarHandleActive = false)
-window.addEventListener("mousemove", (event) => {
-  if (sideBarHandleActive) {
-    var width = event.clientX
-    if (width < 130) width = 130
-    if (width > 500) width = 500
-    document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px")
-  }
-})
-
-// FIELD LIST RENDERING
-
-var sideBar = document.getElementsByClassName("side-bar")[0]
-var sideBarShadow = document.getElementsByClassName("side-bar-shadow")[0]
-sideBar.addEventListener("scroll", (event) => {
-  sideBarShadow.style.opacity = sideBar.scrollTop == 0 ? 0 : 1
 })
