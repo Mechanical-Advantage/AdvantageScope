@@ -52,6 +52,28 @@ export class SideBar {
     }
     this.#sideBarTitle.innerText = log.getFieldCount().toString() + " field" + (log.getFieldCount() == 0 ? "" : "s") + ", " + Math.round(runtime).toString() + runtimeUnit + " runtime"
 
+    // Sorting function that correctly interprets numbers within strings
+    function smartSort(a, b) {
+      function getNum(str) {
+        for (let i = str.length; i > 0; i -= 1) {
+          var num = Number(str.slice(-i))
+          if (!isNaN(num)) {
+            return num
+          }
+        }
+      }
+
+      var aNum = getNum(a)
+      var bNum = getNum(b)
+      if (aNum != null && bNum != null) {
+        return aNum - bNum
+      } else {
+        if (a == b) return 0
+        if (a > b) return 1
+        if (a < b) return -1
+      }
+    }
+
     // Add fields
     function addField(parentElement, title, field, indent) {
       var hasChildren = Object.keys(field.children).length > 0
@@ -89,7 +111,7 @@ export class SideBar {
         closedIcon.addEventListener("click", toggle)
         openIcon.addEventListener("click", toggle)
 
-        var keys = Object.keys(field.children).sort()
+        var keys = Object.keys(field.children).sort(smartSort)
         for (let i in keys) {
           addField(childSpan, keys[i], field.children[keys[i]], indent + 20)
         }
@@ -97,7 +119,7 @@ export class SideBar {
     }
 
     var tree = log.getFieldTree()
-    var keys = Object.keys(tree).sort()
+    var keys = Object.keys(tree).sort(smartSort)
     for (let i in keys) {
       addField(this.#fieldList, keys[i], tree[keys[i]], 0)
     }
