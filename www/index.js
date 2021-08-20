@@ -78,13 +78,11 @@ window.startDrag = (x, y, offsetX, offsetY) => {
   dragActive = true
   dragOffsetX = offsetX
   dragOffsetY = offsetY
-  dragItem.style.left = (x - dragOffsetX).toString() + "px"
-  dragItem.style.top = (y - dragOffsetY).toString() + "px"
-  dragItem.hidden = false
 }
 
 window.addEventListener("mousemove", (event) => {
   if (dragActive) {
+    dragItem.hidden = false
     dragItem.style.left = (event.clientX - dragOffsetX).toString() + "px"
     dragItem.style.top = (event.clientY - dragOffsetY).toString() + "px"
   }
