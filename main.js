@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, MenuItem, shell, dialog } = require("electron")
+const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain } = require("electron")
 const windowStateKeeper = require('electron-window-state');
 const path = require("path")
 const os = require("os")
@@ -162,3 +162,27 @@ function setupMenu() {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
+
+ipcMain.on("add-tab", () => {
+  const menu = new Menu()
+  menu.append(new MenuItem({
+    label: "Line Graph",
+    click() {
+      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 0)
+    }
+  }))
+  menu.append(new MenuItem({
+    label: "Table",
+    click() {
+      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 1)
+    }
+  }))
+  menu.append(new MenuItem({
+    label: "Odometry",
+    click() {
+      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 2)
+    }
+  }))
+
+  menu.popup()
+})

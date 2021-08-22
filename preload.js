@@ -1,4 +1,4 @@
-const { ipcRenderer } = require("electron")
+const { ipcRenderer, Menu, MenuItem } = require("electron")
 const fs = require("fs")
 const os = require("os")
 
@@ -27,6 +27,16 @@ ipcRenderer.on("open-file", (_, path) => {
       }))
     })
   })
+})
+
+window.addEventListener("add-tab", (event) => {
+  ipcRenderer.send("add-tab")
+})
+
+ipcRenderer.on("add-tab-response", (_, type) => {
+  window.dispatchEvent(new CustomEvent("add-tab-response", {
+    detail: type
+  }))
 })
 
 window.addEventListener("DOMContentLoaded", () => {

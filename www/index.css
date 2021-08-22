@@ -291,11 +291,11 @@ div.tab {
   border: 1px solid #aaa;
 }
 
-div.tab:not(div.tab-selected):hover {
+div.tab.tab-hovered {
   background-color: #ddd;
 }
 
-div.tab-selected {
+div.tab.tab-selected {
   background-color: #aaa;
   border: 1px solid #222;
 }
@@ -306,11 +306,11 @@ div.tab-selected {
     border: 1px solid #666;
   }
 
-  div.tab:not(div.tab-selected):hover {
+  div.tab.tab-hovered {
     background-color: #555;
   }
 
-  div.tab-selected {
+  div.tab.tab-selected {
     background-color: #888;
     border: 1px solid #eee;
   }
@@ -377,4 +377,24 @@ button.move-right {
 
 button.add-tab {
   right: 12px;
+}
+
+/* Tab content */
+
+div.tab-content {
+  position: absolute;
+  top: 50px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+div.tab-centered {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+  font-style: italic;
 }
