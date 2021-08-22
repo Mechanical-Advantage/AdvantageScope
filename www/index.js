@@ -1,12 +1,15 @@
 import { Log } from "./modules/log.mjs"
 import { SideBar } from "./modules/sideBar.mjs"
+import { Tabs } from "./modules/tabs.mjs"
 
 window.platform = null
 window.platformRelease = null
 window.isFullscreen = false
+window.isFocused = true
 
 window.log = null
 window.sideBar = new SideBar()
+window.tabs = new Tabs()
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle
@@ -19,11 +22,14 @@ function updateFancyWindow() {
     document.getElementsByClassName("main-view")[0].style.top = "38px"
     document.getElementsByClassName("title-bar")[0].hidden = false
     document.getElementsByClassName("side-bar-shadow")[0].hidden = false
+    document.documentElement.style.setProperty("--tab-control-inline", 0)
   } else {
     document.getElementsByClassName("main-view")[0].style.top = "0px"
     document.getElementsByClassName("title-bar")[0].hidden = true
     document.getElementsByClassName("side-bar-shadow")[0].hidden = true
+    document.documentElement.style.setProperty("--tab-control-inline", 1)
   }
+  tabs.updateScrollBounds()
 
   // Using fancy side bar?
   if (platform == "darwin") {
@@ -38,6 +44,11 @@ function updateFancyWindow() {
 window.addEventListener("set-fullscreen", function (event) {
   window.isFullscreen = event.detail
   updateFancyWindow()
+})
+
+window.addEventListener("set-focused", function (event) {
+  window.isFocused = event.detail
+  tabs.setFocused(isFocused)
 })
 
 window.addEventListener("set-platform", function (event) {

@@ -1,3 +1,5 @@
+import { Tabs } from "./tabs.mjs"
+
 // Controls the side bar and field list
 export class SideBar {
   #sideBar = document.getElementsByClassName("side-bar")[0]
@@ -18,6 +20,7 @@ export class SideBar {
         if (width < 130) width = 130
         if (width > 500) width = 500
         document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px")
+        tabs.updateScrollBounds()
       }
     })
 

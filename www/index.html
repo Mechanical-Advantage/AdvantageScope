@@ -16,6 +16,28 @@
       6328 Log Viewer
     </div>
   </div>
+
+  <button class="tab-control move-left">
+    <svg class="tab-control-icon" height="28" width="28">
+      <line x1="7" y1="14" x2="21" y2="14"></line>
+      <line x1="7" y1="14" x2="13" y2="8"></line>
+      <line x1="7" y1="14" x2="13" y2="20"></line>
+    </svg>
+  </button>
+  <button class="tab-control move-right">
+    <svg class="tab-control-icon" height="28" width="28">
+      <line x1="7" y1="14" x2="21" y2="14"></line>
+      <line x1="21" y1="14" x2="15" y2="8"></line>
+      <line x1="21" y1="14" x2="15" y2="20"></line>
+    </svg>
+  </button>
+  <button class="tab-control add-tab">
+    <svg class="tab-control-icon" height="28" width="28">
+      <line x1="14" y1="7" x2="14" y2="21"></line>
+      <line x1="7" y1="14" x2="21" y2="14"></line>
+    </svg>
+  </button>
+
   <div class="side-bar-background" hidden></div>
   <div class="side-bar-shadow"></div>
   <div class="viewer-background"></div>
@@ -42,7 +64,69 @@
       <span id="fieldList"></span>
     </div>
 
-    <div class="viewer"></div>
+    <div class="viewer">
+      <div class="tab-bar">
+        <div class="tab tab-selected">
+          Line Graph
+        </div>
+        <div class="tab">
+          Odometry
+        </div>
+        <div class="tab">
+          Table
+        </div>
+        <div class="tab">
+          Line Graph
+        </div>
+        <div class="tab">
+          Odometry
+        </div>
+        <div class="tab">
+          Table
+        </div>
+        <div class="tab">
+          Line Graph
+        </div>
+        <div class="tab">
+          Odometry
+        </div>
+        <div class="tab">
+          Table
+        </div>
+        <div class="tab">
+          Line Graph
+        </div>
+        <div class="tab">
+          Odometry
+        </div>
+        <div class="tab">
+          Table
+        </div>
+        <div class="tab">
+          Line Graph
+        </div>
+        <div class="tab">
+          Odometry
+        </div>
+        <div class="tab">
+          Table
+        </div>
+        <div class="tab">
+          Line Graph
+        </div>
+        <div class="tab">
+          Odometry
+        </div>
+        <div class="tab">
+          Table
+        </div>
+      </div>
+      <div class="tab-bar-shadow-left"></div>
+      <div class="tab-bar-shadow-right"></div>
+      <div class="tab-bar-scroll">
+        <div class="tab-bar-scroll-content"></div>
+      </div>
+    </div>
 
     <script type="module" src="index.js"></script>
   </div>

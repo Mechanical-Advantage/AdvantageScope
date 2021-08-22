@@ -8,6 +8,12 @@ ipcRenderer.on("set-fullscreen", (_, isFullscreen) => {
   }))
 })
 
+ipcRenderer.on("set-focused", (_, isFocused) => {
+  window.dispatchEvent(new CustomEvent("set-focused", {
+    detail: isFocused
+  }))
+})
+
 ipcRenderer.on("open-file", (_, path) => {
   fs.open(path, "r", function (err, file) {
     if (err) throw err

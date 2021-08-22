@@ -12,6 +12,7 @@ body {
 
 :root {
   --side-bar-width: 300px;
+  --tab-control-inline: 0;
 }
 
 /* Title bar layout */
@@ -33,7 +34,7 @@ div.title-bar-text {
   top: 0px;
   bottom: 0px;
   left: calc(var(--side-bar-width) + 20px);
-  right: 20px;
+  right: 111px;
 
   text-align: left;
   line-height: 38px;
@@ -127,7 +128,7 @@ div.viewer-background {
 @media (prefers-color-scheme: dark) {
   div.viewer-background {
     box-shadow: 0px 0px 0px 1px #000;
-    background-color: #333;
+    background-color: #222;
   }
 }
 
@@ -200,4 +201,180 @@ div.field-item-label {
   white-space: nowrap;
   font-size: 15px;
   font-style: italic;
+}
+
+/* Tab bar */
+
+div.tab-bar {
+  position: absolute;
+  left: 10px;
+  right: calc(10px + var(--tab-control-inline) * 106px);
+  top: 0px;
+  height: 50px;
+
+  overflow: scroll;
+  white-space: nowrap;
+}
+
+div.tab-bar::-webkit-scrollbar {
+  display: none;
+}
+
+div.tab-bar-shadow-left, div.tab-bar-shadow-right {
+  position: absolute;
+  width: 60px;
+  top: 0px;
+  height: 50px;
+  
+  transition: opacity 0.2s ease-in-out;
+}
+
+div.tab-bar-shadow-left {
+  opacity: 0%;
+  left: 10px;
+  background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0.75), transparent);
+}
+
+div.tab-bar-shadow-right {
+  opacity: 100%;
+  right: calc(10px + var(--tab-control-inline) * 106px);
+  background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  div.tab-bar-shadow-left {
+    background-image: linear-gradient(to right, #222, rgba(34, 34, 34, 0.75), transparent);
+  }
+  
+  div.tab-bar-shadow-right {
+    background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
+  }
+}
+
+div.tab-bar-scroll {
+  position: absolute;
+  left: 10px;
+  right: calc(10px + var(--tab-control-inline) * 106px);
+  top: 0px;
+  height: 50px;
+
+  overflow: scroll;
+  opacity: 0%;
+}
+
+div.tab-bar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+div.tab-bar-scroll-content {
+  width: 100%;
+  height: 100%;
+}
+
+div.tab {
+  display: inline-block;
+  height: 30px;
+  border-radius: 15px;
+
+  margin-top: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-left: 10px;
+  padding-right: 10px;
+
+  text-align: center;
+  line-height: 30px;
+  white-space: nowrap;
+
+  transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+  background-color: #eee;
+  border: 1px solid #aaa;
+}
+
+div.tab:not(div.tab-selected):hover {
+  background-color: #ddd;
+}
+
+div.tab-selected {
+  background-color: #aaa;
+  border: 1px solid #222;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.tab {
+    background-color: #444;
+    border: 1px solid #666;
+  }
+
+  div.tab:not(div.tab-selected):hover {
+    background-color: #555;
+  }
+
+  div.tab-selected {
+    background-color: #888;
+    border: 1px solid #eee;
+  }
+}
+
+/* Tab control buttons */
+
+button.tab-control {
+  position: absolute;
+  z-index: 6;
+  top: calc(8px + (var(--tab-control-inline) * 3px)); /* Center vertically in tab bar when inline */
+  height: 28px;
+  width: 28px;
+
+  padding: 0px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+}
+
+button.tab-control:hover {
+  background-color: #eee;
+}
+
+button.tab-control:active {
+  background-color: #ddd;
+}
+
+svg.tab-control-icon {
+  stroke: #555;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+}
+
+svg.tab-control-icon.blurred {
+  stroke: #aaa;
+}
+
+@media (prefers-color-scheme: dark) {
+  button.tab-control:hover {
+    background-color: #333;
+  }
+  
+  button.tab-control:active {
+    background-color: #444;
+  }
+  
+  svg.tab-control-icon {
+    stroke: #999;
+  }
+
+  svg.tab-control-icon.blurred {
+    stroke: #555;
+  }
+}
+
+button.move-left {
+  right: 78px;
+}
+
+button.move-right {
+  right: 50px;
+}
+
+button.add-tab {
+  right: 12px;
 }

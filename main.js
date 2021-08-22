@@ -94,6 +94,8 @@ function createWindow() {
   window.webContents.on("dom-ready", () => window.send("set-fullscreen", window.isFullScreen()))
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
   window.on("leave-full-screen", () => window.send("set-fullscreen", false))
+  window.on("blur", () => window.send("set-focused", false))
+  window.on("focus", () => window.send("set-focused", true))
   window.loadFile("www/index.html")
   return window
 }
