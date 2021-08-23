@@ -201,6 +201,7 @@ div.field-item-label {
   white-space: nowrap;
   font-size: 15px;
   font-style: italic;
+  cursor: grabbing;
 }
 
 /* Tab bar */
@@ -397,4 +398,156 @@ div.tab-centered {
 
   text-align: center;
   font-style: italic;
+}
+
+/* Line graph */
+
+div.legend-left {
+  position: absolute;
+  left: 0%;
+  width: 33%;
+  bottom: 0px;
+  height: 30%;
+  max-height: 200px;
+
+  overflow: auto;
+}
+
+div.legend-discrete {
+  position: absolute;
+  left: 33%;
+  width: 33%;
+  bottom: 0px;
+  height: 30%;
+  max-height: 200px;
+
+  overflow: auto;
+  border-left: 1px solid #555;
+  border-right: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.legend-discrete {
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
+  }
+}
+
+div.legend-right {
+  position: absolute;
+  left: 66%;
+  width: 34%;
+  bottom: 0px;
+  height: 30%;
+  max-height: 200px;
+
+  overflow: auto;
+}
+
+div.legend-drag-target {
+  background-color: lightgreen;
+  opacity: 25%;
+}
+
+div.legend-item {
+  position: relative;
+  width: 100%;
+  height: 30px;
+}
+
+div.legend-title {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  left: 0px;
+  right: 30px;
+
+  text-align: center;
+  font-size: 16px;
+  line-height: 30px;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.legend-title-center {
+  right: 0px;
+}
+
+div.legend-key-container {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  left: 30px;
+  max-width: calc(100% - 30px - 30px);
+
+  text-align: right;
+  direction: rtl;
+  font-size: 14px;
+  line-height: 30px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+span.legend-key {
+  unicode-bidi: plaintext;
+}
+
+svg.legend-splotch {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translate(-50%, -50%);
+
+  stroke: #555;
+}
+
+button.legend-edit {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translate(50%, -50%);
+
+  width: 25px;
+  height: 25px;
+
+  padding: 0px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+}
+
+button.legend-edit:hover {
+  background-color: #eee;
+}
+
+button.legend-edit:active {
+  background-color: #ddd;
+}
+
+svg.legend-edit-icon {
+  stroke: #555;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+}
+
+@media (prefers-color-scheme: dark) {
+  svg.legend-splotch {
+    stroke: #999;
+  }
+
+  button.legend-edit:hover {
+    background-color: #333;
+  }
+  
+  button.legend-edit:active {
+    background-color: #444;
+  }
+  
+  svg.legend-edit-icon {
+    stroke: #999;
+  }
 }

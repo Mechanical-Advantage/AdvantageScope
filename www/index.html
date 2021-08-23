@@ -75,9 +75,65 @@
 
         <!-- Line graph -->
         <div class="tab-content">
-          <div class="tab-centered">
-            Content for this tab is not available yet.
+
+          <span class="legend-item-template" hidden>
+            <div class="legend-item">
+              <svg class="legend-splotch" height="25" width="25">
+                <circle cx="12.5" cy="12.5" r="6"></circle>
+              </svg>
+              <div class="legend-key-container">
+                <span class="legend-key"></span>
+              </div>
+              <button class="legend-edit">
+                <svg class="legend-edit-icon" height="25" width="25">
+                  <line x1="7" y1="7" x2="18" y2="18"></line>
+                  <line x1="18" y1="7" x2="7" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </span>
+
+          <div class="legend-left">
+            <div class="legend-item">
+              <div class="legend-title">
+                Left Axis
+              </div>
+              <button class="legend-edit">
+                <svg class="legend-edit-icon" height="25" width="25">
+                  <circle cx="7" cy="12.5" r="0.75"></circle>
+                  <circle cx="12.5" cy="12.5" r="0.75"></circle>
+                  <circle cx="18" cy="12.5" r="0.75"></circle>
+                </svg>
+              </button>
+            </div>
           </div>
+          <div class="legend-left legend-drag-target" hidden></div>
+
+          <div class="legend-discrete">
+            <div class="legend-item">
+              <div class="legend-title legend-title-center">
+                Discrete Fields
+              </div>
+            </div>
+          </div>
+          <div class="legend-discrete legend-drag-target" hidden></div>
+
+          <div class="legend-right">
+            <div class="legend-item">
+              <div class="legend-title">
+                Right Axis
+              </div>
+              <button class="legend-edit">
+                <svg class="legend-edit-icon" height="25" width="25">
+                  <circle cx="7" cy="12.5" r="0.75"></circle>
+                  <circle cx="12.5" cy="12.5" r="0.75"></circle>
+                  <circle cx="18" cy="12.5" r="0.75"></circle>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="legend-right legend-drag-target" hidden></div>
+
         </div>
 
         <!-- Table -->

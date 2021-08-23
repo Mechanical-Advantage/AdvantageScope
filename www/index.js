@@ -84,22 +84,35 @@ var dragItem = document.getElementById("dragItem")
 var dragActive = false
 var dragOffsetX = 0
 var dragOffsetY = 0
+var dragData = null
 
-window.startDrag = (x, y, offsetX, offsetY) => {
+window.startDrag = (x, y, offsetX, offsetY, data) => {
   dragActive = true
   dragOffsetX = offsetX
   dragOffsetY = offsetY
+  dragData = data
+
+  dragItem.hidden = false
+  dragItem.style.left = (x - dragOffsetX).toString() + "px"
+  dragItem.style.top = (y - dragOffsetY).toString() + "px"
 }
 
 window.addEventListener("mousemove", (event) => {
   if (dragActive) {
-    dragItem.hidden = false
     dragItem.style.left = (event.clientX - dragOffsetX).toString() + "px"
     dragItem.style.top = (event.clientY - dragOffsetY).toString() + "px"
+    window.dispatchEvent(new CustomEvent("drag-update", {
+      detail: { x: event.clientX, y: event.clientY, data: dragData }
+    }))
   }
 })
 
-window.addEventListener("mouseup", () => {
-  dragActive = false
-  dragItem.hidden = true
+window.addEventListener("mouseup", (event) => {
+  if (dragActive) {
+    dragActive = false
+    dragItem.hidden = true
+    window.dispatchEvent(new CustomEvent("drag-stop", {
+      detail: { x: event.clientX, y: event.clientY, data: dragData }
+    }))
+  }
 })

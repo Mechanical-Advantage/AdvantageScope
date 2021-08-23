@@ -102,7 +102,7 @@ export class SideBar {
       if (field.field != null) {
         label.addEventListener("mousedown", (event) => {
           document.getElementById("dragItem").innerText = title
-          startDrag(event.clientX, event.clientY, event.offsetX, event.offsetY)
+          startDrag(event.clientX, event.clientY, event.offsetX, event.offsetY, field.field)
         })
       }
 
