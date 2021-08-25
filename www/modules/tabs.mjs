@@ -25,7 +25,7 @@ export class Tabs {
 
     // Scroll handling
     window.addEventListener("resize", () => this.updateScrollBounds())
-    this.#scrollOverlay.addEventListener("scroll", () => this.updateScroll())
+    this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
 
     // Hover and click handling
     this.#scrollOverlay.addEventListener("click", (event) => {
@@ -63,9 +63,29 @@ export class Tabs {
     this.addTab(0)
 
     // Periodic function
+    var cycleTime = 0
     window.setInterval(() => {
+      var startTime = window.performance.now()
       this.#tabList[this.#selectedTab].controller.periodic()
+      cycleTime = window.performance.now() - startTime
     }, 15)
+    window.setInterval(() => {
+      console.log("Cycle time (ms): " + cycleTime.toString())
+    }, 5000)
+  }
+
+  // Resets all tabs to their default states
+  reset() {
+    this.#tabList.forEach((tab) => {
+      tab.controller.reset()
+    })
+  }
+
+  // Resets all tabs to their default states
+  sideBarResize() {
+    this.#tabList.forEach((tab) => {
+      tab.controller.sideBarResize()
+    })
   }
 
   // Adds a new tab to the list
@@ -75,22 +95,24 @@ export class Tabs {
       case 0:
         tabData.title = "Line Graph"
         tabData.content = this.#contentTemplates.children[0].cloneNode(true)
+        this.#viewer.appendChild(tabData.content)
         tabData.controller = new LineGraphController(tabData.content)
         break
       case 1:
         tabData.title = "Table"
         tabData.content = this.#contentTemplates.children[1].cloneNode(true)
+        this.#viewer.appendChild(tabData.content)
         tabData.controller = new TableController(tabData.content)
         break
       case 2:
         tabData.title = "Odometry"
         tabData.content = this.#contentTemplates.children[2].cloneNode(true)
+        this.#viewer.appendChild(tabData.content)
         tabData.controller = new OdometryController(tabData.content)
         break
 
     }
     this.#tabList.push(tabData)
-    this.#viewer.appendChild(tabData.content)
     this.#selectedTab = this.#tabList.length - 1
     this.#updateElements()
   }
@@ -168,11 +190,11 @@ export class Tabs {
       this.#scrollOverlayContent.style.width = (scrollLength + this.#scrollOverlay.clientWidth).toString() + "px"
       this.#scrollOverlay.scrollLeft = oldPos
     }
-    this.updateScroll() // Update scroll in case resizing adjusted position
+    this.#updateScroll() // Update scroll in case resizing adjusted position
   }
 
   // Updates scroll position based on overlay
-  updateScroll() {
+  #updateScroll() {
     var secondaryScroll = this.#verticalScroll ? this.#scrollOverlay.scrollLeft : this.#scrollOverlay.scrollTop
     if (secondaryScroll != 1) {
       this.#verticalScroll = !this.#verticalScroll

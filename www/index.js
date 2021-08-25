@@ -75,6 +75,7 @@ window.addEventListener("open-file", function (event) {
     console.log("Log decoded in " + length.toString() + "ms")
 
     sideBar.update()
+    tabs.reset()
   }
 })
 

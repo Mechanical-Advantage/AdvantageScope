@@ -21,6 +21,7 @@ export class SideBar {
         if (width > 500) width = 500
         document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px")
         tabs.updateScrollBounds()
+        tabs.sideBarResize()
       }
     })
 
@@ -102,7 +103,10 @@ export class SideBar {
       if (field.field != null) {
         label.addEventListener("mousedown", (event) => {
           document.getElementById("dragItem").innerText = title
-          startDrag(event.clientX, event.clientY, event.offsetX, event.offsetY, field.field)
+          startDrag(event.clientX, event.clientY, event.offsetX, event.offsetY, {
+            id: field.field,
+            children: Object.values(field.children).map(x => x.field)
+          })
         })
       }
 

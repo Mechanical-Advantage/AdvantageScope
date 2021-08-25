@@ -180,10 +180,6 @@ export class Log {
             timestampIndexes: [entryIndex],
             values: [entry.data[i].value],
           }
-          if (entryIndex > 0) {
-            field.timestampIndexes.splice(0, 0, 0)
-            field.values.splice(0, 0, null)
-          }
           this.#fields.push(field)
           if (entry.data[i].type.endsWith("Array")) {
             this.#fields[this.#fields.length - 1].arrayLength = entry.data[i].value.length
