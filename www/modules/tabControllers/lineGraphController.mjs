@@ -226,11 +226,13 @@ export class LineGraphController {
         step: stepValue
       }
     } else {
-      var firstStepPrimary = Math.ceil(this.#cleanFloat(primaryAxis.min / primaryAxis.step)) * primaryAxis.step
-      var firstStepSecondary = Math.ceil(this.#cleanFloat(targetRange[0] / stepValue)) * stepValue
+      var midPrimary = (primaryAxis.min + primaryAxis.max) / 2
+      var midSecondary = (targetRange[0] + targetRange[1]) / 2
+      var midStepPrimary = Math.ceil(this.#cleanFloat(midPrimary / primaryAxis.step)) * primaryAxis.step
+      var midStepSecondary = Math.ceil(this.#cleanFloat(midSecondary / stepValue)) * stepValue
 
-      var newMin = (((primaryAxis.min - firstStepPrimary) / primaryAxis.step) * stepValue) + firstStepSecondary
-      var newMax = (((primaryAxis.max - firstStepPrimary) / primaryAxis.step) * stepValue) + firstStepSecondary
+      var newMin = (((primaryAxis.min - midStepPrimary) / primaryAxis.step) * stepValue) + midStepSecondary
+      var newMax = (((primaryAxis.max - midStepPrimary) / primaryAxis.step) * stepValue) + midStepSecondary
       return {
         min: newMin,
         max: newMax,
