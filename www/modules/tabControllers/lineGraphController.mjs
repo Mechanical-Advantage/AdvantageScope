@@ -1,5 +1,6 @@
 // Controls rendering of line graphs
 export class LineGraphController {
+  #content = null
   #legendItemTemplate = null
   #canvasContainer = null
   #canvas = null
@@ -13,7 +14,11 @@ export class LineGraphController {
   #zoomExponent = 1.5
 
   #lastScrollTop = 0
-  #lastCursorX = []
+  #lastCursorX = 0
+  #lastClientWidth = 0
+  #panActive = false
+  #panStartCursorX = 0
+  #panStartScrollLeft = 0
   #xRange = [0, 1]
 
   #legends = {
@@ -40,6 +45,7 @@ export class LineGraphController {
   }
 
   constructor(content) {
+    this.#content = content
     this.#legendItemTemplate = content.getElementsByClassName("legend-item-template")[0].firstElementChild
     this.#canvasContainer = content.getElementsByClassName("line-graph-canvas-container")[0]
     this.#canvas = content.getElementsByClassName("line-graph-canvas")[0]
@@ -55,9 +61,24 @@ export class LineGraphController {
 
     window.addEventListener("drag-update", (event) => this.#handleDrag(event))
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
+
     window.addEventListener("resize", () => this.#updateScroll())
-    this.#scrollOverlay.addEventListener("scroll", (event) => this.#updateScroll())
-    this.#scrollOverlay.addEventListener("mousemove", (event) => this.#lastCursorX = event.layerX)
+    this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
+    this.#scrollOverlay.addEventListener("mousedown", (event) => {
+      this.#panActive = true
+      this.#panStartCursorX = event.layerX
+      this.#panStartScrollLeft = this.#scrollOverlay.scrollLeft
+    })
+    this.#scrollOverlay.addEventListener("mousemove", (event) => {
+      this.#lastCursorX = event.layerX // Update cursor for zoom
+      if (this.#panActive) {
+        this.#scrollOverlay.scrollLeft = this.#panStartScrollLeft + (this.#panStartCursorX - event.layerX)
+        this.#updateScroll()
+      }
+    })
+    this.#scrollOverlay.addEventListener("mouseup", () => this.#panActive = false)
+    this.#scrollOverlay.addEventListener("mouseleave", () => this.#panActive = false)
+
     this.reset()
   }
 
@@ -107,18 +128,28 @@ export class LineGraphController {
     var item = this.#legendItemTemplate.cloneNode(true)
     item.getElementsByClassName("legend-key")[0].innerText = log.getFieldInfo(field).displayKey
     item.getElementsByClassName("legend-splotch")[0].style.fill = color
+    item.getElementsByClassName("legend-splotch")[0].addEventListener("click", () => {
+      var index = Array.from(item.parentElement.children).indexOf(item) - 1
+      var show = !this.#legends[legend].fields[index].show
+      this.#legends[legend].fields[index].show = show
+      item.firstElementChild.style.fill = show ? color : "transparent"
+      this.#render()
+    })
     item.getElementsByClassName("legend-edit")[0].addEventListener("click", () => {
       var index = Array.from(item.parentElement.children).indexOf(item) - 1
       item.parentElement.removeChild(item)
       this.#legends[legend].fields.splice(index, 1)
+      this.#render()
     })
 
     // Add field
     this.#legends[legend].fields.push({
       id: field,
-      color: color
+      color: color,
+      show: true
     })
     this.#legends[legend].element.appendChild(item)
+    this.#render()
   }
 
   // Called by tab controller when log changes
@@ -145,8 +176,7 @@ export class LineGraphController {
   }
 
   // Updates scroll position based on overlay
-  #updateScroll(reset) {
-
+  #updateScroll(reset, resizing) {
     // Find current time range
     if (log == null) {
       var timeRange = [0, 10]
@@ -158,7 +188,7 @@ export class LineGraphController {
     var scrollLengthVertical = ((timeRange[1] - timeRange[0]) / this.#zoomScalar) ** (1 / this.#zoomExponent) // Calc maximum zoom based on time range
     var scrollLengthHorizontal = this.#scrollOverlay.clientWidth * ((timeRange[1] - timeRange[0]) / this.#calcZoom()) // Calc horizontal length based on zoom
 
-    // Adjust content size
+    // Adjust content size and enforce limits
     this.#scrollOverlayContent.style.height = (scrollLengthVertical + this.#scrollOverlay.clientHeight).toString() + "px"
     this.#scrollOverlayContent.style.width = scrollLengthHorizontal.toString() + "px"
     if (reset) {
@@ -172,19 +202,26 @@ export class LineGraphController {
       if (this.#scrollOverlay.scrollLeft > scrollLengthHorizontal) this.#scrollOverlay.scrollLeft = scrollLengthHorizontal
     }
 
+    // Lock minX when resizing, since changing client width would otherwise affect pan
+    if (this.#scrollOverlay.clientWidth != this.#lastClientWidth) {
+      this.#lastClientWidth = this.#scrollOverlay.clientWidth
+      this.#scrollOverlay.scrollLeft = Math.round(((this.#xRange[0] - timeRange[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth)
+    }
+
     // Manage zoom
     if (this.#scrollOverlay.scrollTop != this.#lastScrollTop) {
       var cursorTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (this.#xRange[1] - this.#xRange[0])) + this.#xRange[0] // Time represented by cursor before scroll
-      var zoom = this.#calcZoom()
-      var minX = cursorTime - ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * zoom) // New min X to keep cursor at same time
-      this.#scrollOverlay.scrollLeft = Math.round(((minX - timeRange[0]) / zoom) * this.#scrollOverlay.clientWidth)
+      var minX = cursorTime - ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * this.#calcZoom()) // New min X to keep cursor at same time
+      this.#scrollOverlay.scrollLeft = Math.round(((minX - timeRange[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth)
     }
 
-    var zoom = this.#calcZoom()
-    var minX = ((this.#scrollOverlay.scrollLeft / this.#scrollOverlay.clientWidth) * zoom) + timeRange[0]
-
-    this.#xRange = [minX, minX + zoom]
+    // Update x range
+    var minX = ((this.#scrollOverlay.scrollLeft / this.#scrollOverlay.clientWidth) * this.#calcZoom()) + timeRange[0]
+    this.#xRange = [minX, minX + this.#calcZoom()]
     this.#lastScrollTop = this.#scrollOverlay.scrollTop
+
+    // Render canvas
+    this.#render()
   }
 
   // Cleans up floating point errors
@@ -241,8 +278,18 @@ export class LineGraphController {
     }
   }
 
+  // Called by the tab controller when the tab becomes visible
+  show() { this.#render() }
+
   // Called every 15ms by the tab controller
-  periodic() {
+  periodic() { }
+
+  // Updates the canvas
+  #render() {
+    if (this.#content.hidden) {
+      return
+    }
+
     // Shorthand to adjust pixel values based on screen scaling (retina vs non-retina)
     function pix(pixels) {
       return pixels * window.devicePixelRatio
@@ -289,17 +336,19 @@ export class LineGraphController {
       return minMax
     }
 
-    if (this.#legends.left.fields.length >= this.#legends.right.fields.length) {
+    var visibleFieldsLeft = this.#legends.left.fields.filter((field) => field.show)
+    var visibleFieldsRight = this.#legends.right.fields.filter((field) => field.show)
+    if (visibleFieldsLeft.length >= visibleFieldsRight.length) {
       var leftIsPrimary = true
-      var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(this.#legends.left.fields), 0.05, null)
-      var rightAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(this.#legends.right.fields), 0.3, leftAxis)
+      var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsLeft), 0.05, null)
+      var rightAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsRight), 0.3, leftAxis)
     } else {
       var leftIsPrimary = false
-      var rightAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(this.#legends.right.fields), 0.05, null)
-      var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(this.#legends.left.fields), 0.3, rightAxis)
+      var rightAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsRight), 0.05, null)
+      var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsLeft), 0.3, rightAxis)
     }
 
-    // Render data
+    // Render continuous data
     function renderLegend(fields, range) {
       fields.forEach((field) => {
         var data = dataLookup[field.id]
@@ -329,8 +378,68 @@ export class LineGraphController {
         context.stroke()
       })
     }
-    renderLegend(this.#legends.left.fields, [leftAxis.min, leftAxis.max])
-    renderLegend(this.#legends.right.fields, [rightAxis.min, rightAxis.max])
+    renderLegend(visibleFieldsLeft, [leftAxis.min, leftAxis.max])
+    renderLegend(visibleFieldsRight, [rightAxis.min, rightAxis.max])
+
+    // Render discrete data
+    context.textAlign = "left"
+    context.textBaseline = "middle"
+    context.font = pix(16).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
+    var visibleFieldsDiscrete = this.#legends.discrete.fields.filter((field) => field.show)
+    visibleFieldsDiscrete.forEach((field, renderIndex) => {
+      if (field.id in dataLookup) {
+        var data = dataLookup[field.id]
+      } else {
+        var data = log.getDataInRange(field.id, xRange[0], xRange[1])
+      }
+
+      var colorArray = field.color.slice(1).match(/.{1,2}/g)
+      colorArray = [parseInt(colorArray[0], 16), parseInt(colorArray[1], 16), parseInt(colorArray[2], 16)]
+      var darkColor = colorArray.map(x => {
+        x -= 25
+        if (x < 0) x = 0
+        return x
+      })
+      darkColor = "rgb(" + darkColor.toString() + ")"
+      var lightColor = colorArray.map(x => {
+        x += 25
+        if (x > 255) x = 255
+        return x
+      })
+      lightColor = "rgb(" + lightColor.toString() + ")"
+
+      var lastChange = 0
+      var colorToggle = data.startValueIndex % 2 == 0
+      for (let i = 1; i < data.timestamps.length + 1; i++) {
+        if (i == data.timestamps.length || data.values[i] != data.values[lastChange]) {
+          if (data.values[lastChange] != null) {
+            var startX = scaleValue(data.timestamps[lastChange], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+            if (i == data.timestamps.length) {
+              var endX = graphLeft + graphWidth
+            } else {
+              var endX = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+            }
+            var topY = graphTop + graphHeight - 35 - (renderIndex * 35)
+
+            // Calculate color
+            colorToggle = !colorToggle
+            context.fillStyle = colorToggle ? darkColor : lightColor
+            context.globalAlpha = 0.8
+            context.fillRect(pix(startX), pix(topY), pix(endX - startX), pix(25))
+
+            // Draw text
+            var adjustedStartX = startX < graphLeft ? graphLeft : startX
+            if (endX - adjustedStartX > 50) {
+              context.fillStyle = colorToggle ? lightColor : darkColor
+              context.globalAlpha = 1
+              context.fillText(data.values[lastChange].toString(), pix(adjustedStartX + 5), pix(topY + (25 / 2)), pix(endX - adjustedStartX - 10))
+            }
+          }
+
+          lastChange = i
+        }
+      }
+    })
 
     // Clear overflow & draw graph outline
     context.lineWidth = pix(1)
@@ -350,15 +459,15 @@ export class LineGraphController {
 
     var stepPosLeft = Math.ceil(this.#cleanFloat(leftAxis.min / leftAxis.step)) * leftAxis.step
     var stepPosRight = Math.ceil(this.#cleanFloat(rightAxis.min / rightAxis.step)) * rightAxis.step
-    while (stepPosLeft <= leftAxis.max) {
+    while (this.#cleanFloat(stepPosLeft) <= leftAxis.max) {
       var y = scaleValue(stepPosLeft, leftAxis.min, leftAxis.max, graphTop + graphHeight, graphTop)
 
       context.globalAlpha = 1
-      if (leftIsPrimary || this.#legends.left.fields.length > 0) {
+      if (leftIsPrimary || visibleFieldsLeft.length > 0) {
         context.textAlign = "right"
         context.fillText(this.#cleanFloat(stepPosLeft).toString(), pix(graphLeft - 10), pix(y))
       }
-      if (!leftIsPrimary || this.#legends.right.fields.length > 0) {
+      if (!leftIsPrimary || visibleFieldsRight.length > 0) {
         context.textAlign = "left"
         context.fillText(this.#cleanFloat(stepPosRight).toString(), pix(graphLeft + graphWidth + 10), pix(y))
       }
@@ -377,7 +486,7 @@ export class LineGraphController {
     var axis = this.#calcAutoAxis(graphWidth, 100, xRange, 0, null)
     context.textAlign = "center"
     var stepPos = Math.ceil(this.#cleanFloat(axis.min / axis.step)) * axis.step
-    while (stepPos <= axis.max) {
+    while (this.#cleanFloat(stepPos) <= axis.max) {
       var x = scaleValue(stepPos, axis.min, axis.max, graphLeft, graphLeft + graphWidth)
 
       context.globalAlpha = 1

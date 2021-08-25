@@ -63,15 +63,9 @@ export class Tabs {
     this.addTab(0)
 
     // Periodic function
-    var cycleTime = 0
     window.setInterval(() => {
-      var startTime = window.performance.now()
       this.#tabList[this.#selectedTab].controller.periodic()
-      cycleTime = window.performance.now() - startTime
     }, 15)
-    window.setInterval(() => {
-      console.log("Cycle time (ms): " + cycleTime.toString())
-    }, 5000)
   }
 
   // Resets all tabs to their default states
@@ -166,6 +160,7 @@ export class Tabs {
       if (index == this.#selectedTab) {
         tab.classList.add("tab-selected")
         tabItem.content.hidden = false
+        tabItem.controller.show()
       } else {
         tab.classList.remove("tab-selected")
         tabItem.content.hidden = true

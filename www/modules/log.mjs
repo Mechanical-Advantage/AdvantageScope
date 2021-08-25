@@ -109,7 +109,8 @@ export class Log {
 
     return {
       timestamps: timestamps.map((i) => this.#timestamps[i]),
-      values: values
+      values: values,
+      startValueIndex: startValueIndex
     }
   }
 
