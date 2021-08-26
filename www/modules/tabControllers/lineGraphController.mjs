@@ -63,6 +63,7 @@ export class LineGraphController {
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
 
     window.addEventListener("resize", () => this.#updateScroll())
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.#render());
     this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
     this.#scrollOverlay.addEventListener("mousedown", (event) => {
       this.#panActive = true
