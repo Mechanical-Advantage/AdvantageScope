@@ -160,7 +160,6 @@ export class Tabs {
       if (index == this.#selectedTab) {
         tab.classList.add("tab-selected")
         tabItem.content.hidden = false
-        tabItem.controller.show()
       } else {
         tab.classList.remove("tab-selected")
         tabItem.content.hidden = true

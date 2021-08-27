@@ -63,7 +63,6 @@ export class LineGraphController {
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
 
     window.addEventListener("resize", () => this.#updateScroll())
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => this.#render());
     this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
     this.#scrollOverlay.addEventListener("mousedown", (event) => {
       this.#panActive = true
@@ -134,13 +133,11 @@ export class LineGraphController {
       var show = !this.#legends[legend].fields[index].show
       this.#legends[legend].fields[index].show = show
       item.firstElementChild.style.fill = show ? color : "transparent"
-      this.#render()
     })
     item.getElementsByClassName("legend-edit")[0].addEventListener("click", () => {
       var index = Array.from(item.parentElement.children).indexOf(item) - 1
       item.parentElement.removeChild(item)
       this.#legends[legend].fields.splice(index, 1)
-      this.#render()
     })
 
     // Add field
@@ -150,7 +147,6 @@ export class LineGraphController {
       show: true
     })
     this.#legends[legend].element.appendChild(item)
-    this.#render()
   }
 
   // Called by tab controller when log changes
@@ -220,9 +216,6 @@ export class LineGraphController {
     var minX = ((this.#scrollOverlay.scrollLeft / this.#scrollOverlay.clientWidth) * this.#calcZoom()) + timeRange[0]
     this.#xRange = [minX, minX + this.#calcZoom()]
     this.#lastScrollTop = this.#scrollOverlay.scrollTop
-
-    // Render canvas
-    this.#render()
   }
 
   // Cleans up floating point errors
@@ -279,14 +272,21 @@ export class LineGraphController {
     }
   }
 
-  // Called by the tab controller when the tab becomes visible
-  show() { this.#render() }
+  // Adjusts color brightness
+  #shiftColor(color, shift) {
+    var colorArray = color.slice(1).match(/.{1,2}/g)
+    colorArray = [parseInt(colorArray[0], 16), parseInt(colorArray[1], 16), parseInt(colorArray[2], 16)]
+    var colorArray = colorArray.map(x => {
+      x += shift
+      if (x < 0) x = 0
+      if (x > 255) x = 255
+      return x
+    })
+    return "rgb(" + colorArray.toString() + ")"
+  }
 
   // Called every 15ms by the tab controller
-  periodic() { }
-
-  // Updates the canvas
-  #render() {
+  periodic() {
     if (this.#content.hidden) {
       return
     }
@@ -349,6 +349,62 @@ export class LineGraphController {
       var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsLeft), 0.3, rightAxis)
     }
 
+    // Render discrete data
+    context.globalAlpha = 1
+    context.textAlign = "left"
+    context.textBaseline = "middle"
+    context.font = pix(12).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
+    var visibleFieldsDiscrete = this.#legends.discrete.fields.filter((field) => field.show)
+    visibleFieldsDiscrete.forEach((field, renderIndex) => {
+      if (field.id in dataLookup) {
+        var data = dataLookup[field.id]
+      } else {
+        var data = log.getDataInRange(field.id, xRange[0], xRange[1])
+      }
+      var fieldInfo = log.getFieldInfo(field.id)
+      var lastChange = 0
+      var colorToggle = data.startValueIndex % 2 == 0
+      for (let i = 1; i < data.timestamps.length + 1; i++) {
+        if (i == data.timestamps.length || data.values[i] != data.values[lastChange]) {
+          if (data.values[lastChange] != null) {
+            var startX = scaleValue(data.timestamps[lastChange], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+            if (i == data.timestamps.length) {
+              var endX = graphLeft + graphWidth
+            } else {
+              var endX = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+            }
+            var topY = graphTop + graphHeight - 20 - (renderIndex * 20)
+
+            // Draw rectangle
+            colorToggle = !colorToggle
+            context.fillStyle = colorToggle ? this.#shiftColor(field.color, -15) : this.#shiftColor(field.color, 15)
+
+            context.fillRect(pix(startX), pix(topY), pix(endX - startX), pix(15))
+
+            // Draw text
+            var adjustedStartX = startX < graphLeft ? graphLeft : startX
+            if (endX - adjustedStartX > 10) {
+              if (fieldInfo.type == "Byte") {
+                var text = "0x" + (data.values[lastChange] & 0xFF).toString(16).padStart(2, "0")
+              } else if (fieldInfo.type == "ByteArray") {
+                var hexArray = data.values[lastChange].map(byte => {
+                  "0x" + (byte & 0xff).toString(16).padStart(2, "0")
+                })
+                var text = "[" + hexArray.toString() + "]"
+              } else {
+                var text = JSON.stringify(data.values[lastChange])
+              }
+
+              context.fillStyle = colorToggle ? this.#shiftColor(field.color, 100) : this.#shiftColor(field.color, -100)
+              context.fillText(text, pix(adjustedStartX + 5), pix(topY + (15 / 2)), pix(endX - adjustedStartX - 10))
+            }
+          }
+
+          lastChange = i
+        }
+      }
+    })
+
     // Render continuous data
     function renderLegend(fields, range) {
       fields.forEach((field) => {
@@ -381,66 +437,6 @@ export class LineGraphController {
     }
     renderLegend(visibleFieldsLeft, [leftAxis.min, leftAxis.max])
     renderLegend(visibleFieldsRight, [rightAxis.min, rightAxis.max])
-
-    // Render discrete data
-    context.textAlign = "left"
-    context.textBaseline = "middle"
-    context.font = pix(16).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
-    var visibleFieldsDiscrete = this.#legends.discrete.fields.filter((field) => field.show)
-    visibleFieldsDiscrete.forEach((field, renderIndex) => {
-      if (field.id in dataLookup) {
-        var data = dataLookup[field.id]
-      } else {
-        var data = log.getDataInRange(field.id, xRange[0], xRange[1])
-      }
-
-      var colorArray = field.color.slice(1).match(/.{1,2}/g)
-      colorArray = [parseInt(colorArray[0], 16), parseInt(colorArray[1], 16), parseInt(colorArray[2], 16)]
-      var darkColor = colorArray.map(x => {
-        x -= 25
-        if (x < 0) x = 0
-        return x
-      })
-      darkColor = "rgb(" + darkColor.toString() + ")"
-      var lightColor = colorArray.map(x => {
-        x += 25
-        if (x > 255) x = 255
-        return x
-      })
-      lightColor = "rgb(" + lightColor.toString() + ")"
-
-      var lastChange = 0
-      var colorToggle = data.startValueIndex % 2 == 0
-      for (let i = 1; i < data.timestamps.length + 1; i++) {
-        if (i == data.timestamps.length || data.values[i] != data.values[lastChange]) {
-          if (data.values[lastChange] != null) {
-            var startX = scaleValue(data.timestamps[lastChange], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
-            if (i == data.timestamps.length) {
-              var endX = graphLeft + graphWidth
-            } else {
-              var endX = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
-            }
-            var topY = graphTop + graphHeight - 35 - (renderIndex * 35)
-
-            // Calculate color
-            colorToggle = !colorToggle
-            context.fillStyle = colorToggle ? darkColor : lightColor
-            context.globalAlpha = 0.8
-            context.fillRect(pix(startX), pix(topY), pix(endX - startX), pix(25))
-
-            // Draw text
-            var adjustedStartX = startX < graphLeft ? graphLeft : startX
-            if (endX - adjustedStartX > 50) {
-              context.fillStyle = colorToggle ? lightColor : darkColor
-              context.globalAlpha = 1
-              context.fillText(data.values[lastChange].toString(), pix(adjustedStartX + 5), pix(topY + (25 / 2)), pix(endX - adjustedStartX - 10))
-            }
-          }
-
-          lastChange = i
-        }
-      }
-    })
 
     // Clear overflow & draw graph outline
     context.lineWidth = pix(1)

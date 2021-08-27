@@ -12,9 +12,6 @@ export class OdometryController {
   // Called by tab controller when side bar size changes
   sideBarResize() { }
 
-  // Called by the tab controller when the tab becomes visible
-  show() { }
-
   // Called every 15ms by the tab controller
   periodic() { }
 }
