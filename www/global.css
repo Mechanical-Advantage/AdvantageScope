@@ -1,0 +1,62 @@
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
+  color: #222;
+  user-select: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #eee;
+  }
+}
+
+:root {
+  --side-bar-width: 300px;
+  --tab-control-inline: 0;
+}
+
+/* Buttons */
+
+button {
+  padding: 0px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+}
+
+button:hover {
+  background-color: #eee;
+}
+
+button:active {
+  background-color: #ddd;
+}
+
+button svg {
+  stroke: #555;
+  stroke-width: 1.5px;
+  stroke-linecap: round;
+}
+
+button.blurred svg {
+  stroke: #aaa;
+}
+
+@media (prefers-color-scheme: dark) {
+
+  button:hover {
+    background-color: #333;
+  }
+  
+  button:active {
+    background-color: #444;
+  }
+
+  button svg {
+    stroke: #999;
+  }
+
+  button.blurred svg {
+    stroke: #555;
+  }
+}

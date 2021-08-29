@@ -6,6 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="global.css">
   <link rel="stylesheet" href="index.css">
   <title>6328 Log Viewer</title>
 </head>
@@ -18,21 +19,21 @@
   </div>
 
   <button class="tab-control move-left">
-    <svg class="tab-control-icon" height="28" width="28">
+    <svg height="28" width="28">
       <line x1="7" y1="14" x2="21" y2="14"></line>
       <line x1="7" y1="14" x2="13" y2="8"></line>
       <line x1="7" y1="14" x2="13" y2="20"></line>
     </svg>
   </button>
   <button class="tab-control move-right">
-    <svg class="tab-control-icon" height="28" width="28">
+    <svg height="28" width="28">
       <line x1="7" y1="14" x2="21" y2="14"></line>
       <line x1="21" y1="14" x2="15" y2="8"></line>
       <line x1="21" y1="14" x2="15" y2="20"></line>
     </svg>
   </button>
   <button class="tab-control add-tab">
-    <svg class="tab-control-icon" height="28" width="28">
+    <svg height="28" width="28">
       <line x1="14" y1="7" x2="14" y2="21"></line>
       <line x1="7" y1="14" x2="21" y2="14"></line>
     </svg>
@@ -85,7 +86,7 @@
                 <span class="legend-key"></span>
               </div>
               <button class="legend-edit">
-                <svg class="legend-edit-icon" height="25" width="25">
+                <svg height="25" width="25">
                   <line x1="7" y1="7" x2="18" y2="18"></line>
                   <line x1="18" y1="7" x2="7" y2="18"></line>
                 </svg>
@@ -103,10 +104,10 @@
           <div class="legend-left">
             <div class="legend-item">
               <div class="legend-title">
-                Left Axis
+                Left Axis<span hidden> [Locked]</span>
               </div>
               <button class="legend-edit">
-                <svg class="legend-edit-icon" height="25" width="25">
+                <svg height="25" width="25">
                   <circle cx="7" cy="12.5" r="0.75"></circle>
                   <circle cx="12.5" cy="12.5" r="0.75"></circle>
                   <circle cx="18" cy="12.5" r="0.75"></circle>
@@ -128,10 +129,10 @@
           <div class="legend-right">
             <div class="legend-item">
               <div class="legend-title">
-                Right Axis
+                Right Axis<span hidden> [Locked]</span>
               </div>
               <button class="legend-edit">
-                <svg class="legend-edit-icon" height="25" width="25">
+                <svg height="25" width="25">
                   <circle cx="7" cy="12.5" r="0.75"></circle>
                   <circle cx="12.5" cy="12.5" r="0.75"></circle>
                   <circle cx="18" cy="12.5" r="0.75"></circle>

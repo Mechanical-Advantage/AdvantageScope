@@ -19,7 +19,7 @@ export class LineGraphController {
   #panActive = false
   #panStartCursorX = 0
   #panStartScrollLeft = 0
-  #xRange = [0, 1]
+  #xRange = [0, 10]
 
   #legends = {
     left: {
@@ -27,7 +27,10 @@ export class LineGraphController {
       element: null,
       dragTarget: null,
       types: ["Integer", "Double", "Byte"],
-      arrayTypes: ["IntegerArray", "DoubleArray", "ByteArray"]
+      arrayTypes: ["IntegerArray", "DoubleArray", "ByteArray"],
+      locked: false,
+      range: [],
+      editTimestamp: 0.0
     },
     discrete: {
       fields: [],
@@ -40,11 +43,15 @@ export class LineGraphController {
       element: null,
       dragTarget: null,
       types: ["Integer", "Double", "Byte"],
-      arrayTypes: ["IntegerArray", "DoubleArray", "ByteArray"]
+      arrayTypes: ["IntegerArray", "DoubleArray", "ByteArray"],
+      locked: false,
+      range: [],
+      editTimestamp: 0.0
     }
   }
 
   constructor(content) {
+    // Set up elements
     this.#content = content
     this.#legendItemTemplate = content.getElementsByClassName("legend-item-template")[0].firstElementChild
     this.#canvasContainer = content.getElementsByClassName("line-graph-canvas-container")[0]
@@ -59,9 +66,51 @@ export class LineGraphController {
     this.#legends.discrete.dragTarget = content.getElementsByClassName("legend-discrete")[1]
     this.#legends.right.dragTarget = content.getElementsByClassName("legend-right")[1]
 
+    // Edit axis menus
+    this.#legends.left.element.firstElementChild.lastElementChild.addEventListener("click", () => {
+      this.#legends.left.editTimestamp = new Date().getTime()
+      window.dispatchEvent(new CustomEvent("edit-axis", {
+        detail: {
+          timestamp: this.#legends.left.editTimestamp,
+          name: "left",
+          locked: this.#legends.left.locked,
+          range: this.#legends.left.range
+        }
+      }))
+    })
+    this.#legends.right.element.firstElementChild.lastElementChild.addEventListener("click", () => {
+      this.#legends.right.editTimestamp = new Date().getTime()
+      window.dispatchEvent(new CustomEvent("edit-axis", {
+        detail: {
+          timestamp: this.#legends.right.editTimestamp,
+          locked: this.#legends.right.locked,
+          range: this.#legends.right.range
+        }
+      }))
+    })
+    window.addEventListener("edit-axis-response", (event) => {
+      if (event.detail.timestamp == this.#legends.left.editTimestamp) {
+        var legend = this.#legends.left
+      } else if (event.detail.timestamp == this.#legends.right.editTimestamp) {
+        var legend = this.#legends.right
+      } else {
+        return // Response for a different tab
+      }
+
+      switch (event.detail.command) {
+        case "toggle-lock":
+          legend.locked = !legend.locked
+          legend.element.firstElementChild.firstElementChild.lastElementChild.hidden = !legend.locked
+          break
+        case "set-range":
+          legend.range = event.detail.value
+          break
+      }
+    })
+
+    // Scrolling controls
     window.addEventListener("drag-update", (event) => this.#handleDrag(event))
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
-
     window.addEventListener("resize", () => this.#updateScroll())
     this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
     this.#scrollOverlay.addEventListener("mousedown", (event) => {
@@ -173,7 +222,7 @@ export class LineGraphController {
   }
 
   // Updates scroll position based on overlay
-  #updateScroll(reset, resizing) {
+  #updateScroll(reset) {
     // Find current time range
     if (log == null) {
       var timeRange = [0, 10]
@@ -226,10 +275,14 @@ export class LineGraphController {
   }
 
   // Calculates appropriate bounds and steps based on data
-  #calcAutoAxis(heightPx, targetStepPx, valueRange, marginProportion, primaryAxis) {
+  #calcAutoAxis(heightPx, targetStepPx, valueRange, marginProportion, primaryAxis, lockedRange) {
     // Calc target range
-    var margin = (valueRange[1] - valueRange[0]) * marginProportion
-    var targetRange = [valueRange[0] - margin, valueRange[1] + margin]
+    if (lockedRange == null) {
+      var margin = (valueRange[1] - valueRange[0]) * marginProportion
+      var targetRange = [valueRange[0] - margin, valueRange[1] + margin]
+    } else {
+      var targetRange = lockedRange
+    }
 
     // How many steps?
     if (primaryAxis == null) {
@@ -339,15 +392,37 @@ export class LineGraphController {
 
     var visibleFieldsLeft = this.#legends.left.fields.filter((field) => field.show)
     var visibleFieldsRight = this.#legends.right.fields.filter((field) => field.show)
-    if (visibleFieldsLeft.length >= visibleFieldsRight.length) {
-      var leftIsPrimary = true
-      var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsLeft), 0.05, null)
-      var rightAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsRight), 0.3, leftAxis)
-    } else {
-      var leftIsPrimary = false
-      var rightAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsRight), 0.05, null)
-      var leftAxis = this.#calcAutoAxis(graphHeight, 50, getMinMax(visibleFieldsLeft), 0.3, rightAxis)
+
+    const targetStepPx = 50
+    const primaryMargin = 0.05
+    const secondaryMargin = 0.3
+    var leftIsPrimary = false
+    if (this.#legends.left.locked && this.#legends.right.locked) { // No secondary axis
+      leftIsPrimary = visibleFieldsLeft.length >= visibleFieldsRight.length
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, this.#legends.left.range)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, null, this.#legends.right.range)
+    } else if (this.#legends.left.locked) { // Only left locked, make it primary
+      leftIsPrimary = true
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, this.#legends.left.range)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, leftAxis, null)
+    } else if (this.#legends.right.locked) { // Only right locked, make it primary
+      leftIsPrimary = false
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, null, this.#legends.right.range)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, rightAxis, null)
+    } else if (visibleFieldsRight.length > visibleFieldsLeft.length) { // Right has more fields, make it primary
+      leftIsPrimary = false
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, null, null)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, rightAxis, null)
+    } else { // Left is primary by default
+      leftIsPrimary = true
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, null)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, null, null)
     }
+    var showLeftAxis = visibleFieldsLeft.length > 0 || this.#legends.left.locked
+    var showRightAxis = visibleFieldsRight.length > 0 || this.#legends.right.locked
+    if (!showLeftAxis && !showRightAxis) showLeftAxis = true
+    this.#legends.left.range = [leftAxis.min, leftAxis.max]
+    this.#legends.right.range = [rightAxis.min, rightAxis.max]
 
     // Render discrete data
     context.globalAlpha = 1
@@ -454,40 +529,69 @@ export class LineGraphController {
     context.textBaseline = "middle"
     context.font = pix(12).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
 
-    var stepPosLeft = Math.ceil(this.#cleanFloat(leftAxis.min / leftAxis.step)) * leftAxis.step
-    var stepPosRight = Math.ceil(this.#cleanFloat(rightAxis.min / rightAxis.step)) * rightAxis.step
-    while (this.#cleanFloat(stepPosLeft) <= leftAxis.max) {
-      var y = scaleValue(stepPosLeft, leftAxis.min, leftAxis.max, graphTop + graphHeight, graphTop)
+    if (showLeftAxis) {
+      context.textAlign = "right"
+      var stepPos = Math.ceil(this.#cleanFloat(leftAxis.min / leftAxis.step)) * leftAxis.step
+      while (this.#cleanFloat(stepPos) <= leftAxis.max) {
+        var y = scaleValue(stepPos, leftAxis.min, leftAxis.max, graphTop + graphHeight, graphTop)
 
-      context.globalAlpha = 1
-      if (leftIsPrimary || visibleFieldsLeft.length > 0) {
-        context.textAlign = "right"
-        context.fillText(this.#cleanFloat(stepPosLeft).toString(), pix(graphLeft - 10), pix(y))
+        context.globalAlpha = 1
+        context.fillText(this.#cleanFloat(stepPos).toString(), pix(graphLeft - 15), pix(y))
+        context.beginPath()
+        context.moveTo(pix(graphLeft), pix(y))
+        context.lineTo(pix(graphLeft - 5), pix(y))
+        context.stroke()
+
+        if (leftIsPrimary) {
+          context.globalAlpha = 0.1
+          context.beginPath()
+          context.moveTo(pix(graphLeft), pix(y))
+          context.lineTo(pix(graphLeft + graphWidth), pix(y))
+          context.stroke()
+        }
+
+        stepPos += leftAxis.step
       }
-      if (!leftIsPrimary || visibleFieldsRight.length > 0) {
-        context.textAlign = "left"
-        context.fillText(this.#cleanFloat(stepPosRight).toString(), pix(graphLeft + graphWidth + 10), pix(y))
+    }
+
+    if (showRightAxis) {
+      context.textAlign = "left"
+      var stepPos = Math.ceil(this.#cleanFloat(rightAxis.min / rightAxis.step)) * rightAxis.step
+      while (this.#cleanFloat(stepPos) <= rightAxis.max) {
+        var y = scaleValue(stepPos, rightAxis.min, rightAxis.max, graphTop + graphHeight, graphTop)
+
+        context.globalAlpha = 1
+        context.fillText(this.#cleanFloat(stepPos).toString(), pix(graphLeft + graphWidth + 15), pix(y))
+        context.beginPath()
+        context.moveTo(pix(graphLeft + graphWidth), pix(y))
+        context.lineTo(pix(graphLeft + graphWidth + 5), pix(y))
+        context.stroke()
+
+        if (!leftIsPrimary) {
+          context.globalAlpha = 0.1
+          context.beginPath()
+          context.moveTo(pix(graphLeft), pix(y))
+          context.lineTo(pix(graphLeft + graphWidth), pix(y))
+          context.stroke()
+        }
+
+        stepPos += rightAxis.step
       }
-
-      context.globalAlpha = 0.1
-      context.beginPath()
-      context.moveTo(pix(graphLeft), pix(y))
-      context.lineTo(pix(graphLeft + graphWidth), pix(y))
-      context.stroke()
-
-      stepPosLeft += leftAxis.step
-      stepPosRight += rightAxis.step
     }
 
     // Render x axis
-    var axis = this.#calcAutoAxis(graphWidth, 100, xRange, 0, null)
+    var axis = this.#calcAutoAxis(graphWidth, 100, xRange, 0, null, null)
     context.textAlign = "center"
     var stepPos = Math.ceil(this.#cleanFloat(axis.min / axis.step)) * axis.step
     while (this.#cleanFloat(stepPos) <= axis.max) {
       var x = scaleValue(stepPos, axis.min, axis.max, graphLeft, graphLeft + graphWidth)
 
       context.globalAlpha = 1
-      context.fillText(this.#cleanFloat(stepPos).toString() + "s", pix(x), pix(graphTop + graphHeight + 10))
+      context.fillText(this.#cleanFloat(stepPos).toString() + "s", pix(x), pix(graphTop + graphHeight + 15))
+      context.beginPath()
+      context.moveTo(pix(x), pix(graphTop + graphHeight))
+      context.lineTo(pix(x), pix(graphTop + graphHeight + 5))
+      context.stroke()
 
       context.globalAlpha = 0.1
       context.beginPath()

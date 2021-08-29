@@ -1,4 +1,4 @@
-const { ipcRenderer, Menu, MenuItem } = require("electron")
+const { ipcRenderer } = require("electron")
 const fs = require("fs")
 const os = require("os")
 
@@ -29,13 +29,23 @@ ipcRenderer.on("open-file", (_, path) => {
   })
 })
 
-window.addEventListener("add-tab", (event) => {
+window.addEventListener("add-tab", () => {
   ipcRenderer.send("add-tab")
 })
 
 ipcRenderer.on("add-tab-response", (_, type) => {
   window.dispatchEvent(new CustomEvent("add-tab-response", {
     detail: type
+  }))
+})
+
+window.addEventListener("edit-axis", (event) => {
+  ipcRenderer.send("edit-axis", event.detail)
+})
+
+ipcRenderer.on("edit-axis-response", (_, data) => {
+  window.dispatchEvent(new CustomEvent("edit-axis-response", {
+    detail: data
   }))
 })
 

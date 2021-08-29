@@ -48,7 +48,13 @@ window.addEventListener("set-fullscreen", function (event) {
 
 window.addEventListener("set-focused", function (event) {
   window.isFocused = event.detail
-  tabs.setFocused(isFocused)
+  Array.from(document.getElementsByTagName("button")).forEach(button => {
+    if (window.isFocused) {
+      button.classList.remove("blurred")
+    } else {
+      button.classList.add("blurred")
+    }
+  })
 })
 
 window.addEventListener("set-platform", function (event) {

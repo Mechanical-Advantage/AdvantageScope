@@ -1,0 +1,34 @@
+table {
+  width: 100%;
+}
+
+tr {
+  line-height: 25px;
+}
+
+td.label {
+  white-space: nowrap;
+  width: 1px;
+  text-align: right;
+}
+
+input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+}
+
+button {
+  position: absolute;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+}
+
+#exit {
+  right: 43px;
+}
+
+#confirm {
+  right: 8px;
+}

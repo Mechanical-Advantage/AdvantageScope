@@ -200,17 +200,4 @@ export class Tabs {
       this.#shadowRight.style.opacity = scrollPos == this.#tabBar.scrollWidth - this.#tabBar.clientWidth ? 0 : 1
     }
   }
-
-  // Updates button shade based on window focus
-  setFocused(focused) {
-    if (focused) {
-      this.#leftButton.firstElementChild.classList.remove("blurred")
-      this.#rightButton.firstElementChild.classList.remove("blurred")
-      this.#addButton.firstElementChild.classList.remove("blurred")
-    } else {
-      this.#leftButton.firstElementChild.classList.add("blurred")
-      this.#rightButton.firstElementChild.classList.add("blurred")
-      this.#addButton.firstElementChild.classList.add("blurred")
-    }
-  }
 }

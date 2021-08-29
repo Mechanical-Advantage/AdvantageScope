@@ -1,5 +1,5 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain } = require("electron")
-const windowStateKeeper = require('electron-window-state');
+const windowStateKeeper = require("electron-window-state")
 const path = require("path")
 const os = require("os")
 
@@ -55,7 +55,7 @@ function createWindow() {
     icon: path.join(__dirname, "assets/icon-256.png"),
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
+      preload: path.join(__dirname, "indexPreload.js")
     }
   }
 
@@ -185,4 +185,63 @@ ipcMain.on("add-tab", () => {
   }))
 
   menu.popup()
+})
+
+var editLookup = {}
+ipcMain.on("edit-axis", (_, data) => {
+  const menu = new Menu()
+  const window = BrowserWindow.getFocusedWindow()
+  menu.append(new MenuItem({
+    label: data.locked ? "Unlock Axis" : "Lock Axis",
+    click() {
+      window.webContents.send("edit-axis-response", {
+        timestamp: data.timestamp,
+        command: "toggle-lock"
+      })
+    }
+  }))
+  menu.append(new MenuItem({
+    type: "separator",
+  }))
+  menu.append(new MenuItem({
+    label: "Edit Range",
+    enabled: data.locked,
+    click() {
+      // Create edit axis window
+      const editWindow = new BrowserWindow({
+        width: 300,
+        height: 140,
+        resizable: false,
+        icon: path.join(__dirname, "assets/icon-256.png"),
+        show: false,
+        parent: window,
+        modal: true,
+        webPreferences: {
+          preload: path.join(__dirname, "editAxisPreload.js")
+        }
+      })
+
+      // Finish setup
+      editWindow.setMenu(null)
+      editWindow.once("ready-to-show", window.show)
+      editWindow.webContents.on("dom-ready", () => editWindow.send("start", data))
+      editWindow.loadFile("www/editAxis.html")
+      editLookup[data.timestamp] = {
+        parent: window,
+        child: editWindow
+      }
+    }
+  }))
+  menu.popup()
+})
+
+ipcMain.on("edit-axis-complete", (_, timestamp, range) => {
+  editLookup[timestamp].child.close()
+  if (range != null) {
+    editLookup[timestamp].parent.webContents.send("edit-axis-response", {
+      timestamp: timestamp,
+      command: "set-range",
+      value: range
+    })
+  }
 })

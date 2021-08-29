@@ -1,20 +1,3 @@
-body {
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont;
-  color: #222;
-  user-select: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    color: #eee;
-  }
-}
-
-:root {
-  --side-bar-width: 300px;
-  --tab-control-inline: 0;
-}
-
 /* Title bar layout */
 
 div.title-bar {
@@ -197,7 +180,7 @@ div.field-item-label {
 
 #dragItem {
   position: absolute;
-  z-index: 7;
+  z-index: 8;
   white-space: nowrap;
   font-size: 15px;
   font-style: italic;
@@ -260,7 +243,6 @@ div.tab-bar-scroll {
   height: 50px;
 
   overflow: scroll;
-  opacity: 0%;
 }
 
 div.tab-bar-scroll::-webkit-scrollbar {
@@ -325,47 +307,6 @@ button.tab-control {
   top: calc(8px + (var(--tab-control-inline) * 3px)); /* Center vertically in tab bar when inline */
   height: 28px;
   width: 28px;
-
-  padding: 0px;
-  background-color: transparent;
-  border: none;
-  border-radius: 6px;
-}
-
-button.tab-control:hover {
-  background-color: #eee;
-}
-
-button.tab-control:active {
-  background-color: #ddd;
-}
-
-svg.tab-control-icon {
-  stroke: #555;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-}
-
-svg.tab-control-icon.blurred {
-  stroke: #aaa;
-}
-
-@media (prefers-color-scheme: dark) {
-  button.tab-control:hover {
-    background-color: #333;
-  }
-  
-  button.tab-control:active {
-    background-color: #444;
-  }
-  
-  svg.tab-control-icon {
-    stroke: #999;
-  }
-
-  svg.tab-control-icon.blurred {
-    stroke: #555;
-  }
 }
 
 button.move-left {
@@ -513,41 +454,10 @@ button.legend-edit {
 
   width: 25px;
   height: 25px;
-
-  padding: 0px;
-  background-color: transparent;
-  border: none;
-  border-radius: 6px;
-}
-
-button.legend-edit:hover {
-  background-color: #eee;
-}
-
-button.legend-edit:active {
-  background-color: #ddd;
-}
-
-svg.legend-edit-icon {
-  stroke: #555;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
 }
 
 @media (prefers-color-scheme: dark) {
   svg.legend-splotch {
-    stroke: #999;
-  }
-
-  button.legend-edit:hover {
-    background-color: #333;
-  }
-  
-  button.legend-edit:active {
-    background-color: #444;
-  }
-  
-  svg.legend-edit-icon {
     stroke: #999;
   }
 }
@@ -569,13 +479,13 @@ canvas.line-graph-canvas {
 
 div.line-graph-scroll {
   position: absolute;
+  z-index: 7;
   left: 60px;
   right: 60px;
   top: 5px;
   bottom: 50px;
 
   overflow: scroll;
-  opacity: 0%;
 }
 
 div.line-graph-scroll::-webkit-scrollbar {
