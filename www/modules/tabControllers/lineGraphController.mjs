@@ -77,7 +77,6 @@ export class LineGraphController {
       window.dispatchEvent(new CustomEvent("edit-axis", {
         detail: {
           timestamp: this.#legends.left.editTimestamp,
-          name: "left",
           locked: this.#legends.left.locked,
           range: this.#legends.left.range
         }
