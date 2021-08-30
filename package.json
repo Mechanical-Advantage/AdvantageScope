@@ -11,7 +11,7 @@
     "test-build": "electron-builder build --dir"
   },
   "author": "FRC 6328",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "electron": "^13.1.9",
     "electron-builder": "^22.11.7"
