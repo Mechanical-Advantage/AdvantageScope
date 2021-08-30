@@ -482,7 +482,7 @@ div.line-graph-scroll {
   z-index: 7;
   left: 60px;
   right: 60px;
-  top: 5px;
+  top: 8px;
   bottom: 50px;
 
   overflow: scroll;

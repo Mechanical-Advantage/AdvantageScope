@@ -24,7 +24,7 @@ export class Log {
 
   */
 
-  static resolutions = [0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] // Min time between changes (seconds)
+  static resolutions = [0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] // Min time between changes (seconds)
   #timestamps = []
   #fields = []
 

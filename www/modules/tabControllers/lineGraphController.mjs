@@ -11,13 +11,15 @@ export class LineGraphController {
 
   #colors = ["#EBC542", "#80588E", "#E48B32", "#AACAEE", "#AF2437", "#C0B487", "#858584", "#3B875A", "#D993AA", "#2B66A2", "#EB987E", "#5D4F92", "#EBAA3B", "#A64B6B", "#DBD345", "#7E331F", "#96B637", "#5F4528", "#D36134", "#2E3B28"]
 
-  #zoomScalar = 0.0001
-  #minZoomTime = 1
-  #zoomExponent = 1.5
+  #zoomScalar = 0.01
+  #minZoomTime = 0.1
+  #zoomExponentBaseDarwin = 1.001
+  #zoomExponentBaseOther = 1.1
 
   #lastScrollTop = 0
   #lastCursorX = 0
   #lastClientWidth = 0
+  #lastPlatform = null
   #panActive = false
   #panStartCursorX = 0
   #panStartScrollLeft = 0
@@ -38,7 +40,8 @@ export class LineGraphController {
       fields: [],
       element: null,
       dragTarget: null,
-      types: ["Boolean", "BooleanArray", "Integer", "IntegerArray", "Double", "DoubleArray", "String", "StringArray", "Byte", "ByteArray"], arrayTypes: []
+      types: ["Boolean", "BooleanArray", "Integer", "IntegerArray", "Double", "DoubleArray", "String", "StringArray", "Byte", "ByteArray"],
+      arrayTypes: []
     },
     right: {
       fields: [],
@@ -218,9 +221,14 @@ export class LineGraphController {
     this.#updateScroll()
   }
 
-  // Returns the current zoom level
+  // Returns the current zoom level based on scroll position
   #calcZoom() {
-    return (this.#scrollOverlay.scrollTop ** this.#zoomExponent) * this.#zoomScalar
+    return ((platform == "darwin" ? this.#zoomExponentBaseDarwin : this.#zoomExponentBaseOther) ** this.#scrollOverlay.scrollTop) * this.#zoomScalar
+  }
+
+  // Returns the necessary scroll position for the specified zoom level
+  #calcReverseZoom(zoomTarget) {
+    return Math.log(zoomTarget / this.#zoomScalar) / Math.log(platform == "darwin" ? this.#zoomExponentBaseDarwin : this.#zoomExponentBaseOther)
   }
 
   // Updates scroll position based on overlay
@@ -233,17 +241,19 @@ export class LineGraphController {
     }
 
     // Calculate maximum scroll lengths
-    var scrollLengthVertical = ((timeRange[1] - timeRange[0]) / this.#zoomScalar) ** (1 / this.#zoomExponent) // Calc maximum zoom based on time range
+    var scrollLengthVertical = this.#calcReverseZoom(timeRange[1] - timeRange[0]) // Calc maximum zoom based on time range
+    console.log(scrollLengthVertical)
     var scrollLengthHorizontal = this.#scrollOverlay.clientWidth * ((timeRange[1] - timeRange[0]) / this.#calcZoom()) // Calc horizontal length based on zoom
 
     // Adjust content size and enforce limits
     this.#scrollOverlayContent.style.height = (scrollLengthVertical + this.#scrollOverlay.clientHeight).toString() + "px"
     this.#scrollOverlayContent.style.width = scrollLengthHorizontal.toString() + "px"
-    if (reset) {
+    if (reset || platform != this.#lastPlatform) {
+      this.#lastPlatform = platform
       this.#scrollOverlay.scrollTop = scrollLengthVertical
       this.#scrollOverlay.scrollLeft = 0
     } else {
-      var minZoom = (this.#minZoomTime / this.#zoomScalar) ** (1 / this.#zoomExponent)
+      var minZoom = this.#calcReverseZoom(this.#minZoomTime)
       if (this.#scrollOverlay.scrollTop < minZoom) this.#scrollOverlay.scrollTop = minZoom
       if (this.#scrollOverlay.scrollLeft < 0) this.#scrollOverlay.scrollLeft = 0
       if (this.#scrollOverlay.scrollTop > scrollLengthVertical) this.#scrollOverlay.scrollTop = scrollLengthVertical
@@ -372,7 +382,7 @@ export class LineGraphController {
 
     context.clearRect(0, 0, pix(width), pix(height))
     var graphLeft = 60
-    var graphTop = 5
+    var graphTop = 8
     var graphWidth = width - graphLeft - 60
     var graphHeight = height - graphTop - 50
     var xRange = this.#xRange
