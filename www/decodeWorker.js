@@ -117,7 +117,6 @@ onmessage = function (event) {
         }
       }
       log.add(entry)
-      cycleCount++
     }
   } catch (error) {
     console.error(error.message)
