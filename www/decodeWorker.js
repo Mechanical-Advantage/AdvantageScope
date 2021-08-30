@@ -16,14 +16,13 @@ onmessage = function (event) {
   try {
     mainLoop:
     while (true) {
+      if (offset >= dataArray.length) break mainLoop // No more data, so we can't start a new entry
       var entry = { timestamp: dataBuffer.getFloat64(shiftOffset(8)), data: [] }
 
       readLoop:
       while (true) {
         var type = dataArray[shiftOffset(1)]
-        if (type == undefined) {
-          break mainLoop
-        }
+        if (type == undefined) break readLoop // This was the last cycle, save the data
 
         switch (type) {
           case 0: // New timestamp
@@ -118,6 +117,7 @@ onmessage = function (event) {
         }
       }
       log.add(entry)
+      cycleCount++
     }
   } catch (error) {
     console.error(error.message)
