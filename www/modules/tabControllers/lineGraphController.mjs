@@ -1,3 +1,5 @@
+import { Log } from "../log.mjs"
+
 // Controls rendering of line graphs
 export class LineGraphController {
   #content = null
@@ -280,6 +282,10 @@ export class LineGraphController {
     if (lockedRange == null) {
       var margin = (valueRange[1] - valueRange[0]) * marginProportion
       var targetRange = [valueRange[0] - margin, valueRange[1] + margin]
+      if (targetRange[0] == targetRange[1]) {
+        targetRange[0] -= 1
+        targetRange[1] += 1
+      }
     } else {
       var targetRange = lockedRange
     }
@@ -371,6 +377,12 @@ export class LineGraphController {
     var graphHeight = height - graphTop - 50
     var xRange = this.#xRange
 
+    var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / pix(width)
+    var resolutionIndex = Log.resolutions.findIndex(resolution => resolution > secsPerPixel)
+    if (resolutionIndex == -1) resolutionIndex = Log.resolutions.length // No resolution is low enough
+    resolutionIndex -= 1
+    var resolution = resolutionIndex < 0 ? 0 : Log.resolutions[resolutionIndex]
+
     // Calculate axes
     var dataLookup = {}
     function getMinMax(fields) {
@@ -379,7 +391,7 @@ export class LineGraphController {
         if (field.id in dataLookup) {
           allValues.push.apply(allValues, dataLookup[field.id].values)
         } else {
-          var data = log.getDataInRange(field.id, xRange[0], xRange[1])
+          var data = log.getDataInRange(field.id, xRange[0], xRange[1], resolution)
           dataLookup[field.id] = data
           allValues.push.apply(allValues, data.values)
         }
@@ -434,7 +446,7 @@ export class LineGraphController {
       if (field.id in dataLookup) {
         var data = dataLookup[field.id]
       } else {
-        var data = log.getDataInRange(field.id, xRange[0], xRange[1])
+        var data = log.getDataInRange(field.id, xRange[0], xRange[1], resolution)
       }
       var fieldInfo = log.getFieldInfo(field.id)
       var lastChange = 0
@@ -453,7 +465,6 @@ export class LineGraphController {
             // Draw rectangle
             colorToggle = !colorToggle
             context.fillStyle = colorToggle ? this.#shiftColor(field.color, -15) : this.#shiftColor(field.color, 15)
-
             context.fillRect(pix(startX), pix(topY), pix(endX - startX), pix(15))
 
             // Draw text
@@ -488,17 +499,15 @@ export class LineGraphController {
         context.strokeStyle = field.color
         context.beginPath()
 
-        for (let i = 0; i < data.timestamps.length; i++) {
+        for (let i = 0; i < data.timestamps.length + 1; i++) {
           if (i > 0 && data.values[i - 1] != null) {
-            var lastTimestampValue = lastTimestamp(data.timestamps[i])
-            if (lastTimestampValue != data.timestamps[i - 1]) { // Skipped at least one cycle since last point
-              var x = scaleValue(lastTimestampValue, xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
-              var y = scaleValue(data.values[i - 1], range[0], range[1], graphTop + graphHeight, graphTop)
-              context.lineTo(pix(x), pix(y))
-            }
+            var timestamp = i == data.timestamps.length ? log.getTimestamps()[log.getTimestamps().length - 1] : data.timestamps[i]
+            var x = scaleValue(timestamp, xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+            var y = scaleValue(data.values[i - 1], range[0], range[1], graphTop + graphHeight, graphTop)
+            context.lineTo(pix(x), pix(y))
           }
 
-          if (i == null) {
+          if (i == data.timestamps.length || data.values[i] == null) {
             context.stroke()
             context.beginPath()
           } else {
@@ -507,6 +516,7 @@ export class LineGraphController {
             context.lineTo(pix(x), pix(y))
           }
         }
+        context.lineTo(pix(x), pix(y))
         context.stroke()
       })
     }

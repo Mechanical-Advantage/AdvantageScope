@@ -6,8 +6,12 @@ export class Log {
     key: "/ExampleSubsystem/ExampleArray",
     type: "IntegerArray",
     arrayLength: 3, <-- arrays only, used to keep track of array item fields
-    timestampIndexes: [0, 1, 5], <-- indexes in "timestamps" for field updates
-    values: [[1, 2, 3], [2, 3, 4], [4, 5, 6]], <-- values from field (or nulls) associated with timestamp
+    resolutions: {
+      0: { <-- min separation between changes in seconds
+        timestampIndexes: [0, 1, 5], <-- indexes in "timestamps" for field updates
+        values: [[1, 2, 3], [2, 3, 4], [4, 5, 6]], <-- values from field (or nulls) associated with timestamp
+      }
+    }
     displayKey: "/ExampleSubsystem/ExampleArray[IntegerArray]" <-- in case of a conflict, used to distinguish fields with the same key but different types
   }
 
@@ -20,6 +24,7 @@ export class Log {
 
   */
 
+  static resolutions = [0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] // Min time between changes (seconds)
   #timestamps = []
   #fields = []
 
@@ -75,12 +80,12 @@ export class Log {
   }
 
   // Gets all data from a field in the given range
-  getDataInRange(fieldIndex, startTime, endTime) {
+  getDataInRange(fieldIndex, startTime, endTime, resolution) {
     var field = this.#fields[fieldIndex]
 
     // Array item, get data from parent
     if ("arrayParent" in field) {
-      var parentData = this.getDataInRange(field.arrayParent, startTime, endTime)
+      var parentData = this.getDataInRange(field.arrayParent, startTime, endTime, resolution)
       return {
         timestamps: parentData.timestamps,
         values: parentData.values.map((value) => field.arrayIndex >= value.length ? null : value[field.arrayIndex])
@@ -91,20 +96,20 @@ export class Log {
     var timestamps = []
     var values = []
 
-    var startValueIndex = field.timestampIndexes.findIndex((timestampIndex) => this.#timestamps[timestampIndex] > startTime)
+    var startValueIndex = field.resolutions[resolution].timestampIndexes.findIndex((timestampIndex) => this.#timestamps[timestampIndex] > startTime)
     if (startValueIndex == -1) {
-      startValueIndex = field.timestampIndexes.length - 1
+      startValueIndex = field.resolutions[resolution].timestampIndexes.length - 1
     } else if (startValueIndex != 0) {
       startValueIndex -= 1
     }
 
-    var endValueIndex = field.timestampIndexes.findIndex((timestampIndex) => this.#timestamps[timestampIndex] >= endTime)
-    if (endValueIndex == -1 || endValueIndex == field.timestampIndexes.length - 1) { // Extend to end of timestamps
-      timestamps = field.timestampIndexes.slice(startValueIndex)
-      values = field.values.slice(startValueIndex)
+    var endValueIndex = field.resolutions[resolution].timestampIndexes.findIndex((timestampIndex) => this.#timestamps[timestampIndex] >= endTime)
+    if (endValueIndex == -1 || endValueIndex == field.resolutions[resolution].timestampIndexes.length - 1) { // Extend to end of timestamps
+      timestamps = field.resolutions[resolution].timestampIndexes.slice(startValueIndex)
+      values = field.resolutions[resolution].values.slice(startValueIndex)
     } else {
-      timestamps = field.timestampIndexes.slice(startValueIndex, endValueIndex + 1)
-      values = field.values.slice(startValueIndex, endValueIndex + 1)
+      timestamps = field.resolutions[resolution].timestampIndexes.slice(startValueIndex, endValueIndex + 1)
+      values = field.resolutions[resolution].values.slice(startValueIndex, endValueIndex + 1)
     }
 
     return {
@@ -154,8 +159,8 @@ export class Log {
       if (entry.data[i].type == "null") { // Set all types if null
         this.#fields.forEach(function (_, index, arr) {
           if (arr[index].key == entry.data[i].key) {
-            arr[index].timestampIndexes.push(entryIndex)
-            arr[index].values.push(null)
+            arr[index].resolutions[0].timestampIndexes.push(entryIndex)
+            arr[index].resolutions[0].values.push(null)
           }
         })
 
@@ -163,8 +168,8 @@ export class Log {
         var fieldIndex = this.#fields.find(field => field.key == entry.data[i].key && field.type == entry.data[i].type)
         fieldIndex = this.#fields.indexOf(fieldIndex)
         if (fieldIndex > -1) { // Field already exists, add to it
-          this.#fields[fieldIndex].timestampIndexes.push(entryIndex)
-          this.#fields[fieldIndex].values.push(entry.data[i].value)
+          this.#fields[fieldIndex].resolutions[0].timestampIndexes.push(entryIndex)
+          this.#fields[fieldIndex].resolutions[0].values.push(entry.data[i].value)
           if (entry.data[i].type.endsWith("Array")) {
             var originalLength = this.#fields[fieldIndex].arrayLength
             var newLength = entry.data[i].value.length
@@ -178,8 +183,12 @@ export class Log {
           var field = {
             key: entry.data[i].key,
             type: entry.data[i].type,
-            timestampIndexes: [entryIndex],
-            values: [entry.data[i].value],
+            resolutions: {
+              0: {
+                timestampIndexes: [entryIndex],
+                values: [entry.data[i].value]
+              }
+            }
           }
           this.#fields.push(field)
           if (entry.data[i].type.endsWith("Array")) {
@@ -191,9 +200,9 @@ export class Log {
         // Find fields of a different type to fill
         this.#fields.forEach(function (_, index, arr) {
           if ("key" in arr[index] && arr[index].key == entry.data[i].key && arr[index].type != entry.data[i].type) {
-            if (arr[index].values[arr[index].values.length - 1] != null) {
-              arr[index].timestampIndexes.push(entryIndex)
-              arr[index].values.push(null)
+            if (arr[index].resolutions[0].values[arr[index].values.length - 1] != null) {
+              arr[index].resolutions[0].timestampIndexes.push(entryIndex)
+              arr[index].resolutions[0].values.push(null)
             }
           }
         })
@@ -230,5 +239,29 @@ export class Log {
         this.#fields[i].displayKey = arrayParent.displayKey + "/" + this.#fields[i].arrayIndex.toString()
       }
     }
+  }
+
+  // Generates lower resolutions of data for faster visualization
+  generateResolutions() {
+    this.#fields.forEach(field => {
+      if (!("arrayParent" in field)) {
+        var originalData = field.resolutions[0]
+        Log.resolutions.forEach(resolution => {
+          var data = { timestampIndexes: [], values: [] }
+          var i = originalData.timestampIndexes.length - 1
+          var lastTimestamp = Infinity
+          while (i >= 0) {
+            var currentTimestamp = this.#timestamps[originalData.timestampIndexes[i]]
+            if (lastTimestamp - currentTimestamp > resolution) {
+              data.timestampIndexes.splice(0, 0, originalData.timestampIndexes[i])
+              data.values.splice(0, 0, originalData.values[i])
+              lastTimestamp = currentTimestamp
+            }
+            i--
+          }
+          field.resolutions[resolution] = data
+        })
+      }
+    })
   }
 }

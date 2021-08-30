@@ -123,5 +123,6 @@ onmessage = function (event) {
     console.error(error.message)
   }
   log.updateDisplayKeys()
+  log.generateResolutions()
   this.postMessage(log.rawData)
 }

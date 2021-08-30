@@ -78,7 +78,7 @@ window.addEventListener("open-file", function (event) {
     window.log.rawData = event.data
 
     var length = new Date().getTime() - startTime
-    console.log("Log decoded in " + length.toString() + "ms")
+    console.log("Log decoded and processed in " + length.toString() + "ms")
 
     sideBar.update()
     tabs.reset()
