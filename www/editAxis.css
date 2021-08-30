@@ -1,5 +1,8 @@
 table {
-  width: 100%;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
 }
 
 tr {
@@ -10,6 +13,7 @@ td.label {
   white-space: nowrap;
   width: 1px;
   text-align: right;
+  font-size: 14px;
 }
 
 input {
