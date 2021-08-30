@@ -242,7 +242,6 @@ export class LineGraphController {
 
     // Calculate maximum scroll lengths
     var scrollLengthVertical = this.#calcReverseZoom(timeRange[1] - timeRange[0]) // Calc maximum zoom based on time range
-    console.log(scrollLengthVertical)
     var scrollLengthHorizontal = this.#scrollOverlay.clientWidth * ((timeRange[1] - timeRange[0]) / this.#calcZoom()) // Calc horizontal length based on zoom
 
     // Adjust content size and enforce limits
