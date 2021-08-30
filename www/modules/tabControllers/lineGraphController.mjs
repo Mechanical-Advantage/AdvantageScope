@@ -436,7 +436,7 @@ export class LineGraphController {
     } else { // Left is primary by default
       leftIsPrimary = true
       var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, null)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, null, null)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, leftAxis, null)
     }
     var showLeftAxis = visibleFieldsLeft.length > 0 || this.#legends.left.locked
     var showRightAxis = visibleFieldsRight.length > 0 || this.#legends.right.locked
