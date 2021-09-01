@@ -1,0 +1,84 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Get tag name
+        id: get_version
+        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
+      - name: Create release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.get_version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+
+  build:
+    needs: release
+    strategy:
+      matrix:
+        host:
+          - {os: macos-latest, shortName: "mac", displayName: "macOS", artifactExt: "dmg", artifactType: "application/octet-stream"}
+          - {os: ubuntu-latest, shortName: "linux", displayName: "Linux", artifactExt: "zip", artifactType: "application/zip"}
+          - {os: windows-latest, shortName: "win", displayName: "Windows", artifactExt: "exe", artifactType: "application/octet-stream"}
+        arch: ["x64", "arm64"]
+
+    name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.host.os }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16.x'
+        cache: 'npm'
+    - name: Install Node.js dependencies
+      run: npm install
+    - name: Prepare macOS certificate
+      if: matrix.host.os == 'macos-latest'
+      run: |
+        echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+        echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+    - name: Build app
+      run: npx electron-builder build --${{ matrix.arch }} --publish never
+    - name: Prepare macOS artifact
+      if: matrix.host.os == 'macos-latest'
+      run: |
+        mv dist/6328\ Log\ Viewer-*.dmg artifact
+    - name: Prepare Linux artifact
+      if: matrix.host.os == 'ubuntu-latest'
+      run: |
+        cd dist
+        zip ../artifact.zip ./6328-log-viewer*
+        mv ../artifact.zip ../artifact
+    - name: Prepare Windows artifact
+      if: matrix.host.os == 'windows-latest'
+      run: |
+        Move-Item -Path "dist\6328 Log Viewer Setup *.exe" -Destination "artifact"
+    - name: Upload artifacts
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ needs.release.outputs.upload_url }}
+        asset_path: artifact
+        asset_name: 6328-log-viewer-${{ matrix.host.shortName }}-${{ matrix.arch }}.${{ matrix.host.artifactExt }}
+        asset_content_type: ${{ matrix.host.artifactType }}
