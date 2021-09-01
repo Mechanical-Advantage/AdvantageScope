@@ -168,19 +168,19 @@ ipcMain.on("add-tab", () => {
   menu.append(new MenuItem({
     label: "Line Graph",
     click() {
-      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 0)
+      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 1)
     }
   }))
   menu.append(new MenuItem({
     label: "Table",
     click() {
-      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 1)
+      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 2)
     }
   }))
   menu.append(new MenuItem({
     label: "Odometry",
     click() {
-      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 2)
+      BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 3)
     }
   }))
 

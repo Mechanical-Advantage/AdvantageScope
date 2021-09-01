@@ -1,3 +1,4 @@
+import { MetadataController } from "./tabControllers/metadataController.mjs"
 import { LineGraphController } from "./tabControllers/lineGraphController.mjs"
 import { TableController } from "./tabControllers/tableController.mjs"
 import { OdometryController } from "./tabControllers/odometryController.mjs"
@@ -60,7 +61,8 @@ export class Tabs {
     window.addEventListener("add-tab-response", (event) => {
       this.addTab(event.detail)
     })
-    this.addTab(0)
+    this.addTab(0, true)
+    this.addTab(1)
 
     // Periodic function
     window.setInterval(() => {
@@ -83,24 +85,30 @@ export class Tabs {
   }
 
   // Adds a new tab to the list
-  addTab(type) {
+  addTab(type, skipUpdate) {
     var tabData = {}
     switch (type) {
       case 0:
-        tabData.title = "Line Graph"
+        tabData.title = "\ud83d\udd0d"
         tabData.content = this.#contentTemplates.children[0].cloneNode(true)
+        this.#viewer.appendChild(tabData.content)
+        tabData.controller = new MetadataController(tabData.content)
+        break
+      case 1:
+        tabData.title = "Line Graph"
+        tabData.content = this.#contentTemplates.children[1].cloneNode(true)
         this.#viewer.appendChild(tabData.content)
         tabData.controller = new LineGraphController(tabData.content)
         break
-      case 1:
+      case 2:
         tabData.title = "Table"
-        tabData.content = this.#contentTemplates.children[1].cloneNode(true)
+        tabData.content = this.#contentTemplates.children[2].cloneNode(true)
         this.#viewer.appendChild(tabData.content)
         tabData.controller = new TableController(tabData.content)
         break
-      case 2:
+      case 3:
         tabData.title = "Odometry"
-        tabData.content = this.#contentTemplates.children[2].cloneNode(true)
+        tabData.content = this.#contentTemplates.children[3].cloneNode(true)
         this.#viewer.appendChild(tabData.content)
         tabData.controller = new OdometryController(tabData.content)
         break
@@ -108,7 +116,7 @@ export class Tabs {
     }
     this.#tabList.push(tabData)
     this.#selectedTab = this.#tabList.length - 1
-    this.#updateElements()
+    if (!skipUpdate) this.#updateElements()
   }
 
   // Shifts the currently selected tab left or right

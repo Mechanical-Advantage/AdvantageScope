@@ -134,6 +134,9 @@ export class SideBar {
     var tree = log.getFieldTree()
     var keys = Object.keys(tree).sort(smartSort)
     for (let i in keys) {
+      if (keys[i] == "RealMetadata" || keys[i] == "ReplayMetadata") {
+        continue // Hide metadata b/c viewed separately
+      }
       addField(this.#fieldList, keys[i], tree[keys[i]], 0)
     }
   }
