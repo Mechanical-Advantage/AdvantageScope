@@ -12,8 +12,14 @@ export class SideBar {
 
   constructor() {
     // Set up handle for resizing
-    this.#sideBarHandle.addEventListener("mousedown", (_) => this.#sideBarHandleActive = true)
-    window.addEventListener("mouseup", (_) => this.#sideBarHandleActive = false)
+    this.#sideBarHandle.addEventListener("mousedown", (_) => {
+      this.#sideBarHandleActive = true
+      document.body.style.cursor = "col-resize"
+    })
+    window.addEventListener("mouseup", (_) => {
+      this.#sideBarHandleActive = false
+      document.body.style.cursor = "default"
+    })
     window.addEventListener("mousemove", (event) => {
       if (this.#sideBarHandleActive) {
         var width = event.clientX
