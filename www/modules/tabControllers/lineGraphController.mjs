@@ -472,7 +472,7 @@ export class LineGraphController {
 
             // Draw rectangle
             colorToggle = !colorToggle
-            context.fillStyle = colorToggle ? this.#shiftColor(field.color, -15) : this.#shiftColor(field.color, 15)
+            context.fillStyle = colorToggle ? this.#shiftColor(field.color, -30) : this.#shiftColor(field.color, 30)
             context.fillRect(pix(startX), pix(topY), pix(endX - startX), pix(15))
 
             // Draw text
