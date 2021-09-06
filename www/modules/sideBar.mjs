@@ -18,7 +18,7 @@ export class SideBar {
     })
     window.addEventListener("mouseup", (_) => {
       this.#sideBarHandleActive = false
-      document.body.style.cursor = "default"
+      document.body.style.cursor = "initial"
     })
     window.addEventListener("mousemove", (event) => {
       if (this.#sideBarHandleActive) {
