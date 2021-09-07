@@ -81,8 +81,8 @@ export class TableController {
     this.#tableContainer.hidden = false
 
     this.#currentRange = [0, log.getTimestamps().length < 1000 ? log.getTimestamps().length - 1 : 999]
-    this.#clearTable()
-    this.#fillRange(this.#currentRange, false)
+    this.#fields = []
+    this.#updateFields()
     this.#tableContainer.scrollTop = 0
   }
 
