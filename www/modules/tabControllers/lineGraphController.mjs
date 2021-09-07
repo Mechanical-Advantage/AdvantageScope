@@ -137,6 +137,7 @@ export class LineGraphController {
 
   // Handles dragging events (moving and stopping)
   #handleDrag(event) {
+    if (this.#content.hidden) return
     Object.keys(this.#legends).forEach((key) => {
       var legend = this.#legends[key]
       var rect = legend.element.getBoundingClientRect()
@@ -354,10 +355,6 @@ export class LineGraphController {
 
   // Called every 15ms by the tab controller
   periodic() {
-    if (this.#content.hidden) {
-      return
-    }
-
     // Shorthand to adjust pixel values based on screen scaling (retina vs non-retina)
     function pix(pixels) {
       return pixels * window.devicePixelRatio

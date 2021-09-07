@@ -1,5 +1,6 @@
 // Controls rendering of tables
 export class TableController {
+  #content = null
   #noDataAlert = null
   #tableContainer = null
   #tableBody = null
@@ -11,6 +12,7 @@ export class TableController {
   #currentRange = [0, 0]
 
   constructor(content) {
+    this.#content = content
     this.#noDataAlert = content.getElementsByClassName("tab-centered")[0]
     this.#tableContainer = content.getElementsByClassName("data-table-container")[0]
     this.#tableBody = content.getElementsByClassName("data-table")[0].firstElementChild
@@ -38,6 +40,8 @@ export class TableController {
 
   // Handles dragging events (moving and stopping)
   #handleDrag(event) {
+    if (this.#content.hidden) return
+
     // Find selected section
     var header = this.#tableBody.firstElementChild
     var tableBox = this.#tableContainer.getBoundingClientRect()
