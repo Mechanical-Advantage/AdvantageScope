@@ -479,7 +479,7 @@ export class LineGraphController {
             var adjustedStartX = startX < graphLeft ? graphLeft : startX
             if (endX - adjustedStartX > 10) {
               if (fieldInfo.type == "Byte") {
-                var text = "0x" + (data.values[lastChange] & 0xFF).toString(16).padStart(2, "0")
+                var text = "0x" + (data.values[lastChange] & 0xff).toString(16).padStart(2, "0")
               } else if (fieldInfo.type == "ByteArray") {
                 var hexArray = data.values[lastChange].map(byte => {
                   "0x" + (byte & 0xff).toString(16).padStart(2, "0")

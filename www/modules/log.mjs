@@ -88,7 +88,9 @@ export class Log {
       var parentData = this.getDataInRange(field.arrayParent, startTime, endTime, resolution)
       return {
         timestamps: parentData.timestamps,
-        values: parentData.values.map((value) => field.arrayIndex >= value.length ? null : value[field.arrayIndex])
+        timestampIndexes: parentData.timestampIndexes,
+        values: parentData.values.map((value) => field.arrayIndex >= value.length ? null : value[field.arrayIndex]),
+        startValueIndex: parentData.startValueIndex
       }
     }
 
@@ -114,6 +116,7 @@ export class Log {
 
     return {
       timestamps: timestamps.map((i) => this.#timestamps[i]),
+      timestampIndexes: timestamps,
       values: values,
       startValueIndex: startValueIndex
     }

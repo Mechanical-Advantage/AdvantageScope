@@ -180,7 +180,7 @@ div.field-item-label {
 
 #dragItem {
   position: absolute;
-  z-index: 8;
+  z-index: 999;
   white-space: nowrap;
   font-size: 15px;
   font-style: italic;
@@ -553,4 +553,108 @@ div.line-graph-scroll::-webkit-scrollbar {
 div.line-graph-scroll-content {
   width: 100%;
   height: 100%;
+}
+
+/* Table */
+
+div.data-table-container {
+  height: 100%;
+  width: 100%;
+  overflow: scroll;
+}
+
+table.data-table {
+  text-align: left;
+  white-space: nowrap;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+
+  border-style: hidden;
+}
+
+table.data-table th {
+  position: sticky;
+  top: 0px;
+  padding: 6px;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #222;
+
+  background-color: #fff;
+  z-index: 7;
+}
+
+table.data-table th:first-child {
+  left: 0px;
+  z-index: 8;
+  text-align: right;
+}
+
+table.data-table th:not(first-child) {
+  max-width: 150px;
+  direction: rtl;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.data-table th:not(first-child) span {
+  unicode-bidi: plaintext;
+}
+
+table.data-table th:last-child {
+  border-right: none;
+}
+
+div.data-table-drag-highlight {
+  position: absolute;
+  z-index: 9;
+  width: 25px;
+  top: 0px;
+  bottom: 0px;
+  background-color: lightgreen;
+  opacity: 25%;
+}
+
+table.data-table td {
+  height: 16px;
+  padding: 4px;
+  font-family: monospace;
+  user-select: text;
+  border-right: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+table.data-table td:first-child {
+  position: sticky;
+  left: 0px;
+  text-align: right;
+  font-weight: bold;
+  border-left: none;
+
+  background-color: #fff;
+}
+
+table.data-table td:last-child {
+  border-right: none;
+}
+
+table.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  table.data-table th {
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #eee;
+    background-color: #222;
+  }
+
+  table.data-table td {
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+  }
+
+  table.data-table td:first-child {
+    background-color: #222;
+  }
 }
