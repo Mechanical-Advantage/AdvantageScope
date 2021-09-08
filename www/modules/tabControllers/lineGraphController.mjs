@@ -180,7 +180,9 @@ export class LineGraphController {
 
     // Create element
     var item = this.#legendItemTemplate.cloneNode(true)
-    item.getElementsByClassName("legend-key")[0].innerText = log.getFieldInfo(field).displayKey
+    var text = log.getFieldInfo(field).displayKey
+    item.title = text
+    item.getElementsByClassName("legend-key")[0].innerText = text
     item.getElementsByClassName("legend-splotch")[0].style.fill = color
     item.getElementsByClassName("legend-splotch")[0].addEventListener("click", () => {
       var index = Array.from(item.parentElement.children).indexOf(item) - 1
@@ -188,6 +190,7 @@ export class LineGraphController {
       this.#legends[legend].fields[index].show = show
       item.firstElementChild.style.fill = show ? color : "transparent"
     })
+    item.getElementsByClassName("legend-edit")[0].title = ""
     item.getElementsByClassName("legend-edit")[0].addEventListener("click", () => {
       var index = Array.from(item.parentElement.children).indexOf(item) - 1
       item.parentElement.removeChild(item)

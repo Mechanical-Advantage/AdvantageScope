@@ -167,11 +167,34 @@
           <div class="tab-centered">
             No data.
           </div>
+
+          <span class="data-table-header-template" hidden>
+            <div class="data-table-key-container">
+              <span></span>
+            </div>
+            <button class="data-table-key-delete">
+              <svg height="25" width="25">
+                <line x1="7" y1="7" x2="18" y2="18"></line>
+                <line x1="18" y1="7" x2="7" y2="18"></line>
+              </svg>
+            </button>
+          </span>
+
           <div class="data-table-container" hidden>
             <table class="data-table">
               <tbody>
                 <tr>
-                  <th>Timestamp</th>
+                  <th>
+                    <input class="data-table-jump-input" type="number" placeholder="0.000">
+                    <button class="data-table-jump-button">
+                      <svg height="25" width="25">
+                        <line x1="7.5" y1="6" x2="17.5" y2="6"></line>
+                        <line x1="12.5" y1="6" x2="12.5" y2="19"></line>
+                        <line x1="12.5" y1="19" x2="7.5" y2="14"></line>
+                        <line x1="12.5" y1="19" x2="17.5" y2="14"></line>
+                      </svg>
+                    </button>
+                  </th>
                 </tr>
               </tbody>
             </table>

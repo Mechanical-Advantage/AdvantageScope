@@ -2,11 +2,12 @@
 export class TableController {
   #content = null
   #noDataAlert = null
+  #headerTemplate = null
   #tableContainer = null
   #tableBody = null
   #dragHighlight = null
 
-  #rowHeight = 23
+  #rowHeight = 25
   #scrollMargin = 3000
   #fields = []
   #currentRange = [0, 0]
@@ -14,6 +15,7 @@ export class TableController {
   constructor(content) {
     this.#content = content
     this.#noDataAlert = content.getElementsByClassName("tab-centered")[0]
+    this.#headerTemplate = content.getElementsByClassName("data-table-header-template")[0]
     this.#tableContainer = content.getElementsByClassName("data-table-container")[0]
     this.#tableBody = content.getElementsByClassName("data-table")[0].firstElementChild
     this.#dragHighlight = content.getElementsByClassName("data-table-drag-highlight")[0]
@@ -21,7 +23,17 @@ export class TableController {
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
     if (log) this.reset()
 
-    window.scrollTo = (target) => {
+    var input = content.getElementsByClassName("data-table-jump-input")[0]
+    var jump = () => {
+      if (input.value == "") return
+
+      // Find index
+      var target = log.getTimestamps().findIndex(value => Math.round(value * 1000) / 1000 > Number(input.value))
+      if (target == -1) target = log.getTimestamps().length
+      if (target < 1) target = 1
+      target -= 1
+
+      // Jump to index
       if (log.getTimestamps().length < 1000) {
         this.#currentRange = [0, log.getTimestamps().length - 1]
       } else {
@@ -36,6 +48,8 @@ export class TableController {
       this.#fillRange(this.#currentRange, false)
       this.#tableContainer.scrollTop = (target - this.#currentRange[0]) * this.#rowHeight
     }
+    input.addEventListener("keydown", event => { if (event.code == "Enter") jump() })
+    content.getElementsByClassName("data-table-jump-button")[0].addEventListener("click", jump)
   }
 
   // Handles dragging events (moving and stopping)
@@ -102,12 +116,20 @@ export class TableController {
     }
 
     // Add new header cells
-    this.#fields.forEach(field => {
+    this.#fields.forEach((field, index) => {
       var cell = document.createElement("th")
+      Array.from(this.#headerTemplate.children).forEach(element => {
+        cell.appendChild(element.cloneNode(true))
+      })
       header.appendChild(cell)
-      var span = document.createElement("span")
-      cell.appendChild(span)
-      span.innerText = log.getFieldInfo(field).displayKey
+      var text = log.getFieldInfo(field).displayKey
+      cell.title = text
+      cell.firstElementChild.firstElementChild.innerText = text
+      cell.lastElementChild.title = ""
+      cell.lastElementChild.addEventListener("click", () => {
+        this.#fields.splice(index, 1)
+        this.#updateFields()
+      })
     })
 
     // Reset table data

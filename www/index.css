@@ -558,8 +558,11 @@ div.line-graph-scroll-content {
 /* Table */
 
 div.data-table-container {
-  height: 100%;
-  width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   overflow: scroll;
 }
 
@@ -576,7 +579,8 @@ table.data-table {
 table.data-table th {
   position: sticky;
   top: 0px;
-  padding: 6px;
+  height: 30px;
+  padding: 0px;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #222;
 
@@ -586,33 +590,57 @@ table.data-table th {
 
 table.data-table th:first-child {
   left: 0px;
+  min-width: 97px;
   z-index: 8;
-  text-align: right;
 }
 
-table.data-table th:not(first-child) {
-  max-width: 150px;
+table.data-table th:first-child input {
+  position: absolute;
+  left: 4px;
+  top: 4.5px;
+  height: 15px;
+  width: 56px;
+}
+
+table.data-table th:first-child button {
+  position: absolute;
+  left: 70px;
+  top: 2.5px;
+  height: 25px;
+  width: 25px;
+}
+
+table.data-table th:not(:first-child) {
+  min-width: 200px;
+}
+
+div.data-table-key-container {
+  position: absolute;
+  left: 6px;
+  right: 30px;
+  top: 0px;
+  height: 30px;
+  line-height: 30px;
+
   direction: rtl;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-table.data-table th:not(first-child) span {
+div.data-table-key-container span {
   unicode-bidi: plaintext;
+}
+
+button.data-table-key-delete {
+  position: absolute;
+  height: 25px;
+  width: 25px;
+  top: 2.5px;
+  right: 2px;
 }
 
 table.data-table th:last-child {
   border-right: none;
-}
-
-div.data-table-drag-highlight {
-  position: absolute;
-  z-index: 9;
-  width: 25px;
-  top: 0px;
-  bottom: 0px;
-  background-color: lightgreen;
-  opacity: 25%;
 }
 
 table.data-table td {
@@ -657,4 +685,14 @@ table.data-table tr:last-child td {
   table.data-table td:first-child {
     background-color: #222;
   }
+}
+
+div.data-table-drag-highlight {
+  position: absolute;
+  z-index: 9;
+  width: 25px;
+  top: 0px;
+  bottom: 0px;
+  background-color: lightgreen;
+  opacity: 25%;
 }
