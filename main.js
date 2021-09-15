@@ -163,6 +163,15 @@ function setupMenu() {
   Menu.setApplicationMenu(menu)
 }
 
+ipcMain.on("error", (_, title, content) => {
+  dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+    type: "error",
+    title: "Error",
+    message: title,
+    detail: content
+  })
+})
+
 ipcMain.on("add-tab", () => {
   const menu = new Menu()
   menu.append(new MenuItem({

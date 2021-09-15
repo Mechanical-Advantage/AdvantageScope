@@ -2,11 +2,13 @@ import { Log } from "./modules/log.mjs"
 
 // Decodes a series of bytes from an RLOG file and returns serializable data for a Log()
 onmessage = function (event) {
+  const supportedLogRevisions = [1]
+
   var log = new Log()
   var dataArray = event.data
   var dataBuffer = new DataView(dataArray.buffer)
   var decoder = new TextDecoder("UTF-8")
-  var offset = 1 // Skip first byte (timestamp)
+  var offset = 0
   var keyIDs = {}
 
   function shiftOffset(shift) {
@@ -14,6 +16,17 @@ onmessage = function (event) {
   }
 
   try {
+    // Check log reivison
+    var logRevision = dataArray[shiftOffset(1)]
+    if (!supportedLogRevisions.includes(logRevision)) {
+      this.postMessage({
+        success: false,
+        message: "The detected format of the log file is incompatible with the current app version. (Revision " + logRevision.toString() + ")"
+      })
+      return
+    }
+    shiftOffset(1) // Skip second byte (timestamp)
+
     mainLoop:
     while (true) {
       if (offset >= dataArray.length) break mainLoop // No more data, so we can't start a new entry
@@ -123,5 +136,8 @@ onmessage = function (event) {
   }
   log.updateDisplayKeys()
   log.generateResolutions()
-  this.postMessage(log.rawData)
+  this.postMessage({
+    success: true,
+    data: log.rawData
+  })
 }

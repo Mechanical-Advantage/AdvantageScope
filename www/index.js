@@ -74,14 +74,20 @@ window.addEventListener("open-file", function (event) {
   var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   decodeWorker.postMessage(event.detail.data)
   decodeWorker.onmessage = function (event) {
-    window.log = new Log()
-    window.log.rawData = event.data
+    if (event.data.success) {
+      window.log = new Log()
+      window.log.rawData = event.data.data
 
-    var length = new Date().getTime() - startTime
-    console.log("Log decoded and processed in " + length.toString() + "ms")
+      var length = new Date().getTime() - startTime
+      console.log("Log decoded and processed in " + length.toString() + "ms")
 
-    sideBar.update()
-    tabs.reset()
+      sideBar.update()
+      tabs.reset()
+    } else {
+      window.dispatchEvent(new CustomEvent("error", {
+        detail: { title: "Failed to read log", content: event.data.message }
+      }))
+    }
   }
 })
 

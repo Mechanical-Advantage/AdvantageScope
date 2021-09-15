@@ -29,6 +29,10 @@ ipcRenderer.on("open-file", (_, path) => {
   })
 })
 
+window.addEventListener("error", event => {
+  ipcRenderer.send("error", event.detail.title, event.detail.content)
+})
+
 window.addEventListener("add-tab", () => {
   ipcRenderer.send("add-tab")
 })
@@ -39,7 +43,7 @@ ipcRenderer.on("add-tab-response", (_, type) => {
   }))
 })
 
-window.addEventListener("edit-axis", (event) => {
+window.addEventListener("edit-axis", event => {
   ipcRenderer.send("edit-axis", event.detail)
 })
 
