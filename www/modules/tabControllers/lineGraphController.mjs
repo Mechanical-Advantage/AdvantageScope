@@ -385,11 +385,17 @@ export class LineGraphController {
     var graphHeight = height - graphTop - 50
     var xRange = this.#xRange
 
-    var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / pix(width)
-    var resolutionIndex = Log.resolutions.findIndex(resolution => resolution > secsPerPixel)
-    if (resolutionIndex == -1) resolutionIndex = Log.resolutions.length // No resolution is low enough
-    resolutionIndex -= 1
-    var resolution = resolutionIndex < 0 ? 0 : Log.resolutions[resolutionIndex]
+    if (log) {
+      var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / pix(width)
+      var availableResolutions = log.getResolutions()
+      var resolutionIndex = availableResolutions.findIndex(resolution => resolution > secsPerPixel)
+      if (resolutionIndex == -1) resolutionIndex = availableResolutions.length // No resolution is low enough
+      resolutionIndex -= 1
+      var resolution = resolutionIndex < 0 ? 0 : availableResolutions[resolutionIndex]
+      console.log(resolution)
+    } else {
+      var resolution = 0
+    }
 
     // Calculate axes
     var dataLookup = {}

@@ -74,19 +74,30 @@ window.addEventListener("open-file", function (event) {
   var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   decodeWorker.postMessage(event.detail.data)
   decodeWorker.onmessage = function (event) {
-    if (event.data.success) {
-      window.log = new Log()
-      window.log.rawData = event.data.data
+    switch (event.data.status) {
+      case "incompatible": // Failed to read log file
+        window.dispatchEvent(new CustomEvent("error", {
+          detail: { title: "Failed to read log", content: event.data.message }
+        }))
+        break
 
-      var length = new Date().getTime() - startTime
-      console.log("Log decoded and processed in " + length.toString() + "ms")
+      case "newData": // New data to show, reset everything
+        window.log = new Log()
+        window.log.rawData = event.data.data
 
-      sideBar.update()
-      tabs.reset()
-    } else {
-      window.dispatchEvent(new CustomEvent("error", {
-        detail: { title: "Failed to read log", content: event.data.message }
-      }))
+        var length = new Date().getTime() - startTime
+        console.log("Initial log ready in " + length.toString() + "ms")
+
+        sideBar.update()
+        tabs.reset()
+        break
+
+      case "updateData": // New resolutions added, don't reset
+        window.log = new Log()
+        window.log.rawData = event.data.data
+
+        var length = new Date().getTime() - startTime
+        console.log("Log updated in " + length.toString() + "ms")
     }
   }
 })

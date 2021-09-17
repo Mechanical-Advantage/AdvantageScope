@@ -24,15 +24,18 @@ export class Log {
 
   */
 
-  static resolutions = [0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] // Min time between changes (seconds)
+  static primaryResolutions = [0.05, 0.1, 0.2, 0.4, 0.6, 0.8, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] // Min time between changes (seconds)
+  static secondaryResolutions = [0.02, 0.04, 0.06, 0.08, 0.12, 0.14, 0.16, 0.18, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.34, 0.36, 0.38, 0.42, 0.44, 0.46, 0.48, 0.5, 0.55, 0.65, 0.7, 0.75, 0.85, 0.9, 0.95, 1.1, 1.2, 1.3, 1.4, 1.6, 1.7, 1.8, 1.9, 2.1, 2.2, 2.3, 2.4, 2.6, 2.7, 2.8, 2.9, 3.1, 3.2, 3.3, 3.4, 3.6, 3.7, 3.8, 3.9, 4.1, 4.2, 4.3, 4.4, 4.6, 4.7, 4.8, 4.9]
   #timestamps = []
   #fields = []
+  #resolutions = []
 
   // Gets all data that can be serialized
   get rawData() {
     return {
       timestamps: this.#timestamps,
-      fields: this.#fields
+      fields: this.#fields,
+      resolutions: this.#resolutions
     }
   }
 
@@ -40,11 +43,17 @@ export class Log {
   set rawData(value) {
     this.#timestamps = value.timestamps
     this.#fields = value.fields
+    this.#resolutions = value.resolutions
   }
 
   // Gets a list of valid timestamps
   getTimestamps() {
     return this.#timestamps
+  }
+
+  // Gets a sorted list of available resolutions
+  getResolutions() {
+    return this.#resolutions
   }
 
   // Gets the number of fields, use this to find all possible indexes
@@ -245,11 +254,11 @@ export class Log {
   }
 
   // Generates lower resolutions of data for faster visualization
-  generateResolutions() {
+  generateResolutions(resolutions) {
     this.#fields.forEach(field => {
       if (!("arrayParent" in field)) {
         var originalData = field.resolutions[0]
-        Log.resolutions.forEach(resolution => {
+        resolutions.forEach(resolution => {
           var data = { timestampIndexes: [], values: [] }
           var i = originalData.timestampIndexes.length - 1
           var lastTimestamp = Infinity
@@ -266,5 +275,7 @@ export class Log {
         })
       }
     })
+    this.#resolutions = this.#resolutions.concat(resolutions)
+    this.#resolutions.sort()
   }
 }

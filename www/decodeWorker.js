@@ -20,7 +20,7 @@ onmessage = function (event) {
     var logRevision = dataArray[shiftOffset(1)]
     if (!supportedLogRevisions.includes(logRevision)) {
       this.postMessage({
-        success: false,
+        status: "incompatible",
         message: "The detected format of the log file is incompatible with the current app version. (Revision " + logRevision.toString() + ")"
       })
       return
@@ -135,9 +135,14 @@ onmessage = function (event) {
     console.error(error.message)
   }
   log.updateDisplayKeys()
-  log.generateResolutions()
+  log.generateResolutions(Log.primaryResolutions)
   this.postMessage({
-    success: true,
+    status: "newData",
+    data: log.rawData
+  })
+  log.generateResolutions(Log.secondaryResolutions)
+  this.postMessage({
+    status: "updateData",
     data: log.rawData
   })
 }
