@@ -147,7 +147,7 @@ export class LineGraphController {
   // Handles dragging events (moving and stopping)
   #handleDrag(event) {
     if (this.#content.hidden) return
-    Object.keys(this.#legends).forEach((key) => {
+    Object.keys(this.#legends).forEach(key => {
       var legend = this.#legends[key]
       var rect = legend.element.getBoundingClientRect()
       var active = event.detail.x > rect.left && event.detail.x < rect.right && event.detail.y > rect.top && event.detail.y < rect.bottom

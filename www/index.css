@@ -462,8 +462,8 @@ div.legend-title {
   position: absolute;
   top: 0px;
   height: 100%;
-  left: 0px;
-  right: 30px;
+  left: 5px;
+  right: 35px;
 
   text-align: center;
   font-size: 16px;
@@ -475,7 +475,7 @@ div.legend-title {
 }
 
 div.legend-title-center {
-  right: 0px;
+  right: 5px;
 }
 
 div.legend-key-container {
@@ -714,4 +714,77 @@ div.data-table-drag-highlight {
   bottom: 0px;
   background-color: lightgreen;
   opacity: 25%;
+}
+
+/* Odometry controls */
+
+div.odometry-drag-highlight {
+  position: absolute;
+  z-index: 9;
+  background-color: lightgreen;
+  opacity: 25%;
+}
+
+table.odometry-config {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-top: 1px solid #555;
+}
+
+table.odometry-config th {
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 5px;
+  border-right: 1px solid #555;
+  border-bottom: 1px solid #555;
+}
+
+table.odometry-config td {
+  word-wrap: break-word;
+  padding: 5px;
+  border-right: 1px solid #555;
+  border-bottom: 1px solid #eee;
+}
+
+table.odometry-config td:last-child, table.odometry-config th:last-child {
+  border-right: none;
+}
+
+table.odometry-config tr:last-child td {
+  border-bottom: none;
+}
+
+table.odometry-config span.label {
+  font-weight: 600;
+}
+
+table.odometry-config span.field-name {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+table.odometry-config input[type="number"] {
+  width: 75px;
+}
+
+@media (prefers-color-scheme: dark) {
+  table.odometry-config {
+    border-top: 1px solid #999;
+  }
+  
+  table.odometry-config th {
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #999;
+  }
+
+  table.odometry-config td {
+    border-right: 1px solid #999;
+    border-bottom: 1px solid #333;
+  }
 }

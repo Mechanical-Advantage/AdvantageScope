@@ -18,32 +18,32 @@
     </div>
   </div>
 
-  <button class="tab-control play">
+  <button class="tab-control play" tabindex="-1">
     <svg height="28" width="28">
       <polygon points="9,8 9,20 19,14"></polygon>
     </svg>
   </button>
-  <button class="tab-control pause" hidden>
+  <button class="tab-control pause" tabindex="-1" hidden>
     <svg height="28" width="28">
       <line x1="9" y1="7" x2="9" y2="21"></line>
       <line x1="19" y1="7" x2="19" y2="21"></line>
     </svg>
   </button>
-  <button class="tab-control move-left">
+  <button class="tab-control move-left" tabindex="-1">
     <svg height="28" width="28">
       <line x1="7" y1="14" x2="21" y2="14"></line>
       <line x1="7" y1="14" x2="13" y2="8"></line>
       <line x1="7" y1="14" x2="13" y2="20"></line>
     </svg>
   </button>
-  <button class="tab-control move-right">
+  <button class="tab-control move-right" tabindex="-1">
     <svg height="28" width="28">
       <line x1="7" y1="14" x2="21" y2="14"></line>
       <line x1="21" y1="14" x2="15" y2="8"></line>
       <line x1="21" y1="14" x2="15" y2="20"></line>
     </svg>
   </button>
-  <button class="tab-control add-tab">
+  <button class="tab-control add-tab" tabindex="-1">
     <svg height="28" width="28">
       <line x1="14" y1="7" x2="14" y2="21"></line>
       <line x1="7" y1="14" x2="21" y2="14"></line>
@@ -114,7 +114,7 @@
               <div class="legend-key-container">
                 <span class="legend-key"></span>
               </div>
-              <button class="legend-edit">
+              <button class="legend-edit" tabindex="-1">
                 <svg height="25" width="25">
                   <line x1="7" y1="7" x2="18" y2="18"></line>
                   <line x1="18" y1="7" x2="7" y2="18"></line>
@@ -135,7 +135,7 @@
               <div class="legend-title">
                 Left Axis<span hidden> [Locked]</span>
               </div>
-              <button class="legend-edit">
+              <button class="legend-edit" tabindex="-1">
                 <svg height="25" width="25">
                   <circle cx="7" cy="12.5" r="0.75"></circle>
                   <circle cx="12.5" cy="12.5" r="0.75"></circle>
@@ -160,7 +160,7 @@
               <div class="legend-title">
                 Right Axis<span hidden> [Locked]</span>
               </div>
-              <button class="legend-edit">
+              <button class="legend-edit" tabindex="-1">
                 <svg height="25" width="25">
                   <circle cx="7" cy="12.5" r="0.75"></circle>
                   <circle cx="12.5" cy="12.5" r="0.75"></circle>
@@ -183,7 +183,7 @@
             <div class="data-table-key-container">
               <span></span>
             </div>
-            <button class="data-table-key-delete">
+            <button class="data-table-key-delete" tabindex="-1">
               <svg height="25" width="25">
                 <line x1="7" y1="7" x2="18" y2="18"></line>
                 <line x1="18" y1="7" x2="7" y2="18"></line>
@@ -196,8 +196,8 @@
               <tbody>
                 <tr>
                   <th>
-                    <input class="data-table-jump-input" type="number" placeholder="0.000">
-                    <button class="data-table-jump-button">
+                    <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1">
+                    <button class="data-table-jump-button" tabindex="-1">
                       <svg height="25" width="25">
                         <line x1="7.5" y1="6" x2="17.5" y2="6"></line>
                         <line x1="12.5" y1="6" x2="12.5" y2="19"></line>
@@ -215,9 +215,82 @@
 
         <!-- Odometry -->
         <div class="tab-content">
-          <div class="tab-centered">
-            Content for this tab is not available yet.
-          </div>
+          <div class="odometry-drag-highlight" hidden></div>
+          <table class="odometry-config">
+            <tbody>
+              <tr>
+                <th>Pose Data</th>
+                <th>Coordinate System</th>
+                <th>Robot Config</th>
+              </tr>
+              <tr>
+                <td>
+                  <span class="label">Rotation:</span>
+                  <span class="field-name">&lt;Drag Here&gt;</span>
+                </td>
+                <td>
+                  <span class="label">Game:</span>
+                  <select tabindex="-1">
+                    <option>2020</option>
+                    <option>2019</option>
+                    <option>2018</option>
+                    <option>2017</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="label">Side length:</span>
+                  <input type="number" min="0" value="0.75" step="0.01" tabindex="-1">
+                  <span>meters</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="label">X Position:</span>
+                  <span class="field-name">&lt;Drag Here&gt;</span>
+                </td>
+                <td>
+                  <span class="label">Units:</span>
+                  <select tabindex="-1">
+                    <option>meters</option>
+                    <option>inches</option>
+                  </select>
+                  and
+                  <select tabindex="-1">
+                    <option>radians</option>
+                    <option>degrees</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="label">Alliance color:</span>
+                  <select tabindex="-1">
+                    <option>blue</option>
+                    <option>red</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <span class="label">Y Position:</span>
+                  <span class="field-name">&lt;Drag Here&gt;</span>
+                </td>
+                <td>
+                  <span class="label">Origin:</span>
+                  <select tabindex="-1">
+                    <option>right</option>
+                    <option>center</option>
+                    <option>left</option>
+                  </select>
+                </td>
+                <td>
+                  <span class="label">Orientation:</span>
+                  <select tabindex="-1">
+                    <option>blue, red</option>
+                    <option>red, blue</option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
       </span>

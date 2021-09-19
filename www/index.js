@@ -93,6 +93,9 @@ window.addEventListener("open-file", function (event) {
 
         sideBar.update()
         tabs.reset()
+        selection.pause()
+        selection.selectedTime = null
+        selection.hoveredTime = null
         break
 
       case "updateData": // New resolutions added, don't reset

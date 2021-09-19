@@ -62,7 +62,7 @@ export class Tabs {
       this.addTab(event.detail)
     })
     this.addTab(0, true)
-    this.addTab(1)
+    this.addTab(3)
 
     // Periodic function
     window.setInterval(() => {
