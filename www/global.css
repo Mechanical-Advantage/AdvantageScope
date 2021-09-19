@@ -34,12 +34,14 @@ button:active {
 
 button svg {
   stroke: #555;
+  fill: #555;
   stroke-width: 1.5px;
   stroke-linecap: round;
 }
 
 button.blurred svg {
   stroke: #aaa;
+  fill: #aaa;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -54,9 +56,11 @@ button.blurred svg {
 
   button svg {
     stroke: #999;
+    fill: #999;
   }
 
   button.blurred svg {
     stroke: #555;
+    fill: #555;
   }
 }

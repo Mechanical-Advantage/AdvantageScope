@@ -6,6 +6,7 @@ export class TableController {
   #tableContainer = null
   #tableBody = null
   #dragHighlight = null
+  #input = null
 
   #rowHeight = 25
   #scrollMargin = 3000
@@ -19,16 +20,25 @@ export class TableController {
     this.#tableContainer = content.getElementsByClassName("data-table-container")[0]
     this.#tableBody = content.getElementsByClassName("data-table")[0].firstElementChild
     this.#dragHighlight = content.getElementsByClassName("data-table-drag-highlight")[0]
+    this.#input = content.getElementsByClassName("data-table-jump-input")[0]
     window.addEventListener("drag-update", (event) => this.#handleDrag(event))
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
     if (log) this.reset()
 
-    var input = content.getElementsByClassName("data-table-jump-input")[0]
     var jump = () => {
-      if (input.value == "") return
+      // Determine target time
+      if (this.#input.value == "") {
+        if (window.selection.selectedTime) {
+          var targetTime = window.selection.selectedTime
+        } else {
+          var targetTime = 0
+        }
+      } else {
+        var targetTime = Number(this.#input.value)
+      }
 
       // Find index
-      var target = log.getTimestamps().findIndex(value => Math.round(value * 1000) / 1000 > Number(input.value))
+      var target = log.getTimestamps().findIndex(value => Math.floor(value * 1000) / 1000 > targetTime)
       if (target == -1) target = log.getTimestamps().length
       if (target < 1) target = 1
       target -= 1
@@ -48,7 +58,7 @@ export class TableController {
       this.#fillRange(this.#currentRange, false)
       this.#tableContainer.scrollTop = (target - this.#currentRange[0]) * this.#rowHeight
     }
-    input.addEventListener("keydown", event => { if (event.code == "Enter") jump() })
+    this.#input.addEventListener("keydown", event => { if (event.code == "Enter") jump() })
     content.getElementsByClassName("data-table-jump-button")[0].addEventListener("click", jump)
   }
 
@@ -146,6 +156,29 @@ export class TableController {
     }
   }
 
+  // Updates highlighted times (selected & hovered)
+  #updateHighlights() {
+    var highlight = (time, className) => {
+      Array.from(this.#tableBody.children).forEach(row => row.classList.remove(className))
+      if (time) {
+        var target = log.getTimestamps().findIndex(value => value > time)
+        if (target == -1) target = log.getTimestamps().length
+        if (target < 1) target = 1
+        target -= 1
+        if (target >= this.#currentRange[0] && target <= this.#currentRange[1]) this.#tableBody.children[target - this.#currentRange[0] + 1].classList.add(className)
+      }
+    }
+    highlight(window.selection.selectedTime, "selected")
+    highlight(window.selection.hoveredTime, "hovered")
+  }
+
+  // Formats a time as a string of the correct length
+  #formatTime(time) {
+    var seconds = Math.floor(time)
+    var milliseconds = Math.floor((time - seconds) * 1000)
+    return seconds.toString() + "." + milliseconds.toString().padStart(3, "0")
+  }
+
   // Adds rows on the top or bottom in the specified range
   #fillRange(range, top) {
     // Get data
@@ -178,17 +211,24 @@ export class TableController {
         this.#tableBody.appendChild(row)
       }
 
+      // Bind selection controls
+      row.addEventListener("mouseenter", () => {
+        window.selection.hoveredTime = log.getTimestamps()[i]
+      })
+      row.addEventListener("mouseleave", () => {
+        window.selection.hoveredTime = null
+      })
+      row.addEventListener("click", event => {
+        window.selection.selectedTime = log.getTimestamps()[i]
+      })
+      row.addEventListener("contextmenu", event => {
+        window.selection.selectedTime = null
+      })
+
       // Add timestamp
       var timestampCell = document.createElement("td")
       row.appendChild(timestampCell)
-      var timestamp = log.getTimestamps()[i]
-      var seconds = Math.floor(timestamp)
-      var milliseconds = Math.round((timestamp - seconds) * 1000)
-      if (milliseconds > 999) {
-        seconds += 1
-        milliseconds -= 1000
-      }
-      timestampCell.innerText = seconds.toString() + "." + milliseconds.toString().padStart(3, "0")
+      timestampCell.innerText = this.#formatTime(log.getTimestamps()[i])
 
       // Add data
       this.#fields.forEach(field => {
@@ -208,12 +248,16 @@ export class TableController {
         dataCell.innerText = text
       })
     }
+
+    // Update highlights
+    this.#updateHighlights()
   }
 
   // Called every 15ms by the tab controller
   periodic() {
     if (log == null) return
 
+    // Determine if rows need to be updated
     var adjusted = false
     if (this.#tableContainer.scrollTop < this.#scrollMargin && this.#currentRange[0] > 0) {
       adjusted = true
@@ -224,6 +268,7 @@ export class TableController {
       var offset = this.#scrollMargin - (this.#tableContainer.scrollHeight - this.#tableContainer.clientHeight - this.#tableContainer.scrollTop)
     }
 
+    // Update rows
     if (adjusted) {
       var rowOffset = Math.floor(offset / this.#rowHeight)
       if (this.#currentRange[0] + rowOffset < 0) rowOffset = this.#currentRange[0] * -1
@@ -244,5 +289,10 @@ export class TableController {
         this.#fillRange([this.#currentRange[1] - rowOffset + 1, this.#currentRange[1]], false)
       }
     }
+
+    // Update based on selected & hovered times
+    this.#updateHighlights()
+    var placeholder = window.selection.selectedTime == null ? 0 : window.selection.selectedTime
+    this.#input.placeholder = this.#formatTime(placeholder)
   }
 }

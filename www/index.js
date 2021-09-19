@@ -1,4 +1,5 @@
 import { Log } from "./modules/log.mjs"
+import { Selection } from "./modules/selection.mjs"
 import { SideBar } from "./modules/sideBar.mjs"
 import { Tabs } from "./modules/tabs.mjs"
 
@@ -10,6 +11,8 @@ window.isFocused = true
 window.log = null
 window.sideBar = new SideBar()
 window.tabs = new Tabs()
+
+window.selection = new Selection()
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle

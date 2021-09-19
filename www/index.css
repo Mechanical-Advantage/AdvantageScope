@@ -17,7 +17,7 @@ div.title-bar-text {
   top: 0px;
   bottom: 0px;
   left: calc(var(--side-bar-width) + 20px);
-  right: 111px;
+  right: 149px;
 
   text-align: left;
   line-height: 38px;
@@ -192,7 +192,7 @@ div.field-item-label {
 div.tab-bar {
   position: absolute;
   left: 10px;
-  right: calc(10px + var(--tab-control-inline) * 106px);
+  right: calc(10px + var(--tab-control-inline) * 144px);
   top: 0px;
   height: 50px;
 
@@ -221,7 +221,7 @@ div.tab-bar-shadow-left {
 
 div.tab-bar-shadow-right {
   opacity: 100%;
-  right: calc(10px + var(--tab-control-inline) * 106px);
+  right: calc(10px + var(--tab-control-inline) * 144px);
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
@@ -238,7 +238,7 @@ div.tab-bar-shadow-right {
 div.tab-bar-scroll {
   position: absolute;
   left: 10px;
-  right: calc(10px + var(--tab-control-inline) * 106px);
+  right: calc(10px + var(--tab-control-inline) * 144px);
   top: 0px;
   height: 50px;
 
@@ -307,6 +307,10 @@ button.tab-control {
   top: calc(8px + (var(--tab-control-inline) * 3px)); /* Center vertically in tab bar when inline */
   height: 28px;
   width: 28px;
+}
+
+button.play, button.pause {
+  right: 116px;
 }
 
 button.move-left {
@@ -611,7 +615,7 @@ table.data-table th:first-child button {
 }
 
 table.data-table th:not(:first-child) {
-  min-width: 200px;
+  min-width: 250px;
 }
 
 div.data-table-key-container {
@@ -657,7 +661,6 @@ table.data-table td:first-child {
   left: 0px;
   text-align: right;
   font-weight: bold;
-  border-left: none;
 
   background-color: #fff;
 }
@@ -668,6 +671,14 @@ table.data-table td:last-child {
 
 table.data-table tr:last-child td {
   border-bottom: none;
+}
+
+table.data-table tr.hovered td {
+  background-color: #ddd;
+}
+
+table.data-table tr.selected td {
+  background-color: #aaa;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -684,6 +695,14 @@ table.data-table tr:last-child td {
 
   table.data-table td:first-child {
     background-color: #222;
+  }
+
+  table.data-table tr.hovered td {
+    background-color: #444;
+  }
+  
+  table.data-table tr.selected td {
+    background-color: #777;
   }
 }
 

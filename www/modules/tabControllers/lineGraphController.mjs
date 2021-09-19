@@ -16,8 +16,8 @@ export class LineGraphController {
   #zoomExponentBaseDarwin = 1.001
   #zoomExponentBaseOther = 1.1
 
+  #lastCursorX = null
   #lastScrollTop = 0
-  #lastCursorX = 0
   #lastClientWidth = 0
   #lastPlatform = null
   #panActive = false
@@ -112,25 +112,30 @@ export class LineGraphController {
       }
     })
 
-    // Scrolling controls
-    window.addEventListener("drag-update", (event) => this.#handleDrag(event))
-    window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
+    // Bind events
+    window.addEventListener("drag-update", event => this.#handleDrag(event))
+    window.addEventListener("drag-stop", event => this.#handleDrag(event))
     window.addEventListener("resize", () => this.#updateScroll())
     this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
-    this.#scrollOverlay.addEventListener("mousedown", (event) => {
-      this.#panActive = true
-      this.#panStartCursorX = event.layerX
-      this.#panStartScrollLeft = this.#scrollOverlay.scrollLeft
-    })
-    this.#scrollOverlay.addEventListener("mousemove", (event) => {
-      this.#lastCursorX = event.layerX // Update cursor for zoom
+    this.#scrollOverlay.addEventListener("mousemove", event => {
+      this.#lastCursorX = event.layerX
       if (this.#panActive) {
         this.#scrollOverlay.scrollLeft = this.#panStartScrollLeft + (this.#panStartCursorX - event.layerX)
         this.#updateScroll()
       }
     })
+    this.#scrollOverlay.addEventListener("mouseleave", () => {
+      this.#panActive = false
+      this.#lastCursorX = null
+    })
+    this.#scrollOverlay.addEventListener("mousedown", event => {
+      this.#panActive = true
+      this.#panStartCursorX = event.layerX
+      this.#panStartScrollLeft = this.#scrollOverlay.scrollLeft
+    })
     this.#scrollOverlay.addEventListener("mouseup", () => this.#panActive = false)
-    this.#scrollOverlay.addEventListener("mouseleave", () => this.#panActive = false)
+    this.#scrollOverlay.addEventListener("click", event => { if (event.layerX == this.#panStartCursorX) window.selection.selectedTime = window.selection.hoveredTime })
+    this.#scrollOverlay.addEventListener("contextmenu", () => window.selection.selectedTime = null)
 
     this.reset()
   }
@@ -270,8 +275,9 @@ export class LineGraphController {
 
     // Manage zoom
     if (this.#scrollOverlay.scrollTop != this.#lastScrollTop) {
-      var cursorTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (this.#xRange[1] - this.#xRange[0])) + this.#xRange[0] // Time represented by cursor before scroll
-      var minX = cursorTime - ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * this.#calcZoom()) // New min X to keep cursor at same time
+      var cursorX = this.#lastCursorX == null ? this.#scrollOverlay.clientWidth * 0.5 : this.#lastCursorX
+      var cursorTime = ((cursorX / this.#scrollOverlay.clientWidth) * (this.#xRange[1] - this.#xRange[0])) + this.#xRange[0] // Time represented by cursor before scroll
+      var minX = cursorTime - ((cursorX / this.#scrollOverlay.clientWidth) * this.#calcZoom()) // New min X to keep cursor at same time
       this.#scrollOverlay.scrollLeft = Math.round(((minX - timeRange[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth)
     }
 
@@ -367,10 +373,6 @@ export class LineGraphController {
       return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
     }
 
-    function lastTimestamp(timestamp) {
-      return log.getTimestamps()[log.getTimestamps().indexOf(timestamp) - 1]
-    }
-
     var context = this.#canvas.getContext("2d")
     var width = this.#canvasContainer.clientWidth
     var height = this.#canvasContainer.clientHeight
@@ -392,7 +394,6 @@ export class LineGraphController {
       if (resolutionIndex == -1) resolutionIndex = availableResolutions.length // No resolution is low enough
       resolutionIndex -= 1
       var resolution = resolutionIndex < 0 ? 0 : availableResolutions[resolutionIndex]
-      console.log(resolution)
     } else {
       var resolution = 0
     }
@@ -536,6 +537,32 @@ export class LineGraphController {
     }
     renderLegend(visibleFieldsLeft, [leftAxis.min, leftAxis.max])
     renderLegend(visibleFieldsRight, [rightAxis.min, rightAxis.max])
+
+    // Render selected times
+    function markTime(time, alpha) {
+      if (time == null) return
+      if (time >= xRange[0] && time <= xRange[1]) {
+        context.globalAlpha = alpha
+        context.lineWidth = pix(1)
+        context.setLineDash([pix(5), pix(5)])
+        context.strokeStyle = light ? "#222" : "#eee"
+
+        var x = scaleValue(time, xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+        context.beginPath()
+        context.moveTo(pix(x), pix(graphTop))
+        context.lineTo(pix(x), pix(graphTop + graphHeight))
+        context.stroke()
+        context.setLineDash([])
+        context.globalAlpha = 1
+      }
+    }
+    if (this.#lastCursorX == null) {
+      window.selection.hoveredTime = null
+    } else {
+      window.selection.hoveredTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (this.#xRange[1] - this.#xRange[0])) + this.#xRange[0]
+    }
+    markTime(window.selection.selectedTime, 1)
+    markTime(window.selection.hoveredTime, 0.35)
 
     // Clear overflow & draw graph outline
     context.lineWidth = pix(1)
