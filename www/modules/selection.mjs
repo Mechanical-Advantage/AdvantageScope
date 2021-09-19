@@ -12,7 +12,8 @@ export class Selection {
     this.#playButton.addEventListener("click", () => { this.play() })
     this.#pauseButton.addEventListener("click", () => { this.pause() })
     window.addEventListener("keydown", event => {
-      if (event.code == "Space") {
+      if (event.code == "Space" && event.target == document.body) {
+        event.preventDefault()
         if (this.#playing) {
           this.pause()
         } else {
@@ -41,7 +42,15 @@ export class Selection {
   // Retrieves selected time
   get selectedTime() {
     if (this.#playing) {
-      return ((new Date().getTime() / 1000) - this.#playStart) + (this.#selectedTime == null ? 0 : this.#selectedTime)
+      var time = ((new Date().getTime() / 1000) - this.#playStart) + (this.#selectedTime == null ? 0 : this.#selectedTime)
+      var lastTime = log == null ? 10 : log.getTimestamps()[log.getTimestamps().length - 1]
+      if (time >= lastTime) {
+        this.pause()
+        this.#selectedTime = lastTime
+        return lastTime
+      } else {
+        return time
+      }
     } else {
       return this.#selectedTime
     }

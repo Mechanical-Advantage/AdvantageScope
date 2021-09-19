@@ -134,7 +134,11 @@ export class LineGraphController {
       this.#panStartScrollLeft = this.#scrollOverlay.scrollLeft
     })
     this.#scrollOverlay.addEventListener("mouseup", () => this.#panActive = false)
-    this.#scrollOverlay.addEventListener("click", event => { if (event.layerX == this.#panStartCursorX) window.selection.selectedTime = window.selection.hoveredTime })
+    this.#scrollOverlay.addEventListener("click", event => {
+      if (Math.abs(event.layerX - this.#panStartCursorX) <= 5) {
+        window.selection.selectedTime = window.selection.hoveredTime
+      }
+    })
     this.#scrollOverlay.addEventListener("contextmenu", () => window.selection.selectedTime = null)
 
     this.reset()
@@ -634,8 +638,15 @@ export class LineGraphController {
     var axis = this.#calcAutoAxis(graphWidth, 100, xRange, 0, null, null)
     context.textAlign = "center"
     var stepPos = Math.ceil(this.#cleanFloat(axis.min / axis.step)) * axis.step
-    while (this.#cleanFloat(stepPos) <= axis.max) {
+    while (true) {
       var x = scaleValue(stepPos, axis.min, axis.max, graphLeft, graphLeft + graphWidth)
+
+      // Clean up final x (scroll can cause rounding problems)
+      if (x - graphLeft - graphWidth > 1) {
+        break
+      } else if (x - graphLeft - graphWidth > 0) {
+        x = graphLeft + graphWidth
+      }
 
       context.globalAlpha = 1
       context.fillText(this.#cleanFloat(stepPos).toString() + "s", pix(x), pix(graphTop + graphHeight + 15))
