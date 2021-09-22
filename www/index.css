@@ -758,6 +758,7 @@ table.odometry-config td:last-child, table.odometry-config th:last-child {
 
 table.odometry-config tr:last-child td {
   border-bottom: none;
+  padding-bottom: 6px;
 }
 
 table.odometry-config span.label {
