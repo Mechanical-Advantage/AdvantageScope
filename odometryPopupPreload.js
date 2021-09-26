@@ -5,3 +5,7 @@ ipcRenderer.on("render", (_, command) => {
     detail: command
   }))
 })
+
+window.addEventListener("set-aspect-ratio", event => {
+  ipcRenderer.send("resize-odometry-popup", event.detail)
+})

@@ -62,7 +62,7 @@ export class Tabs {
       this.addTab(event.detail)
     })
     this.addTab(0, true)
-    this.addTab(3)
+    this.addTab(1)
 
     // Periodic function
     window.setInterval(() => {
@@ -121,9 +121,10 @@ export class Tabs {
 
   // Shifts the currently selected tab left or right
   shiftSelected(shift) {
+    if (this.#selectedTab == 0) return // Don't move metadata tab
     var tab = this.#tabList.splice(this.#selectedTab, 1)[0]
     this.#selectedTab += shift
-    if (this.#selectedTab < 0) this.#selectedTab = 0
+    if (this.#selectedTab < 1) this.#selectedTab = 1 // Stay to the right of metadata tab
     if (this.#selectedTab > this.#tabList.length) this.#selectedTab = this.#tabList.length
     this.#tabList.splice(this.#selectedTab, 0, tab)
     this.#updateElements()

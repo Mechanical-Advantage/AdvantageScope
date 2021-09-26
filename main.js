@@ -176,6 +176,21 @@ ipcMain.on("open-link", (_, url) => {
   shell.openExternal(url)
 })
 
+ipcMain.on("set-playback-speed", (_, currentSpeed) => {
+  const menu = new Menu()
+  Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach(value => {
+    menu.append(new MenuItem({
+      label: (value * 100).toString() + "%",
+      type: "checkbox",
+      checked: value == currentSpeed,
+      click() {
+        BrowserWindow.getFocusedWindow().webContents.send("set-playback-speed-response", value)
+      }
+    }))
+  })
+  menu.popup()
+})
+
 ipcMain.on("add-tab", () => {
   const menu = new Menu()
   menu.append(new MenuItem({
@@ -273,15 +288,27 @@ ipcMain.on("create-odometry-popup", (_, id) => {
       preload: path.join(__dirname, "odometryPopupPreload.js")
     }
   })
-  popup.once("ready-to-show", popup.show)
   popup.loadFile("www/odometryPopup.html")
+  popup.once("ready-to-show", popup.show)
+
   if (!(id in odometryLookup)) {
     odometryLookup[id] = []
   }
   odometryLookup[id].push(popup)
+
+  var closed = false
+  BrowserWindow.getFocusedWindow().once("close", () => { if (!closed) popup.close() })
   popup.once("closed", () => {
+    closed = true
     odometryLookup[id].splice(odometryLookup[id].indexOf(popup), 1)
   })
+})
+
+ipcMain.on("resize-odometry-popup", (event, aspectRatio) => {
+  var window = BrowserWindow.fromWebContents(event.sender)
+  var size = window.getContentSize()
+  window.setAspectRatio(aspectRatio)
+  window.setContentSize(Math.round(size[1] * aspectRatio), size[1])
 })
 
 ipcMain.on("update-odometry-popup", (_, id, command) => {

@@ -4,6 +4,7 @@ export class Selection {
   #hoveredTime = null
   #playing = false
   #playStart = null
+  #playbackSpeed = 1
 
   #playButton = document.getElementsByClassName("play")[0]
   #pauseButton = document.getElementsByClassName("pause")[0]
@@ -19,6 +20,22 @@ export class Selection {
         } else {
           this.play()
         }
+      }
+    })
+    var setPlaybackSpeed = () => {
+      window.dispatchEvent(new CustomEvent("set-playback-speed", {
+        detail: this.#playbackSpeed
+      }))
+    }
+    this.#playButton.addEventListener("contextmenu", setPlaybackSpeed)
+    this.#pauseButton.addEventListener("contextmenu", setPlaybackSpeed)
+    window.addEventListener("set-playback-speed-response", event => {
+      if (this.#playing) {
+        this.pause()
+        this.#playbackSpeed = event.detail
+        this.play()
+      } else {
+        this.#playbackSpeed = event.detail
       }
     })
   }
@@ -42,7 +59,7 @@ export class Selection {
   // Retrieves selected time
   get selectedTime() {
     if (this.#playing) {
-      var time = ((new Date().getTime() / 1000) - this.#playStart) + (this.#selectedTime == null ? 0 : this.#selectedTime)
+      var time = ((new Date().getTime() / 1000) - this.#playStart) * this.#playbackSpeed + (this.#selectedTime == null ? 0 : this.#selectedTime)
       var lastTime = log == null ? 10 : log.getTimestamps()[log.getTimestamps().length - 1]
       if (time >= lastTime) {
         this.pause()
@@ -67,7 +84,7 @@ export class Selection {
   // Stops real time playback
   pause() {
     this.#playing = false
-    this.#selectedTime = ((new Date().getTime() / 1000) - this.#playStart) + (this.#selectedTime == null ? 0 : this.#selectedTime)
+    this.#selectedTime = ((new Date().getTime() / 1000) - this.#playStart) * this.#playbackSpeed + (this.#selectedTime == null ? 0 : this.#selectedTime)
     this.#playButton.hidden = false
     this.#pauseButton.hidden = true
   }

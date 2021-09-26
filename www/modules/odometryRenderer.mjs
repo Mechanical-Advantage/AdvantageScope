@@ -6,7 +6,6 @@ export class OdometryRenderer {
   #img = null
   #lastImgSrc = null
 
-  #fieldMarginPx = 15
   #inchesPerMeter = 39.37007874015748
 
   constructor(canvas) {
@@ -38,7 +37,7 @@ export class OdometryRenderer {
       this.#img.src = "../games/" + gameData.filename
     }
     if (!(this.#img.width > 0 && this.#img.height > 0)) {
-      return
+      return null
     }
 
     // Determine field layout
@@ -48,19 +47,20 @@ export class OdometryRenderer {
     // Render background
     var fieldWidth = gameData.bottomRight[0] - gameData.topLeft[0]
     var fieldHeight = gameData.bottomRight[1] - gameData.topLeft[1]
-    var availableWidth = width - this.#fieldMarginPx * 2
-    var availableHeight = height - this.#fieldMarginPx * 2
-    var constrainHeight = (availableWidth / availableHeight) > (fieldWidth / fieldHeight)
+
+    var topMargin = gameData.topLeft[1]
+    var bottomMargin = this.#img.height - gameData.bottomRight[1]
+    var leftMargin = gameData.topLeft[0]
+    var rightMargin = this.#img.width - gameData.bottomRight[0]
+
+    var margin = Math.min(topMargin, bottomMargin, leftMargin, rightMargin)
+    var extendedFieldWidth = fieldWidth + margin * 2
+    var extendedFieldHeight = fieldHeight + margin * 2
+    var constrainHeight = (width / height) > (extendedFieldWidth / extendedFieldHeight)
     if (constrainHeight) {
-      var imageScalar = availableHeight / fieldHeight
-      if (this.#img.height * imageScalar < height) {
-        imageScalar = height / this.#img.height
-      }
+      var imageScalar = height / extendedFieldHeight
     } else {
-      var imageScalar = availableWidth / fieldWidth
-      if (this.#img.width * imageScalar < width) {
-        imageScalar = width / this.#img.width
-      }
+      var imageScalar = width / extendedFieldWidth
     }
     var fieldCenterX = fieldWidth * 0.5 + gameData.topLeft[0]
     var fieldCenterY = fieldHeight * 0.5 + gameData.topLeft[1]
@@ -137,11 +137,16 @@ export class OdometryRenderer {
 
     // Render trail
     if (command.pose.trail.length > 0) {
-      var startPoint = calcCoordinates(command.pose.trail[0])
-      var startPointDist = (((startPoint[0] - robotPos[0]) ** 2) + ((startPoint[1] - robotPos[1]) ** 2)) ** 0.5
-      var endPoint = calcCoordinates(command.pose.trail[command.pose.trail.length - 1])
-      var endPointDist = (((endPoint[0] - robotPos[0]) ** 2) + ((endPoint[1] - robotPos[1]) ** 2)) ** 0.5
-      var gradient = context.createRadialGradient(robotPos[0], robotPos[1], lengthPixels * 0.5, robotPos[0], robotPos[1], Math.max(startPointDist, endPointDist))
+      var trailCoordinates = []
+      var maxDistance = 0
+      command.pose.trail.forEach(position => {
+        var coordinates = calcCoordinates(position)
+        trailCoordinates.push(coordinates)
+        var distance = (((coordinates[0] - robotPos[0]) ** 2) + ((coordinates[1] - robotPos[1]) ** 2)) ** 0.5
+        if (distance > maxDistance) maxDistance = distance
+      })
+
+      var gradient = context.createRadialGradient(robotPos[0], robotPos[1], lengthPixels * 0.5, robotPos[0], robotPos[1], maxDistance)
       gradient.addColorStop(0, "rgba(170, 170, 170, 1)")
       gradient.addColorStop(0.25, "rgba(170, 170, 170, 1)")
       gradient.addColorStop(1, "rgba(170, 170, 170, 0)")
@@ -152,13 +157,12 @@ export class OdometryRenderer {
       context.lineJoin = "round"
       context.beginPath()
       var firstPoint = true
-      command.pose.trail.forEach(position => {
-        var coordinates = calcCoordinates(position)
+      trailCoordinates.forEach(position => {
         if (firstPoint) {
-          context.moveTo(coordinates[0], coordinates[1])
+          context.moveTo(position[0], position[1])
           firstPoint = false
         } else {
-          context.lineTo(coordinates[0], coordinates[1])
+          context.lineTo(position[0], position[1])
         }
       })
       context.stroke()
@@ -194,5 +198,8 @@ export class OdometryRenderer {
     context.lineTo(arrowFront[0], arrowFront[1])
     context.lineTo(arrowRight[0], arrowRight[1])
     context.stroke()
+
+    // Return target aspect ratio
+    return fieldWidth / fieldHeight
   }
 }

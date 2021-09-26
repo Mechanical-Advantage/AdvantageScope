@@ -24,7 +24,7 @@ export class OdometryController {
     this.#timelineMarkerContainer = content.getElementsByClassName("odometry-timeline-marker-container")[0]
     this.#canvas = content.getElementsByClassName("odometry-canvas")[0]
     this.#configTable = content.getElementsByClassName("odometry-config")[0]
-    this.#renderer = new OdometryRenderer(this.#canvas)
+    this.#renderer = new OdometryRenderer(this.#canvas, true)
 
     this.#timelineInput.addEventListener("input", () => {
       window.selection.selectedTime = Number(this.#timelineInput.value)

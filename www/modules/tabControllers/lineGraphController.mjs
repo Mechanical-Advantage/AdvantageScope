@@ -16,6 +16,7 @@ export class LineGraphController {
   #zoomExponentBaseDarwin = 1.001
   #zoomExponentBaseOther = 1.1
 
+  #resetNext = false
   #lastCursorX = null
   #lastScrollTop = 0
   #lastClientWidth = 0
@@ -217,6 +218,11 @@ export class LineGraphController {
 
   // Called by tab controller when log changes
   reset() {
+    if (this.#content.hidden) {
+      this.#resetNext = true
+      return
+    }
+
     Object.values(this.#legends).forEach((legend) => {
       legend.fields = []
       while (legend.element.children.length > 1) {
@@ -299,7 +305,7 @@ export class LineGraphController {
   }
 
   // Calculates appropriate bounds and steps based on data
-  #calcAutoAxis(heightPx, targetStepPx, valueRange, marginProportion, primaryAxis, lockedRange) {
+  #calcAutoAxis(heightPx, targetStepPx, valueRange, marginProportion, customUnit, primaryAxis, lockedRange) {
     // Calc target range
     if (lockedRange == null) {
       var margin = (valueRange[1] - valueRange[0]) * marginProportion
@@ -322,7 +328,12 @@ export class LineGraphController {
 
 
     // Clean up step size
-    var roundBase = 10 ** Math.floor(Math.log10(stepValueApprox))
+    var useCustomUnit = customUnit != null && stepValueApprox > customUnit
+    if (useCustomUnit) {
+      var roundBase = customUnit * 10 ** Math.floor(Math.log10(stepValueApprox / customUnit))
+    } else {
+      var roundBase = 10 ** Math.floor(Math.log10(stepValueApprox))
+    }
     if (primaryAxis == null) {
       var multiplierLookup = [0, 1, 2, 2, 5, 5, 5, 5, 5, 10, 10]
     } else {
@@ -335,7 +346,8 @@ export class LineGraphController {
       return {
         min: targetRange[0],
         max: targetRange[1],
-        step: stepValue
+        step: stepValue,
+        customUnit: useCustomUnit
       }
     } else {
       var midPrimary = (primaryAxis.min + primaryAxis.max) / 2
@@ -348,7 +360,8 @@ export class LineGraphController {
       return {
         min: newMin,
         max: newMax,
-        step: stepValue
+        step: stepValue,
+        customUnit: useCustomUnit
       }
     }
   }
@@ -371,6 +384,11 @@ export class LineGraphController {
     // Utility function to scale value between two ranges
     function scaleValue(value, oldMin, oldMax, newMin, newMax) {
       return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
+    }
+
+    if (this.#resetNext) {
+      this.reset()
+      this.#resetNext = false
     }
 
     var context = this.#canvas.getContext("2d")
@@ -427,24 +445,24 @@ export class LineGraphController {
     var leftIsPrimary = false
     if (this.#legends.left.locked && this.#legends.right.locked) { // No secondary axis
       leftIsPrimary = visibleFieldsLeft.length >= visibleFieldsRight.length
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, this.#legends.left.range)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, null, this.#legends.right.range)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, this.#legends.left.range)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, null, this.#legends.right.range)
     } else if (this.#legends.left.locked) { // Only left locked, make it primary
       leftIsPrimary = true
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, this.#legends.left.range)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, leftAxis, null)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, this.#legends.left.range)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, leftAxis, null)
     } else if (this.#legends.right.locked) { // Only right locked, make it primary
       leftIsPrimary = false
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, null, this.#legends.right.range)
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, rightAxis, null)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, 1, null, this.#legends.right.range)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, 1, rightAxis, null)
     } else if (visibleFieldsRight.length > visibleFieldsLeft.length) { // Right has more fields, make it primary
       leftIsPrimary = false
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, null, null)
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, rightAxis, null)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, 1, null, null)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, 1, rightAxis, null)
     } else { // Left is primary by default
       leftIsPrimary = true
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, null, null)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, leftAxis, null)
+      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, null)
+      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, leftAxis, null)
     }
     var showLeftAxis = visibleFieldsLeft.length > 0 || this.#legends.left.locked
     var showRightAxis = visibleFieldsRight.length > 0 || this.#legends.right.locked
@@ -632,7 +650,7 @@ export class LineGraphController {
     }
 
     // Render x axis
-    var axis = this.#calcAutoAxis(graphWidth, 100, xRange, 0, null, null)
+    var axis = this.#calcAutoAxis(graphWidth, 100, xRange, 0, 60, null, null)
     context.textAlign = "center"
     var stepPos = Math.ceil(this.#cleanFloat(axis.min / axis.step)) * axis.step
     while (true) {
@@ -645,8 +663,14 @@ export class LineGraphController {
         x = graphLeft + graphWidth
       }
 
+      if (axis.customUnit) {
+        var text = this.#cleanFloat(stepPos / 60).toString() + "m"
+      } else {
+        var text = this.#cleanFloat(stepPos).toString() + "s"
+      }
+
       context.globalAlpha = 1
-      context.fillText(this.#cleanFloat(stepPos).toString() + "s", x, graphTop + graphHeight + 15)
+      context.fillText(text, x, graphTop + graphHeight + 15)
       context.beginPath()
       context.moveTo(x, graphTop + graphHeight)
       context.lineTo(x, graphTop + graphHeight + 5)

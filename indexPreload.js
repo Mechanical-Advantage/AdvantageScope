@@ -37,6 +37,16 @@ window.addEventListener("open-link", event => {
   ipcRenderer.send("open-link", event.detail)
 })
 
+window.addEventListener("set-playback-speed", event => {
+  ipcRenderer.send("set-playback-speed", event.detail)
+})
+
+ipcRenderer.on("set-playback-speed-response", (_, speed) => {
+  window.dispatchEvent(new CustomEvent("set-playback-speed-response", {
+    detail: speed
+  }))
+})
+
 window.addEventListener("add-tab", () => {
   ipcRenderer.send("add-tab")
 })
