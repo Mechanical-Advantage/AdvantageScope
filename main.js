@@ -288,6 +288,7 @@ ipcMain.on("create-odometry-popup", (_, id) => {
       preload: path.join(__dirname, "odometryPopupPreload.js")
     }
   })
+  popup.setMenu(null)
   popup.loadFile("www/odometryPopup.html")
   popup.once("ready-to-show", popup.show)
 
