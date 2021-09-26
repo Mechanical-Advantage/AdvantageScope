@@ -84,8 +84,9 @@ export class OdometryController {
     window.addEventListener("drag-update", event => this.#handleDrag(event))
     window.addEventListener("drag-stop", event => this.#handleDrag(event))
 
-    // Start periodic cycle
+    // Start periodic cycle and reset (in case log is already loaded)
     window.setInterval(() => this.customPeriodic(), 15)
+    this.reset()
   }
 
   // Handles dragging events (moving and stopping)
@@ -116,24 +117,29 @@ export class OdometryController {
   // Called by tab controller when log changes
   reset() {
     // Adjust timeline
-    var minTime = log.getTimestamps()[0]
-    var maxTime = log.getTimestamps()[log.getTimestamps().length - 1]
-    this.#timelineInput.min = minTime
-    this.#timelineInput.max = maxTime
     while (this.#timelineMarkerContainer.firstChild) {
       this.#timelineMarkerContainer.removeChild(this.#timelineMarkerContainer.firstChild)
     }
-    var data = log.getDataInRange(log.findField("/DriverStation/Enabled", "Boolean"), -Infinity, Infinity, 0)
-    for (let i = 0; i < data.values.length; i++) {
-      if (data.values[i]) {
-        var div = document.createElement("div")
-        this.#timelineMarkerContainer.appendChild(div)
-        var leftPercent = (data.timestamps[i] / (maxTime - minTime)) * 100
-        var nextTime = i == data.values.length - 1 ? maxTime : data.timestamps[i + 1]
-        var widthPercent = ((nextTime - data.timestamps[i]) / (maxTime - minTime)) * 100
-        div.style.left = leftPercent.toString() + "%"
-        div.style.width = widthPercent.toString() + "%"
+    if (log) {
+      var minTime = log.getTimestamps()[0]
+      var maxTime = log.getTimestamps()[log.getTimestamps().length - 1]
+      this.#timelineInput.min = minTime
+      this.#timelineInput.max = maxTime
+      var data = log.getDataInRange(log.findField("/DriverStation/Enabled", "Boolean"), -Infinity, Infinity, 0)
+      for (let i = 0; i < data.values.length; i++) {
+        if (data.values[i]) {
+          var div = document.createElement("div")
+          this.#timelineMarkerContainer.appendChild(div)
+          var leftPercent = (data.timestamps[i] / (maxTime - minTime)) * 100
+          var nextTime = i == data.values.length - 1 ? maxTime : data.timestamps[i + 1]
+          var widthPercent = ((nextTime - data.timestamps[i]) / (maxTime - minTime)) * 100
+          div.style.left = leftPercent.toString() + "%"
+          div.style.width = widthPercent.toString() + "%"
+        }
       }
+    } else {
+      this.#timelineInput.min = 0
+      this.#timelineInput.max = 10
     }
 
     // Reset fields
