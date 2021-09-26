@@ -215,6 +215,24 @@
 
         <!-- Odometry -->
         <div class="tab-content">
+          <div class="odometry-timeline-container">
+            <input class="odometry-timeline-slider" id="timeline" type="range" value="0" min="0" max="10" step="0.001"
+              tabindex="-1"></input>
+            <div class="odometry-timeline-marker-container"></div>
+          </div>
+          <button class="odometry-popup-button" tabindex="-1">
+            <svg height="25" width="25">
+              <line x1="12" y1="13" x2="20" y2="5"></line>
+              <line x1="20" y1="5" x2="20" y2="10"></line>
+              <line x1="20" y1="5" x2="15" y2="5"></line>
+
+              <line x1="17" y1="13" x2="17" y2="19"></line>
+              <line x1="17" y1="19" x2="6" y2="19"></line>
+              <line x1="6" y1="19" x2="6" y2="8"></line>
+              <line x1="6" y1="8" x2="12" y2="8"></line>
+            </svg>
+          </button>
+          <canvas class="odometry-canvas"></canvas>
           <div class="odometry-drag-highlight" hidden></div>
           <table class="odometry-config">
             <tbody>
@@ -230,12 +248,8 @@
                 </td>
                 <td>
                   <span class="label">Game:</span>
-                  <select tabindex="-1">
-                    <option>2020</option>
-                    <option>2019</option>
-                    <option>2018</option>
-                    <option>2017</option>
-                  </select>
+                  <select tabindex="-1"></select>
+                  <a class="credit-link" href="#">Source</a>
                 </td>
                 <td>
                   <span class="label">Side length:</span>

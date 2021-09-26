@@ -71,4 +71,9 @@ export class Selection {
     this.#playButton.hidden = false
     this.#pauseButton.hidden = true
   }
+
+  // Returns whether playback is active
+  isPlaying() {
+    return this.#playing
+  }
 }

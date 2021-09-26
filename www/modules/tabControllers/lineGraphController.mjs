@@ -368,11 +368,7 @@ export class LineGraphController {
 
   // Called every 15ms by the tab controller
   periodic() {
-    // Shorthand to adjust pixel values based on screen scaling (retina vs non-retina)
-    function pix(pixels) {
-      return pixels * window.devicePixelRatio
-    }
-
+    // Utility function to scale value between two ranges
     function scaleValue(value, oldMin, oldMax, newMin, newMax) {
       return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
     }
@@ -381,10 +377,11 @@ export class LineGraphController {
     var width = this.#canvasContainer.clientWidth
     var height = this.#canvasContainer.clientHeight
     var light = !window.matchMedia("(prefers-color-scheme: dark)").matches
-    this.#canvas.width = pix(width)
-    this.#canvas.height = pix(height)
+    this.#canvas.width = width * window.devicePixelRatio
+    this.#canvas.height = height * window.devicePixelRatio
+    context.scale(window.devicePixelRatio, window.devicePixelRatio)
 
-    context.clearRect(0, 0, pix(width), pix(height))
+    context.clearRect(0, 0, width, height)
     var graphLeft = 60
     var graphTop = 8
     var graphWidth = width - graphLeft - 60
@@ -392,7 +389,7 @@ export class LineGraphController {
     var xRange = this.#xRange
 
     if (log) {
-      var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / pix(width)
+      var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / (width * window.devicePixelRatio)
       var availableResolutions = log.getResolutions()
       var resolutionIndex = availableResolutions.findIndex(resolution => resolution > secsPerPixel)
       if (resolutionIndex == -1) resolutionIndex = availableResolutions.length // No resolution is low enough
@@ -459,7 +456,7 @@ export class LineGraphController {
     context.globalAlpha = 1
     context.textAlign = "left"
     context.textBaseline = "middle"
-    context.font = pix(12).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
+    context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
     var visibleFieldsDiscrete = this.#legends.discrete.fields.filter((field) => field.show)
     visibleFieldsDiscrete.forEach((field, renderIndex) => {
       if (field.id in dataLookup) {
@@ -484,7 +481,7 @@ export class LineGraphController {
             // Draw rectangle
             colorToggle = !colorToggle
             context.fillStyle = colorToggle ? this.#shiftColor(field.color, -30) : this.#shiftColor(field.color, 30)
-            context.fillRect(pix(startX), pix(topY), pix(endX - startX), pix(15))
+            context.fillRect(startX, topY, endX - startX, 15)
 
             // Draw text
             var adjustedStartX = startX < graphLeft ? graphLeft : startX
@@ -501,7 +498,7 @@ export class LineGraphController {
               }
 
               context.fillStyle = colorToggle ? this.#shiftColor(field.color, 100) : this.#shiftColor(field.color, -100)
-              context.fillText(text, pix(adjustedStartX + 5), pix(topY + (15 / 2)), pix(endX - adjustedStartX - 10))
+              context.fillText(text, adjustedStartX + 5, topY + (15 / 2), endX - adjustedStartX - 10)
             }
           }
 
@@ -514,7 +511,7 @@ export class LineGraphController {
     function renderLegend(fields, range) {
       fields.forEach((field) => {
         var data = dataLookup[field.id]
-        context.lineWidth = pix(1)
+        context.lineWidth = 1
         context.strokeStyle = field.color
         context.beginPath()
 
@@ -523,7 +520,7 @@ export class LineGraphController {
             var timestamp = i == data.timestamps.length ? log.getTimestamps()[log.getTimestamps().length - 1] : data.timestamps[i]
             var x = scaleValue(timestamp, xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
             var y = scaleValue(data.values[i - 1], range[0], range[1], graphTop + graphHeight, graphTop)
-            context.lineTo(pix(x), pix(y))
+            context.lineTo(x, y)
           }
 
           if (i == data.timestamps.length || data.values[i] == null) {
@@ -532,10 +529,10 @@ export class LineGraphController {
           } else {
             var x = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
             var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
-            context.lineTo(pix(x), pix(y))
+            context.lineTo(x, y)
           }
         }
-        context.lineTo(pix(x), pix(y))
+        context.lineTo(x, y)
         context.stroke()
       })
     }
@@ -547,14 +544,14 @@ export class LineGraphController {
       if (time == null) return
       if (time >= xRange[0] && time <= xRange[1]) {
         context.globalAlpha = alpha
-        context.lineWidth = pix(1)
-        context.setLineDash([pix(5), pix(5)])
+        context.lineWidth = 1
+        context.setLineDash([5, 5])
         context.strokeStyle = light ? "#222" : "#eee"
 
         var x = scaleValue(time, xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
         context.beginPath()
-        context.moveTo(pix(x), pix(graphTop))
-        context.lineTo(pix(x), pix(graphTop + graphHeight))
+        context.moveTo(x, graphTop)
+        context.lineTo(x, graphTop + graphHeight)
         context.stroke()
         context.setLineDash([])
         context.globalAlpha = 1
@@ -569,20 +566,20 @@ export class LineGraphController {
     markTime(window.selection.hoveredTime, 0.35)
 
     // Clear overflow & draw graph outline
-    context.lineWidth = pix(1)
+    context.lineWidth = 1
     context.strokeStyle = light ? "#222" : "#eee"
-    context.clearRect(pix(0), pix(0), pix(width), pix(graphTop))
-    context.clearRect(pix(0), pix(graphTop + graphHeight), pix(width), pix(height - graphTop - graphHeight))
-    context.clearRect(pix(0), pix(graphTop), pix(graphLeft), pix(graphHeight))
-    context.clearRect(pix(graphLeft + graphWidth), pix(graphTop), pix(width - graphLeft - graphWidth), pix(graphHeight))
-    context.strokeRect(pix(graphLeft), pix(graphTop), pix(graphWidth), pix(graphHeight))
+    context.clearRect(0, 0, width, graphTop)
+    context.clearRect(0, graphTop + graphHeight, width, height - graphTop - graphHeight)
+    context.clearRect(0, graphTop, graphLeft, graphHeight)
+    context.clearRect(graphLeft + graphWidth, graphTop, width - graphLeft - graphWidth, graphHeight)
+    context.strokeRect(graphLeft, graphTop, graphWidth, graphHeight)
 
     // Render y axes
-    context.lineWidth = pix(1)
+    context.lineWidth = 1
     context.strokeStyle = light ? "#222" : "#eee"
     context.fillStyle = light ? "#222" : "#eee"
     context.textBaseline = "middle"
-    context.font = pix(12).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
+    context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
 
     if (showLeftAxis) {
       context.textAlign = "right"
@@ -591,17 +588,17 @@ export class LineGraphController {
         var y = scaleValue(stepPos, leftAxis.min, leftAxis.max, graphTop + graphHeight, graphTop)
 
         context.globalAlpha = 1
-        context.fillText(this.#cleanFloat(stepPos).toString(), pix(graphLeft - 15), pix(y))
+        context.fillText(this.#cleanFloat(stepPos).toString(), graphLeft - 15, y)
         context.beginPath()
-        context.moveTo(pix(graphLeft), pix(y))
-        context.lineTo(pix(graphLeft - 5), pix(y))
+        context.moveTo(graphLeft, y)
+        context.lineTo(graphLeft - 5, y)
         context.stroke()
 
         if (leftIsPrimary) {
           context.globalAlpha = 0.1
           context.beginPath()
-          context.moveTo(pix(graphLeft), pix(y))
-          context.lineTo(pix(graphLeft + graphWidth), pix(y))
+          context.moveTo(graphLeft, y)
+          context.lineTo(graphLeft + graphWidth, y)
           context.stroke()
         }
 
@@ -616,17 +613,17 @@ export class LineGraphController {
         var y = scaleValue(stepPos, rightAxis.min, rightAxis.max, graphTop + graphHeight, graphTop)
 
         context.globalAlpha = 1
-        context.fillText(this.#cleanFloat(stepPos).toString(), pix(graphLeft + graphWidth + 15), pix(y))
+        context.fillText(this.#cleanFloat(stepPos).toString(), graphLeft + graphWidth + 15, y)
         context.beginPath()
-        context.moveTo(pix(graphLeft + graphWidth), pix(y))
-        context.lineTo(pix(graphLeft + graphWidth + 5), pix(y))
+        context.moveTo(graphLeft + graphWidth, y)
+        context.lineTo(graphLeft + graphWidth + 5, y)
         context.stroke()
 
         if (!leftIsPrimary) {
           context.globalAlpha = 0.1
           context.beginPath()
-          context.moveTo(pix(graphLeft), pix(y))
-          context.lineTo(pix(graphLeft + graphWidth), pix(y))
+          context.moveTo(graphLeft, y)
+          context.lineTo(graphLeft + graphWidth, y)
           context.stroke()
         }
 
@@ -649,16 +646,16 @@ export class LineGraphController {
       }
 
       context.globalAlpha = 1
-      context.fillText(this.#cleanFloat(stepPos).toString() + "s", pix(x), pix(graphTop + graphHeight + 15))
+      context.fillText(this.#cleanFloat(stepPos).toString() + "s", x, graphTop + graphHeight + 15)
       context.beginPath()
-      context.moveTo(pix(x), pix(graphTop + graphHeight))
-      context.lineTo(pix(x), pix(graphTop + graphHeight + 5))
+      context.moveTo(x, graphTop + graphHeight)
+      context.lineTo(x, graphTop + graphHeight + 5)
       context.stroke()
 
       context.globalAlpha = 0.1
       context.beginPath()
-      context.moveTo(pix(x), pix(graphTop))
-      context.lineTo(pix(x), pix(graphTop + graphHeight))
+      context.moveTo(x, graphTop)
+      context.lineTo(x, graphTop + graphHeight)
       context.stroke()
 
       stepPos += axis.step

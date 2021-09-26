@@ -1,16 +1,39 @@
-// Controls rendering of odometry graphs
+import { GameConstants } from "../../../games/games.mjs"
+import { OdometryRenderer } from "../odometryRenderer.mjs"
+
+// Controls rendering of odometry config
 export class OdometryController {
   #content = null
+  #timelineInput = null
+  #timelineMarkerContainer = null
+  #canvas = null
   #dragHighlight = null
+  #configTable = null
   #config = null
 
+  #tabIdentifier = Math.random().toString(36).slice(2)
   #lastUnitDistance = "meters"
-
+  #renderer = null
   #inchesPerMeter = 39.37007874015748
+  #trailLengthSecs = 5
 
   constructor(content) {
     this.#content = content
     this.#dragHighlight = content.getElementsByClassName("odometry-drag-highlight")[0]
+    this.#timelineInput = content.getElementsByClassName("odometry-timeline-slider")[0]
+    this.#timelineMarkerContainer = content.getElementsByClassName("odometry-timeline-marker-container")[0]
+    this.#canvas = content.getElementsByClassName("odometry-canvas")[0]
+    this.#configTable = content.getElementsByClassName("odometry-config")[0]
+    this.#renderer = new OdometryRenderer(this.#canvas)
+
+    this.#timelineInput.addEventListener("input", () => {
+      window.selection.selectedTime = Number(this.#timelineInput.value)
+    })
+    content.getElementsByClassName("odometry-popup-button")[0].addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("create-odometry-popup", {
+        detail: this.#tabIdentifier
+      }))
+    })
     var configBody = content.getElementsByClassName("odometry-config")[0].firstElementChild
     this.#config = {
       fields: {
@@ -19,7 +42,7 @@ export class OdometryController {
         y: { element: configBody.children[3].firstElementChild, id: null }
       },
       coordinates: {
-        game: configBody.children[1].children[1].lastElementChild,
+        game: configBody.children[1].children[1].children[1],
         unitDistance: configBody.children[2].children[1].children[1],
         unitRotation: configBody.children[2].children[1].children[2],
         origin: configBody.children[3].children[1].lastElementChild
@@ -46,10 +69,23 @@ export class OdometryController {
         this.#lastUnitDistance = newUnit
       }
     })
+    GameConstants.forEach(game => {
+      var option = document.createElement("option")
+      option.innerText = game.title
+      this.#config.coordinates.game.appendChild(option)
+    })
+    configBody.children[1].children[1].children[2].addEventListener("click", () => {
+      window.dispatchEvent(new CustomEvent("open-link", {
+        detail: GameConstants.find(x => x.title == this.#config.coordinates.game.value).source
+      }))
+    })
 
     // Manage dragging
     window.addEventListener("drag-update", event => this.#handleDrag(event))
     window.addEventListener("drag-stop", event => this.#handleDrag(event))
+
+    // Start periodic cycle
+    window.setInterval(() => this.customPeriodic(), 15)
   }
 
   // Handles dragging events (moving and stopping)
@@ -78,11 +114,126 @@ export class OdometryController {
   }
 
   // Called by tab controller when log changes
-  reset() { }
+  reset() {
+    // Adjust timeline
+    var minTime = log.getTimestamps()[0]
+    var maxTime = log.getTimestamps()[log.getTimestamps().length - 1]
+    this.#timelineInput.min = minTime
+    this.#timelineInput.max = maxTime
+    while (this.#timelineMarkerContainer.firstChild) {
+      this.#timelineMarkerContainer.removeChild(this.#timelineMarkerContainer.firstChild)
+    }
+    var data = log.getDataInRange(log.findField("/DriverStation/Enabled", "Boolean"), -Infinity, Infinity, 0)
+    for (let i = 0; i < data.values.length; i++) {
+      if (data.values[i]) {
+        var div = document.createElement("div")
+        this.#timelineMarkerContainer.appendChild(div)
+        var leftPercent = (data.timestamps[i] / (maxTime - minTime)) * 100
+        var nextTime = i == data.values.length - 1 ? maxTime : data.timestamps[i + 1]
+        var widthPercent = ((nextTime - data.timestamps[i]) / (maxTime - minTime)) * 100
+        div.style.left = leftPercent.toString() + "%"
+        div.style.width = widthPercent.toString() + "%"
+      }
+    }
+
+    // Reset fields
+    Object.keys(this.#config.fields).forEach(fieldKey => {
+      this.#config.fields[fieldKey].element.lastElementChild.innerText = "<Drag Here>"
+      this.#config.fields[fieldKey].id = null
+    })
+  }
 
   // Called by tab controller when side bar size changes
   sideBarResize() { }
 
   // Called every 15ms by the tab controller
   periodic() { }
+
+  // Called every 15ms (regardless of the visible tab)
+  customPeriodic() {
+    if (window.selection.isPlaying()) {
+      var time = window.selection.selectedTime
+    } else {
+      var time = window.selection.hoveredTime ? window.selection.hoveredTime : window.selection.selectedTime
+    }
+    if (time == null) time = 0
+
+    // Update timeline
+    this.#timelineInput.value = time
+
+    // Update canvas height
+    this.#canvas.style.setProperty("--bottom-margin", this.#configTable.getBoundingClientRect().height.toString() + "px")
+
+    // Get rotation data from log
+    if (this.#config.fields.rotation.id != null) {
+      var currentRotation = log.getDataInRange(this.#config.fields.rotation.id, time, time, 0).values[0]
+    } else {
+      var currentRotation = 0
+    }
+
+    // Get position data from log
+    var currentPosition = []
+    var positionData = {}
+    Array("x", "y").forEach(fieldName => {
+      if (this.#config.fields[fieldName].id == null) {
+        positionData[fieldName] = {
+          timestamps: [],
+          values: []
+        }
+        currentPosition.push(0)
+      } else {
+        var fieldData = log.getDataInRange(this.#config.fields[fieldName].id, time - this.#trailLengthSecs, time + this.#trailLengthSecs, 0)
+        positionData[fieldName] = fieldData
+        var nextIndex = fieldData.timestamps.findIndex(x => x > time)
+        if (nextIndex == -1) nextIndex = fieldData.timestamps.length // Current time is past the end of the data
+        if (nextIndex == 0) nextIndex = 1 // Current time is before the start of the data
+        var currentValue = fieldData.values[nextIndex - 1]
+        currentPosition.push(currentValue)
+      }
+    })
+    var allTimestamps = [...new Set([...positionData.x.timestamps, ...positionData.y.timestamps])]
+    if (allTimestamps[allTimestamps.length - 1] - time > this.#trailLengthSecs) allTimestamps.pop()
+    var trailData = []
+    allTimestamps.forEach(timestamp => {
+      var point = []
+      Array("x", "y").forEach(fieldName => {
+        if (positionData[fieldName].timestamps.length > 0) {
+          var nextIndex = positionData[fieldName].timestamps.findIndex(x => x > timestamp)
+          if (nextIndex == -1) nextIndex = positionData[fieldName].timestamps.length
+          if (nextIndex == 0) nextIndex = 1
+          point.push(positionData[fieldName].values[nextIndex - 1])
+        } else {
+          point.push(0)
+        }
+      })
+      trailData.push(point)
+    })
+
+    // Package command data
+    var commandData = {
+      pose: {
+        rotation: currentRotation,
+        position: currentPosition,
+        trail: trailData
+      },
+      coordinates: {
+        game: this.#config.coordinates.game.value,
+        unitDistance: this.#config.coordinates.unitDistance.value,
+        unitRotation: this.#config.coordinates.unitRotation.value,
+        origin: this.#config.coordinates.origin.value,
+      },
+      robot: {
+        size: Number(this.#config.robot.size.value),
+        alliance: this.#config.robot.alliance.value,
+        orientation: this.#config.robot.orientation.value
+      }
+    }
+    if (!this.#content.hidden) this.#renderer.render(commandData)
+    window.dispatchEvent(new CustomEvent("update-odometry-popup", {
+      detail: {
+        id: this.#tabIdentifier,
+        command: commandData
+      }
+    }))
+  }
 }

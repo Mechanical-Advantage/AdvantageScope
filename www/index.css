@@ -718,6 +718,65 @@ div.data-table-drag-highlight {
 
 /* Odometry controls */
 
+div.odometry-timeline-container {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 35px;
+  height: 30px;
+}
+
+input.odometry-timeline-slider {
+  position: absolute;
+  margin: 0px;
+  left: 0px;
+  width: 100%;
+  top: 0px;
+  height: 23px;
+
+  appearance: none;
+  background-color: #aaa;
+}
+
+input.odometry-timeline-slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 23px;
+  width: 8px;
+  background: black;
+  cursor: pointer;
+}
+
+div.odometry-timeline-marker-container {
+  position: absolute;
+  bottom: 0px;
+  height: 7px;
+  left: 0px;
+  right: 0px;
+  background: red;
+}
+
+div.odometry-timeline-marker-container div {
+  position: absolute;
+  height: 100%;
+  background-color: lightgreen;
+}
+
+button.odometry-popup-button {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: 0px;
+  right: 5px;
+}
+
+canvas.odometry-canvas {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+}
+
 div.odometry-drag-highlight {
   position: absolute;
   z-index: 9;
@@ -770,6 +829,10 @@ table.odometry-config span.field-name {
   font-size: 14px;
 }
 
+table.odometry-config a.credit-link {
+  font-size: 14px;
+}
+
 table.odometry-config input[type="number"] {
   width: 75px;
 }
@@ -787,5 +850,9 @@ table.odometry-config input[type="number"] {
   table.odometry-config td {
     border-right: 1px solid #999;
     border-bottom: 1px solid #333;
+  }
+
+  table.odometry-config a.credit-link {
+    color: #88f;
   }
 }

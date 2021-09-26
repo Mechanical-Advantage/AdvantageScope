@@ -33,6 +33,10 @@ window.addEventListener("error", event => {
   ipcRenderer.send("error", event.detail.title, event.detail.content)
 })
 
+window.addEventListener("open-link", event => {
+  ipcRenderer.send("open-link", event.detail)
+})
+
 window.addEventListener("add-tab", () => {
   ipcRenderer.send("add-tab")
 })
@@ -51,6 +55,14 @@ ipcRenderer.on("edit-axis-response", (_, data) => {
   window.dispatchEvent(new CustomEvent("edit-axis-response", {
     detail: data
   }))
+})
+
+window.addEventListener("create-odometry-popup", event => {
+  ipcRenderer.send("create-odometry-popup", event.detail)
+})
+
+window.addEventListener("update-odometry-popup", event => {
+  ipcRenderer.send("update-odometry-popup", event.detail.id, event.detail.command)
 })
 
 window.addEventListener("DOMContentLoaded", () => {

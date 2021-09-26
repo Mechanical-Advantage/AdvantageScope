@@ -70,6 +70,16 @@ export class Log {
     }
   }
 
+  // Returns the field ID based on key and type
+  findField(key, type) {
+    return this.#fields.findIndex(field => {
+      if (field.key) {
+        return field.key == key && field.type == type
+      }
+      return false
+    })
+  }
+
   // Organizes fields into a tree structure
   getFieldTree() {
     var root = {}

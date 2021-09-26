@@ -172,6 +172,10 @@ ipcMain.on("error", (_, title, content) => {
   })
 })
 
+ipcMain.on("open-link", (_, url) => {
+  shell.openExternal(url)
+})
+
 ipcMain.on("add-tab", () => {
   const menu = new Menu()
   menu.append(new MenuItem({
@@ -251,6 +255,41 @@ ipcMain.on("edit-axis-complete", (_, timestamp, range) => {
       timestamp: timestamp,
       command: "set-range",
       value: range
+    })
+  }
+})
+
+var odometryLookup = {}
+ipcMain.on("create-odometry-popup", (_, id) => {
+  const popup = new BrowserWindow({
+    width: 900,
+    height: 500,
+    minWidth: 200,
+    minHeight: 100,
+    resizable: true,
+    icon: path.join(__dirname, "assets/icon-256.png"),
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, "odometryPopupPreload.js")
+    }
+  })
+  popup.once("ready-to-show", popup.show)
+  popup.loadFile("www/odometryPopup.html")
+  if (!(id in odometryLookup)) {
+    odometryLookup[id] = []
+  }
+  odometryLookup[id].push(popup)
+  popup.once("closed", () => {
+    odometryLookup[id].splice(odometryLookup[id].indexOf(popup), 1)
+  })
+})
+
+ipcMain.on("update-odometry-popup", (_, id, command) => {
+  if (id in odometryLookup) {
+    odometryLookup[id].forEach(window => {
+      if (window.isVisible()) {
+        window.send("render", command)
+      }
     })
   }
 })
