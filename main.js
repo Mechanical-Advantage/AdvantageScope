@@ -1,5 +1,6 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain } = require("electron")
 const windowStateKeeper = require("electron-window-state")
+const { setUpdateNotification } = require("electron-update-notifier")
 const path = require("path")
 const os = require("os")
 
@@ -30,6 +31,11 @@ app.whenReady().then(() => {
   app.on("activate", function () {
     if (BrowserWindow.getAllWindows().length == 0) createWindow()
   })
+
+  // Notify about any updates
+  window.once("show", () => setUpdateNotification({
+    repository: "Mechanical-Advantage/LogViewer"
+  }))
 })
 
 app.on("window-all-closed", function () {
@@ -143,6 +149,15 @@ function setupMenu() {
     {
       role: "help",
       submenu: [
+        {
+          label: "Check for Updates...",
+          click() {
+            setUpdateNotification({
+              repository: "Mechanical-Advantage/LogViewer",
+              silent: false
+            })
+          }
+        },
         {
           label: "View Repository",
           click() {
