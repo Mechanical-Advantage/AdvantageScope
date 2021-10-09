@@ -15,6 +15,7 @@ export class Tabs {
 
   #leftButton = document.getElementsByClassName("move-left")[0]
   #rightButton = document.getElementsByClassName("move-right")[0]
+  #closeButton = document.getElementsByClassName("close")[0]
   #addButton = document.getElementsByClassName("add-tab")[0]
 
   #tabList = []
@@ -57,6 +58,13 @@ export class Tabs {
     // Control buttons
     this.#leftButton.addEventListener("click", () => this.shiftSelected(-1))
     this.#rightButton.addEventListener("click", () => this.shiftSelected(1))
+    this.#closeButton.addEventListener("click", () => {
+      if (this.#selectedTab == 0) return // Don't close metadata tab
+      this.#viewer.removeChild(this.#tabList[this.#selectedTab].content)
+      this.#tabList.splice(this.#selectedTab, 1)
+      if (this.#selectedTab > this.#tabList.length - 1) this.#selectedTab = this.#tabList.length - 1
+      this.#updateElements()
+    })
     this.#addButton.addEventListener("click", () => window.dispatchEvent(new Event("add-tab")))
     window.addEventListener("add-tab-response", (event) => {
       this.addTab(event.detail)
@@ -70,14 +78,49 @@ export class Tabs {
     }, 15)
   }
 
-  // Resets all tabs to their default states
-  reset() {
-    this.#tabList.forEach((tab) => {
-      tab.controller.reset()
-    })
+  // Standard function: retrieves current state
+  get state() {
+    return {
+      scroll: this.#verticalScroll ? this.#scrollOverlay.scrollTop : this.#scrollOverlay.scrollLeft,
+      selected: this.#selectedTab,
+      tabs: this.#tabList.map(tab => {
+        return {
+          type: tab.type,
+          state: tab.controller.state
+        }
+      })
+    }
   }
 
-  // Resets all tabs to their default states
+  // Standard function: restores state where possible
+  set state(newState) {
+    var oldTabs = this.#tabList.map(tab => tab.type)
+    var newTabs = newState.tabs.map(tab => tab.type)
+    if (JSON.stringify(oldTabs) == JSON.stringify(newTabs)) { // Reset all tabs, don't recreate them
+      for (let i = 0; i < this.#tabList.length; i++) {
+        this.#tabList[i].controller.state = newState.tabs[i].state
+      }
+    } else { // Something changed, recreate all tabs
+      this.#tabList.forEach(tab => {
+        this.#viewer.removeChild(tab.content)
+      })
+      this.#tabList = []
+      newState.tabs.forEach(tab => {
+        this.addTab(tab.type, true)
+        this.#tabList[this.#tabList.length - 1].controller.state = tab.state
+      })
+      this.#selectedTab = newState.selected
+      this.#updateElements()
+    }
+
+    if (this.#verticalScroll) {
+      this.#scrollOverlay.scrollTop = newState.scroll
+    } else {
+      this.#scrollOverlay.scrollLeft = newState.scroll
+    }
+  }
+
+  // Passthrough to each tab controller
   sideBarResize() {
     this.#tabList.forEach((tab) => {
       tab.controller.sideBarResize()
@@ -86,7 +129,7 @@ export class Tabs {
 
   // Adds a new tab to the list
   addTab(type, skipUpdate) {
-    var tabData = {}
+    var tabData = { type: type }
     switch (type) {
       case 0:
         tabData.title = "\ud83d\udd0d"
@@ -132,6 +175,11 @@ export class Tabs {
 
   // Updates all tab elements
   #updateElements() {
+    // Remove old tabs
+    while (this.#tabBar.firstChild) {
+      this.#tabBar.removeChild(this.#tabBar.firstChild)
+    }
+
     // Update display titles
     var uniqueTitles = []
     var multipleTitles = {}

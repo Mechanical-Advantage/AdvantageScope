@@ -1,3 +1,7 @@
+:root {
+  --tab-control-inline: 0;
+}
+
 /* Title bar layout */
 
 div.title-bar {
@@ -192,7 +196,7 @@ div.field-item-label {
 div.tab-bar {
   position: absolute;
   left: 10px;
-  right: calc(10px + var(--tab-control-inline) * 144px);
+  right: calc(10px + var(--tab-control-inline) * 172px);
   top: 0px;
   height: 50px;
 
@@ -221,7 +225,7 @@ div.tab-bar-shadow-left {
 
 div.tab-bar-shadow-right {
   opacity: 100%;
-  right: calc(10px + var(--tab-control-inline) * 144px);
+  right: calc(10px + var(--tab-control-inline) * 172px);
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
@@ -238,7 +242,7 @@ div.tab-bar-shadow-right {
 div.tab-bar-scroll {
   position: absolute;
   left: 10px;
-  right: calc(10px + var(--tab-control-inline) * 144px);
+  right: calc(10px + var(--tab-control-inline) * 172px);
   top: 0px;
   height: 50px;
 
@@ -310,10 +314,14 @@ button.tab-control {
 }
 
 button.play, button.pause {
-  right: 116px;
+  right: 144px;
 }
 
 button.move-left {
+  right: 106px;
+}
+
+button.close {
   right: 78px;
 }
 
@@ -765,7 +773,7 @@ button.odometry-popup-button {
   position: absolute;
   width: 25px;
   height: 25px;
-  top: 0px;
+  top: 1px;
   right: 5px;
 }
 

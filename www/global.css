@@ -10,11 +10,6 @@ body {
   }
 }
 
-:root {
-  --side-bar-width: 300px;
-  --tab-control-inline: 0;
-}
-
 /* Buttons */
 
 button {

@@ -10,12 +10,22 @@ export class MetadataController {
     this.#tableBody = content.getElementsByClassName("metadata-table")[0].firstElementChild
   }
 
-  // Called by tab controller when log changes
-  reset() {
+  // Standard function: retrieves current state
+  get state() {
+    return {}
+  }
+
+  // Standard function: restores state where possible
+  set state(newState) {
+    // Nothing to restore, just reset everything
+
     // Remove old rows
     while (this.#tableBody.childElementCount > 1) {
       this.#tableBody.removeChild(this.#tableBody.lastChild)
     }
+
+    // Exit if log not ready
+    if (log == null) return
 
     // Get data
     var tree = log.getFieldTree()

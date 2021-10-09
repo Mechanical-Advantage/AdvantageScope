@@ -16,11 +16,12 @@ export class LineGraphController {
   #zoomExponentBaseDarwin = 1.001
   #zoomExponentBaseOther = 1.1
 
-  #resetNext = false
+  #firstReset = true
   #lastCursorX = null
   #lastScrollTop = 0
   #lastClientWidth = 0
   #lastPlatform = null
+  #resetOnNextUpdate = false
   #panActive = false
   #panStartCursorX = 0
   #panStartScrollLeft = 0
@@ -142,7 +143,92 @@ export class LineGraphController {
     })
     this.#scrollOverlay.addEventListener("contextmenu", () => window.selection.selectedTime = null)
 
-    this.reset()
+    this.#updateScroll(true)
+  }
+
+  // Standard function: retrieves current state
+  get state() {
+    var processFields = x => {
+      if (x.id == null) {
+        return {
+          displayKey: x.missingKey,
+          color: x.color,
+          show: x.show
+        }
+      } else {
+        return {
+          displayKey: log.getFieldInfo(x.id).displayKey,
+          color: x.color,
+          show: x.show
+        }
+      }
+    }
+    return {
+      range: this.#xRange,
+      legends: {
+        left: {
+          fields: this.#legends.left.fields.map(processFields),
+          locked: this.#legends.left.locked,
+          range: this.#legends.left.range,
+          scroll: this.#legends.left.element.scrollTop
+        },
+        discrete: {
+          fields: this.#legends.discrete.fields.map(processFields),
+          scroll: this.#legends.discrete.element.scrollTop
+        },
+        right: {
+          fields: this.#legends.right.fields.map(processFields),
+          locked: this.#legends.right.locked,
+          range: this.#legends.right.range,
+          scroll: this.#legends.right.element.scrollTop
+        }
+      }
+    }
+  }
+
+  // Standard function: restores state where possible
+  set state(newState) {
+    Object.keys(this.#legends).forEach(legendKey => {
+      var legend = this.#legends[legendKey]
+
+      // Update locked status & range
+      legend.locked = newState.legends[legendKey].locked
+      legend.range = newState.legends[legendKey].range
+
+      // Remove all fields
+      legend.fields = []
+      while (legend.element.children.length > 1) {
+        legend.element.removeChild(legend.element.lastChild)
+      }
+
+      // Add new fields
+      newState.legends[legendKey].fields.forEach(field => {
+        if (log != null) {
+          var id = log.findFieldDisplay(field.displayKey)
+          if (id != -1) {
+            this.addField(legendKey, id, field.color, field.show)
+            return
+          }
+        }
+
+        // Field not available, insert filler
+        this.addField(legendKey, null, field.color, field.show, field.displayKey)
+      })
+
+      // Update scroll
+      legend.element.scrollTop = newState.legends[legendKey].scroll
+    })
+
+    // Update zoom and pan
+    if (log == null) return
+    if (this.#firstReset) {
+      this.#updateScroll(true)
+      this.#firstReset = false
+    } else {
+      this.#updateScroll() // Updates limits
+      this.#scrollOverlay.scrollTop = this.#calcReverseZoom(newState.range[1] - newState.range[0]) // Update zoom
+      this.#scrollOverlay.scrollLeft = Math.round(((newState.range[0] - log.getTimestamps()[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth) // Update pan}
+    }
   }
 
   // Handles dragging events (moving and stopping)
@@ -173,33 +259,52 @@ export class LineGraphController {
   }
 
   // Adds a new field to the specified legend
-  addField(legend, field) {
+  addField(legend, field, forcedColor, forcedShow, missingKey) {
     // Get color
-    var usedColors = []
-    Object.keys(this.#legends).forEach((key) => {
-      this.#legends[key].fields.forEach((x) => {
-        usedColors.push(x.color)
-      })
-    })
-    var availableColors = this.#colors.filter((color) => !usedColors.includes(color))
-    if (availableColors.length == 0) {
-      var color = this.#colors[Math.floor(Math.random() * this.#colors.length)]
+    if (forcedColor) {
+      var color = forcedColor
     } else {
-      var color = availableColors[0]
+      var usedColors = []
+      Object.keys(this.#legends).forEach((key) => {
+        this.#legends[key].fields.forEach((x) => {
+          usedColors.push(x.color)
+        })
+      })
+      var availableColors = this.#colors.filter((color) => !usedColors.includes(color))
+      if (availableColors.length == 0) {
+        var color = this.#colors[Math.floor(Math.random() * this.#colors.length)]
+      } else {
+        var color = availableColors[0]
+      }
+    }
+
+    // Determine if showing
+    if (forcedShow == null) {
+      var show = true
+    } else {
+      var show = forcedShow
     }
 
     // Create element
     var item = this.#legendItemTemplate.cloneNode(true)
-    var text = log.getFieldInfo(field).displayKey
+    if (field != null) {
+      var text = log.getFieldInfo(field).displayKey
+    } else {
+      var text = missingKey
+    }
     item.title = text
     item.getElementsByClassName("legend-key")[0].innerText = text
+    if (field == null) item.getElementsByClassName("legend-key")[0].style.textDecoration = "line-through"
     item.getElementsByClassName("legend-splotch")[0].style.fill = color
-    item.getElementsByClassName("legend-splotch")[0].addEventListener("click", () => {
-      var index = Array.from(item.parentElement.children).indexOf(item) - 1
-      var show = !this.#legends[legend].fields[index].show
-      this.#legends[legend].fields[index].show = show
-      item.firstElementChild.style.fill = show ? color : "transparent"
-    })
+    if (field != null) {
+      item.getElementsByClassName("legend-splotch")[0].addEventListener("click", () => {
+        var index = Array.from(item.parentElement.children).indexOf(item) - 1
+        var show = !this.#legends[legend].fields[index].show
+        this.#legends[legend].fields[index].show = show
+        item.firstElementChild.style.fill = show ? color : "transparent"
+      })
+    }
+    item.getElementsByClassName("legend-splotch")[0].style.fill = show && (field != null) ? color : "transparent"
     item.getElementsByClassName("legend-edit")[0].title = ""
     item.getElementsByClassName("legend-edit")[0].addEventListener("click", () => {
       var index = Array.from(item.parentElement.children).indexOf(item) - 1
@@ -210,28 +315,11 @@ export class LineGraphController {
     // Add field
     this.#legends[legend].fields.push({
       id: field,
+      missingKey: missingKey,
       color: color,
-      show: true
+      show: show
     })
     this.#legends[legend].element.appendChild(item)
-  }
-
-  // Called by tab controller when log changes
-  reset() {
-    if (this.#content.hidden) {
-      this.#resetNext = true
-      return
-    }
-
-    Object.values(this.#legends).forEach((legend) => {
-      legend.fields = []
-      while (legend.element.children.length > 1) {
-        legend.element.removeChild(legend.element.lastChild)
-      }
-    })
-
-    // Reset position to 0 seconds and zoom to 10 seconds
-    this.#updateScroll(true)
   }
 
   // Called by tab controller when side bar size changes
@@ -251,6 +339,12 @@ export class LineGraphController {
 
   // Updates scroll position based on overlay
   #updateScroll(reset) {
+    // Exit if not visible (cannot get element sizes)
+    if (this.#content.hidden) {
+      if (reset) this.#resetOnNextUpdate = true
+      return
+    }
+
     // Find current time range
     if (log == null) {
       var timeRange = [0, 10]
@@ -381,14 +475,15 @@ export class LineGraphController {
 
   // Called every 15ms by the tab controller
   periodic() {
+    // Reset scroll if queued
+    if (this.#resetOnNextUpdate) {
+      this.#resetOnNextUpdate = false
+      this.#updateScroll(true)
+    }
+
     // Utility function to scale value between two ranges
     function scaleValue(value, oldMin, oldMax, newMin, newMax) {
       return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
-    }
-
-    if (this.#resetNext) {
-      this.reset()
-      this.#resetNext = false
     }
 
     var context = this.#canvas.getContext("2d")
@@ -407,7 +502,7 @@ export class LineGraphController {
     var xRange = this.#xRange
 
     if (log) {
-      var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / (width * window.devicePixelRatio)
+      var secsPerPixel = (xRange[1] - xRange[0]) / (width * window.devicePixelRatio)
       var availableResolutions = log.getResolutions()
       var resolutionIndex = availableResolutions.findIndex(resolution => resolution > secsPerPixel)
       if (resolutionIndex == -1) resolutionIndex = availableResolutions.length // No resolution is low enough
@@ -422,6 +517,7 @@ export class LineGraphController {
     function getMinMax(fields) {
       var allValues = []
       fields.forEach((field) => {
+        if (field.id == null) return // Missing field
         if (field.id in dataLookup) {
           allValues.push.apply(allValues, dataLookup[field.id].values)
         } else {
@@ -477,6 +573,7 @@ export class LineGraphController {
     context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
     var visibleFieldsDiscrete = this.#legends.discrete.fields.filter((field) => field.show)
     visibleFieldsDiscrete.forEach((field, renderIndex) => {
+      if (field.id == null) return // Missing field
       if (field.id in dataLookup) {
         var data = dataLookup[field.id]
       } else {
@@ -527,7 +624,8 @@ export class LineGraphController {
 
     // Render continuous data
     function renderLegend(fields, range) {
-      fields.forEach((field) => {
+      fields.forEach(field => {
+        if (field.id == null) return // Missing field
         var data = dataLookup[field.id]
         context.lineWidth = 1
         context.strokeStyle = field.color
@@ -578,7 +676,7 @@ export class LineGraphController {
     if (this.#lastCursorX == null) {
       window.selection.hoveredTime = null
     } else {
-      window.selection.hoveredTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (this.#xRange[1] - this.#xRange[0])) + this.#xRange[0]
+      window.selection.hoveredTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (xRange[1] - xRange[0])) + xRange[0]
     }
     markTime(window.selection.selectedTime, 1)
     markTime(window.selection.hoveredTime, 0.35)

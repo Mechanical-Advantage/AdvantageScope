@@ -70,6 +70,13 @@ export class Log {
     }
   }
 
+  // Returns the field ID based on display key
+  findFieldDisplay(displayKey) {
+    return this.#fields.findIndex(field => {
+      return field.displayKey == displayKey
+    })
+  }
+
   // Returns the field ID based on key and type
   findField(key, type) {
     return this.#fields.findIndex(field => {

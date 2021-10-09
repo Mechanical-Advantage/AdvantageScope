@@ -1,8 +1,10 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain } = require("electron")
-const windowStateKeeper = require("electron-window-state")
+const WindowStateKeeper = require("./windowState.js")
 const { setUpdateNotification } = require("electron-update-notifier")
 const path = require("path")
 const os = require("os")
+
+const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
 
 var firstOpenPath = null
 app.whenReady().then(() => {
@@ -66,10 +68,18 @@ function createWindow() {
   }
 
   // Manage window state
-  var windowState = windowStateKeeper({
+  var window = null
+  var windowState = WindowStateKeeper({
+    file: stateFileName,
     defaultWidth: 1100,
     defaultHeight: 650,
-    fullScreen: false
+    fullScreen: false,
+    saveDataHandler: saveStateHandler,
+    restoreDataHandler: state => {
+      window.once("ready-to-show", () => {
+        window.send("restore-state", state)
+      })
+    }
   })
   if (BrowserWindow.getFocusedWindow() == null) {
     prefs.x = windowState.x
@@ -91,7 +101,7 @@ function createWindow() {
   }
 
   // Create window
-  const window = new BrowserWindow(prefs)
+  window = new BrowserWindow(prefs)
   windowState.manage(window)
 
   // Finish setup
@@ -106,6 +116,17 @@ function createWindow() {
   return window
 }
 
+// Manage state
+var states = {}
+ipcMain.on("save-state", (event, state) => {
+  states[event.sender.getOwnerBrowserWindow()] = state
+})
+
+function saveStateHandler(window) {
+  return states[window]
+}
+
+// Create app menu
 function setupMenu() {
   const isMac = process.platform === "darwin"
 

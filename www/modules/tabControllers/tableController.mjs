@@ -8,6 +8,7 @@ export class TableController {
   #dragHighlight = null
   #input = null
 
+  #stateCache = null
   #rowHeight = 25
   #scrollMargin = 3000
   #fields = []
@@ -23,7 +24,7 @@ export class TableController {
     this.#input = content.getElementsByClassName("data-table-jump-input")[0]
     window.addEventListener("drag-update", (event) => this.#handleDrag(event))
     window.addEventListener("drag-stop", (event) => this.#handleDrag(event))
-    if (log) this.reset()
+    if (log) this.state = this.state
 
     var jump = () => {
       // Determine target time
@@ -37,26 +38,7 @@ export class TableController {
         var targetTime = Number(this.#input.value)
       }
 
-      // Find index
-      var target = log.getTimestamps().findIndex(value => Math.floor(value * 1000) / 1000 > targetTime)
-      if (target == -1) target = log.getTimestamps().length
-      if (target < 1) target = 1
-      target -= 1
-
-      // Jump to index
-      if (log.getTimestamps().length < 1000) {
-        this.#currentRange = [0, log.getTimestamps().length - 1]
-      } else {
-        this.#currentRange = [target - 500, target + 499]
-        var offset = 0
-        if (this.#currentRange[0] < 0) offset = this.#currentRange[0] * -1
-        if (this.#currentRange[1] > log.getTimestamps().length - 1) offset = log.getTimestamps().length - 1 - this.#currentRange[1]
-        this.#currentRange[0] += offset
-        this.#currentRange[1] += offset
-      }
-      this.#clearTable()
-      this.#fillRange(this.#currentRange, false)
-      this.#tableContainer.scrollTop = (target - this.#currentRange[0]) * this.#rowHeight
+      this.#jumpToTime(targetTime)
     }
     this.#input.addEventListener("keydown", event => { if (event.code == "Enter") jump() })
     content.getElementsByClassName("data-table-jump-button")[0].addEventListener("click", jump)
@@ -97,25 +79,92 @@ export class TableController {
     } else {
       this.#dragHighlight.hidden = true
       if (selected != null) {
-        this.#fields.splice(selected, 0, event.detail.data.id)
+        this.#fields.splice(selected, 0, { id: event.detail.data.id })
         this.#updateFields()
       }
     }
   }
 
-  // Called by tab controller when log changes
-  reset() {
+  // Standard function: retrieves current state
+  get state() {
+    if (this.#stateCache != null) {
+      return this.#stateCache
+    }
+
+    var fields = this.#fields.map(x => {
+      if (x.id == null) {
+        return x.missingKey
+      } else {
+        return log.getFieldInfo(x.id).displayKey
+      }
+    })
+    var time = log == null ? null : log.getTimestamps()[Math.floor(this.#tableContainer.scrollTop / this.#rowHeight) + this.#currentRange[0]]
+    var scrollVert = this.#tableContainer.scrollTop % this.#rowHeight
+    var scrollHorz = this.#tableContainer.scrollLeft
+    return {
+      fields: fields,
+      time: time,
+      scrollVert: scrollVert,
+      scrollHorz: scrollHorz
+    }
+  }
+
+  // Standard function: restores state where possible
+  set state(newState) {
+    if (log == null) {
+      this.#stateCache = newState
+      return
+    } else {
+      this.#stateCache = null
+    }
     this.#noDataAlert.hidden = true
     this.#tableContainer.hidden = false
 
     this.#currentRange = [0, log.getTimestamps().length < 1000 ? log.getTimestamps().length - 1 : 999]
-    this.#fields = []
+    this.#fields = newState.fields.map(x => {
+      var id = log.findFieldDisplay(x)
+      if (id != -1) {
+        return { id: id }
+      } else {
+        return { id: null, missingKey: x }
+      }
+    })
     this.#updateFields()
     this.#tableContainer.scrollTop = 0
+    this.#tableContainer.scrollLeft = newState.scrollHorz
+
+    if (newState.time) {
+      this.#jumpToTime(newState.time)
+      this.#tableContainer.scrollTop += newState.scrollVert
+    }
   }
 
   // Called by tab controller when side bar size changes
   sideBarResize() { }
+
+  // Jumps to the specified time
+  #jumpToTime(targetTime) {
+    // Find index
+    var target = log.getTimestamps().findIndex(value => Math.floor(value * 1000) / 1000 > targetTime)
+    if (target == -1) target = log.getTimestamps().length
+    if (target < 1) target = 1
+    target -= 1
+
+    // Jump to index
+    if (log.getTimestamps().length < 1000) {
+      this.#currentRange = [0, log.getTimestamps().length - 1]
+    } else {
+      this.#currentRange = [target - 500, target + 499]
+      var offset = 0
+      if (this.#currentRange[0] < 0) offset = this.#currentRange[0] * -1
+      if (this.#currentRange[1] > log.getTimestamps().length - 1) offset = log.getTimestamps().length - 1 - this.#currentRange[1]
+      this.#currentRange[0] += offset
+      this.#currentRange[1] += offset
+    }
+    this.#clearTable()
+    this.#fillRange(this.#currentRange, false)
+    this.#tableContainer.scrollTop = (target - this.#currentRange[0]) * this.#rowHeight
+  }
 
   // Updates the table based on the current field list
   #updateFields() {
@@ -132,7 +181,12 @@ export class TableController {
         cell.appendChild(element.cloneNode(true))
       })
       header.appendChild(cell)
-      var text = log.getFieldInfo(field).displayKey
+      if (field.id == null) {
+        var text = field.missingKey
+        cell.firstElementChild.firstElementChild.style.textDecoration = "line-through"
+      } else {
+        var text = log.getFieldInfo(field.id).displayKey
+      }
       cell.title = text
       cell.firstElementChild.firstElementChild.innerText = text
       cell.lastElementChild.title = ""
@@ -185,7 +239,8 @@ export class TableController {
     var dataLookup = {}
     var typeLookup = {}
     this.#fields.forEach(field => {
-      var data = log.getDataInRange(field, log.getTimestamps()[range[0]], log.getTimestamps()[range[1]], 0)
+      if (field.id == null) return
+      var data = log.getDataInRange(field.id, log.getTimestamps()[range[0]], log.getTimestamps()[range[1]], 0)
       var fullData = []
       for (let i = range[0]; i < range[1] + 1; i++) {
         var nextIndex = data.timestampIndexes.findIndex(value => value > i)
@@ -196,8 +251,8 @@ export class TableController {
           fullData.push(data.values[nextIndex - 1])
         }
       }
-      dataLookup[field] = fullData
-      typeLookup[field] = log.getFieldInfo(field).type
+      dataLookup[field.id] = fullData
+      typeLookup[field.id] = log.getFieldInfo(field.id).type
     })
 
     // Add rows
@@ -234,16 +289,20 @@ export class TableController {
       this.#fields.forEach(field => {
         var dataCell = document.createElement("td")
         row.appendChild(dataCell)
-        var value = dataLookup[field][i - range[0]]
-        if (typeLookup[field] == "Byte") {
-          var text = "0x" + (value & 0xff).toString(16).padStart(2, "0")
-        } else if (typeLookup[field] == "ByteArray") {
-          var hexArray = value.map(byte => {
-            "0x" + (byte & 0xff).toString(16).padStart(2, "0")
-          })
-          var text = "[" + hexArray.toString() + "]"
+        if (field.id == null) {
+          var text = "null"
         } else {
-          var text = JSON.stringify(value)
+          var value = dataLookup[field.id][i - range[0]]
+          if (typeLookup[field.id] == "Byte") {
+            var text = "0x" + (value & 0xff).toString(16).padStart(2, "0")
+          } else if (typeLookup[field.id] == "ByteArray") {
+            var hexArray = value.map(byte => {
+              "0x" + (byte & 0xff).toString(16).padStart(2, "0")
+            })
+            var text = "[" + hexArray.toString() + "]"
+          } else {
+            var text = JSON.stringify(value)
+          }
         }
         dataCell.innerText = text
       })

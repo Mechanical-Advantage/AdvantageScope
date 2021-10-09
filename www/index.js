@@ -9,9 +9,8 @@ window.isFullscreen = false
 window.isFocused = true
 
 window.log = null
-window.sideBar = new SideBar()
 window.tabs = new Tabs()
-
+window.sideBar = new SideBar()
 window.selection = new Selection()
 
 function setTitle(newTitle) {
@@ -42,14 +41,40 @@ function updateFancyWindow() {
   }
 }
 
+// STATE MANAGEMENT
+
+window.getWindowState = () => {
+  return {
+    tabs: tabs.state,
+    sideBar: sideBar.state,
+    selection: selection.state
+  }
+}
+
+window.setWindowState = newState => {
+  tabs.state = newState.tabs
+  sideBar.state = newState.sideBar
+  selection.state = newState.selection
+}
+
+window.addEventListener("restore-state", event => {
+  setWindowState(event.detail)
+})
+
+window.setInterval(() => {
+  window.dispatchEvent(new CustomEvent("save-state", {
+    detail: getWindowState()
+  }))
+}, 1000)
+
 // COMMUNICATION WITH PRELOAD
 
-window.addEventListener("set-fullscreen", function (event) {
+window.addEventListener("set-fullscreen", event => {
   window.isFullscreen = event.detail
   updateFancyWindow()
 })
 
-window.addEventListener("set-focused", function (event) {
+window.addEventListener("set-focused", event => {
   window.isFocused = event.detail
   Array.from(document.getElementsByTagName("button")).forEach(button => {
     if (window.isFocused) {
@@ -60,13 +85,13 @@ window.addEventListener("set-focused", function (event) {
   })
 })
 
-window.addEventListener("set-platform", function (event) {
+window.addEventListener("set-platform", event => {
   window.platform = event.detail.platform
   window.platformRelease = event.detail.release
   updateFancyWindow()
 })
 
-window.addEventListener("open-file", function (event) {
+window.addEventListener("open-file", event => {
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
   setTitle(logName + " \u2014 6328 Log Viewer")
@@ -76,7 +101,7 @@ window.addEventListener("open-file", function (event) {
 
   var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   decodeWorker.postMessage(event.detail.data)
-  decodeWorker.onmessage = function (event) {
+  decodeWorker.onmessage = event => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
         window.dispatchEvent(new CustomEvent("error", {
@@ -85,17 +110,14 @@ window.addEventListener("open-file", function (event) {
         break
 
       case "newData": // New data to show, reset everything
+        var oldState = getWindowState()
         window.log = new Log()
         window.log.rawData = event.data.data
 
         var length = new Date().getTime() - startTime
         console.log("Initial log ready in " + length.toString() + "ms")
 
-        sideBar.update()
-        tabs.reset()
-        selection.pause()
-        selection.selectedTime = null
-        selection.hoveredTime = null
+        setWindowState(oldState) // Set to the same state (resets everything)
         break
 
       case "updateData": // New resolutions added, don't reset

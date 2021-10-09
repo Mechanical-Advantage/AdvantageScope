@@ -14,6 +14,16 @@ ipcRenderer.on("set-focused", (_, isFocused) => {
   }))
 })
 
+ipcRenderer.on("restore-state", (_, state) => {
+  window.dispatchEvent(new CustomEvent("restore-state", {
+    detail: state
+  }))
+})
+
+window.addEventListener("save-state", event => {
+  ipcRenderer.send("save-state", event.detail)
+})
+
 ipcRenderer.on("open-file", (_, path) => {
   fs.open(path, "r", function (err, file) {
     if (err) throw err

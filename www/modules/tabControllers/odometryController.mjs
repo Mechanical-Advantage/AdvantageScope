@@ -37,9 +37,9 @@ export class OdometryController {
     var configBody = content.getElementsByClassName("odometry-config")[0].firstElementChild
     this.#config = {
       fields: {
-        rotation: { element: configBody.children[1].firstElementChild, id: null },
-        x: { element: configBody.children[2].firstElementChild, id: null },
-        y: { element: configBody.children[3].firstElementChild, id: null }
+        rotation: { element: configBody.children[1].firstElementChild, id: null, missingKey: null },
+        x: { element: configBody.children[2].firstElementChild, id: null, missingKey: null },
+        y: { element: configBody.children[3].firstElementChild, id: null, missingKey: null }
       },
       coordinates: {
         game: configBody.children[1].children[1].children[1],
@@ -86,36 +86,40 @@ export class OdometryController {
 
     // Start periodic cycle and reset (in case log is already loaded)
     window.setInterval(() => this.customPeriodic(), 15)
-    this.reset()
+    this.state = this.state
   }
 
-  // Handles dragging events (moving and stopping)
-  #handleDrag(event) {
-    if (this.#content.hidden) return
-
-    this.#dragHighlight.hidden = true
-    Object.values(this.#config.fields).forEach(field => {
-      var rect = field.element.getBoundingClientRect()
-      var active = event.detail.x > rect.left && event.detail.x < rect.right && event.detail.y > rect.top && event.detail.y < rect.bottom
-
-      if (active) {
-        if (event.type == "drag-update") {
-          var contentRect = this.#content.getBoundingClientRect()
-          this.#dragHighlight.style.left = (rect.left - contentRect.left).toString() + "px"
-          this.#dragHighlight.style.top = (rect.top - contentRect.top).toString() + "px"
-          this.#dragHighlight.style.width = rect.width.toString() + "px"
-          this.#dragHighlight.style.height = rect.height.toString() + "px"
-          this.#dragHighlight.hidden = false
-        } else {
-          field.id = event.detail.data.id
-          field.element.lastElementChild.innerText = log.getFieldInfo(field.id).displayKey
-        }
+  // Standard function: retrieves current state
+  get state() {
+    function processField(field) {
+      if (field.id == null) {
+        return field.missingKey
+      } else {
+        return log.getFieldInfo(field.id).displayKey
       }
-    })
+    }
+    return {
+      fields: {
+        rotation: processField(this.#config.fields.rotation),
+        x: processField(this.#config.fields.x),
+        y: processField(this.#config.fields.y)
+      },
+      coordinates: {
+        game: this.#config.coordinates.game.value,
+        unitDistance: this.#config.coordinates.unitDistance.value,
+        unitRotation: this.#config.coordinates.unitRotation.value,
+        origin: this.#config.coordinates.origin.value
+      },
+      robot: {
+        size: Number(this.#config.robot.size.value),
+        alliance: this.#config.robot.alliance.value,
+        orientation: this.#config.robot.orientation.value
+      }
+    }
   }
 
-  // Called by tab controller when log changes
-  reset() {
+  // Standard function: restores state where possible
+  set state(newState) {
     // Adjust timeline
     while (this.#timelineMarkerContainer.firstChild) {
       this.#timelineMarkerContainer.removeChild(this.#timelineMarkerContainer.firstChild)
@@ -130,7 +134,7 @@ export class OdometryController {
         if (data.values[i]) {
           var div = document.createElement("div")
           this.#timelineMarkerContainer.appendChild(div)
-          var leftPercent = (data.timestamps[i] / (maxTime - minTime)) * 100
+          var leftPercent = ((data.timestamps[i] - minTime) / (maxTime - minTime)) * 100
           var nextTime = i == data.values.length - 1 ? maxTime : data.timestamps[i + 1]
           var widthPercent = ((nextTime - data.timestamps[i]) / (maxTime - minTime)) * 100
           div.style.left = leftPercent.toString() + "%"
@@ -142,10 +146,65 @@ export class OdometryController {
       this.#timelineInput.max = 10
     }
 
+    // Set config data
+    this.#config.coordinates.game.value = newState.coordinates.game
+    this.#config.coordinates.unitDistance.value = newState.coordinates.unitDistance
+    this.#config.coordinates.unitRotation.value = newState.coordinates.unitRotation
+    this.#config.coordinates.origin.value = newState.coordinates.origin
+    this.#config.robot.size.value = newState.robot.size
+    this.#config.robot.alliance.value = newState.robot.alliance
+    this.#config.robot.orientation.value = newState.robot.orientation
+
     // Reset fields
     Object.keys(this.#config.fields).forEach(fieldKey => {
-      this.#config.fields[fieldKey].element.lastElementChild.innerText = "<Drag Here>"
-      this.#config.fields[fieldKey].id = null
+      var text = ""
+      var missing = false
+      if (newState.fields[fieldKey] == null) { // Field is empty
+        text = "<Drag Here>"
+        this.#config.fields[fieldKey].id = null
+        this.#config.fields[fieldKey].missingKey = null
+      } else {
+        var id = log == null ? -1 : log.findFieldDisplay(newState.fields[fieldKey])
+        if (id == -1) { // Missing field
+          text = newState.fields[fieldKey]
+          missing = true
+          this.#config.fields[fieldKey].id = null
+          this.#config.fields[fieldKey].missingKey = newState.fields[fieldKey]
+        } else { // Valid field
+          text = log.getFieldInfo(id).displayKey
+          this.#config.fields[fieldKey].id = id
+          this.#config.fields[fieldKey].missingKey = null
+        }
+      }
+      this.#config.fields[fieldKey].element.lastElementChild.innerText = text
+      this.#config.fields[fieldKey].element.lastElementChild.style.textDecoration = missing ? "line-through" : ""
+    })
+  }
+
+  // Handles dragging events (moving and stopping)
+  #handleDrag(event) {
+    if (this.#content.hidden) return
+
+    this.#dragHighlight.hidden = true
+    Object.values(this.#config.fields).forEach(field => {
+      var rect = field.element.getBoundingClientRect()
+      var active = event.detail.x > rect.left && event.detail.x < rect.right && event.detail.y > rect.top && event.detail.y < rect.bottom
+      var type = log.getFieldInfo(event.detail.data.id).type
+      var validType = type == "Double" || type == "Integer" || type == "Byte"
+
+      if (active && validType) {
+        if (event.type == "drag-update") {
+          var contentRect = this.#content.getBoundingClientRect()
+          this.#dragHighlight.style.left = (rect.left - contentRect.left).toString() + "px"
+          this.#dragHighlight.style.top = (rect.top - contentRect.top).toString() + "px"
+          this.#dragHighlight.style.width = rect.width.toString() + "px"
+          this.#dragHighlight.style.height = rect.height.toString() + "px"
+          this.#dragHighlight.hidden = false
+        } else {
+          field.id = event.detail.data.id
+          field.element.lastElementChild.innerText = log.getFieldInfo(field.id).displayKey
+        }
+      }
     })
   }
 

@@ -40,6 +40,21 @@ export class Selection {
     })
   }
 
+  // Standard function: retrieves current state
+  get state() {
+    return {
+      selectedTime: this.selectedTime,
+      playbackSpeed: this.#playbackSpeed
+    }
+  }
+
+  // Standard function: restores state where possible
+  set state(newState) {
+    this.pause()
+    this.#selectedTime = newState.selectedTime
+    this.#playbackSpeed = newState.playbackSpeed
+  }
+
   // Updates hovered time
   set hoveredTime(time) {
     this.#hoveredTime = time

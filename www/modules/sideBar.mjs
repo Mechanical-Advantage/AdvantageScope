@@ -9,6 +9,9 @@ export class SideBar {
   #fieldList = document.getElementById("fieldList")
 
   #sideBarHandleActive = false
+  #sideBarWidth = 300
+  #fieldControlLookup = {}
+  #expandedCache = null
 
   constructor() {
     // Set up handle for resizing
@@ -25,11 +28,11 @@ export class SideBar {
         var width = event.clientX
         if (width < 130) width = 130
         if (width > 500) width = 500
-        document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px")
-        tabs.updateScrollBounds()
-        tabs.sideBarResize()
+        this.#sideBarWidth = width
+        this.#updateWidth()
       }
     })
+    this.#updateWidth()
 
     // Set up shadow when scrolling
     this.#sideBar.addEventListener("scroll", (event) => {
@@ -37,13 +40,39 @@ export class SideBar {
     })
   }
 
-  // Displays a loading message in the side bar title
-  startLoading(name) {
-    this.#sideBarTitle.innerText = "Reading " + name + " ..."
+  // Standard function: retrieves current state
+  get state() {
+    if (this.#expandedCache == null) {
+      var expanded = []
+      for (let [title, elements] of Object.entries(this.#fieldControlLookup)) {
+        if (!elements.childSpan.hidden) {
+          expanded.push(title)
+        }
+      }
+    } else {
+      var expanded = this.#expandedCache
+    }
+    return {
+      width: this.#sideBarWidth,
+      scroll: this.#sideBar.scrollTop,
+      expanded: expanded
+    }
   }
 
-  // Updates the list of fields
-  update() {
+  // Standard function: restores state where possible
+  set state(newState) {
+    // Update side bar width
+    this.#sideBarWidth = newState.width
+    this.#updateWidth()
+
+    // Exit if log not ready
+    if (log == null) {
+      this.#expandedCache = newState.expanded
+      return
+    } else {
+      this.#expandedCache = null
+    }
+
     // Remove old list
     while (this.#fieldList.firstChild) {
       this.#fieldList.removeChild(this.#fieldList.firstChild)
@@ -85,7 +114,7 @@ export class SideBar {
     }
 
     // Add fields
-    function addField(parentElement, title, field, indent) {
+    var addField = (parentElement, title, field, indent, fullTitle) => {
       var hasChildren = Object.keys(field.children).length > 0
 
       var fieldElement = document.createElement("div")
@@ -122,28 +151,54 @@ export class SideBar {
         childSpan.style.setProperty("--indent", (indent + 20).toString() + "px")
         childSpan.hidden = true
 
-        function toggle() {
-          childSpan.hidden = !childSpan.hidden
-          closedIcon.style.display = childSpan.hidden ? "initial" : "none"
-          openIcon.style.display = childSpan.hidden ? "none" : "initial"
+        closedIcon.addEventListener("click", () => this.#setExpanded(fieldElement, childSpan, true))
+        openIcon.addEventListener("click", () => this.#setExpanded(fieldElement, childSpan, false))
+        if (newState.expanded.includes(fullTitle)) this.#setExpanded(fieldElement, childSpan, true)
+        this.#fieldControlLookup[fullTitle] = {
+          fieldElement: fieldElement,
+          childSpan: childSpan
         }
-        closedIcon.addEventListener("click", toggle)
-        openIcon.addEventListener("click", toggle)
 
         var keys = Object.keys(field.children).sort(smartSort)
         for (let i in keys) {
-          addField(childSpan, keys[i], field.children[keys[i]], indent + 20)
+          addField(childSpan, keys[i], field.children[keys[i]], indent + 20, fullTitle + "/" + keys[i])
         }
       }
     }
 
+    // Start adding fields recursively
     var tree = log.getFieldTree()
     var keys = Object.keys(tree).sort(smartSort)
     for (let i in keys) {
       if (keys[i] == "RealMetadata" || keys[i] == "ReplayMetadata") {
         continue // Hide metadata b/c viewed separately
       }
-      addField(this.#fieldList, keys[i], tree[keys[i]], 0)
+      addField(this.#fieldList, keys[i], tree[keys[i]], 0, keys[i])
     }
+
+    // Restore scroll position
+    this.#sideBar.scrollTop = newState.scroll
+  }
+
+  // Updates the current side bar width
+  #updateWidth() {
+    document.documentElement.style.setProperty("--side-bar-width", this.#sideBarWidth.toString() + "px")
+    tabs.updateScrollBounds()
+    tabs.sideBarResize()
+  }
+
+  // Displays a loading message in the side bar title
+  startLoading(name) {
+    this.#sideBarTitle.innerText = "Reading " + name + " ..."
+  }
+
+  // Expand or hide field children
+  #setExpanded(fieldElement, childSpan, expanded) {
+    var closedIcon = fieldElement.children[0]
+    var openIcon = fieldElement.children[1]
+
+    childSpan.hidden = !expanded
+    closedIcon.style.display = expanded ? "none" : "initial"
+    openIcon.style.display = expanded ? "initial" : "none"
   }
 }
