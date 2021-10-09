@@ -1,5 +1,6 @@
 :root {
   --tab-control-inline: 0;
+  --side-bar-width: 300px;
 }
 
 /* Title bar layout */

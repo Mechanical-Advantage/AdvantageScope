@@ -231,14 +231,14 @@ export class Tabs {
     var scrollLength = this.#tabBar.scrollWidth - this.#tabBar.clientWidth
     var oldPos = this.#tabBar.scrollLeft
     if (this.#verticalScroll) {
-      this.#scrollOverlayContent.style.width = (2 + this.#scrollOverlay.clientWidth).toString() + "px"
+      this.#scrollOverlayContent.style.width = (2 + Math.ceil(this.#scrollOverlay.clientWidth)).toString() + "px"
       this.#scrollOverlay.scrollLeft = 1
-      this.#scrollOverlayContent.style.height = (scrollLength + this.#scrollOverlay.clientHeight).toString() + "px"
+      this.#scrollOverlayContent.style.height = (scrollLength + Math.ceil(this.#scrollOverlay.clientHeight)).toString() + "px"
       this.#scrollOverlay.scrollTop = oldPos
     } else {
-      this.#scrollOverlayContent.style.height = (2 + this.#scrollOverlay.clientHeight).toString() + "px"
+      this.#scrollOverlayContent.style.height = (2 + Math.ceil(this.#scrollOverlay.clientHeight)).toString() + "px"
       this.#scrollOverlay.scrollTop = 1
-      this.#scrollOverlayContent.style.width = (scrollLength + this.#scrollOverlay.clientWidth).toString() + "px"
+      this.#scrollOverlayContent.style.width = (scrollLength + Math.ceil(this.#scrollOverlay.clientWidth)).toString() + "px"
       this.#scrollOverlay.scrollLeft = oldPos
     }
     this.#updateScroll() // Update scroll in case resizing adjusted position
@@ -247,7 +247,7 @@ export class Tabs {
   // Updates scroll position based on overlay
   #updateScroll() {
     var secondaryScroll = this.#verticalScroll ? this.#scrollOverlay.scrollLeft : this.#scrollOverlay.scrollTop
-    if (secondaryScroll != 1) {
+    if (Math.round(secondaryScroll) != 1) {
       this.#verticalScroll = !this.#verticalScroll
       this.updateScrollBounds()
     } else {
