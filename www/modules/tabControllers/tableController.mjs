@@ -273,10 +273,10 @@ export class TableController {
       row.addEventListener("mouseleave", () => {
         window.selection.hoveredTime = null
       })
-      row.addEventListener("click", event => {
+      row.addEventListener("click", () => {
         window.selection.selectedTime = log.getTimestamps()[i]
       })
-      row.addEventListener("contextmenu", event => {
+      row.addEventListener("contextmenu", () => {
         window.selection.selectedTime = null
       })
 
@@ -310,6 +310,10 @@ export class TableController {
 
     // Update highlights
     this.#updateHighlights()
+
+    // Update row height (not all platforms render the same way)
+    var rowHeight = this.#tableBody.children[1].getBoundingClientRect().height
+    if (rowHeight > 0 && rowHeight != this.#rowHeight) this.#rowHeight = rowHeight
   }
 
   // Called every 15ms by the tab controller

@@ -253,8 +253,8 @@ export class Tabs {
     } else {
       var scrollPos = this.#verticalScroll ? this.#scrollOverlay.scrollTop : this.#scrollOverlay.scrollLeft
       this.#tabBar.scrollLeft = scrollPos
-      this.#shadowLeft.style.opacity = scrollPos == 0 ? 0 : 1
-      this.#shadowRight.style.opacity = scrollPos == this.#tabBar.scrollWidth - this.#tabBar.clientWidth ? 0 : 1
+      this.#shadowLeft.style.opacity = Math.floor(scrollPos) == 0 ? 0 : 1
+      this.#shadowRight.style.opacity = Math.ceil(scrollPos) == this.#tabBar.scrollWidth - this.#tabBar.clientWidth ? 0 : 1
     }
   }
 }
