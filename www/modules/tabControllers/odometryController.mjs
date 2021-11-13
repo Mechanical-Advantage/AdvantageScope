@@ -129,7 +129,7 @@ export class OdometryController {
       var maxTime = log.getTimestamps()[log.getTimestamps().length - 1]
       this.#timelineInput.min = minTime
       this.#timelineInput.max = maxTime
-      var data = log.getDataInRange(log.findField("/DriverStation/Enabled", "Boolean"), -Infinity, Infinity, 0)
+      var data = log.getDataInRange(log.findField("/DriverStation/Enabled", "Boolean"), -Infinity, Infinity)
       for (let i = 0; i < data.values.length; i++) {
         if (data.values[i]) {
           var div = document.createElement("div")
@@ -181,6 +181,9 @@ export class OdometryController {
     })
   }
 
+  // Standard function: updates based on new live data
+  updateLive() { }
+
   // Handles dragging events (moving and stopping)
   #handleDrag(event) {
     if (this.#content.hidden) return
@@ -231,7 +234,7 @@ export class OdometryController {
 
     // Get rotation data from log
     if (this.#config.fields.rotation.id != null) {
-      var currentRotation = log.getDataInRange(this.#config.fields.rotation.id, time, time, 0).values[0]
+      var currentRotation = log.getDataInRange(this.#config.fields.rotation.id, time, time).values[0]
     } else {
       var currentRotation = 0
     }
@@ -247,7 +250,7 @@ export class OdometryController {
         }
         currentPosition.push(0)
       } else {
-        var fieldData = log.getDataInRange(this.#config.fields[fieldName].id, time - this.#trailLengthSecs, time + this.#trailLengthSecs, 0)
+        var fieldData = log.getDataInRange(this.#config.fields[fieldName].id, time - this.#trailLengthSecs, time + this.#trailLengthSecs)
         positionData[fieldName] = fieldData
         var nextIndex = fieldData.timestamps.findIndex(x => x > time)
         if (nextIndex == -1) nextIndex = fieldData.timestamps.length // Current time is past the end of the data

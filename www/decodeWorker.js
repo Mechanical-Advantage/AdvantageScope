@@ -1,15 +1,16 @@
 import { Log } from "./modules/log.mjs"
 
+const supportedLogRevisions = [1]
+var log = new Log()
+var logRevision = null
+var keyIDs = {}
+
 // Decodes a series of bytes from an RLOG file and returns serializable data for a Log()
 onmessage = function (event) {
-  const supportedLogRevisions = [1]
-
-  var log = new Log()
   var dataArray = event.data
   var dataBuffer = new DataView(dataArray.buffer)
   var decoder = new TextDecoder("UTF-8")
   var offset = 0
-  var keyIDs = {}
 
   function shiftOffset(shift) {
     return (offset += shift) - shift
@@ -17,13 +18,15 @@ onmessage = function (event) {
 
   try {
     // Check log reivison
-    var logRevision = dataArray[shiftOffset(1)]
-    if (!supportedLogRevisions.includes(logRevision)) {
-      this.postMessage({
-        status: "incompatible",
-        message: "The detected format of the log file is incompatible with the current app version. (Revision " + logRevision.toString() + ")"
-      })
-      return
+    if (logRevision == null) {
+      logRevision = dataArray[shiftOffset(1)]
+      if (!supportedLogRevisions.includes(logRevision)) {
+        this.postMessage({
+          status: "incompatible",
+          message: "The detected format of the log is incompatible with the current app version. (Revision " + logRevision.toString() + ")"
+        })
+        return
+      }
     }
     shiftOffset(1) // Skip second byte (timestamp)
 
@@ -135,14 +138,8 @@ onmessage = function (event) {
     console.error(error.message)
   }
   log.updateDisplayKeys()
-  log.generateResolutions(Log.primaryResolutions)
   this.postMessage({
     status: "newData",
-    data: log.rawData
-  })
-  log.generateResolutions(Log.secondaryResolutions)
-  this.postMessage({
-    status: "updateData",
     data: log.rawData
   })
 }

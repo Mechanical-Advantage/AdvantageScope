@@ -5,6 +5,7 @@ export class Selection {
   #playing = false
   #playStart = null
   #playbackSpeed = 1
+  #locked = false
 
   #playButton = document.getElementsByClassName("play")[0]
   #pauseButton = document.getElementsByClassName("pause")[0]
@@ -50,6 +51,7 @@ export class Selection {
 
   // Standard function: restores state where possible
   set state(newState) {
+    this.unlock()
     this.pause()
     this.#selectedTime = newState.selectedTime
     this.#playbackSpeed = newState.playbackSpeed
@@ -65,15 +67,23 @@ export class Selection {
     return this.#hoveredTime
   }
 
+  // Retrieves whether selection is locked
+  get locked() {
+    return this.#locked
+  }
+
   // Updates selected time
   set selectedTime(time) {
+    if (this.#locked) return
     this.#selectedTime = time
     if (this.#playing) this.#playStart = new Date().getTime() / 1000
   }
 
   // Retrieves selected time
   get selectedTime() {
-    if (this.#playing) {
+    if (this.#locked) { // Based on live logging start time (continuously increase regardless of data)
+      return ((new Date().getTime() / 1000) - window.liveStart) + log.getTimestamps()[0]
+    } else if (this.#playing) { // Increase from last selected time until reaching the end of data
       var time = ((new Date().getTime() / 1000) - this.#playStart) * this.#playbackSpeed + (this.#selectedTime == null ? 0 : this.#selectedTime)
       var lastTime = log == null ? 10 : log.getTimestamps()[log.getTimestamps().length - 1]
       if (time >= lastTime) {
@@ -83,13 +93,14 @@ export class Selection {
       } else {
         return time
       }
-    } else {
+    } else { // Return static time
       return this.#selectedTime
     }
   }
 
   // Begins real time playback
   play() {
+    if (this.#locked) return
     this.#playing = true
     this.#playStart = new Date().getTime() / 1000
     this.#playButton.hidden = true
@@ -98,10 +109,27 @@ export class Selection {
 
   // Stops real time playback
   pause() {
+    if (this.#locked) return
+    this.#selectedTime = this.selectedTime
     this.#playing = false
-    this.#selectedTime = ((new Date().getTime() / 1000) - this.#playStart) * this.#playbackSpeed + (this.#selectedTime == null ? 0 : this.#selectedTime)
     this.#playButton.hidden = false
     this.#pauseButton.hidden = true
+  }
+
+  // Locks playback to live data
+  lock() {
+    if (window.liveStart) {
+      this.pause()
+      this.#locked = true
+    }
+  }
+
+  // Unlocks playback and returns to normal state
+  unlock() {
+    if (this.#locked) {
+      this.#selectedTime = this.selectedTime
+      this.#locked = false
+    }
   }
 
   // Returns whether playback is active

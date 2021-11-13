@@ -139,6 +139,9 @@ export class TableController {
     }
   }
 
+  // Standard function: updates based on new live data
+  updateLive() { }
+
   // Called by tab controller when side bar size changes
   sideBarResize() { }
 
@@ -240,7 +243,7 @@ export class TableController {
     var typeLookup = {}
     this.#fields.forEach(field => {
       if (field.id == null) return
-      var data = log.getDataInRange(field.id, log.getTimestamps()[range[0]], log.getTimestamps()[range[1]], 0)
+      var data = log.getDataInRange(field.id, log.getTimestamps()[range[0]], log.getTimestamps()[range[1]])
       var fullData = []
       for (let i = range[0]; i < range[1] + 1; i++) {
         var nextIndex = data.timestampIndexes.findIndex(value => value > i)

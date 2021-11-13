@@ -9,9 +9,10 @@ window.isFullscreen = false
 window.isFocused = true
 
 window.log = null
+window.liveStart = null
+window.selection = new Selection()
 window.tabs = new Tabs()
 window.sideBar = new SideBar()
-window.selection = new Selection()
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle
@@ -95,6 +96,7 @@ window.addEventListener("open-file", event => {
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
   setTitle(logName + " \u2014 6328 Log Viewer")
+  window.dispatchEvent(new Event("stop-live-socket")) // Stop live logging
 
   console.log("Opening file '" + logName + "'")
   var startTime = new Date().getTime()
@@ -113,21 +115,68 @@ window.addEventListener("open-file", event => {
         var oldState = getWindowState()
         window.log = new Log()
         window.log.rawData = event.data.data
+        window.liveStart = null
 
         var length = new Date().getTime() - startTime
-        console.log("Initial log ready in " + length.toString() + "ms")
+        console.log("Log ready in " + length.toString() + "ms")
 
         setWindowState(oldState) // Set to the same state (resets everything)
         break
+    }
+  }
+})
 
-      case "updateData": // New resolutions added, don't reset
+window.liveTest = () => {
+  window.dispatchEvent(new Event("start-live"))
+}
+
+window.addEventListener("start-live", () => {
+  const host = "127.0.0.1"
+  const port = 5800
+
+  setTitle(host + " \u2014 6328 Log Viewer")
+  console.log("Starting live logging from " + host)
+
+  var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
+  window.addEventListener("live-data", event => {
+    decodeWorker.postMessage(event.detail)
+  })
+  var firstData = true
+  decodeWorker.onmessage = event => {
+    switch (event.data.status) {
+      case "incompatible": // Failed to read log file
+        window.dispatchEvent(new CustomEvent("error", {
+          detail: { title: "Failed to read log", content: event.data.message }
+        }))
+        window.dispatchEvent(new Event("stop-live-socket"))
+        break
+
+      case "newData": // New data to show
+        var oldFieldCount = window.log == null ? 0 : window.log.getFieldCount()
+        var oldState = getWindowState()
+
         window.log = new Log()
         window.log.rawData = event.data.data
 
-        var length = new Date().getTime() - startTime
-        console.log("Log updated in " + length.toString() + "ms")
+        if (firstData) { // Reset everything when log changes
+          setWindowState(oldState)
+          firstData = false
+          window.liveStart = new Date().getTime() / 1000
+        } else if (window.log.getFieldCount() != oldFieldCount) { // Reset sidebar when fields update
+          sideBar.state = sideBar.state
+        }
+        tabs.updateLive()
+        break
     }
   }
+
+  // Start!
+  window.dispatchEvent(new CustomEvent("start-live-socket", {
+    detail: {
+      host: host,
+      port: port
+    }
+  }))
 })
 
 // MANAGE DRAGGING

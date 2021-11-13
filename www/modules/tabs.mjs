@@ -120,6 +120,13 @@ export class Tabs {
     }
   }
 
+  // Standard function: updates based on new live data
+  updateLive() {
+    this.#tabList.forEach(tab => {
+      tab.controller.updateLive()
+    })
+  }
+
   // Passthrough to each tab controller
   sideBarResize() {
     this.#tabList.forEach((tab) => {

@@ -26,6 +26,8 @@ export class LineGraphController {
   #panStartCursorX = 0
   #panStartScrollLeft = 0
   #xRange = [0, 10]
+  #maxScrollVert = true
+  #maxScrollHorz = true
 
   #legends = {
     left: {
@@ -322,6 +324,11 @@ export class LineGraphController {
     this.#legends[legend].element.appendChild(item)
   }
 
+  // Standard function: updates based on new live data
+  updateLive() {
+    this.#updateScroll(this.#maxScrollVert)
+  }
+
   // Called by tab controller when side bar size changes
   sideBarResize() {
     this.#updateScroll()
@@ -348,6 +355,8 @@ export class LineGraphController {
     // Find current time range
     if (log == null) {
       var timeRange = [0, 10]
+    } else if (selection.locked) {
+      var timeRange = [log.getTimestamps()[0], selection.selectedTime]
     } else {
       var timeRange = [log.getTimestamps()[0], log.getTimestamps()[log.getTimestamps().length - 1]]
     }
@@ -385,10 +394,19 @@ export class LineGraphController {
       this.#scrollOverlay.scrollLeft = Math.round(((minX - timeRange[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth)
     }
 
+    // Locked horzontal scroll
+    if (selection.locked && !(reset || platform != this.#lastPlatform)) {
+      this.#scrollOverlay.scrollLeft = scrollLengthHorizontal
+    }
+
     // Update x range
     var minX = ((this.#scrollOverlay.scrollLeft / this.#scrollOverlay.clientWidth) * this.#calcZoom()) + timeRange[0]
     this.#xRange = [minX, minX + this.#calcZoom()]
     this.#lastScrollTop = this.#scrollOverlay.scrollTop
+
+    // Check if at limits
+    this.#maxScrollVert = Math.ceil(this.#scrollOverlay.scrollTop) == Math.floor(scrollLengthVertical)
+    this.#maxScrollHorz = Math.ceil(this.#scrollOverlay.scrollLeft) == Math.floor(scrollLengthHorizontal)
   }
 
   // Cleans up floating point errors
@@ -479,10 +497,12 @@ export class LineGraphController {
     if (this.#resetOnNextUpdate) {
       this.#resetOnNextUpdate = false
       this.#updateScroll(true)
+    } else if (selection.locked) { // Update every cycle when locked to ensure smoothness
+      this.#updateScroll()
     }
 
     // Utility function to scale value between two ranges
-    function scaleValue(value, oldMin, oldMax, newMin, newMax) {
+    var scaleValue = (value, oldMin, oldMax, newMin, newMax) => {
       return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
     }
 
@@ -501,32 +521,42 @@ export class LineGraphController {
     var graphHeight = height - graphTop - 50
     var xRange = this.#xRange
 
-    if (log) {
-      var secsPerPixel = (xRange[1] - xRange[0]) / (width * window.devicePixelRatio)
-      var availableResolutions = log.getResolutions()
-      var resolutionIndex = availableResolutions.findIndex(resolution => resolution > secsPerPixel)
-      if (resolutionIndex == -1) resolutionIndex = availableResolutions.length // No resolution is low enough
-      resolutionIndex -= 1
-      var resolution = resolutionIndex < 0 ? 0 : availableResolutions[resolutionIndex]
-    } else {
-      var resolution = 0
-    }
-
     // Calculate axes
     var dataLookup = {}
-    function getMinMax(fields) {
+    var getMinMax = (fields) => {
       var allValues = []
       fields.forEach((field) => {
         if (field.id == null) return // Missing field
         if (field.id in dataLookup) {
           allValues.push.apply(allValues, dataLookup[field.id].values)
         } else {
-          var data = log.getDataInRange(field.id, xRange[0], xRange[1], resolution)
+          var data = log.getDataInRange(field.id, xRange[0], xRange[1])
           dataLookup[field.id] = data
           allValues.push.apply(allValues, data.values)
         }
       })
-      var minMax = [Math.min.apply(null, allValues), Math.max.apply(null, allValues)]
+
+      function arrayMin(arr) {
+        var len = arr.length, min = Infinity;
+        while (len--) {
+          if (arr[len] < min) {
+            min = arr[len];
+          }
+        }
+        return min;
+      }
+
+      function arrayMax(arr) {
+        var len = arr.length, max = -Infinity;
+        while (len--) {
+          if (arr[len] > max) {
+            max = arr[len];
+          }
+        }
+        return max;
+      }
+
+      var minMax = [arrayMin(allValues), arrayMax(allValues)]
       if (!isFinite(minMax[0])) minMax[0] = -1
       if (!isFinite(minMax[1])) minMax[1] = 1
       return minMax
@@ -577,7 +607,7 @@ export class LineGraphController {
       if (field.id in dataLookup) {
         var data = dataLookup[field.id]
       } else {
-        var data = log.getDataInRange(field.id, xRange[0], xRange[1], resolution)
+        var data = log.getDataInRange(field.id, xRange[0], xRange[1])
       }
       var fieldInfo = log.getFieldInfo(field.id)
       var lastChange = 0
@@ -623,7 +653,7 @@ export class LineGraphController {
     })
 
     // Render continuous data
-    function renderLegend(fields, range) {
+    var renderLegend = (fields, range) => {
       fields.forEach(field => {
         if (field.id == null) return // Missing field
         var data = dataLookup[field.id]
@@ -631,32 +661,64 @@ export class LineGraphController {
         context.strokeStyle = field.color
         context.beginPath()
 
-        for (let i = 0; i < data.timestamps.length + 1; i++) {
-          if (i > 0 && data.values[i - 1] != null) {
-            var timestamp = i == data.timestamps.length ? log.getTimestamps()[log.getTimestamps().length - 1] : data.timestamps[i]
-            var x = scaleValue(timestamp, xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
-            var y = scaleValue(data.values[i - 1], range[0], range[1], graphTop + graphHeight, graphTop)
-            context.lineTo(x, y)
-          }
+        // Render starting point
+        var startVal = data.values[data.timestamps.length - 1]
+        if (startVal != null) {
+          context.moveTo(graphLeft + graphWidth, scaleValue(startVal, range[0], range[1], graphTop + graphHeight, graphTop))
+        }
 
-          if (i == data.timestamps.length || data.values[i] == null) {
-            context.stroke()
-            context.beginPath()
-          } else {
-            var x = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+        // Render main data
+        var i = data.timestamps.length - 1
+        var renderHorzConnection = true
+        while (true) {
+          var x = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
+
+          // Render start of current data point
+          if (data.values[i] != null && renderHorzConnection) {
             var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
             context.lineTo(x, y)
           }
+
+          // Find previous data point and vertical range
+          var currentX = Math.floor(x)
+          var vertRange = [data.values[i], data.values[i]]
+          do {
+            i--
+            if (data.values[i] != null) {
+              if (vertRange[0] == null || data.values[i] < vertRange[0]) vertRange[0] = data.values[i]
+              if (vertRange[1] == null || data.values[i] > vertRange[1]) vertRange[1] = data.values[i]
+            }
+            var newX = Math.floor(scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth))
+          } while (i >= 0 && newX >= currentX)
+          if (i < 0) break
+          renderHorzConnection = newX < currentX - 1 // Render connection if vertical lines are not adjacent
+
+          // Render vertical range
+          if (vertRange[0] != null && vertRange[1] != null) {
+            context.moveTo(x, scaleValue(vertRange[0], range[0], range[1], graphTop + graphHeight, graphTop))
+            context.lineTo(x, scaleValue(vertRange[1], range[0], range[1], graphTop + graphHeight, graphTop))
+          }
+
+          // Move to end of previous data point
+          if (data.values[i] != null) {
+            if (renderHorzConnection) {
+              var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
+              context.moveTo(x, y)
+            }
+          } else {
+            context.stroke()
+            context.beginPath()
+          }
         }
-        context.lineTo(x, y)
         context.stroke()
+        context.beginPath()
       })
     }
     renderLegend(visibleFieldsLeft, [leftAxis.min, leftAxis.max])
     renderLegend(visibleFieldsRight, [rightAxis.min, rightAxis.max])
 
     // Render selected times
-    function markTime(time, alpha) {
+    var markTime = (time, alpha) => {
       if (time == null) return
       if (time >= xRange[0] && time <= xRange[1]) {
         context.globalAlpha = alpha
@@ -678,7 +740,7 @@ export class LineGraphController {
     } else {
       window.selection.hoveredTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (xRange[1] - xRange[0])) + xRange[0]
     }
-    markTime(window.selection.selectedTime, 1)
+    if (!window.selection.locked) markTime(window.selection.selectedTime, 1)
     markTime(window.selection.hoveredTime, 0.35)
 
     // Clear overflow & draw graph outline

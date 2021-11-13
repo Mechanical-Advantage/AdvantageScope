@@ -35,7 +35,7 @@ export class MetadataController {
         if (!(key in data)) {
           data[key] = {}
         }
-        data[key].real = log.getDataInRange(value.field, 0, 0, 0).values[0]
+        data[key].real = log.getDataInRange(value.field, 0, 0).values[0]
       }
     }
     if ("ReplayMetadata" in tree) {
@@ -43,7 +43,7 @@ export class MetadataController {
         if (!(key in data)) {
           data[key] = {}
         }
-        data[key].replay = log.getDataInRange(value.field, 0, 0, 0).values[0]
+        data[key].replay = log.getDataInRange(value.field, 0, 0).values[0]
       }
     }
 
@@ -76,6 +76,9 @@ export class MetadataController {
     this.#noDataAlert.hidden = showTable
     this.#tableContainer.hidden = !showTable
   }
+
+  // Standard function: updates based on new live data
+  updateLive() { }
 
   // Called by tab controller when side bar size changes
   sideBarResize() { }
