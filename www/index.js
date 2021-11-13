@@ -95,7 +95,7 @@ window.addEventListener("set-platform", event => {
 window.addEventListener("open-file", event => {
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
-  setTitle(logName + " \u2014 6328 Log Viewer")
+  setTitle(logName + " \u2014 Advantage Scope")
   window.dispatchEvent(new Event("stop-live-socket")) // Stop live logging
 
   console.log("Opening file '" + logName + "'")
@@ -134,7 +134,7 @@ window.addEventListener("start-live", () => {
   const host = "127.0.0.1"
   const port = 5800
 
-  setTitle(host + " \u2014 6328 Log Viewer")
+  setTitle(host + " \u2014 Advantage Scope")
   console.log("Starting live logging from " + host)
 
   var decodeWorker = new Worker("decodeWorker.js", { type: "module" })

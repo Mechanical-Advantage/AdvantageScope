@@ -1,6 +1,6 @@
 {
-  "name": "6328-log-viewer",
-  "productName": "6328 Log Viewer",
+  "name": "advantage-scope",
+  "productName": "Advantage Scope",
   "version": "1.1.2",
   "description": "Logging tool from FRC Team 6328.",
   "main": "main.js",
@@ -21,7 +21,7 @@
     "electron-window-state": "^5.0.3"
   },
   "build": {
-    "appId": "org.littletonrobotics.logviewer",
+    "appId": "org.littletonrobotics.advantagescope",
     "publish": [],
     "directories": {
       "buildResources": "./"

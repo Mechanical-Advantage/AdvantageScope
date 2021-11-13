@@ -62,17 +62,17 @@ jobs:
     - name: Prepare macOS artifact
       if: matrix.host.os == 'macos-latest'
       run: |
-        mv dist/6328\ Log\ Viewer-*.dmg artifact
+        mv dist/Advantage\ Scope-*.dmg artifact
     - name: Prepare Linux artifact
       if: matrix.host.os == 'ubuntu-latest'
       run: |
         cd dist
-        zip ../artifact.zip ./6328-log-viewer*
+        zip ../artifact.zip ./advantage-scope*
         mv ../artifact.zip ../artifact
     - name: Prepare Windows artifact
       if: matrix.host.os == 'windows-latest'
       run: |
-        Move-Item -Path "dist\6328 Log Viewer Setup *.exe" -Destination "artifact"
+        Move-Item -Path "dist\Advantage Scope Setup *.exe" -Destination "artifact"
     - name: Upload artifacts
       uses: actions/upload-release-asset@v1
       env:
@@ -80,5 +80,5 @@ jobs:
       with:
         upload_url: ${{ needs.release.outputs.upload_url }}
         asset_path: artifact
-        asset_name: 6328-log-viewer-${{ matrix.host.shortName }}-${{ matrix.arch }}.${{ matrix.host.artifactExt }}
+        asset_name: advantage-scope-${{ matrix.host.shortName }}-${{ matrix.arch }}.${{ matrix.host.artifactExt }}
         asset_content_type: ${{ matrix.host.artifactType }}

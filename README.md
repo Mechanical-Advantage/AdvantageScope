@@ -1,5 +1,5 @@
-# 6328 Log Viewer
-Development workspace for the desktop viewer application of [this](https://github.com/Mechanical-Advantage/LoggingDevelopment) logging framework. This project is still in early development with no documentation. More information will be provided as we make progress.
+# Advantage Scope
+Advantage Scope is the desktop application used to interact with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework. It can be used to view logs from a file or connect to a robot over the network (coming soon). Visualizations include line graphs, tables, and fields diagrams for odometry data.
 
 ## Installation
 1. Click the release marked "Latest" under "Releases".
