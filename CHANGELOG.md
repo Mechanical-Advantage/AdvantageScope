@@ -1,4 +1,4 @@
-Bug fixes for minor visual glitches on some platforms:
+The app has a new name! "6328 Log Viewer" is now "Advantage Scope". Other changes include...
 
-* Shadows on the tab bar failed to fade out properly.
-* Jumping to a time in the table was offset from the correct position.
+* Improvements to handling of large log files. Zooming in and out is now smoother and more accurate!
+* Experimental support for receiving live data over the network. This feature will be made accessible in future versions.
