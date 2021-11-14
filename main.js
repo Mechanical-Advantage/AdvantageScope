@@ -36,7 +36,7 @@ app.whenReady().then(() => {
 
   // Notify about any updates
   window.once("show", () => setUpdateNotification({
-    repository: "Mechanical-Advantage/LogViewer"
+    repository: "Mechanical-Advantage/AdvantageScope"
   }))
 })
 
@@ -174,7 +174,7 @@ function setupMenu() {
           label: "Check for Updates...",
           click() {
             setUpdateNotification({
-              repository: "Mechanical-Advantage/LogViewer",
+              repository: "Mechanical-Advantage/AdvantageScope",
               silent: false
             })
           }
@@ -182,7 +182,7 @@ function setupMenu() {
         {
           label: "View Repository",
           click() {
-            shell.openExternal("https://github.com/Mechanical-Advantage/LogViewer")
+            shell.openExternal("https://github.com/Mechanical-Advantage/AdvantageScope")
           }
         },
         {

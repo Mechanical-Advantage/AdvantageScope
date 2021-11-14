@@ -73,9 +73,11 @@ export class Tabs {
     this.addTab(1)
 
     // Periodic function
-    window.setInterval(() => {
+    var periodic = () => {
       this.#tabList[this.#selectedTab].controller.periodic()
-    }, 15)
+      window.requestAnimationFrame(periodic)
+    }
+    window.requestAnimationFrame(periodic)
   }
 
   // Standard function: retrieves current state

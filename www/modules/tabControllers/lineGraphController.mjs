@@ -506,13 +506,14 @@ export class LineGraphController {
       return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
     }
 
+    const devicePixelRatio = window.devicePixelRatio
     var context = this.#canvas.getContext("2d")
     var width = this.#canvasContainer.clientWidth
     var height = this.#canvasContainer.clientHeight
     var light = !window.matchMedia("(prefers-color-scheme: dark)").matches
-    this.#canvas.width = width * window.devicePixelRatio
-    this.#canvas.height = height * window.devicePixelRatio
-    context.scale(window.devicePixelRatio, window.devicePixelRatio)
+    this.#canvas.width = width * devicePixelRatio
+    this.#canvas.height = height * devicePixelRatio
+    context.scale(devicePixelRatio, devicePixelRatio)
 
     context.clearRect(0, 0, width, height)
     var graphLeft = 60
@@ -669,18 +670,17 @@ export class LineGraphController {
 
         // Render main data
         var i = data.timestamps.length - 1
-        var renderHorzConnection = true
         while (true) {
           var x = scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth)
 
           // Render start of current data point
-          if (data.values[i] != null && renderHorzConnection) {
+          if (data.values[i] != null) {
             var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
             context.lineTo(x, y)
           }
 
           // Find previous data point and vertical range
-          var currentX = Math.floor(x)
+          var currentX = Math.floor(x * devicePixelRatio)
           var vertRange = [data.values[i], data.values[i]]
           do {
             i--
@@ -688,10 +688,9 @@ export class LineGraphController {
               if (vertRange[0] == null || data.values[i] < vertRange[0]) vertRange[0] = data.values[i]
               if (vertRange[1] == null || data.values[i] > vertRange[1]) vertRange[1] = data.values[i]
             }
-            var newX = Math.floor(scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth))
+            var newX = Math.floor(scaleValue(data.timestamps[i], xRange[0], xRange[1], graphLeft, graphLeft + graphWidth) * devicePixelRatio)
           } while (i >= 0 && newX >= currentX)
           if (i < 0) break
-          renderHorzConnection = newX < currentX - 1 // Render connection if vertical lines are not adjacent
 
           // Render vertical range
           if (vertRange[0] != null && vertRange[1] != null) {
@@ -701,10 +700,8 @@ export class LineGraphController {
 
           // Move to end of previous data point
           if (data.values[i] != null) {
-            if (renderHorzConnection) {
-              var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
-              context.moveTo(x, y)
-            }
+            var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
+            context.moveTo(x, y)
           } else {
             context.stroke()
             context.beginPath()

@@ -1,4 +1,6 @@
-The app has a new name! "6328 Log Viewer" is now "Advantage Scope". Other changes include...
+Various minor improvements to line graph rendering:
+* Large logs no longer cause lag spikes when zooming out.
+* Framerate will scale down smoothly when required instead of staying locked.
+* Displays with high pixel density are now fully utilized when zoomed out.
 
-* Improvements to handling of large log files. Zooming in and out is now smoother and more accurate!
-* Experimental support for receiving live data over the network. This feature will be made accessible in future versions.
+The GitHub repository name has also been updated to "AdvantageScope" (for auto-update and the "View Repository" link).
