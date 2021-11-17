@@ -118,15 +118,14 @@ export class OdometryController {
     }
   }
 
-  // Standard function: restores state where possible
-  set state(newState) {
-    // Adjust timeline
+  // Render timeline sections
+  #renderTimeline() {
     while (this.#timelineMarkerContainer.firstChild) {
       this.#timelineMarkerContainer.removeChild(this.#timelineMarkerContainer.firstChild)
     }
     if (log) {
       var minTime = log.getTimestamps()[0]
-      var maxTime = log.getTimestamps()[log.getTimestamps().length - 1]
+      var maxTime = selection.isLocked() ? selection.selectedTime : log.getTimestamps()[log.getTimestamps().length - 1]
       this.#timelineInput.min = minTime
       this.#timelineInput.max = maxTime
       var data = log.getDataInRange(log.findField("/DriverStation/Enabled", "Boolean"), -Infinity, Infinity)
@@ -145,6 +144,12 @@ export class OdometryController {
       this.#timelineInput.min = 0
       this.#timelineInput.max = 10
     }
+  }
+
+  // Standard function: restores state where possible
+  set state(newState) {
+    // Adjust timeline
+    this.#renderTimeline()
 
     // Set config data
     this.#config.coordinates.game.value = newState.coordinates.game
@@ -182,7 +187,10 @@ export class OdometryController {
   }
 
   // Standard function: updates based on new live data
-  updateLive() { }
+  updateLive() {
+    this.#renderTimeline()
+    if (selection.isLocked()) this.#timelineInput.value = this.#timelineInput.max
+  }
 
   // Handles dragging events (moving and stopping)
   #handleDrag(event) {
@@ -206,6 +214,7 @@ export class OdometryController {
         } else {
           field.id = event.detail.data.id
           field.element.lastElementChild.innerText = log.getFieldInfo(field.id).displayKey
+          field.element.lastElementChild.style.textDecoration = ""
         }
       }
     })
@@ -219,10 +228,10 @@ export class OdometryController {
 
   // Called every 15ms (regardless of the visible tab)
   customPeriodic() {
-    if (window.selection.isPlaying()) {
-      var time = window.selection.selectedTime
+    if (selection.isPlaying() || selection.isLocked()) {
+      var time = selection.selectedTime
     } else {
-      var time = window.selection.hoveredTime ? window.selection.hoveredTime : window.selection.selectedTime
+      var time = selection.hoveredTime ? selection.hoveredTime : selection.selectedTime
     }
     if (time == null) time = 0
 

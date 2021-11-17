@@ -67,11 +67,6 @@ export class Selection {
     return this.#hoveredTime
   }
 
-  // Retrieves whether selection is locked
-  get locked() {
-    return this.#locked
-  }
-
   // Updates selected time
   set selectedTime(time) {
     if (this.#locked) return
@@ -135,5 +130,10 @@ export class Selection {
   // Returns whether playback is active
   isPlaying() {
     return this.#playing
+  }
+
+  // Returns whether selection is locked
+  isLocked() {
+    return this.#locked
   }
 }

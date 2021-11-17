@@ -196,6 +196,7 @@ export class LineGraphController {
       // Update locked status & range
       legend.locked = newState.legends[legendKey].locked
       legend.range = newState.legends[legendKey].range
+      if (legend.locked != undefined) legend.element.firstElementChild.firstElementChild.lastElementChild.hidden = !legend.locked
 
       // Remove all fields
       legend.fields = []
@@ -355,7 +356,7 @@ export class LineGraphController {
     // Find current time range
     if (log == null) {
       var timeRange = [0, 10]
-    } else if (selection.locked) {
+    } else if (selection.isLocked()) {
       var timeRange = [log.getTimestamps()[0], selection.selectedTime]
     } else {
       var timeRange = [log.getTimestamps()[0], log.getTimestamps()[log.getTimestamps().length - 1]]
@@ -395,7 +396,7 @@ export class LineGraphController {
     }
 
     // Locked horzontal scroll
-    if (selection.locked && !(reset || platform != this.#lastPlatform)) {
+    if (selection.isLocked() && !(reset || platform != this.#lastPlatform)) {
       this.#scrollOverlay.scrollLeft = scrollLengthHorizontal
     }
 
@@ -497,7 +498,7 @@ export class LineGraphController {
     if (this.#resetOnNextUpdate) {
       this.#resetOnNextUpdate = false
       this.#updateScroll(true)
-    } else if (selection.locked) { // Update every cycle when locked to ensure smoothness
+    } else if (selection.isLocked()) { // Update every cycle when locked to ensure smoothness
       this.#updateScroll()
     }
 
@@ -521,6 +522,8 @@ export class LineGraphController {
     var graphWidth = width - graphLeft - 60
     var graphHeight = height - graphTop - 50
     var xRange = this.#xRange
+    if (graphWidth < 1) graphWidth = 1
+    if (graphHeight < 1) graphHeight = 1
 
     // Calculate axes
     var dataLookup = {}
@@ -563,8 +566,11 @@ export class LineGraphController {
       return minMax
     }
 
-    var visibleFieldsLeft = this.#legends.left.fields.filter((field) => field.show)
-    var visibleFieldsRight = this.#legends.right.fields.filter((field) => field.show)
+    var visibleFieldsDiscrete = this.#legends.discrete.fields.filter(field => field.show)
+    var visibleFieldsLeft = this.#legends.left.fields.filter(field => field.show)
+    var visibleFieldsRight = this.#legends.right.fields.filter(field => field.show)
+    var graphHeightOpen = graphHeight - (visibleFieldsDiscrete.length * 20) - (visibleFieldsDiscrete.length > 0 ? 5 : 0) // Graph height above discrete fields
+    if (graphHeightOpen < 1) graphHeightOpen = 1
 
     const targetStepPx = 50
     const primaryMargin = 0.05
@@ -572,24 +578,24 @@ export class LineGraphController {
     var leftIsPrimary = false
     if (this.#legends.left.locked && this.#legends.right.locked) { // No secondary axis
       leftIsPrimary = visibleFieldsLeft.length >= visibleFieldsRight.length
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, this.#legends.left.range)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, null, this.#legends.right.range)
+      var leftAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, this.#legends.left.range)
+      var rightAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, null, this.#legends.right.range)
     } else if (this.#legends.left.locked) { // Only left locked, make it primary
       leftIsPrimary = true
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, this.#legends.left.range)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, leftAxis, null)
+      var leftAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, this.#legends.left.range)
+      var rightAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, leftAxis, null)
     } else if (this.#legends.right.locked) { // Only right locked, make it primary
       leftIsPrimary = false
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, 1, null, this.#legends.right.range)
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, 1, rightAxis, null)
+      var rightAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, 1, null, this.#legends.right.range)
+      var leftAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, 1, rightAxis, null)
     } else if (visibleFieldsRight.length > visibleFieldsLeft.length) { // Right has more fields, make it primary
       leftIsPrimary = false
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, 1, null, null)
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, 1, rightAxis, null)
+      var rightAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsRight), primaryMargin, 1, null, null)
+      var leftAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsLeft), secondaryMargin, 1, rightAxis, null)
     } else { // Left is primary by default
       leftIsPrimary = true
-      var leftAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, null)
-      var rightAxis = this.#calcAutoAxis(graphHeight, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, leftAxis, null)
+      var leftAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsLeft), primaryMargin, 1, null, null)
+      var rightAxis = this.#calcAutoAxis(graphHeightOpen, targetStepPx, getMinMax(visibleFieldsRight), secondaryMargin, 1, leftAxis, null)
     }
     var showLeftAxis = visibleFieldsLeft.length > 0 || this.#legends.left.locked
     var showRightAxis = visibleFieldsRight.length > 0 || this.#legends.right.locked
@@ -602,7 +608,6 @@ export class LineGraphController {
     context.textAlign = "left"
     context.textBaseline = "middle"
     context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont"
-    var visibleFieldsDiscrete = this.#legends.discrete.fields.filter((field) => field.show)
     visibleFieldsDiscrete.forEach((field, renderIndex) => {
       if (field.id == null) return // Missing field
       if (field.id in dataLookup) {
@@ -665,7 +670,7 @@ export class LineGraphController {
         // Render starting point
         var startVal = data.values[data.timestamps.length - 1]
         if (startVal != null) {
-          context.moveTo(graphLeft + graphWidth, scaleValue(startVal, range[0], range[1], graphTop + graphHeight, graphTop))
+          context.moveTo(graphLeft + graphWidth, scaleValue(startVal, range[0], range[1], graphTop + graphHeightOpen, graphTop))
         }
 
         // Render main data
@@ -675,7 +680,7 @@ export class LineGraphController {
 
           // Render start of current data point
           if (data.values[i] != null) {
-            var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
+            var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeightOpen, graphTop)
             context.lineTo(x, y)
           }
 
@@ -694,13 +699,13 @@ export class LineGraphController {
 
           // Render vertical range
           if (vertRange[0] != null && vertRange[1] != null) {
-            context.moveTo(x, scaleValue(vertRange[0], range[0], range[1], graphTop + graphHeight, graphTop))
-            context.lineTo(x, scaleValue(vertRange[1], range[0], range[1], graphTop + graphHeight, graphTop))
+            context.moveTo(x, scaleValue(vertRange[0], range[0], range[1], graphTop + graphHeightOpen, graphTop))
+            context.lineTo(x, scaleValue(vertRange[1], range[0], range[1], graphTop + graphHeightOpen, graphTop))
           }
 
           // Move to end of previous data point
           if (data.values[i] != null) {
-            var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeight, graphTop)
+            var y = scaleValue(data.values[i], range[0], range[1], graphTop + graphHeightOpen, graphTop)
             context.moveTo(x, y)
           } else {
             context.stroke()
@@ -737,7 +742,7 @@ export class LineGraphController {
     } else {
       window.selection.hoveredTime = ((this.#lastCursorX / this.#scrollOverlay.clientWidth) * (xRange[1] - xRange[0])) + xRange[0]
     }
-    if (!window.selection.locked) markTime(window.selection.selectedTime, 1)
+    if (!window.selection.isLocked()) markTime(window.selection.selectedTime, 1)
     markTime(window.selection.hoveredTime, 0.35)
 
     // Clear overflow & draw graph outline
@@ -758,9 +763,10 @@ export class LineGraphController {
 
     if (showLeftAxis) {
       context.textAlign = "right"
-      var stepPos = Math.ceil(this.#cleanFloat(leftAxis.min / leftAxis.step)) * leftAxis.step
-      while (this.#cleanFloat(stepPos) <= leftAxis.max) {
-        var y = scaleValue(stepPos, leftAxis.min, leftAxis.max, graphTop + graphHeight, graphTop)
+      var stepPos = Math.floor(this.#cleanFloat(leftAxis.max / leftAxis.step)) * leftAxis.step
+      while (true) {
+        var y = scaleValue(stepPos, leftAxis.min, leftAxis.max, graphTop + graphHeightOpen, graphTop)
+        if (y > graphTop + graphHeight) break
 
         context.globalAlpha = 1
         context.fillText(this.#cleanFloat(stepPos).toString(), graphLeft - 15, y)
@@ -777,15 +783,16 @@ export class LineGraphController {
           context.stroke()
         }
 
-        stepPos += leftAxis.step
+        stepPos -= leftAxis.step
       }
     }
 
     if (showRightAxis) {
       context.textAlign = "left"
-      var stepPos = Math.ceil(this.#cleanFloat(rightAxis.min / rightAxis.step)) * rightAxis.step
-      while (this.#cleanFloat(stepPos) <= rightAxis.max) {
-        var y = scaleValue(stepPos, rightAxis.min, rightAxis.max, graphTop + graphHeight, graphTop)
+      var stepPos = Math.floor(this.#cleanFloat(rightAxis.max / rightAxis.step)) * rightAxis.step
+      while (true) {
+        var y = scaleValue(stepPos, rightAxis.min, rightAxis.max, graphTop + graphHeightOpen, graphTop)
+        if (y > graphTop + graphHeight) break
 
         context.globalAlpha = 1
         context.fillText(this.#cleanFloat(stepPos).toString(), graphLeft + graphWidth + 15, y)
@@ -802,7 +809,7 @@ export class LineGraphController {
           context.stroke()
         }
 
-        stepPos += rightAxis.step
+        stepPos -= rightAxis.step
       }
     }
 

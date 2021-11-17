@@ -1,6 +1,5 @@
-Various minor improvements to line graph rendering:
-* Large logs no longer cause lag spikes when zooming out.
-* Framerate will scale down smoothly when required instead of staying locked.
-* Displays with high pixel density are now fully utilized when zoomed out.
-
-The GitHub repository name has also been updated to "AdvantageScope" (for auto-update and the "View Repository" link).
+Minor bug fixes/improvements:
+* Continuous line graph data no longer intersects with discrete data.
+* When restoring a line graph with locked axes, their status is now displayed properly on the axis titles.
+* Replacing a missing field in the odometry config now correctly removes the strikethrough effect.
+* (Experimental) The odometry timeline now properly updates when receiving live log data.
