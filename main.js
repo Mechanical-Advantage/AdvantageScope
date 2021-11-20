@@ -34,10 +34,29 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length == 0) createWindow()
   })
 
-  // Notify about any updates
-  window.once("show", () => setUpdateNotification({
-    repository: "Mechanical-Advantage/AdvantageScope"
-  }))
+  // Send notifications once the window is ready
+  window.once("show", () => {
+
+    // Check if running under translation
+    if (app.runningUnderARM64Translation) {
+      dialog.showMessageBox({
+        type: "info",
+        title: "Download native version?",
+        message: "Download native version?",
+        detail: "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
+        buttons: ["Download", "Later"],
+        defaultId: 0
+      }).then(result => {
+        if (result.response == 0) shell.openExternal("https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest")
+      })
+
+    } else {
+      // Check if update available
+      setUpdateNotification({
+        repository: "Mechanical-Advantage/AdvantageScope"
+      })
+    }
+  })
 })
 
 app.on("window-all-closed", function () {
@@ -131,22 +150,57 @@ function setupMenu() {
   const isMac = process.platform === "darwin"
 
   const template = [
-    ...(isMac ? [{ role: "appMenu" }] : []),
+    ...(isMac ? [{
+      role: "appMenu",
+      submenu: [
+        {
+          role: "about"
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Preferences...",
+          accelerator: "Cmd+,",
+          click() {
+            openPreferences()
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          role: "services"
+        },
+        {
+          type: "separator"
+        },
+        {
+          role: "hide"
+        },
+        {
+          role: "hideOthers"
+        },
+        {
+          role: "unhide"
+        },
+        {
+          type: "separator"
+        },
+        {
+          role: "quit"
+        }
+      ]
+    }] : []),
     {
       label: "File",
       submenu: [
         {
-          label: "New Window",
-          accelerator: "CommandOrControl+N",
-          click() {
-            createWindow()
-          }
-        },
-        {
-          label: "Open...",
-          accelerator: "CommandOrControl+O",
+          label: "Open file...",
+          accelerator: "CmdOrCtrl+O",
           click() {
             var window = BrowserWindow.getFocusedWindow()
+            if (!window.webContents.getURL().endsWith("index.html")) return
             var files = dialog.showOpenDialog(window, {
               title: "Select a robot log file to open",
               properties: ["openFile"],
@@ -157,27 +211,141 @@ function setupMenu() {
             files.then((files) => {
               if (files.filePaths.length > 0) {
                 window.webContents.send("open-file", files.filePaths[0])
+                app.addRecentDocument(files.filePaths[0])
               }
             })
           }
         },
-        isMac ? { role: "close" } : { role: "quit" }
+        {
+          label: "Connect to Server",
+          accelerator: "CmdOrCtrl+K",
+          click() { }
+        },
+        {
+          label: "Download Logs...",
+          accelerator: "CmdOrCtrl+D",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "Coming soon...",
+              message: "Coming soon...",
+              detail: "This feature is not available yet.",
+            })
+          }
+        },
+        {
+          label: "Export as CSV...",
+          accelerator: "CmdOrCtrl+E",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "Coming soon...",
+              message: "Coming soon...",
+              detail: "This feature is not available yet.",
+            })
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "New Window",
+          accelerator: "CommandOrControl+N",
+          click() {
+            createWindow()
+          }
+        },
+        isMac ? { role: "close", accelerator: "Shift+Cmd+W" } : { role: "quit" }
       ]
     },
-    { role: "editMenu" },
+    {
+      label: "Tabs",
+      submenu: [
+        {
+          label: "New Line Graph",
+          accelerator: "CmdOrCtrl+1",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 1)
+          }
+        },
+        {
+          label: "New Table",
+          accelerator: "CmdOrCtrl+2",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 2)
+          }
+        },
+        {
+          label: "New Odometry",
+          accelerator: "CmdOrCtrl+3",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 3)
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Shift Left",
+          accelerator: "CmdOrCtrl+[",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "shift", -1)
+          }
+        },
+        {
+          label: "Shift Right",
+          accelerator: "CmdOrCtrl+]",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "shift", 1)
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Close Tab",
+          accelerator: "CmdOrCtrl+W",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "close", null)
+          }
+        },
+      ]
+    },
     { role: "viewMenu" },
     { role: "windowMenu" },
     {
       role: "help",
       submenu: [
+        ...(isMac ? [] : [{
+          label: "About Advantage Scope",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "About",
+              message: "Advantage Scope",
+              detail: "Version " + app.getVersion(),
+              buttons: ["Close"]
+            })
+          }
+        }]),
         {
-          label: "Check for Updates...",
+          label: "Check for Updates",
           click() {
             setUpdateNotification({
               repository: "Mechanical-Advantage/AdvantageScope",
               silent: false
             })
           }
+        },
+        ...(isMac ? [] : [{
+          label: "Show Preferences...",
+          accelerator: "Ctrl+,",
+          click() {
+            openPreferences()
+          }
+        }]),
+        {
+          type: "separator"
         },
         {
           label: "View Repository",
@@ -198,6 +366,17 @@ function setupMenu() {
   const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 }
+
+function openPreferences() {
+  dialog.showMessageBox({
+    type: "info",
+    title: "Coming soon...",
+    message: "Coming soon...",
+    detail: "This feature is not available yet.",
+  })
+}
+
+// Communicate with preload
 
 ipcMain.on("error", (_, title, content) => {
   dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {

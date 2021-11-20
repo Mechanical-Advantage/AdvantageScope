@@ -85,6 +85,16 @@ ipcRenderer.on("add-tab-response", (_, type) => {
   }))
 })
 
+// Menu bar tab commands
+ipcRenderer.on("tab-command", (_, type, value) => {
+  window.dispatchEvent(new CustomEvent("tab-command", {
+    detail: {
+      type: type,
+      value: value
+    }
+  }))
+})
+
 // Edit axis popup
 window.addEventListener("edit-axis", event => {
   ipcRenderer.send("edit-axis", event.detail)
@@ -111,9 +121,6 @@ window.addEventListener("start-live-socket", event => {
   client = net.createConnection({
     host: event.detail.host,
     port: event.detail.port
-  }, () => {
-    console.log("Connection local address : " + client.localAddress + ":" + client.localPort);
-    console.log("Connection remote address : " + client.remoteAddress + ":" + client.remotePort);
   })
 
   client.on("data", data => {
@@ -121,12 +128,19 @@ window.addEventListener("start-live-socket", event => {
       detail: data
     }))
   })
+
+  client.on("error", () => {
+    window.dispatchEvent(new Event("live-error"))
+  })
+
+  client.on("close", () => {
+    window.dispatchEvent(new Event("live-closed"))
+  })
 })
 
 window.addEventListener("stop-live-socket", event => {
   if (client) {
     client.destroy()
     client = null
-    console.log("Connection closed")
   }
 })

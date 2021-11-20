@@ -58,19 +58,28 @@ export class Tabs {
     // Control buttons
     this.#leftButton.addEventListener("click", () => this.shiftSelected(-1))
     this.#rightButton.addEventListener("click", () => this.shiftSelected(1))
-    this.#closeButton.addEventListener("click", () => {
-      if (this.#selectedTab == 0) return // Don't close metadata tab
-      this.#viewer.removeChild(this.#tabList[this.#selectedTab].content)
-      this.#tabList.splice(this.#selectedTab, 1)
-      if (this.#selectedTab > this.#tabList.length - 1) this.#selectedTab = this.#tabList.length - 1
-      this.#updateElements()
-    })
+    this.#closeButton.addEventListener("click", () => this.closeSelected())
     this.#addButton.addEventListener("click", () => window.dispatchEvent(new Event("add-tab")))
-    window.addEventListener("add-tab-response", (event) => {
+    window.addEventListener("add-tab-response", event => {
       this.addTab(event.detail)
     })
     this.addTab(0, true)
     this.addTab(1)
+
+    // Menu bar commands
+    window.addEventListener("tab-command", event => {
+      switch (event.detail.type) {
+        case "new":
+          this.addTab(event.detail.value)
+          break;
+        case "shift":
+          this.shiftSelected(event.detail.value)
+          break;
+        case "close":
+          this.closeSelected()
+          break;
+      }
+    })
 
     // Periodic function
     var periodic = () => {
@@ -136,6 +145,15 @@ export class Tabs {
     })
   }
 
+  // Closes the current tab
+  closeSelected() {
+    if (this.#selectedTab == 0) return // Don't close metadata tab
+    this.#viewer.removeChild(this.#tabList[this.#selectedTab].content)
+    this.#tabList.splice(this.#selectedTab, 1)
+    if (this.#selectedTab > this.#tabList.length - 1) this.#selectedTab = this.#tabList.length - 1
+    this.#updateElements()
+  }
+
   // Adds a new tab to the list
   addTab(type, skipUpdate) {
     var tabData = { type: type }
@@ -184,6 +202,8 @@ export class Tabs {
 
   // Updates all tab elements
   #updateElements() {
+    var scrollPos = this.#tabBar.scrollLeft
+
     // Remove old tabs
     while (this.#tabBar.firstChild) {
       this.#tabBar.removeChild(this.#tabBar.firstChild)
@@ -211,7 +231,6 @@ export class Tabs {
     })
 
     // Create elements
-    var scrollPos = this.#tabBar.scrollLeft
     this.#tabList.forEach((tabItem, index) => {
       var tab = null
       if (index > this.#tabBar.children.length - 1) {

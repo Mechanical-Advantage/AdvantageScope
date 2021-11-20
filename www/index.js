@@ -9,10 +9,14 @@ window.isFullscreen = false
 window.isFocused = true
 
 window.log = null
-window.liveStart = null
+window.liveActive = false // Connected (or connecting) to live server
+window.liveReconnecting = false // Reconnecting, supress errors
+window.liveStart = null // If not null, actively receiving live data
 window.selection = new Selection()
 window.tabs = new Tabs()
 window.sideBar = new SideBar()
+
+var decodeWorker = null
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle
@@ -96,12 +100,18 @@ window.addEventListener("open-file", event => {
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
   setTitle(logName + " \u2014 Advantage Scope")
-  window.dispatchEvent(new Event("stop-live-socket")) // Stop live logging
+  if (window.liveActive) {
+    selection.unlock()
+    window.liveActive = false
+    window.liveReconnecting = false
+    window.liveStart = null
+    window.dispatchEvent(new Event("stop-live-socket")) // Stop live logging
+  }
 
   console.log("Opening file '" + logName + "'")
   var startTime = new Date().getTime()
 
-  var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
+  decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   decodeWorker.postMessage(event.detail.data)
   decodeWorker.onmessage = event => {
     switch (event.data.status) {
@@ -134,17 +144,18 @@ window.addEventListener("start-live", () => {
   const host = "127.0.0.1"
   const port = 5800
 
-  setTitle(host + " \u2014 Advantage Scope")
-  console.log("Starting live logging from " + host)
+  setTitle(host + ":" + port.toString() + " \u2014 Advantage Scope")
+  window.liveActive = true
 
-  var decodeWorker = new Worker("decodeWorker.js", { type: "module" })
-  window.addEventListener("live-data", event => {
-    decodeWorker.postMessage(event.detail)
-  })
+  decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   var firstData = true
   decodeWorker.onmessage = event => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
+        selection.unlock()
+        window.liveActive = false
+        window.liveReconnecting = false
+        window.liveStart = null
         window.dispatchEvent(new CustomEvent("error", {
           detail: { title: "Failed to read log", content: event.data.message }
         }))
@@ -161,6 +172,7 @@ window.addEventListener("start-live", () => {
         if (firstData) { // Reset everything when log changes
           setWindowState(oldState)
           firstData = false
+          window.liveReconnecting = false
           window.liveStart = new Date().getTime() / 1000
         } else if (window.log.getFieldCount() != oldFieldCount) { // Reset sidebar when fields update
           sideBar.state = sideBar.state
@@ -177,6 +189,37 @@ window.addEventListener("start-live", () => {
       port: port
     }
   }))
+})
+
+window.addEventListener("live-data", event => {
+  if (window.liveActive) {
+    decodeWorker.postMessage(event.detail)
+  }
+})
+
+window.addEventListener("live-error", () => {
+  if (window.liveActive) {
+    if (window.liveReconnecting) {
+      window.setTimeout(() => {
+        window.dispatchEvent(new Event("start-live"))
+      }, 1000)
+    } else {
+      window.dispatchEvent(new CustomEvent("error", {
+        detail: { title: "Log connection failed", content: "Could not connect to log server at 127.0.0.1:5800." }
+      }))
+    }
+  }
+})
+
+window.addEventListener("live-closed", () => {
+  if (window.liveStart != null) {
+    selection.unlock()
+    window.liveStart = null
+    window.liveReconnecting = true
+    window.setTimeout(() => {
+      window.dispatchEvent(new Event("start-live"))
+    }, 1000)
+  }
 })
 
 // MANAGE DRAGGING

@@ -1,7 +1,7 @@
 {
   "name": "advantage-scope",
   "productName": "Advantage Scope",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "Logging tool from FRC Team 6328.",
   "main": "main.js",
   "scripts": {
@@ -13,7 +13,7 @@
   "author": "FRC 6328",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^13.1.9",
+    "electron": "^16.0.0",
     "electron-builder": "^22.11.7"
   },
   "dependencies": {

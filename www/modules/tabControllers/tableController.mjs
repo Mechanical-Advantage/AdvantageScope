@@ -11,6 +11,7 @@ export class TableController {
   #stateCache = null
   #rowHeight = 25
   #scrollMargin = 3000
+  #maxRows = 1000
   #fields = []
   #currentRange = [0, 0]
 
@@ -29,8 +30,8 @@ export class TableController {
     var jump = () => {
       // Determine target time
       if (this.#input.value == "") {
-        if (window.selection.selectedTime) {
-          var targetTime = window.selection.selectedTime
+        if (selection.selectedTime) {
+          var targetTime = selection.selectedTime
         } else {
           var targetTime = 0
         }
@@ -120,7 +121,7 @@ export class TableController {
     this.#noDataAlert.hidden = true
     this.#tableContainer.hidden = false
 
-    this.#currentRange = [0, log.getTimestamps().length < 1000 ? log.getTimestamps().length - 1 : 999]
+    this.#currentRange = [0, log.getTimestamps().length < this.#maxRows ? log.getTimestamps().length - 1 : this.#maxRows - 1]
     this.#fields = newState.fields.map(x => {
       var id = log.findFieldDisplay(x)
       if (id != -1) {
@@ -148,16 +149,16 @@ export class TableController {
   // Jumps to the specified time
   #jumpToTime(targetTime) {
     // Find index
-    var target = log.getTimestamps().findIndex(value => Math.floor(value * 1000) / 1000 > targetTime)
+    var target = log.getTimestamps().findIndex(value => Math.floor(value * this.#maxRows) / this.#maxRows > targetTime)
     if (target == -1) target = log.getTimestamps().length
     if (target < 1) target = 1
     target -= 1
 
     // Jump to index
-    if (log.getTimestamps().length < 1000) {
+    if (log.getTimestamps().length < this.#maxRows) {
       this.#currentRange = [0, log.getTimestamps().length - 1]
     } else {
-      this.#currentRange = [target - 500, target + 499]
+      this.#currentRange = [target - (this.#maxRows / 2), target + (this.#maxRows / 2) - 1]
       var offset = 0
       if (this.#currentRange[0] < 0) offset = this.#currentRange[0] * -1
       if (this.#currentRange[1] > log.getTimestamps().length - 1) offset = log.getTimestamps().length - 1 - this.#currentRange[1]
@@ -225,8 +226,14 @@ export class TableController {
         if (target >= this.#currentRange[0] && target <= this.#currentRange[1]) this.#tableBody.children[target - this.#currentRange[0] + 1].classList.add(className)
       }
     }
-    highlight(window.selection.selectedTime, "selected")
-    highlight(window.selection.hoveredTime, "hovered")
+    if (selection.isLocked()) {
+      Array.from(this.#tableBody.children).forEach(row => row.classList.remove("selected"))
+      Array.from(this.#tableBody.children).forEach(row => row.classList.remove("hovered"))
+      this.#tableBody.lastElementChild.classList.add("selected")
+    } else {
+      highlight(selection.selectedTime, "selected")
+      highlight(selection.hoveredTime, "hovered")
+    }
   }
 
   // Formats a time as a string of the correct length
@@ -271,16 +278,16 @@ export class TableController {
 
       // Bind selection controls
       row.addEventListener("mouseenter", () => {
-        window.selection.hoveredTime = log.getTimestamps()[i]
+        selection.hoveredTime = log.getTimestamps()[i]
       })
       row.addEventListener("mouseleave", () => {
-        window.selection.hoveredTime = null
+        selection.hoveredTime = null
       })
       row.addEventListener("click", () => {
-        window.selection.selectedTime = log.getTimestamps()[i]
+        selection.selectedTime = log.getTimestamps()[i]
       })
       row.addEventListener("contextmenu", () => {
-        window.selection.selectedTime = null
+        selection.selectedTime = null
       })
 
       // Add timestamp
@@ -323,34 +330,53 @@ export class TableController {
   periodic() {
     if (log == null) return
 
-    // Determine if rows need to be updated
-    var adjusted = false
-    if (this.#tableContainer.scrollTop < this.#scrollMargin && this.#currentRange[0] > 0) {
-      adjusted = true
-      var offset = this.#tableContainer.scrollTop - this.#scrollMargin
-    }
-    if (this.#tableContainer.scrollHeight - this.#tableContainer.clientHeight - this.#tableContainer.scrollTop < this.#scrollMargin && this.#currentRange[1] < log.getTimestamps().length - 1) {
-      adjusted = true
-      var offset = this.#scrollMargin - (this.#tableContainer.scrollHeight - this.#tableContainer.clientHeight - this.#tableContainer.scrollTop)
+    var atMaxRows = this.#currentRange[1] - this.#currentRange[0] + 1 >= this.#maxRows
+    if (!atMaxRows) {
+      // If not enough rows, add any that are missing
+      if (log.getTimestamps().length > 0) {
+        var rowOffset = log.getTimestamps().length - this.#currentRange[1] - 1
+      } else {
+        var rowOffset = 0
+      }
+    } else {
+      // Determine if rows need to be updated based on scroll
+      var offset = 0
+      if (this.#tableContainer.scrollTop < this.#scrollMargin && this.#currentRange[0] > 0) {
+        offset = this.#tableContainer.scrollTop - this.#scrollMargin
+      }
+      if (this.#tableContainer.scrollHeight - this.#tableContainer.clientHeight - this.#tableContainer.scrollTop < this.#scrollMargin && this.#currentRange[1] < log.getTimestamps().length - 1) {
+        offset = this.#scrollMargin - (this.#tableContainer.scrollHeight - this.#tableContainer.clientHeight - this.#tableContainer.scrollTop)
+      }
+      var rowOffset = Math.floor(offset / this.#rowHeight)
     }
 
     // Update rows
-    if (adjusted) {
-      var rowOffset = Math.floor(offset / this.#rowHeight)
+    if (rowOffset != 0) {
       if (this.#currentRange[0] + rowOffset < 0) rowOffset = this.#currentRange[0] * -1
       if (this.#currentRange[1] + rowOffset > log.getTimestamps().length - 1) rowOffset = log.getTimestamps().length - 1 - this.#currentRange[1]
-      this.#currentRange[0] += rowOffset
-      this.#currentRange[1] += rowOffset
+      if (atMaxRows) { // Offset both sides if at row limit
+        this.#currentRange[0] += rowOffset
+        this.#currentRange[1] += rowOffset
+      } else if (rowOffset < 0) { // Add to min range to extend
+        this.#currentRange[0] += rowOffset
+      } else if (rowOffset > 0) { // Add to max range to extend
+        this.#currentRange[1] += rowOffset
+      }
+
 
       if (rowOffset < 0) {
-        for (let i = 0; i < rowOffset * -1; i++) {
-          this.#tableBody.removeChild(this.#tableBody.lastElementChild)
+        if (atMaxRows) {
+          for (let i = 0; i < rowOffset * -1; i++) {
+            this.#tableBody.removeChild(this.#tableBody.lastElementChild)
+          }
         }
         this.#fillRange([this.#currentRange[0], this.#currentRange[0] - rowOffset - 1], true)
       }
       if (rowOffset > 0) {
-        for (let i = 0; i < rowOffset; i++) {
-          this.#tableBody.removeChild(this.#tableBody.children[1])
+        if (atMaxRows) {
+          for (let i = 0; i < rowOffset; i++) {
+            this.#tableBody.removeChild(this.#tableBody.children[1])
+          }
         }
         this.#fillRange([this.#currentRange[1] - rowOffset + 1, this.#currentRange[1]], false)
       }
@@ -358,7 +384,12 @@ export class TableController {
 
     // Update based on selected & hovered times
     this.#updateHighlights()
-    var placeholder = window.selection.selectedTime == null ? 0 : window.selection.selectedTime
+    var placeholder = selection.selectedTime == null ? 0 : selection.selectedTime
     this.#input.placeholder = this.#formatTime(placeholder)
+
+    // Scroll to bottom if locked
+    if (selection.isLocked()) {
+      this.#tableContainer.scrollTop = this.#tableContainer.scrollHeight - this.#tableContainer.clientHeight
+    }
   }
 }
