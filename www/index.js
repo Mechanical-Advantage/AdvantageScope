@@ -64,7 +64,7 @@ window.setWindowState = (newState, updateSelection) => {
 }
 
 window.addEventListener("restore-state", event => {
-  setWindowState(event.detailm, true)
+  setWindowState(event.detail, true)
 })
 
 window.setInterval(() => {

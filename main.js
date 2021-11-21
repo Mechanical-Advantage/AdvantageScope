@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain } = require("electron")
+const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain, nativeTheme } = require("electron")
 const WindowStateKeeper = require("./windowState.js")
 const { setUpdateNotification } = require("electron-update-notifier")
 const jsonfile = require("jsonfile")
@@ -9,16 +9,52 @@ const os = require("os")
 const repository = "Mechanical-Advantage/AdvantageScope"
 const prefsFileName = path.join(app.getPath("userData"), "prefs.json")
 const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
+var iconPath = null
+const defaultPrefs = {
+  address: "10.63.28.2",
+  port: 5800,
+  rioPath: "/media/sda1/",
+  theme: process.platform == "linux" ? "light" : "system"
+}
+
+// Workaround to set menu bar color on some Linux environments
+if (process.platform == "linux" && fs.existsSync(prefsFileName)) {
+  var prefs = jsonfile.readFileSync(prefsFileName)
+  if ("theme" in prefs) {
+    process.env["GTK_THEME"] = "Adwaita:" + prefs.theme
+  }
+}
 
 var firstOpenPath = null
 app.whenReady().then(() => {
-  // Create preferences if file not found
+  // Pick icon based on platform
+  switch (process.platform) {
+    case "win32":
+      iconPath = path.join(__dirname, "assets/app-icon-4096.png") // Square icon
+      break;
+    case "linux":
+      iconPath = path.join(__dirname, "assets/app-icon-rounded.png") // Rounded icon
+      break;
+    default:
+      iconPath = null // macOS uses the app icon by default
+      break;
+  }
+
+  // Check preferences and set theme
   if (!fs.existsSync(prefsFileName)) {
-    jsonfile.writeFileSync(prefsFileName, {
-      address: "10.63.28.2",
-      port: 5800,
-      rioPath: "/media/sda1/"
-    })
+    jsonfile.writeFileSync(prefsFileName, defaultPrefs)
+    nativeTheme.themeSource = defaultPrefs.theme
+  } else {
+    var prefs = jsonfile.readFileSync(prefsFileName)
+    var modified = false
+    for (let [key, value] of Object.entries(defaultPrefs)) {
+      if (!(key in prefs)) {
+        prefs[key] = value
+        modified = true
+      }
+    }
+    if (modified) jsonfile.writeFileSync(prefsFileName, prefs)
+    nativeTheme.themeSource = prefs.theme
   }
 
   // Create menu and window
@@ -59,7 +95,8 @@ app.whenReady().then(() => {
         message: "Download native version?",
         detail: "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
         buttons: ["Download", "Later"],
-        defaultId: 0
+        defaultId: 0,
+        icon: iconPath
       }).then(result => {
         if (result.response == 0) shell.openExternal("https://github.com/" + repository + "/releases/latest")
       })
@@ -94,8 +131,9 @@ function createWindow() {
   var prefs = {
     minWidth: 800,
     minHeight: 400,
-    icon: path.join(__dirname, "assets/icon-256.png"),
+    icon: iconPath,
     show: false,
+    tabbingIdentifier: "main",
     webPreferences: {
       preload: path.join(__dirname, "indexPreload.js")
     }
@@ -186,6 +224,15 @@ function setupMenu() {
           }
         },
         {
+          label: "Check for Updates...",
+          click() {
+            setUpdateNotification({
+              repository: repository,
+              silent: false
+            })
+          }
+        },
+        {
           type: "separator"
         },
         {
@@ -251,6 +298,7 @@ function setupMenu() {
               title: "Coming soon...",
               message: "Coming soon...",
               detail: "This feature is not available yet.",
+              icon: iconPath
             })
           }
         },
@@ -263,6 +311,7 @@ function setupMenu() {
               title: "Coming soon...",
               message: "Coming soon...",
               detail: "This feature is not available yet.",
+              icon: iconPath
             })
           }
         },
@@ -338,37 +387,40 @@ function setupMenu() {
     {
       role: "help",
       submenu: [
-        ...(isMac ? [] : [{
-          label: "About Advantage Scope",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Advantage Scope",
-              detail: "Version " + app.getVersion(),
-              buttons: ["Close"]
-            })
+        ...(isMac ? [] : [
+          {
+            label: "About Advantage Scope",
+            click() {
+              dialog.showMessageBox({
+                type: "info",
+                title: "About",
+                message: "Advantage Scope",
+                detail: "Version: " + app.getVersion() + "\nPlatform: " + process.platform + "-" + process.arch,
+                buttons: ["Close"],
+                icon: iconPath
+              })
+            }
+          },
+          {
+            label: "Show Preferences...",
+            accelerator: "Ctrl+,",
+            click() {
+              openPreferences()
+            }
+          },
+          {
+            label: "Check for Updates...",
+            click() {
+              setUpdateNotification({
+                repository: repository,
+                silent: false
+              })
+            }
+          },
+          {
+            type: "separator"
           }
-        }]),
-        {
-          label: "Check for Updates",
-          click() {
-            setUpdateNotification({
-              repository: repository,
-              silent: false
-            })
-          }
-        },
-        ...(isMac ? [] : [{
-          label: "Show Preferences...",
-          accelerator: "Ctrl+,",
-          click() {
-            openPreferences()
-          }
-        }]),
-        {
-          type: "separator"
-        },
+        ]),
         {
           label: "View Repository",
           click() {
@@ -402,8 +454,9 @@ function openPreferences() {
     height: height,
     x: Math.floor(BrowserWindow.getFocusedWindow().getBounds().x + (BrowserWindow.getFocusedWindow().getBounds().width / 2) - (width / 2)),
     y: Math.floor(BrowserWindow.getFocusedWindow().getBounds().y + (BrowserWindow.getFocusedWindow().getBounds().height / 2) - (height / 2)),
+    useContentSize: true,
     resizable: false,
-    icon: path.join(__dirname, "assets/icon-256.png"),
+    icon: iconPath,
     show: false,
     fullscreenable: false,
     webPreferences: {
@@ -420,16 +473,18 @@ function openPreferences() {
 
 // COMMUNICATION WITH PRELOAD
 
-ipcMain.on("exit-preferences", (_, data) => {
+ipcMain.on("update-preferences", (_, data) => {
+  jsonfile.writeFileSync(prefsFileName, data)
+  nativeTheme.themeSource = data.theme
+  indexWindows.forEach(window => {
+    if (!window.isDestroyed()) {
+      window.send("set-preferences", data)
+    }
+  })
+})
+
+ipcMain.on("exit-preferences", () => {
   prefsWindow.close()
-  if (data) {
-    jsonfile.writeFileSync(prefsFileName, data)
-    indexWindows.forEach(window => {
-      if (!window.isDestroyed()) {
-        window.send("set-preferences", data)
-      }
-    })
-  }
 })
 
 ipcMain.on("error", (_, title, content) => {
@@ -437,7 +492,8 @@ ipcMain.on("error", (_, title, content) => {
     type: "error",
     title: "Error",
     message: title,
-    detail: content
+    detail: content,
+    icon: iconPath
   })
 })
 
@@ -507,9 +563,10 @@ ipcMain.on("edit-axis", (_, data) => {
       // Create edit axis window
       const editWindow = new BrowserWindow({
         width: 300,
-        height: 140,
+        height: 110,
+        useContentSize: true,
         resizable: false,
-        icon: path.join(__dirname, "assets/icon-256.png"),
+        icon: iconPath,
         show: false,
         parent: window,
         modal: true,
@@ -551,7 +608,7 @@ ipcMain.on("create-odometry-popup", (_, id) => {
     minWidth: 200,
     minHeight: 100,
     resizable: true,
-    icon: path.join(__dirname, "assets/icon-256.png"),
+    icon: iconPath,
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "odometryPopupPreload.js")

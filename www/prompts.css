@@ -26,7 +26,7 @@ td.label {
   font-size: 14px;
 }
 
-input {
+input, select {
   box-sizing: border-box;
   display: block;
   width: 100%;
