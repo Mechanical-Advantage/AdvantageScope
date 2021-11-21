@@ -20,8 +20,8 @@ const defaultPrefs = {
 // Workaround to set menu bar color on some Linux environments
 if (process.platform == "linux" && fs.existsSync(prefsFileName)) {
   var prefs = jsonfile.readFileSync(prefsFileName)
-  if ("theme" in prefs) {
-    process.env["GTK_THEME"] = "Adwaita:" + prefs.theme
+  if (prefs.theme == "dark") {
+    process.env["GTK_THEME"] = "Adwaita:dark"
   }
 }
 
