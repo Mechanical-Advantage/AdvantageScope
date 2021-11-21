@@ -13,10 +13,16 @@ table {
   top: 10px;
   left: 10px;
   width: calc(100% - 20px);
+  border-spacing: 0px;
 }
 
 tr {
-  line-height: 25px;
+  line-height: 27px;
+}
+
+td {
+  margin: 0px;
+  padding: 0px;
 }
 
 td.label {
@@ -29,7 +35,8 @@ td.label {
 input, select {
   box-sizing: border-box;
   display: block;
-  width: 100%;
+  margin-left: 5px;
+  width: calc(100% - 5px);
 }
 
 button {

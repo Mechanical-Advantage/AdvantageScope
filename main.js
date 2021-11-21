@@ -376,7 +376,7 @@ function setupMenu() {
         },
         {
           label: "Close Tab",
-          accelerator: "CmdOrCtrl+W",
+          accelerator: isMac ? "Cmd+W" : "Ctrl+Q",
           click() {
             BrowserWindow.getFocusedWindow().webContents.send("tab-command", "close", null)
           }
@@ -448,7 +448,7 @@ function openPreferences() {
     return
   }
   const width = 400
-  const height = 170
+  const height = process.platform == "win32" ? 222 : 162 // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -563,7 +563,7 @@ ipcMain.on("edit-axis", (_, data) => {
       // Create edit axis window
       const editWindow = new BrowserWindow({
         width: 300,
-        height: 110,
+        height: process.platform == "win32" ? 125 : 108,  // "useContentSize" is broken on Windows when not resizable
         useContentSize: true,
         resizable: false,
         icon: iconPath,

@@ -327,7 +327,7 @@ export class LineGraphController {
 
   // Standard function: updates based on new live data
   updateLive() {
-    this.#updateScroll(this.#maxScrollVert)
+    this.#updateScroll()
   }
 
   // Called by tab controller when side bar size changes
@@ -362,6 +362,16 @@ export class LineGraphController {
       var timeRange = [log.getTimestamps()[0], log.getTimestamps()[log.getTimestamps().length - 1]]
     }
 
+    // Check if at limits
+    this.#maxScrollVert = Math.ceil(this.#scrollOverlay.scrollTop) >= Math.floor(this.#scrollOverlay.scrollHeight - this.#scrollOverlay.clientHeight) - 1
+    this.#maxScrollHorz = Math.ceil(this.#scrollOverlay.scrollLeft) >= Math.floor(this.#scrollOverlay.scrollWidth - this.#scrollOverlay.clientWidth) - 1
+    if (selection.isLocked()) {
+      this.#maxScrollVert = false // Disable auto zoom while locked
+    }
+    if (log) {
+      if (log.getTimestamps().length < 10) this.#maxScrollVert = true // Lock to max zoom until log is of reasonable length
+    }
+
     // Calculate maximum scroll lengths
     var scrollLengthVertical = this.#calcReverseZoom(timeRange[1] - timeRange[0]) // Calc maximum zoom based on time range
     var scrollLengthHorizontal = this.#scrollOverlay.clientWidth * ((timeRange[1] - timeRange[0]) / this.#calcZoom()) // Calc horizontal length based on zoom
@@ -369,7 +379,7 @@ export class LineGraphController {
     // Adjust content size and enforce limits
     this.#scrollOverlayContent.style.height = (scrollLengthVertical + this.#scrollOverlay.clientHeight).toString() + "px"
     this.#scrollOverlayContent.style.width = scrollLengthHorizontal.toString() + "px"
-    if (reset || platform != this.#lastPlatform) {
+    if (reset || platform != this.#lastPlatform || this.#maxScrollVert) {
       this.#lastPlatform = platform
       this.#scrollOverlay.scrollTop = scrollLengthVertical
       this.#scrollOverlay.scrollLeft = 0
@@ -404,16 +414,6 @@ export class LineGraphController {
     var minX = ((this.#scrollOverlay.scrollLeft / this.#scrollOverlay.clientWidth) * this.#calcZoom()) + timeRange[0]
     this.#xRange = [minX, minX + this.#calcZoom()]
     this.#lastScrollTop = this.#scrollOverlay.scrollTop
-
-    // Check if at limits
-    this.#maxScrollVert = Math.ceil(this.#scrollOverlay.scrollTop) >= Math.floor(scrollLengthVertical) - 5
-    this.#maxScrollHorz = Math.ceil(this.#scrollOverlay.scrollLeft) == Math.floor(scrollLengthHorizontal)
-    if (selection.isLocked()) {
-      this.#maxScrollVert = false // Disable auto zoom while locked
-    }
-    if (log) {
-      if (log.getTimestamps().length < 10) this.#maxScrollVert = true // Lock to max zoom until log is of reasonable length}
-    }
   }
 
   // Cleans up floating point errors
@@ -501,7 +501,7 @@ export class LineGraphController {
   // Called every 15ms by the tab controller
   periodic() {
     // Reset scroll if queued
-    if (this.#resetOnNextUpdate || this.#maxScrollVert) {
+    if (this.#resetOnNextUpdate) {
       this.#resetOnNextUpdate = false
       this.#updateScroll(true)
     } else if (selection.isLocked()) { // Update every cycle when locked to ensure smoothness
