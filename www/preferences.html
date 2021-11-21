@@ -8,22 +8,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="global.css">
   <link rel="stylesheet" href="prompts.css">
-  <title>Edit Axis &mdash; Advantage Scope</title>
+  <title>Preferences &mdash; Advantage Scope</title>
 </head>
 
 <body>
   <table>
     <tbody>
       <tr>
-        <td class="label">Maximum value</td>
+        <td class="label">Log server address</td>
         <td class="input" tabindex="-1">
-          <input type="number" id="max" />
+          <input type="text" id="address" />
         </td>
       </tr>
       <tr>
-        <td class="label">Minimum value</td>
+        <td class="label">Log server port</td>
         <td class="input" tabindex="-1">
-          <input type="number" id="min" />
+          <input type="number" id="port" />
+        </td>
+      </tr>
+      <tr>
+        <td class="label">roboRIO log folder</td>
+        <td class="input" tabindex="-1">
+          <input type="text" id="rioPath" />
         </td>
       </tr>
     </tbody>

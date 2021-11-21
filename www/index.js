@@ -7,6 +7,7 @@ window.platform = null
 window.platformRelease = null
 window.isFullscreen = false
 window.isFocused = true
+window.prefs = {}
 
 window.log = null
 window.liveActive = false // Connected (or connecting) to live server
@@ -56,14 +57,14 @@ window.getWindowState = () => {
   }
 }
 
-window.setWindowState = newState => {
+window.setWindowState = (newState, updateSelection) => {
   tabs.state = newState.tabs
   sideBar.state = newState.sideBar
-  selection.state = newState.selection
+  if (updateSelection) selection.state = newState.selection
 }
 
 window.addEventListener("restore-state", event => {
-  setWindowState(event.detail)
+  setWindowState(event.detailm, true)
 })
 
 window.setInterval(() => {
@@ -96,15 +97,19 @@ window.addEventListener("set-platform", event => {
   updateFancyWindow()
 })
 
+window.addEventListener("set-preferences", event => {
+  window.prefs = event.detail
+})
+
 window.addEventListener("open-file", event => {
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
   setTitle(logName + " \u2014 Advantage Scope")
   if (window.liveActive) {
-    selection.unlock()
     window.liveActive = false
     window.liveReconnecting = false
     window.liveStart = null
+    selection.unlock()
     window.dispatchEvent(new Event("stop-live-socket")) // Stop live logging
   }
 
@@ -126,36 +131,32 @@ window.addEventListener("open-file", event => {
         window.log = new Log()
         window.log.rawData = event.data.data
         window.liveStart = null
+        selection.updateLockButtons()
 
         var length = new Date().getTime() - startTime
         console.log("Log ready in " + length.toString() + "ms")
 
-        setWindowState(oldState) // Set to the same state (resets everything)
+        setWindowState(oldState, true) // Set to the same state (resets everything)
         break
     }
   }
 })
 
-window.liveTest = () => {
-  window.dispatchEvent(new Event("start-live"))
-}
-
 window.addEventListener("start-live", () => {
-  const host = "127.0.0.1"
-  const port = 5800
-
-  setTitle(host + ":" + port.toString() + " \u2014 Advantage Scope")
+  window.liveStart = null
   window.liveActive = true
+  window.dispatchEvent(new Event("stop-live-socket"))
+  setTitle(prefs.address + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
 
   decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   var firstData = true
   decodeWorker.onmessage = event => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
-        selection.unlock()
         window.liveActive = false
         window.liveReconnecting = false
         window.liveStart = null
+        selection.unlock()
         window.dispatchEvent(new CustomEvent("error", {
           detail: { title: "Failed to read log", content: event.data.message }
         }))
@@ -169,14 +170,16 @@ window.addEventListener("start-live", () => {
         window.log = new Log()
         window.log.rawData = event.data.data
 
-        if (firstData) { // Reset everything when log changes
-          setWindowState(oldState)
+        if (firstData) {
+          setWindowState(oldState, true)
           firstData = false
           window.liveReconnecting = false
           window.liveStart = new Date().getTime() / 1000
-        } else if (window.log.getFieldCount() != oldFieldCount) { // Reset sidebar when fields update
-          sideBar.state = sideBar.state
+          selection.updateLockButtons()
+        } else if (window.log.getFieldCount() != oldFieldCount) { // Reset state when fields update
+          setWindowState(oldState, false)
         }
+        sideBar.updateTitle()
         tabs.updateLive()
         break
     }
@@ -185,8 +188,8 @@ window.addEventListener("start-live", () => {
   // Start!
   window.dispatchEvent(new CustomEvent("start-live-socket", {
     detail: {
-      host: host,
-      port: port
+      address: prefs.address,
+      port: prefs.port
     }
   }))
 })
@@ -205,7 +208,7 @@ window.addEventListener("live-error", () => {
       }, 1000)
     } else {
       window.dispatchEvent(new CustomEvent("error", {
-        detail: { title: "Log connection failed", content: "Could not connect to log server at 127.0.0.1:5800." }
+        detail: { title: "Log connection failed", content: "Could not connect to log server at " + prefs.address + ":" + prefs.port }
       }))
     }
   }
@@ -213,9 +216,9 @@ window.addEventListener("live-error", () => {
 
 window.addEventListener("live-closed", () => {
   if (window.liveStart != null) {
-    selection.unlock()
     window.liveStart = null
     window.liveReconnecting = true
+    selection.unlock()
     window.setTimeout(() => {
       window.dispatchEvent(new Event("start-live"))
     }, 1000)

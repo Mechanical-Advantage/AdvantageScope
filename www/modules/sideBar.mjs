@@ -79,17 +79,7 @@ export class SideBar {
     }
 
     // Update title
-    var runtime = log.getTimestamps()[log.getTimestamps().length - 1]
-    var runtimeUnit = "s"
-    if (runtime > 120) {
-      runtime /= 60
-      runtimeUnit = "m"
-    }
-    if (runtime > 120) {
-      runtime /= 60
-      runtimeUnit = "h"
-    }
-    this.#sideBarTitle.innerText = log.getFieldCount().toString() + " field" + (log.getFieldCount() == 0 ? "" : "s") + ", " + Math.round(runtime).toString() + runtimeUnit + " runtime"
+    this.updateTitle()
 
     // Sorting function that correctly interprets numbers within strings
     function smartSort(a, b) {
@@ -178,6 +168,21 @@ export class SideBar {
 
     // Restore scroll position
     this.#sideBar.scrollTop = newState.scroll
+  }
+
+  // Updates the title, including runtime
+  updateTitle() {
+    var runtime = log.getTimestamps()[log.getTimestamps().length - 1] - log.getTimestamps()[0]
+    var runtimeUnit = "s"
+    if (runtime > 120) {
+      runtime /= 60
+      runtimeUnit = "m"
+    }
+    if (runtime > 120) {
+      runtime /= 60
+      runtimeUnit = "h"
+    }
+    this.#sideBarTitle.innerText = log.getFieldCount().toString() + " field" + (log.getFieldCount() == 1 ? "" : "s") + ", " + Math.round(runtime).toString() + runtimeUnit + " runtime"
   }
 
   // Updates the current side bar width

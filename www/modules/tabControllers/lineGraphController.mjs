@@ -406,8 +406,14 @@ export class LineGraphController {
     this.#lastScrollTop = this.#scrollOverlay.scrollTop
 
     // Check if at limits
-    this.#maxScrollVert = Math.ceil(this.#scrollOverlay.scrollTop) == Math.floor(scrollLengthVertical)
+    this.#maxScrollVert = Math.ceil(this.#scrollOverlay.scrollTop) >= Math.floor(scrollLengthVertical) - 5
     this.#maxScrollHorz = Math.ceil(this.#scrollOverlay.scrollLeft) == Math.floor(scrollLengthHorizontal)
+    if (selection.isLocked()) {
+      this.#maxScrollVert = false // Disable auto zoom while locked
+    }
+    if (log) {
+      if (log.getTimestamps().length < 10) this.#maxScrollVert = true // Lock to max zoom until log is of reasonable length}
+    }
   }
 
   // Cleans up floating point errors
@@ -495,7 +501,7 @@ export class LineGraphController {
   // Called every 15ms by the tab controller
   periodic() {
     // Reset scroll if queued
-    if (this.#resetOnNextUpdate) {
+    if (this.#resetOnNextUpdate || this.#maxScrollVert) {
       this.#resetOnNextUpdate = false
       this.#updateScroll(true)
     } else if (selection.isLocked()) { // Update every cycle when locked to ensure smoothness

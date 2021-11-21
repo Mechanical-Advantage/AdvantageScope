@@ -1,13 +1,27 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain } = require("electron")
 const WindowStateKeeper = require("./windowState.js")
 const { setUpdateNotification } = require("electron-update-notifier")
+const jsonfile = require("jsonfile")
 const path = require("path")
+const fs = require("fs")
 const os = require("os")
 
+const repository = "Mechanical-Advantage/AdvantageScope"
+const prefsFileName = path.join(app.getPath("userData"), "prefs.json")
 const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
 
 var firstOpenPath = null
 app.whenReady().then(() => {
+  // Create preferences if file not found
+  if (!fs.existsSync(prefsFileName)) {
+    jsonfile.writeFileSync(prefsFileName, {
+      address: "10.63.28.2",
+      port: 5800,
+      rioPath: "/media/sda1/"
+    })
+  }
+
+  // Create menu and window
   setupMenu()
   var window = createWindow()
 
@@ -47,13 +61,13 @@ app.whenReady().then(() => {
         buttons: ["Download", "Later"],
         defaultId: 0
       }).then(result => {
-        if (result.response == 0) shell.openExternal("https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest")
+        if (result.response == 0) shell.openExternal("https://github.com/" + repository + "/releases/latest")
       })
 
     } else {
       // Check if update available
       setUpdateNotification({
-        repository: "Mechanical-Advantage/AdvantageScope"
+        repository: repository
       })
     }
   })
@@ -75,6 +89,7 @@ app.on("open-file", (_, path) => {
   }
 })
 
+var indexWindows = []
 function createWindow() {
   var prefs = {
     minWidth: 800,
@@ -122,11 +137,15 @@ function createWindow() {
   // Create window
   window = new BrowserWindow(prefs)
   windowState.manage(window)
+  indexWindows.push(window)
 
   // Finish setup
   if (process.defaultApp) window.webContents.openDevTools()
   window.once("ready-to-show", window.show)
-  window.webContents.on("dom-ready", () => window.send("set-fullscreen", window.isFullScreen()))
+  window.webContents.on("dom-ready", () => {
+    window.send("set-fullscreen", window.isFullScreen())
+    window.send("set-preferences", jsonfile.readFileSync(prefsFileName))
+  })
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
   window.on("leave-full-screen", () => window.send("set-fullscreen", false))
   window.on("blur", () => window.send("set-focused", false))
@@ -219,7 +238,9 @@ function setupMenu() {
         {
           label: "Connect to Server",
           accelerator: "CmdOrCtrl+K",
-          click() { }
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("start-live")
+          }
         },
         {
           label: "Download Logs...",
@@ -258,6 +279,8 @@ function setupMenu() {
         isMac ? { role: "close", accelerator: "Shift+Cmd+W" } : { role: "quit" }
       ]
     },
+    { role: "editMenu" },
+    { role: "viewMenu" },
     {
       label: "Tabs",
       submenu: [
@@ -311,7 +334,6 @@ function setupMenu() {
         },
       ]
     },
-    { role: "viewMenu" },
     { role: "windowMenu" },
     {
       role: "help",
@@ -332,7 +354,7 @@ function setupMenu() {
           label: "Check for Updates",
           click() {
             setUpdateNotification({
-              repository: "Mechanical-Advantage/AdvantageScope",
+              repository: repository,
               silent: false
             })
           }
@@ -350,7 +372,7 @@ function setupMenu() {
         {
           label: "View Repository",
           click() {
-            shell.openExternal("https://github.com/Mechanical-Advantage/AdvantageScope")
+            shell.openExternal("https://github.com/" + repository)
           }
         },
         {
@@ -367,16 +389,48 @@ function setupMenu() {
   Menu.setApplicationMenu(menu)
 }
 
+var prefsWindow = null
 function openPreferences() {
-  dialog.showMessageBox({
-    type: "info",
-    title: "Coming soon...",
-    message: "Coming soon...",
-    detail: "This feature is not available yet.",
+  if (prefsWindow != null && !prefsWindow.isDestroyed()) {
+    prefsWindow.focus()
+    return
+  }
+  const width = 400
+  const height = 170
+  prefsWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    x: Math.floor(BrowserWindow.getFocusedWindow().getBounds().x + (BrowserWindow.getFocusedWindow().getBounds().width / 2) - (width / 2)),
+    y: Math.floor(BrowserWindow.getFocusedWindow().getBounds().y + (BrowserWindow.getFocusedWindow().getBounds().height / 2) - (height / 2)),
+    resizable: false,
+    icon: path.join(__dirname, "assets/icon-256.png"),
+    show: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preferencesPreload.js")
+    }
   })
+
+  // Finish setup
+  prefsWindow.setMenu(null)
+  prefsWindow.once("ready-to-show", prefsWindow.show)
+  prefsWindow.webContents.on("dom-ready", () => prefsWindow.send("start", jsonfile.readFileSync(prefsFileName)))
+  prefsWindow.loadFile("www/preferences.html")
 }
 
-// Communicate with preload
+// COMMUNICATION WITH PRELOAD
+
+ipcMain.on("exit-preferences", (_, data) => {
+  prefsWindow.close()
+  if (data) {
+    jsonfile.writeFileSync(prefsFileName, data)
+    indexWindows.forEach(window => {
+      if (!window.isDestroyed()) {
+        window.send("set-preferences", data)
+      }
+    })
+  }
+})
 
 ipcMain.on("error", (_, title, content) => {
   dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {

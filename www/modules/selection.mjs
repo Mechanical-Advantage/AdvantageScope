@@ -9,6 +9,8 @@ export class Selection {
 
   #playButton = document.getElementsByClassName("play")[0]
   #pauseButton = document.getElementsByClassName("pause")[0]
+  #unlockedButton = document.getElementsByClassName("unlocked")[0]
+  #lockedButton = document.getElementsByClassName("locked")[0]
 
   constructor() {
     this.#playButton.addEventListener("click", () => { this.play() })
@@ -16,13 +18,27 @@ export class Selection {
     window.addEventListener("keydown", event => {
       if (event.code == "Space" && event.target == document.body) {
         event.preventDefault()
-        if (this.#playing) {
+        if (this.#playing || (window.liveStart != null && this.isLocked())) {
           this.pause()
         } else {
           this.play()
         }
       }
     })
+
+    this.#unlockedButton.addEventListener("click", () => { this.lock() })
+    this.#lockedButton.addEventListener("click", () => { this.unlock() })
+    window.addEventListener("keydown", event => {
+      if (event.code == "KeyL" && event.target == document.body && window.liveStart != null) {
+        event.preventDefault()
+        if (this.#locked) {
+          this.unlock()
+        } else {
+          this.lock()
+        }
+      }
+    })
+
     var setPlaybackSpeed = () => {
       window.dispatchEvent(new CustomEvent("set-playback-speed", {
         detail: this.#playbackSpeed
@@ -82,7 +98,9 @@ export class Selection {
       var time = ((new Date().getTime() / 1000) - this.#playStart) * this.#playbackSpeed + (this.#selectedTime == null ? 0 : this.#selectedTime)
       var lastTime = log == null ? 10 : log.getTimestamps()[log.getTimestamps().length - 1]
       if (time >= lastTime) {
-        this.pause()
+        this.#playing = false
+        this.#playButton.hidden = false
+        this.#pauseButton.hidden = true
         this.#selectedTime = lastTime
         return lastTime
       } else {
@@ -104,7 +122,10 @@ export class Selection {
 
   // Stops real time playback
   pause() {
-    if (this.#locked) return
+    if (this.#locked) {
+      this.unlock()
+      return
+    }
     this.#selectedTime = this.selectedTime
     this.#playing = false
     this.#playButton.hidden = false
@@ -117,6 +138,7 @@ export class Selection {
       this.pause()
       this.#locked = true
     }
+    this.updateLockButtons()
   }
 
   // Unlocks playback and returns to normal state
@@ -125,6 +147,7 @@ export class Selection {
       this.#selectedTime = this.selectedTime
       this.#locked = false
     }
+    this.updateLockButtons()
   }
 
   // Returns whether playback is active
@@ -135,5 +158,20 @@ export class Selection {
   // Returns whether selection is locked
   isLocked() {
     return this.#locked
+  }
+
+  // Updates (including hiding or showing) lock buttons
+  updateLockButtons() {
+    var showButtons = window.liveStart != null
+    document.documentElement.style.setProperty("--show-lock-buttons", showButtons ? 1 : 0)
+    if (showButtons) {
+      this.#unlockedButton.hidden = this.isLocked()
+      this.#lockedButton.hidden = !this.isLocked()
+      this.#playButton.hidden = this.isLocked()
+      this.#pauseButton.hidden = !this.isLocked()
+    } else {
+      this.#unlockedButton.hidden = true
+      this.#lockedButton.hidden = true
+    }
   }
 }

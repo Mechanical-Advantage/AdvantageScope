@@ -37,6 +37,13 @@ window.addEventListener("save-state", event => {
   ipcRenderer.send("save-state", event.detail)
 })
 
+// Send preferences
+ipcRenderer.on("set-preferences", (_, prefs) => {
+  window.dispatchEvent(new CustomEvent("set-preferences", {
+    detail: prefs
+  }))
+})
+
 // Opening file
 ipcRenderer.on("open-file", (_, path) => {
   fs.open(path, "r", function (err, file) {
@@ -115,18 +122,25 @@ window.addEventListener("update-odometry-popup", event => {
   ipcRenderer.send("update-odometry-popup", event.detail.id, event.detail.command)
 })
 
-// Manage socket connection
+// Manage live logging
+ipcRenderer.on("start-live", () => {
+  window.dispatchEvent(new Event("start-live"))
+})
+
+
 var client = null
 window.addEventListener("start-live-socket", event => {
   client = net.createConnection({
-    host: event.detail.host,
+    host: event.detail.address,
     port: event.detail.port
   })
 
   client.on("data", data => {
-    window.dispatchEvent(new CustomEvent("live-data", {
-      detail: data
-    }))
+    if (client) {
+      window.dispatchEvent(new CustomEvent("live-data", {
+        detail: data
+      }))
+    }
   })
 
   client.on("error", () => {
@@ -138,7 +152,7 @@ window.addEventListener("start-live-socket", event => {
   })
 })
 
-window.addEventListener("stop-live-socket", event => {
+window.addEventListener("stop-live-socket", () => {
   if (client) {
     client.destroy()
     client = null
