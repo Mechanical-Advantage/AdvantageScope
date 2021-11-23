@@ -46,7 +46,6 @@ module.exports = function (options) {
       displayBounds,
       data: state.data
     };
-    console.log(state)
   }
 
   function windowWithinBounds(bounds) {
