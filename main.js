@@ -133,7 +133,6 @@ function createWindow() {
     minHeight: 400,
     icon: iconPath,
     show: false,
-    tabbingIdentifier: "main",
     webPreferences: {
       preload: path.join(__dirname, "indexPreload.js")
     }
@@ -352,6 +351,23 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+3",
           click() {
             BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 3)
+          }
+        },
+        {
+          type: "separator"
+        },
+        {
+          label: "Previous Tab",
+          accelerator: "CmdOrCtrl+Left",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "move", -1)
+          }
+        },
+        {
+          label: "Next Tab",
+          accelerator: "CmdOrCtrl+Right",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "move", 1)
           }
         },
         {

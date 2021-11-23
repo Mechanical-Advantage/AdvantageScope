@@ -72,6 +72,12 @@ export class Tabs {
         case "new":
           this.addTab(event.detail.value)
           break;
+        case "move":
+          this.#selectedTab += event.detail.value
+          if (this.#selectedTab < 0) this.#selectedTab = 0
+          if (this.#selectedTab > this.#tabList.length - 1) this.#selectedTab = this.#tabList.length - 1
+          this.#updateElements()
+          break;
         case "shift":
           this.shiftSelected(event.detail.value)
           break;

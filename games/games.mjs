@@ -35,5 +35,14 @@ export const GameConstants = [
     bottomRight: [1090, 480],
     widthInches: 652,
     heightInches: 324
+  },
+  {
+    title: "2016",
+    filename: "2016-field.jpg",
+    source: "https://firstfrc.blob.core.windows.net/frc2016manuals/GameManual/FRC-2016-game-manual.pdf",
+    topLeft: [124, 48],
+    bottomRight: [791, 375],
+    widthInches: 649,
+    heightInches: 319
   }
 ]

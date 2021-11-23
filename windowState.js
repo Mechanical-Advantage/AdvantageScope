@@ -44,8 +44,9 @@ module.exports = function (options) {
       x: 0,
       y: 0,
       displayBounds,
-      data
+      data: state.data
     };
+    console.log(state)
   }
 
   function windowWithinBounds(bounds) {
