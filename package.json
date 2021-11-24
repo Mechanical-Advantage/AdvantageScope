@@ -1,7 +1,7 @@
 {
   "name": "advantage-scope",
   "productName": "Advantage Scope",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Logging tool from FRC Team 6328.",
   "main": "main.js",
   "scripts": {
@@ -18,9 +18,9 @@
   },
   "dependencies": {
     "date-holidays": "^3.12.1",
-    "electron-update-notifier": "^1.3.1",
-    "electron-window-state": "^5.0.3",
-    "jsonfile": "^4.0.0"
+    "electron-fetch": "^1.7.4",
+    "jsonfile": "^4.0.0",
+    "mkdirp": "^0.5.5"
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",

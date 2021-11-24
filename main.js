@@ -1,8 +1,8 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain, nativeTheme } = require("electron")
 const WindowStateKeeper = require("./windowState.js")
-const { setUpdateNotification } = require("electron-update-notifier")
 const jsonfile = require("jsonfile")
 const Holidays = require("date-holidays")
+const fetch = require("electron-fetch").default
 const path = require("path")
 const fs = require("fs")
 const os = require("os")
@@ -64,13 +64,13 @@ app.whenReady().then(() => {
   var window = createWindow()
 
   // Check for file path given as argument
-  if (process.defaultApp) {
-    if (process.argv.length > 2) {
-      firstOpenPath = process.argv[2]
-    }
-  } else {
+  if (app.isPackaged) {
     if (process.argv.length > 1) {
       firstOpenPath = process.argv[1]
+    }
+  } else {
+    if (process.argv.length > 2) {
+      firstOpenPath = process.argv[2]
     }
   }
 
@@ -86,30 +86,8 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length == 0) createWindow()
   })
 
-  // Send notifications once the window is ready
-  window.once("show", () => {
-
-    // Check if running under translation
-    if (app.runningUnderARM64Translation) {
-      dialog.showMessageBox({
-        type: "info",
-        title: "Download native version?",
-        message: "Download native version?",
-        detail: "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
-        buttons: ["Download", "Later"],
-        defaultId: 0,
-        icon: iconPath
-      }).then(result => {
-        if (result.response == 0) shell.openExternal("https://github.com/" + repository + "/releases/latest")
-      })
-
-    } else {
-      // Check if update available
-      setUpdateNotification({
-        repository: repository
-      })
-    }
-  })
+  // Send update notification once the window is ready
+  window.once("show", () => checkForUpdate(false))
 })
 
 app.on("window-all-closed", function () {
@@ -128,6 +106,7 @@ app.on("open-file", (_, path) => {
   }
 })
 
+// Create a new main window
 var indexWindows = []
 function createWindow() {
   var prefs = {
@@ -179,13 +158,12 @@ function createWindow() {
   indexWindows.push(window)
 
   // Finish setup
-  // if (process.defaultApp) window.webContents.openDevTools()
+  if (!app.isPackaged) window.webContents.openDevTools()
   window.once("ready-to-show", window.show)
   window.webContents.on("dom-ready", () => {
     window.send("set-fullscreen", window.isFullScreen())
     window.send("set-preferences", jsonfile.readFileSync(prefsFileName))
     var holidayToday = holidays.isHoliday(new Date())
-    console.log(holidayToday)
     if (holidayToday) {
       window.send("set-holiday", holidayToday[holidayToday.length - 1].name)
     }
@@ -232,10 +210,7 @@ function setupMenu() {
         {
           label: "Check for Updates...",
           click() {
-            setUpdateNotification({
-              repository: repository,
-              silent: false
-            })
+            checkForUpdate(true)
           }
         },
         {
@@ -434,10 +409,7 @@ function setupMenu() {
           {
             label: "Check for Updates...",
             click() {
-              setUpdateNotification({
-                repository: repository,
-                silent: false
-              })
+              checkForUpdate(true)
             }
           },
           {
@@ -464,6 +436,7 @@ function setupMenu() {
   Menu.setApplicationMenu(menu)
 }
 
+// Create a new preferences window
 var prefsWindow = null
 function openPreferences() {
   if (prefsWindow != null && !prefsWindow.isDestroyed()) {
@@ -494,8 +467,6 @@ function openPreferences() {
   prefsWindow.loadFile("www/preferences.html")
 }
 
-// COMMUNICATION WITH PRELOAD
-
 ipcMain.on("update-preferences", (_, data) => {
   jsonfile.writeFileSync(prefsFileName, data)
   nativeTheme.themeSource = data.theme
@@ -509,6 +480,117 @@ ipcMain.on("update-preferences", (_, data) => {
 ipcMain.on("exit-preferences", () => {
   prefsWindow.close()
 })
+
+// Detect updates from GitHub
+function checkForUpdate(alwaysNotify) {
+  if (!app.isPackaged) {
+    if (alwaysNotify) {
+      dialog.showMessageBox({
+        type: "error",
+        title: "Update Checker",
+        message: "Cannot check for updates",
+        detail: "This app is running in a development environment.",
+        icon: iconPath
+      })
+    }
+    return
+  }
+
+  fetch("https://api.github.com/repos/" + repository + "/releases").then(res => res.json()).then(json => {
+    var currentVersion = app.getVersion()
+    var latestVersion = json[0].tag_name.slice(1)
+    var latestDate = new Date(json[0].published_at)
+    var latestDateText = latestDate.toLocaleDateString()
+    var options = process.platform == "darwin" ? ["Download", "Later", "View Changelog"] : ["Download", "View Changelog", "Later"]
+
+    var handleResponse = result => {
+      var response = options[result.response]
+      if (response == "Download") {
+        var platformKey = ""
+        switch (process.platform) {
+          case "win32":
+            platformKey = "win"
+            break;
+          case "linux":
+            platformKey = "linux"
+            break;
+          case "darwin":
+            platformKey = "mac"
+            break;
+        }
+        var arch = app.runningUnderARM64Translation ? "arm64" : process.arch // If under translation, switch to ARM
+
+        var url = null
+        json[0].assets.forEach(asset => {
+          if (asset.name.includes(platformKey) && asset.name.includes(arch)) {
+            url = asset.browser_download_url
+          }
+        })
+        if (url == null) {
+          shell.openExternal("https://github.com/" + repository + "/releases/latest")
+        } else {
+          shell.openExternal(url)
+        }
+
+      } else if (response == "View Changelog") {
+        shell.openExternal("https://github.com/" + repository + "/releases")
+      }
+    }
+
+    // Send appropriate prompt
+    if (currentVersion != latestVersion && app.runningUnderARM64Translation) {
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Checker",
+        message: "Download latest native version?",
+        detail: "Version " + latestVersion + " is available (released " + latestDateText + "). You're currently running the x86 build of version " + currentVersion + " on an arm64 platform. Would you like to download the latest native version?",
+        icon: iconPath,
+        buttons: options,
+        defaultId: 0,
+      }).then(handleResponse)
+    } else if (currentVersion != latestVersion) {
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Checker",
+        message: "Download latest version?",
+        detail: "Version " + latestVersion + " is available (released " + latestDateText + "). You're currently running version " + currentVersion + ". Would you like to download the latest version?",
+        icon: iconPath,
+        buttons: options,
+        defaultId: 0,
+      }).then(handleResponse)
+    } else if (app.runningUnderARM64Translation) {
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Checker",
+        message: "Download native version?",
+        detail: "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
+        icon: iconPath,
+        buttons: options,
+        defaultId: 0,
+      }).then(handleResponse)
+    } else if (alwaysNotify) {
+      dialog.showMessageBox({
+        type: "info",
+        title: "Update Checker",
+        message: "No updates available",
+        detail: "You're currently running version " + currentVersion + " (released " + latestDateText + ").",
+        icon: iconPath
+      })
+    }
+  }).catch(() => {
+    if (alwaysNotify) {
+      dialog.showMessageBox({
+        type: "error",
+        title: "Update Checker",
+        message: "Cannot check for updates",
+        detail: "Failed to retrieve update information from GitHub. Please check your internet connection and try again.",
+        icon: iconPath
+      })
+    }
+  })
+}
+
+// MISC COMMUNICATION WITH PRELOAD
 
 ipcMain.on("error", (_, title, content) => {
   dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
