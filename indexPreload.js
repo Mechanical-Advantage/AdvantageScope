@@ -26,6 +26,13 @@ window.addEventListener("DOMContentLoaded", () => {
   }))
 })
 
+// Set holiday
+ipcRenderer.on("set-holiday", (_, holiday) => {
+  window.dispatchEvent(new CustomEvent("set-holiday", {
+    detail: holiday
+  }))
+})
+
 // State management
 ipcRenderer.on("restore-state", (_, state) => {
   window.dispatchEvent(new CustomEvent("restore-state", {

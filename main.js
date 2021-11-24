@@ -2,6 +2,7 @@ const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain, nativeTheme 
 const WindowStateKeeper = require("./windowState.js")
 const { setUpdateNotification } = require("electron-update-notifier")
 const jsonfile = require("jsonfile")
+const Holidays = require("date-holidays")
 const path = require("path")
 const fs = require("fs")
 const os = require("os")
@@ -9,6 +10,7 @@ const os = require("os")
 const repository = "Mechanical-Advantage/AdvantageScope"
 const prefsFileName = path.join(app.getPath("userData"), "prefs.json")
 const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
+const holidays = new Holidays("US")
 var iconPath = null
 const defaultPrefs = {
   address: "10.63.28.2",
@@ -177,11 +179,16 @@ function createWindow() {
   indexWindows.push(window)
 
   // Finish setup
-  if (process.defaultApp) window.webContents.openDevTools()
+  // if (process.defaultApp) window.webContents.openDevTools()
   window.once("ready-to-show", window.show)
   window.webContents.on("dom-ready", () => {
     window.send("set-fullscreen", window.isFullScreen())
     window.send("set-preferences", jsonfile.readFileSync(prefsFileName))
+    var holidayToday = holidays.isHoliday(new Date())
+    console.log(holidayToday)
+    if (holidayToday) {
+      window.send("set-holiday", holidayToday[holidayToday.length - 1].name)
+    }
   })
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
   window.on("leave-full-screen", () => window.send("set-fullscreen", false))
