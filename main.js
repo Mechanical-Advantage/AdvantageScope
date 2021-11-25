@@ -3,6 +3,7 @@ const WindowStateKeeper = require("./windowState.js")
 const jsonfile = require("jsonfile")
 const Holidays = require("date-holidays")
 const fetch = require("electron-fetch").default
+const { Headers } = require("electron-fetch")
 const path = require("path")
 const fs = require("fs")
 const os = require("os")
@@ -33,13 +34,13 @@ app.whenReady().then(() => {
   switch (process.platform) {
     case "win32":
       iconPath = path.join(__dirname, "assets/app-icon-4096.png") // Square icon
-      break;
+      break
     case "linux":
       iconPath = path.join(__dirname, "assets/app-icon-rounded.png") // Rounded icon
-      break;
+      break
     default:
       iconPath = null // macOS uses the app icon by default
-      break;
+      break
   }
 
   // Check preferences and set theme
@@ -496,11 +497,19 @@ function checkForUpdate(alwaysNotify) {
     return
   }
 
-  fetch("https://api.github.com/repos/" + repository + "/releases").then(res => res.json()).then(json => {
+  var fetchHeaders = new Headers()
+  fetchHeaders.append("pragma", "no-cache")
+  fetchHeaders.append("cache-control", "no-cache")
+  var fetchInit = {
+    method: "GET",
+    headers: fetchHeaders,
+  }
+  fetch("https://api.github.com/repos/" + repository + "/releases", fetchInit).then(res => res.json()).then(json => {
     var currentVersion = app.getVersion()
     var latestVersion = json[0].tag_name.slice(1)
     var latestDate = new Date(json[0].published_at)
     var latestDateText = latestDate.toLocaleDateString()
+    var translated = process.arch != "arm64" && app.runningUnderARM64Translation
     var options = process.platform == "darwin" ? ["Download", "Later", "View Changelog"] : ["Download", "View Changelog", "Later"]
 
     var handleResponse = result => {
@@ -510,15 +519,15 @@ function checkForUpdate(alwaysNotify) {
         switch (process.platform) {
           case "win32":
             platformKey = "win"
-            break;
+            break
           case "linux":
             platformKey = "linux"
-            break;
+            break
           case "darwin":
             platformKey = "mac"
-            break;
+            break
         }
-        var arch = app.runningUnderARM64Translation ? "arm64" : process.arch // If under translation, switch to ARM
+        var arch = translated ? "arm64" : process.arch // If under translation, switch to ARM
 
         var url = null
         json[0].assets.forEach(asset => {
@@ -538,7 +547,7 @@ function checkForUpdate(alwaysNotify) {
     }
 
     // Send appropriate prompt
-    if (currentVersion != latestVersion && app.runningUnderARM64Translation) {
+    if (currentVersion != latestVersion && translated) {
       dialog.showMessageBox({
         type: "info",
         title: "Update Checker",
@@ -558,7 +567,7 @@ function checkForUpdate(alwaysNotify) {
         buttons: options,
         defaultId: 0,
       }).then(handleResponse)
-    } else if (app.runningUnderARM64Translation) {
+    } else if (translated) {
       dialog.showMessageBox({
         type: "info",
         title: "Update Checker",
