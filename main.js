@@ -116,7 +116,7 @@ function createWindow() {
     icon: iconPath,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "indexPreload.js")
+      preload: path.join(__dirname, "preload/indexPreload.js")
     }
   }
 
@@ -457,7 +457,7 @@ function openPreferences() {
     show: false,
     fullscreenable: false,
     webPreferences: {
-      preload: path.join(__dirname, "preferencesPreload.js")
+      preload: path.join(__dirname, "preload/preferencesPreload.js")
     }
   })
 
@@ -685,7 +685,7 @@ ipcMain.on("edit-axis", (_, data) => {
         parent: window,
         modal: true,
         webPreferences: {
-          preload: path.join(__dirname, "editAxisPreload.js")
+          preload: path.join(__dirname, "preload/editAxisPreload.js")
         }
       })
 
@@ -725,7 +725,7 @@ ipcMain.on("create-odometry-popup", (_, id) => {
     icon: iconPath,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "odometryPopupPreload.js")
+      preload: path.join(__dirname, "preload/odometryPopupPreload.js")
     }
   })
   popup.setMenu(null)

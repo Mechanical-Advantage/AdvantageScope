@@ -10,8 +10,8 @@ export const Holidays = {
   "Independence Day": "🇺🇸 🎆",
   "Labor Day": "👮 🧑‍⚕️ 👷 🧑‍🌾 🧑‍🍳 🧑‍🏫 🧑‍🔧 🧑‍🔬 🧑‍✈️",
   "Veterans Day": "🇺🇸",
-  "Thanksgiving Day": "🌽 🦃 🥕 🍗 🥘",
   "Halloween": "🎃 👻",
+  "Thanksgiving Day": "🌽 🦃 🥕 🍗 🥘",
   "Christmas Eve": "🎁 🎄 🎅",
   "Christmas Day": "🎁 🎄 🎅",
   "New Year's Eve": "🎇 🎆"
