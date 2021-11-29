@@ -16,11 +16,6 @@ export class OdometryRenderer {
 
   // Renders new data
   render(command) {
-    // Utility function to scale value between two ranges
-    function scaleValue(value, oldMin, oldMax, newMin, newMax) {
-      return (((value - oldMin) / (oldMax - oldMin)) * (newMax - newMin)) + newMin
-    }
-
     // Set up canvas
     var context = this.#canvas.getContext("2d")
     var width = this.#canvas.clientWidth
@@ -91,7 +86,7 @@ export class OdometryRenderer {
     // Convert pose data to pixel coordinates
     var calcCoordinates = position => {
       if (command.coordinates.unitDistance == "inches") {
-        var positionInches = position
+        var positionInches = [position[0], position[1]]
       } else {
         var positionInches = [position[0] * this.#inchesPerMeter, position[1] * this.#inchesPerMeter]
       }

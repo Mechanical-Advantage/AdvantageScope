@@ -453,6 +453,7 @@ function openPreferences() {
     y: Math.floor(BrowserWindow.getFocusedWindow().getBounds().y + (BrowserWindow.getFocusedWindow().getBounds().height / 2) - (height / 2)),
     useContentSize: true,
     resizable: false,
+    alwaysOnTop: true,
     icon: iconPath,
     show: false,
     fullscreenable: false,

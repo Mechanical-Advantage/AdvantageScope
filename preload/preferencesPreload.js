@@ -29,7 +29,8 @@ ipcRenderer.on("start", (_, data) => {
 
   // Set up exit triggers
   document.getElementById("exit").addEventListener("click", () => {
-    ipcRenderer.send("exit-preferences", null)
+    ipcRenderer.send("update-preferences", data)
+    ipcRenderer.send("exit-preferences")
   })
   document.getElementById("confirm").addEventListener("click", () => {
     update()
