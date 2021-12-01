@@ -7,27 +7,26 @@ export class LineGraphController {
   #canvasContainer = null
   #canvas = null
   #scrollOverlay = null
-  #scrollOverlayContent = null
 
   #colors = ["#EBC542", "#80588E", "#E48B32", "#AACAEE", "#AF2437", "#C0B487", "#858584", "#3B875A", "#D993AA", "#2B66A2", "#EB987E", "#5D4F92", "#EBAA3B", "#A64B6B", "#DBD345", "#7E331F", "#96B637", "#5F4528", "#D36134", "#2E3B28"]
 
-  #zoomScalar = 0.01
   #minZoomTime = 0.1
-  #zoomExponentBaseDarwin = 1.001
-  #zoomExponentBaseOther = 1.1
+  #zoomBase = 1.001
+  #scrollCenter = 500000
+  #scrollStationaryMs = 50
 
-  #firstReset = true
-  #lastCursorX = null
-  #lastScrollTop = 0
-  #lastClientWidth = 0
-  #lastPlatform = null
+  #lastScrollUpdate = 0
+  #lastScrollLeft = null
+  #lastScrollTop = null
   #resetOnNextUpdate = false
+
+  #firstRestore = true
+  #maxZoom = false
+  #lastCursorX = null
   #panActive = false
   #panStartCursorX = 0
-  #panStartScrollLeft = 0
+  #panStartXRangeMin = 0
   #xRange = [0, 10]
-  #maxScrollVert = true
-  #maxScrollHorz = true
 
   #legends = {
     left: {
@@ -66,7 +65,6 @@ export class LineGraphController {
     this.#canvasContainer = content.getElementsByClassName("line-graph-canvas-container")[0]
     this.#canvas = content.getElementsByClassName("line-graph-canvas")[0]
     this.#scrollOverlay = content.getElementsByClassName("line-graph-scroll")[0]
-    this.#scrollOverlayContent = content.getElementsByClassName("line-graph-scroll-content")[0]
 
     this.#legends.left.element = content.getElementsByClassName("legend-left")[0]
     this.#legends.discrete.element = content.getElementsByClassName("legend-discrete")[0]
@@ -119,13 +117,15 @@ export class LineGraphController {
     // Bind events
     window.addEventListener("drag-update", event => this.#handleDrag(event))
     window.addEventListener("drag-stop", event => this.#handleDrag(event))
-    window.addEventListener("resize", () => this.#updateScroll())
-    this.#scrollOverlay.addEventListener("scroll", () => this.#updateScroll())
+    this.#scrollOverlay.addEventListener("scroll", () => this.#updateRange())
     this.#scrollOverlay.addEventListener("mousemove", event => {
       this.#lastCursorX = event.layerX
       if (this.#panActive) {
-        this.#scrollOverlay.scrollLeft = this.#panStartScrollLeft + (this.#panStartCursorX - event.layerX)
-        this.#updateScroll()
+        var zoomTime = (this.#xRange[1] - this.#xRange[0])
+        var shift = ((this.#panStartCursorX - event.layerX) / this.#scrollOverlay.clientWidth) * zoomTime
+        this.#xRange[0] = this.#panStartXRangeMin + shift
+        this.#xRange[1] = this.#panStartXRangeMin + shift + zoomTime
+        this.#updateRange() // Enforces limits
       }
     })
     this.#scrollOverlay.addEventListener("mouseleave", () => {
@@ -135,7 +135,7 @@ export class LineGraphController {
     this.#scrollOverlay.addEventListener("mousedown", event => {
       this.#panActive = true
       this.#panStartCursorX = event.layerX
-      this.#panStartScrollLeft = this.#scrollOverlay.scrollLeft
+      this.#panStartXRangeMin = this.#xRange[0]
     })
     this.#scrollOverlay.addEventListener("mouseup", () => this.#panActive = false)
     this.#scrollOverlay.addEventListener("click", event => {
@@ -145,7 +145,7 @@ export class LineGraphController {
     })
     this.#scrollOverlay.addEventListener("contextmenu", () => window.selection.selectedTime = null)
 
-    this.#updateScroll(true)
+    this.#updateRange(true)
   }
 
   // Standard function: retrieves current state
@@ -224,13 +224,11 @@ export class LineGraphController {
 
     // Update zoom and pan
     if (log == null) return
-    if (this.#firstReset) {
-      this.#updateScroll(true)
-      this.#firstReset = false
+    if (this.#firstRestore) {
+      this.#updateRange(true)
+      this.#firstRestore = false
     } else {
-      this.#updateScroll() // Updates limits
-      this.#scrollOverlay.scrollTop = this.#calcReverseZoom(newState.range[1] - newState.range[0]) // Update zoom
-      this.#scrollOverlay.scrollLeft = Math.round(((newState.range[0] - log.getTimestamps()[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth) // Update pan}
+      this.#updateRange() // Enforces limits
     }
   }
 
@@ -327,93 +325,101 @@ export class LineGraphController {
 
   // Standard function: updates based on new live data
   updateLive() {
-    this.#updateScroll()
+    this.#updateRange()
   }
 
   // Called by tab controller when side bar size changes
-  sideBarResize() {
-    this.#updateScroll()
-  }
+  sideBarResize() { }
 
-  // Returns the current zoom level based on scroll position
-  #calcZoom() {
-    return ((platform == "darwin" ? this.#zoomExponentBaseDarwin : this.#zoomExponentBaseOther) ** this.#scrollOverlay.scrollTop) * this.#zoomScalar
-  }
+  // Updates current x range based on scroll
+  #updateRange(reset) {
+    var currentTime = new Date().getTime()
 
-  // Returns the necessary scroll position for the specified zoom level
-  #calcReverseZoom(zoomTarget) {
-    return Math.log(zoomTarget / this.#zoomScalar) / Math.log(platform == "darwin" ? this.#zoomExponentBaseDarwin : this.#zoomExponentBaseOther)
-  }
-
-  // Updates scroll position based on overlay
-  #updateScroll(reset) {
-    // Exit if not visible (cannot get element sizes)
+    // Exit if not visible (cannot get scroll position)
     if (this.#content.hidden) {
       if (reset) this.#resetOnNextUpdate = true
       return
     }
 
-    // Find current time range
+    // Find available time range
     if (log == null) {
-      var timeRange = [0, 10]
+      var availableRange = [0, 10]
     } else if (selection.isLocked()) {
-      var timeRange = [log.getTimestamps()[0], selection.selectedTime]
+      var availableRange = [log.getTimestamps()[0], selection.selectedTime]
     } else {
-      var timeRange = [log.getTimestamps()[0], log.getTimestamps()[log.getTimestamps().length - 1]]
+      var availableRange = [log.getTimestamps()[0], log.getTimestamps()[log.getTimestamps().length - 1]]
     }
+    if (availableRange[1] - availableRange[0] < this.#minZoomTime) availableRange[1] = availableRange[0] + this.#minZoomTime
 
-    // Check if at limits
-    this.#maxScrollVert = Math.ceil(this.#scrollOverlay.scrollTop) >= Math.floor(this.#scrollOverlay.scrollHeight - this.#scrollOverlay.clientHeight) - 1
-    this.#maxScrollHorz = Math.ceil(this.#scrollOverlay.scrollLeft) >= Math.floor(this.#scrollOverlay.scrollWidth - this.#scrollOverlay.clientWidth) - 1
-    if (selection.isLocked()) {
-      this.#maxScrollVert = false // Disable auto zoom while locked
+    // Reset to center
+    if ((currentTime - this.#lastScrollUpdate) > this.#scrollStationaryMs) {
+      this.#scrollOverlay.scrollLeft = this.#scrollCenter
+      this.#scrollOverlay.scrollTop = this.#scrollCenter
+      this.#lastScrollLeft = this.#scrollCenter
+      this.#lastScrollTop = this.#scrollCenter
     }
-    if (log) {
-      if (log.getTimestamps().length < 10) this.#maxScrollVert = true // Lock to max zoom until log is of reasonable length
-    }
+    this.#lastScrollUpdate = currentTime
 
-    // Calculate maximum scroll lengths
-    var scrollLengthVertical = this.#calcReverseZoom(timeRange[1] - timeRange[0]) // Calc maximum zoom based on time range
-    var scrollLengthHorizontal = this.#scrollOverlay.clientWidth * ((timeRange[1] - timeRange[0]) / this.#calcZoom()) // Calc horizontal length based on zoom
-
-    // Adjust content size and enforce limits
-    this.#scrollOverlayContent.style.height = (scrollLengthVertical + this.#scrollOverlay.clientHeight).toString() + "px"
-    this.#scrollOverlayContent.style.width = scrollLengthHorizontal.toString() + "px"
-    if (reset || platform != this.#lastPlatform || this.#maxScrollVert) {
-      this.#lastPlatform = platform
-      this.#scrollOverlay.scrollTop = scrollLengthVertical
-      this.#scrollOverlay.scrollLeft = 0
-    } else {
-      var minZoom = this.#calcReverseZoom(this.#minZoomTime)
-      if (this.#scrollOverlay.scrollTop < minZoom) this.#scrollOverlay.scrollTop = minZoom
-      if (this.#scrollOverlay.scrollLeft < 0) this.#scrollOverlay.scrollLeft = 0
-      if (this.#scrollOverlay.scrollTop > scrollLengthVertical) this.#scrollOverlay.scrollTop = scrollLengthVertical
-      if (this.#scrollOverlay.scrollLeft > scrollLengthHorizontal) this.#scrollOverlay.scrollLeft = scrollLengthHorizontal
-    }
-
-    // Lock minX when resizing, since changing client width would otherwise affect pan
-    if (this.#scrollOverlay.clientWidth != this.#lastClientWidth) {
-      this.#lastClientWidth = this.#scrollOverlay.clientWidth
-      this.#scrollOverlay.scrollLeft = Math.round(((this.#xRange[0] - timeRange[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth)
-    }
-
-    // Manage zoom
-    if (this.#scrollOverlay.scrollTop != this.#lastScrollTop) {
-      var cursorX = this.#lastCursorX == null ? this.#scrollOverlay.clientWidth * 0.5 : this.#lastCursorX
-      var cursorTime = ((cursorX / this.#scrollOverlay.clientWidth) * (this.#xRange[1] - this.#xRange[0])) + this.#xRange[0] // Time represented by cursor before scroll
-      var minX = cursorTime - ((cursorX / this.#scrollOverlay.clientWidth) * this.#calcZoom()) // New min X to keep cursor at same time
-      this.#scrollOverlay.scrollLeft = Math.round(((minX - timeRange[0]) / this.#calcZoom()) * this.#scrollOverlay.clientWidth)
-    }
-
-    // Locked horzontal scroll
-    if (selection.isLocked() && !(reset || platform != this.#lastPlatform)) {
-      this.#scrollOverlay.scrollLeft = scrollLengthHorizontal
-    }
-
-    // Update x range
-    var minX = ((this.#scrollOverlay.scrollLeft / this.#scrollOverlay.clientWidth) * this.#calcZoom()) + timeRange[0]
-    this.#xRange = [minX, minX + this.#calcZoom()]
+    // Measure scroll movement
+    var dx = (this.#scrollOverlay.scrollLeft - this.#lastScrollLeft)
+    var dy = (this.#scrollOverlay.scrollTop - this.#lastScrollTop)
+    this.#lastScrollLeft = this.#scrollOverlay.scrollLeft
     this.#lastScrollTop = this.#scrollOverlay.scrollTop
+
+    // Reset to max range
+    if (reset) {
+      this.#xRange = availableRange
+      return
+    }
+
+    // Apply horizontal scroll
+    if (selection.isLocked()) {
+      var zoom = this.#xRange[1] - this.#xRange[0]
+      this.#xRange[0] = availableRange[1] - zoom
+      this.#xRange[1] = availableRange[1]
+      if (dx < 0) selection.unlock() // Unlock if attempting to scroll away
+    } else if (dx != 0) {
+      var secsPerPixel = (this.#xRange[1] - this.#xRange[0]) / this.#scrollOverlay.clientWidth
+      this.#xRange[0] += dx * secsPerPixel
+      this.#xRange[1] += dx * secsPerPixel
+    }
+
+    // Apply vertical scroll
+    if (dy != 0) {
+      var zoomPercent = Math.pow(this.#zoomBase, dy)
+      var newZoom = (this.#xRange[1] - this.#xRange[0]) * zoomPercent
+      if (newZoom < this.#minZoomTime) newZoom = this.#minZoomTime
+      if (newZoom > (availableRange[1] - availableRange[0])) newZoom = availableRange[1] - availableRange[0]
+
+      if (selection.hoveredTime != null) {
+        var hoveredPercent = (selection.hoveredTime - this.#xRange[0]) / (this.#xRange[1] - this.#xRange[0])
+        this.#xRange[0] = selection.hoveredTime - (newZoom * hoveredPercent)
+        this.#xRange[1] = selection.hoveredTime + (newZoom * (1 - hoveredPercent))
+      }
+    } else if (this.#maxZoom && !selection.isLocked()) {
+      this.#xRange = availableRange
+    }
+
+    // Enforce max range
+    if ((this.#xRange[1] - this.#xRange[0]) > (availableRange[1] - availableRange[0])) {
+      this.#xRange = availableRange
+    }
+    this.#maxZoom = (this.#xRange[1] - this.#xRange[0]) == (availableRange[1] - availableRange[0])
+
+    // Enforce left limit
+    if (this.#xRange[0] < availableRange[0]) {
+      var shift = availableRange[0] - this.#xRange[0]
+      this.#xRange[0] += shift
+      this.#xRange[1] += shift
+    }
+
+    // Enforce right limit
+    if (this.#xRange[1] > availableRange[1]) {
+      var shift = availableRange[1] - this.#xRange[1]
+      this.#xRange[0] += shift
+      this.#xRange[1] += shift
+      if (dx > 0) selection.lock() // Lock if action is intentional
+    }
   }
 
   // Cleans up floating point errors
@@ -503,9 +509,9 @@ export class LineGraphController {
     // Reset scroll if queued
     if (this.#resetOnNextUpdate) {
       this.#resetOnNextUpdate = false
-      this.#updateScroll(true)
+      this.#updateRange(true)
     } else if (selection.isLocked()) { // Update every cycle when locked to ensure smoothness
-      this.#updateScroll()
+      this.#updateRange()
     }
 
     // Utility function to scale value between two ranges

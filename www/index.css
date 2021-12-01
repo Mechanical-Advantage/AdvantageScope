@@ -590,8 +590,8 @@ div.line-graph-scroll::-webkit-scrollbar {
 }
 
 div.line-graph-scroll-content {
-  width: 100%;
-  height: 100%;
+  width: 1000000px;
+  height: 1000000px;
 }
 
 /* Table */
