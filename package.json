@@ -19,12 +19,13 @@
   "dependencies": {
     "date-holidays": "^3.12.1",
     "electron-fetch": "^1.7.4",
-    "jsonfile": "^4.0.0",
-    "mkdirp": "^0.5.5",
+    "jsonfile": "^6.1.0",
+    "mkdirp": "^1.0.4",
     "ssh2": "^1.5.0"
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",
+    "npmRebuild": false,
     "publish": [],
     "directories": {
       "buildResources": "./"
