@@ -8,6 +8,8 @@ body {
   }
 }
 
+/* File list */
+
 div.file-list {
   position: absolute;
   left: 0px;
@@ -77,6 +79,47 @@ div.file-item img.mac {
   }
 }
 
+/* File selection */
+div.file-item:not(.selected):hover {
+  background-color: #e8e8e8;
+}
+
+div.file-item:not(.selected):nth-child(even):hover {
+  background-color: #d7d7d7;
+}
+
+div.file-item.selected {
+  background-color: #88f;
+}
+
+div.file-item.selected:nth-child(even) {
+  background-color: #77e;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.file-item:not(.selected):hover {
+    background-color: #151515;
+  }
+  
+  div.file-item:not(.selected):nth-child(even):hover {
+    background-color: #1e1e1e;
+  }
+  
+  div.file-item.selected {
+    background-color: #22a;
+  }
+  
+  div.file-item.selected:nth-child(even) {
+    background-color: #33b;
+  }
+
+  div.file-item.selected img {
+    filter: drop-shadow(0px 0.5px 1px #000);
+  }
+}
+
+/* Loading animation */
+
 div.loading {
   position: absolute;
   top: 50%;
@@ -129,15 +172,9 @@ div.loading-bar {
   }
 }
 
-progress {
-  position: absolute;
-  bottom: 23px;
-  transform: translateY(50%);
-  left: 10px;
-  width: calc(100% - 10px - 83px);
-}
+/* Control bar */
 
-div.error-text {
+div.alert-text {
   position: absolute;
   bottom: 8px;
   height: 30px;

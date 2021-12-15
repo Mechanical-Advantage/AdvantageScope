@@ -2,7 +2,7 @@ const fileList = document.getElementsByClassName("file-list")[0]
 const fileListItems = fileList.children[0]
 const loadingAnimation = document.getElementsByClassName("loading")[0]
 const progessBar = document.getElementsByTagName("progress")[0]
-const errorText = document.getElementsByClassName("error-text")[0]
+const alertText = document.getElementsByClassName("alert-text")[0]
 const exitButton = document.getElementById("exit")
 const downloadButton = document.getElementById("download")
 
@@ -12,6 +12,11 @@ const bottomFillerMargin = 5
 var platform = null
 var prefs = null
 var loading = true
+var alertIsError = false
+var filenames = []
+var selectedFiles = []
+var lastClickedIndex = null
+var lastClickedSelect = true
 
 // Update platform name
 window.addEventListener("set-platform", event => {
@@ -25,10 +30,10 @@ window.addEventListener("set-preferences", event => {
 
 // Update list of files
 window.addEventListener("status-list", event => {
-  // Hide loading animation and error text
+  // Hide loading animation and alert text
   loadingAnimation.hidden = true
   loading = false
-  errorText.hidden = true
+  if (alertIsError) alertText.hidden = true
 
   // Remove old list items
   while (fileListItems.firstChild) {
@@ -36,10 +41,40 @@ window.addEventListener("status-list", event => {
   }
 
   // Add new list items
-  event.detail.forEach(filename => {
+  filenames = event.detail
+  event.detail.forEach((filename, index) => {
     var item = document.createElement("div")
     fileListItems.appendChild(item)
     item.classList.add("file-item")
+
+    if (selectedFiles.includes(filename)) {
+      item.classList.add("selected")
+    }
+    item.addEventListener("click", event => {
+      if (event.shiftKey && (lastClickedIndex != null)) { // Update a range of items
+        var range = [Math.min(index, lastClickedIndex), Math.max(index, lastClickedIndex)]
+        for (let i = range[0]; i < range[1] + 1; i++) {
+          if (lastClickedSelect && !selectedFiles.includes(filenames[i])) {
+            selectedFiles.push(filenames[i])
+            fileListItems.children[i].classList.add("selected")
+          }
+          if (!lastClickedSelect && selectedFiles.includes(filenames[i])) {
+            selectedFiles.splice(selectedFiles.indexOf(filenames[i]), 1)
+            fileListItems.children[i].classList.remove("selected")
+          }
+        }
+      } else if (selectedFiles.includes(filename)) { // Deselect item
+        selectedFiles.splice(selectedFiles.indexOf(filename), 1)
+        item.classList.remove("selected")
+        lastClickedIndex = index
+        lastClickedSelect = false
+      } else { // Select item
+        selectedFiles.push(filename)
+        item.classList.add("selected")
+        lastClickedIndex = index
+        lastClickedSelect = true
+      }
+    })
 
     var img = document.createElement("img")
     item.appendChild(img)
@@ -90,7 +125,7 @@ window.addEventListener("resize", updateFiller)
 window.addEventListener("status-error", event => {
   loadingAnimation.hidden = false
   loading = true
-  errorText.hidden = false
+  alertText.hidden = false
 
   // Remove list items
   while (fileListItems.firstChild) {
@@ -108,9 +143,36 @@ window.addEventListener("status-error", event => {
   } else if (event.detail == "All configured authentication methods failed") {
     friendlyText = "Failed to authenticate to roboRIO at <u>" + prefs.address + "</u>"
   } else if (event.detail == "Not connected") {
-    friendlyText = "" // We tried to refresh files while actively disconnecting, ignore this
+    friendlyText = "Lost connection to roboRIO"
   } else {
     friendlyText = "Unknown error" + " (" + event.detail + ")"
   }
-  errorText.innerHTML = friendlyText
+  alertIsError = true
+  alertText.innerHTML = friendlyText
 })
+
+// Display alert
+window.addEventListener("status-alert", event => {
+  alertText.hidden = false
+  alertIsError = false
+  alertText.innerHTML = event.detail
+})
+
+// Bind button functions
+exitButton.addEventListener("click", () => {
+  window.dispatchEvent(new Event("exit-download"))
+})
+downloadButton.addEventListener("click", save)
+window.addEventListener("keydown", (event) => {
+  if (event.code == "Enter") save()
+})
+
+function save() {
+  if (selectedFiles.length == 0) {
+    alert("Please select a log to download.")
+  } else {
+    window.dispatchEvent(new CustomEvent("prompt-download-save", {
+      detail: selectedFiles
+    }))
+  }
+}

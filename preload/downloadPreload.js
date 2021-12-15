@@ -1,5 +1,6 @@
 const { ipcRenderer } = require("electron")
 const { Client } = require("ssh2")
+const fs = require("fs")
 
 const username = "lvuser"
 const password = ""
@@ -13,6 +14,7 @@ var sshClient = new Client()
 var retryTimeout = null
 var refreshInterval = null
 
+// Communication between renderer and main process
 ipcRenderer.on("set-preferences", (_, newPrefs) => {
   prefs = newPrefs
   window.dispatchEvent(new CustomEvent("set-preferences", {
@@ -21,6 +23,15 @@ ipcRenderer.on("set-preferences", (_, newPrefs) => {
   connect()
 })
 
+window.addEventListener("exit-download", () => {
+  ipcRenderer.send("exit-download")
+})
+
+window.addEventListener("prompt-download-save", event => {
+  ipcRenderer.send("prompt-download-save", event.detail)
+})
+
+// Manage SSH connection
 function connect() {
   clearTimeout(retryTimeout)
   clearInterval(refreshInterval)
@@ -75,4 +86,63 @@ window.addEventListener("DOMContentLoaded", () => {
   window.dispatchEvent(new CustomEvent("set-platform", {
     detail: process.platform
   }))
+})
+
+// Save files
+ipcRenderer.on("download-save", (_, files, savePath) => {
+  var fullRioPath = prefs.rioPath.endsWith("/") ? prefs.rioPath : prefs.rioPath + "/"
+
+  sshClient.sftp((error, sftp) => {
+    if (error) {
+      sendError(error.message)
+    } else {
+      if (files.length == 1) { // Single file
+        sftp.fastGet(fullRioPath + files[0], savePath, error => {
+          if (error) {
+            sendError(error.message)
+          } else {
+            ipcRenderer.send("prompt-download-auto-open", savePath)
+          }
+        })
+
+      } else { // Multiple files
+        if (files.length > 10) {
+          window.dispatchEvent(new CustomEvent("status-alert", {
+            detail: "Downloading " + files.length.toString() + " logs..."
+          }))
+        }
+
+        var completeCount = 0
+        var skipCount = 0
+        files.forEach(file => {
+          fs.stat(savePath + "/" + file, statErr => {
+            if (statErr == null) { // File exists already, skip downloading
+              completeCount++
+              skipCount++
+              if (skipCount == files.length) { // All files skipped
+                window.dispatchEvent(new CustomEvent("status-alert", { detail: "No new logs found." }))
+              }
+            } else { // File not found, download
+              sftp.fastGet(fullRioPath + file, savePath + "/" + file, error => {
+                if (error) {
+                  sendError(error.message)
+                } else {
+                  completeCount++
+                  if (completeCount >= files.length) {
+                    if (skipCount > 0) {
+                      var newCount = completeCount - skipCount
+                      var message = "Saved " + newCount.toString() + " new log" + (newCount == 1 ? "" : "s") + " (" + skipCount.toString() + " skipped) to <u>" + savePath + "</u>"
+                    } else {
+                      var message = "Saved " + completeCount.toString() + " log" + (completeCount == 1 ? "" : "s") + " to <u>" + savePath + "</u>"
+                    }
+                    window.dispatchEvent(new CustomEvent("status-alert", { detail: message }))
+                  }
+                }
+              })
+            }
+          })
+        })
+      }
+    }
+  })
 })

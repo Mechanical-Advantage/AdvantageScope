@@ -109,6 +109,7 @@ app.on("open-file", (_, path) => {
 
 // Create a new main window
 var indexWindows = []
+var lastIndexWindow = null
 function createWindow() {
   var prefs = {
     minWidth: 800,
@@ -172,7 +173,10 @@ function createWindow() {
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
   window.on("leave-full-screen", () => window.send("set-fullscreen", false))
   window.on("blur", () => window.send("set-focused", false))
-  window.on("focus", () => window.send("set-focused", true))
+  window.on("focus", () => {
+    window.send("set-focused", true)
+    lastIndexWindow = window
+  })
   window.loadFile("www/index.html")
   return window
 }
@@ -454,7 +458,7 @@ function checkForUpdate(alwaysNotify) {
   if (!app.isPackaged) {
     if (alwaysNotify) {
       dialog.showMessageBox({
-        type: "error",
+        type: "info",
         title: "Update Checker",
         message: "Cannot check for updates",
         detail: "This app is running in a development environment.",
@@ -516,7 +520,7 @@ function checkForUpdate(alwaysNotify) {
     // Send appropriate prompt
     if (currentVersion != latestVersion && translated) {
       dialog.showMessageBox({
-        type: "info",
+        type: "question",
         title: "Update Checker",
         message: "Download latest native version?",
         detail: "Version " + latestVersion + " is available (released " + latestDateText + "). You're currently running the x86 build of version " + currentVersion + " on an arm64 platform. Would you like to download the latest native version?",
@@ -526,7 +530,7 @@ function checkForUpdate(alwaysNotify) {
       }).then(handleResponse)
     } else if (currentVersion != latestVersion) {
       dialog.showMessageBox({
-        type: "info",
+        type: "question",
         title: "Update Checker",
         message: "Download latest version?",
         detail: "Version " + latestVersion + " is available (released " + latestDateText + "). You're currently running version " + currentVersion + ". Would you like to download the latest version?",
@@ -536,7 +540,7 @@ function checkForUpdate(alwaysNotify) {
       }).then(handleResponse)
     } else if (translated) {
       dialog.showMessageBox({
-        type: "info",
+        type: "question",
         title: "Update Checker",
         message: "Download native version?",
         detail: "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
@@ -556,7 +560,7 @@ function checkForUpdate(alwaysNotify) {
   }).catch(() => {
     if (alwaysNotify) {
       dialog.showMessageBox({
-        type: "error",
+        type: "info",
         title: "Update Checker",
         message: "Cannot check for updates",
         detail: "Failed to retrieve update information from GitHub. Please check your internet connection and try again.",
@@ -599,6 +603,60 @@ function openDownload() {
   downloadWindow.webContents.on("dom-ready", () => downloadWindow.send("set-preferences", jsonfile.readFileSync(prefsFileName)))
   downloadWindow.loadFile("www/download.html")
 }
+
+ipcMain.on("exit-download", () => {
+  downloadWindow.close()
+})
+
+ipcMain.on("prompt-download-save", (_, files) => {
+  if (files.length > 1) {
+    var result = dialog.showOpenDialog(downloadWindow, {
+      title: "Select save location for robot logs",
+      buttonLabel: "Save",
+      properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
+    })
+  } else {
+    var result = dialog.showSaveDialog(downloadWindow, {
+      title: "Select save location for robot log",
+      defaultPath: files[0],
+      properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+      filters: [
+        { name: "Robot logs", extensions: ["rlog"] }
+      ]
+    })
+  }
+  result.then(response => {
+    if (!response.canceled) {
+      var savePath = null
+      if (response.filePath) {
+        savePath = response.filePath
+      } else if (response.filePaths.length > 0) {
+        savePath = response.filePaths[0]
+      }
+      if (savePath != null) {
+        downloadWindow.webContents.send("download-save", files, savePath)
+      }
+    }
+  })
+})
+
+ipcMain.on("prompt-download-auto-open", (_, path) => {
+  var filename = path.split("/")[path.split("/").length - 1]
+  dialog.showMessageBox(downloadWindow, {
+    type: "question",
+    message: "Open log?",
+    detail: "Would you like to open the log file \"" + filename + "\"?",
+    icon: iconPath,
+    buttons: ["Open", "Skip"],
+    defaultId: 0
+  }).then(result => {
+    if (result.response == 0) {
+      downloadWindow.close()
+      lastIndexWindow.focus()
+      lastIndexWindow.send("open-file", path)
+    }
+  })
+})
 
 // MISC COMMUNICATION WITH PRELOAD
 
