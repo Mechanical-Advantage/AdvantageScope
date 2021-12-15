@@ -51,7 +51,7 @@ jobs:
         node-version: '16.x'
         cache: 'npm'
     - name: Install Node.js dependencies
-      run: npm install
+      run: npm install --no-optional
     - name: Prepare macOS certificate
       if: matrix.host.os == 'macos-latest'
       run: |
