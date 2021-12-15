@@ -20,7 +20,8 @@
     "date-holidays": "^3.12.1",
     "electron-fetch": "^1.7.4",
     "jsonfile": "^4.0.0",
-    "mkdirp": "^0.5.5"
+    "mkdirp": "^0.5.5",
+    "ssh2": "^1.5.0"
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",
@@ -35,25 +36,25 @@
         "description": "Robot log",
         "mimeType": "application/octet-stream",
         "role": "Viewer",
-        "icon": "assets/rlog-icon"
+        "icon": "icons/app/rlog-icon"
       }
     ],
     "mac": {
       "target": "dmg",
-      "icon": "assets/app-icon.icns"
+      "icon": "icons/app/app-icon.icns"
     },
     "linux": {
       "target": [
         "deb",
         "rpm"
       ],
-      "icon": "assets/app-icon.icns",
+      "icon": "icons/app/app-icon.icns",
       "maintainer": "FRC 6328",
       "category": "Utility"
     },
     "win": {
       "target": "nsis",
-      "icon": "assets/app-icon.ico"
+      "icon": "icons/app/app-icon.ico"
     }
   }
 }

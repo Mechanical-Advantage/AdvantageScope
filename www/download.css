@@ -1,0 +1,167 @@
+body {
+  background-color: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #222;
+  }
+}
+
+div.file-list {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  right: 0px;
+  bottom: 46px;
+  overflow: hidden;
+  background-color: #eee;
+  box-shadow: inset 0px 0px 2px #ccc;
+}
+
+div.file-item {
+  height: 25px;
+  margin-left: 6px;
+  margin-right: 6px;
+  padding-left: 0px;
+  padding-right: 5px;
+  border-radius: 8px;
+
+  font-size: 14px;
+  line-height: 25px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.file-item:first-child {
+  margin-top: 3px;
+}
+
+div.file-item:last-child {
+  margin-bottom: 3px;
+}
+
+div.file-item:nth-child(even) {
+  background-color: #ddd;
+}
+
+div.file-item img {
+  position: relative;
+  top: 2px;
+  height: 15px;
+  padding-left: 8px;
+  padding-right: 5px;
+  filter: drop-shadow(0px 0.5px 1px #bbb);
+}
+
+div.file-item img.mac {
+  top: 3px;
+  height: 18px;
+  padding-left: 7px;
+  padding-right: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.file-list {
+    background-color: #111;
+    box-shadow: inset 0px 0px 2px #000;
+  }
+
+  div.file-item:nth-child(even) {
+    background-color: #1a1a1a;
+  }
+
+  div.file-item img {
+    filter: drop-shadow(0px 0.5px 4px #000);
+  }
+}
+
+div.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+div.loading-bar {
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  border-radius: 4px;
+  animation: loading 1s ease-in-out infinite;
+}
+
+.loading-bar:nth-child(1) {
+  background-color: #303dc9;
+  animation-delay: 0;
+}
+
+.loading-bar:nth-child(2) {
+  background-color: #e8c24f;
+  animation-delay: 0.09s;
+}
+
+.loading-bar:nth-child(3) {
+  background-color: #303dc9;
+  animation-delay: .18s;
+}
+
+.loading-bar:nth-child(4) {
+  background-color: #e8c24f;
+  animation-delay: .27s;
+}
+
+.loading-bar:nth-child(5) {
+  background-color: #303dc9;
+  animation-delay: .36s;
+}
+
+@keyframes loading {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1, 2.2);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+progress {
+  position: absolute;
+  bottom: 23px;
+  transform: translateY(50%);
+  left: 10px;
+  width: calc(100% - 10px - 83px);
+}
+
+div.error-text {
+  position: absolute;
+  bottom: 8px;
+  height: 30px;
+  left: 12px;
+  right: 85px;
+
+  font-size: 14px;
+  line-height: 30px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+button {
+  position: absolute;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+}
+
+#exit {
+  right: 43px;
+}
+
+#download {
+  right: 8px;
+}

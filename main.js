@@ -33,10 +33,10 @@ app.whenReady().then(() => {
   // Pick icon based on platform
   switch (process.platform) {
     case "win32":
-      iconPath = path.join(__dirname, "assets/app-icon-4096.png") // Square icon
+      iconPath = path.join(__dirname, "icons/window/window-icon-win.png") // Square icon
       break
     case "linux":
-      iconPath = path.join(__dirname, "assets/app-icon-rounded.png") // Rounded icon
+      iconPath = path.join(__dirname, "icons/window/window-icon-linux.png") // Rounded icon
       break
     default:
       iconPath = null // macOS uses the app icon by default
@@ -195,12 +195,8 @@ function setupMenu() {
     ...(isMac ? [{
       role: "appMenu",
       submenu: [
-        {
-          role: "about"
-        },
-        {
-          type: "separator"
-        },
+        { role: "about" },
+        { type: "separator" },
         {
           label: "Preferences...",
           accelerator: "Cmd+,",
@@ -214,30 +210,14 @@ function setupMenu() {
             checkForUpdate(true)
           }
         },
-        {
-          type: "separator"
-        },
-        {
-          role: "services"
-        },
-        {
-          type: "separator"
-        },
-        {
-          role: "hide"
-        },
-        {
-          role: "hideOthers"
-        },
-        {
-          role: "unhide"
-        },
-        {
-          type: "separator"
-        },
-        {
-          role: "quit"
-        }
+        { type: "separator" },
+        { role: "services" },
+        { type: "separator" },
+        { role: "hide" },
+        { role: "hideOthers" },
+        { role: "unhide" },
+        { type: "separator" },
+        { role: "quit" }
       ]
     }] : []),
     {
@@ -275,13 +255,7 @@ function setupMenu() {
           label: "Download Logs...",
           accelerator: "CmdOrCtrl+D",
           click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "Coming soon...",
-              message: "Coming soon...",
-              detail: "This feature is not available yet.",
-              icon: iconPath
-            })
+            openDownload()
           }
         },
         {
@@ -297,9 +271,7 @@ function setupMenu() {
             })
           }
         },
-        {
-          type: "separator"
-        },
+        { type: "separator" },
         {
           label: "New Window",
           accelerator: "CommandOrControl+N",
@@ -336,9 +308,7 @@ function setupMenu() {
             BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 3)
           }
         },
-        {
-          type: "separator"
-        },
+        { type: "separator" },
         {
           label: "Previous Tab",
           accelerator: "CmdOrCtrl+Left",
@@ -353,9 +323,7 @@ function setupMenu() {
             BrowserWindow.getFocusedWindow().webContents.send("tab-command", "move", 1)
           }
         },
-        {
-          type: "separator"
-        },
+        { type: "separator" },
         {
           label: "Shift Left",
           accelerator: "CmdOrCtrl+[",
@@ -370,9 +338,7 @@ function setupMenu() {
             BrowserWindow.getFocusedWindow().webContents.send("tab-command", "shift", 1)
           }
         },
-        {
-          type: "separator"
-        },
+        { type: "separator" },
         {
           label: "Close Tab",
           accelerator: isMac ? "Cmd+W" : "Ctrl+Q",
@@ -413,9 +379,7 @@ function setupMenu() {
               checkForUpdate(true)
             }
           },
-          {
-            type: "separator"
-          }
+          { type: "separator" }
         ]),
         {
           label: "View Repository",
@@ -444,6 +408,7 @@ function openPreferences() {
     prefsWindow.focus()
     return
   }
+
   const width = 400
   const height = process.platform == "win32" ? 222 : 162 // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
@@ -477,6 +442,7 @@ ipcMain.on("update-preferences", (_, data) => {
       window.send("set-preferences", data)
     }
   })
+  if (downloadWindow != null && !downloadWindow.isDestroyed()) downloadWindow.send("set-preferences", data)
 })
 
 ipcMain.on("exit-preferences", () => {
@@ -598,6 +564,40 @@ function checkForUpdate(alwaysNotify) {
       })
     }
   })
+}
+
+// Create a new download window
+var downloadWindow = null
+function openDownload() {
+  if (downloadWindow != null && !downloadWindow.isDestroyed()) {
+    downloadWindow.focus()
+    return
+  }
+
+  const width = 500
+  const height = 500
+  downloadWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    minWidth: width,
+    minHeight: height,
+    x: Math.floor(BrowserWindow.getFocusedWindow().getBounds().x + (BrowserWindow.getFocusedWindow().getBounds().width / 2) - (width / 2)),
+    y: Math.floor(BrowserWindow.getFocusedWindow().getBounds().y + (BrowserWindow.getFocusedWindow().getBounds().height / 2) - (height / 2)),
+    resizable: true,
+    alwaysOnTop: true,
+    icon: iconPath,
+    show: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload/downloadPreload.js")
+    }
+  })
+
+  // Finish setup
+  downloadWindow.setMenu(null)
+  downloadWindow.once("ready-to-show", downloadWindow.show)
+  downloadWindow.webContents.on("dom-ready", () => downloadWindow.send("set-preferences", jsonfile.readFileSync(prefsFileName)))
+  downloadWindow.loadFile("www/download.html")
 }
 
 // MISC COMMUNICATION WITH PRELOAD
