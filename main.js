@@ -130,7 +130,7 @@ function createWindow() {
     fullScreen: false,
     saveDataHandler: saveStateHandler,
     restoreDataHandler: state => {
-      window.once("ready-to-show", () => {
+      window.on("ready-to-show", () => {
         window.send("restore-state", state)
       })
     }
@@ -167,7 +167,9 @@ function createWindow() {
     window.send("set-preferences", jsonfile.readFileSync(prefsFileName))
     var holidayToday = holidays.isHoliday(new Date())
     if (holidayToday) {
-      window.send("set-holiday", holidayToday[holidayToday.length - 1].name)
+      holidayToday.forEach(x => {
+        if (!x.substitute) window.send("set-holiday", x.name)
+      })
     }
   })
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
@@ -621,7 +623,7 @@ ipcMain.on("prompt-download-save", (_, files) => {
       defaultPath: files[0],
       properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
       filters: [
-        { name: "Robot logs", extensions: ["rlog"] }
+        { name: "Robot log", extensions: ["rlog"] }
       ]
     })
   }
@@ -641,7 +643,7 @@ ipcMain.on("prompt-download-save", (_, files) => {
 })
 
 ipcMain.on("prompt-download-auto-open", (_, path) => {
-  var filename = path.split("/")[path.split("/").length - 1]
+  var filename = path.split("/")[path.split("/").length - 1] // TODO: Fix this on Windows
   dialog.showMessageBox(downloadWindow, {
     type: "question",
     message: "Open log?",
