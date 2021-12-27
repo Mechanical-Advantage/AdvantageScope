@@ -136,6 +136,15 @@ ipcRenderer.on("start-live", () => {
 
 
 var client = null
+var dataArray = new Uint8Array()
+
+function appendArray(newArray) {
+  fullArray = new Uint8Array(dataArray.length + newArray.length)
+  fullArray.set(dataArray)
+  fullArray.set(newArray, dataArray.length)
+  dataArray = fullArray
+}
+
 window.addEventListener("start-live-socket", event => {
   client = net.createConnection({
     host: event.detail.address,
@@ -143,10 +152,27 @@ window.addEventListener("start-live-socket", event => {
   })
 
   client.on("data", data => {
-    if (client) {
-      window.dispatchEvent(new CustomEvent("live-data", {
-        detail: data
-      }))
+    appendArray(data)
+
+    while (true) {
+      var expectedLength
+      if (dataArray.length < 4) {
+        break
+      } else {
+        expectedLength = new DataView(dataArray.buffer).getInt32() + 4
+        if (dataArray.length < expectedLength) {
+          break
+        }
+      }
+
+      var singleArray = dataArray.slice(4, expectedLength)
+      dataArray = dataArray.slice(expectedLength)
+
+      if (client) {
+        window.dispatchEvent(new CustomEvent("live-data", {
+          detail: new Uint8Array(singleArray)
+        }))
+      }
     }
   })
 

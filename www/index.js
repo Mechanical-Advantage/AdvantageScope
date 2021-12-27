@@ -181,11 +181,13 @@ window.addEventListener("start-live", () => {
         window.log = new Log()
         window.log.rawData = event.data.data
 
+        var timeRange = window.log.getTimestamps()[window.log.getTimestamps().length - 1] - window.log.getTimestamps()[0]
+        window.liveStart = (new Date().getTime() / 1000) - timeRange
+
         if (firstData) {
           setWindowState(oldState, true)
           firstData = false
           window.liveReconnecting = false
-          window.liveStart = new Date().getTime() / 1000
           selection.updateLockButtons()
         } else if (window.log.getFieldCount() != oldFieldCount) { // Reset state when fields update
           setWindowState(oldState, false)
