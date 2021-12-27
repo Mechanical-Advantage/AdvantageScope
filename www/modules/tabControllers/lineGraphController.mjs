@@ -13,7 +13,7 @@ export class LineGraphController {
   #minZoomTime = 0.1
   #zoomBase = 1.001
   #scrollCenter = 500000
-  #scrollStationaryMs = 50
+  #scrollStationaryMs = 1000
 
   #lastScrollUpdate = 0
   #lastScrollLeft = null
