@@ -126,12 +126,20 @@ export class SideBar {
       label.style.fontStyle = field.field == null ? "normal" : "italic"
       label.style.cursor = field.field == null ? "auto" : "grab"
       if (field.field != null) {
-        label.addEventListener("mousedown", (event) => {
+        var dragEvent = (x, y, offsetX, offsetY) => {
           document.getElementById("dragItem").innerText = title
-          startDrag(event.clientX, event.clientY, event.offsetX, event.offsetY, {
+          startDrag(x, y, offsetX, offsetY, {
             id: field.field,
             children: Object.values(field.children).map(x => x.field)
           })
+        }
+
+        label.addEventListener("mousedown", event => {
+          dragEvent(event.clientX, event.clientY, event.offsetX, event.offsetY)
+        })
+        label.addEventListener("touchstart", event => {
+          var touch = event.targetTouches[0]
+          dragEvent(touch.clientX, touch.clientY, touch.clientX - label.getBoundingClientRect().x, touch.clientY - label.getBoundingClientRect().y)
         })
       }
 

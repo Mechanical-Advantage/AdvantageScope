@@ -244,35 +244,45 @@ var dragItem = document.getElementById("dragItem")
 var dragActive = false
 var dragOffsetX = 0
 var dragOffsetY = 0
+var dragLastX = 0
+var dragLastY = 0
 var dragData = null
 
 window.startDrag = (x, y, offsetX, offsetY, data) => {
   dragActive = true
   dragOffsetX = offsetX
   dragOffsetY = offsetY
+  dragLastX = x
+  dragLastY = y
   dragData = data
 
   dragItem.hidden = false
-  dragItem.style.left = (x - dragOffsetX).toString() + "px"
-  dragItem.style.top = (y - dragOffsetY).toString() + "px"
+  dragItem.style.left = (x - offsetX).toString() + "px"
+  dragItem.style.top = (y - offsetY).toString() + "px"
 }
 
-window.addEventListener("mousemove", (event) => {
+var dragMove = (x, y) => {
   if (dragActive) {
-    dragItem.style.left = (event.clientX - dragOffsetX).toString() + "px"
-    dragItem.style.top = (event.clientY - dragOffsetY).toString() + "px"
+    dragItem.style.left = (x - dragOffsetX).toString() + "px"
+    dragItem.style.top = (y - dragOffsetY).toString() + "px"
+    dragLastX = x
+    dragLastY = y
     window.dispatchEvent(new CustomEvent("drag-update", {
-      detail: { x: event.clientX, y: event.clientY, data: dragData }
+      detail: { x: x, y: y, data: dragData }
     }))
   }
-})
+}
+window.addEventListener("mousemove", event => { dragMove(event.clientX, event.clientY) })
+window.addEventListener("touchmove", event => { dragMove(event.touches[0].clientX, event.touches[0].clientY) })
 
-window.addEventListener("mouseup", (event) => {
+var dragEnd = () => {
   if (dragActive) {
     dragActive = false
     dragItem.hidden = true
     window.dispatchEvent(new CustomEvent("drag-stop", {
-      detail: { x: event.clientX, y: event.clientY, data: dragData }
+      detail: { x: dragLastX, y: dragLastY, data: dragData }
     }))
   }
-})
+}
+window.addEventListener("mouseup", () => { dragEnd() })
+window.addEventListener("touchend", () => { dragEnd() })

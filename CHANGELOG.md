@@ -1,1 +1,1 @@
-Fixed a bug which prevented scrolling on the line graph in some circumstances. 
+Added support for dragging fields on touch screens.
