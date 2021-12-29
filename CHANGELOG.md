@@ -1,1 +1,1 @@
-Added support for dragging fields on touch screens.
+Fixed a bug causing high memory usage and lag when connected to a live server for long periods.

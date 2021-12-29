@@ -5,12 +5,18 @@ var log = new Log()
 var logRevision = null
 var keyIDs = {}
 
+var isLive = false
+var dataArray = null
+var dataBuffer = null
+var decoder = new TextDecoder("UTF-8")
+var offset = null
+
 // Decodes a series of bytes from an RLOG file and returns serializable data for a Log()
 onmessage = function (event) {
-  var dataArray = event.data
-  var dataBuffer = new DataView(dataArray.buffer)
-  var decoder = new TextDecoder("UTF-8")
-  var offset = 0
+  isLive = event.data.isLive
+  dataArray = event.data.bytes
+  dataBuffer = new DataView(dataArray.buffer)
+  offset = 0
 
   function shiftOffset(shift) {
     return (offset += shift) - shift
@@ -132,14 +138,21 @@ onmessage = function (event) {
             break;
         }
       }
-      log.add(entry)
+      if (isLive) { // If live, stop after one entry and send data back to index.js
+        this.postMessage({
+          status: "newLiveData",
+          data: entry
+        })
+      } else { // If not live, read all data and process log here
+        log.add(entry)
+      }
     }
   } catch (error) {
     console.error(error.message)
   }
   log.updateDisplayKeys()
   this.postMessage({
-    status: "newData",
+    status: "newLog",
     data: log.rawData
   })
 }

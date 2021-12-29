@@ -128,7 +128,7 @@ window.addEventListener("open-file", event => {
   var startTime = new Date().getTime()
 
   decodeWorker = new Worker("decodeWorker.js", { type: "module" })
-  decodeWorker.postMessage(event.detail.data)
+  decodeWorker.postMessage({ bytes: event.detail.data, isLive: false })
   decodeWorker.onmessage = event => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
@@ -137,7 +137,7 @@ window.addEventListener("open-file", event => {
         }))
         break
 
-      case "newData": // New data to show, reset everything
+      case "newLog": // New data to show, reset everything
         var oldState = getWindowState()
         window.log = new Log()
         window.log.rawData = event.data.data
@@ -154,8 +154,8 @@ window.addEventListener("open-file", event => {
 })
 
 window.addEventListener("start-live", () => {
-  window.liveStart = null
   window.liveActive = true
+  window.liveStart = null
   window.dispatchEvent(new Event("stop-live-socket"))
   setTitle(prefs.address + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
 
@@ -174,12 +174,14 @@ window.addEventListener("start-live", () => {
         window.dispatchEvent(new Event("stop-live-socket"))
         break
 
-      case "newData": // New data to show
+      case "newLiveData": // New data to show
         var oldFieldCount = window.log == null ? 0 : window.log.getFieldCount()
         var oldState = getWindowState()
 
-        window.log = new Log()
-        window.log.rawData = event.data.data
+        if (firstData) window.log = new Log()
+
+        window.log.add(event.data.data)
+        window.log.updateDisplayKeys()
 
         var timeRange = window.log.getTimestamps()[window.log.getTimestamps().length - 1] - window.log.getTimestamps()[0]
         window.liveStart = (new Date().getTime() / 1000) - timeRange
@@ -209,7 +211,7 @@ window.addEventListener("start-live", () => {
 
 window.addEventListener("live-data", event => {
   if (window.liveActive) {
-    decodeWorker.postMessage(event.detail)
+    decodeWorker.postMessage({ bytes: event.detail, isLive: true })
   }
 })
 
