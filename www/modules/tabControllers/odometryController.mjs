@@ -269,6 +269,8 @@ export class OdometryController {
       }
     })
     var allTimestamps = [...new Set([...positionData.x.timestamps, ...positionData.y.timestamps])]
+    allTimestamps.sort((a, b) => a - b)
+    if (time - allTimestamps[0] > this.#trailLengthSecs) allTimestamps.shift()
     if (allTimestamps[allTimestamps.length - 1] - time > this.#trailLengthSecs) allTimestamps.pop()
     var trailData = []
     allTimestamps.forEach(timestamp => {

@@ -11,8 +11,8 @@ ipcRenderer.on("start", (_, data) => {
     }
   }
 
-  document.getElementById("min").value = data.range[0]
-  document.getElementById("max").value = data.range[1]
+  document.getElementById("min").value = Math.round(data.range[0] * 100000) / 100000
+  document.getElementById("max").value = Math.round(data.range[1] * 100000) / 100000
   document.getElementById("exit").addEventListener("click", () => {
     ipcRenderer.send("edit-axis-complete", data.timestamp, null)
   })

@@ -94,6 +94,14 @@ export class Log {
   // Gets all data from a field in the given range
   getDataInRange(fieldIndex, startTime, endTime) {
     var field = this.#fields[fieldIndex]
+    if (field == undefined) {
+      return {
+        timestamps: [],
+        timestampIndexes: [],
+        values: [],
+        startValueIndex: 0
+      }
+    }
 
     // Array item, get data from parent
     if ("arrayParent" in field) {

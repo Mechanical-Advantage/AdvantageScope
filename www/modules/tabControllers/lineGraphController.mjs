@@ -396,7 +396,7 @@ export class LineGraphController {
         this.#xRange[0] = selection.hoveredTime - (newZoom * hoveredPercent)
         this.#xRange[1] = selection.hoveredTime + (newZoom * (1 - hoveredPercent))
       }
-    } else if (this.#maxZoom && !selection.isLocked()) {
+    } else if (this.#maxZoom) {
       this.#xRange = availableRange
     }
 

@@ -643,7 +643,7 @@ ipcMain.on("prompt-download-save", (_, files) => {
 })
 
 ipcMain.on("prompt-download-auto-open", (_, path) => {
-  var filename = path.split("/")[path.split("/").length - 1] // TODO: Fix this on Windows
+  var filename = path.basename(path)
   dialog.showMessageBox(downloadWindow, {
     type: "question",
     message: "Open log?",

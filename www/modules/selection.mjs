@@ -92,7 +92,7 @@ export class Selection {
 
   // Retrieves selected time
   get selectedTime() {
-    if (this.#locked) { // Based on live logging start time (continuously increase regardless of data)
+    if (window.liveStatus == 2 && this.#locked) { // Based on live logging start time (continuously increase regardless of data)
       return ((new Date().getTime() / 1000) - window.liveStart) + log.getTimestamps()[0]
     } else if (this.#playing) { // Increase from last selected time until reaching the end of data
       var time = ((new Date().getTime() / 1000) - this.#playStart) * this.#playbackSpeed + (this.#selectedTime == null ? 0 : this.#selectedTime)
@@ -134,7 +134,7 @@ export class Selection {
 
   // Locks playback to live data
   lock() {
-    if (window.liveStart) {
+    if (window.liveStatus == 2) {
       this.pause()
       this.#locked = true
     }
@@ -162,7 +162,7 @@ export class Selection {
 
   // Updates (including hiding or showing) lock buttons
   updateLockButtons() {
-    var showButtons = window.liveStart != null
+    var showButtons = window.liveStatus == 2
     document.documentElement.style.setProperty("--show-lock-buttons", showButtons ? 1 : 0)
     if (showButtons) {
       this.#unlockedButton.hidden = this.isLocked()

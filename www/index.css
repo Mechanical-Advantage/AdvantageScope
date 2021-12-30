@@ -1,6 +1,7 @@
 :root {
   --tab-control-inline: 0;
   --side-bar-width: 300px;
+  --show-side-bar: 1;
   --show-lock-buttons: 0;
 }
 
@@ -22,8 +23,8 @@ div.title-bar-text {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: calc(var(--side-bar-width) + 20px);
-  right: 149px;
+  left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
+  right: calc(182px + var(--show-lock-buttons) * 28px);
 
   text-align: left;
   line-height: 38px;
@@ -72,6 +73,7 @@ div.side-bar-shadow {
   box-shadow: 0px 0px 3px 0px #777;
   transition: opacity 0.3s ease-in-out;
   opacity: 0%;
+  background-color: red;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -94,7 +96,7 @@ div.side-bar-handle {
   top: 0px;
   bottom: 0px;
   left: calc(var(--side-bar-width) - 2px);
-  width: 4px;
+  width: calc(20px - (var(--show-side-bar) * 16px));
 
   z-index: 6;
   cursor: col-resize;

@@ -11,9 +11,8 @@ window.isFocused = true
 window.prefs = {}
 
 window.log = null
-window.liveActive = false // Connected (or connecting) to live server
-window.liveReconnecting = false // Reconnecting, supress errors
-window.liveStart = null // If not null, actively receiving live data
+window.liveStatus = 0 // 0 = not live, 1 = connecting (first time), 2 = active, 3 = reconecting
+window.liveStart = null
 window.selection = new Selection()
 window.tabs = new Tabs()
 window.sideBar = new SideBar()
@@ -112,15 +111,24 @@ window.addEventListener("set-preferences", event => {
   window.prefs = event.detail
 })
 
+function setLiveStatus(status) {
+  var oldStatus = window.liveStatus
+  window.liveStatus = status
+  if (status != 2 && oldStatus == 2) {
+    selection.unlock()
+  }
+  if (status == 2 && oldStatus != 2) {
+    selection.lock()
+  }
+  selection.updateLockButtons()
+}
+
 window.addEventListener("open-file", event => {
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
   setTitle(logName + " \u2014 Advantage Scope")
-  if (window.liveActive) {
-    window.liveActive = false
-    window.liveReconnecting = false
-    window.liveStart = null
-    selection.unlock()
+  if (window.liveStatus != 0) {
+    setLiveStatus(0)
     window.dispatchEvent(new Event("stop-live-socket")) // Stop live logging
   }
 
@@ -141,8 +149,6 @@ window.addEventListener("open-file", event => {
         var oldState = getWindowState()
         window.log = new Log()
         window.log.rawData = event.data.data
-        window.liveStart = null
-        selection.updateLockButtons()
 
         var length = new Date().getTime() - startTime
         console.log("Log ready in " + length.toString() + "ms")
@@ -154,20 +160,19 @@ window.addEventListener("open-file", event => {
 })
 
 window.addEventListener("start-live", () => {
-  window.liveActive = true
-  window.liveStart = null
+  if (window.liveStatus != 3) {
+    setLiveStatus(1)
+    setTitle(prefs.address + ":" + prefs.port.toString() + " (Connecting) \u2014 Advantage Scope")
+  }
   window.dispatchEvent(new Event("stop-live-socket"))
-  setTitle(prefs.address + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
 
   decodeWorker = new Worker("decodeWorker.js", { type: "module" })
   var firstData = true
   decodeWorker.onmessage = event => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
-        window.liveActive = false
-        window.liveReconnecting = false
-        window.liveStart = null
-        selection.unlock()
+        setLiveStatus(0)
+        setTitle(prefs.address + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope")
         window.dispatchEvent(new CustomEvent("error", {
           detail: { title: "Failed to read log", content: event.data.message }
         }))
@@ -187,10 +192,10 @@ window.addEventListener("start-live", () => {
         window.liveStart = (new Date().getTime() / 1000) - timeRange
 
         if (firstData) {
-          setWindowState(oldState, true)
           firstData = false
-          window.liveReconnecting = false
-          selection.updateLockButtons()
+          setTitle(prefs.address + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
+          setWindowState(oldState, true)
+          setLiveStatus(2)
         } else if (window.log.getFieldCount() != oldFieldCount) { // Reset state when fields update
           setWindowState(oldState, false)
         }
@@ -210,30 +215,29 @@ window.addEventListener("start-live", () => {
 })
 
 window.addEventListener("live-data", event => {
-  if (window.liveActive) {
+  if (window.liveStatus != 0) {
     decodeWorker.postMessage({ bytes: event.detail, isLive: true })
   }
 })
 
 window.addEventListener("live-error", () => {
-  if (window.liveActive) {
-    if (window.liveReconnecting) {
-      window.setTimeout(() => {
-        window.dispatchEvent(new Event("start-live"))
-      }, 1000)
-    } else {
-      window.dispatchEvent(new CustomEvent("error", {
-        detail: { title: "Log connection failed", content: "Could not connect to log server at " + prefs.address + ":" + prefs.port }
-      }))
-    }
+  if (window.liveStatus == 1) {
+    setLiveStatus(0)
+    setTitle(prefs.address + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope")
+    window.dispatchEvent(new CustomEvent("error", {
+      detail: { title: "Log connection failed", content: "Could not connect to log server at " + prefs.address + ":" + prefs.port }
+    }))
+  } else if (window.liveStatus == 3) {
+    window.setTimeout(() => {
+      window.dispatchEvent(new Event("start-live"))
+    }, 1000)
   }
 })
 
 window.addEventListener("live-closed", () => {
-  if (window.liveStart != null) {
-    window.liveStart = null
-    window.liveReconnecting = true
-    selection.unlock()
+  if (window.liveStatus == 2) {
+    setLiveStatus(3)
+    setTitle(prefs.address + ":" + prefs.port.toString() + " (Reconnecting) \u2014 Advantage Scope")
     window.setTimeout(() => {
       window.dispatchEvent(new Event("start-live"))
     }, 1000)

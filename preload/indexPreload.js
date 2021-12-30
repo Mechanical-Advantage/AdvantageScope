@@ -3,6 +3,8 @@ const fs = require("fs")
 const os = require("os")
 const net = require("net")
 
+const connectTimeoutMs = 1000 // How long to wait when connecting
+
 // Window updates
 ipcRenderer.on("set-fullscreen", (_, isFullscreen) => {
   window.dispatchEvent(new CustomEvent("set-fullscreen", {
@@ -177,6 +179,10 @@ window.addEventListener("start-live-socket", event => {
   })
 
   client.on("error", () => {
+    window.dispatchEvent(new Event("live-error"))
+  })
+
+  client.setTimeout(connectTimeoutMs, () => {
     window.dispatchEvent(new Event("live-error"))
   })
 

@@ -26,8 +26,9 @@ export class SideBar {
     window.addEventListener("mousemove", (event) => {
       if (this.#sideBarHandleActive) {
         var width = event.clientX
-        if (width < 130) width = 130
         if (width > 500) width = 500
+        if (width >= 80 && width < 160) width = 160
+        if (width < 80) width = 0
         this.#sideBarWidth = width
         this.#updateWidth()
       }
@@ -196,6 +197,7 @@ export class SideBar {
   // Updates the current side bar width
   #updateWidth() {
     document.documentElement.style.setProperty("--side-bar-width", this.#sideBarWidth.toString() + "px")
+    document.documentElement.style.setProperty("--show-side-bar", this.#sideBarWidth > 0 ? 1 : 0)
     tabs.updateScrollBounds()
     tabs.sideBarResize()
   }
