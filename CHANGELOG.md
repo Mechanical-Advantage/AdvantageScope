@@ -1,1 +1,1 @@
-Removed red background from side bar shadow.
+Fixed error when downloading a single log file.

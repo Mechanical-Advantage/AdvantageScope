@@ -642,8 +642,8 @@ ipcMain.on("prompt-download-save", (_, files) => {
   })
 })
 
-ipcMain.on("prompt-download-auto-open", (_, path) => {
-  var filename = path.basename(path)
+ipcMain.on("prompt-download-auto-open", (_, filePath) => {
+  var filename = path.basename(filePath)
   dialog.showMessageBox(downloadWindow, {
     type: "question",
     message: "Open log?",
@@ -655,7 +655,7 @@ ipcMain.on("prompt-download-auto-open", (_, path) => {
     if (result.response == 0) {
       downloadWindow.close()
       lastIndexWindow.focus()
-      lastIndexWindow.send("open-file", path)
+      lastIndexWindow.send("open-file", filePath)
     }
   })
 })
