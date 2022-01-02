@@ -25,6 +25,7 @@
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",
+    "copyright": "Copyright © 2021-2022 FRC 6328",
     "npmRebuild": false,
     "publish": [],
     "directories": {
