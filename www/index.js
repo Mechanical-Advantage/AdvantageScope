@@ -11,6 +11,7 @@ window.isFocused = true
 window.prefs = {}
 
 window.log = null
+window.logPath = null
 window.liveStatus = 0 // 0 = not live, 1 = connecting (first time), 2 = active, 3 = reconecting
 window.liveStart = null
 window.selection = new Selection()
@@ -124,6 +125,7 @@ function setLiveStatus(status) {
 }
 
 window.addEventListener("open-file", event => {
+  window.logPath = event.detail.path
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0]
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName)
   setTitle(logName + " \u2014 Advantage Scope")
@@ -180,7 +182,7 @@ window.addEventListener("start-live", () => {
         break
 
       case "newLiveData": // New data to show
-        var oldFieldCount = window.log == null ? 0 : window.log.getFieldCount()
+        var oldFieldCount = window.log == null ? 0 : window.log.getFieldCount(true)
         var oldState = getWindowState()
 
         if (firstData) window.log = new Log()
@@ -196,7 +198,7 @@ window.addEventListener("start-live", () => {
           setTitle(prefs.address + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
           setWindowState(oldState, true)
           setLiveStatus(2)
-        } else if (window.log.getFieldCount() != oldFieldCount) { // Reset state when fields update
+        } else if (window.log.getFieldCount(true) != oldFieldCount) { // Reset state when fields update
           setWindowState(oldState, false)
         }
         sideBar.updateTitle()
@@ -242,6 +244,37 @@ window.addEventListener("live-closed", () => {
       window.dispatchEvent(new Event("start-live"))
     }, 1000)
   }
+})
+
+window.addEventListener("export-csv", () => {
+  if (log == null || window.liveStatus != 0) {
+    window.dispatchEvent(new CustomEvent("error", {
+      detail: { title: "Cannot export as CSV", content: "Please open a log file, then try again" }
+    }))
+  } else {
+    window.dispatchEvent(new CustomEvent("export-csv-dialog", {
+      detail: window.logPath
+    }))
+  }
+})
+
+window.addEventListener("export-csv-dialog-response", event => {
+  var filename = event.detail.split(/[\\/]+/).reverse()[0]
+  sideBar.startExporting(filename)
+  var csvWorker = new Worker("csvWorker.js", { type: "module" })
+  csvWorker.postMessage(log.rawData)
+  csvWorker.onmessage = message => {
+    window.dispatchEvent(new CustomEvent("save-csv-data", {
+      detail: {
+        path: event.detail,
+        data: message.data
+      }
+    }))
+  }
+})
+
+window.addEventListener("save-csv-data-response", () => {
+  sideBar.updateTitle()
 })
 
 // MANAGE DRAGGING

@@ -1,7 +1,7 @@
 const fileList = document.getElementsByClassName("file-list")[0]
 const fileListItems = fileList.children[0]
 const loadingAnimation = document.getElementsByClassName("loading")[0]
-const progessBar = document.getElementsByTagName("progress")[0]
+const progressBar = document.getElementsByTagName("progress")[0]
 const alertText = document.getElementsByClassName("alert-text")[0]
 const exitButton = document.getElementById("exit")
 const downloadButton = document.getElementById("download")
@@ -33,7 +33,10 @@ window.addEventListener("status-list", event => {
   // Hide loading animation and alert text
   loadingAnimation.hidden = true
   loading = false
-  if (alertIsError) alertText.hidden = true
+  if (alertIsError) {
+    alertText.hidden = true
+    progressBar.hidden = true
+  }
 
   // Remove old list items
   while (fileListItems.firstChild) {
@@ -126,6 +129,7 @@ window.addEventListener("status-error", event => {
   loadingAnimation.hidden = false
   loading = true
   alertText.hidden = false
+  progressBar.hidden = true
 
   // Remove list items
   while (fileListItems.firstChild) {
@@ -154,8 +158,21 @@ window.addEventListener("status-error", event => {
 // Display alert
 window.addEventListener("status-alert", event => {
   alertText.hidden = false
+  progressBar.hidden = true
   alertIsError = false
   alertText.innerHTML = event.detail
+})
+
+// Update progress bar
+window.addEventListener("status-progress", event => {
+  alertText.hidden = true
+  progressBar.hidden = false
+  alertIsError = false
+  if (event.detail == null) {
+    progressBar.removeAttribute("value") // Show indeterminate
+  } else {
+    progressBar.value = event.detail
+  }
 })
 
 // Bind button functions

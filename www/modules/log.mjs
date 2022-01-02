@@ -43,8 +43,12 @@ export class Log {
   }
 
   // Gets the number of fields, use this to find all possible indexes
-  getFieldCount() {
-    return this.#fields.length
+  getFieldCount(includeArrayItems) {
+    if (includeArrayItems) {
+      return this.#fields.length
+    } else {
+      return this.#fields.filter(x => x.key != undefined).length
+    }
   }
 
   // Gets info for a field based on its index
@@ -74,19 +78,21 @@ export class Log {
   }
 
   // Organizes fields into a tree structure
-  getFieldTree() {
+  getFieldTree(includeArrayItems) {
     var root = {}
     for (let i in this.#fields) {
-      var tableNames = this.#fields[i].displayKey.slice(1).split("/")
-      var pos = { children: root }
-      for (let x in tableNames) {
-        var tableName = tableNames[x]
-        if (!(tableName in pos.children)) {
-          pos.children[tableName] = { field: null, children: {} }
+      if (includeArrayItems || this.#fields[i].key) {
+        var tableNames = this.#fields[i].displayKey.slice(1).split("/")
+        var pos = { children: root }
+        for (let x in tableNames) {
+          var tableName = tableNames[x]
+          if (!(tableName in pos.children)) {
+            pos.children[tableName] = { field: null, children: {} }
+          }
+          pos = pos.children[tableName]
         }
-        pos = pos.children[tableName]
+        pos.field = Number(i)
       }
-      pos.field = Number(i)
     }
     return root
   }

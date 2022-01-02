@@ -28,7 +28,7 @@ export class MetadataController {
     if (log == null) return
 
     // Get data
-    var tree = log.getFieldTree()
+    var tree = log.getFieldTree(true)
     var data = {}
     if ("RealMetadata" in tree) {
       for (let [key, value] of Object.entries(tree["RealMetadata"].children)) {

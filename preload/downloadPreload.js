@@ -96,22 +96,18 @@ ipcRenderer.on("download-save", (_, files, savePath) => {
     if (error) {
       sendError(error.message)
     } else {
+      window.dispatchEvent(new CustomEvent("status-progress", { detail: null }))
       if (files.length == 1) { // Single file
         sftp.fastGet(fullRioPath + files[0], savePath, error => {
           if (error) {
             sendError(error.message)
           } else {
+            window.dispatchEvent(new CustomEvent("status-progress", { detail: 1.0 }))
             ipcRenderer.send("prompt-download-auto-open", savePath)
           }
         })
 
       } else { // Multiple files
-        if (files.length > 10) {
-          window.dispatchEvent(new CustomEvent("status-alert", {
-            detail: "Downloading " + files.length.toString() + " logs..."
-          }))
-        }
-
         var completeCount = 0
         var skipCount = 0
         files.forEach(file => {
@@ -128,6 +124,10 @@ ipcRenderer.on("download-save", (_, files, savePath) => {
                   sendError(error.message)
                 } else {
                   completeCount++
+                  var progress = (completeCount - skipCount) / (files.length - skipCount)
+                  window.dispatchEvent(new CustomEvent("status-progress", { detail: progress }))
+                  console.log(progress)
+
                   if (completeCount >= files.length) {
                     if (skipCount > 0) {
                       var newCount = completeCount - skipCount

@@ -188,6 +188,14 @@ div.alert-text {
   text-overflow: ellipsis;
 }
 
+progress {
+  position: absolute;
+  bottom: 14px;
+  height: 18px;
+  left: 12px;
+  width: calc(100% - 12px - 85px);
+}
+
 button {
   position: absolute;
   bottom: 8px;

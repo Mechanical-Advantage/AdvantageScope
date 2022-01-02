@@ -197,3 +197,28 @@ window.addEventListener("stop-live-socket", () => {
     client = null
   }
 })
+
+// Manage exporting as CSV
+ipcRenderer.on("export-csv", () => {
+  window.dispatchEvent(new Event("export-csv"))
+})
+
+window.addEventListener("export-csv-dialog", event => {
+  ipcRenderer.send("export-csv-dialog", event.detail)
+})
+
+ipcRenderer.on("export-csv-dialog-response", (_, path) => {
+  window.dispatchEvent(new CustomEvent("export-csv-dialog-response", {
+    detail: path
+  }))
+})
+
+window.addEventListener("save-csv-data", event => {
+  fs.writeFile(event.detail.path, event.detail.data, err => {
+    if (err)
+      throw err
+    else {
+      window.dispatchEvent(new Event("save-csv-data-response"))
+    }
+  })
+})

@@ -268,13 +268,9 @@ function setupMenu() {
           label: "Export as CSV...",
           accelerator: "CmdOrCtrl+E",
           click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "Coming soon...",
-              message: "Coming soon...",
-              detail: "This feature is not available yet.",
-              icon: iconPath
-            })
+            var window = BrowserWindow.getFocusedWindow()
+            if (!window.webContents.getURL().endsWith("index.html")) return
+            window.webContents.send("export-csv")
           }
         },
         { type: "separator" },
@@ -821,4 +817,21 @@ ipcMain.on("update-odometry-popup", (_, id, command) => {
       }
     })
   }
+})
+
+ipcMain.on("export-csv-dialog", (_, path) => {
+  var csvPath = path.substring(0, path.length - 4) + "csv"
+  var result = dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
+    title: "Select export location for robot log",
+    defaultPath: csvPath,
+    properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+    filters: [
+      { name: "Comma-separated values", extensions: ["csv"] }
+    ]
+  })
+  result.then(response => {
+    if (!response.canceled) {
+      BrowserWindow.getFocusedWindow().send("export-csv-dialog-response", response.filePath)
+    }
+  })
 })

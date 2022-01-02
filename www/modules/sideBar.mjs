@@ -166,7 +166,7 @@ export class SideBar {
     }
 
     // Start adding fields recursively
-    var tree = log.getFieldTree()
+    var tree = log.getFieldTree(true)
     var keys = Object.keys(tree).sort(smartSort)
     for (let i in keys) {
       if (keys[i] == "RealMetadata" || keys[i] == "ReplayMetadata") {
@@ -191,7 +191,7 @@ export class SideBar {
       runtime /= 60
       runtimeUnit = "h"
     }
-    this.#sideBarTitle.innerText = log.getFieldCount().toString() + " field" + (log.getFieldCount() == 1 ? "" : "s") + ", " + Math.round(runtime).toString() + runtimeUnit + " runtime"
+    this.#sideBarTitle.innerText = log.getFieldCount(false).toString() + " field" + (log.getFieldCount(false) == 1 ? "" : "s") + ", " + Math.round(runtime).toString() + runtimeUnit + " runtime"
   }
 
   // Updates the current side bar width
@@ -202,9 +202,14 @@ export class SideBar {
     tabs.sideBarResize()
   }
 
-  // Displays a loading message in the side bar title
+  // Displays a loading message in the side bar title (when opening a file)
   startLoading(name) {
-    this.#sideBarTitle.innerText = "Reading " + name + " ..."
+    this.#sideBarTitle.innerText = "Reading " + name + "..."
+  }
+
+  // Displays a loading message in the side bar title (when exporting a CSV)
+  startExporting(name) {
+    this.#sideBarTitle.innerText = "Exporting " + name + "..."
   }
 
   // Expand or hide field children
