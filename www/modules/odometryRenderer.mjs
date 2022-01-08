@@ -27,9 +27,14 @@ export class OdometryRenderer {
 
     // Get game data and update image element
     var gameData = GameConstants.find(x => x.title == command.coordinates.game)
-    if (gameData.filename != this.#lastImgSrc) {
-      this.#lastImgSrc = gameData.filename
-      this.#img.src = "../games/" + gameData.filename
+    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      var imageFilename = gameData.imageDark != undefined ? gameData.imageDark : gameData.imageLight
+    } else {
+      var imageFilename = gameData.imageLight != undefined ? gameData.imageLight : gameData.imageDark
+    }
+    if (imageFilename != this.#lastImgSrc) {
+      this.#lastImgSrc = imageFilename
+      this.#img.src = "../games/" + imageFilename
     }
     if (!(this.#img.width > 0 && this.#img.height > 0)) {
       return null
