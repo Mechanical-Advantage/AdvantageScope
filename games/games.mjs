@@ -1,6 +1,15 @@
 // List of games and rendering info. Field images should be oriented with blue on the left and red on the right.
 export const GameConstants = [
   {
+    title: "2022",
+    filename: "2022-field.jpg",
+    source: "https://firstfrc.blob.core.windows.net/frc2022/Manual/2022FRCGameManual.pdf",
+    topLeft: [149, 24],
+    bottomRight: [1043, 472],
+    widthInches: 648,
+    heightInches: 324
+  },
+  {
     title: "2020",
     filename: "2020-field.png",
     source: "https://www.chiefdelphi.com/t/2020-top-down-orthographic-field-views/369892",
