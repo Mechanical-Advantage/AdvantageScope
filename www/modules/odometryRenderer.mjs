@@ -129,75 +129,138 @@ export class OdometryRenderer {
       ]
     }
 
-    // Calculate robot position
-    var robotPos = calcCoordinates(command.pose.position)
-    var rotation = command.coordinates.unitRotation == "radians" ? command.pose.rotation : command.pose.rotation * (Math.PI / 180)
-    if (robotRight) rotation += Math.PI
-    var lengthPixels = pixelsPerInch * (command.coordinates.unitDistance == "inches" ? command.robot.size : command.robot.size * this.#inchesPerMeter)
+    // Calculate robot length
+    var robotLengthPixels = pixelsPerInch * (command.coordinates.unitDistance == "inches" ? command.robot.size : command.robot.size * this.#inchesPerMeter)
 
-    // Render trail
-    if (command.pose.trail.length > 0) {
-      var trailCoordinates = []
-      var maxDistance = 0
-      command.pose.trail.forEach(position => {
-        var coordinates = calcCoordinates(position)
-        trailCoordinates.push(coordinates)
-        var distance = (((coordinates[0] - robotPos[0]) ** 2) + ((coordinates[1] - robotPos[1]) ** 2)) ** 0.5
-        if (distance > maxDistance) maxDistance = distance
-      })
+    if (command.pose.robotPose != null) {
+      // Calculate robot position
+      var robotPos = calcCoordinates(command.pose.robotPose.pose)
+      var rotation = command.coordinates.unitRotation == "radians" ? command.pose.robotPose.pose[2] : command.pose.robotPose.pose[2] * (Math.PI / 180)
+      if (robotRight) rotation += Math.PI
 
-      var gradient = context.createRadialGradient(robotPos[0], robotPos[1], lengthPixels * 0.5, robotPos[0], robotPos[1], maxDistance)
-      gradient.addColorStop(0, "rgba(170, 170, 170, 1)")
-      gradient.addColorStop(0.25, "rgba(170, 170, 170, 1)")
-      gradient.addColorStop(1, "rgba(170, 170, 170, 0)")
+      // Render trail
+      if (command.pose.robotPose.trail.filter(x => x != null).length > 0) {
+        var trailCoordinates = []
+        var maxDistance = 0
+        command.pose.robotPose.trail.forEach(position => {
+          if (position == null) {
+            trailCoordinates.push(null)
+          } else {
+            var coordinates = calcCoordinates(position)
+            trailCoordinates.push(coordinates)
+            var distance = (((coordinates[0] - robotPos[0]) ** 2) + ((coordinates[1] - robotPos[1]) ** 2)) ** 0.5
+            if (distance > maxDistance) maxDistance = distance
+          }
+        })
 
-      context.strokeStyle = gradient
-      context.lineWidth = 1 * pixelsPerInch
-      context.lineCap = "round"
-      context.lineJoin = "round"
+        var gradient = context.createRadialGradient(robotPos[0], robotPos[1], robotLengthPixels * 0.5, robotPos[0], robotPos[1], maxDistance)
+        gradient.addColorStop(0, "rgba(170, 170, 170, 1)")
+        gradient.addColorStop(0.25, "rgba(170, 170, 170, 1)")
+        gradient.addColorStop(1, "rgba(170, 170, 170, 0)")
+
+        context.strokeStyle = gradient
+        context.lineWidth = 1 * pixelsPerInch
+        context.lineCap = "round"
+        context.lineJoin = "round"
+        context.beginPath()
+        var firstPoint = true
+        trailCoordinates.forEach(position => {
+          if (position == null) {
+            context.stroke()
+            context.beginPath()
+            firstPoint = true
+          } else {
+            if (firstPoint) {
+              context.moveTo(position[0], position[1])
+              firstPoint = false
+            } else {
+              context.lineTo(position[0], position[1])
+            }
+          }
+        })
+        context.stroke()
+      }
+
+      // Render vision line
+      if (command.pose.visionCoordinates != null) {
+        var visionCoordinates = calcCoordinates(command.pose.visionCoordinates)
+        context.strokeStyle = "lightgreen"
+        context.lineWidth = 1 * pixelsPerInch
+        context.beginPath()
+        context.moveTo(robotPos[0], robotPos[1])
+        context.lineTo(visionCoordinates[0], visionCoordinates[1])
+        context.stroke()
+      }
+
+      // Render robot
+      context.fillStyle = "#222"
+      context.strokeStyle = command.robot.alliance
+      context.lineWidth = 3 * pixelsPerInch
+      var backLeft = transform([robotLengthPixels * -0.5, robotLengthPixels * -0.5], rotation, robotPos)
+      var frontLeft = transform([robotLengthPixels * 0.5, robotLengthPixels * -0.5], rotation, robotPos)
+      var frontRight = transform([robotLengthPixels * 0.5, robotLengthPixels * 0.5], rotation, robotPos)
+      var backRight = transform([robotLengthPixels * -0.5, robotLengthPixels * 0.5], rotation, robotPos)
       context.beginPath()
-      var firstPoint = true
-      trailCoordinates.forEach(position => {
-        if (firstPoint) {
-          context.moveTo(position[0], position[1])
-          firstPoint = false
-        } else {
-          context.lineTo(position[0], position[1])
-        }
-      })
+      context.moveTo(frontLeft[0], frontLeft[1])
+      context.lineTo(frontRight[0], frontRight[1])
+      context.lineTo(backRight[0], backRight[1])
+      context.lineTo(backLeft[0], backLeft[1])
+      context.closePath()
+      context.fill()
+      context.stroke()
+
+      context.strokeStyle = "white"
+      context.lineWidth = 1 * pixelsPerInch
+      var arrowBack = transform([robotLengthPixels * -0.3, 0], rotation, robotPos)
+      var arrowFront = transform([robotLengthPixels * 0.3, 0], rotation, robotPos)
+      var arrowLeft = transform([robotLengthPixels * 0.15, robotLengthPixels * -0.15], rotation, robotPos)
+      var arrowRight = transform([robotLengthPixels * 0.15, robotLengthPixels * 0.15], rotation, robotPos)
+      context.beginPath()
+      context.moveTo(arrowBack[0], arrowBack[1])
+      context.lineTo(arrowFront[0], arrowFront[1])
+      context.moveTo(arrowLeft[0], arrowLeft[1])
+      context.lineTo(arrowFront[0], arrowFront[1])
+      context.lineTo(arrowRight[0], arrowRight[1])
       context.stroke()
     }
 
-    // Render robot
-    context.fillStyle = "#222"
-    context.strokeStyle = command.robot.alliance
-    context.lineWidth = 3 * pixelsPerInch
-    var backLeft = transform([lengthPixels * -0.5, lengthPixels * -0.5], rotation, robotPos)
-    var frontLeft = transform([lengthPixels * 0.5, lengthPixels * -0.5], rotation, robotPos)
-    var frontRight = transform([lengthPixels * 0.5, lengthPixels * 0.5], rotation, robotPos)
-    var backRight = transform([lengthPixels * -0.5, lengthPixels * 0.5], rotation, robotPos)
-    context.beginPath()
-    context.moveTo(frontLeft[0], frontLeft[1])
-    context.lineTo(frontRight[0], frontRight[1])
-    context.lineTo(backRight[0], backRight[1])
-    context.lineTo(backLeft[0], backLeft[1])
-    context.closePath()
-    context.fill()
-    context.stroke()
+    // Render ghost robot
+    if (command.pose.ghostPose != null) {
+      var robotPos = calcCoordinates(command.pose.ghostPose)
+      var rotation = command.coordinates.unitRotation == "radians" ? command.pose.ghostPose[2] : command.pose.ghostPose[2] * (Math.PI / 180)
+      if (robotRight) rotation += Math.PI
 
-    context.strokeStyle = "white"
-    context.lineWidth = 1 * pixelsPerInch
-    var arrowBack = transform([lengthPixels * -0.3, 0], rotation, robotPos)
-    var arrowFront = transform([lengthPixels * 0.3, 0], rotation, robotPos)
-    var arrowLeft = transform([lengthPixels * 0.15, lengthPixels * -0.15], rotation, robotPos)
-    var arrowRight = transform([lengthPixels * 0.15, lengthPixels * 0.15], rotation, robotPos)
-    context.beginPath()
-    context.moveTo(arrowBack[0], arrowBack[1])
-    context.lineTo(arrowFront[0], arrowFront[1])
-    context.moveTo(arrowLeft[0], arrowLeft[1])
-    context.lineTo(arrowFront[0], arrowFront[1])
-    context.lineTo(arrowRight[0], arrowRight[1])
-    context.stroke()
+      context.globalAlpha = 0.5
+      context.fillStyle = "#222"
+      context.strokeStyle = command.robot.alliance
+      context.lineWidth = 3 * pixelsPerInch
+      var backLeft = transform([robotLengthPixels * -0.5, robotLengthPixels * -0.5], rotation, robotPos)
+      var frontLeft = transform([robotLengthPixels * 0.5, robotLengthPixels * -0.5], rotation, robotPos)
+      var frontRight = transform([robotLengthPixels * 0.5, robotLengthPixels * 0.5], rotation, robotPos)
+      var backRight = transform([robotLengthPixels * -0.5, robotLengthPixels * 0.5], rotation, robotPos)
+      context.beginPath()
+      context.moveTo(frontLeft[0], frontLeft[1])
+      context.lineTo(frontRight[0], frontRight[1])
+      context.lineTo(backRight[0], backRight[1])
+      context.lineTo(backLeft[0], backLeft[1])
+      context.closePath()
+      context.fill()
+      context.stroke()
+
+      context.strokeStyle = "white"
+      context.lineWidth = 1 * pixelsPerInch
+      var arrowBack = transform([robotLengthPixels * -0.3, 0], rotation, robotPos)
+      var arrowFront = transform([robotLengthPixels * 0.3, 0], rotation, robotPos)
+      var arrowLeft = transform([robotLengthPixels * 0.15, robotLengthPixels * -0.15], rotation, robotPos)
+      var arrowRight = transform([robotLengthPixels * 0.15, robotLengthPixels * 0.15], rotation, robotPos)
+      context.beginPath()
+      context.moveTo(arrowBack[0], arrowBack[1])
+      context.lineTo(arrowFront[0], arrowFront[1])
+      context.moveTo(arrowLeft[0], arrowLeft[1])
+      context.lineTo(arrowFront[0], arrowFront[1])
+      context.lineTo(arrowRight[0], arrowRight[1])
+      context.stroke()
+    }
 
     // Return target aspect ratio
     return fieldWidth / fieldHeight

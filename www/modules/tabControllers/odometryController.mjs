@@ -37,9 +37,9 @@ export class OdometryController {
     var configBody = content.getElementsByClassName("odometry-config")[0].firstElementChild
     this.#config = {
       fields: {
-        rotation: { element: configBody.children[1].firstElementChild, id: null, missingKey: null },
-        x: { element: configBody.children[2].firstElementChild, id: null, missingKey: null },
-        y: { element: configBody.children[3].firstElementChild, id: null, missingKey: null }
+        robotPose: { element: configBody.children[1].firstElementChild, id: null, missingKey: null },
+        ghostPose: { element: configBody.children[2].firstElementChild, id: null, missingKey: null },
+        visionCoordinates: { element: configBody.children[3].firstElementChild, id: null, missingKey: null }
       },
       coordinates: {
         game: configBody.children[1].children[1].children[1],
@@ -84,38 +84,19 @@ export class OdometryController {
     window.addEventListener("drag-update", event => this.#handleDrag(event))
     window.addEventListener("drag-stop", event => this.#handleDrag(event))
 
+    // Clear fields on right click
+    Object.values(this.#config.fields).forEach(field => {
+      field.element.addEventListener("contextmenu", () => {
+        field.id = null
+        field.missingKey = null
+        field.element.lastElementChild.innerText = "<Drag Here>"
+        field.element.lastElementChild.style.textDecoration = ""
+      })
+    })
+
     // Start periodic cycle and reset (in case log is already loaded)
     window.setInterval(() => this.customPeriodic(), 15)
     this.state = this.state
-  }
-
-  // Standard function: retrieves current state
-  get state() {
-    function processField(field) {
-      if (field.id == null) {
-        return field.missingKey
-      } else {
-        return log.getFieldInfo(field.id).displayKey
-      }
-    }
-    return {
-      fields: {
-        rotation: processField(this.#config.fields.rotation),
-        x: processField(this.#config.fields.x),
-        y: processField(this.#config.fields.y)
-      },
-      coordinates: {
-        game: this.#config.coordinates.game.value,
-        unitDistance: this.#config.coordinates.unitDistance.value,
-        unitRotation: this.#config.coordinates.unitRotation.value,
-        origin: this.#config.coordinates.origin.value
-      },
-      robot: {
-        size: Number(this.#config.robot.size.value),
-        alliance: this.#config.robot.alliance.value,
-        orientation: this.#config.robot.orientation.value
-      }
-    }
   }
 
   // Render timeline sections
@@ -143,6 +124,35 @@ export class OdometryController {
     } else {
       this.#timelineInput.min = 0
       this.#timelineInput.max = 10
+    }
+  }
+
+  // Standard function: retrieves current state
+  get state() {
+    function processField(field) {
+      if (field.id == null) {
+        return field.missingKey
+      } else {
+        return log.getFieldInfo(field.id).displayKey
+      }
+    }
+    return {
+      fields: {
+        robotPose: processField(this.#config.fields.robotPose),
+        ghostPose: processField(this.#config.fields.ghostPose),
+        visionCoordinates: processField(this.#config.fields.visionCoordinates)
+      },
+      coordinates: {
+        game: this.#config.coordinates.game.value,
+        unitDistance: this.#config.coordinates.unitDistance.value,
+        unitRotation: this.#config.coordinates.unitRotation.value,
+        origin: this.#config.coordinates.origin.value
+      },
+      robot: {
+        size: Number(this.#config.robot.size.value),
+        alliance: this.#config.robot.alliance.value,
+        orientation: this.#config.robot.orientation.value
+      }
     }
   }
 
@@ -201,7 +211,7 @@ export class OdometryController {
       var rect = field.element.getBoundingClientRect()
       var active = event.detail.x > rect.left && event.detail.x < rect.right && event.detail.y > rect.top && event.detail.y < rect.bottom
       var type = log.getFieldInfo(event.detail.data.id).type
-      var validType = type == "Double" || type == "Integer" || type == "Byte"
+      var validType = type == "DoubleArray"
 
       if (active && validType) {
         if (event.type == "drag-update") {
@@ -241,59 +251,69 @@ export class OdometryController {
     // Update canvas height
     this.#canvas.style.setProperty("--bottom-margin", this.#configTable.getBoundingClientRect().height.toString() + "px")
 
-    // Get rotation data from log
-    if (this.#config.fields.rotation.id != null) {
-      var currentRotation = log.getDataInRange(this.#config.fields.rotation.id, time, time).values[0]
-    } else {
-      var currentRotation = 0
+    // Get vision coordinates
+    var visionCoordinates = null
+    if (this.#config.fields.visionCoordinates.id != null) {
+      var currentData = log.getDataInRange(this.#config.fields.visionCoordinates.id, time, time).values[0]
+      if (currentData != null && currentData.length == 2) {
+        visionCoordinates = currentData
+      }
     }
 
-    // Get position data from log
-    var currentPosition = []
-    var positionData = {}
-    Array("x", "y").forEach(fieldName => {
-      if (this.#config.fields[fieldName].id == null) {
-        positionData[fieldName] = {
-          timestamps: [],
-          values: []
-        }
-        currentPosition.push(0)
-      } else {
-        var fieldData = log.getDataInRange(this.#config.fields[fieldName].id, time - this.#trailLengthSecs, time + this.#trailLengthSecs)
-        positionData[fieldName] = fieldData
-        var nextIndex = fieldData.timestamps.findIndex(x => x > time)
-        if (nextIndex == -1) nextIndex = fieldData.timestamps.length // Current time is past the end of the data
-        if (nextIndex == 0) nextIndex = 1 // Current time is before the start of the data
-        var currentValue = fieldData.values[nextIndex - 1]
-        currentPosition.push(currentValue)
+    // Read pose data based on field id
+    var getPoseData = (id, includeTrail) => {
+      if (id == null) {
+        return null
       }
-    })
-    var allTimestamps = [...new Set([...positionData.x.timestamps, ...positionData.y.timestamps])]
-    allTimestamps.sort((a, b) => a - b)
-    if (time - allTimestamps[0] > this.#trailLengthSecs) allTimestamps.shift()
-    if (allTimestamps[allTimestamps.length - 1] - time > this.#trailLengthSecs) allTimestamps.pop()
-    var trailData = []
-    allTimestamps.forEach(timestamp => {
-      var point = []
-      Array("x", "y").forEach(fieldName => {
-        if (positionData[fieldName].timestamps.length > 0) {
-          var nextIndex = positionData[fieldName].timestamps.findIndex(x => x > timestamp)
-          if (nextIndex == -1) nextIndex = positionData[fieldName].timestamps.length
-          if (nextIndex == 0) nextIndex = 1
-          point.push(positionData[fieldName].values[nextIndex - 1])
-        } else {
-          point.push(0)
+
+      var currentData = log.getDataInRange(id, time, time).values[0]
+      if (currentData == null) {
+        return null
+      }
+
+      var pose = [0, 0, 0] // x, y, rotation
+      var trail = null
+
+      // Get current position/rotation
+      if (currentData.length == 3) {
+        pose = currentData
+      }
+
+      // Get trail
+      if (includeTrail) {
+        var trailData = log.getDataInRange(id, time - this.#trailLengthSecs, time + this.#trailLengthSecs)
+        if (time - trailData.timestamps[0] > this.#trailLengthSecs) {
+          trailData.timestamps.shift()
+          trailData.values.shift()
         }
-      })
-      trailData.push(point)
-    })
+        if (trailData.timestamps[trailData.timestamps.length - 1] - time > this.#trailLengthSecs) {
+          trailData.timestamps.pop()
+          trailData.values.pop()
+        }
+        trail = trailData.values.map(x => {
+          if (x == null || x.length != 3) {
+            return null
+          } else {
+            return [x[0], x[1]]
+          }
+        })
+
+        // Return with trail
+        return {
+          pose: pose,
+          trail: trail
+        }
+      } else {
+        return pose
+      }
+    }
 
     // Package command data
     var commandData = {
       pose: {
-        rotation: currentRotation,
-        position: currentPosition,
-        trail: trailData
+        robotPose: getPoseData(this.#config.fields.robotPose.id, true),
+        ghostPose: getPoseData(this.#config.fields.ghostPose.id, false),
+        visionCoordinates: visionCoordinates
       },
       coordinates: {
         game: this.#config.coordinates.game.value,
