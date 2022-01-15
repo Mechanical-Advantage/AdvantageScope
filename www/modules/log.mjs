@@ -115,7 +115,7 @@ export class Log {
       return {
         timestamps: parentData.timestamps,
         timestampIndexes: parentData.timestampIndexes,
-        values: parentData.values.map((value) => field.arrayIndex >= value.length ? null : value[field.arrayIndex]),
+        values: parentData.values.map(value => value == null || field.arrayIndex >= value.length ? null : value[field.arrayIndex]),
         startValueIndex: parentData.startValueIndex
       }
     }

@@ -239,21 +239,37 @@ export class LineGraphController {
       var legend = this.#legends[key]
       var rect = legend.element.getBoundingClientRect()
       var active = event.detail.x > rect.left && event.detail.x < rect.right && event.detail.y > rect.top && event.detail.y < rect.bottom
-      var type = log.getFieldInfo(event.detail.data.id).type
-      var validType = (legend.types.includes(type) || legend.arrayTypes.includes(type))
+      var validType = false
+      event.detail.data.ids.forEach(id => {
+        var type = log.getFieldInfo(id).type
+        if (legend.types.includes(type)) {
+          validType = true
+        }
+        if (event.detail.data.ids.length == 1) {
+          if (legend.arrayTypes.includes(type)) {
+            validType = true
+          }
+        }
+      })
+
 
       if (event.type == "drag-update") {
         legend.dragTarget.hidden = !(active && validType)
       } else {
         legend.dragTarget.hidden = true
         if (active && validType) {
-          if (legend.types.includes(type)) {
-            this.addField(key, event.detail.data.id)
-          } else { // Array, so add all children
-            event.detail.data.children.forEach(id => {
+          event.detail.data.ids.forEach(id => {
+            var type = log.getFieldInfo(id).type
+            if (legend.types.includes(type)) {
               this.addField(key, id)
-            })
-          }
+            } else if (legend.arrayTypes.includes(type)) { // Single array
+              if (event.detail.data.ids.length == 1) {
+                event.detail.data.children.forEach(id => {
+                  this.addField(key, id)
+                })
+              }
+            }
+          })
         }
       }
     })

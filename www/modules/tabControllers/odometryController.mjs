@@ -210,7 +210,7 @@ export class OdometryController {
     Object.values(this.#config.fields).forEach(field => {
       var rect = field.element.getBoundingClientRect()
       var active = event.detail.x > rect.left && event.detail.x < rect.right && event.detail.y > rect.top && event.detail.y < rect.bottom
-      var type = log.getFieldInfo(event.detail.data.id).type
+      var type = log.getFieldInfo(event.detail.data.ids[0]).type
       var validType = type == "DoubleArray"
 
       if (active && validType) {
@@ -222,7 +222,7 @@ export class OdometryController {
           this.#dragHighlight.style.height = rect.height.toString() + "px"
           this.#dragHighlight.hidden = false
         } else {
-          field.id = event.detail.data.id
+          field.id = event.detail.data.ids[0]
           field.element.lastElementChild.innerText = log.getFieldInfo(field.id).displayKey
           field.element.lastElementChild.style.textDecoration = ""
         }
@@ -266,7 +266,12 @@ export class OdometryController {
         return null
       }
 
-      var currentData = log.getDataInRange(id, time, time).values[0]
+      var currentData = log.getDataInRange(id, time, time)
+      if (currentData.timestamps[0] > time) { // No data yet
+        currentData = null;
+      } else {
+        currentData = currentData.values[0]
+      }
       if (currentData == null) {
         return null
       }
@@ -327,6 +332,7 @@ export class OdometryController {
         orientation: this.#config.robot.orientation.value
       }
     }
+    // console.log(commandData.pose.ghostPose)
     if (!this.#content.hidden) this.#renderer.render(commandData)
     window.dispatchEvent(new CustomEvent("update-odometry-popup", {
       detail: {

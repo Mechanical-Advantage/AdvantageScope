@@ -8,10 +8,14 @@ export class SideBar {
   #sideBarTitle = document.getElementsByClassName("side-bar-title")[0]
   #fieldList = document.getElementById("fieldList")
 
+  #fieldDragThreshold = 3
+
   #sideBarHandleActive = false
   #sideBarWidth = 300
   #fieldControlLookup = {}
   #expandedCache = null
+  #selectGroup = []
+  #selectGroupUpdaters = []
 
   constructor() {
     // Set up handle for resizing
@@ -56,7 +60,8 @@ export class SideBar {
     return {
       width: this.#sideBarWidth,
       scroll: this.#sideBar.scrollTop,
-      expanded: expanded
+      expanded: expanded,
+      selected: this.#selectGroup.map(id => log.getFieldInfo(id).displayKey)
     }
   }
 
@@ -128,19 +133,60 @@ export class SideBar {
       label.style.cursor = field.field == null ? "auto" : "grab"
       if (field.field != null) {
         var dragEvent = (x, y, offsetX, offsetY) => {
-          document.getElementById("dragItem").innerText = title
+          var isGroup = this.#selectGroup.includes(field.field)
+          document.getElementById("dragItem").innerText = title + (isGroup ? "..." : "")
+          document.getElementById("dragItem").style.fontWeight = isGroup ? "bolder" : "initial"
           startDrag(x, y, offsetX, offsetY, {
-            id: field.field,
-            children: Object.values(field.children).map(x => x.field)
+            ids: isGroup ? this.#selectGroup : [field.field],
+            children: isGroup ? [] : Object.values(field.children).map(x => x.field)
           })
+          if (isGroup) {
+            this.#selectGroup = []
+            this.updateSelectGroup()
+          }
         }
 
+        var mouseDownInfo = null
         label.addEventListener("mousedown", event => {
-          dragEvent(event.clientX, event.clientY, event.offsetX, event.offsetY)
+          mouseDownInfo = [event.clientX, event.clientY, event.offsetX, event.offsetY]
+        })
+        window.addEventListener("mousemove", event => {
+          if (mouseDownInfo != null) {
+            if (Math.abs(event.clientX - mouseDownInfo[0]) >= this.#fieldDragThreshold || Math.abs(event.clientY - mouseDownInfo[1]) >= this.#fieldDragThreshold) {
+              dragEvent(mouseDownInfo[0], mouseDownInfo[1], mouseDownInfo[2], mouseDownInfo[3])
+              mouseDownInfo = null
+            }
+          }
+        })
+        label.addEventListener("mouseup", event => {
+          if (mouseDownInfo != null) {
+            if ((event.ctrlKey || event.metaKey) && Math.abs(event.clientX - mouseDownInfo[0]) < this.#fieldDragThreshold && Math.abs(event.clientY - mouseDownInfo[1]) < this.#fieldDragThreshold) {
+              var index = this.#selectGroup.indexOf(field.field)
+              if (index == -1) {
+                this.#selectGroup.push(field.field)
+                label.style.fontWeight = "bolder"
+              } else {
+                this.#selectGroup.splice(index, 1)
+                label.style.fontWeight = "initial"
+              }
+            }
+            mouseDownInfo = null
+          }
         })
         label.addEventListener("touchstart", event => {
           var touch = event.targetTouches[0]
           dragEvent(touch.clientX, touch.clientY, touch.clientX - label.getBoundingClientRect().x, touch.clientY - label.getBoundingClientRect().y)
+        })
+
+        // Restore selection
+        if (newState.selected.includes(log.getFieldInfo(field.field).displayKey)) {
+          this.#selectGroup.push(field.field)
+          label.style.fontWeight = "bolder"
+        }
+
+        // Add select update callback
+        this.#selectGroupUpdaters.push(() => {
+          label.style.fontWeight = this.#selectGroup.includes(field.field) ? "bolder" : "initial"
         })
       }
 
@@ -166,6 +212,7 @@ export class SideBar {
     }
 
     // Start adding fields recursively
+    this.#selectGroupUpdaters = []
     var tree = log.getFieldTree(true)
     var keys = Object.keys(tree).sort(smartSort)
     for (let i in keys) {
@@ -177,6 +224,11 @@ export class SideBar {
 
     // Restore scroll position
     this.#sideBar.scrollTop = newState.scroll
+  }
+
+  // Updates set of bolded items based on current selected group
+  updateSelectGroup() {
+    this.#selectGroupUpdaters.forEach(update => update())
   }
 
   // Updates the title, including runtime

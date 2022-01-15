@@ -80,7 +80,11 @@ export class TableController {
     } else {
       this.#dragHighlight.hidden = true
       if (selected != null) {
-        this.#fields.splice(selected, 0, { id: event.detail.data.id })
+        var fieldData = event.detail.data.ids.map(id => {
+          return { id: id }
+        })
+        console.log(fieldData)
+        this.#fields.splice(selected, 0, ...fieldData)
         this.#updateFields()
       }
     }
