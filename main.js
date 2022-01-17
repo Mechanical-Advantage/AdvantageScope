@@ -1,7 +1,6 @@
 const { app, BrowserWindow, Menu, MenuItem, shell, dialog, ipcMain, nativeTheme } = require("electron")
 const WindowStateKeeper = require("./windowState.js")
 const jsonfile = require("jsonfile")
-const Holidays = require("date-holidays")
 const fetch = require("electron-fetch").default
 const { Headers } = require("electron-fetch")
 const path = require("path")
@@ -11,7 +10,6 @@ const os = require("os")
 const repository = "Mechanical-Advantage/AdvantageScope"
 const prefsFileName = path.join(app.getPath("userData"), "prefs.json")
 const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
-const holidays = new Holidays("US")
 var iconPath = null
 const defaultPrefs = {
   address: "10.63.28.2",
@@ -165,12 +163,6 @@ function createWindow() {
   window.webContents.on("dom-ready", () => {
     window.send("set-fullscreen", window.isFullScreen())
     window.send("set-preferences", jsonfile.readFileSync(prefsFileName))
-    var holidayToday = holidays.isHoliday(new Date())
-    if (holidayToday) {
-      holidayToday.forEach(x => {
-        if (!x.substitute) window.send("set-holiday", x.name)
-      })
-    }
   })
   window.on("enter-full-screen", () => window.send("set-fullscreen", true))
   window.on("leave-full-screen", () => window.send("set-fullscreen", false))

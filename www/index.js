@@ -2,7 +2,6 @@ import { Log } from "./modules/log.mjs"
 import { Selection } from "./modules/selection.mjs"
 import { SideBar } from "./modules/sideBar.mjs"
 import { Tabs } from "./modules/tabs.mjs"
-import { Holidays } from "./modules/holidays.mjs"
 
 window.platform = null
 window.platformRelease = null
@@ -96,16 +95,6 @@ window.addEventListener("set-platform", event => {
   window.platform = event.detail.platform
   window.platformRelease = event.detail.release
   updateFancyWindow()
-})
-
-window.addEventListener("set-holiday", event => {
-  if (event.detail in Holidays) {
-    var holidayBanner = document.getElementsByClassName("holiday-banner")[0]
-    while (holidayBanner.innerText.length < 200) {
-      holidayBanner.innerText += Holidays[event.detail] + " "
-    }
-    holidayBanner.hidden = false
-  }
 })
 
 window.addEventListener("set-preferences", event => {

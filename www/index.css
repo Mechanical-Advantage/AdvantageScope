@@ -132,19 +132,6 @@ div.viewer {
 
 /* Field selector */
 
-div.holiday-banner {
-  position: relative;
-  height: 30px;
-  margin-top: 5px;
-  margin-left: 10px;
-  margin-right: 10px;
-
-  font-size: 25px;
-  line-height: 30px;
-  text-align: center;
-  overflow: hidden;
-}
-
 div.side-bar-title {
   position: relative;
   margin-top: 5px;
