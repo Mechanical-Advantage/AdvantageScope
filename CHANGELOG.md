@@ -1,1 +1,1 @@
-Removed superfluous features to simplify code base.
+Fixed handling of `null` values when calculating auto-axis range.

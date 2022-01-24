@@ -571,6 +571,7 @@ export class LineGraphController {
       function arrayMin(arr) {
         var len = arr.length, min = Infinity;
         while (len--) {
+          if (arr[len] == null) continue
           if (arr[len] < min) {
             min = arr[len];
           }
@@ -581,6 +582,7 @@ export class LineGraphController {
       function arrayMax(arr) {
         var len = arr.length, max = -Infinity;
         while (len--) {
+          if (arr[len] == null) continue
           if (arr[len] > max) {
             max = arr[len];
           }
