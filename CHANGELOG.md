@@ -1,1 +1,1 @@
-Fixed handling of `null` values when calculating auto-axis range.
+Added support for sending the current log file to Advantage Kit when starting robot code replay. Requires Advantage Kit v1.3.0 or later.

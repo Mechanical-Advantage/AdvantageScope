@@ -10,6 +10,7 @@ const os = require("os")
 const repository = "Mechanical-Advantage/AdvantageScope"
 const prefsFileName = path.join(app.getPath("userData"), "prefs.json")
 const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
+const lastOpenFileName = "akit-log-path.txt"
 var iconPath = null
 const defaultPrefs = {
   address: "10.63.28.2",
@@ -77,6 +78,7 @@ app.whenReady().then(() => {
   if (firstOpenPath != null) {
     window.webContents.once("dom-ready", () => {
       window.send("open-file", firstOpenPath)
+      recordOpenFile(path)
     })
   }
 
@@ -99,10 +101,22 @@ app.on("open-file", (_, path) => {
     var window = createWindow()
     window.webContents.once("dom-ready", () => {
       window.send("open-file", path)
+      recordOpenFile(path)
     })
   } else { // Not running yet, open in first window
     firstOpenPath = path
   }
+})
+
+// Record open file path to temp file for robot program
+function recordOpenFile(filePath) {
+  console.log(path.join(app.getPath("temp"), lastOpenFileName))
+  fs.writeFile(path.join(app.getPath("temp"), lastOpenFileName), filePath, () => { })
+}
+
+// Remove the open file path from temp file
+app.on("quit", () => {
+  fs.unlink(path.join(app.getPath("temp"), lastOpenFileName), () => { })
 })
 
 // Create a new main window
@@ -237,6 +251,7 @@ function setupMenu() {
             files.then((files) => {
               if (files.filePaths.length > 0) {
                 window.webContents.send("open-file", files.filePaths[0])
+                recordOpenFile(files.filePaths[0])
                 app.addRecentDocument(files.filePaths[0])
               }
             })
@@ -644,6 +659,7 @@ ipcMain.on("prompt-download-auto-open", (_, filePath) => {
       downloadWindow.close()
       lastIndexWindow.focus()
       lastIndexWindow.send("open-file", filePath)
+      recordOpenFile(filePath)
     }
   })
 })
