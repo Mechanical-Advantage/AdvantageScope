@@ -78,7 +78,7 @@ app.whenReady().then(() => {
   if (firstOpenPath != null) {
     window.webContents.once("dom-ready", () => {
       window.send("open-file", firstOpenPath)
-      recordOpenFile(path)
+      recordOpenFile(firstOpenPath)
     })
   }
 
