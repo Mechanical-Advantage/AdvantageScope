@@ -180,7 +180,10 @@ window.addEventListener("start-live", () => {
         window.log.updateDisplayKeys()
 
         var timeRange = window.log.getTimestamps()[window.log.getTimestamps().length - 1] - window.log.getTimestamps()[0]
-        window.liveStart = (new Date().getTime() / 1000) - timeRange
+        var newLiveStart = (new Date().getTime() / 1000) - timeRange
+        if (firstData || newLiveStart < window.liveStart) {
+          window.liveStart = newLiveStart
+        }
 
         if (firstData) {
           firstData = false

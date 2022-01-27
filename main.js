@@ -110,7 +110,6 @@ app.on("open-file", (_, path) => {
 
 // Record open file path to temp file for robot program
 function recordOpenFile(filePath) {
-  console.log(path.join(app.getPath("temp"), lastOpenFileName))
   fs.writeFile(path.join(app.getPath("temp"), lastOpenFileName), filePath, () => { })
 }
 

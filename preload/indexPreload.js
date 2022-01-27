@@ -4,6 +4,9 @@ const os = require("os")
 const net = require("net")
 
 const connectTimeoutMs = 1000 // How long to wait when connecting
+const dataTimeoutMs = 3000 // How long with no data until timeout
+const heartbeatDelayMs = 1000 // How long to wait between heartbeats
+const heartbeatData = new Uint8Array([6, 3, 2, 8])
 
 // Window updates
 ipcRenderer.on("set-fullscreen", (_, isFullscreen) => {
@@ -130,7 +133,8 @@ ipcRenderer.on("start-live", () => {
 })
 
 
-var client = null
+var socket = null
+var socketTimeout = null
 var dataArray = new Uint8Array()
 
 function appendArray(newArray) {
@@ -141,13 +145,21 @@ function appendArray(newArray) {
 }
 
 window.addEventListener("start-live-socket", event => {
-  client = net.createConnection({
+  socket = net.createConnection({
     host: event.detail.address,
     port: event.detail.port
   })
 
-  client.on("data", data => {
+  socket.setTimeout(connectTimeoutMs, () => {
+    window.dispatchEvent(new Event("live-error"))
+  })
+
+  socket.on("data", data => {
     appendArray(data)
+    clearTimeout(socketTimeout)
+    socketTimeout = setTimeout(() => {
+      socket.destroy()
+    }, dataTimeoutMs)
 
     while (true) {
       var expectedLength
@@ -163,7 +175,7 @@ window.addEventListener("start-live-socket", event => {
       var singleArray = dataArray.slice(4, expectedLength)
       dataArray = dataArray.slice(expectedLength)
 
-      if (client) {
+      if (socket) {
         window.dispatchEvent(new CustomEvent("live-data", {
           detail: new Uint8Array(singleArray)
         }))
@@ -171,25 +183,26 @@ window.addEventListener("start-live-socket", event => {
     }
   })
 
-  client.on("error", () => {
+  socket.on("error", () => {
     window.dispatchEvent(new Event("live-error"))
   })
 
-  client.setTimeout(connectTimeoutMs, () => {
-    window.dispatchEvent(new Event("live-error"))
-  })
-
-  client.on("close", () => {
+  socket.on("close", () => {
     window.dispatchEvent(new Event("live-closed"))
   })
 })
 
 window.addEventListener("stop-live-socket", () => {
-  if (client) {
-    client.destroy()
-    client = null
+  if (socket) {
+    socket.destroy()
   }
 })
+
+window.setInterval(() => {
+  if (socket) {
+    socket.write(heartbeatData)
+  }
+}, heartbeatDelayMs)
 
 // Manage exporting as CSV
 ipcRenderer.on("export-csv", () => {
