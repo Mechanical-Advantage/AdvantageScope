@@ -4,8 +4,8 @@ ipcRenderer.on("start", (_, data) => {
   function update() {
     ipcRenderer.send("update-preferences", {
       theme: document.getElementById("theme").value,
-      address: document.getElementById("address").value,
       port: Number(document.getElementById("port").value),
+      address: document.getElementById("address").value,
       rioPath: document.getElementById("rioPath").value
     })
   }
@@ -17,14 +17,14 @@ ipcRenderer.on("start", (_, data) => {
     document.getElementById("theme").children[2].innerText = "Dark"
   }
   document.getElementById("theme").value = data.theme
-  document.getElementById("address").value = data.address
   document.getElementById("port").value = data.port
+  document.getElementById("address").value = data.address
   document.getElementById("rioPath").value = data.rioPath
 
   // Add change listeners
   document.getElementById("theme").addEventListener("change", update)
-  document.getElementById("address").addEventListener("change", update)
   document.getElementById("port").addEventListener("change", update)
+  document.getElementById("address").addEventListener("change", update)
   document.getElementById("rioPath").addEventListener("change", update)
 
   // Set up exit triggers

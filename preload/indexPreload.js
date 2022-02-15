@@ -128,8 +128,10 @@ window.addEventListener("update-odometry-popup", event => {
 })
 
 // Manage live logging
-ipcRenderer.on("start-live", () => {
-  window.dispatchEvent(new Event("start-live"))
+ipcRenderer.on("start-live", (_, simulator) => {
+  window.dispatchEvent(new CustomEvent("start-live", {
+    detail: simulator
+  }))
 })
 
 

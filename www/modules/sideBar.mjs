@@ -8,6 +8,7 @@ export class SideBar {
   #sideBarTitle = document.getElementsByClassName("side-bar-title")[0]
   #fieldList = document.getElementById("fieldList")
 
+  #knownKeys = ["DriverStation", "NetworkTables", "RealOutputs", "ReplayOutputs", "SystemStats"]
   #fieldDragThreshold = 3
 
   #sideBarHandleActive = false
@@ -128,6 +129,7 @@ export class SideBar {
       var label = document.createElement("div")
       fieldElement.appendChild(label)
       label.classList.add("field-item-label")
+      if (this.#knownKeys.includes(title)) label.classList.add("known")
       label.innerText = title
       label.style.fontStyle = field.field == null ? "normal" : "italic"
       label.style.cursor = field.field == null ? "auto" : "grab"
@@ -214,7 +216,11 @@ export class SideBar {
     // Start adding fields recursively
     this.#selectGroupUpdaters = []
     var tree = log.getFieldTree(true)
-    var keys = Object.keys(tree).sort(smartSort)
+    var keys = Object.keys(tree).sort(smartSort).sort((a, b) => {
+      if (this.#knownKeys.includes(a) && !this.#knownKeys.includes(b)) return 1
+      if (!this.#knownKeys.includes(a) && this.#knownKeys.includes(b)) return -1
+      return 0
+    })
     for (let i in keys) {
       if (keys[i] == "RealMetadata" || keys[i] == "ReplayMetadata") {
         continue // Hide metadata b/c viewed separately

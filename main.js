@@ -13,8 +13,8 @@ const stateFileName = "state-" + app.getVersion().replaceAll(".", '_') + ".json"
 const lastOpenFileName = "akit-log-path.txt"
 var iconPath = null
 const defaultPrefs = {
-  address: "10.63.28.2",
   port: 5800,
+  address: "10.63.28.2",
   rioPath: "/media/sda1/",
   theme: process.platform == "linux" ? "light" : "system"
 }
@@ -235,7 +235,7 @@ function setupMenu() {
       label: "File",
       submenu: [
         {
-          label: "Open file...",
+          label: "Open...",
           accelerator: "CmdOrCtrl+O",
           click() {
             var window = BrowserWindow.getFocusedWindow()
@@ -257,10 +257,17 @@ function setupMenu() {
           }
         },
         {
-          label: "Connect to Server",
+          label: "Connect to Robot",
           accelerator: "CmdOrCtrl+K",
           click() {
-            BrowserWindow.getFocusedWindow().webContents.send("start-live")
+            BrowserWindow.getFocusedWindow().webContents.send("start-live", false)
+          }
+        },
+        {
+          label: "Connect to Simulator",
+          accelerator: "CmdOrCtrl+Shift+K",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("start-live", true)
           }
         },
         {
@@ -271,7 +278,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Export as CSV...",
+          label: "Export CSV...",
           accelerator: "CmdOrCtrl+E",
           click() {
             var window = BrowserWindow.getFocusedWindow()

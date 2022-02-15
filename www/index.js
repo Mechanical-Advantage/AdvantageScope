@@ -13,6 +13,7 @@ window.log = null
 window.logPath = null
 window.liveStatus = 0 // 0 = not live, 1 = connecting (first time), 2 = active, 3 = reconecting
 window.liveStart = null
+window.liveAddress = null // roboRIO address or "127.0.0.1"
 window.selection = new Selection()
 window.tabs = new Tabs()
 window.sideBar = new SideBar()
@@ -150,10 +151,11 @@ window.addEventListener("open-file", event => {
   }
 })
 
-window.addEventListener("start-live", () => {
+window.addEventListener("start-live", event => {
+  window.liveAddress = event.detail ? "127.0.0.1" : prefs.address
   if (window.liveStatus != 3) {
     setLiveStatus(1)
-    setTitle(prefs.address + ":" + prefs.port.toString() + " (Connecting) \u2014 Advantage Scope")
+    setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Connecting) \u2014 Advantage Scope")
   }
   window.dispatchEvent(new Event("stop-live-socket"))
 
@@ -163,7 +165,7 @@ window.addEventListener("start-live", () => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
         setLiveStatus(0)
-        setTitle(prefs.address + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope")
+        setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope")
         window.dispatchEvent(new CustomEvent("error", {
           detail: { title: "Failed to read log", content: event.data.message }
         }))
@@ -187,7 +189,7 @@ window.addEventListener("start-live", () => {
 
         if (firstData) {
           firstData = false
-          setTitle(prefs.address + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
+          setTitle(window.liveAddress + ":" + prefs.port.toString() + " \u2014 Advantage Scope")
           setWindowState(oldState, true)
           setLiveStatus(2)
         } else if (window.log.getFieldCount(true) != oldFieldCount) { // Reset state when fields update
@@ -202,7 +204,7 @@ window.addEventListener("start-live", () => {
   // Start!
   window.dispatchEvent(new CustomEvent("start-live-socket", {
     detail: {
-      address: prefs.address,
+      address: window.liveAddress,
       port: prefs.port
     }
   }))
@@ -217,9 +219,9 @@ window.addEventListener("live-data", event => {
 window.addEventListener("live-error", () => {
   if (window.liveStatus == 1) {
     setLiveStatus(0)
-    setTitle(prefs.address + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope")
+    setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope")
     window.dispatchEvent(new CustomEvent("error", {
-      detail: { title: "Log connection failed", content: "Could not connect to log server at " + prefs.address + ":" + prefs.port }
+      detail: { title: "Log connection failed", content: "Could not connect to log server at " + window.liveAddress + ":" + prefs.port }
     }))
   } else if (window.liveStatus == 3) {
     window.setTimeout(() => {
@@ -231,7 +233,7 @@ window.addEventListener("live-error", () => {
 window.addEventListener("live-closed", () => {
   if (window.liveStatus == 2) {
     setLiveStatus(3)
-    setTitle(prefs.address + ":" + prefs.port.toString() + " (Reconnecting) \u2014 Advantage Scope")
+    setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Reconnecting) \u2014 Advantage Scope")
     window.setTimeout(() => {
       window.dispatchEvent(new Event("start-live"))
     }, 1000)

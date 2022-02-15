@@ -183,6 +183,10 @@ div.field-item-label {
   text-overflow: ellipsis;
 }
 
+div.field-item-label.known {
+  text-decoration: underline;
+}
+
 /* Dragged items */
 
 #dragItem {
