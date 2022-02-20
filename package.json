@@ -47,7 +47,8 @@
     "linux": {
       "target": [
         "deb",
-        "rpm"
+        "rpm",
+        "pacman"
       ],
       "icon": "icons/app/app-icon.icns",
       "maintainer": "FRC 6328",

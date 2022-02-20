@@ -9,7 +9,7 @@ jobs:
       matrix:
         host:
           - {os: macos-latest, displayName: "macOS", artifactPath: "dist/Advantage Scope-*.dmg"}
-          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm"}
+          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman"}
           - {os: windows-latest, displayName: "Windows", artifactPath: "dist/Advantage Scope Setup *.exe"}
         arch: ["x64", "arm64"]
 
