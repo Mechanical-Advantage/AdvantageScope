@@ -52,6 +52,9 @@ jobs:
         cache: 'npm'
     - name: Install Node.js dependencies
       run: npm install
+    - name: Install Linux dependencies
+      if: matrix.host.os == 'ubuntu-latest'
+      run: sudo apt-get install --no-install-recommends -y libarchive-tools
     - name: Prepare macOS certificate
       if: matrix.host.os == 'macos-latest'
       run: |
