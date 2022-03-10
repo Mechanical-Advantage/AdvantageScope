@@ -30,21 +30,25 @@ export class MetadataController {
     // Get data
     var tree = log.getFieldTree(true)
     var data = {}
-    if ("RealMetadata" in tree) {
-      for (let [key, value] of Object.entries(tree["RealMetadata"].children)) {
+
+    var scanTree = (fieldData, key, isReal) => {
+      if (fieldData.field != null) {
         if (!(key in data)) {
           data[key] = {}
         }
-        data[key].real = log.getDataInRange(value.field, 0, 0).values[0]
+        data[key][isReal ? "real" : "replay"] = log.getDataInRange(fieldData.field, 0, 0).values[0]
+      } else {
+        for (let [childKey, childData] of Object.entries(fieldData.children)) {
+          var newKey = key + "/" + childKey
+          scanTree(childData, newKey, isReal)
+        }
       }
     }
+    if ("RealMetadata" in tree) {
+      scanTree(tree["RealMetadata"], "", true)
+    }
     if ("ReplayMetadata" in tree) {
-      for (let [key, value] of Object.entries(tree["ReplayMetadata"].children)) {
-        if (!(key in data)) {
-          data[key] = {}
-        }
-        data[key].replay = log.getDataInRange(value.field, 0, 0).values[0]
-      }
+      scanTree(tree["RealMetadata"], "", false)
     }
 
     // Add rows
@@ -56,7 +60,7 @@ export class MetadataController {
       for (let i = 0; i < 3; i++) {
         row.appendChild(document.createElement("td"))
       }
-      row.children[0].innerText = key
+      row.children[0].innerText = key.substring(1)
       if ("real" in data[key]) {
         row.children[1].innerText = data[key].real
       } else {
