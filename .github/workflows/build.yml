@@ -5,41 +5,57 @@ on:
   pull_request:
 
 jobs:
-  build:
+  format:
+    name: Check Formatting
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm install
+      - name: Check formatting
+        run: npm run check-format
+
+  build:
     strategy:
       matrix:
         host:
-          - {os: macos-latest, displayName: "macOS", artifactPath: "dist/Advantage Scope-*.dmg"}
-          - {os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman"}
-          - {os: windows-latest, displayName: "Windows", artifactPath: "dist/Advantage Scope Setup *.exe"}
+          - { os: macos-latest, displayName: "macOS", artifactPath: "dist/Advantage Scope-*.dmg" }
+          - { os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman" }
+          - { os: windows-latest, displayName: "Windows", artifactPath: "dist/Advantage Scope Setup *.exe" }
         arch: ["x64", "arm64"]
 
     name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
     runs-on: ${{ matrix.host.os }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-        cache: 'npm'
-    - name: Install Node.js dependencies
-      run: npm install
-    - name: Install Linux dependencies
-      if: matrix.host.os == 'ubuntu-latest'
-      run: sudo apt-get install --no-install-recommends -y libarchive-tools
-    - name: Prepare macOS certificate
-      if: matrix.host.os == 'macos-latest'
-      run: |
-        echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
-        echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-    - name: Build app
-      run: npx electron-builder build --${{ matrix.arch }} --publish never
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ matrix.host.displayName }}-${{ matrix.arch }}
-        path: ${{ matrix.host.artifactPath }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm install
+      - name: Install Linux dependencies
+        if: matrix.host.os == 'ubuntu-latest'
+        run: sudo apt-get install --no-install-recommends -y libarchive-tools
+      - name: Prepare macOS certificate
+        if: matrix.host.os == 'macos-latest'
+        run: |
+          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - name: Build app
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.host.displayName }}-${{ matrix.arch }}
+          path: ${{ matrix.host.artifactPath }}

@@ -3,9 +3,26 @@ name: Create Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 jobs:
+  format:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm install
+      - name: Check formatting
+        run: npm run check-format
+
   release:
     name: Create Release
     runs-on: ubuntu-latest
@@ -34,54 +51,72 @@ jobs:
     strategy:
       matrix:
         host:
-          - {os: macos-latest, shortName: "mac", displayName: "macOS", artifactExt: "dmg", artifactType: "application/octet-stream"}
-          - {os: ubuntu-latest, shortName: "linux", displayName: "Linux", artifactExt: "zip", artifactType: "application/zip"}
-          - {os: windows-latest, shortName: "win", displayName: "Windows", artifactExt: "exe", artifactType: "application/octet-stream"}
+          - {
+              os: macos-latest,
+              shortName: "mac",
+              displayName: "macOS",
+              artifactExt: "dmg",
+              artifactType: "application/octet-stream"
+            }
+          - {
+              os: ubuntu-latest,
+              shortName: "linux",
+              displayName: "Linux",
+              artifactExt: "zip",
+              artifactType: "application/zip"
+            }
+          - {
+              os: windows-latest,
+              shortName: "win",
+              displayName: "Windows",
+              artifactExt: "exe",
+              artifactType: "application/octet-stream"
+            }
         arch: ["x64", "arm64"]
 
     name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
     runs-on: ${{ matrix.host.os }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '16.x'
-        cache: 'npm'
-    - name: Install Node.js dependencies
-      run: npm install
-    - name: Install Linux dependencies
-      if: matrix.host.os == 'ubuntu-latest'
-      run: sudo apt-get install --no-install-recommends -y libarchive-tools
-    - name: Prepare macOS certificate
-      if: matrix.host.os == 'macos-latest'
-      run: |
-        echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
-        echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-    - name: Build app
-      run: npx electron-builder build --${{ matrix.arch }} --publish never
-    - name: Prepare macOS artifact
-      if: matrix.host.os == 'macos-latest'
-      run: |
-        mv dist/Advantage\ Scope-*.dmg artifact
-    - name: Prepare Linux artifact
-      if: matrix.host.os == 'ubuntu-latest'
-      run: |
-        cd dist
-        zip ../artifact.zip ./advantage-scope*
-        mv ../artifact.zip ../artifact
-    - name: Prepare Windows artifact
-      if: matrix.host.os == 'windows-latest'
-      run: |
-        Move-Item -Path "dist\Advantage Scope Setup *.exe" -Destination "artifact"
-    - name: Upload artifacts
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ needs.release.outputs.upload_url }}
-        asset_path: artifact
-        asset_name: advantage-scope-${{ matrix.host.shortName }}-${{ matrix.arch }}.${{ matrix.host.artifactExt }}
-        asset_content_type: ${{ matrix.host.artifactType }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm install
+      - name: Install Linux dependencies
+        if: matrix.host.os == 'ubuntu-latest'
+        run: sudo apt-get install --no-install-recommends -y libarchive-tools
+      - name: Prepare macOS certificate
+        if: matrix.host.os == 'macos-latest'
+        run: |
+          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - name: Build app
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
+      - name: Prepare macOS artifact
+        if: matrix.host.os == 'macos-latest'
+        run: |
+          mv dist/Advantage\ Scope-*.dmg artifact
+      - name: Prepare Linux artifact
+        if: matrix.host.os == 'ubuntu-latest'
+        run: |
+          cd dist
+          zip ../artifact.zip ./advantage-scope*
+          mv ../artifact.zip ../artifact
+      - name: Prepare Windows artifact
+        if: matrix.host.os == 'windows-latest'
+        run: |
+          Move-Item -Path "dist\Advantage Scope Setup *.exe" -Destination "artifact"
+      - name: Upload artifacts
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ needs.release.outputs.upload_url }}
+          asset_path: artifact
+          asset_name: advantage-scope-${{ matrix.host.shortName }}-${{ matrix.arch }}.${{ matrix.host.artifactExt }}
+          asset_content_type: ${{ matrix.host.artifactType }}

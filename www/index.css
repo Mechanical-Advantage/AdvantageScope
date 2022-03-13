@@ -215,12 +215,13 @@ div.tab-bar::-webkit-scrollbar {
   display: none;
 }
 
-div.tab-bar-shadow-left, div.tab-bar-shadow-right {
+div.tab-bar-shadow-left,
+div.tab-bar-shadow-right {
   position: absolute;
   width: 60px;
   top: 0px;
   height: 50px;
-  
+
   transition: opacity 0.2s ease-in-out;
 }
 
@@ -240,7 +241,7 @@ div.tab-bar-shadow-right {
   div.tab-bar-shadow-left {
     background-image: linear-gradient(to right, #222, rgba(34, 34, 34, 0.75), transparent);
   }
-  
+
   div.tab-bar-shadow-right {
     background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
   }
@@ -320,11 +321,13 @@ button.tab-control {
   width: 28px;
 }
 
-button.play, button.pause {
+button.play,
+button.pause {
   right: calc(144px + var(--show-lock-buttons) * 28px);
 }
 
-button.unlocked, button.locked {
+button.unlocked,
+button.locked {
   right: 144px;
 }
 
@@ -727,7 +730,7 @@ table.data-table tr.selected td {
   table.data-table tr.hovered td {
     background-color: #444;
   }
-  
+
   table.data-table tr.selected td {
     background-color: #777;
   }
@@ -838,7 +841,8 @@ table.odometry-config td {
   border-bottom: 1px solid #eee;
 }
 
-table.odometry-config td:last-child, table.odometry-config th:last-child {
+table.odometry-config td:last-child,
+table.odometry-config th:last-child {
   border-right: none;
 }
 
@@ -868,7 +872,7 @@ table.odometry-config input[type="number"] {
   table.odometry-config {
     border-top: 1px solid #999;
   }
-  
+
   table.odometry-config th {
     border-right: 1px solid #999;
     border-bottom: 1px solid #999;
