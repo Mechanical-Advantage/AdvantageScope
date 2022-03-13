@@ -22,7 +22,8 @@ export const GameConstants = [
   {
     title: "2019",
     imageLight: "2019-field.jpg",
-    source: "https://github.com/wpilibsuite/PathWeaver/blob/main/src/main/resources/edu/wpi/first/pathweaver/2019-field.jpg",
+    source:
+      "https://github.com/wpilibsuite/PathWeaver/blob/main/src/main/resources/edu/wpi/first/pathweaver/2019-field.jpg",
     topLeft: [212, 34],
     bottomRight: [1370, 607],
     widthInches: 648,
@@ -55,4 +56,4 @@ export const GameConstants = [
     widthInches: 649,
     heightInches: 319
   }
-]
+];

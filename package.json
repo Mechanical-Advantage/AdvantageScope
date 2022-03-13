@@ -8,19 +8,26 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron main.js",
     "build": "electron-builder build",
-    "test-build": "electron-builder build --dir"
+    "test-build": "electron-builder build --dir",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "author": "FRC 6328",
   "license": "MIT",
   "devDependencies": {
     "electron": "^16.0.0",
-    "electron-builder": "^22.11.7"
+    "electron-builder": "^22.11.7",
+    "prettier": "2.5.1"
   },
   "dependencies": {
     "electron-fetch": "^1.7.4",
     "jsonfile": "^6.1.0",
     "mkdirp": "^1.0.4",
     "ssh2": "^1.5.0"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "trailingComma": "none"
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",

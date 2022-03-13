@@ -32,7 +32,8 @@ td.label {
   font-size: 14px;
 }
 
-input, select {
+input,
+select {
   box-sizing: border-box;
   display: block;
   margin-left: 5px;

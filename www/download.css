@@ -100,15 +100,15 @@ div.file-item.selected:nth-child(even) {
   div.file-item:not(.selected):hover {
     background-color: #151515;
   }
-  
+
   div.file-item:not(.selected):nth-child(even):hover {
     background-color: #1e1e1e;
   }
-  
+
   div.file-item.selected {
     background-color: #22a;
   }
-  
+
   div.file-item.selected:nth-child(even) {
     background-color: #33b;
   }
@@ -147,17 +147,17 @@ div.loading-bar {
 
 .loading-bar:nth-child(3) {
   background-color: #303dc9;
-  animation-delay: .18s;
+  animation-delay: 0.18s;
 }
 
 .loading-bar:nth-child(4) {
   background-color: #e8c24f;
-  animation-delay: .27s;
+  animation-delay: 0.27s;
 }
 
 .loading-bar:nth-child(5) {
   background-color: #303dc9;
-  animation-delay: .36s;
+  animation-delay: 0.36s;
 }
 
 @keyframes loading {

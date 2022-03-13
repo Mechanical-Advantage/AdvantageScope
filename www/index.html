@@ -1,333 +1,323 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="index.css" />
+    <title>Advantage Scope</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="global.css">
-  <link rel="stylesheet" href="index.css">
-  <title>Advantage Scope</title>
-</head>
-
-<body>
-  <div class="title-bar" hidden>
-    <div class="title-bar-text">
-      Advantage Scope
-    </div>
-  </div>
-
-  <button class="tab-control play" tabindex="-1">
-    <svg height="28" width="28">
-      <polygon points="9,8 9,20 19,14"></polygon>
-    </svg>
-  </button>
-  <button class="tab-control pause" tabindex="-1" hidden>
-    <svg height="28" width="28">
-      <line x1="10" y1="8" x2="10" y2="20"></line>
-      <line x1="18" y1="8" x2="18" y2="20"></line>
-    </svg>
-  </button>
-  <button class="tab-control unlocked" tabindex="-1" hidden>
-    <svg height="28" width="28">
-      <circle cx="14" cy="14" r="6"></circle>
-    </svg>
-  </button>
-  <button class="tab-control locked" tabindex="-1" hidden>
-    <svg height="28" width="28">
-      <circle cx="14" cy="14" r="6"></circle>
-    </svg>
-  </button>
-  <button class="tab-control move-left" tabindex="-1">
-    <svg height="28" width="28">
-      <line x1="7" y1="14" x2="21" y2="14"></line>
-      <line x1="7" y1="14" x2="13" y2="8"></line>
-      <line x1="7" y1="14" x2="13" y2="20"></line>
-    </svg>
-  </button>
-  <button class="tab-control close" tabindex="-1">
-    <svg height="28" width="28">
-      <line x1="8" y1="8" x2="20" y2="20"></line>
-      <line x1="20" y1="8" x2="8" y2="20"></line>
-    </svg>
-  </button>
-  <button class="tab-control move-right" tabindex="-1">
-    <svg height="28" width="28">
-      <line x1="7" y1="14" x2="21" y2="14"></line>
-      <line x1="21" y1="14" x2="15" y2="8"></line>
-      <line x1="21" y1="14" x2="15" y2="20"></line>
-    </svg>
-  </button>
-  <button class="tab-control add-tab" tabindex="-1">
-    <svg height="28" width="28">
-      <line x1="14" y1="7" x2="14" y2="21"></line>
-      <line x1="7" y1="14" x2="21" y2="14"></line>
-    </svg>
-  </button>
-
-  <div class="side-bar-background" hidden></div>
-  <div class="side-bar-shadow"></div>
-  <div class="viewer-background"></div>
-  <div class="side-bar-handle"></div>
-
-  <span id="dragItem"></span>
-
-  <div class="main-view">
-    <div class="side-bar">
-      <div class="side-bar-title">No data available</div>
-
-      <span id="fieldItemIconTemplates" hidden>
-        <svg class="field-item-icon" height="12" width="12">
-          <polygon points="1,0 1,12 11,6"></polygon>
-        </svg>
-        <svg class="field-item-icon" height="12" width="12">
-          <polygon points="12,1 0,1 6,11"></polygon>
-        </svg>
-        <svg class="field-item-icon" height="12" width="12">
-          <rect x="1" y="5" width="10" height="2"></rect>
-        </svg>
-      </span>
-
-      <span id="fieldList"></span>
+  <body>
+    <div class="title-bar" hidden>
+      <div class="title-bar-text">Advantage Scope</div>
     </div>
 
-    <div class="viewer">
-      <div class="tab-bar"></div>
-      <div class="tab-bar-shadow-left"></div>
-      <div class="tab-bar-shadow-right"></div>
-      <div class="tab-bar-scroll">
-        <div class="tab-bar-scroll-content"></div>
+    <button class="tab-control play" tabindex="-1">
+      <svg height="28" width="28">
+        <polygon points="9,8 9,20 19,14"></polygon>
+      </svg>
+    </button>
+    <button class="tab-control pause" tabindex="-1" hidden>
+      <svg height="28" width="28">
+        <line x1="10" y1="8" x2="10" y2="20"></line>
+        <line x1="18" y1="8" x2="18" y2="20"></line>
+      </svg>
+    </button>
+    <button class="tab-control unlocked" tabindex="-1" hidden>
+      <svg height="28" width="28">
+        <circle cx="14" cy="14" r="6"></circle>
+      </svg>
+    </button>
+    <button class="tab-control locked" tabindex="-1" hidden>
+      <svg height="28" width="28">
+        <circle cx="14" cy="14" r="6"></circle>
+      </svg>
+    </button>
+    <button class="tab-control move-left" tabindex="-1">
+      <svg height="28" width="28">
+        <line x1="7" y1="14" x2="21" y2="14"></line>
+        <line x1="7" y1="14" x2="13" y2="8"></line>
+        <line x1="7" y1="14" x2="13" y2="20"></line>
+      </svg>
+    </button>
+    <button class="tab-control close" tabindex="-1">
+      <svg height="28" width="28">
+        <line x1="8" y1="8" x2="20" y2="20"></line>
+        <line x1="20" y1="8" x2="8" y2="20"></line>
+      </svg>
+    </button>
+    <button class="tab-control move-right" tabindex="-1">
+      <svg height="28" width="28">
+        <line x1="7" y1="14" x2="21" y2="14"></line>
+        <line x1="21" y1="14" x2="15" y2="8"></line>
+        <line x1="21" y1="14" x2="15" y2="20"></line>
+      </svg>
+    </button>
+    <button class="tab-control add-tab" tabindex="-1">
+      <svg height="28" width="28">
+        <line x1="14" y1="7" x2="14" y2="21"></line>
+        <line x1="7" y1="14" x2="21" y2="14"></line>
+      </svg>
+    </button>
+
+    <div class="side-bar-background" hidden></div>
+    <div class="side-bar-shadow"></div>
+    <div class="viewer-background"></div>
+    <div class="side-bar-handle"></div>
+
+    <span id="dragItem"></span>
+
+    <div class="main-view">
+      <div class="side-bar">
+        <div class="side-bar-title">No data available</div>
+
+        <span id="fieldItemIconTemplates" hidden>
+          <svg class="field-item-icon" height="12" width="12">
+            <polygon points="1,0 1,12 11,6"></polygon>
+          </svg>
+          <svg class="field-item-icon" height="12" width="12">
+            <polygon points="12,1 0,1 6,11"></polygon>
+          </svg>
+          <svg class="field-item-icon" height="12" width="12">
+            <rect x="1" y="5" width="10" height="2"></rect>
+          </svg>
+        </span>
+
+        <span id="fieldList"></span>
       </div>
-      <span id="tabContentTemplates" hidden>
 
-        <!-- Metadata -->
-        <div class="tab-content">
-          <div class="tab-centered">
-            No data.
-          </div>
-          <div class="metadata-table-container" hidden>
-            <table class="metadata-table">
-              <tbody>
-                <tr>
-                  <th></th>
-                  <th>Real</th>
-                  <th>Replay</th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <div class="viewer">
+        <div class="tab-bar"></div>
+        <div class="tab-bar-shadow-left"></div>
+        <div class="tab-bar-shadow-right"></div>
+        <div class="tab-bar-scroll">
+          <div class="tab-bar-scroll-content"></div>
         </div>
+        <span id="tabContentTemplates" hidden>
+          <!-- Metadata -->
+          <div class="tab-content">
+            <div class="tab-centered">No data.</div>
+            <div class="metadata-table-container" hidden>
+              <table class="metadata-table">
+                <tbody>
+                  <tr>
+                    <th></th>
+                    <th>Real</th>
+                    <th>Replay</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-        <!-- Line graph -->
-        <div class="tab-content">
-
-          <span class="legend-item-template" hidden>
-            <div class="legend-item">
-              <svg class="legend-splotch" height="25" width="25">
-                <circle cx="12.5" cy="12.5" r="6"></circle>
-              </svg>
-              <div class="legend-key-container">
-                <span class="legend-key"></span>
+          <!-- Line graph -->
+          <div class="tab-content">
+            <span class="legend-item-template" hidden>
+              <div class="legend-item">
+                <svg class="legend-splotch" height="25" width="25">
+                  <circle cx="12.5" cy="12.5" r="6"></circle>
+                </svg>
+                <div class="legend-key-container">
+                  <span class="legend-key"></span>
+                </div>
+                <button class="legend-edit" tabindex="-1">
+                  <svg height="25" width="25">
+                    <line x1="7" y1="7" x2="18" y2="18"></line>
+                    <line x1="18" y1="7" x2="7" y2="18"></line>
+                  </svg>
+                </button>
               </div>
-              <button class="legend-edit" tabindex="-1">
+            </span>
+
+            <div class="line-graph-canvas-container">
+              <canvas class="line-graph-canvas"></canvas>
+              <div class="line-graph-scroll">
+                <div class="line-graph-scroll-content"></div>
+              </div>
+            </div>
+
+            <div class="legend-left">
+              <div class="legend-item">
+                <div class="legend-title">Left Axis<span hidden> [Locked]</span></div>
+                <button class="legend-edit" tabindex="-1">
+                  <svg height="25" width="25">
+                    <circle cx="7" cy="12.5" r="0.75"></circle>
+                    <circle cx="12.5" cy="12.5" r="0.75"></circle>
+                    <circle cx="18" cy="12.5" r="0.75"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="legend-left legend-drag-target" hidden></div>
+
+            <div class="legend-discrete">
+              <div class="legend-item">
+                <div class="legend-title legend-title-center">Discrete Fields</div>
+              </div>
+            </div>
+            <div class="legend-discrete legend-drag-target" hidden></div>
+
+            <div class="legend-right">
+              <div class="legend-item">
+                <div class="legend-title">Right Axis<span hidden> [Locked]</span></div>
+                <button class="legend-edit" tabindex="-1">
+                  <svg height="25" width="25">
+                    <circle cx="7" cy="12.5" r="0.75"></circle>
+                    <circle cx="12.5" cy="12.5" r="0.75"></circle>
+                    <circle cx="18" cy="12.5" r="0.75"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="legend-right legend-drag-target" hidden></div>
+          </div>
+
+          <!-- Table -->
+          <div class="tab-content">
+            <div class="tab-centered">No data.</div>
+
+            <span class="data-table-header-template" hidden>
+              <div class="data-table-key-container">
+                <span></span>
+              </div>
+              <button class="data-table-key-delete" tabindex="-1">
                 <svg height="25" width="25">
                   <line x1="7" y1="7" x2="18" y2="18"></line>
                   <line x1="18" y1="7" x2="7" y2="18"></line>
                 </svg>
               </button>
-            </div>
-          </span>
+            </span>
 
-          <div class="line-graph-canvas-container">
-            <canvas class="line-graph-canvas"></canvas>
-            <div class="line-graph-scroll">
-              <div class="line-graph-scroll-content"></div>
+            <div class="data-table-container" hidden>
+              <table class="data-table">
+                <tbody>
+                  <tr>
+                    <th>
+                      <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                      <button class="data-table-jump-button" tabindex="-1">
+                        <svg height="25" width="25">
+                          <line x1="7.5" y1="6" x2="17.5" y2="6"></line>
+                          <line x1="12.5" y1="6" x2="12.5" y2="19"></line>
+                          <line x1="12.5" y1="19" x2="7.5" y2="14"></line>
+                          <line x1="12.5" y1="19" x2="17.5" y2="14"></line>
+                        </svg>
+                      </button>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+            <div class="data-table-drag-highlight" hidden></div>
           </div>
 
-          <div class="legend-left">
-            <div class="legend-item">
-              <div class="legend-title">
-                Left Axis<span hidden> [Locked]</span>
-              </div>
-              <button class="legend-edit" tabindex="-1">
-                <svg height="25" width="25">
-                  <circle cx="7" cy="12.5" r="0.75"></circle>
-                  <circle cx="12.5" cy="12.5" r="0.75"></circle>
-                  <circle cx="18" cy="12.5" r="0.75"></circle>
-                </svg>
-              </button>
+          <!-- Odometry -->
+          <div class="tab-content">
+            <div class="odometry-timeline-container">
+              <input
+                class="odometry-timeline-slider"
+                id="timeline"
+                type="range"
+                value="0"
+                min="0"
+                max="10"
+                step="0.000001"
+                tabindex="-1"
+              />
+              <div class="odometry-timeline-marker-container"></div>
             </div>
-          </div>
-          <div class="legend-left legend-drag-target" hidden></div>
-
-          <div class="legend-discrete">
-            <div class="legend-item">
-              <div class="legend-title legend-title-center">
-                Discrete Fields
-              </div>
-            </div>
-          </div>
-          <div class="legend-discrete legend-drag-target" hidden></div>
-
-          <div class="legend-right">
-            <div class="legend-item">
-              <div class="legend-title">
-                Right Axis<span hidden> [Locked]</span>
-              </div>
-              <button class="legend-edit" tabindex="-1">
-                <svg height="25" width="25">
-                  <circle cx="7" cy="12.5" r="0.75"></circle>
-                  <circle cx="12.5" cy="12.5" r="0.75"></circle>
-                  <circle cx="18" cy="12.5" r="0.75"></circle>
-                </svg>
-              </button>
-            </div>
-          </div>
-          <div class="legend-right legend-drag-target" hidden></div>
-
-        </div>
-
-        <!-- Table -->
-        <div class="tab-content">
-          <div class="tab-centered">
-            No data.
-          </div>
-
-          <span class="data-table-header-template" hidden>
-            <div class="data-table-key-container">
-              <span></span>
-            </div>
-            <button class="data-table-key-delete" tabindex="-1">
+            <button class="odometry-popup-button" tabindex="-1">
               <svg height="25" width="25">
-                <line x1="7" y1="7" x2="18" y2="18"></line>
-                <line x1="18" y1="7" x2="7" y2="18"></line>
+                <line x1="12" y1="13" x2="20" y2="5"></line>
+                <line x1="20" y1="5" x2="20" y2="10"></line>
+                <line x1="20" y1="5" x2="15" y2="5"></line>
+
+                <line x1="17" y1="13" x2="17" y2="19"></line>
+                <line x1="17" y1="19" x2="6" y2="19"></line>
+                <line x1="6" y1="19" x2="6" y2="8"></line>
+                <line x1="6" y1="8" x2="12" y2="8"></line>
               </svg>
             </button>
-          </span>
-
-          <div class="data-table-container" hidden>
-            <table class="data-table">
+            <canvas class="odometry-canvas"></canvas>
+            <div class="odometry-drag-highlight" hidden></div>
+            <table class="odometry-config">
               <tbody>
                 <tr>
-                  <th>
-                    <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1">
-                    <button class="data-table-jump-button" tabindex="-1">
-                      <svg height="25" width="25">
-                        <line x1="7.5" y1="6" x2="17.5" y2="6"></line>
-                        <line x1="12.5" y1="6" x2="12.5" y2="19"></line>
-                        <line x1="12.5" y1="19" x2="7.5" y2="14"></line>
-                        <line x1="12.5" y1="19" x2="17.5" y2="14"></line>
-                      </svg>
-                    </button>
-                  </th>
+                  <th>Pose Data</th>
+                  <th>Coordinate System</th>
+                  <th>Robot Config</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label" title="Full robot w/ trail (x, y, rotation)">Robot:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Game:</span>
+                    <select tabindex="-1"></select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                  <td>
+                    <span class="label">Side length:</span>
+                    <input type="number" min="0" value="0.75" step="0.01" tabindex="-1" />
+                    <span>meters</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label" title="Supplemental transparent robot w/o trail (x, y, rotation)">Ghost:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Units:</span>
+                    <select tabindex="-1">
+                      <option>meters</option>
+                      <option>inches</option>
+                    </select>
+                    and
+                    <select tabindex="-1">
+                      <option>radians</option>
+                      <option>degrees</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Alliance color:</span>
+                    <select tabindex="-1">
+                      <option>blue</option>
+                      <option>red</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label" title="Green line from robot to target (x, y)">Vision:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Origin:</span>
+                    <select tabindex="-1">
+                      <option>right</option>
+                      <option>center</option>
+                      <option>left</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Orientation:</span>
+                    <select tabindex="-1">
+                      <option>blue, red</option>
+                      <option>red, blue</option>
+                    </select>
+                  </td>
                 </tr>
               </tbody>
             </table>
           </div>
-          <div class="data-table-drag-highlight" hidden></div>
-        </div>
+        </span>
+      </div>
 
-        <!-- Odometry -->
-        <div class="tab-content">
-          <div class="odometry-timeline-container">
-            <input class="odometry-timeline-slider" id="timeline" type="range" value="0" min="0" max="10"
-              step="0.000001" tabindex="-1"></input>
-            <div class="odometry-timeline-marker-container"></div>
-          </div>
-          <button class="odometry-popup-button" tabindex="-1">
-            <svg height="25" width="25">
-              <line x1="12" y1="13" x2="20" y2="5"></line>
-              <line x1="20" y1="5" x2="20" y2="10"></line>
-              <line x1="20" y1="5" x2="15" y2="5"></line>
-
-              <line x1="17" y1="13" x2="17" y2="19"></line>
-              <line x1="17" y1="19" x2="6" y2="19"></line>
-              <line x1="6" y1="19" x2="6" y2="8"></line>
-              <line x1="6" y1="8" x2="12" y2="8"></line>
-            </svg>
-          </button>
-          <canvas class="odometry-canvas"></canvas>
-          <div class="odometry-drag-highlight" hidden></div>
-          <table class="odometry-config">
-            <tbody>
-              <tr>
-                <th>Pose Data</th>
-                <th>Coordinate System</th>
-                <th>Robot Config</th>
-              </tr>
-              <tr>
-                <td>
-                  <span class="label" title="Full robot w/ trail (x, y, rotation)">Robot:</span>
-                  <span class="field-name">&lt;Drag Here&gt;</span>
-                </td>
-                <td>
-                  <span class="label">Game:</span>
-                  <select tabindex="-1"></select>
-                  <a class="credit-link" href="#" tabindex="-1">Source</a>
-                </td>
-                <td>
-                  <span class="label">Side length:</span>
-                  <input type="number" min="0" value="0.75" step="0.01" tabindex="-1">
-                  <span>meters</span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="label" title="Supplemental transparent robot w/o trail (x, y, rotation)">Ghost:</span>
-                  <span class="field-name">&lt;Drag Here&gt;</span>
-                </td>
-                <td>
-                  <span class="label">Units:</span>
-                  <select tabindex="-1">
-                    <option>meters</option>
-                    <option>inches</option>
-                  </select>
-                  and
-                  <select tabindex="-1">
-                    <option>radians</option>
-                    <option>degrees</option>
-                  </select>
-                </td>
-                <td>
-                  <span class="label">Alliance color:</span>
-                  <select tabindex="-1">
-                    <option>blue</option>
-                    <option>red</option>
-                  </select>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <span class="label" title="Green line from robot to target (x, y)">Vision:</span>
-                  <span class="field-name">&lt;Drag Here&gt;</span>
-                </td>
-                <td>
-                  <span class="label">Origin:</span>
-                  <select tabindex="-1">
-                    <option>right</option>
-                    <option>center</option>
-                    <option>left</option>
-                  </select>
-                </td>
-                <td>
-                  <span class="label">Orientation:</span>
-                  <select tabindex="-1">
-                    <option>blue, red</option>
-                    <option>red, blue</option>
-                  </select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </span>
+      <script type="module" src="index.js"></script>
     </div>
-
-    <script type="module" src="index.js"></script>
-  </div>
-</body>
-
+  </body>
 </html>

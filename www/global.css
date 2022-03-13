@@ -40,11 +40,10 @@ button.blurred svg {
 }
 
 @media (prefers-color-scheme: dark) {
-
   button:hover {
     background-color: #333;
   }
-  
+
   button:active {
     background-color: #444;
   }
