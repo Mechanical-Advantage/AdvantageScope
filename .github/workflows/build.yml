@@ -48,7 +48,7 @@ jobs:
         if: matrix.host.os == 'ubuntu-latest'
         run: sudo apt-get install --no-install-recommends -y libarchive-tools
       - name: Prepare macOS certificate
-        if: matrix.host.os == 'macos-latest'
+        if: matrix.host.os == 'macos-latest' && github.event_name == 'push'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
