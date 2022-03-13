@@ -156,7 +156,19 @@ window.addEventListener("open-file", (event) => {
 });
 
 window.addEventListener("start-live", (event) => {
-  window.liveAddress = event.detail ? "127.0.0.1" : prefs.address;
+  switch (event.detail) {
+    case "sim":
+      window.liveAddress = "127.0.0.1";
+      break;
+    case "usb":
+      // See https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/roborio-network-troubleshooting.html#usb-connection-troubleshooting
+      window.liveAddress = "172.22.11.2";
+      break;
+    default:
+      window.liveAddress = prefs.address;
+      break;
+  }
+
   if (window.liveStatus != 3) {
     setLiveStatus(1);
     setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Connecting) \u2014 Advantage Scope");

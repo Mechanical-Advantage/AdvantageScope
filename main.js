@@ -264,14 +264,20 @@ function setupMenu() {
           label: "Connect to Robot",
           accelerator: "CmdOrCtrl+K",
           click() {
-            BrowserWindow.getFocusedWindow().webContents.send("start-live", false);
+            BrowserWindow.getFocusedWindow().webContents.send("start-live", "wireless");
+          }
+        },
+        {
+          label: "Connect to roboRIO via USB",
+          click() {
+            BrowserWindow.getFocusedWindow().webContents.send("start-live", "usb");
           }
         },
         {
           label: "Connect to Simulator",
           accelerator: "CmdOrCtrl+Shift+K",
           click() {
-            BrowserWindow.getFocusedWindow().webContents.send("start-live", true);
+            BrowserWindow.getFocusedWindow().webContents.send("start-live", "sim");
           }
         },
         {
