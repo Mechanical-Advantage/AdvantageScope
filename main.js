@@ -120,6 +120,20 @@ app.on("quit", () => {
   fs.unlink(path.join(app.getPath("temp"), lastOpenFileName), () => {});
 });
 
+// Sends the current preferences to all windows (including USB menu bar setting)
+var usingUsb = false;
+function sendAllPreferences() {
+  var data = jsonfile.readFileSync(prefsFileName);
+  data.usb = usingUsb;
+  nativeTheme.themeSource = data.theme;
+  indexWindows.forEach((window) => {
+    if (!window.isDestroyed()) {
+      window.send("set-preferences", data);
+    }
+  });
+  if (downloadWindow != null && !downloadWindow.isDestroyed()) downloadWindow.send("set-preferences", data);
+}
+
 // Create a new main window
 var indexWindows = [];
 var lastIndexWindow = null;
@@ -177,7 +191,7 @@ function createWindow() {
   window.once("ready-to-show", window.show);
   window.webContents.on("dom-ready", () => {
     window.send("set-fullscreen", window.isFullScreen());
-    window.send("set-preferences", jsonfile.readFileSync(prefsFileName));
+    sendAllPreferences();
   });
   window.on("enter-full-screen", () => window.send("set-fullscreen", true));
   window.on("leave-full-screen", () => window.send("set-fullscreen", false));
@@ -288,6 +302,16 @@ function setupMenu() {
             var window = BrowserWindow.getFocusedWindow();
             if (!window.webContents.getURL().endsWith("index.html")) return;
             window.webContents.send("export-csv");
+          }
+        },
+        { type: "separator" },
+        {
+          label: "Use USB roboRIO Address",
+          type: "checkbox",
+          checked: false,
+          click(item) {
+            usingUsb = item.checked;
+            sendAllPreferences();
           }
         },
         { type: "separator" },
@@ -465,13 +489,7 @@ function openPreferences() {
 
 ipcMain.on("update-preferences", (_, data) => {
   jsonfile.writeFileSync(prefsFileName, data);
-  nativeTheme.themeSource = data.theme;
-  indexWindows.forEach((window) => {
-    if (!window.isDestroyed()) {
-      window.send("set-preferences", data);
-    }
-  });
-  if (downloadWindow != null && !downloadWindow.isDestroyed()) downloadWindow.send("set-preferences", data);
+  sendAllPreferences();
 });
 
 ipcMain.on("exit-preferences", () => {
@@ -660,9 +678,7 @@ function openDownload() {
   // Finish setup
   downloadWindow.setMenu(null);
   downloadWindow.once("ready-to-show", downloadWindow.show);
-  downloadWindow.webContents.on("dom-ready", () =>
-    downloadWindow.send("set-preferences", jsonfile.readFileSync(prefsFileName))
-  );
+  downloadWindow.webContents.on("dom-ready", sendAllPreferences);
   downloadWindow.loadFile("www/download.html");
 }
 

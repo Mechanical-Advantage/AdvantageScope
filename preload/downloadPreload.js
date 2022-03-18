@@ -5,6 +5,8 @@ const fs = require("fs");
 const username = "lvuser";
 const password = "";
 
+const usbAddress = "172.22.11.2";
+
 const connectTimeoutMs = 3000; // How long to wait when connecting
 const retryDelayMs = 1000; // How long to wait between connection attempts
 const refreshIntervalMs = 5000; // How often to refresh file list when connected
@@ -38,7 +40,7 @@ function connect() {
   clearTimeout(retryTimeout);
   clearInterval(refreshInterval);
   sshClient.connect({
-    host: prefs.address,
+    host: prefs.usb ? usbAddress : prefs.address,
     port: 22,
     readyTimeout: connectTimeoutMs,
     username: username,

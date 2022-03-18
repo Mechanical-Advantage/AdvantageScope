@@ -1,3 +1,5 @@
+const usbAddress = "172.22.11.2";
+
 const fileList = document.getElementsByClassName("file-list")[0];
 const fileListItems = fileList.children[0];
 const loadingAnimation = document.getElementsByClassName("loading")[0];
@@ -17,6 +19,10 @@ var filenames = [];
 var selectedFiles = [];
 var lastClickedIndex = null;
 var lastClickedSelect = true;
+
+function getAddress() {
+  return prefs.usb ? usbAddress : prefs.address;
+}
 
 // Update platform name
 window.addEventListener("set-platform", (event) => {
@@ -148,11 +154,11 @@ window.addEventListener("status-error", (event) => {
   if (event.detail == "No such file") {
     friendlyText = "Failed to open log folder at <u>" + prefs.rioPath + "</u>";
   } else if (event.detail == "Timed out while waiting for handshake") {
-    friendlyText = "roboRIO not found at <u>" + prefs.address + "</u> (check connection)";
+    friendlyText = "roboRIO not found at <u>" + getAddress() + "</u> (check connection)";
   } else if (event.detail.includes("ENOTFOUND")) {
-    friendlyText = "Unknown address <u>" + prefs.address + "</u>";
+    friendlyText = "Unknown address <u>" + getAddress() + "</u>";
   } else if (event.detail == "All configured authentication methods failed") {
-    friendlyText = "Failed to authenticate to roboRIO at <u>" + prefs.address + "</u>";
+    friendlyText = "Failed to authenticate to roboRIO at <u>" + getAddress() + "</u>";
   } else if (event.detail == "Not connected") {
     friendlyText = "Lost connection to roboRIO";
   } else {

@@ -3,6 +3,9 @@ import { Selection } from "./modules/selection.mjs";
 import { SideBar } from "./modules/sideBar.mjs";
 import { Tabs } from "./modules/tabs.mjs";
 
+const usbAddress = "172.22.11.2";
+const simAddress = "127.0.0.1";
+
 window.platform = null;
 window.platformRelease = null;
 window.isFullscreen = false;
@@ -156,7 +159,13 @@ window.addEventListener("open-file", (event) => {
 });
 
 window.addEventListener("start-live", (event) => {
-  window.liveAddress = event.detail ? "127.0.0.1" : prefs.address;
+  if (event.detail) {
+    window.liveAddress = simAddress;
+  } else if (prefs.usb) {
+    window.liveAddress = usbAddress;
+  } else {
+    window.liveAddress = prefs.address;
+  }
   if (window.liveStatus != 3) {
     setLiveStatus(1);
     setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Connecting) \u2014 Advantage Scope");
