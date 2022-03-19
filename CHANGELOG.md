@@ -1,1 +1,1 @@
-Fixed [this issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues/3) causing metadata keys with slahes to be displayed incorrectly.
+Added a shortcut to the menu bar for connecting to a roboRIO over USB.
