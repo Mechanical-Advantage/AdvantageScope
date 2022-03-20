@@ -251,7 +251,7 @@ function setupMenu() {
             ]
           }
         ]
-      : [{}]),
+      : []),
     {
       label: "File",
       submenu: [
