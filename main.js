@@ -218,6 +218,7 @@ function saveStateHandler(window) {
 function setupMenu() {
   const isMac = process.platform === "darwin";
 
+  /** @type {(Electron.MenuItem | Electron.MenuItemConstructorOptions)[]} */
   const template = [
     ...(isMac
       ? [
@@ -229,8 +230,8 @@ function setupMenu() {
               {
                 label: "Preferences...",
                 accelerator: "Cmd+,",
-                click() {
-                  openPreferences();
+                click(_, window) {
+                  openPreferences(window);
                 }
               },
               {
@@ -250,16 +251,15 @@ function setupMenu() {
             ]
           }
         ]
-      : []),
+      : [{}]),
     {
       label: "File",
       submenu: [
         {
           label: "Open...",
           accelerator: "CmdOrCtrl+O",
-          click() {
-            var window = BrowserWindow.getFocusedWindow();
-            if (!window.webContents.getURL().endsWith("index.html")) return;
+          click(_, window) {
+            if (!window?.webContents.getURL().endsWith("index.html")) return;
             var files = dialog.showOpenDialog(window, {
               title: "Select a robot log file to open",
               properties: ["openFile"],
@@ -267,7 +267,7 @@ function setupMenu() {
             });
             files.then((files) => {
               if (files.filePaths.length > 0) {
-                window.webContents.send("open-file", files.filePaths[0]);
+                window?.webContents.send("open-file", files.filePaths[0]);
                 recordOpenFile(files.filePaths[0]);
                 app.addRecentDocument(files.filePaths[0]);
               }
@@ -277,31 +277,30 @@ function setupMenu() {
         {
           label: "Connect to Robot",
           accelerator: "CmdOrCtrl+K",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("start-live", false);
+          click(_, window) {
+            window?.webContents.send("start-live", false);
           }
         },
         {
           label: "Connect to Simulator",
           accelerator: "CmdOrCtrl+Shift+K",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("start-live", true);
+          click(_, window) {
+            window?.webContents.send("start-live", true);
           }
         },
         {
           label: "Download Logs...",
           accelerator: "CmdOrCtrl+D",
-          click() {
-            openDownload();
+          click(_, window) {
+            openDownload(window);
           }
         },
         {
           label: "Export CSV...",
           accelerator: "CmdOrCtrl+E",
-          click() {
-            var window = BrowserWindow.getFocusedWindow();
-            if (!window.webContents.getURL().endsWith("index.html")) return;
-            window.webContents.send("export-csv");
+          click(_, window) {
+            if (!window?.webContents.getURL().endsWith("index.html")) return;
+            window?.webContents.send("export-csv");
           }
         },
         { type: "separator" },
@@ -333,60 +332,60 @@ function setupMenu() {
         {
           label: "New Line Graph",
           accelerator: "CmdOrCtrl+1",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 1);
+          click(_, window) {
+            window?.webContents.send("tab-command", "new", 1);
           }
         },
         {
           label: "New Table",
           accelerator: "CmdOrCtrl+2",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 2);
+          click(_, window) {
+            window?.webContents.send("tab-command", "new", 2);
           }
         },
         {
           label: "New Odometry",
           accelerator: "CmdOrCtrl+3",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "new", 3);
+          click(_, window) {
+            window?.webContents.send("tab-command", "new", 3);
           }
         },
         { type: "separator" },
         {
           label: "Previous Tab",
           accelerator: "CmdOrCtrl+Left",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "move", -1);
+          click(_, window) {
+            window?.webContents.send("tab-command", "move", -1);
           }
         },
         {
           label: "Next Tab",
           accelerator: "CmdOrCtrl+Right",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "move", 1);
+          click(_, window) {
+            window?.webContents.send("tab-command", "move", 1);
           }
         },
         { type: "separator" },
         {
           label: "Shift Left",
           accelerator: "CmdOrCtrl+[",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "shift", -1);
+          click(_, window) {
+            window?.webContents.send("tab-command", "shift", -1);
           }
         },
         {
           label: "Shift Right",
           accelerator: "CmdOrCtrl+]",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "shift", 1);
+          click(_, window) {
+            window?.webContents.send("tab-command", "shift", 1);
           }
         },
         { type: "separator" },
         {
           label: "Close Tab",
           accelerator: isMac ? "Cmd+W" : "Ctrl+Q",
-          click() {
-            BrowserWindow.getFocusedWindow().webContents.send("tab-command", "close", null);
+          click(_, window) {
+            window?.webContents.send("tab-command", "close", null);
           }
         }
       ]
@@ -414,8 +413,10 @@ function setupMenu() {
               {
                 label: "Show Preferences...",
                 accelerator: "Ctrl+,",
-                click() {
-                  openPreferences();
+                click(_, window) {
+                  if (window) {
+                    openPreferences(window);
+                  }
                 }
               },
               {
@@ -447,8 +448,14 @@ function setupMenu() {
 }
 
 // Create a new preferences window
+/** @type {Electron.BrowserWindow | null} */
 var prefsWindow = null;
-function openPreferences() {
+/**
+ *
+ * @param {Electron.BrowserWindow} parentWindow
+ * @returns {void}
+ */
+function openPreferences(parentWindow) {
   if (prefsWindow != null && !prefsWindow.isDestroyed()) {
     prefsWindow.focus();
     return;
@@ -459,16 +466,8 @@ function openPreferences() {
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
-    x: Math.floor(
-      BrowserWindow.getFocusedWindow().getBounds().x +
-        BrowserWindow.getFocusedWindow().getBounds().width / 2 -
-        width / 2
-    ),
-    y: Math.floor(
-      BrowserWindow.getFocusedWindow().getBounds().y +
-        BrowserWindow.getFocusedWindow().getBounds().height / 2 -
-        height / 2
-    ),
+    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
     useContentSize: true,
     resizable: false,
     alwaysOnTop: true,
@@ -641,8 +640,14 @@ function checkForUpdate(alwaysNotify) {
 }
 
 // Create a new download window
+/** @type {Electron.BrowserWindow | null} */
 var downloadWindow = null;
-function openDownload() {
+/**
+ *
+ * @param {Electron.BrowserWindow} parentWindow
+ * @returns {void}
+ */
+function openDownload(parentWindow) {
   if (downloadWindow != null && !downloadWindow.isDestroyed()) {
     downloadWindow.focus();
     return;
@@ -655,16 +660,8 @@ function openDownload() {
     height: height,
     minWidth: width,
     minHeight: height,
-    x: Math.floor(
-      BrowserWindow.getFocusedWindow().getBounds().x +
-        BrowserWindow.getFocusedWindow().getBounds().width / 2 -
-        width / 2
-    ),
-    y: Math.floor(
-      BrowserWindow.getFocusedWindow().getBounds().y +
-        BrowserWindow.getFocusedWindow().getBounds().height / 2 -
-        height / 2
-    ),
+    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
     resizable: true,
     alwaysOnTop: true,
     icon: iconPath,
@@ -739,8 +736,9 @@ ipcMain.on("prompt-download-auto-open", (_, filePath) => {
 
 // MISC COMMUNICATION WITH PRELOAD
 
-ipcMain.on("error", (_, title, content) => {
-  dialog.showMessageBox(BrowserWindow.getFocusedWindow(), {
+ipcMain.on("error", (event, title, content) => {
+  const window = BrowserWindow.fromWebContents(event.sender);
+  dialog.showMessageBox(window, {
     type: "error",
     title: "Error",
     message: title,
@@ -761,8 +759,8 @@ ipcMain.on("set-playback-speed", (_, currentSpeed) => {
         label: (value * 100).toString() + "%",
         type: "checkbox",
         checked: value == currentSpeed,
-        click() {
-          BrowserWindow.getFocusedWindow().webContents.send("set-playback-speed-response", value);
+        click(_, window) {
+          window?.webContents.send("set-playback-speed-response", value);
         }
       })
     );
@@ -775,24 +773,24 @@ ipcMain.on("add-tab", () => {
   menu.append(
     new MenuItem({
       label: "Line Graph",
-      click() {
-        BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 1);
+      click(_, window) {
+        window?.webContents.send("add-tab-response", 1);
       }
     })
   );
   menu.append(
     new MenuItem({
       label: "Table",
-      click() {
-        BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 2);
+      click(_, window) {
+        window?.webContents.send("add-tab-response", 2);
       }
     })
   );
   menu.append(
     new MenuItem({
       label: "Odometry",
-      click() {
-        BrowserWindow.getFocusedWindow().webContents.send("add-tab-response", 3);
+      click(_, window) {
+        window?.webContents.send("add-tab-response", 3);
       }
     })
   );
@@ -803,12 +801,11 @@ ipcMain.on("add-tab", () => {
 var editLookup = {};
 ipcMain.on("edit-axis", (_, data) => {
   const menu = new Menu();
-  const window = BrowserWindow.getFocusedWindow();
   menu.append(
     new MenuItem({
       label: data.locked ? "Unlock Axis" : "Lock Axis",
-      click() {
-        window.webContents.send("edit-axis-response", {
+      click(_, window) {
+        window?.webContents.send("edit-axis-response", {
           timestamp: data.timestamp,
           command: "toggle-lock"
         });
@@ -824,7 +821,7 @@ ipcMain.on("edit-axis", (_, data) => {
     new MenuItem({
       label: "Edit Range",
       enabled: data.locked,
-      click() {
+      click(_, parentWindow) {
         // Create edit axis window
         const editWindow = new BrowserWindow({
           width: 300,
@@ -833,7 +830,7 @@ ipcMain.on("edit-axis", (_, data) => {
           resizable: false,
           icon: iconPath,
           show: false,
-          parent: window,
+          parent: parentWindow,
           modal: true,
           webPreferences: {
             preload: path.join(__dirname, "preload/editAxisPreload.js")
@@ -842,11 +839,11 @@ ipcMain.on("edit-axis", (_, data) => {
 
         // Finish setup
         editWindow.setMenu(null);
-        editWindow.once("ready-to-show", window.show);
+        editWindow.once("ready-to-show", parentWindow.show);
         editWindow.webContents.on("dom-ready", () => editWindow.send("start", data));
         editWindow.loadFile("www/editAxis.html");
         editLookup[data.timestamp] = {
-          parent: window,
+          parent: parentWindow,
           child: editWindow
         };
       }
@@ -867,7 +864,9 @@ ipcMain.on("edit-axis-complete", (_, timestamp, range) => {
 });
 
 var odometryLookup = {};
-ipcMain.on("create-odometry-popup", (_, id) => {
+ipcMain.on("create-odometry-popup", (event, id) => {
+  const parentWindow = BrowserWindow.fromWebContents(event.sender);
+
   const popup = new BrowserWindow({
     width: 900,
     height: 500,
@@ -890,7 +889,7 @@ ipcMain.on("create-odometry-popup", (_, id) => {
   odometryLookup[id].push(popup);
 
   var closed = false;
-  BrowserWindow.getFocusedWindow().once("close", () => {
+  parentWindow.once("close", () => {
     if (!closed) popup.close();
   });
   popup.once("closed", () => {
@@ -916,7 +915,8 @@ ipcMain.on("update-odometry-popup", (_, id, command) => {
   }
 });
 
-ipcMain.on("export-csv-dialog", (_, path) => {
+ipcMain.on("export-csv-dialog", (event, path) => {
+  const parentWindow = BrowserWindow.fromWebContents(event.sender);
   var csvPath = path.substring(0, path.length - 4) + "csv";
   var result = dialog.showSaveDialog(BrowserWindow.getFocusedWindow(), {
     title: "Select export location for robot log",
@@ -926,7 +926,7 @@ ipcMain.on("export-csv-dialog", (_, path) => {
   });
   result.then((response) => {
     if (!response.canceled) {
-      BrowserWindow.getFocusedWindow().send("export-csv-dialog-response", response.filePath);
+      parentWindow.send("export-csv-dialog-response", response.filePath);
     }
   });
 });
