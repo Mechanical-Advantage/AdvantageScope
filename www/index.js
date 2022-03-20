@@ -119,7 +119,6 @@ function setLiveStatus(status) {
 }
 
 window.addEventListener("open-file", (event) => {
-  console.log("open-file");
   window.logPath = event.detail.path;
   var logName = event.detail.path.split(/[\\/]+/).reverse()[0];
   if (event.detail.data.length > 1000000) sideBar.startLoading(logName);
@@ -159,7 +158,6 @@ window.addEventListener("open-file", (event) => {
 });
 
 window.addEventListener("start-live", (event) => {
-  console.log("start-live");
   if (event.detail) {
     window.liveAddress = simAddress;
   } else if (prefs.usb) {
@@ -231,7 +229,6 @@ window.addEventListener("start-live", (event) => {
 });
 
 window.addEventListener("live-data", (event) => {
-  console.log("live-data");
   if (window.liveStatus != 0) {
     const decodeWorker = getOrCreateWorker("decodeWorker.js");
 
@@ -240,7 +237,6 @@ window.addEventListener("live-data", (event) => {
 });
 
 window.addEventListener("live-error", () => {
-  console.log("live-error");
   if (window.liveStatus == 1) {
     setLiveStatus(0);
     setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Failed) \u2014 Advantage Scope");
@@ -260,8 +256,6 @@ window.addEventListener("live-error", () => {
 });
 
 window.addEventListener("live-closed", () => {
-  console.log("live-closed");
-
   if (window.liveStatus == 2) {
     setLiveStatus(3);
     setTitle(window.liveAddress + ":" + prefs.port.toString() + " (Reconnecting) \u2014 Advantage Scope");
