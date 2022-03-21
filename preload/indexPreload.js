@@ -59,8 +59,11 @@ ipcRenderer.on("set-preferences", (_, prefs) => {
   );
 });
 
-// Opening file
-ipcRenderer.on("open-file", (_, path) => {
+/**
+ * @param {string} path
+ * @returns {void}
+ */
+function openFile(path) {
   fs.open(path, "r", function (err, file) {
     if (err) throw err;
 
@@ -75,6 +78,11 @@ ipcRenderer.on("open-file", (_, path) => {
       );
     });
   });
+}
+
+// Opening file
+ipcRenderer.on("open-file", (_, path) => {
+  openFile(path);
 });
 
 // Display error popup
@@ -253,4 +261,19 @@ window.addEventListener("save-csv-data", (event) => {
       window.dispatchEvent(new Event("save-csv-data-response"));
     }
   });
+});
+
+document.addEventListener("drop", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  for (const file of event.dataTransfer.files) {
+    openFile(file.path);
+    return;
+  }
+});
+
+document.addEventListener("dragover", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
 });
