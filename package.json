@@ -1,7 +1,7 @@
 {
   "name": "advantage-scope",
   "productName": "Advantage Scope",
-  "version": "1.17.0",
+  "version": "1.17.1",
   "description": "Logging tool from FRC Team 6328.",
   "main": "main.js",
   "scripts": {
