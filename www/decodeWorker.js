@@ -1,22 +1,33 @@
 import { Log } from "./modules/log.mjs";
 
 const supportedLogRevisions = [1];
+const stringDecoder = new TextDecoder("UTF-8");
+
 var log = new Log();
 var logRevision = null;
 var keyIDs = {};
 
-var isLive = false;
-var dataArray = null;
-var dataBuffer = null;
-var decoder = new TextDecoder("UTF-8");
-var offset = null;
+/*
+Event data format:
+{
+  type: "reset" | "file-data" | "live-data",
+  bytes: byte array
+}
+*/
 
 // Decodes a series of bytes from an RLOG file and returns serializable data for a Log()
 onmessage = function (event) {
-  isLive = event.data.isLive;
-  dataArray = event.data.bytes;
-  dataBuffer = new DataView(dataArray.buffer);
-  offset = 0;
+  // Reset persistent data
+  if (event.data.type == "reset") {
+    log = new Log();
+    logRevision = null;
+    keyIDs = {};
+    return;
+  }
+
+  var dataArray = event.data.bytes;
+  var dataBuffer = new DataView(dataArray.buffer);
+  var offset = 0;
 
   function shiftOffset(shift) {
     return (offset += shift) - shift;
@@ -53,7 +64,7 @@ onmessage = function (event) {
           case 1: // New key ID
             var keyID = dataBuffer.getInt16(shiftOffset(2));
             var length = dataBuffer.getInt16(shiftOffset(2));
-            var key = decoder.decode(dataArray.slice(offset, offset + length));
+            var key = stringDecoder.decode(dataArray.slice(offset, offset + length));
             offset += length;
             keyIDs[keyID] = key;
             break;
@@ -85,7 +96,7 @@ onmessage = function (event) {
               case 7: // String
                 type = "String";
                 var length = dataBuffer.getInt16(shiftOffset(2));
-                value = decoder.decode(dataArray.slice(offset, offset + length));
+                value = stringDecoder.decode(dataArray.slice(offset, offset + length));
                 offset += length;
                 break;
               case 2: // BooleanArray
@@ -126,7 +137,7 @@ onmessage = function (event) {
                 value = [];
                 for (let i = 0; i < length; i++) {
                   var stringLength = dataBuffer.getInt16(shiftOffset(2));
-                  value.push(decoder.decode(dataArray.slice(offset, offset + stringLength)));
+                  value.push(stringDecoder.decode(dataArray.slice(offset, offset + stringLength)));
                   offset += stringLength;
                 }
                 break;
@@ -139,7 +150,7 @@ onmessage = function (event) {
             break;
         }
       }
-      if (isLive) {
+      if (event.data.type == "live-data") {
         // If live, stop after one entry and send data back to index.js
         this.postMessage({
           status: "newLiveData",

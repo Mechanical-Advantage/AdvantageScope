@@ -21,7 +21,8 @@ window.selection = new Selection();
 window.tabs = new Tabs();
 window.sideBar = new SideBar();
 
-var decodeWorker = null;
+var decodeWorker = new Worker("decodeWorker.js", { type: "module" });
+var csvWorker = new Worker("csvWorker.js", { type: "module" });
 
 function setTitle(newTitle) {
   document.getElementsByTagName("title")[0].innerText = newTitle;
@@ -132,8 +133,8 @@ window.addEventListener("open-file", (event) => {
   console.log("Opening file '" + logName + "'");
   var startTime = new Date().getTime();
 
-  decodeWorker = new Worker("decodeWorker.js", { type: "module" });
-  decodeWorker.postMessage({ bytes: event.detail.data, isLive: false });
+  decodeWorker.postMessage({ type: "reset" });
+  decodeWorker.postMessage({ type: "file-data", bytes: event.detail.data });
   decodeWorker.onmessage = (event) => {
     switch (event.data.status) {
       case "incompatible": // Failed to read log file
@@ -159,12 +160,16 @@ window.addEventListener("open-file", (event) => {
 });
 
 window.addEventListener("start-live", (event) => {
-  if (event.detail) {
-    window.liveAddress = simAddress;
-  } else if (prefs.usb) {
-    window.liveAddress = usbAddress;
-  } else {
-    window.liveAddress = prefs.address;
+  switch (event.detail) {
+    case "robot":
+      window.liveAddress = prefs.usb ? usbAddress : prefs.address;
+      break;
+    case "sim":
+      window.liveAddress = simAddress;
+      break;
+    default:
+      // Reconnecting, use the previous address
+      break;
   }
   if (window.liveStatus != 3) {
     setLiveStatus(1);
@@ -172,7 +177,7 @@ window.addEventListener("start-live", (event) => {
   }
   window.dispatchEvent(new Event("stop-live-socket"));
 
-  decodeWorker = new Worker("decodeWorker.js", { type: "module" });
+  decodeWorker.postMessage({ type: "reset" });
   var firstData = true;
   decodeWorker.onmessage = (event) => {
     switch (event.data.status) {
@@ -231,7 +236,7 @@ window.addEventListener("start-live", (event) => {
 
 window.addEventListener("live-data", (event) => {
   if (window.liveStatus != 0) {
-    decodeWorker.postMessage({ bytes: event.detail, isLive: true });
+    decodeWorker.postMessage({ type: "live-data", bytes: event.detail });
   }
 });
 
@@ -283,7 +288,6 @@ window.addEventListener("export-csv", () => {
 window.addEventListener("export-csv-dialog-response", (event) => {
   var filename = event.detail.split(/[\\/]+/).reverse()[0];
   sideBar.startExporting(filename);
-  var csvWorker = new Worker("csvWorker.js", { type: "module" });
   csvWorker.postMessage(log.rawData);
   csvWorker.onmessage = (message) => {
     window.dispatchEvent(

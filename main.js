@@ -278,14 +278,14 @@ function setupMenu() {
           label: "Connect to Robot",
           accelerator: "CmdOrCtrl+K",
           click(_, window) {
-            window?.webContents.send("start-live", false);
+            window?.webContents.send("start-live", "robot");
           }
         },
         {
           label: "Connect to Simulator",
           accelerator: "CmdOrCtrl+Shift+K",
           click(_, window) {
-            window?.webContents.send("start-live", true);
+            window?.webContents.send("start-live", "sim");
           }
         },
         {
