@@ -88,7 +88,6 @@ export class TableController {
         var fieldData = event.detail.data.ids.map((id) => {
           return { id: id };
         });
-        console.log(fieldData);
         this.#fields.splice(selected, 0, ...fieldData);
         this.#updateFields();
       }
