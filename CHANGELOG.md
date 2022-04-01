@@ -1,1 +1,2 @@
-Improves handling of corrupted log files. The times and addresses of corrupted areas are printed to the console.
+- Fixed an issue with the corruption handling which prevented many live connections.
+- Added detection of duplicate timestamps to the corruption detection.

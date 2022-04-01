@@ -2,11 +2,12 @@ import { Log } from "./modules/log.mjs";
 
 const supportedLogRevisions = [1];
 const stringDecoder = new TextDecoder("UTF-8");
+const minTimestampStep = 0.0001; // Step size less than this many seconds indicates corrupted data
 const maxTimestampStep = 15.0; // Step size greater than this many seconds indicates corrupted data
 
 var log = new Log();
 var logRevision = null;
-var lastTimestamp = 0.0;
+var lastTimestamp = null;
 var lastTimestampCorrupted = null;
 var keyIDs = {};
 
@@ -24,7 +25,7 @@ onmessage = function (event) {
   if (event.data.type == "reset") {
     log = new Log();
     logRevision = null;
-    lastTimestamp = 0.0;
+    lastTimestamp = null;
     lastTimestampCorrupted = null;
     keyIDs = {};
     return;
@@ -59,10 +60,11 @@ onmessage = function (event) {
       if (offset >= dataArray.length) break mainLoop; // No more data, so we can't start a new entry
       var entry = { timestamp: dataBuffer.getFloat64(shiftOffset(8)), data: [] };
       if (
-        isNaN(entry.timestamp) ||
-        entry.timestamp == null ||
-        entry.timestamp < lastTimestamp ||
-        entry.timestamp > lastTimestamp + maxTimestampStep
+        lastTimestamp != null &&
+        (isNaN(entry.timestamp) ||
+          entry.timestamp == null ||
+          entry.timestamp < lastTimestamp + minTimestampStep ||
+          entry.timestamp > lastTimestamp + maxTimestampStep)
       ) {
         if (lastTimestamp != lastTimestampCorrupted) {
           console.warn(
