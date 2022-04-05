@@ -17,7 +17,7 @@
   "devDependencies": {
     "electron": "^16.0.0",
     "electron-builder": "^22.11.7",
-    "prettier": "2.5.1"
+    "prettier": "2.6.2"
   },
   "dependencies": {
     "electron-fetch": "^1.7.4",

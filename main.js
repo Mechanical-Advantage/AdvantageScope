@@ -31,14 +31,14 @@ var firstOpenPath = null;
 app.whenReady().then(() => {
   // Pick icon based on platform
   switch (process.platform) {
-    case "win32":
-      iconPath = path.join(__dirname, "icons/window/window-icon-win.png"); // Square icon
+    case "win32": // Square icon
+      iconPath = path.join(__dirname, "icons/window/window-icon-win.png");
       break;
-    case "linux":
-      iconPath = path.join(__dirname, "icons/window/window-icon-linux.png"); // Rounded icon
+    case "linux": // Rounded icon
+      iconPath = path.join(__dirname, "icons/window/window-icon-linux.png");
       break;
-    default:
-      iconPath = null; // macOS uses the app icon by default
+    default: // macOS uses the app icon by default
+      iconPath = null;
       break;
   }
 
