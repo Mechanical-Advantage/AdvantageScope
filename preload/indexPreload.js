@@ -146,13 +146,13 @@ ipcRenderer.on("edit-axis-response", (_, data) => {
   );
 });
 
-// Manage odometry popup
-window.addEventListener("create-odometry-popup", (event) => {
-  ipcRenderer.send("create-odometry-popup", event.detail);
+// Manage generic viz popup
+window.addEventListener("create-generic-viz-popup", (event) => {
+  ipcRenderer.send("create-generic-viz-popup", event.detail.id, event.detail.type);
 });
 
-window.addEventListener("update-odometry-popup", (event) => {
-  ipcRenderer.send("update-odometry-popup", event.detail.id, event.detail.command);
+window.addEventListener("update-generic-viz-popup", (event) => {
+  ipcRenderer.send("update-generic-viz-popup", event.detail.id, event.detail.command);
 });
 
 // Manage live logging

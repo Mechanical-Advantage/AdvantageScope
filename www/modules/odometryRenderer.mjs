@@ -26,7 +26,7 @@ export class OdometryRenderer {
     context.clearRect(0, 0, width, height);
 
     // Get game data and update image element
-    var gameData = GameConstants.find((x) => x.title == command.coordinates.game);
+    var gameData = GameConstants.find((x) => x.title == command.options.game);
     if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       var imageFilename = gameData.imageDark != undefined ? gameData.imageDark : gameData.imageLight;
     } else {
@@ -41,8 +41,8 @@ export class OdometryRenderer {
     }
 
     // Determine field layout
-    var fieldFlipped = command.robot.orientation != "blue, red";
-    var robotRight = Boolean((command.robot.alliance != "blue") ^ fieldFlipped);
+    var fieldFlipped = command.options.orientation != "blue, red";
+    var robotRight = Boolean((command.options.alliance != "blue") ^ fieldFlipped);
 
     // Render background
     var fieldWidth = gameData.bottomRight[0] - gameData.topLeft[0];
@@ -96,14 +96,14 @@ export class OdometryRenderer {
 
     // Convert pose data to pixel coordinates
     var calcCoordinates = (position) => {
-      if (command.coordinates.unitDistance == "inches") {
+      if (command.options.unitDistance == "inches") {
         var positionInches = [position[0], position[1]];
       } else {
         var positionInches = [position[0] * this.#inchesPerMeter, position[1] * this.#inchesPerMeter];
       }
 
       positionInches[1] *= -1; // Positive y is flipped on the canvas
-      switch (command.coordinates.origin) {
+      switch (command.options.origin) {
         case "left":
           break;
         case "center":
@@ -138,13 +138,13 @@ export class OdometryRenderer {
     // Calculate robot length
     var robotLengthPixels =
       pixelsPerInch *
-      (command.coordinates.unitDistance == "inches" ? command.robot.size : command.robot.size * this.#inchesPerMeter);
+      (command.options.unitDistance == "inches" ? command.options.size : command.options.size * this.#inchesPerMeter);
 
     if (command.pose.robotPose != null) {
       // Calculate robot position
       var robotPos = calcCoordinates(command.pose.robotPose.pose);
       var rotation =
-        command.coordinates.unitRotation == "radians"
+        command.options.unitRotation == "radians"
           ? command.pose.robotPose.pose[2]
           : command.pose.robotPose.pose[2] * (Math.PI / 180);
       if (robotRight) rotation += Math.PI;
@@ -212,7 +212,7 @@ export class OdometryRenderer {
 
       // Render robot
       context.fillStyle = "#222";
-      context.strokeStyle = command.robot.alliance;
+      context.strokeStyle = command.options.alliance;
       context.lineWidth = 3 * pixelsPerInch;
       var backLeft = transform([robotLengthPixels * -0.5, robotLengthPixels * -0.5], rotation, robotPos);
       var frontLeft = transform([robotLengthPixels * 0.5, robotLengthPixels * -0.5], rotation, robotPos);
@@ -246,14 +246,14 @@ export class OdometryRenderer {
     if (command.pose.ghostPose != null) {
       var robotPos = calcCoordinates(command.pose.ghostPose);
       var rotation =
-        command.coordinates.unitRotation == "radians"
+        command.options.unitRotation == "radians"
           ? command.pose.ghostPose[2]
           : command.pose.ghostPose[2] * (Math.PI / 180);
       if (robotRight) rotation += Math.PI;
 
       context.globalAlpha = 0.5;
       context.fillStyle = "#222";
-      context.strokeStyle = command.robot.alliance;
+      context.strokeStyle = command.options.alliance;
       context.lineWidth = 3 * pixelsPerInch;
       var backLeft = transform([robotLengthPixels * -0.5, robotLengthPixels * -0.5], rotation, robotPos);
       var frontLeft = transform([robotLengthPixels * 0.5, robotLengthPixels * -0.5], rotation, robotPos);

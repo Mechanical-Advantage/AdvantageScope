@@ -746,9 +746,9 @@ div.data-table-drag-highlight {
   opacity: 25%;
 }
 
-/* Odometry controls */
+/* Generic visualizer controls */
 
-div.odometry-timeline-container {
+div.generic-viz-timeline-container {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -756,7 +756,7 @@ div.odometry-timeline-container {
   height: 30px;
 }
 
-input.odometry-timeline-slider {
+input.generic-viz-timeline-slider {
   position: absolute;
   margin: 0px;
   left: 0px;
@@ -768,7 +768,7 @@ input.odometry-timeline-slider {
   background-color: #aaa;
 }
 
-input.odometry-timeline-slider::-webkit-slider-thumb {
+input.generic-viz-timeline-slider::-webkit-slider-thumb {
   appearance: none;
   height: 23px;
   width: 8px;
@@ -776,7 +776,7 @@ input.odometry-timeline-slider::-webkit-slider-thumb {
   cursor: pointer;
 }
 
-div.odometry-timeline-marker-container {
+div.generic-viz-timeline-marker-container {
   position: absolute;
   bottom: 0px;
   height: 7px;
@@ -785,13 +785,13 @@ div.odometry-timeline-marker-container {
   background: red;
 }
 
-div.odometry-timeline-marker-container div {
+div.generic-viz-timeline-marker-container div {
   position: absolute;
   height: 100%;
   background-color: lightgreen;
 }
 
-button.odometry-popup-button {
+button.generic-viz-popup-button {
   position: absolute;
   width: 25px;
   height: 25px;
@@ -799,22 +799,14 @@ button.odometry-popup-button {
   right: 5px;
 }
 
-canvas.odometry-canvas {
-  position: absolute;
-  top: 30px;
-  height: calc(100% - 30px - var(--bottom-margin));
-  left: 0px;
-  width: 100%;
-}
-
-div.odometry-drag-highlight {
+div.generic-viz-drag-highlight {
   position: absolute;
   z-index: 9;
   background-color: lightgreen;
   opacity: 25%;
 }
 
-table.odometry-config {
+table.generic-viz-config {
   position: absolute;
   left: 0px;
   bottom: 0px;
@@ -825,7 +817,7 @@ table.odometry-config {
   border-top: 1px solid #555;
 }
 
-table.odometry-config th {
+table.generic-viz-config th {
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -834,56 +826,95 @@ table.odometry-config th {
   border-bottom: 1px solid #555;
 }
 
-table.odometry-config td {
+table.generic-viz-config td {
   word-wrap: break-word;
   padding: 5px;
   border-right: 1px solid #555;
   border-bottom: 1px solid #eee;
 }
 
-table.odometry-config td:last-child,
-table.odometry-config th:last-child {
+table.generic-viz-config td:last-child,
+table.generic-viz-config th:last-child {
   border-right: none;
 }
 
-table.odometry-config tr:last-child td {
+table.generic-viz-config tr:last-child td {
   border-bottom: none;
   padding-bottom: 6px;
 }
 
-table.odometry-config span.label {
+table.generic-viz-config span.label {
   font-weight: 600;
 }
 
-table.odometry-config span.field-name {
+table.generic-viz-config span.field-name {
   font-family: monospace;
   font-size: 14px;
 }
 
-table.odometry-config a.credit-link {
+table.generic-viz-config a.credit-link {
   font-size: 14px;
 }
 
-table.odometry-config input[type="number"] {
+table.generic-viz-config input[type="number"] {
   width: 75px;
 }
 
 @media (prefers-color-scheme: dark) {
-  table.odometry-config {
+  table.generic-viz-config {
     border-top: 1px solid #999;
   }
 
-  table.odometry-config th {
+  table.generic-viz-config th {
     border-right: 1px solid #999;
     border-bottom: 1px solid #999;
   }
 
-  table.odometry-config td {
+  table.generic-viz-config td {
     border-right: 1px solid #999;
     border-bottom: 1px solid #333;
   }
 
-  table.odometry-config a.credit-link {
+  table.generic-viz-config a.credit-link {
     color: #88f;
   }
+}
+
+canvas.odometry-canvas {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+}
+
+div.points-background-container {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+div.points-background {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.points-background {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}
+
+div.points-background svg {
+  position: absolute;
+  stroke-width: 5px;
 }

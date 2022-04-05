@@ -1,5 +1,3 @@
-import { Tabs } from "./tabs.mjs";
-
 // Controls the side bar and field list
 export class SideBar {
   #sideBar = document.getElementsByClassName("side-bar")[0];

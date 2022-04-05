@@ -350,6 +350,13 @@ function setupMenu() {
             window?.webContents.send("tab-command", "new", 3);
           }
         },
+        {
+          label: "New Points",
+          accelerator: "CmdOrCtrl+4",
+          click(_, window) {
+            window?.webContents.send("tab-command", "new", 4);
+          }
+        },
         { type: "separator" },
         {
           label: "Previous Tab",
@@ -794,6 +801,14 @@ ipcMain.on("add-tab", () => {
       }
     })
   );
+  menu.append(
+    new MenuItem({
+      label: "Points",
+      click(_, window) {
+        window?.webContents.send("add-tab-response", 4);
+      }
+    })
+  );
 
   menu.popup();
 });
@@ -863,8 +878,8 @@ ipcMain.on("edit-axis-complete", (_, timestamp, range) => {
   }
 });
 
-var odometryLookup = {};
-ipcMain.on("create-odometry-popup", (event, id) => {
+var genericVizLookup = {};
+ipcMain.on("create-generic-viz-popup", (event, id, type) => {
   const parentWindow = BrowserWindow.fromWebContents(event.sender);
 
   const popup = new BrowserWindow({
@@ -876,17 +891,20 @@ ipcMain.on("create-odometry-popup", (event, id) => {
     icon: iconPath,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "preload/odometryPopupPreload.js")
+      preload: path.join(__dirname, "preload/genericVizPopupPreload.js")
     }
   });
   popup.setMenu(null);
-  popup.loadFile("www/odometryPopup.html");
+  popup.loadFile("www/genericVizPopup.html");
   popup.once("ready-to-show", popup.show);
+  popup.webContents.on("dom-ready", () => {
+    popup.send("set-type", type);
+  });
 
-  if (!(id in odometryLookup)) {
-    odometryLookup[id] = [];
+  if (!(id in genericVizLookup)) {
+    genericVizLookup[id] = [];
   }
-  odometryLookup[id].push(popup);
+  genericVizLookup[id].push(popup);
 
   var closed = false;
   parentWindow.once("close", () => {
@@ -894,20 +912,20 @@ ipcMain.on("create-odometry-popup", (event, id) => {
   });
   popup.once("closed", () => {
     closed = true;
-    odometryLookup[id].splice(odometryLookup[id].indexOf(popup), 1);
+    genericVizLookup[id].splice(genericVizLookup[id].indexOf(popup), 1);
   });
 });
 
-ipcMain.on("resize-odometry-popup", (event, aspectRatio) => {
+ipcMain.on("resize-generic-viz-popup", (event, aspectRatio) => {
   var window = BrowserWindow.fromWebContents(event.sender);
   var size = window.getContentSize();
   window.setAspectRatio(aspectRatio);
   window.setContentSize(Math.round(size[1] * aspectRatio), size[1]);
 });
 
-ipcMain.on("update-odometry-popup", (_, id, command) => {
-  if (id in odometryLookup) {
-    odometryLookup[id].forEach((window) => {
+ipcMain.on("update-generic-viz-popup", (_, id, command) => {
+  if (id in genericVizLookup) {
+    genericVizLookup[id].forEach((window) => {
       if (window.isVisible()) {
         window.send("render", command);
       }

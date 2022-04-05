@@ -1,7 +1,7 @@
 import { MetadataController } from "./tabControllers/metadataController.mjs";
 import { LineGraphController } from "./tabControllers/lineGraphController.mjs";
 import { TableController } from "./tabControllers/tableController.mjs";
-import { OdometryController } from "./tabControllers/odometryController.mjs";
+import { GenericVizController } from "./tabControllers/genericVizController.mjs";
 
 // Manages the tab bar
 export class Tabs {
@@ -197,8 +197,16 @@ export class Tabs {
       case 3:
         tabData.title = "Odometry";
         tabData.content = this.#contentTemplates.children[3].cloneNode(true);
+        tabData.content.insertBefore(this.#contentTemplates.children[4].cloneNode(true), tabData.content.firstChild);
         this.#viewer.appendChild(tabData.content);
-        tabData.controller = new OdometryController(tabData.content);
+        tabData.controller = new GenericVizController(tabData.content, "odometry");
+        break;
+      case 4:
+        tabData.title = "Points";
+        tabData.content = this.#contentTemplates.children[3].cloneNode(true);
+        tabData.content.insertBefore(this.#contentTemplates.children[5].cloneNode(true), tabData.content.firstChild);
+        this.#viewer.appendChild(tabData.content);
+        tabData.controller = new GenericVizController(tabData.content, "points");
         break;
     }
     this.#tabList.push(tabData);

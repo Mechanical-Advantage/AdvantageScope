@@ -1,4 +1,4 @@
-import { Log } from "../log.mjs";
+import { Colors } from "../colors.mjs";
 
 // Controls rendering of line graphs
 export class LineGraphController {
@@ -7,29 +7,6 @@ export class LineGraphController {
   #canvasContainer = null;
   #canvas = null;
   #scrollOverlay = null;
-
-  #colors = [
-    "#EBC542",
-    "#80588E",
-    "#E48B32",
-    "#AACAEE",
-    "#AF2437",
-    "#C0B487",
-    "#858584",
-    "#3B875A",
-    "#D993AA",
-    "#2B66A2",
-    "#EB987E",
-    "#5D4F92",
-    "#EBAA3B",
-    "#A64B6B",
-    "#DBD345",
-    "#7E331F",
-    "#96B637",
-    "#5F4528",
-    "#D36134",
-    "#2E3B28"
-  ];
 
   #minZoomTime = 0.1;
   #zoomBase = 1.001;
@@ -328,9 +305,9 @@ export class LineGraphController {
           usedColors.push(x.color);
         });
       });
-      var availableColors = this.#colors.filter((color) => !usedColors.includes(color));
+      var availableColors = Colors.filter((color) => !usedColors.includes(color));
       if (availableColors.length == 0) {
-        var color = this.#colors[Math.floor(Math.random() * this.#colors.length)];
+        var color = Colors[Math.floor(Math.random() * Colors.length)];
       } else {
         var color = availableColors[0];
       }
