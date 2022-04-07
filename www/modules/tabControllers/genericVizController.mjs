@@ -301,9 +301,11 @@ export class GenericVizController {
     // Get vision coordinates
     var visionCoordinates = null;
     if (this.#config.fields.visionCoordinates.id != null) {
-      var currentData = log.getDataInRange(this.#config.fields.visionCoordinates.id, time, time).values[0];
-      if (currentData != null && currentData.length == 2) {
-        visionCoordinates = currentData;
+      var currentData = log.getDataInRange(this.#config.fields.visionCoordinates.id, time, time);
+      var currentDataTimestamp = currentData.timestamps[0];
+      var currentDataValue = currentData.values[0];
+      if (currentDataTimestamp <= time && currentDataValue != null && currentDataValue.length > 1) {
+        visionCoordinates = currentDataValue;
       }
     }
 
