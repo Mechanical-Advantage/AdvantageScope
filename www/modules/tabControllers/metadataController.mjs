@@ -48,7 +48,7 @@ export class MetadataController {
       scanTree(tree["RealMetadata"], "", true);
     }
     if ("ReplayMetadata" in tree) {
-      scanTree(tree["RealMetadata"], "", false);
+      scanTree(tree["ReplayMetadata"], "", false);
     }
 
     // Add rows
