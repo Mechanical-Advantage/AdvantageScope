@@ -1,6 +1,7 @@
 ### Node/Electron ###
 node_modules
 dist
+bundles
 
 ### Linux ###
 *~

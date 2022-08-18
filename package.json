@@ -1,23 +1,28 @@
 {
   "name": "advantage-scope",
   "productName": "Advantage Scope",
-  "version": "1.18.2",
+  "version": "2.0.0",
   "description": "Logging tool from FRC Team 6328.",
-  "main": "main.js",
+  "author": "FRC 6328",
+  "license": "MIT",
+  "main": "bundles/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron main.js",
-    "build": "electron-builder build",
-    "test-build": "electron-builder build --dir",
+    "compile": "rollup -c",
+    "start": "npm run compile && electron bundles/main.js",
+    "build": "npm run compile && electron-builder build",
+    "test-build": "npm run compile && electron-builder build --dir",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
   },
-  "author": "FRC 6328",
-  "license": "MIT",
   "devDependencies": {
-    "electron": "^16.0.0",
-    "electron-builder": "^22.11.7",
-    "prettier": "2.6.2"
+    "@rollup/plugin-typescript": "^8.3.4",
+    "electron": "^20.0.0",
+    "electron-builder": "^23.3.3",
+    "prettier": "2.7.1",
+    "rollup": "^2.78.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "electron-fetch": "^1.7.4",
@@ -34,9 +39,13 @@
     "copyright": "Copyright © 2021-2022 FRC 6328",
     "npmRebuild": false,
     "publish": [],
-    "directories": {
-      "buildResources": "./"
-    },
+    "files": [
+      "www/**/*",
+      "bundles/**/*",
+      "games/**/*",
+      "icons/**/*",
+      "!**/.*"
+    ],
     "fileAssociations": [
       {
         "ext": "rlog",
@@ -45,6 +54,14 @@
         "mimeType": "application/octet-stream",
         "role": "Viewer",
         "icon": "icons/app/rlog-icon"
+      },
+      {
+        "ext": "wpilog",
+        "name": "Robot log",
+        "description": "Robot log",
+        "mimeType": "application/octet-stream",
+        "role": "Viewer",
+        "icon": "icons/app/wpilog-icon"
       }
     ],
     "mac": {
