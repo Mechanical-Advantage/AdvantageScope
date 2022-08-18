@@ -53,7 +53,7 @@ jobs:
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never
+        run: npm run build -- --${{ matrix.arch }} --publish never
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
