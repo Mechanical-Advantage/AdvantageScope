@@ -10,19 +10,19 @@
     "compile": "rollup -c",
     "start": "npm run compile && electron bundles/main.js",
     "build": "npm run compile && electron-builder build",
-    "test-build": "npm run compile && electron-builder build --dir",
+    "fast-build": "npm run compile && electron-builder build --dir",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
   },
   "devDependencies": {
-    "@rollup/plugin-typescript": "^8.3.4",
     "electron": "^20.0.0",
     "electron-builder": "^23.3.3",
-    "prettier": "2.7.1",
-    "rollup": "^2.78.0",
-    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.7.4",
     "tslib": "^2.4.0",
-    "typescript": "^4.7.4"
+    "rollup": "^2.78.0",
+    "@rollup/plugin-typescript": "^8.3.4",
+    "prettier": "2.7.1",
+    "@types/jsonfile": "^6.1.0"
   },
   "dependencies": {
     "electron-fetch": "^1.7.4",

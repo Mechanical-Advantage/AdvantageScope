@@ -1,1 +1,1 @@
-console.log("Hello from the download window!");
+console.log("Hello from the download renderer!");

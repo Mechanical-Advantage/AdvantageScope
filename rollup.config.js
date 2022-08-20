@@ -1,32 +1,22 @@
 import typescript from "@rollup/plugin-typescript";
-import { terser } from "rollup-plugin-terser";
 
-const bundle = (name) => ({
-  input: "src/" + name + "/" + name + ".ts",
+const bundle = (name, isPreload) => ({
+  input: "src/" + name + "/" + (isPreload ? "preload" : name) + ".ts",
   output: {
-    file: "bundles/" + name + ".js",
+    file: "bundles/" + name + (isPreload ? "$preload" : "") + ".js",
     format: "cjs"
   },
-  plugins: [typescript(), terser()]
-});
-
-const preload = (name) => ({
-  input: "src/" + name + "/preload.ts",
-  output: {
-    file: "bundles/" + name + "$preload.js",
-    format: "cjs"
-  },
-  plugins: [typescript(), terser()]
+  plugins: [typescript()]
 });
 
 export default [
-  bundle("main"),
-  bundle("hub"),
-  bundle("download"),
-  bundle("satellite"),
-  bundle("preferences"),
-  preload("hub"),
-  preload("download"),
-  preload("satellite"),
-  preload("preferences")
+  bundle("main", false),
+  bundle("hub", false),
+  bundle("download", false),
+  bundle("satellite", false),
+  bundle("preferences", false),
+  bundle("hub", true),
+  bundle("download", true),
+  bundle("satellite", true),
+  bundle("preferences", true)
 ];

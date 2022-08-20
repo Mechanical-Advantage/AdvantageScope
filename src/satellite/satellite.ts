@@ -1,1 +1,1 @@
-console.log("Hello from the satellite window!");
+console.log("Hello from the satellite renderer!");

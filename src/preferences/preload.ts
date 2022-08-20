@@ -1,1 +1,1 @@
-console.log("This is a preload script.");
+console.log("Hello from the download preload script!");
