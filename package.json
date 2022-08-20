@@ -15,20 +15,23 @@
     "check-format": "prettier --check ."
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.4",
+    "@types/jsonfile": "^6.1.0",
     "electron": "^20.0.0",
     "electron-builder": "^23.3.3",
-    "typescript": "^4.7.4",
-    "tslib": "^2.4.0",
-    "rollup": "^2.78.0",
-    "@rollup/plugin-typescript": "^8.3.4",
     "prettier": "2.7.1",
-    "@types/jsonfile": "^6.1.0"
+    "rollup": "^2.78.0",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "electron-fetch": "^1.7.4",
     "jsonfile": "^6.1.0",
     "mkdirp": "^1.0.4",
-    "ssh2": "^1.5.0"
+    "ssh2": "^1.5.0",
+    "ts-treemap": "^1.1.0"
   },
   "prettier": {
     "printWidth": 120,
