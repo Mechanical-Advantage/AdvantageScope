@@ -38,7 +38,6 @@ function sendMainMessage(name: string, data: any) {
 }
 
 function handleMainMessage(message: NamedMessage) {
-  console.log(message);
   switch (message.name) {
     case "set-fullscreen":
       isFullscreen = message.data;

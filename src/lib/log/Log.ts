@@ -1,7 +1,15 @@
-import TreeMap from "ts-treemap";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
+import {
+  LogValueSetBoolean,
+  LogValueSetBooleanArray,
+  LogValueSetNumber,
+  LogValueSetNumberArray,
+  LogValueSetRaw,
+  LogValueSetString,
+  LogValueSetStringArray
+} from "./LogValueSets";
 
 /** Represents a collection of log fields. */
 export default class Log {
@@ -62,37 +70,37 @@ export default class Log {
   }
 
   /** Reads a set of Raw values from the field. */
-  getRaw(key: string, start: number, end: number): TreeMap<number, Uint8Array> | undefined {
+  getRaw(key: string, start: number, end: number): LogValueSetRaw | undefined {
     if (key in this.fields) return this.fields[key].getRaw(start, end);
   }
 
   /** Reads a set of Boolean values from the field. */
-  getBoolean(key: string, start: number, end: number): TreeMap<number, boolean> | undefined {
+  getBoolean(key: string, start: number, end: number): LogValueSetBoolean | undefined {
     if (key in this.fields) return this.fields[key].getBoolean(start, end);
   }
 
   /** Reads a set of Number values from the field. */
-  getNumber(key: string, start: number, end: number): TreeMap<number, number> | undefined {
+  getNumber(key: string, start: number, end: number): LogValueSetNumber | undefined {
     if (key in this.fields) return this.fields[key].getNumber(start, end);
   }
 
   /** Reads a set of String values from the field. */
-  getString(key: string, start: number, end: number): TreeMap<number, string> | undefined {
+  getString(key: string, start: number, end: number): LogValueSetString | undefined {
     if (key in this.fields) return this.fields[key].getString(start, end);
   }
 
   /** Reads a set of BooleanArray values from the field. */
-  getBooleanArray(key: string, start: number, end: number): TreeMap<number, boolean[]> | undefined {
+  getBooleanArray(key: string, start: number, end: number): LogValueSetBooleanArray | undefined {
     if (key in this.fields) return this.fields[key].getBooleanArray(start, end);
   }
 
   /** Reads a set of NumberArray values from the field. */
-  getNumberArray(key: string, start: number, end: number): TreeMap<number, number[]> | undefined {
+  getNumberArray(key: string, start: number, end: number): LogValueSetNumberArray | undefined {
     if (key in this.fields) return this.fields[key].getNumberArray(start, end);
   }
 
   /** Reads a set of StringArray values from the field. */
-  getStringArray(key: string, start: number, end: number): TreeMap<number, string[]> | undefined {
+  getStringArray(key: string, start: number, end: number): LogValueSetStringArray | undefined {
     if (key in this.fields) return this.fields[key].getStringArray(start, end);
   }
 

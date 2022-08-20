@@ -30,8 +30,7 @@
     "electron-fetch": "^1.7.4",
     "jsonfile": "^6.1.0",
     "mkdirp": "^1.0.4",
-    "ssh2": "^1.5.0",
-    "ts-treemap": "^1.1.0"
+    "ssh2": "^1.5.0"
   },
   "prettier": {
     "printWidth": 120,
