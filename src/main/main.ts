@@ -230,7 +230,26 @@ function sendAllPreferences() {
  */
 function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   switch (message.name) {
-    case "":
+    case "historical-start":
+      let sendError = () => {
+        sendMessage(window, "historical-data", {
+          success: false
+        });
+      };
+      fs.open(message.data, "r", (error, file) => {
+        if (error) sendError();
+        fs.readFile(file, (error, buffer) => {
+          if (error) {
+            sendError();
+          } else {
+            sendMessage(window, "historical-data", {
+              success: true,
+              raw: buffer
+            });
+          }
+        });
+      });
+      break;
   }
 }
 
@@ -524,7 +543,7 @@ function createHubWindow() {
   hubWindows.splice(0, 0, window);
   const { port1, port2 } = new MessageChannelMain();
   windowPorts[window.id] = port2;
-  window.webContents.postMessage("port", null, [port1]);
+  window.webContents.postMessage("set-port", null, [port1]);
   port2.on("message", (event) => {
     handleHubMessage(window, event.data);
   });

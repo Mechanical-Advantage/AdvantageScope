@@ -1,10 +1,12 @@
-const { ipcRenderer } = require("electron");
+import NamedMessage from "../lib/NamedMessage";
+import { ipcRenderer } from "electron";
 
 const windowLoaded = new Promise((resolve) => {
   window.onload = resolve;
 });
 
-ipcRenderer.on("port", async (event) => {
+ipcRenderer.on("set-port", async (event) => {
   await windowLoaded;
-  window.postMessage("port", "*", event.ports);
+  const message: NamedMessage = { name: "set-port" };
+  window.postMessage(message, "*", event.ports);
 });
