@@ -1,18 +1,3 @@
-export var defaultState: HubState = {
-  selection: {
-    selectedTime: null,
-    playbackSpeed: 1
-  },
-  sidebar: {
-    width: 300,
-    expanded: []
-  },
-  tabController: {
-    selected: null,
-    tabs: []
-  }
-};
-
 export interface HubState {
   selection: SelectionState;
   sidebar: SidebarState;
