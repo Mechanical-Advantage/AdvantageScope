@@ -30,6 +30,7 @@ export default class RLOGServerSource extends LiveDataSource {
       let success = this.decoder.decode(this.log, data.raw);
       if (success) {
         if (this.outputCallback != null) this.outputCallback();
+        this.setStatus(LiveDataSourceStatus.Active);
       } else {
         this.setStatus(LiveDataSourceStatus.Error);
         window.sendMainMessage("live-rlog-stop");

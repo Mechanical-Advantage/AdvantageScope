@@ -5,6 +5,8 @@ import { HistorialDataSource, HistorialDataSourceStatus } from "./sources/Histor
 import { LiveDataSource, LiveDataSourceStatus } from "./sources/LiveDataSource";
 import RLOGFileSource from "./sources/RLOGFileSource";
 import RLOGServerSource from "./sources/RLOGServerSource";
+import htmlEncode from "../lib/htmlEncode";
+import SelectionManager from "./SelectionManager";
 
 // Constants
 const USB_ADDRESS = "172.22.11.2";
@@ -13,32 +15,37 @@ const SIM_ADDRESS = "127.0.0.1";
 // Global variables
 declare global {
   interface Window {
-    log: Log | null;
+    log: Log;
     preferences: Preferences | null;
     platform: string;
     platformRelease: string;
     isFullscreen: boolean;
     isFocused: boolean;
+
+    selectionManager: SelectionManager;
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
   }
 }
-window.log = null;
+window.log = new Log();
 window.preferences = null;
 window.platform = "";
 window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
+
+window.selectionManager = new SelectionManager();
 window.messagePort = null;
-window.sendMainMessage = (name: string, data?: any) => {
-  if (window.messagePort != null) {
-    let message: NamedMessage = { name: name, data: data };
-    window.messagePort.postMessage(message);
-  }
-};
 
 var historicalSource: HistorialDataSource | null;
 var liveSource: LiveDataSource | null;
+
+// WINDOW UTILITIES
+
+function setWindowTitle(title: string) {
+  document.getElementsByTagName("title")[0].innerHTML = htmlEncode(title);
+  document.getElementsByClassName("title-bar-text")[0].innerHTML = htmlEncode(title);
+}
 
 function updateFancyWindow() {
   // Using fancy title bar?
@@ -55,6 +62,15 @@ function updateFancyWindow() {
     document.body.classList.remove("fancy-side-bar");
   }
 }
+
+// MAIN MESSAGE HANDLING
+
+window.sendMainMessage = (name: string, data?: any) => {
+  if (window.messagePort != null) {
+    let message: NamedMessage = { name: name, data: data };
+    window.messagePort.postMessage(message);
+  }
+};
 
 window.addEventListener("message", (event) => {
   if (event.source == window && event.data == "port") {
@@ -143,11 +159,27 @@ function handleMainMessage(message: NamedMessage) {
         window.log,
         (status: LiveDataSourceStatus) => {
           console.log("Live status", status);
+          if (status == LiveDataSourceStatus.Error || status == LiveDataSourceStatus.Stopped) {
+            window.selectionManager.setLiveDisconnected();
+          }
         },
         () => {
           console.log("Log updated");
+          let logRange = window.log.getTimestampRange();
+          let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
+          let oldLiveZeroTime = window.selectionManager.getLiveZeroTime();
+          if (oldLiveZeroTime == null || oldLiveZeroTime > newLiveZeroTime) {
+            window.selectionManager.setLiveConnected(newLiveZeroTime);
+          }
+          if (oldLiveZeroTime == null) {
+            window.selectionManager.lock();
+          }
         }
       );
+      break;
+
+    case "set-playback-speed":
+      window.selectionManager.setPlaybackSpeed(message.data);
       break;
   }
 }

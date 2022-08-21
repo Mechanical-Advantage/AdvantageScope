@@ -132,4 +132,23 @@ export default class LogField {
   putStringArray(timestamp: number, value: string[]) {
     if (this.type == LoggableType.StringArray) this.putData(timestamp, value);
   }
+
+  /** Returns a serialized version of the data from this field. */
+  toSerialized(): any {
+    return {
+      type: this.type,
+      timestamps: this.data.timestamps,
+      values: this.data.values
+    };
+  }
+
+  /** Creates a new field based on the data from `toSerialized()` */
+  static fromSerialized(serializedData: any) {
+    let field = new LogField(serializedData.type);
+    field.data = {
+      timestamps: serializedData.timestamps,
+      values: serializedData.values
+    };
+    return field;
+  }
 }

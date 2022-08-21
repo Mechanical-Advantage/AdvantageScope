@@ -359,16 +359,16 @@ button.pause {
   right: calc(144px + var(--show-lock-buttons) * 28px);
 }
 
-button.unlocked,
-button.locked {
+button.lock,
+button.unlock {
   right: 144px;
 }
 
-button.unlocked svg {
+button.lock svg {
   fill: #ddd;
 }
 
-button.locked svg {
+button.unlock svg {
   fill: #f00;
 }
 

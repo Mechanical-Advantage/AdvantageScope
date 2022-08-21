@@ -1,12 +1,6 @@
 export interface HubState {
-  selection: SelectionState;
   sidebar: SidebarState;
   tabController: TabControllerState;
-}
-
-export interface SelectionState {
-  selectedTime: number | null;
-  playbackSpeed: number;
 }
 
 export interface SidebarState {

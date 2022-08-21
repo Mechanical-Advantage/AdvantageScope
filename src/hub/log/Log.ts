@@ -13,9 +13,12 @@ import {
 
 /** Represents a collection of log fields. */
 export default class Log {
+  private DEFAULT_TIMESTAMP_RANGE: [number, number] = [0, 10];
+
   private fields: { [id: string]: LogField } = {};
   private arrayLengths: { [id: string]: number } = {}; // Used to detect when length increases
   private arrayItemFields: string[] = []; // Readonly fields
+  private timestampRange: [number, number] | null = null;
 
   /** Checks if the field exists and registers it if necessary. */
   private checkField(key: string, type: LoggableType) {
@@ -23,6 +26,17 @@ export default class Log {
     this.fields[key] = new LogField(type);
     if (type == LoggableType.BooleanArray || type == LoggableType.NumberArray || type == LoggableType.StringArray) {
       this.arrayLengths[key] = 0;
+    }
+  }
+
+  /** Updates the timestamp range if necessary. */
+  private updateRange(timestamp: number) {
+    if (this.timestampRange == null) {
+      this.timestampRange = [timestamp, timestamp];
+    } else if (timestamp < this.timestampRange[0]) {
+      this.timestampRange[0] = timestamp;
+    } else if (timestamp > this.timestampRange[1]) {
+      this.timestampRange[1] = timestamp;
     }
   }
 
@@ -48,6 +62,21 @@ export default class Log {
     });
     output.sort();
     return output;
+  }
+
+  /** Returns the range of timestamps across all fields. */
+  getTimestampRange(): [number, number] {
+    if (this.timestampRange == null) {
+      return this.DEFAULT_TIMESTAMP_RANGE;
+    } else {
+      return this.timestampRange;
+    }
+  }
+
+  /** Returns the most recent timestamp across all fields. */
+  getLastTimestamp(): number {
+    let timestamps = this.getTimestamps(this.getFieldKeys());
+    return timestamps[timestamps.length - 1];
   }
 
   /** Organizes the fields into a tree structure. */
@@ -107,6 +136,7 @@ export default class Log {
   /** Writes a new Raw value to the field. */
   putRaw(key: string, timestamp: number, value: Uint8Array) {
     this.checkField(key, LoggableType.Raw);
+    this.updateRange(timestamp);
     this.fields[key].putRaw(timestamp, value);
   }
 
@@ -114,6 +144,7 @@ export default class Log {
   putBoolean(key: string, timestamp: number, value: boolean) {
     if (this.arrayItemFields.includes(key)) return;
     this.checkField(key, LoggableType.Boolean);
+    this.updateRange(timestamp);
     this.fields[key].putBoolean(timestamp, value);
   }
 
@@ -121,6 +152,7 @@ export default class Log {
   putNumber(key: string, timestamp: number, value: number) {
     if (this.arrayItemFields.includes(key)) return;
     this.checkField(key, LoggableType.Number);
+    this.updateRange(timestamp);
     this.fields[key].putNumber(timestamp, value);
   }
 
@@ -128,12 +160,14 @@ export default class Log {
   putString(key: string, timestamp: number, value: string) {
     if (this.arrayItemFields.includes(key)) return;
     this.checkField(key, LoggableType.String);
+    this.updateRange(timestamp);
     this.fields[key].putString(timestamp, value);
   }
 
   /** Writes a new BooleanArray value to the field. */
   putBooleanArray(key: string, timestamp: number, value: boolean[]) {
     this.checkField(key, LoggableType.BooleanArray);
+    this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.BooleanArray) {
       this.fields[key].putBooleanArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
@@ -152,6 +186,7 @@ export default class Log {
   /** Writes a new NumberArray value to the field. */
   putNumberArray(key: string, timestamp: number, value: number[]) {
     this.checkField(key, LoggableType.NumberArray);
+    this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.NumberArray) {
       this.fields[key].putNumberArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
@@ -170,6 +205,7 @@ export default class Log {
   /** Writes a new StringArray value to the field. */
   putStringArray(key: string, timestamp: number, value: string[]) {
     this.checkField(key, LoggableType.StringArray);
+    this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.StringArray) {
       this.fields[key].putStringArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
@@ -183,5 +219,31 @@ export default class Log {
         this.fields[key + "/" + i.toString()].putString(timestamp, value[i]);
       }
     }
+  }
+
+  /** Returns a serialized version of the data from this log. */
+  toSerialized(): any {
+    let result: any = {
+      fields: {},
+      arrayLengths: this.arrayLengths,
+      arrayItemFields: this.arrayItemFields,
+      timestampRange: this.timestampRange
+    };
+    Object.entries(this.fields).forEach(([key, value]) => {
+      result.fields[key] = value.toSerialized();
+    });
+    return result;
+  }
+
+  /** Creates a new log based on the data from `toSerialized()` */
+  static fromSerialized(serializedData: any) {
+    let log = new Log();
+    Object.entries(serializedData.fields).forEach(([key, value]) => {
+      log.fields[key] = LogField.fromSerialized(value);
+    });
+    log.arrayLengths = serializedData.arrayLengths;
+    log.arrayItemFields = serializedData.arrayItemFields;
+    log.timestampRange = serializedData.timestampRange;
+    return log;
   }
 }

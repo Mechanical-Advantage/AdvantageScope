@@ -16,7 +16,7 @@ self.onmessage = (event) => {
   let decoder = new RLOGDecoder();
   let success = decoder.decode(log, payload.raw);
   if (success) {
-    resolve(log);
+    resolve(log.toSerialized());
   } else {
     reject();
   }

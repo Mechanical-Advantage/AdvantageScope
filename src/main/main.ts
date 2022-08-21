@@ -4,6 +4,7 @@ import {
   BrowserWindowConstructorOptions,
   dialog,
   Menu,
+  MenuItem,
   MessageChannelMain,
   MessagePortMain,
   nativeTheme,
@@ -78,6 +79,10 @@ function sendAllPreferences() {
  */
 function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   switch (message.name) {
+    case "save-state":
+      hubStateTracker.saveRendererState(window, message.data);
+      break;
+
     case "historical-start":
       let sendError = () => {
         sendMessage(window, "historical-data", {
@@ -154,6 +159,23 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "live-rlog-stop":
       rlogSocket?.destroy();
+      break;
+
+    case "ask-playback-speed":
+      const menu = new Menu();
+      Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
+        menu.append(
+          new MenuItem({
+            label: (value * 100).toString() + "%",
+            type: "checkbox",
+            checked: value == message.data,
+            click() {
+              sendMessage(window, "set-playback-speed", value);
+            }
+          })
+        );
+      });
+      menu.popup();
       break;
   }
 }
@@ -417,7 +439,7 @@ function setupMenu() {
 
 /** Creates a new hub window. */
 function createHubWindow() {
-  var prefs: BrowserWindowConstructorOptions = {
+  let prefs: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 400,
     icon: WINDOW_ICON,
@@ -428,7 +450,8 @@ function createHubWindow() {
   };
 
   // Manage window state
-  var focusedWindow = BrowserWindow.getFocusedWindow();
+  let focusedWindow = BrowserWindow.getFocusedWindow();
+  let rendererState: any = null;
   const defaultWidth = 1100;
   const defaultHeight = 650;
   if (hubWindows.length == 0) {
@@ -437,6 +460,7 @@ function createHubWindow() {
     prefs.y = state.y;
     prefs.width = state.width;
     prefs.height = state.height;
+    if (state.rendererState) rendererState = state.rendererState;
   } else if (focusedWindow != null) {
     var bounds = focusedWindow.getBounds();
     prefs.x = bounds.x + 30;
@@ -455,7 +479,7 @@ function createHubWindow() {
   }
 
   // Create window
-  var window = new BrowserWindow(prefs);
+  let window = new BrowserWindow(prefs);
   hubWindows.push(window);
   const { port1, port2 } = new MessageChannelMain();
   windowPorts[window.id] = port2;
@@ -468,6 +492,7 @@ function createHubWindow() {
   // Finish setup
   if (!app.isPackaged) window.webContents.openDevTools();
   window.once("ready-to-show", window.show);
+  if (rendererState) sendMessage(window, "restore-state", rendererState);
   sendMessage(window, "set-fullscreen", window.isFullScreen());
   sendMessage(window, "set-platform", {
     platform: process.platform,

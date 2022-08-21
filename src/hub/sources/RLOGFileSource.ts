@@ -8,10 +8,10 @@ export default class RLOGFileSource extends HistorialDataSource {
     this.setStatus(HistorialDataSourceStatus.Decoding);
 
     WorkerManager.request("../bundles/hub$rlogWorker.js", data)
-      .then((log: Log) => {
+      .then((logData: any) => {
         if (this.status == HistorialDataSourceStatus.Error || this.status == HistorialDataSourceStatus.Stopped) return;
+        if (this.outputCallback != null) this.outputCallback(Log.fromSerialized(logData));
         this.setStatus(HistorialDataSourceStatus.Ready);
-        if (this.outputCallback != null) this.outputCallback(log);
       })
       .catch(() => {
         this.setStatus(HistorialDataSourceStatus.Error);
