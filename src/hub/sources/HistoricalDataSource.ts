@@ -1,17 +1,10 @@
 import Log from "../../lib/log/Log";
-import NamedMessage from "../../lib/NamedMessage";
 
 /** A provider of historial log data (i.e. all of the data is returned at once). */
 export abstract class HistorialDataSource {
   protected status: HistorialDataSourceStatus = HistorialDataSourceStatus.Waiting;
-
-  protected sendMainMessage: (name: string, data: any) => void;
   protected statusCallback: ((status: HistorialDataSourceStatus) => void) | null = null;
   protected outputCallback: ((log: Log) => void) | null = null;
-
-  constructor(sendMainMessage: (name: string, data: any) => void) {
-    this.sendMainMessage = sendMainMessage;
-  }
 
   /**
    * Generates log data from a file.
@@ -29,7 +22,7 @@ export abstract class HistorialDataSource {
     this.setStatus(HistorialDataSourceStatus.Reading);
 
     // Post message to start reading
-    this.sendMainMessage("historical-start", path);
+    window.sendMainMessage("historical-start", path);
   }
 
   /** Cancels the read operation. */
@@ -37,12 +30,12 @@ export abstract class HistorialDataSource {
     this.setStatus(HistorialDataSourceStatus.Stopped);
   }
 
-  /** Process new data from a message. */
+  /** Process new data from the main process, overriden by subclass. */
   handleMainMessage(data: any) {}
 
-  /** Update the current status and triggers the callback if necessary. */
+  /** Updates the current status and triggers the callback if necessary. */
   protected setStatus(status: HistorialDataSourceStatus) {
-    if (status != this.status) {
+    if (status != this.status && this.status != HistorialDataSourceStatus.Stopped) {
       this.status = status;
       if (this.statusCallback != null) this.statusCallback(status);
     }

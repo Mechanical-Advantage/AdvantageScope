@@ -9,35 +9,15 @@ import {
   nativeTheme,
   shell
 } from "electron";
-import fetch from "electron-fetch";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import os from "os";
 import path from "path";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
-
-// Constants
-const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
-const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
-const STATE_FILENAME = "state-" + app.getVersion().replaceAll(".", "_") + ".json";
-const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
-const WINDOW_ICON: string | undefined = (() => {
-  switch (process.platform) {
-    case "win32": // Square icon
-      return path.join(__dirname, "../icons/window/window-icon-win.png");
-    case "linux": // Rounded icon
-      return path.join(__dirname, "../icons/window/window-icon-linux.png");
-    default: // macOS uses the app icon by default
-      return undefined;
-  }
-})();
-const DEFAULT_PREFS: Preferences = {
-  port: 5800,
-  address: "10.63.28.2",
-  rioPath: "/media/sda1/",
-  theme: process.platform == "linux" ? "light" : "system"
-};
+import checkForUpdate from "./checkForUpdate";
+import { DEFAULT_PREFS, LAST_OPEN_FILE, PREFS_FILENAME, REPOSITORY, WINDOW_ICON } from "./constants";
+import net from "net";
 
 // Global variables
 var hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -49,153 +29,19 @@ var windowPorts: { [id: number]: MessagePortMain } = {};
 var usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 var firstOpenPath: string | null = null; // Cache path to open immediately
 
+// Live RLOG variables
+const RLOG_CONNECT_TIMEOUT_MS = 1000; // How long to wait when connecting
+const RLOG_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout
+const RLOG_HEARTBEAT_DELAY_MS = 1000; // How long to wait between heartbeats
+const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
+var rlogSocket: net.Socket | null = null;
+var rlogSocketTimeout: NodeJS.Timeout | null = null;
+var rlogDataArray = new Uint8Array();
+
 /** Records the last open file for the robot program (and recent files for the OS). */
 function recordOpenFile(filePath: string) {
   fs.writeFile(LAST_OPEN_FILE, filePath, () => {});
   app.addRecentDocument(filePath);
-}
-
-/** Checks for updates from GitHub and notifies the user if necessary. */
-function checkForUpdate(alwaysNotify: boolean) {
-  if (!app.isPackaged) {
-    if (alwaysNotify) {
-      dialog.showMessageBox({
-        type: "info",
-        title: "Update Checker",
-        message: "Cannot check for updates",
-        detail: "This app is running in a development environment.",
-        icon: WINDOW_ICON
-      });
-    }
-    return;
-  }
-
-  fetch("https://api.github.com/repos/" + REPOSITORY + "/releases", {
-    method: "GET",
-    headers: {
-      pragma: "no-cache",
-      "cache-control": "no-cache"
-    }
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      var currentVersion = app.getVersion();
-      var latestVersion = json[0].tag_name.slice(1);
-      var latestDate = new Date(json[0].published_at);
-      var latestDateText = latestDate.toLocaleDateString();
-      var translated = process.arch != "arm64" && app.runningUnderARM64Translation;
-      var options =
-        process.platform == "darwin"
-          ? ["Download", "Later", "View Changelog"]
-          : ["Download", "View Changelog", "Later"];
-
-      var handleResponse = (result: Electron.MessageBoxReturnValue) => {
-        var response = options[result.response];
-        if (response == "Download") {
-          var platformKey = "";
-          switch (process.platform) {
-            case "win32":
-              platformKey = "win";
-              break;
-            case "linux":
-              platformKey = "linux";
-              break;
-            case "darwin":
-              platformKey = "mac";
-              break;
-          }
-          var arch = translated ? "arm64" : process.arch; // If under translation, switch to ARM
-
-          var url = null;
-          json[0].assets.forEach((asset: any) => {
-            if (asset.name.includes(platformKey) && asset.name.includes(arch)) {
-              url = asset.browser_download_url;
-            }
-          });
-          if (url == null) {
-            shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
-          } else {
-            shell.openExternal(url);
-          }
-        } else if (response == "View Changelog") {
-          shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
-        }
-      };
-
-      // Send appropriate prompt
-      if (currentVersion != latestVersion && translated) {
-        dialog
-          .showMessageBox({
-            type: "question",
-            title: "Update Checker",
-            message: "Download latest native version?",
-            detail:
-              "Version " +
-              latestVersion +
-              " is available (released " +
-              latestDateText +
-              "). You're currently running the x86 build of version " +
-              currentVersion +
-              " on an arm64 platform. Would you like to download the latest native version?",
-            icon: WINDOW_ICON,
-            buttons: options,
-            defaultId: 0
-          })
-          .then(handleResponse);
-      } else if (currentVersion != latestVersion) {
-        dialog
-          .showMessageBox({
-            type: "question",
-            title: "Update Checker",
-            message: "Download latest version?",
-            detail:
-              "Version " +
-              latestVersion +
-              " is available (released " +
-              latestDateText +
-              "). You're currently running version " +
-              currentVersion +
-              ". Would you like to download the latest version?",
-            icon: WINDOW_ICON,
-            buttons: options,
-            defaultId: 0
-          })
-          .then(handleResponse);
-      } else if (translated) {
-        dialog
-          .showMessageBox({
-            type: "question",
-            title: "Update Checker",
-            message: "Download native version?",
-            detail:
-              "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
-            icon: WINDOW_ICON,
-            buttons: options,
-            defaultId: 0
-          })
-          .then(handleResponse);
-      } else if (alwaysNotify) {
-        dialog.showMessageBox({
-          type: "info",
-          title: "Update Checker",
-          message: "No updates available",
-          detail: "You're currently running version " + currentVersion + " (released " + latestDateText + ").",
-          icon: WINDOW_ICON
-        });
-      }
-    })
-    .catch(() => {
-      if (alwaysNotify) {
-        dialog.showMessageBox({
-          type: "info",
-          title: "Update Checker",
-          message: "Cannot check for updates",
-          detail:
-            "Failed to retrieve update information from GitHub. Please check your internet connection and try again.",
-          icon: WINDOW_ICON
-        });
-      }
-    });
 }
 
 // WINDOW MESSAGE HANDLING
@@ -250,8 +96,70 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         });
       });
       break;
+
+    case "live-rlog-start":
+      rlogSocket = net.createConnection({
+        host: message.data.address,
+        port: message.data.port
+      });
+
+      rlogSocket.setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
+        sendMessage(window, "live-rlog-data", { status: false });
+      });
+
+      function appendArray(newArray: Uint8Array) {
+        let fullArray = new Uint8Array(rlogDataArray.length + newArray.length);
+        fullArray.set(rlogDataArray);
+        fullArray.set(newArray, rlogDataArray.length);
+        rlogDataArray = fullArray;
+      }
+
+      rlogSocket.on("data", (data) => {
+        appendArray(data);
+        if (rlogSocketTimeout != null) clearTimeout(rlogSocketTimeout);
+        rlogSocketTimeout = setTimeout(() => {
+          rlogSocket?.destroy();
+        }, RLOG_DATA_TIMEOUT_MS);
+
+        while (true) {
+          var expectedLength;
+          if (rlogDataArray.length < 4) {
+            break;
+          } else {
+            expectedLength = new DataView(rlogDataArray.buffer).getInt32(0) + 4;
+            if (rlogDataArray.length < expectedLength) {
+              break;
+            }
+          }
+
+          var singleArray = rlogDataArray.slice(4, expectedLength);
+          rlogDataArray = rlogDataArray.slice(expectedLength);
+
+          if (rlogSocket) {
+            sendMessage(window, "live-rlog-data", { success: true, raw: new Uint8Array(singleArray) });
+          }
+        }
+      });
+
+      rlogSocket.on("error", () => {
+        sendMessage(window, "live-rlog-data", { success: false });
+      });
+
+      rlogSocket.on("close", () => {
+        sendMessage(window, "live-rlog-data", { success: false });
+      });
+      break;
+
+    case "live-rlog-stop":
+      rlogSocket?.destroy();
+      break;
   }
 }
+
+// Send live RLOG heartbeat
+setInterval(() => {
+  rlogSocket?.write(RLOG_HEARTBEAT_DATA);
+}, RLOG_HEARTBEAT_DELAY_MS);
 
 // CREATE WINDOWS
 
@@ -543,7 +451,7 @@ function createHubWindow() {
   hubWindows.splice(0, 0, window);
   const { port1, port2 } = new MessageChannelMain();
   windowPorts[window.id] = port2;
-  window.webContents.postMessage("set-port", null, [port1]);
+  window.webContents.postMessage("port", null, [port1]);
   port2.on("message", (event) => {
     handleHubMessage(window, event.data);
   });

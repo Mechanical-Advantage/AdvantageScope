@@ -5,8 +5,7 @@ const windowLoaded = new Promise((resolve) => {
   window.onload = resolve;
 });
 
-ipcRenderer.on("set-port", async (event) => {
+ipcRenderer.on("port", async (event) => {
   await windowLoaded;
-  const message: NamedMessage = { name: "set-port" };
-  window.postMessage(message, "*", event.ports);
+  window.postMessage("port", "*", event.ports);
 });

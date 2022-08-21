@@ -17,7 +17,7 @@ export default [
 
   bundle("hub/hub.ts", "hub.js"),
   bundle("hub/preload.ts", "hub$preload.js", ["electron"]),
-  bundle("hub/sources/rlogworker.ts", "hub$rlogworker.js"),
+  bundle("hub/sources/rlogWorker.ts", "hub$rlogWorker.js"),
 
   bundle("download/download.ts", "download.js"),
   bundle("download/preload.ts", "download$preload.js"),

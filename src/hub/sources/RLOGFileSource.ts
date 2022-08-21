@@ -7,14 +7,13 @@ export default class RLOGFileSource extends HistorialDataSource {
     if (this.status != HistorialDataSourceStatus.Reading) return;
     this.setStatus(HistorialDataSourceStatus.Decoding);
 
-    WorkerManager.request("../bundles/hub$rlogworker.js", data)
+    WorkerManager.request("../bundles/hub$rlogWorker.js", data)
       .then((log: Log) => {
         if (this.status == HistorialDataSourceStatus.Error || this.status == HistorialDataSourceStatus.Stopped) return;
         this.setStatus(HistorialDataSourceStatus.Ready);
         if (this.outputCallback != null) this.outputCallback(log);
       })
       .catch(() => {
-        if (this.status == HistorialDataSourceStatus.Stopped) return;
         this.setStatus(HistorialDataSourceStatus.Error);
       });
   }
