@@ -1,5 +1,5 @@
-import Log from "../../lib/log/Log";
-import WorkerManager from "../../lib/WorkerManager";
+import Log from "../log/Log";
+import WorkerManager from "../WorkerManager";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./HistoricalDataSource";
 
 export default class RLOGFileSource extends HistorialDataSource {

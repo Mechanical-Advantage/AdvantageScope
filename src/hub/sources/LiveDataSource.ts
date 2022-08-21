@@ -1,4 +1,4 @@
-import Log from "../../lib/log/Log";
+import Log from "../log/Log";
 
 /** A provider of live log data (i.e. the data is updated as it is received). */
 export abstract class LiveDataSource {

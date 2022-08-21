@@ -1,4 +1,4 @@
-import Log from "../lib/log/Log";
+import Log from "./log/Log";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./sources/HistoricalDataSource";

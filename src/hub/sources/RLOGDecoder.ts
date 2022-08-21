@@ -1,4 +1,4 @@
-import Log from "../../lib/log/Log";
+import Log from "../log/Log";
 
 export default class RLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [1];
