@@ -14,17 +14,11 @@ const bundle = (input, output, external = []) => ({
 
 export default [
   bundle("main/main.ts", "main.js", ["electron", "electron-fetch", "fs", "jsonfile", "os", "path"]),
+  bundle("preload/preload.ts", "preload.js", ["electron"]),
 
   bundle("hub/hub.ts", "hub.js"),
-  bundle("hub/preload.ts", "hub$preload.js", ["electron"]),
   bundle("hub/sources/rlogWorker.ts", "hub$rlogWorker.js"),
-
   bundle("download/download.ts", "download.js"),
-  bundle("download/preload.ts", "download$preload.js"),
-
   bundle("satellite/satellite.ts", "satellite.js"),
-  bundle("satellite/preload.ts", "satellite$preload.js"),
-
-  bundle("preferences/preferences.ts", "preferences.js"),
-  bundle("preferences/preload.ts", "preferences$preload.js")
+  bundle("preferences/preferences.ts", "preferences.js")
 ];

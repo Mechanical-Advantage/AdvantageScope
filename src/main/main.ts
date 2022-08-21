@@ -445,7 +445,7 @@ function createHubWindow() {
     icon: WINDOW_ICON,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "hub$preload.js")
+      preload: path.join(__dirname, "preload.js")
     }
   };
 
