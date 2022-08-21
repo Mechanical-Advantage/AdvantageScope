@@ -1,12 +1,12 @@
-import Log from "./log/Log";
+import htmlEncode from "../lib/htmlEncode";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
+import Log from "./log/Log";
+import Selection from "./Selection";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./sources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./sources/LiveDataSource";
 import RLOGFileSource from "./sources/RLOGFileSource";
 import RLOGServerSource from "./sources/RLOGServerSource";
-import htmlEncode from "../lib/htmlEncode";
-import SelectionManager from "./SelectionManager";
 
 // Constants
 const USB_ADDRESS = "172.22.11.2";
@@ -22,7 +22,7 @@ declare global {
     isFullscreen: boolean;
     isFocused: boolean;
 
-    selectionManager: SelectionManager;
+    selection: Selection;
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
   }
@@ -34,7 +34,7 @@ window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
 
-window.selectionManager = new SelectionManager();
+window.selection = new Selection();
 window.messagePort = null;
 
 var historicalSource: HistorialDataSource | null;
@@ -160,26 +160,26 @@ function handleMainMessage(message: NamedMessage) {
         (status: LiveDataSourceStatus) => {
           console.log("Live status", status);
           if (status == LiveDataSourceStatus.Error || status == LiveDataSourceStatus.Stopped) {
-            window.selectionManager.setLiveDisconnected();
+            window.selection.setLiveDisconnected();
           }
         },
         () => {
           console.log("Log updated");
           let logRange = window.log.getTimestampRange();
           let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
-          let oldLiveZeroTime = window.selectionManager.getLiveZeroTime();
+          let oldLiveZeroTime = window.selection.getLiveZeroTime();
           if (oldLiveZeroTime == null || oldLiveZeroTime > newLiveZeroTime) {
-            window.selectionManager.setLiveConnected(newLiveZeroTime);
+            window.selection.setLiveConnected(newLiveZeroTime);
           }
           if (oldLiveZeroTime == null) {
-            window.selectionManager.lock();
+            window.selection.lock();
           }
         }
       );
       break;
 
     case "set-playback-speed":
-      window.selectionManager.setPlaybackSpeed(message.data);
+      window.selection.setPlaybackSpeed(message.data);
       break;
   }
 }

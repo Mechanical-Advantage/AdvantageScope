@@ -1,4 +1,4 @@
-export default class SelectionManager {
+export default class Selection {
   private PLAY_BUTTON = document.getElementsByClassName("play")[0] as HTMLElement;
   private PAUSE_BUTTON = document.getElementsByClassName("pause")[0] as HTMLElement;
   private LOCK_BUTTON = document.getElementsByClassName("lock")[0] as HTMLElement;
