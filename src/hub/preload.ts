@@ -1,4 +1,3 @@
-import NamedMessage from "../lib/NamedMessage";
 import { ipcRenderer } from "electron";
 
 const windowLoaded = new Promise((resolve) => {

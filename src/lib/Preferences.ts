@@ -1,8 +1,8 @@
 /** A set of application preferences. */
 export default interface Preferences {
-  port: Number;
-  address: String;
-  rioPath: String;
+  port: number;
+  address: string;
+  rioPath: string;
   theme: "light" | "dark" | "system";
   usb?: boolean;
 }

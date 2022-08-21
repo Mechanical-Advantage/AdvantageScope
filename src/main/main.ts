@@ -18,6 +18,7 @@ import Preferences from "../lib/Preferences";
 import checkForUpdate from "./checkForUpdate";
 import { DEFAULT_PREFS, LAST_OPEN_FILE, PREFS_FILENAME, REPOSITORY, WINDOW_ICON } from "./constants";
 import net from "net";
+import StateTracker from "./StateTracker";
 
 // Global variables
 var hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -26,6 +27,7 @@ var prefsWindow: BrowserWindow | null = null;
 var satelliteWindows: BrowserWindow[] = [];
 var windowPorts: { [id: number]: MessagePortMain } = {};
 
+var hubStateTracker = new StateTracker();
 var usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 var firstOpenPath: string | null = null; // Cache path to open immediately
 
@@ -426,18 +428,24 @@ function createHubWindow() {
   };
 
   // Manage window state
-  if (BrowserWindow.getFocusedWindow() == null) {
-    // TODO: Get from window state management
-    prefs.width = 1100;
-    prefs.height = 650;
+  var focusedWindow = BrowserWindow.getFocusedWindow();
+  const defaultWidth = 1100;
+  const defaultHeight = 650;
+  if (hubWindows.length == 0) {
+    let state = hubStateTracker.getState(defaultWidth, defaultHeight);
+    prefs.x = state.x;
+    prefs.y = state.y;
+    prefs.width = state.width;
+    prefs.height = state.height;
+  } else if (focusedWindow != null) {
+    var bounds = focusedWindow.getBounds();
+    prefs.x = bounds.x + 30;
+    prefs.y = bounds.y + 30;
+    prefs.width = bounds.width;
+    prefs.height = bounds.height;
   } else {
-    var focusedWindow = BrowserWindow.getFocusedWindow();
-    if (focusedWindow != null) {
-      prefs.x = focusedWindow.getPosition()[0] + 30;
-      prefs.y = focusedWindow.getPosition()[1] + 30;
-      prefs.width = focusedWindow.getSize()[0];
-      prefs.height = focusedWindow.getSize()[1];
-    }
+    prefs.width = defaultWidth;
+    prefs.height = defaultHeight;
   }
 
   // Set fancy window effects
@@ -448,7 +456,7 @@ function createHubWindow() {
 
   // Create window
   var window = new BrowserWindow(prefs);
-  hubWindows.splice(0, 0, window);
+  hubWindows.push(window);
   const { port1, port2 } = new MessageChannelMain();
   windowPorts[window.id] = port2;
   window.webContents.postMessage("port", null, [port1]);
@@ -471,8 +479,7 @@ function createHubWindow() {
   window.on("blur", () => sendMessage(window, "set-focused", false));
   window.on("focus", () => {
     sendMessage(window, "set-focused", true);
-    hubWindows.splice(hubWindows.indexOf(window), 1);
-    hubWindows.splice(0, 0, window);
+    hubStateTracker.setFocusedWindow(window);
   });
 
   window.loadFile(path.join(__dirname, "../www/hub.html"));

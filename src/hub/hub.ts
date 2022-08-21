@@ -6,7 +6,11 @@ import { LiveDataSource, LiveDataSourceStatus } from "./sources/LiveDataSource";
 import RLOGFileSource from "./sources/RLOGFileSource";
 import RLOGServerSource from "./sources/RLOGServerSource";
 
-// Declare global variables
+// Constants
+const USB_ADDRESS = "172.22.11.2";
+const SIM_ADDRESS = "127.0.0.1";
+
+// Global variables
 declare global {
   interface Window {
     log: Log | null;
@@ -122,8 +126,20 @@ function handleMainMessage(message: NamedMessage) {
       historicalSource?.stop();
       liveSource = new RLOGServerSource();
       window.log = new Log();
+
+      let address = "";
+      if (message.data == "sim") {
+        address = SIM_ADDRESS;
+      } else if (window.preferences?.usb) {
+        address = USB_ADDRESS;
+      } else {
+        if (window.preferences) {
+          address = window.preferences.address;
+        }
+      }
+
       liveSource.connect(
-        "127.0.0.1",
+        address,
         window.log,
         (status: LiveDataSourceStatus) => {
           console.log("Live status", status);

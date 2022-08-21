@@ -4,7 +4,10 @@ import Preferences from "../lib/Preferences";
 
 export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
 export const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
-export const STATE_FILENAME = "state-" + app.getVersion().replaceAll(".", "_") + ".json";
+export const STATE_FILENAME = path.join(
+  app.getPath("userData"),
+  "state-" + app.getVersion().replaceAll(".", "_") + ".json"
+);
 export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
 export const WINDOW_ICON: string | undefined = (() => {
   switch (process.platform) {
