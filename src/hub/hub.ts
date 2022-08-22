@@ -1,4 +1,4 @@
-import htmlEncode from "../lib/htmlEncode";
+import { htmlEncode } from "../lib/util";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import { HubState } from "./HubState";

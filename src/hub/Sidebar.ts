@@ -1,4 +1,4 @@
-import arraysEqual from "../lib/arraysEqual";
+import { arraysEqual } from "../lib/util";
 import { SidebarState } from "./HubState";
 import LogFieldTree from "./log/LogFieldTree";
 
