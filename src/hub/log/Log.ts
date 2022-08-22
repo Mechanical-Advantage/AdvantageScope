@@ -45,6 +45,11 @@ export default class Log {
     return Object.keys(this.fields);
   }
 
+  /** Returns the count of fields (excluding array item fields). */
+  getFieldCount(): number {
+    return Object.keys(this.fields).filter((field) => !this.arrayItemFields.includes(field)).length;
+  }
+
   /** Returns the constant field type. */
   getType(key: string): LoggableType | undefined {
     return this.fields[key].getType();

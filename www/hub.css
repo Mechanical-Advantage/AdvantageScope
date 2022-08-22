@@ -13,7 +13,7 @@ div.title-bar {
   top: 0px;
   height: 38px;
 
-  display: hidden;
+  display: none;
   z-index: 5;
   user-select: none;
   -webkit-app-region: drag;
@@ -65,7 +65,7 @@ div.side-bar-background {
 }
 
 body.fancy-side-bar div.side-bar-background {
-  display: hidden;
+  display: none;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -82,7 +82,7 @@ div.side-bar-shadow {
   top: 0px;
   height: 38px;
 
-  display: hidden;
+  display: none;
   box-shadow: 0px 0px 3px 0px #777;
   transition: opacity 0.3s ease-in-out;
   opacity: 0%;

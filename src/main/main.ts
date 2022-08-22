@@ -481,24 +481,29 @@ function createHubWindow() {
   // Create window
   let window = new BrowserWindow(prefs);
   hubWindows.push(window);
-  const { port1, port2 } = new MessageChannelMain();
-  windowPorts[window.id] = port2;
-  window.webContents.postMessage("port", null, [port1]);
-  port2.on("message", (event) => {
-    handleHubMessage(window, event.data);
-  });
-  port2.start();
 
   // Finish setup
   if (!app.isPackaged) window.webContents.openDevTools();
   window.once("ready-to-show", window.show);
-  if (rendererState) sendMessage(window, "restore-state", rendererState);
-  sendMessage(window, "set-fullscreen", window.isFullScreen());
-  sendMessage(window, "set-platform", {
-    platform: process.platform,
-    release: os.release()
+  window.webContents.on("dom-ready", () => {
+    // Set up ports
+    const { port1, port2 } = new MessageChannelMain();
+    window.webContents.postMessage("port", null, [port1]);
+    windowPorts[window.id] = port2;
+    port2.on("message", (event) => {
+      handleHubMessage(window, event.data);
+    });
+    port2.start();
+
+    // Init messages
+    if (rendererState) sendMessage(window, "restore-state", rendererState);
+    sendMessage(window, "set-fullscreen", window.isFullScreen());
+    sendMessage(window, "set-platform", {
+      platform: process.platform,
+      release: os.release()
+    });
+    sendAllPreferences();
   });
-  sendAllPreferences();
   window.on("enter-full-screen", () => sendMessage(window, "set-fullscreen", true));
   window.on("leave-full-screen", () => sendMessage(window, "set-fullscreen", false));
   window.on("blur", () => sendMessage(window, "set-focused", false));
