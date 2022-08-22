@@ -290,11 +290,6 @@ div.tab-bar-scroll::-webkit-scrollbar {
   display: none;
 }
 
-div.tab-bar-scroll-content {
-  width: 100%;
-  height: 100%;
-}
-
 div.tab {
   display: inline-block;
   height: 30px;

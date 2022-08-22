@@ -20,6 +20,7 @@ import checkForUpdate from "./checkForUpdate";
 import { DEFAULT_PREFS, LAST_OPEN_FILE, PREFS_FILENAME, REPOSITORY, WINDOW_ICON } from "./constants";
 import net from "net";
 import StateTracker from "./StateTracker";
+import TabType from "../lib/TabType";
 
 // Global variables
 var hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -162,9 +163,9 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "ask-playback-speed":
-      const menu = new Menu();
+      const playbackSpeedMenu = new Menu();
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
-        menu.append(
+        playbackSpeedMenu.append(
           new MenuItem({
             label: (value * 100).toString() + "%",
             type: "checkbox",
@@ -175,7 +176,45 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           })
         );
       });
-      menu.popup();
+      playbackSpeedMenu.popup();
+      break;
+
+    case "ask-new-tab":
+      const newTabMenu = new Menu();
+      newTabMenu.append(
+        new MenuItem({
+          label: "Line Graph",
+          click() {
+            sendMessage(window, "new-tab", TabType.LineGraph);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Table",
+          click() {
+            sendMessage(window, "new-tab", TabType.Table);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Odometry",
+          click() {
+            sendMessage(window, "new-tab", TabType.Odometry);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Points",
+          click() {
+            sendMessage(window, "new-tab", TabType.Points);
+          }
+        })
+      );
+
+      newTabMenu.popup();
       break;
   }
 }
@@ -276,7 +315,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+1",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "new", detail: 1 });
+            sendMessage(window, "new-tab", TabType.LineGraph);
           }
         },
         {
@@ -284,7 +323,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+2",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "new", detail: 2 });
+            sendMessage(window, "new-tab", TabType.Table);
           }
         },
         {
@@ -292,7 +331,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+3",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "new", detail: 3 });
+            sendMessage(window, "new-tab", TabType.Odometry);
           }
         },
         {
@@ -300,7 +339,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+4",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "new", detail: 4 });
+            sendMessage(window, "new-tab", TabType.Points);
           }
         },
         { type: "separator" },
@@ -309,7 +348,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+Left",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "move", detail: -1 });
+            sendMessage(window, "move-tab", -1);
           }
         },
         {
@@ -317,7 +356,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+Right",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "move", detail: 1 });
+            sendMessage(window, "move-tab", 1);
           }
         },
         { type: "separator" },
@@ -326,7 +365,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+[",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "shift", detail: -1 });
+            sendMessage(window, "shift-tab", -1);
           }
         },
         {
@@ -334,7 +373,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+]",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "shift", detail: 1 });
+            sendMessage(window, "shift-tab", 1);
           }
         },
         { type: "separator" },
@@ -343,7 +382,7 @@ function setupMenu() {
           accelerator: isMac ? "Cmd+W" : "Ctrl+Q",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "tab-command", { type: "close" });
+            sendMessage(window, "close-tab");
           }
         }
       ]

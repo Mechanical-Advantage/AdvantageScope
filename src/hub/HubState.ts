@@ -1,6 +1,8 @@
+import TabType from "../lib/TabType";
+
 export interface HubState {
   sidebar: SidebarState;
-  tabController: TabControllerState;
+  tabs: TabGroupState;
 }
 
 export interface SidebarState {
@@ -8,13 +10,21 @@ export interface SidebarState {
   expanded: string[];
 }
 
-export interface TabControllerState {
-  selected: number | null;
-  tabs: (LineGraphState | TableState | OdometryState | PointsState)[];
+export interface TabGroupState {
+  selected: number;
+  tabs: TabState[];
+}
+
+export interface TabState {
+  type: TabType;
+}
+
+export interface MetadataState extends TabState {
+  type: TabType.Metadata;
 }
 
 export interface LineGraphState {
-  name: "line-graph";
+  type: TabType.LineGraph;
   range: [number, number];
   legends: {
     left: {
@@ -50,12 +60,12 @@ export interface LineGraphState {
 }
 
 export interface TableState {
-  name: "table";
+  name: TabType.Table;
   fields: string[];
 }
 
 export interface OdometryState {
-  name: "odometry";
+  name: TabType.Odometry;
   fields: {
     robotPose: string | null;
     ghostPose: string | null;
@@ -73,7 +83,7 @@ export interface OdometryState {
 }
 
 export interface PointsState {
-  name: "points";
+  name: TabType.Points;
   fields: {
     x: string | null;
     y: string | null;

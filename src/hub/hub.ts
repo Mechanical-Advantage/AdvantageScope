@@ -9,6 +9,7 @@ import { HistorialDataSource, HistorialDataSourceStatus } from "./sources/Histor
 import { LiveDataSource, LiveDataSourceStatus } from "./sources/LiveDataSource";
 import RLOGFileSource from "./sources/RLOGFileSource";
 import RLOGServerSource from "./sources/RLOGServerSource";
+import Tabs from "./Tabs";
 
 // Constants
 const USB_ADDRESS = "172.22.11.2";
@@ -28,6 +29,7 @@ declare global {
 
     selection: Selection;
     sidebar: Sidebar;
+    tabs: Tabs;
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
 
@@ -43,6 +45,7 @@ window.isFocused = true;
 
 window.selection = new Selection();
 window.sidebar = new Sidebar();
+window.tabs = new Tabs();
 window.messagePort = null;
 
 var historicalSource: HistorialDataSource | null;
@@ -85,7 +88,7 @@ function updateFancyWindow() {
 function saveState(): HubState {
   return {
     sidebar: window.sidebar.saveState(),
-    tabController: { selected: null, tabs: [] }
+    tabs: window.tabs.saveState()
   };
 }
 
@@ -296,6 +299,22 @@ function handleMainMessage(message: NamedMessage) {
 
     case "set-playback-speed":
       window.selection.setPlaybackSpeed(message.data);
+      break;
+
+    case "new-tab":
+      window.tabs.addTab(message.data);
+      break;
+
+    case "move-tab":
+      window.tabs.setSelected(window.tabs.getSelectedTab() + message.data);
+      break;
+
+    case "shift-tab":
+      window.tabs.shift(window.tabs.getSelectedTab(), message.data);
+      break;
+
+    case "close-tab":
+      window.tabs.close(window.tabs.getSelectedTab());
       break;
   }
 }
