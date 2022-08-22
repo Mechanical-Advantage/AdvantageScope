@@ -79,7 +79,6 @@ export default class Sidebar {
   refresh(forceRefresh: boolean = false) {
     if (!forceRefresh && arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys)) return;
     this.lastFieldKeys = window.log.getFieldKeys();
-    console.log("REFRESHING");
 
     // Remove old list
     while (this.FIELD_LIST.firstChild) {
