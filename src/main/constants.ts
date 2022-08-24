@@ -20,8 +20,9 @@ export const WINDOW_ICON: string | undefined = (() => {
   }
 })();
 export const DEFAULT_PREFS: Preferences = {
-  port: 5800,
-  address: "10.63.28.2",
+  theme: process.platform == "linux" ? "light" : "system",
+  rioAddress: "10.63.28.2",
   rioPath: "/media/sda1/",
-  theme: process.platform == "linux" ? "light" : "system"
+  liveMode: "nt4",
+  rlogPort: 5800
 };

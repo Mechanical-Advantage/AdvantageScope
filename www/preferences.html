@@ -15,7 +15,7 @@
     <table>
       <tbody>
         <tr>
-          <td class="label">Application theme</td>
+          <td class="label">Application Theme</td>
           <td class="input" tabindex="-1">
             <select id="theme">
               <option value="system">Match System</option>
@@ -25,21 +25,31 @@
           </td>
         </tr>
         <tr>
-          <td class="label">Log server port</td>
+          <td class="label">roboRIO Address</td>
           <td class="input" tabindex="-1">
-            <input type="number" id="port" />
+            <input type="text" id="rioAddress" />
           </td>
         </tr>
         <tr>
-          <td class="label">roboRIO address</td>
-          <td class="input" tabindex="-1">
-            <input type="text" id="address" />
-          </td>
-        </tr>
-        <tr>
-          <td class="label">roboRIO log folder</td>
+          <td class="label">roboRIO Log Folder</td>
           <td class="input" tabindex="-1">
             <input type="text" id="rioPath" />
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Live Mode</td>
+          <td class="input" tabindex="-1">
+            <select id="liveMode">
+              <option value="nt4">NetworkTables 4</option>
+              <option value="nt4-akit">NetworkTables 4 (AdvantageKit)</option>
+              <option value="rlog">RLOG Server</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">RLOG Server Port</td>
+          <td class="input" tabindex="-1">
+            <input type="number" id="rlogPort" />
           </td>
         </tr>
       </tbody>

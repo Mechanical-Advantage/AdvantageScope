@@ -259,7 +259,7 @@ function handleMainMessage(message: NamedMessage) {
         address = USB_ADDRESS;
       } else {
         if (window.preferences) {
-          address = window.preferences.address;
+          address = window.preferences.rioAddress;
         }
       }
 

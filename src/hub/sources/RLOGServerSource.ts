@@ -15,7 +15,7 @@ export default class RLOGServerSource extends LiveDataSource {
     if (window.preferences == null) {
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
-      window.sendMainMessage("live-rlog-start", { address: address, port: window.preferences.port });
+      window.sendMainMessage("live-rlog-start", { address: address, port: window.preferences.rlogPort });
     }
   }
 

@@ -11,6 +11,11 @@ window.addEventListener("message", (event) => {
     messagePort.onmessage = (event) => {
       let range: [number, number] = event.data;
 
+      // Update values
+      MIN_INPUT.value = cleanFloat(range[0]).toString();
+      MAX_INPUT.value = cleanFloat(range[1]).toString();
+
+      // Close function
       function confirm() {
         let min = Number(MIN_INPUT.value);
         let max = Number(MAX_INPUT.value);
@@ -21,8 +26,7 @@ window.addEventListener("message", (event) => {
         }
       }
 
-      MIN_INPUT.value = cleanFloat(range[0]).toString();
-      MAX_INPUT.value = cleanFloat(range[1]).toString();
+      // Set up exit triggers
       EXIT_BUTTON.addEventListener("click", () => {
         messagePort.postMessage(range);
       });

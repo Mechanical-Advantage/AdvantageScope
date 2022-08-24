@@ -628,7 +628,7 @@ function createEditAxisWindow(
     editWindow.webContents.postMessage("port", null, [port1]);
     port2.postMessage(range);
     port2.on("message", (event) => {
-      editWindow.close();
+      editWindow.destroy();
       callback(event.data);
     });
     port2.start();
@@ -640,7 +640,48 @@ function createEditAxisWindow(
  * Creates a new preferences window if it doesn't already exist.
  * @param parentWindow The parent window to use for alignment
  */
-function openPreferences(parentWindow: Electron.BrowserWindow) {}
+function openPreferences(parentWindow: Electron.BrowserWindow) {
+  if (prefsWindow != null && !prefsWindow.isDestroyed()) {
+    prefsWindow.focus();
+    return;
+  }
+
+  const width = 400;
+  const height = process.platform == "win32" ? 249 : 189; // "useContentSize" is broken on Windows when not resizable
+  prefsWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
+    useContentSize: true,
+    resizable: false,
+    alwaysOnTop: true,
+    icon: WINDOW_ICON,
+    show: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  prefsWindow.setMenu(null);
+  prefsWindow.once("ready-to-show", prefsWindow.show);
+  prefsWindow.webContents.on("dom-ready", () => {
+    // Set up ports
+    const { port1, port2 } = new MessageChannelMain();
+    prefsWindow?.webContents.postMessage("port", null, [port1]);
+    port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
+    port2.on("message", (event) => {
+      prefsWindow?.destroy();
+      jsonfile.writeFileSync(PREFS_FILENAME, event.data);
+      sendAllPreferences();
+    });
+    port2.start();
+    prefsWindow?.show();
+  });
+  prefsWindow.loadFile(path.join(__dirname, "../www/preferences.html"));
+}
 
 /**
  * Creates a new download window if it doesn't already exist.
@@ -664,7 +705,32 @@ app.whenReady().then(() => {
     jsonfile.writeFileSync(PREFS_FILENAME, DEFAULT_PREFS);
     nativeTheme.themeSource = DEFAULT_PREFS.theme;
   } else {
-    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+    let oldPrefs = jsonfile.readFileSync(PREFS_FILENAME);
+    let prefs = DEFAULT_PREFS;
+    if ("theme" in oldPrefs && (oldPrefs.theme == "light" || oldPrefs.theme == "dark" || oldPrefs.theme == "system")) {
+      prefs.theme = oldPrefs.theme;
+    }
+    if ("rioAddress" in oldPrefs && typeof oldPrefs.rioAddress == "string") {
+      prefs.rioAddress = oldPrefs.rioAddress;
+    }
+    if ("address" in oldPrefs && typeof oldPrefs.address == "string") {
+      // Migrate from v1
+      prefs.rioAddress = oldPrefs.address;
+    }
+    if ("rioPath" in oldPrefs && typeof oldPrefs.rioPath == "string") {
+      prefs.rioPath = oldPrefs.rioPath;
+    }
+    if (
+      "liveMode" in oldPrefs &&
+      (oldPrefs.liveMode == "nt4" || oldPrefs.liveMode == "nt4-akit" || oldPrefs.liveMode == "rlog")
+    ) {
+      prefs.liveMode = oldPrefs.liveMode;
+    }
+    if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort == "number") {
+      prefs.rlogPort = oldPrefs.rlogPort;
+    }
+
+    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
   }
 
