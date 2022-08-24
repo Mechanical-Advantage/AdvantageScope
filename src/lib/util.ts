@@ -32,7 +32,7 @@ export function shiftColor(color: string, shift: number) {
 
 /** Cleans up floating point errors. */
 export function cleanFloat(float: number) {
-  var output = Math.round(float * 10000) / 10000;
+  let output = Math.round(float * 10000) / 10000;
   if (output == -0) output = 0;
   return output;
 }

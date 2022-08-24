@@ -60,7 +60,7 @@ export default class MetadataController implements TabController {
     }
 
     // Add rows
-    var keys = Object.keys(data);
+    let keys = Object.keys(data);
     keys.sort();
     keys.forEach((key) => {
       let row = document.createElement("tr");
@@ -88,7 +88,7 @@ export default class MetadataController implements TabController {
     });
 
     // Show/hide table
-    var showTable = keys.length > 0;
+    let showTable = keys.length > 0;
     this.NO_DATA_ALERT.hidden = showTable;
     this.TABLE_CONTAINER.hidden = !showTable;
   }
