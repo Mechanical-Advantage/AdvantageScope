@@ -690,7 +690,7 @@ app.whenReady().then(() => {
   }
 
   // Create new window if activated while none exist
-  app.on("activate", function () {
+  app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length == 0) createHubWindow();
   });
 
@@ -698,7 +698,7 @@ app.whenReady().then(() => {
   window.once("show", () => checkForUpdate(false));
 });
 
-app.on("window-all-closed", function () {
+app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
