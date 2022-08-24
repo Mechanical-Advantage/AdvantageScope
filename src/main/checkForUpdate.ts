@@ -26,20 +26,20 @@ export default function checkForUpdate(alwaysNotify: boolean) {
   })
     .then((res) => res.json())
     .then((json) => {
-      var currentVersion = app.getVersion();
-      var latestVersion = json[0].tag_name.slice(1);
-      var latestDate = new Date(json[0].published_at);
-      var latestDateText = latestDate.toLocaleDateString();
-      var translated = process.arch != "arm64" && app.runningUnderARM64Translation;
-      var options =
+      let currentVersion = app.getVersion();
+      let latestVersion = json[0].tag_name.slice(1);
+      let latestDate = new Date(json[0].published_at);
+      let latestDateText = latestDate.toLocaleDateString();
+      let translated = process.arch != "arm64" && app.runningUnderARM64Translation;
+      let options =
         process.platform == "darwin"
           ? ["Download", "Later", "View Changelog"]
           : ["Download", "View Changelog", "Later"];
 
-      var handleResponse = (result: Electron.MessageBoxReturnValue) => {
-        var response = options[result.response];
+      let handleResponse = (result: Electron.MessageBoxReturnValue) => {
+        let response = options[result.response];
         if (response == "Download") {
-          var platformKey = "";
+          let platformKey = "";
           switch (process.platform) {
             case "win32":
               platformKey = "win";
@@ -51,9 +51,9 @@ export default function checkForUpdate(alwaysNotify: boolean) {
               platformKey = "mac";
               break;
           }
-          var arch = translated ? "arm64" : process.arch; // If under translation, switch to ARM
+          let arch = translated ? "arm64" : process.arch; // If under translation, switch to ARM
 
-          var url = null;
+          let url = null;
           json[0].assets.forEach((asset: any) => {
             if (asset.name.includes(platformKey) && asset.name.includes(arch)) {
               url = asset.browser_download_url;

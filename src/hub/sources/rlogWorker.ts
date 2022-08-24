@@ -2,7 +2,7 @@ import Log from "../log/Log";
 import RLOGDecoder from "./RLOGDecoder";
 
 self.onmessage = (event) => {
-  var { id, payload } = event.data;
+  let { id, payload } = event.data;
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });
   }

@@ -22,7 +22,7 @@ export default abstract class WorkerManager {
   }
 
   private static handleResponse(event: any) {
-    var message = event.data;
+    let message = event.data;
     if ("payload" in message) {
       if (message.id in WorkerManager.resolves) {
         WorkerManager.resolves[message.id](message.payload);

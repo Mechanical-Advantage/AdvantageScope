@@ -332,7 +332,7 @@ export default class LineGraphController implements TabController {
           usedColors.push(field.color);
         });
       });
-      var availableColors = this.COLORS.filter((color) => !usedColors.includes(color));
+      let availableColors = this.COLORS.filter((color) => !usedColors.includes(color));
       if (availableColors.length == 0) {
         color = this.COLORS[Math.floor(Math.random() * this.COLORS.length)];
       } else {
@@ -371,7 +371,7 @@ export default class LineGraphController implements TabController {
     removeElement.title = "";
     removeElement.addEventListener("click", () => {
       if (!itemElement.parentElement) return;
-      var index = Array.from(itemElement.parentElement.children).indexOf(itemElement) - 1;
+      let index = Array.from(itemElement.parentElement.children).indexOf(itemElement) - 1;
       itemElement.parentElement.removeChild(itemElement);
       fieldList.splice(index, 1);
     });
@@ -413,21 +413,21 @@ export default class LineGraphController implements TabController {
       this.timestampRange[1] = availableRange[1];
       if (dx < 0) window.selection.unlock(); // Unlock if attempting to scroll away
     } else if (dx != 0) {
-      var secsPerPixel = (this.timestampRange[1] - this.timestampRange[0]) / this.SCROLL_OVERLAY.clientWidth;
+      let secsPerPixel = (this.timestampRange[1] - this.timestampRange[0]) / this.SCROLL_OVERLAY.clientWidth;
       this.timestampRange[0] += dx * secsPerPixel;
       this.timestampRange[1] += dx * secsPerPixel;
     }
 
     // Apply vertical scroll
     if (dy != 0) {
-      var zoomPercent = Math.pow(this.ZOOM_BASE, dy);
-      var newZoom = (this.timestampRange[1] - this.timestampRange[0]) * zoomPercent;
+      let zoomPercent = Math.pow(this.ZOOM_BASE, dy);
+      let newZoom = (this.timestampRange[1] - this.timestampRange[0]) * zoomPercent;
       if (newZoom < this.MIN_ZOOM_TIME) newZoom = this.MIN_ZOOM_TIME;
       if (newZoom > availableRange[1] - availableRange[0]) newZoom = availableRange[1] - availableRange[0];
 
       let hoveredTime = window.selection.getHoveredTime();
       if (hoveredTime != null) {
-        var hoveredPercent = (hoveredTime - this.timestampRange[0]) / (this.timestampRange[1] - this.timestampRange[0]);
+        let hoveredPercent = (hoveredTime - this.timestampRange[0]) / (this.timestampRange[1] - this.timestampRange[0]);
         this.timestampRange[0] = hoveredTime - newZoom * hoveredPercent;
         this.timestampRange[1] = hoveredTime + newZoom * (1 - hoveredPercent);
       }
@@ -443,14 +443,14 @@ export default class LineGraphController implements TabController {
 
     // Enforce left limit
     if (this.timestampRange[0] < availableRange[0]) {
-      var shift = availableRange[0] - this.timestampRange[0];
+      let shift = availableRange[0] - this.timestampRange[0];
       this.timestampRange[0] += shift;
       this.timestampRange[1] += shift;
     }
 
     // Enforce right limit
     if (this.timestampRange[1] > availableRange[1]) {
-      var shift = availableRange[1] - this.timestampRange[1];
+      let shift = availableRange[1] - this.timestampRange[1];
       this.timestampRange[0] += shift;
       this.timestampRange[1] += shift;
       if (dx > 0) window.selection.lock(); // Lock if action is intentional
@@ -525,8 +525,8 @@ export default class LineGraphController implements TabController {
       let midStepPrimary = Math.ceil(cleanFloat(midPrimary / primaryAxis.step)) * primaryAxis.step;
       let midStepSecondary = Math.ceil(cleanFloat(midSecondary / stepValue)) * stepValue;
 
-      var newMin = ((primaryAxis.min - midStepPrimary) / primaryAxis.step) * stepValue + midStepSecondary;
-      var newMax = ((primaryAxis.max - midStepPrimary) / primaryAxis.step) * stepValue + midStepSecondary;
+      let newMin = ((primaryAxis.min - midStepPrimary) / primaryAxis.step) * stepValue + midStepSecondary;
+      let newMax = ((primaryAxis.max - midStepPrimary) / primaryAxis.step) * stepValue + midStepSecondary;
       return {
         min: newMin,
         max: newMax,
@@ -790,7 +790,7 @@ export default class LineGraphController implements TabController {
         context.setLineDash([5, 5]);
         context.strokeStyle = light ? "#222" : "#eee";
 
-        var x = scaleValue(time, timestampRange, [graphLeft, graphLeft + graphWidth]);
+        let x = scaleValue(time, timestampRange, [graphLeft, graphLeft + graphWidth]);
         context.beginPath();
         context.moveTo(x, graphTop);
         context.lineTo(x, graphTop + graphHeight);
@@ -878,7 +878,7 @@ export default class LineGraphController implements TabController {
     context.textAlign = "center";
     let stepPos = Math.ceil(cleanFloat(axis.min / axis.step)) * axis.step;
     while (true) {
-      var x = scaleValue(stepPos, [axis.min, axis.max], [graphLeft, graphLeft + graphWidth]);
+      let x = scaleValue(stepPos, [axis.min, axis.max], [graphLeft, graphLeft + graphWidth]);
 
       // Clean up final x (scroll can cause rounding problems)
       if (x - graphLeft - graphWidth > 1) {

@@ -35,14 +35,14 @@ export default class LogField {
     let timestamps: number[] = [];
     let values: any[] = [];
 
-    var startValueIndex = this.data.timestamps.findIndex((x) => x > start);
+    let startValueIndex = this.data.timestamps.findIndex((x) => x > start);
     if (startValueIndex == -1) {
       startValueIndex = this.data.timestamps.length - 1;
     } else if (startValueIndex != 0) {
       startValueIndex -= 1;
     }
 
-    var endValueIndex = this.data.timestamps.findIndex((x) => x >= end);
+    let endValueIndex = this.data.timestamps.findIndex((x) => x >= end);
     if (endValueIndex == -1 || endValueIndex == this.data.timestamps.length - 1) {
       // Extend to end of timestamps
       timestamps = this.data.timestamps.slice(startValueIndex);

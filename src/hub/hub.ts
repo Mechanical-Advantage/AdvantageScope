@@ -168,7 +168,7 @@ window.addEventListener("message", (event) => {
   if (event.source == window && event.data == "port") {
     window.messagePort = event.ports[0];
     window.messagePort.onmessage = (event) => {
-      var message: NamedMessage = event.data;
+      let message: NamedMessage = event.data;
       handleMainMessage(message);
     };
   }

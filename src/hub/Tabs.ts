@@ -33,7 +33,7 @@ export default class Tabs {
     // Hover and click handling
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       this.tabList.forEach((tab, index) => {
-        var rect = tab.titleElement.getBoundingClientRect();
+        let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
           event.clientX <= rect.right &&
@@ -46,7 +46,7 @@ export default class Tabs {
     });
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
       this.tabList.forEach((tab) => {
-        var rect = tab.titleElement.getBoundingClientRect();
+        let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
           event.clientX <= rect.right &&
@@ -83,7 +83,7 @@ export default class Tabs {
     });
 
     // Periodic function
-    var periodic = () => {
+    let periodic = () => {
       this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) == 0 ? "0" : "1";
       this.SHADOW_RIGHT.style.opacity =
         Math.ceil(this.TAB_BAR.scrollLeft) == this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";

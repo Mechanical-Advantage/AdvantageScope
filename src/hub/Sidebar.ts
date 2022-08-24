@@ -35,7 +35,7 @@ export default class Sidebar {
     });
     window.addEventListener("mousemove", (event) => {
       if (this.sidebarHandleActive) {
-        var width = event.clientX;
+        let width = event.clientX;
         if (width > 500) width = 500;
         if (width >= 80 && width < 160) width = 160;
         if (width < 80) width = 0;
@@ -195,7 +195,7 @@ export default class Sidebar {
         }
       });
       label.addEventListener("touchstart", (event) => {
-        var touch = event.targetTouches[0];
+        let touch = event.targetTouches[0];
         dragEvent(
           touch.clientX,
           touch.clientY,
