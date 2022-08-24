@@ -564,16 +564,15 @@ function createHubWindow() {
   // Finish setup
   if (!app.isPackaged) window.webContents.openDevTools();
   window.once("ready-to-show", window.show);
-  window.webContents.on("dom-ready", () => {
-    // Set up ports
-    const { port1, port2 } = new MessageChannelMain();
-    window.webContents.postMessage("port", null, [port1]);
-    windowPorts[window.id] = port2;
-    port2.on("message", (event) => {
-      handleHubMessage(window, event.data);
-    });
-    port2.start();
 
+  const { port1, port2 } = new MessageChannelMain();
+  window.webContents.postMessage("port", null, [port1]);
+  windowPorts[window.id] = port2;
+  port2.on("message", (event) => {
+    handleHubMessage(window, event.data);
+  });
+  port2.start();
+  window.webContents.on("dom-ready", () => {
     // Init messages
     if (rendererState) sendMessage(window, "restore-state", rendererState);
     sendMessage(window, "set-fullscreen", window.isFullScreen());
@@ -622,17 +621,14 @@ function createEditAxisWindow(
   // Finish setup
   editWindow.setMenu(null);
   editWindow.once("ready-to-show", parentWindow.show);
-  editWindow.webContents.on("dom-ready", () => {
-    // Set up ports
-    const { port1, port2 } = new MessageChannelMain();
-    editWindow.webContents.postMessage("port", null, [port1]);
-    port2.postMessage(range);
-    port2.on("message", (event) => {
-      editWindow.destroy();
-      callback(event.data);
-    });
-    port2.start();
+  const { port1, port2 } = new MessageChannelMain();
+  editWindow.webContents.postMessage("port", null, [port1]);
+  port2.postMessage(range);
+  port2.on("message", (event) => {
+    editWindow.destroy();
+    callback(event.data);
   });
+  port2.start();
   editWindow.loadFile(path.join(__dirname, "../www/editAxis.html"));
 }
 
@@ -667,19 +663,15 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   // Finish setup
   prefsWindow.setMenu(null);
   prefsWindow.once("ready-to-show", prefsWindow.show);
-  prefsWindow.webContents.on("dom-ready", () => {
-    // Set up ports
-    const { port1, port2 } = new MessageChannelMain();
-    prefsWindow?.webContents.postMessage("port", null, [port1]);
-    port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
-    port2.on("message", (event) => {
-      prefsWindow?.destroy();
-      jsonfile.writeFileSync(PREFS_FILENAME, event.data);
-      sendAllPreferences();
-    });
-    port2.start();
-    prefsWindow?.show();
+  const { port1, port2 } = new MessageChannelMain();
+  prefsWindow.webContents.postMessage("port", null, [port1]);
+  port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
+  port2.on("message", (event) => {
+    prefsWindow?.destroy();
+    jsonfile.writeFileSync(PREFS_FILENAME, event.data);
+    sendAllPreferences();
   });
+  port2.start();
   prefsWindow.loadFile(path.join(__dirname, "../www/preferences.html"));
 }
 
