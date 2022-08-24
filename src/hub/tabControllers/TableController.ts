@@ -4,10 +4,10 @@ import TabController from "../TabController";
 
 export default class TableController implements TabController {
   constructor(content: HTMLElement) {}
-  saveState(): MetadataState {
-    return { type: TabType.Metadata };
+  saveState(): TableState {
+    return { type: TabType.Table, fields: [] };
   }
   restoreState(state: MetadataState): void {}
-  periodic(): void {}
   refresh(): void {}
+  periodic(): void {}
 }

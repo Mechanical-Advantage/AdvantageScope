@@ -8,9 +8,9 @@ export default interface TabController {
   /** Restores to the provided state. */
   restoreState(state: TabState): void;
 
-  /** Called every animation frame if the tab is visible. */
-  periodic(): void;
-
   /** Refresh based on new log data. */
   refresh(): void;
+
+  /** Called every animation frame if the tab is visible. */
+  periodic(): void;
 }

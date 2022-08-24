@@ -612,11 +612,6 @@ div.line-graph-scroll::-webkit-scrollbar {
   display: none;
 }
 
-div.line-graph-scroll-content {
-  width: 1000000px;
-  height: 1000000px;
-}
-
 /* Table */
 
 div.data-table-container {

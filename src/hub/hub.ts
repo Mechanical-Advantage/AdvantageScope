@@ -95,6 +95,7 @@ function saveState(): HubState {
 /** Restores to the provided state. */
 function restoreState(state: HubState) {
   window.sidebar.restoreState(state.sidebar);
+  window.tabs.restoreState(state.tabs);
 }
 
 setInterval(() => {
@@ -124,7 +125,7 @@ function dragMove(x: number, y: number) {
     dragLastY = y;
     window.dispatchEvent(
       new CustomEvent("drag-update", {
-        detail: { x: x, y: y, data: dragData }
+        detail: { end: false, x: x, y: y, data: dragData }
       })
     );
   }
@@ -141,8 +142,8 @@ function dragEnd() {
     dragActive = false;
     DRAG_ITEM.hidden = true;
     window.dispatchEvent(
-      new CustomEvent("drag-stop", {
-        detail: { x: dragLastX, y: dragLastY, data: dragData }
+      new CustomEvent("drag-update", {
+        detail: { end: true, x: dragLastX, y: dragLastY, data: dragData }
       })
     );
   }
@@ -241,6 +242,7 @@ function handleMainMessage(message: NamedMessage) {
         (log: Log) => {
           window.log = log;
           window.sidebar.refresh();
+          window.tabs.refresh();
         }
       );
       break;
@@ -293,6 +295,7 @@ function handleMainMessage(message: NamedMessage) {
           }
 
           window.sidebar.refresh();
+          window.tabs.refresh();
         }
       );
       break;
@@ -315,6 +318,10 @@ function handleMainMessage(message: NamedMessage) {
 
     case "close-tab":
       window.tabs.close(window.tabs.getSelectedTab());
+      break;
+
+    case "edit-axis":
+      window.tabs.editAxis(message.data.isLeft, message.data.range);
       break;
   }
 }

@@ -74,7 +74,7 @@ export default class Selection {
   }
 
   /** Returns the hovered time. */
-  setHoveredTime(value: number) {
+  setHoveredTime(value: number | null) {
     this.hoveredTime = value;
   }
 
@@ -119,6 +119,19 @@ export default class Selection {
         this.playbackStartLog = time;
         this.playbackStartReal = this.now();
         break;
+      case SelectionMode.Locked:
+        break;
+    }
+  }
+
+  /** Switches to idle if possible.. */
+  goIdle() {
+    switch (this.mode) {
+      case SelectionMode.Static:
+        this.setMode(SelectionMode.Idle);
+        break;
+      case SelectionMode.Idle:
+      case SelectionMode.Playback:
       case SelectionMode.Locked:
         break;
     }

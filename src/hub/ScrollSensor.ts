@@ -1,5 +1,5 @@
 export default class ScrollSensor {
-  private SIZE_PX = 1000000;
+  private SIZE_PX = 100000;
   private RESET_MS = 1000;
 
   private container: HTMLElement;
@@ -20,10 +20,10 @@ export default class ScrollSensor {
     this.callback = callback;
 
     let content = document.createElement("div");
+    this.container.appendChild(content);
     content.style.width = this.SIZE_PX.toString() + "px";
     content.style.height = this.SIZE_PX.toString() + "px";
-    this.container.appendChild(content);
-    this.reset();
+    setTimeout(() => this.reset(), 100); // Wait to load
 
     this.container.addEventListener("scroll", () => {
       this.update();

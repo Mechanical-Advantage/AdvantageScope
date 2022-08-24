@@ -207,6 +207,13 @@ export default class Tabs {
     this.updateElements();
   }
 
+  /** Adjusts the locked range for an axis on the selected line graph. */
+  editAxis(isLeft: boolean, range: [number, number] | null) {
+    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, range);
+    }
+  }
+
   /** Updates the displayed elements based on the tab list. */
   private updateElements() {
     // Remove old tabs

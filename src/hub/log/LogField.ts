@@ -1,3 +1,4 @@
+import { arraysEqual } from "../../lib/util";
 import LoggableType from "./LoggableType";
 import {
   LogValueSetAny,
@@ -30,7 +31,7 @@ export default class LogField {
   }
 
   /** Returns the values in the specified timestamp range. */
-  private getRange(start: number, end: number): LogValueSetAny {
+  getRange(start: number, end: number): LogValueSetAny {
     let timestamps: number[] = [];
     let values: any[] = [];
 
@@ -51,16 +52,6 @@ export default class LogField {
       values = this.data.values.slice(startValueIndex, endValueIndex + 1);
     }
     return { timestamps: timestamps, values: values };
-  }
-
-  /** Inserts a new value at the correct index. */
-  private putData(timestamp: number, value: any) {
-    let insertIndex = this.data.timestamps.findIndex((x) => x > timestamp);
-    if (insertIndex == -1) {
-      insertIndex = this.data.timestamps.length;
-    }
-    this.data.timestamps.splice(insertIndex, 0, timestamp);
-    this.data.values.splice(insertIndex, 0, value);
   }
 
   /** Reads a set of Raw values from the field. */
@@ -96,6 +87,44 @@ export default class LogField {
   /** Reads a set of StringArray values from the field. */
   getStringArray(start: number, end: number): LogValueSetStringArray | undefined {
     if (this.type == LoggableType.StringArray) return this.getRange(start, end);
+  }
+
+  /** Checks if two log values are equal. */
+  private areEqual(type: LoggableType, a: any, b: any): boolean {
+    switch (type) {
+      case LoggableType.Boolean:
+      case LoggableType.Number:
+      case LoggableType.String:
+        return a == b;
+      case LoggableType.BooleanArray:
+      case LoggableType.NumberArray:
+      case LoggableType.StringArray:
+        return arraysEqual(a, b);
+      case LoggableType.Raw:
+        return arraysEqual(Array.from(a as Uint8Array), Array.from(b as Uint8Array));
+    }
+  }
+
+  /** Inserts a new value at the correct index. */
+  private putData(timestamp: number, value: any) {
+    let insertIndex = this.data.timestamps.findIndex((x) => x > timestamp);
+    if (insertIndex == -1) {
+      insertIndex = this.data.timestamps.length;
+    }
+
+    if (insertIndex > 0 && this.areEqual(this.type, value, this.data.values[insertIndex - 1])) {
+      // Same as the previous value
+    } else if (
+      insertIndex < this.data.values.length &&
+      this.areEqual(this.type, value, this.data.values[insertIndex])
+    ) {
+      // Same as the next value
+      this.data.timestamps[insertIndex] = timestamp;
+    } else {
+      // New value
+      this.data.timestamps.splice(insertIndex, 0, timestamp);
+      this.data.values.splice(insertIndex, 0, value);
+    }
   }
 
   /** Writes a new Raw value to the field. */

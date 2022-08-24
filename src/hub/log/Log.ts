@@ -2,6 +2,7 @@ import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
 import {
+  LogValueSetAny,
   LogValueSetBoolean,
   LogValueSetBooleanArray,
   LogValueSetNumber,
@@ -57,15 +58,19 @@ export default class Log {
 
   /** Returns the combined timestamps from a set of fields. */
   getTimestamps(keys: string[]): number[] {
-    const output: number[] = [];
-    keys.forEach((key) => {
-      this.fields[key].getTimestamps().forEach((timestamp) => {
-        if (!output.includes(timestamp)) {
-          output.push(timestamp);
-        }
+    let output: number[] = [];
+    if (keys.length > 1) {
+      keys.forEach((key) => {
+        this.fields[key].getTimestamps().forEach((timestamp) => {
+          if (!output.includes(timestamp)) {
+            output.push(timestamp);
+          }
+        });
       });
-    });
-    output.sort();
+      output.sort((a, b) => a - b);
+    } else {
+      output = this.fields[keys[0]].getTimestamps();
+    }
     return output;
   }
 
@@ -101,6 +106,11 @@ export default class Log {
       position.fullKey = key;
     });
     return root;
+  }
+
+  /** Reads a set of generic values from the field. */
+  getRange(key: string, start: number, end: number): LogValueSetAny | undefined {
+    if (key in this.fields) return this.fields[key].getRange(start, end);
   }
 
   /** Reads a set of Raw values from the field. */

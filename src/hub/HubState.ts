@@ -25,47 +25,40 @@ export interface MetadataState extends TabState {
 
 export interface LineGraphState {
   type: TabType.LineGraph;
-  range: [number, number];
   legends: {
     left: {
       lockedRange: [number, number] | null;
-      fields: [
-        {
-          displayKey: string;
-          color: string;
-          show: boolean;
-        }
-      ];
+      fields: {
+        key: string;
+        color: string;
+        show: boolean;
+      }[];
     };
     discrete: {
-      fields: [
-        {
-          displayKey: string;
-          color: string;
-          show: boolean;
-        }
-      ];
+      fields: {
+        key: string;
+        color: string;
+        show: boolean;
+      }[];
     };
     right: {
       lockedRange: [number, number] | null;
-      fields: [
-        {
-          displayKey: string;
-          color: string;
-          show: boolean;
-        }
-      ];
+      fields: {
+        key: string;
+        color: string;
+        show: boolean;
+      }[];
     };
   };
 }
 
 export interface TableState {
-  name: TabType.Table;
+  type: TabType.Table;
   fields: string[];
 }
 
 export interface OdometryState {
-  name: TabType.Odometry;
+  type: TabType.Odometry;
   fields: {
     robotPose: string | null;
     ghostPose: string | null;
@@ -83,7 +76,7 @@ export interface OdometryState {
 }
 
 export interface PointsState {
-  name: TabType.Points;
+  type: TabType.Points;
   fields: {
     x: string | null;
     y: string | null;

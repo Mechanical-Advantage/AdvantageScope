@@ -18,6 +18,7 @@ export default [
 
   bundle("hub/hub.ts", "hub.js"),
   bundle("hub/sources/rlogWorker.ts", "hub$rlogWorker.js"),
+  bundle("editAxis/editAxis.ts", "editAxis.js"),
   bundle("download/download.ts", "download.js"),
   bundle("satellite/satellite.ts", "satellite.js"),
   bundle("preferences/preferences.ts", "preferences.js")

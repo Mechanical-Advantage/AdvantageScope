@@ -216,6 +216,46 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
       newTabMenu.popup();
       break;
+
+    case "ask-edit-axis":
+      let isLeft: boolean = message.data.isLeft;
+      let lockedRange: [number, number] | null = message.data.lockedRange;
+
+      const menu = new Menu();
+      menu.append(
+        new MenuItem({
+          label: "Lock Axis",
+          type: "checkbox",
+          checked: lockedRange != null,
+          click() {
+            sendMessage(window, "edit-axis", {
+              isLeft: message.data.isLeft,
+              range: lockedRange == null ? [null, null] : null
+            });
+          }
+        })
+      );
+      menu.append(
+        new MenuItem({
+          type: "separator"
+        })
+      );
+      menu.append(
+        new MenuItem({
+          label: "Edit Range",
+          enabled: lockedRange != null,
+          click() {
+            createEditAxisWindow(window, lockedRange as [number, number], (newRange) => {
+              sendMessage(window, "edit-axis", {
+                isLeft: message.data.isLeft,
+                range: newRange
+              });
+            });
+          }
+        })
+      );
+      menu.popup();
+      break;
   }
 }
 
@@ -553,6 +593,47 @@ function createHubWindow() {
 
   window.loadFile(path.join(__dirname, "../www/hub.html"));
   return window;
+}
+
+/**
+ * Creates a new window to edit axis range.
+ * @param parentWindow The parent window to use for alignment
+ */
+function createEditAxisWindow(
+  parentWindow: Electron.BrowserWindow,
+  range: [number, number],
+  callback: (range: [number, number]) => void
+) {
+  // Create edit axis window
+  const editWindow = new BrowserWindow({
+    width: 300,
+    height: process.platform == "win32" ? 125 : 108, // "useContentSize" is broken on Windows when not resizable
+    useContentSize: true,
+    resizable: false,
+    icon: WINDOW_ICON,
+    show: false,
+    parent: parentWindow,
+    modal: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  editWindow.setMenu(null);
+  editWindow.once("ready-to-show", parentWindow.show);
+  editWindow.webContents.on("dom-ready", () => {
+    // Set up ports
+    const { port1, port2 } = new MessageChannelMain();
+    editWindow.webContents.postMessage("port", null, [port1]);
+    port2.postMessage(range);
+    port2.on("message", (event) => {
+      editWindow.close();
+      callback(event.data);
+    });
+    port2.start();
+  });
+  editWindow.loadFile(path.join(__dirname, "../www/editAxis.html"));
 }
 
 /**

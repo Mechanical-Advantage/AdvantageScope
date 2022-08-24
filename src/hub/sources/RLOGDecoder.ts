@@ -31,7 +31,7 @@ export default class RLOGDecoder {
 
       mainLoop: while (true) {
         if (offset >= dataArray.length) break mainLoop; // No more data, so we can't start a new entry
-        var timestamp = dataBuffer.getFloat64(shiftOffset(8));
+        let timestamp = dataBuffer.getFloat64(shiftOffset(8));
         if (
           this.lastTimestamp != null &&
           (isNaN(timestamp) ||
@@ -55,21 +55,21 @@ export default class RLOGDecoder {
         this.lastTimestamp = timestamp;
 
         readLoop: while (true) {
-          var type = dataArray[shiftOffset(1)];
+          let type = dataArray[shiftOffset(1)];
           if (type == undefined) break readLoop; // This was the last cycle, save the data
 
           switch (type) {
             case 0: // New timestamp
               break readLoop;
             case 1: // New key ID
-              var keyID = dataBuffer.getInt16(shiftOffset(2));
-              var length = dataBuffer.getInt16(shiftOffset(2));
-              var key = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + length));
+              let keyID = dataBuffer.getInt16(shiftOffset(2));
+              let length = dataBuffer.getInt16(shiftOffset(2));
+              let newKey = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + length));
               offset += length;
-              this.keyIDs[keyID] = key;
+              this.keyIDs[keyID] = newKey;
               break;
             case 2: // Updated field
-              var key = this.keyIDs[dataBuffer.getInt16(shiftOffset(2))];
+              let key = this.keyIDs[dataBuffer.getInt16(shiftOffset(2))];
 
               switch (dataArray[shiftOffset(1)]) {
                 case 0: // null, not supported
@@ -87,48 +87,48 @@ export default class RLOGDecoder {
                   log.putNumber(key, timestamp, dataBuffer.getFloat64(shiftOffset(8)));
                   break;
                 case 7: // String
-                  var length = dataBuffer.getInt16(shiftOffset(2));
-                  var string = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + length));
-                  offset += length;
+                  let stringLength = dataBuffer.getInt16(shiftOffset(2));
+                  let string = this.STRING_DECODER.decode(dataArray.subarray(offset, offset + stringLength));
+                  offset += stringLength;
                   log.putString(key, timestamp, string);
                   break;
                 case 2: // BooleanArray
-                  var length = dataBuffer.getInt16(shiftOffset(2));
-                  var booleanArray: boolean[] = [];
-                  for (let i = 0; i < length; i++) {
+                  let booleanArrayLength = dataBuffer.getInt16(shiftOffset(2));
+                  let booleanArray: boolean[] = [];
+                  for (let i = 0; i < booleanArrayLength; i++) {
                     booleanArray.push(dataArray[shiftOffset(1)] != 0);
                   }
                   log.putBooleanArray(key, timestamp, booleanArray);
                   break;
                 case 10: // ByteArray
-                  var length = dataBuffer.getInt16(shiftOffset(2));
-                  var byteArray: number[] = [];
-                  for (let i = 0; i < length; i++) {
+                  let byteArrayLength = dataBuffer.getInt16(shiftOffset(2));
+                  let byteArray: number[] = [];
+                  for (let i = 0; i < byteArrayLength; i++) {
                     byteArray.push(dataArray[shiftOffset(1)]);
                   }
                   log.putRaw(key, timestamp, new Uint8Array(byteArray));
                   break;
                 case 4: // IntegerArray
-                  var length = dataBuffer.getInt16(shiftOffset(2));
-                  var numberArray: number[] = [];
-                  for (let i = 0; i < length; i++) {
-                    numberArray.push(dataBuffer.getInt32(shiftOffset(4)));
+                  let integerArrayLength = dataBuffer.getInt16(shiftOffset(2));
+                  let integerArray: number[] = [];
+                  for (let i = 0; i < integerArrayLength; i++) {
+                    integerArray.push(dataBuffer.getInt32(shiftOffset(4)));
                   }
-                  log.putNumberArray(key, timestamp, numberArray);
+                  log.putNumberArray(key, timestamp, integerArray);
                   break;
                 case 6: // DoubleArray
-                  var length = dataBuffer.getInt16(shiftOffset(2));
-                  var numberArray: number[] = [];
-                  for (let i = 0; i < length; i++) {
-                    numberArray.push(dataBuffer.getFloat64(shiftOffset(8)));
+                  let doubleArrayLength = dataBuffer.getInt16(shiftOffset(2));
+                  let doubleArray: number[] = [];
+                  for (let i = 0; i < doubleArrayLength; i++) {
+                    doubleArray.push(dataBuffer.getFloat64(shiftOffset(8)));
                   }
-                  log.putNumberArray(key, timestamp, numberArray);
+                  log.putNumberArray(key, timestamp, doubleArray);
                   break;
                 case 8: // StringArray
-                  var length = dataBuffer.getInt16(shiftOffset(2));
-                  var stringArray: string[] = [];
-                  for (let i = 0; i < length; i++) {
-                    var stringLength = dataBuffer.getInt16(shiftOffset(2));
+                  let stringArraylength = dataBuffer.getInt16(shiftOffset(2));
+                  let stringArray: string[] = [];
+                  for (let i = 0; i < stringArraylength; i++) {
+                    let stringLength = dataBuffer.getInt16(shiftOffset(2));
                     stringArray.push(this.STRING_DECODER.decode(dataArray.subarray(offset, offset + stringLength)));
                     offset += stringLength;
                   }
