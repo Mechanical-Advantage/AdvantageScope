@@ -279,7 +279,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+O",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            var files = dialog.showOpenDialog(window, {
+            let files = dialog.showOpenDialog(window, {
               title: "Select a robot log file to open",
               properties: ["openFile"],
               filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog"] }]
@@ -541,7 +541,7 @@ function createHubWindow() {
     prefs.height = state.height;
     if (state.rendererState) rendererState = state.rendererState;
   } else if (focusedWindow != null) {
-    var bounds = focusedWindow.getBounds();
+    let bounds = focusedWindow.getBounds();
     prefs.x = bounds.x + 30;
     prefs.y = bounds.y + 30;
     prefs.width = bounds.width;
@@ -652,7 +652,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {}
 
 // Workaround to set menu bar color on some Linux environments
 if (process.platform == "linux" && fs.existsSync(PREFS_FILENAME)) {
-  var prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
   if (prefs.theme == "dark") {
     process.env["GTK_THEME"] = "Adwaita:dark";
   }
@@ -664,13 +664,13 @@ app.whenReady().then(() => {
     jsonfile.writeFileSync(PREFS_FILENAME, DEFAULT_PREFS);
     nativeTheme.themeSource = DEFAULT_PREFS.theme;
   } else {
-    var prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
     nativeTheme.themeSource = prefs.theme;
   }
 
   // Create menu and window
   setupMenu();
-  var window = createHubWindow();
+  let window = createHubWindow();
 
   // Check for file path given as argument
   if (app.isPackaged) {
@@ -706,7 +706,7 @@ app.on("window-all-closed", function () {
 app.on("open-file", (_, path) => {
   if (app.isReady()) {
     // Already running, create a new window
-    var window = createHubWindow();
+    let window = createHubWindow();
     sendMessage(window, "open-file", path);
     recordOpenFile(path);
   } else {
