@@ -51,20 +51,20 @@
     ],
     "fileAssociations": [
       {
+        "ext": "wpilog",
+        "name": "WPILib robot log",
+        "description": "WPILib robot log",
+        "mimeType": "application/octet-stream",
+        "role": "Viewer",
+        "icon": "icons/app/wpilog-icon"
+      },
+      {
         "ext": "rlog",
         "name": "Robot log",
         "description": "Robot log",
         "mimeType": "application/octet-stream",
         "role": "Viewer",
         "icon": "icons/app/rlog-icon"
-      },
-      {
-        "ext": "wpilog",
-        "name": "Robot log",
-        "description": "Robot log",
-        "mimeType": "application/octet-stream",
-        "role": "Viewer",
-        "icon": "icons/app/wpilog-icon"
       }
     ],
     "mac": {

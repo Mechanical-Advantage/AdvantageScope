@@ -38,9 +38,9 @@ const RLOG_CONNECT_TIMEOUT_MS = 1000; // How long to wait when connecting
 const RLOG_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout
 const RLOG_HEARTBEAT_DELAY_MS = 1000; // How long to wait between heartbeats
 const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
-var rlogSocket: net.Socket | null = null;
-var rlogSocketTimeout: NodeJS.Timeout | null = null;
-var rlogDataArray = new Uint8Array();
+var rlogSockets: { [id: number]: net.Socket } = {};
+var rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
+var rlogDataArrays: { [id: number]: Uint8Array } = {};
 
 /** Records the last open file for the robot program (and recent files for the OS). */
 function recordOpenFile(filePath: string) {
@@ -55,9 +55,15 @@ function recordOpenFile(filePath: string) {
  * @param window The window target
  * @param name The name of the message
  * @param data Arbitrary data to include
+ * @returns Whether the operation was successful
  */
-function sendMessage(window: BrowserWindow, name: string, data?: any) {
-  windowPorts[window.id].postMessage({ name: name, data: data });
+function sendMessage(window: BrowserWindow, name: string, data?: any): boolean {
+  try {
+    windowPorts[window.id].postMessage({ name: name, data: data });
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
 /** Sends the current preferences to all windows (including USB menu bar setting) */
@@ -79,13 +85,16 @@ function sendAllPreferences() {
  * @param message The received message
  */
 function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
+  let windowId = window.id;
   switch (message.name) {
     case "save-state":
       hubStateTracker.saveRendererState(window, message.data);
       break;
 
     case "historical-start":
+      console.log("Reading historical data for window " + windowId.toString());
       let sendError = () => {
+        console.log("Failed to read historical data for window " + windowId.toString());
         sendMessage(window, "historical-data", {
           success: false
         });
@@ -96,6 +105,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           if (error) {
             sendError();
           } else {
+            console.log("Successfully read historical data for window " + windowId.toString());
             sendMessage(window, "historical-data", {
               success: true,
               raw: buffer
@@ -106,60 +116,68 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "live-rlog-start":
-      rlogSocket = net.createConnection({
+      rlogSockets[windowId] = net.createConnection({
         host: message.data.address,
         port: message.data.port
       });
 
-      rlogSocket.setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
+      rlogSockets[windowId].setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
         sendMessage(window, "live-rlog-data", { status: false });
       });
 
-      function appendArray(newArray: Uint8Array) {
-        let fullArray = new Uint8Array(rlogDataArray.length + newArray.length);
-        fullArray.set(rlogDataArray);
-        fullArray.set(newArray, rlogDataArray.length);
-        rlogDataArray = fullArray;
-      }
+      let appendArray = (newArray: Uint8Array) => {
+        let fullArray = new Uint8Array(rlogDataArrays[windowId].length + newArray.length);
+        fullArray.set(rlogDataArrays[windowId]);
+        fullArray.set(newArray, rlogDataArrays[windowId].length);
+        rlogDataArrays[windowId] = fullArray;
+      };
 
-      rlogSocket.on("data", (data) => {
+      rlogDataArrays[windowId] = new Uint8Array();
+      rlogSockets[windowId].on("data", (data) => {
         appendArray(data);
-        if (rlogSocketTimeout != null) clearTimeout(rlogSocketTimeout);
-        rlogSocketTimeout = setTimeout(() => {
-          rlogSocket?.destroy();
+        if (rlogSocketTimeouts[windowId] != null) clearTimeout(rlogSocketTimeouts[windowId]);
+        rlogSocketTimeouts[windowId] = setTimeout(() => {
+          rlogSockets[windowId].destroy();
         }, RLOG_DATA_TIMEOUT_MS);
 
         while (true) {
           var expectedLength;
-          if (rlogDataArray.length < 4) {
+          if (rlogDataArrays[windowId].length < 4) {
             break;
           } else {
-            expectedLength = new DataView(rlogDataArray.buffer).getInt32(0) + 4;
-            if (rlogDataArray.length < expectedLength) {
+            expectedLength = new DataView(rlogDataArrays[windowId].buffer).getInt32(0) + 4;
+            if (rlogDataArrays[windowId].length < expectedLength) {
               break;
             }
           }
 
-          var singleArray = rlogDataArray.slice(4, expectedLength);
-          rlogDataArray = rlogDataArray.slice(expectedLength);
+          var singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
+          rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
 
-          if (rlogSocket) {
-            sendMessage(window, "live-rlog-data", { success: true, raw: new Uint8Array(singleArray) });
+          let success = sendMessage(window, "live-rlog-data", { success: true, raw: new Uint8Array(singleArray) });
+          if (!success) {
+            rlogSockets[windowId].destroy();
+            console.log(
+              "Closed RLOG socket for window " + windowId.toString() + " because the renderer port was destroyed"
+            );
           }
         }
       });
 
-      rlogSocket.on("error", () => {
+      rlogSockets[windowId].on("error", () => {
         sendMessage(window, "live-rlog-data", { success: false });
       });
 
-      rlogSocket.on("close", () => {
+      rlogSockets[windowId].on("close", () => {
         sendMessage(window, "live-rlog-data", { success: false });
       });
+
+      console.log("Opened RLOG socket for window " + windowId.toString());
       break;
 
     case "live-rlog-stop":
-      rlogSocket?.destroy();
+      rlogSockets[windowId].destroy();
+      console.log("Closed RLOG socket for window " + windowId.toString());
       break;
 
     case "ask-playback-speed":
@@ -259,9 +277,11 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   }
 }
 
-// Send live RLOG heartbeat
+// Send live RLOG heartbeats
 setInterval(() => {
-  rlogSocket?.write(RLOG_HEARTBEAT_DATA);
+  Object.values(rlogSockets).forEach((socket) => {
+    socket.write(RLOG_HEARTBEAT_DATA);
+  });
 }, RLOG_HEARTBEAT_DELAY_MS);
 
 // CREATE WINDOWS
@@ -565,14 +585,21 @@ function createHubWindow() {
   if (!app.isPackaged) window.webContents.openDevTools();
   window.once("ready-to-show", window.show);
 
-  const { port1, port2 } = new MessageChannelMain();
-  window.webContents.postMessage("port", null, [port1]);
-  windowPorts[window.id] = port2;
-  port2.on("message", (event) => {
-    handleHubMessage(window, event.data);
-  });
-  port2.start();
+  let firstLoad = true;
+  let createPorts = () => {
+    const { port1, port2 } = new MessageChannelMain();
+    window.webContents.postMessage("port", null, [port1]);
+    windowPorts[window.id] = port2;
+    port2.on("message", (event) => {
+      handleHubMessage(window, event.data);
+    });
+    port2.start();
+  };
+  createPorts(); // Create ports immediately so messages can be queued
   window.webContents.on("dom-ready", () => {
+    if (!firstLoad) createPorts(); // Create ports on reload
+    firstLoad = false;
+
     // Init messages
     if (rendererState) sendMessage(window, "restore-state", rendererState);
     sendMessage(window, "set-fullscreen", window.isFullScreen());
@@ -621,14 +648,17 @@ function createEditAxisWindow(
   // Finish setup
   editWindow.setMenu(null);
   editWindow.once("ready-to-show", parentWindow.show);
-  const { port1, port2 } = new MessageChannelMain();
-  editWindow.webContents.postMessage("port", null, [port1]);
-  port2.postMessage(range);
-  port2.on("message", (event) => {
-    editWindow.destroy();
-    callback(event.data);
+  editWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    editWindow.webContents.postMessage("port", null, [port1]);
+    port2.postMessage(range);
+    port2.on("message", (event) => {
+      editWindow.destroy();
+      callback(event.data);
+    });
+    port2.start();
   });
-  port2.start();
   editWindow.loadFile(path.join(__dirname, "../www/editAxis.html"));
 }
 
@@ -663,15 +693,18 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   // Finish setup
   prefsWindow.setMenu(null);
   prefsWindow.once("ready-to-show", prefsWindow.show);
-  const { port1, port2 } = new MessageChannelMain();
-  prefsWindow.webContents.postMessage("port", null, [port1]);
-  port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
-  port2.on("message", (event) => {
-    prefsWindow?.destroy();
-    jsonfile.writeFileSync(PREFS_FILENAME, event.data);
-    sendAllPreferences();
+  prefsWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    prefsWindow?.webContents.postMessage("port", null, [port1]);
+    port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
+    port2.on("message", (event) => {
+      prefsWindow?.destroy();
+      jsonfile.writeFileSync(PREFS_FILENAME, event.data);
+      sendAllPreferences();
+    });
+    port2.start();
   });
-  port2.start();
   prefsWindow.loadFile(path.join(__dirname, "../www/preferences.html"));
 }
 

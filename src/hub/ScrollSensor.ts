@@ -1,51 +1,56 @@
 export default class ScrollSensor {
-  private SIZE_PX = 100000;
+  private SIZE_PX = 1000000;
   private RESET_MS = 1000;
 
   private container: HTMLElement;
   private callback: (x: number, y: number) => void;
 
+  private sizePx = 0;
   private lastScrollUpdate = 0;
-  private resetOnNextUpdate = false;
+  private resetNext = false;
   private lastScrollLeft: number = 0;
   private lastScrollTop: number = 0;
 
   /**
    * Creates a new ScrollSensor.
-   * @param element The container element. The overflow should be "scroll" and the scrollbar should be hidden. It does not need a child element.
+   * @param element The container element. The overflow should be "scroll" and the scrollbar should be hidden. The child element should have the dimensions 1000000x1000000px.
    * @param callback A function to be called after each scroll event, with the relative change in x and y.
    */
   constructor(container: HTMLElement, callback: (dx: number, dy: number) => void) {
     this.container = container;
     this.callback = callback;
 
-    let content = document.createElement("div");
-    this.container.appendChild(content);
-    content.style.width = this.SIZE_PX.toString() + "px";
-    content.style.height = this.SIZE_PX.toString() + "px";
-    setTimeout(() => this.reset(), 100); // Wait to load
-
+    this.resetNext = true;
     this.container.addEventListener("scroll", () => {
       this.update();
     });
   }
 
+  /** Should be called periodically to trigger resets. */
+  periodic() {
+    let currentTime = new Date().getTime();
+    if (this.resetNext || currentTime - this.lastScrollUpdate > this.RESET_MS) {
+      this.resetNext = false;
+      this.reset();
+    }
+  }
+
   /** Measure the scroll and update if necessary. */
   private update() {
     let currentTime = new Date().getTime();
+    this.lastScrollUpdate = currentTime;
+
+    // Reset if necessary
+    if (this.resetNext) {
+      this.resetNext = false;
+      this.reset();
+    }
 
     // Exit if not visible (cannot get scroll position)
     if (this.container.offsetWidth == 0 && this.container.offsetHeight == 0) {
-      this.resetOnNextUpdate = true;
+      this.resetNext = true;
       return;
     }
-
-    // Reset if necessary
-    if (this.resetOnNextUpdate || currentTime - this.lastScrollUpdate > this.RESET_MS) {
-      this.resetOnNextUpdate = false;
-      this.reset();
-    }
-    this.lastScrollUpdate = currentTime;
 
     // Measure scroll movement
     let dx = this.container.scrollLeft - this.lastScrollLeft;

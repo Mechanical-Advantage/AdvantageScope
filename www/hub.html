@@ -94,7 +94,7 @@
         <div class="tab-bar"></div>
         <div class="tab-bar-shadow-left"></div>
         <div class="tab-bar-shadow-right"></div>
-        <div class="tab-bar-scroll"></div>
+        <div class="tab-bar-scroll"><div class="tab-bar-scroll-content"></div></div>
         <span id="tabContentTemplates" hidden>
           <!-- Metadata -->
           <div class="tab-content">
@@ -133,7 +133,9 @@
 
             <div class="line-graph-canvas-container">
               <canvas class="line-graph-canvas"></canvas>
-              <div class="line-graph-scroll"></div>
+              <div class="line-graph-scroll">
+                <div class="line-graph-scroll-content"></div>
+              </div>
             </div>
 
             <div class="legend-left">
@@ -174,7 +176,7 @@
 
           <!-- Table -->
           <div class="tab-content">
-            <div class="tab-centered">No data.</div>
+            <div class="tab-centered">Drag a field to view data.</div>
 
             <span class="data-table-header-template" hidden>
               <div class="data-table-key-container">
@@ -188,7 +190,7 @@
               </button>
             </span>
 
-            <div class="data-table-container" hidden>
+            <div class="data-table-container">
               <table class="data-table">
                 <tbody>
                   <tr>

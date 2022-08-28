@@ -73,6 +73,7 @@ export default class LineGraphController implements TabController {
   private panActive = false;
   private panStartCursorX = 0;
   private panLastCursorX = 0;
+  private scrollSensor: ScrollSensor;
 
   constructor(content: HTMLElement) {
     this.CONTENT = content;
@@ -96,7 +97,7 @@ export default class LineGraphController implements TabController {
     this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
       this.lastCursorX = null;
     });
-    new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
+    this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
       this.updateScroll(dx, dy);
     });
 
@@ -544,6 +545,9 @@ export default class LineGraphController implements TabController {
   }
 
   periodic(): void {
+    // Scroll sensor periodic
+    this.scrollSensor.periodic();
+
     // When locked, update to ensure smoothness
     if (window.selection.getMode() == SelectionMode.Locked) {
       this.updateScroll(0, 0);

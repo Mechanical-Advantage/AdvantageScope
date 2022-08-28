@@ -28,6 +28,7 @@ export default class Tabs {
     contentElement: HTMLElement;
   }[] = [];
   private selectedTab = 0;
+  private scrollSensor: ScrollSensor;
 
   constructor() {
     // Hover and click handling
@@ -78,7 +79,7 @@ export default class Tabs {
     this.addTab(TabType.LineGraph);
 
     // Scroll management
-    new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
+    this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
       this.TAB_BAR.scrollLeft += dx + dy;
     });
 
@@ -88,6 +89,7 @@ export default class Tabs {
       this.SHADOW_RIGHT.style.opacity =
         Math.ceil(this.TAB_BAR.scrollLeft) == this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
       this.tabList[this.selectedTab].controller.periodic();
+      this.scrollSensor.periodic();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -103,7 +105,6 @@ export default class Tabs {
 
   /** Restores to the provided state. */
   restoreState(state: TabGroupState) {
-    this.selectedTab = state.selected;
     this.tabList.forEach((tab) => {
       this.VIEWER.removeChild(tab.contentElement);
     });
@@ -112,6 +113,8 @@ export default class Tabs {
       this.addTab(tabState.type);
       this.tabList[this.tabList.length - 1].controller.restoreState(tabState);
     });
+    this.selectedTab = state.selected;
+    this.updateElements();
   }
 
   /** Refresh based on new log data. */

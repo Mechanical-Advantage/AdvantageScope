@@ -68,7 +68,7 @@ export default class Log {
         });
       });
       output.sort((a, b) => a - b);
-    } else {
+    } else if (keys.length == 1) {
       output = this.fields[keys[0]].getTimestamps();
     }
     return output;
