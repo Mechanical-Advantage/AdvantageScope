@@ -37,6 +37,7 @@ export default class RLOGServerSource extends LiveDataSource {
   handleMainMessage(data: any) {
     if (this.log == null || this.decoder == null) return;
     if (data.uuid != this.uuid) return;
+    if (this.status == LiveDataSourceStatus.Stopped) return;
 
     if (this.timeout != null) {
       clearTimeout(this.timeout);
