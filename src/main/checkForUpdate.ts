@@ -25,16 +25,18 @@ export default function checkForUpdate(alwaysNotify: boolean) {
     }
   })
     .then((res) => res.json())
-    .then((json) => {
+    .then((releaseData) => {
       let currentVersion = app.getVersion();
-      let latestVersion = json[0].tag_name.slice(1);
-      let latestDate = new Date(json[0].published_at);
+      let latestVersionInfo = releaseData.filter((release: any) => !release["prerelease"])[0];
+      let latestVersion = latestVersionInfo["tag_name"].slice(1);
+      let latestDate = new Date(latestVersionInfo["published_at"]);
       let latestDateText = latestDate.toLocaleDateString();
       let translated = process.arch != "arm64" && app.runningUnderARM64Translation;
       let options =
         process.platform == "darwin"
           ? ["Download", "Later", "View Changelog"]
           : ["Download", "View Changelog", "Later"];
+      let cancelId = process.platform == "darwin" ? 1 : 2;
 
       let handleResponse = (result: Electron.MessageBoxReturnValue) => {
         let response = options[result.response];
@@ -54,7 +56,7 @@ export default function checkForUpdate(alwaysNotify: boolean) {
           let arch = translated ? "arm64" : process.arch; // If under translation, switch to ARM
 
           let url = null;
-          json[0].assets.forEach((asset: any) => {
+          latestVersionInfo["assets"].forEach((asset: any) => {
             if (asset.name.includes(platformKey) && asset.name.includes(arch)) {
               url = asset.browser_download_url;
             }
@@ -86,7 +88,8 @@ export default function checkForUpdate(alwaysNotify: boolean) {
               " on an arm64 platform. Would you like to download the latest native version?",
             icon: WINDOW_ICON,
             buttons: options,
-            defaultId: 0
+            defaultId: 0,
+            cancelId: cancelId
           })
           .then(handleResponse);
       } else if (currentVersion != latestVersion) {
@@ -105,7 +108,8 @@ export default function checkForUpdate(alwaysNotify: boolean) {
               ". Would you like to download the latest version?",
             icon: WINDOW_ICON,
             buttons: options,
-            defaultId: 0
+            defaultId: 0,
+            cancelId: cancelId
           })
           .then(handleResponse);
       } else if (translated) {
@@ -118,7 +122,8 @@ export default function checkForUpdate(alwaysNotify: boolean) {
               "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
             icon: WINDOW_ICON,
             buttons: options,
-            defaultId: 0
+            defaultId: 0,
+            cancelId: cancelId
           })
           .then(handleResponse);
       } else if (alwaysNotify) {
