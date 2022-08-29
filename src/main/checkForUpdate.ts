@@ -27,7 +27,12 @@ export default function checkForUpdate(alwaysNotify: boolean) {
     .then((res) => res.json())
     .then((releaseData) => {
       let currentVersion = app.getVersion();
-      let latestVersionInfo = releaseData.filter((release: any) => !release["prerelease"])[0];
+      let latestVersionInfo: any;
+      if (currentVersion.includes("beta") || currentVersion.includes("alpha")) {
+        latestVersionInfo = releaseData[0];
+      } else {
+        latestVersionInfo = releaseData.filter((release: any) => !release["prerelease"])[0];
+      }
       let latestVersion = latestVersionInfo["tag_name"].slice(1);
       let latestDate = new Date(latestVersionInfo["published_at"]);
       let latestDateText = latestDate.toLocaleDateString();
