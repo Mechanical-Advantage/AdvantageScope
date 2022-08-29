@@ -1,6 +1,6 @@
-import { htmlEncode } from "../lib/util";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
+import { htmlEncode } from "../lib/util";
 import { HubState } from "./HubState";
 import Log from "./log/Log";
 import Selection from "./Selection";

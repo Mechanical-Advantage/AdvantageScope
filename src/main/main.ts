@@ -12,15 +12,15 @@ import {
 } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
+import net from "net";
 import os from "os";
 import path from "path";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
+import TabType from "../lib/TabType";
 import checkForUpdate from "./checkForUpdate";
 import { DEFAULT_PREFS, LAST_OPEN_FILE, PREFS_FILENAME, REPOSITORY, WINDOW_ICON } from "./constants";
-import net from "net";
 import StateTracker from "./StateTracker";
-import TabType from "../lib/TabType";
 
 // Global variables
 var hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -85,6 +85,7 @@ function sendAllPreferences() {
  * @param message The received message
  */
 function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
+  if (window.isDestroyed()) return;
   let windowId = window.id;
   switch (message.name) {
     case "save-state":

@@ -1,5 +1,5 @@
 import TabType from "../../lib/TabType";
-import { MetadataState, OdometryState } from "../HubState";
+import { OdometryState } from "../HubState";
 import TabController from "../TabController";
 
 export default class OdometryController implements TabController {

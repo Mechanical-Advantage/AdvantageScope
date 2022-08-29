@@ -1,5 +1,5 @@
 import TabType from "../../lib/TabType";
-import { LineGraphState, TableState, OdometryState, PointsState, MetadataState } from "../HubState";
+import { PointsState } from "../HubState";
 import TabController from "../TabController";
 
 export default class PointsController implements TabController {

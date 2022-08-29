@@ -1,7 +1,6 @@
 import TabType from "../../lib/TabType";
 import { cleanFloat, scaleValue, shiftColor } from "../../lib/util";
-import { LineGraphState, MetadataState } from "../HubState";
-import Log from "../log/Log";
+import { LineGraphState } from "../HubState";
 import LoggableType from "../log/LoggableType";
 import { LogValueSetAny, LogValueSetNumber } from "../log/LogValueSets";
 import ScrollSensor from "../ScrollSensor";

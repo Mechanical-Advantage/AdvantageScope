@@ -5,7 +5,6 @@ export default class ScrollSensor {
   private container: HTMLElement;
   private callback: (x: number, y: number) => void;
 
-  private sizePx = 0;
   private lastScrollUpdate = 0;
   private resetNext = false;
   private lastScrollLeft: number = 0;

@@ -1,6 +1,6 @@
 import TabType from "../../lib/TabType";
 import { arraysEqual } from "../../lib/util";
-import { LineGraphState, TableState, OdometryState, PointsState, MetadataState } from "../HubState";
+import { MetadataState, TableState } from "../HubState";
 import LoggableType from "../log/LoggableType";
 import { LogValueSetAny } from "../log/LogValueSets";
 import { SelectionMode } from "../Selection";
