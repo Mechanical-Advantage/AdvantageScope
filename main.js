@@ -526,16 +526,18 @@ function checkForUpdate(alwaysNotify) {
   };
   fetch("https://api.github.com/repos/" + repository + "/releases", fetchInit)
     .then((res) => res.json())
-    .then((json) => {
+    .then((releaseData) => {
       var currentVersion = app.getVersion();
-      var latestVersion = json[0].tag_name.slice(1);
-      var latestDate = new Date(json[0].published_at);
+      var latestVersionInfo = releaseData.filter((release) => !release["prerelease"])[0];
+      var latestVersion = latestVersionInfo["tag_name"].slice(1);
+      var latestDate = new Date(latestVersionInfo["published_at"]);
       var latestDateText = latestDate.toLocaleDateString();
       var translated = process.arch != "arm64" && app.runningUnderARM64Translation;
       var options =
         process.platform == "darwin"
           ? ["Download", "Later", "View Changelog"]
           : ["Download", "View Changelog", "Later"];
+      var cancelId = process.platform == "darwin" ? 1 : 2;
 
       var handleResponse = (result) => {
         var response = options[result.response];
@@ -555,7 +557,7 @@ function checkForUpdate(alwaysNotify) {
           var arch = translated ? "arm64" : process.arch; // If under translation, switch to ARM
 
           var url = null;
-          json[0].assets.forEach((asset) => {
+          latestVersionInfo["assets"].forEach((asset) => {
             if (asset.name.includes(platformKey) && asset.name.includes(arch)) {
               url = asset.browser_download_url;
             }
@@ -587,7 +589,8 @@ function checkForUpdate(alwaysNotify) {
               " on an arm64 platform. Would you like to download the latest native version?",
             icon: iconPath,
             buttons: options,
-            defaultId: 0
+            defaultId: 0,
+            cancelId: cancelId
           })
           .then(handleResponse);
       } else if (currentVersion != latestVersion) {
@@ -606,7 +609,8 @@ function checkForUpdate(alwaysNotify) {
               ". Would you like to download the latest version?",
             icon: iconPath,
             buttons: options,
-            defaultId: 0
+            defaultId: 0,
+            cancelId: cancelId
           })
           .then(handleResponse);
       } else if (translated) {
@@ -619,7 +623,8 @@ function checkForUpdate(alwaysNotify) {
               "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?",
             icon: iconPath,
             buttons: options,
-            defaultId: 0
+            defaultId: 0,
+            cancelId: cancelId
           })
           .then(handleResponse);
       } else if (alwaysNotify) {
