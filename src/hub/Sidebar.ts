@@ -77,23 +77,25 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    if (!forceRefresh && arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys)) return;
+    let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
     this.lastFieldKeys = window.log.getFieldKeys();
 
-    // Remove old list
-    while (this.FIELD_LIST.firstChild) {
-      this.FIELD_LIST.removeChild(this.FIELD_LIST.firstChild);
-    }
+    if (fieldsChanged) {
+      // Remove old list
+      while (this.FIELD_LIST.firstChild) {
+        this.FIELD_LIST.removeChild(this.FIELD_LIST.firstChild);
+      }
 
-    // Add new list
-    this.selectGroupClearCallbacks = [];
-    let tree = window.log.getFieldTree();
-    Object.keys(tree)
-      .filter((key) => !this.HIDDEN_KEYS.includes(key))
-      .sort((a, b) => this.sortKeys(a, b))
-      .forEach((key) => {
-        this.addField(key, "/" + key, tree[key], this.FIELD_LIST, 0);
-      });
+      // Add new list
+      this.selectGroupClearCallbacks = [];
+      let tree = window.log.getFieldTree();
+      Object.keys(tree)
+        .filter((key) => !this.HIDDEN_KEYS.includes(key))
+        .sort((a, b) => this.sortKeys(a, b))
+        .forEach((key) => {
+          this.addFields(key, "/" + key, tree[key], this.FIELD_LIST, 0);
+        });
+    }
 
     // Update title
     let range = window.log.getTimestampRange();
@@ -123,7 +125,7 @@ export default class Sidebar {
   }
 
   /** Recursively adds a set of fields. */
-  private addField(title: string, fullTitle: string, field: LogFieldTree, parentElement: HTMLElement, indent: number) {
+  private addFields(title: string, fullTitle: string, field: LogFieldTree, parentElement: HTMLElement, indent: number) {
     let hasChildren = Object.keys(field.children).length > 0;
 
     let fieldElement = document.createElement("div");
@@ -235,7 +237,7 @@ export default class Sidebar {
         .filter((key) => !this.HIDDEN_KEYS.includes(key))
         .sort((a, b) => this.sortKeys(a, b))
         .forEach((key) => {
-          this.addField(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
+          this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
         });
     }
   }

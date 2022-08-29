@@ -41,3 +41,15 @@ export function cleanFloat(float: number) {
 export function scaleValue(value: number, oldRange: [number, number], newRange: [number, number]): number {
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];
 }
+
+/** Generates a random string of characters. */
+export function createUUID(): string {
+  let outString: string = "";
+  let inOptions: string = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (let i = 0; i < 64; i++) {
+    outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
+  }
+
+  return outString;
+}

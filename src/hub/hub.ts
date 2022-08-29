@@ -219,6 +219,7 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "open-file":
+      historicalSource?.stop();
       liveSource?.stop();
       historicalSource = new RLOGFileSource();
       historicalSource.openFile(
@@ -249,8 +250,8 @@ function handleMainMessage(message: NamedMessage) {
 
     case "start-live":
       historicalSource?.stop();
+      liveSource?.stop();
       liveSource = new RLOGServerSource();
-      window.log = new Log();
 
       let address = "";
       if (message.data == "sim") {
@@ -265,7 +266,6 @@ function handleMainMessage(message: NamedMessage) {
 
       liveSource.connect(
         address,
-        window.log,
         (status: LiveDataSourceStatus) => {
           switch (status) {
             case LiveDataSourceStatus.Connecting:
@@ -275,15 +275,16 @@ function handleMainMessage(message: NamedMessage) {
               setWindowTitle(address);
               break;
             case LiveDataSourceStatus.Error:
-              setWindowTitle(address, "Disconnected");
+              setWindowTitle(address, "Error");
               break;
           }
 
-          if (status == LiveDataSourceStatus.Error || status == LiveDataSourceStatus.Stopped) {
+          if (status != LiveDataSourceStatus.Active) {
             window.selection.setLiveDisconnected();
           }
         },
-        () => {
+        (log: Log) => {
+          window.log = log;
           let logRange = window.log.getTimestampRange();
           let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
           let oldLiveZeroTime = window.selection.getLiveZeroTime();

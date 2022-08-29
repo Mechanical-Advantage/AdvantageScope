@@ -92,9 +92,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "historical-start":
-      console.log("Reading historical data for window " + windowId.toString());
       let sendError = () => {
-        console.log("Failed to read historical data for window " + windowId.toString());
         sendMessage(window, "historical-data", {
           success: false
         });
@@ -105,7 +103,6 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           if (error) {
             sendError();
           } else {
-            console.log("Successfully read historical data for window " + windowId.toString());
             sendMessage(window, "historical-data", {
               success: true,
               raw: buffer
@@ -122,7 +119,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
 
       rlogSockets[windowId].setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
-        sendMessage(window, "live-rlog-data", { status: false });
+        sendMessage(window, "live-rlog-data", { uuid: message.data.uuid, status: false });
       });
 
       let appendArray = (newArray: Uint8Array) => {
@@ -154,30 +151,28 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           var singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
           rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
 
-          let success = sendMessage(window, "live-rlog-data", { success: true, raw: new Uint8Array(singleArray) });
+          let success = sendMessage(window, "live-rlog-data", {
+            uuid: message.data.uuid,
+            success: true,
+            raw: new Uint8Array(singleArray)
+          });
           if (!success) {
             rlogSockets[windowId].destroy();
-            console.log(
-              "Closed RLOG socket for window " + windowId.toString() + " because the renderer port was destroyed"
-            );
           }
         }
       });
 
       rlogSockets[windowId].on("error", () => {
-        sendMessage(window, "live-rlog-data", { success: false });
+        sendMessage(window, "live-rlog-data", { uuid: message.data.uuid, success: false });
       });
 
       rlogSockets[windowId].on("close", () => {
-        sendMessage(window, "live-rlog-data", { success: false });
+        sendMessage(window, "live-rlog-data", { uuid: message.data.uuid, success: false });
       });
-
-      console.log("Opened RLOG socket for window " + windowId.toString());
       break;
 
     case "live-rlog-stop":
       rlogSockets[windowId].destroy();
-      console.log("Closed RLOG socket for window " + windowId.toString());
       break;
 
     case "ask-playback-speed":

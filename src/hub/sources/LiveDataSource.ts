@@ -1,27 +1,27 @@
+import { createUUID } from "../../lib/util";
 import Log from "../log/Log";
 
 /** A provider of live log data (i.e. the data is updated as it is received). */
 export abstract class LiveDataSource {
   protected status: LiveDataSourceStatus = LiveDataSourceStatus.Waiting;
+  protected uuid: string = createUUID();
 
-  protected log: Log | null = null;
+  protected address: string | null = null;
   protected statusCallback: ((status: LiveDataSourceStatus) => void) | null = null;
-  protected outputCallback: (() => void) | null = null;
+  protected outputCallback: ((log: Log) => void) | null = null;
 
   /**
    * Generates log data from a live source.
    * @param address The IP address of the source
-   * @param log A log instance to update with data
    * @param statusCallback A callback to be triggered when the status changes
    * @param outputCallback A callback to be triggered when new data is available
    */
   connect(
     address: string,
-    log: Log,
     statusCallback: (status: LiveDataSourceStatus) => void,
-    outputCallback: () => void
+    outputCallback: (log: Log) => void
   ): void {
-    this.log = log;
+    this.address = address;
     this.statusCallback = statusCallback;
     this.outputCallback = outputCallback;
     this.setStatus(LiveDataSourceStatus.Connecting);

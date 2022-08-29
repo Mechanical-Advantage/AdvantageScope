@@ -548,10 +548,8 @@ export default class LineGraphController implements TabController {
     // Scroll sensor periodic
     this.scrollSensor.periodic();
 
-    // When locked, update to ensure smoothness
-    if (window.selection.getMode() == SelectionMode.Locked) {
-      this.updateScroll(0, 0);
-    }
+    // Update to ensure smoothness when locked
+    this.updateScroll(0, 0);
 
     // Update hovered time
     if (this.lastCursorX == null) {
