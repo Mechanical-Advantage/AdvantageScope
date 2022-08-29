@@ -59,10 +59,13 @@ export default class TableController implements TabController {
   }
 
   saveState(): TableState {
-    return { type: TabType.Table, fields: [] };
+    return { type: TabType.Table, fields: this.fields };
   }
 
-  restoreState(state: MetadataState): void {}
+  restoreState(state: TableState): void {
+    this.fields = state.fields;
+    this.updateFields();
+  }
 
   refresh(): void {
     // Update timestamps (Check if fields were only added at the end. If not, do a full refresh)
@@ -141,8 +144,11 @@ export default class TableController implements TabController {
 
   /** Jumps to the specified time */
   private jumpToTime(targetTime: number, offsetPx: number = 0) {
-    // Stop if no data
-    if (this.timestamps.length == 0) return;
+    // If no data, clear table
+    if (this.timestamps.length == 0) {
+      this.clearTable();
+      return;
+    }
 
     // Find index
     let target = this.timestamps.findIndex((value) => value > targetTime);

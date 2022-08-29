@@ -61,6 +61,7 @@ export default class Log {
     let output: number[] = [];
     if (keys.length > 1) {
       keys.forEach((key) => {
+        if (!(key in this.fields)) return;
         this.fields[key].getTimestamps().forEach((timestamp) => {
           if (!output.includes(timestamp)) {
             output.push(timestamp);
