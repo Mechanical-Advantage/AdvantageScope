@@ -1,18 +1,89 @@
+import LoggableType from "../../lib/log/LoggableType";
 import TabType from "../../lib/TabType";
 import PointsVisualizer from "../../lib/visualizers/PointsVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class PointsController extends TimelineVizController {
+  private WIDTH: HTMLInputElement;
+  private HEIGHT: HTMLInputElement;
+  private GROUP: HTMLInputElement;
+  private POINT_SHAPE: HTMLInputElement;
+  private POINT_SIZE: HTMLInputElement;
+
   constructor(content: HTMLElement) {
-    super(content, TabType.Points, [], new PointsVisualizer());
+    let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
+    super(
+      content,
+      TabType.Points,
+      [
+        // X
+        {
+          element: configBody.children[1].firstElementChild as HTMLElement,
+          type: LoggableType.NumberArray
+        },
+
+        // Y
+        {
+          element: configBody.children[2].firstElementChild as HTMLElement,
+          type: LoggableType.NumberArray
+        }
+      ],
+      new PointsVisualizer(content.getElementsByClassName("points-background-container")[0] as HTMLElement)
+    );
+
+    // Get option inputs
+    this.WIDTH = configBody.children[1].children[1].children[1] as HTMLInputElement;
+    this.HEIGHT = configBody.children[1].children[1].children[3] as HTMLInputElement;
+    this.GROUP = configBody.children[2].children[1].children[1] as HTMLInputElement;
+    this.POINT_SHAPE = configBody.children[1].children[2].children[1] as HTMLInputElement;
+    this.POINT_SIZE = configBody.children[2].children[2].children[1] as HTMLInputElement;
   }
+
   get options(): { [id: string]: any } {
-    throw new Error("Method not implemented.");
+    return {
+      width: Number(this.WIDTH.value),
+      height: Number(this.HEIGHT.value),
+      group: Number(this.GROUP.value),
+      pointShape: this.POINT_SHAPE.value,
+      pointSize: this.POINT_SIZE.value
+    };
   }
-  set options(newOptions: { [id: string]: any }) {
-    throw new Error("Method not implemented.");
+
+  set options(options: { [id: string]: any }) {
+    this.WIDTH.value = options.width;
+    this.HEIGHT.value = options.height;
+    this.GROUP.value = options.group;
+    this.POINT_SHAPE.value = options.pointShape;
+    this.POINT_SIZE.value = options.pointSize;
   }
+
   getCommand(time: number) {
-    throw new Error("Method not implemented.");
+    let fields = this.getFields();
+
+    // Get current data
+    let xData: number[] = [];
+    let yData: number[] = [];
+
+    if (fields[0] != null) {
+      let xDataTemp = window.log.getNumberArray(fields[0], time, time);
+      if (xDataTemp && xDataTemp.timestamps[0] <= time) {
+        xData = xDataTemp.values[0];
+      }
+    }
+    if (fields[1] != null) {
+      let yDataTemp = window.log.getNumberArray(fields[1], time, time);
+      if (yDataTemp && yDataTemp.timestamps[0] <= time) {
+        yData = yDataTemp.values[0];
+      }
+    }
+
+    // Package command data
+    return {
+      data: {
+        x: xData,
+        y: yData
+      },
+      options: this.options
+    };
   }
 }

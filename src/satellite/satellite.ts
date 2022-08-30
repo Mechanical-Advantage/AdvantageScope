@@ -29,7 +29,9 @@ window.addEventListener("message", (event) => {
               break;
             case TabType.Points:
               document.getElementsByTagName("title")[0].innerHTML = "Points &mdash; Advantage Scope";
-              visualizer = new PointsVisualizer();
+              visualizer = new PointsVisualizer(
+                document.getElementsByClassName("points-background-container")[0] as HTMLElement
+              );
               break;
           }
           break;

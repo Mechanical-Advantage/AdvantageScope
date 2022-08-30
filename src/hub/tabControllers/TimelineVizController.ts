@@ -183,6 +183,9 @@ export default abstract class TimelineVizController implements TabController {
 
     // Jump to end of timeline if locked
     if (window.selection.getMode() == SelectionMode.Locked) this.TIMELINE_INPUT.value = this.TIMELINE_INPUT.max;
+
+    // Update fields
+    this.updateFields();
   }
 
   periodic(): void {}

@@ -707,7 +707,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
       let aspectRatio = event.data;
       let size = satellite.getContentSize();
       satellite.setAspectRatio(aspectRatio);
-      satellite.setContentSize(Math.round(size[1] * aspectRatio), size[1], true);
+      satellite.setContentSize(Math.round(size[1] * aspectRatio), size[1]);
     });
     port2.start();
     sendMessage(satellite, "set-type", type);

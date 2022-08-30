@@ -1,3 +1,4 @@
+import Colors from "../../lib/Colors";
 import LoggableType from "../../lib/log/LoggableType";
 import { LogValueSetAny, LogValueSetNumber } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
@@ -10,28 +11,6 @@ import TabController from "../TabController";
 export default class LineGraphController implements TabController {
   private MIN_ZOOM_TIME = 0.05;
   private ZOOM_BASE = 1.001;
-  private COLORS = [
-    "#EBC542",
-    "#80588E",
-    "#E48B32",
-    "#AACAEE",
-    "#AF2437",
-    "#C0B487",
-    "#858584",
-    "#3B875A",
-    "#D993AA",
-    "#2B66A2",
-    "#EB987E",
-    "#5D4F92",
-    "#EBAA3B",
-    "#A64B6B",
-    "#DBD345",
-    "#7E331F",
-    "#96B637",
-    "#5F4528",
-    "#D36134",
-    "#2E3B28"
-  ];
 
   private CONTENT: HTMLElement;
   private LEGEND_ITEM_TEMPLATE: HTMLElement;
@@ -331,9 +310,9 @@ export default class LineGraphController implements TabController {
           usedColors.push(field.color);
         });
       });
-      let availableColors = this.COLORS.filter((color) => !usedColors.includes(color));
+      let availableColors = Colors.filter((color) => !usedColors.includes(color));
       if (availableColors.length == 0) {
-        color = this.COLORS[Math.floor(Math.random() * this.COLORS.length)];
+        color = Colors[Math.floor(Math.random() * Colors.length)];
       } else {
         color = availableColors[0];
       }
