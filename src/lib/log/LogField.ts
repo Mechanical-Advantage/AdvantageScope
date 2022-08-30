@@ -1,4 +1,4 @@
-import { arraysEqual } from "../../lib/util";
+import { arraysEqual } from "../util";
 import LoggableType from "./LoggableType";
 import {
   LogValueSetAny,

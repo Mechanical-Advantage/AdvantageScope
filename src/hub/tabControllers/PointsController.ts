@@ -1,26 +1,18 @@
 import TabType from "../../lib/TabType";
-import { PointsState } from "../HubState";
-import TabController from "../TabController";
+import PointsVisualizer from "../../lib/visualizers/PointsVisualizer";
+import TimelineVizController from "./TimelineVizController";
 
-export default class PointsController implements TabController {
-  constructor(content: HTMLElement) {}
-  saveState(): PointsState {
-    return {
-      type: TabType.Points,
-      fields: {
-        x: null,
-        y: null
-      },
-      options: {
-        width: 1280,
-        height: 720,
-        group: 4,
-        pointShape: "plus",
-        pointSize: "medium"
-      }
-    };
+export default class PointsController extends TimelineVizController {
+  constructor(content: HTMLElement) {
+    super(content, TabType.Points, [], new PointsVisualizer());
   }
-  restoreState(state: PointsState): void {}
-  refresh(): void {}
-  periodic(): void {}
+  get options(): { [id: string]: any } {
+    throw new Error("Method not implemented.");
+  }
+  set options(newOptions: { [id: string]: any }) {
+    throw new Error("Method not implemented.");
+  }
+  getCommand(time: number) {
+    throw new Error("Method not implemented.");
+  }
 }

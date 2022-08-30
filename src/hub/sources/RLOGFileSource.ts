@@ -1,4 +1,4 @@
-import Log from "../log/Log";
+import Log from "../../lib/log/Log";
 import WorkerManager from "../WorkerManager";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./HistoricalDataSource";
 

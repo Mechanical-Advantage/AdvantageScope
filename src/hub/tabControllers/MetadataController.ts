@@ -1,7 +1,7 @@
+import LogFieldTree from "../../lib/log/LogFieldTree";
 import TabType from "../../lib/TabType";
 import { arraysEqual } from "../../lib/util";
 import { MetadataState } from "../HubState";
-import LogFieldTree from "../log/LogFieldTree";
 import TabController from "../TabController";
 
 export default class MetadataController implements TabController {

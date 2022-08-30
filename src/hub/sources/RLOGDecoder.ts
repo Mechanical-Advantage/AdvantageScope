@@ -1,4 +1,5 @@
-import Log from "../log/Log";
+import Log from "../../lib/log/Log";
+import LoggableType from "../../lib/log/LoggableType";
 
 export default class RLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [1];
@@ -72,7 +73,32 @@ export default class RLOGDecoder {
               let key = this.keyIDs[dataBuffer.getInt16(shiftOffset(2))];
 
               switch (dataArray[shiftOffset(1)]) {
-                case 0: // null, not supported
+                case 0: // null
+                  // Null values are not supported, so go to a default value instead
+                  let previousType = log.getType(key);
+                  switch (previousType) {
+                    case LoggableType.Raw:
+                      log.putRaw(key, timestamp, new Uint8Array());
+                      break;
+                    case LoggableType.Boolean:
+                      log.putBoolean(key, timestamp, false);
+                      break;
+                    case LoggableType.Number:
+                      log.putNumber(key, timestamp, 0);
+                      break;
+                    case LoggableType.String:
+                      log.putString(key, timestamp, "");
+                      break;
+                    case LoggableType.BooleanArray:
+                      log.putBooleanArray(key, timestamp, []);
+                      break;
+                    case LoggableType.NumberArray:
+                      log.putNumberArray(key, timestamp, []);
+                      break;
+                    case LoggableType.StringArray:
+                      log.putStringArray(key, timestamp, []);
+                      break;
+                  }
                   break;
                 case 1: // Boolean
                   log.putBoolean(key, timestamp, dataArray[shiftOffset(1)] != 0);

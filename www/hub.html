@@ -212,11 +212,11 @@
             <div class="data-table-drag-highlight" hidden></div>
           </div>
 
-          <!-- Generic visualizer -->
+          <!-- Timeline visualizer -->
           <div class="tab-content">
-            <div class="generic-viz-timeline-container">
+            <div class="timeline-viz-timeline-container">
               <input
-                class="generic-viz-timeline-slider"
+                class="timeline-viz-timeline-slider"
                 id="timeline"
                 type="range"
                 value="0"
@@ -225,9 +225,9 @@
                 step="0.000001"
                 tabindex="-1"
               />
-              <div class="generic-viz-timeline-marker-container"></div>
+              <div class="timeline-viz-timeline-marker-container"></div>
             </div>
-            <button class="generic-viz-popup-button" tabindex="-1">
+            <button class="timeline-viz-popup-button" tabindex="-1">
               <svg height="25" width="25">
                 <line x1="12" y1="13" x2="20" y2="5"></line>
                 <line x1="20" y1="5" x2="20" y2="10"></line>
@@ -239,13 +239,13 @@
                 <line x1="6" y1="8" x2="12" y2="8"></line>
               </svg>
             </button>
-            <div class="generic-viz-drag-highlight" hidden></div>
+            <div class="timeline-viz-drag-highlight" hidden></div>
           </div>
 
           <!-- Odometry -->
           <span>
             <canvas class="odometry-canvas"></canvas>
-            <table class="generic-viz-config">
+            <table class="timeline-viz-config">
               <tbody>
                 <tr>
                   <th>Pose Data</th>
@@ -336,7 +336,7 @@
                 </svg>
               </span>
             </div>
-            <table class="generic-viz-config">
+            <table class="timeline-viz-config">
               <tbody>
                 <tr>
                   <th>Point Data</th>

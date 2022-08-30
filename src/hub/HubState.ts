@@ -57,35 +57,8 @@ export interface TableState {
   fields: string[];
 }
 
-export interface OdometryState {
-  type: TabType.Odometry;
-  fields: {
-    robotPose: string | null;
-    ghostPose: string | null;
-    visionCoordinates: string | null;
-  };
-  options: {
-    game: string;
-    unitDistance: "meters" | "inches";
-    unitRotation: "radians" | "degrees";
-    origin: "right" | "center" | "left";
-    size: number;
-    alliance: "red" | "blue";
-    orientation: "red, blue" | "blue, red";
-  };
-}
-
-export interface PointsState {
-  type: TabType.Points;
-  fields: {
-    x: string | null;
-    y: string | null;
-  };
-  options: {
-    width: number;
-    height: number;
-    group: number;
-    pointShape: "plus" | "cross" | "circle";
-    pointSize: "large" | "medium" | "small";
-  };
+export interface TimelineVisualizerState {
+  type: TabType.Odometry | TabType.Points;
+  fields: (string | null)[];
+  options: { [id: string]: any };
 }

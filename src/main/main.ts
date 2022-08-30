@@ -26,7 +26,7 @@ import StateTracker from "./StateTracker";
 var hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
 var downloadWindow: BrowserWindow | null = null;
 var prefsWindow: BrowserWindow | null = null;
-var satelliteWindows: BrowserWindow[] = [];
+var satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 var windowPorts: { [id: number]: MessagePortMain } = {};
 
 var hubStateTracker = new StateTracker();
@@ -176,6 +176,10 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       rlogSockets[windowId].destroy();
       break;
 
+    case "open-link":
+      shell.openExternal(message.data);
+      break;
+
     case "ask-playback-speed":
       const playbackSpeedMenu = new Menu();
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
@@ -269,6 +273,22 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         })
       );
       menu.popup();
+      break;
+
+    case "create-satellite":
+      createSatellite(window, message.data.uuid, message.data.type);
+      break;
+
+    case "update-satellite":
+      let uuid = message.data.uuid;
+      let command = message.data.command;
+      if (uuid in satelliteWindows) {
+        satelliteWindows[uuid].forEach((satellite) => {
+          if (satellite.isVisible()) {
+            sendMessage(satellite, "render", command);
+          }
+        });
+      }
       break;
   }
 }
@@ -656,6 +676,56 @@ function createEditAxisWindow(
     port2.start();
   });
   editWindow.loadFile(path.join(__dirname, "../www/editAxis.html"));
+}
+
+/**
+ * Creates a new satellite window.
+ * @param parentWindow The parent (source) window
+ */
+function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, type: TabType) {
+  const satellite = new BrowserWindow({
+    width: 900,
+    height: 500,
+    minWidth: 200,
+    minHeight: 100,
+    resizable: true,
+    icon: WINDOW_ICON,
+    show: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+  satellite.setMenu(null);
+  satellite.once("ready-to-show", satellite.show);
+  satellite.loadFile(path.join(__dirname, "../www/satellite.html"));
+  satellite.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    satellite.webContents.postMessage("port", null, [port1]);
+    windowPorts[satellite.id] = port2;
+    port2.on("message", (event) => {
+      let aspectRatio = event.data;
+      let size = satellite.getContentSize();
+      satellite.setAspectRatio(aspectRatio);
+      satellite.setContentSize(Math.round(size[1] * aspectRatio), size[1], true);
+    });
+    port2.start();
+    sendMessage(satellite, "set-type", type);
+  });
+
+  if (!(uuid in satelliteWindows)) {
+    satelliteWindows[uuid] = [];
+  }
+  satelliteWindows[uuid].push(satellite);
+
+  var closed = false;
+  parentWindow.once("close", () => {
+    if (!closed) satellite.close();
+  });
+  satellite.once("closed", () => {
+    closed = true;
+    satelliteWindows[uuid].splice(satelliteWindows[uuid].indexOf(satellite), 1);
+  });
 }
 
 /**

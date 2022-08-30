@@ -1,4 +1,4 @@
-import Log from "../log/Log";
+import Log from "../../lib/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import RLOGDecoder from "./RLOGDecoder";
 
@@ -22,7 +22,7 @@ export default class RLOGServerSource extends LiveDataSource {
       this.log = new Log();
       this.decoder = new RLOGDecoder();
       window.sendMainMessage("live-rlog-start", {
-        uuid: this.uuid,
+        uuid: this.UUID,
         address: address,
         port: window.preferences.rlogPort
       });
@@ -36,7 +36,7 @@ export default class RLOGServerSource extends LiveDataSource {
 
   handleMainMessage(data: any) {
     if (this.log == null || this.decoder == null) return;
-    if (data.uuid != this.uuid) return;
+    if (data.uuid != this.UUID) return;
     if (this.status == LiveDataSourceStatus.Stopped) return;
 
     if (this.timeout != null) {
@@ -63,7 +63,7 @@ export default class RLOGServerSource extends LiveDataSource {
           this.decoder = new RLOGDecoder();
           this.setStatus(LiveDataSourceStatus.Connecting);
           window.sendMainMessage("live-rlog-start", {
-            uuid: this.uuid,
+            uuid: this.UUID,
             address: this.address,
             port: window.preferences.rlogPort
           });

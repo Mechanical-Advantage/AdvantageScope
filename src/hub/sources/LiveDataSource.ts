@@ -1,10 +1,10 @@
+import Log from "../../lib/log/Log";
 import { createUUID } from "../../lib/util";
-import Log from "../log/Log";
 
 /** A provider of live log data (i.e. the data is updated as it is received). */
 export abstract class LiveDataSource {
+  protected UUID: string = createUUID();
   protected status: LiveDataSourceStatus = LiveDataSourceStatus.Waiting;
-  protected uuid: string = createUUID();
 
   protected address: string | null = null;
   protected statusCallback: ((status: LiveDataSourceStatus) => void) | null = null;

@@ -1,8 +1,8 @@
+import LoggableType from "../../lib/log/LoggableType";
+import { LogValueSetAny } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
 import { arraysEqual } from "../../lib/util";
-import { MetadataState, TableState } from "../HubState";
-import LoggableType from "../log/LoggableType";
-import { LogValueSetAny } from "../log/LogValueSets";
+import { TableState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
 

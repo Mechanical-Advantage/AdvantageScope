@@ -31,7 +31,7 @@ export default function checkForUpdate(alwaysNotify: boolean) {
       if (currentVersion.includes("beta") || currentVersion.includes("alpha")) {
         latestVersionInfo = releaseData[0];
       } else {
-        latestVersionInfo = releaseData.filter((release: any) => !release["prerelease"])[0];
+        latestVersionInfo = releaseData.find((release: any) => !release["prerelease"]);
       }
       let latestVersion = latestVersionInfo["tag_name"].slice(1);
       let latestDate = new Date(latestVersionInfo["published_at"]);

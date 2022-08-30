@@ -1,8 +1,8 @@
+import LoggableType from "../../lib/log/LoggableType";
+import { LogValueSetAny, LogValueSetNumber } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
 import { cleanFloat, scaleValue, shiftColor } from "../../lib/util";
 import { LineGraphState } from "../HubState";
-import LoggableType from "../log/LoggableType";
-import { LogValueSetAny, LogValueSetNumber } from "../log/LogValueSets";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
@@ -274,7 +274,6 @@ export default class LineGraphController implements TabController {
         arrayTypes: [LoggableType.NumberArray]
       }
     ].forEach((data) => {
-      let dragDetail = (event as CustomEvent).detail;
       let legend = data.legend as "left" | "discrete" | "right";
       let element = data.element;
       let target = data.target;
@@ -284,14 +283,14 @@ export default class LineGraphController implements TabController {
       // Check if active and valid type
       let rect = element.getBoundingClientRect();
       let active =
-        dragDetail.x > rect.left && dragDetail.x < rect.right && dragDetail.y > rect.top && dragDetail.y < rect.bottom;
+        dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
       let validType = false;
-      dragDetail.data.fields.forEach((key: string) => {
+      dragData.data.fields.forEach((key: string) => {
         let type = window.log.getType(key) as LoggableType;
         if (normalTypes.includes(type)) {
           validType = true;
         }
-        if (dragDetail.data.fields.length == 1) {
+        if (dragData.data.fields.length == 1) {
           if (arrayTypes.includes(type)) {
             validType = true;
           }
@@ -299,17 +298,17 @@ export default class LineGraphController implements TabController {
       });
 
       // Add field
-      if (dragDetail.end) {
+      if (dragData.end) {
         target.hidden = true;
         if (active && validType) {
-          dragDetail.data.fields.forEach((key: string) => {
+          dragData.data.fields.forEach((key: string) => {
             let type = window.log.getType(key) as LoggableType;
             if (normalTypes.includes(type)) {
               this.addField(legend, key);
             } else if (arrayTypes.includes(type)) {
               // Single array
-              if (dragDetail.data.fields.length == 1) {
-                dragDetail.data.children.forEach((childKey: string) => {
+              if (dragData.data.fields.length == 1) {
+                dragData.data.children.forEach((childKey: string) => {
                   this.addField(legend, childKey);
                 });
               }

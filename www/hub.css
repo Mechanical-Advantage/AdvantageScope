@@ -781,7 +781,7 @@ div.data-table-drag-highlight {
 
 /* Generic visualizer controls */
 
-div.generic-viz-timeline-container {
+div.timeline-viz-timeline-container {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -789,7 +789,7 @@ div.generic-viz-timeline-container {
   height: 30px;
 }
 
-input.generic-viz-timeline-slider {
+input.timeline-viz-timeline-slider {
   position: absolute;
   margin: 0px;
   left: 0px;
@@ -801,7 +801,7 @@ input.generic-viz-timeline-slider {
   background-color: #aaa;
 }
 
-input.generic-viz-timeline-slider::-webkit-slider-thumb {
+input.timeline-viz-timeline-slider::-webkit-slider-thumb {
   appearance: none;
   height: 23px;
   width: 8px;
@@ -809,7 +809,7 @@ input.generic-viz-timeline-slider::-webkit-slider-thumb {
   cursor: pointer;
 }
 
-div.generic-viz-timeline-marker-container {
+div.timeline-viz-timeline-marker-container {
   position: absolute;
   bottom: 0px;
   height: 7px;
@@ -818,13 +818,13 @@ div.generic-viz-timeline-marker-container {
   background: red;
 }
 
-div.generic-viz-timeline-marker-container div {
+div.timeline-viz-timeline-marker-container div {
   position: absolute;
   height: 100%;
   background-color: lightgreen;
 }
 
-button.generic-viz-popup-button {
+button.timeline-viz-popup-button {
   position: absolute;
   width: 25px;
   height: 25px;
@@ -832,14 +832,14 @@ button.generic-viz-popup-button {
   right: 5px;
 }
 
-div.generic-viz-drag-highlight {
+div.timeline-viz-drag-highlight {
   position: absolute;
   z-index: 9;
   background-color: lightgreen;
   opacity: 25%;
 }
 
-table.generic-viz-config {
+table.timeline-viz-config {
   position: absolute;
   left: 0px;
   bottom: 0px;
@@ -850,7 +850,7 @@ table.generic-viz-config {
   border-top: 1px solid #555;
 }
 
-table.generic-viz-config th {
+table.timeline-viz-config th {
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -859,56 +859,56 @@ table.generic-viz-config th {
   border-bottom: 1px solid #555;
 }
 
-table.generic-viz-config td {
+table.timeline-viz-config td {
   word-wrap: break-word;
   padding: 5px;
   border-right: 1px solid #555;
   border-bottom: 1px solid #eee;
 }
 
-table.generic-viz-config td:last-child,
-table.generic-viz-config th:last-child {
+table.timeline-viz-config td:last-child,
+table.timeline-viz-config th:last-child {
   border-right: none;
 }
 
-table.generic-viz-config tr:last-child td {
+table.timeline-viz-config tr:last-child td {
   border-bottom: none;
   padding-bottom: 6px;
 }
 
-table.generic-viz-config span.label {
+table.timeline-viz-config span.label {
   font-weight: 600;
 }
 
-table.generic-viz-config span.field-name {
+table.timeline-viz-config span.field-name {
   font-family: monospace;
   font-size: 14px;
 }
 
-table.generic-viz-config a.credit-link {
+table.timeline-viz-config a.credit-link {
   font-size: 14px;
 }
 
-table.generic-viz-config input[type="number"] {
+table.timeline-viz-config input[type="number"] {
   width: 75px;
 }
 
 @media (prefers-color-scheme: dark) {
-  table.generic-viz-config {
+  table.timeline-viz-config {
     border-top: 1px solid #999;
   }
 
-  table.generic-viz-config th {
+  table.timeline-viz-config th {
     border-right: 1px solid #999;
     border-bottom: 1px solid #999;
   }
 
-  table.generic-viz-config td {
+  table.timeline-viz-config td {
     border-right: 1px solid #999;
     border-bottom: 1px solid #333;
   }
 
-  table.generic-viz-config a.credit-link {
+  table.timeline-viz-config a.credit-link {
     color: #88f;
   }
 }

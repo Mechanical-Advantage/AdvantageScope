@@ -44,8 +44,9 @@
     "publish": [],
     "files": [
       "www/**/*",
-      "bundles/**/*",
+      "bundles/*",
       "games/**/*",
+      "!games/games.ts",
       "icons/**/*",
       "!**/.*"
     ],

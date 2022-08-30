@@ -1,8 +1,8 @@
+import Log from "../lib/log/Log";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import { htmlEncode } from "../lib/util";
 import { HubState } from "./HubState";
-import Log from "./log/Log";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./sources/HistoricalDataSource";
