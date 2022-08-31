@@ -15,11 +15,27 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
+import { Client } from "ssh2";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import TabType from "../lib/TabType";
 import checkForUpdate from "./checkForUpdate";
-import { DEFAULT_PREFS, LAST_OPEN_FILE, PREFS_FILENAME, REPOSITORY, WINDOW_ICON } from "./constants";
+import {
+  DEFAULT_PREFS,
+  DOWNLOAD_CONNECT_TIMEOUT_MS,
+  DOWNLOAD_PASSWORD,
+  DOWNLOAD_REFRESH_INTERVAL_MS,
+  DOWNLOAD_RETRY_DELAY_MS,
+  DOWNLOAD_USERNAME,
+  LAST_OPEN_FILE,
+  PREFS_FILENAME,
+  REPOSITORY,
+  RLOG_CONNECT_TIMEOUT_MS,
+  RLOG_DATA_TIMEOUT_MS,
+  RLOG_HEARTBEAT_DATA,
+  RLOG_HEARTBEAT_DELAY_MS,
+  WINDOW_ICON
+} from "./constants";
 import StateTracker from "./StateTracker";
 
 // Global variables
@@ -34,13 +50,16 @@ var usingUsb = false; // Menu bar setting, bundled with other prefs for renderer
 var firstOpenPath: string | null = null; // Cache path to open immediately
 
 // Live RLOG variables
-const RLOG_CONNECT_TIMEOUT_MS = 1000; // How long to wait when connecting
-const RLOG_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout
-const RLOG_HEARTBEAT_DELAY_MS = 1000; // How long to wait between heartbeats
-const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
 var rlogSockets: { [id: number]: net.Socket } = {};
 var rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 var rlogDataArrays: { [id: number]: Uint8Array } = {};
+
+// Download variables
+var downloadClient: Client | null = null;
+var downloadRetryTimeout: NodeJS.Timeout | null = null;
+var downloadRefreshInterval: NodeJS.Timer | null = null;
+var downloadAddress: string = "";
+var downloadPath: string = "";
 
 /** Records the last open file for the robot program (and recent files for the OS). */
 function recordOpenFile(filePath: string) {
@@ -299,6 +318,236 @@ setInterval(() => {
     socket.write(RLOG_HEARTBEAT_DATA);
   });
 }, RLOG_HEARTBEAT_DELAY_MS);
+
+/**
+ * Process a message from a download window.
+ * @param message The received message
+ */
+function handleDownloadMessage(message: NamedMessage) {
+  if (!downloadWindow) return;
+  if (downloadWindow.isDestroyed()) return;
+
+  switch (message.name) {
+    case "start":
+      downloadAddress = message.data.address;
+      downloadPath = message.data.path;
+      if (!downloadPath.endsWith("/")) downloadPath += "/";
+      downloadStart();
+      break;
+
+    case "close":
+      downloadWindow.destroy();
+      downloadStop();
+      break;
+
+    case "save":
+      downloadSave(message.data);
+      break;
+  }
+}
+
+/** Starts a new SSH connection. */
+function downloadStart() {
+  if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
+  if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+  downloadClient?.end();
+  downloadClient = new Client()
+    .once("ready", () => {
+      // Successful SSH connection
+      downloadClient?.sftp((error, sftp) => {
+        if (error) {
+          // Failed to start SFTP
+          downloadError(error.message);
+        } else {
+          // Successful SFTP connection
+          let readFiles = () => {
+            sftp.readdir(downloadPath, (error, list) => {
+              if (error) {
+                // Failed to read directory (not found?)
+                downloadError(error.message);
+              } else {
+                // Return list of files
+                if (downloadWindow) {
+                  sendMessage(
+                    downloadWindow,
+                    "set-list",
+                    list
+                      .map((file) => file.filename)
+                      .filter(
+                        (filename) =>
+                          !filename.startsWith(".") && (filename.endsWith(".rlog") || filename.endsWith(".wpilog"))
+                      )
+                      .sort()
+                      .reverse()
+                  );
+                }
+              }
+            });
+          };
+
+          // Start periodic read
+          downloadRefreshInterval = setInterval(readFiles, DOWNLOAD_REFRESH_INTERVAL_MS);
+          readFiles();
+        }
+      });
+    })
+    .on("error", (error) => {
+      // Failed SSH connection
+      downloadError(error.message);
+    })
+    .connect({
+      // Start connection
+      host: downloadAddress,
+      port: 22,
+      readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
+      username: DOWNLOAD_USERNAME,
+      password: DOWNLOAD_PASSWORD
+    });
+}
+
+/** Closes the SSH connection. */
+function downloadStop() {
+  downloadClient?.end();
+  if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
+  if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+}
+
+/** Problem connecting or reading data, restart after a delay. */
+function downloadError(errorMessage: string) {
+  if (!downloadWindow) return;
+  sendMessage(downloadWindow, "show-error", errorMessage);
+  if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
+  downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
+}
+
+/** Guides the user through saving a set of files. */
+function downloadSave(files: string[]) {
+  if (!downloadWindow) return;
+  let selectPromise;
+  if (files.length > 1) {
+    selectPromise = dialog.showOpenDialog(downloadWindow, {
+      title: "Select save location for robot logs",
+      buttonLabel: "Save",
+      properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
+    });
+  } else {
+    let extension = path.extname(files[0]).slice(1);
+    let name = extension == "wpilog" ? "WPILib robot log" : "Robot log";
+    selectPromise = dialog.showSaveDialog(downloadWindow, {
+      title: "Select save location for robot log",
+      defaultPath: files[0],
+      properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+      filters: [{ name: name, extensions: [extension] }]
+    });
+  }
+
+  // Handle selected save location
+  selectPromise.then((response) => {
+    if (response.canceled) return;
+    let savePath: string = "";
+    if (files.length > 1) {
+      savePath = (response as Electron.OpenDialogReturnValue).filePaths[0];
+    } else {
+      savePath = (response as Electron.SaveDialogReturnValue).filePath as string;
+    }
+    if (savePath != "") {
+      // Start saving
+      downloadClient?.sftp((error, sftp) => {
+        if (error) {
+          downloadError(error.message);
+        } else {
+          if (downloadWindow) sendMessage(downloadWindow, "set-progress", null);
+          if (files.length == 1) {
+            // Single file
+            sftp.fastGet(downloadPath + files[0], savePath, (error) => {
+              if (error) {
+                downloadError(error.message);
+              } else {
+                if (!downloadWindow) return;
+                sendMessage(downloadWindow, "set-progress", 1);
+
+                // Ask if the log should be opened
+                dialog
+                  .showMessageBox(downloadWindow, {
+                    type: "question",
+                    message: "Open log?",
+                    detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
+                    icon: WINDOW_ICON,
+                    buttons: ["Open", "Skip"],
+                    defaultId: 0
+                  })
+                  .then((result) => {
+                    if (result.response == 0) {
+                      downloadWindow?.destroy();
+                      downloadStop();
+                      hubWindows[0].focus();
+                      sendMessage(hubWindows[0], "open-file", savePath);
+                      recordOpenFile(savePath);
+                    }
+                  });
+              }
+            });
+          } else {
+            // Multiple files
+            let completeCount = 0;
+            let skipCount = 0;
+            files.forEach((file) => {
+              fs.stat(savePath + "/" + file, (statErr) => {
+                if (statErr == null) {
+                  // File exists already, skip downloading
+                  completeCount++;
+                  skipCount++;
+                  if (skipCount == files.length) {
+                    // All files skipped
+                    if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
+                  }
+                } else {
+                  // File not found, download
+                  sftp.fastGet(downloadPath + file, savePath + "/" + file, (error) => {
+                    if (error) {
+                      downloadError(error.message);
+                    } else {
+                      completeCount++;
+                      let progress = (completeCount - skipCount) / (files.length - skipCount);
+                      if (downloadWindow) sendMessage(downloadWindow, "set-progress", progress);
+
+                      if (completeCount >= files.length) {
+                        let message = "";
+                        if (skipCount > 0) {
+                          let newCount = completeCount - skipCount;
+                          message =
+                            "Saved " +
+                            newCount.toString() +
+                            " new log" +
+                            (newCount == 1 ? "" : "s") +
+                            " (" +
+                            skipCount.toString() +
+                            " skipped) to <u>" +
+                            savePath +
+                            "</u>";
+                        } else {
+                          message =
+                            "Saved " +
+                            completeCount.toString() +
+                            " log" +
+                            (completeCount == 1 ? "" : "s") +
+                            " to <u>" +
+                            savePath +
+                            "</u>";
+                        }
+                        if (downloadWindow) sendMessage(downloadWindow, "show-alert", message);
+                      }
+                    }
+                  });
+                }
+              });
+            });
+          }
+        }
+      });
+    }
+  });
+}
 
 // CREATE WINDOWS
 
@@ -631,6 +880,8 @@ function createHubWindow() {
   window.on("focus", () => {
     sendMessage(window, "set-focused", true);
     hubStateTracker.setFocusedWindow(window);
+    hubWindows.splice(hubWindows.indexOf(window), 1);
+    hubWindows.splice(0, 0, window);
   });
 
   window.loadFile(path.join(__dirname, "../www/hub.html"));
@@ -646,7 +897,6 @@ function createEditAxisWindow(
   range: [number, number],
   callback: (range: [number, number]) => void
 ) {
-  // Create edit axis window
   const editWindow = new BrowserWindow({
     width: 300,
     height: process.platform == "win32" ? 125 : 108, // "useContentSize" is broken on Windows when not resizable
@@ -778,7 +1028,52 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
  * Creates a new download window if it doesn't already exist.
  * @param parentWindow The parent window to use for alignment
  */
-function openDownload(parentWindow: Electron.BrowserWindow) {}
+function openDownload(parentWindow: Electron.BrowserWindow) {
+  if (downloadWindow != null && !downloadWindow.isDestroyed()) {
+    downloadWindow.focus();
+    return;
+  }
+
+  const width = 500;
+  const height = 500;
+  downloadWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    minWidth: width,
+    minHeight: height,
+    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
+    resizable: true,
+    alwaysOnTop: true,
+    icon: WINDOW_ICON,
+    show: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  downloadWindow.setMenu(null);
+  downloadWindow.once("ready-to-show", downloadWindow.show);
+  downloadWindow.once("close", downloadStop);
+  downloadWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    if (downloadWindow == null) return;
+    const { port1, port2 } = new MessageChannelMain();
+    downloadWindow.webContents.postMessage("port", null, [port1]);
+    windowPorts[downloadWindow.id] = port2;
+    port2.on("message", (event) => {
+      if (downloadWindow) handleDownloadMessage(event.data);
+    });
+    port2.start();
+
+    // Init messages
+    sendMessage(downloadWindow, "set-platform", process.platform);
+    sendAllPreferences();
+  });
+  downloadWindow.loadFile(path.join(__dirname, "../www/download.html"));
+}
 
 // APPLICATION EVENTS
 

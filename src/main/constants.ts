@@ -2,6 +2,7 @@ import { app } from "electron";
 import path from "path";
 import Preferences from "../lib/Preferences";
 
+// General
 export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
 export const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
 export const STATE_FILENAME = path.join(
@@ -26,3 +27,16 @@ export const DEFAULT_PREFS: Preferences = {
   liveMode: "nt4",
   rlogPort: 5800
 };
+
+// Live RLOG
+export const RLOG_CONNECT_TIMEOUT_MS = 1000; // How long to wait when connecting
+export const RLOG_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout
+export const RLOG_HEARTBEAT_DELAY_MS = 1000; // How long to wait between heartbeats
+export const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
+
+// Download
+export const DOWNLOAD_USERNAME = "lvuser";
+export const DOWNLOAD_PASSWORD = "";
+export const DOWNLOAD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
+export const DOWNLOAD_RETRY_DELAY_MS = 1000; // How long to wait between connection attempts
+export const DOWNLOAD_REFRESH_INTERVAL_MS = 5000; // How often to refresh file list when connected

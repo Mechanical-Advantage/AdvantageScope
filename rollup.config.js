@@ -13,7 +13,7 @@ const bundle = (input, output, external = []) => ({
 });
 
 export default [
-  bundle("main/main.ts", "main.js", ["electron", "electron-fetch", "fs", "jsonfile", "os", "path"]),
+  bundle("main/main.ts", "main.js", ["electron", "electron-fetch", "fs", "jsonfile", "net", "os", "path", "ssh2"]),
   bundle("preload/preload.ts", "preload.js", ["electron"]),
 
   bundle("hub/hub.ts", "hub.js"),

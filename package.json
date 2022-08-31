@@ -3,7 +3,11 @@
   "productName": "Advantage Scope",
   "version": "2.0.0",
   "description": "Logging tool from FRC Team 6328.",
-  "author": "FRC 6328",
+  "author": {
+    "name": "FRC 6328",
+    "email": "info@littletonrobotics.org",
+    "url": "https://littletonrobotics.org"
+  },
   "license": "MIT",
   "main": "bundles/main.js",
   "scripts": {
@@ -20,6 +24,7 @@
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.4",
     "@types/jsonfile": "^6.1.0",
+    "@types/ssh2": "^1.11.5",
     "electron": "^20.0.0",
     "electron-builder": "^23.3.3",
     "prettier": "2.7.1",
@@ -30,7 +35,6 @@
   "dependencies": {
     "electron-fetch": "^1.7.4",
     "jsonfile": "^6.1.0",
-    "mkdirp": "^1.0.4",
     "ssh2": "^1.5.0"
   },
   "prettier": {
@@ -79,7 +83,6 @@
         "pacman"
       ],
       "icon": "icons/app/app-icon.icns",
-      "maintainer": "FRC 6328",
       "category": "Utility"
     },
     "win": {

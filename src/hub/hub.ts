@@ -1,3 +1,4 @@
+import { SIM_ADDRESS, USB_ADDRESS } from "../lib/IPAddresses";
 import Log from "../lib/log/Log";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
@@ -12,8 +13,6 @@ import RLOGServerSource from "./sources/RLOGServerSource";
 import Tabs from "./Tabs";
 
 // Constants
-const USB_ADDRESS = "172.22.11.2";
-const SIM_ADDRESS = "127.0.0.1";
 const SAVE_PERIOD_MS = 500;
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
