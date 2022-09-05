@@ -863,16 +863,20 @@ function createHubWindow() {
   createPorts(); // Create ports immediately so messages can be queued
   window.webContents.on("dom-ready", () => {
     if (!firstLoad) createPorts(); // Create ports on reload
-    firstLoad = false;
 
     // Init messages
-    if (rendererState) sendMessage(window, "restore-state", rendererState);
+    if (firstLoad) {
+      if (rendererState) sendMessage(window, "restore-state", rendererState); // Use state from file
+    } else {
+      sendMessage(window, "restore-state", hubStateTracker.getRendererState(window)); // Use last cached state
+    }
     sendMessage(window, "set-fullscreen", window.isFullScreen());
     sendMessage(window, "set-platform", {
       platform: process.platform,
       release: os.release()
     });
     sendAllPreferences();
+    firstLoad = false;
   });
   window.on("enter-full-screen", () => sendMessage(window, "set-fullscreen", true));
   window.on("leave-full-screen", () => sendMessage(window, "set-fullscreen", false));

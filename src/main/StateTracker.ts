@@ -2,10 +2,9 @@ import { BrowserWindow, screen } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import { STATE_FILENAME } from "./constants";
-import WindowState from "./WindowState";
 
 export default class StateTracker {
-  private SAVE_PERIOD_MS = 500;
+  private SAVE_PERIOD_MS = 250;
 
   private focusedWindow: BrowserWindow | null = null;
   private rendererStateCache: { [id: number]: any } = {};
@@ -70,4 +69,17 @@ export default class StateTracker {
   saveRendererState(window: BrowserWindow, rendererState: any) {
     this.rendererStateCache[window.id] = rendererState;
   }
+
+  /** Returns the cached renderer state for a window. */
+  getRendererState(window: BrowserWindow): any {
+    return this.rendererStateCache[window.id];
+  }
+}
+
+export interface WindowState {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rendererState?: any;
 }

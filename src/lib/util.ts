@@ -8,6 +8,16 @@ export function arraysEqual(a: any[], b: any[]): boolean {
   );
 }
 
+/** Checks whether two sets are equal. */
+export function setsEqual(a: Set<any>, b: Set<any>): boolean {
+  return (
+    a.size == b.size &&
+    Array.from(a).every((value) => {
+      return b.has(value);
+    })
+  );
+}
+
 /** Returns the HTML encoded version of a string. */
 export function htmlEncode(text: string) {
   return text.replace(/[\u00A0-\u9999<>\&]/g, (i) => {

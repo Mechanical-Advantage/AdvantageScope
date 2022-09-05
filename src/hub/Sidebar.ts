@@ -1,5 +1,5 @@
 import LogFieldTree from "../lib/log/LogFieldTree";
-import { arraysEqual } from "../lib/util";
+import { arraysEqual, setsEqual } from "../lib/util";
 import { SidebarState } from "./HubState";
 
 export default class Sidebar {
@@ -19,7 +19,7 @@ export default class Sidebar {
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
   private lastFieldKeys: string[] = [];
-  private expandedFields: string[] = [];
+  private expandedFields = new Set<string>();
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
 
@@ -55,16 +55,17 @@ export default class Sidebar {
   saveState(): SidebarState {
     return {
       width: this.sidebarWidth,
-      expanded: this.expandedFields
+      expanded: [...this.expandedFields]
     };
   }
 
   /** Restores to the provided state. */
   restoreState(state: SidebarState) {
     let widthEqual = state.width == this.sidebarWidth;
-    let expandedEqual = arraysEqual(state.expanded, this.expandedFields);
+    let expandedSet = new Set<string>(state.expanded);
+    let expandedEqual = setsEqual(expandedSet, this.expandedFields);
     this.sidebarWidth = state.width;
-    this.expandedFields = state.expanded;
+    this.expandedFields = expandedSet;
     if (!widthEqual) this.updateWidth();
     if (!expandedEqual) this.refresh(true);
   }
@@ -223,15 +224,15 @@ export default class Sidebar {
         closedIcon.style.display = expanded ? "none" : "initial";
         openIcon.style.display = expanded ? "initial" : "none";
         if (expanded) {
-          this.expandedFields.push(fullTitle);
+          this.expandedFields.add(fullTitle);
         } else {
-          this.expandedFields.splice(this.expandedFields.indexOf(fullTitle), 1);
+          this.expandedFields.delete(fullTitle);
         }
       };
 
       closedIcon.addEventListener("click", () => setExpanded(true));
       openIcon.addEventListener("click", () => setExpanded(false));
-      if (this.expandedFields.includes(fullTitle)) setExpanded(true);
+      if (this.expandedFields.has(fullTitle)) setExpanded(true);
 
       Object.keys(field.children)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))
