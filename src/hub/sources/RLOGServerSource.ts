@@ -45,23 +45,28 @@ export default class RLOGServerSource extends LiveDataSource {
     }
 
     if (data.success) {
-      let success = this.decoder.decode(this.log, data.raw);
-      if (success) {
-        if (this.outputCallback != null) this.outputCallback(this.log);
+      let decodeSuccess = this.decoder.decode(this.log, data.raw);
+      if (decodeSuccess) {
+        // New data, everything normal
         this.setStatus(LiveDataSourceStatus.Active);
+        if (this.outputCallback != null) this.outputCallback(this.log);
       } else {
+        // Problem decoding, don't reconnect automatically
         this.setStatus(LiveDataSourceStatus.Error);
         window.sendMainMessage("live-rlog-stop");
       }
     } else {
+      // Failed to connect (or just disconnected), stop and reconnect automatically
+      this.setStatus(LiveDataSourceStatus.Connecting);
       window.sendMainMessage("live-rlog-stop");
       this.timeout = setTimeout(() => {
         if (window.preferences == null) {
+          // No preferences, can't reconnect
           this.setStatus(LiveDataSourceStatus.Error);
         } else {
+          // Try to reconnect
           this.log = new Log();
           this.decoder = new RLOGDecoder();
-          this.setStatus(LiveDataSourceStatus.Connecting);
           window.sendMainMessage("live-rlog-start", {
             uuid: this.UUID,
             address: this.address,

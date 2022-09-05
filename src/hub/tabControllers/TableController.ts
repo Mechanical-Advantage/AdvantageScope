@@ -70,7 +70,7 @@ export default class TableController implements TabController {
   refresh(): void {
     // Update timestamps (Check if fields were only added at the end. If not, do a full refresh)
     let fullRefresh = true;
-    let newTimestamps = [...window.log.getTimestamps(this.fields)];
+    let newTimestamps = window.log.getTimestamps(this.fields);
     if (newTimestamps.length >= this.timestamps.length) {
       if (arraysEqual(this.timestamps.slice(0, newTimestamps.length), this.timestamps)) {
         fullRefresh = false;
@@ -214,7 +214,7 @@ export default class TableController implements TabController {
           this.timestamps[Math.floor(this.TABLE_CONTAINER.scrollTop / this.ROW_HEIGHT_PX) + this.currentRange[0]];
         offsetPx = this.TABLE_CONTAINER.scrollTop % this.ROW_HEIGHT_PX;
       }
-      this.timestamps = [...window.log.getTimestamps(this.fields)];
+      this.timestamps = window.log.getTimestamps(this.fields);
       this.jumpToTime(targetTime, offsetPx);
     } else {
       this.timestamps = [];

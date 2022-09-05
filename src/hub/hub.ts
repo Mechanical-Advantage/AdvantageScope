@@ -14,6 +14,7 @@ import Tabs from "./Tabs";
 
 // Constants
 const SAVE_PERIOD_MS = 250;
+const MIN_LIVE_RESYNC_SECS = 0.15; // Resync live data if out of sync by longer than this
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
 // Global variables
@@ -287,8 +288,9 @@ function handleMainMessage(message: NamedMessage) {
           let logRange = window.log.getTimestampRange();
           let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
           let oldLiveZeroTime = window.selection.getLiveZeroTime();
-          if (oldLiveZeroTime == null || oldLiveZeroTime > newLiveZeroTime) {
+          if (oldLiveZeroTime == null || Math.abs(oldLiveZeroTime - newLiveZeroTime) > MIN_LIVE_RESYNC_SECS) {
             window.selection.setLiveConnected(newLiveZeroTime);
+            if (oldLiveZeroTime) console.warn("Live data out of sync, resetting");
           }
           if (oldLiveZeroTime == null) {
             window.selection.lock();

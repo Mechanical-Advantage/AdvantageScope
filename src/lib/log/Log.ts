@@ -59,9 +59,9 @@ export default class Log {
   /** Returns the combined timestamps from a set of fields. */
   getTimestamps(keys: string[]): number[] {
     let output: number[] = [];
+    keys = keys.filter((key) => key in this.fields);
     if (keys.length > 1) {
       keys.forEach((key) => {
-        if (!(key in this.fields)) return;
         this.fields[key].getTimestamps().forEach((timestamp) => {
           if (!output.includes(timestamp)) {
             output.push(timestamp);
@@ -70,7 +70,7 @@ export default class Log {
       });
       output.sort((a, b) => a - b);
     } else if (keys.length == 1) {
-      output = this.fields[keys[0]].getTimestamps();
+      output = [...this.fields[keys[0]].getTimestamps()];
     }
     return output;
   }

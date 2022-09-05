@@ -148,6 +148,7 @@ export default abstract class TimelineVizController implements TabController {
       this.TIMELINE_MARKER_CONTAINER.removeChild(this.TIMELINE_MARKER_CONTAINER.firstChild);
     }
     let range = window.log.getTimestampRange();
+    if (window.selection.getMode() == SelectionMode.Locked) range[1] = window.selection.getSelectedTime() as number;
     this.TIMELINE_INPUT.min = range[0].toString();
     this.TIMELINE_INPUT.max = range[1].toString();
 
@@ -206,7 +207,9 @@ export default abstract class TimelineVizController implements TabController {
     }
 
     // Update timeline
-    this.TIMELINE_INPUT.value = time.toString();
+    if (window.selection.getMode() != SelectionMode.Locked) {
+      this.TIMELINE_INPUT.value = time.toString();
+    }
 
     // Update content height
     this.CONTENT.style.setProperty(

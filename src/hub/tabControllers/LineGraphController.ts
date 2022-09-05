@@ -381,8 +381,9 @@ export default class LineGraphController implements TabController {
     if (window.selection.getMode() == SelectionMode.Locked) {
       availableRange[1] = window.selection.getSelectedTime() as number;
     }
-    if (availableRange[1] - availableRange[0] < this.MIN_ZOOM_TIME)
+    if (availableRange[1] - availableRange[0] < this.MIN_ZOOM_TIME) {
       availableRange[1] = availableRange[0] + this.MIN_ZOOM_TIME;
+    }
 
     // Apply horizontal scroll
     if (window.selection.getMode() == SelectionMode.Locked) {
@@ -670,7 +671,6 @@ export default class LineGraphController implements TabController {
       let type = typeCache[field.key];
       let data = dataCache[field.key];
 
-      // console.log(data.timestamps[0], window.log.getTimestamps([field.key]).slice(0, 10));
       let isDark = window.log.getTimestamps([field.key]).indexOf(data.timestamps[0]) % 2 == 0;
       for (let i = 0; i < data.timestamps.length; i++) {
         let startX = scaleValue(data.timestamps[i], this.timestampRange, [graphLeft, graphLeft + graphWidth]);

@@ -158,7 +158,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         }, RLOG_DATA_TIMEOUT_MS);
 
         while (true) {
-          var expectedLength;
+          let expectedLength;
           if (rlogDataArrays[windowId].length < 4) {
             break;
           } else {
@@ -168,7 +168,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             }
           }
 
-          var singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
+          let singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
           rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
 
           let success = sendMessage(window, "live-rlog-data", {
