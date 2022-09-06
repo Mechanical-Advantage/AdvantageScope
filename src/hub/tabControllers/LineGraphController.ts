@@ -21,6 +21,8 @@ export default class LineGraphController implements TabController {
   private LEFT_LIST: HTMLElement;
   private DISCRETE_LIST: HTMLElement;
   private RIGHT_LIST: HTMLElement;
+  private LEFT_LOCKED_LABEL: HTMLElement;
+  private RIGHT_LOCKED_LABEL: HTMLElement;
   private LEFT_DRAG_TARGET: HTMLElement;
   private DISCRETE_DRAG_TARGET: HTMLElement;
   private RIGHT_DRAG_TARGET: HTMLElement;
@@ -64,6 +66,8 @@ export default class LineGraphController implements TabController {
     this.LEFT_LIST = content.getElementsByClassName("legend-left")[0] as HTMLElement;
     this.DISCRETE_LIST = content.getElementsByClassName("legend-discrete")[0] as HTMLElement;
     this.RIGHT_LIST = content.getElementsByClassName("legend-right")[0] as HTMLElement;
+    this.LEFT_LOCKED_LABEL = this.LEFT_LIST.firstElementChild?.firstElementChild?.lastElementChild as HTMLElement;
+    this.RIGHT_LOCKED_LABEL = this.RIGHT_LIST.firstElementChild?.firstElementChild?.lastElementChild as HTMLElement;
     this.LEFT_DRAG_TARGET = content.getElementsByClassName("legend-left")[1] as HTMLElement;
     this.DISCRETE_DRAG_TARGET = content.getElementsByClassName("legend-discrete")[1] as HTMLElement;
     this.RIGHT_DRAG_TARGET = content.getElementsByClassName("legend-right")[1] as HTMLElement;
@@ -155,6 +159,8 @@ export default class LineGraphController implements TabController {
   restoreState(state: LineGraphState): void {
     this.leftLockedRange = state.legends.left.lockedRange;
     this.rightLockedRange = state.legends.right.lockedRange;
+    this.LEFT_LOCKED_LABEL.hidden = this.leftLockedRange == null;
+    this.RIGHT_LOCKED_LABEL.hidden = this.rightLockedRange == null;
 
     // Remove old fields
     this.leftFields = [];
@@ -195,6 +201,8 @@ export default class LineGraphController implements TabController {
         this.rightLockedRange = range;
       }
     }
+    this.LEFT_LOCKED_LABEL.hidden = this.leftLockedRange == null;
+    this.RIGHT_LOCKED_LABEL.hidden = this.rightLockedRange == null;
   }
 
   refresh(): void {
