@@ -51,6 +51,89 @@ body.fancy-title-bar div.main-view {
   top: 38px;
 }
 
+/* Loading glow */
+
+div.loading-glow {
+  position: absolute;
+  z-index: 6;
+  left: var(--side-bar-width);
+  right: 0px;
+  top: 0px;
+  height: 0px;
+  transition: height 0.2s;
+  overflow: hidden;
+}
+
+body.fancy-title-bar div.loading-glow {
+  top: 38px;
+}
+
+div.loading-glow.active {
+  height: 6px;
+}
+
+@keyframes loadingGlowSlide {
+  0% {
+    translate: 0% 0%;
+  }
+  100% {
+    translate: 400% 0%;
+  }
+}
+
+div.loading-glow-element {
+  position: absolute;
+  width: 25%;
+  height: 3px;
+  top: 0%;
+  transform: skew(-45deg);
+  animation: loadingGlowSlide 1.5s linear infinite;
+
+  background-color: #303dc9;
+  box-shadow: 0px 0px 3px #303dc9;
+}
+
+div.loading-glow-element:nth-child(2n) {
+  background-color: #e8c24f;
+  box-shadow: 0px 0px 3px #e8c24f;
+}
+
+div.loading-glow-element:nth-child(1) {
+  left: -125%;
+}
+
+div.loading-glow-element:nth-child(2) {
+  left: -100%;
+}
+
+div.loading-glow-element:nth-child(3) {
+  left: -75%;
+}
+
+div.loading-glow-element:nth-child(4) {
+  left: -50%;
+}
+
+div.loading-glow-element:nth-child(5) {
+  left: -25%;
+}
+
+div.loading-glow-element:nth-child(6) {
+  left: 0%;
+}
+
+div.loading-glow-element:nth-child(7) {
+  left: 25%;
+}
+
+div.loading-glow-element:nth-child(8) {
+  left: 50%;
+}
+
+div.loading-glow-element:nth-child(9) {
+  left: 75%;
+}
+
 /* Side bar layout */
 
 div.side-bar-background {
@@ -114,7 +197,7 @@ div.side-bar-handle {
   left: calc(var(--side-bar-width) - 2px);
   width: calc(20px - (var(--show-side-bar) * 16px));
 
-  z-index: 6;
+  z-index: 7;
   cursor: col-resize;
 }
 
@@ -604,7 +687,7 @@ canvas.line-graph-canvas {
 
 div.line-graph-scroll {
   position: absolute;
-  z-index: 7;
+  z-index: 8;
   left: 60px;
   right: 60px;
   top: 8px;
@@ -658,7 +741,7 @@ table.data-table th {
 table.data-table th:first-child {
   left: 0px;
   min-width: 97px;
-  z-index: 8;
+  z-index: 9;
 }
 
 table.data-table th:first-child input {
@@ -771,7 +854,7 @@ table.data-table tr.selected td {
 
 div.data-table-drag-highlight {
   position: absolute;
-  z-index: 9;
+  z-index: 10;
   width: 25px;
   top: 0px;
   bottom: 0px;
@@ -834,7 +917,7 @@ button.timeline-viz-popup-button {
 
 div.timeline-viz-drag-highlight {
   position: absolute;
-  z-index: 9;
+  z-index: 10;
   background-color: lightgreen;
   opacity: 25%;
 }

@@ -66,6 +66,14 @@ function setWindowTitle(name: string, status?: string) {
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
 
+function setLoading(active: boolean) {
+  if (active) {
+    document.getElementsByClassName("loading-glow")[0].classList.add("active");
+  } else {
+    document.getElementsByClassName("loading-glow")[0].classList.remove("active");
+  }
+}
+
 function updateFancyWindow() {
   // Using fancy title bar?
   if (window.platform == "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
@@ -231,12 +239,15 @@ function handleMainMessage(message: NamedMessage) {
             case HistorialDataSourceStatus.Reading:
             case HistorialDataSourceStatus.Decoding:
               setWindowTitle(friendlyName, "Loading");
+              setLoading(true);
               break;
             case HistorialDataSourceStatus.Ready:
               setWindowTitle(friendlyName);
+              setLoading(false);
               break;
             case HistorialDataSourceStatus.Error:
               setWindowTitle(friendlyName, "Error");
+              setLoading(false);
               break;
           }
         },
@@ -269,7 +280,7 @@ function handleMainMessage(message: NamedMessage) {
         (status: LiveDataSourceStatus) => {
           switch (status) {
             case LiveDataSourceStatus.Connecting:
-              setWindowTitle(address, "Connecting");
+              setWindowTitle(address, "Searching");
               break;
             case LiveDataSourceStatus.Active:
               setWindowTitle(address);
