@@ -91,9 +91,10 @@ export default class Log {
   }
 
   /** Organizes the fields into a tree structure. */
-  getFieldTree(): { [id: string]: LogFieldTree } {
+  getFieldTree(includeArrayItems: boolean = true): { [id: string]: LogFieldTree } {
     let root: { [id: string]: LogFieldTree } = {};
     Object.keys(this.fields).forEach((key) => {
+      if (!includeArrayItems && this.arrayItemFields.includes(key)) return;
       let position: LogFieldTree = { fullKey: null, children: root };
       key
         .slice(1)

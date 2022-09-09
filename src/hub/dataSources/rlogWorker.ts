@@ -2,6 +2,7 @@ import Log from "../../lib/log/Log";
 import RLOGDecoder from "./RLOGDecoder";
 
 self.onmessage = (event) => {
+  // WORKER SETUP
   let { id, payload } = event.data;
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });
@@ -10,6 +11,9 @@ self.onmessage = (event) => {
     self.postMessage({ id: id });
   }
 
+  // MAIN LOGIC
+
+  // Run worker
   if (!payload.success) reject();
 
   let log = new Log();

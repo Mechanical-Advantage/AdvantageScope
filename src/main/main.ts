@@ -107,6 +107,16 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   if (window.isDestroyed()) return;
   let windowId = window.id;
   switch (message.name) {
+    case "error":
+      dialog.showMessageBox(window, {
+        type: "error",
+        title: "Error",
+        message: message.data.title,
+        detail: message.data.content,
+        icon: WINDOW_ICON
+      });
+      break;
+
     case "save-state":
       hubStateTracker.saveRendererState(window, message.data);
       break;
@@ -308,6 +318,36 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         });
       }
+      break;
+
+    case "prompt-export-csv":
+      let path = message.data;
+      let csvPath = path.substring(0, path.length - 4) + "csv";
+      dialog
+        .showSaveDialog(window, {
+          title: "Select export location for robot log",
+          defaultPath: csvPath,
+          properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+          filters: [{ name: "Comma-separated values", extensions: ["csv"] }]
+        })
+        .then((response) => {
+          if (!response.canceled) {
+            sendMessage(window, "prepare-export-csv", response.filePath);
+          }
+        });
+      break;
+
+    case "write-export-csv":
+      fs.writeFile(message.data.path, message.data.content, (err) => {
+        if (err) throw err;
+        else {
+          sendMessage(window, "finish-export-csv");
+        }
+      });
+      break;
+
+    default:
+      console.warn("Unknown message from hub renderer process", message);
       break;
   }
 }
@@ -606,7 +646,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+E",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "export-csv");
+            sendMessage(window, "start-export-csv");
           }
         },
         { type: "separator" },

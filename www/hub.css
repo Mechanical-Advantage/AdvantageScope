@@ -60,16 +60,12 @@ div.loading-glow {
   right: 0px;
   top: 0px;
   height: 0px;
-  transition: height 0.2s;
+  transition: height 0.3s;
   overflow: hidden;
 }
 
-body.fancy-title-bar div.loading-glow {
-  top: 38px;
-}
-
 div.loading-glow.active {
-  height: 6px;
+  height: 4px;
 }
 
 @keyframes loadingGlowSlide {
@@ -84,18 +80,18 @@ div.loading-glow.active {
 div.loading-glow-element {
   position: absolute;
   width: 25%;
-  height: 3px;
+  height: 2px;
   top: 0%;
   transform: skew(-45deg);
   animation: loadingGlowSlide 1.5s linear infinite;
 
   background-color: #303dc9;
-  box-shadow: 0px 0px 3px #303dc9;
+  box-shadow: 0px 0px 2px 0px #303dc9;
 }
 
 div.loading-glow-element:nth-child(2n) {
   background-color: #e8c24f;
-  box-shadow: 0px 0px 3px #e8c24f;
+  box-shadow: 0px 0px 2px 0px #e8c24f;
 }
 
 div.loading-glow-element:nth-child(1) {

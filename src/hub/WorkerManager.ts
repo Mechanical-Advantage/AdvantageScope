@@ -1,3 +1,4 @@
+/** Manages communication with worker scripts. Duplicate workers are avoided and the response is provided through a promise. */
 export default abstract class WorkerManager {
   private static workers: { [id: string]: Worker } = {};
   private static globalRequestId: number = 0;

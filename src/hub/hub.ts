@@ -3,14 +3,15 @@ import Log from "../lib/log/Log";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import { htmlEncode } from "../lib/util";
+import { HistorialDataSource, HistorialDataSourceStatus } from "./dataSources/HistoricalDataSource";
+import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
+import RLOGFileSource from "./dataSources/RLOGFileSource";
+import RLOGServerSource from "./dataSources/RLOGServerSource";
 import { HubState } from "./HubState";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
-import { HistorialDataSource, HistorialDataSourceStatus } from "./sources/HistoricalDataSource";
-import { LiveDataSource, LiveDataSourceStatus } from "./sources/LiveDataSource";
-import RLOGFileSource from "./sources/RLOGFileSource";
-import RLOGServerSource from "./sources/RLOGServerSource";
 import Tabs from "./Tabs";
+import WorkerManager from "./WorkerManager";
 
 // Constants
 const SAVE_PERIOD_MS = 250;
@@ -50,6 +51,7 @@ window.messagePort = null;
 
 var historicalSource: HistorialDataSource | null;
 var liveSource: LiveDataSource | null;
+var logPath: string | null = null;
 
 var dragActive = false;
 var dragOffsetX = 0;
@@ -248,11 +250,16 @@ function handleMainMessage(message: NamedMessage) {
             case HistorialDataSourceStatus.Error:
               setWindowTitle(friendlyName, "Error");
               setLoading(false);
+              window.sendMainMessage("error", {
+                title: "Failed to open log",
+                content: "There was a problem while reading the log file. Please try again."
+              });
               break;
           }
         },
         (log: Log) => {
           window.log = log;
+          logPath = message.data;
           window.sidebar.refresh();
           window.tabs.refresh();
         }
@@ -287,6 +294,10 @@ function handleMainMessage(message: NamedMessage) {
               break;
             case LiveDataSourceStatus.Error:
               setWindowTitle(address, "Error");
+              window.sendMainMessage("error", {
+                title: "Problem with live source",
+                content: "There was a problem while connecting to the live source. Please try again."
+              });
               break;
           }
 
@@ -296,6 +307,7 @@ function handleMainMessage(message: NamedMessage) {
         },
         (log: Log) => {
           window.log = log;
+          logPath = null;
           let logRange = window.log.getTimestampRange();
           let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
           let oldLiveZeroTime = window.selection.getLiveZeroTime();
@@ -335,6 +347,42 @@ function handleMainMessage(message: NamedMessage) {
 
     case "edit-axis":
       window.tabs.editAxis(message.data.isLeft, message.data.range);
+      break;
+
+    case "start-export-csv":
+      if (logPath != null) {
+        window.sendMainMessage("prompt-export-csv", logPath);
+      } else {
+        window.sendMainMessage("error", {
+          title: "Cannot export as CSV",
+          content: "Please open a log file, then try again."
+        });
+      }
+      break;
+
+    case "prepare-export-csv":
+      setLoading(true);
+      WorkerManager.request("../bundles/hub$csvWorker.js", window.log.toSerialized())
+        .then((csvContent) => {
+          window.sendMainMessage("write-export-csv", {
+            path: message.data,
+            content: csvContent
+          });
+        })
+        .catch(() => {
+          window.sendMainMessage("error", {
+            title: "Failed to export as CSV",
+            content: "There was a problem while converting to the CSV format. Please try again."
+          });
+        });
+      break;
+
+    case "finish-export-csv":
+      setLoading(false);
+      break;
+
+    default:
+      console.warn("Unknown message from main process", message);
       break;
   }
 }

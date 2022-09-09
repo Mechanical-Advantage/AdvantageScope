@@ -41,6 +41,10 @@ window.addEventListener("message", (event) => {
           let aspectRatio = visualizer?.render(message.data);
           if (aspectRatio) processAspectRatio(aspectRatio);
           break;
+
+        default:
+          console.warn("Unknown message from main process", message);
+          break;
       }
     };
   }

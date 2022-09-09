@@ -190,6 +190,10 @@ function handleMainMessage(message: NamedMessage) {
 
       updateFiller();
       break;
+
+    default:
+      console.warn("Unknown message from main process", message);
+      break;
   }
 }
 
