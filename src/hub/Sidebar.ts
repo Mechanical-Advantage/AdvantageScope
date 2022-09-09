@@ -11,7 +11,7 @@ export default class Sidebar {
   private ICON_TEMPLATES = document.getElementById("fieldItemIconTemplates") as HTMLElement;
   private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
-  private KNOWN_KEYS = ["DriverStation", "NetworkTables", "RealOutputs", "ReplayOutputs", "SystemStats"];
+  private KNOWN_KEYS = ["DriverStation", "NetworkTables", "RealOutputs", "ReplayOutputs", "SystemStats", "Timestamp"];
   private HIDDEN_KEYS = ["RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
@@ -92,7 +92,7 @@ export default class Sidebar {
       let tree = window.log.getFieldTree();
       Object.keys(tree)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))
-        .sort((a, b) => this.sortKeys(a, b))
+        .sort((a, b) => this.sortKeys(a, b, true))
         .forEach((key) => {
           this.addFields(key, "/" + key, tree[key], this.FIELD_LIST, 0);
         });
@@ -144,7 +144,7 @@ export default class Sidebar {
     let label = document.createElement("div");
     fieldElement.appendChild(label);
     label.classList.add("field-item-label");
-    if (this.KNOWN_KEYS.includes(title)) label.classList.add("known");
+    if (indent == 0 && this.KNOWN_KEYS.includes(title)) label.classList.add("known");
     label.innerText = title;
     label.style.fontStyle = field.fullKey == null ? "normal" : "italic";
     label.style.cursor = field.fullKey == null ? "auto" : "grab";
@@ -235,7 +235,6 @@ export default class Sidebar {
       if (this.expandedFields.has(fullTitle)) setExpanded(true);
 
       Object.keys(field.children)
-        .filter((key) => !this.HIDDEN_KEYS.includes(key))
         .sort((a, b) => this.sortKeys(a, b))
         .forEach((key) => {
           this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
@@ -243,11 +242,13 @@ export default class Sidebar {
     }
   }
 
-  /** Soring function that uses the known keys and correctly interprets numbers within strings. */
-  private sortKeys(a: string, b: string): number {
+  /** Soring function that uses the known keys (optionally) and correctly interprets numbers within strings. */
+  private sortKeys(a: string, b: string, useKnown: boolean = false): number {
     // Check for known keys
-    if (this.KNOWN_KEYS.includes(a) && !this.KNOWN_KEYS.includes(b)) return 1;
-    if (!this.KNOWN_KEYS.includes(a) && this.KNOWN_KEYS.includes(b)) return -1;
+    if (useKnown) {
+      if (this.KNOWN_KEYS.includes(a) && !this.KNOWN_KEYS.includes(b)) return 1;
+      if (!this.KNOWN_KEYS.includes(a) && this.KNOWN_KEYS.includes(b)) return -1;
+    }
 
     // Sort based on name
     function getNum(text: string): number | null {
