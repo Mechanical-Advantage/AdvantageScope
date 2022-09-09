@@ -65,7 +65,7 @@ div.loading-glow {
 }
 
 div.loading-glow.active {
-  height: 4px;
+  height: 3px;
 }
 
 @keyframes loadingGlowSlide {
@@ -80,18 +80,16 @@ div.loading-glow.active {
 div.loading-glow-element {
   position: absolute;
   width: 25%;
-  height: 2px;
+  height: 3px;
   top: 0%;
   transform: skew(-45deg);
   animation: loadingGlowSlide 1.5s linear infinite;
 
   background-color: #303dc9;
-  box-shadow: 0px 0px 2px 0px #303dc9;
 }
 
 div.loading-glow-element:nth-child(2n) {
   background-color: #e8c24f;
-  box-shadow: 0px 0px 2px 0px #e8c24f;
 }
 
 div.loading-glow-element:nth-child(1) {
