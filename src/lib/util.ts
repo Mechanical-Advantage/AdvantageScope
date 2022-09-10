@@ -50,9 +50,7 @@ export function cleanFloat(float: number) {
 /** Formats a number using a letter (K/M/B) for large numbers. */
 export function formatWithLetter(value: number): string {
   value = cleanFloat(value);
-  if (Math.abs(value) >= 1e15) {
-    return Math.round(value / 1e15).toString() + "Q";
-  } else if (Math.abs(value) >= 1e12) {
+  if (Math.abs(value) >= 1e12) {
     return Math.round(value / 1e12).toString() + "T";
   } else if (Math.abs(value) >= 1e9) {
     return Math.round(value / 1e9).toString() + "B";
