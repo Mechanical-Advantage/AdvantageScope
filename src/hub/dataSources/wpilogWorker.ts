@@ -1,4 +1,5 @@
 import Log from "../../lib/log/Log";
+import LoggableType from "../../lib/log/LoggableType";
 import { WPILOGReader } from "./WPILOGDecoder";
 
 self.onmessage = (event) => {
@@ -27,43 +28,76 @@ self.onmessage = (event) => {
           let startData = record.getStartData();
           entryIds[startData.entry] = startData.name;
           entryTypes[startData.entry] = startData.type;
+          switch (startData.type) {
+            case "raw":
+              log.createBlankField(startData.name, LoggableType.Raw);
+              break;
+            case "boolean":
+              log.createBlankField(startData.name, LoggableType.Boolean);
+              break;
+            case "int64":
+            case "float":
+            case "double":
+              log.createBlankField(startData.name, LoggableType.Number);
+              break;
+            case "string":
+            case "json":
+              log.createBlankField(startData.name, LoggableType.String);
+              break;
+            case "boolean[]":
+              log.createBlankField(startData.name, LoggableType.BooleanArray);
+              break;
+            case "int64[]":
+            case "float[]":
+            case "double[]":
+              log.createBlankField(startData.name, LoggableType.NumberArray);
+              break;
+            case "string[]":
+              log.createBlankField(startData.name, LoggableType.StringArray);
+              break;
+            default:
+              console.warn("Unknown type", startData.type);
+              break;
+          }
         }
       } else {
-        let id = entryIds[record.getEntry()];
+        let key = entryIds[record.getEntry()];
+        let type = entryTypes[record.getEntry()];
         let timestamp = record.getTimestamp() / 1000000.0;
-        switch (entryTypes[record.getEntry()]) {
+        switch (type) {
           case "raw":
-            log.putRaw(id, timestamp, record.getRaw());
+            log.putRaw(key, timestamp, record.getRaw());
             break;
           case "boolean":
-            log.putBoolean(id, timestamp, record.getBoolean());
+            log.putBoolean(key, timestamp, record.getBoolean());
             break;
           case "int64":
-            log.putNumber(id, timestamp, record.getInteger());
+            log.putNumber(key, timestamp, record.getInteger());
             break;
           case "float":
-            log.putNumber(id, timestamp, record.getFloat());
+            log.putNumber(key, timestamp, record.getFloat());
             break;
           case "double":
-            log.putNumber(id, timestamp, record.getDouble());
+            log.putNumber(key, timestamp, record.getDouble());
             break;
           case "string":
-            log.putString(id, timestamp, record.getString());
+          case "json":
+            log.putString(key, timestamp, record.getString());
             break;
           case "boolean[]":
-            log.putBooleanArray(id, timestamp, record.getBooleanArray());
+            log.putBooleanArray(key, timestamp, record.getBooleanArray());
             break;
           case "int64[]":
-            log.putNumberArray(id, timestamp, record.getIntegerArray());
+            log.putNumberArray(key, timestamp, record.getIntegerArray());
             break;
           case "float[]":
-            log.putNumberArray(id, timestamp, record.getFloatArray());
+            log.putNumberArray(key, timestamp, record.getFloatArray());
             break;
           case "double[]":
-            log.putNumberArray(id, timestamp, record.getDoubleArray());
+            log.putNumberArray(key, timestamp, record.getDoubleArray());
             break;
           case "string[]":
-            log.putStringArray(id, timestamp, record.getStringArray());
+            log.putStringArray(key, timestamp, record.getStringArray());
             break;
         }
       }

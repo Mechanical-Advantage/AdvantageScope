@@ -22,7 +22,7 @@ export default class Log {
   private timestampRange: [number, number] | null = null;
 
   /** Checks if the field exists and registers it if necessary. */
-  private checkField(key: string, type: LoggableType) {
+  public createBlankField(key: string, type: LoggableType) {
     if (key in this.fields) return;
     this.fields[key] = new LogField(type);
     if (type == LoggableType.BooleanArray || type == LoggableType.NumberArray || type == LoggableType.StringArray) {
@@ -97,9 +97,10 @@ export default class Log {
       if (!includeArrayItems && this.arrayItemFields.includes(key)) return;
       let position: LogFieldTree = { fullKey: null, children: root };
       key
-        .slice(1)
-        .split("/")
+        .slice(key.startsWith("/") ? 1 : 0)
+        .split(new RegExp(/\/|:/))
         .forEach((table) => {
+          if (table == "") return;
           if (!(table in position.children)) {
             position.children[table] = { fullKey: null, children: {} };
           }
@@ -152,7 +153,7 @@ export default class Log {
 
   /** Writes a new Raw value to the field. */
   putRaw(key: string, timestamp: number, value: Uint8Array) {
-    this.checkField(key, LoggableType.Raw);
+    this.createBlankField(key, LoggableType.Raw);
     this.updateRange(timestamp);
     this.fields[key].putRaw(timestamp, value);
   }
@@ -160,7 +161,7 @@ export default class Log {
   /** Writes a new Boolean value to the field. */
   putBoolean(key: string, timestamp: number, value: boolean) {
     if (this.arrayItemFields.includes(key)) return;
-    this.checkField(key, LoggableType.Boolean);
+    this.createBlankField(key, LoggableType.Boolean);
     this.updateRange(timestamp);
     this.fields[key].putBoolean(timestamp, value);
   }
@@ -168,7 +169,7 @@ export default class Log {
   /** Writes a new Number value to the field. */
   putNumber(key: string, timestamp: number, value: number) {
     if (this.arrayItemFields.includes(key)) return;
-    this.checkField(key, LoggableType.Number);
+    this.createBlankField(key, LoggableType.Number);
     this.updateRange(timestamp);
     this.fields[key].putNumber(timestamp, value);
   }
@@ -176,14 +177,14 @@ export default class Log {
   /** Writes a new String value to the field. */
   putString(key: string, timestamp: number, value: string) {
     if (this.arrayItemFields.includes(key)) return;
-    this.checkField(key, LoggableType.String);
+    this.createBlankField(key, LoggableType.String);
     this.updateRange(timestamp);
     this.fields[key].putString(timestamp, value);
   }
 
   /** Writes a new BooleanArray value to the field. */
   putBooleanArray(key: string, timestamp: number, value: boolean[]) {
-    this.checkField(key, LoggableType.BooleanArray);
+    this.createBlankField(key, LoggableType.BooleanArray);
     this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.BooleanArray) {
       this.fields[key].putBooleanArray(timestamp, value);
@@ -202,7 +203,7 @@ export default class Log {
 
   /** Writes a new NumberArray value to the field. */
   putNumberArray(key: string, timestamp: number, value: number[]) {
-    this.checkField(key, LoggableType.NumberArray);
+    this.createBlankField(key, LoggableType.NumberArray);
     this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.NumberArray) {
       this.fields[key].putNumberArray(timestamp, value);
@@ -221,7 +222,7 @@ export default class Log {
 
   /** Writes a new StringArray value to the field. */
   putStringArray(key: string, timestamp: number, value: string[]) {
-    this.checkField(key, LoggableType.StringArray);
+    this.createBlankField(key, LoggableType.StringArray);
     this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.StringArray) {
       this.fields[key].putStringArray(timestamp, value);
