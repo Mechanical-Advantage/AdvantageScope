@@ -321,7 +321,9 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "prompt-export-csv":
       let path = message.data;
-      let csvPath = path.substring(0, path.length - 4) + "csv";
+      let pathComponents = path.split(".");
+      pathComponents.pop();
+      let csvPath = pathComponents.join(".") + ".csv";
       dialog
         .showSaveDialog(window, {
           title: "Select export location for robot log",
