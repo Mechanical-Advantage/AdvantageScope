@@ -11,9 +11,9 @@
   "license": "MIT",
   "main": "bundles/main.js",
   "scripts": {
-    "start": "npm run compile && (electron bundles/main.js & npm run watch)",
-    "build": "npm run compile && electron-builder build",
-    "fast-build": "npm run compile && electron-builder build --dir",
+    "start": "rollup -c && electron bundles/main.js",
+    "build": "rollup -c && electron-builder build",
+    "fast-build": "rollup -c && electron-builder build --dir",
     "compile": "rollup -c",
     "watch": "rollup -c -w",
     "format": "prettier --write .",
