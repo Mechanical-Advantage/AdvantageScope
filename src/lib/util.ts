@@ -19,14 +19,14 @@ export function setsEqual(a: Set<any>, b: Set<any>): boolean {
 }
 
 /** Returns the HTML encoded version of a string. */
-export function htmlEncode(text: string) {
+export function htmlEncode(text: string): string {
   return text.replace(/[\u00A0-\u9999<>\&]/g, (i) => {
     return "&#" + i.charCodeAt(0) + ";";
   });
 }
 
 /** Adjust the brightness of a HEX color.*/
-export function shiftColor(color: string, shift: number) {
+export function shiftColor(color: string, shift: number): string {
   let colorHexArray = color.slice(1).match(/.{1,2}/g);
   let colorArray = [0, 0, 0];
   if (colorHexArray != null)
@@ -45,6 +45,20 @@ export function cleanFloat(float: number) {
   let output = Math.round(float * 10000) / 10000;
   if (output == -0) output = 0;
   return output;
+}
+
+/** Formats a number using a letter (K/M/B) for large numbers. */
+export function formatWithLetter(value: number): string {
+  value = cleanFloat(value);
+  if (Math.abs(value) >= 1e9) {
+    return Math.round(value / 1e9).toString() + "B";
+  } else if (Math.abs(value) >= 1e6) {
+    return Math.round(value / 1e6).toString() + "M";
+  } else if (Math.abs(value) >= 1e5) {
+    return Math.round(value / 1e3).toString() + "K";
+  } else {
+    return value.toString();
+  }
 }
 
 /** Converts a value between two ranges. */

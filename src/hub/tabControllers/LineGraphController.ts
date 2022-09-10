@@ -2,7 +2,7 @@ import Colors from "../../lib/Colors";
 import LoggableType from "../../lib/log/LoggableType";
 import { LogValueSetAny, LogValueSetNumber } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
-import { cleanFloat, scaleValue, shiftColor } from "../../lib/util";
+import { cleanFloat, formatWithLetter, scaleValue, shiftColor } from "../../lib/util";
 import { LineGraphState } from "../HubState";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";
@@ -816,7 +816,7 @@ export default class LineGraphController implements TabController {
         if (y > graphTop + graphHeight) break;
 
         context.globalAlpha = 1;
-        context.fillText(cleanFloat(stepPos).toString(), graphLeft - 15, y);
+        context.fillText(formatWithLetter(stepPos), graphLeft - 15, y);
         context.beginPath();
         context.moveTo(graphLeft, y);
         context.lineTo(graphLeft - 5, y);
@@ -842,7 +842,7 @@ export default class LineGraphController implements TabController {
         if (y > graphTop + graphHeight) break;
 
         context.globalAlpha = 1;
-        context.fillText(cleanFloat(stepPos).toString(), graphLeft + graphWidth + 15, y);
+        context.fillText(formatWithLetter(stepPos), graphLeft + graphWidth + 15, y);
         context.beginPath();
         context.moveTo(graphLeft + graphWidth, y);
         context.lineTo(graphLeft + graphWidth + 5, y);
