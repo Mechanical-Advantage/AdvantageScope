@@ -18,6 +18,7 @@ export default [
 
   bundle("hub/hub.ts", "hub.js"),
   bundle("hub/dataSources/rlogWorker.ts", "hub$rlogWorker.js"),
+  bundle("hub/dataSources/wpilogWorker.ts", "hub$wpilogWorker.js"),
   bundle("hub/csvWorker.ts", "hub$csvWorker.js"),
   bundle("editAxis/editAxis.ts", "editAxis.js"),
   bundle("download/download.ts", "download.js"),

@@ -7,6 +7,7 @@ import { HistorialDataSource, HistorialDataSourceStatus } from "./dataSources/Hi
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import RLOGFileSource from "./dataSources/RLOGFileSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
+import WPILOGFileSource from "./dataSources/WPILOGFileSource";
 import { HubState } from "./HubState";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
@@ -171,7 +172,19 @@ window.addEventListener("touchend", () => {
 function startHistorical(path: string) {
   historicalSource?.stop();
   liveSource?.stop();
-  historicalSource = new RLOGFileSource();
+
+  if (path.endsWith(".rlog")) {
+    historicalSource = new RLOGFileSource();
+  } else if (path.endsWith(".wpilog")) {
+    historicalSource = new WPILOGFileSource();
+  } else {
+    window.sendMainMessage("error", {
+      title: "Failed to open log",
+      content: "Could not determine the format of the log file. Please try again."
+    });
+    return;
+  }
+
   historicalSource.openFile(
     path,
     (status: HistorialDataSourceStatus) => {
