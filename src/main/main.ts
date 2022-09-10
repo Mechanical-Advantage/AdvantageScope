@@ -61,12 +61,6 @@ let downloadRefreshInterval: NodeJS.Timer | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 
-/** Records the last open file for the robot program (and recent files for the OS). */
-function recordOpenFile(filePath: string) {
-  fs.writeFile(LAST_OPEN_FILE, filePath, () => {});
-  app.addRecentDocument(filePath);
-}
-
 // WINDOW MESSAGE HANDLING
 
 /**
@@ -122,6 +116,11 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "historical-start":
+      // Record opened file
+      app.addRecentDocument(message.data);
+      fs.writeFile(LAST_OPEN_FILE, message.data, () => {});
+
+      // Read data from file
       let sendError = () => {
         sendMessage(window, "historical-data", {
           success: false
@@ -522,7 +521,6 @@ function downloadSave(files: string[]) {
                       downloadStop();
                       hubWindows[0].focus();
                       sendMessage(hubWindows[0], "open-file", savePath);
-                      recordOpenFile(savePath);
                     }
                   });
               }
@@ -612,7 +610,6 @@ function setupMenu() {
             files.then((files) => {
               if (files.filePaths.length > 0) {
                 sendMessage(window, "open-file", files.filePaths[0]);
-                recordOpenFile(files.filePaths[0]);
               }
             });
           }
@@ -622,7 +619,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+K",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", "robot");
+            sendMessage(window, "start-live", false);
           }
         },
         {
@@ -630,7 +627,7 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+Shift+K",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", "sim");
+            sendMessage(window, "start-live", true);
           }
         },
         {
@@ -1182,7 +1179,6 @@ app.whenReady().then(() => {
   // Open file if exists
   if (firstOpenPath != null) {
     sendMessage(window, "open-file", firstOpenPath);
-    recordOpenFile(firstOpenPath);
   }
 
   // Create new window if activated while none exist
@@ -1204,7 +1200,6 @@ app.on("open-file", (_, path) => {
     // Already running, create a new window
     let window = createHubWindow();
     sendMessage(window, "open-file", path);
-    recordOpenFile(path);
   } else {
     // Not running yet, open in first window
     firstOpenPath = path;

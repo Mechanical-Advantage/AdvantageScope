@@ -165,6 +165,123 @@ window.addEventListener("touchend", () => {
   dragEnd();
 });
 
+// DATA SOURCE HANDLING
+
+/** Connects to a historical data source. */
+function startHistorical(path: string) {
+  historicalSource?.stop();
+  liveSource?.stop();
+  historicalSource = new RLOGFileSource();
+  historicalSource.openFile(
+    path,
+    (status: HistorialDataSourceStatus) => {
+      let components = path.split(window.platform == "win32" ? "\\" : "/");
+      let friendlyName = components[components.length - 1];
+      switch (status) {
+        case HistorialDataSourceStatus.Reading:
+        case HistorialDataSourceStatus.Decoding:
+          setWindowTitle(friendlyName, "Loading");
+          setLoading(true);
+          break;
+        case HistorialDataSourceStatus.Ready:
+          setWindowTitle(friendlyName);
+          setLoading(false);
+          break;
+        case HistorialDataSourceStatus.Error:
+          setWindowTitle(friendlyName, "Error");
+          setLoading(false);
+          window.sendMainMessage("error", {
+            title: "Failed to open log",
+            content: "There was a problem while reading the log file. Please try again."
+          });
+          break;
+      }
+    },
+    (log: Log) => {
+      window.log = log;
+      logPath = path;
+      window.sidebar.refresh();
+      window.tabs.refresh();
+    }
+  );
+}
+
+/** Connects to a live data source. */
+function startLive(isSim: boolean) {
+  historicalSource?.stop();
+  liveSource?.stop();
+  liveSource = new RLOGServerSource();
+
+  let address = "";
+  if (isSim) {
+    address = SIM_ADDRESS;
+  } else if (window.preferences?.usb) {
+    address = USB_ADDRESS;
+  } else {
+    if (window.preferences) {
+      address = window.preferences.rioAddress;
+    }
+  }
+
+  liveSource.connect(
+    address,
+    (status: LiveDataSourceStatus) => {
+      switch (status) {
+        case LiveDataSourceStatus.Connecting:
+          setWindowTitle(address, "Searching");
+          break;
+        case LiveDataSourceStatus.Active:
+          setWindowTitle(address);
+          break;
+        case LiveDataSourceStatus.Error:
+          setWindowTitle(address, "Error");
+          window.sendMainMessage("error", {
+            title: "Problem with live source",
+            content: "There was a problem while connecting to the live source. Please try again."
+          });
+          break;
+      }
+
+      if (status != LiveDataSourceStatus.Active) {
+        window.selection.setLiveDisconnected();
+      }
+    },
+    (log: Log) => {
+      window.log = log;
+      logPath = null;
+      let logRange = window.log.getTimestampRange();
+      let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
+      let oldLiveZeroTime = window.selection.getLiveZeroTime();
+      if (oldLiveZeroTime == null || Math.abs(oldLiveZeroTime - newLiveZeroTime) > MIN_LIVE_RESYNC_SECS) {
+        window.selection.setLiveConnected(newLiveZeroTime);
+        if (oldLiveZeroTime) console.warn("Live data out of sync, resetting");
+      }
+      if (oldLiveZeroTime == null) {
+        window.selection.lock();
+      }
+
+      window.sidebar.refresh();
+      window.tabs.refresh();
+    }
+  );
+}
+
+// File dropped on window
+document.addEventListener("dragover", (event) => {
+  event.preventDefault();
+});
+document.addEventListener("drop", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
+  if (event.dataTransfer) {
+    for (const file of event.dataTransfer.files) {
+      startHistorical(file.path);
+      return;
+    }
+  }
+});
+
 // MAIN MESSAGE HANDLING
 
 window.sendMainMessage = (name: string, data?: any) => {
@@ -229,100 +346,11 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "open-file":
-      historicalSource?.stop();
-      liveSource?.stop();
-      historicalSource = new RLOGFileSource();
-      historicalSource.openFile(
-        message.data,
-        (status: HistorialDataSourceStatus) => {
-          let components = message.data.split(window.platform == "win32" ? "\\" : "/");
-          let friendlyName = components[components.length - 1];
-          switch (status) {
-            case HistorialDataSourceStatus.Reading:
-            case HistorialDataSourceStatus.Decoding:
-              setWindowTitle(friendlyName, "Loading");
-              setLoading(true);
-              break;
-            case HistorialDataSourceStatus.Ready:
-              setWindowTitle(friendlyName);
-              setLoading(false);
-              break;
-            case HistorialDataSourceStatus.Error:
-              setWindowTitle(friendlyName, "Error");
-              setLoading(false);
-              window.sendMainMessage("error", {
-                title: "Failed to open log",
-                content: "There was a problem while reading the log file. Please try again."
-              });
-              break;
-          }
-        },
-        (log: Log) => {
-          window.log = log;
-          logPath = message.data;
-          window.sidebar.refresh();
-          window.tabs.refresh();
-        }
-      );
+      startHistorical(message.data);
       break;
 
     case "start-live":
-      historicalSource?.stop();
-      liveSource?.stop();
-      liveSource = new RLOGServerSource();
-
-      let address = "";
-      if (message.data == "sim") {
-        address = SIM_ADDRESS;
-      } else if (window.preferences?.usb) {
-        address = USB_ADDRESS;
-      } else {
-        if (window.preferences) {
-          address = window.preferences.rioAddress;
-        }
-      }
-
-      liveSource.connect(
-        address,
-        (status: LiveDataSourceStatus) => {
-          switch (status) {
-            case LiveDataSourceStatus.Connecting:
-              setWindowTitle(address, "Searching");
-              break;
-            case LiveDataSourceStatus.Active:
-              setWindowTitle(address);
-              break;
-            case LiveDataSourceStatus.Error:
-              setWindowTitle(address, "Error");
-              window.sendMainMessage("error", {
-                title: "Problem with live source",
-                content: "There was a problem while connecting to the live source. Please try again."
-              });
-              break;
-          }
-
-          if (status != LiveDataSourceStatus.Active) {
-            window.selection.setLiveDisconnected();
-          }
-        },
-        (log: Log) => {
-          window.log = log;
-          logPath = null;
-          let logRange = window.log.getTimestampRange();
-          let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
-          let oldLiveZeroTime = window.selection.getLiveZeroTime();
-          if (oldLiveZeroTime == null || Math.abs(oldLiveZeroTime - newLiveZeroTime) > MIN_LIVE_RESYNC_SECS) {
-            window.selection.setLiveConnected(newLiveZeroTime);
-            if (oldLiveZeroTime) console.warn("Live data out of sync, resetting");
-          }
-          if (oldLiveZeroTime == null) {
-            window.selection.lock();
-          }
-
-          window.sidebar.refresh();
-          window.tabs.refresh();
-        }
-      );
+      startLive(message.data);
       break;
 
     case "set-playback-speed":
