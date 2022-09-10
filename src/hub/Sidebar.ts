@@ -11,7 +11,19 @@ export default class Sidebar {
   private ICON_TEMPLATES = document.getElementById("fieldItemIconTemplates") as HTMLElement;
   private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
-  private KNOWN_KEYS = ["DriverStation", "NetworkTables", "RealOutputs", "ReplayOutputs", "SystemStats", "Timestamp"];
+  private KNOWN_KEYS = [
+    "DriverStation",
+    "NetworkTables",
+    "RealOutputs",
+    "ReplayOutputs",
+    "SystemStats",
+    "Timestamp",
+    "DS",
+    "NT",
+    "NTConnection",
+    "messages",
+    "systemTime"
+  ];
   private HIDDEN_KEYS = ["RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
