@@ -13,29 +13,29 @@ const DOWNLOAD_BUTTON: HTMLElement = document.getElementById("download") as HTML
 const FILE_ITEM_HEIGHT_PX = 25;
 const BOTTOM_FILLTER_MARGIN_PX = 5;
 
-var messagePort: MessagePort | null = null;
-var platform: string = "";
-var preferences: Preferences | null = null;
+let messagePort: MessagePort | null = null;
+let platform: string = "";
+let preferences: Preferences | null = null;
 
 let lastAddress: string = "";
-var loading = true;
-var alertIsError = false;
-var filenames: string[] = [];
-var selectedFiles: string[] = [];
-var lastClickedIndex: number | null = null;
-var lastClickedSelect = true;
+let loading = true;
+let alertIsError = false;
+let filenames: string[] = [];
+let selectedFiles: string[] = [];
+let lastClickedIndex: number | null = null;
+let lastClickedSelect = true;
 
 function sendMainMessage(name: string, data?: any) {
-  if (window.messagePort != null) {
+  if (messagePort != null) {
     let message: NamedMessage = { name: name, data: data };
-    window.messagePort.postMessage(message);
+    messagePort.postMessage(message);
   }
 }
 
 window.addEventListener("message", (event) => {
   if (event.source == window && event.data == "port") {
-    window.messagePort = event.ports[0];
-    window.messagePort.onmessage = (event) => {
+    messagePort = event.ports[0];
+    messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
       handleMainMessage(message);
     };
@@ -75,7 +75,7 @@ function handleMainMessage(message: NamedMessage) {
 
       // Set error text
       console.warn(message.data);
-      var friendlyText = "";
+      let friendlyText = "";
       if (message.data == "No such file") {
         friendlyText = "Failed to open log folder at <u>" + preferences?.rioPath + "</u>";
       } else if (message.data == "Timed out while waiting for handshake") {
@@ -141,7 +141,7 @@ function handleMainMessage(message: NamedMessage) {
         item.addEventListener("click", (event) => {
           if (event.shiftKey && lastClickedIndex != null) {
             // Update a range of items
-            var range = [Math.min(index, lastClickedIndex), Math.max(index, lastClickedIndex)];
+            let range = [Math.min(index, lastClickedIndex), Math.max(index, lastClickedIndex)];
             for (let i = range[0]; i < range[1] + 1; i++) {
               if (lastClickedSelect && !selectedFiles.includes(filenames[i])) {
                 selectedFiles.push(filenames[i]);

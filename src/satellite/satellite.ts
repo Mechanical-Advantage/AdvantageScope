@@ -6,11 +6,11 @@ import Visualizer from "../lib/visualizers/Visualizer";
 
 const MAX_ASPECT_RATIO = 5;
 
-var visualizer: Visualizer | null = null;
-var type: TabType | null = null;
-var messagePort: MessagePort | null = null;
-var lastAspectRatio: number | null = null;
-var lastCommand: any = null;
+let visualizer: Visualizer | null = null;
+let type: TabType | null = null;
+let messagePort: MessagePort | null = null;
+let lastAspectRatio: number | null = null;
+let lastCommand: any = null;
 
 window.addEventListener("message", (event) => {
   if (event.source == window && event.data == "port") {

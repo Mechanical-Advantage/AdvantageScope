@@ -49,16 +49,16 @@ window.sidebar = new Sidebar();
 window.tabs = new Tabs();
 window.messagePort = null;
 
-var historicalSource: HistorialDataSource | null;
-var liveSource: LiveDataSource | null;
-var logPath: string | null = null;
+let historicalSource: HistorialDataSource | null;
+let liveSource: LiveDataSource | null;
+let logPath: string | null = null;
 
-var dragActive = false;
-var dragOffsetX = 0;
-var dragOffsetY = 0;
-var dragLastX = 0;
-var dragLastY = 0;
-var dragData: any = null;
+let dragActive = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let dragLastX = 0;
+let dragLastY = 0;
+let dragData: any = null;
 
 // WINDOW UTILITIES
 

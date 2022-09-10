@@ -39,27 +39,27 @@ import {
 import StateTracker from "./StateTracker";
 
 // Global variables
-var hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
-var downloadWindow: BrowserWindow | null = null;
-var prefsWindow: BrowserWindow | null = null;
-var satelliteWindows: { [id: string]: BrowserWindow[] } = {};
-var windowPorts: { [id: number]: MessagePortMain } = {};
+let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
+let downloadWindow: BrowserWindow | null = null;
+let prefsWindow: BrowserWindow | null = null;
+let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
+let windowPorts: { [id: number]: MessagePortMain } = {};
 
-var hubStateTracker = new StateTracker();
-var usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
-var firstOpenPath: string | null = null; // Cache path to open immediately
+let hubStateTracker = new StateTracker();
+let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
+let firstOpenPath: string | null = null; // Cache path to open immediately
 
 // Live RLOG variables
-var rlogSockets: { [id: number]: net.Socket } = {};
-var rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
-var rlogDataArrays: { [id: number]: Uint8Array } = {};
+let rlogSockets: { [id: number]: net.Socket } = {};
+let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
+let rlogDataArrays: { [id: number]: Uint8Array } = {};
 
 // Download variables
-var downloadClient: Client | null = null;
-var downloadRetryTimeout: NodeJS.Timeout | null = null;
-var downloadRefreshInterval: NodeJS.Timer | null = null;
-var downloadAddress: string = "";
-var downloadPath: string = "";
+let downloadClient: Client | null = null;
+let downloadRetryTimeout: NodeJS.Timeout | null = null;
+let downloadRefreshInterval: NodeJS.Timer | null = null;
+let downloadAddress: string = "";
+let downloadPath: string = "";
 
 /** Records the last open file for the robot program (and recent files for the OS). */
 function recordOpenFile(filePath: string) {
@@ -87,7 +87,7 @@ function sendMessage(window: BrowserWindow, name: string, data?: any): boolean {
 
 /** Sends the current preferences to all windows (including USB menu bar setting) */
 function sendAllPreferences() {
-  var data: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+  let data: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
   data.usb = usingUsb;
   nativeTheme.themeSource = data.theme;
   hubWindows.forEach((window) => {
@@ -1012,7 +1012,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
   }
   satelliteWindows[uuid].push(satellite);
 
-  var closed = false;
+  let closed = false;
   parentWindow.once("close", () => {
     if (!closed) satellite.close();
   });
