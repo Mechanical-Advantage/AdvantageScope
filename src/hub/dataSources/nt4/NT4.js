@@ -452,7 +452,13 @@ export class NT4_Client {
   ws_onMessage(e) {
     if (typeof e.data === "string") {
       // JSON array
-      JSON.parse(e.data).forEach((msg) => {
+      var msgData = JSON.parse(e.data);
+      if (!Array.isArray(msgData)) {
+        console.log("[NT4] Ignoring text message, JSON parsing did not produce an array at the top level.");
+        return;
+      }
+
+      msgData.forEach((msg) => {
         // Validate proper format of message
         if (typeof msg !== "object") {
           console.log("[NT4] Ignoring text message, JSON parsing did not produce an object.");
