@@ -1,7 +1,7 @@
 import LoggableType from "../../lib/log/LoggableType";
 import { LogValueSetAny } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
-import { arraysEqual } from "../../lib/util";
+import { arraysEqual, createUUID } from "../../lib/util";
 import { TableState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
@@ -15,6 +15,7 @@ export default class TableController implements TabController {
   private DRAG_HIGHLIGHT: HTMLElement;
   private INPUT_FIELD: HTMLInputElement;
 
+  private UUID = createUUID();
   private ROW_HEIGHT_PX = 25; // May be adjusted later based on platform
   private SCROLL_MARGIN_PX = 3000;
   private MAX_ROWS = 1000;
@@ -70,7 +71,7 @@ export default class TableController implements TabController {
   refresh(): void {
     // Update timestamps (Check if fields were only added at the end. If not, do a full refresh)
     let fullRefresh = true;
-    let newTimestamps = window.log.getTimestamps(this.fields);
+    let newTimestamps = window.log.getTimestamps(this.fields, this.UUID);
     if (newTimestamps.length >= this.timestamps.length) {
       if (arraysEqual(this.timestamps.slice(0, newTimestamps.length), this.timestamps)) {
         fullRefresh = false;
@@ -214,7 +215,7 @@ export default class TableController implements TabController {
           this.timestamps[Math.floor(this.TABLE_CONTAINER.scrollTop / this.ROW_HEIGHT_PX) + this.currentRange[0]];
         offsetPx = this.TABLE_CONTAINER.scrollTop % this.ROW_HEIGHT_PX;
       }
-      this.timestamps = window.log.getTimestamps(this.fields);
+      this.timestamps = window.log.getTimestamps(this.fields, this.UUID);
       this.jumpToTime(targetTime, offsetPx);
     } else {
       this.timestamps = [];

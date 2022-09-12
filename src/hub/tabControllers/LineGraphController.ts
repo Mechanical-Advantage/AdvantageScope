@@ -386,8 +386,8 @@ export default class LineGraphController implements TabController {
     // Find available timestamp range
     let availableRange = window.log.getTimestampRange();
     availableRange = [availableRange[0], availableRange[1]];
-    if (window.selection.getMode() == SelectionMode.Locked) {
-      availableRange[1] = window.selection.getSelectedTime() as number;
+    if (window.selection.getLiveZeroTime() != null) {
+      availableRange[1] = window.selection.getCurrentLiveTime() as number;
     }
     if (availableRange[1] - availableRange[0] < this.MIN_ZOOM_TIME) {
       availableRange[1] = availableRange[0] + this.MIN_ZOOM_TIME;

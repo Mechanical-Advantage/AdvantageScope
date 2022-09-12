@@ -18,6 +18,15 @@ export function setsEqual(a: Set<any>, b: Set<any>): boolean {
   );
 }
 
+/** Checks whether all values in an array match the given type. */
+export function checkArrayType(value: unknown, type: string): boolean {
+  if (!Array.isArray(value)) return false;
+  value.forEach((item) => {
+    if (typeof item !== type) return false;
+  });
+  return true;
+}
+
 /** Returns the HTML encoded version of a string. */
 export function htmlEncode(text: string): string {
   return text.replace(/[\u00A0-\u9999<>\&]/g, (i) => {

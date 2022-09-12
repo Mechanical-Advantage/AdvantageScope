@@ -1,3 +1,4 @@
+import { arraysEqual } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
@@ -20,6 +21,7 @@ export default class Log {
   private arrayLengths: { [id: string]: number } = {}; // Used to detect when length increases
   private arrayItemFields: string[] = []; // Readonly fields
   private timestampRange: [number, number] | null = null;
+  private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
 
   /** Checks if the field exists and registers it if necessary. */
   public createBlankField(key: string, type: LoggableType) {
@@ -30,8 +32,9 @@ export default class Log {
     }
   }
 
-  /** Updates the timestamp range if necessary. */
-  private updateRange(timestamp: number) {
+  /** Updates the timestamp range and set caches if necessary. */
+  private processTimestamp(key: string, timestamp: number) {
+    // Update timestamp range
     if (this.timestampRange == null) {
       this.timestampRange = [timestamp, timestamp];
     } else if (timestamp < this.timestampRange[0]) {
@@ -39,6 +42,17 @@ export default class Log {
     } else if (timestamp > this.timestampRange[1]) {
       this.timestampRange[1] = timestamp;
     }
+
+    // Update timestamp set caches
+    Object.values(this.timestampSetCache).forEach((cache) => {
+      if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
+        let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
+        if (insertIndex == -1) {
+          insertIndex = cache.timestamps.length;
+        }
+        cache.timestamps.splice(insertIndex, 0, timestamp);
+      }
+    });
   }
 
   /** Returns an array of registered field keys. */
@@ -56,20 +70,33 @@ export default class Log {
     return this.fields[key].getType();
   }
 
-  /** Returns the combined timestamps from a set of fields. */
-  getTimestamps(keys: string[]): number[] {
+  /** Returns the combined timestamps from a set of fields.
+   *
+   * If a UUID is provided, the last set of keys will be cached so
+   * that data can be retrieved more quickly for subsequent calls. */
+  getTimestamps(keys: string[], uuid: string | null = null): number[] {
     let output: number[] = [];
     keys = keys.filter((key) => key in this.fields);
     if (keys.length > 1) {
-      keys.forEach((key) => {
-        this.fields[key].getTimestamps().forEach((timestamp) => {
-          if (!output.includes(timestamp)) {
-            output.push(timestamp);
-          }
-        });
-      });
+      // Multiple fields, read from cache if possible
+      let saveCache = false;
+      if (uuid != null) {
+        if (uuid in this.timestampSetCache && arraysEqual(this.timestampSetCache[uuid].keys, keys)) {
+          return [...this.timestampSetCache[uuid].timestamps];
+        }
+        this.timestampSetCache[uuid] = {
+          keys: keys,
+          timestamps: []
+        };
+        saveCache = true;
+      }
+
+      // Get new data
+      output = [...new Set(keys.map((key) => this.fields[key].getTimestamps()).flat())];
       output.sort((a, b) => a - b);
+      if (saveCache && uuid) this.timestampSetCache[uuid].timestamps = output;
     } else if (keys.length == 1) {
+      // Single field
       output = [...this.fields[keys[0]].getTimestamps()];
     }
     return output;
@@ -154,39 +181,47 @@ export default class Log {
   /** Writes a new Raw value to the field. */
   putRaw(key: string, timestamp: number, value: Uint8Array) {
     this.createBlankField(key, LoggableType.Raw);
-    this.updateRange(timestamp);
     this.fields[key].putRaw(timestamp, value);
+    if (this.fields[key].getType() == LoggableType.Raw) {
+      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
+    }
   }
 
   /** Writes a new Boolean value to the field. */
   putBoolean(key: string, timestamp: number, value: boolean) {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Boolean);
-    this.updateRange(timestamp);
     this.fields[key].putBoolean(timestamp, value);
+    if (this.fields[key].getType() == LoggableType.Boolean) {
+      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
+    }
   }
 
   /** Writes a new Number value to the field. */
   putNumber(key: string, timestamp: number, value: number) {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Number);
-    this.updateRange(timestamp);
     this.fields[key].putNumber(timestamp, value);
+    if (this.fields[key].getType() == LoggableType.Number) {
+      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
+    }
   }
 
   /** Writes a new String value to the field. */
   putString(key: string, timestamp: number, value: string) {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.String);
-    this.updateRange(timestamp);
     this.fields[key].putString(timestamp, value);
+    if (this.fields[key].getType() == LoggableType.String) {
+      this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
+    }
   }
 
   /** Writes a new BooleanArray value to the field. */
   putBooleanArray(key: string, timestamp: number, value: boolean[]) {
     this.createBlankField(key, LoggableType.BooleanArray);
-    this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.BooleanArray) {
+      this.processTimestamp(key, timestamp);
       this.fields[key].putBooleanArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
         for (let i = this.arrayLengths[key]; i < value.length; i++) {
@@ -196,6 +231,7 @@ export default class Log {
         this.arrayLengths[key] = value.length;
       }
       for (let i = 0; i < value.length; i++) {
+        this.processTimestamp(key + "/" + i.toString(), timestamp);
         this.fields[key + "/" + i.toString()].putBoolean(timestamp, value[i]);
       }
     }
@@ -204,8 +240,8 @@ export default class Log {
   /** Writes a new NumberArray value to the field. */
   putNumberArray(key: string, timestamp: number, value: number[]) {
     this.createBlankField(key, LoggableType.NumberArray);
-    this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.NumberArray) {
+      this.processTimestamp(key, timestamp);
       this.fields[key].putNumberArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
         for (let i = this.arrayLengths[key]; i < value.length; i++) {
@@ -215,6 +251,7 @@ export default class Log {
         this.arrayLengths[key] = value.length;
       }
       for (let i = 0; i < value.length; i++) {
+        this.processTimestamp(key + "/" + i.toString(), timestamp);
         this.fields[key + "/" + i.toString()].putNumber(timestamp, value[i]);
       }
     }
@@ -223,8 +260,8 @@ export default class Log {
   /** Writes a new StringArray value to the field. */
   putStringArray(key: string, timestamp: number, value: string[]) {
     this.createBlankField(key, LoggableType.StringArray);
-    this.updateRange(timestamp);
     if (this.fields[key].getType() == LoggableType.StringArray) {
+      this.processTimestamp(key, timestamp);
       this.fields[key].putStringArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
         for (let i = this.arrayLengths[key]; i < value.length; i++) {
@@ -234,6 +271,7 @@ export default class Log {
         this.arrayLengths[key] = value.length;
       }
       for (let i = 0; i < value.length; i++) {
+        this.processTimestamp(key + "/" + i.toString(), timestamp);
         this.fields[key + "/" + i.toString()].putString(timestamp, value[i]);
       }
     }

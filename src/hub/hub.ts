@@ -5,9 +5,10 @@ import Preferences from "../lib/Preferences";
 import { htmlEncode } from "../lib/util";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
+import NT4Source from "./dataSources/NT4Source";
 import RLOGFileSource from "./dataSources/RLOGFileSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
-import WPILOGFileSource from "./dataSources/WPILOGFileSource";
+import WPILOGSource from "./dataSources/WPILOGSource";
 import { HubState } from "./HubState";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
@@ -176,7 +177,7 @@ function startHistorical(path: string) {
   if (path.endsWith(".rlog")) {
     historicalSource = new RLOGFileSource();
   } else if (path.endsWith(".wpilog")) {
-    historicalSource = new WPILOGFileSource();
+    historicalSource = new WPILOGSource();
   } else {
     window.sendMainMessage("error", {
       title: "Failed to open log",
@@ -223,7 +224,19 @@ function startHistorical(path: string) {
 function startLive(isSim: boolean) {
   historicalSource?.stop();
   liveSource?.stop();
-  liveSource = new RLOGServerSource();
+
+  if (!window.preferences) return;
+  switch (window.preferences.liveMode) {
+    case "nt4":
+      liveSource = new NT4Source(false);
+      break;
+    case "nt4-akit":
+      liveSource = new NT4Source(true);
+      break;
+    case "rlog":
+      liveSource = new RLOGServerSource();
+      break;
+  }
 
   let address = "";
   if (isSim) {
@@ -250,7 +263,8 @@ function startLive(isSim: boolean) {
           setWindowTitle(address, "Error");
           window.sendMainMessage("error", {
             title: "Problem with live source",
-            content: "There was a problem while connecting to the live source. Please try again."
+            content:
+              "There was a problem while connecting to the live source. Please check your connection settings and try again."
           });
           break;
       }
@@ -262,15 +276,17 @@ function startLive(isSim: boolean) {
     (log: Log) => {
       window.log = log;
       logPath = null;
-      let logRange = window.log.getTimestampRange();
-      let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
-      let oldLiveZeroTime = window.selection.getLiveZeroTime();
-      if (oldLiveZeroTime == null || Math.abs(oldLiveZeroTime - newLiveZeroTime) > MIN_LIVE_RESYNC_SECS) {
-        window.selection.setLiveConnected(newLiveZeroTime);
-        if (oldLiveZeroTime) console.warn("Live data out of sync, resetting");
-      }
-      if (oldLiveZeroTime == null) {
-        window.selection.lock();
+      if (log.getFieldKeys().length > 0) {
+        let logRange = window.log.getTimestampRange();
+        let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
+        let oldLiveZeroTime = window.selection.getLiveZeroTime();
+        if (oldLiveZeroTime == null || Math.abs(oldLiveZeroTime - newLiveZeroTime) > MIN_LIVE_RESYNC_SECS) {
+          window.selection.setLiveConnected(newLiveZeroTime);
+          if (oldLiveZeroTime) console.warn("Live data out of sync, resetting");
+        }
+        if (oldLiveZeroTime == null) {
+          window.selection.lock();
+        }
       }
 
       window.sidebar.refresh();

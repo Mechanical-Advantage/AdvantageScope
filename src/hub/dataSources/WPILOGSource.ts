@@ -2,7 +2,7 @@ import Log from "../../lib/log/Log";
 import WorkerManager from "../WorkerManager";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./HistoricalDataSource";
 
-export default class WPILOGFileSource extends HistorialDataSource {
+export default class WPILOGSource extends HistorialDataSource {
   handleMainMessage(data: any) {
     if (this.status != HistorialDataSourceStatus.Reading) return;
     this.setStatus(HistorialDataSourceStatus.Decoding);

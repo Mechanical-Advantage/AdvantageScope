@@ -101,7 +101,7 @@ export default class Selection {
         }
       case SelectionMode.Locked:
         if (this.liveZeroTime == null) return 0;
-        return new Date().getTime() / 1000 - this.liveZeroTime + window.log.getTimestampRange()[0];
+        return this.getCurrentLiveTime();
     }
   }
 
@@ -207,6 +207,14 @@ export default class Selection {
   /** Returns the current live zero time. */
   getLiveZeroTime(): number | null {
     return this.liveZeroTime;
+  }
+
+  getCurrentLiveTime(): number | null {
+    if (this.liveZeroTime == null) {
+      return null;
+    } else {
+      return new Date().getTime() / 1000 - this.liveZeroTime + window.log.getTimestampRange()[0];
+    }
   }
 
   /** Updates the playback speed. */
