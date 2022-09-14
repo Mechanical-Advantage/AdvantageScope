@@ -36,6 +36,7 @@ import {
   RLOG_HEARTBEAT_DELAY_MS,
   WINDOW_ICON
 } from "./constants";
+import ffmpegTest from "./ffmpegTest";
 import StateTracker from "./StateTracker";
 
 // Global variables
@@ -1129,6 +1130,8 @@ if (process.platform == "linux" && fs.existsSync(PREFS_FILENAME)) {
 }
 
 app.whenReady().then(() => {
+  ffmpegTest();
+
   // Check preferences and set theme
   if (!fs.existsSync(PREFS_FILENAME)) {
     jsonfile.writeFileSync(PREFS_FILENAME, DEFAULT_PREFS);

@@ -17,7 +17,8 @@
     "compile": "rollup -c",
     "watch": "rollup -c -w",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "install": "node ffmpegDownload.js"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.2",
@@ -25,6 +26,7 @@
     "@rollup/plugin-typescript": "^8.3.4",
     "@types/jsonfile": "^6.1.0",
     "@types/ssh2": "^1.11.5",
+    "download": "^8.0.0",
     "electron": "^20.0.0",
     "electron-builder": "^23.3.3",
     "prettier": "2.7.1",
@@ -53,6 +55,14 @@
       "!games/games.ts",
       "icons/**/*",
       "!**/.*"
+    ],
+    "extraResources": [
+      {
+        "from": "ffmpeg",
+        "filter": [
+          "ffmpeg-${os}-${arch}*"
+        ]
+      }
     ],
     "fileAssociations": [
       {
