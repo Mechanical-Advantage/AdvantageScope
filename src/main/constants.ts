@@ -10,6 +10,7 @@ export const STATE_FILENAME = path.join(
   "state-" + app.getVersion().replaceAll(".", "_") + ".json"
 );
 export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
+export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantage-scope-videos");
 export const WINDOW_ICON: string | undefined = (() => {
   switch (process.platform) {
     case "win32": // Square icon

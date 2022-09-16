@@ -1,6 +1,6 @@
 import { app, dialog, shell } from "electron";
 import fetch from "electron-fetch";
-import { REPOSITORY, WINDOW_ICON } from "./constants";
+import { REPOSITORY, WINDOW_ICON } from "./Constants";
 
 /** Checks for updates from GitHub and notifies the user if necessary. */
 export default function checkForUpdate(alwaysNotify: boolean) {

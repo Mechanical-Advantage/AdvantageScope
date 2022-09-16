@@ -1,7 +1,7 @@
 import { BrowserWindow, screen } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
-import { STATE_FILENAME } from "./constants";
+import { STATE_FILENAME } from "./Constants";
 
 export default class StateTracker {
   private SAVE_PERIOD_MS = 250;

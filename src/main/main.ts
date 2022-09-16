@@ -1,3 +1,4 @@
+import { spawn } from "child_process";
 import {
   app,
   BrowserWindow,
@@ -34,10 +35,11 @@ import {
   RLOG_DATA_TIMEOUT_MS,
   RLOG_HEARTBEAT_DATA,
   RLOG_HEARTBEAT_DELAY_MS,
+  VIDEO_CACHE,
   WINDOW_ICON
-} from "./constants";
-import ffmpegTest from "./ffmpegTest";
+} from "./Constants";
 import StateTracker from "./StateTracker";
+import videoExtensions from "./videoExtensions";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -49,6 +51,7 @@ let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubStateTracker = new StateTracker();
 let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
+let videoUUIDs: Set<string> = new Set();
 
 // Live RLOG variables
 let rlogSockets: { [id: number]: net.Socket } = {};
@@ -276,7 +279,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           checked: lockedRange != null,
           click() {
             sendMessage(window, "edit-axis", {
-              isLeft: message.data.isLeft,
+              isLeft: isLeft,
               range: lockedRange == null ? [null, null] : null
             });
           }
@@ -294,7 +297,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           click() {
             createEditAxisWindow(window, lockedRange as [number, number], (newRange) => {
               sendMessage(window, "edit-axis", {
-                isLeft: message.data.isLeft,
+                isLeft: isLeft,
                 range: newRange
               });
             });
@@ -321,8 +324,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "prompt-export-csv":
-      let path = message.data;
-      let pathComponents = path.split(".");
+      let pathComponents = message.data.split(".");
       pathComponents.pop();
       let csvPath = pathComponents.join(".") + ".csv";
       dialog
@@ -346,6 +348,143 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           sendMessage(window, "finish-export-csv");
         }
       });
+      break;
+
+    case "select-video":
+      dialog
+        .showOpenDialog(window, {
+          title: "Select a video to open",
+          properties: ["openFile"],
+          filters: [{ name: "Robot logs", extensions: videoExtensions }]
+        })
+        .then((result) => {
+          if (result.filePaths.length > 0) {
+            let videoPath = result.filePaths[0];
+            let uuid = message.data;
+
+            // Send error message
+            let sendError = () => {
+              dialog.showMessageBox(window, {
+                type: "error",
+                title: "Error",
+                message: "Failed to open video",
+                detail: "There was a problem while reading the video file. Please try again.",
+                icon: WINDOW_ICON
+              });
+            };
+
+            // Create cache folder
+            videoUUIDs.add(uuid);
+            let cachePath = path.join(VIDEO_CACHE, uuid) + path.sep;
+            if (fs.existsSync(cachePath)) {
+              fs.rmSync(cachePath, { recursive: true });
+            }
+            fs.mkdirSync(cachePath, { recursive: true });
+
+            // Find ffmpeg path
+            let platformString = "";
+            switch (process.platform) {
+              case "darwin":
+                platformString = "mac";
+                break;
+              case "linux":
+                platformString = "linux";
+                break;
+              case "win32":
+                platformString = "win";
+                break;
+            }
+            let ffmpegPath = "";
+            if (app.isPackaged) {
+              ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + platformString + "-" + process.arch);
+            } else {
+              ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + platformString + "-" + process.arch);
+            }
+
+            // Start ffmpeg
+            let fps = 0;
+            let totalFrames = 0;
+            let completedFrames = 0;
+            let ffmpeg = spawn(ffmpegPath, [
+              "-hide_banner",
+              "-i",
+              videoPath,
+              "-q:v",
+              "2",
+              path.join(cachePath, "%08d.jpg")
+            ]);
+
+            // New data, get status
+            ffmpeg.stderr.on("data", (data: Buffer) => {
+              let text = data.toString();
+              let updated = false;
+              if (text.includes("Duration: ")) {
+                // Initial video information
+                updated = true;
+                let fpsIndex = text.lastIndexOf(" fps, ");
+                let fpsStartIndex = text.lastIndexOf(" ", fpsIndex - 1);
+                fps = Number(text.slice(fpsStartIndex + 1, fpsIndex));
+                if (isNaN(fps)) {
+                  sendError();
+                  ffmpeg.kill();
+                  return;
+                }
+
+                let durationIndex = text.lastIndexOf("Duration: ");
+                let durationText = text.slice(durationIndex + 10, durationIndex + 21);
+                let durationSecs =
+                  Number(durationText.slice(0, 2)) * 3600 +
+                  Number(durationText.slice(3, 5)) * 60 +
+                  Number(durationText.slice(6, 8)) +
+                  Number(durationText.slice(9, 11)) * 0.01;
+                if (isNaN(durationSecs)) {
+                  sendError();
+                  ffmpeg.kill();
+                  return;
+                }
+
+                totalFrames = Math.round(durationSecs * fps);
+              }
+              if (text.startsWith("frame=")) {
+                // Updated frame count
+                updated = true;
+                let fpsIndex = text.indexOf(" fps=");
+                completedFrames = Number(text.slice(6, fpsIndex));
+                if (isNaN(completedFrames)) {
+                  sendError();
+                  ffmpeg.kill();
+                  return;
+                }
+              }
+
+              // Send status
+              if (updated) {
+                sendMessage(window, "video-data", {
+                  uuid: uuid,
+                  imgFolder: cachePath,
+                  fps: fps,
+                  totalFrames: totalFrames,
+                  completedFrames: completedFrames
+                });
+              }
+            });
+
+            // Finished, check status code
+            ffmpeg.on("close", (code) => {
+              if (code == 0) {
+                sendMessage(window, "video-data", {
+                  uuid: uuid,
+                  imgFolder: cachePath,
+                  fps: fps,
+                  totalFrames: completedFrames, // In case original value was inaccurate
+                  completedFrames: completedFrames
+                });
+              } else {
+                sendError();
+              }
+            });
+          }
+        });
       break;
 
     default:
@@ -1130,8 +1269,6 @@ if (process.platform == "linux" && fs.existsSync(PREFS_FILENAME)) {
 }
 
 app.whenReady().then(() => {
-  ffmpegTest();
-
   // Check preferences and set theme
   if (!fs.existsSync(PREFS_FILENAME)) {
     jsonfile.writeFileSync(PREFS_FILENAME, DEFAULT_PREFS);
@@ -1211,7 +1348,10 @@ app.on("open-file", (_, path) => {
   }
 });
 
-// Remove the open file path from temp file
+// Clean up files on quit
 app.on("quit", () => {
   fs.unlink(LAST_OPEN_FILE, () => {});
+  videoUUIDs.forEach((uuid) => {
+    fs.rmSync(path.join(VIDEO_CACHE, uuid), { recursive: true });
+  });
 });
