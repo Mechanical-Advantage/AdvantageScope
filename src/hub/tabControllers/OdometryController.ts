@@ -105,7 +105,8 @@ export default class OdometryController extends TimelineVizController {
     this.UNIT_ROTATION.value = options.unitRotation;
     this.ORIGIN.value = options.origin;
     this.SIZE.value = options.size;
-    this.SIZE_TEXT.innerText = options.size;
+    this.SIZE_TEXT.innerText = options.unitDistance;
+    this.lastUnitDistance = options.unitDistance;
     this.ALLIANCE.value = options.alliance;
     this.ORIENTATION.value = options.orientation;
   }

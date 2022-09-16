@@ -8,7 +8,6 @@ import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
 
 export default abstract class TimelineVizController implements TabController {
-  private UUID = createUUID();
   private ENABLED_KEYS = [
     "/DriverStation/Enabled",
     "/AdvantageKit/DriverStation/Enabled",
@@ -16,6 +15,7 @@ export default abstract class TimelineVizController implements TabController {
     "/FMSInfo/FMSControlData"
   ];
 
+  protected UUID = createUUID();
   protected CONTENT: HTMLElement;
   private TIMELINE_INPUT: HTMLInputElement;
   private TIMELINE_MARKER_CONTAINER: HTMLElement;
@@ -78,7 +78,7 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   saveState(): TimelineVisualizerState {
-    let type = this.type as TabType.Odometry | TabType.Points;
+    let type = this.type as TabType.Odometry | TabType.Points | TabType.Video;
     return {
       type: type,
       fields: this.fields,

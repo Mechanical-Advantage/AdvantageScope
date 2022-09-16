@@ -3,7 +3,8 @@ enum TabType {
   LineGraph,
   Table,
   Odometry,
-  Points
+  Points,
+  Video
 }
 
 export default TabType;

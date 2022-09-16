@@ -58,7 +58,7 @@ export interface TableState {
 }
 
 export interface TimelineVisualizerState {
-  type: TabType.Odometry | TabType.Points;
+  type: TabType.Odometry | TabType.Points | TabType.Video;
   fields: (string | null)[];
   options: { [id: string]: any };
 }

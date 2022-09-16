@@ -263,6 +263,14 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Video",
+          click() {
+            sendMessage(window, "new-tab", TabType.Video);
+          }
+        })
+      );
 
       newTabMenu.popup();
       break;
@@ -844,6 +852,14 @@ function setupMenu() {
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
             sendMessage(window, "new-tab", TabType.Points);
+          }
+        },
+        {
+          label: "New Video",
+          accelerator: "CmdOrCtrl+5",
+          click(_, window) {
+            if (window == null || !hubWindows.includes(window)) return;
+            sendMessage(window, "new-tab", TabType.Video);
           }
         },
         { type: "separator" },

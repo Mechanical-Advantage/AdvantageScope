@@ -7,6 +7,7 @@ import MetadataController from "./tabControllers/MetadataController";
 import OdometryController from "./tabControllers/OdometryController";
 import PointsController from "./tabControllers/PointsController";
 import TableController from "./tabControllers/TableController";
+import VideoController from "./tabControllers/VideoController";
 
 export default class Tabs {
   private VIEWER = document.getElementsByClassName("viewer")[0] as HTMLElement;
@@ -156,6 +157,12 @@ export default class Tabs {
         contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
         contentElement.insertBefore(this.CONTENT_TEMPLATES.children[5].cloneNode(true), contentElement.firstChild);
         controller = new PointsController(contentElement);
+        break;
+      case TabType.Video:
+        title = "Video";
+        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
+        contentElement.insertBefore(this.CONTENT_TEMPLATES.children[6].cloneNode(true), contentElement.firstChild);
+        controller = new VideoController(contentElement);
         break;
     }
 
