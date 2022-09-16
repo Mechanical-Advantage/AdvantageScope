@@ -441,12 +441,8 @@ button.unlock {
   right: 144px;
 }
 
-button.lock svg {
-  fill: #ddd;
-}
-
-button.unlock svg {
-  fill: #f00;
+button.unlock > img {
+  filter: invert(11%) sepia(94%) saturate(6673%) hue-rotate(0deg) brightness(107%) contrast(108%);
 }
 
 button.move-left {
