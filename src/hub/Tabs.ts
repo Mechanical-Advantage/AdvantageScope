@@ -149,19 +149,19 @@ export default class Tabs {
       case TabType.Odometry:
         title = "Odometry";
         contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        contentElement.insertBefore(this.CONTENT_TEMPLATES.children[4].cloneNode(true), contentElement.firstChild);
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[4].cloneNode(true));
         controller = new OdometryController(contentElement);
         break;
       case TabType.Points:
         title = "Points";
         contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        contentElement.insertBefore(this.CONTENT_TEMPLATES.children[5].cloneNode(true), contentElement.firstChild);
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[5].cloneNode(true));
         controller = new PointsController(contentElement);
         break;
       case TabType.Video:
         title = "Video";
         contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        contentElement.insertBefore(this.CONTENT_TEMPLATES.children[6].cloneNode(true), contentElement.firstChild);
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
         controller = new VideoController(contentElement);
         break;
     }

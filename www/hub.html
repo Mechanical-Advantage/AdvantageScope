@@ -355,14 +355,53 @@
               <tbody>
                 <tr>
                   <th>Source</th>
-                  <th colspan="2">Syncronization</th>
+                  <th colspan="2">Synchronization</th>
                 </tr>
                 <tr>
-                  <td rowspan="2">Cell A</td>
-                  <td colspan="2">Cell B</td>
+                  <td class="video-source" rowspan="2">&lt;Click Here&gt;</td>
+                  <td colspan="2">
+                    <button tabindex="-1">
+                      <img src="symbols/lock.open.svg" />
+                    </button>
+                    <button tabindex="-1" hidden>
+                      <img src="symbols/lock.svg" />
+                    </button>
+                    <div class="video-timeline-container">
+                      <input
+                        class="timeline-viz-timeline-slider"
+                        id="timeline"
+                        type="range"
+                        value="0"
+                        min="0"
+                        max="10"
+                        step="1"
+                        tabindex="-1"
+                      />
+                      <div class="timeline-viz-timeline-marker-container"><div></div></div>
+                    </div>
+                  </td>
                 </tr>
                 <tr>
-                  <td colspan="2">Cell D</td>
+                  <td class="video-controls" colspan="2">
+                    <button tabindex="-1">
+                      <img src="symbols/gobackward.10.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/backward.frame.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/play.fill.svg" />
+                    </button>
+                    <button tabindex="-1" hidden>
+                      <img src="symbols/pause.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/forward.frame.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/goforward.10.svg" />
+                    </button>
+                  </td>
                 </tr>
               </tbody>
             </table>

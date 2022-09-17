@@ -858,7 +858,7 @@ div.timeline-viz-timeline-container {
   position: absolute;
   top: 0px;
   left: 0px;
-  right: 35px;
+  right: 38px;
   height: 30px;
 }
 
@@ -899,8 +899,8 @@ div.timeline-viz-timeline-marker-container div {
 
 button.timeline-viz-popup-button {
   position: absolute;
-  width: 25px;
-  height: 25px;
+  width: 28px;
+  height: 28px;
   top: 1px;
   right: 5px;
 }
@@ -924,6 +924,7 @@ table.timeline-viz-config {
 }
 
 table.timeline-viz-config th {
+  position: relative;
   text-align: center;
   font-size: 16px;
   font-weight: bold;
@@ -933,6 +934,7 @@ table.timeline-viz-config th {
 }
 
 table.timeline-viz-config td {
+  position: relative;
   word-wrap: break-word;
   padding: 5px;
   border-right: 1px solid #555;
@@ -964,6 +966,11 @@ table.timeline-viz-config a.credit-link {
 
 table.timeline-viz-config input[type="number"] {
   width: 75px;
+}
+
+table.timeline-viz-config button {
+  height: 30px;
+  width: 30px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1023,4 +1030,30 @@ div.points-background {
 div.points-background svg {
   position: absolute;
   stroke-width: 5px;
+}
+
+td.video-source {
+  font-family: monospace;
+  font-size: 14px;
+  text-align: center;
+}
+
+div.video-timeline-container {
+  position: absolute;
+  right: 5px;
+  left: 40px;
+  top: 5px;
+  height: 30px;
+}
+
+div.video-timeline-container div.timeline-viz-timeline-marker-container {
+  background-color: #888;
+}
+
+div.video-timeline-container div.timeline-viz-timeline-marker-container div {
+  background-color: #00f;
+}
+
+td.video-controls {
+  text-align: center;
 }
