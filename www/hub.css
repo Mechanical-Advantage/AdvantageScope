@@ -877,9 +877,13 @@ input.timeline-viz-timeline-slider {
 input.timeline-viz-timeline-slider::-webkit-slider-thumb {
   appearance: none;
   height: 23px;
-  width: 8px;
+  width: 4px;
   background: black;
   cursor: pointer;
+}
+
+input.timeline-viz-timeline-slider:disabled::-webkit-slider-thumb {
+  cursor: initial;
 }
 
 div.timeline-viz-timeline-marker-container {
@@ -1032,10 +1036,43 @@ div.points-background svg {
   stroke-width: 5px;
 }
 
+div.video-container {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+div.video-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 td.video-source {
   font-family: monospace;
   font-size: 14px;
   text-align: center;
+}
+
+td.video-source:hover {
+  background-color: #eee;
+}
+
+td.video-source:active {
+  background-color: #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  td.video-source:hover {
+    background-color: #333;
+  }
+
+  td.video-source:active {
+    background-color: #444;
+  }
 }
 
 div.video-timeline-container {

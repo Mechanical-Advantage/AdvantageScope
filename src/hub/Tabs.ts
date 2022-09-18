@@ -224,6 +224,15 @@ export default class Tabs {
     }
   }
 
+  /** Sends video data to all video controllers. */
+  processVideoData(data: any) {
+    this.tabList.forEach((tab) => {
+      if (tab.type == TabType.Video) {
+        (tab.controller as VideoController).processVideoData(data);
+      }
+    });
+  }
+
   /** Updates the displayed elements based on the tab list. */
   private updateElements() {
     // Remove old tabs

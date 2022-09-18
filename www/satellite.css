@@ -42,3 +42,12 @@ div.points-background svg {
   position: absolute;
   stroke-width: 5px;
 }
+
+img.video-image {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}

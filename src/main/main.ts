@@ -1,4 +1,4 @@
-import { spawn } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 import {
   app,
   BrowserWindow,
@@ -20,6 +20,7 @@ import { Client } from "ssh2";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import TabType from "../lib/TabType";
+import { createUUID } from "../lib/util";
 import checkForUpdate from "./checkForUpdate";
 import {
   DEFAULT_PREFS,
@@ -51,7 +52,8 @@ let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubStateTracker = new StateTracker();
 let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
-let videoUUIDs: Set<string> = new Set();
+let videoProcesses: { [id: string]: ChildProcess } = {}; // Key is tab UUID
+let videoFolderUUIDs: string[] = [];
 
 // Live RLOG variables
 let rlogSockets: { [id: number]: net.Socket } = {};
@@ -370,20 +372,16 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             let videoPath = result.filePaths[0];
             let uuid = message.data;
 
-            // Send error message
-            let sendError = () => {
-              dialog.showMessageBox(window, {
-                type: "error",
-                title: "Error",
-                message: "Failed to open video",
-                detail: "There was a problem while reading the video file. Please try again.",
-                icon: WINDOW_ICON
-              });
-            };
+            // Send name
+            sendMessage(window, "video-data", {
+              uuid: uuid,
+              path: videoPath
+            });
 
             // Create cache folder
-            videoUUIDs.add(uuid);
-            let cachePath = path.join(VIDEO_CACHE, uuid) + path.sep;
+            let folderUUID = createUUID();
+            videoFolderUUIDs.push(folderUUID);
+            let cachePath = path.join(VIDEO_CACHE, folderUUID) + path.sep;
             if (fs.existsSync(cachePath)) {
               fs.rmSync(cachePath, { recursive: true });
             }
@@ -410,68 +408,81 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             }
 
             // Start ffmpeg
+            if (uuid in videoProcesses) videoProcesses[uuid].kill();
+            let ffmpeg = spawn(ffmpegPath, ["-i", videoPath, "-q:v", "2", path.join(cachePath, "%08d.jpg")]);
+            videoProcesses[uuid] = ffmpeg;
+            let running = true;
+            let fullOutput = "";
             let fps = 0;
-            let totalFrames = 0;
+            let durationSecs = 0;
             let completedFrames = 0;
-            let ffmpeg = spawn(ffmpegPath, [
-              "-hide_banner",
-              "-i",
-              videoPath,
-              "-q:v",
-              "2",
-              path.join(cachePath, "%08d.jpg")
-            ]);
+
+            // Send error message and exit
+            let sendError = () => {
+              running = false;
+              ffmpeg.kill();
+              dialog.showMessageBox(window, {
+                type: "error",
+                title: "Error",
+                message: "Failed to open video",
+                detail: "There was a problem while reading the video file. Please try again.",
+                icon: WINDOW_ICON
+              });
+              console.log("*** START FFMPEG OUTPUT ***");
+              console.log(fullOutput);
+              console.log("*** END FFMPEG OUTPUT ***");
+            };
 
             // New data, get status
             ffmpeg.stderr.on("data", (data: Buffer) => {
+              if (!running) return;
               let text = data.toString();
-              let updated = false;
-              if (text.includes("Duration: ")) {
-                // Initial video information
-                updated = true;
+              fullOutput += text;
+              if (text.includes(" fps, ")) {
+                // Get FPS
                 let fpsIndex = text.lastIndexOf(" fps, ");
                 let fpsStartIndex = text.lastIndexOf(" ", fpsIndex - 1);
                 fps = Number(text.slice(fpsStartIndex + 1, fpsIndex));
                 if (isNaN(fps)) {
                   sendError();
-                  ffmpeg.kill();
                   return;
                 }
-
+              }
+              if (text.includes("Duration: ")) {
+                // Get duration
                 let durationIndex = text.lastIndexOf("Duration: ");
                 let durationText = text.slice(durationIndex + 10, durationIndex + 21);
-                let durationSecs =
+                durationSecs =
                   Number(durationText.slice(0, 2)) * 3600 +
                   Number(durationText.slice(3, 5)) * 60 +
                   Number(durationText.slice(6, 8)) +
                   Number(durationText.slice(9, 11)) * 0.01;
                 if (isNaN(durationSecs)) {
                   sendError();
-                  ffmpeg.kill();
+                  return;
+                }
+              }
+              if (text.startsWith("frame=")) {
+                // Exit if initial information not collected
+                if (fps == 0 || durationSecs == 0) {
+                  sendError();
                   return;
                 }
 
-                totalFrames = Math.round(durationSecs * fps);
-              }
-              if (text.startsWith("frame=")) {
                 // Updated frame count
-                updated = true;
                 let fpsIndex = text.indexOf(" fps=");
                 completedFrames = Number(text.slice(6, fpsIndex));
                 if (isNaN(completedFrames)) {
                   sendError();
-                  ffmpeg.kill();
                   return;
                 }
-              }
 
-              // Send status
-              if (updated) {
+                // Send status
                 sendMessage(window, "video-data", {
                   uuid: uuid,
                   imgFolder: cachePath,
                   fps: fps,
-                  totalFrames: totalFrames,
+                  totalFrames: Math.round(durationSecs * fps),
                   completedFrames: completedFrames
                 });
               }
@@ -479,6 +490,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
             // Finished, check status code
             ffmpeg.on("close", (code) => {
+              if (!running) return;
               if (code == 0) {
                 sendMessage(window, "video-data", {
                   uuid: uuid,
@@ -487,7 +499,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   totalFrames: completedFrames, // In case original value was inaccurate
                   completedFrames: completedFrames
                 });
-              } else {
+              } else if (code == 1) {
                 sendError();
               }
             });
@@ -1367,7 +1379,10 @@ app.on("open-file", (_, path) => {
 // Clean up files on quit
 app.on("quit", () => {
   fs.unlink(LAST_OPEN_FILE, () => {});
-  videoUUIDs.forEach((uuid) => {
+  Object.values(videoProcesses).forEach((process) => {
+    process.kill();
+  });
+  videoFolderUUIDs.forEach((uuid) => {
     fs.rmSync(path.join(VIDEO_CACHE, uuid), { recursive: true });
   });
 });

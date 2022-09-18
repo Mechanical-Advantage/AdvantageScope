@@ -406,6 +406,10 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.editAxis(message.data.isLeft, message.data.range);
       break;
 
+    case "video-data":
+      window.tabs.processVideoData(message.data);
+      break;
+
     case "start-export-csv":
       if (logPath != null) {
         window.sendMainMessage("prompt-export-csv", logPath);
