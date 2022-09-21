@@ -1,5 +1,5 @@
 import LogFieldTree from "../lib/log/LogFieldTree";
-import { arraysEqual, setsEqual } from "../lib/util";
+import { arraysEqual, setsEqual, smartSort } from "../lib/util";
 import { SidebarState } from "./HubState";
 
 export default class Sidebar {
@@ -262,25 +262,6 @@ export default class Sidebar {
       if (!this.KNOWN_KEYS.includes(a) && this.KNOWN_KEYS.includes(b)) return -1;
     }
 
-    // Sort based on name
-    function getNum(text: string): number | null {
-      for (let i = text.length; i > 0; i -= 1) {
-        let num = Number(text.slice(-i));
-        if (!isNaN(num)) {
-          return num;
-        }
-      }
-      return null;
-    }
-    let aNum = getNum(a);
-    let bNum = getNum(b);
-    if (aNum != null && bNum != null) {
-      return aNum - bNum;
-    } else if (a > b) {
-      return 1;
-    } else if (a < b) {
-      return -1;
-    }
-    return 0;
+    return smartSort(a, b);
   }
 }

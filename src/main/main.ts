@@ -17,10 +17,11 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { Client } from "ssh2";
+import { Config2d, Config3dField, Config3dRobot, FRCData } from "../lib/FRCData";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
 import TabType from "../lib/TabType";
-import { createUUID } from "../lib/util";
+import { checkArrayType, createUUID, smartSort } from "../lib/util";
 import checkForUpdate from "./checkForUpdate";
 import {
   DEFAULT_PREFS,
@@ -29,6 +30,7 @@ import {
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
+  EXTRA_FRC_DATA,
   LAST_OPEN_FILE,
   PREFS_FILENAME,
   REPOSITORY,
@@ -54,6 +56,11 @@ let usingUsb = false; // Menu bar setting, bundled with other prefs for renderer
 let firstOpenPath: string | null = null; // Cache path to open immediately
 let videoProcesses: { [id: string]: ChildProcess } = {}; // Key is tab UUID
 let videoFolderUUIDs: string[] = [];
+let frcData: FRCData = {
+  field2ds: [],
+  field3ds: [],
+  robots: []
+};
 
 // Live RLOG variables
 let rlogSockets: { [id: number]: net.Socket } = {};
@@ -270,6 +277,14 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           label: "Video",
           click() {
             sendMessage(window, "new-tab", TabType.Video);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "3D Field",
+          click() {
+            sendMessage(window, "new-tab", TabType.ThreeDimension);
           }
         })
       );
@@ -874,6 +889,14 @@ function setupMenu() {
             sendMessage(window, "new-tab", TabType.Video);
           }
         },
+        {
+          label: "New 3D Field",
+          accelerator: "CmdOrCtrl+6",
+          click(_, window) {
+            if (window == null || !hubWindows.includes(window)) return;
+            sendMessage(window, "new-tab", TabType.ThreeDimension);
+          }
+        },
         { type: "separator" },
         {
           label: "Previous Tab",
@@ -923,6 +946,12 @@ function setupMenu() {
     {
       role: "help",
       submenu: [
+        {
+          label: "Show FRC Data Folder",
+          click() {
+            shell.openPath(EXTRA_FRC_DATA);
+          }
+        },
         {
           label: "View Repository",
           click() {
@@ -1072,17 +1101,18 @@ function createHubWindow() {
     if (!firstLoad) createPorts(); // Create ports on reload
 
     // Init messages
-    if (firstLoad) {
-      if (rendererState) sendMessage(window, "restore-state", rendererState); // Use state from file
-    } else {
-      sendMessage(window, "restore-state", hubStateTracker.getRendererState(window)); // Use last cached state
-    }
+    sendMessage(window, "set-frc-data", frcData);
     sendMessage(window, "set-fullscreen", window.isFullScreen());
     sendMessage(window, "set-platform", {
       platform: process.platform,
       release: os.release()
     });
     sendAllPreferences();
+    if (firstLoad) {
+      if (rendererState) sendMessage(window, "restore-state", rendererState); // Use state from file
+    } else {
+      sendMessage(window, "restore-state", hubStateTracker.getRendererState(window)); // Use last cached state
+    }
     firstLoad = false;
   });
   window.on("enter-full-screen", () => sendMessage(window, "set-fullscreen", true));
@@ -1171,6 +1201,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
       satellite.setContentSize(Math.round(size[1] * aspectRatio), size[1]);
     });
     port2.start();
+    sendMessage(satellite, "set-frc-data", frcData);
     sendMessage(satellite, "set-type", type);
   });
 
@@ -1330,6 +1361,113 @@ app.whenReady().then(() => {
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
   }
+
+  // Create extra FRC data folder
+  if (!fs.existsSync(EXTRA_FRC_DATA)) {
+    fs.mkdirSync(EXTRA_FRC_DATA);
+  }
+  fs.copyFileSync(path.join("frcData", "README.txt"), path.join(EXTRA_FRC_DATA, "README.txt"));
+
+  // Load FRC data json
+  [path.join(__dirname, "..", "frcData"), EXTRA_FRC_DATA].forEach((folder) => {
+    fs.readdirSync(folder).forEach((file) => {
+      if (!file.endsWith(".json")) return;
+      let title = file.split("_").slice(1).join("_").split(".").slice(0, -1).join(".");
+      let configRaw = jsonfile.readFileSync(path.join(folder, file));
+      let isField2d = file.startsWith("Field2d_");
+      let isField3d = file.startsWith("Field3d_");
+      let isRobot = file.startsWith("Robot_");
+
+      if (isField2d) {
+        let config: Config2d = {
+          title: title,
+          path: path.join(folder, "Field2d_" + title + ".png"),
+          sourceUrl: "",
+          topLeft: [0, 0],
+          bottomRight: [0, 0],
+          widthInches: 0,
+          heightInches: 0
+        };
+        if (typeof configRaw == "object") {
+          if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
+            config.sourceUrl = configRaw.sourceUrl;
+          }
+          if ("topLeft" in configRaw && checkArrayType(config.topLeft, "number") && config.topLeft.length == 2) {
+            config.topLeft = configRaw.topLeft;
+          }
+          if (
+            "bottomRight" in configRaw &&
+            checkArrayType(config.bottomRight, "number") &&
+            config.topLeft.length == 2
+          ) {
+            config.bottomRight = configRaw.bottomRight;
+          }
+          if ("widthInches" in configRaw && typeof configRaw.widthInches === "number") {
+            config.widthInches = configRaw.widthInches;
+          }
+          if ("heightInches" in configRaw && typeof configRaw.heightInches === "number") {
+            config.heightInches = configRaw.heightInches;
+          }
+        }
+        frcData.field2ds.push(config);
+      } else if (isField3d) {
+        let config: Config3dField = {
+          title: title,
+          path: path.join(folder, (isField3d ? "Field3d_" : "Robot_") + title + ".glb"),
+          sourceUrl: "",
+          rotations: [],
+          widthInches: 0,
+          heightInches: 0
+        };
+        if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
+          config.sourceUrl = configRaw.sourceUrl;
+        }
+        if (
+          "rotations" in configRaw &&
+          Array.isArray(config.rotations) &&
+          config.rotations.every((rotation) => checkArrayType(rotation, "number") && rotation.length == 4)
+        ) {
+          config.rotations = configRaw.rotations;
+        }
+        if ("widthInches" in configRaw && typeof configRaw.widthInches === "number") {
+          config.widthInches = configRaw.widthInches;
+        }
+        if ("heightInches" in configRaw && typeof configRaw.heightInches === "number") {
+          config.heightInches = configRaw.heightInches;
+        }
+        frcData.field3ds.push(config);
+      } else if (isRobot) {
+        let config: Config3dRobot = {
+          title: title,
+          path: path.join(folder, (isField3d ? "Field3d_" : "Robot_") + title + ".glb"),
+          sourceUrl: "",
+          position: [0, 0, 0],
+          rotations: []
+        };
+        if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
+          config.sourceUrl = configRaw.sourceUrl;
+        }
+        if ("position" in configRaw && checkArrayType(configRaw.position, "number") && configRaw.position.length == 3) {
+          config.position = configRaw.position;
+        }
+        if (
+          "rotations" in configRaw &&
+          Array.isArray(config.rotations) &&
+          config.rotations.every((rotation) => checkArrayType(rotation, "number") && rotation.length == 4)
+        ) {
+          config.rotations = configRaw.rotations;
+        }
+        frcData.robots.push(config);
+      }
+    });
+  });
+  frcData.field2ds.sort((a, b) => (a.title > b.title ? -1 : b.title > a.title ? 1 : 0));
+  frcData.field3ds.sort((a, b) => (a.title > b.title ? -1 : b.title > a.title ? 1 : 0));
+  frcData.robots.sort((a, b) => {
+    if (a.title == "KitBot") return -1;
+    if (b.title == "KitBot") return 1;
+    return smartSort(a.title, b.title);
+  });
 
   // Create menu and window
   setupMenu();

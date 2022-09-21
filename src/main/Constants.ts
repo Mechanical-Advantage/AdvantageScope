@@ -9,6 +9,7 @@ export const STATE_FILENAME = path.join(
   app.getPath("userData"),
   "state-" + app.getVersion().replaceAll(".", "_") + ".json"
 );
+export const EXTRA_FRC_DATA = path.join(app.getPath("userData"), "frcData");
 export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
 export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantage-scope-videos");
 export const WINDOW_ICON: string | undefined = (() => {

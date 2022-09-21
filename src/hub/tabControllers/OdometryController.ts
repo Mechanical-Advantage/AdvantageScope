@@ -1,4 +1,3 @@
-import GAMES from "../../../games/games";
 import LoggableType from "../../lib/log/LoggableType";
 import TabType from "../../lib/TabType";
 import { inchesToMeters, metersToInches } from "../../lib/units";
@@ -18,6 +17,7 @@ export default class OdometryController extends TimelineVizController {
 
   private TRAIL_LENGTH_SECS = 5;
   private lastUnitDistance = "meters";
+  private lastOptions: { [id: string]: any } | null = null;
 
   constructor(content: HTMLElement) {
     let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
@@ -74,16 +74,12 @@ export default class OdometryController extends TimelineVizController {
       }
     });
 
-    // Add game options
-    GAMES.forEach((game) => {
-      let option = document.createElement("option");
-      option.innerText = game.title;
-      this.GAME.appendChild(option);
-    });
-
     // Bind source button
     this.GAME_SOURCE_LINK.addEventListener("click", () => {
-      window.sendMainMessage("open-link", GAMES.find((game) => game.title == this.GAME.value)?.source);
+      window.sendMainMessage(
+        "open-link",
+        window.frcData?.field2ds.find((game) => game.title == this.GAME.value)?.sourceUrl
+      );
     });
   }
 
@@ -100,6 +96,7 @@ export default class OdometryController extends TimelineVizController {
   }
 
   set options(options: { [id: string]: any }) {
+    this.lastOptions = options;
     this.GAME.value = options.game;
     this.UNIT_DISTANCE.value = options.unitDistance;
     this.UNIT_ROTATION.value = options.unitRotation;
@@ -113,6 +110,16 @@ export default class OdometryController extends TimelineVizController {
 
   getCommand(time: number) {
     let fields = this.getFields();
+
+    // Add game options
+    if (this.GAME.children.length == 0 && window.frcData) {
+      window.frcData.field2ds.forEach((game) => {
+        let option = document.createElement("option");
+        option.innerText = game.title;
+        this.GAME.appendChild(option);
+      });
+      if (this.lastOptions) this.options = this.lastOptions;
+    }
 
     // Get vision coordinates
     let visionCoordinates: [number, number] | null = null;

@@ -26,11 +26,13 @@
     "@rollup/plugin-typescript": "^8.3.4",
     "@types/jsonfile": "^6.1.0",
     "@types/ssh2": "^1.11.5",
+    "@types/three": "^0.144.0",
     "download": "^8.0.0",
     "electron": "^20.0.0",
     "electron-builder": "^23.3.3",
     "prettier": "2.7.1",
     "rollup": "^2.78.0",
+    "three": "^0.144.0",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4"
   },
@@ -51,9 +53,8 @@
     "files": [
       "www/**/*",
       "bundles/*",
-      "games/**/*",
-      "!games/games.ts",
       "icons/**/*",
+      "frcData/**/*",
       "!**/.*"
     ],
     "extraResources": [

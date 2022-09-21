@@ -1,4 +1,3 @@
-import games from "../../../games/games";
 import { degreesToRadians, metersToInches } from "../units";
 import Visualizer from "./Visualizer";
 
@@ -25,17 +24,11 @@ export default class OdometryVisualizer implements Visualizer {
     context.clearRect(0, 0, width, height);
 
     // Get game data and update image element
-    let gameData = games.find((game) => game.title == command.options.game);
+    let gameData = window.frcData?.field2ds.find((game) => game.title == command.options.game);
     if (!gameData) return null;
-    let imageFilename = "";
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      imageFilename = gameData.imageDark != undefined ? gameData.imageDark : gameData.imageLight;
-    } else {
-      imageFilename = gameData.imageLight;
-    }
-    if (imageFilename != this.lastImageSource) {
-      this.lastImageSource = imageFilename;
-      this.IMAGE.src = "../games/" + imageFilename;
+    if (gameData.path != this.lastImageSource) {
+      this.lastImageSource = gameData.path;
+      this.IMAGE.src = gameData.path;
     }
     if (!(this.IMAGE.width > 0 && this.IMAGE.height > 0)) {
       return null;

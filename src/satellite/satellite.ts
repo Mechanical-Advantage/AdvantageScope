@@ -1,11 +1,19 @@
+import { FRCData } from "../lib/FRCData";
 import NamedMessage from "../lib/NamedMessage";
 import TabType from "../lib/TabType";
 import OdometryVisualizer from "../lib/visualizers/OdometryVisualizer";
 import PointsVisualizer from "../lib/visualizers/PointsVisualizer";
+import ThreeDimensionVisualizer from "../lib/visualizers/ThreeDimensionVisualizer";
 import VideoVisualizer from "../lib/visualizers/VideoVisualizer";
 import Visualizer from "../lib/visualizers/Visualizer";
 
 const MAX_ASPECT_RATIO = 5;
+
+declare global {
+  interface Window {
+    frcData: FRCData | null;
+  }
+}
 
 let visualizer: Visualizer | null = null;
 let type: TabType | null = null;
@@ -19,11 +27,16 @@ window.addEventListener("message", (event) => {
     messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
       switch (message.name) {
+        case "set-frc-data":
+          window.frcData = message.data;
+          break;
+
         case "set-type":
           type = message.data;
           (document.getElementById("odometry") as HTMLElement).hidden = type != TabType.Odometry;
           (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
           (document.getElementById("video") as HTMLElement).hidden = type != TabType.Video;
+          (document.getElementById("threeDimension") as HTMLElement).hidden = type != TabType.ThreeDimension;
           switch (type) {
             case TabType.Odometry:
               document.getElementsByTagName("title")[0].innerHTML = "Odometry &mdash; Advantage Scope";
@@ -38,6 +51,13 @@ window.addEventListener("message", (event) => {
             case TabType.Video:
               document.getElementsByTagName("title")[0].innerHTML = "Video &mdash; Advantage Scope";
               visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
+              break;
+            case TabType.ThreeDimension:
+              document.getElementsByTagName("title")[0].innerHTML = "3D Field &mdash; Advantage Scope";
+              visualizer = new ThreeDimensionVisualizer(
+                document.body,
+                document.getElementById("threeDimensionCanvas") as HTMLCanvasElement
+              );
               break;
           }
           break;

@@ -943,6 +943,7 @@ table.timeline-viz-config td {
   padding: 5px;
   border-right: 1px solid #555;
   border-bottom: 1px solid #eee;
+  overflow: hidden;
 }
 
 table.timeline-viz-config td:last-child,
@@ -997,7 +998,8 @@ table.timeline-viz-config button {
   }
 }
 
-canvas.odometry-canvas {
+canvas.odometry-canvas,
+canvas.three-dimension-canvas {
   position: absolute;
   top: 30px;
   height: calc(100% - 30px - var(--bottom-margin));

@@ -71,7 +71,7 @@ export default abstract class TimelineVizController implements TabController {
     });
 
     // Start periodic cycle
-    window.setInterval(() => this.customPeriodic(), 15);
+    window.setInterval(() => this.customPeriodic(), 1000 / 60);
 
     // Refresh timeline immediately
     this.refresh();

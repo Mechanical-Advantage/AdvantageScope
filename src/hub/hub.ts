@@ -1,3 +1,4 @@
+import { FRCData } from "../lib/FRCData";
 import { SIM_ADDRESS, USB_ADDRESS } from "../lib/IPAddresses";
 import Log from "../lib/log/Log";
 import NamedMessage from "../lib/NamedMessage";
@@ -25,6 +26,7 @@ declare global {
   interface Window {
     log: Log;
     preferences: Preferences | null;
+    frcData: FRCData | null;
     platform: string;
     platformRelease: string;
     isFullscreen: boolean;
@@ -35,12 +37,18 @@ declare global {
     tabs: Tabs;
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
-
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
+
+    overrideFRCDataRobot: (
+      title: string,
+      position: [number, number, number],
+      rotations: [number, number, number, number][]
+    ) => void;
   }
 }
 window.log = new Log();
 window.preferences = null;
+window.frcData = null;
 window.platform = "";
 window.platformRelease = "";
 window.isFullscreen = false;
@@ -93,6 +101,30 @@ function updateFancyWindow() {
     document.body.classList.remove("fancy-side-bar");
   }
 }
+
+// FRC DATA OVERRIDES
+
+window.overrideFRCDataRobot = (title, position, rotations) => {
+  if (!window.frcData) {
+    console.error("FRC data not loaded yet.");
+    return;
+  }
+  let index = window.frcData.robots.findIndex((robot) => robot.title == title);
+  if (index == -1) {
+    console.error(
+      'Could not find robot "' +
+        title +
+        '"\n\nCheck that your config files have the following names: "Robot_' +
+        title +
+        '.json" and "Robot_' +
+        title +
+        '.glb"'
+    );
+    return;
+  }
+  window.frcData.robots[index].position = position;
+  window.frcData.robots[index].rotations = rotations;
+};
 
 // MANAGE STATE
 
@@ -360,6 +392,10 @@ function handleMainMessage(message: NamedMessage) {
 
     case "set-preferences":
       window.preferences = message.data;
+      break;
+
+    case "set-frc-data":
+      window.frcData = message.data;
       break;
 
     case "historical-data":

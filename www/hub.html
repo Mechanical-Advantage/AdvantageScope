@@ -2,10 +2,13 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; connect-src ws: wss:" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; connect-src ws: wss: file:"
+    />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; connect-src ws: wss:"
+      content="default-src 'self'; script-src 'self'; connect-src ws: wss: file:"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
@@ -404,6 +407,53 @@
                     <button tabindex="-1">
                       <img src="symbols/goforward.5.svg" />
                     </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- 3D -->
+          <span>
+            <canvas class="three-dimension-canvas"></canvas>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th colspan="2">Pose Data</th>
+                  <th>Config</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Robot:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Blue Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field:</span>
+                    <select tabindex="-1"></select>
+                    <select tabindex="-1">
+                      <option>blue</option>
+                      <option>red</option>
+                    </select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Green Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Yellow Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Robot:</span>
+                    <select tabindex="-1"></select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
                   </td>
                 </tr>
               </tbody>
