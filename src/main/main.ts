@@ -1366,7 +1366,7 @@ app.whenReady().then(() => {
   if (!fs.existsSync(EXTRA_FRC_DATA)) {
     fs.mkdirSync(EXTRA_FRC_DATA);
   }
-  fs.copyFileSync(path.join("frcData", "README.txt"), path.join(EXTRA_FRC_DATA, "README.txt"));
+  fs.copyFileSync(path.join(__dirname, "..", "frcData", "extra-readme.txt"), path.join(EXTRA_FRC_DATA, "README.txt"));
 
   // Load FRC data json
   [path.join(__dirname, "..", "frcData"), EXTRA_FRC_DATA].forEach((folder) => {
