@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Config3dField } from "../FRCData";
 import { degreesToRadians, inchesToMeters } from "../units";
 import Visualizer from "./Visualizer";
 
@@ -11,6 +12,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private field: THREE.Object3D | null = null;
   private lastFieldTitle: string = "";
   private robot: THREE.Object3D | null = null;
+
+  private lastFrcDataString: string = "";
   private lastRobotTitle: string = "";
   private lastRobotVisible: boolean = false;
 
@@ -76,8 +79,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     if (!this.command) return;
     let fieldTitle = this.command.options.field;
     let robotTitle = this.command.options.robot;
-    let fieldConfig = window.frcData?.field3ds.find((fieldData) => fieldData.title == fieldTitle);
-    let robotConfig = window.frcData?.robots.find((robotData) => robotData.title == robotTitle);
+    let fieldConfig = window.frcData?.field3ds.find((fieldData) => fieldData.title === fieldTitle);
+    let robotConfig = window.frcData?.robots.find((robotData) => robotData.title === robotTitle);
+    if (fieldConfig == undefined || robotConfig == undefined) return;
+
+    // Check for new FRC data
+    let frcDataString = JSON.stringify(window.frcData);
+    let newFrcData = frcDataString != this.lastFrcDataString;
+    if (newFrcData) this.lastFrcDataString = frcDataString;
 
     // Add field
     if (fieldTitle != this.lastFieldTitle) {
@@ -85,27 +94,25 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (this.field) {
         this.scene.remove(this.field);
       }
-      if (fieldConfig) {
-        const loader = new GLTFLoader();
-        loader.load(fieldConfig.path, (gltf) => {
-          this.field = gltf.scene;
-          let rotation = new THREE.Quaternion();
-          fieldConfig!.rotations.forEach((offsetRotation) => {
-            rotation = rotation.premultiply(
-              new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(offsetRotation[0], offsetRotation[2], -offsetRotation[1]),
-                degreesToRadians(offsetRotation[3])
-              )
-            );
-          });
-          this.field.rotation.setFromQuaternion(rotation);
-          this.scene.add(this.field);
+      const loader = new GLTFLoader();
+      loader.load(fieldConfig.path, (gltf) => {
+        if (fieldConfig == undefined) return;
+
+        // Calculate rotation
+        let rotation = new THREE.Quaternion();
+        fieldConfig.rotations.forEach((offsetRotation) => {
+          rotation.premultiply(this.getThreeJSQuaternion(offsetRotation, true));
         });
-      }
+
+        // Set rotation and add to scene
+        this.field = gltf.scene;
+        this.field.rotation.setFromQuaternion(rotation);
+        this.scene.add(this.field);
+      });
     }
 
     // Add robot
-    if (robotTitle != this.lastRobotTitle && robotConfig) {
+    if (robotTitle != this.lastRobotTitle || newFrcData) {
       this.lastRobotTitle = robotTitle;
       if (this.robot && this.lastRobotVisible) {
         this.scene.remove(this.robot);
@@ -114,7 +121,19 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
       const loader = new GLTFLoader();
       loader.load(robotConfig.path, (gltf) => {
-        this.robot = gltf.scene;
+        if (robotConfig == undefined) return;
+
+        // Set position and rotation
+        let robotModel = gltf.scene;
+        let rotation = new THREE.Quaternion();
+        robotConfig.rotations.forEach((offsetRotation) => {
+          rotation.premultiply(this.getThreeJSQuaternion(offsetRotation, true));
+        });
+        robotModel.rotation.setFromQuaternion(rotation);
+        robotModel.position.set(...this.getThreeJSCoordinates(robotConfig.position));
+
+        // Create group and add to scene
+        this.robot = new THREE.Group().add(robotModel);
         if (this.lastRobotVisible) {
           this.scene.add(this.robot);
         }
@@ -122,61 +141,24 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Set robot position
-    let robotPose: Pose3d | null = this.command.poses.robot;
     if (this.robot) {
-      let robotVisible = fieldConfig != undefined && robotConfig != undefined && robotPose != null;
-      if (robotVisible) {
-        fieldConfig = fieldConfig!;
-        robotConfig = robotConfig!;
-        robotPose = robotPose!;
-
+      let robotPose: Pose3d | null = this.command.poses.robot;
+      if (robotPose != null) {
         if (!this.lastRobotVisible) {
           this.scene.add(this.robot);
         }
 
-        let position = [-robotConfig.position[0], robotConfig.position[2], robotConfig.position[1]];
-        let rotation = new THREE.Quaternion();
-        [
-          ...robotConfig.rotations.map((rotation) => [
-            rotation[0],
-            rotation[1],
-            rotation[2],
-            degreesToRadians(rotation[3])
-          ]),
-          robotPose.rotation
-        ].forEach((offsetRotation) => {
-          // Apply rotation offset
-          rotation = rotation.premultiply(
-            new THREE.Quaternion().setFromAxisAngle(
-              new THREE.Vector3(offsetRotation[0], offsetRotation[2], -offsetRotation[1]),
-              offsetRotation[3]
-            )
-          );
-
-          // Rotate position offset
-          let positionQuaternion = new THREE.Quaternion(position[0], position[1], position[2]);
-          let rotationQuaternion = new THREE.Quaternion().setFromAxisAngle(
-            new THREE.Vector3(offsetRotation[0], offsetRotation[2], -offsetRotation[1]),
-            offsetRotation[3]
-          );
-          let output = new THREE.Quaternion()
-            .copy(rotationQuaternion)
-            .multiply(new THREE.Quaternion().copy(positionQuaternion))
-            .multiply(new THREE.Quaternion().copy(rotationQuaternion).invert());
-          position = [output.x, output.y, output.z];
-        });
-        this.robot.rotation.setFromQuaternion(rotation);
-
-        position[0] -= robotPose.position[0];
-        position[1] += robotPose.position[2];
-        position[2] += robotPose.position[1];
-        position[0] += inchesToMeters(fieldConfig.widthInches!) / 2;
-        position[2] -= inchesToMeters(fieldConfig.heightInches!) / 2;
-        this.robot.position.set(position[0], position[1], position[2]);
+        // Set position and rotation
+        let position = this.getThreeJSCoordinates(robotPose.position);
+        position[0] += inchesToMeters(fieldConfig.widthInches) / 2;
+        position[2] -= inchesToMeters(fieldConfig.heightInches) / 2;
+        this.robot.position.set(...position);
+        this.robot.rotation.setFromQuaternion(this.getThreeJSQuaternion(robotPose.rotation, false));
       } else if (this.lastRobotVisible) {
+        // Robot is no longer visible, remove
         this.scene.remove(this.robot);
       }
-      this.lastRobotVisible = robotVisible;
+      this.lastRobotVisible = robotPose != null;
     }
 
     // Render new frame
@@ -193,6 +175,19 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       : new THREE.Color("#ffffff");
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.render(this.scene, this.camera);
+  }
+
+  /** Converts a position from WPILib to ThreeJS coordinates. */
+  private getThreeJSCoordinates(position: [number, number, number]): [number, number, number] {
+    return [-position[0], position[2], position[1]];
+  }
+
+  /** Converts a rotation from WPILib to ThreeJS coordinates (axis-angle to quaternion). */
+  private getThreeJSQuaternion(rotation: [number, number, number, number], isDegrees: boolean): THREE.Quaternion {
+    return new THREE.Quaternion().setFromAxisAngle(
+      new THREE.Vector3(rotation[0], rotation[2], -rotation[1]),
+      isDegrees ? degreesToRadians(rotation[3]) : rotation[3]
+    );
   }
 }
 

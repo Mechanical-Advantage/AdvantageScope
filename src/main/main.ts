@@ -1447,15 +1447,15 @@ app.whenReady().then(() => {
         if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
           config.sourceUrl = configRaw.sourceUrl;
         }
-        if ("position" in configRaw && checkArrayType(configRaw.position, "number") && configRaw.position.length == 3) {
-          config.position = configRaw.position;
-        }
         if (
           "rotations" in configRaw &&
           Array.isArray(config.rotations) &&
           config.rotations.every((rotation) => checkArrayType(rotation, "number") && rotation.length == 4)
         ) {
           config.rotations = configRaw.rotations;
+        }
+        if ("position" in configRaw && checkArrayType(configRaw.position, "number") && configRaw.position.length == 3) {
+          config.position = configRaw.position;
         }
         frcData.robots.push(config);
       }

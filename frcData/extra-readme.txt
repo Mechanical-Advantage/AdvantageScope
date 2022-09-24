@@ -31,13 +31,13 @@ Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". 
 
 {
   sourceUrl: string
-  position: [number, number, number] // Position offset in meters, applied BEFORE the rotations
   rotations: [number, number, number, number][] // Sequence of rotations in axis-angle form (x, y, z, angle in degrees)
+  position: [number, number, number] // Position offset in meters, applied after rotation
 }
 
-In our experience, the simplest way to determine appropriate position and rotation values is by trial and error. You can temporarily adjust these values temporarily by opening the developer tools (View > Toggle Developer Tools) and using the following command:
+The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms will be applied in this order. You can temporarily adjust these values by opening the developer tools (View > Toggle Developer Tools) and using the following command:
 
-> overrideFRCDataRobot(name, position, rotation)
-> overrideFRCDataRobot("6328 (Bot-Bot Strikes Back)", [0, 0, 0], [[0, 0, 0, 0], [0, 0, 0, 0]])
+> override3dRobotConfig(name, rotations, position)
+> override3dRobotConfig("6328 (Bot-Bot Strikes Back)", [[0, 0, 0, 0], [0, 0, 0, 0]], [0, 0, 0])
 
 THESE VALUES ARE NOT RETAINED WHEN THE APP IS CLOSED. Please copy them to the JSON config file when you have finished.

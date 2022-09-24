@@ -30,6 +30,6 @@ export interface Config3dRobot {
   path: string;
 
   sourceUrl: string;
-  position: [number, number, number];
   rotations: [number, number, number, number][];
+  position: [number, number, number];
 }

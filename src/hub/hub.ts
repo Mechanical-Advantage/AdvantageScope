@@ -39,10 +39,10 @@ declare global {
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
 
-    overrideFRCDataRobot: (
+    override3dRobotConfig: (
       title: string,
-      position: [number, number, number],
-      rotations: [number, number, number, number][]
+      rotations: [number, number, number, number][],
+      position: [number, number, number]
     ) => void;
   }
 }
@@ -102,9 +102,9 @@ function updateFancyWindow() {
   }
 }
 
-// FRC DATA OVERRIDES
+// FRC DATA OVERRIDE
 
-window.overrideFRCDataRobot = (title, position, rotations) => {
+window.override3dRobotConfig = (title, rotations, position) => {
   if (!window.frcData) {
     console.error("FRC data not loaded yet.");
     return;
@@ -122,8 +122,8 @@ window.overrideFRCDataRobot = (title, position, rotations) => {
     );
     return;
   }
-  window.frcData.robots[index].position = position;
   window.frcData.robots[index].rotations = rotations;
+  window.frcData.robots[index].position = position;
 };
 
 // MANAGE STATE
