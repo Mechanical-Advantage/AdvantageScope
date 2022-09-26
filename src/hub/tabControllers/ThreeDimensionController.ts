@@ -1,4 +1,3 @@
-import Renderer from "electron/renderer";
 import LoggableType from "../../lib/log/LoggableType";
 import TabType from "../../lib/TabType";
 import ThreeDimensionVisualizer, { Pose3d } from "../../lib/visualizers/ThreeDimensionVisualizer";
@@ -136,6 +135,7 @@ export default class ThreeDimensionController extends TimelineVizController {
               rotation: [rawPoseData[i + 3], rawPoseData[i + 4], rawPoseData[i + 5], rawPoseData[i + 6]]
             });
           }
+          return poses;
         }
       }
       return [];

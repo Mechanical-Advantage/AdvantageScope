@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Config3dField } from "../FRCData";
 import { degreesToRadians, inchesToMeters } from "../units";
 import Visualizer from "./Visualizer";
 
@@ -10,14 +9,22 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private field: THREE.Object3D | null = null;
-  private lastFieldTitle: string = "";
   private robot: THREE.Object3D | null = null;
-
-  private lastFrcDataString: string = "";
-  private lastRobotTitle: string = "";
-  private lastRobotVisible: boolean = false;
+  private greenCones: THREE.Object3D[] = [];
+  private blueCones: THREE.Object3D[] = [];
+  private yellowCones: THREE.Object3D[] = [];
 
   private command: any;
+  private lastFrcDataString: string = "";
+  private lastFieldTitle: string = "";
+  private lastRobotTitle: string = "";
+  private lastRobotVisible: boolean = false;
+  private coneTextureGreen: THREE.Texture;
+  private coneTextureGreenBase: THREE.Texture;
+  private coneTextureBlue: THREE.Texture;
+  private coneTextureBlueBase: THREE.Texture;
+  private coneTextureYellow: THREE.Texture;
+  private coneTextureYellowBase: THREE.Texture;
 
   constructor(content: HTMLElement, canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas });
@@ -56,11 +63,22 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     {
       const color = 0xffffff;
       const intensity = 0.2;
-      const light = new THREE.DirectionalLight(color, intensity);
+      const light = new THREE.PointLight(color, intensity);
       light.position.set(0, -10, 0);
       this.scene.add(light);
-      this.scene.add(light.target);
     }
+
+    // Load cone textures
+    const loader = new THREE.TextureLoader();
+    this.coneTextureGreen = loader.load("../www/textures/cone-green.png");
+    this.coneTextureBlue = loader.load("../www/textures/cone-blue.png");
+    this.coneTextureYellow = loader.load("../www/textures/cone-yellow.png");
+    this.coneTextureGreen.offset.set(0.25, 0);
+    this.coneTextureBlue.offset.set(0.25, 0);
+    this.coneTextureYellow.offset.set(0.25, 0);
+    this.coneTextureGreenBase = loader.load("../www/textures/cone-green-base.png");
+    this.coneTextureBlueBase = loader.load("../www/textures/cone-blue-base.png");
+    this.coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
 
     // Render loop
     let periodic = () => {
@@ -160,6 +178,54 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       }
       this.lastRobotVisible = robotPose != null;
     }
+
+    // Function to update a set of cones
+    let updateCones = (
+      poseData: Pose3d[],
+      objectArray: THREE.Object3D[],
+      texture: THREE.Texture,
+      textureBase: THREE.Texture
+    ) => {
+      // Remove extra cones
+      while (poseData.length < objectArray.length) {
+        let cone = objectArray.pop();
+        if (cone) this.scene.remove(cone);
+      }
+
+      // Add new cones
+      while (poseData.length > objectArray.length) {
+        let cone = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.32, 16, 32), [
+          new THREE.MeshPhongMaterial({
+            map: texture
+          }),
+          new THREE.MeshPhongMaterial(),
+          new THREE.MeshPhongMaterial({
+            map: textureBase
+          })
+        ]);
+        cone.rotation.setFromQuaternion(this.getThreeJSQuaternion([0, -1, 0, 90], true));
+
+        let group = new THREE.Group().add(cone);
+        objectArray.push(group);
+        this.scene.add(group);
+      }
+
+      // Set cone poses
+      poseData.forEach((pose, index) => {
+        if (!fieldConfig) return;
+        let cone = objectArray[index];
+        let position = this.getThreeJSCoordinates(pose.position);
+        position[0] += inchesToMeters(fieldConfig.widthInches) / 2;
+        position[2] -= inchesToMeters(fieldConfig.heightInches) / 2;
+        cone.position.set(...position);
+        cone.rotation.setFromQuaternion(this.getThreeJSQuaternion(pose.rotation, false));
+      });
+    };
+
+    // Update all sets of cones
+    updateCones(this.command.poses.green, this.greenCones, this.coneTextureGreen, this.coneTextureGreenBase);
+    updateCones(this.command.poses.blue, this.blueCones, this.coneTextureBlue, this.coneTextureBlueBase);
+    updateCones(this.command.poses.yellow, this.yellowCones, this.coneTextureYellow, this.coneTextureYellowBase);
 
     // Render new frame
     const canvas = this.renderer.domElement;
