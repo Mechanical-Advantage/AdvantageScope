@@ -952,6 +952,13 @@ function setupMenu() {
             shell.openPath(EXTRA_FRC_DATA);
           }
         },
+        { type: "separator" },
+        {
+          label: "Report a Problem",
+          click() {
+            shell.openExternal("https://github.com/" + REPOSITORY + "/issues");
+          }
+        },
         {
           label: "View Repository",
           click() {
