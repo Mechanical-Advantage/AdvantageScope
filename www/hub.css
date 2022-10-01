@@ -1169,6 +1169,7 @@ div.stats-values-container {
 
 table.stats-values {
   width: 100%;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 

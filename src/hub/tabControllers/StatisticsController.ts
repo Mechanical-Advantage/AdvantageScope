@@ -26,7 +26,7 @@ export default class StatisticsController implements TabController {
   private HISTOGRAM_BINS: HTMLInputElement;
 
   private fields: (string | null)[] = [];
-  private shouldUpdate = false;
+  private shouldUpdate = true;
   private lastUpdateTime = 0;
 
   constructor(content: HTMLElement) {
@@ -202,7 +202,7 @@ export default class StatisticsController implements TabController {
 
   periodic(): void {
     // Update histogram layout
-    this.VALUES_TABLE_CONTAINER.style.top = (this.CONFIG_TABLE.clientHeight + 20).toString() + "px";
+    this.VALUES_TABLE_CONTAINER.style.top = (this.CONFIG_TABLE.clientHeight + 10).toString() + "px";
     this.HISTOGRAM_CONTAINER.style.top = (this.CONFIG_TABLE.clientHeight + 20).toString() + "px";
     this.HISTOGRAM_CONTAINER.style.left = (this.VALUES_TABLE_CONTAINER.clientWidth + 20).toString() + "px";
 
