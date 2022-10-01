@@ -8,6 +8,10 @@ body {
   body {
     color: #eee;
   }
+
+  a {
+    color: #88f;
+  }
 }
 
 /* Buttons */

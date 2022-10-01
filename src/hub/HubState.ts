@@ -19,7 +19,7 @@ export interface TabState {
   type: TabType;
 }
 
-export interface MetadataState extends TabState {
+export interface MetadataState {
   type: TabType.Metadata;
 }
 
@@ -61,4 +61,15 @@ export interface TimelineVisualizerState {
   type: TabType.Odometry | TabType.Points | TabType.Video;
   fields: (string | null)[];
   options: { [id: string]: any };
+}
+
+export interface StatisticsState {
+  type: TabType.Statistics;
+  fields: (string | null)[];
+  selectionType: string;
+  selectionRangeMin: number;
+  selectionRangeMax: number;
+  samplingType: string;
+  samplingPeriod: number;
+  histogramBins: number;
 }

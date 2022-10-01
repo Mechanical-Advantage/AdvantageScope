@@ -1,4 +1,5 @@
 import LoggableType from "../../lib/log/LoggableType";
+import { getEnabledData } from "../../lib/log/LogUtil";
 import { LogValueSetBoolean } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
 import { createUUID } from "../../lib/util";
@@ -154,32 +155,17 @@ export default abstract class TimelineVizController implements TabController {
     this.TIMELINE_INPUT.max = range[1].toString();
     this.TIMELINE_INPUT.disabled = isLocked;
 
-    let enabledKey = this.ENABLED_KEYS.find((key) => window.log.getFieldKeys().includes(key));
-    if (enabledKey) {
-      let enabledData: LogValueSetBoolean | undefined;
-      if (enabledKey == "/FMSInfo/FMSControlData") {
-        let tempEnabledData = window.log.getNumber("/FMSInfo/FMSControlData", -Infinity, Infinity);
-        if (tempEnabledData) {
-          enabledData = {
-            timestamps: tempEnabledData.timestamps,
-            values: tempEnabledData.values.map((controlWord) => controlWord % 2 == 1)
-          };
-        }
-      } else {
-        enabledData = window.log.getBoolean(enabledKey, -Infinity, Infinity);
-      }
-
-      if (enabledData) {
-        for (let i = 0; i < enabledData.values.length; i++) {
-          if (enabledData.values[i]) {
-            let div = document.createElement("div");
-            this.TIMELINE_MARKER_CONTAINER.appendChild(div);
-            let leftPercent = ((enabledData.timestamps[i] - range[0]) / (range[1] - range[0])) * 100;
-            let nextTime = i == enabledData.values.length - 1 ? range[1] : enabledData.timestamps[i + 1];
-            let widthPercent = ((nextTime - enabledData.timestamps[i]) / (range[1] - range[0])) * 100;
-            div.style.left = leftPercent.toString() + "%";
-            div.style.width = widthPercent.toString() + "%";
-          }
+    let enabledData = getEnabledData(window.log);
+    if (enabledData) {
+      for (let i = 0; i < enabledData.values.length; i++) {
+        if (enabledData.values[i]) {
+          let div = document.createElement("div");
+          this.TIMELINE_MARKER_CONTAINER.appendChild(div);
+          let leftPercent = ((enabledData.timestamps[i] - range[0]) / (range[1] - range[0])) * 100;
+          let nextTime = i == enabledData.values.length - 1 ? range[1] : enabledData.timestamps[i + 1];
+          let widthPercent = ((nextTime - enabledData.timestamps[i]) / (range[1] - range[0])) * 100;
+          div.style.left = leftPercent.toString() + "%";
+          div.style.width = widthPercent.toString() + "%";
         }
       }
     }

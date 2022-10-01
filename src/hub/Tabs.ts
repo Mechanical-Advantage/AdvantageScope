@@ -6,6 +6,7 @@ import LineGraphController from "./tabControllers/LineGraphController";
 import MetadataController from "./tabControllers/MetadataController";
 import OdometryController from "./tabControllers/OdometryController";
 import PointsController from "./tabControllers/PointsController";
+import StatisticsController from "./tabControllers/StatisticsController";
 import TableController from "./tabControllers/TableController";
 import ThreeDimensionController from "./tabControllers/ThreeDimensionController";
 import VideoController from "./tabControllers/VideoController";
@@ -170,6 +171,11 @@ export default class Tabs {
         contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
         controller = new ThreeDimensionController(contentElement);
+        break;
+      case TabType.Statistics:
+        title = "Statistics";
+        contentElement = this.CONTENT_TEMPLATES.children[8].cloneNode(true) as HTMLElement;
+        controller = new StatisticsController(contentElement);
         break;
     }
 

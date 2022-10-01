@@ -114,6 +114,16 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   if (window.isDestroyed()) return;
   let windowId = window.id;
   switch (message.name) {
+    case "alert":
+      dialog.showMessageBox(window, {
+        type: "info",
+        title: "Alert",
+        message: message.data.title,
+        detail: message.data.content,
+        icon: WINDOW_ICON
+      });
+      break;
+
     case "error":
       dialog.showMessageBox(window, {
         type: "error",
@@ -285,6 +295,14 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           label: "3D Field",
           click() {
             sendMessage(window, "new-tab", TabType.ThreeDimension);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Statistics",
+          click() {
+            sendMessage(window, "new-tab", TabType.Statistics);
           }
         })
       );
@@ -850,52 +868,65 @@ function setupMenu() {
       label: "Tabs",
       submenu: [
         {
-          label: "New Line Graph",
-          accelerator: "CmdOrCtrl+1",
-          click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "new-tab", TabType.LineGraph);
-          }
-        },
-        {
-          label: "New Table",
-          accelerator: "CmdOrCtrl+2",
-          click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "new-tab", TabType.Table);
-          }
-        },
-        {
-          label: "New Odometry",
-          accelerator: "CmdOrCtrl+3",
-          click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "new-tab", TabType.Odometry);
-          }
-        },
-        {
-          label: "New Points",
-          accelerator: "CmdOrCtrl+4",
-          click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "new-tab", TabType.Points);
-          }
-        },
-        {
-          label: "New Video",
-          accelerator: "CmdOrCtrl+5",
-          click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "new-tab", TabType.Video);
-          }
-        },
-        {
-          label: "New 3D Field",
-          accelerator: "CmdOrCtrl+6",
-          click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "new-tab", TabType.ThreeDimension);
-          }
+          label: "New Tab",
+          submenu: [
+            {
+              label: "Line Graph",
+              accelerator: "CmdOrCtrl+1",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.LineGraph);
+              }
+            },
+            {
+              label: "Table",
+              accelerator: "CmdOrCtrl+2",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Table);
+              }
+            },
+            {
+              label: "Odometry",
+              accelerator: "CmdOrCtrl+3",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Odometry);
+              }
+            },
+            {
+              label: "Points",
+              accelerator: "CmdOrCtrl+4",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Points);
+              }
+            },
+            {
+              label: "Video",
+              accelerator: "CmdOrCtrl+5",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Video);
+              }
+            },
+            {
+              label: "3D Field",
+              accelerator: "CmdOrCtrl+6",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.ThreeDimension);
+              }
+            },
+            {
+              label: "Statistics",
+              accelerator: "CmdOrCtrl+7",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Statistics);
+              }
+            }
+          ]
         },
         { type: "separator" },
         {

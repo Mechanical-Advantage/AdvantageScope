@@ -423,7 +423,7 @@
                   <th>Config</th>
                 </tr>
                 <tr>
-                  <td>
+                  <td class="undivided-right">
                     <span class="label">Robot:</span>
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
@@ -442,7 +442,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>
+                  <td class="undivided-right">
                     <span class="label">Green Cones:</span>
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
@@ -459,6 +459,208 @@
               </tbody>
             </table>
           </span>
+
+          <!-- Statistics -->
+          <div class="tab-content">
+            <table class="stats-config">
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="label">Field #1:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field #2:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field #3:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Selection:</span>
+                    <br />
+                    <select tabindex="-1">
+                      <option value="full">Full Log</option>
+                      <option value="enabled">Enabled Only</option>
+                      <option value="range">Time Range</option>
+                    </select>
+                    &mdash;
+                    <input type="number" min="0" value="0" tabindex="-1" disabled />
+                    to
+                    <input type="number" min="0" value="10" tabindex="-1" disabled />
+                  </td>
+                  <td>
+                    <span class="label"> Sampling (<a href="#" tabindex="-1">Help</a>): </span>
+                    <br />
+                    <select tabindex="-1">
+                      <option value="fixed">Fixed</option>
+                      <option value="auto">Auto</option>
+                    </select>
+                    &mdash;
+                    <input type="number" min="1" value="20" tabindex="-1" />
+                    ms
+                  </td>
+                  <td>
+                    <span class="label">Histogram:</span>
+                    <br />
+                    <input type="number" min="1" value="10" tabindex="-1" />
+                    bins
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="stats-values-container">
+              <table class="stats-values">
+                <tbody>
+                  <tr class="section">
+                    <td colspan="4">Summary</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Count</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Min</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Max</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="section">
+                    <td colspan="4">Measures of Center</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Mean</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Median</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Mode</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Geometric Mean</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Harmonic Mean</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Quadratic Mean</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="section">
+                    <td colspan="4">Measures of Variance</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Standard Deviation</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Mean Absolute Deviation</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Interquartile Range</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>Skewness</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="section">
+                    <td colspan="4">Percentiles</td>
+                  </tr>
+                  <tr class="values">
+                    <td>1st Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>5th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>10th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>25th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>75th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>90th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>95th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                  <tr class="values">
+                    <td>99th Percentile</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                    <td>0.000</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="stats-histogram-container"></div>
+            <div class="stats-drag-highlight" hidden></div>
+          </div>
         </span>
       </div>
     </div>

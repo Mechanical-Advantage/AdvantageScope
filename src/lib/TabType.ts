@@ -5,7 +5,8 @@ enum TabType {
   Odometry,
   Points,
   Video,
-  ThreeDimension
+  ThreeDimension,
+  Statistics
 }
 
 export default TabType;
