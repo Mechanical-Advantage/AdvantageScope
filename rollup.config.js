@@ -1,6 +1,7 @@
-import typescript from "@rollup/plugin-typescript";
-import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import typescript from "@rollup/plugin-typescript";
+import cleanup from "rollup-plugin-cleanup";
 
 const bundle = (input, output, external = []) => ({
   input: "src/" + input,
@@ -8,7 +9,7 @@ const bundle = (input, output, external = []) => ({
     file: "bundles/" + output,
     format: "cjs"
   },
-  plugins: [typescript(), nodeResolve(), commonjs()],
+  plugins: [typescript(), nodeResolve(), commonjs(), cleanup()],
   external: external
 });
 
