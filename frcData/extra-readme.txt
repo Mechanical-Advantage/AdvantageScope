@@ -40,4 +40,4 @@ The simplest way to determine appropriate position and rotation values is by tri
 > override3dRobotConfig(name, rotations, position)
 > override3dRobotConfig("6328 (Bot-Bot Strikes Back)", [[0, 0, 0, 0], [0, 0, 0, 0]], [0, 0, 0])
 
-THESE VALUES ARE NOT RETAINED WHEN THE APP IS CLOSED. Please copy them to the JSON config file when you have finished.
+The values set using the above method are not retained when the app is closed. Please copy them to the JSON config file when you have finished.

@@ -482,32 +482,40 @@
                   <td>
                     <span class="label">Selection:</span>
                     <br />
-                    <select tabindex="-1">
+                    <select>
                       <option value="full">Full Log</option>
                       <option value="enabled">Enabled Only</option>
                       <option value="range">Time Range</option>
                     </select>
                     &mdash;
-                    <input type="number" min="0" value="0" tabindex="-1" disabled />
+                    <input type="number" value="0" disabled />
                     to
-                    <input type="number" min="0" value="10" tabindex="-1" disabled />
+                    <input type="number" value="10" disabled />
                   </td>
                   <td>
-                    <span class="label"> Sampling (<a href="#" tabindex="-1">Help</a>): </span>
+                    <span class="label">Measurement:</span>
                     <br />
-                    <select tabindex="-1">
+                    <select>
+                      <option value="independent">Independent fields</option>
+                      <option value="reference">Reference + measurements</option>
+                    </select>
+                    <br />
+                    <select>
                       <option value="fixed">Fixed</option>
                       <option value="auto">Auto</option>
                     </select>
-                    &mdash;
-                    <input type="number" min="1" value="20" tabindex="-1" />
+                    (<a href="#" tabindex="-1">Help</a>) &mdash;
+                    <input type="number" value="20" />
                     ms
                   </td>
                   <td>
                     <span class="label">Histogram:</span>
                     <br />
-                    <input type="number" min="1" value="10" tabindex="-1" />
-                    bins
+                    <input type="number" value="0" />
+                    to
+                    <input type="number" value="100" />
+                    &mdash; step
+                    <input type="number" value="10" />
                   </td>
                 </tr>
               </tbody>
@@ -519,7 +527,7 @@
               </table>
             </div>
 
-            <div class="stats-histogram-container"></div>
+            <div class="stats-histogram-container"><canvas width="599" height="297"></canvas></div>
             <div class="stats-drag-highlight" hidden></div>
           </div>
         </span>

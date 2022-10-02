@@ -1,4 +1,4 @@
-const Colors = [
+export const AllColors = [
   "#EBC542",
   "#80588E",
   "#E48B32",
@@ -21,4 +21,4 @@ const Colors = [
   "#2E3B28"
 ];
 
-export default Colors;
+export const SimpleColors = ["#61A5F2", "#EBC542", "#3B875A"];

@@ -1,4 +1,4 @@
-import Colors from "../../lib/Colors";
+import { AllColors } from "../../lib/Colors";
 import LoggableType from "../../lib/log/LoggableType";
 import { LogValueSetAny, LogValueSetNumber } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
@@ -318,9 +318,9 @@ export default class LineGraphController implements TabController {
           usedColors.push(field.color);
         });
       });
-      let availableColors = Colors.filter((color) => !usedColors.includes(color));
+      let availableColors = AllColors.filter((color) => !usedColors.includes(color));
       if (availableColors.length == 0) {
-        color = Colors[Math.floor(Math.random() * Colors.length)];
+        color = AllColors[Math.floor(Math.random() * AllColors.length)];
       } else {
         color = availableColors[0];
       }

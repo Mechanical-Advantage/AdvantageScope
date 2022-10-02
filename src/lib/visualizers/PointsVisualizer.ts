@@ -1,4 +1,4 @@
-import Colors from "../Colors";
+import { AllColors } from "../Colors";
 import Visualizer from "./Visualizer";
 
 export default class PointsVisualizer implements Visualizer {
@@ -79,7 +79,7 @@ export default class PointsVisualizer implements Visualizer {
       if (command.options.group < 1) {
         color = window.matchMedia("(prefers-color-scheme: dark)").matches ? "white" : "black";
       } else {
-        color = Colors[Math.floor(i / command.options.group) % Colors.length];
+        color = AllColors[Math.floor(i / command.options.group) % AllColors.length];
       }
       point.style.fill = color;
       point.style.stroke = color;

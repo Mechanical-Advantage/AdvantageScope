@@ -69,7 +69,10 @@ export interface StatisticsState {
   selectionType: string;
   selectionRangeMin: number;
   selectionRangeMax: number;
-  samplingType: string;
-  samplingPeriod: number;
-  histogramBins: number;
+  measurementType: string;
+  measurementSampling: string;
+  measurementSamplingPeriod: number;
+  histogramMin: number;
+  histogramMax: number;
+  histogramStep: number;
 }

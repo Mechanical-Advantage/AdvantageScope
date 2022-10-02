@@ -1178,18 +1178,23 @@ table.stats-values td {
   padding: 2px 6px 2px 6px;
 }
 
+table.stats-values tr.title td {
+  font-weight: 600;
+  font-size: 14px;
+}
+
 table.stats-values tr.section td {
   text-align: center;
   font-weight: 600;
   font-size: 14px;
 }
 
-table.stats-values tr.section:not(:first-child) td {
+table.stats-values tr.section td {
   border-top: 1px solid #555;
 }
 
 @media (prefers-color-scheme: dark) {
-  table.stats-values tr.section:not(:first-child) td {
+  table.stats-values tr.section td {
     border-top: 1px solid #999;
   }
 }
@@ -1210,8 +1215,7 @@ div.stats-histogram-container {
   position: absolute;
   right: 10px;
   bottom: 10px;
-  background-color: green;
-  opacity: 0.1;
+  overflow: hidden;
 }
 
 div.stats-drag-highlight {
