@@ -1,0 +1,140 @@
+[
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": true,
+    "centerPx": [828, 329],
+    "sizePx": [80, 80],
+    "sourceIndex": 1
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": true,
+    "centerPx": [892, 265],
+    "sizePx": [80, 80],
+    "sourceIndex": 2
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": true,
+    "centerPx": [761, 263],
+    "sizePx": [80, 80],
+    "sourceIndex": 3
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": true,
+    "centerPx": [826, 199],
+    "sizePx": [80, 80],
+    "sourceIndex": 4
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": false,
+    "centerPx": [335, 114],
+    "sizePx": [208, 80],
+    "sourceIndex": 5
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": false,
+    "centerPx": [820, 114],
+    "sizePx": [208, 80],
+    "sourceIndex": 6
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": true,
+    "centerPx": [507, 262],
+    "sizePx": [60, 60],
+    "sourceIndex": 7
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": true,
+    "centerPx": [649, 262],
+    "sizePx": [60, 60],
+    "sourceIndex": 8
+  },
+  {
+    "type": "axis",
+    "isYellow": false,
+    "centerPx": [125, 150],
+    "sizePx": [60, 200],
+    "sourceIndex": 2,
+    "sourceRange": [0, 1]
+  },
+  {
+    "type": "axis",
+    "isYellow": false,
+    "centerPx": [1033, 150],
+    "sizePx": [60, 200],
+    "sourceIndex": 3,
+    "sourceRange": [0, 1]
+  },
+  {
+    "type": "joystick",
+    "isYellow": true,
+    "centerPx": [330, 264],
+    "radiusPx": 60,
+    "xSourceIndex": 0,
+    "xSourceInverted": false,
+    "ySourceIndex": 1,
+    "ySourceInverted": true,
+    "buttonSourceIndex": 9
+  },
+  {
+    "type": "joystick",
+    "isYellow": true,
+    "centerPx": [705, 409],
+    "radiusPx": 60,
+    "xSourceIndex": 4,
+    "xSourceInverted": false,
+    "ySourceIndex": 5,
+    "ySourceInverted": true,
+    "buttonSourceIndex": 9
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": false,
+    "centerPx": [405, 376],
+    "sizePx": [55, 55],
+    "sourceIndex": 0,
+    "sourcePov": "up"
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": false,
+    "centerPx": [497, 420],
+    "sizePx": [55, 55],
+    "sourceIndex": 0,
+    "sourcePov": "right"
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": false,
+    "centerPx": [449, 465],
+    "sizePx": [55, 55],
+    "sourceIndex": 0,
+    "sourcePov": "down"
+  },
+  {
+    "type": "button",
+    "isYellow": true,
+    "isEllipse": false,
+    "centerPx": [404, 422],
+    "sizePx": [55, 55],
+    "sourceIndex": 0,
+    "sourcePov": "left"
+  }
+]
