@@ -82,13 +82,17 @@ export default class VideoController extends TimelineVizController {
       this.updateButtons();
     };
     let changeFrame = (delta: number) => {
-      if (this.locked || !this.hasData()) return;
+      if (this.locked || !this.hasData() || this.playing) return;
       this.VIDEO_TIMELINE_INPUT.value = (Number(this.VIDEO_TIMELINE_INPUT.value) + delta).toString();
     };
     let skipTime = (delta: number) => {
       if (this.locked || !this.hasData()) return;
       if (this.fps) {
         this.VIDEO_TIMELINE_INPUT.value = (Number(this.VIDEO_TIMELINE_INPUT.value) + delta * this.fps).toString();
+        if (this.playing) {
+          this.playStartFrame = Number(this.VIDEO_TIMELINE_INPUT.value);
+          this.playStartReal = new Date().getTime() / 1000;
+        }
       }
     };
     this.PLAY_BUTTON.addEventListener("click", () => togglePlayPause());
