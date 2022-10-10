@@ -48,7 +48,7 @@ export default class LineGraphController implements TabController {
   private rightRenderedRange: [number, number] = [-1, 1];
 
   private timestampRange: [number, number] = [0, 10];
-  private maxZoom = false; // When at maximum zoom, maintain it as the available range increases
+  private maxZoom = true; // When at maximum zoom, maintain it as the available range increases
   private lastCursorX: number | null = null;
   private panActive = false;
   private panStartCursorX = 0;
