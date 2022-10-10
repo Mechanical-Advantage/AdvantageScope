@@ -3,87 +3,87 @@
     "type": "button",
     "isYellow": true,
     "isEllipse": true,
-    "centerPx": [828, 329],
-    "sizePx": [80, 80],
+    "centerPx": [1193, 541],
+    "sizePx": [95, 95],
     "sourceIndex": 1
   },
   {
     "type": "button",
     "isYellow": true,
     "isEllipse": true,
-    "centerPx": [892, 265],
-    "sizePx": [80, 80],
+    "centerPx": [1294, 440],
+    "sizePx": [95, 95],
     "sourceIndex": 2
   },
   {
     "type": "button",
     "isYellow": true,
     "isEllipse": true,
-    "centerPx": [761, 263],
-    "sizePx": [80, 80],
+    "centerPx": [1093, 440],
+    "sizePx": [95, 95],
     "sourceIndex": 3
   },
   {
     "type": "button",
     "isYellow": true,
     "isEllipse": true,
-    "centerPx": [826, 199],
-    "sizePx": [80, 80],
+    "centerPx": [1196, 340],
+    "sizePx": [95, 95],
     "sourceIndex": 4
   },
   {
     "type": "button",
     "isYellow": true,
     "isEllipse": false,
-    "centerPx": [335, 114],
-    "sizePx": [208, 80],
+    "centerPx": [410, 125],
+    "sizePx": [165, 76],
     "sourceIndex": 5
   },
   {
     "type": "button",
     "isYellow": true,
     "isEllipse": false,
-    "centerPx": [820, 114],
-    "sizePx": [208, 80],
+    "centerPx": [1215, 125],
+    "sizePx": [165, 76],
     "sourceIndex": 6
   },
   {
     "type": "button",
     "isYellow": true,
-    "isEllipse": true,
-    "centerPx": [507, 262],
-    "sizePx": [60, 60],
+    "isEllipse": false,
+    "centerPx": [667, 338],
+    "sizePx": [85, 64],
     "sourceIndex": 7
   },
   {
     "type": "button",
     "isYellow": true,
-    "isEllipse": true,
-    "centerPx": [649, 262],
-    "sizePx": [60, 60],
+    "isEllipse": false,
+    "centerPx": [945, 340],
+    "sizePx": [85, 64],
     "sourceIndex": 8
   },
   {
     "type": "axis",
     "isYellow": false,
-    "centerPx": [125, 150],
-    "sizePx": [60, 200],
+    "centerPx": [120, 204],
+    "sizePx": [80, 234],
     "sourceIndex": 2,
     "sourceRange": [0, 1]
   },
   {
     "type": "axis",
     "isYellow": false,
-    "centerPx": [1033, 150],
-    "sizePx": [60, 200],
+    "centerPx": [1501, 204],
+    "sizePx": [80, 234],
     "sourceIndex": 3,
     "sourceRange": [0, 1]
   },
   {
     "type": "joystick",
     "isYellow": true,
-    "centerPx": [330, 264],
-    "radiusPx": 60,
+    "centerPx": [607, 663],
+    "radiusPx": 100,
     "xSourceIndex": 0,
     "xSourceInverted": false,
     "ySourceIndex": 1,
@@ -93,20 +93,20 @@
   {
     "type": "joystick",
     "isYellow": true,
-    "centerPx": [705, 409],
-    "radiusPx": 60,
+    "centerPx": [1000, 663],
+    "radiusPx": 100,
     "xSourceIndex": 4,
     "xSourceInverted": false,
     "ySourceIndex": 5,
     "ySourceInverted": true,
-    "buttonSourceIndex": 9
+    "buttonSourceIndex": 10
   },
   {
     "type": "button",
     "isYellow": true,
     "isEllipse": false,
-    "centerPx": [405, 376],
-    "sizePx": [55, 55],
+    "centerPx": [415, 365],
+    "sizePx": [70, 70],
     "sourceIndex": 0,
     "sourcePov": "up"
   },
@@ -114,8 +114,8 @@
     "type": "button",
     "isYellow": true,
     "isEllipse": false,
-    "centerPx": [497, 420],
-    "sizePx": [55, 55],
+    "centerPx": [485, 435],
+    "sizePx": [70, 70],
     "sourceIndex": 0,
     "sourcePov": "right"
   },
@@ -123,8 +123,8 @@
     "type": "button",
     "isYellow": true,
     "isEllipse": false,
-    "centerPx": [449, 465],
-    "sizePx": [55, 55],
+    "centerPx": [415, 505],
+    "sizePx": [70, 70],
     "sourceIndex": 0,
     "sourcePov": "down"
   },
@@ -132,8 +132,8 @@
     "type": "button",
     "isYellow": true,
     "isEllipse": false,
-    "centerPx": [404, 422],
-    "sizePx": [55, 55],
+    "centerPx": [345, 435],
+    "sizePx": [70, 70],
     "sourceIndex": 0,
     "sourcePov": "left"
   }

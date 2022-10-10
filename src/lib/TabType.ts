@@ -2,11 +2,12 @@ enum TabType {
   Metadata,
   LineGraph,
   Table,
+  Statistics,
   Odometry,
-  Points,
-  Video,
   ThreeDimension,
-  Statistics
+  Video,
+  Points,
+  Joysticks
 }
 
 export default TabType;

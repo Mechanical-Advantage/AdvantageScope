@@ -852,6 +852,130 @@ div.data-table-drag-highlight {
   opacity: 25%;
 }
 
+/* Statistics */
+
+table.stats-config,
+table.stats-values {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #555;
+}
+
+table.stats-config td,
+table.stats-values td {
+  border: 1px solid #eee;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  table.stats-config,
+  table.stats-values {
+    border: 1px solid #999;
+  }
+
+  table.stats-config td,
+  table.stats-values td {
+    border: 1px solid #333;
+  }
+}
+
+table.stats-config {
+  position: absolute;
+  table-layout: fixed;
+  left: 10px;
+  width: calc(100% - 20px);
+  top: 10px;
+}
+
+table.stats-config td {
+  position: relative;
+  word-wrap: break-word;
+  text-align: center;
+  padding: 5px;
+}
+
+table.stats-config tr:last-child td {
+  line-height: 25px;
+}
+
+table.stats-config span.label {
+  font-weight: 600;
+}
+
+table.stats-config span.field-name {
+  font-family: monospace;
+  font-size: 14px;
+}
+
+table.stats-config input[type="number"] {
+  width: 50px;
+}
+
+div.stats-values-container {
+  position: absolute;
+  left: 10px;
+  bottom: 0px;
+  overflow-y: auto;
+}
+
+table.stats-values {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+table.stats-values td {
+  word-wrap: break-word;
+  padding: 2px 6px 2px 6px;
+}
+
+table.stats-values tr.title td {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+table.stats-values tr.section td {
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+table.stats-values tr.section td {
+  border-top: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  table.stats-values tr.section td {
+    border-top: 1px solid #999;
+  }
+}
+
+table.stats-values tr.values td:first-child {
+  text-align: right;
+  font-size: 12px;
+  width: 100px;
+}
+
+table.stats-values tr.values td:not(:first-child) {
+  user-select: text;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+div.stats-histogram-container {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  overflow: hidden;
+}
+
+div.stats-drag-highlight {
+  position: absolute;
+  z-index: 10;
+  background-color: lightgreen;
+  opacity: 25%;
+}
+
 /* Timline visualizers */
 
 div.timeline-viz-timeline-container {
@@ -1003,43 +1127,13 @@ table.timeline-viz-config button {
 }
 
 canvas.odometry-canvas,
-canvas.three-dimension-canvas {
+canvas.three-dimension-canvas,
+canvas.joysticks-canvas {
   position: absolute;
   top: 30px;
   height: calc(100% - 30px - var(--bottom-margin));
   left: 0px;
   width: 100%;
-}
-
-div.points-background-container {
-  position: absolute;
-  top: 30px;
-  height: calc(100% - 30px - var(--bottom-margin));
-  left: 0px;
-  width: 100%;
-  overflow: hidden;
-}
-
-div.points-background {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  background-color: #f4f4f4;
-  border: 1px solid #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.points-background {
-    background-color: #292929;
-    border: 1px solid #999;
-  }
-}
-
-div.points-background svg {
-  position: absolute;
-  stroke-width: 5px;
 }
 
 div.video-container {
@@ -1101,126 +1195,41 @@ td.video-controls {
   text-align: center;
 }
 
-/* Statistics */
+div.points-background-container {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
 
-table.stats-config,
-table.stats-values {
-  border-collapse: separate;
-  border-spacing: 0;
+div.points-background {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
   border: 1px solid #555;
 }
 
-table.stats-config td,
-table.stats-values td {
-  border: 1px solid #eee;
-  overflow: hidden;
-}
-
 @media (prefers-color-scheme: dark) {
-  table.stats-config,
-  table.stats-values {
+  div.points-background {
+    background-color: #292929;
     border: 1px solid #999;
   }
-
-  table.stats-config td,
-  table.stats-values td {
-    border: 1px solid #333;
-  }
 }
 
-table.stats-config {
+div.points-background svg {
   position: absolute;
-  table-layout: fixed;
-  left: 10px;
-  width: calc(100% - 20px);
-  top: 10px;
+  stroke-width: 5px;
 }
 
-table.stats-config td {
-  position: relative;
-  word-wrap: break-word;
+table.joysticks-config td {
   text-align: center;
-  padding: 5px;
 }
 
-table.stats-config tr:last-child td {
-  line-height: 25px;
-}
-
-table.stats-config span.label {
-  font-weight: 600;
-}
-
-table.stats-config span.field-name {
-  font-family: monospace;
-  font-size: 14px;
-}
-
-table.stats-config input[type="number"] {
-  width: 50px;
-}
-
-div.stats-values-container {
-  position: absolute;
-  left: 10px;
-  bottom: 0px;
-  overflow-y: auto;
-}
-
-table.stats-values {
-  width: 100%;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-table.stats-values td {
-  word-wrap: break-word;
-  padding: 2px 6px 2px 6px;
-}
-
-table.stats-values tr.title td {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-table.stats-values tr.section td {
-  text-align: center;
-  font-weight: 600;
-  font-size: 14px;
-}
-
-table.stats-values tr.section td {
-  border-top: 1px solid #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  table.stats-values tr.section td {
-    border-top: 1px solid #999;
-  }
-}
-
-table.stats-values tr.values td:first-child {
-  text-align: right;
-  font-size: 12px;
-  width: 100px;
-}
-
-table.stats-values tr.values td:not(:first-child) {
-  user-select: text;
-  font-family: monospace;
-  font-size: 14px;
-}
-
-div.stats-histogram-container {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  overflow: hidden;
-}
-
-div.stats-drag-highlight {
-  position: absolute;
-  z-index: 10;
-  background-color: lightgreen;
-  opacity: 25%;
+table.joysticks-config input[type="number"] {
+  width: 40px;
 }

@@ -57,12 +57,6 @@ export interface TableState {
   fields: string[];
 }
 
-export interface TimelineVisualizerState {
-  type: TabType.Odometry | TabType.Points | TabType.Video;
-  fields: (string | null)[];
-  options: { [id: string]: any };
-}
-
 export interface StatisticsState {
   type: TabType.Statistics;
   fields: (string | null)[];
@@ -75,4 +69,10 @@ export interface StatisticsState {
   histogramMin: number;
   histogramMax: number;
   histogramStep: number;
+}
+
+export interface TimelineVisualizerState {
+  type: TabType.Odometry | TabType.ThreeDimension | TabType.Video | TabType.Points | TabType.Joysticks;
+  fields: (string | null)[];
+  options: { [id: string]: any };
 }

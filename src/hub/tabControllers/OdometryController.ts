@@ -81,6 +81,12 @@ export default class OdometryController extends TimelineVizController {
         window.frcData?.field2ds.find((game) => game.title == this.GAME.value)?.sourceUrl
       );
     });
+
+    // Enforce side length range
+    this.SIZE.addEventListener("change", () => {
+      if (Number(this.SIZE.value) < 0) this.SIZE.value = "0.1";
+      if (Number(this.SIZE.value) == 0) this.SIZE.value = "0.1";
+    });
   }
 
   get options(): { [id: string]: any } {

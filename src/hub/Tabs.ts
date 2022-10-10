@@ -2,6 +2,7 @@ import TabType from "../lib/TabType";
 import { TabGroupState } from "./HubState";
 import ScrollSensor from "./ScrollSensor";
 import TabController from "./TabController";
+import JoysticksController from "./tabControllers/JoysticksController";
 import LineGraphController from "./tabControllers/LineGraphController";
 import MetadataController from "./tabControllers/MetadataController";
 import OdometryController from "./tabControllers/OdometryController";
@@ -148,34 +149,40 @@ export default class Tabs {
         contentElement = this.CONTENT_TEMPLATES.children[2].cloneNode(true) as HTMLElement;
         controller = new TableController(contentElement);
         break;
+      case TabType.Statistics:
+        title = "Statistics";
+        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
+        controller = new StatisticsController(contentElement);
+        break;
       case TabType.Odometry:
         title = "Odometry";
-        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[4].cloneNode(true));
-        controller = new OdometryController(contentElement);
-        break;
-      case TabType.Points:
-        title = "Points";
-        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
+        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[5].cloneNode(true));
-        controller = new PointsController(contentElement);
-        break;
-      case TabType.Video:
-        title = "Video";
-        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
-        controller = new VideoController(contentElement);
+        controller = new OdometryController(contentElement);
         break;
       case TabType.ThreeDimension:
         title = "3D Field";
-        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
+        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
         controller = new ThreeDimensionController(contentElement);
         break;
-      case TabType.Statistics:
-        title = "Statistics";
-        contentElement = this.CONTENT_TEMPLATES.children[8].cloneNode(true) as HTMLElement;
-        controller = new StatisticsController(contentElement);
+      case TabType.Video:
+        title = "Video";
+        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
+        controller = new VideoController(contentElement);
+        break;
+      case TabType.Points:
+        title = "Points";
+        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
+        controller = new PointsController(contentElement);
+        break;
+      case TabType.Joysticks:
+        title = "Joysticks";
+        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
+        controller = new JoysticksController(contentElement);
         break;
     }
 

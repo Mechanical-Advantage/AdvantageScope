@@ -190,6 +190,79 @@
             <div class="data-table-drag-highlight" hidden></div>
           </div>
 
+          <!-- Statistics -->
+          <div class="tab-content">
+            <table class="stats-config">
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="label">Field #1:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field #2:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field #3:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Selection:</span>
+                    <br />
+                    <select>
+                      <option value="full">Full Log</option>
+                      <option value="enabled">Enabled Only</option>
+                      <option value="range">Time Range</option>
+                    </select>
+                    &mdash;
+                    <input type="number" value="0" disabled />
+                    to
+                    <input type="number" value="10" disabled />
+                  </td>
+                  <td>
+                    <span class="label">Measurement:</span>
+                    <br />
+                    <select>
+                      <option value="independent">Independent fields</option>
+                      <option value="reference">Reference + measurements</option>
+                    </select>
+                    <br />
+                    <select>
+                      <option value="fixed">Fixed</option>
+                      <option value="auto">Auto</option>
+                    </select>
+                    (<a href="#" tabindex="-1">Help</a>) &mdash;
+                    <input type="number" value="20" />
+                    ms
+                  </td>
+                  <td>
+                    <span class="label">Histogram:</span>
+                    <br />
+                    <input type="number" value="0" />
+                    to
+                    <input type="number" value="100" />
+                    &mdash; step
+                    <input type="number" value="10" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="stats-values-container">
+              <table class="stats-values">
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <div class="stats-histogram-container">
+              <canvas width="100" height="100"></canvas>
+            </div>
+            <div class="stats-drag-highlight" hidden></div>
+          </div>
+
           <!-- Timeline visualizer -->
           <div class="tab-content">
             <div class="timeline-viz-timeline-container">
@@ -287,67 +360,47 @@
             </table>
           </span>
 
-          <!-- Points -->
+          <!-- 3D Field -->
           <span>
-            <div class="points-background-container">
-              <div class="points-background"></div>
-              <span hidden>
-                <svg height="20" width="20">
-                  <line x1="10" y1="0" x2="10" y2="20"></line>
-                  <line x1="0" y1="10" x2="20" y2="10"></line>
-                </svg>
-                <svg height="20" width="20">
-                  <line x1="2" y1="2" x2="18" y2="18"></line>
-                  <line x1="18" y1="2" x2="2" y2="18"></line>
-                </svg>
-                <svg height="20" width="20">
-                  <circle cx="10" cy="10" r="7"></circle>
-                </svg>
-              </span>
-            </div>
+            <canvas class="three-dimension-canvas"></canvas>
             <table class="timeline-viz-config">
               <tbody>
                 <tr>
-                  <th>Point Data</th>
-                  <th>Coordinate System</th>
-                  <th>Point Style</th>
+                  <th colspan="2">Pose Data</th>
+                  <th>Config</th>
                 </tr>
                 <tr>
-                  <td>
-                    <span class="label">X:</span>
+                  <td class="undivided-right">
+                    <span class="label">Robot:</span>
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
                   <td>
-                    <span class="label">Size:</span>
-                    <input type="number" min="1" value="960" step="1" />
-                    <span class="label">x</span>
-                    <input type="number" min="1" value="720" step="1" />
-                  </td>
-                  <td>
-                    <span class="label">Point shape:</span>
-                    <select tabindex="-1">
-                      <option>plus</option>
-                      <option>cross</option>
-                      <option>circle</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="label">Y:</span>
+                    <span class="label">Blue Cones:</span>
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
                   <td>
-                    <span class="label">Group size:</span>
-                    <input type="number" min="0" value="0" step="1" />
+                    <span class="label">Field:</span>
+                    <select tabindex="-1"></select>
+                    <select tabindex="-1">
+                      <option>blue</option>
+                      <option>red</option>
+                    </select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="undivided-right">
+                    <span class="label">Green Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
                   <td>
-                    <span class="label">Point size:</span>
-                    <select tabindex="-1">
-                      <option>large</option>
-                      <option selected>medium</option>
-                      <option>small</option>
-                    </select>
+                    <span class="label">Yellow Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Robot:</span>
+                    <select tabindex="-1"></select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
                   </td>
                 </tr>
               </tbody>
@@ -417,125 +470,98 @@
             </table>
           </span>
 
-          <!-- 3D -->
+          <!-- Points -->
           <span>
-            <canvas class="three-dimension-canvas"></canvas>
+            <div class="points-background-container">
+              <div class="points-background"></div>
+              <span hidden>
+                <svg height="20" width="20">
+                  <line x1="10" y1="0" x2="10" y2="20"></line>
+                  <line x1="0" y1="10" x2="20" y2="10"></line>
+                </svg>
+                <svg height="20" width="20">
+                  <line x1="2" y1="2" x2="18" y2="18"></line>
+                  <line x1="18" y1="2" x2="2" y2="18"></line>
+                </svg>
+                <svg height="20" width="20">
+                  <circle cx="10" cy="10" r="7"></circle>
+                </svg>
+              </span>
+            </div>
             <table class="timeline-viz-config">
               <tbody>
                 <tr>
-                  <th colspan="2">Pose Data</th>
-                  <th>Config</th>
+                  <th>Point Data</th>
+                  <th>Coordinate System</th>
+                  <th>Point Style</th>
                 </tr>
                 <tr>
-                  <td class="undivided-right">
-                    <span class="label">Robot:</span>
+                  <td>
+                    <span class="label">X:</span>
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
                   <td>
-                    <span class="label">Blue Cones:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
+                    <span class="label">Size:</span>
+                    <input type="number" min="1" value="960" step="1" />
+                    <span class="label">x</span>
+                    <input type="number" min="1" value="720" step="1" />
                   </td>
                   <td>
-                    <span class="label">Field:</span>
-                    <select tabindex="-1"></select>
+                    <span class="label">Point shape:</span>
                     <select tabindex="-1">
-                      <option>blue</option>
-                      <option>red</option>
+                      <option>plus</option>
+                      <option>cross</option>
+                      <option>circle</option>
                     </select>
-                    <a class="credit-link" href="#" tabindex="-1">Source</a>
                   </td>
                 </tr>
                 <tr>
-                  <td class="undivided-right">
-                    <span class="label">Green Cones:</span>
+                  <td>
+                    <span class="label">Y:</span>
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
                   <td>
-                    <span class="label">Yellow Cones:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
+                    <span class="label">Group size:</span>
+                    <input type="number" min="0" value="0" step="1" />
                   </td>
                   <td>
-                    <span class="label">Robot:</span>
-                    <select tabindex="-1"></select>
-                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                    <span class="label">Point size:</span>
+                    <select tabindex="-1">
+                      <option>large</option>
+                      <option selected>medium</option>
+                      <option>small</option>
+                    </select>
                   </td>
                 </tr>
               </tbody>
             </table>
           </span>
 
-          <!-- Statistics -->
-          <div class="tab-content">
-            <table class="stats-config">
+          <!-- Joysticks -->
+          <span>
+            <canvas class="joysticks-canvas"></canvas>
+            <table class="timeline-viz-config joysticks-config">
               <tbody>
                 <tr>
-                  <td>
-                    <span class="label">Field #1:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
-                  </td>
-                  <td>
-                    <span class="label">Field #2:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
-                  </td>
-                  <td>
-                    <span class="label">Field #3:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
-                  </td>
+                  <th colspan="3">Config</th>
                 </tr>
                 <tr>
                   <td>
-                    <span class="label">Selection:</span>
-                    <br />
-                    <select>
-                      <option value="full">Full Log</option>
-                      <option value="enabled">Enabled Only</option>
-                      <option value="range">Time Range</option>
-                    </select>
-                    &mdash;
-                    <input type="number" value="0" disabled />
-                    to
-                    <input type="number" value="10" disabled />
+                    <input type="number" min="0" max="5" value="0" step="1" />
+                    <select tabindex="-1"></select>
                   </td>
                   <td>
-                    <span class="label">Measurement:</span>
-                    <br />
-                    <select>
-                      <option value="independent">Independent fields</option>
-                      <option value="reference">Reference + measurements</option>
-                    </select>
-                    <br />
-                    <select>
-                      <option value="fixed">Fixed</option>
-                      <option value="auto">Auto</option>
-                    </select>
-                    (<a href="#" tabindex="-1">Help</a>) &mdash;
-                    <input type="number" value="20" />
-                    ms
+                    <input type="number" min="0" max="5" value="1" step="1" />
+                    <select tabindex="-1"></select>
                   </td>
                   <td>
-                    <span class="label">Histogram:</span>
-                    <br />
-                    <input type="number" value="0" />
-                    to
-                    <input type="number" value="100" />
-                    &mdash; step
-                    <input type="number" value="10" />
+                    <input type="number" min="0" max="5" value="2" step="1" />
+                    <select tabindex="-1"></select>
                   </td>
                 </tr>
               </tbody>
             </table>
-
-            <div class="stats-values-container">
-              <table class="stats-values">
-                <tbody></tbody>
-              </table>
-            </div>
-
-            <div class="stats-histogram-container">
-              <canvas width="599" height="297"></canvas>
-            </div>
-            <div class="stats-drag-highlight" hidden></div>
-          </div>
+          </span>
         </span>
       </div>
     </div>

@@ -49,7 +49,7 @@ export default class VideoController extends TimelineVizController {
       "timeline-viz-timeline-slider"
     )[0] as HTMLInputElement;
     this.VIDEO_TIMELINE_PROGRESS = configTable.getElementsByClassName("timeline-viz-timeline-marker-container")[0]
-      .firstChild as HTMLElement;
+      .firstElementChild as HTMLElement;
 
     // Source selection
     this.SOURCE_CELL.addEventListener("click", () => {
@@ -104,36 +104,25 @@ export default class VideoController extends TimelineVizController {
     this.SKIP_BACK_BUTTON.addEventListener("click", () => skipTime(-5));
     this.SKIP_FORWARD_BUTTON.addEventListener("click", () => skipTime(5));
     window.addEventListener("keydown", (event) => {
-      if (content.hidden || event.target != document.body) return;
+      if (content.parentElement == null || content.hidden || event.target != document.body || event.metaKey) return;
       switch (event.code) {
         case "ArrowUp":
         case "ArrowDown":
-          event.preventDefault();
           toggleLock();
           break;
-
         case "Slash":
-          event.preventDefault();
           togglePlayPause();
           break;
-
         case "Comma":
-          event.preventDefault();
           skipTime(-5);
           break;
-
         case "Period":
-          event.preventDefault();
           skipTime(5);
           break;
-
         case "ArrowLeft":
-          event.preventDefault();
           changeFrame(-1);
           break;
-
         case "ArrowRight":
-          event.preventDefault();
           changeFrame(1);
           break;
       }

@@ -1,6 +1,7 @@
 import { FRCData } from "../lib/FRCData";
 import NamedMessage from "../lib/NamedMessage";
 import TabType from "../lib/TabType";
+import JoysticksVisualizer from "../lib/visualizers/JoysticksVisualizer";
 import OdometryVisualizer from "../lib/visualizers/OdometryVisualizer";
 import PointsVisualizer from "../lib/visualizers/PointsVisualizer";
 import ThreeDimensionVisualizer from "../lib/visualizers/ThreeDimensionVisualizer";
@@ -34,30 +35,36 @@ window.addEventListener("message", (event) => {
         case "set-type":
           type = message.data;
           (document.getElementById("odometry") as HTMLElement).hidden = type != TabType.Odometry;
-          (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
-          (document.getElementById("video") as HTMLElement).hidden = type != TabType.Video;
           (document.getElementById("threeDimension") as HTMLElement).hidden = type != TabType.ThreeDimension;
+          (document.getElementById("video") as HTMLElement).hidden = type != TabType.Video;
+          (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
+          (document.getElementById("joysticks") as HTMLElement).hidden = type != TabType.Joysticks;
+          let title = document.getElementsByTagName("title")[0] as HTMLElement;
           switch (type) {
             case TabType.Odometry:
-              document.getElementsByTagName("title")[0].innerHTML = "Odometry &mdash; Advantage Scope";
+              title.innerHTML = "Odometry &mdash; Advantage Scope";
               visualizer = new OdometryVisualizer(document.getElementById("odometryCanvas") as HTMLCanvasElement);
               break;
-            case TabType.Points:
-              document.getElementsByTagName("title")[0].innerHTML = "Points &mdash; Advantage Scope";
-              visualizer = new PointsVisualizer(
-                document.getElementsByClassName("points-background-container")[0] as HTMLElement
-              );
-              break;
-            case TabType.Video:
-              document.getElementsByTagName("title")[0].innerHTML = "Video &mdash; Advantage Scope";
-              visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
-              break;
             case TabType.ThreeDimension:
-              document.getElementsByTagName("title")[0].innerHTML = "3D Field &mdash; Advantage Scope";
+              title.innerHTML = "3D Field &mdash; Advantage Scope";
               visualizer = new ThreeDimensionVisualizer(
                 document.body,
                 document.getElementById("threeDimensionCanvas") as HTMLCanvasElement
               );
+              break;
+            case TabType.Video:
+              title.innerHTML = "Video &mdash; Advantage Scope";
+              visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
+              break;
+            case TabType.Points:
+              title.innerHTML = "Points &mdash; Advantage Scope";
+              visualizer = new PointsVisualizer(
+                document.getElementsByClassName("points-background-container")[0] as HTMLElement
+              );
+              break;
+            case TabType.Joysticks:
+              title.innerHTML = "Joysticks &mdash; Advantage Scope";
+              visualizer = new JoysticksVisualizer(document.getElementById("joysticksCanvas") as HTMLCanvasElement);
               break;
           }
           break;

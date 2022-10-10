@@ -264,7 +264,11 @@ export function loadFRCData(): FRCData {
     });
   });
   frcData.field2ds.sort((a, b) => (a.title > b.title ? -1 : b.title > a.title ? 1 : 0));
-  frcData.field3ds.sort((a, b) => (a.title > b.title ? -1 : b.title > a.title ? 1 : 0));
+  frcData.field3ds.sort((a, b) => {
+    if (a.title == "Evergreen") return 1;
+    if (b.title == "Evergreen") return -1;
+    return a.title > b.title ? -1 : b.title > a.title ? 1 : 0;
+  });
   frcData.robots.sort((a, b) => {
     if (a.title == "KitBot") return -1;
     if (b.title == "KitBot") return 1;

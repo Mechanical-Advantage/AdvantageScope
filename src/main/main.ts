@@ -270,25 +270,17 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       newTabMenu.append(
         new MenuItem({
+          label: "Statistics",
+          click() {
+            sendMessage(window, "new-tab", TabType.Statistics);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
           label: "Odometry",
           click() {
             sendMessage(window, "new-tab", TabType.Odometry);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Points",
-          click() {
-            sendMessage(window, "new-tab", TabType.Points);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Video",
-          click() {
-            sendMessage(window, "new-tab", TabType.Video);
           }
         })
       );
@@ -302,9 +294,25 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       newTabMenu.append(
         new MenuItem({
-          label: "Statistics",
+          label: "Video",
           click() {
-            sendMessage(window, "new-tab", TabType.Statistics);
+            sendMessage(window, "new-tab", TabType.Video);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Points",
+          click() {
+            sendMessage(window, "new-tab", TabType.Points);
+          }
+        })
+      );
+      newTabMenu.append(
+        new MenuItem({
+          label: "Joysticks",
+          click() {
+            sendMessage(window, "new-tab", TabType.Joysticks);
           }
         })
       );
@@ -889,43 +897,51 @@ function setupMenu() {
               }
             },
             {
-              label: "Odometry",
+              label: "Statistics",
               accelerator: "CmdOrCtrl+3",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Statistics);
+              }
+            },
+            {
+              label: "Odometry",
+              accelerator: "CmdOrCtrl+4",
               click(_, window) {
                 if (window == null || !hubWindows.includes(window)) return;
                 sendMessage(window, "new-tab", TabType.Odometry);
               }
             },
             {
-              label: "Points",
-              accelerator: "CmdOrCtrl+4",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Points);
-              }
-            },
-            {
-              label: "Video",
-              accelerator: "CmdOrCtrl+5",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Video);
-              }
-            },
-            {
               label: "3D Field",
-              accelerator: "CmdOrCtrl+6",
+              accelerator: "CmdOrCtrl+5",
               click(_, window) {
                 if (window == null || !hubWindows.includes(window)) return;
                 sendMessage(window, "new-tab", TabType.ThreeDimension);
               }
             },
             {
-              label: "Statistics",
+              label: "Video",
+              accelerator: "CmdOrCtrl+6",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Video);
+              }
+            },
+            {
+              label: "Points",
               accelerator: "CmdOrCtrl+7",
               click(_, window) {
                 if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Statistics);
+                sendMessage(window, "new-tab", TabType.Points);
+              }
+            },
+            {
+              label: "Joysticks",
+              accelerator: "CmdOrCtrl+8",
+              click(_, window) {
+                if (window == null || !hubWindows.includes(window)) return;
+                sendMessage(window, "new-tab", TabType.Joysticks);
               }
             }
           ]
