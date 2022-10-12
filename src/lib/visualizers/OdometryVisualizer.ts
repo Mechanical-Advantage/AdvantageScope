@@ -1,4 +1,5 @@
 import { degreesToRadians, metersToInches } from "../units";
+import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {
@@ -124,17 +125,6 @@ export default class OdometryVisualizer implements Visualizer {
       return positionPixels;
     };
 
-    // Transform pixel coordinate based on robot rotation
-    let transform = (
-      relativePosition: [number, number],
-      rotation: number,
-      centerPosition: [number, number]
-    ): [number, number] => {
-      let hypot = Math.hypot(relativePosition[0], relativePosition[1]);
-      let newAngle = Math.atan2(-relativePosition[1], relativePosition[0]) + rotation;
-      return [centerPosition[0] + Math.cos(newAngle) * hypot, centerPosition[1] - Math.sin(newAngle) * hypot];
-    };
-
     // Calculate robot length
     let robotLengthPixels =
       pixelsPerInch *
@@ -214,10 +204,10 @@ export default class OdometryVisualizer implements Visualizer {
       context.fillStyle = "#222";
       context.strokeStyle = command.options.alliance;
       context.lineWidth = 3 * pixelsPerInch;
-      let backLeft = transform([robotLengthPixels * -0.5, robotLengthPixels * -0.5], rotation, robotPos);
-      let frontLeft = transform([robotLengthPixels * 0.5, robotLengthPixels * -0.5], rotation, robotPos);
-      let frontRight = transform([robotLengthPixels * 0.5, robotLengthPixels * 0.5], rotation, robotPos);
-      let backRight = transform([robotLengthPixels * -0.5, robotLengthPixels * 0.5], rotation, robotPos);
+      let backLeft = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
+      let frontLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);
+      let frontRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * -0.5]);
+      let backRight = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * -0.5]);
       context.beginPath();
       context.moveTo(frontLeft[0], frontLeft[1]);
       context.lineTo(frontRight[0], frontRight[1]);
@@ -229,10 +219,10 @@ export default class OdometryVisualizer implements Visualizer {
 
       context.strokeStyle = "white";
       context.lineWidth = 1 * pixelsPerInch;
-      let arrowBack = transform([robotLengthPixels * -0.3, 0], rotation, robotPos);
-      let arrowFront = transform([robotLengthPixels * 0.3, 0], rotation, robotPos);
-      let arrowLeft = transform([robotLengthPixels * 0.15, robotLengthPixels * -0.15], rotation, robotPos);
-      let arrowRight = transform([robotLengthPixels * 0.15, robotLengthPixels * 0.15], rotation, robotPos);
+      let arrowBack = transformPx(robotPos, rotation, [robotLengthPixels * -0.3, 0]);
+      let arrowFront = transformPx(robotPos, rotation, [robotLengthPixels * 0.3, 0]);
+      let arrowLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
+      let arrowRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * -0.15]);
       context.beginPath();
       context.moveTo(arrowBack[0], arrowBack[1]);
       context.lineTo(arrowFront[0], arrowFront[1]);
@@ -255,10 +245,10 @@ export default class OdometryVisualizer implements Visualizer {
       context.fillStyle = "#222";
       context.strokeStyle = command.options.alliance;
       context.lineWidth = 3 * pixelsPerInch;
-      let backLeft = transform([robotLengthPixels * -0.5, robotLengthPixels * -0.5], rotation, robotPos);
-      let frontLeft = transform([robotLengthPixels * 0.5, robotLengthPixels * -0.5], rotation, robotPos);
-      let frontRight = transform([robotLengthPixels * 0.5, robotLengthPixels * 0.5], rotation, robotPos);
-      let backRight = transform([robotLengthPixels * -0.5, robotLengthPixels * 0.5], rotation, robotPos);
+      let backLeft = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
+      let frontLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);
+      let frontRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * -0.5]);
+      let backRight = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * -0.5]);
       context.beginPath();
       context.moveTo(frontLeft[0], frontLeft[1]);
       context.lineTo(frontRight[0], frontRight[1]);
@@ -270,10 +260,10 @@ export default class OdometryVisualizer implements Visualizer {
 
       context.strokeStyle = "white";
       context.lineWidth = 1 * pixelsPerInch;
-      let arrowBack = transform([robotLengthPixels * -0.3, 0], rotation, robotPos);
-      let arrowFront = transform([robotLengthPixels * 0.3, 0], rotation, robotPos);
-      let arrowLeft = transform([robotLengthPixels * 0.15, robotLengthPixels * -0.15], rotation, robotPos);
-      let arrowRight = transform([robotLengthPixels * 0.15, robotLengthPixels * 0.15], rotation, robotPos);
+      let arrowBack = transformPx(robotPos, rotation, [robotLengthPixels * -0.3, 0]);
+      let arrowFront = transformPx(robotPos, rotation, [robotLengthPixels * 0.3, 0]);
+      let arrowLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
+      let arrowRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * -0.15]);
       context.beginPath();
       context.moveTo(arrowBack[0], arrowBack[1]);
       context.lineTo(arrowFront[0], arrowFront[1]);

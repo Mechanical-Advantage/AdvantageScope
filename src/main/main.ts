@@ -20,7 +20,7 @@ import { Client } from "ssh2";
 import { FRCData } from "../lib/FRCData";
 import NamedMessage from "../lib/NamedMessage";
 import Preferences from "../lib/Preferences";
-import TabType from "../lib/TabType";
+import TabType, { getAllTabTypes, getTabTitle } from "../lib/TabType";
 import { createUUID } from "../lib/util";
 import checkForUpdate from "./checkForUpdate";
 import {
@@ -252,71 +252,17 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "ask-new-tab":
       const newTabMenu = new Menu();
-      newTabMenu.append(
-        new MenuItem({
-          label: "Line Graph",
-          click() {
-            sendMessage(window, "new-tab", TabType.LineGraph);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Table",
-          click() {
-            sendMessage(window, "new-tab", TabType.Table);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Statistics",
-          click() {
-            sendMessage(window, "new-tab", TabType.Statistics);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Odometry",
-          click() {
-            sendMessage(window, "new-tab", TabType.Odometry);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "3D Field",
-          click() {
-            sendMessage(window, "new-tab", TabType.ThreeDimension);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Video",
-          click() {
-            sendMessage(window, "new-tab", TabType.Video);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Points",
-          click() {
-            sendMessage(window, "new-tab", TabType.Points);
-          }
-        })
-      );
-      newTabMenu.append(
-        new MenuItem({
-          label: "Joysticks",
-          click() {
-            sendMessage(window, "new-tab", TabType.Joysticks);
-          }
-        })
-      );
-
+      getAllTabTypes().forEach((tabType, index) => {
+        if (index == 0) return;
+        newTabMenu.append(
+          new MenuItem({
+            label: getTabTitle(tabType),
+            click() {
+              sendMessage(window, "new-tab", tabType);
+            }
+          })
+        );
+      });
       newTabMenu.popup();
       break;
 
@@ -879,72 +825,18 @@ function setupMenu() {
       submenu: [
         {
           label: "New Tab",
-          submenu: [
-            {
-              label: "Line Graph",
-              accelerator: "CmdOrCtrl+1",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.LineGraph);
-              }
-            },
-            {
-              label: "Table",
-              accelerator: "CmdOrCtrl+2",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Table);
-              }
-            },
-            {
-              label: "Statistics",
-              accelerator: "CmdOrCtrl+3",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Statistics);
-              }
-            },
-            {
-              label: "Odometry",
-              accelerator: "CmdOrCtrl+4",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Odometry);
-              }
-            },
-            {
-              label: "3D Field",
-              accelerator: "CmdOrCtrl+5",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.ThreeDimension);
-              }
-            },
-            {
-              label: "Video",
-              accelerator: "CmdOrCtrl+6",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Video);
-              }
-            },
-            {
-              label: "Points",
-              accelerator: "CmdOrCtrl+7",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Points);
-              }
-            },
-            {
-              label: "Joysticks",
-              accelerator: "CmdOrCtrl+8",
-              click(_, window) {
-                if (window == null || !hubWindows.includes(window)) return;
-                sendMessage(window, "new-tab", TabType.Joysticks);
-              }
-            }
-          ]
+          submenu: getAllTabTypes()
+            .slice(1)
+            .map((tabType, index) => {
+              return {
+                label: getTabTitle(tabType),
+                accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : index == 9 ? "CmdOrCtrl+0" : "",
+                click(_, window) {
+                  if (window == null || !hubWindows.includes(window)) return;
+                  sendMessage(window, "new-tab", tabType);
+                }
+              };
+            })
         },
         { type: "separator" },
         {

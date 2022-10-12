@@ -1,9 +1,10 @@
 import { FRCData } from "../lib/FRCData";
 import NamedMessage from "../lib/NamedMessage";
-import TabType from "../lib/TabType";
+import TabType, { getTabTitle } from "../lib/TabType";
 import JoysticksVisualizer from "../lib/visualizers/JoysticksVisualizer";
 import OdometryVisualizer from "../lib/visualizers/OdometryVisualizer";
 import PointsVisualizer from "../lib/visualizers/PointsVisualizer";
+import SwerveVisualizer from "../lib/visualizers/SwerveVisualizer";
 import ThreeDimensionVisualizer from "../lib/visualizers/ThreeDimensionVisualizer";
 import VideoVisualizer from "../lib/visualizers/VideoVisualizer";
 import Visualizer from "../lib/visualizers/Visualizer";
@@ -33,38 +34,46 @@ window.addEventListener("message", (event) => {
           break;
 
         case "set-type":
-          type = message.data;
+          type = message.data as TabType;
+
+          // Update visible elements
           (document.getElementById("odometry") as HTMLElement).hidden = type != TabType.Odometry;
           (document.getElementById("threeDimension") as HTMLElement).hidden = type != TabType.ThreeDimension;
           (document.getElementById("video") as HTMLElement).hidden = type != TabType.Video;
           (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
           (document.getElementById("joysticks") as HTMLElement).hidden = type != TabType.Joysticks;
+          (document.getElementById("swerve") as HTMLElement).hidden = type != TabType.Swerve;
+
+          // Update title
           let title = document.getElementsByTagName("title")[0] as HTMLElement;
+          title.innerHTML = getTabTitle(type) + " &mdash; Advantage Scope";
+
+          // Create visualizer
           switch (type) {
             case TabType.Odometry:
-              title.innerHTML = "Odometry &mdash; Advantage Scope";
               visualizer = new OdometryVisualizer(document.getElementById("odometryCanvas") as HTMLCanvasElement);
               break;
             case TabType.ThreeDimension:
-              title.innerHTML = "3D Field &mdash; Advantage Scope";
               visualizer = new ThreeDimensionVisualizer(
                 document.body,
                 document.getElementById("threeDimensionCanvas") as HTMLCanvasElement
               );
               break;
             case TabType.Video:
-              title.innerHTML = "Video &mdash; Advantage Scope";
               visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
               break;
             case TabType.Points:
-              title.innerHTML = "Points &mdash; Advantage Scope";
               visualizer = new PointsVisualizer(
                 document.getElementsByClassName("points-background-container")[0] as HTMLElement
               );
               break;
             case TabType.Joysticks:
-              title.innerHTML = "Joysticks &mdash; Advantage Scope";
               visualizer = new JoysticksVisualizer(document.getElementById("joysticksCanvas") as HTMLCanvasElement);
+              break;
+            case TabType.Swerve:
+              visualizer = new SwerveVisualizer(
+                document.getElementsByClassName("swerve-canvas-container")[0] as HTMLElement
+              );
               break;
           }
           break;

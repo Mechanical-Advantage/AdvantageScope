@@ -1,4 +1,4 @@
-import TabType from "../lib/TabType";
+import TabType, { getTabTitle } from "../lib/TabType";
 import { TabGroupState } from "./HubState";
 import ScrollSensor from "./ScrollSensor";
 import TabController from "./TabController";
@@ -8,6 +8,7 @@ import MetadataController from "./tabControllers/MetadataController";
 import OdometryController from "./tabControllers/OdometryController";
 import PointsController from "./tabControllers/PointsController";
 import StatisticsController from "./tabControllers/StatisticsController";
+import SwerveController from "./tabControllers/SwerveController";
 import TableController from "./tabControllers/TableController";
 import ThreeDimensionController from "./tabControllers/ThreeDimensionController";
 import VideoController from "./tabControllers/VideoController";
@@ -130,59 +131,55 @@ export default class Tabs {
 
   /** Creates a new tab. */
   addTab(type: TabType) {
-    let title: string;
+    let title = type == TabType.Metadata ? "\ud83d\udd0d" : getTabTitle(type);
     let contentElement: HTMLElement;
     let controller: TabController;
     switch (type) {
       case TabType.Metadata:
-        title = "\ud83d\udd0d";
         contentElement = this.CONTENT_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
         controller = new MetadataController(contentElement);
         break;
       case TabType.LineGraph:
-        title = "Line Graph";
         contentElement = this.CONTENT_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
         controller = new LineGraphController(contentElement);
         break;
       case TabType.Table:
-        title = "Table";
         contentElement = this.CONTENT_TEMPLATES.children[2].cloneNode(true) as HTMLElement;
         controller = new TableController(contentElement);
         break;
       case TabType.Statistics:
-        title = "Statistics";
         contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
         controller = new StatisticsController(contentElement);
         break;
       case TabType.Odometry:
-        title = "Odometry";
         contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[5].cloneNode(true));
         controller = new OdometryController(contentElement);
         break;
       case TabType.ThreeDimension:
-        title = "3D Field";
         contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
         controller = new ThreeDimensionController(contentElement);
         break;
       case TabType.Video:
-        title = "Video";
         contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
         controller = new VideoController(contentElement);
         break;
       case TabType.Points:
-        title = "Points";
         contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
         controller = new PointsController(contentElement);
         break;
       case TabType.Joysticks:
-        title = "Joysticks";
         contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
         controller = new JoysticksController(contentElement);
+        break;
+      case TabType.Swerve:
+        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
+        controller = new SwerveController(contentElement);
         break;
     }
 
@@ -200,6 +197,7 @@ export default class Tabs {
     });
     this.selectedTab = this.tabList.length - 1;
     this.VIEWER.appendChild(contentElement);
+    controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
     this.updateElements();
   }
 

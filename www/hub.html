@@ -305,7 +305,7 @@
                     <a class="credit-link" href="#" tabindex="-1">Source</a>
                   </td>
                   <td>
-                    <span class="label">Side length:</span>
+                    <span class="label">Side Length:</span>
                     <input type="number" min="0" value="0.75" step="0.01" tabindex="-1" />
                     <span>meters</span>
                   </td>
@@ -328,7 +328,7 @@
                     </select>
                   </td>
                   <td>
-                    <span class="label">Alliance color:</span>
+                    <span class="label">Alliance Color:</span>
                     <select tabindex="-1">
                       <option>blue</option>
                       <option>red</option>
@@ -507,7 +507,7 @@
                     <input type="number" min="1" value="720" step="1" />
                   </td>
                   <td>
-                    <span class="label">Point shape:</span>
+                    <span class="label">Point Shape:</span>
                     <select tabindex="-1">
                       <option>plus</option>
                       <option>cross</option>
@@ -521,11 +521,11 @@
                     <span class="field-name">&lt;Drag Here&gt;</span>
                   </td>
                   <td>
-                    <span class="label">Group size:</span>
+                    <span class="label">Group Size:</span>
                     <input type="number" min="0" value="0" step="1" />
                   </td>
                   <td>
-                    <span class="label">Point size:</span>
+                    <span class="label">Point Size:</span>
                     <select tabindex="-1">
                       <option>large</option>
                       <option selected>medium</option>
@@ -557,6 +557,79 @@
                   <td>
                     <input type="number" min="0" max="5" value="2" step="1" />
                     <select tabindex="-1"></select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- Swerve -->
+          <span>
+            <div class="swerve-canvas-container">
+              <canvas class="swerve-canvas" width="100" height="100"></canvas>
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>Fields</th>
+                  <th>Data</th>
+                  <th>Display</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">States (Red):</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Max Speed:</span>
+                    <input type="number" min="0" value="4.5" step="0.1" />
+                  </td>
+                  <td>
+                    <span class="label">Size (Left-Right):</span>
+                    <input type="number" min="0" value="0.65" step="0.1" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">States (Blue):</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Rotation Units:</span>
+                    <select tabindex="-1">
+                      <option>radians</option>
+                      <option>degrees</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Size (Front-Back):</span>
+                    <input type="number" min="0" value="0.65" step="0.1" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Robot Rotation:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Arrangement:</span>
+                    <select tabindex="-1">
+                      <option value="0,1,2,3">FL, FR, BL, BR</option>
+                      <option value="1,2,3,2">FR, FL, BR, BL</option>
+                      <option value="0,1,3,2">FL, FR, BR, BL</option>
+                      <option value="0,2,3,1">FL, BL, BR, FR</option>
+                      <option value="1,3,2,0">FR, BR, BL, FL</option>
+                      <option value="1,0,2,3">FR, FL, BL, BR</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Forward =</span>
+                    <select tabindex="-1">
+                      <option>up</option>
+                      <option>right</option>
+                      <option>down</option>
+                      <option>left</option>
+                    </select>
                   </td>
                 </tr>
               </tbody>

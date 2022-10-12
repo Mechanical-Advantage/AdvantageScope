@@ -1233,3 +1233,29 @@ table.joysticks-config td {
 table.joysticks-config input[type="number"] {
   width: 40px;
 }
+
+div.swerve-canvas-container {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+canvas.swerve-canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  canvas.swerve-canvas {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}

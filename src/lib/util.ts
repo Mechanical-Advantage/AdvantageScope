@@ -77,6 +77,34 @@ export function scaleValue(value: number, oldRange: [number, number], newRange: 
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];
 }
 
+/**
+ * Applys a transform to a pixel value.
+ * @param originPx The origin pixel in image coordinates.
+ * @param rotationRadians The rotation around the origin pixel (CCW positive).
+ * @param relativePx The relative pixel coordinate in standard coordinates.
+ * @returns The transformed pixel in image coordinates.
+ */
+export function transformPx(
+  originPx: [number, number],
+  rotationRadians: number,
+  relativePx: [number, number]
+): [number, number] {
+  let hypot = Math.hypot(relativePx[0], relativePx[1]);
+  let newAngle = Math.atan2(relativePx[1], relativePx[0]) + rotationRadians;
+  return [originPx[0] + Math.cos(newAngle) * hypot, originPx[1] - Math.sin(newAngle) * hypot];
+}
+
+/** Wraps a radian value to a range of negative pi to pi. */
+export function wrapRadians(radians: number): number {
+  while (radians < -Math.PI) {
+    radians += Math.PI * 2;
+  }
+  while (radians > Math.PI) {
+    radians -= Math.PI * 2;
+  }
+  return radians;
+}
+
 /** Generates a random string of characters. */
 export function createUUID(): string {
   let outString: string = "";
