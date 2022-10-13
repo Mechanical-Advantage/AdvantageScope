@@ -1,6 +1,6 @@
 import LoggableType from "../../lib/log/LoggableType";
 import TabType from "../../lib/TabType";
-import { inchesToMeters, metersToInches } from "../../lib/units";
+import { inchesToMeters, metersToInches } from "../../lib/util";
 import OdometryVisualizer from "../../lib/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 

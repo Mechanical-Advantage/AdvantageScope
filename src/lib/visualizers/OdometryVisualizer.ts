@@ -1,5 +1,4 @@
-import { degreesToRadians, metersToInches } from "../units";
-import { transformPx } from "../util";
+import { degreesToRadians, metersToInches, transformPx } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {

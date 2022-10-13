@@ -3,7 +3,7 @@ import { Quaternion } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3d_Rotation } from "../FRCData";
-import { degreesToRadians, inchesToMeters } from "../units";
+import { degreesToRadians, inchesToMeters } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {

@@ -1,3 +1,26 @@
+const METERS_PER_INCH = 0.0254;
+const RADIANS_PER_DEGREE = Math.PI / 180;
+
+/** Converts from meters to inches. */
+export function metersToInches(meters: number): number {
+  return meters / METERS_PER_INCH;
+}
+
+/** Converts from inches to meters. */
+export function inchesToMeters(inches: number): number {
+  return inches * METERS_PER_INCH;
+}
+
+/** Converts from radians to degrees. */
+export function radiansToDegrees(radians: number): number {
+  return radians / RADIANS_PER_DEGREE;
+}
+
+/** Converts from degrees to radians. */
+export function degreesToRadians(degrees: number): number {
+  return degrees * RADIANS_PER_DEGREE;
+}
+
 /** Checks whether two arrays are equal. */
 export function arraysEqual(a: any[], b: any[]): boolean {
   return (

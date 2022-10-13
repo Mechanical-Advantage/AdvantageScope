@@ -1,8 +1,7 @@
 import LoggableType from "../../lib/log/LoggableType";
 import TabType from "../../lib/TabType";
-import { degreesToRadians } from "../../lib/units";
+import { degreesToRadians } from "../../lib/util";
 import SwerveVisualizer, { NormalizedModuleState } from "../../lib/visualizers/SwerveVisualizer";
-import StateTracker from "../../main/StateTracker";
 import TimelineVizController from "./TimelineVizController";
 
 export default class JoysticksController extends TimelineVizController {
