@@ -61,6 +61,7 @@ window.addEventListener("message", (event) => {
               break;
             case TabType.ThreeDimension:
               visualizer = new ThreeDimensionVisualizer(
+                document.body,
                 document.getElementById("threeDimensionCanvas") as HTMLCanvasElement
               );
               break;

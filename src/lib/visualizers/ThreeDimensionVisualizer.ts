@@ -9,6 +9,7 @@ import Visualizer from "./Visualizer";
 export default class ThreeDimensionVisualizer implements Visualizer {
   private EFFICIENCY_MAX_FPS = 15;
 
+  private content: HTMLElement;
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
@@ -21,8 +22,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private yellowCones: THREE.Object3D[] = [];
 
   private command: any;
-  private efficiencyFrameTimeout: NodeJS.Timeout | null = null;
+  private shouldRender = false;
   private lastFrameTime = 0;
+  private lastWidth: number | null = 0;
+  private lastHeight: number | null = 0;
+  private lastDevicePixelRatio: number | null = null;
+  private lastIsDark: boolean | null = null;
   private lastPrefsMode = "";
   private lastFrcDataString: string = "";
   private lastFieldTitle: string = "";
@@ -36,7 +41,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private coneTextureYellow: THREE.Texture;
   private coneTextureYellowBase: THREE.Texture;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(content: HTMLElement, canvas: HTMLCanvasElement) {
+    this.content = content;
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.scene = new THREE.Scene();
@@ -99,38 +105,74 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.coneTextureBlueBase = loader.load("../www/textures/cone-blue-base.png");
     this.coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
 
-    // Render when camera is moved or window is resized
-    controls.addEventListener("change", () => this.renderFrame());
-    window.addEventListener("resize", () => this.renderFrame());
+    // Render when camera is moved
+    controls.addEventListener("change", () => (this.shouldRender = true));
+
+    // Render loop
+    let periodic = () => {
+      this.renderFrame();
+      window.requestAnimationFrame(periodic);
+    };
+    window.requestAnimationFrame(periodic);
   }
 
   render(command: any): number | null {
-    let shouldRender =
-      JSON.stringify(command) != JSON.stringify(this.command) ||
-      window.preferences?.threeDimensionMode != this.lastPrefsMode;
-    if (window.preferences) {
-      this.lastPrefsMode = window.preferences.threeDimensionMode;
+    if (JSON.stringify(command) != JSON.stringify(this.command)) {
+      this.shouldRender = true;
     }
     this.command = command;
-    if (shouldRender) this.renderFrame(); // Render on new data
     return null;
   }
 
   renderFrame() {
-    if (!this.command) return;
+    // Check for new render mode
+    if (window.preferences) {
+      if (window.preferences.threeDimensionMode != this.lastPrefsMode) {
+        this.shouldRender = true;
+        this.lastPrefsMode = window.preferences.threeDimensionMode;
+      }
+    }
 
-    // Limit FPS based on selected mode
+    // Check for new size, device pixel ratio, or theme
+    let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (
+      this.renderer.domElement.clientWidth != this.lastWidth ||
+      this.renderer.domElement.clientHeight != this.lastHeight ||
+      window.devicePixelRatio != this.lastDevicePixelRatio ||
+      isDark != this.lastIsDark
+    ) {
+      this.lastWidth = this.renderer.domElement.clientWidth;
+      this.lastHeight = this.renderer.domElement.clientHeight;
+      this.lastDevicePixelRatio = window.devicePixelRatio;
+      this.lastIsDark = isDark;
+      this.shouldRender = true;
+    }
+
+    // Exit if no command is set
+    if (!this.command) {
+      return; // Continue trying to render
+    }
+
+    // Exit if not visible
+    if (this.content.hidden) {
+      return; // Continue trying to render
+    }
+
+    // Limit FPS in efficiency mode
     let now = new Date().getTime();
-    if (this.efficiencyFrameTimeout) clearTimeout(this.efficiencyFrameTimeout);
     if (
       window.preferences?.threeDimensionMode == "efficiency" &&
       now - this.lastFrameTime < 1000 / this.EFFICIENCY_MAX_FPS
     ) {
-      // Render a frame after this method stops getting called (ensures that the last frame is accurate)
-      this.efficiencyFrameTimeout = setTimeout(() => this.renderFrame(), 1000 / this.EFFICIENCY_MAX_FPS);
+      return; // Continue trying to render
+    }
+
+    // Check if rendering should continue
+    if (!this.shouldRender) {
       return;
     }
     this.lastFrameTime = now;
+    this.shouldRender = false;
 
     // Get config
     let fieldTitle = this.command.options.field;
@@ -160,7 +202,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.wpilibCoordinateGroup.add(this.field);
 
         // Render new frame
-        this.renderFrame();
+        this.shouldRender = true;
       });
     }
 
@@ -188,7 +230,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         }
 
         // Render new frame
-        this.renderFrame();
+        this.shouldRender = true;
       });
     }
 
@@ -272,18 +314,17 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     updateCones(this.command.poses.yellow, this.yellowCones, this.coneTextureYellow, this.coneTextureYellowBase);
 
     // Render new frame
+    const devicePixelRatio = window.preferences?.threeDimensionMode == "efficiency" ? 1 : window.devicePixelRatio;
     const canvas = this.renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    if (canvas.width != width || canvas.height != height) {
-      this.renderer.setSize(width, height, false);
-      this.camera.aspect = width / height;
+    const clientWidth = canvas.clientWidth;
+    const clientHeight = canvas.clientHeight;
+    if (canvas.width / devicePixelRatio != clientWidth || canvas.height / devicePixelRatio != clientHeight) {
+      this.renderer.setSize(clientWidth, clientHeight, false);
+      this.camera.aspect = clientWidth / clientHeight;
       this.camera.updateProjectionMatrix();
     }
-    this.scene.background = window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? new THREE.Color("#222222")
-      : new THREE.Color("#ffffff");
-    this.renderer.setPixelRatio(window.preferences?.threeDimensionMode == "efficiency" ? 1 : window.devicePixelRatio);
+    this.scene.background = isDark ? new THREE.Color("#222222") : new THREE.Color("#ffffff");
+    this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.render(this.scene, this.camera);
   }
 
