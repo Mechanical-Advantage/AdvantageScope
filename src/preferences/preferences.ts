@@ -5,6 +5,7 @@ const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;
 const RIO_PATH = document.getElementById("rioPath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const RLOG_PORT = document.getElementById("rlogPort") as HTMLInputElement;
+const THREE_DIMENSION_MODE = document.getElementById("threeDimensionMode") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
@@ -26,6 +27,7 @@ window.addEventListener("message", (event) => {
       RIO_PATH.value = oldPrefs.rioPath;
       LIVE_MODE.value = oldPrefs.liveMode;
       RLOG_PORT.value = oldPrefs.rlogPort.toString();
+      THREE_DIMENSION_MODE.value = oldPrefs.threeDimensionMode;
 
       // Close function
       function close(useNewPrefs: boolean) {
@@ -40,12 +42,17 @@ window.addEventListener("message", (event) => {
           if (LIVE_MODE.value == "nt4-akit") liveMode = "nt4-akit";
           if (LIVE_MODE.value == "rlog") liveMode = "rlog";
 
+          let threeDimensionMode: "quality" | "efficiency" = "quality";
+          if (THREE_DIMENSION_MODE.value == "quality") threeDimensionMode = "quality";
+          if (THREE_DIMENSION_MODE.value == "efficiency") threeDimensionMode = "efficiency";
+
           let newPrefs: Preferences = {
             theme: theme,
             rioAddress: RIO_ADDRESS.value,
             rioPath: RIO_PATH.value,
             liveMode: liveMode,
-            rlogPort: Number(RLOG_PORT.value)
+            rlogPort: Number(RLOG_PORT.value),
+            threeDimensionMode: threeDimensionMode
           };
           messagePort.postMessage(newPrefs);
         } else {

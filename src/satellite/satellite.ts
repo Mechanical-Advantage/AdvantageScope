@@ -1,5 +1,6 @@
 import { FRCData } from "../lib/FRCData";
 import NamedMessage from "../lib/NamedMessage";
+import Preferences from "../lib/Preferences";
 import TabType, { getTabTitle } from "../lib/TabType";
 import JoysticksVisualizer from "../lib/visualizers/JoysticksVisualizer";
 import OdometryVisualizer from "../lib/visualizers/OdometryVisualizer";
@@ -14,6 +15,7 @@ const MAX_ASPECT_RATIO = 5;
 declare global {
   interface Window {
     frcData: FRCData | null;
+    preferences: Preferences | null;
   }
 }
 
@@ -31,6 +33,10 @@ window.addEventListener("message", (event) => {
       switch (message.name) {
         case "set-frc-data":
           window.frcData = message.data;
+          break;
+
+        case "set-preferences":
+          window.preferences = message.data;
           break;
 
         case "set-type":
@@ -55,7 +61,6 @@ window.addEventListener("message", (event) => {
               break;
             case TabType.ThreeDimension:
               visualizer = new ThreeDimensionVisualizer(
-                document.body,
                 document.getElementById("threeDimensionCanvas") as HTMLCanvasElement
               );
               break;

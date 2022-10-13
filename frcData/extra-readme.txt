@@ -20,7 +20,7 @@ Files must follow the naming convention "Field3d_NAME.json" and "Field3d_NAME.gl
 
 {
   "sourceUrl": string
-  "rotations": [number, number, number, number][] // Sequence of rotations in axis-angle form (x, y, z, angle in degrees)
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)
 }
@@ -31,20 +31,20 @@ Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". 
 
 {
   "sourceUrl": string
-  "rotations": [number, number, number, number][] // Sequence of rotations in axis-angle form (x, y, z, angle in degrees)
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
 }
 
 The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms will be applied in this order. You can temporarily adjust these values by opening the developer tools (View > Toggle Developer Tools) and using the following command:
 
 > override3dRobotConfig(name, rotations, position)
-> override3dRobotConfig("6328 (Bot-Bot Strikes Back)", [[0, 0, 0, 0], [0, 0, 0, 0]], [0, 0, 0])
+> override3dRobotConfig("6328 (Bot-Bot Strikes Back)", [{ "axis": "x", "degrees": 0 }, { "axis": "y", "degrees": 0 }], [0, 0, 0])
 
-The values set using the above method are not retained when the app is closed. Please copy them to the JSON config file when you have finished.
+The values set using this method are not retained when the app is closed. Please copy them to the JSON config file when you have finished.
 
 ========== JOYSTICKS ==========
 
-Files must follow the naming convention "Joystick_NAME.json" and "Joystick_NAME.png". The JSON file must be an array of objects that follow one of the formats below.
+Files must follow the naming convention "Joystick_NAME.json" and "Joystick_NAME.png". The JSON file must be an array of objects with one of the formats below.
 
 [
   {

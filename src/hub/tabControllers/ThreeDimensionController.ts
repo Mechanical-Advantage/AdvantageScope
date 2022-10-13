@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import LoggableType from "../../lib/log/LoggableType";
 import TabType from "../../lib/TabType";
 import ThreeDimensionVisualizer, { Pose3d } from "../../lib/visualizers/ThreeDimensionVisualizer";
@@ -42,10 +43,7 @@ export default class ThreeDimensionController extends TimelineVizController {
           type: LoggableType.NumberArray
         }
       ],
-      new ThreeDimensionVisualizer(
-        content,
-        content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement
-      )
+      new ThreeDimensionVisualizer(content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement)
     );
 
     // Get option inputs
@@ -109,9 +107,10 @@ export default class ThreeDimensionController extends TimelineVizController {
       let logData = window.log.getNumberArray(fields[0], time, time);
       if (logData && logData.timestamps[0] <= time) {
         if (logData.values[0].length == 3) {
+          let quaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), logData.values[0][2]);
           robotPose = {
             position: [logData.values[0][0], logData.values[0][1], 0],
-            rotation: [0, 0, 1, logData.values[0][2]]
+            rotation: [quaternion.w, quaternion.x, quaternion.y, quaternion.z]
           };
         } else if (logData.values[0].length == 7) {
           robotPose = {

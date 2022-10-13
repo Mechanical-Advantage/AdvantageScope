@@ -91,7 +91,14 @@ export function loadFRCData(): FRCData {
           if (
             "rotations" in configRaw &&
             Array.isArray(config.rotations) &&
-            config.rotations.every((rotation) => checkArrayType(rotation, "number") && rotation.length == 4)
+            configRaw.rotations.every(
+              (rotation: any) =>
+                typeof rotation === "object" &&
+                "axis" in rotation &&
+                (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+                "degrees" in rotation &&
+                typeof rotation.degrees === "number"
+            )
           ) {
             config.rotations = configRaw.rotations;
           }
@@ -119,7 +126,14 @@ export function loadFRCData(): FRCData {
           if (
             "rotations" in configRaw &&
             Array.isArray(config.rotations) &&
-            config.rotations.every((rotation) => checkArrayType(rotation, "number") && rotation.length == 4)
+            configRaw.rotations.every(
+              (rotation: any) =>
+                typeof rotation === "object" &&
+                "axis" in rotation &&
+                (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+                "degrees" in rotation &&
+                typeof rotation.degrees === "number"
+            )
           ) {
             config.rotations = configRaw.rotations;
           }

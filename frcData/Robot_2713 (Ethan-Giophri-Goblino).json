@@ -1,8 +1,5 @@
 {
   "sourceUrl": "https://cad.onshape.com/documents/ff29bfac394b96c4cbc0d4e7",
-  "rotations": [
-    [1, 0, 0, -90],
-    [0, 0, 1, 90]
-  ],
+  "rotations": [{ "axis": "z", "degrees": -90 }],
   "position": [0, 0, 0]
 }

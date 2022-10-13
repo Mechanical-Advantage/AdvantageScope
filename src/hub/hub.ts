@@ -1,4 +1,4 @@
-import { FRCData } from "../lib/FRCData";
+import { Config3d_Rotation, FRCData } from "../lib/FRCData";
 import { SIM_ADDRESS, USB_ADDRESS } from "../lib/IPAddresses";
 import Log from "../lib/log/Log";
 import NamedMessage from "../lib/NamedMessage";
@@ -39,11 +39,7 @@ declare global {
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
 
-    override3dRobotConfig: (
-      title: string,
-      rotations: [number, number, number, number][],
-      position: [number, number, number]
-    ) => void;
+    override3dRobotConfig: (title: string, rotations: Config3d_Rotation[], position: [number, number, number]) => void;
   }
 }
 window.log = new Log();

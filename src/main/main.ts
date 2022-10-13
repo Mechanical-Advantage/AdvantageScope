@@ -104,6 +104,13 @@ function sendAllPreferences() {
       sendMessage(window, "set-preferences", data);
     }
   });
+  Object.values(satelliteWindows).forEach((satelliteArray) => {
+    satelliteArray.forEach((satellite) => {
+      if (!satellite.isDestroyed()) {
+        sendMessage(satellite, "set-preferences", data);
+      }
+    });
+  });
   if (downloadWindow != null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
 }
 
@@ -1151,6 +1158,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
     port2.start();
     sendMessage(satellite, "set-frc-data", frcData);
     sendMessage(satellite, "set-type", type);
+    sendAllPreferences();
   });
 
   if (!(uuid in satelliteWindows)) {
@@ -1179,7 +1187,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = process.platform == "win32" ? 249 : 189; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform == "win32" ? 276 : 216; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,

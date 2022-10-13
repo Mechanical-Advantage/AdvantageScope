@@ -21,7 +21,7 @@ export interface Config3dField {
   path: string;
 
   sourceUrl: string;
-  rotations: [number, number, number, number][];
+  rotations: Config3d_Rotation[];
   widthInches: number;
   heightInches: number;
 }
@@ -31,8 +31,13 @@ export interface Config3dRobot {
   path: string;
 
   sourceUrl: string;
-  rotations: [number, number, number, number][];
+  rotations: Config3d_Rotation[];
   position: [number, number, number];
+}
+
+export interface Config3d_Rotation {
+  axis: "x" | "y" | "z";
+  degrees: number;
 }
 
 export interface ConfigJoystick {

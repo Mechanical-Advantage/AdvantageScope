@@ -1,13 +1,19 @@
 import * as THREE from "three";
+import { Quaternion } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { Config3d_Rotation } from "../FRCData";
 import { degreesToRadians, inchesToMeters } from "../units";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
+  private EFFICIENCY_MAX_FPS = 15;
+
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
+  private wpilibCoordinateGroup: THREE.Group;
+  private wpilibFieldCoordinateGroup: THREE.Group;
   private field: THREE.Object3D | null = null;
   private robot: THREE.Object3D | null = null;
   private greenCones: THREE.Object3D[] = [];
@@ -15,10 +21,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private yellowCones: THREE.Object3D[] = [];
 
   private command: any;
+  private efficiencyFrameTimeout: NodeJS.Timeout | null = null;
+  private lastFrameTime = 0;
+  private lastPrefsMode = "";
   private lastFrcDataString: string = "";
   private lastFieldTitle: string = "";
   private lastRobotTitle: string = "";
   private lastRobotVisible: boolean = false;
+
   private coneTextureGreen: THREE.Texture;
   private coneTextureGreenBase: THREE.Texture;
   private coneTextureBlue: THREE.Texture;
@@ -26,12 +36,20 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private coneTextureYellow: THREE.Texture;
   private coneTextureYellowBase: THREE.Texture;
 
-  constructor(content: HTMLElement, canvas: HTMLCanvasElement) {
+  constructor(canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.outputEncoding = THREE.sRGBEncoding;
-
     this.scene = new THREE.Scene();
 
+    // Create coordinate groups
+    this.wpilibCoordinateGroup = new THREE.Group();
+    this.scene.add(this.wpilibCoordinateGroup);
+    this.wpilibCoordinateGroup.rotateX(Math.PI / 2);
+    this.wpilibCoordinateGroup.rotateY(Math.PI);
+    this.wpilibFieldCoordinateGroup = new THREE.Group();
+    this.wpilibCoordinateGroup.add(this.wpilibFieldCoordinateGroup);
+
+    // Create camera
     const fov = 45;
     const aspect = 2;
     const near = 0.1;
@@ -40,6 +58,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.camera.position.set(0, 6, -12);
     this.camera.lookAt(0, 0.5, 0);
 
+    // Create controls
     const controls = new OrbitControls(this.camera, canvas);
     controls.target.set(0, 0.5, 0);
     controls.maxDistance = 30;
@@ -80,21 +99,40 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.coneTextureBlueBase = loader.load("../www/textures/cone-blue-base.png");
     this.coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
 
-    // Render loop
-    let periodic = () => {
-      if (!content.hidden) this.renderFrame();
-      window.requestAnimationFrame(periodic);
-    };
-    window.requestAnimationFrame(periodic);
+    // Render when camera is moved or window is resized
+    controls.addEventListener("change", () => this.renderFrame());
+    window.addEventListener("resize", () => this.renderFrame());
   }
 
   render(command: any): number | null {
+    let shouldRender =
+      JSON.stringify(command) != JSON.stringify(this.command) ||
+      window.preferences?.threeDimensionMode != this.lastPrefsMode;
+    if (window.preferences) {
+      this.lastPrefsMode = window.preferences.threeDimensionMode;
+    }
     this.command = command;
+    if (shouldRender) this.renderFrame(); // Render on new data
     return null;
   }
 
   renderFrame() {
     if (!this.command) return;
+
+    // Limit FPS based on selected mode
+    let now = new Date().getTime();
+    if (this.efficiencyFrameTimeout) clearTimeout(this.efficiencyFrameTimeout);
+    if (
+      window.preferences?.threeDimensionMode == "efficiency" &&
+      now - this.lastFrameTime < 1000 / this.EFFICIENCY_MAX_FPS
+    ) {
+      // Render a frame after this method stops getting called (ensures that the last frame is accurate)
+      this.efficiencyFrameTimeout = setTimeout(() => this.renderFrame(), 1000 / this.EFFICIENCY_MAX_FPS);
+      return;
+    }
+    this.lastFrameTime = now;
+
+    // Get config
     let fieldTitle = this.command.options.field;
     let robotTitle = this.command.options.robot;
     let fieldConfig = window.frcData?.field3ds.find((fieldData) => fieldData.title === fieldTitle);
@@ -110,22 +148,19 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     if (fieldTitle != this.lastFieldTitle) {
       this.lastFieldTitle = fieldTitle;
       if (this.field) {
-        this.scene.remove(this.field);
+        this.wpilibCoordinateGroup.remove(this.field);
       }
       const loader = new GLTFLoader();
       loader.load(fieldConfig.path, (gltf) => {
         if (fieldConfig == undefined) return;
 
-        // Calculate rotation
-        let rotation = new THREE.Quaternion();
-        fieldConfig.rotations.forEach((offsetRotation) => {
-          rotation.premultiply(this.getThreeJSQuaternion(offsetRotation, true));
-        });
-
-        // Set rotation and add to scene
+        // Add to scene
         this.field = gltf.scene;
-        this.field.rotation.setFromQuaternion(rotation);
-        this.scene.add(this.field);
+        this.field.rotation.setFromQuaternion(this.getQuaternionFromRotSeq(fieldConfig.rotations));
+        this.wpilibCoordinateGroup.add(this.field);
+
+        // Render new frame
+        this.renderFrame();
       });
     }
 
@@ -133,7 +168,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     if (robotTitle != this.lastRobotTitle || newFrcData) {
       this.lastRobotTitle = robotTitle;
       if (this.robot && this.lastRobotVisible) {
-        this.scene.remove(this.robot);
+        this.wpilibFieldCoordinateGroup.remove(this.robot);
       }
       this.robot = null;
 
@@ -143,19 +178,29 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Set position and rotation
         let robotModel = gltf.scene;
-        let rotation = new THREE.Quaternion();
-        robotConfig.rotations.forEach((offsetRotation) => {
-          rotation.premultiply(this.getThreeJSQuaternion(offsetRotation, true));
-        });
-        robotModel.rotation.setFromQuaternion(rotation);
-        robotModel.position.set(...this.getThreeJSCoordinates(robotConfig.position));
+        robotModel.rotation.setFromQuaternion(this.getQuaternionFromRotSeq(robotConfig.rotations));
+        robotModel.position.set(...robotConfig.position);
 
         // Create group and add to scene
         this.robot = new THREE.Group().add(robotModel);
         if (this.lastRobotVisible) {
-          this.scene.add(this.robot);
+          this.wpilibFieldCoordinateGroup.add(this.robot);
         }
+
+        // Render new frame
+        this.renderFrame();
       });
+    }
+
+    // Update field coordinates
+    if (fieldConfig) {
+      let isBlue = this.command.options.alliance == "blue";
+      this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), isBlue ? 0 : Math.PI);
+      this.wpilibFieldCoordinateGroup.position.set(
+        inchesToMeters(fieldConfig.widthInches / 2) * (isBlue ? -1 : 1),
+        inchesToMeters(fieldConfig.heightInches / 2) * (isBlue ? -1 : 1),
+        0
+      );
     }
 
     // Set robot position
@@ -163,18 +208,17 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       let robotPose: Pose3d | null = this.command.poses.robot;
       if (robotPose != null) {
         if (!this.lastRobotVisible) {
-          this.scene.add(this.robot);
+          this.wpilibFieldCoordinateGroup.add(this.robot);
         }
 
         // Set position and rotation
-        let position = this.getThreeJSCoordinates(robotPose.position);
-        position[0] += inchesToMeters(fieldConfig.widthInches) / 2;
-        position[2] -= inchesToMeters(fieldConfig.heightInches) / 2;
-        this.robot.position.set(...position);
-        this.robot.rotation.setFromQuaternion(this.getThreeJSQuaternion(robotPose.rotation, false));
+        this.robot.position.set(...robotPose.position);
+        this.robot.rotation.setFromQuaternion(
+          new Quaternion(robotPose.rotation[1], robotPose.rotation[2], robotPose.rotation[3], robotPose.rotation[0])
+        );
       } else if (this.lastRobotVisible) {
         // Robot is no longer visible, remove
-        this.scene.remove(this.robot);
+        this.wpilibFieldCoordinateGroup.remove(this.robot);
       }
       this.lastRobotVisible = robotPose != null;
     }
@@ -189,12 +233,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       // Remove extra cones
       while (poseData.length < objectArray.length) {
         let cone = objectArray.pop();
-        if (cone) this.scene.remove(cone);
+        if (cone) this.wpilibFieldCoordinateGroup.remove(cone);
       }
 
       // Add new cones
       while (poseData.length > objectArray.length) {
-        let cone = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.32, 16, 32), [
+        let cone = new THREE.Group();
+        let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.32, 16, 32), [
           new THREE.MeshPhongMaterial({
             map: texture
           }),
@@ -203,22 +248,21 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             map: textureBase
           })
         ]);
-        cone.rotation.setFromQuaternion(this.getThreeJSQuaternion([0, -1, 0, 90], true));
-
-        let group = new THREE.Group().add(cone);
-        objectArray.push(group);
-        this.scene.add(group);
+        coneMesh.rotateY(-Math.PI / 2);
+        coneMesh.rotateX(-Math.PI / 2);
+        cone.add(coneMesh);
+        objectArray.push(cone);
+        this.wpilibFieldCoordinateGroup.add(cone);
       }
 
       // Set cone poses
       poseData.forEach((pose, index) => {
         if (!fieldConfig) return;
         let cone = objectArray[index];
-        let position = this.getThreeJSCoordinates(pose.position);
-        position[0] += inchesToMeters(fieldConfig.widthInches) / 2;
-        position[2] -= inchesToMeters(fieldConfig.heightInches) / 2;
-        cone.position.set(...position);
-        cone.rotation.setFromQuaternion(this.getThreeJSQuaternion(pose.rotation, false));
+        cone.position.set(...pose.position);
+        cone.rotation.setFromQuaternion(
+          new Quaternion(pose.rotation[1], pose.rotation[2], pose.rotation[3], pose.rotation[0])
+        );
       });
     };
 
@@ -239,25 +283,25 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.scene.background = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? new THREE.Color("#222222")
       : new THREE.Color("#ffffff");
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(window.preferences?.threeDimensionMode == "efficiency" ? 1 : window.devicePixelRatio);
     this.renderer.render(this.scene, this.camera);
   }
 
-  /** Converts a position from WPILib to ThreeJS coordinates. */
-  private getThreeJSCoordinates(position: [number, number, number]): [number, number, number] {
-    return [-position[0], position[2], position[1]];
-  }
-
-  /** Converts a rotation from WPILib to ThreeJS coordinates (axis-angle to quaternion). */
-  private getThreeJSQuaternion(rotation: [number, number, number, number], isDegrees: boolean): THREE.Quaternion {
-    return new THREE.Quaternion().setFromAxisAngle(
-      new THREE.Vector3(rotation[0], rotation[2], -rotation[1]),
-      isDegrees ? degreesToRadians(rotation[3]) : rotation[3]
-    );
+  /** Converts a rotation sequence to a quaternion. */
+  private getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Quaternion {
+    let quaternion = new THREE.Quaternion();
+    rotations.forEach((rotation) => {
+      let axis = new THREE.Vector3(0, 0, 0);
+      if (rotation.axis == "x") axis.setX(1);
+      if (rotation.axis == "y") axis.setY(1);
+      if (rotation.axis == "z") axis.setZ(1);
+      quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(axis, degreesToRadians(rotation.degrees)));
+    });
+    return quaternion;
   }
 }
 
 export interface Pose3d {
-  position: [number, number, number];
-  rotation: [number, number, number, number];
+  position: [number, number, number]; // X, Y, Z
+  rotation: [number, number, number, number]; // W, X, Y, Z
 }
