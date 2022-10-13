@@ -20,4 +20,4 @@ export const AllColors = [
   "#2e3b28"
 ];
 
-export const SimpleColors = ["#61A5F2", "#EBC542", "#3B875A"];
+export const SimpleColors = ["#61a5f2", "#ebc542", "#3b875a"];
