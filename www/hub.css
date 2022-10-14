@@ -375,11 +375,8 @@ div.tab-bar-scroll-content {
 div.tab {
   display: inline-block;
   height: 30px;
-  border-radius: 15px;
 
   margin-top: 10px;
-  margin-left: 3px;
-  margin-right: 3px;
   padding-left: 10px;
   padding-right: 10px;
 
@@ -390,6 +387,16 @@ div.tab {
   transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
   background-color: #eee;
   border: 1px solid #aaa;
+}
+
+div.tab:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+div.tab:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }
 
 div.tab.tab-hovered {
