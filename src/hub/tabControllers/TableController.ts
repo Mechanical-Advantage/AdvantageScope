@@ -1,7 +1,7 @@
 import LoggableType from "../../lib/log/LoggableType";
 import { LogValueSetAny } from "../../lib/log/LogValueSets";
 import TabType from "../../lib/TabType";
-import { arraysEqual, createUUID } from "../../lib/util";
+import { arraysEqual, createUUID, formatTimeWithMS } from "../../lib/util";
 import { TableState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
@@ -63,12 +63,12 @@ export default class TableController implements TabController {
     return { type: TabType.Table, fields: this.fields };
   }
 
-  restoreState(state: TableState): void {
+  restoreState(state: TableState) {
     this.fields = state.fields;
     this.updateFields();
   }
 
-  refresh(): void {
+  refresh() {
     // Update timestamps (Check if fields were only added at the end. If not, do a full refresh)
     let fullRefresh = true;
     let newTimestamps = window.log.getTimestamps(this.fields, this.UUID);
@@ -262,13 +262,6 @@ export default class TableController implements TabController {
     }
   }
 
-  /** Formats a time as a string of the correct length. */
-  private formatTime(time: number): string {
-    let seconds = Math.floor(time);
-    let milliseconds = Math.floor((time - seconds) * 1000);
-    return seconds.toString() + "." + milliseconds.toString().padStart(3, "0");
-  }
-
   /**
    * Adds rows on the top or bottom in the specified range.
    * @param range The range of timestamp indexes to insert
@@ -325,7 +318,7 @@ export default class TableController implements TabController {
       // Add timestamp
       let timestampCell = document.createElement("td");
       row.appendChild(timestampCell);
-      timestampCell.innerText = this.formatTime(this.timestamps[i]);
+      timestampCell.innerText = formatTimeWithMS(this.timestamps[i]);
 
       // Add data
       this.fields.forEach((field) => {
@@ -362,7 +355,7 @@ export default class TableController implements TabController {
     this.updateHighlights();
     let selectedTime = window.selection.getSelectedTime();
     let placeholder = selectedTime == null ? 0 : selectedTime;
-    this.INPUT_FIELD.placeholder = this.formatTime(placeholder);
+    this.INPUT_FIELD.placeholder = formatTimeWithMS(placeholder);
 
     // Stop if no data
     if (this.timestamps.length == 0) return;

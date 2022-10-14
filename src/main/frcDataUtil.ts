@@ -15,7 +15,7 @@ import { checkArrayType, smartSort } from "../lib/util";
 import { EXTRA_FRC_DATA } from "./Constants";
 
 /** Creates extra FRC data folder and updates README. */
-export function createExtraFRCDataFolder(): void {
+export function createExtraFRCDataFolder() {
   if (!fs.existsSync(EXTRA_FRC_DATA)) {
     fs.mkdirSync(EXTRA_FRC_DATA);
   }

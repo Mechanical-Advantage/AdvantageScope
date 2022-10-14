@@ -87,7 +87,7 @@ export default abstract class TimelineVizController implements TabController {
     };
   }
 
-  restoreState(state: TimelineVisualizerState): void {
+  restoreState(state: TimelineVisualizerState) {
     if (state.type != this.type) return;
     this.fields = state.fields;
     this.options = state.options;
@@ -143,7 +143,7 @@ export default abstract class TimelineVizController implements TabController {
     });
   }
 
-  refresh(): void {
+  refresh() {
     // Render timeline sections
     while (this.TIMELINE_MARKER_CONTAINER.firstChild) {
       this.TIMELINE_MARKER_CONTAINER.removeChild(this.TIMELINE_MARKER_CONTAINER.firstChild);
@@ -177,7 +177,7 @@ export default abstract class TimelineVizController implements TabController {
     this.updateFields();
   }
 
-  periodic(): void {}
+  periodic() {}
 
   /** Called every 15ms (regardless of the visible tab). */
   private customPeriodic() {

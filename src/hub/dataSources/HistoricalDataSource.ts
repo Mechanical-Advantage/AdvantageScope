@@ -26,7 +26,7 @@ export abstract class HistorialDataSource {
   }
 
   /** Cancels the read operation. */
-  stop(): void {
+  stop() {
     this.setStatus(HistorialDataSourceStatus.Stopped);
   }
 

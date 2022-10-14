@@ -9,11 +9,7 @@ export default class RLOGServerSource extends LiveDataSource {
   private decoder: RLOGDecoder | null = null;
   private timeout: NodeJS.Timeout | null = null;
 
-  connect(
-    address: string,
-    statusCallback: (status: LiveDataSourceStatus) => void,
-    outputCallback: (log: Log) => void
-  ): void {
+  connect(address: string, statusCallback: (status: LiveDataSourceStatus) => void, outputCallback: (log: Log) => void) {
     super.connect(address, statusCallback, outputCallback);
 
     if (window.preferences == null) {
@@ -29,7 +25,7 @@ export default class RLOGServerSource extends LiveDataSource {
     }
   }
 
-  stop(): void {
+  stop() {
     super.stop();
     window.sendMainMessage("live-rlog-stop");
   }

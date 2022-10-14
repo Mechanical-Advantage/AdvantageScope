@@ -57,6 +57,11 @@ export interface TableState {
   fields: string[];
 }
 
+export interface ConsoleState {
+  type: TabType.Console;
+  field: string | null;
+}
+
 export interface StatisticsState {
   type: TabType.Statistics;
   fields: (string | null)[];

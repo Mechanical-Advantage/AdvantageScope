@@ -17,11 +17,7 @@ export default class NT4Source extends LiveDataSource {
     this.akitMode = akitMode;
   }
 
-  connect(
-    address: string,
-    statusCallback: (status: LiveDataSourceStatus) => void,
-    outputCallback: (log: Log) => void
-  ): void {
+  connect(address: string, statusCallback: (status: LiveDataSourceStatus) => void, outputCallback: (log: Log) => void) {
     super.connect(address, statusCallback, outputCallback);
 
     if (window.preferences == null) {
@@ -149,7 +145,7 @@ export default class NT4Source extends LiveDataSource {
     }
   }
 
-  stop(): void {
+  stop() {
     super.stop();
     this.client?.disconnect();
   }

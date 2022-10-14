@@ -95,6 +95,13 @@ export function formatWithLetter(value: number): string {
   }
 }
 
+/** Formats a time with milliseconds using three decimal places. */
+export function formatTimeWithMS(time: number): string {
+  let seconds = Math.floor(time);
+  let milliseconds = Math.floor((time - seconds) * 1000);
+  return seconds.toString() + "." + milliseconds.toString().padStart(3, "0");
+}
+
 /** Converts a value between two ranges. */
 export function scaleValue(value: number, oldRange: [number, number], newRange: [number, number]): number {
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];

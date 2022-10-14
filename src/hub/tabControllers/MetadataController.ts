@@ -21,11 +21,11 @@ export default class MetadataController implements TabController {
     return { type: TabType.Metadata };
   }
 
-  restoreState(state: MetadataState): void {}
+  restoreState(state: MetadataState) {}
 
-  periodic(): void {}
+  periodic() {}
 
-  refresh(): void {
+  refresh() {
     let fieldList = window.log.getFieldKeys();
     if (arraysEqual(fieldList, this.lastFieldList)) return;
     this.lastFieldList = fieldList;

@@ -16,11 +16,7 @@ export abstract class LiveDataSource {
    * @param statusCallback A callback to be triggered when the status changes
    * @param outputCallback A callback to be triggered when new data is available
    */
-  connect(
-    address: string,
-    statusCallback: (status: LiveDataSourceStatus) => void,
-    outputCallback: (log: Log) => void
-  ): void {
+  connect(address: string, statusCallback: (status: LiveDataSourceStatus) => void, outputCallback: (log: Log) => void) {
     this.address = address;
     this.statusCallback = statusCallback;
     this.outputCallback = outputCallback;
@@ -28,7 +24,7 @@ export abstract class LiveDataSource {
   }
 
   /** Cancels the connection. */
-  stop(): void {
+  stop() {
     this.setStatus(LiveDataSourceStatus.Stopped);
   }
 

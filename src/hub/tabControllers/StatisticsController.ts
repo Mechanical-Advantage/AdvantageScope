@@ -192,7 +192,7 @@ export default class StatisticsController implements TabController {
     };
   }
 
-  restoreState(state: StatisticsState): void {
+  restoreState(state: StatisticsState) {
     this.SELECTION_TYPE.value = state.selectionType;
     this.SELECTION_RANGE_MIN.value = state.selectionRangeMin.toString();
     this.SELECTION_RANGE_MAX.value = state.selectionRangeMax.toString();
@@ -268,12 +268,12 @@ export default class StatisticsController implements TabController {
     });
   }
 
-  refresh(): void {
+  refresh() {
     this.updateFields();
     this.shouldUpdate = true;
   }
 
-  periodic(): void {
+  periodic() {
     // Update histogram layout
     this.VALUES_TABLE_CONTAINER.style.top = (this.CONFIG_TABLE.clientHeight + 10).toString() + "px";
     this.HISTOGRAM_CONTAINER.style.top = (this.CONFIG_TABLE.clientHeight + 20).toString() + "px";

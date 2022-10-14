@@ -156,7 +156,7 @@ export default class LineGraphController implements TabController {
     };
   }
 
-  restoreState(state: LineGraphState): void {
+  restoreState(state: LineGraphState) {
     this.leftLockedRange = state.legends.left.lockedRange;
     this.rightLockedRange = state.legends.right.lockedRange;
     this.LEFT_LOCKED_LABEL.hidden = this.leftLockedRange == null;
@@ -205,7 +205,7 @@ export default class LineGraphController implements TabController {
     this.RIGHT_LOCKED_LABEL.hidden = this.rightLockedRange == null;
   }
 
-  refresh(): void {
+  refresh() {
     this.updateScroll();
 
     // Update field strikethrough
@@ -530,7 +530,7 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  periodic(): void {
+  periodic() {
     // Scroll sensor periodic
     this.scrollSensor.periodic();
 

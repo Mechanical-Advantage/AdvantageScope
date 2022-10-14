@@ -2,6 +2,7 @@ enum TabType {
   Metadata,
   LineGraph,
   Table,
+  Console,
   Statistics,
   Odometry,
   ThreeDimension,
@@ -23,6 +24,8 @@ export function getTabTitle(type: TabType): string {
       return "Line Graph";
     case TabType.Table:
       return "Table";
+    case TabType.Console:
+      return "Console";
     case TabType.Statistics:
       return "Statistics";
     case TabType.Odometry:
