@@ -43,7 +43,7 @@ export default class OdometryController extends TimelineVizController {
           type: LoggableType.NumberArray
         }
       ],
-      new OdometryVisualizer(content.getElementsByClassName("odometry-canvas")[0] as HTMLCanvasElement)
+      new OdometryVisualizer(content.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement)
     );
 
     // Get option inputs

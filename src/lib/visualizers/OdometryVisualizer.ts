@@ -1,27 +1,50 @@
+import { contentTracing } from "electron";
 import { degreesToRadians, metersToInches, transformPx } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {
+  private CONTAINER: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;
 
   private lastImageSource = "";
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.CANVAS = canvas;
+  constructor(container: HTMLElement) {
+    this.CONTAINER = container;
+    this.CANVAS = container.firstElementChild as HTMLCanvasElement;
     this.IMAGE = document.createElement("img");
-    canvas.appendChild(this.IMAGE);
+    this.CANVAS.appendChild(this.IMAGE);
   }
 
   render(command: any): number | null {
     // Set up canvas
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
-    let width = this.CANVAS.clientWidth;
-    let height = this.CANVAS.clientHeight;
+    let isVertical =
+      command.options.orientation == "blue bottom, red top" || command.options.orientation == "red bottom, blue top";
+    let width = isVertical ? this.CONTAINER.clientHeight : this.CONTAINER.clientWidth;
+    let height = isVertical ? this.CONTAINER.clientWidth : this.CONTAINER.clientHeight;
+    this.CANVAS.style.width = width.toString() + "px";
+    this.CANVAS.style.height = height.toString() + "px";
     this.CANVAS.width = width * window.devicePixelRatio;
     this.CANVAS.height = height * window.devicePixelRatio;
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.clearRect(0, 0, width, height);
+
+    // Set canvas transform
+    switch (command.options.orientation) {
+      case "blue left, red right":
+        this.CANVAS.style.transform = "translate(-50%, -50%)";
+        break;
+      case "red left, blue right":
+        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(180deg)";
+        break;
+      case "blue bottom, red top":
+        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(-90deg)";
+        break;
+      case "red bottom, blue top":
+        this.CANVAS.style.transform = "translate(-50%, -50%) rotate(90deg)";
+        break;
+    }
 
     // Get game data and update image element
     let gameData = window.frcData?.field2ds.find((game) => game.title == command.options.game);
@@ -34,9 +57,8 @@ export default class OdometryVisualizer implements Visualizer {
       return null;
     }
 
-    // Determine field layout
-    let fieldFlipped = command.options.orientation != "blue, red";
-    let robotRight = (command.options.alliance != "blue") != fieldFlipped;
+    // Determine if robot is flipped
+    let robotFlipped = command.options.alliance == "red";
 
     // Render background
     let fieldWidth = gameData.bottomRight[0] - gameData.topLeft[0];
@@ -67,20 +89,7 @@ export default class OdometryVisualizer implements Visualizer {
       this.IMAGE.width * imageScalar, // Width
       this.IMAGE.height * imageScalar // Height
     ];
-    if (fieldFlipped) {
-      context.save();
-      context.scale(-1, -1);
-    }
-    context.drawImage(
-      this.IMAGE,
-      renderValues[fieldFlipped ? 2 : 0],
-      renderValues[fieldFlipped ? 3 : 1],
-      renderValues[4],
-      renderValues[5]
-    );
-    if (fieldFlipped) {
-      context.restore();
-    }
+    context.drawImage(this.IMAGE, renderValues[0], renderValues[1], renderValues[4], renderValues[5]);
 
     // Calculate field edges
     let canvasFieldLeft = renderValues[0] + gameData.topLeft[0] * imageScalar;
@@ -114,7 +123,7 @@ export default class OdometryVisualizer implements Visualizer {
         positionInches[0] * (canvasFieldWidth / gameData.widthInches),
         positionInches[1] * (canvasFieldHeight / gameData.heightInches)
       ];
-      if (robotRight) {
+      if (robotFlipped) {
         positionPixels[0] = canvasFieldLeft + canvasFieldWidth - positionPixels[0];
         positionPixels[1] = canvasFieldTop + canvasFieldHeight - positionPixels[1];
       } else {
@@ -136,7 +145,7 @@ export default class OdometryVisualizer implements Visualizer {
         command.options.unitRotation == "radians"
           ? command.pose.robotPose.pose[2]
           : degreesToRadians(command.pose.robotPose.pose[2]);
-      if (robotRight) rotation += Math.PI;
+      if (robotFlipped) rotation += Math.PI;
 
       // Render trail
       if (command.pose.robotPose.trail.filter((x: any) => x != null).length > 0) {
@@ -238,7 +247,7 @@ export default class OdometryVisualizer implements Visualizer {
         command.options.unitRotation == "radians"
           ? command.pose.ghostPose[2]
           : command.pose.ghostPose[2] * (Math.PI / 180);
-      if (robotRight) rotation += Math.PI;
+      if (robotFlipped) rotation += Math.PI;
 
       context.globalAlpha = 0.5;
       context.fillStyle = "#222";
@@ -273,6 +282,6 @@ export default class OdometryVisualizer implements Visualizer {
     }
 
     // Return target aspect ratio
-    return fieldWidth / fieldHeight;
+    return isVertical ? fieldHeight / fieldWidth : fieldWidth / fieldHeight;
   }
 }

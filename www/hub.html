@@ -308,7 +308,9 @@
 
           <!-- Odometry -->
           <span>
-            <canvas class="odometry-canvas"></canvas>
+            <div class="odometry-canvas-container">
+              <canvas></canvas>
+            </div>
             <table class="timeline-viz-config">
               <tbody>
                 <tr>
@@ -373,8 +375,10 @@
                   <td>
                     <span class="label">Orientation:</span>
                     <select tabindex="-1">
-                      <option>blue, red</option>
-                      <option>red, blue</option>
+                      <option>blue left, red right</option>
+                      <option>red left, blue right</option>
+                      <option>blue bottom, red top</option>
+                      <option>red bottom, blue top</option>
                     </select>
                   </td>
                 </tr>

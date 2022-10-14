@@ -1151,9 +1151,13 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
     windowPorts[satellite.id] = port2;
     port2.on("message", (event) => {
       let aspectRatio = event.data;
-      let size = satellite.getContentSize();
+      let originalSize = satellite.getContentSize();
+      let originalArea = originalSize[0] * originalSize[1];
+      let newY = Math.sqrt(originalArea / aspectRatio);
+      let newX = aspectRatio * newY;
+
       satellite.setAspectRatio(aspectRatio);
-      satellite.setContentSize(Math.round(size[1] * aspectRatio), size[1]);
+      satellite.setContentSize(Math.round(newX), Math.round(newY));
     });
     port2.start();
     sendMessage(satellite, "set-frc-data", frcData);
