@@ -133,7 +133,7 @@ export default class Tabs {
 
   /** Creates a new tab. */
   addTab(type: TabType) {
-    let title = type == TabType.Metadata ? "\ud83d\udd0d" : getTabTitle(type);
+    let title = getTabTitle(type);
     let contentElement: HTMLElement;
     let controller: TabController;
     switch (type) {

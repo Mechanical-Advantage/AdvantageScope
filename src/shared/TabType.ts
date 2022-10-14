@@ -20,26 +20,28 @@ export function getAllTabTypes(): TabType[] {
 
 export function getTabTitle(type: TabType): string {
   switch (type) {
+    case TabType.Metadata:
+      return "🔍";
     case TabType.LineGraph:
-      return "Line Graph";
+      return "📉 Line Graph";
     case TabType.Table:
-      return "Table";
+      return "🔢 Table";
     case TabType.Console:
-      return "Console";
+      return "💬 Console";
     case TabType.Statistics:
-      return "Statistics";
+      return "📊 Statistics";
     case TabType.Odometry:
-      return "Odometry";
+      return "🗺 Odometry";
     case TabType.ThreeDimension:
-      return "3D Field";
+      return "👀 3D Field";
     case TabType.Video:
-      return "Video";
+      return "🎬 Video";
     case TabType.Points:
-      return "Points";
+      return "🔵 Points";
     case TabType.Joysticks:
-      return "Joysticks";
+      return "🎮 Joysticks";
     case TabType.Swerve:
-      return "Swerve";
+      return "🛞 Swerve";
     default:
       return "";
   }
