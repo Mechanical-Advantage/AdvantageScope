@@ -1,4 +1,4 @@
-import Log from "../../lib/log/Log";
+import Log from "../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import RLOGDecoder from "./RLOGDecoder";
 

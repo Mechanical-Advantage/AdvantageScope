@@ -1,5 +1,5 @@
-import Log from "../../lib/log/Log";
-import { createUUID } from "../../lib/util";
+import Log from "../../shared/log/Log";
+import { createUUID } from "../../shared/util";
 
 /** A provider of live log data (i.e. the data is updated as it is received). */
 export abstract class LiveDataSource {

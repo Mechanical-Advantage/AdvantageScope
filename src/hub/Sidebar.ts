@@ -1,5 +1,5 @@
-import LogFieldTree from "../lib/log/LogFieldTree";
-import { arraysEqual, setsEqual, smartSort } from "../lib/util";
+import LogFieldTree from "../shared/log/LogFieldTree";
+import { arraysEqual, setsEqual, smartSort } from "../shared/util";
 import { SidebarState } from "./HubState";
 
 export default class Sidebar {

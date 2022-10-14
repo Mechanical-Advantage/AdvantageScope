@@ -17,11 +17,11 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { Client } from "ssh2";
-import { FRCData } from "../lib/FRCData";
-import NamedMessage from "../lib/NamedMessage";
-import Preferences from "../lib/Preferences";
-import TabType, { getAllTabTypes, getTabTitle } from "../lib/TabType";
-import { createUUID } from "../lib/util";
+import { FRCData } from "../shared/FRCData";
+import NamedMessage from "../shared/NamedMessage";
+import Preferences from "../shared/Preferences";
+import TabType, { getAllTabTypes, getTabTitle } from "../shared/TabType";
+import { createUUID } from "../shared/util";
 import checkForUpdate from "./checkForUpdate";
 import {
   DEFAULT_PREFS,

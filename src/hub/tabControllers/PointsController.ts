@@ -1,6 +1,6 @@
-import LoggableType from "../../lib/log/LoggableType";
-import TabType from "../../lib/TabType";
-import PointsVisualizer from "../../lib/visualizers/PointsVisualizer";
+import LoggableType from "../../shared/log/LoggableType";
+import TabType from "../../shared/TabType";
+import PointsVisualizer from "../../shared/visualizers/PointsVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class PointsController extends TimelineVizController {

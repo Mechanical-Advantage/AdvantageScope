@@ -1,4 +1,4 @@
-import Log from "../../lib/log/Log";
+import Log from "../../shared/log/Log";
 
 /** A provider of historial log data (i.e. all of the data is returned at once). */
 export abstract class HistorialDataSource {

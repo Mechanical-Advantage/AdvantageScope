@@ -1,4 +1,4 @@
-import Preferences from "./lib/Preferences";
+import Preferences from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
 const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;

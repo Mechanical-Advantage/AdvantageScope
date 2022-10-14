@@ -1,6 +1,6 @@
-import LogFieldTree from "../../lib/log/LogFieldTree";
-import TabType from "../../lib/TabType";
-import { arraysEqual } from "../../lib/util";
+import LogFieldTree from "../../shared/log/LogFieldTree";
+import TabType from "../../shared/TabType";
+import { arraysEqual } from "../../shared/util";
 import { MetadataState } from "../HubState";
 import TabController from "../TabController";
 

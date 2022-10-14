@@ -1,5 +1,5 @@
-import Log from "../lib/log/Log";
-import LogFieldTree from "../lib/log/LogFieldTree";
+import Log from "../shared/log/Log";
+import LogFieldTree from "../shared/log/LogFieldTree";
 
 self.onmessage = (event) => {
   // WORKER SETUP

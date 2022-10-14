@@ -1,8 +1,8 @@
-import { AllColors } from "../../lib/Colors";
-import LoggableType from "../../lib/log/LoggableType";
-import { LogValueSetAny, LogValueSetNumber } from "../../lib/log/LogValueSets";
-import TabType from "../../lib/TabType";
-import { cleanFloat, formatWithLetter, scaleValue, shiftColor } from "../../lib/util";
+import { AllColors } from "../../shared/Colors";
+import LoggableType from "../../shared/log/LoggableType";
+import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
+import TabType from "../../shared/TabType";
+import { cleanFloat, formatWithLetter, scaleValue, shiftColor } from "../../shared/util";
 import { LineGraphState } from "../HubState";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";

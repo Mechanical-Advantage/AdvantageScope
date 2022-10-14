@@ -1,7 +1,7 @@
-import LoggableType from "../../lib/log/LoggableType";
-import { LogValueSetString } from "../../lib/log/LogValueSets";
-import TabType from "../../lib/TabType";
-import { formatTimeWithMS, htmlEncode } from "../../lib/util";
+import LoggableType from "../../shared/log/LoggableType";
+import { LogValueSetString } from "../../shared/log/LogValueSets";
+import TabType from "../../shared/TabType";
+import { formatTimeWithMS, htmlEncode } from "../../shared/util";
 import { ConsoleState, TabState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";

@@ -1,7 +1,7 @@
-import LoggableType from "../../lib/log/LoggableType";
-import { LogValueSetAny } from "../../lib/log/LogValueSets";
-import TabType from "../../lib/TabType";
-import { arraysEqual, createUUID, formatTimeWithMS } from "../../lib/util";
+import LoggableType from "../../shared/log/LoggableType";
+import { LogValueSetAny } from "../../shared/log/LogValueSets";
+import TabType from "../../shared/TabType";
+import { arraysEqual, createUUID, formatTimeWithMS } from "../../shared/util";
 import { TableState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";

@@ -1,4 +1,4 @@
-import TabType from "../lib/TabType";
+import TabType from "../shared/TabType";
 
 export interface HubState {
   sidebar: SidebarState;

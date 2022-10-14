@@ -1,6 +1,6 @@
 import { app } from "electron";
 import path from "path";
-import Preferences from "../lib/Preferences";
+import Preferences from "../shared/Preferences";
 
 // General
 export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";

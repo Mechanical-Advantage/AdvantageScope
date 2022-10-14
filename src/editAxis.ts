@@ -1,4 +1,4 @@
-import { cleanFloat } from "./lib/util";
+import { cleanFloat } from "./shared/util";
 
 const MIN_INPUT = document.getElementById("min") as HTMLInputElement;
 const MAX_INPUT = document.getElementById("max") as HTMLInputElement;

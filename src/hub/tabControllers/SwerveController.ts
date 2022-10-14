@@ -1,7 +1,7 @@
-import LoggableType from "../../lib/log/LoggableType";
-import TabType from "../../lib/TabType";
-import { degreesToRadians } from "../../lib/util";
-import SwerveVisualizer, { NormalizedModuleState } from "../../lib/visualizers/SwerveVisualizer";
+import LoggableType from "../../shared/log/LoggableType";
+import TabType from "../../shared/TabType";
+import { degreesToRadians } from "../../shared/util";
+import SwerveVisualizer, { NormalizedModuleState } from "../../shared/visualizers/SwerveVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class JoysticksController extends TimelineVizController {

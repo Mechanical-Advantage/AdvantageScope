@@ -1,4 +1,4 @@
-import TabType, { getTabTitle } from "../lib/TabType";
+import TabType, { getTabTitle } from "../shared/TabType";
 import { TabGroupState } from "./HubState";
 import ScrollSensor from "./ScrollSensor";
 import TabController from "./TabController";

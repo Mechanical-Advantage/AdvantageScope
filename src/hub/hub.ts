@@ -1,9 +1,9 @@
-import { Config3d_Rotation, FRCData } from "../lib/FRCData";
-import { SIM_ADDRESS, USB_ADDRESS } from "../lib/IPAddresses";
-import Log from "../lib/log/Log";
-import NamedMessage from "../lib/NamedMessage";
-import Preferences from "../lib/Preferences";
-import { htmlEncode } from "../lib/util";
+import { Config3d_Rotation, FRCData } from "../shared/FRCData";
+import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
+import Log from "../shared/log/Log";
+import NamedMessage from "../shared/NamedMessage";
+import Preferences from "../shared/Preferences";
+import { htmlEncode } from "../shared/util";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import NT4Source from "./dataSources/NT4Source";

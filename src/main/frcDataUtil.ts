@@ -10,8 +10,8 @@ import {
   ConfigJoystick_Button,
   ConfigJoystick_Joystick,
   FRCData
-} from "../lib/FRCData";
-import { checkArrayType, smartSort } from "../lib/util";
+} from "../shared/FRCData";
+import { checkArrayType, smartSort } from "../shared/util";
 import { EXTRA_FRC_DATA } from "./Constants";
 
 /** Creates extra FRC data folder and updates README. */

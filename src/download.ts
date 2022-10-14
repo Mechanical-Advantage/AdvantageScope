@@ -1,6 +1,6 @@
-import { USB_ADDRESS } from "./lib/IPAddresses";
-import NamedMessage from "./lib/NamedMessage";
-import Preferences from "./lib/Preferences";
+import { USB_ADDRESS } from "./shared/IPAddresses";
+import NamedMessage from "./shared/NamedMessage";
+import Preferences from "./shared/Preferences";
 
 const FILE_LIST: HTMLElement = document.getElementsByClassName("file-list")[0] as HTMLElement;
 const FILE_LIST_ITEMS: HTMLElement = FILE_LIST.children[0] as HTMLElement;

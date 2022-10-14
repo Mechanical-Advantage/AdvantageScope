@@ -1,14 +1,14 @@
-import { FRCData } from "./lib/FRCData";
-import NamedMessage from "./lib/NamedMessage";
-import Preferences from "./lib/Preferences";
-import TabType, { getTabTitle } from "./lib/TabType";
-import JoysticksVisualizer from "./lib/visualizers/JoysticksVisualizer";
-import OdometryVisualizer from "./lib/visualizers/OdometryVisualizer";
-import PointsVisualizer from "./lib/visualizers/PointsVisualizer";
-import SwerveVisualizer from "./lib/visualizers/SwerveVisualizer";
-import ThreeDimensionVisualizer from "./lib/visualizers/ThreeDimensionVisualizer";
-import VideoVisualizer from "./lib/visualizers/VideoVisualizer";
-import Visualizer from "./lib/visualizers/Visualizer";
+import { FRCData } from "./shared/FRCData";
+import NamedMessage from "./shared/NamedMessage";
+import Preferences from "./shared/Preferences";
+import TabType, { getTabTitle } from "./shared/TabType";
+import JoysticksVisualizer from "./shared/visualizers/JoysticksVisualizer";
+import OdometryVisualizer from "./shared/visualizers/OdometryVisualizer";
+import PointsVisualizer from "./shared/visualizers/PointsVisualizer";
+import SwerveVisualizer from "./shared/visualizers/SwerveVisualizer";
+import ThreeDimensionVisualizer from "./shared/visualizers/ThreeDimensionVisualizer";
+import VideoVisualizer from "./shared/visualizers/VideoVisualizer";
+import Visualizer from "./shared/visualizers/Visualizer";
 
 const MAX_ASPECT_RATIO = 5;
 

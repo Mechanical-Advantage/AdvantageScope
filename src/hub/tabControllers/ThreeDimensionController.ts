@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import LoggableType from "../../lib/log/LoggableType";
-import TabType from "../../lib/TabType";
-import ThreeDimensionVisualizer, { Pose3d } from "../../lib/visualizers/ThreeDimensionVisualizer";
+import LoggableType from "../../shared/log/LoggableType";
+import TabType from "../../shared/TabType";
+import ThreeDimensionVisualizer, { Pose3d } from "../../shared/visualizers/ThreeDimensionVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {

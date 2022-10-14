@@ -1,5 +1,5 @@
-import TabType from "../../lib/TabType";
-import VideoVisualizer from "../../lib/visualizers/VideoVisualizer";
+import TabType from "../../shared/TabType";
+import VideoVisualizer from "../../shared/visualizers/VideoVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class VideoController extends TimelineVizController {

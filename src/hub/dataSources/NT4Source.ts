@@ -1,6 +1,6 @@
-import Log from "../../lib/log/Log";
-import LoggableType from "../../lib/log/LoggableType";
-import { checkArrayType } from "../../lib/util";
+import Log from "../../shared/log/Log";
+import LoggableType from "../../shared/log/LoggableType";
+import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import { NT4_Client, NT4_Topic } from "./nt4/NT4";
 

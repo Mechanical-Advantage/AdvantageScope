@@ -1,7 +1,7 @@
-import LoggableType from "../../lib/log/LoggableType";
-import TabType from "../../lib/TabType";
-import { inchesToMeters, metersToInches } from "../../lib/util";
-import OdometryVisualizer from "../../lib/visualizers/OdometryVisualizer";
+import LoggableType from "../../shared/log/LoggableType";
+import TabType from "../../shared/TabType";
+import { inchesToMeters, metersToInches } from "../../shared/util";
+import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class OdometryController extends TimelineVizController {
