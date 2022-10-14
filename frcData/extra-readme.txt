@@ -7,7 +7,7 @@ This folder contains extra resources for the odometry, 3D field, and joystick vi
 Files must follow the naming convention "Field2d_NAME.json" and "Field2d_NAME.png". The image should be oriented with the blue alliance on the left. The JSON file must be in the following format:
 
 {
-  "sourceUrl": string
+  "sourceUrl": string // Optional, link to the original file
   "topLeft": [number, number] // Pixel coordinate (origin at upper left)
   "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
   "widthInches": number // Real width of the field (long side)
@@ -19,7 +19,7 @@ Files must follow the naming convention "Field2d_NAME.json" and "Field2d_NAME.pn
 Files must follow the naming convention "Field3d_NAME.json" and "Field3d_NAME.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to gLTF (.glb). The JSON file must be in the following format:
 
 {
-  "sourceUrl": string
+  "sourceUrl": string // Optional, link to the original file
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)
@@ -30,7 +30,7 @@ Files must follow the naming convention "Field3d_NAME.json" and "Field3d_NAME.gl
 Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". CAD files must be converted to gLTF (.glb). The JSON file must be in the following format:
 
 {
-  "sourceUrl": string
+  "sourceUrl": string // Optional, link to the original file
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
 }

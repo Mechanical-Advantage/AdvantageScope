@@ -46,7 +46,6 @@ export function loadFRCData(): FRCData {
         let config: Config2d = {
           title: title,
           path: path.join(folder, "Field2d_" + title + ".png"),
-          sourceUrl: "",
           topLeft: [0, 0],
           bottomRight: [0, 0],
           widthInches: 0,
@@ -79,7 +78,6 @@ export function loadFRCData(): FRCData {
         let config: Config3dField = {
           title: title,
           path: path.join(folder, "Field3d_" + title + ".glb"),
-          sourceUrl: "",
           rotations: [],
           widthInches: 0,
           heightInches: 0
@@ -115,7 +113,6 @@ export function loadFRCData(): FRCData {
         let config: Config3dRobot = {
           title: title,
           path: path.join(folder, "Robot_" + title + ".glb"),
-          sourceUrl: "",
           position: [0, 0, 0],
           rotations: []
         };

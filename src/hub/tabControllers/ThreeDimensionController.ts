@@ -56,12 +56,20 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.ROBOT = configBody.children[2].children[2].children[1] as HTMLInputElement;
     this.ROBOT_SOURCE_LINK = configBody.children[2].children[2].children[2] as HTMLInputElement;
 
-    // Bind source buttons
+    // Bind source links
+    this.FIELD.addEventListener("change", () => {
+      let fieldConfig = window.frcData?.field3ds.find((game) => game.title == this.FIELD.value);
+      this.FIELD_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
+    });
     this.FIELD_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
         window.frcData?.field3ds.find((field) => field.title == this.FIELD.value)?.sourceUrl
       );
+    });
+    this.ROBOT.addEventListener("change", () => {
+      let config = window.frcData?.robots.find((game) => game.title == this.ROBOT.value);
+      this.ROBOT_SOURCE_LINK.hidden = config != undefined && config.sourceUrl == undefined;
     });
     this.ROBOT_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
@@ -84,6 +92,12 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.FIELD.value = options.field;
     this.ALLIANCE.value = options.alliance;
     this.ROBOT.value = options.robot;
+
+    // Set whether source links are hidden
+    let fieldConfig = window.frcData?.field3ds.find((game) => game.title == this.FIELD.value);
+    this.FIELD_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
+    let robotConfig = window.frcData?.robots.find((game) => game.title == this.ROBOT.value);
+    this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
   }
 
   getCommand(time: number) {

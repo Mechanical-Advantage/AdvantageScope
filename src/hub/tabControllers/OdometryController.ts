@@ -74,7 +74,11 @@ export default class OdometryController extends TimelineVizController {
       }
     });
 
-    // Bind source button
+    // Bind source link
+    this.GAME.addEventListener("change", () => {
+      let config = window.frcData?.field2ds.find((game) => game.title == this.GAME.value);
+      this.GAME_SOURCE_LINK.hidden = config != undefined && config.sourceUrl == undefined;
+    });
     this.GAME_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
@@ -112,6 +116,10 @@ export default class OdometryController extends TimelineVizController {
     this.lastUnitDistance = options.unitDistance;
     this.ALLIANCE.value = options.alliance;
     this.ORIENTATION.value = options.orientation;
+
+    // Set whether source link is hidden
+    let fieldConfig = window.frcData?.field2ds.find((game) => game.title == this.GAME.value);
+    this.GAME_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
   }
 
   getCommand(time: number) {

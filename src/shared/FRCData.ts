@@ -9,7 +9,7 @@ export interface Config2d {
   title: string;
   path: string;
 
-  sourceUrl: string;
+  sourceUrl?: string;
   topLeft: [number, number];
   bottomRight: [number, number];
   widthInches: number;
@@ -20,7 +20,7 @@ export interface Config3dField {
   title: string;
   path: string;
 
-  sourceUrl: string;
+  sourceUrl?: string;
   rotations: Config3d_Rotation[];
   widthInches: number;
   heightInches: number;
@@ -30,7 +30,7 @@ export interface Config3dRobot {
   title: string;
   path: string;
 
-  sourceUrl: string;
+  sourceUrl?: string;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
 }
