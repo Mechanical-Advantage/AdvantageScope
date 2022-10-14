@@ -1,4 +1,5 @@
 import TabType, { getTabTitle } from "../shared/TabType";
+import { UnitConversionPreset } from "../shared/units";
 import { TabGroupState } from "./HubState";
 import ScrollSensor from "./ScrollSensor";
 import TabController from "./TabController";
@@ -240,10 +241,10 @@ export default class Tabs {
     this.updateElements();
   }
 
-  /** Adjusts the locked range for an axis on the selected line graph. */
-  editAxis(isLeft: boolean, range: [number, number] | null) {
+  /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
+  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, range);
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
     }
   }
 

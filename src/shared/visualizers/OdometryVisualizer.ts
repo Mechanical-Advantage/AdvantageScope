@@ -1,5 +1,5 @@
-import { contentTracing } from "electron";
-import { degreesToRadians, metersToInches, transformPx } from "../util";
+import { convert } from "../units";
+import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {
@@ -104,7 +104,7 @@ export default class OdometryVisualizer implements Visualizer {
 
       let positionInches = [position[0], position[1]];
       if (command.options.unitDistance == "meters") {
-        positionInches = [metersToInches(position[0]), metersToInches(position[1])];
+        positionInches = [convert(position[0], "meters", "inches"), convert(position[1], "meters", "inches")];
       }
 
       positionInches[1] *= -1; // Positive y is flipped on the canvas
@@ -136,7 +136,9 @@ export default class OdometryVisualizer implements Visualizer {
     // Calculate robot length
     let robotLengthPixels =
       pixelsPerInch *
-      (command.options.unitDistance == "inches" ? command.options.size : metersToInches(command.options.size));
+      (command.options.unitDistance == "inches"
+        ? command.options.size
+        : convert(command.options.size, "meters", "inches"));
 
     if (command.pose.robotPose.pose != null) {
       // Calculate robot position
@@ -144,7 +146,7 @@ export default class OdometryVisualizer implements Visualizer {
       let rotation =
         command.options.unitRotation == "radians"
           ? command.pose.robotPose.pose[2]
-          : degreesToRadians(command.pose.robotPose.pose[2]);
+          : convert(command.pose.robotPose.pose[2], "degrees", "radians");
       if (robotFlipped) rotation += Math.PI;
 
       // Render trail
@@ -246,7 +248,7 @@ export default class OdometryVisualizer implements Visualizer {
       let rotation =
         command.options.unitRotation == "radians"
           ? command.pose.ghostPose[2]
-          : command.pose.ghostPose[2] * (Math.PI / 180);
+          : convert(command.pose.ghostPose.pose[2], "degrees", "radians");
       if (robotFlipped) rotation += Math.PI;
 
       context.globalAlpha = 0.5;

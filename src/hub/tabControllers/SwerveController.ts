@@ -1,6 +1,6 @@
 import LoggableType from "../../shared/log/LoggableType";
 import TabType from "../../shared/TabType";
-import { degreesToRadians } from "../../shared/util";
+import { convert } from "../../shared/units";
 import SwerveVisualizer, { NormalizedModuleState } from "../../shared/visualizers/SwerveVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
@@ -93,7 +93,8 @@ export default class JoysticksController extends TimelineVizController {
             let rotationValue = moduleData!.values[0][stateIndexNum * 2];
             let velocityValue = moduleData!.values[0][stateIndexNum * 2 + 1];
             let state: NormalizedModuleState = {
-              rotation: this.ROTATION_UNITS.value == "radians" ? rotationValue : degreesToRadians(rotationValue),
+              rotation:
+                this.ROTATION_UNITS.value == "radians" ? rotationValue : convert(rotationValue, "degrees", "radians"),
               normalizedVelocity: Math.min(Math.max(velocityValue / Number(this.MAX_SPEED.value), -1), 1)
             };
             return state;
@@ -125,7 +126,7 @@ export default class JoysticksController extends TimelineVizController {
         if (this.ROTATION_UNITS.value == "radians") {
           robotRotation += robotRotationData.values[0];
         } else {
-          robotRotation += degreesToRadians(robotRotationData.values[0]);
+          robotRotation += convert(robotRotationData.values[0], "degrees", "radians");
         }
       }
     }

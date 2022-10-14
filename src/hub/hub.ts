@@ -435,7 +435,7 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "edit-axis":
-      window.tabs.editAxis(message.data.isLeft, message.data.range);
+      window.tabs.editAxis(message.data.isLeft, message.data.lockedRange, message.data.unitConversion);
       break;
 
     case "video-data":

@@ -1,6 +1,6 @@
 import LoggableType from "../../shared/log/LoggableType";
 import TabType from "../../shared/TabType";
-import { inchesToMeters, metersToInches } from "../../shared/util";
+import { convert } from "../../shared/units";
 import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
@@ -63,10 +63,10 @@ export default class OdometryController extends TimelineVizController {
       if (newUnit != this.lastUnitDistance) {
         let oldSize = Number(this.SIZE.value);
         if (newUnit == "meters") {
-          this.SIZE.value = (Math.round(inchesToMeters(oldSize) * 1000) / 1000).toString();
+          this.SIZE.value = (Math.round(convert(oldSize, "inches", "meters") * 1000) / 1000).toString();
           this.SIZE.step = "0.01";
         } else {
-          this.SIZE.value = (Math.round(metersToInches(oldSize) * 100) / 100).toString();
+          this.SIZE.value = (Math.round(convert(oldSize, "meters", "inches") * 100) / 100).toString();
           this.SIZE.step = "1";
         }
         this.SIZE_TEXT.innerText = newUnit;

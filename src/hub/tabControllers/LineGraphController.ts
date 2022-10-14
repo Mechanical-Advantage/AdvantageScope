@@ -2,6 +2,7 @@ import { AllColors } from "../../shared/Colors";
 import LoggableType from "../../shared/log/LoggableType";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
+import { convertWithPreset, UnitConversionPreset } from "../../shared/units";
 import { cleanFloat, formatWithLetter, scaleValue, shiftColor } from "../../shared/util";
 import { LineGraphState } from "../HubState";
 import ScrollSensor from "../ScrollSensor";
@@ -21,8 +22,8 @@ export default class LineGraphController implements TabController {
   private LEFT_LIST: HTMLElement;
   private DISCRETE_LIST: HTMLElement;
   private RIGHT_LIST: HTMLElement;
-  private LEFT_LOCKED_LABEL: HTMLElement;
-  private RIGHT_LOCKED_LABEL: HTMLElement;
+  private LEFT_LABELS: HTMLElement;
+  private RIGHT_LABELS: HTMLElement;
   private LEFT_DRAG_TARGET: HTMLElement;
   private DISCRETE_DRAG_TARGET: HTMLElement;
   private RIGHT_DRAG_TARGET: HTMLElement;
@@ -46,6 +47,14 @@ export default class LineGraphController implements TabController {
   private rightLockedRange: [number, number] | null = null;
   private leftRenderedRange: [number, number] = [-1, 1];
   private rightRenderedRange: [number, number] = [-1, 1];
+  private leftUnitConversion: UnitConversionPreset = {
+    type: null,
+    factor: 1
+  };
+  private rightUnitConversion: UnitConversionPreset = {
+    type: null,
+    factor: 1
+  };
 
   private timestampRange: [number, number] = [0, 10];
   private maxZoom = true; // When at maximum zoom, maintain it as the available range increases
@@ -66,8 +75,8 @@ export default class LineGraphController implements TabController {
     this.LEFT_LIST = content.getElementsByClassName("legend-left")[0] as HTMLElement;
     this.DISCRETE_LIST = content.getElementsByClassName("legend-discrete")[0] as HTMLElement;
     this.RIGHT_LIST = content.getElementsByClassName("legend-right")[0] as HTMLElement;
-    this.LEFT_LOCKED_LABEL = this.LEFT_LIST.firstElementChild?.firstElementChild?.lastElementChild as HTMLElement;
-    this.RIGHT_LOCKED_LABEL = this.RIGHT_LIST.firstElementChild?.firstElementChild?.lastElementChild as HTMLElement;
+    this.LEFT_LABELS = this.LEFT_LIST.firstElementChild?.firstElementChild?.lastElementChild as HTMLElement;
+    this.RIGHT_LABELS = this.RIGHT_LIST.firstElementChild?.firstElementChild?.lastElementChild as HTMLElement;
     this.LEFT_DRAG_TARGET = content.getElementsByClassName("legend-left")[1] as HTMLElement;
     this.DISCRETE_DRAG_TARGET = content.getElementsByClassName("legend-discrete")[1] as HTMLElement;
     this.RIGHT_DRAG_TARGET = content.getElementsByClassName("legend-right")[1] as HTMLElement;
@@ -126,13 +135,15 @@ export default class LineGraphController implements TabController {
     this.LEFT_LIST.firstElementChild?.lastElementChild?.addEventListener("click", () => {
       window.sendMainMessage("ask-edit-axis", {
         isLeft: true,
-        lockedRange: this.leftLockedRange
+        lockedRange: this.leftLockedRange,
+        unitConversion: this.leftUnitConversion
       });
     });
     this.RIGHT_LIST.firstElementChild?.lastElementChild?.addEventListener("click", () => {
       window.sendMainMessage("ask-edit-axis", {
         isLeft: false,
-        lockedRange: this.rightLockedRange
+        lockedRange: this.rightLockedRange,
+        unitConversion: this.rightUnitConversion
       });
     });
   }
@@ -143,6 +154,7 @@ export default class LineGraphController implements TabController {
       legends: {
         left: {
           lockedRange: this.leftLockedRange,
+          unitConversion: this.leftUnitConversion,
           fields: this.leftFields
         },
         discrete: {
@@ -150,6 +162,7 @@ export default class LineGraphController implements TabController {
         },
         right: {
           lockedRange: this.rightLockedRange,
+          unitConversion: this.rightUnitConversion,
           fields: this.rightFields
         }
       }
@@ -159,8 +172,9 @@ export default class LineGraphController implements TabController {
   restoreState(state: LineGraphState) {
     this.leftLockedRange = state.legends.left.lockedRange;
     this.rightLockedRange = state.legends.right.lockedRange;
-    this.LEFT_LOCKED_LABEL.hidden = this.leftLockedRange == null;
-    this.RIGHT_LOCKED_LABEL.hidden = this.rightLockedRange == null;
+    this.leftUnitConversion = state.legends.left.unitConversion;
+    this.rightUnitConversion = state.legends.right.unitConversion;
+    this.updateAxisLabels();
 
     // Remove old fields
     this.leftFields = [];
@@ -182,27 +196,55 @@ export default class LineGraphController implements TabController {
     });
   }
 
+  /** Updates the axis labels based on the locked and unit conversion status. */
+  updateAxisLabels() {
+    let leftLocked = this.leftLockedRange != null;
+    let leftConverted = this.leftUnitConversion.type != null || this.leftUnitConversion.factor != 1;
+    if (leftLocked && leftConverted) {
+      this.LEFT_LABELS.innerText = " [Locked, Converted]";
+    } else if (leftLocked) {
+      this.LEFT_LABELS.innerText = " [Locked]";
+    } else if (leftConverted) {
+      this.LEFT_LABELS.innerText = " [Converted]";
+    } else {
+      this.LEFT_LABELS.innerText = "";
+    }
+
+    let rightLocked = this.rightLockedRange != null;
+    let rightConverted = this.rightUnitConversion.type != null || this.rightUnitConversion.factor != 1;
+    if (rightLocked && rightConverted) {
+      this.RIGHT_LABELS.innerText = " [Locked, Converted]";
+    } else if (rightLocked) {
+      this.RIGHT_LABELS.innerText = " [Locked]";
+    } else if (rightConverted) {
+      this.RIGHT_LABELS.innerText = " [Converted]";
+    } else {
+      this.RIGHT_LABELS.innerText = "";
+    }
+  }
+
   /** Adjusts the locked range for an axis. */
-  editAxis(isLeft: boolean, range: [number, number] | null) {
+  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (isLeft) {
-      if (range == null) {
+      if (lockedRange == null) {
         this.leftLockedRange = null;
-      } else if (range[0] == null && range[1] == null) {
+      } else if (lockedRange[0] == null && lockedRange[1] == null) {
         this.leftLockedRange = this.leftRenderedRange;
       } else {
-        this.leftLockedRange = range;
+        this.leftLockedRange = lockedRange;
       }
+      this.leftUnitConversion = unitConversion;
     } else {
-      if (range == null) {
+      if (lockedRange == null) {
         this.rightLockedRange = null;
-      } else if (range[0] == null && range[1] == null) {
+      } else if (lockedRange[0] == null && lockedRange[1] == null) {
         this.rightLockedRange = this.rightRenderedRange;
       } else {
-        this.rightLockedRange = range;
+        this.rightLockedRange = lockedRange;
       }
+      this.rightUnitConversion = unitConversion;
     }
-    this.LEFT_LOCKED_LABEL.hidden = this.leftLockedRange == null;
-    this.RIGHT_LOCKED_LABEL.hidden = this.rightLockedRange == null;
+    this.updateAxisLabels();
   }
 
   refresh() {
@@ -581,11 +623,14 @@ export default class LineGraphController implements TabController {
           dataCache[field.key] = window.log.getRange(field.key, timestampRange[0], timestampRange[1]) as LogValueSetAny;
           typeCache[field.key] = window.log.getType(field.key) as LoggableType;
         }
-        if (typeCache[field.key] == LoggableType.Number) {
-          if (dataCache[field.key].timestamps.length == 1 && dataCache[field.key].timestamps[0] > timestampRange[1])
+        if (index != 1 && typeCache[field.key] == LoggableType.Number) {
+          if (dataCache[field.key].timestamps.length == 1 && dataCache[field.key].timestamps[0] > timestampRange[1]) {
             return; // Not displayed
+          }
 
           (dataCache[field.key] as LogValueSetNumber).values.forEach((value) => {
+            if (index == 0) value = convertWithPreset(value, this.leftUnitConversion);
+            if (index == 2) value = convertWithPreset(value, this.rightUnitConversion);
             if (value < range[0]) range[0] = value;
             if (value > range[1]) range[1] = value;
           });
@@ -720,12 +765,13 @@ export default class LineGraphController implements TabController {
 
     // Render continuous data
     [
-      { fields: visibleFieldsLeft, axis: leftAxis },
-      { fields: visibleFieldsRight, axis: rightAxis }
+      { fields: visibleFieldsLeft, axis: leftAxis, unitConversion: this.leftUnitConversion },
+      { fields: visibleFieldsRight, axis: rightAxis, unitConversion: this.rightUnitConversion }
     ].forEach((set) => {
       set.fields.forEach((field) => {
         let data: LogValueSetNumber = dataCache[field.key];
         let axis = set.axis;
+        let unitConversion = set.unitConversion;
         context.lineWidth = 1;
         context.strokeStyle = field.color;
         context.beginPath();
@@ -733,7 +779,11 @@ export default class LineGraphController implements TabController {
         // Render starting point
         context.moveTo(
           graphLeft + graphWidth,
-          scaleValue(data.values[data.values.length - 1], [axis.min, axis.max], [graphTop + graphHeightOpen, graphTop])
+          scaleValue(
+            convertWithPreset(data.values[data.values.length - 1], unitConversion),
+            [axis.min, axis.max],
+            [graphTop + graphHeightOpen, graphTop]
+          )
         );
 
         // Render main data
@@ -742,16 +792,18 @@ export default class LineGraphController implements TabController {
           let x = scaleValue(data.timestamps[i], this.timestampRange, [graphLeft, graphLeft + graphWidth]);
 
           // Render start of current data point
-          context.lineTo(x, scaleValue(data.values[i], [axis.min, axis.max], [graphTop + graphHeightOpen, graphTop]));
+          let convertedValue = convertWithPreset(data.values[i], unitConversion);
+          context.lineTo(x, scaleValue(convertedValue, [axis.min, axis.max], [graphTop + graphHeightOpen, graphTop]));
 
           // Find previous data point and vertical range
           let currentX = Math.floor(x * devicePixelRatio);
           let newX = currentX;
-          let vertRange = [data.values[i], data.values[i]];
+          let vertRange = [convertedValue, convertedValue];
           do {
             i--;
-            if (data.values[i] < vertRange[0]) vertRange[0] = data.values[i];
-            if (data.values[i] > vertRange[1]) vertRange[1] = data.values[i];
+            let convertedValue = convertWithPreset(data.values[i], unitConversion);
+            if (convertedValue < vertRange[0]) vertRange[0] = convertedValue;
+            if (convertedValue > vertRange[1]) vertRange[1] = convertedValue;
             newX = Math.floor(
               scaleValue(data.timestamps[i], timestampRange, [graphLeft, graphLeft + graphWidth]) * devicePixelRatio
             );
@@ -763,7 +815,14 @@ export default class LineGraphController implements TabController {
           context.lineTo(x, scaleValue(vertRange[1], [axis.min, axis.max], [graphTop + graphHeightOpen, graphTop]));
 
           // Move to end of previous data point
-          context.moveTo(x, scaleValue(data.values[i], [axis.min, axis.max], [graphTop + graphHeightOpen, graphTop]));
+          context.moveTo(
+            x,
+            scaleValue(
+              convertWithPreset(data.values[i], unitConversion),
+              [axis.min, axis.max],
+              [graphTop + graphHeightOpen, graphTop]
+            )
+          );
         }
         context.stroke();
       });

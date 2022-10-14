@@ -21,6 +21,7 @@ import { FRCData } from "../shared/FRCData";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getTabTitle } from "../shared/TabType";
+import { UnitConversionPreset } from "../shared/units";
 import { createUUID } from "../shared/util";
 import checkForUpdate from "./checkForUpdate";
 import {
@@ -276,6 +277,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "ask-edit-axis":
       let isLeft: boolean = message.data.isLeft;
       let lockedRange: [number, number] | null = message.data.lockedRange;
+      let unitConversion: UnitConversionPreset = message.data.unitConversion;
 
       const menu = new Menu();
       menu.append(
@@ -286,7 +288,23 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           click() {
             sendMessage(window, "edit-axis", {
               isLeft: isLeft,
-              range: lockedRange == null ? [null, null] : null
+              lockedRange: lockedRange == null ? [null, null] : null,
+              unitConversion: unitConversion
+            });
+          }
+        })
+      );
+      menu.append(
+        new MenuItem({
+          label: "Edit Range...",
+          enabled: lockedRange != null,
+          click() {
+            createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
+              sendMessage(window, "edit-axis", {
+                isLeft: isLeft,
+                lockedRange: newLockedRange,
+                unitConversion: unitConversion
+              });
             });
           }
         })
@@ -298,13 +316,13 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       menu.append(
         new MenuItem({
-          label: "Edit Range",
-          enabled: lockedRange != null,
+          label: "Unit Conversion...",
           click() {
-            createEditAxisWindow(window, lockedRange as [number, number], (newRange) => {
+            createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
               sendMessage(window, "edit-axis", {
                 isLeft: isLeft,
-                range: newRange
+                lockedRange: lockedRange,
+                unitConversion: newUnitConversion
               });
             });
           }
@@ -1088,7 +1106,7 @@ function createHubWindow() {
  * Creates a new window to edit axis range.
  * @param parentWindow The parent window to use for alignment
  */
-function createEditAxisWindow(
+function createEditRangeWindow(
   parentWindow: Electron.BrowserWindow,
   range: [number, number],
   callback: (range: [number, number]) => void
@@ -1121,7 +1139,47 @@ function createEditAxisWindow(
     });
     port2.start();
   });
-  editWindow.loadFile(path.join(__dirname, "../www/editAxis.html"));
+  editWindow.loadFile(path.join(__dirname, "../www/editRange.html"));
+}
+
+/**
+ * Creates a new window to edit unit conversion for axis.
+ * @param parentWindow The parent window to use for alignment
+ */
+function createUnitConversionWindow(
+  parentWindow: Electron.BrowserWindow,
+  unitConversion: UnitConversionPreset,
+  callback: (unitConversion: UnitConversionPreset) => void
+) {
+  const unitConversionWindow = new BrowserWindow({
+    width: 300,
+    height: process.platform == "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    useContentSize: true,
+    resizable: false,
+    icon: WINDOW_ICON,
+    show: false,
+    parent: parentWindow,
+    modal: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  unitConversionWindow.setMenu(null);
+  unitConversionWindow.once("ready-to-show", parentWindow.show);
+  unitConversionWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    unitConversionWindow.webContents.postMessage("port", null, [port1]);
+    port2.postMessage(unitConversion);
+    port2.on("message", (event) => {
+      unitConversionWindow.destroy();
+      callback(event.data);
+    });
+    port2.start();
+  });
+  unitConversionWindow.loadFile(path.join(__dirname, "../www/unitConversion.html"));
 }
 
 /**

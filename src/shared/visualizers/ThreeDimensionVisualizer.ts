@@ -3,7 +3,7 @@ import { Quaternion } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3d_Rotation } from "../FRCData";
-import { degreesToRadians, inchesToMeters } from "../util";
+import { convert } from "../units";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
@@ -239,8 +239,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       let isBlue = this.command.options.alliance == "blue";
       this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), isBlue ? 0 : Math.PI);
       this.wpilibFieldCoordinateGroup.position.set(
-        inchesToMeters(fieldConfig.widthInches / 2) * (isBlue ? -1 : 1),
-        inchesToMeters(fieldConfig.heightInches / 2) * (isBlue ? -1 : 1),
+        convert(fieldConfig.widthInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
+        convert(fieldConfig.heightInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
         0
       );
     }
@@ -336,7 +336,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (rotation.axis == "x") axis.setX(1);
       if (rotation.axis == "y") axis.setY(1);
       if (rotation.axis == "z") axis.setZ(1);
-      quaternion.premultiply(new THREE.Quaternion().setFromAxisAngle(axis, degreesToRadians(rotation.degrees)));
+      quaternion.premultiply(
+        new THREE.Quaternion().setFromAxisAngle(axis, convert(rotation.degrees, "degrees", "radians"))
+      );
     });
     return quaternion;
   }

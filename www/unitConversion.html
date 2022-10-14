@@ -7,23 +7,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="prompts.css" />
-    <script type="module" src="../bundles/editAxis.js"></script>
-    <title>Edit Axis &mdash; Advantage Scope</title>
+    <script type="module" src="../bundles/unitConversion.js"></script>
+    <title>Unit Conversion &mdash; Advantage Scope</title>
   </head>
 
   <body>
     <table>
       <tbody>
         <tr>
-          <td class="label">Maximum value</td>
+          <td class="label">Unit Type</td>
           <td class="input" tabindex="-1">
-            <input type="number" id="max" />
+            <select id="unitType"></select>
           </td>
         </tr>
         <tr>
-          <td class="label">Minimum value</td>
+          <td class="label">From Unit</td>
           <td class="input" tabindex="-1">
-            <input type="number" id="min" />
+            <select id="fromUnit"></select>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">To Unit</td>
+          <td class="input" tabindex="-1">
+            <select id="toUnit"></select>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Extra Factor</td>
+          <td class="input" tabindex="-1">
+            <input type="text" id="extraFactor" />
           </td>
         </tr>
       </tbody>

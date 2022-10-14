@@ -1,4 +1,5 @@
 import TabType from "../shared/TabType";
+import { UnitConversionPreset } from "../shared/units";
 
 export interface HubState {
   sidebar: SidebarState;
@@ -28,6 +29,7 @@ export interface LineGraphState {
   legends: {
     left: {
       lockedRange: [number, number] | null;
+      unitConversion: UnitConversionPreset;
       fields: {
         key: string;
         color: string;
@@ -43,6 +45,7 @@ export interface LineGraphState {
     };
     right: {
       lockedRange: [number, number] | null;
+      unitConversion: UnitConversionPreset;
       fields: {
         key: string;
         color: string;
