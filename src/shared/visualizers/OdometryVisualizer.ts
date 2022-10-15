@@ -199,16 +199,15 @@ export default class OdometryVisualizer implements Visualizer {
         context.stroke();
       }
 
-      // Render vision line
-      if (command.pose.visionCoordinates != null) {
-        let visionCoordinates = calcCoordinates(command.pose.visionCoordinates);
+      // Render vision lines
+      command.pose.visionCoordinates.forEach((coordinates: [number, number]) => {
         context.strokeStyle = "lightgreen";
         context.lineWidth = 1 * pixelsPerInch;
         context.beginPath();
         context.moveTo(robotPos[0], robotPos[1]);
-        context.lineTo(visionCoordinates[0], visionCoordinates[1]);
+        context.lineTo(...calcCoordinates(coordinates));
         context.stroke();
-      }
+      });
 
       // Render robot
       context.fillStyle = "#222";

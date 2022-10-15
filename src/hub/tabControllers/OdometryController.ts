@@ -136,14 +136,16 @@ export default class OdometryController extends TimelineVizController {
     }
 
     // Get vision coordinates
-    let visionCoordinates: [number, number] | null = null;
+    let visionCoordinates: [number, number][] = [];
     if (fields[2] != null) {
       let currentData = window.log.getNumberArray(fields[2], time, time);
       if (currentData && currentData.timestamps.length > 0) {
         let currentDataTimestamp = currentData.timestamps[0];
         let currentDataValue = currentData.values[0];
-        if (currentDataTimestamp <= time && currentDataValue.length >= 2) {
-          visionCoordinates = [currentDataValue[0], currentDataValue[1]];
+        if (currentDataTimestamp <= time && currentDataValue.length % 2 == 0) {
+          for (let i = 0; i < currentDataValue.length; i += 2) {
+            visionCoordinates.push([currentDataValue[i], currentDataValue[i + 1]]);
+          }
         }
       }
     }
