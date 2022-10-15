@@ -78,10 +78,10 @@ export class NT4_Client {
   unPublishTopic(oldTopic: NT4_Topic): void;
 
   /** Send some new value to the server. */
-  addSample(topic: NT4_Topic | string, value: any);
+  addSample(topic: NT4_Topic | string, value: any): void;
 
   /** Send some new timestamped value to the server. */
-  addSample(topic: NT4_Topic | string, timestamp: number, value: any);
+  addSample(topic: NT4_Topic | string, timestamp: number, value: any): void;
 
   /** Gets the current time on the client in microseconds. */
   getClientTime_us(): number;
