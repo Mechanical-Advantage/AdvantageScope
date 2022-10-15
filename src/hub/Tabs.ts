@@ -195,13 +195,16 @@ export default class Tabs {
     titleElement.innerText = title;
 
     // Save to tab list
-    this.tabList.push({
+    if (this.tabList.length == 0) {
+      this.selectedTab = -1;
+    }
+    this.tabList.splice(this.selectedTab + 1, 0, {
       type: type,
       controller: controller,
       titleElement: titleElement,
       contentElement: contentElement
     });
-    this.selectedTab = this.tabList.length - 1;
+    this.selectedTab += 1;
     this.VIEWER.appendChild(contentElement);
     controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
     this.updateElements();
