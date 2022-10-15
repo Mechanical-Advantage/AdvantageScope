@@ -550,7 +550,7 @@ function newTabPopup(window: BrowserWindow) {
   newTabMenu.popup({
     window: window,
     x: window.getBounds().width - 12,
-    y: 13
+    y: 10
   });
 }
 

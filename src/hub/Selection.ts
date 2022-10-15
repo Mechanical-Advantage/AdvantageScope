@@ -27,7 +27,7 @@ export default class Selection {
         let rect = button.getBoundingClientRect();
         window.sendMainMessage("ask-playback-speed", {
           x: Math.round(rect.right),
-          y: Math.round(rect.top + 4),
+          y: Math.round(rect.top),
           speed: this.playbackSpeed
         });
       });

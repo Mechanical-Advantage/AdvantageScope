@@ -137,7 +137,7 @@ export default class LineGraphController implements TabController {
       let rect = leftExitAxisButton.getBoundingClientRect();
       window.sendMainMessage("ask-edit-axis", {
         x: Math.round(rect.right),
-        y: Math.round(rect.top + 4),
+        y: Math.round(rect.top),
         isLeft: true,
         lockedRange: this.leftLockedRange,
         unitConversion: this.leftUnitConversion
@@ -148,7 +148,7 @@ export default class LineGraphController implements TabController {
       let rect = rightEditAxisButton.getBoundingClientRect();
       window.sendMainMessage("ask-edit-axis", {
         x: Math.round(rect.right),
-        y: Math.round(rect.top + 4),
+        y: Math.round(rect.top),
         isLeft: false,
         lockedRange: this.rightLockedRange,
         unitConversion: this.rightUnitConversion
