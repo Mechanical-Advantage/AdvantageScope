@@ -51,25 +51,9 @@ export function shiftColor(color: string, shift: number): string {
 
 /** Cleans up floating point errors. */
 export function cleanFloat(float: number) {
-  let output = Math.round(float * 10000) / 10000;
+  let output = Math.round(float * 1e6) / 1e6;
   if (output == -0) output = 0;
   return output;
-}
-
-/** Formats a number using a letter (K/M/B) for large numbers. */
-export function formatWithLetter(value: number): string {
-  value = cleanFloat(value);
-  if (Math.abs(value) >= 1e12) {
-    return Math.round(value / 1e12).toString() + "T";
-  } else if (Math.abs(value) >= 1e9) {
-    return Math.round(value / 1e9).toString() + "B";
-  } else if (Math.abs(value) >= 1e6) {
-    return Math.round(value / 1e6).toString() + "M";
-  } else if (Math.abs(value) >= 1e5) {
-    return Math.round(value / 1e3).toString() + "K";
-  } else {
-    return value.toString();
-  }
 }
 
 /** Formats a time with milliseconds using three decimal places. */

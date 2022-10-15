@@ -3,7 +3,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
 import { convertWithPreset, UnitConversionPreset } from "../../shared/units";
-import { cleanFloat, formatWithLetter, scaleValue, shiftColor } from "../../shared/util";
+import { cleanFloat, scaleValue, shiftColor } from "../../shared/util";
 import { LineGraphState } from "../HubState";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";
@@ -608,13 +608,7 @@ export default class LineGraphController implements TabController {
     this.CANVAS.height = height * devicePixelRatio;
     context.scale(devicePixelRatio, devicePixelRatio);
     context.clearRect(0, 0, width, height);
-    let graphLeft = 60;
-    let graphTop = 8;
-    let graphWidth = width - graphLeft - 60;
-    let graphHeight = height - graphTop - 50;
-    let timestampRange = this.timestampRange;
-    if (graphWidth < 1) graphWidth = 1;
-    if (graphHeight < 1) graphHeight = 1;
+    context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Cache data for all fields
     let dataCache: { [id: string]: LogValueSetAny } = {};
@@ -628,11 +622,18 @@ export default class LineGraphController implements TabController {
       array.forEach((field) => {
         if (!field.show || !availableKeys.includes(field.key)) return;
         if (!Object.keys(dataCache).includes(field.key)) {
-          dataCache[field.key] = window.log.getRange(field.key, timestampRange[0], timestampRange[1]) as LogValueSetAny;
+          dataCache[field.key] = window.log.getRange(
+            field.key,
+            this.timestampRange[0],
+            this.timestampRange[1]
+          ) as LogValueSetAny;
           typeCache[field.key] = window.log.getType(field.key) as LoggableType;
         }
         if (index != 1 && typeCache[field.key] == LoggableType.Number) {
-          if (dataCache[field.key].timestamps.length == 1 && dataCache[field.key].timestamps[0] > timestampRange[1]) {
+          if (
+            dataCache[field.key].timestamps.length == 1 &&
+            dataCache[field.key].timestamps[0] > this.timestampRange[1]
+          ) {
             return; // Not displayed
           }
 
@@ -660,7 +661,10 @@ export default class LineGraphController implements TabController {
       (field) => field.show && Object.keys(dataCache).includes(field.key)
     );
 
-    // Get graph height above discrete fields
+    // Calculate vertical layout for graph (based on discrete fields)
+    let graphTop = 8;
+    let graphHeight = height - graphTop - 50;
+    if (graphHeight < 1) graphHeight = 1;
     let graphHeightOpen = graphHeight - visibleFieldsDiscrete.length * 20 - (visibleFieldsDiscrete.length > 0 ? 5 : 0);
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
@@ -723,11 +727,29 @@ export default class LineGraphController implements TabController {
     this.leftRenderedRange = [leftAxis.min, leftAxis.max];
     this.rightRenderedRange = [rightAxis.min, rightAxis.max];
 
+    // Calculate horizontal layout for graph
+    let getTextWidth = (config: AxisConfig): number => {
+      let length = 0;
+      let value = Math.floor(config.max / config.step) * config.step;
+      while (value > config.min) {
+        length = Math.max(length, context.measureText(cleanFloat(value).toString()).width);
+        value -= config.step;
+      }
+      return Math.ceil(length / 10) * 10;
+    };
+    let graphLeft = 25 + (showLeftAxis ? getTextWidth(leftAxis) : 0);
+    let graphRight = 25 + (showRightAxis ? getTextWidth(rightAxis) : 0);
+    let graphWidth = width - graphLeft - graphRight;
+    if (graphWidth < 1) graphWidth = 1;
+
+    // Update scroll layout
+    this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
+    this.SCROLL_OVERLAY.style.right = graphRight.toString() + "px";
+
     // Render discrete data
     context.globalAlpha = 1;
     context.textAlign = "left";
     context.textBaseline = "middle";
-    context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
     visibleFieldsDiscrete.forEach((field, renderIndex) => {
       let type = typeCache[field.key];
       let data = dataCache[field.key];
@@ -813,7 +835,8 @@ export default class LineGraphController implements TabController {
             if (convertedValue < vertRange[0]) vertRange[0] = convertedValue;
             if (convertedValue > vertRange[1]) vertRange[1] = convertedValue;
             newX = Math.floor(
-              scaleValue(data.timestamps[i], timestampRange, [graphLeft, graphLeft + graphWidth]) * devicePixelRatio
+              scaleValue(data.timestamps[i], this.timestampRange, [graphLeft, graphLeft + graphWidth]) *
+                devicePixelRatio
             );
           } while (i >= 0 && newX >= currentX); // Compile values to vertical range until the pixel changes
           if (i < 0) break;
@@ -838,13 +861,13 @@ export default class LineGraphController implements TabController {
 
     // Render selected times
     let markTime = (time: number, alpha: number) => {
-      if (time >= timestampRange[0] && time <= timestampRange[1]) {
+      if (time >= this.timestampRange[0] && time <= this.timestampRange[1]) {
         context.globalAlpha = alpha;
         context.lineWidth = 1;
         context.setLineDash([5, 5]);
         context.strokeStyle = light ? "#222" : "#eee";
 
-        let x = scaleValue(time, timestampRange, [graphLeft, graphLeft + graphWidth]);
+        let x = scaleValue(time, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
         context.beginPath();
         context.moveTo(x, graphTop);
         context.lineTo(x, graphTop + graphHeight);
@@ -873,17 +896,16 @@ export default class LineGraphController implements TabController {
     context.strokeStyle = light ? "#222" : "#eee";
     context.fillStyle = light ? "#222" : "#eee";
     context.textBaseline = "middle";
-    context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     if (showLeftAxis) {
       context.textAlign = "right";
-      let stepPos = Math.floor(cleanFloat(leftAxis.max / leftAxis.step)) * leftAxis.step;
+      let stepPos = Math.floor(leftAxis.max / leftAxis.step) * leftAxis.step;
       while (true) {
         let y = scaleValue(stepPos, [leftAxis.min, leftAxis.max], [graphTop + graphHeightOpen, graphTop]);
         if (y > graphTop + graphHeight) break;
 
         context.globalAlpha = 1;
-        context.fillText(formatWithLetter(stepPos), graphLeft - 15, y);
+        context.fillText(cleanFloat(stepPos).toString(), graphLeft - 15, y);
         context.beginPath();
         context.moveTo(graphLeft, y);
         context.lineTo(graphLeft - 5, y);
@@ -903,13 +925,13 @@ export default class LineGraphController implements TabController {
 
     if (showRightAxis) {
       context.textAlign = "left";
-      let stepPos = Math.floor(cleanFloat(rightAxis.max / rightAxis.step)) * rightAxis.step;
+      let stepPos = Math.floor(rightAxis.max / rightAxis.step) * rightAxis.step;
       while (true) {
         let y = scaleValue(stepPos, [rightAxis.min, rightAxis.max], [graphTop + graphHeightOpen, graphTop]);
         if (y > graphTop + graphHeight) break;
 
         context.globalAlpha = 1;
-        context.fillText(formatWithLetter(stepPos), graphLeft + graphWidth + 15, y);
+        context.fillText(cleanFloat(stepPos).toString(), graphLeft + graphWidth + 15, y);
         context.beginPath();
         context.moveTo(graphLeft + graphWidth, y);
         context.lineTo(graphLeft + graphWidth + 5, y);
@@ -928,7 +950,7 @@ export default class LineGraphController implements TabController {
     }
 
     // Render x axis
-    let axis = this.calcAutoAxis(null, graphWidth, 100, null, timestampRange, 0, 60);
+    let axis = this.calcAutoAxis(null, graphWidth, 100, null, this.timestampRange, 0, 60);
     context.textAlign = "center";
     let stepPos = Math.ceil(cleanFloat(axis.min / axis.step)) * axis.step;
     while (true) {

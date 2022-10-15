@@ -685,11 +685,10 @@ canvas.line-graph-canvas {
 div.line-graph-scroll {
   position: absolute;
   z-index: 8;
-  left: 60px;
-  right: 60px;
+  left: 0px;
+  right: 0px;
   top: 8px;
   bottom: 50px;
-
   overflow: scroll;
 }
 
