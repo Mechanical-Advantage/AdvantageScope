@@ -22,12 +22,16 @@ export default class Selection {
     this.PAUSE_BUTTON.addEventListener("click", () => this.pause());
     this.LOCK_BUTTON.addEventListener("click", () => this.lock());
     this.UNLOCK_BUTTON.addEventListener("click", () => this.unlock());
-    this.PLAY_BUTTON.addEventListener("contextmenu", () =>
-      window.sendMainMessage("ask-playback-speed", this.playbackSpeed)
-    );
-    this.PAUSE_BUTTON.addEventListener("contextmenu", () =>
-      window.sendMainMessage("ask-playback-speed", this.playbackSpeed)
-    );
+    [this.PLAY_BUTTON, this.PAUSE_BUTTON].forEach((button) => {
+      button.addEventListener("contextmenu", () => {
+        let rect = button.getBoundingClientRect();
+        window.sendMainMessage("ask-playback-speed", {
+          x: Math.round(rect.right),
+          y: Math.round(rect.top + 4),
+          speed: this.playbackSpeed
+        });
+      });
+    });
 
     window.addEventListener("keydown", (event) => {
       if (event.target != document.body) return;

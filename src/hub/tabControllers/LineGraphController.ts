@@ -132,15 +132,23 @@ export default class LineGraphController implements TabController {
     });
 
     // Edit axis handling
-    this.LEFT_LIST.firstElementChild?.lastElementChild?.addEventListener("click", () => {
+    let leftExitAxisButton = this.LEFT_LIST.firstElementChild?.lastElementChild!;
+    leftExitAxisButton.addEventListener("click", () => {
+      let rect = leftExitAxisButton.getBoundingClientRect();
       window.sendMainMessage("ask-edit-axis", {
+        x: Math.round(rect.right),
+        y: Math.round(rect.top + 4),
         isLeft: true,
         lockedRange: this.leftLockedRange,
         unitConversion: this.leftUnitConversion
       });
     });
-    this.RIGHT_LIST.firstElementChild?.lastElementChild?.addEventListener("click", () => {
+    let rightEditAxisButton = this.RIGHT_LIST.firstElementChild?.lastElementChild!;
+    rightEditAxisButton.addEventListener("click", () => {
+      let rect = rightEditAxisButton.getBoundingClientRect();
       window.sendMainMessage("ask-edit-axis", {
+        x: Math.round(rect.right),
+        y: Math.round(rect.top + 4),
         isLeft: false,
         lockedRange: this.rightLockedRange,
         unitConversion: this.rightUnitConversion

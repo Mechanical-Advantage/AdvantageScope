@@ -248,30 +248,22 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           new MenuItem({
             label: (value * 100).toString() + "%",
             type: "checkbox",
-            checked: value == message.data,
+            checked: value == message.data.speed,
             click() {
               sendMessage(window, "set-playback-speed", value);
             }
           })
         );
       });
-      playbackSpeedMenu.popup();
+      playbackSpeedMenu.popup({
+        window: window,
+        x: message.data.x,
+        y: message.data.y
+      });
       break;
 
     case "ask-new-tab":
-      const newTabMenu = new Menu();
-      getAllTabTypes().forEach((tabType, index) => {
-        if (index == 0) return;
-        newTabMenu.append(
-          new MenuItem({
-            label: getTabTitle(tabType),
-            click() {
-              sendMessage(window, "new-tab", tabType);
-            }
-          })
-        );
-      });
-      newTabMenu.popup();
+      newTabPopup(window);
       break;
 
     case "ask-edit-axis":
@@ -328,7 +320,11 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
-      menu.popup();
+      menu.popup({
+        window: window,
+        x: message.data.x,
+        y: message.data.y
+      });
       break;
 
     case "create-satellite":
@@ -533,6 +529,30 @@ setInterval(() => {
     socket.write(RLOG_HEARTBEAT_DATA);
   });
 }, RLOG_HEARTBEAT_DELAY_MS);
+
+/** Shows a popup to create a new tab on a hub window. */
+function newTabPopup(window: BrowserWindow) {
+  if (!hubWindows.includes(window)) return;
+  const newTabMenu = new Menu();
+  getAllTabTypes()
+    .slice(1)
+    .forEach((tabType, index) => {
+      newTabMenu.append(
+        new MenuItem({
+          label: getTabTitle(tabType),
+          accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : index == 9 ? "CmdOrCtrl+0" : "",
+          click() {
+            sendMessage(window, "new-tab", tabType);
+          }
+        })
+      );
+    });
+  newTabMenu.popup({
+    window: window,
+    x: window.getBounds().width - 12,
+    y: 13
+  });
+}
 
 /**
  * Process a message from a download window.
@@ -862,6 +882,14 @@ function setupMenu() {
                 }
               };
             })
+        },
+        {
+          label: "New Tab (Popup)", // Hidden item to add keyboard shortcut
+          visible: false,
+          accelerator: "CmdOrCtrl+T",
+          click(_, window) {
+            if (window) newTabPopup(window);
+          }
         },
         { type: "separator" },
         {

@@ -41,7 +41,7 @@ export function getTabTitle(type: TabType): string {
     case TabType.Joysticks:
       return "🎮 Joysticks";
     case TabType.Swerve:
-      return "🛞 Swerve";
+      return "🦀 Swerve";
     default:
       return "";
   }
