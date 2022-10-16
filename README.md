@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
-Advantage Scope is the desktop application used to interact with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework. It can be used to view logs from a file or connect to a robot over the network. Visualizations include line graphs, tables, and fields diagrams for odometry data.
+Advantage Scope is a robot diagnostics application for historical and live data analysis. It can open WPILOG and RLOG files, and connect live using NT4 or RLOG streaming. Advantage Scope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework.
 
 ![Example screenshot](/screenshot.jpg)
 
