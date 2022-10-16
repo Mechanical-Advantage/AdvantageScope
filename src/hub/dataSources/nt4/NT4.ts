@@ -56,6 +56,7 @@ export class NT4_SubscriptionOptions {
 
 export class NT4_Topic {
   uid = -1;
+  pubuid = -1;
   name = "";
   type = "";
   properties = new NT4_TopicProperties();
@@ -64,14 +65,14 @@ export class NT4_Topic {
     return {
       name: this.name,
       type: this.type,
-      pubuid: this.uid,
+      pubuid: this.pubuid,
       properties: this.properties.toUpdateObj()
     };
   }
 
-  toUnPublishObj() {
+  toUnpublishObj() {
     return {
-      pubuid: this.uid
+      pubuid: this.pubuid
     };
   }
 
@@ -103,7 +104,7 @@ export class NT4_Client {
   private APP_NAME = "AdvantageScope";
 
   private onTopicAnnounce: (topic: NT4_Topic) => void;
-  private onTopicUnAnnounce: (topic: NT4_Topic) => void;
+  private onTopicUnannounce: (topic: NT4_Topic) => void;
   private onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void;
   private onConnect: () => void;
   private onDisconnect: () => void;
@@ -126,7 +127,7 @@ export class NT4_Client {
    * Creates a new NT4 client without connecting.
    * @param serverAddr Network address of NT4 server
    * @param onTopicAnnounce Gets called when server announces enough topics to form a new signal
-   * @param onTopicUnAnnounce Gets called when server unannounces any part of a signal
+   * @param onTopicUnannounce Gets called when server unannounces any part of a signal
    * @param onNewTopicData Gets called when any new data is available
    * @param onConnect Gets called once client completes initial handshake with server
    * @param onDisconnect Gets called once client detects server has disconnected
@@ -134,14 +135,14 @@ export class NT4_Client {
   constructor(
     serverAddr: string,
     onTopicAnnounce: (topic: NT4_Topic) => void,
-    onTopicUnAnnounce: (topic: NT4_Topic) => void,
+    onTopicUnannounce: (topic: NT4_Topic) => void,
     onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void,
     onConnect: () => void, //
     onDisconnect: () => void
   ) {
     this.serverBaseAddr = serverAddr;
     this.onTopicAnnounce = onTopicAnnounce;
-    this.onTopicUnAnnounce = onTopicUnAnnounce;
+    this.onTopicUnannounce = onTopicUnannounce;
     this.onNewTopicData = onNewTopicData;
     this.onConnect = onConnect;
     this.onDisconnect = onDisconnect;
@@ -217,7 +218,7 @@ export class NT4_Client {
    * @param prefixMode If true, use patterns as prefixes. If false, only subscribe to topics that are an exact match.
    * @returns A subscription object.
    */
-  subscribeTopicsOnly(topicPatterns: string[], prefixMode: boolean) {
+  subscribeTopicsOnly(topicPatterns: string[], prefixMode: boolean): NT4_Subscription {
     let newSub = new NT4_Subscription();
     newSub.uid = this.getNewUID();
     newSub.topics = new Set(topicPatterns);
@@ -232,7 +233,7 @@ export class NT4_Client {
   }
 
   /** Given an existing subscription, unsubscribe from it. */
-  unSubscribe(subscription: NT4_Subscription) {
+  unsubscribe(subscription: NT4_Subscription) {
     this.subscriptions.delete(subscription.uid);
     if (this.serverConnectionActive) {
       this.ws_unsubscribe(subscription);
@@ -242,7 +243,7 @@ export class NT4_Client {
   /** Unsubscribe from all current subscriptions. */
   clearAllSubscriptions() {
     for (const sub of this.subscriptions.values()) {
-      this.unSubscribe(sub);
+      this.unsubscribe(sub);
     }
   }
 
@@ -256,9 +257,9 @@ export class NT4_Client {
   }
 
   /** Publish a new topic from this client with the provided name and type. Returns a topic object. */
-  publishNewTopic(name: string, type: string) {
+  publishNewTopic(name: string, type: string): NT4_Topic {
     let newTopic = new NT4_Topic();
-    newTopic.uid = this.getNewUID();
+    newTopic.pubuid = this.getNewUID();
     newTopic.name = name;
     newTopic.type = type;
 
@@ -301,8 +302,13 @@ export class NT4_Client {
       }
     }
 
-    let txData = serialize([(topic as NT4_Topic).uid, timestamp, (topic as NT4_Topic).getTypeIdx(), value]);
-    this.ws_sendBinary(txData);
+    if (typeof topic !== "string") {
+      if (topic.pubuid === -1) {
+        throw 'Topic "' + topic.name + '" is not published by this client.';
+      }
+      let txData = serialize([topic.pubuid, timestamp, topic.getTypeIdx(), value]);
+      this.ws_sendBinary(txData);
+    }
   }
 
   //////////////////////////////////////////////////////////////
@@ -322,8 +328,8 @@ export class NT4_Client {
     let timeTopic = this.serverTopics.get(-1);
     if (timeTopic) {
       let timeToSend = this.getClientTime_us();
-      this.addTimestampedSample(timeTopic, 0, timeToSend);
-      console.log("[NT4] Starting timestamp sync");
+      let txData = serialize([-1, 0, typestrIdxLookup["int"], timeToSend]);
+      this.ws_sendBinary(txData);
     }
   }
 
@@ -354,7 +360,7 @@ export class NT4_Client {
   }
 
   private ws_unpublish(topic: NT4_Topic) {
-    this.ws_sendJSON("unpublish", topic.toUnPublishObj());
+    this.ws_sendJSON("unpublish", topic.toUnpublishObj());
   }
 
   private ws_setproperties(topic: NT4_Topic) {
@@ -384,33 +390,25 @@ export class NT4_Client {
   // Websocket connection Maintenance
 
   private ws_onOpen() {
-    // Trying to subscribe immediately after the server starts appears to be broken, so add a short delay.
-    setTimeout(() => {
-      // Set the flag allowing general server communication
-      this.serverConnectionActive = true;
+    // Set the flag allowing general server communication
+    this.serverConnectionActive = true;
 
-      // Sync timestamps
-      let timeTopic = new NT4_Topic();
-      timeTopic.name = "Time";
-      timeTopic.uid = -1;
-      timeTopic.type = "int";
-      this.serverTopics.set(timeTopic.uid, timeTopic);
-      this.ws_sendTimestamp();
+    // Sync timestamps
+    this.ws_sendTimestamp();
 
-      // Publish any existing topics
-      for (const topic of this.clientPublishedTopics.values()) {
-        this.ws_publish(topic);
-        this.ws_setproperties(topic);
-      }
+    // Publish any existing topics
+    for (const topic of this.clientPublishedTopics.values()) {
+      this.ws_publish(topic);
+      this.ws_setproperties(topic);
+    }
 
-      // Subscribe to existing subscriptions
-      for (const subscription of this.subscriptions.values()) {
-        this.ws_subscribe(subscription);
-      }
+    // Subscribe to existing subscriptions
+    for (const subscription of this.subscriptions.values()) {
+      this.ws_subscribe(subscription);
+    }
 
-      // User connection-opened hook
-      this.onConnect();
-    }, 100);
+    // User connection-opened hook
+    this.onConnect();
   }
 
   private ws_onClose(event: CloseEvent) {
@@ -479,8 +477,12 @@ export class NT4_Client {
           let newTopic = new NT4_Topic();
           newTopic.name = params.name;
           newTopic.uid = params.id;
+          if ("pubuid" in params) {
+            newTopic.pubuid = params.pubuid;
+          }
           newTopic.type = params.type;
           newTopic.properties.isPersistent = params.properties.persistent;
+          newTopic.properties.isRetained = params.properties.retained;
           this.serverTopics.set(newTopic.uid, newTopic);
           this.onTopicAnnounce(newTopic);
         } else if (method === "unannounce") {
@@ -490,7 +492,7 @@ export class NT4_Client {
             return;
           }
           this.serverTopics.delete(removedTopic.uid);
-          this.onTopicUnAnnounce(removedTopic);
+          this.onTopicUnannounce(removedTopic);
         } else {
           console.log("[NT4] Ignoring text message - unknown method " + method);
           return;
