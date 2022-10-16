@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; connect-src ws: wss: file:"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; connect-src ws: wss: file:"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="hub.css" />
+    <script type="module" src="../bundles/hub.js"></script>
+    <title>Advantage Scope</title>
+  </head>
+
+  <body>
+    <div class="title-bar" hidden>
+      <div class="title-bar-text">Advantage Scope</div>
+    </div>
+
+    <button class="tab-control play" tabindex="-1">
+      <img src="symbols/play.fill.svg" />
+    </button>
+    <button class="tab-control pause" tabindex="-1" hidden>
+      <img src="symbols/pause.svg" />
+    </button>
+    <button class="tab-control lock" tabindex="-1" hidden>
+      <img src="symbols/forward.circle.svg" />
+    </button>
+    <button class="tab-control unlock" tabindex="-1" hidden>
+      <img src="symbols/forward.circle.svg" />
+    </button>
+    <button class="tab-control move-left" tabindex="-1">
+      <img src="symbols/arrow.left.svg" />
+    </button>
+    <button class="tab-control close" tabindex="-1">
+      <img src="symbols/xmark.svg" />
+    </button>
+    <button class="tab-control move-right" tabindex="-1">
+      <img src="symbols/arrow.right.svg" />
+    </button>
+    <button class="tab-control add-tab" tabindex="-1">
+      <img src="symbols/plus.svg" />
+    </button>
+
+    <div class="side-bar-background"></div>
+    <div class="side-bar-shadow"></div>
+    <div class="viewer-background"></div>
+    <div class="side-bar-handle"></div>
+
+    <span id="dragItem"></span>
+
+    <div class="loading-glow">
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+      <div class="loading-glow-element"></div>
+    </div>
+
+    <div class="main-view">
+      <div class="side-bar">
+        <div class="side-bar-title">No data available</div>
+
+        <span id="fieldItemIconTemplates" hidden>
+          <svg class="field-item-icon" height="12" width="12">
+            <polygon points="1,0 1,12 11,6"></polygon>
+          </svg>
+          <svg class="field-item-icon" height="12" width="12">
+            <polygon points="12,1 0,1 6,11"></polygon>
+          </svg>
+          <svg class="field-item-icon" height="12" width="12">
+            <rect x="1" y="5" width="10" height="2"></rect>
+          </svg>
+        </span>
+
+        <span id="fieldList"></span>
+      </div>
+
+      <div class="viewer">
+        <div class="tab-bar"></div>
+        <div class="tab-bar-shadow-left"></div>
+        <div class="tab-bar-shadow-right"></div>
+        <div class="tab-bar-scroll">
+          <div class="tab-bar-scroll-content"></div>
+        </div>
+        <span id="tabContentTemplates" hidden>
+          <!-- Metadata -->
+          <div class="tab-content">
+            <div class="tab-centered">No AdvantageKit metadata.</div>
+            <div class="metadata-table-container" hidden>
+              <table class="metadata-table">
+                <tbody>
+                  <tr>
+                    <th></th>
+                    <th>Real</th>
+                    <th>Replay</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Line graph -->
+          <div class="tab-content">
+            <span class="legend-item-template" hidden>
+              <div class="legend-item">
+                <svg class="legend-splotch" height="25" width="25">
+                  <circle cx="12.5" cy="12.5" r="6"></circle>
+                </svg>
+                <div class="legend-key-container">
+                  <span class="legend-key"></span>
+                </div>
+                <button class="legend-edit" tabindex="-1">
+                  <img src="symbols/xmark.svg" />
+                </button>
+              </div>
+            </span>
+
+            <div class="line-graph-canvas-container">
+              <canvas class="line-graph-canvas"></canvas>
+              <div class="line-graph-scroll">
+                <div class="line-graph-scroll-content"></div>
+              </div>
+            </div>
+
+            <div class="legend-left">
+              <div class="legend-item">
+                <div class="legend-title">Left Axis<span></span></div>
+                <button class="legend-edit" tabindex="-1">
+                  <img src="symbols/ellipsis.svg" />
+                </button>
+              </div>
+            </div>
+            <div class="legend-left legend-drag-target" hidden></div>
+
+            <div class="legend-discrete">
+              <div class="legend-item">
+                <div class="legend-title legend-title-center">Discrete Fields</div>
+              </div>
+            </div>
+            <div class="legend-discrete legend-drag-target" hidden></div>
+
+            <div class="legend-right">
+              <div class="legend-item">
+                <div class="legend-title">Right Axis<span></span></div>
+                <button class="legend-edit" tabindex="-1">
+                  <img src="symbols/ellipsis.svg" />
+                </button>
+              </div>
+            </div>
+            <div class="legend-right legend-drag-target" hidden></div>
+          </div>
+
+          <!-- Table -->
+          <div class="tab-content">
+            <div class="tab-centered">Drag a field to view data.</div>
+
+            <span class="data-table-header-template" hidden>
+              <div class="data-table-key-container">
+                <span></span>
+              </div>
+              <button class="data-table-key-delete" tabindex="-1">
+                <img src="symbols/xmark.svg" />
+              </button>
+            </span>
+
+            <div class="data-table-container">
+              <table class="data-table">
+                <tbody>
+                  <tr>
+                    <th>
+                      <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                      <button class="data-table-jump-button" tabindex="-1">
+                        <img src="symbols/arrow.down.to.line.svg" />
+                      </button>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="data-table-drag-highlight" hidden></div>
+          </div>
+
+          <!-- Console -->
+          <div class="tab-content">
+            <div class="console-table-drag-highlight" hidden></div>
+            <div class="console-table-container">
+              <table class="console-table">
+                <tbody>
+                  <tr>
+                    <th>
+                      <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                      <button class="console-table-jump-button" tabindex="-1">
+                        <img src="symbols/arrow.down.to.line.svg" />
+                      </button>
+                    </th>
+                    <th>
+                      <span>&lt;Drag Here&gt;</span>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Statistics -->
+          <div class="tab-content">
+            <table class="stats-config">
+              <tbody>
+                <tr>
+                  <td>
+                    <span class="label">Field #1:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field #2:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field #3:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Selection:</span>
+                    <br />
+                    <select>
+                      <option value="full">Full Log</option>
+                      <option value="enabled">Enabled Only</option>
+                      <option value="range">Time Range</option>
+                    </select>
+                    &mdash;
+                    <input type="number" value="0" disabled />
+                    to
+                    <input type="number" value="10" disabled />
+                  </td>
+                  <td>
+                    <span class="label">Measurement:</span>
+                    <br />
+                    <select>
+                      <option value="independent">Independent fields</option>
+                      <option value="reference">Reference + measurements</option>
+                    </select>
+                    <br />
+                    <select>
+                      <option value="fixed">Fixed</option>
+                      <option value="auto">Auto</option>
+                    </select>
+                    (<a href="#" tabindex="-1">Help</a>) &mdash;
+                    <input type="number" value="20" />
+                    ms
+                  </td>
+                  <td>
+                    <span class="label">Histogram:</span>
+                    <br />
+                    <input type="number" value="0" />
+                    to
+                    <input type="number" value="100" />
+                    &mdash; step
+                    <input type="number" value="10" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="stats-values-container">
+              <table class="stats-values">
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <div class="stats-histogram-container">
+              <canvas width="100" height="100"></canvas>
+            </div>
+            <div class="stats-drag-highlight" hidden></div>
+          </div>
+
+          <!-- Timeline visualizer -->
+          <div class="tab-content">
+            <div class="timeline-viz-timeline-container">
+              <input
+                class="timeline-viz-timeline-slider"
+                id="timeline"
+                type="range"
+                value="0"
+                min="0"
+                max="10"
+                step="0.000001"
+                tabindex="-1"
+              />
+              <div class="timeline-viz-timeline-marker-container"></div>
+            </div>
+            <button class="timeline-viz-popup-button" tabindex="-1">
+              <img src="symbols/plus.rectangle.on.rectangle.svg" />
+            </button>
+            <div class="timeline-viz-drag-highlight" hidden></div>
+          </div>
+
+          <!-- Odometry -->
+          <span>
+            <div class="odometry-canvas-container">
+              <canvas></canvas>
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>Pose Data</th>
+                  <th>Coordinate System</th>
+                  <th>Robot Config</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label" title="Full robot w/ trail (x, y, rotation)">Robot:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Game:</span>
+                    <select tabindex="-1"></select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                  <td>
+                    <span class="label">Side Length:</span>
+                    <input type="number" min="0" value="0.75" step="0.01" tabindex="-1" />
+                    <span>meters</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label" title="Supplemental transparent robot w/o trail (x, y, rotation)">Ghost:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Units:</span>
+                    <select tabindex="-1">
+                      <option>meters</option>
+                      <option>inches</option>
+                    </select>
+                    and
+                    <select tabindex="-1">
+                      <option>radians</option>
+                      <option>degrees</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Alliance Color:</span>
+                    <select tabindex="-1">
+                      <option>blue</option>
+                      <option>red</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label" title="Green line from robot to target (x, y)">Vision:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Origin:</span>
+                    <select tabindex="-1">
+                      <option>right</option>
+                      <option>center</option>
+                      <option>left</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Orientation:</span>
+                    <select tabindex="-1">
+                      <option>blue left, red right</option>
+                      <option>red left, blue right</option>
+                      <option>blue bottom, red top</option>
+                      <option>red bottom, blue top</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- 3D Field -->
+          <span>
+            <canvas class="three-dimension-canvas"></canvas>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th colspan="2">Pose Data</th>
+                  <th>Config</th>
+                </tr>
+                <tr>
+                  <td class="undivided-right">
+                    <span class="label">Robot:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Blue Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Field:</span>
+                    <select tabindex="-1"></select>
+                    <select tabindex="-1">
+                      <option>blue</option>
+                      <option>red</option>
+                    </select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="undivided-right">
+                    <span class="label">Green Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Yellow Cones:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Robot:</span>
+                    <select tabindex="-1"></select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- Video -->
+          <span>
+            <div class="video-container">
+              <img />
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>Source</th>
+                  <th colspan="2">Synchronization</th>
+                </tr>
+                <tr>
+                  <td class="video-source" rowspan="2">&lt;Click Here&gt;</td>
+                  <td colspan="2">
+                    <button tabindex="-1">
+                      <img src="symbols/lock.open.svg" />
+                    </button>
+                    <button tabindex="-1" hidden>
+                      <img src="symbols/lock.svg" />
+                    </button>
+                    <div class="video-timeline-container">
+                      <input
+                        class="timeline-viz-timeline-slider"
+                        id="timeline"
+                        type="range"
+                        value="0"
+                        min="1"
+                        max="1"
+                        step="1"
+                        tabindex="-1"
+                      />
+                      <div class="timeline-viz-timeline-marker-container">
+                        <div></div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="video-controls" colspan="2">
+                    <button tabindex="-1">
+                      <img src="symbols/gobackward.5.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/backward.frame.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/play.fill.svg" />
+                    </button>
+                    <button tabindex="-1" hidden>
+                      <img src="symbols/pause.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/forward.frame.svg" />
+                    </button>
+                    <button tabindex="-1">
+                      <img src="symbols/goforward.5.svg" />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- Points -->
+          <span>
+            <div class="points-background-container">
+              <div class="points-background"></div>
+              <span hidden>
+                <svg height="20" width="20">
+                  <line x1="10" y1="0" x2="10" y2="20"></line>
+                  <line x1="0" y1="10" x2="20" y2="10"></line>
+                </svg>
+                <svg height="20" width="20">
+                  <line x1="2" y1="2" x2="18" y2="18"></line>
+                  <line x1="18" y1="2" x2="2" y2="18"></line>
+                </svg>
+                <svg height="20" width="20">
+                  <circle cx="10" cy="10" r="7"></circle>
+                </svg>
+              </span>
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>Point Data</th>
+                  <th>Coordinate System</th>
+                  <th>Point Style</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">X:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Size:</span>
+                    <input type="number" min="1" value="960" step="1" />
+                    <span class="label">x</span>
+                    <input type="number" min="1" value="720" step="1" />
+                  </td>
+                  <td>
+                    <span class="label">Point Shape:</span>
+                    <select tabindex="-1">
+                      <option>plus</option>
+                      <option>cross</option>
+                      <option>circle</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Y:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Group Size:</span>
+                    <input type="number" min="0" value="0" step="1" />
+                  </td>
+                  <td>
+                    <span class="label">Point Size:</span>
+                    <select tabindex="-1">
+                      <option>large</option>
+                      <option selected>medium</option>
+                      <option>small</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- Joysticks -->
+          <span>
+            <canvas class="joysticks-canvas"></canvas>
+            <table class="timeline-viz-config joysticks-config">
+              <tbody>
+                <tr>
+                  <th colspan="3">Config</th>
+                </tr>
+                <tr>
+                  <td>
+                    <input type="number" min="0" max="5" value="0" step="1" />
+                    <select tabindex="-1"></select>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="5" value="1" step="1" />
+                    <select tabindex="-1"></select>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="5" value="2" step="1" />
+                    <select tabindex="-1"></select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- Swerve -->
+          <span>
+            <div class="swerve-canvas-container">
+              <canvas class="swerve-canvas" width="100" height="100"></canvas>
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>Fields</th>
+                  <th>Data</th>
+                  <th>Display</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">States (Red):</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Max Speed:</span>
+                    <input type="number" min="0" value="4.5" step="0.1" />
+                  </td>
+                  <td>
+                    <span class="label">Size (Left-Right):</span>
+                    <input type="number" min="0" value="0.65" step="0.1" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">States (Blue):</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Rotation Units:</span>
+                    <select tabindex="-1">
+                      <option>radians</option>
+                      <option>degrees</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Size (Front-Back):</span>
+                    <input type="number" min="0" value="0.65" step="0.1" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Robot Rotation:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Arrangement:</span>
+                    <select tabindex="-1">
+                      <option value="0,1,2,3">FL, FR, BL, BR</option>
+                      <option value="1,2,3,2">FR, FL, BR, BL</option>
+                      <option value="0,1,3,2">FL, FR, BR, BL</option>
+                      <option value="0,2,3,1">FL, BL, BR, FR</option>
+                      <option value="1,3,2,0">FR, BR, BL, FL</option>
+                      <option value="1,0,2,3">FR, FL, BL, BR</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="label">Forward =</span>
+                    <select tabindex="-1">
+                      <option>up</option>
+                      <option>right</option>
+                      <option>down</option>
+                      <option>left</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+        </span>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "sourceUrl": "https://grabcad.com/library/frc-6328-2020-northern-ct-competition-robot-1",
+  "rotations": [
+    { "axis": "x", "degrees": 90 },
+    { "axis": "z", "degrees": 180 }
+  ],
+  "position": [0, 0, 0.09]
+}

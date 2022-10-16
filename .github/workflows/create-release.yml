@@ -12,9 +12,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "16.x"
           cache: "npm"
@@ -30,7 +30,7 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Get tag name
         id: get_version
         run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
@@ -79,9 +79,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "16.x"
           cache: "npm"
@@ -96,7 +96,9 @@ jobs:
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never
+        run: npm run build -- --${{ matrix.arch }} --publish never
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare macOS artifact
         if: matrix.host.os == 'macos-latest'
         run: |

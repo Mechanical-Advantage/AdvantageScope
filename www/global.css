@@ -8,53 +8,65 @@ body {
   body {
     color: #eee;
   }
+
+  a {
+    color: #88f;
+  }
 }
 
 /* Buttons */
 
 button {
+  position: relative;
   padding: 0px;
   background-color: transparent;
   border: none;
   border-radius: 6px;
 }
 
-button:hover {
+button > img {
+  position: absolute;
+  max-height: 100%;
+  max-width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(75%);
+
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(32%) sepia(0%) saturate(60%) hue-rotate(224deg) brightness(100%) contrast(95%);
+}
+
+button.blurred > img,
+button:disabled > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(82%) sepia(3%) saturate(20%) hue-rotate(339deg) brightness(84%) contrast(86%);
+}
+
+button:not(:disabled):hover {
   background-color: #eee;
 }
 
-button:active {
+button:not(:disabled):active {
   background-color: #ddd;
 }
 
-button svg {
-  stroke: #555;
-  fill: #555;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-}
-
-button.blurred svg {
-  stroke: #aaa;
-  fill: #aaa;
-}
-
 @media (prefers-color-scheme: dark) {
-  button:hover {
+  button > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(75%) sepia(0%) saturate(0%) hue-rotate(138deg) brightness(83%) contrast(81%);
+  }
+
+  button.blurred > img,
+  button:disabled > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(30%) sepia(11%) saturate(12%) hue-rotate(104deg) brightness(104%) contrast(93%);
+  }
+
+  button:not(:disabled):hover {
     background-color: #333;
   }
 
-  button:active {
+  button:not(:disabled):active {
     background-color: #444;
-  }
-
-  button svg {
-    stroke: #999;
-    fill: #999;
-  }
-
-  button.blurred svg {
-    stroke: #555;
-    fill: #555;
   }
 }

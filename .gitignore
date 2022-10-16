@@ -1,6 +1,8 @@
 ### Node/Electron ###
 node_modules
 dist
+bundles
+ffmpeg
 
 ### Linux ###
 *~

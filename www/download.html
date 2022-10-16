@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="download.css" />
+    <script type="module" src="../bundles/download.js"></script>
     <title>Download Logs &mdash; Advantage Scope</title>
   </head>
 
@@ -26,18 +27,10 @@
     <progress min="0" max="1" hidden></progress>
 
     <button id="exit" tabindex="-1">
-      <svg height="30" width="30">
-        <line x1="9" y1="9" x2="21" y2="21"></line>
-        <line x1="21" y1="9" x2="9" y2="21"></line>
-      </svg>
+      <img src="symbols/xmark.svg" />
     </button>
     <button id="download" tabindex="-1">
-      <svg height="30" width="30">
-        <line x1="15" y1="8" x2="15" y2="22"></line>
-        <line x1="15" y1="22" x2="9" y2="16"></line>
-        <line x1="15" y1="22" x2="21" y2="16"></line>
-      </svg>
+      <img src="symbols/arrow.down.svg" />
     </button>
-    <script type="module" src="download.js"></script>
   </body>
 </html>
