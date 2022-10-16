@@ -277,7 +277,7 @@ export class WPILOGReader {
     return value;
   }
 
-  /** Performs the specified action for each record in the log. */
+  /** Runs the specified function for each record in the log. */
   forEach(callback: (record: WPILOGRecord) => void) {
     if (!this.isValid()) throw "Log is not valid";
     let extraHeaderSize = this.dataView.getUint32(8, true);
