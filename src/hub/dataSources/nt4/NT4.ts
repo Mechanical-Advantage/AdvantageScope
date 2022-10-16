@@ -101,8 +101,7 @@ export class NT4_TopicProperties {
 }
 
 export class NT4_Client {
-  private APP_NAME = "AdvantageScope";
-
+  private appName: string;
   private onTopicAnnounce: (topic: NT4_Topic) => void;
   private onTopicUnannounce: (topic: NT4_Topic) => void;
   private onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void;
@@ -126,6 +125,7 @@ export class NT4_Client {
   /**
    * Creates a new NT4 client without connecting.
    * @param serverAddr Network address of NT4 server
+   * @param appName Identifier for this client (does not need to be unique).
    * @param onTopicAnnounce Gets called when server announces enough topics to form a new signal
    * @param onTopicUnannounce Gets called when server unannounces any part of a signal
    * @param onNewTopicData Gets called when any new data is available
@@ -134,6 +134,7 @@ export class NT4_Client {
    */
   constructor(
     serverAddr: string,
+    appName: string,
     onTopicAnnounce: (topic: NT4_Topic) => void,
     onTopicUnannounce: (topic: NT4_Topic) => void,
     onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void,
@@ -141,6 +142,7 @@ export class NT4_Client {
     onDisconnect: () => void
   ) {
     this.serverBaseAddr = serverAddr;
+    this.appName = appName;
     this.onTopicAnnounce = onTopicAnnounce;
     this.onTopicUnannounce = onTopicUnannounce;
     this.onNewTopicData = onNewTopicData;
@@ -529,7 +531,7 @@ export class NT4_Client {
     }
 
     this.serverAddr =
-      prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.APP_NAME + "_" + this.clientIdx.toString();
+      prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.appName + "_" + this.clientIdx.toString();
 
     this.ws = new WebSocket(this.serverAddr, "networktables.first.wpi.edu");
     this.ws.binaryType = "arraybuffer";
