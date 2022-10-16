@@ -138,9 +138,9 @@ export default class NT4Source extends LiveDataSource {
       );
       this.client.connect();
       if (this.akitMode) {
-        this.client?.subscribeLogging(["/AdvantageKit/"]);
+        this.client?.subscribeAll(["/AdvantageKit/"], true);
       } else {
-        this.client?.subscribeLogging(["/"]);
+        this.client?.subscribeAll(["/"], true);
       }
     }
   }
