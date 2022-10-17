@@ -327,12 +327,9 @@ export class NT4_Client {
   }
 
   private ws_sendTimestamp() {
-    let timeTopic = this.serverTopics.get(-1);
-    if (timeTopic) {
-      let timeToSend = this.getClientTime_us();
-      let txData = serialize([-1, 0, typestrIdxLookup["int"], timeToSend]);
-      this.ws_sendBinary(txData);
-    }
+    let timeToSend = this.getClientTime_us();
+    let txData = serialize([-1, 0, typestrIdxLookup["int"], timeToSend]);
+    this.ws_sendBinary(txData);
   }
 
   private ws_handleReceiveTimestamp(serverTimestamp: number, clientTimestamp: number) {
