@@ -370,7 +370,8 @@ export default class StatisticsController implements TabController {
       });
 
       // Calculate errors if using reference
-      if (this.MEASUREMENT_TYPE.value == "reference") {
+      if (this.MEASUREMENT_TYPE.value != "independent") {
+        let isAbsolute = this.MEASUREMENT_TYPE.value == "absolute";
         for (let valueIndex = 0; valueIndex < sampleTimes.length; valueIndex++) {
           let reference = sampleData[0][valueIndex];
           for (let fieldIndex = 1; fieldIndex < 3; fieldIndex++) {
@@ -378,7 +379,8 @@ export default class StatisticsController implements TabController {
             if (reference == null || measurement == null) {
               sampleData[fieldIndex][valueIndex] = null;
             } else {
-              sampleData[fieldIndex][valueIndex] = measurement - reference;
+              let error = measurement - reference;
+              sampleData[fieldIndex][valueIndex] = isAbsolute ? Math.abs(error) : error;
             }
           }
         }
