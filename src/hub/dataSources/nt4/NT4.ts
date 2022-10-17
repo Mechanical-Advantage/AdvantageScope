@@ -300,13 +300,13 @@ export class NT4_Client {
         }
       }
       if (!topicFound) {
-        throw "Topic " + topic + " not found in announced server topics!";
+        throw "Topic '" + topic + "' not found in announced server topics!";
       }
     }
 
     if (typeof topic !== "string") {
       if (topic.pubuid === -1) {
-        throw 'Topic "' + topic.name + '" is not published by this client.';
+        throw 'Topic "' + topic.name + '" is not published by this client!';
       }
       let txData = serialize([topic.pubuid, timestamp, topic.getTypeIdx(), value]);
       this.ws_sendBinary(txData);
