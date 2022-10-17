@@ -115,7 +115,7 @@ export class NT4_Client {
   private serverAddr = "";
   private serverConnectionActive = false;
   private serverConnectionRequested = false;
-  private serverTimeOffset_us = 0;
+  private serverTimeOffset_us: number | null = null;
 
   private uidCounter = 0;
   private subscriptions: Map<number, NT4_Subscription> = new Map();
@@ -284,6 +284,7 @@ export class NT4_Client {
   /** Send some new value to the server. The timestamp is whatever the current time is. */
   addSample(topic: NT4_Topic | string, value: any) {
     let timestamp = this.getServerTime_us();
+    if (timestamp === null) timestamp = 0;
     this.addTimestampedSample(topic, timestamp, value);
   }
 
@@ -317,13 +318,17 @@ export class NT4_Client {
   // Server/Client Time Sync Handling
 
   /** Returns the current client time in microseconds. */
-  getClientTime_us() {
+  getClientTime_us(): number {
     return new Date().getTime() * 1000;
   }
 
-  /** Returns the current server time in microseconds. */
-  getServerTime_us() {
-    return this.getClientTime_us() + this.serverTimeOffset_us;
+  /** Returns the current server time in microseconds (or null if unknown). */
+  getServerTime_us(): number | null {
+    if (this.serverTimeOffset_us === null) {
+      return null;
+    } else {
+      return this.getClientTime_us() + this.serverTimeOffset_us;
+    }
   }
 
   private ws_sendTimestamp() {
@@ -340,7 +345,7 @@ export class NT4_Client {
     let serverTimeAtRx = serverTimestamp + rtt / 2.0;
     this.serverTimeOffset_us = serverTimeAtRx - rxTime;
 
-    console.log("[NT4] New server time estimate: " + (this.getServerTime_us() / 1000000.0).toString());
+    console.log("[NT4] New server time estimate: " + (this.getServerTime_us()! / 1000000.0).toString());
   }
 
   //////////////////////////////////////////////////////////////
