@@ -8,15 +8,19 @@ export abstract class LiveDataSource {
 
   protected address: string | null = null;
   protected statusCallback: ((status: LiveDataSourceStatus) => void) | null = null;
-  protected outputCallback: ((log: Log) => void) | null = null;
+  protected outputCallback: ((log: Log, timeSupplier: () => number) => void) | null = null;
 
   /**
    * Generates log data from a live source.
    * @param address The IP address of the source
    * @param statusCallback A callback to be triggered when the status changes
-   * @param outputCallback A callback to be triggered when new data is available
+   * @param outputCallback A callback to be triggered whenever new data is available. This function is given a reference to the log object and a supplier function that returns the current server timestamp.
    */
-  connect(address: string, statusCallback: (status: LiveDataSourceStatus) => void, outputCallback: (log: Log) => void) {
+  connect(
+    address: string,
+    statusCallback: (status: LiveDataSourceStatus) => void,
+    outputCallback: (log: Log, timeSupplier: () => number) => void
+  ) {
     this.address = address;
     this.statusCallback = statusCallback;
     this.outputCallback = outputCallback;

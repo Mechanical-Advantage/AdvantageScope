@@ -5,6 +5,8 @@ import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import { NT4_Client, NT4_Topic } from "./nt4/NT4";
 
 export default class NT4Source extends LiveDataSource {
+  private AKIT_PREFIX = "/AdvantageKit";
+
   private akitMode: boolean;
   private log: Log | null = null;
   private client: NT4_Client | null = null;
@@ -17,7 +19,11 @@ export default class NT4Source extends LiveDataSource {
     this.akitMode = akitMode;
   }
 
-  connect(address: string, statusCallback: (status: LiveDataSourceStatus) => void, outputCallback: (log: Log) => void) {
+  connect(
+    address: string,
+    statusCallback: (status: LiveDataSourceStatus) => void,
+    outputCallback: (log: Log, timeSupplier: () => number) => void
+  ) {
     super.connect(address, statusCallback, outputCallback);
 
     if (window.preferences == null) {
@@ -32,9 +38,9 @@ export default class NT4Source extends LiveDataSource {
           if (!this.log) return;
           let type = this.getLogType(topic.type);
           if (type != null) {
-            this.log.createBlankField(topic.name, type);
+            this.log.createBlankField(this.getKeyFromTopic(topic), type);
           }
-          outputCallback(this.log);
+          this.runOutputCallback();
         },
         (topic: NT4_Topic) => {
           // Unannounce
@@ -48,7 +54,7 @@ export default class NT4Source extends LiveDataSource {
             this.connectServerTime = this.client.getServerTime_us();
           }
 
-          let key = this.akitMode ? topic.name.slice("/AdvantageKit".length) : topic.name;
+          let key = this.getKeyFromTopic(topic);
           let timestamp = Math.max(timestamp_us, this.connectServerTime == null ? 0 : this.connectServerTime) / 1000000;
           let type = this.getLogType(topic.type);
 
@@ -113,23 +119,22 @@ export default class NT4Source extends LiveDataSource {
                 break;
             }
           }
-          if (updated) outputCallback(this.log);
+          if (updated) this.runOutputCallback();
         },
         () => {
           // Connected
           this.setStatus(LiveDataSourceStatus.Active);
           this.log = new Log();
-          outputCallback(this.log);
-          this.noFieldsTimeout = setTimeout(() => {
-            window.sendMainMessage("error", {
-              title: "Problem with NT4 connection",
-              content:
-                "No fields were received from the server. " +
-                (this.akitMode
-                  ? "AdvantageKit mode is selected. Are you connecting to a server without AdvantageKit?"
-                  : "If this is unexpected, please check your connection settings and try again.")
-            });
-          }, 250);
+          this.runOutputCallback();
+          if (this.akitMode) {
+            this.noFieldsTimeout = setTimeout(() => {
+              window.sendMainMessage("error", {
+                title: "Problem with NT4 connection",
+                content:
+                  "No fields were received from the server. AdvantageKit mode is selected. Are you connecting to a server without AdvantageKit?"
+              });
+            }, 500);
+          }
         },
         () => {
           // Disconnected
@@ -139,7 +144,7 @@ export default class NT4Source extends LiveDataSource {
       );
       this.client.connect();
       if (this.akitMode) {
-        this.client?.subscribeAll(["/AdvantageKit/"], true);
+        this.client?.subscribeAll([this.AKIT_PREFIX + "/"], true);
       } else {
         this.client?.subscribeAll(["/"], true);
       }
@@ -149,6 +154,32 @@ export default class NT4Source extends LiveDataSource {
   stop() {
     super.stop();
     this.client?.disconnect();
+  }
+
+  /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */
+  private getKeyFromTopic(topic: NT4_Topic): string {
+    if (this.akitMode) {
+      return topic.name.slice(this.AKIT_PREFIX.length);
+    } else {
+      return topic.name;
+    }
+  }
+
+  /** Triggers the output callback using the correct timestamp supplier. */
+  private runOutputCallback() {
+    if (!this.outputCallback || !this.log) return;
+    this.outputCallback(this.log, () => {
+      if (this.client) {
+        let serverTime = this.client.getServerTime_us();
+        if (serverTime === null) {
+          return 10;
+        } else {
+          return serverTime / 1000000;
+        }
+      } else {
+        return 10;
+      }
+    });
   }
 
   private getLogType(ntType: string): LoggableType | null {

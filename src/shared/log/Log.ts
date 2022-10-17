@@ -105,9 +105,9 @@ export default class Log {
   /** Returns the range of timestamps across all fields. */
   getTimestampRange(): [number, number] {
     if (this.timestampRange == null) {
-      return this.DEFAULT_TIMESTAMP_RANGE;
+      return [...this.DEFAULT_TIMESTAMP_RANGE];
     } else {
-      return this.timestampRange;
+      return [...this.timestampRange];
     }
   }
 

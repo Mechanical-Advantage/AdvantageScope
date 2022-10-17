@@ -18,7 +18,6 @@ import WorkerManager from "./WorkerManager";
 
 // Constants
 const SAVE_PERIOD_MS = 250;
-const MIN_LIVE_RESYNC_SECS = 0.15; // Resync live data if out of sync by longer than this
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
 // Global variables
@@ -237,11 +236,14 @@ function startHistorical(path: string) {
             content: "There was a problem while reading the log file. Please try again."
           });
           break;
+        case HistorialDataSourceStatus.Stopped:
+          setLoading(false);
+          break;
       }
     },
     (log: Log) => {
-      window.log = log;
       logPath = path;
+      window.log = log;
       window.sidebar.refresh();
       window.tabs.refresh();
     }
@@ -301,22 +303,10 @@ function startLive(isSim: boolean) {
         window.selection.setLiveDisconnected();
       }
     },
-    (log: Log) => {
-      window.log = log;
+    (log: Log, timeSupplier: () => number) => {
       logPath = null;
-      if (log.getFieldKeys().length > 0) {
-        let logRange = window.log.getTimestampRange();
-        let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
-        let oldLiveZeroTime = window.selection.getLiveZeroTime();
-        if (oldLiveZeroTime == null || Math.abs(oldLiveZeroTime - newLiveZeroTime) > MIN_LIVE_RESYNC_SECS) {
-          window.selection.setLiveConnected(newLiveZeroTime);
-          if (oldLiveZeroTime) console.warn("Live data out of sync, resetting");
-        }
-        if (oldLiveZeroTime == null) {
-          window.selection.lock();
-        }
-      }
-
+      window.log = log;
+      window.selection.setLiveConnected(timeSupplier);
       window.sidebar.refresh();
       window.tabs.refresh();
     }

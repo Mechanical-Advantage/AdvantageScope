@@ -11,7 +11,7 @@ export default class Selection {
   private playbackStartReal: number = 0;
   private playbackSpeed: number = 1;
   private liveConnected: boolean = false;
-  private liveZeroTime: number | null = null; // The real timestamp that corresponds to zero in the log
+  private liveTimeSupplier: (() => number) | null = null;
 
   private now(): number {
     return new Date().getTime() / 1000;
@@ -104,8 +104,8 @@ export default class Selection {
           return time;
         }
       case SelectionMode.Locked:
-        if (this.liveZeroTime == null) return 0;
-        return this.getCurrentLiveTime();
+        if (this.liveTimeSupplier == null) return 0;
+        return this.liveTimeSupplier();
     }
   }
 
@@ -194,30 +194,30 @@ export default class Selection {
   }
 
   /** Records that the live connection has started. */
-  setLiveConnected(liveZeroTime: number) {
+  setLiveConnected(timeSupplier: () => number) {
+    let newConnection = !this.liveConnected;
     this.liveConnected = true;
-    this.liveZeroTime = liveZeroTime;
-    this.setMode(this.mode); // Just update buttons
+    this.liveTimeSupplier = timeSupplier;
+    if (newConnection) {
+      this.setMode(SelectionMode.Locked);
+    } else {
+      this.setMode(this.mode); // Just update buttons
+    }
   }
 
   /** Records that the live connection has stopped. */
   setLiveDisconnected() {
     this.unlock();
     this.liveConnected = false;
-    this.liveZeroTime = null;
+    this.liveTimeSupplier = null;
     this.setMode(this.mode); // Just update buttons
   }
 
-  /** Returns the current live zero time. */
-  getLiveZeroTime(): number | null {
-    return this.liveZeroTime;
-  }
-
   getCurrentLiveTime(): number | null {
-    if (this.liveZeroTime == null) {
+    if (this.liveTimeSupplier == null) {
       return null;
     } else {
-      return new Date().getTime() / 1000 - this.liveZeroTime + window.log.getTimestampRange()[0];
+      return this.liveTimeSupplier();
     }
   }
 

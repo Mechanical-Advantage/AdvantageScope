@@ -4,12 +4,18 @@ import RLOGDecoder from "./RLOGDecoder";
 
 export default class RLOGServerSource extends LiveDataSource {
   private RECONNECT_DELAY_MS = 1000;
+  private MIN_LIVE_RESYNC_SECS = 0.15; // Resync live data if out of sync by longer than this
 
   private log: Log | null = null;
   private decoder: RLOGDecoder | null = null;
   private timeout: NodeJS.Timeout | null = null;
+  private liveZeroTime = 0;
 
-  connect(address: string, statusCallback: (status: LiveDataSourceStatus) => void, outputCallback: (log: Log) => void) {
+  connect(
+    address: string,
+    statusCallback: (status: LiveDataSourceStatus) => void,
+    outputCallback: (log: Log, timeSupplier: () => number) => void
+  ) {
     super.connect(address, statusCallback, outputCallback);
 
     if (window.preferences == null) {
@@ -45,7 +51,25 @@ export default class RLOGServerSource extends LiveDataSource {
       if (decodeSuccess) {
         // New data, everything normal
         this.setStatus(LiveDataSourceStatus.Active);
-        if (this.outputCallback != null) this.outputCallback(this.log);
+
+        // Update time sync
+        if (this.log.getFieldKeys().length > 0) {
+          let logRange = window.log.getTimestampRange();
+          let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
+          if (Math.abs(this.liveZeroTime - newLiveZeroTime) > this.MIN_LIVE_RESYNC_SECS) {
+            this.liveZeroTime = newLiveZeroTime;
+          }
+        }
+
+        // Run output callback
+        if (this.outputCallback != null)
+          this.outputCallback(this.log, () => {
+            if (this.log) {
+              return new Date().getTime() / 1000 - this.liveZeroTime + this.log.getTimestampRange()[0];
+            } else {
+              return 0;
+            }
+          });
       } else {
         // Problem decoding, don't reconnect automatically
         this.setStatus(LiveDataSourceStatus.Error);
