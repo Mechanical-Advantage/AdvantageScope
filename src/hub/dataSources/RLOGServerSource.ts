@@ -3,7 +3,7 @@ import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import RLOGDecoder from "./RLOGDecoder";
 
 export default class RLOGServerSource extends LiveDataSource {
-  private RECONNECT_DELAY_MS = 1000;
+  private RECONNECT_DELAY_MS = 500;
   private MIN_LIVE_RESYNC_SECS = 0.15; // Resync live data if out of sync by longer than this
 
   private log: Log | null = null;
@@ -71,29 +71,32 @@ export default class RLOGServerSource extends LiveDataSource {
             }
           });
       } else {
-        // Problem decoding, don't reconnect automatically
-        this.setStatus(LiveDataSourceStatus.Error);
-        window.sendMainMessage("live-rlog-stop");
+        // Problem decoding, reconnect
+        this.reconnect();
       }
     } else {
       // Failed to connect (or just disconnected), stop and reconnect automatically
-      this.setStatus(LiveDataSourceStatus.Connecting);
-      window.sendMainMessage("live-rlog-stop");
-      this.timeout = setTimeout(() => {
-        if (window.preferences == null) {
-          // No preferences, can't reconnect
-          this.setStatus(LiveDataSourceStatus.Error);
-        } else {
-          // Try to reconnect
-          this.log = new Log();
-          this.decoder = new RLOGDecoder();
-          window.sendMainMessage("live-rlog-start", {
-            uuid: this.UUID,
-            address: this.address,
-            port: window.preferences.rlogPort
-          });
-        }
-      }, this.RECONNECT_DELAY_MS);
+      this.reconnect();
     }
+  }
+
+  private reconnect() {
+    this.setStatus(LiveDataSourceStatus.Connecting);
+    window.sendMainMessage("live-rlog-stop");
+    this.timeout = setTimeout(() => {
+      if (window.preferences == null) {
+        // No preferences, can't reconnect
+        this.setStatus(LiveDataSourceStatus.Error);
+      } else {
+        // Try to reconnect
+        this.log = new Log();
+        this.decoder = new RLOGDecoder();
+        window.sendMainMessage("live-rlog-start", {
+          uuid: this.UUID,
+          address: this.address,
+          port: window.preferences.rlogPort
+        });
+      }
+    }, this.RECONNECT_DELAY_MS);
   }
 }

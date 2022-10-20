@@ -32,9 +32,9 @@ export const DEFAULT_PREFS: Preferences = {
 };
 
 // Live RLOG
-export const RLOG_CONNECT_TIMEOUT_MS = 1000; // How long to wait when connecting
+export const RLOG_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
 export const RLOG_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout
-export const RLOG_HEARTBEAT_DELAY_MS = 1000; // How long to wait between heartbeats
+export const RLOG_HEARTBEAT_DELAY_MS = 500; // How long to wait between heartbeats
 export const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
 
 // Download

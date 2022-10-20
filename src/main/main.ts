@@ -175,6 +175,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "live-rlog-start":
+      rlogSockets[windowId]?.destroy();
       rlogSockets[windowId] = net.createConnection({
         host: message.data.address,
         port: message.data.port
@@ -196,7 +197,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         appendArray(data);
         if (rlogSocketTimeouts[windowId] != null) clearTimeout(rlogSocketTimeouts[windowId]);
         rlogSocketTimeouts[windowId] = setTimeout(() => {
-          rlogSockets[windowId].destroy();
+          rlogSockets[windowId]?.destroy();
         }, RLOG_DATA_TIMEOUT_MS);
 
         while (true) {
@@ -219,7 +220,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             raw: new Uint8Array(singleArray)
           });
           if (!success) {
-            rlogSockets[windowId].destroy();
+            rlogSockets[windowId]?.destroy();
           }
         }
       });
@@ -234,7 +235,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "live-rlog-stop":
-      rlogSockets[windowId].destroy();
+      rlogSockets[windowId]?.destroy();
       break;
 
     case "open-link":
@@ -540,7 +541,7 @@ function newTabPopup(window: BrowserWindow) {
       newTabMenu.append(
         new MenuItem({
           label: getTabTitle(tabType),
-          accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : index == 9 ? "CmdOrCtrl+0" : "",
+          accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
           click() {
             sendMessage(window, "new-tab", tabType);
           }
@@ -875,7 +876,7 @@ function setupMenu() {
             .map((tabType, index) => {
               return {
                 label: getTabTitle(tabType),
-                accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : index == 9 ? "CmdOrCtrl+0" : "",
+                accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
                 click(_, window) {
                   if (window == null || !hubWindows.includes(window)) return;
                   sendMessage(window, "new-tab", tabType);
@@ -1099,7 +1100,10 @@ function createHubWindow() {
   };
   createPorts(); // Create ports immediately so messages can be queued
   window.webContents.on("dom-ready", () => {
-    if (!firstLoad) createPorts(); // Create ports on reload
+    if (!firstLoad) {
+      createPorts(); // Create ports on reload
+      rlogSockets[window.id]?.destroy(); // Destroy any existing RLOG sockets
+    }
 
     // Init messages
     sendMessage(window, "set-frc-data", frcData);
