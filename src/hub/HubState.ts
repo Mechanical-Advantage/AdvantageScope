@@ -20,10 +20,6 @@ export interface TabState {
   type: TabType;
 }
 
-export interface MetadataState {
-  type: TabType.Metadata;
-}
-
 export interface LineGraphState {
   type: TabType.LineGraph;
   legends: {

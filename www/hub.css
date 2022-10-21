@@ -488,61 +488,63 @@ div.tab-centered {
   font-style: italic;
 }
 
-/* Metadata */
+/* Documentation */
 
-div.metadata-table-container {
-  height: 100%;
+div.documentation-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
   width: 100%;
+  height: 100%;
   overflow: auto;
 }
 
-table.metadata-table {
-  width: 100%;
-  table-layout: fixed;
-  text-align: left;
-  word-wrap: break-word;
-  border-collapse: separate;
-  border-spacing: 0;
+div.documentation-text {
+  padding: 15px;
 }
 
-table.metadata-table th:first-child {
-  width: 150px;
+div.documentation-text h1 {
+  margin: 10px 0px 10px 0px;
 }
 
-table.metadata-table th {
-  padding: 6px;
-  position: sticky;
-  top: 0px;
-  border-bottom: 1px solid #222;
-  background-color: #fff;
+div.documentation-text h2 {
+  margin: 10px 0px 10px 0px;
 }
 
-table.metadata-table td:first-child {
-  padding: 6px;
-  text-align: right;
-  font-weight: bold;
-  border-right: 1px solid #222;
+div.documentation-text h3 {
+  margin: 10px 0px 10px 0px;
 }
 
-table.metadata-table td:not(:first-child) {
-  padding: 6px;
-  font-family: monospace;
-  font-size: 14px;
-  user-select: text;
+div.documentation-text p {
+  margin: 12px 0px 12px 0px;
 }
 
-table.metadata-table td.no-data {
-  font-style: italic;
+div.documentation-text li {
+  margin: 5px 0px 5px 0px;
+}
+
+div.documentation-text code {
+  font-size: 16px;
+}
+
+div.documentation-text img {
+  max-width: 100%;
+  margin: 10px 0px 10px 0px;
+}
+
+div.documentation-text blockquote {
+  background-color: #ccc;
+  margin: 12px 0px 12px 0px;
+  padding: 10px;
+}
+
+div.documentation-text blockquote p {
+  margin: 0px;
 }
 
 @media (prefers-color-scheme: dark) {
-  table.metadata-table th {
-    border-bottom: 1px solid #eee;
-    background-color: #222;
-  }
-
-  table.metadata-table td:first-child {
-    border-right: 1px solid #eee;
+  div.documentation-text blockquote {
+    background-color: #444;
   }
 }
 
@@ -1335,37 +1337,6 @@ td.video-controls {
   text-align: center;
 }
 
-div.points-background-container {
-  position: absolute;
-  top: 30px;
-  height: calc(100% - 30px - var(--bottom-margin));
-  left: 0px;
-  width: 100%;
-  overflow: hidden;
-}
-
-div.points-background {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  background-color: #f4f4f4;
-  border: 1px solid #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.points-background {
-    background-color: #292929;
-    border: 1px solid #999;
-  }
-}
-
-div.points-background svg {
-  position: absolute;
-  stroke-width: 5px;
-}
-
 table.joysticks-config td {
   text-align: center;
 }
@@ -1397,5 +1368,94 @@ canvas.swerve-canvas {
   canvas.swerve-canvas {
     background-color: #292929;
     border: 1px solid #999;
+  }
+}
+
+div.points-background-container {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+div.points-background {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.points-background {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}
+
+div.points-background svg {
+  position: absolute;
+  stroke-width: 5px;
+}
+
+/* Metadata */
+
+div.metadata-table-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+table.metadata-table {
+  width: 100%;
+  table-layout: fixed;
+  text-align: left;
+  word-wrap: break-word;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table.metadata-table th:first-child {
+  width: 150px;
+}
+
+table.metadata-table th {
+  padding: 6px;
+  position: sticky;
+  top: 0px;
+  border-bottom: 1px solid #222;
+  background-color: #fff;
+}
+
+table.metadata-table td:first-child {
+  padding: 6px;
+  text-align: right;
+  font-weight: bold;
+  border-right: 1px solid #222;
+}
+
+table.metadata-table td:not(:first-child) {
+  padding: 6px;
+  font-family: monospace;
+  font-size: 14px;
+  user-select: text;
+}
+
+table.metadata-table td.no-data {
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  table.metadata-table th {
+    border-bottom: 1px solid #eee;
+    background-color: #222;
+  }
+
+  table.metadata-table td:first-child {
+    border-right: 1px solid #eee;
   }
 }

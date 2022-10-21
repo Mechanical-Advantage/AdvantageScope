@@ -1,5 +1,5 @@
 enum TabType {
-  Metadata,
+  Documentation,
   LineGraph,
   Table,
   Console,
@@ -7,9 +7,10 @@ enum TabType {
   Odometry,
   ThreeDimension,
   Video,
-  Points,
   Joysticks,
-  Swerve
+  Swerve,
+  Points,
+  Metadata
 }
 
 export default TabType;
@@ -20,8 +21,8 @@ export function getAllTabTypes(): TabType[] {
 
 export function getTabTitle(type: TabType): string {
   switch (type) {
-    case TabType.Metadata:
-      return "🔍";
+    case TabType.Documentation:
+      return "📖";
     case TabType.LineGraph:
       return "📉 Line Graph";
     case TabType.Table:
@@ -36,12 +37,14 @@ export function getTabTitle(type: TabType): string {
       return "👀 3D Field";
     case TabType.Video:
       return "🎬 Video";
-    case TabType.Points:
-      return "🔵 Points";
     case TabType.Joysticks:
       return "🎮 Joysticks";
     case TabType.Swerve:
       return "🦀 Swerve";
+    case TabType.Points:
+      return "🔵 Points";
+    case TabType.Metadata:
+      return "🔍 Metadata";
     default:
       return "";
   }

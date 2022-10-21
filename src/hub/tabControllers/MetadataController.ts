@@ -1,7 +1,7 @@
 import LogFieldTree from "../../shared/log/LogFieldTree";
 import TabType from "../../shared/TabType";
 import { arraysEqual } from "../../shared/util";
-import { MetadataState } from "../HubState";
+import { TabState } from "../HubState";
 import TabController from "../TabController";
 
 export default class MetadataController implements TabController {
@@ -17,11 +17,11 @@ export default class MetadataController implements TabController {
     this.TABLE_BODY = content.getElementsByClassName("metadata-table")[0].firstElementChild as HTMLElement;
   }
 
-  saveState(): MetadataState {
+  saveState(): TabState {
     return { type: TabType.Metadata };
   }
 
-  restoreState(state: MetadataState) {}
+  restoreState(state: TabState) {}
 
   periodic() {}
 
