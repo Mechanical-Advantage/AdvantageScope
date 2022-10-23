@@ -18,7 +18,7 @@ const typestrIdxLookup: { [id: string]: number } = {
   "string[]": 20
 };
 
-export class NT4_Subscription {
+class NT4_Subscription {
   uid = -1;
   topics = new Set();
   options = new NT4_SubscriptionOptions();
@@ -31,14 +31,14 @@ export class NT4_Subscription {
     };
   }
 
-  toUnSubscribeObj() {
+  toUnsubscribeObj() {
     return {
       subuid: this.uid
     };
   }
 }
 
-export class NT4_SubscriptionOptions {
+class NT4_SubscriptionOptions {
   periodic = 0.1;
   all = false;
   topicsOnly = false;
@@ -55,48 +55,32 @@ export class NT4_SubscriptionOptions {
 }
 
 export class NT4_Topic {
-  uid = -1;
-  pubuid = -1;
+  uid = -1; // "id" if server topic, "pubuid" if published
   name = "";
   type = "";
-  properties = new NT4_TopicProperties();
+  properties: { [id: string]: any } = {};
 
   toPublishObj() {
     return {
       name: this.name,
       type: this.type,
-      pubuid: this.pubuid,
-      properties: this.properties.toUpdateObj()
+      pubuid: this.uid,
+      properties: this.properties
     };
   }
 
   toUnpublishObj() {
     return {
-      pubuid: this.pubuid
-    };
-  }
-
-  toPropertiesObj() {
-    return {
-      name: this.name,
-      update: this.properties.toUpdateObj()
+      pubuid: this.uid
     };
   }
 
   getTypeIdx() {
-    return typestrIdxLookup[this.type];
-  }
-}
-
-export class NT4_TopicProperties {
-  isPersistent = false;
-  isRetained = false;
-
-  toUpdateObj() {
-    return {
-      persistent: this.isPersistent,
-      retrained: this.isRetained
-    };
+    if (this.type in typestrIdxLookup) {
+      return typestrIdxLookup[this.type];
+    } else {
+      return 5; // Default to binary
+    }
   }
 }
 
@@ -119,8 +103,8 @@ export class NT4_Client {
 
   private uidCounter = 0;
   private subscriptions: Map<number, NT4_Subscription> = new Map();
-  private clientPublishedTopics: Map<number, NT4_Topic> = new Map();
-  private serverTopics: Map<number, NT4_Topic> = new Map();
+  private publishedTopics: Map<string, NT4_Topic> = new Map();
+  private serverTopics: Map<string, NT4_Topic> = new Map();
 
   /**
    * Creates a new NT4 client without connecting.
@@ -178,9 +162,9 @@ export class NT4_Client {
    * @param topicPatterns A list of topics or prefixes to include in the subscription.
    * @param prefixMode If true, use patterns as prefixes. If false, only subscribe to topics that are an exact match.
    * @param period The period to return data in seconds.
-   * @returns A subscription object.
+   * @returns A subscription ID that can be used to unsubscribe.
    */
-  subscribePeriodic(topicPatterns: string[], prefixMode: boolean, period: number) {
+  subscribePeriodic(topicPatterns: string[], prefixMode: boolean, period: number): number {
     let newSub = new NT4_Subscription();
     newSub.uid = this.getNewUID();
     newSub.topics = new Set(topicPatterns);
@@ -191,16 +175,16 @@ export class NT4_Client {
     if (this.serverConnectionActive) {
       this.ws_subscribe(newSub);
     }
-    return newSub;
+    return newSub.uid;
   }
 
   /**
    * Add a new subscription, reading all value updates.
    * @param topicPatterns A list of topics or prefixes to include in the subscription.
    * @param prefixMode If true, use patterns as prefixes. If false, only subscribe to topics that are an exact match.
-   * @returns A subscription object.
+   * @returns A subscription ID that can be used to unsubscribe.
    */
-  subscribeAll(topicPatterns: string[], prefixMode: boolean) {
+  subscribeAll(topicPatterns: string[], prefixMode: boolean): number {
     let newSub = new NT4_Subscription();
     newSub.uid = this.getNewUID();
     newSub.topics = new Set(topicPatterns);
@@ -211,16 +195,16 @@ export class NT4_Client {
     if (this.serverConnectionActive) {
       this.ws_subscribe(newSub);
     }
-    return newSub;
+    return newSub.uid;
   }
 
   /**
    * Add a new subscription, reading only topic announcements (not values).
    * @param topicPatterns A list of topics or prefixes to include in the subscription.
    * @param prefixMode If true, use patterns as prefixes. If false, only subscribe to topics that are an exact match.
-   * @returns A subscription object.
+   * @returns A subscription ID that can be used to unsubscribe.
    */
-  subscribeTopicsOnly(topicPatterns: string[], prefixMode: boolean): NT4_Subscription {
+  subscribeTopicsOnly(topicPatterns: string[], prefixMode: boolean): number {
     let newSub = new NT4_Subscription();
     newSub.uid = this.getNewUID();
     newSub.topics = new Set(topicPatterns);
@@ -231,12 +215,16 @@ export class NT4_Client {
     if (this.serverConnectionActive) {
       this.ws_subscribe(newSub);
     }
-    return newSub;
+    return newSub.uid;
   }
 
   /** Given an existing subscription, unsubscribe from it. */
-  unsubscribe(subscription: NT4_Subscription) {
-    this.subscriptions.delete(subscription.uid);
+  unsubscribe(subscriptionId: number) {
+    let subscription = this.subscriptions.get(subscriptionId);
+    if (!subscription) {
+      throw 'Unknown subscription ID "' + subscriptionId + '"';
+    }
+    this.subscriptions.delete(subscriptionId);
     if (this.serverConnectionActive) {
       this.ws_unsubscribe(subscription);
     }
@@ -244,74 +232,103 @@ export class NT4_Client {
 
   /** Unsubscribe from all current subscriptions. */
   clearAllSubscriptions() {
-    for (const sub of this.subscriptions.values()) {
-      this.unsubscribe(sub);
+    for (const subscriptionId of this.subscriptions.keys()) {
+      this.unsubscribe(subscriptionId);
     }
   }
 
-  /** Set the properties of a particular topic. */
-  setProperties(topic: NT4_Topic, isPersistent: boolean, isRetained: boolean) {
-    topic.properties.isPersistent = isPersistent;
-    topic.properties.isRetained = isRetained;
+  /**
+   * Set the properties of a particular topic.
+   * @param topic The topic to update
+   * @param properties The set of new properties
+   */
+  setProperties(topic: string, properties: { [id: string]: any }) {
+    // Update local topics
+    let updateTopic = (toUpdate: NT4_Topic) => {
+      for (const key of Object.keys(properties)) {
+        let value = properties[key];
+        if (value === null) {
+          delete toUpdate.properties[key];
+        } else {
+          toUpdate.properties[key] = value;
+        }
+      }
+    };
+    let publishedTopic = this.publishedTopics.get(topic);
+    if (publishedTopic) updateTopic(publishedTopic);
+    let serverTopic = this.serverTopics.get(topic);
+    if (serverTopic) updateTopic(serverTopic);
+
+    // Send new properties to server
     if (this.serverConnectionActive) {
-      this.ws_setproperties(topic);
+      this.ws_setproperties(topic, properties);
     }
   }
 
-  /** Publish a new topic from this client with the provided name and type. Returns a topic object. */
-  publishNewTopic(name: string, type: string): NT4_Topic {
-    let newTopic = new NT4_Topic();
-    newTopic.pubuid = this.getNewUID();
-    newTopic.name = name;
-    newTopic.type = type;
+  /** Set whether a topic is persistent.
+   *
+   * If true, the last set value will be periodically saved to
+   * persistent storage on the server and be restored during server
+   * startup. Topics with this property set to true will not be
+   * deleted by the server when the last publisher stops publishing.
+   */
+  setPersistent(topic: string, isPersistent: boolean) {
+    this.setProperties(topic, { persistent: isPersistent });
+  }
 
-    this.clientPublishedTopics.set(newTopic.uid, newTopic);
+  /** Set whether a topic is retained.
+   *
+   * Topics with this property set to true will not be deleted by
+   * the server when the last publisher stops publishing.
+   */
+  setRetained(topic: string, isRetained: boolean) {
+    this.setProperties(topic, { retained: isRetained });
+  }
+
+  /** Publish a new topic from this client with the provided name and type. */
+  publishNewTopic(topic: string, type: string) {
+    if (this.publishedTopics.has(topic)) {
+      return;
+    }
+    let newTopic = new NT4_Topic();
+    newTopic.name = topic;
+    newTopic.uid = this.getNewUID();
+    newTopic.type = type;
+    this.publishedTopics.set(topic, newTopic);
+
     if (this.serverConnectionActive) {
       this.ws_publish(newTopic);
     }
-
-    return newTopic;
+    return;
   }
 
   /** Unpublish a previously-published topic from this client. */
-  unpublishTopic(topic: NT4_Topic) {
-    this.clientPublishedTopics.delete(topic.uid);
+  unpublishTopic(topic: string) {
+    let topicObj = this.publishedTopics.get(topic);
+    if (!topicObj) {
+      throw 'Topic "' + topic + '" not found';
+    }
+    this.publishedTopics.delete(topic);
     if (this.serverConnectionActive) {
-      this.ws_unpublish(topic);
+      this.ws_unpublish(topicObj);
     }
   }
 
   /** Send some new value to the server. The timestamp is whatever the current time is. */
-  addSample(topic: NT4_Topic | string, value: any) {
+  addSample(topic: string, value: any) {
     let timestamp = this.getServerTime_us();
     if (timestamp === null) timestamp = 0;
     this.addTimestampedSample(topic, timestamp, value);
   }
 
   /** Send some new timestamped value to the server. */
-  addTimestampedSample(topic: NT4_Topic | string, timestamp: number, value: any) {
-    if (typeof topic === "string") {
-      let topicFound = false;
-      // Slow-lookup - strings are assumed to be topic names for things the server has already announced.
-      for (const topicIter of this.serverTopics.values()) {
-        if (topicIter.name === topic) {
-          topic = topicIter;
-          topicFound = true;
-          break;
-        }
-      }
-      if (!topicFound) {
-        throw "Topic '" + topic + "' not found in announced server topics!";
-      }
+  addTimestampedSample(topic: string, timestamp: number, value: any) {
+    let topicObj = this.publishedTopics.get(topic);
+    if (!topicObj) {
+      throw 'Topic "' + topic + '" not found';
     }
-
-    if (typeof topic !== "string") {
-      if (topic.pubuid === -1) {
-        throw 'Topic "' + topic.name + '" is not published by this client!';
-      }
-      let txData = serialize([topic.pubuid, timestamp, topic.getTypeIdx(), value]);
-      this.ws_sendBinary(txData);
-    }
+    let txData = serialize([topicObj.uid, timestamp, topicObj.getTypeIdx(), value]);
+    this.ws_sendBinary(txData);
   }
 
   //////////////////////////////////////////////////////////////
@@ -356,7 +373,7 @@ export class NT4_Client {
   }
 
   private ws_unsubscribe(subscription: NT4_Subscription) {
-    this.ws_sendJSON("unsubscribe", subscription.toUnSubscribeObj());
+    this.ws_sendJSON("unsubscribe", subscription.toUnsubscribeObj());
   }
 
   private ws_publish(topic: NT4_Topic) {
@@ -367,8 +384,11 @@ export class NT4_Client {
     this.ws_sendJSON("unpublish", topic.toUnpublishObj());
   }
 
-  private ws_setproperties(topic: NT4_Topic) {
-    this.ws_sendJSON("setproperties", topic.toPropertiesObj());
+  private ws_setproperties(topic: string, newProperties: { [id: string]: any }) {
+    this.ws_sendJSON("setproperties", {
+      name: topic,
+      update: newProperties
+    });
   }
 
   private ws_sendJSON(method: string, params: any) {
@@ -396,14 +416,14 @@ export class NT4_Client {
   private ws_onOpen() {
     // Set the flag allowing general server communication
     this.serverConnectionActive = true;
+    console.log("[NT4] Connected with idx " + this.clientIdx.toString());
 
     // Sync timestamps
     this.ws_sendTimestamp();
 
     // Publish any existing topics
-    for (const topic of this.clientPublishedTopics.values()) {
+    for (const topic of this.publishedTopics.values()) {
       this.ws_publish(topic);
-      this.ws_setproperties(topic);
     }
 
     // Subscribe to existing subscriptions
@@ -426,15 +446,14 @@ export class NT4_Client {
     // Clear out any local cache of server state
     this.serverTopics.clear();
 
-    console.log("[NT4] Socket is closed: ", event.reason);
-    if (this.serverConnectionRequested) {
-      console.log("[NT4] Reconnect will be attempted in 0.5 second.");
-      setTimeout(() => this.ws_connect(), 500);
+    if (event.reason !== "") {
+      console.log("[NT4] Socket is closed: ", event.reason);
     }
-
     if (!event.wasClean) {
-      console.error("[NT4] Socket encountered error!");
       this.useSecure = !this.useSecure;
+    }
+    if (this.serverConnectionRequested) {
+      setTimeout(() => this.ws_connect(), 500);
     }
   }
 
@@ -447,19 +466,19 @@ export class NT4_Client {
       // JSON array
       let msgData = JSON.parse(event.data);
       if (!Array.isArray(msgData)) {
-        console.log("[NT4] Ignoring text message, JSON parsing did not produce an array at the top level.");
+        console.warn("[NT4] Ignoring text message, JSON parsing did not produce an array at the top level.");
         return;
       }
 
       msgData.forEach((msg) => {
         // Validate proper format of message
         if (typeof msg !== "object") {
-          console.log("[NT4] Ignoring text message, JSON parsing did not produce an object.");
+          console.warn("[NT4] Ignoring text message, JSON parsing did not produce an object.");
           return;
         }
 
         if (!("method" in msg) || !("params" in msg)) {
-          console.log("[NT4] Ignoring text message, JSON parsing did not find all required fields.");
+          console.warn("[NT4] Ignoring text message, JSON parsing did not find all required fields.");
           return;
         }
 
@@ -467,38 +486,48 @@ export class NT4_Client {
         let params = msg["params"];
 
         if (typeof method !== "string") {
-          console.log('[NT4] Ignoring text message, JSON parsing found "method", but it wasn\'t a string.');
+          console.warn('[NT4] Ignoring text message, JSON parsing found "method", but it wasn\'t a string.');
           return;
         }
 
         if (typeof params !== "object") {
-          console.log('[NT4] Ignoring text message, JSON parsing found "params", but it wasn\'t an object.');
+          console.warn('[NT4] Ignoring text message, JSON parsing found "params", but it wasn\'t an object.');
           return;
         }
 
         // Message validates reasonably, switch based on supported methods
         if (method === "announce") {
           let newTopic = new NT4_Topic();
-          newTopic.name = params.name;
           newTopic.uid = params.id;
-          if ("pubuid" in params) {
-            newTopic.pubuid = params.pubuid;
-          }
+          newTopic.name = params.name;
           newTopic.type = params.type;
-          newTopic.properties.isPersistent = params.properties.persistent;
-          newTopic.properties.isRetained = params.properties.retained;
-          this.serverTopics.set(newTopic.uid, newTopic);
+          newTopic.properties = params.properties;
+          this.serverTopics.set(newTopic.name, newTopic);
           this.onTopicAnnounce(newTopic);
         } else if (method === "unannounce") {
-          let removedTopic = this.serverTopics.get(params.id);
+          let removedTopic = this.serverTopics.get(params.name);
           if (!removedTopic) {
-            console.log("[NT4] Ignoring unannounce, topic was not previously announced.");
+            console.warn("[NT4] Ignoring unannounce, topic was not previously announced.");
             return;
           }
-          this.serverTopics.delete(removedTopic.uid);
+          this.serverTopics.delete(removedTopic.name);
           this.onTopicUnannounce(removedTopic);
+        } else if (method === "properties") {
+          let topic = this.serverTopics.get(params.name);
+          if (!topic) {
+            console.warn("[NT4] Ignoring set properties, topic was not previously announced.");
+            return;
+          }
+          for (const key of Object.keys(params.update)) {
+            let value = params.update[key];
+            if (value === null) {
+              delete topic.properties[key];
+            } else {
+              topic.properties[key] = value;
+            }
+          }
         } else {
-          console.log("[NT4] Ignoring text message - unknown method " + method);
+          console.warn("[NT4] Ignoring text message - unknown method " + method);
           return;
         }
       });
@@ -511,12 +540,22 @@ export class NT4_Client {
         let value = unpackedData[3];
 
         if (topicID >= 0) {
-          let topic = this.serverTopics.get(topicID);
-          if (topic) this.onNewTopicData(topic, timestamp_us, value);
+          let topic: NT4_Topic | null = null;
+          for (let serverTopic of this.serverTopics.values()) {
+            if (serverTopic.uid === topicID) {
+              topic = serverTopic;
+              return;
+            }
+          }
+          if (!topic) {
+            console.warn("[NT4] Ignoring binary data - unknown topic ID " + topicID.toString());
+            return;
+          }
+          this.onNewTopicData(topic, timestamp_us, value);
         } else if (topicID === -1) {
           this.ws_handleReceiveTimestamp(timestamp_us, value);
         } else {
-          console.log("[NT4] Ignoring binary data - invalid topic id " + topicID.toString());
+          console.warn("[NT4] Ignoring binary data - invalid topic ID " + topicID.toString());
         }
       });
     }
@@ -541,8 +580,6 @@ export class NT4_Client {
     this.ws.addEventListener("message", (event: MessageEvent) => this.ws_onMessage(event));
     this.ws.addEventListener("close", (event: CloseEvent) => this.ws_onClose(event));
     this.ws.addEventListener("error", () => this.ws_onError());
-
-    console.log("[NT4] Connected with idx " + this.clientIdx.toString());
   }
 
   //////////////////////////////////////////////////////////////
