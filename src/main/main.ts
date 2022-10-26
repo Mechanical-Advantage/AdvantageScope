@@ -20,7 +20,7 @@ import { Client } from "ssh2";
 import { FRCData } from "../shared/FRCData";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
-import TabType, { getAllTabTypes, getTabTitle } from "../shared/TabType";
+import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import { createUUID } from "../shared/util";
 import checkForUpdate from "./checkForUpdate";
@@ -272,8 +272,8 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       let lockedRange: [number, number] | null = message.data.lockedRange;
       let unitConversion: UnitConversionPreset = message.data.unitConversion;
 
-      const menu = new Menu();
-      menu.append(
+      const editAxisMenu = new Menu();
+      editAxisMenu.append(
         new MenuItem({
           label: "Lock Axis",
           type: "checkbox",
@@ -287,7 +287,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
-      menu.append(
+      editAxisMenu.append(
         new MenuItem({
           label: "Edit Range...",
           enabled: lockedRange != null,
@@ -302,12 +302,12 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
-      menu.append(
+      editAxisMenu.append(
         new MenuItem({
           type: "separator"
         })
       );
-      menu.append(
+      editAxisMenu.append(
         new MenuItem({
           label: "Unit Conversion...",
           click() {
@@ -321,10 +321,30 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
-      menu.popup({
+      editAxisMenu.popup({
         window: window,
         x: message.data.x,
         y: message.data.y
+      });
+      break;
+
+    case "ask-rename-tab":
+      const renameTabMenu = new Menu();
+      renameTabMenu.append(
+        new MenuItem({
+          label: "Rename...",
+          click() {
+            createRenameTabWindow(window, message.data.name, (newName) => {
+              sendMessage(window, "rename-tab", {
+                index: message.data.index,
+                name: newName
+              });
+            });
+          }
+        })
+      );
+      renameTabMenu.popup({
+        window: window
       });
       break;
 
@@ -335,10 +355,11 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "update-satellite":
       let uuid = message.data.uuid;
       let command = message.data.command;
+      let title = message.data.title;
       if (uuid in satelliteWindows) {
         satelliteWindows[uuid].forEach((satellite) => {
           if (satellite.isVisible()) {
-            sendMessage(satellite, "render", command);
+            sendMessage(satellite, "render", { command: command, title: title });
           }
         });
       }
@@ -540,7 +561,7 @@ function newTabPopup(window: BrowserWindow) {
     .forEach((tabType, index) => {
       newTabMenu.append(
         new MenuItem({
-          label: getTabTitle(tabType),
+          label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
           accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
           click() {
             sendMessage(window, "new-tab", tabType);
@@ -875,7 +896,7 @@ function setupMenu() {
             .slice(1)
             .map((tabType, index) => {
               return {
-                label: getTabTitle(tabType),
+                label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
                 accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
                 click(_, window) {
                   if (window == null || !hubWindows.includes(window)) return;
@@ -1212,6 +1233,46 @@ function createUnitConversionWindow(
     port2.start();
   });
   unitConversionWindow.loadFile(path.join(__dirname, "../www/unitConversion.html"));
+}
+
+/**
+ * Creates a new window to edit a tab name.
+ * @param parentWindow The parent window to use for alignment
+ */
+function createRenameTabWindow(
+  parentWindow: Electron.BrowserWindow,
+  name: string,
+  callback: (newName: string) => void
+) {
+  const renameTabWindow = new BrowserWindow({
+    width: 300,
+    height: process.platform == "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    useContentSize: true,
+    resizable: false,
+    icon: WINDOW_ICON,
+    show: false,
+    parent: parentWindow,
+    modal: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  renameTabWindow.setMenu(null);
+  renameTabWindow.once("ready-to-show", parentWindow.show);
+  renameTabWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    renameTabWindow.webContents.postMessage("port", null, [port1]);
+    port2.postMessage(name);
+    port2.on("message", (event) => {
+      renameTabWindow.destroy();
+      callback(event.data);
+    });
+    port2.start();
+  });
+  renameTabWindow.loadFile(path.join(__dirname, "../www/renameTab.html"));
 }
 
 /**

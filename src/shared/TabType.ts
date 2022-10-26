@@ -14,34 +14,72 @@ enum TabType {
 
 export default TabType;
 
+export const TIMELINE_VIZ_TYPES: TabType[] = [
+  TabType.Odometry,
+  TabType.ThreeDimension,
+  TabType.Video,
+  TabType.Points,
+  TabType.Joysticks,
+  TabType.Swerve
+];
+
 export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType == "number") as TabType[];
 }
 
-export function getTabTitle(type: TabType): string {
+export function getDefaultTabTitle(type: TabType): string {
+  switch (type) {
+    case TabType.Metadata:
+      return "";
+    case TabType.LineGraph:
+      return "Line Graph";
+    case TabType.Table:
+      return "Table";
+    case TabType.Console:
+      return "Console";
+    case TabType.Statistics:
+      return "Statistics";
+    case TabType.Odometry:
+      return "Odometry";
+    case TabType.ThreeDimension:
+      return "3D Field";
+    case TabType.Video:
+      return "Video";
+    case TabType.Points:
+      return "Points";
+    case TabType.Joysticks:
+      return "Joysticks";
+    case TabType.Swerve:
+      return "Swerve";
+    default:
+      return "";
+  }
+}
+
+export function getTabIcon(type: TabType): string {
   switch (type) {
     case TabType.Metadata:
       return "🔍";
     case TabType.LineGraph:
-      return "📉 Line Graph";
+      return "📉";
     case TabType.Table:
-      return "🔢 Table";
+      return "🔢";
     case TabType.Console:
-      return "💬 Console";
+      return "💬";
     case TabType.Statistics:
-      return "📊 Statistics";
+      return "📊";
     case TabType.Odometry:
-      return "🗺 Odometry";
+      return "🗺";
     case TabType.ThreeDimension:
-      return "👀 3D Field";
+      return "👀";
     case TabType.Video:
-      return "🎬 Video";
+      return "🎬";
     case TabType.Points:
-      return "🔵 Points";
+      return "🔵";
     case TabType.Joysticks:
-      return "🎮 Joysticks";
+      return "🎮";
     case TabType.Swerve:
-      return "🦀 Swerve";
+      return "🦀";
     default:
       return "";
   }

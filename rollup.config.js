@@ -23,6 +23,7 @@ export default [
   bundle("hub/csvWorker.ts", "hub$csvWorker.js"),
   bundle("editRange.ts", "editRange.js"),
   bundle("unitConversion.ts", "unitConversion.js"),
+  bundle("renameTab.ts", "renameTab.js"),
   bundle("download.ts", "download.js"),
   bundle("satellite.ts", "satellite.js"),
   bundle("preferences.ts", "preferences.js")

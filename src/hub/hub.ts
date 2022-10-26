@@ -428,6 +428,10 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.editAxis(message.data.isLeft, message.data.lockedRange, message.data.unitConversion);
       break;
 
+    case "rename-tab":
+      window.tabs.renameTab(message.data.index, message.data.name);
+      break;
+
     case "video-data":
       window.tabs.processVideoData(message.data);
       break;

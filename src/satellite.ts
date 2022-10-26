@@ -1,7 +1,8 @@
 import { FRCData } from "./shared/FRCData";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
-import TabType, { getTabTitle } from "./shared/TabType";
+import TabType, { getTabIcon } from "./shared/TabType";
+import { htmlEncode } from "./shared/util";
 import JoysticksVisualizer from "./shared/visualizers/JoysticksVisualizer";
 import OdometryVisualizer from "./shared/visualizers/OdometryVisualizer";
 import PointsVisualizer from "./shared/visualizers/PointsVisualizer";
@@ -21,6 +22,7 @@ declare global {
 
 let visualizer: Visualizer | null = null;
 let type: TabType | null = null;
+let title: string = "";
 let messagePort: MessagePort | null = null;
 let lastAspectRatio: number | null = null;
 let lastCommand: any = null;
@@ -49,10 +51,6 @@ window.addEventListener("message", (event) => {
           (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
           (document.getElementById("joysticks") as HTMLElement).hidden = type != TabType.Joysticks;
           (document.getElementById("swerve") as HTMLElement).hidden = type != TabType.Swerve;
-
-          // Update title
-          let title = document.getElementsByTagName("title")[0] as HTMLElement;
-          title.innerHTML = getTabTitle(type) + " &mdash; Advantage Scope";
 
           // Create visualizer
           switch (type) {
@@ -85,8 +83,18 @@ window.addEventListener("message", (event) => {
           break;
 
         case "render":
+          // Update title
+          let titleElement = document.getElementsByTagName("title")[0] as HTMLElement;
+          let newTitle = message.data.title;
+          if (newTitle != title) {
+            titleElement.innerHTML =
+              (type ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; Advantage Scope";
+            title = newTitle;
+          }
+
+          // Render frame
           lastCommand = message.data;
-          let aspectRatio = visualizer?.render(message.data);
+          let aspectRatio = visualizer?.render(message.data.command);
           if (aspectRatio) processAspectRatio(aspectRatio);
           break;
 

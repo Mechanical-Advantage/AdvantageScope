@@ -1,4 +1,5 @@
-import TabType, { getTabTitle } from "../shared/TabType";
+import { rename } from "original-fs";
+import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import { TabGroupState } from "./HubState";
 import ScrollSensor from "./ScrollSensor";
@@ -13,6 +14,7 @@ import StatisticsController from "./tabControllers/StatisticsController";
 import SwerveController from "./tabControllers/SwerveController";
 import TableController from "./tabControllers/TableController";
 import ThreeDimensionController from "./tabControllers/ThreeDimensionController";
+import TimelineVizController from "./tabControllers/TimelineVizController";
 import VideoController from "./tabControllers/VideoController";
 
 export default class Tabs {
@@ -30,6 +32,7 @@ export default class Tabs {
 
   private tabList: {
     type: TabType;
+    title: string;
     controller: TabController;
     titleElement: HTMLElement;
     contentElement: HTMLElement;
@@ -49,6 +52,23 @@ export default class Tabs {
           event.clientY <= rect.bottom
         ) {
           this.setSelected(index);
+        }
+      });
+    });
+    this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
+      this.tabList.forEach((tab, index) => {
+        if (index == 0) return;
+        let rect = tab.titleElement.getBoundingClientRect();
+        if (
+          event.clientX >= rect.left &&
+          event.clientX <= rect.right &&
+          event.clientY >= rect.top &&
+          event.clientY <= rect.bottom
+        ) {
+          window.sendMainMessage("ask-rename-tab", {
+            index: index,
+            name: this.tabList[index].title
+          });
         }
       });
     });
@@ -106,7 +126,11 @@ export default class Tabs {
   saveState(): TabGroupState {
     return {
       selected: this.selectedTab,
-      tabs: this.tabList.map((tab) => tab.controller.saveState())
+      tabs: this.tabList.map((tab, index) => {
+        let state = tab.controller.saveState();
+        state.title = this.tabList[index].title;
+        return state;
+      })
     };
   }
 
@@ -116,8 +140,9 @@ export default class Tabs {
       this.VIEWER.removeChild(tab.contentElement);
     });
     this.tabList = [];
-    state.tabs.forEach((tabState) => {
+    state.tabs.forEach((tabState, index) => {
       this.addTab(tabState.type);
+      if (tabState.title) this.renameTab(index, tabState.title);
       this.tabList[this.tabList.length - 1].controller.restoreState(tabState);
     });
     this.selectedTab = state.selected;
@@ -133,7 +158,6 @@ export default class Tabs {
 
   /** Creates a new tab. */
   addTab(type: TabType) {
-    let title = getTabTitle(type);
     let contentElement: HTMLElement;
     let controller: TabController;
     switch (type) {
@@ -192,7 +216,7 @@ export default class Tabs {
     // Create title element
     let titleElement = document.createElement("div");
     titleElement.classList.add("tab");
-    titleElement.innerText = title;
+    titleElement.innerText = getTabIcon(type) + " " + getDefaultTabTitle(type);
 
     // Save to tab list
     if (this.tabList.length == 0) {
@@ -200,6 +224,7 @@ export default class Tabs {
     }
     this.tabList.splice(this.selectedTab + 1, 0, {
       type: type,
+      title: getDefaultTabTitle(type),
       controller: controller,
       titleElement: titleElement,
       contentElement: contentElement
@@ -248,6 +273,16 @@ export default class Tabs {
   editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
       (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
+    }
+  }
+
+  /** Renames a single tab. */
+  renameTab(index: number, name: string) {
+    let tab = this.tabList[index];
+    tab.title = name;
+    tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
+    if (TIMELINE_VIZ_TYPES.includes(tab.type)) {
+      (tab.controller as TimelineVizController).setTitle(name);
     }
   }
 

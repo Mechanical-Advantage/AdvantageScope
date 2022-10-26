@@ -24,6 +24,7 @@ export default abstract class TimelineVizController implements TabController {
   private CONFIG_TABLE: HTMLElement;
 
   private type: TabType;
+  private title: string = "";
   private fieldConfig: { element: HTMLElement; type: LoggableType }[];
   private fields: (string | null)[] = [];
   private visualizer: Visualizer;
@@ -177,6 +178,11 @@ export default abstract class TimelineVizController implements TabController {
     this.updateFields();
   }
 
+  /** Called when this tab's title changes, so that the updated title can be sent to the satellites. */
+  setTitle(title: string) {
+    this.title = title;
+  }
+
   periodic() {}
 
   /** Called every 15ms (regardless of the visible tab). */
@@ -212,7 +218,8 @@ export default abstract class TimelineVizController implements TabController {
     if (!this.CONTENT.hidden) this.visualizer.render(command);
     window.sendMainMessage("update-satellite", {
       uuid: this.UUID,
-      command: command
+      command: command,
+      title: this.title
     });
   }
 

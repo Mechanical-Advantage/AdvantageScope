@@ -18,6 +18,7 @@ export interface TabGroupState {
 
 export interface TabState {
   type: TabType;
+  title?: string;
 }
 
 export interface MetadataState {
