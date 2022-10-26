@@ -68,7 +68,7 @@ export default class Tabs {
         }
       });
     });
-    this.SCROLL_OVERLAY.addEventListener("mouseout", (event) => {
+    this.SCROLL_OVERLAY.addEventListener("mouseout", () => {
       this.tabList.forEach((tab) => {
         tab.titleElement.classList.remove("tab-hovered");
       });
@@ -83,6 +83,7 @@ export default class Tabs {
     });
 
     // Add default tabs
+    this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
 
     // Scroll management
