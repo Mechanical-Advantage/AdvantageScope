@@ -1,6 +1,6 @@
+import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import { arraysEqual, setsEqual, smartSort } from "../shared/util";
-import { SidebarState } from "./HubState";
 
 export default class Sidebar {
   private SIDEBAR = document.getElementsByClassName("side-bar")[0] as HTMLElement;

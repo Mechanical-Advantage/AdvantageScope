@@ -1,4 +1,4 @@
-import { TabState } from "./HubState";
+import { TabState } from "../shared/HubState";
 
 /** A controller for a single tab. */
 export default interface TabController {

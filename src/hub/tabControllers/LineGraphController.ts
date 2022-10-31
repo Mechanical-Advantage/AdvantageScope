@@ -1,10 +1,11 @@
 import { AllColors } from "../../shared/Colors";
 import LoggableType from "../../shared/log/LoggableType";
+import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
 import { convertWithPreset, UnitConversionPreset } from "../../shared/units";
 import { cleanFloat, scaleValue, shiftColor } from "../../shared/util";
-import { LineGraphState } from "../HubState";
+import { LineGraphState } from "../../shared/HubState";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
@@ -618,10 +619,12 @@ export default class LineGraphController implements TabController {
     let rightRange: [number, number] = [-1, 1];
 
     let availableKeys = window.log.getFieldKeys();
-    [this.leftFields, this.discreteFields, this.rightFields].forEach((array, index) => {
+    [this.leftFields, this.discreteFields, this.rightFields].forEach((array, legendIndex) => {
       let range: [number, number] = [Infinity, -Infinity];
-      array.forEach((field) => {
+      array.forEach((field, fieldIndex) => {
         if (!field.show || !availableKeys.includes(field.key)) return;
+
+        // Read data for field
         if (!Object.keys(dataCache).includes(field.key)) {
           dataCache[field.key] = window.log.getRange(
             field.key,
@@ -630,7 +633,9 @@ export default class LineGraphController implements TabController {
           ) as LogValueSetAny;
           typeCache[field.key] = window.log.getType(field.key) as LoggableType;
         }
-        if (index != 1 && typeCache[field.key] == LoggableType.Number) {
+
+        // Update range for left & right legends
+        if (legendIndex != 1 && typeCache[field.key] == LoggableType.Number) {
           if (
             dataCache[field.key].timestamps.length == 1 &&
             dataCache[field.key].timestamps[0] > this.timestampRange[1]
@@ -639,8 +644,8 @@ export default class LineGraphController implements TabController {
           }
 
           (dataCache[field.key] as LogValueSetNumber).values.forEach((value) => {
-            if (index == 0) value = convertWithPreset(value, this.leftUnitConversion);
-            if (index == 2) value = convertWithPreset(value, this.rightUnitConversion);
+            if (legendIndex == 0) value = convertWithPreset(value, this.leftUnitConversion);
+            if (legendIndex == 2) value = convertWithPreset(value, this.rightUnitConversion);
             if (value < range[0]) range[0] = value;
             if (value > range[1]) range[1] = value;
           });
@@ -650,8 +655,8 @@ export default class LineGraphController implements TabController {
       // Save range
       if (!isFinite(range[0])) range[0] = -1;
       if (!isFinite(range[1])) range[1] = 1;
-      if (index == 0) leftRange = range;
-      if (index == 2) rightRange = range;
+      if (legendIndex == 0) leftRange = range;
+      if (legendIndex == 2) rightRange = range;
     });
 
     let visibleFieldsLeft = this.leftFields.filter((field) => field.show && Object.keys(dataCache).includes(field.key));
@@ -776,18 +781,7 @@ export default class LineGraphController implements TabController {
         // Draw text
         let adjustedStartX = startX < graphLeft ? graphLeft : startX;
         if (endX - adjustedStartX > 10) {
-          let text = "";
-          if (type == LoggableType.Raw) {
-            let array: Uint8Array = data.values[i];
-            let textArray: string[] = [];
-            array.forEach((byte: number) => {
-              textArray.push("0x" + (byte & 0xff).toString(16).padStart(2, "0"));
-            });
-            text = "[" + textArray.toString() + "]";
-          } else {
-            text = JSON.stringify(data.values[i]);
-          }
-
+          let text = getLogValueText(data.values[i], type);
           context.fillStyle = isDark ? shiftColor(field.color, 130) : shiftColor(field.color, -130);
           context.fillText(text, adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
         }
@@ -878,8 +872,9 @@ export default class LineGraphController implements TabController {
       }
     };
     let selectionMode = window.selection.getMode();
-    if (selectionMode == SelectionMode.Static || selectionMode == SelectionMode.Playback)
+    if (selectionMode == SelectionMode.Static || selectionMode == SelectionMode.Playback) {
       markTime(window.selection.getSelectedTime() as number, 1);
+    }
     let hoveredTime = window.selection.getHoveredTime();
     if (hoveredTime != null) markTime(hoveredTime, 0.35);
 
@@ -981,6 +976,45 @@ export default class LineGraphController implements TabController {
 
       stepPos += axis.step;
     }
+
+    // Update value preview
+    let selectedTime = window.selection.getSelectedTime();
+    [
+      [this.LEFT_LIST, this.leftFields],
+      [this.DISCRETE_LIST, this.discreteFields],
+      [this.RIGHT_LIST, this.rightFields]
+    ].forEach((fieldData) => {
+      let parentElement = fieldData[0] as HTMLElement;
+      let fieldList = fieldData[1] as {
+        key: string;
+        color: string;
+        show: boolean;
+      }[];
+      Array.from(parentElement.children).forEach((itemElement, index) => {
+        if (index == 0) return;
+        let valueElement = itemElement.getElementsByClassName("legend-value")[0] as HTMLElement;
+        let key = fieldList[index - 1].key;
+        let hasValue = false;
+        if (selectedTime !== null && availableKeys.includes(key)) {
+          let currentData = window.log.getRange(key, selectedTime as number, selectedTime as number);
+          if (
+            currentData &&
+            currentData.timestamps.length > 0 &&
+            currentData.timestamps[0] <= (selectedTime as number)
+          ) {
+            let text = getLogValueText(currentData.values[0], window.log.getType(key)!);
+            if (text !== valueElement.innerText) valueElement.innerText = text;
+            hasValue = true;
+          }
+        }
+
+        if (selectedTime !== null && availableKeys.includes(key) && hasValue) {
+          itemElement.classList.add("legend-item-with-value");
+        } else {
+          itemElement.classList.remove("legend-item-with-value");
+        }
+      });
+    });
   }
 }
 

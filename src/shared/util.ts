@@ -27,6 +27,11 @@ export function checkArrayType(value: unknown, type: string): boolean {
   return true;
 }
 
+/** Creates a deep copy of an object by converting to and from JSON. */
+export function jsonCopy(value: any): any {
+  return JSON.parse(JSON.stringify(value));
+}
+
 /** Returns the HTML encoded version of a string. */
 export function htmlEncode(text: string): string {
   return text.replace(/[\u00A0-\u9999<>\&]/g, (i) => {

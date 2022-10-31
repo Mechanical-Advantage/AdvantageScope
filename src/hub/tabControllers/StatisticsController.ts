@@ -1,11 +1,11 @@
 import { Chart, ChartDataset, LegendOptions, LinearScaleOptions, registerables, TooltipCallbacks } from "chart.js";
 import * as stats from "simple-statistics";
 import { SimpleColors } from "../../shared/Colors";
+import { StatisticsState } from "../../shared/HubState";
 import LoggableType from "../../shared/log/LoggableType";
 import { getEnabledData } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { cleanFloat, createUUID } from "../../shared/util";
-import { StatisticsState } from "../HubState";
 import TabController from "../TabController";
 
 export default class StatisticsController implements TabController {

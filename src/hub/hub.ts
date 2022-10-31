@@ -10,7 +10,7 @@ import NT4Source from "./dataSources/NT4Source";
 import RLOGFileSource from "./dataSources/RLOGFileSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
 import WPILOGSource from "./dataSources/WPILOGSource";
-import { HubState } from "./HubState";
+import { HubState } from "../shared/HubState";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
 import Tabs from "./Tabs";

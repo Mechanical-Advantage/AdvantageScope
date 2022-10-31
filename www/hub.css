@@ -601,10 +601,14 @@ div.legend-item {
   height: 30px;
 }
 
+div.legend-item-with-value {
+  height: 45px;
+}
+
 div.legend-title {
   position: absolute;
   top: 0px;
-  height: 100%;
+  height: 30px;
   left: 5px;
   right: 35px;
 
@@ -624,7 +628,7 @@ div.legend-title-center {
 div.legend-key-container {
   position: absolute;
   top: 0px;
-  height: 100%;
+  height: 30px;
   left: 30px;
   max-width: calc(100% - 30px - 30px);
 
@@ -644,7 +648,7 @@ span.legend-key {
 
 svg.legend-splotch {
   position: absolute;
-  top: 50%;
+  top: 15px;
   left: 15px;
   transform: translate(-50%, -50%);
 
@@ -653,7 +657,7 @@ svg.legend-splotch {
 
 button.legend-edit {
   position: absolute;
-  top: 50%;
+  top: 15px;
   right: 15px;
   transform: translate(50%, -50%);
 
@@ -661,9 +665,54 @@ button.legend-edit {
   height: 25px;
 }
 
+img.legend-value-symbol {
+  display: none;
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  height: 11px;
+  width: 11px;
+
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(43%) sepia(0%) saturate(2564%) hue-rotate(1deg) brightness(110%) contrast(107%);
+}
+
+div.legend-value {
+  display: none;
+  position: absolute;
+  top: 30px;
+  height: 15px;
+  left: 45px;
+  right: 0px;
+
+  color: #777;
+  user-select: text;
+  font-size: 14px;
+  line-height: 15px;
+  padding: 0px 4px 0px 2px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.legend-item-with-value img.legend-value-symbol,
+div.legend-item-with-value div.legend-value {
+  display: initial;
+}
+
 @media (prefers-color-scheme: dark) {
   svg.legend-splotch {
     stroke: #999;
+  }
+
+  img.legend-value-symbol {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(75%) sepia(12%) saturate(0%) hue-rotate(185deg) brightness(89%) contrast(90%);
+  }
+
+  div.legend-value {
+    color: #aaa;
   }
 }
 

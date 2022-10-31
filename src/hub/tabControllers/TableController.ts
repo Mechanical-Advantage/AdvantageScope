@@ -1,8 +1,9 @@
+import { TableState } from "../../shared/HubState";
 import LoggableType from "../../shared/log/LoggableType";
+import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetAny } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
 import { arraysEqual, createUUID, formatTimeWithMS } from "../../shared/util";
-import { TableState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
 
@@ -324,21 +325,8 @@ export default class TableController implements TabController {
       this.fields.forEach((field) => {
         let dataCell = document.createElement("td");
         row.appendChild(dataCell);
-        let text = "null";
-        if (availableFields.includes(field)) {
-          let value = dataLookup[field][i - range[0]];
-          if (typeLookup[field] == LoggableType.Raw) {
-            let array: Uint8Array = value;
-            let textArray: string[] = [];
-            array.forEach((byte: number) => {
-              textArray.push("0x" + (byte & 0xff).toString(16).padStart(2, "0"));
-            });
-            text = "[" + textArray.toString() + "]";
-          } else {
-            text = JSON.stringify(value);
-          }
-        }
-        dataCell.innerText = text;
+        let value = dataLookup[field][i - range[0]];
+        dataCell.innerText = getLogValueText(value, typeLookup[field]);
       });
     }
 

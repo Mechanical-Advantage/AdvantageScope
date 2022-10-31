@@ -1,10 +1,9 @@
+import { TimelineVisualizerState } from "../../shared/HubState";
 import LoggableType from "../../shared/log/LoggableType";
 import { getEnabledData } from "../../shared/log/LogUtil";
-import { LogValueSetBoolean } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
 import { createUUID } from "../../shared/util";
 import Visualizer from "../../shared/visualizers/Visualizer";
-import { TimelineVisualizerState } from "../HubState";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
 

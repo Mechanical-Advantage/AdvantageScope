@@ -1,4 +1,5 @@
 import Log from "./Log";
+import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
 
 const ENABLED_KEYS = [
@@ -9,6 +10,19 @@ const ENABLED_KEYS = [
 ];
 
 const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+
+export function getLogValueText(value: any, type: LoggableType): string {
+  if (type == LoggableType.Raw) {
+    let array: Uint8Array = value;
+    let textArray: string[] = [];
+    array.forEach((byte: number) => {
+      textArray.push("0x" + (byte & 0xff).toString(16).padStart(2, "0"));
+    });
+    return "[" + textArray.toString() + "]";
+  } else {
+    return JSON.stringify(value);
+  }
+}
 
 export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));

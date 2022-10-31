@@ -1,7 +1,6 @@
-import { rename } from "original-fs";
+import { TabGroupState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
-import { TabGroupState } from "./HubState";
 import ScrollSensor from "./ScrollSensor";
 import TabController from "./TabController";
 import ConsoleController from "./tabControllers/ConsoleController";
@@ -126,7 +125,7 @@ export default class Tabs {
   saveState(): TabGroupState {
     return {
       selected: this.selectedTab,
-      tabs: this.tabList.map((tab, index) => {
+      tabs: this.tabList.slice(1).map((tab, index) => {
         let state = tab.controller.saveState();
         state.title = this.tabList[index].title;
         return state;
@@ -140,12 +139,14 @@ export default class Tabs {
       this.VIEWER.removeChild(tab.contentElement);
     });
     this.tabList = [];
+    this.selectedTab = 0;
+    this.addTab(TabType.Metadata); // Add default tab
     state.tabs.forEach((tabState, index) => {
       this.addTab(tabState.type);
       if (tabState.title) this.renameTab(index, tabState.title);
       this.tabList[this.tabList.length - 1].controller.restoreState(tabState);
     });
-    this.selectedTab = state.selected;
+    this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
     this.updateElements();
   }
 

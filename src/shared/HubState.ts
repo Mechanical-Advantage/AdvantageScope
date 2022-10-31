@@ -1,5 +1,5 @@
-import TabType from "../shared/TabType";
-import { UnitConversionPreset } from "../shared/units";
+import TabType from "./TabType";
+import { UnitConversionPreset } from "./units";
 
 export interface HubState {
   sidebar: SidebarState;
