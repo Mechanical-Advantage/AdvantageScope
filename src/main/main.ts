@@ -1207,9 +1207,10 @@ function createHubWindow() {
     // Init messages
     sendMessage(window, "set-frc-data", frcData);
     sendMessage(window, "set-fullscreen", window.isFullScreen());
-    sendMessage(window, "set-platform", {
+    sendMessage(window, "set-version", {
       platform: process.platform,
-      release: os.release()
+      platformRelease: os.release(),
+      appVersion: app.isPackaged ? app.getVersion() : "dev"
     });
     sendAllPreferences();
     if (firstLoad) {

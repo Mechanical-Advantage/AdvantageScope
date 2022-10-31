@@ -28,6 +28,7 @@ declare global {
     frcData: FRCData | null;
     platform: string;
     platformRelease: string;
+    appVersion: string;
     isFullscreen: boolean;
     isFocused: boolean;
 
@@ -370,9 +371,10 @@ function handleMainMessage(message: NamedMessage) {
       });
       break;
 
-    case "set-platform":
+    case "set-version":
       window.platform = message.data.platform;
-      window.platformRelease = message.data.release;
+      window.platformRelease = message.data.platformRelease;
+      window.appVersion = message.data.appVersion;
       updateFancyWindow();
       break;
 

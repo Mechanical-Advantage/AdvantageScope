@@ -1,15 +1,15 @@
-# Advantage Scope
+# Welcome to Advantage Scope!
 
-Advantage Scope is a robot diagnostics application for historical and live data analysis. It can open WPILOG and RLOG files, and connect live using NT4 or RLOG streaming. Advantage Scope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework.
+Advantage Scope is a robot diagnostics application for historical and live data analysis. This documentation explains common uses of Advantage Scope and is updated as new features are added.
 
-> This is a quote!
+## Pages
 
-There is an image below. You can also visit [the subpage](/docs/SUBPAGE.md).
+- [Subpage](/docs/SUBPAGE.md)
 
-![Example screenshot](/docs/screenshot-2.jpg)
+## Other Links
 
-## Installation
+- [AdvantageKit documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
+- [AdvantageScope repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
+- [Team website](https://littletonrobotics.org)
 
-1. Click the release marked "Latest" under "Releases".
-2. Download the appropriate build for your OS & architecture.
-3. When opening the app for the first time on macOS, right click the icon and select "Open" to bypass Gatekeeper restrictions.
+To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.
