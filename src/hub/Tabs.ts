@@ -4,6 +4,7 @@ import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import TabController from "./TabController";
 import ConsoleController from "./tabControllers/ConsoleController";
+import DocumentationController from "./tabControllers/DocumentationController";
 import JoysticksController from "./tabControllers/JoysticksController";
 import LineGraphController from "./tabControllers/LineGraphController";
 import MetadataController from "./tabControllers/MetadataController";
@@ -86,7 +87,7 @@ export default class Tabs {
         }
       });
     });
-    this.SCROLL_OVERLAY.addEventListener("mouseout", (event) => {
+    this.SCROLL_OVERLAY.addEventListener("mouseout", () => {
       this.tabList.forEach((tab) => {
         tab.titleElement.classList.remove("tab-hovered");
       });
@@ -101,7 +102,7 @@ export default class Tabs {
     });
 
     // Add default tabs
-    this.addTab(TabType.Metadata);
+    this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
 
     // Scroll management
@@ -162,9 +163,9 @@ export default class Tabs {
     let contentElement: HTMLElement;
     let controller: TabController;
     switch (type) {
-      case TabType.Metadata:
+      case TabType.Documentation:
         contentElement = this.CONTENT_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
-        controller = new MetadataController(contentElement);
+        controller = new DocumentationController(contentElement);
         break;
       case TabType.LineGraph:
         contentElement = this.CONTENT_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
@@ -197,20 +198,24 @@ export default class Tabs {
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
         controller = new VideoController(contentElement);
         break;
-      case TabType.Points:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
-        controller = new PointsController(contentElement);
-        break;
       case TabType.Joysticks:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
         controller = new JoysticksController(contentElement);
         break;
       case TabType.Swerve:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
         controller = new SwerveController(contentElement);
+        break;
+      case TabType.Points:
+        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
+        controller = new PointsController(contentElement);
+        break;
+      case TabType.Metadata:
+        contentElement = this.CONTENT_TEMPLATES.children[12].cloneNode(true) as HTMLElement;
+        controller = new MetadataController(contentElement);
         break;
     }
 

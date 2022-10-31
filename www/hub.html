@@ -93,19 +93,10 @@
           <div class="tab-bar-scroll-content"></div>
         </div>
         <span id="tabContentTemplates" hidden>
-          <!-- Metadata -->
+          <!-- Documentation -->
           <div class="tab-content">
-            <div class="tab-centered">No AdvantageKit metadata.</div>
-            <div class="metadata-table-container" hidden>
-              <table class="metadata-table">
-                <tbody>
-                  <tr>
-                    <th></th>
-                    <th>Real</th>
-                    <th>Replay</th>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="documentation-container">
+              <div class="documentation-text"></div>
             </div>
           </div>
 
@@ -499,73 +490,6 @@
             </table>
           </span>
 
-          <!-- Points -->
-          <span>
-            <div class="points-background-container">
-              <div class="points-background"></div>
-              <span hidden>
-                <svg height="20" width="20">
-                  <line x1="10" y1="0" x2="10" y2="20"></line>
-                  <line x1="0" y1="10" x2="20" y2="10"></line>
-                </svg>
-                <svg height="20" width="20">
-                  <line x1="2" y1="2" x2="18" y2="18"></line>
-                  <line x1="18" y1="2" x2="2" y2="18"></line>
-                </svg>
-                <svg height="20" width="20">
-                  <circle cx="10" cy="10" r="7"></circle>
-                </svg>
-              </span>
-            </div>
-            <table class="timeline-viz-config">
-              <tbody>
-                <tr>
-                  <th>Point Data</th>
-                  <th>Coordinate System</th>
-                  <th>Point Style</th>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="label">X:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
-                  </td>
-                  <td>
-                    <span class="label">Size:</span>
-                    <input type="number" min="1" value="960" step="1" />
-                    <span class="label">x</span>
-                    <input type="number" min="1" value="720" step="1" />
-                  </td>
-                  <td>
-                    <span class="label">Point Shape:</span>
-                    <select tabindex="-1">
-                      <option>plus</option>
-                      <option>cross</option>
-                      <option>circle</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <span class="label">Y:</span>
-                    <span class="field-name">&lt;Drag Here&gt;</span>
-                  </td>
-                  <td>
-                    <span class="label">Group Size:</span>
-                    <input type="number" min="0" value="0" step="1" />
-                  </td>
-                  <td>
-                    <span class="label">Point Size:</span>
-                    <select tabindex="-1">
-                      <option>large</option>
-                      <option selected>medium</option>
-                      <option>small</option>
-                    </select>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </span>
-
           <!-- Joysticks -->
           <span>
             <canvas class="joysticks-canvas"></canvas>
@@ -664,6 +588,89 @@
               </tbody>
             </table>
           </span>
+
+          <!-- Points -->
+          <span>
+            <div class="points-background-container">
+              <div class="points-background"></div>
+              <span hidden>
+                <svg height="20" width="20">
+                  <line x1="10" y1="0" x2="10" y2="20"></line>
+                  <line x1="0" y1="10" x2="20" y2="10"></line>
+                </svg>
+                <svg height="20" width="20">
+                  <line x1="2" y1="2" x2="18" y2="18"></line>
+                  <line x1="18" y1="2" x2="2" y2="18"></line>
+                </svg>
+                <svg height="20" width="20">
+                  <circle cx="10" cy="10" r="7"></circle>
+                </svg>
+              </span>
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>Point Data</th>
+                  <th>Coordinate System</th>
+                  <th>Point Style</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">X:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Size:</span>
+                    <input type="number" min="1" value="960" step="1" />
+                    <span class="label">x</span>
+                    <input type="number" min="1" value="720" step="1" />
+                  </td>
+                  <td>
+                    <span class="label">Point Shape:</span>
+                    <select tabindex="-1">
+                      <option>plus</option>
+                      <option>cross</option>
+                      <option>circle</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Y:</span>
+                    <span class="field-name">&lt;Drag Here&gt;</span>
+                  </td>
+                  <td>
+                    <span class="label">Group Size:</span>
+                    <input type="number" min="0" value="0" step="1" />
+                  </td>
+                  <td>
+                    <span class="label">Point Size:</span>
+                    <select tabindex="-1">
+                      <option>large</option>
+                      <option selected>medium</option>
+                      <option>small</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
+          <!-- Metadata -->
+          <div class="tab-content">
+            <div class="tab-centered">No AdvantageKit metadata.</div>
+            <div class="metadata-table-container" hidden>
+              <table class="metadata-table">
+                <tbody>
+                  <tr>
+                    <th></th>
+                    <th>Real</th>
+                    <th>Replay</th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </span>
       </div>
     </div>
