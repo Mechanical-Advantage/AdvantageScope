@@ -2,9 +2,22 @@
 
 Advantage Scope is a robot diagnostics application for historical and live data analysis. This documentation explains common uses of Advantage Scope and is updated as new features are added.
 
-## Pages
-
-- [Subpage](/docs/SUBPAGE.md)
+- [App Navigation](/docs/NAVIGATION.md)
+- [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
+- [Connecting to Live Sources](/docs/OPEN-LIVE.md)
+- Tab Information
+  - 📉 [Line Graph](/docs/tabs/LINE-GRAPH.md)
+  - 🔢 [Table](/docs/tabs/TABLE.md)
+  - 💬 [Console](/docs/tabs/CONSOLE.md)
+  - 📊 [Statistics](/docs/tabs/STATISTICS.md)
+  - 🗺 [Odometry](/docs/tabs/ODOMETRY.md)
+  - 👀 [3D Field](/docs/tabs/3D-FIELD.md)
+  - 🎬 [Video](/docs/tabs/VIDEO.md)
+  - 🎮 [Joysticks](/docs/tabs/JOYSTICKS.md)
+  - 🦀 [Swerve](/docs/tabs/SWERVE.md)
+  - 🔵 [Points](/docs/tabs/POINTS.md)
+  - 🔍 [Metadata](/docs/tabs/METADATA.md)
+- [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 ## Other Links
 

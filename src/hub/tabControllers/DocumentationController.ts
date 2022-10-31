@@ -59,7 +59,7 @@ export default class DocumentationController implements TabController {
 
         // App adjustments for index page
         if (markdownPath == "../docs/INDEX.md") {
-          let list = this.TEXT.getElementsByTagName("ul")[1];
+          let list = this.TEXT.getElementsByTagName("ul")[2];
           let listItem = document.createElement("li");
           list.insertBefore(listItem, list.firstChild);
           let link = document.createElement("a");
