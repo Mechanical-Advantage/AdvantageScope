@@ -1,6 +1,6 @@
 import { Remarkable } from "remarkable";
+import { TabState } from "../../shared/HubState";
 import TabType from "../../shared/TabType";
-import { TabState } from "../HubState";
 import TabController from "../TabController";
 
 export default class DocumentationController implements TabController {
