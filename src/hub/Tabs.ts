@@ -141,7 +141,7 @@ export default class Tabs {
     });
     this.tabList = [];
     this.selectedTab = 0;
-    this.addTab(TabType.Metadata); // Add default tab
+    this.addTab(TabType.Documentation); // Add default tab
     state.tabs.forEach((tabState, index) => {
       this.addTab(tabState.type);
       if (tabState.title) this.renameTab(index, tabState.title);
