@@ -557,6 +557,7 @@ div.legend-left {
   max-height: 200px;
 
   overflow: auto;
+  padding-bottom: 5px;
 }
 
 div.legend-discrete {
@@ -568,6 +569,7 @@ div.legend-discrete {
   max-height: 200px;
 
   overflow: auto;
+  padding-bottom: 5px;
   border-left: 1px solid #555;
   border-right: 1px solid #555;
 }
@@ -588,6 +590,7 @@ div.legend-right {
   max-height: 200px;
 
   overflow: auto;
+  padding-bottom: 5px;
 }
 
 div.legend-drag-target {
