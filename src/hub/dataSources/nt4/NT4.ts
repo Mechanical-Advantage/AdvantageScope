@@ -544,7 +544,7 @@ export class NT4_Client {
           for (let serverTopic of this.serverTopics.values()) {
             if (serverTopic.uid === topicID) {
               topic = serverTopic;
-              return;
+              break;
             }
           }
           if (!topic) {
