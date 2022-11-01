@@ -21,6 +21,7 @@
     "install": "node ffmpegDownload.js"
   },
   "devDependencies": {
+    "@electron/notarize": "^1.2.3",
     "@rollup/plugin-commonjs": "^22.0.2",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@rollup/plugin-typescript": "^8.3.4",
@@ -59,6 +60,7 @@
     "copyright": "Copyright © 2021-2022 FRC 6328",
     "npmRebuild": false,
     "publish": [],
+    "afterSign": "notarize.js",
     "files": [
       "www/**/*",
       "bundles/*",
@@ -95,7 +97,9 @@
     ],
     "mac": {
       "target": "dmg",
-      "icon": "icons/app/app-icon.icns"
+      "icon": "icons/app/app-icon.icns",
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist"
     },
     "linux": {
       "target": [
