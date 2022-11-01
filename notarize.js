@@ -9,7 +9,7 @@ exports.default = async function notarizing(context) {
   const appleId = process.env.APPLE_ID;
   const appleIdPwd = process.env.APPLE_ID_PWD;
   if (!appleId || !appleIdPwd) {
-    console.log("Skipped notarization, no Apple ID provided");
+    console.log("No Apple ID provided, skipping notarization");
     return;
   }
 
