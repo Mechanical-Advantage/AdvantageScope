@@ -11,10 +11,10 @@ exports.default = async function notarizing(context) {
   const appName = context.packager.appInfo.productFilename;
 
   return await notarize({
-    tool: "notarytool",
+    tool: "legacy",
     appPath: `${appOutDir}/${appName}.app`,
+    appBundleId: "org.littletonrobotics.advantagescope",
     appleId: appleId,
-    appleIdPassword: appleIdPwd,
-    teamId: "6S3UQC528P" // Team ID for Apple Developer organization
+    appleIdPassword: appleIdPwd
   });
 };
