@@ -7,7 +7,7 @@ export default class DocumentationController implements TabController {
   private CONTENT: HTMLElement;
   private CONTAINER: HTMLElement;
   private TEXT: HTMLElement;
-  private remarkable = new Remarkable();
+  private remarkable = new Remarkable({ html: true });
 
   constructor(content: HTMLElement) {
     this.CONTENT = content;
@@ -35,7 +35,9 @@ export default class DocumentationController implements TabController {
         return response.text();
       })
       .then((text) => {
-        this.TEXT.innerHTML = this.remarkable.render(text);
+        let html = this.remarkable.render(text);
+        html = html.replaceAll('<span style="color: ', '<span color="'); // Remove color span styles (inline styles not allowed)
+        this.TEXT.innerHTML = html;
 
         // Update links
         Array.from(this.TEXT.getElementsByTagName("a")).forEach((link) => {
@@ -55,6 +57,12 @@ export default class DocumentationController implements TabController {
           if (img.src.startsWith("file:///")) {
             img.src = img.src.replace("file:///", "../");
           }
+        });
+
+        // Apply span colors (removed earlier b/c inline styles aren't allowed)
+        Array.from(this.TEXT.getElementsByTagName("span")).forEach((span) => {
+          let color = span.getAttribute("color");
+          if (color) span.style.color = color.slice(0, -1);
         });
 
         // App adjustments for index page

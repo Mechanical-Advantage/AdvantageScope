@@ -523,6 +523,14 @@ div.documentation-text li {
   margin: 5px 0px 5px 0px;
 }
 
+div.documentation-text a {
+  text-decoration: none;
+}
+
+div.documentation-text a:hover {
+  text-decoration: underline;
+}
+
 div.documentation-text code {
   font-size: 16px;
 }
