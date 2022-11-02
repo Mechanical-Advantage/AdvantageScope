@@ -11,12 +11,39 @@ export default class NT4Source extends LiveDataSource {
   private log: Log | null = null;
   private client: NT4_Client | null = null;
 
+  private shouldRunOutputCallback = false;
   private connectServerTime: number | null = null;
   private noFieldsTimeout: NodeJS.Timeout | null = null;
 
   constructor(akitMode: boolean) {
     super();
     this.akitMode = akitMode;
+
+    // Check periodically if output callback should be triggered
+    // (prevents running the callback many times for each frame)
+    this.shouldRunOutputCallback = false;
+    setInterval(() => {
+      if (
+        !this.shouldRunOutputCallback ||
+        this.status == LiveDataSourceStatus.Stopped ||
+        !this.outputCallback ||
+        !this.log
+      )
+        return;
+      this.shouldRunOutputCallback = false;
+      this.outputCallback(this.log, () => {
+        if (this.client) {
+          let serverTime = this.client.getServerTime_us();
+          if (serverTime === null) {
+            return 10;
+          } else {
+            return serverTime / 1000000;
+          }
+        } else {
+          return 10;
+        }
+      });
+    }, 1000 / 60);
   }
 
   connect(
@@ -25,6 +52,7 @@ export default class NT4Source extends LiveDataSource {
     outputCallback: (log: Log, timeSupplier: () => number) => void
   ) {
     super.connect(address, statusCallback, outputCallback);
+    this.shouldRunOutputCallback = false;
 
     if (window.preferences == null) {
       this.setStatus(LiveDataSourceStatus.Error);
@@ -40,7 +68,7 @@ export default class NT4Source extends LiveDataSource {
           if (type != null) {
             this.log.createBlankField(this.getKeyFromTopic(topic), type);
           }
-          this.runOutputCallback();
+          this.shouldRunOutputCallback = true;
         },
         (topic: NT4_Topic) => {
           // Unannounce
@@ -119,13 +147,13 @@ export default class NT4Source extends LiveDataSource {
                 break;
             }
           }
-          if (updated) this.runOutputCallback();
+          if (updated) this.shouldRunOutputCallback = true;
         },
         () => {
           // Connected
           this.setStatus(LiveDataSourceStatus.Active);
           this.log = new Log();
-          this.runOutputCallback();
+          this.shouldRunOutputCallback = true;
           if (this.akitMode) {
             this.noFieldsTimeout = setTimeout(() => {
               window.sendMainMessage("error", {
@@ -139,6 +167,7 @@ export default class NT4Source extends LiveDataSource {
         () => {
           // Disconnected
           this.setStatus(LiveDataSourceStatus.Connecting);
+          this.shouldRunOutputCallback = false;
           this.connectServerTime = null;
         }
       );
@@ -163,23 +192,6 @@ export default class NT4Source extends LiveDataSource {
     } else {
       return topic.name;
     }
-  }
-
-  /** Triggers the output callback using the correct timestamp supplier. */
-  private runOutputCallback() {
-    if (!this.outputCallback || !this.log) return;
-    this.outputCallback(this.log, () => {
-      if (this.client) {
-        let serverTime = this.client.getServerTime_us();
-        if (serverTime === null) {
-          return 10;
-        } else {
-          return serverTime / 1000000;
-        }
-      } else {
-        return 10;
-      }
-    });
   }
 
   private getLogType(ntType: string): LoggableType | null {
