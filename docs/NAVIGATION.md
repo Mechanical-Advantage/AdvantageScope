@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-The screenshot below shows the important elements of the main Advantage Scope window. The exact appearance may differ based on your operating system.
+The screenshot below shows the important elements of the main Advantage Scope window. The exact appearance will differ for each operating system.
 
 ![Navigation diagram](/docs/img/navigation-1.png)
 
@@ -16,6 +16,8 @@ The <span style="color: green;">navigation buttons</span> on the top allow you t
 
 ![Creating a new tab](/docs/img/navigation-3.gif)
 
-Playback can be toggled using the play/pause button or by pressing the **space bar**. The selected time is sychronized between all tabs, including the line graph, table, field views, and more. To adjust the playback speed, **right-click** on the play/pause button.
+Playback can be toggled using the play/pause button or by pressing the **space bar**. The selected time is sychronized between all tabs, including the line graph, table, field views, and more.
+
+> Note: To adjust the playback speed, **right-click** on the play/pause button.
 
 ![Managing playback](/docs/img/navigation-4.gif)

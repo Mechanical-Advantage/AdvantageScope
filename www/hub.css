@@ -501,6 +501,8 @@ div.documentation-container {
 
 div.documentation-text {
   padding: 15px;
+  user-select: text;
+  overflow-wrap: normal;
 }
 
 div.documentation-text h1 {
@@ -532,16 +534,22 @@ div.documentation-text a:hover {
 }
 
 div.documentation-text code {
-  font-size: 16px;
+  display: block;
+  font-size: 14px;
+  background-color: #ddd;
+  padding: 8px;
+  overflow-x: auto;
 }
 
-div.documentation-text img {
-  max-width: 100%;
-  margin: 10px 0px 10px 0px;
+div.documentation-text img,
+div.documentation-text video {
+  max-width: calc(100% - 50px);
+  max-height: 50vh;
+  margin: 10px 25px 10px 25px;
 }
 
 div.documentation-text blockquote {
-  background-color: #ccc;
+  background-color: #ddd;
   margin: 12px 0px 12px 0px;
   padding: 10px;
 }
@@ -551,6 +559,10 @@ div.documentation-text blockquote p {
 }
 
 @media (prefers-color-scheme: dark) {
+  div.documentation-text code {
+    background-color: #444;
+  }
+
   div.documentation-text blockquote {
     background-color: #444;
   }

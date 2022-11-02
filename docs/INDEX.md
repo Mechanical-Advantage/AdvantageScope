@@ -1,9 +1,5 @@
 # Welcome to Advantage Scope!
 
-Advantage Scope is a robot diagnostics application for historical and live data analysis. This documentation explains common uses of Advantage Scope and is updated as new features are added.
-
-## General Resources
-
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
