@@ -61,7 +61,9 @@ export default class DocumentationController implements TabController {
           // Replace GIFs with videos
           if (img.src.endsWith(".gif")) {
             let video = document.createElement("video");
-            video.controls = false;
+            video.controls = true;
+            video.disablePictureInPicture = true;
+            video.disableRemotePlayback = true;
             video.autoplay = true;
             video.loop = true;
             video.src = img.src.slice(0, -4) + ".mp4";

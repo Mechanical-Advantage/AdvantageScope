@@ -506,15 +506,15 @@ div.documentation-text {
 }
 
 div.documentation-text h1 {
-  margin: 10px 0px 10px 0px;
+  margin: 0px 0px 0px 0px;
 }
 
 div.documentation-text h2 {
-  margin: 10px 0px 10px 0px;
+  margin: 20px 0px 0px 0px;
 }
 
 div.documentation-text h3 {
-  margin: 10px 0px 10px 0px;
+  margin: 20px 0px 0px 0px;
 }
 
 div.documentation-text p {

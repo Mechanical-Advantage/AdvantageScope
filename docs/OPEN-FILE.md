@@ -4,7 +4,7 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 ## Opening a Saved Log
 
-In the menu bar, click "File" > "Open..." or press **cmd/ctrl + O**, then choose the log file from your local disk.
+In the menu bar, click "File" > "Open..." or press **cmd/ctrl + O**, then choose the log file from your local disk. Both WPILOG and RLOG files are supported.
 
 ![Opening a saved log](/docs/img/open-file-1.gif)
 
