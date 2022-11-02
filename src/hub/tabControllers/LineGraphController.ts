@@ -270,10 +270,8 @@ export default class LineGraphController implements TabController {
       let element = data.element;
 
       for (let i = 0; i < fields.length; i++) {
-        if (availableFields.includes(fields[i].key)) {
-          let keyElement = element.children[i + 1].getElementsByClassName("legend-key")[0] as HTMLElement;
-          keyElement.style.textDecoration = "initial";
-        }
+        let keyElement = element.children[i + 1].getElementsByClassName("legend-key")[0] as HTMLElement;
+        keyElement.style.textDecoration = availableFields.includes(fields[i].key) ? "initial" : "line-through";
       }
     });
   }
