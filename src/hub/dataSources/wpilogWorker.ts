@@ -55,8 +55,8 @@ self.onmessage = (event) => {
             case "string[]":
               log.createBlankField(startData.name, LoggableType.StringArray);
               break;
-            default:
-              console.warn("Unknown type", startData.type);
+            default: // Default to raw
+              log.createBlankField(startData.name, LoggableType.Raw);
               break;
           }
         }
@@ -98,6 +98,9 @@ self.onmessage = (event) => {
             break;
           case "string[]":
             log.putStringArray(key, timestamp, record.getStringArray());
+            break;
+          default: // Default to raw
+            log.putRaw(key, timestamp, record.getRaw());
             break;
         }
       }
