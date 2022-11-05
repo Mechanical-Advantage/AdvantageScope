@@ -61,6 +61,16 @@ function handleMainMessage(message: NamedMessage) {
       });
       break;
 
+    case "set-focused":
+      Array.from(document.getElementsByTagName("button")).forEach((button) => {
+        if (message.data) {
+          button.classList.remove("blurred");
+        } else {
+          button.classList.add("blurred");
+        }
+      });
+      break;
+
     case "show-error":
       // Show loading animation and alert text
       LOADING_ANIMATION.hidden = false;

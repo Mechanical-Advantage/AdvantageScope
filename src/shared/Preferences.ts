@@ -5,6 +5,6 @@ export default interface Preferences {
   rioPath: string;
   liveMode: "nt4" | "nt4-akit" | "rlog";
   rlogPort: number;
-  threeDimensionMode: "quality" | "efficiency";
+  threeDimensionMode: "quality" | "efficiency" | "auto";
   usb?: boolean;
 }

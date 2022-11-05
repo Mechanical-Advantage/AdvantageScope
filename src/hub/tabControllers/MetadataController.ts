@@ -15,6 +15,7 @@ export default class MetadataController implements TabController {
     this.NO_DATA_ALERT = content.getElementsByClassName("tab-centered")[0] as HTMLElement;
     this.TABLE_CONTAINER = content.getElementsByClassName("metadata-table-container")[0] as HTMLElement;
     this.TABLE_BODY = content.getElementsByClassName("metadata-table")[0].firstElementChild as HTMLElement;
+    this.refresh();
   }
 
   saveState(): TabState {

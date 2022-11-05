@@ -981,7 +981,7 @@ export default class LineGraphController implements TabController {
       [this.LEFT_LIST, this.leftFields],
       [this.DISCRETE_LIST, this.discreteFields],
       [this.RIGHT_LIST, this.rightFields]
-    ].forEach((fieldData) => {
+    ].forEach((fieldData, legendIndex) => {
       let parentElement = fieldData[0] as HTMLElement;
       let fieldList = fieldData[1] as {
         key: string;
@@ -1000,7 +1000,10 @@ export default class LineGraphController implements TabController {
             currentData.timestamps.length > 0 &&
             currentData.timestamps[0] <= (selectedTime as number)
           ) {
-            let text = getLogValueText(currentData.values[0], window.log.getType(key)!);
+            let value = currentData.values[0];
+            if (legendIndex == 0) value = convertWithPreset(value, this.leftUnitConversion);
+            if (legendIndex == 2) value = convertWithPreset(value, this.rightUnitConversion);
+            let text = getLogValueText(value, window.log.getType(key)!);
             if (text !== valueElement.innerText) valueElement.innerText = text;
             hasValue = true;
           }

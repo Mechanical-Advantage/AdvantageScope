@@ -100,6 +100,11 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
   }
 
+  /** Switches the selected camera for the main visualizer. */
+  set3DCamera(index: number) {
+    (this.visualizer as ThreeDimensionVisualizer).set3DCamera(index);
+  }
+
   getCommand(time: number) {
     let fields = this.getFields();
 

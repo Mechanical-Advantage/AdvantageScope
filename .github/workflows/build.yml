@@ -26,9 +26,19 @@ jobs:
     strategy:
       matrix:
         host:
-          - { os: macos-latest, displayName: "macOS", artifactPath: "dist/Advantage Scope-*.dmg" }
-          - { os: ubuntu-latest, displayName: "Linux", artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman" }
-          - { os: windows-latest, displayName: "Windows", artifactPath: "dist/Advantage Scope Setup *.exe" }
+          - { os: macos-latest, shortName: "mac", displayName: "macOS", artifactPath: "dist/AdvantageScope-*.dmg" }
+          - {
+              os: ubuntu-latest,
+              shortName: "linux",
+              displayName: "Linux",
+              artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman"
+            }
+          - {
+              os: windows-latest,
+              shortName: "win",
+              displayName: "Windows",
+              artifactPath: "dist/AdvantageScope Setup *.exe"
+            }
         arch: ["x64", "arm64"]
 
     name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
@@ -59,5 +69,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.host.displayName }}-${{ matrix.arch }}
+          name: advantagescope-${{ matrix.host.shortname }}-${{ matrix.arch }}-dev
           path: ${{ matrix.host.artifactPath }}

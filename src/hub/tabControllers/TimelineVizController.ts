@@ -26,7 +26,7 @@ export default abstract class TimelineVizController implements TabController {
   private title: string = "";
   private fieldConfig: { element: HTMLElement; type: LoggableType }[];
   private fields: (string | null)[] = [];
-  private visualizer: Visualizer;
+  protected visualizer: Visualizer;
 
   constructor(
     content: HTMLElement,

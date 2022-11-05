@@ -113,10 +113,7 @@ export default class StatisticsController implements TabController {
       }
     });
     this.HISTOGRAM_STEP.addEventListener("change", () => {
-      this.HISTOGRAM_STEP.step = Number(this.HISTOGRAM_STEP.value) < 1 ? "0.1" : "1";
-      if (Number(this.HISTOGRAM_STEP.value) <= 0) {
-        this.HISTOGRAM_STEP.value = "0.1";
-      }
+      this.updateHistogramInputs();
     });
 
     // Schedule update when config changes
@@ -132,6 +129,12 @@ export default class StatisticsController implements TabController {
     this.HISTOGRAM_MIN.addEventListener("change", () => (this.shouldUpdate = true));
     this.HISTOGRAM_MAX.addEventListener("change", () => (this.shouldUpdate = true));
     this.HISTOGRAM_STEP.addEventListener("change", () => (this.shouldUpdate = true));
+
+    // Set initial values for histogram inputs
+    this.HISTOGRAM_MIN.value = "0";
+    this.HISTOGRAM_MAX.value = "10";
+    this.HISTOGRAM_STEP.value = "1";
+    this.updateHistogramInputs();
 
     // Create chart
     StatisticsController.registerChart();
@@ -176,6 +179,19 @@ export default class StatisticsController implements TabController {
     }
   }
 
+  /** Updates the step size for each histogram input. */
+  private updateHistogramInputs() {
+    if (Number(this.HISTOGRAM_STEP.value) <= 0) {
+      this.HISTOGRAM_STEP.value = cleanFloat(Number(this.HISTOGRAM_STEP.step) * 0.9).toString();
+    }
+    let step = Math.pow(10, Math.floor(Math.log10(Number(this.HISTOGRAM_STEP.value))));
+    this.HISTOGRAM_STEP.step = step.toString();
+
+    let minMaxStep = Math.pow(10, Math.ceil(Math.log10(Number(this.HISTOGRAM_STEP.value))));
+    this.HISTOGRAM_MIN.step = minMaxStep.toString();
+    this.HISTOGRAM_MAX.step = minMaxStep.toString();
+  }
+
   saveState(): StatisticsState {
     return {
       type: TabType.Statistics,
@@ -202,7 +218,7 @@ export default class StatisticsController implements TabController {
     this.HISTOGRAM_MIN.value = state.histogramMin.toString();
     this.HISTOGRAM_MAX.value = state.histogramMax.toString();
     this.HISTOGRAM_STEP.value = state.histogramStep.toString();
-    this.HISTOGRAM_STEP.step = state.histogramStep < 1 ? "0.1" : "1";
+    this.updateHistogramInputs();
 
     this.SELECTION_RANGE_MIN.disabled = state.selectionType != "range";
     this.SELECTION_RANGE_MAX.disabled = state.selectionType != "range";
