@@ -160,6 +160,16 @@ export default class Tabs {
 
   /** Creates a new tab. */
   addTab(type: TabType) {
+    // Select existing metadata tab
+    if (type == TabType.Metadata) {
+      let existingIndex = this.tabList.findIndex((tab) => tab.type == TabType.Metadata);
+      if (existingIndex >= 0) {
+        this.setSelected(existingIndex);
+        return;
+      }
+    }
+
+    // Add tab
     let contentElement: HTMLElement;
     let controller: TabController;
     switch (type) {
