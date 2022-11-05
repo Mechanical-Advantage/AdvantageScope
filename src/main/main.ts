@@ -1323,6 +1323,8 @@ function createEditRangeWindow(
       editWindow.destroy();
       callback(event.data);
     });
+    editWindow.on("blur", () => port2.postMessage({ isFocused: false }));
+    editWindow.on("focus", () => port2.postMessage({ isFocused: true }));
     port2.start();
   });
   editWindow.loadFile(path.join(__dirname, "../www/editRange.html"));
@@ -1363,6 +1365,8 @@ function createUnitConversionWindow(
       unitConversionWindow.destroy();
       callback(event.data);
     });
+    unitConversionWindow.on("blur", () => port2.postMessage({ isFocused: false }));
+    unitConversionWindow.on("focus", () => port2.postMessage({ isFocused: true }));
     port2.start();
   });
   unitConversionWindow.loadFile(path.join(__dirname, "../www/unitConversion.html"));
@@ -1403,6 +1407,8 @@ function createRenameTabWindow(
       renameTabWindow.destroy();
       callback(event.data);
     });
+    renameTabWindow.on("blur", () => port2.postMessage({ isFocused: false }));
+    renameTabWindow.on("focus", () => port2.postMessage({ isFocused: true }));
     port2.start();
   });
   renameTabWindow.loadFile(path.join(__dirname, "../www/renameTab.html"));
@@ -1517,6 +1523,8 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
       jsonfile.writeFileSync(PREFS_FILENAME, event.data);
       sendAllPreferences();
     });
+    prefsWindow?.on("blur", () => port2.postMessage({ isFocused: false }));
+    prefsWindow?.on("focus", () => port2.postMessage({ isFocused: true }));
     port2.start();
   });
   prefsWindow.loadFile(path.join(__dirname, "../www/preferences.html"));
@@ -1570,6 +1578,8 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
     sendMessage(downloadWindow, "set-platform", process.platform);
     sendAllPreferences();
   });
+  downloadWindow.on("blur", () => sendMessage(downloadWindow!, "set-focused", false));
+  downloadWindow.on("focus", () => sendMessage(downloadWindow!, "set-focused", true));
   downloadWindow.loadFile(path.join(__dirname, "../www/download.html"));
 }
 
