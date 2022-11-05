@@ -8,7 +8,8 @@ exports.default = async function notarizing(context) {
 
   const appleId = process.env.APPLE_ID;
   const appleIdPwd = process.env.APPLE_ID_PWD;
-  if (!appleId || !appleIdPwd) {
+  const appleIdTeam = process.env.APPLE_ID_TEAM;
+  if (!appleId || !appleIdPwd || !appleIdTeam) {
     console.log("No Apple ID provided, skipping notarization");
     return;
   }
@@ -21,6 +22,6 @@ exports.default = async function notarizing(context) {
     appPath: `${appOutDir}/${appName}.app`,
     appleId: appleId,
     appleIdPassword: appleIdPwd,
-    teamId: "6S3UQC528P" // Team ID for Apple Developer organization
+    teamId: appleIdTeam
   });
 };
