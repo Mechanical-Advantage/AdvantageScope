@@ -114,7 +114,7 @@ jobs:
       - name: Prepare Windows artifact
         if: matrix.host.os == 'windows-latest'
         run: |
-          Move-Item -Path "dist\Advantage Scope Setup *.exe" -Destination "artifact"
+          Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "artifact"
       - name: Upload artifacts
         uses: actions/upload-release-asset@v1
         env:

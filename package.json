@@ -1,8 +1,8 @@
 {
-  "name": "advantage-scope",
-  "productName": "Advantage Scope",
+  "name": "advantagescope",
+  "productName": "AdvantageScope",
   "version": "2.0.0",
-  "description": "Logging tool from FRC Team 6328.",
+  "description": "Robot telemetry application for FRC",
   "author": {
     "name": "FRC 6328",
     "email": "info@littletonrobotics.org",
