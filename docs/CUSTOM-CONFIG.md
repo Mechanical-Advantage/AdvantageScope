@@ -2,9 +2,9 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-Advantage Scope includes a default set of flat field images, field models, robot models, and joystick configurations. You can manually add more options if desired. To open the configuration folder, click "Help" > "Show FRC Data Folder". You must restart Advantage Scope for changes to take effect.
+AdvantageScope includes a default set of flat field images, field models, robot models, and joystick configurations. These can be customized to add more options if desired. To open the configuration folder, click "Help" > "Show FRC Data Folder". AdvantageScope must be restarted for changes to take effect.
 
-The expected formats for the configuration files are defined below. You can also the [built-in configurations](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/frcData) for reference.
+The expected formats for the configuration files are defined below. See the [built-in configurations](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/frcData) for reference.
 
 ## Flat Field Images
 
@@ -45,14 +45,14 @@ Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". 
 }
 ```
 
-The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms will be applied in this order. You can temporarily adjust these values by opening the developer tools ("View" > "Toggle Developer Tools") and using the following command:
+The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms will be applied in this order. To temporarily adjust these values, open the developer tools ("View" > "Toggle Developer Tools") and use the following command:
 
 ```
 override3dRobotConfig(name, rotations, position)
 override3dRobotConfig("6328 (Bot-Bot Strikes Back)", [{ "axis": "x", "degrees": 0 }, { "axis": "y", "degrees": 0 }], [0, 0, 0])
 ```
 
-The values set using this method are not retained when the app is closed. Please copy them to the JSON config file when you have finished.
+The values set using this method are not retained when the app is closed; copy them to the JSON config file when finished.
 
 ## Joysticks
 
