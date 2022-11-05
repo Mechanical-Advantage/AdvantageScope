@@ -1419,9 +1419,13 @@ function createRenameTabWindow(
  * @param parentWindow The parent (source) window
  */
 function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, type: TabType) {
+  const width = 900;
+  const height = 500;
   const satellite = new BrowserWindow({
-    width: 900,
-    height: 500,
+    width: width,
+    height: height,
+    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
     minWidth: 200,
     minHeight: 100,
     resizable: true,
