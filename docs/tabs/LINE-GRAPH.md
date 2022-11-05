@@ -8,7 +8,7 @@ To zoom, place the cursor over the main graph and scroll up or down. Move left a
 
 Clicking on the graph selects a time, and right-clicking deselects it. The value of each field at that time is displayed in the legend.
 
-> Note: The selected time is synchronized across all tabs, making it easy to quickly find this location in other views.
+> Note: The selected time is synchronized across all tabs, making it easy to quickly find this location in other views. Hovering the cursor over a time will also display it in the pop-up windows.
 
 ![Line graph demo](/docs/img/line-graph-1.gif)
 
