@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-All visualizations in AdvantageScope are designed to receive live data from a robot or simulator in addition to log files.  This section describes how to connect to real time data sources.
+All visualizations in Advantage Scope are designed to receive live data from a robot or simulator in addition to log files. This section describes how to connect to real time data sources.
 
 ## Configuration
 
@@ -10,7 +10,7 @@ Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" 
 
 > Note: Click "File" > "Use USB roboRIO Address" to temporarily use the IP address "172.22.11.2" for all connections.
 
-- **NetworkTables 4:** This is the default networking protocol starting in WPILib 2023, and is commonly used by dashboards, coprocessors, etc. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details. Note that NetworkTables 3 (used by WPILib 2022 and older) is not supported by AdvantageScope.
+- **NetworkTables 4:** This is the default networking protocol starting in WPILib 2023, and is commonly used by dashboards, coprocessors, etc. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details. Note that NetworkTables 3 (used by WPILib 2022 and older) is not supported by Advantage Scope.
 - **NetworkTables 4 (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the "/AdvantageKit" table in NetworkTables. The only difference from the **NetworkTables 4** mode is that the "/AdvantageKit" table is used as the root, which allows for easier switching between an NT4 connection and an AdvantageKit log file.
 - **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases. Note that the "RLOG Server Port" must be set to use this mode.
 
@@ -27,7 +27,7 @@ The window title displays the IP address and the text "Searching" until the robo
 
 ## Viewing Live Data
 
-When connected to a live source, AdvantageScope locks all tabs to the current time by default. Views like the line graph and table autoscroll, and views like odometry and joysticks display the current values of each field. Clicking the red arrow button in the navigation bar toggles this lock, enabling viewing and replay of past data.
+When connected to a live source, Advantage Scope locks all tabs to the current time by default. Views like the line graph and table autoscroll, and views like odometry and joysticks display the current values of each field. Clicking the red arrow button in the navigation bar toggles this lock, enabling viewing and replay of past data.
 
 > Note: Scrolling to the left in the line graph also unlocks from the current time, and scrolling all the way to the right locks to current time again.
 

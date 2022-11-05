@@ -20,7 +20,7 @@ By default, each axis adjusts its range based on the visible data. To disable au
 
 ## Unit Conversion
 
-To adjust the units for an axis, click the three dots near the axis title and then "Unit Conversion...". Select the type of unit and the conversion you would like to perform. Each value is also multiplied by the "Extra Factor", allowing for custom conversions (like gear ratios, angular to linear conversions, or other units not provided by AdvantageScope).
+To adjust the units for an axis, click the three dots near the axis title and then "Unit Conversion...". Select the type of unit and the conversion you would like to perform. Each value is also multiplied by the "Extra Factor", allowing for custom conversions (like gear ratios, angular to linear conversions, or other units not provided by Advantage Scope).
 
 > Note: The "Extra Factor" accepts mathematical expressions such as "(50/14)\*(17/27)\*(45/15)" or "1.5\*pi". This often useful when expressing gear ratios or custom units.
 

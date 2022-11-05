@@ -1,20 +1,20 @@
-# Welcome to AdvantageScope!
+# Welcome to Advantage Scope!
 
-AdvantageScope is a robot diagnostics, log review/analysis, and data
+Advantage Scope is a robot diagnostics, log review/analysis, and data
 visualization application for FIRST Robotics Competition.
 
 ## Getting Started
 
-These links cover the basics you need to know to use AdvantageScope.
+These links cover the basics you need to know to use Advantage Scope.
 
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
 - [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
-## Tab Information 
+## Tab Information
 
-AdvantageScope supports many ways to view and analyze data, organized into Tabs.  The type of visualization is selectable for each new Tab opened, and multiple Tabs of a given type can be open at once.  Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing. 
+Advantage Scope supports many ways to view and analyze data, organized into Tabs. The type of visualization is selectable for each new Tab opened, and multiple Tabs of a given type can be open at once. Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing.
 
 - 📉 [Line Graph](/docs/tabs/LINE-GRAPH.md)
 - 🔢 [Table](/docs/tabs/TABLE.md)
@@ -31,7 +31,7 @@ AdvantageScope supports many ways to view and analyze data, organized into Tabs.
 ## Other Links
 
 - [AdvantageKit documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
-- [AdvantageScope repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
+- [Advantage Scope repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
 - [Team website](https://littletonrobotics.org)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.

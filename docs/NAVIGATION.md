@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-The screenshot below shows the important elements of the main AdvantageScope window. The exact appearance differs between operating systems.
+The screenshot below shows the important elements of the main Advantage Scope window. The exact appearance differs between operating systems.
 
 ![Navigation diagram](/docs/img/navigation-1.png)
 
@@ -18,7 +18,7 @@ To the left is the <span style="color: red;">sidebar</span> with the list of ava
 
 Use the <span style="color: blue;">tab bar</span> to switch between different views. This documentation is available at any time by clicking the 📖 icon to the left.
 
-> Note: Tabs can be named to identify their contents.  Rename a tab by right-clicking it and selecting "Rename..."
+> Note: Tabs can be named to identify their contents. Rename a tab by right-clicking it and selecting "Rename..."
 
 ## Navigation Buttons / Playback
 
@@ -34,6 +34,6 @@ Playback can be toggled using the play/pause button or by pressing the **space b
 
 ## Window Pop-Out
 
-It is often useful to view multiple tabs at once.  Since AdvantageScope synchronizes playback across all tabs, it is possible to perform sophisticated match review by looking at multiple visualizations at once.  An example might be viewing video, field odometry, controller inputs, and performance graphs all together.  Tabs that support pop-out have an additional "Add Window" icon just below the Navigation/Playback controls.
+It is often useful to view multiple tabs at once. Since Advantage Scope synchronizes playback across all tabs, it is possible to perform sophisticated match review by looking at multiple visualizations at once. An example might be viewing video, field odometry, controller inputs, and performance graphs all together. Tabs that support pop-out have an additional "Add Window" icon just below the Navigation/Playback controls.
 
-When using pop-out windows, playback is controlled from the main AdvantageScope window.
+When using pop-out windows, playback is controlled from the main Advantage Scope window.
