@@ -9,6 +9,9 @@ import Visualizer from "./Visualizer";
 export default class ThreeDimensionVisualizer implements Visualizer {
   private EFFICIENCY_MAX_FPS = 15;
   private ORBIT_FOV = 50;
+  private ORBIT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
+  private ORBIT_FIELD_DEFAULT_POSITION = new THREE.Vector3(0, 6, -12);
+  private ORBIT_ROBOT_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
   private WPILIB_ROTATION = this.getQuaternionFromRotSeq([
     {
       axis: "x",
@@ -38,6 +41,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private command: any;
   private shouldRender = false;
   private cameraIndex = -1;
+  private lastCameraIndex = -1;
   private lastFrameTime = 0;
   private lastWidth: number | null = 0;
   private lastHeight: number | null = 0;
@@ -97,13 +101,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       const near = 0.1;
       const far = 100;
       this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      this.camera.position.set(0, 6, -12);
-      this.camera.lookAt(0, 0.5, 0);
+      this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
+      this.camera.lookAt(this.ORBIT_DEFAULT_TARGET.x, this.ORBIT_DEFAULT_TARGET.y, this.ORBIT_DEFAULT_TARGET.z);
     }
 
     // Create controls
     this.controls = new OrbitControls(this.camera, canvas);
-    this.controls.target.set(0, 0.5, 0);
+    this.controls.target.copy(this.ORBIT_DEFAULT_TARGET);
     this.controls.maxDistance = 30;
     this.controls.enabled = true;
     this.controls.update();
@@ -411,6 +415,15 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
         }
+        if (this.cameraIndex != this.lastCameraIndex) {
+          if (this.cameraIndex == -1) {
+            this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
+          } else {
+            this.camera.position.copy(this.ORBIT_ROBOT_DEFAULT_POSITION);
+          }
+          this.controls.target.copy(this.ORBIT_DEFAULT_TARGET);
+          this.controls.update();
+        }
       } else {
         this.canvas.classList.add("fixed");
         let aspectRatio = 16 / 9;
@@ -436,6 +449,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.camera.fov = fov;
         this.camera.updateProjectionMatrix();
       }
+
+      this.lastCameraIndex = this.cameraIndex;
     }
 
     // Render new frame
