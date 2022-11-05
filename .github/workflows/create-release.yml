@@ -106,7 +106,7 @@ jobs:
       - name: Prepare macOS artifact
         if: matrix.host.os == 'macos-latest'
         run: |
-          mv dist/Advantage\ Scope-*.dmg artifact
+          mv dist/AdvantageScope-*.dmg artifact
       - name: Prepare Linux artifact
         if: matrix.host.os == 'ubuntu-latest'
         run: |
