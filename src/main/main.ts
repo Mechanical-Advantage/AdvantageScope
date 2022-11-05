@@ -9,6 +9,7 @@ import {
   MessageChannelMain,
   MessagePortMain,
   nativeTheme,
+  powerMonitor,
   shell
 } from "electron";
 import fs from "fs";
@@ -1257,6 +1258,7 @@ function createHubWindow() {
     // Init messages
     sendMessage(window, "set-frc-data", frcData);
     sendMessage(window, "set-fullscreen", window.isFullScreen());
+    sendMessage(window, "set-battery", powerMonitor.isOnBatteryPower());
     sendMessage(window, "set-version", {
       platform: process.platform,
       platformRelease: os.release(),
@@ -1279,6 +1281,8 @@ function createHubWindow() {
     hubWindows.splice(hubWindows.indexOf(window), 1);
     hubWindows.splice(0, 0, window);
   });
+  powerMonitor.on("on-ac", () => sendMessage(window, "set-battery", false));
+  powerMonitor.on("on-battery", () => sendMessage(window, "set-battery", true));
 
   window.loadFile(path.join(__dirname, "../www/hub.html"));
   return window;

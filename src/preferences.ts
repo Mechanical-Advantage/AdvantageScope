@@ -42,9 +42,10 @@ window.addEventListener("message", (event) => {
           if (LIVE_MODE.value == "nt4-akit") liveMode = "nt4-akit";
           if (LIVE_MODE.value == "rlog") liveMode = "rlog";
 
-          let threeDimensionMode: "quality" | "efficiency" = "quality";
+          let threeDimensionMode: "quality" | "efficiency" | "auto" = "quality";
           if (THREE_DIMENSION_MODE.value == "quality") threeDimensionMode = "quality";
           if (THREE_DIMENSION_MODE.value == "efficiency") threeDimensionMode = "efficiency";
+          if (THREE_DIMENSION_MODE.value == "auto") threeDimensionMode = "auto";
 
           let newPrefs: Preferences = {
             theme: theme,

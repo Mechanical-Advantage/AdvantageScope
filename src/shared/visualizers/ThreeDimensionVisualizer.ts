@@ -49,6 +49,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private lastIsDark: boolean | null = null;
   private lastAspectRatio: number | null = null;
   private lastPrefsMode = "";
+  private lastIsBattery = false;
   private lastFrcDataString: string = "";
   private lastFieldTitle: string = "";
   private lastRobotTitle: string = "";
@@ -175,9 +176,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private renderFrame() {
     // Check for new render mode
     if (window.preferences) {
-      if (window.preferences.threeDimensionMode != this.lastPrefsMode) {
+      if (window.preferences.threeDimensionMode != this.lastPrefsMode || window.isBattery != this.lastIsBattery) {
         this.shouldRender = true;
         this.lastPrefsMode = window.preferences.threeDimensionMode;
+        this.lastIsBattery = window.isBattery;
       }
     }
 
@@ -207,11 +209,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Limit FPS in efficiency mode
+    let isEfficiency =
+      window.preferences?.threeDimensionMode == "efficiency" ||
+      (window.preferences?.threeDimensionMode == "auto" && window.isBattery);
     let now = new Date().getTime();
-    if (
-      window.preferences?.threeDimensionMode == "efficiency" &&
-      now - this.lastFrameTime < 1000 / this.EFFICIENCY_MAX_FPS
-    ) {
+    if (isEfficiency && now - this.lastFrameTime < 1000 / this.EFFICIENCY_MAX_FPS) {
       return; // Continue trying to render
     }
 
@@ -454,7 +456,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Render new frame
-    const devicePixelRatio = window.preferences?.threeDimensionMode == "efficiency" ? 1 : window.devicePixelRatio;
+    const devicePixelRatio = isEfficiency ? 1 : window.devicePixelRatio;
     const canvas = this.renderer.domElement;
     const clientWidth = canvas.clientWidth;
     const clientHeight = canvas.clientHeight;
@@ -481,14 +483,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       );
     });
     return quaternion;
-  }
-
-  private rotateTranslationByRotation(position: Vector3, rotation: Quaternion): Vector3 {
-    let p = new THREE.Quaternion(position.x, position.y, position.z, 0);
-    let qprime = rotation.clone();
-    qprime.multiply(p);
-    qprime.multiply(rotation.clone().invert());
-    return new THREE.Vector3(qprime.x, qprime.y, qprime.z);
   }
 }
 

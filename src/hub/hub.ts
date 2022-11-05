@@ -31,6 +31,7 @@ declare global {
     appVersion: string;
     isFullscreen: boolean;
     isFocused: boolean;
+    isBattery: boolean;
 
     selection: Selection;
     sidebar: Sidebar;
@@ -49,6 +50,7 @@ window.platform = "";
 window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
+window.isBattery = false;
 
 window.selection = new Selection();
 window.sidebar = new Sidebar();
@@ -369,6 +371,10 @@ function handleMainMessage(message: NamedMessage) {
           button.classList.add("blurred");
         }
       });
+      break;
+
+    case "set-battery":
+      window.isBattery = message.data;
       break;
 
     case "set-version":
