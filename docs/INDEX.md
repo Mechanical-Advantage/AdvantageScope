@@ -1,25 +1,11 @@
 # Welcome to AdvantageScope!
 
-AdvantageScope is a cross-platform data visualization and log review tool for
-FIRST Robotics Competition teams.  It reads logs in WPILOG and RLOG formats and
-can view live robot data through Network Tables 4 (NT4).
-
-Supported visualization tools include:
-- A wide selection of flexible graphs and charts
-- 2D and 3D field visualizations of odometry data, with customizable CAD-based robot avatars
-- Synchronized video playback from a separately loaded match video
-- Controller use, showing driver/operator actions on customizable controller representations
-- Swerve drive module vector displays
-- Console message review
-- Log statistics
-
-Windows, Mac, and Linux binaries are provided.
-
-AdvantageScope does not require AdvantageKit; although they were designed to
-work well together, AdvantageScope is an independent tool that can be used by
-any team through WPILOG and NT4 based data.
+AdvantageScope is a robot diagnostics, log review/analysis, and data
+visualization application for FIRST Robotics Competition.
 
 ## Getting Started
+
+These links cover the basics you need to know to use AdvantageScope.
 
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
@@ -27,6 +13,8 @@ any team through WPILOG and NT4 based data.
 - [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 ## Tab Information 
+
+AdvantageScope supports many ways to view and analyze data, organized into Tabs.  The type of visualization is selectable for each new Tab opened, and multiple Tabs of a given type can be open at once.  Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing. 
 
 - 📉 [Line Graph](/docs/tabs/LINE-GRAPH.md)
 - 🔢 [Table](/docs/tabs/TABLE.md)
