@@ -25,3 +25,9 @@ Click "File" > "Download Logs..." or press **cmd/ctrl + D** to open the download
 When a single log file is downloaded, AdvantageScope prompts to open it immediately:
 
 ![Prompt to open log file](/docs/img/open-file-4.png)
+
+## Exporting as CSV
+
+To export a log as a CSV file, click "File" > "Export CSV..." or press **cmd/ctrl + E**, then choose a save location. Each column represents a field, and each row represents a new timestamp (with a single header row).
+
+![CSV table](/docs/img/open-file-5.png)
