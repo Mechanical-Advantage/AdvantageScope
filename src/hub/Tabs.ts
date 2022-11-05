@@ -238,6 +238,9 @@ export default class Tabs {
     this.selectedTab += 1;
     this.VIEWER.appendChild(contentElement);
     controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
+    if (TIMELINE_VIZ_TYPES.includes(type)) {
+      (controller as TimelineVizController).setTitle(getDefaultTabTitle(type));
+    }
     this.updateElements();
   }
 
@@ -275,13 +278,6 @@ export default class Tabs {
     this.updateElements();
   }
 
-  /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
-  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
-    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
-    }
-  }
-
   /** Renames a single tab. */
   renameTab(index: number, name: string) {
     let tab = this.tabList[index];
@@ -289,6 +285,20 @@ export default class Tabs {
     tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
     if (TIMELINE_VIZ_TYPES.includes(tab.type)) {
       (tab.controller as TimelineVizController).setTitle(name);
+    }
+  }
+
+  /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
+  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
+    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
+    }
+  }
+
+  /** Switches the selected camera for the selected 3D field. */
+  set3DCamera(index: number) {
+    if (this.tabList[this.selectedTab].type == TabType.ThreeDimension) {
+      (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
     }
   }
 

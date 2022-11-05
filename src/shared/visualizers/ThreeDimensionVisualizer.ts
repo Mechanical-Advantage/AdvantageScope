@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Quaternion } from "three";
+import { Quaternion, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3d_Rotation } from "../FRCData";
@@ -8,26 +8,42 @@ import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
   private EFFICIENCY_MAX_FPS = 15;
+  private ORBIT_FOV = 50;
+  private WPILIB_ROTATION = this.getQuaternionFromRotSeq([
+    {
+      axis: "x",
+      degrees: -90
+    },
+    {
+      axis: "y",
+      degrees: 180
+    }
+  ]);
 
   private content: HTMLElement;
+  private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
-  private wpilibCoordinateGroup: THREE.Group;
-  private wpilibFieldCoordinateGroup: THREE.Group;
+  private controls: OrbitControls;
+  private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
+  private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
   private robot: THREE.Object3D | null = null;
+  private robotCameras: THREE.Object3D[] = [];
   private greenCones: THREE.Object3D[] = [];
   private blueCones: THREE.Object3D[] = [];
   private yellowCones: THREE.Object3D[] = [];
 
   private command: any;
   private shouldRender = false;
+  private cameraIndex = -1;
   private lastFrameTime = 0;
   private lastWidth: number | null = 0;
   private lastHeight: number | null = 0;
   private lastDevicePixelRatio: number | null = null;
   private lastIsDark: boolean | null = null;
+  private lastAspectRatio: number | null = null;
   private lastPrefsMode = "";
   private lastFrcDataString: string = "";
   private lastFieldTitle: string = "";
@@ -43,32 +59,54 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
   constructor(content: HTMLElement, canvas: HTMLCanvasElement) {
     this.content = content;
+    this.canvas = canvas;
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.scene = new THREE.Scene();
 
+    // Change camera menu
+    let startPx: [number, number] | null = null;
+    canvas.addEventListener("contextmenu", (event) => {
+      startPx = [event.x, event.y];
+    });
+    canvas.addEventListener("mouseup", (event) => {
+      if (startPx && event.x == startPx[0] && event.y == startPx[1]) {
+        if (!this.command) return;
+        let robotTitle = this.command.options.robot;
+        let robotConfig = window.frcData?.robots.find((robotData) => robotData.title === robotTitle);
+        if (robotConfig == undefined) return;
+        window.sendMainMessage("ask-3d-camera", {
+          options: robotConfig.cameras.map((camera) => camera.name),
+          selectedIndex: this.cameraIndex >= robotConfig.cameras.length ? -1 : this.cameraIndex
+        });
+      }
+      startPx = null;
+    });
+
     // Create coordinate groups
     this.wpilibCoordinateGroup = new THREE.Group();
     this.scene.add(this.wpilibCoordinateGroup);
-    this.wpilibCoordinateGroup.rotateX(Math.PI / 2);
-    this.wpilibCoordinateGroup.rotateY(Math.PI);
+    this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
     this.wpilibFieldCoordinateGroup = new THREE.Group();
     this.wpilibCoordinateGroup.add(this.wpilibFieldCoordinateGroup);
 
     // Create camera
-    const fov = 45;
-    const aspect = 2;
-    const near = 0.1;
-    const far = 100;
-    this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-    this.camera.position.set(0, 6, -12);
-    this.camera.lookAt(0, 0.5, 0);
+    {
+      const fov = this.ORBIT_FOV;
+      const aspect = 2;
+      const near = 0.1;
+      const far = 100;
+      this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      this.camera.position.set(0, 6, -12);
+      this.camera.lookAt(0, 0.5, 0);
+    }
 
     // Create controls
-    const controls = new OrbitControls(this.camera, canvas);
-    controls.target.set(0, 0.5, 0);
-    controls.maxDistance = 30;
-    controls.update();
+    this.controls = new OrbitControls(this.camera, canvas);
+    this.controls.target.set(0, 0.5, 0);
+    this.controls.maxDistance = 30;
+    this.controls.enabled = true;
+    this.controls.update();
 
     // Add lights
     {
@@ -106,7 +144,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
 
     // Render when camera is moved
-    controls.addEventListener("change", () => (this.shouldRender = true));
+    this.controls.addEventListener("change", () => (this.shouldRender = true));
 
     // Render loop
     let periodic = () => {
@@ -116,15 +154,21 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     window.requestAnimationFrame(periodic);
   }
 
+  /** Switches the selected camera. */
+  set3DCamera(index: number) {
+    this.cameraIndex = index;
+    this.shouldRender = true;
+  }
+
   render(command: any): number | null {
     if (JSON.stringify(command) != JSON.stringify(this.command)) {
       this.shouldRender = true;
     }
     this.command = command;
-    return null;
+    return this.lastAspectRatio;
   }
 
-  renderFrame() {
+  private renderFrame() {
     // Check for new render mode
     if (window.preferences) {
       if (window.preferences.threeDimensionMode != this.lastPrefsMode) {
@@ -213,12 +257,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.wpilibFieldCoordinateGroup.remove(this.robot);
       }
       this.robot = null;
+      this.robotCameras = [];
 
       const loader = new GLTFLoader();
       loader.load(robotConfig.path, (gltf) => {
         if (robotConfig == undefined) return;
 
-        // Set position and rotation
+        // Set position and rotation of model
         let robotModel = gltf.scene;
         robotModel.rotation.setFromQuaternion(this.getQuaternionFromRotSeq(robotConfig.rotations));
         robotModel.position.set(...robotConfig.position);
@@ -228,6 +273,25 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         if (this.lastRobotVisible) {
           this.wpilibFieldCoordinateGroup.add(this.robot);
         }
+
+        // Set up cameras
+        this.robotCameras = robotConfig.cameras.map((camera) => {
+          let cameraObj = new THREE.Object3D();
+          const extraRotations: Config3d_Rotation[] = [
+            {
+              axis: "z",
+              degrees: -90
+            },
+            {
+              axis: "y",
+              degrees: -90
+            }
+          ];
+          cameraObj.rotation.setFromQuaternion(this.getQuaternionFromRotSeq([...extraRotations, ...camera.rotations]));
+          cameraObj.position.set(...camera.position);
+          this.robot?.add(cameraObj);
+          return cameraObj;
+        });
 
         // Render new frame
         this.shouldRender = true;
@@ -281,7 +345,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       // Add new cones
       while (poseData.length > objectArray.length) {
         let cone = new THREE.Group();
-        let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.32, 16, 32), [
+        let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.25, 16, 32), [
           new THREE.MeshPhongMaterial({
             map: texture
           }),
@@ -290,8 +354,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             map: textureBase
           })
         ]);
+        coneMesh.position.set(-0.125, 0, 0);
+        coneMesh.rotateZ(-Math.PI / 2);
         coneMesh.rotateY(-Math.PI / 2);
-        coneMesh.rotateX(-Math.PI / 2);
         cone.add(coneMesh);
         objectArray.push(cone);
         this.wpilibFieldCoordinateGroup.add(cone);
@@ -312,6 +377,66 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     updateCones(this.command.poses.green, this.greenCones, this.coneTextureGreen, this.coneTextureGreenBase);
     updateCones(this.command.poses.blue, this.blueCones, this.coneTextureBlue, this.coneTextureBlueBase);
     updateCones(this.command.poses.yellow, this.yellowCones, this.coneTextureYellow, this.coneTextureYellowBase);
+
+    // Set camera for fixed views
+    {
+      // Reset camera index if invalid
+      if (this.cameraIndex >= this.robotCameras.length) this.cameraIndex = -1;
+
+      // Update camera controls
+      let orbitalCamera = this.cameraIndex < 0;
+      if (orbitalCamera != this.controls.enabled) {
+        this.controls.enabled = orbitalCamera;
+        this.controls.update();
+      }
+
+      // Update container and camera based on mode
+      let fov = this.ORBIT_FOV;
+      this.lastAspectRatio = null;
+      if (orbitalCamera) {
+        this.canvas.classList.remove("fixed");
+        this.canvas.style.aspectRatio = "";
+        if (this.cameraIndex == -1) {
+          // Reset to default origin
+          this.wpilibCoordinateGroup.position.set(0, 0, 0);
+          this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
+        } else if (this.robot) {
+          // Shift based on robot location
+          this.wpilibCoordinateGroup.position.set(0, 0, 0);
+          this.wpilibCoordinateGroup.rotation.setFromQuaternion(new THREE.Quaternion());
+          let position = this.robot.getWorldPosition(new THREE.Vector3());
+          let rotation = this.robot.getWorldQuaternion(new THREE.Quaternion()).multiply(this.WPILIB_ROTATION);
+          position.negate();
+          rotation.invert();
+          this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
+          this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
+        }
+      } else {
+        this.canvas.classList.add("fixed");
+        let aspectRatio = 16 / 9;
+        if (robotConfig) {
+          // Get fixed aspect ratio and FOV
+          let cameraConfig = robotConfig.cameras[this.cameraIndex];
+          aspectRatio = cameraConfig.resolution[0] / cameraConfig.resolution[1];
+          this.lastAspectRatio = aspectRatio;
+          fov = (cameraConfig.fov * aspectRatio) / 2;
+          this.canvas.style.aspectRatio = aspectRatio.toString();
+
+          // Update camera position
+          if (this.lastRobotVisible) {
+            let cameraObj = this.robotCameras[this.cameraIndex];
+            this.camera.position.copy(cameraObj.getWorldPosition(new THREE.Vector3()));
+            this.camera.rotation.setFromQuaternion(cameraObj.getWorldQuaternion(new THREE.Quaternion()));
+          }
+        }
+      }
+
+      // Update camera FOV
+      if (fov != this.camera.fov) {
+        this.camera.fov = fov;
+        this.camera.updateProjectionMatrix();
+      }
+    }
 
     // Render new frame
     const devicePixelRatio = window.preferences?.threeDimensionMode == "efficiency" ? 1 : window.devicePixelRatio;
@@ -341,6 +466,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       );
     });
     return quaternion;
+  }
+
+  private rotateTranslationByRotation(position: Vector3, rotation: Quaternion): Vector3 {
+    let p = new THREE.Quaternion(position.x, position.y, position.z, 0);
+    let qprime = rotation.clone();
+    qprime.multiply(p);
+    qprime.multiply(rotation.clone().invert());
+    return new THREE.Vector3(qprime.x, qprime.y, qprime.z);
   }
 }
 

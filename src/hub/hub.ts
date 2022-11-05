@@ -426,12 +426,16 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.close(window.tabs.getSelectedTab());
       break;
 
+    case "rename-tab":
+      window.tabs.renameTab(message.data.index, message.data.name);
+      break;
+
     case "edit-axis":
       window.tabs.editAxis(message.data.isLeft, message.data.lockedRange, message.data.unitConversion);
       break;
 
-    case "rename-tab":
-      window.tabs.renameTab(message.data.index, message.data.name);
+    case "set-3d-camera":
+      window.tabs.set3DCamera(message.data);
       break;
 
     case "video-data":

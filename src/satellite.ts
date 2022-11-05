@@ -17,15 +17,23 @@ declare global {
   interface Window {
     frcData: FRCData | null;
     preferences: Preferences | null;
+    sendMainMessage: (name: string, data?: any) => void;
   }
 }
 
 let visualizer: Visualizer | null = null;
 let type: TabType | null = null;
-let title: string = "";
+let title: string | null = null;
 let messagePort: MessagePort | null = null;
 let lastAspectRatio: number | null = null;
 let lastCommand: any = null;
+
+window.sendMainMessage = (name: string, data?: any) => {
+  if (messagePort != null) {
+    let message: NamedMessage = { name: name, data: data };
+    messagePort.postMessage(message);
+  }
+};
 
 window.addEventListener("message", (event) => {
   if (event.source == window && event.data == "port") {
@@ -93,9 +101,17 @@ window.addEventListener("message", (event) => {
           }
 
           // Render frame
-          lastCommand = message.data;
-          let aspectRatio = visualizer?.render(message.data.command);
-          if (aspectRatio) processAspectRatio(aspectRatio);
+          lastCommand = message.data.command;
+          if (visualizer) {
+            let aspectRatio = visualizer.render(message.data.command);
+            processAspectRatio(aspectRatio);
+          }
+          break;
+
+        case "set-3d-camera":
+          if (type == TabType.ThreeDimension) {
+            (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
+          }
           break;
 
         default:
@@ -114,11 +130,13 @@ window.addEventListener("resize", () => {
   if (aspectRatio) processAspectRatio(aspectRatio);
 });
 
-function processAspectRatio(aspectRatio: number) {
+function processAspectRatio(aspectRatio: number | null) {
   if (aspectRatio != lastAspectRatio) {
     lastAspectRatio = aspectRatio;
-    if (aspectRatio > MAX_ASPECT_RATIO) aspectRatio = MAX_ASPECT_RATIO;
-    if (aspectRatio < 1 / MAX_ASPECT_RATIO) aspectRatio = 1 / MAX_ASPECT_RATIO;
-    messagePort?.postMessage(aspectRatio);
+    if (aspectRatio !== null) {
+      if (aspectRatio > MAX_ASPECT_RATIO) aspectRatio = MAX_ASPECT_RATIO;
+      if (aspectRatio < 1 / MAX_ASPECT_RATIO) aspectRatio = 1 / MAX_ASPECT_RATIO;
+    }
+    window.sendMainMessage("set-aspect-ratio", aspectRatio);
   }
 }

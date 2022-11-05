@@ -1334,7 +1334,7 @@ table.timeline-viz-config button {
 }
 
 div.odometry-canvas-container,
-canvas.three-dimension-canvas,
+div.three-dimension-canvas-container,
 canvas.joysticks-canvas {
   position: absolute;
   top: 30px;
@@ -1348,6 +1348,31 @@ div.odometry-canvas-container canvas {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+canvas.three-dimension-canvas:not(.fixed) {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+canvas.three-dimension-canvas.fixed {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 2;
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  canvas.three-dimension-canvas.fixed {
+    border: 1px solid #999;
+  }
 }
 
 div.video-container {
