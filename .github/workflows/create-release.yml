@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
+      version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -123,5 +124,5 @@ jobs:
         with:
           upload_url: ${{ needs.release.outputs.upload_url }}
           asset_path: artifact
-          asset_name: advantage-scope-${{ matrix.host.shortName }}-${{ matrix.arch }}.${{ matrix.host.artifactExt }}
+          asset_name: advantagescope-${{ matrix.host.shortName }}-${{ matrix.arch }}-{{ needs.release.outputs.version }}.${{ matrix.host.artifactExt }}
           asset_content_type: ${{ matrix.host.artifactType }}
