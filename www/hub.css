@@ -449,7 +449,13 @@ button.unlock {
 }
 
 button.unlock > img {
-  filter: invert(11%) sepia(94%) saturate(6673%) hue-rotate(0deg) brightness(107%) contrast(108%);
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(10%) sepia(100%) saturate(7058%) hue-rotate(358deg) brightness(105%) contrast(117%);
+}
+
+button.unlock.blurred > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(83%) sepia(68%) saturate(3617%) hue-rotate(294deg) brightness(99%) contrast(119%);
 }
 
 button.move-left {
