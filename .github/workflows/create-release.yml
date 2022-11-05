@@ -111,7 +111,7 @@ jobs:
         if: matrix.host.os == 'ubuntu-latest'
         run: |
           cd dist
-          zip ../artifact.zip ./advantage-scope*
+          zip ../artifact.zip ./advantagescope*
           mv ../artifact.zip ../artifact
       - name: Prepare Windows artifact
         if: matrix.host.os == 'windows-latest'
