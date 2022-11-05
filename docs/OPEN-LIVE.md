@@ -2,11 +2,11 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-All visualizations in AdvantageScope are designed to receive live data from a robot or simulator in addition to log files.  This section describes how to connect to real time data sources.
+All visualizations in AdvantageScope are designed to receive live data from a robot or simulator in addition to log files. This section describes how to connect to real time data sources.
 
 ## Configuration
 
-Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "Advantage Scope" > "Preferences..." (macOS). Update the "roboRIO Address" and "Live Mode (options listed below).
+Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). Update the "roboRIO Address" and "Live Mode (options listed below).
 
 > Note: Click "File" > "Use USB roboRIO Address" to temporarily use the IP address "172.22.11.2" for all connections.
 

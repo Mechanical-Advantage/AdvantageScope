@@ -1,20 +1,19 @@
 # Welcome to AdvantageScope!
 
-AdvantageScope is a robot diagnostics, log review/analysis, and data
-visualization application for FIRST Robotics Competition.
+AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition.
 
 ## Getting Started
 
-These links cover the basics you need to know to use AdvantageScope.
+These links cover the basics you need to know when using AdvantageScope.
 
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
 - [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
-## Tab Information 
+## Tab Information
 
-AdvantageScope supports many ways to view and analyze data, organized into Tabs.  The type of visualization is selectable for each new Tab opened, and multiple Tabs of a given type can be open at once.  Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing. 
+AdvantageScope supports many ways to view and analyze data, organized into tabs. The type of visualization is selectable for each new tab opened, and multiple tabs of a given type can be open at once. Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing.
 
 - 📉 [Line Graph](/docs/tabs/LINE-GRAPH.md)
 - 🔢 [Table](/docs/tabs/TABLE.md)

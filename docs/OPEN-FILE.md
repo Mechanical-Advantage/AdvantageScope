@@ -6,13 +6,13 @@ This section describes how to open a log file for analysis.
 
 ## Opening a Saved Log
 
-In the menu bar, click "File" > "Open..." or press **cmd/ctrl + O**, then choose the log file from your local disk. Both WPILOG and RLOG files are supported.
+In the menu bar, click "File" > "Open..." or press **cmd/ctrl + O**, then choose a log file from the local disk. Both WPILOG and RLOG files are supported.
 
 ![Opening a saved log](/docs/img/open-file-1.gif)
 
 ## Downloading from a roboRIO
 
-Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "Advantage Scope" > "Preferences..." (macOS). Update the "roboRIO Address" and "roboRIO Log Folder".
+Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). Update the "roboRIO Address" and "roboRIO Log Folder".
 
 > Note: Click "File" > "Use USB roboRIO Address" to temporarily use the IP address "172.22.11.2" for all connections.
 
