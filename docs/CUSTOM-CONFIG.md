@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-Advantage Scope includes a default set of flat field images, field models, robot models, and joystick configurations. You can manually add more options if desired. To open the configuration folder, click "Help" > "Show FRC Data Folder". You must restart Advantage Scope for changes to take effect.
+AdvantageScope includes a default set of flat field images, field models, robot models, and joystick configurations. These can be customized to add more options if desired. To open the configuration folder, click "Help" > "Show FRC Data Folder". AdvantageScope must be restarted for changes to take effect.
 
 The expected formats for the configuration files are defined below. You can also the [built-in configurations](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/frcData) for reference.
 
