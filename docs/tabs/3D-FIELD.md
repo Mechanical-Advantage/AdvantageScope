@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-This tab shows a 3D visualization of the robot and field. It can be used with regular 2D odometry, but is especially helpful when working with 3D calculations (like localizing with AprilTag). Multiple camera views are available, including field relative, robot relative, and fixed. The timeline shows when the robot is enabled and can be used to navigate through the log data.
+This tab shows a 3D visualization of the robot and field. It can be used with regular 2D odometry, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
 > Note: To view the 3D visualizations alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. Each pop-up window can also be configured with a different camera view (see more details below).
 
@@ -34,7 +34,7 @@ Each of the non-robot fields can be used to display a set of cones at arbitrary 
 
 > Note: To log an array of Pose3d objects using AdvantageKit, call _Logger.getInstance().recordOutput(key, poses[]);_
 
-The tip of each cone shows the translation component, and the rotation matches the pose. The dark band on top of each cone shows the rotation around its axis.
+The tip of each cone shows the translation component, and the rotation matches the pose. The dark band is rendered on top of each cone and shows the rotation around its axis.
 
 ![3D cones](/docs/resources/3d-field/3d-field-2.gif)
 
@@ -48,7 +48,7 @@ The following configuration options are available:
 
 > Note: To add a custom field or robot model, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
 
-The 3D field also includes an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). The available options for the "3D Mode" are:
+The 3D field also supports an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). The available options for the "3D Mode" are:
 
 - **Prioritize quality:** Always render at the screen's native resolution and framerate.
 - **Prioritize efficiency:** Always lower the framerate and resolution to reduce battery consumption and provide more consistent performance on low-end devices.
@@ -56,7 +56,7 @@ The 3D field also includes an "efficiency" mode, which optionally reduces the fr
 
 ## Camera Options
 
-To switch the selected camera mode, right-click on the rendered field view. The camera mode and selected position is controlled independently for every pop-up window, allowing for the easy creation of multi-camera views.
+To switch the selected camera mode, right-click on the rendered field view. The camera mode and position is controlled independently for every pop-up window, allowing for the easy creation of multi-camera views.
 
 ### Orbit Field
 
