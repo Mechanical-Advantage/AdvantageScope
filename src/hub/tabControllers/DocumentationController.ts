@@ -4,13 +4,11 @@ import TabType from "../../shared/TabType";
 import TabController from "../TabController";
 
 export default class DocumentationController implements TabController {
-  private CONTENT: HTMLElement;
   private CONTAINER: HTMLElement;
   private TEXT: HTMLElement;
   private remarkable = new Remarkable({ html: true });
 
   constructor(content: HTMLElement) {
-    this.CONTENT = content;
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
     this.TEXT = content.getElementsByClassName("documentation-text")[0] as HTMLElement;
 
@@ -38,6 +36,7 @@ export default class DocumentationController implements TabController {
         let html = this.remarkable.render(text);
         html = html.replaceAll('<span style="color: ', '<span color="'); // Remove color span styles (inline styles not allowed)
         this.TEXT.innerHTML = html;
+        this.CONTAINER.scrollTop = 0;
 
         // Update links
         Array.from(this.TEXT.getElementsByTagName("a")).forEach((link) => {
