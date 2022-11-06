@@ -16,7 +16,7 @@ It includes the following tools:
 
 **View the [online documentation](/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
 
-![Example screenshot](/docs/resources/screenshot-dark.png)
+![Example screenshot](/docs/resources/screenshot-light.png)
 
 ## Installation
 
