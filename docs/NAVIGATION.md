@@ -10,7 +10,7 @@ The screenshot below shows the important elements of the main AdvantageScope win
 
 ## Sidebar
 
-To the left is the <span style="color: red;">sidebar</span> with the list of available tables and fields. Selectable fields are shown in _italics_ and built-in tables (from WPILib or AdvantageKit) are <u>underlined</u>. Click the arrow to expand nested tables. **Drag a single field** to select it or **hold cmd/ctrl** to select a collection of fields by clicking each one. Start dragging the collection of fields to finish the selection.
+To the left is the <span style="color: red;">sidebar (red)</span> with the list of available tables and fields. Selectable fields are shown in _italics_ and built-in tables (from WPILib or AdvantageKit) are <u>underlined</u>. Click the arrow to expand nested tables. **Drag a single field** to select it or **hold cmd/ctrl** to select a collection of fields by clicking each one. Start dragging the collection of fields to finish the selection.
 
 > Note: Click and drag on the right edge to resize or hide the sidebar.
 
@@ -18,13 +18,13 @@ To the left is the <span style="color: red;">sidebar</span> with the list of ava
 
 ## Tab Bar
 
-Use the <span style="color: blue;">tab bar</span> to switch between different views. This documentation is available at any time by clicking the 📖 icon to the left. To export the current tab layout (and associated settings), click "File" > "Export Layout..." To import a layout from a file, click "File" > "Import Layout..."
+Use the <span style="color: blue;">tab bar (blue)</span> to switch between different views. This documentation is available at any time by clicking the 📖 icon to the left. To export the current tab layout (and associated settings), click "File" > "Export Layout..." To import a layout from a file, click "File" > "Import Layout..."
 
 > Note: Tabs can be named to identify their contents. Rename a tab by right-clicking it and selecting "Rename..."
 
 ## Navigation Buttons & Playback
 
-The <span style="color: green;">navigation buttons</span> on the top manage the tabs and control playback. The "+" icon adds a new tab (this can be accessed quickly by pressing **cmd/ctrl + T**). The "X" icon closes the selected tab (**cmd/ctrl + W**) and the arrow buttons move the selected tab left or right (**cmd/ctrl + [ OR ]**). Quickly switch between tabs using the arrow keys (**cmd/ctrl + ← OR →**).
+The <span style="color: green;">navigation buttons (green)</span> on the top manage the tabs and control playback. The "+" icon adds a new tab (this can be accessed quickly by pressing **cmd/ctrl + T**). The "X" icon closes the selected tab (**cmd/ctrl + W**) and the arrow buttons move the selected tab left or right (**cmd/ctrl + [ OR ]**). Quickly switch between tabs using the arrow keys (**cmd/ctrl + ← OR →**).
 
 ![Creating a new tab](/docs/img/navigation-3.gif)
 
