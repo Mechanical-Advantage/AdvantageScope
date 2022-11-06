@@ -20,5 +20,5 @@ It includes the following tools:
 
 ## Installation
 
-1. Click the release marked "Latest" under "Releases".
+1. Find the [latest release](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest) under "Releases".
 2. Download the appropriate build based on the OS & architecture. AdvantageScope supports Windows, macOS, and Linux on both x86 and ARM architectures.
