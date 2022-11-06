@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
-AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition teams. It reads logs in WPILOG and RLOG file formats, and supports live robot data viewing using NT4 or RLOG streaming.
+AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition teams. It reads logs in WPILOG and RLOG file formats, and supports live robot data viewing using NT4 or RLOG streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework.
 
 It includes the following tools:
 
@@ -13,8 +13,6 @@ It includes the following tools:
 - Swerve drive module vector displays
 - Console message review
 - Log statistics analysis
-
-AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework.
 
 **View the [online documentation](/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
 
