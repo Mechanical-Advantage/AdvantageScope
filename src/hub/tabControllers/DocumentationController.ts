@@ -94,8 +94,8 @@ export default class DocumentationController implements TabController {
         this.isIndex = markdownPath == "../docs/INDEX.md";
         if (this.isIndex) {
           // Update screenshot
-          if (!window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            this.TEXT.getElementsByTagName("img")[0].src = "../docs/resources/screenshot-light.png";
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            this.TEXT.getElementsByTagName("img")[0].src = "../docs/resources/screenshot-dark.png";
           }
 
           // Add link to online documentation
