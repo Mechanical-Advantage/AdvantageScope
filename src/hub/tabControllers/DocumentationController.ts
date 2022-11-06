@@ -7,6 +7,7 @@ export default class DocumentationController implements TabController {
   private CONTAINER: HTMLElement;
   private TEXT: HTMLElement;
   private remarkable = new Remarkable({ html: true });
+  private isIndex = false;
 
   constructor(content: HTMLElement) {
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
@@ -25,7 +26,20 @@ export default class DocumentationController implements TabController {
 
   refresh(): void {}
 
-  periodic(): void {}
+  periodic(): void {
+    // Update screenshot on index page
+    if (this.isIndex) {
+      let images = this.TEXT.getElementsByTagName("img");
+      if (images.length >= 1) {
+        let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (isDark && images[0].src.endsWith("screenshot-light.png")) {
+          images[0].src = "../docs/resources/screenshot-dark.png";
+        } else if (!isDark && images[0].src.endsWith("screenshot-dark.png")) {
+          images[0].src = "../docs/resources/screenshot-light.png";
+        }
+      }
+    }
+  }
 
   private loadMarkdown(markdownPath: string) {
     fetch(markdownPath)
@@ -77,7 +91,14 @@ export default class DocumentationController implements TabController {
         });
 
         // App adjustments for index page
-        if (markdownPath == "../docs/INDEX.md") {
+        this.isIndex = markdownPath == "../docs/INDEX.md";
+        if (this.isIndex) {
+          // Update screenshot
+          if (!window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            this.TEXT.getElementsByTagName("img")[0].src = "../docs/resources/screenshot-light.png";
+          }
+
+          // Add link to online documentation
           let list = this.TEXT.getElementsByTagName("ul")[2];
           let listItem = document.createElement("li");
           list.insertBefore(listItem, list.firstChild);
@@ -92,6 +113,7 @@ export default class DocumentationController implements TabController {
             );
           });
 
+          // Add version text
           let paragraph = document.createElement("p");
           this.TEXT.appendChild(paragraph);
           let versionText = document.createElement("em");

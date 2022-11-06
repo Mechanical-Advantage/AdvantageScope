@@ -18,7 +18,7 @@ AdvantageScope can be used with any WPILib project, but is also optimized for us
 
 **View the [online documentation](/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
 
-![Example screenshot](/screenshot.jpg)
+![Example screenshot](/docs/resources/screenshot-dark.png)
 
 ## Installation
 

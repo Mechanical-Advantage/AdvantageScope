@@ -551,7 +551,7 @@ div.documentation-text img,
 div.documentation-text video {
   max-width: calc(100% - 50px);
   max-height: 50vh;
-  margin: 10px 25px 10px 25px;
+  margin: 10px 15px 10px 15px;
 }
 
 div.documentation-text blockquote {
