@@ -4,7 +4,7 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The statistics tab allows for deep statistical analysis of numerical fields, analyzing overall trends rather than changes over time. The selected fields are analyzed using a histogram and a variety of standard statistical measures. The key sections of the tab are shown here:
 
-![Overview of statistics tab](/docs/img/statistics-1.png)
+![Overview of statistics tab](/docs/resources/statistics/statistics-1.png)
 
 ## Configuration
 

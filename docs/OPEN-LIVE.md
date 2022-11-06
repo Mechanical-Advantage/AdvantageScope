@@ -14,7 +14,7 @@ Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" 
 - **NetworkTables 4 (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the "/AdvantageKit" table in NetworkTables. The only difference from the **NetworkTables 4** mode is that the "/AdvantageKit" table is used as the root, which allows for easier switching between an NT4 connection and an AdvantageKit log file.
 - **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases. Note that the "RLOG Server Port" must be set to use this mode.
 
-![Diagram of live preferences](/docs/img/open-live-1.png)
+![Diagram of live preferences](/docs/resources/open-live/open-live-1.png)
 
 ## Starting the Connection
 
@@ -31,4 +31,4 @@ When connected to a live source, AdvantageScope locks all tabs to the current ti
 
 > Note: Scrolling to the left in the line graph also unlocks from the current time, and scrolling all the way to the right locks to current time again.
 
-![Live viewing controls](/docs/img/open-live-2.gif)
+![Live viewing controls](/docs/resources/open-live/open-live-2.gif)

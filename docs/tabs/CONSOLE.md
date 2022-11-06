@@ -10,6 +10,6 @@ The console view is designed to view a single string field with console data. So
 
 Drag the desired field to the main view to get started. Each row represents an update to the field. For WPILib logs, a new row is created for each saved line. For AdvantageKit logs, a new row is created for each loop cycle.
 
-![Console view](/docs/img/console-1.png)
+![Console view](/docs/resources/console/console-1.png)
 
 The controls are identical to the [table](/docs/tabs/TABLE.md) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).

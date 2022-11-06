@@ -7,9 +7,9 @@ AdvantageScope is a robot diagnostics, log review/analysis, and data visualizati
 It includes the following tools:
 
 - A wide selection of flexible graphs and charts
-- 2D and 3D field visualizations of odometry data, with customizable CAD-based robot avatars
+- 2D and 3D field visualizations of odometry data, with customizable CAD-based robots
 - Synchronized video playback from a separately loaded match video
-- Controller visualization, showing driver/operator actions on customizable controller representations
+- Joystick visualization, showing driver actions on customizable controller representations
 - Swerve drive module vector displays
 - Console message review
 - Log statistics analysis

@@ -9,7 +9,6 @@ These links cover the basics you need to know when using AdvantageScope.
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
-- [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 ## Tab Information
 
@@ -32,5 +31,6 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 - [AdvantageKit documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
 - [AdvantageScope repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
 - [Team website](https://littletonrobotics.org)
+- [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.

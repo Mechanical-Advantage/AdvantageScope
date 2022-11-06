@@ -6,7 +6,7 @@ The screenshot below shows the important elements of the main AdvantageScope win
 
 > Note: To view multiple log files simultaneously, click "File" > "New Window" or press **cmd/ctrl + N**.
 
-![Navigation diagram](/docs/img/navigation-1.png)
+![Navigation diagram](/docs/resources/navigation/navigation-1.png)
 
 ## Sidebar
 
@@ -14,7 +14,7 @@ To the left is the <span style="color: red;">sidebar (red)</span> with the list 
 
 > Note: Click and drag on the right edge to resize or hide the sidebar.
 
-![Selecting a collection of fields](/docs/img/navigation-2.gif)
+![Selecting a collection of fields](/docs/resources/navigation/navigation-2.gif)
 
 ## Tab Bar
 
@@ -26,18 +26,18 @@ Use the <span style="color: blue;">tab bar (blue)</span> to switch between diffe
 
 The <span style="color: green;">navigation buttons (green)</span> on the top manage the tabs and control playback. The "+" icon adds a new tab (this can be accessed quickly by pressing **cmd/ctrl + T**). The "X" icon closes the selected tab (**cmd/ctrl + W**) and the arrow buttons move the selected tab left or right (**cmd/ctrl + [ OR ]**). Quickly switch between tabs using the arrow keys (**cmd/ctrl + ← OR →**).
 
-![Creating a new tab](/docs/img/navigation-3.gif)
+![Creating a new tab](/docs/resources/navigation/navigation-3.gif)
 
 Playback can be toggled using the play/pause button or by pressing the **space bar**. The selected time is synchronized between all tabs, including the line graph, table, field views, and more.
 
 > Note: To adjust the playback speed, **right-click** on the play/pause button.
 
-![Managing playback](/docs/img/navigation-4.gif)
+![Managing playback](/docs/resources/navigation/navigation-4.gif)
 
 ## Window Pop-Out
 
-It is often useful to view multiple tabs at once. Since AdvantageScope synchronizes playback across all tabs, it is possible to perform sophisticated analysis by looking at multiple visualizations at once. An example might be viewing video, field odometry, controller inputs, and performance graphs all together. Tabs that support pop-out have an additional "Add Window" icon just below the navigation/playback controls.
+It is often useful to view multiple tabs at once. Since AdvantageScope synchronizes playback across all tabs, it is possible to perform sophisticated analysis by looking at multiple visualizations at once. An example might be viewing video, field odometry, joystick inputs, and performance graphs all together. Tabs that support pop-out have an additional "Add Window" icon just below the navigation/playback controls.
 
 > Note: When using pop-out windows, playback is controlled from the main AdvantageScope window.
 
-![Creating a pop-out window](/docs/img/navigation-5.gif)
+![Creating a pop-out window](/docs/resources/navigation/navigation-5.gif)
