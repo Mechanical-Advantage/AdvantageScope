@@ -36,7 +36,7 @@ Playback can be toggled using the play/pause button or by pressing the **space b
 
 ## Window Pop-Out
 
-It is often useful to view multiple tabs at once. Since AdvantageScope synchronizes playback across all tabs, it is possible to perform sophisticated analysis by looking at multiple visualizations at once. An example might be viewing video, field odometry, joystick inputs, and performance graphs all together. Tabs that support pop-out have an additional "Add Window" icon just below the navigation/playback controls.
+It is often useful to view multiple tabs at the same time. Since AdvantageScope synchronizes playback across all tabs, it is possible to perform sophisticated analysis by looking at multiple visualizations at once. An example might be viewing video, field odometry, joystick inputs, and performance graphs all together. Tabs that support pop-out have an additional "Add Window" icon just below the navigation/playback controls.
 
 > Note: When using pop-out windows, playback is controlled from the main AdvantageScope window.
 

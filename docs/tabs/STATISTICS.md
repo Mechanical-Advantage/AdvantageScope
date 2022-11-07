@@ -49,8 +49,8 @@ The table of <span style="color: blue;">statistical measures (blue)</span> shows
 - [**Median:**](https://en.wikipedia.org/wiki/Median) The "middle" value of the data, or the 50% percentile.
 - [**Mode:**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) The most common value in the data.
 - [**Geometric Mean:**](https://en.wikipedia.org/wiki/Geometric_mean) A measure of center calculated using the product of the values rather than the sum. Applicable when measuring _exponential growth rates_ (like percent change between cycles).
-- [**Harmonic Mean:**](https://en.wikipedia.org/wiki/Harmonic_mean) A measure of center calculated using the sum of the reciprocals of the values. Applicable when measuring _rates or velociites_.
-- [**Quadratic Mean:**](https://en.wikipedia.org/wiki/Root_mean_square) A measure of center calculated using the squares of the values. Applicable when measuring data with both _postive and negative values_, like periodic motion.
+- [**Harmonic Mean:**](https://en.wikipedia.org/wiki/Harmonic_mean) A measure of center calculated using the sum of the reciprocals of the values. Applicable when measuring _rates or velocities_.
+- [**Quadratic Mean:**](https://en.wikipedia.org/wiki/Root_mean_square) A measure of center calculated using the squares of the values. Applicable when measuring data with both _positive and negative values_, like periodic motion.
 
 ### Spread
 

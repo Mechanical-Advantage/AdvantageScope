@@ -6,7 +6,7 @@ AdvantageScope is a robot diagnostics, log review/analysis, and data visualizati
 
 ## Getting Started
 
-These links cover the basics you need to know when using AdvantageScope.
+These links cover the basics of getting around in AdvantageScope and and accessing data.
 
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)

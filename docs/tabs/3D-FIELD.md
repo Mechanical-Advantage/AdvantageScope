@@ -60,7 +60,7 @@ To switch the selected camera mode, right-click on the rendered field view. The 
 
 ### Orbit Field
 
-This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** rotates the camera, and **right-click + drag** pans the camera.
+This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** rotates the camera, and **right-click + drag** pans the camera. **Scroll** to zoom in and out.
 
 !["Orbit Field" camera](/docs/resources/3d-field/3d-field-3.gif)
 
