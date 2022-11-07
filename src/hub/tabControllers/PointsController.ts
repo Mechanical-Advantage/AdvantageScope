@@ -39,10 +39,14 @@ export default class PointsController extends TimelineVizController {
     this.POINT_SIZE = configBody.children[2].children[2].children[1] as HTMLInputElement;
 
     // Enforce range
-    [this.WIDTH, this.HEIGHT, this.GROUP].forEach((input) => {
+    [this.WIDTH, this.HEIGHT, this.GROUP].forEach((input, index) => {
       input.addEventListener("change", () => {
         if (Number(input.value) % 1 != 0) input.value = Math.round(Number(input.value)).toString();
-        if (Number(input.value) <= 0) input.value = "1";
+        if (index == 2) {
+          if (Number(input.value) < 0) input.value = "0";
+        } else {
+          if (Number(input.value) <= 0) input.value = "1";
+        }
       });
     });
   }
