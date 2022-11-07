@@ -4,11 +4,11 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The line graph is the default view in AdvantageScope. It supports both continuous (numerical) and discrete fields. To get started, drag a field to one of the three legends. Delete a field using the "X" button or hide it temporarily by clicking the colored circle.
 
-To zoom, place the cursor over the main graph and scroll up or down. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the graph.
+To zoom, place the cursor over the main graph and scroll up or down. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the graph. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 
 Clicking on the graph selects a time, and right-clicking deselects it. The value of each field at that time is displayed in the legend.
 
-> Note: The selected time is synchronized across all tabs, making it easy to quickly find this location in other views. Hovering the cursor over a time will also display it in the pop-up windows.
+> Note: The selected time is synchronized across all tabs, making it easy to quickly find this location in other views. Hovering the cursor over a time on the line graph also displays it in the pop-up windows.
 
 ![Line graph demo](/docs/resources/line-graph/line-graph-1.gif)
 

@@ -22,15 +22,15 @@ The <span style="color: red;">configuration (red)</span> section contains the di
 
 - **Measurement Type:** Sets how the fields are interpreted. See options below.
   - _Independent fields:_ Analyzes up to three fields separately (including the histogram and statistical measures).
-  - _Relative error:_ Analyzes up to two measurement fields relative to a reference field. At each timestamp, the values of the fields will be equal to "measurement - reference".
-  - _Absolute error:_ Analyzes up to two measurements fields relative to a reference field, but taking the absolute value of the error. At each timestamp, the values of the fields will be equal to "abs(measurement - reference)"
+  - _Relative error:_ Analyzes up to two measurement fields relative to a reference field. At each timestamp, the values of the fields are equal to "measurement - reference".
+  - _Absolute error:_ Analyzes up to two measurements fields relative to a reference field, but taking the absolute value of the error. At each timestamp, the values of the fields are equal to "abs(measurement - reference)"
 - **Sampling:** Sets how discrete samples are captured from timestamped data. See options below.
   - _Fixed:_ Generates discrete samples at a constant time interval (recommended in most cases). Set the sampling period to adjust how often samples are generated; this should generally equal the period of the robot controller.
   - _Auto:_ Generates discrete samples whenever any field is updated, producing one sample for each loop cycle. This option should only be used on timestamp synchronized logs, like those produced by AdvantageKit.
 
 ### Histogram
 
-- **Range:** The min and max values to display on the histogram. Data outside this range will not be shown, but it will continue to be used for the statistical measures.
+- **Range:** The min and max values to display on the histogram. Data outside this range is not shown, but it continues to be used for the statistical measures.
 - **Step:** The size of each histogram bin. Smaller values produce more detailed graphs, but also reveal more noise.
 
 ## Statistical Measures

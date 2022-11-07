@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-The table view is designed to show the specific value changes for a set of fields in more detail than the line graph. To add a field, drag it to the main view. To delete a field, click the "X" button next to its name.
+The table view is designed to show the specific value changes for a set of fields in more detail than the [line graph](/docs/tabs/LINE-GRAPH.md). To add a field, drag it to the main view. To delete a field, click the "X" button next to its name.
 
 ![Adding fields](/docs/resources/table/table-1.gif)
 

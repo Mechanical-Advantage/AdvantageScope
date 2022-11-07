@@ -4,7 +4,7 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 This tab shows a 3D visualization of the robot and field. It can be used with regular 2D odometry, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-> Note: To view the 3D visualizations alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. Each pop-up window can also be configured with a different camera view (see more details below).
+> Note: To view the 3D visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. Each pop-up window can also be configured with a different camera view (see more details below).
 
 ![Overview of 3D field tab](/docs/resources/3d-field/3d-field-1.png)
 
@@ -60,7 +60,7 @@ To switch the selected camera mode, right-click on the rendered field view. The 
 
 ### Orbit Field
 
-This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** will rotate the camera, and **right-click + drag** will pan the camera.
+This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** rotates the camera, and **right-click + drag** pans the camera.
 
 !["Orbit Field" camera](/docs/resources/3d-field/3d-field-3.gif)
 

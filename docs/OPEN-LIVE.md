@@ -27,8 +27,8 @@ The window title displays the IP address and the text "Searching" until the robo
 
 ## Viewing Live Data
 
-When connected to a live source, AdvantageScope locks all tabs to the current time by default. Views like the line graph and table autoscroll, and views like odometry and joysticks display the current values of each field. Clicking the red arrow button in the navigation bar toggles this lock, enabling viewing and replay of past data.
+When connected to a live source, AdvantageScope locks all tabs to the current time by default. Views like the [line graph](/docs/tabs/LINE-GRAPH.md) and [table](/docs/tabs/TABLE.md) autoscroll, and views like odometry and joysticks display the current values of each field. Clicking the red arrow button in the navigation bar toggles this lock, enabling viewing and replay of past data.
 
-> Note: Scrolling to the left in the line graph also unlocks from the current time, and scrolling all the way to the right locks to current time again.
+> Note: Scrolling to the left in the line graph also unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 
 ![Live viewing controls](/docs/resources/open-live/open-live-2.gif)

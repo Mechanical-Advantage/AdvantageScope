@@ -45,7 +45,7 @@ Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". 
 }
 ```
 
-The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms will be applied in this order. To temporarily adjust these values, open the developer tools ("View" > "Toggle Developer Tools") and use the following command:
+The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms are applied in this order. To temporarily adjust these values, open the developer tools ("View" > "Toggle Developer Tools") and use the following command:
 
 ```
 override3dRobotConfig(name, rotations, position)

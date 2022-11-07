@@ -4,7 +4,7 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The odometry tab shows a 2D visualization of the robot overlayed on a map of the field. It can also show extra data like vision targeting status and reference poses. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-> Note: To view the odometry visualizations alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
+> Note: To view the odometry visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
 
 ![Overview of odometry tab](/docs/resources/odometry/odometry-1.png)
 
