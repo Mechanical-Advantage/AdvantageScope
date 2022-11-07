@@ -1375,8 +1375,24 @@ canvas.three-dimension-canvas.fixed {
   border: 1px solid #555;
 }
 
+div.three-dimension-alert {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  text-align: center;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #555;
+}
+
 @media (prefers-color-scheme: dark) {
   canvas.three-dimension-canvas.fixed {
+    border: 1px solid #999;
+  }
+
+  div.three-dimension-alert {
+    background-color: #222;
     border: 1px solid #999;
   }
 }

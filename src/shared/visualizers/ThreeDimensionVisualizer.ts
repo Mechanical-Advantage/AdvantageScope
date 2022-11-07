@@ -25,6 +25,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
   private content: HTMLElement;
   private canvas: HTMLCanvasElement;
+  private alert: HTMLElement;
+  private alertCamera: HTMLElement;
+
   private renderer: THREE.WebGLRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
@@ -62,9 +65,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private coneTextureYellow: THREE.Texture;
   private coneTextureYellowBase: THREE.Texture;
 
-  constructor(content: HTMLElement, canvas: HTMLCanvasElement) {
+  constructor(content: HTMLElement, canvas: HTMLCanvasElement, alert: HTMLElement) {
     this.content = content;
     this.canvas = canvas;
+    this.alert = alert;
+    this.alertCamera = alert.getElementsByTagName("span")[0];
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.scene = new THREE.Scene();
@@ -235,6 +240,18 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     let frcDataString = JSON.stringify(window.frcData);
     let newFrcData = frcDataString != this.lastFrcDataString;
     if (newFrcData) this.lastFrcDataString = frcDataString;
+
+    // Update alert
+    this.alert.hidden = this.cameraIndex == -1 || this.command.poses.robot != null;
+    if (!this.alert.hidden) {
+      if (this.cameraIndex == -2) {
+        this.alertCamera.innerText = "Orbit Robot";
+      } else if (robotConfig) {
+        this.alertCamera.innerText = robotConfig.cameras[this.cameraIndex].name;
+      } else {
+        this.alertCamera.innerText = "???";
+      }
+    }
 
     // Add field
     if (fieldTitle != this.lastFieldTitle) {

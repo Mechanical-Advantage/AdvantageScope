@@ -45,7 +45,8 @@ export default class ThreeDimensionController extends TimelineVizController {
       ],
       new ThreeDimensionVisualizer(
         content,
-        content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement
+        content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement,
+        content.getElementsByClassName("three-dimension-alert")[0] as HTMLElement
       )
     );
 

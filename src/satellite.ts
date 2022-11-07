@@ -68,7 +68,8 @@ window.addEventListener("message", (event) => {
             case TabType.ThreeDimension:
               visualizer = new ThreeDimensionVisualizer(
                 document.body,
-                document.getElementById("threeDimensionCanvas") as HTMLCanvasElement
+                document.getElementById("threeDimensionCanvas") as HTMLCanvasElement,
+                document.getElementById("threeDimensionAlert") as HTMLElement
               );
               break;
             case TabType.Video:
