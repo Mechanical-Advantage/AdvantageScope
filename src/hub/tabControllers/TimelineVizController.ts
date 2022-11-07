@@ -197,6 +197,8 @@ export default abstract class TimelineVizController implements TabController {
       time = hoveredTime;
     } else if (selectedTime) {
       time = selectedTime;
+    } else {
+      time = window.log.getTimestampRange()[0];
     }
 
     // Update timeline
