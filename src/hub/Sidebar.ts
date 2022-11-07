@@ -18,6 +18,7 @@ export default class Sidebar {
     "ReplayOutputs",
     "SystemStats",
     "PowerDistribution",
+    "DashboardInputs",
     "Timestamp",
     "DS",
     "NT",
