@@ -104,7 +104,7 @@ export default class DocumentationController implements TabController {
           list.insertBefore(listItem, list.firstChild);
           let link = document.createElement("a");
           listItem.appendChild(link);
-          link.innerText = "Online documentation";
+          link.innerText = "Online Documentation";
           link.href = "#";
           link.addEventListener("click", () => {
             window.sendMainMessage(

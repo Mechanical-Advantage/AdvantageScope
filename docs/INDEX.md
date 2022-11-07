@@ -30,9 +30,9 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 
 ## Other Links
 
-- [AdvantageKit documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
-- [AdvantageScope repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
-- [Team website](https://littletonrobotics.org)
+- [AdvantageKit Documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
+- [AdvantageScope Repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
+- [Team Website](https://littletonrobotics.org)
 - [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.
