@@ -36,7 +36,6 @@
     "electron": "^20.0.0",
     "electron-builder": "^23.3.3",
     "mathjs": "^11.3.0",
-    "plotly.js-dist": "^2.14.0",
     "prettier": "2.7.1",
     "remarkable": "^2.0.1",
     "rollup": "^2.78.0",
