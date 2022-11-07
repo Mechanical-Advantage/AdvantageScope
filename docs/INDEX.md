@@ -1,4 +1,4 @@
-# Welcome to Advantage Scope!
+# Welcome to AdvantageScope!
 
 AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition.
 

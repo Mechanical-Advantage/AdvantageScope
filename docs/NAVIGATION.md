@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-The screenshot below shows the important elements of the main Advantage Scope window. The exact appearance differs between operating systems.
+The screenshot below shows the important elements of the main AdvantageScope window. The exact appearance differs between operating systems.
 
 > Note: To view multiple log files simultaneously, click "File" > "New Window" or press **cmd/ctrl + N**.
 

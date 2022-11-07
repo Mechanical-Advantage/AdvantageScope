@@ -36,7 +36,7 @@ Once the video and log are aligned, click the lock icon next to the video timeli
 
 ## Step 4: Playback
 
-Once locked, the video playback stays aligned with the selected time in the log. To view the video alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. For example, the video can be compared to the robot's odometry data.
+Once locked, the video playback stays aligned with the selected time in the log. To view the video alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. For example, the video can be compared to the robot's odometry data as seen below.
 
 > Note: Sound playback is not supported. The original video is converted to a frame-by-frame representation to support log synchronization.
 

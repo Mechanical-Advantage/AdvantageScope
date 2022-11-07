@@ -22,7 +22,7 @@ Click "File" > "Download Logs..." or press **cmd/ctrl + D** to open the download
 
 ![Downloading log files](/docs/resources/open-file/open-file-3.gif)
 
-When a single log file is downloaded, Advantage Scope prompts to open it immediately:
+When a single log file is downloaded, AdvantageScope prompts to open it immediately:
 
 ![Prompt to open log file](/docs/resources/open-file/open-file-4.png)
 
