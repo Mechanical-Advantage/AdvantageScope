@@ -6,7 +6,7 @@ This section describes how to open a log file for analysis.
 
 ## Opening a Saved Log
 
-In the menu bar, click "File" > "Open..." or press **cmd/ctrl + O**, then choose a log file from the local disk. Both WPILOG and RLOG files are supported.
+In the menu bar, click "File" > "Open..." or press **cmd/ctrl + O**, then choose a log file from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open. Both WPILOG and RLOG files are supported.
 
 ![Opening a saved log](/docs/resources/open-file/open-file-1.gif)
 
