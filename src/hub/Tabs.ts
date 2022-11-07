@@ -126,9 +126,9 @@ export default class Tabs {
   saveState(): TabGroupState {
     return {
       selected: this.selectedTab,
-      tabs: this.tabList.slice(1).map((tab, index) => {
+      tabs: this.tabList.slice(1).map((tab) => {
         let state = tab.controller.saveState();
-        state.title = this.tabList[index].title;
+        state.title = tab.title;
         return state;
       })
     };
@@ -144,8 +144,8 @@ export default class Tabs {
     this.addTab(TabType.Documentation); // Add default tab
     state.tabs.forEach((tabState, index) => {
       this.addTab(tabState.type);
-      if (tabState.title) this.renameTab(index, tabState.title);
-      this.tabList[this.tabList.length - 1].controller.restoreState(tabState);
+      if (tabState.title) this.renameTab(index + 1, tabState.title);
+      this.tabList[index + 1].controller.restoreState(tabState);
     });
     this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
     this.updateElements();
@@ -160,6 +160,16 @@ export default class Tabs {
 
   /** Creates a new tab. */
   addTab(type: TabType) {
+    // Select existing metadata tab
+    if (type == TabType.Metadata) {
+      let existingIndex = this.tabList.findIndex((tab) => tab.type == TabType.Metadata);
+      if (existingIndex >= 0) {
+        this.setSelected(existingIndex);
+        return;
+      }
+    }
+
+    // Add tab
     let contentElement: HTMLElement;
     let controller: TabController;
     switch (type) {
@@ -238,6 +248,9 @@ export default class Tabs {
     this.selectedTab += 1;
     this.VIEWER.appendChild(contentElement);
     controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
+    if (TIMELINE_VIZ_TYPES.includes(type)) {
+      (controller as TimelineVizController).setTitle(getDefaultTabTitle(type));
+    }
     this.updateElements();
   }
 
@@ -275,13 +288,6 @@ export default class Tabs {
     this.updateElements();
   }
 
-  /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
-  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
-    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
-    }
-  }
-
   /** Renames a single tab. */
   renameTab(index: number, name: string) {
     let tab = this.tabList[index];
@@ -289,6 +295,20 @@ export default class Tabs {
     tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
     if (TIMELINE_VIZ_TYPES.includes(tab.type)) {
       (tab.controller as TimelineVizController).setTitle(name);
+    }
+  }
+
+  /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
+  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
+    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
+    }
+  }
+
+  /** Switches the selected camera for the selected 3D field. */
+  set3DCamera(index: number) {
+    if (this.tabList[this.selectedTab].type == TabType.ThreeDimension) {
+      (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
     }
   }
 

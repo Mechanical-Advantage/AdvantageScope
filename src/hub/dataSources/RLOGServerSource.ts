@@ -91,6 +91,7 @@ export default class RLOGServerSource extends LiveDataSource {
         // Try to reconnect
         this.log = new Log();
         this.decoder = new RLOGDecoder();
+        this.liveZeroTime = 0;
         window.sendMainMessage("live-rlog-start", {
           uuid: this.UUID,
           address: this.address,

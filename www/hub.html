@@ -14,12 +14,12 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="hub.css" />
     <script type="module" src="../bundles/hub.js"></script>
-    <title>Advantage Scope</title>
+    <title>AdvantageScope</title>
   </head>
 
   <body>
     <div class="title-bar" hidden>
-      <div class="title-bar-text">Advantage Scope</div>
+      <div class="title-bar-text">AdvantageScope</div>
     </div>
 
     <button class="tab-control play" tabindex="-1">
@@ -257,11 +257,11 @@
                   <td>
                     <span class="label">Histogram:</span>
                     <br />
-                    <input type="number" value="0" />
+                    <input type="number" />
                     to
-                    <input type="number" value="10" />
+                    <input type="number" />
                     &mdash; step
-                    <input type="number" value="1" />
+                    <input type="number" />
                   </td>
                 </tr>
               </tbody>
@@ -382,7 +382,9 @@
 
           <!-- 3D Field -->
           <span>
-            <canvas class="three-dimension-canvas"></canvas>
+            <div class="three-dimension-canvas-container">
+              <canvas class="three-dimension-canvas"></canvas>
+            </div>
             <table class="timeline-viz-config">
               <tbody>
                 <tr>

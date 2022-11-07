@@ -1,20 +1,20 @@
 # Welcome to Advantage Scope!
 
-Advantage Scope is a robot diagnostics, log review/analysis, and data
-visualization application for FIRST Robotics Competition.
+AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition.
+
+![Example screenshot](/docs/resources/screenshot-light.png)
 
 ## Getting Started
 
-These links cover the basics you need to know to use Advantage Scope.
+These links cover the basics you need to know when using AdvantageScope.
 
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
-- [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 ## Tab Information
 
-Advantage Scope supports many ways to view and analyze data, organized into Tabs. The type of visualization is selectable for each new Tab opened, and multiple Tabs of a given type can be open at once. Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing.
+AdvantageScope supports many ways to view and analyze data, organized into tabs. The type of visualization is selectable for each new tab opened, and multiple tabs of a given type can be open at once. Tabs can be named for ease of organization and many can "pop out" to separate windows for simultaneous, synchronized data viewing.
 
 - 📉 [Line Graph](/docs/tabs/LINE-GRAPH.md)
 - 🔢 [Table](/docs/tabs/TABLE.md)
@@ -30,8 +30,9 @@ Advantage Scope supports many ways to view and analyze data, organized into Tabs
 
 ## Other Links
 
-- [AdvantageKit documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
-- [Advantage Scope repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
-- [Team website](https://littletonrobotics.org)
+- [AdvantageKit Documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
+- [AdvantageScope Repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
+- [Team Website](https://littletonrobotics.org)
+- [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.

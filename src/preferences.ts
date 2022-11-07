@@ -13,6 +13,19 @@ window.addEventListener("message", (event) => {
   if (event.source == window && event.data == "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
+      // Update button focus
+      if (typeof event.data === "object" && "isFocused" in event.data) {
+        Array.from(document.getElementsByTagName("button")).forEach((button) => {
+          if (event.data.isFocused) {
+            button.classList.remove("blurred");
+          } else {
+            button.classList.add("blurred");
+          }
+        });
+        return;
+      }
+
+      // Normal message
       let platform: string = event.data.platform;
       let oldPrefs: Preferences = event.data.prefs;
 
@@ -42,9 +55,10 @@ window.addEventListener("message", (event) => {
           if (LIVE_MODE.value == "nt4-akit") liveMode = "nt4-akit";
           if (LIVE_MODE.value == "rlog") liveMode = "rlog";
 
-          let threeDimensionMode: "quality" | "efficiency" = "quality";
+          let threeDimensionMode: "quality" | "efficiency" | "auto" = "quality";
           if (THREE_DIMENSION_MODE.value == "quality") threeDimensionMode = "quality";
           if (THREE_DIMENSION_MODE.value == "efficiency") threeDimensionMode = "efficiency";
+          if (THREE_DIMENSION_MODE.value == "auto") threeDimensionMode = "auto";
 
           let newPrefs: Preferences = {
             theme: theme,

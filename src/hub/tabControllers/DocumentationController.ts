@@ -4,13 +4,12 @@ import TabType from "../../shared/TabType";
 import TabController from "../TabController";
 
 export default class DocumentationController implements TabController {
-  private CONTENT: HTMLElement;
   private CONTAINER: HTMLElement;
   private TEXT: HTMLElement;
   private remarkable = new Remarkable({ html: true });
+  private isIndex = false;
 
   constructor(content: HTMLElement) {
-    this.CONTENT = content;
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
     this.TEXT = content.getElementsByClassName("documentation-text")[0] as HTMLElement;
 
@@ -27,7 +26,20 @@ export default class DocumentationController implements TabController {
 
   refresh(): void {}
 
-  periodic(): void {}
+  periodic(): void {
+    // Update screenshot on index page
+    if (this.isIndex) {
+      let images = this.TEXT.getElementsByTagName("img");
+      if (images.length >= 1) {
+        let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        if (isDark && images[0].src.endsWith("screenshot-light.png")) {
+          images[0].src = "../docs/resources/screenshot-dark.png";
+        } else if (!isDark && images[0].src.endsWith("screenshot-dark.png")) {
+          images[0].src = "../docs/resources/screenshot-light.png";
+        }
+      }
+    }
+  }
 
   private loadMarkdown(markdownPath: string) {
     fetch(markdownPath)
@@ -38,6 +50,7 @@ export default class DocumentationController implements TabController {
         let html = this.remarkable.render(text);
         html = html.replaceAll('<span style="color: ', '<span color="'); // Remove color span styles (inline styles not allowed)
         this.TEXT.innerHTML = html;
+        this.CONTAINER.scrollTop = 0;
 
         // Update links
         Array.from(this.TEXT.getElementsByTagName("a")).forEach((link) => {
@@ -78,13 +91,20 @@ export default class DocumentationController implements TabController {
         });
 
         // App adjustments for index page
-        if (markdownPath == "../docs/INDEX.md") {
+        this.isIndex = markdownPath == "../docs/INDEX.md";
+        if (this.isIndex) {
+          // Update screenshot
+          if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            this.TEXT.getElementsByTagName("img")[0].src = "../docs/resources/screenshot-dark.png";
+          }
+
+          // Add link to online documentation
           let list = this.TEXT.getElementsByTagName("ul")[2];
           let listItem = document.createElement("li");
           list.insertBefore(listItem, list.firstChild);
           let link = document.createElement("a");
           listItem.appendChild(link);
-          link.innerText = "Online documentation";
+          link.innerText = "Online Documentation";
           link.href = "#";
           link.addEventListener("click", () => {
             window.sendMainMessage(
@@ -93,6 +113,7 @@ export default class DocumentationController implements TabController {
             );
           });
 
+          // Add version text
           let paragraph = document.createElement("p");
           this.TEXT.appendChild(paragraph);
           let versionText = document.createElement("em");

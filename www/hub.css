@@ -449,7 +449,13 @@ button.unlock {
 }
 
 button.unlock > img {
-  filter: invert(11%) sepia(94%) saturate(6673%) hue-rotate(0deg) brightness(107%) contrast(108%);
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(10%) sepia(100%) saturate(7058%) hue-rotate(358deg) brightness(105%) contrast(117%);
+}
+
+button.unlock.blurred > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(83%) sepia(68%) saturate(3617%) hue-rotate(294deg) brightness(99%) contrast(119%);
 }
 
 button.move-left {
@@ -545,7 +551,7 @@ div.documentation-text img,
 div.documentation-text video {
   max-width: calc(100% - 50px);
   max-height: 50vh;
-  margin: 10px 25px 10px 25px;
+  margin: 10px 15px 10px 15px;
 }
 
 div.documentation-text blockquote {
@@ -1334,7 +1340,7 @@ table.timeline-viz-config button {
 }
 
 div.odometry-canvas-container,
-canvas.three-dimension-canvas,
+div.three-dimension-canvas-container,
 canvas.joysticks-canvas {
   position: absolute;
   top: 30px;
@@ -1348,6 +1354,31 @@ div.odometry-canvas-container canvas {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+canvas.three-dimension-canvas:not(.fixed) {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+canvas.three-dimension-canvas.fixed {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  aspect-ratio: 2;
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  canvas.three-dimension-canvas.fixed {
+    border: 1px solid #999;
+  }
 }
 
 div.video-container {

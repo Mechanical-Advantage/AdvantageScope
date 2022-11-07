@@ -5,6 +5,7 @@ import {
   Config2d,
   Config3dField,
   Config3dRobot,
+  Config3dRobot_Camera,
   ConfigJoystick,
   ConfigJoystick_Axis,
   ConfigJoystick_Button,
@@ -55,13 +56,13 @@ export function loadFRCData(): FRCData {
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
             config.sourceUrl = configRaw.sourceUrl;
           }
-          if ("topLeft" in configRaw && checkArrayType(config.topLeft, "number") && config.topLeft.length == 2) {
+          if ("topLeft" in configRaw && checkArrayType(configRaw.topLeft, "number") && configRaw.topLeft.length == 2) {
             config.topLeft = configRaw.topLeft;
           }
           if (
             "bottomRight" in configRaw &&
-            checkArrayType(config.bottomRight, "number") &&
-            config.topLeft.length == 2
+            checkArrayType(configRaw.bottomRight, "number") &&
+            configRaw.topLeft.length == 2
           ) {
             config.bottomRight = configRaw.bottomRight;
           }
@@ -88,7 +89,7 @@ export function loadFRCData(): FRCData {
           }
           if (
             "rotations" in configRaw &&
-            Array.isArray(config.rotations) &&
+            Array.isArray(configRaw.rotations) &&
             configRaw.rotations.every(
               (rotation: any) =>
                 typeof rotation === "object" &&
@@ -113,8 +114,9 @@ export function loadFRCData(): FRCData {
         let config: Config3dRobot = {
           title: title,
           path: path.join(folder, "Robot_" + title + ".glb"),
+          rotations: [],
           position: [0, 0, 0],
-          rotations: []
+          cameras: []
         };
         if (typeof configRaw == "object") {
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
@@ -122,7 +124,7 @@ export function loadFRCData(): FRCData {
           }
           if (
             "rotations" in configRaw &&
-            Array.isArray(config.rotations) &&
+            Array.isArray(configRaw.rotations) &&
             configRaw.rotations.every(
               (rotation: any) =>
                 typeof rotation === "object" &&
@@ -140,6 +142,52 @@ export function loadFRCData(): FRCData {
             configRaw.position.length == 3
           ) {
             config.position = configRaw.position;
+          }
+          if ("cameras" in configRaw && Array.isArray(configRaw.cameras)) {
+            configRaw.cameras.forEach((cameraRaw: any) => {
+              let camera: Config3dRobot_Camera = {
+                name: "",
+                rotations: [],
+                position: [0, 0, 0],
+                resolution: [200, 100],
+                fov: 90
+              };
+              config.cameras.push(camera);
+              if ("name" in cameraRaw && typeof cameraRaw.name === "string") {
+                camera.name = cameraRaw.name;
+              }
+              if (
+                "rotations" in cameraRaw &&
+                Array.isArray(cameraRaw.rotations) &&
+                cameraRaw.rotations.every(
+                  (rotation: any) =>
+                    typeof rotation === "object" &&
+                    "axis" in rotation &&
+                    (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+                    "degrees" in rotation &&
+                    typeof rotation.degrees === "number"
+                )
+              ) {
+                camera.rotations = cameraRaw.rotations;
+              }
+              if (
+                "position" in cameraRaw &&
+                checkArrayType(cameraRaw.position, "number") &&
+                cameraRaw.position.length == 3
+              ) {
+                camera.position = cameraRaw.position;
+              }
+              if (
+                "resolution" in cameraRaw &&
+                checkArrayType(cameraRaw.resolution, "number") &&
+                cameraRaw.resolution.length == 2
+              ) {
+                camera.resolution = cameraRaw.resolution;
+              }
+              if ("fov" in cameraRaw && typeof cameraRaw.fov === "number") {
+                camera.fov = cameraRaw.fov;
+              }
+            });
           }
         }
         frcData.robots.push(config);

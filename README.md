@@ -1,29 +1,24 @@
-# Advantage Scope
+# AdvantageScope
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
-Advantage Scope is a robot diagnostics, log review/analysis, and data
-visualization application for FIRST Robotics Competition teams. It reads logs
-in WPILOG and RLOG file formats, and supports live robot data viewing using NT4
-or RLOG streaming.
+AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition teams. It reads logs in WPILOG and RLOG file formats, and supports live robot data viewing using NT4 or RLOG streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework.
 
 It includes the following tools:
 
 - A wide selection of flexible graphs and charts
-- 2D and 3D field visualizations of odometry data, with customizable CAD-based robot avatars
+- 2D and 3D field visualizations of odometry data, with customizable CAD-based robots
 - Synchronized video playback from a separately loaded match video
-- Controller visualization, showing driver/operator actions on customizable controller representations
+- Joystick visualization, showing driver actions on customizable controller representations
 - Swerve drive module vector displays
 - Console message review
 - Log statistics analysis
 
-Advantage Scope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://github.com/Mechanical-Advantage/AdvantageKit) logging framework.
+**View the [online documentation](/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
 
-View the [online documentation](/docs/INDEX.md) or find it offline by clicking the book icon in the tab bar.
-
-![Example screenshot](/screenshot.jpg)
+![Example screenshot](/docs/resources/screenshot-light.png)
 
 ## Installation
 
-1. Click the release marked "Latest" under "Releases".
-2. Download the appropriate build for your OS & architecture. Windows, Mac, and Linux binaries are provided.
+1. Find the [latest release](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest) under "Releases".
+2. Download the appropriate build based on the OS & architecture. AdvantageScope supports Windows, macOS, and Linux on both x86 and ARM architectures.
