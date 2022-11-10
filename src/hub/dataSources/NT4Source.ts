@@ -37,7 +37,7 @@ export default class NT4Source extends LiveDataSource {
           if (serverTime === null) {
             return 10;
           } else {
-            return serverTime / 1000000;
+            return (serverTime - this.client.getNetworkLatency_us()) / 1000000;
           }
         } else {
           return 10;
@@ -173,9 +173,9 @@ export default class NT4Source extends LiveDataSource {
       );
       this.client.connect();
       if (this.akitMode) {
-        this.client?.subscribeAll([this.AKIT_PREFIX + "/"], true);
+        this.client?.subscribe([this.AKIT_PREFIX + "/"], true, true, 0);
       } else {
-        this.client?.subscribeAll(["/"], true);
+        this.client?.subscribe(["/"], true, true, 0);
       }
     }
   }

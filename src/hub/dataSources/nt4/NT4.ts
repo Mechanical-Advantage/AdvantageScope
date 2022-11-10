@@ -100,6 +100,7 @@ export class NT4_Client {
   private serverConnectionActive = false;
   private serverConnectionRequested = false;
   private serverTimeOffset_us: number | null = null;
+  private networkLatency_us: number = 0;
 
   private uidCounter = 0;
   private subscriptions: Map<number, NT4_Subscription> = new Map();
@@ -158,38 +159,20 @@ export class NT4_Client {
   }
 
   /**
-   * Add a new subscription, reading data at the specified frequency.
+   * Add a new subscription, reading value updates
    * @param topicPatterns A list of topics or prefixes to include in the subscription.
    * @param prefixMode If true, use patterns as prefixes. If false, only subscribe to topics that are an exact match.
-   * @param period The period to return data in seconds.
+   * @param sendAll If true, send all values. If false, only send the most recent value.
+   * @param periodic How frequently to send updates (applies regardless of "sendAll" option)
    * @returns A subscription ID that can be used to unsubscribe.
    */
-  subscribePeriodic(topicPatterns: string[], prefixMode: boolean, period: number): number {
+  subscribe(topicPatterns: string[], prefixMode: boolean, sendAll: boolean = false, periodic: number = 0.1): number {
     let newSub = new NT4_Subscription();
     newSub.uid = this.getNewUID();
     newSub.topics = new Set(topicPatterns);
     newSub.options.prefix = prefixMode;
-    newSub.options.periodic = period;
-
-    this.subscriptions.set(newSub.uid, newSub);
-    if (this.serverConnectionActive) {
-      this.ws_subscribe(newSub);
-    }
-    return newSub.uid;
-  }
-
-  /**
-   * Add a new subscription, reading all value updates.
-   * @param topicPatterns A list of topics or prefixes to include in the subscription.
-   * @param prefixMode If true, use patterns as prefixes. If false, only subscribe to topics that are an exact match.
-   * @returns A subscription ID that can be used to unsubscribe.
-   */
-  subscribeAll(topicPatterns: string[], prefixMode: boolean): number {
-    let newSub = new NT4_Subscription();
-    newSub.uid = this.getNewUID();
-    newSub.topics = new Set(topicPatterns);
-    newSub.options.prefix = prefixMode;
-    newSub.options.all = true;
+    newSub.options.all = sendAll;
+    newSub.options.periodic = periodic;
 
     this.subscriptions.set(newSub.uid, newSub);
     if (this.serverConnectionActive) {
@@ -348,6 +331,11 @@ export class NT4_Client {
     }
   }
 
+  /** Returns the current network latency in microseconds */
+  getNetworkLatency_us(): number {
+    return this.networkLatency_us;
+  }
+
   private ws_sendTimestamp() {
     let timeToSend = this.getClientTime_us();
     let txData = serialize([-1, 0, typestrIdxLookup["int"], timeToSend]);
@@ -359,10 +347,17 @@ export class NT4_Client {
 
     // Recalculate server/client offset based on round trip time
     let rtt = rxTime - clientTimestamp;
-    let serverTimeAtRx = serverTimestamp + rtt / 2.0;
+    this.networkLatency_us = rtt / 2.0;
+    let serverTimeAtRx = serverTimestamp + this.networkLatency_us;
     this.serverTimeOffset_us = serverTimeAtRx - rxTime;
 
-    console.log("[NT4] New server time estimate: " + (this.getServerTime_us()! / 1000000.0).toString());
+    console.log(
+      "[NT4] New server time: " +
+        (this.getServerTime_us()! / 1000000.0).toString() +
+        "s with " +
+        (this.networkLatency_us / 1000.0).toString() +
+        "ms latency"
+    );
   }
 
   //////////////////////////////////////////////////////////////
