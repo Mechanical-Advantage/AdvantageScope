@@ -1,9 +1,8 @@
 name: Create Release
 
 on:
-  push:
-    tags:
-      - "v*"
+  release:
+    types: [published]
 
 jobs:
   format:
@@ -23,32 +22,7 @@ jobs:
       - name: Check formatting
         run: npm run check-format
 
-  release:
-    name: Create Release
-    runs-on: ubuntu-latest
-    outputs:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      version: ${{ steps.get_version.outputs.version }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Get tag name
-        id: get_version
-        run: echo ::set-output name=version::$(echo $GITHUB_REF | cut -d / -f 3)
-      - name: Create release
-        uses: actions/create-release@v1
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ steps.get_version.outputs.version }}
-          tag_name: ${{ github.ref }}
-          body_path: CHANGELOG.md
-
   build:
-    needs: release
     strategy:
       matrix:
         host:
@@ -81,6 +55,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Get release info
+        id: get_release_info
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -122,7 +101,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{ needs.release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: artifact
-          asset_name: advantagescope-${{ matrix.host.shortName }}-${{ matrix.arch }}-{{ needs.release.outputs.version }}.${{ matrix.host.artifactExt }}
+          asset_name: advantagescope-${{ matrix.host.shortName }}-${{ matrix.arch }}-{{ steps.get_release_info.outputs.tag_name }}.${{ matrix.host.artifactExt }}
           asset_content_type: ${{ matrix.host.artifactType }}
