@@ -103,5 +103,5 @@ jobs:
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: artifact
-          asset_name: advantagescope-${{ matrix.host.shortName }}-${{ matrix.arch }}-{{ steps.get_release_info.outputs.tag_name }}.${{ matrix.host.artifactExt }}
+          asset_name: advantagescope-${{ matrix.host.shortName }}-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.host.artifactExt }}
           asset_content_type: ${{ matrix.host.artifactType }}
