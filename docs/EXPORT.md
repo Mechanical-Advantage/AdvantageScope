@@ -21,6 +21,10 @@ The following options are provided when exporting:
   - _All Changes:_ Create a new row when any of the included fields are updated. Other columns will show duplicate values.
   - _Fixed:_ Create new rows at a fixed interval, useful for logs without timestamp synchronization (when many fields are being logged with similar, but not identical, timestamps).
 - **Period:** Only for "CSV (Table)" with fixed timestamps. Sets the period in milliseconds between each row. Typically, this should match the loop cycle period of the robot code.
+- **Prefixes:** If blank, include all fields. Otherwise, only include fields that match the prefixes provided (separated with commas). See examples below.
+  - "_/DriverStation/Joystick0_": Include all fields starting with "/DriverStation/Joystick0" (data from the first joystick).
+  - "_/Flywheels,DS:enabled_": Include all fields starting with "/Flywheels" or "DS:enabled" (all data from the flywheel, plus the robot's enabled status).
+  - "_/Drive/LeftPosition,/Drive/RightPosition_": Only include the fields "/Drive/LeftPosition" and "/Drive/RightPosition".
 
 > Note: Exported log files may not match the original data exactly. The following changes are made:
 >
