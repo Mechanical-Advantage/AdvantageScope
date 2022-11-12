@@ -11,6 +11,7 @@ These links cover the basics of getting around in AdvantageScope and and accessi
 - [App Navigation](/docs/NAVIGATION.md)
 - [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
+- [Exporting Log Data](/docs/EXPORT.md)
 
 ## Tab Information
 

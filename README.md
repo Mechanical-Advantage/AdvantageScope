@@ -13,6 +13,7 @@ It includes the following tools:
 - Swerve drive module vector displays
 - Console message review
 - Log statistics analysis
+- Flexible export options, with support for CSV and WPILOG
 
 **View the [online documentation](/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
 
