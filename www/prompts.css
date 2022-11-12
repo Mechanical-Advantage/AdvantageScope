@@ -40,7 +40,8 @@ select {
   width: calc(100% - 5px);
 }
 
-button {
+button,
+div.help-div {
   position: absolute;
   bottom: 8px;
   width: 30px;
@@ -53,4 +54,16 @@ button {
 
 #confirm {
   right: 8px;
+}
+
+div.help-div {
+  right: 78px;
+  width: 50px;
+}
+
+div.help-div > a {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

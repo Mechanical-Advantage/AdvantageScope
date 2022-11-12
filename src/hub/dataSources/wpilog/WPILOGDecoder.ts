@@ -1,55 +1,24 @@
-// Utilities for reading the WPILOG format. See the following resources:
-//
-// WPILOG specification: https://github.com/wpilibsuite/allwpilib/blob/main/wpiutil/doc/datalog.adoc
-// Python decoder: https://github.com/wpilibsuite/allwpilib/blob/main/wpiutil/examples/printlog/datalog.py
-// Java interface: https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/util/datalog/DataLogRecord.html
-
-const HEADER_STRING = "WPILOG";
-const HEADER_VERSION = 0x0100;
-const CONTROL_ENTRY = 0;
-const CONTROL_START = 0;
-const CONTROL_FINISH = 1;
-const CONTROL_SET_METADATA = 2;
-const TEXT_DECODER = new TextDecoder("UTF-8");
-
-/**
- * Data contained in a start control record as created by DataLog.start() when
- * writing the log. This can be read by calling DataLogRecord.getStartData().
- *
- * entry: Entry ID; this will be used for this entry in future records.
- * name: Entry name.
- * type: Type of the stored data for this entry, as a string, e.g. "double".
- * metadata: Initial metadata.
- */
-export type StartRecordData = {
-  readonly entry: number;
-  readonly name: string;
-  readonly type: string;
-  readonly metadata: string;
-};
-
-/**
- * Data contained in a set metadata control record as created by
- * DataLog.setMetadata(). This can be read by calling
- * DataLogRecord.getSetMetadataData().
- *
- * entry: Entry ID.
- * metadata: New metadata for the entry.
- */
-export type MetadataRecordData = {
-  readonly entry: number;
-  readonly metadata: string;
-};
+import {
+  CONTROL_ENTRY,
+  CONTROL_FINISH,
+  CONTROL_SET_METADATA,
+  CONTROL_START,
+  HEADER_STRING,
+  HEADER_VERSION,
+  MetadataRecordData,
+  StartRecordData,
+  TEXT_DECODER
+} from "./WPILOGShared";
 
 /** A record in the data log. May represent either a control record or a data record. */
-export class WPILOGRecord {
+export class WPILOGDecoderRecord {
   private entry: number;
   private timestamp: number;
   private data: Uint8Array;
   private dataView: DataView;
 
   /**
-   * Creates a new LogRecord.
+   * Creates a new WPILOGDecoderRecord.
    * @param entry The entry ID
    * @param timestamp The timestamp in microseconds
    * @param data The payload data
@@ -86,7 +55,7 @@ export class WPILOGRecord {
     return this.isControl() && this.data.length >= 17 && this.getControlType() == CONTROL_START;
   }
 
-  /** Returns true if the record is a finish control record.  */
+  /** Returns true if the record is a finish control record. */
   isFinish(): boolean {
     return this.isControl() && this.data.length == 5 && this.getControlType() == CONTROL_FINISH;
   }
@@ -231,8 +200,8 @@ export class WPILOGRecord {
   }
 }
 
-/** WPILOG reader. */
-export class WPILOGReader {
+/** WPILOG decoder. */
+export class WPILOGDecoder {
   private data: Uint8Array;
   private dataView: DataView;
 
@@ -246,7 +215,7 @@ export class WPILOGReader {
     return (
       this.data.length >= 12 &&
       TEXT_DECODER.decode(this.data.subarray(0, 6)) == HEADER_STRING &&
-      this.getVersion() >= HEADER_VERSION
+      this.getVersion() == HEADER_VERSION
     );
   }
 
@@ -278,7 +247,7 @@ export class WPILOGReader {
   }
 
   /** Runs the specified function for each record in the log. */
-  forEach(callback: (record: WPILOGRecord) => void) {
+  forEach(callback: (record: WPILOGDecoderRecord) => void) {
     if (!this.isValid()) throw "Log is not valid";
     let extraHeaderSize = this.dataView.getUint32(8, true);
     let position = 12 + extraHeaderSize;
@@ -295,7 +264,11 @@ export class WPILOGReader {
       let timestamp = this.readVariableInteger(position + 1 + entryLength + sizeLength, timestampLength);
       if (this.data.length < position + headerLength + size) break;
       callback(
-        new WPILOGRecord(entry, timestamp, this.data.subarray(position + headerLength, position + headerLength + size))
+        new WPILOGDecoderRecord(
+          entry,
+          timestamp,
+          this.data.subarray(position + headerLength, position + headerLength + size)
+        )
       );
       position += headerLength + size;
     }

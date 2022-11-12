@@ -1,6 +1,6 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
-import { WPILOGReader } from "./WPILOGDecoder";
+import { WPILOGDecoder } from "./wpilog/WPILOGDecoder";
 
 self.onmessage = (event) => {
   // WORKER SETUP
@@ -18,7 +18,7 @@ self.onmessage = (event) => {
   if (!payload.success) reject();
 
   let log = new Log();
-  let reader = new WPILOGReader(payload.raw);
+  let reader = new WPILOGDecoder(payload.raw);
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
   try {

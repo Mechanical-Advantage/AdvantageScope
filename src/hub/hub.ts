@@ -1,4 +1,5 @@
 import { Config3d_Rotation, FRCData } from "../shared/FRCData";
+import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
 import NamedMessage from "../shared/NamedMessage";
@@ -10,7 +11,6 @@ import NT4Source from "./dataSources/NT4Source";
 import RLOGFileSource from "./dataSources/RLOGFileSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
 import WPILOGSource from "./dataSources/WPILOGSource";
-import { HubState } from "../shared/HubState";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
 import Tabs from "./Tabs";
@@ -60,6 +60,7 @@ window.messagePort = null;
 let historicalSource: HistorialDataSource | null;
 let liveSource: LiveDataSource | null;
 let logPath: string | null = null;
+let liveConnected = false;
 
 let dragActive = false;
 let dragOffsetX = 0;
@@ -246,6 +247,7 @@ function startHistorical(path: string) {
     },
     (log: Log) => {
       logPath = path;
+      liveConnected = false;
       window.log = log;
       window.sidebar.refresh();
       window.tabs.refresh();
@@ -308,6 +310,7 @@ function startLive(isSim: boolean) {
     },
     (log: Log, timeSupplier: () => number) => {
       logPath = null;
+      liveConnected = true;
       window.log = log;
       window.selection.setLiveConnected(timeSupplier);
       window.sidebar.refresh();
@@ -448,35 +451,38 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.processVideoData(message.data);
       break;
 
-    case "start-export-csv":
-      if (logPath != null) {
-        window.sendMainMessage("prompt-export-csv", logPath);
+    case "start-export":
+      if (logPath != null || liveConnected) {
+        window.sendMainMessage("prompt-export", logPath);
       } else {
         window.sendMainMessage("error", {
-          title: "Cannot export as CSV",
-          content: "Please open a log file, then try again."
+          title: "Cannot export data",
+          content: "Please open a log file or connect to a live source, then try again."
         });
       }
       break;
 
-    case "prepare-export-csv":
+    case "prepare-export":
       setLoading(true);
-      WorkerManager.request("../bundles/hub$csvWorker.js", window.log.toSerialized())
-        .then((csvContent) => {
-          window.sendMainMessage("write-export-csv", {
-            path: message.data,
-            content: csvContent
+      WorkerManager.request("../bundles/hub$exportWorker.js", {
+        options: message.data.options,
+        log: window.log.toSerialized()
+      })
+        .then((content) => {
+          window.sendMainMessage("write-export", {
+            path: message.data.path,
+            content: content
           });
         })
         .catch(() => {
           window.sendMainMessage("error", {
-            title: "Failed to export as CSV",
-            content: "There was a problem while converting to the CSV format. Please try again."
+            title: "Failed to export data",
+            content: "There was a problem while converting to the export format. Please try again."
           });
         });
       break;
 
-    case "finish-export-csv":
+    case "finish-export":
       setLoading(false);
       break;
 

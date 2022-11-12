@@ -18,6 +18,7 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { Client } from "ssh2";
+import ExportOptions from "../shared/ExportOptions";
 import { FRCData } from "../shared/FRCData";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
@@ -371,29 +372,15 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       select3DCameraPopup(window, message.data.options, message.data.selectedIndex);
       break;
 
-    case "prompt-export-csv":
-      let pathComponents = message.data.split(".");
-      pathComponents.pop();
-      let csvPath = pathComponents.join(".") + ".csv";
-      dialog
-        .showSaveDialog(window, {
-          title: "Select export location for robot log",
-          defaultPath: csvPath,
-          properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-          filters: [{ name: "Comma-separated values", extensions: ["csv"] }]
-        })
-        .then((response) => {
-          if (!response.canceled) {
-            sendMessage(window, "prepare-export-csv", response.filePath);
-          }
-        });
+    case "prompt-export":
+      createExportWindow(window, message.data);
       break;
 
-    case "write-export-csv":
+    case "write-export":
       fs.writeFile(message.data.path, message.data.content, (err) => {
         if (err) throw err;
         else {
-          sendMessage(window, "finish-export-csv");
+          sendMessage(window, "finish-export");
         }
       });
       break;
@@ -403,7 +390,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         .showOpenDialog(window, {
           title: "Select a video to open",
           properties: ["openFile"],
-          filters: [{ name: "Robot logs", extensions: videoExtensions }]
+          filters: [{ name: "Videos", extensions: videoExtensions }]
         })
         .then((result) => {
           if (result.filePaths.length > 0) {
@@ -741,7 +728,7 @@ function downloadSave(files: string[]) {
     });
   } else {
     let extension = path.extname(files[0]).slice(1);
-    let name = extension == "wpilog" ? "WPILib robot log" : "Robot log";
+    let name = extension == "wpilog" ? "WPILib robot logs" : "Robot logs";
     selectPromise = dialog.showSaveDialog(downloadWindow, {
       title: "Select save location for robot log",
       defaultPath: files[0],
@@ -910,11 +897,11 @@ function setupMenu() {
           }
         },
         {
-          label: "Export CSV...",
+          label: "Export Data...",
           accelerator: "CmdOrCtrl+E",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-export-csv");
+            sendMessage(window, "start-export");
           }
         },
         { type: "separator" },
@@ -937,7 +924,7 @@ function setupMenu() {
                 title: "Select export location for layout file",
                 defaultPath: "AdvantageScope " + new Date().toLocaleDateString().replaceAll("/", "-") + ".json",
                 properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-                filters: [{ name: "JSON file", extensions: ["json"] }]
+                filters: [{ name: "JSON files", extensions: ["json"] }]
               })
               .then((response) => {
                 if (!response.canceled) {
@@ -1412,6 +1399,75 @@ function createRenameTabWindow(
     port2.start();
   });
   renameTabWindow.loadFile(path.join(__dirname, "../www/renameTab.html"));
+}
+
+/**
+ * Creates a new window for export options.
+ * @param parentWindow The parent window to use for alignment
+ */
+function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath: string | null) {
+  const exportWindow = new BrowserWindow({
+    width: 300,
+    height: process.platform == "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    useContentSize: true,
+    resizable: false,
+    icon: WINDOW_ICON,
+    show: false,
+    parent: parentWindow,
+    modal: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  exportWindow.setMenu(null);
+  exportWindow.once("ready-to-show", parentWindow.show);
+  exportWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    exportWindow.webContents.postMessage("port", null, [port1]);
+    port2.on("message", (event) => {
+      if (event.data === null) {
+        // Exit button
+        exportWindow.destroy();
+      } else if (typeof event.data === "string") {
+        // Help button
+        shell.openExternal(event.data);
+      } else if (typeof event.data === "object") {
+        // Confirm
+        let exportOptions: ExportOptions = event.data;
+        let extension = exportOptions.format == "wpilog" ? "wpilog" : "csv";
+        let defaultPath = undefined;
+        if (currentLogPath !== null) {
+          let pathComponents = currentLogPath.split(".");
+          pathComponents.pop();
+          defaultPath = pathComponents.join(".") + "." + extension;
+        }
+        dialog
+          .showSaveDialog(exportWindow, {
+            title: "Select export location for robot log",
+            defaultPath: defaultPath,
+            properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+            filters: [
+              extension == "csv"
+                ? { name: "Comma-separated values", extensions: ["csv"] }
+                : { name: "WPILib robot logs", extensions: ["wpilog"] }
+            ]
+          })
+          .then((response) => {
+            if (!response.canceled) {
+              exportWindow.destroy();
+              sendMessage(parentWindow, "prepare-export", { path: response.filePath, options: exportOptions });
+            }
+          });
+      }
+    });
+    exportWindow.on("blur", () => port2.postMessage({ isFocused: false }));
+    exportWindow.on("focus", () => port2.postMessage({ isFocused: true }));
+    port2.start();
+  });
+  exportWindow.loadFile(path.join(__dirname, "../www/export.html"));
 }
 
 /**

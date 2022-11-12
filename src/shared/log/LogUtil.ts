@@ -12,7 +12,9 @@ const ENABLED_KEYS = [
 const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
 
 export function getLogValueText(value: any, type: LoggableType): string {
-  if (type == LoggableType.Raw) {
+  if (value === null) {
+    return "null";
+  } else if (type == LoggableType.Raw) {
     let array: Uint8Array = value;
     let textArray: string[] = [];
     array.forEach((byte: number) => {

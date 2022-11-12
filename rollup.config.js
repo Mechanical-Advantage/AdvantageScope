@@ -20,10 +20,11 @@ export default [
   bundle("hub/hub.ts", "hub.js"),
   bundle("hub/dataSources/rlogWorker.ts", "hub$rlogWorker.js"),
   bundle("hub/dataSources/wpilogWorker.ts", "hub$wpilogWorker.js"),
-  bundle("hub/csvWorker.ts", "hub$csvWorker.js"),
+  bundle("hub/exportWorker.ts", "hub$exportWorker.js"),
   bundle("editRange.ts", "editRange.js"),
   bundle("unitConversion.ts", "unitConversion.js"),
   bundle("renameTab.ts", "renameTab.js"),
+  bundle("export.ts", "export.js"),
   bundle("download.ts", "download.js"),
   bundle("satellite.ts", "satellite.js"),
   bundle("preferences.ts", "preferences.js")

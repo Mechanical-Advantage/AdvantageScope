@@ -21,7 +21,7 @@ export default class RLOGDecoder {
     }
 
     try {
-      // Check log reivison
+      // Check log revision
       if (this.logRevision == null) {
         this.logRevision = dataArray[shiftOffset(1)];
         if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
