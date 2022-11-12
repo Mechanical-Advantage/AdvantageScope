@@ -108,9 +108,16 @@ export default class LogField {
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
     if (this.data.timestamps.includes(timestamp)) return;
-    let insertIndex = this.data.timestamps.findIndex((x) => x > timestamp);
-    if (insertIndex == -1) {
+    let insertIndex: number;
+    if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
+      // There's a good chance this data is at the end of the log, so check that first
       insertIndex = this.data.timestamps.length;
+    } else {
+      // Adding in the middle, find where to insert it
+      insertIndex = this.data.timestamps.findIndex((x) => x > timestamp);
+      if (insertIndex == -1) {
+        insertIndex = this.data.timestamps.length;
+      }
     }
 
     if (insertIndex > 0 && this.areEqual(this.type, value, this.data.values[insertIndex - 1])) {
