@@ -6,6 +6,7 @@ AdvantageScope includes a flexible system for exporting log data as a CSV or WPI
 
 - Converting a WPILOG file to CSV for analysis in other application.
 - Exporting a WPILOG file based on NetworkTables data, for later access.
+- Saving a WPILOG with a limited number of fields (and duplicate values removed) to reduce file size.
 
 To view options for exporting, click "File" > "Export Data..." or press **cmd/ctrl + E**.
 
@@ -26,9 +27,9 @@ The following options are provided when exporting:
   - "_/Flywheels,DS:enabled_": Include all fields starting with "/Flywheels" or "DS:enabled" (all data from the flywheel, plus the robot's enabled status).
   - "_/Drive/LeftPosition,/Drive/RightPosition_": Only include the fields "/Drive/LeftPosition" and "/Drive/RightPosition".
 
-> Note: Exported log files may not match the original data exactly. The following changes are made:
+> Note: Exported log files may not exactly match the original data. The following changes are made:
 >
-> - Duplicate values recorded in the original log file are discarded, and are not included in formats like "CSV (List)".
+> - Duplicate values recorded in the original log file are discarded, and are not included in formats like "CSV (List)" and "WPILOG". This effect can be used to reduce the size of WPILOG files with duplicate values, by opening and then exporting again with the "WPILOG" format.
 > - When exporting as "WPILOG", all numeric fields are saved using the "double" or "double[]" types.
 
 An example CSV file exported from AdvantageScope is shown below, in the "CSV (Table)" format with timestamps set to "All Changes":
