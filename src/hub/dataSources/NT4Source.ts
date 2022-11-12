@@ -161,7 +161,7 @@ export default class NT4Source extends LiveDataSource {
                 content:
                   "No fields were received from the server. AdvantageKit mode is selected. Are you connecting to a server without AdvantageKit?"
               });
-            }, 500);
+            }, 5000);
           }
         },
         () => {
