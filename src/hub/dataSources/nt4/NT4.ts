@@ -268,8 +268,8 @@ export class NT4_Client {
     this.setProperties(topic, { retained: isRetained });
   }
 
-  /** Publish a new topic from this client with the provided name and type. */
-  publishNewTopic(topic: string, type: string) {
+  /** Publish a topic from this client with the provided name and type. Can be a new or existing. */
+  publishTopic(topic: string, type: string) {
     if (this.publishedTopics.has(topic)) {
       return;
     }
