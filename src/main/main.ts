@@ -152,27 +152,32 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "historical-start":
-      // Record opened file
-      app.addRecentDocument(message.data);
-      fs.writeFile(LAST_OPEN_FILE, message.data, () => {});
+      // Record opened files
+      let paths: string[] = message.data;
+      paths.forEach((path) => app.addRecentDocument(path));
+      fs.writeFile(LAST_OPEN_FILE, paths[0], () => {});
 
       // Read data from file
-      let sendError = () => {
-        sendMessage(window, "historical-data", {
-          success: false
-        });
-      };
-      fs.open(message.data, "r", (error, file) => {
-        if (error) sendError();
-        fs.readFile(file, (error, buffer) => {
+      let completedCount = 0;
+      let results: (Buffer | null)[] = paths.map(() => null);
+      paths.forEach((path, index) => {
+        fs.open(path, "r", (error, file) => {
           if (error) {
-            sendError();
-          } else {
-            sendMessage(window, "historical-data", {
-              success: true,
-              raw: buffer
-            });
+            completedCount++;
+            if (completedCount == paths.length) {
+              sendMessage(window, "historical-data", results);
+            }
+            return;
           }
+          fs.readFile(file, (error, buffer) => {
+            completedCount++;
+            if (!error) {
+              results[index] = buffer;
+            }
+            if (completedCount == paths.length) {
+              sendMessage(window, "historical-data", results);
+            }
+          });
         });
       });
       break;
@@ -855,7 +860,7 @@ function setupMenu() {
       label: "File",
       submenu: [
         {
-          label: "Open...",
+          label: "Open Log...",
           accelerator: "CmdOrCtrl+O",
           click(_, window) {
             if (window == null || !hubWindows.includes(window)) return;
@@ -863,11 +868,29 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
                   sendMessage(window, "open-file", files.filePaths[0]);
+                }
+              });
+          }
+        },
+        {
+          label: "Merge Log...",
+          accelerator: "CmdOrCtrl+Shift+O",
+          click(_, window) {
+            if (window == null || !hubWindows.includes(window)) return;
+            dialog
+              .showOpenDialog(window, {
+                title: "Select a robot log file to merge with the current data",
+                properties: ["openFile"],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+              })
+              .then((files) => {
+                if (files.filePaths.length > 0) {
+                  sendMessage(window, "open-file-merge", files.filePaths[0]);
                 }
               });
           }

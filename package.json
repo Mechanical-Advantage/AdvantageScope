@@ -92,6 +92,22 @@
         "mimeType": "application/octet-stream",
         "role": "Viewer",
         "icon": "icons/app/rlog-icon"
+      },
+      {
+        "ext": "dslog",
+        "name": "FRC Driver Station log",
+        "description": "FRC Driver Station log",
+        "mimeType": "application/octet-stream",
+        "role": "Viewer",
+        "icon": "icons/app/dslog-icon"
+      },
+      {
+        "ext": "dsevents",
+        "name": "FRC Driver Station events",
+        "description": "FRC Driver Station events",
+        "mimeType": "application/octet-stream",
+        "role": "Viewer",
+        "icon": "icons/app/dsevents-icon"
       }
     ],
     "mac": {

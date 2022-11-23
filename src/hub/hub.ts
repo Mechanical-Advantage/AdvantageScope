@@ -2,15 +2,14 @@ import { Config3d_Rotation, FRCData } from "../shared/FRCData";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
+import { getEnabledData } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { htmlEncode } from "../shared/util";
 import { HistorialDataSource, HistorialDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import NT4Source from "./dataSources/NT4Source";
-import RLOGFileSource from "./dataSources/RLOGFileSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
-import WPILOGSource from "./dataSources/WPILOGSource";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
 import Tabs from "./Tabs";
@@ -201,22 +200,11 @@ window.addEventListener("touchend", () => {
 // DATA SOURCE HANDLING
 
 /** Connects to a historical data source. */
-function startHistorical(path: string) {
+function startHistorical(path: string, shouldMerge: boolean = false) {
   historicalSource?.stop();
   liveSource?.stop();
 
-  if (path.endsWith(".rlog")) {
-    historicalSource = new RLOGFileSource();
-  } else if (path.endsWith(".wpilog")) {
-    historicalSource = new WPILOGSource();
-  } else {
-    window.sendMainMessage("error", {
-      title: "Failed to open log",
-      content: "Could not determine the format of the log file. Please try again."
-    });
-    return;
-  }
-
+  historicalSource = new HistorialDataSource();
   historicalSource.openFile(
     path,
     (status: HistorialDataSourceStatus) => {
@@ -225,15 +213,15 @@ function startHistorical(path: string) {
       switch (status) {
         case HistorialDataSourceStatus.Reading:
         case HistorialDataSourceStatus.Decoding:
-          setWindowTitle(friendlyName, "Loading");
+          if (!shouldMerge) setWindowTitle(friendlyName, "Loading");
           setLoading(true);
           break;
         case HistorialDataSourceStatus.Ready:
-          setWindowTitle(friendlyName);
+          if (!shouldMerge) setWindowTitle(friendlyName);
           setLoading(false);
           break;
         case HistorialDataSourceStatus.Error:
-          setWindowTitle(friendlyName, "Error");
+          if (!shouldMerge) setWindowTitle(friendlyName, "Error");
           setLoading(false);
           window.sendMainMessage("error", {
             title: "Failed to open log",
@@ -246,9 +234,40 @@ function startHistorical(path: string) {
       }
     },
     (log: Log) => {
-      logPath = path;
+      if (shouldMerge && window.log.getFieldKeys().length > 0) {
+        // Check for field conflicts
+        let newFields = log.getFieldKeys();
+        let canMerge = true;
+        window.log.getFieldKeys().forEach((key) => {
+          if (newFields.includes(key)) canMerge = false;
+        });
+        if (!canMerge) {
+          window.sendMainMessage("error", {
+            title: "Failed to merge logs",
+            content:
+              "The logs contain conflicting fields. Merging is only possible when the logged fields don't overlap."
+          });
+          return;
+        }
+
+        // Merge based on first enable
+        let currentFirstEnable = 0;
+        let newFirstEnabled = 0;
+        let currentEnabledData = getEnabledData(window.log);
+        let newEnabledData = getEnabledData(log);
+        if (currentEnabledData && currentEnabledData.values.includes(true)) {
+          currentFirstEnable = currentEnabledData.timestamps[currentEnabledData.values.indexOf(true)];
+        }
+        if (newEnabledData && newEnabledData.values.includes(true)) {
+          newFirstEnabled = newEnabledData.timestamps[newEnabledData.values.indexOf(true)];
+        }
+        window.log = Log.mergeLogs(window.log, log, currentFirstEnable - newFirstEnabled);
+      } else {
+        window.log = log;
+        logPath = path;
+      }
+
       liveConnected = false;
-      window.log = log;
       window.sidebar.refresh();
       window.tabs.refresh();
     }
@@ -409,6 +428,10 @@ function handleMainMessage(message: NamedMessage) {
 
     case "open-file":
       startHistorical(message.data);
+      break;
+
+    case "open-file-merge":
+      startHistorical(message.data, true);
       break;
 
     case "start-live":

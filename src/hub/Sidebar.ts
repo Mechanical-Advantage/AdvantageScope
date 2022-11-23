@@ -24,7 +24,9 @@ export default class Sidebar {
     "NT",
     "NTConnection",
     "messages",
-    "systemTime"
+    "systemTime",
+    "DSLog",
+    "DSEvents"
   ];
   private HIDDEN_KEYS = ["RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;

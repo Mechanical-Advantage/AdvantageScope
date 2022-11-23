@@ -14,11 +14,9 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   // Run worker
-  if (!payload.success) reject();
-
   let log = new Log();
   let decoder = new RLOGDecoder();
-  let success = decoder.decode(log, payload.raw);
+  let success = decoder.decode(log, payload[0]);
   if (success) {
     resolve(log.toSerialized());
   } else {

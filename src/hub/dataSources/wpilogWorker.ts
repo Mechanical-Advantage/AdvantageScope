@@ -15,10 +15,8 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   // Run worker
-  if (!payload.success) reject();
-
   let log = new Log();
-  let reader = new WPILOGDecoder(payload.raw);
+  let reader = new WPILOGDecoder(payload[0]);
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
   try {
@@ -108,6 +106,7 @@ self.onmessage = (event) => {
   } catch (exception) {
     console.error(exception);
     reject();
+    return;
   }
   resolve(log.toSerialized());
 };

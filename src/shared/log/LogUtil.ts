@@ -6,7 +6,8 @@ const ENABLED_KEYS = [
   "/DriverStation/Enabled",
   "/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
-  "/FMSInfo/FMSControlData"
+  "/FMSInfo/FMSControlData",
+  "/DSLog/Status/DSDisabled"
 ];
 
 const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
@@ -31,7 +32,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
   if (enabledKey == "/FMSInfo/FMSControlData") {
-    let tempEnabledData = window.log.getNumber("/FMSInfo/FMSControlData", -Infinity, Infinity);
+    let tempEnabledData = log.getNumber("/FMSInfo/FMSControlData", -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
@@ -39,8 +40,15 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
       };
     }
   } else {
-    let tempEnabledData = window.log.getBoolean(enabledKey, -Infinity, Infinity);
-    if (tempEnabledData) enabledData = tempEnabledData;
+    let tempEnabledData = log.getBoolean(enabledKey, -Infinity, Infinity);
+    if (!tempEnabledData) return null;
+    enabledData = tempEnabledData;
+    if (enabledKey == "/DSLog/Status/DSDisabled") {
+      enabledData = {
+        timestamps: enabledData.timestamps,
+        values: enabledData.values.map((value) => !value)
+      };
+    }
   }
   return enabledData;
 }
@@ -79,35 +87,35 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   // Read values
   if (isAkit) {
     let buttonCount = 0;
-    let buttonCountData = window.log.getNumber(tablePrefix + "ButtonCount", time, time);
+    let buttonCountData = log.getNumber(tablePrefix + "ButtonCount", time, time);
     if (buttonCountData && buttonCountData.timestamps[0] <= time) {
       buttonCount = buttonCountData.values[0];
     }
-    let buttonValueData = window.log.getNumber(tablePrefix + "ButtonValues", time, time);
+    let buttonValueData = log.getNumber(tablePrefix + "ButtonValues", time, time);
     state.buttons = [];
     if (buttonValueData && buttonValueData.timestamps[0] <= time) {
       for (let i = 0; i < buttonCount; i++) {
         state.buttons.push(((1 << i) & buttonValueData.values[0]) != 0);
       }
     }
-    let axisData = window.log.getNumberArray(tablePrefix + "AxisValues", time, time);
+    let axisData = log.getNumberArray(tablePrefix + "AxisValues", time, time);
     if (axisData && axisData.timestamps[0] <= time) {
       state.axes = axisData.values[0];
     }
-    let povData = window.log.getNumberArray(tablePrefix + "POVs", time, time);
+    let povData = log.getNumberArray(tablePrefix + "POVs", time, time);
     if (povData && povData.timestamps[0] <= time) {
       state.povs = povData.values[0];
     }
   } else {
-    let buttonData = window.log.getBooleanArray(tablePrefix + "buttons", time, time);
+    let buttonData = log.getBooleanArray(tablePrefix + "buttons", time, time);
     if (buttonData && buttonData.timestamps[0] <= time) {
       state.buttons = buttonData.values[0];
     }
-    let axisData = window.log.getNumberArray(tablePrefix + "axes", time, time);
+    let axisData = log.getNumberArray(tablePrefix + "axes", time, time);
     if (axisData && axisData.timestamps[0] <= time) {
       state.axes = axisData.values[0];
     }
-    let povData = window.log.getNumberArray(tablePrefix + "axes", time, time);
+    let povData = log.getNumberArray(tablePrefix + "axes", time, time);
     if (povData && povData.timestamps[0] <= time) {
       state.povs = povData.values[0];
     }

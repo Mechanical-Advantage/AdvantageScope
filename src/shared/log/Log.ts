@@ -292,7 +292,7 @@ export default class Log {
   }
 
   /** Creates a new log based on the data from `toSerialized()` */
-  static fromSerialized(serializedData: any) {
+  static fromSerialized(serializedData: any): Log {
     let log = new Log();
     Object.entries(serializedData.fields).forEach(([key, value]) => {
       log.fields[key] = LogField.fromSerialized(value);
@@ -300,6 +300,44 @@ export default class Log {
     log.arrayLengths = serializedData.arrayLengths;
     log.arrayItemFields = serializedData.arrayItemFields;
     log.timestampRange = serializedData.timestampRange;
+    return log;
+  }
+
+  /** Merges two log objects with no overlapping fields. */
+  static mergeLogs(firstLog: Log, secondLog: Log, timestampOffset: number): Log {
+    // Serialize logs and adjust timestamps
+    let firstSerialized = firstLog.toSerialized();
+    let secondSerialized = secondLog.toSerialized();
+    Object.values(secondSerialized.fields).forEach((field) => {
+      let newField = field as { timestamps: number[]; values: number[] };
+      newField.timestamps = newField.timestamps.map((timestamp) => timestamp + timestampOffset);
+    });
+    if (secondSerialized.timestampRange) {
+      secondSerialized.timestampRange = (secondSerialized.timestampRange as number[]).map(
+        (timestamp) => timestamp + timestampOffset
+      );
+    }
+
+    // Merge logs
+    let log = new Log();
+    Object.entries(firstSerialized.fields).forEach(([key, value]) => {
+      log.fields[key] = LogField.fromSerialized(value);
+    });
+    Object.entries(secondSerialized.fields).forEach(([key, value]) => {
+      log.fields[key] = LogField.fromSerialized(value);
+    });
+    log.arrayLengths = { ...firstSerialized.arrayLengths, ...secondSerialized.arrayLengths };
+    log.arrayItemFields = [...firstSerialized.arrayItemFields, ...secondSerialized.arrayItemFields];
+    if (firstSerialized.timestampRange && secondSerialized.timestampRange) {
+      log.timestampRange = [
+        Math.min(firstSerialized.timestampRange[0], secondSerialized.timestampRange[0]),
+        Math.max(firstSerialized.timestampRange[1], secondSerialized.timestampRange[1])
+      ];
+    } else if (firstSerialized.timestampRange) {
+      log.timestampRange = firstSerialized.timestampRange;
+    } else if (secondSerialized.timestampRange) {
+      log.timestampRange = secondSerialized.timestampRange;
+    }
     return log;
   }
 }
