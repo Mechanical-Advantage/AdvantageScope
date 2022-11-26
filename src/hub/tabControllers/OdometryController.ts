@@ -127,11 +127,23 @@ export default class OdometryController extends TimelineVizController {
     }
 
     // Returns the current value for a field
-    let getCurrentValue = (key: string, isPose: boolean = true): (Pose2d | Translation2d)[] => {
+    let getCurrentValue = (key: string): Pose2d[] => {
       let logData = window.log.getNumberArray(key, time, time);
-      if (logData && logData.timestamps[0] <= time && logData.values[0].length % (isPose ? 3 : 2) == 0) {
-        if (isPose) {
-          let poses: Pose2d[] = [];
+      if (
+        logData &&
+        logData.timestamps[0] <= time &&
+        (logData.values[0].length == 2 || logData.values[0].length % 3 == 0)
+      ) {
+        let poses: Pose2d[] = [];
+        if (logData.values[0].length == 2) {
+          poses.push({
+            translation: [
+              convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
+              convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
+            ],
+            rotation: 0
+          });
+        } else {
           for (let i = 0; i < logData.values[0].length; i += 3) {
             poses.push({
               translation: [
@@ -141,17 +153,9 @@ export default class OdometryController extends TimelineVizController {
               rotation: convert(logData.values[0][i + 2], this.UNIT_ROTATION.value, "radians")
             });
           }
-          return poses;
-        } else {
-          let translations: Translation2d[] = [];
-          for (let i = 0; i < logData.values[0].length; i += 2) {
-            translations.push([
-              convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
-              convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters")
-            ]);
-          }
-          return translations;
         }
+        return poses;
+      } else {
       }
       return [];
     };
@@ -161,7 +165,7 @@ export default class OdometryController extends TimelineVizController {
     let trailData: Translation2d[][] = [];
     let ghostData: Pose2d[] = [];
     let trajectoryData: Pose2d[][] = [];
-    let visionTargetData: Translation2d[] = [];
+    let visionTargetData: Pose2d[] = [];
     let arrowFrontData: Pose2d[] = [];
     let arrowCenterData: Pose2d[] = [];
     let arrowBackData: Pose2d[] = [];
@@ -208,7 +212,7 @@ export default class OdometryController extends TimelineVizController {
           trajectoryData.push(getCurrentValue(field.key) as Pose2d[]);
           break;
         case "Vision Target":
-          visionTargetData = visionTargetData.concat(getCurrentValue(field.key, false) as Translation2d[]);
+          visionTargetData = visionTargetData.concat(getCurrentValue(field.key) as Pose2d[]);
           break;
         case "Arrow (Front)":
           arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key) as Pose2d[]);

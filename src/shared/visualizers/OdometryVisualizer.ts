@@ -152,13 +152,13 @@ export default class OdometryVisualizer implements Visualizer {
     // Draw vision targets
     if (command.poses.robot.length > 0) {
       let robotPos = calcCoordinates(command.poses.robot[0].translation);
-      command.poses.visionTarget.forEach((target: Translation2d) => {
+      command.poses.visionTarget.forEach((target: Pose2d) => {
         let robotPose = command.poses.robot[0];
         context.strokeStyle = "lightgreen";
         context.lineWidth = 1 * pixelsPerInch;
         context.beginPath();
         context.moveTo(robotPos[0], robotPos[1]);
-        context.lineTo(...calcCoordinates(target));
+        context.lineTo(...calcCoordinates(target.translation));
         context.stroke();
       });
     }
