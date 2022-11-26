@@ -1,3 +1,5 @@
+import { config } from "mathjs";
+import { Pose2d, Translation2d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
@@ -24,23 +26,12 @@ export default class OdometryController extends TimelineVizController {
     super(
       content,
       TabType.Odometry,
+      [],
       [
-        // Robot pose
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
-        },
-
-        // Ghost pose
-        {
-          element: configBody.children[2].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
-        },
-
-        // Vision target
-        {
-          element: configBody.children[3].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
+          type: LoggableType.NumberArray,
+          options: ["Robot", "Ghost", "Vision Target", "Trajectory", "Arrow (Front)", "Arrow (Center)", "Arrow (Back)"]
         }
       ],
       new OdometryVisualizer(content.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement)
@@ -49,9 +40,9 @@ export default class OdometryController extends TimelineVizController {
     // Get option inputs
     this.GAME = configBody.children[1].children[1].children[1] as HTMLInputElement;
     this.GAME_SOURCE_LINK = configBody.children[1].children[1].children[2] as HTMLElement;
-    this.UNIT_DISTANCE = configBody.children[2].children[1].children[1] as HTMLInputElement;
-    this.UNIT_ROTATION = configBody.children[2].children[1].children[2] as HTMLInputElement;
-    this.ORIGIN = configBody.children[3].children[1].lastElementChild as HTMLInputElement;
+    this.UNIT_DISTANCE = configBody.children[2].children[0].children[1] as HTMLInputElement;
+    this.UNIT_ROTATION = configBody.children[2].children[0].children[2] as HTMLInputElement;
+    this.ORIGIN = configBody.children[3].children[0].lastElementChild as HTMLInputElement;
     this.SIZE = configBody.children[1].lastElementChild?.children[1] as HTMLInputElement;
     this.SIZE_TEXT = configBody.children[1].lastElementChild?.lastElementChild as HTMLElement;
     this.ALLIANCE = configBody.children[2].lastElementChild?.lastElementChild as HTMLInputElement;
@@ -123,7 +114,7 @@ export default class OdometryController extends TimelineVizController {
   }
 
   getCommand(time: number) {
-    let fields = this.getFields();
+    let fields = this.getListFields()[0];
 
     // Add game options
     if (this.GAME.children.length == 0 && window.frcData) {
@@ -135,80 +126,113 @@ export default class OdometryController extends TimelineVizController {
       if (this.lastOptions) this.options = this.lastOptions;
     }
 
-    // Get vision coordinates
-    let visionCoordinates: [number, number][] = [];
-    if (fields[2] != null) {
-      let currentData = window.log.getNumberArray(fields[2], time, time);
-      if (currentData && currentData.timestamps.length > 0) {
-        let currentDataTimestamp = currentData.timestamps[0];
-        let currentDataValue = currentData.values[0];
-        if (currentDataTimestamp <= time && currentDataValue.length % 2 == 0) {
-          for (let i = 0; i < currentDataValue.length; i += 2) {
-            visionCoordinates.push([currentDataValue[i], currentDataValue[i + 1]]);
-          }
-        }
-      }
-    }
-
-    // Read pose data based on field id
-    let getPoseData = (key: string | null, includeTrail: boolean) => {
-      if (key == null) {
-        if (includeTrail) {
-          return {
-            pose: null,
-            trail: []
-          };
-        } else {
-          return null;
-        }
-      }
-
-      let pose: [number, number, number] | null = null; // X, Y, Rotation
-      let trail: ([number, number] | null)[] = [];
-
-      // Get current pose
+    // Returns the current value for a field
+    let getCurrentValue = (key: string, isPose: boolean = true): (Pose2d | Translation2d)[] => {
       let logData = window.log.getNumberArray(key, time, time);
-      if (logData && logData.timestamps[0] <= time && logData.values[0].length == 3) {
-        pose = [logData.values[0][0], logData.values[0][1], logData.values[0][2]];
-      }
-
-      // Get trail
-      if (includeTrail) {
-        let trailData = window.log.getNumberArray(key, time - this.TRAIL_LENGTH_SECS, time + this.TRAIL_LENGTH_SECS);
-        if (trailData) {
-          if (time - trailData.timestamps[0] > this.TRAIL_LENGTH_SECS) {
-            trailData.timestamps.shift();
-            trailData.values.shift();
+      if (logData && logData.timestamps[0] <= time && logData.values[0].length % (isPose ? 3 : 2) == 0) {
+        if (isPose) {
+          let poses: Pose2d[] = [];
+          for (let i = 0; i < logData.values[0].length; i += 3) {
+            poses.push({
+              translation: [
+                convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
+                convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters")
+              ],
+              rotation: convert(logData.values[0][i + 2], this.UNIT_ROTATION.value, "radians")
+            });
           }
-          if (trailData.timestamps[trailData.timestamps.length - 1] - time > this.TRAIL_LENGTH_SECS) {
-            trailData.timestamps.pop();
-            trailData.values.pop();
+          return poses;
+        } else {
+          let translations: Translation2d[] = [];
+          for (let i = 0; i < logData.values[0].length; i += 2) {
+            translations.push([
+              convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
+              convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters")
+            ]);
           }
-          trail = trailData.values.map((value) => {
-            if (value.length != 3) {
-              return null;
-            } else {
-              return [value[0], value[1]];
-            }
-          });
+          return translations;
         }
-
-        // Return with trail
-        return {
-          pose: pose,
-          trail: trail
-        };
-      } else {
-        return pose;
       }
+      return [];
     };
+
+    // Get basic data
+    let robotData: Pose2d[] = [];
+    let trailData: Translation2d[][] = [];
+    let ghostData: Pose2d[] = [];
+    let trajectoryData: Pose2d[][] = [];
+    let visionTargetData: Translation2d[] = [];
+    let arrowFrontData: Pose2d[] = [];
+    let arrowCenterData: Pose2d[] = [];
+    let arrowBackData: Pose2d[] = [];
+    fields.forEach((field) => {
+      switch (field.type) {
+        case "Robot":
+          let currentRobotData = getCurrentValue(field.key) as Pose2d[];
+          robotData = robotData.concat(currentRobotData);
+
+          // Get trails
+          let trailsTemp: Translation2d[][] = currentRobotData.map(() => []);
+          let trailLogData = window.log.getNumberArray(
+            field.key,
+            time - this.TRAIL_LENGTH_SECS,
+            time + this.TRAIL_LENGTH_SECS
+          );
+          if (trailLogData) {
+            if (time - trailLogData.timestamps[0] > this.TRAIL_LENGTH_SECS) {
+              trailLogData.timestamps.shift();
+              trailLogData.values.shift();
+            }
+            if (trailLogData.timestamps[trailLogData.timestamps.length - 1] - time > this.TRAIL_LENGTH_SECS) {
+              trailLogData.timestamps.pop();
+              trailLogData.values.pop();
+            }
+            trailLogData.values.forEach((value) => {
+              if (value.length % 3 == 0) {
+                for (let i = 0; i < value.length / 3; i += 1) {
+                  if (i >= trailsTemp.length) continue;
+                  trailsTemp[i].push([
+                    convert(value[i * 3], this.UNIT_DISTANCE.value, "meters"),
+                    convert(value[i * 3 + 1], this.UNIT_DISTANCE.value, "meters")
+                  ]);
+                }
+              }
+            });
+          }
+          trailData = trailData.concat(trailsTemp);
+          break;
+        case "Ghost":
+          ghostData = ghostData.concat(getCurrentValue(field.key) as Pose2d[]);
+          break;
+        case "Trajectory":
+          trajectoryData.push(getCurrentValue(field.key) as Pose2d[]);
+          break;
+        case "Vision Target":
+          visionTargetData = visionTargetData.concat(getCurrentValue(field.key, false) as Translation2d[]);
+          break;
+        case "Arrow (Front)":
+          arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key) as Pose2d[]);
+          break;
+        case "Arrow (Center)":
+          arrowCenterData = arrowCenterData.concat(getCurrentValue(field.key) as Pose2d[]);
+          break;
+        case "Arrow (Back)":
+          arrowBackData = arrowBackData.concat(getCurrentValue(field.key) as Pose2d[]);
+          break;
+      }
+    });
 
     // Package command data
     return {
-      pose: {
-        robotPose: getPoseData(fields[0], true),
-        ghostPose: getPoseData(fields[1], false),
-        visionCoordinates: visionCoordinates
+      poses: {
+        robot: robotData,
+        trail: trailData,
+        ghost: ghostData,
+        trajectory: trajectoryData,
+        visionTarget: visionTargetData,
+        arrowFront: arrowFrontData,
+        arrowCenter: arrowCenterData,
+        arrowBack: arrowBackData
       },
       options: this.options
     };

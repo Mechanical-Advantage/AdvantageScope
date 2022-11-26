@@ -43,6 +43,7 @@ export default class ThreeDimensionController extends TimelineVizController {
           type: LoggableType.NumberArray
         }
       ],
+      [],
       new ThreeDimensionVisualizer(
         content,
         content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement,

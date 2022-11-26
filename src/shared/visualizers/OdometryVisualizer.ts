@@ -1,3 +1,4 @@
+import { Pose2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
@@ -57,8 +58,8 @@ export default class OdometryVisualizer implements Visualizer {
       return null;
     }
 
-    // Determine if robot is flipped
-    let robotFlipped = command.options.alliance == "red";
+    // Determine if objects are flipped
+    let objectsFlipped = command.options.alliance == "red";
 
     // Render background
     let fieldWidth = gameData.bottomRight[0] - gameData.topLeft[0];
@@ -98,14 +99,10 @@ export default class OdometryVisualizer implements Visualizer {
     let canvasFieldHeight = fieldHeight * imageScalar;
     let pixelsPerInch = (canvasFieldHeight / gameData.heightInches + canvasFieldWidth / gameData.widthInches) / 2;
 
-    // Convert pose data to pixel coordinates
-    let calcCoordinates = (position: [number, number]): [number, number] => {
+    // Convert translation to pixel coordinates
+    let calcCoordinates = (translation: Translation2d): [number, number] => {
       if (!gameData) return [0, 0];
-
-      let positionInches = [position[0], position[1]];
-      if (command.options.unitDistance == "meters") {
-        positionInches = [convert(position[0], "meters", "inches"), convert(position[1], "meters", "inches")];
-      }
+      let positionInches = [convert(translation[0], "meters", "inches"), convert(translation[1], "meters", "inches")];
 
       positionInches[1] *= -1; // Positive y is flipped on the canvas
       switch (command.options.origin) {
@@ -123,7 +120,7 @@ export default class OdometryVisualizer implements Visualizer {
         positionInches[0] * (canvasFieldWidth / gameData.widthInches),
         positionInches[1] * (canvasFieldHeight / gameData.heightInches)
       ];
-      if (robotFlipped) {
+      if (objectsFlipped) {
         positionPixels[0] = canvasFieldLeft + canvasFieldWidth - positionPixels[0];
         positionPixels[1] = canvasFieldTop + canvasFieldHeight - positionPixels[1];
       } else {
@@ -133,81 +130,84 @@ export default class OdometryVisualizer implements Visualizer {
       return positionPixels;
     };
 
-    // Calculate robot length
-    let robotLengthPixels =
-      pixelsPerInch *
-      (command.options.unitDistance == "inches"
-        ? command.options.size
-        : convert(command.options.size, "meters", "inches"));
+    // Draw trajectories
+    command.poses.trajectory.forEach((trajectory: Pose2d[]) => {
+      context.strokeStyle = "orange";
+      context.lineWidth = 2 * pixelsPerInch;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      context.beginPath();
+      let firstPoint = true;
+      trajectory.forEach((pose) => {
+        if (firstPoint) {
+          context.moveTo(...calcCoordinates(pose.translation));
+          firstPoint = false;
+        } else {
+          context.lineTo(...calcCoordinates(pose.translation));
+        }
+      });
+      context.stroke();
+    });
 
-    if (command.pose.robotPose.pose != null) {
-      // Calculate robot position
-      let robotPos = calcCoordinates(command.pose.robotPose.pose);
-      let rotation =
-        command.options.unitRotation == "radians"
-          ? command.pose.robotPose.pose[2]
-          : convert(command.pose.robotPose.pose[2], "degrees", "radians");
-      if (robotFlipped) rotation += Math.PI;
-
-      // Render trail
-      if (command.pose.robotPose.trail.filter((x: any) => x != null).length > 0) {
-        let trailCoordinates: ([number, number] | null)[] = [];
-        let maxDistance = 0;
-        command.pose.robotPose.trail.forEach((position: [number, number] | null) => {
-          if (position == null) {
-            trailCoordinates.push(null);
-          } else {
-            let coordinates = calcCoordinates(position);
-            trailCoordinates.push(coordinates);
-            let distance = Math.hypot(coordinates[0] - robotPos[0], coordinates[1] - robotPos[0]);
-            if (distance > maxDistance) maxDistance = distance;
-          }
-        });
-
-        let gradient = context.createRadialGradient(
-          robotPos[0],
-          robotPos[1],
-          robotLengthPixels * 0.5,
-          robotPos[0],
-          robotPos[1],
-          maxDistance
-        );
-        gradient.addColorStop(0, "rgba(170, 170, 170, 1)");
-        gradient.addColorStop(0.25, "rgba(170, 170, 170, 1)");
-        gradient.addColorStop(1, "rgba(170, 170, 170, 0)");
-
-        context.strokeStyle = gradient;
-        context.lineWidth = 1 * pixelsPerInch;
-        context.lineCap = "round";
-        context.lineJoin = "round";
-        context.beginPath();
-        let firstPoint = true;
-        trailCoordinates.forEach((position) => {
-          if (position == null) {
-            context.stroke();
-            context.beginPath();
-            firstPoint = true;
-          } else {
-            if (firstPoint) {
-              context.moveTo(position[0], position[1]);
-              firstPoint = false;
-            } else {
-              context.lineTo(position[0], position[1]);
-            }
-          }
-        });
-        context.stroke();
-      }
-
-      // Render vision lines
-      command.pose.visionCoordinates.forEach((coordinates: [number, number]) => {
+    // Draw vision targets
+    if (command.poses.robot.length > 0) {
+      let robotPos = calcCoordinates(command.poses.robot[0].translation);
+      command.poses.visionTarget.forEach((target: Translation2d) => {
+        let robotPose = command.poses.robot[0];
         context.strokeStyle = "lightgreen";
         context.lineWidth = 1 * pixelsPerInch;
         context.beginPath();
         context.moveTo(robotPos[0], robotPos[1]);
-        context.lineTo(...calcCoordinates(coordinates));
+        context.lineTo(...calcCoordinates(target));
         context.stroke();
       });
+    }
+
+    // Draw robots
+    let robotLengthPixels = pixelsPerInch * convert(command.options.size, command.options.unitDistance, "inches");
+    command.poses.robot.forEach((robotPose: Pose2d, index: number) => {
+      let robotPos = calcCoordinates(robotPose.translation);
+      let rotation = robotPose.rotation;
+      if (objectsFlipped) rotation += Math.PI;
+
+      // Render trail
+      let trailData = command.poses.trail[index] as Translation2d[];
+      let trailCoordinates: [number, number][] = [];
+      let maxDistance = 0;
+      trailData.forEach((translation: Translation2d) => {
+        let coordinates = calcCoordinates(translation);
+        trailCoordinates.push(coordinates);
+        let distance = Math.hypot(coordinates[0] - robotPos[0], coordinates[1] - robotPos[0]);
+        if (distance > maxDistance) maxDistance = distance;
+      });
+
+      let gradient = context.createRadialGradient(
+        robotPos[0],
+        robotPos[1],
+        robotLengthPixels * 0.5,
+        robotPos[0],
+        robotPos[1],
+        maxDistance
+      );
+      gradient.addColorStop(0, "rgba(170, 170, 170, 1)");
+      gradient.addColorStop(0.25, "rgba(170, 170, 170, 1)");
+      gradient.addColorStop(1, "rgba(170, 170, 170, 0)");
+
+      context.strokeStyle = gradient;
+      context.lineWidth = 1 * pixelsPerInch;
+      context.lineCap = "round";
+      context.lineJoin = "round";
+      context.beginPath();
+      let firstPoint = true;
+      trailCoordinates.forEach((position) => {
+        if (firstPoint) {
+          context.moveTo(position[0], position[1]);
+          firstPoint = false;
+        } else {
+          context.lineTo(position[0], position[1]);
+        }
+      });
+      context.stroke();
 
       // Render robot
       context.fillStyle = "#222";
@@ -227,7 +227,7 @@ export default class OdometryVisualizer implements Visualizer {
       context.stroke();
 
       context.strokeStyle = "white";
-      context.lineWidth = 1 * pixelsPerInch;
+      context.lineWidth = 1.5 * pixelsPerInch;
       let arrowBack = transformPx(robotPos, rotation, [robotLengthPixels * -0.3, 0]);
       let arrowFront = transformPx(robotPos, rotation, [robotLengthPixels * 0.3, 0]);
       let arrowLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
@@ -235,22 +235,21 @@ export default class OdometryVisualizer implements Visualizer {
       context.beginPath();
       context.moveTo(arrowBack[0], arrowBack[1]);
       context.lineTo(arrowFront[0], arrowFront[1]);
-      context.moveTo(arrowLeft[0], arrowLeft[1]);
-      context.lineTo(arrowFront[0], arrowFront[1]);
+      context.lineTo(arrowLeft[0], arrowLeft[1]);
+      context.moveTo(arrowFront[0], arrowFront[1]);
       context.lineTo(arrowRight[0], arrowRight[1]);
       context.stroke();
-    }
+    });
 
-    // Render ghost robot
-    if (command.pose.ghostPose != null) {
-      let robotPos = calcCoordinates(command.pose.ghostPose);
-      let rotation =
-        command.options.unitRotation == "radians"
-          ? command.pose.ghostPose[2]
-          : convert(command.pose.ghostPose.pose[2], "degrees", "radians");
-      if (robotFlipped) rotation += Math.PI;
+    // Draw ghosts
+    command.poses.ghost.forEach((robotPose: Pose2d) => {
+      let robotPos = calcCoordinates(robotPose.translation);
+      let rotation = robotPose.rotation;
+      if (objectsFlipped) rotation += Math.PI;
 
       context.globalAlpha = 0.5;
+      context.lineCap = "round";
+      context.lineJoin = "round";
       context.fillStyle = "#222";
       context.strokeStyle = command.options.alliance;
       context.lineWidth = 3 * pixelsPerInch;
@@ -268,7 +267,7 @@ export default class OdometryVisualizer implements Visualizer {
       context.stroke();
 
       context.strokeStyle = "white";
-      context.lineWidth = 1 * pixelsPerInch;
+      context.lineWidth = 1.5 * pixelsPerInch;
       let arrowBack = transformPx(robotPos, rotation, [robotLengthPixels * -0.3, 0]);
       let arrowFront = transformPx(robotPos, rotation, [robotLengthPixels * 0.3, 0]);
       let arrowLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
@@ -276,11 +275,45 @@ export default class OdometryVisualizer implements Visualizer {
       context.beginPath();
       context.moveTo(arrowBack[0], arrowBack[1]);
       context.lineTo(arrowFront[0], arrowFront[1]);
-      context.moveTo(arrowLeft[0], arrowLeft[1]);
-      context.lineTo(arrowFront[0], arrowFront[1]);
+      context.lineTo(arrowLeft[0], arrowLeft[1]);
+      context.moveTo(arrowFront[0], arrowFront[1]);
       context.lineTo(arrowRight[0], arrowRight[1]);
       context.stroke();
-    }
+      context.globalAlpha = 1;
+    });
+
+    // Draw arrows
+    [command.poses.arrowFront, command.poses.arrowCenter, command.poses.arrowBack].forEach(
+      (arrowPoses: Pose2d[], index: number) => {
+        arrowPoses.forEach((arrowPose: Pose2d) => {
+          let position = calcCoordinates(arrowPose.translation);
+          let rotation = arrowPose.rotation;
+          if (objectsFlipped) rotation += Math.PI;
+
+          context.strokeStyle = "white";
+          context.lineCap = "round";
+          context.lineJoin = "round";
+          context.lineWidth = 1.5 * pixelsPerInch;
+          let arrowBack = transformPx(position, rotation, [robotLengthPixels * (-0.6 + 0.3 * index), 0]);
+          let arrowFront = transformPx(position, rotation, [robotLengthPixels * (0.3 * index), 0]);
+          let arrowLeft = transformPx(position, rotation, [
+            robotLengthPixels * (-0.15 + 0.3 * index),
+            robotLengthPixels * 0.15
+          ]);
+          let arrowRight = transformPx(position, rotation, [
+            robotLengthPixels * (-0.15 + 0.3 * index),
+            robotLengthPixels * -0.15
+          ]);
+          context.beginPath();
+          context.moveTo(arrowBack[0], arrowBack[1]);
+          context.lineTo(arrowFront[0], arrowFront[1]);
+          context.lineTo(arrowLeft[0], arrowLeft[1]);
+          context.moveTo(arrowFront[0], arrowFront[1]);
+          context.lineTo(arrowRight[0], arrowRight[1]);
+          context.stroke();
+        });
+      }
+    );
 
     // Return target aspect ratio
     return isVertical ? fieldHeight / fieldWidth : fieldWidth / fieldHeight;

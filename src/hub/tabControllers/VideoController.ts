@@ -31,6 +31,7 @@ export default class VideoController extends TimelineVizController {
       content,
       TabType.Video,
       [],
+      [],
       new VideoVisualizer(content.getElementsByClassName("video-container")[0].firstElementChild as HTMLImageElement)
     );
 

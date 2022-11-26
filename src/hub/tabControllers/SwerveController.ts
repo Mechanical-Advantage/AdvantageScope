@@ -36,6 +36,7 @@ export default class JoysticksController extends TimelineVizController {
           type: LoggableType.Number
         }
       ],
+      [],
       new SwerveVisualizer(content.getElementsByClassName("swerve-canvas-container")[0] as HTMLElement)
     );
 

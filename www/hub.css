@@ -458,6 +458,13 @@ button.unlock.blurred > img {
   filter: invert(83%) sepia(68%) saturate(3617%) hue-rotate(294deg) brightness(99%) contrast(119%);
 }
 
+@media (prefers-color-scheme: dark) {
+  button.unlock.blurred > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(37%) sepia(16%) saturate(1793%) hue-rotate(314deg) brightness(98%) contrast(77%);
+  }
+}
+
 button.move-left {
   right: 106px;
 }
@@ -1297,6 +1304,28 @@ table.timeline-viz-config tr:last-child td {
   padding-bottom: 6px;
 }
 
+table.timeline-viz-config td.list {
+  padding: 0px;
+  border-bottom: none;
+  vertical-align: top;
+}
+
+table.timeline-viz-config div.list-filler {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: center;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+table.timeline-viz-config div.list-item {
+  padding: 5px;
+  border-bottom: 1px solid #eee;
+}
+
 table.timeline-viz-config span.label {
   font-weight: 600;
 }
@@ -1336,6 +1365,10 @@ table.timeline-viz-config button {
 
   table.timeline-viz-config td.undivided-right {
     border-right: 1px solid #333;
+  }
+
+  table.timeline-viz-config div.list-item {
+    border-bottom: 1px solid #333;
   }
 }
 

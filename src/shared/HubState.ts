@@ -79,5 +79,6 @@ export interface StatisticsState {
 export interface TimelineVisualizerState {
   type: TabType.Odometry | TabType.ThreeDimension | TabType.Video | TabType.Points | TabType.Joysticks;
   fields: (string | null)[];
+  listFields: { type: string; key: string }[][];
   options: { [id: string]: any };
 }

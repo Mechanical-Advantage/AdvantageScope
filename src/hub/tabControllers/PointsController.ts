@@ -28,6 +28,7 @@ export default class PointsController extends TimelineVizController {
           type: LoggableType.NumberArray
         }
       ],
+      [],
       new PointsVisualizer(content.getElementsByClassName("points-background-container")[0] as HTMLElement)
     );
 

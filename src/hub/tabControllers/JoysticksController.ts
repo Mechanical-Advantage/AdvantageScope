@@ -14,6 +14,7 @@ export default class JoysticksController extends TimelineVizController {
       content,
       TabType.Joysticks,
       [],
+      [],
       new JoysticksVisualizer(content.getElementsByClassName("joysticks-canvas")[0] as HTMLCanvasElement)
     );
 
