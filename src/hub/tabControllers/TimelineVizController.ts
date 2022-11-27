@@ -143,12 +143,6 @@ export default abstract class TimelineVizController implements TabController {
   /** Updates the field elements based on the internal field list. */
   private updateFields() {
     let availableKeys = window.log.getFieldKeys();
-    let listFieldsStr = JSON.stringify(this.listFields);
-    if (arraysEqual(availableKeys, this.lastAvailableKeys) && listFieldsStr == this.lastListFieldsStr) {
-      return;
-    }
-    this.lastAvailableKeys = availableKeys;
-    this.lastListFieldsStr = listFieldsStr;
 
     // Single fields
     Object.values(this.fieldConfig).forEach((field, index) => {
@@ -166,6 +160,14 @@ export default abstract class TimelineVizController implements TabController {
         textElement.style.textDecoration = "";
       }
     });
+
+    // Exit if list fields and available fields have not changed
+    let listFieldsStr = JSON.stringify(this.listFields);
+    if (arraysEqual(availableKeys, this.lastAvailableKeys) && listFieldsStr == this.lastListFieldsStr) {
+      return;
+    }
+    this.lastAvailableKeys = availableKeys;
+    this.lastListFieldsStr = listFieldsStr;
 
     // List fields
     Object.values(this.listConfig).forEach((list, index) => {
