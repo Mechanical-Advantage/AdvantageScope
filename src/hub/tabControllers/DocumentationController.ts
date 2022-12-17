@@ -60,7 +60,7 @@ export default class DocumentationController implements TabController {
             if (url.startsWith("http")) {
               window.sendMainMessage("open-link", url);
             } else {
-              this.loadMarkdown(url.replace("file:///", "../"));
+              this.loadMarkdown(this.fixRelativePath(url));
             }
           });
         });
@@ -68,7 +68,7 @@ export default class DocumentationController implements TabController {
         // Update image URLs
         Array.from(this.TEXT.getElementsByTagName("img")).forEach((img) => {
           if (img.src.startsWith("file:///")) {
-            img.src = img.src.replace("file:///", "../");
+            img.src = this.fixRelativePath(img.src);
           }
 
           // Replace GIFs with videos
@@ -121,5 +121,13 @@ export default class DocumentationController implements TabController {
           versionText.innerText = "Version: " + window.appVersion;
         }
       });
+  }
+
+  private fixRelativePath(input: string): string {
+    if (window.platform == "win32") {
+      return "../" + input.slice(11); // Remove "file:///X:/"
+    } else {
+      return "../" + input.slice(8); // Remove "file:///"
+    }
   }
 }
