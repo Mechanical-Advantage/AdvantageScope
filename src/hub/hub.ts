@@ -463,7 +463,11 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "edit-axis":
-      window.tabs.editAxis(message.data.isLeft, message.data.lockedRange, message.data.unitConversion);
+      window.tabs.editAxis(message.data.legend, message.data.lockedRange, message.data.unitConversion);
+      break;
+
+    case "clear-axis":
+      window.tabs.clearAxis(message.data);
       break;
 
     case "set-3d-camera":

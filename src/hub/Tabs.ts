@@ -299,9 +299,16 @@ export default class Tabs {
   }
 
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
-  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
+  editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(isLeft, lockedRange, unitConversion);
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
+    }
+  }
+
+  /** Clear the fields for an axis on the selected line graph. */
+  clearAxis(legend: string) {
+    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
     }
   }
 

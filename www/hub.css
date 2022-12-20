@@ -659,10 +659,6 @@ div.legend-title {
   text-overflow: ellipsis;
 }
 
-div.legend-title-center {
-  right: 5px;
-}
-
 div.legend-key-container {
   position: absolute;
   top: 0px;

@@ -139,9 +139,18 @@ export default class LineGraphController implements TabController {
       window.sendMainMessage("ask-edit-axis", {
         x: Math.round(rect.right),
         y: Math.round(rect.top),
-        isLeft: true,
+        legend: "left",
         lockedRange: this.leftLockedRange,
         unitConversion: this.leftUnitConversion
+      });
+    });
+    let discreteEditAxisButton = this.DISCRETE_LIST.firstElementChild?.lastElementChild!;
+    discreteEditAxisButton.addEventListener("click", () => {
+      let rect = discreteEditAxisButton.getBoundingClientRect();
+      window.sendMainMessage("ask-edit-axis", {
+        x: Math.round(rect.right),
+        y: Math.round(rect.top),
+        legend: "discrete"
       });
     });
     let rightEditAxisButton = this.RIGHT_LIST.firstElementChild?.lastElementChild!;
@@ -150,7 +159,7 @@ export default class LineGraphController implements TabController {
       window.sendMainMessage("ask-edit-axis", {
         x: Math.round(rect.right),
         y: Math.round(rect.top),
-        isLeft: false,
+        legend: "right",
         lockedRange: this.rightLockedRange,
         unitConversion: this.rightUnitConversion
       });
@@ -232,28 +241,52 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  /** Adjusts the locked range for an axis. */
-  editAxis(isLeft: boolean, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
-    if (isLeft) {
-      if (lockedRange == null) {
-        this.leftLockedRange = null;
-      } else if (lockedRange[0] == null && lockedRange[1] == null) {
-        this.leftLockedRange = this.leftRenderedRange;
-      } else {
-        this.leftLockedRange = lockedRange;
-      }
-      this.leftUnitConversion = unitConversion;
-    } else {
-      if (lockedRange == null) {
-        this.rightLockedRange = null;
-      } else if (lockedRange[0] == null && lockedRange[1] == null) {
-        this.rightLockedRange = this.rightRenderedRange;
-      } else {
-        this.rightLockedRange = lockedRange;
-      }
-      this.rightUnitConversion = unitConversion;
+  /** Adjusts the locked range and unit conversion for an axis. */
+  editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
+    switch (legend) {
+      case "left":
+        if (lockedRange == null) {
+          this.leftLockedRange = null;
+        } else if (lockedRange[0] == null && lockedRange[1] == null) {
+          this.leftLockedRange = this.leftRenderedRange;
+        } else {
+          this.leftLockedRange = lockedRange;
+        }
+        this.leftUnitConversion = unitConversion;
+        break;
+
+      case "right":
+        if (lockedRange == null) {
+          this.rightLockedRange = null;
+        } else if (lockedRange[0] == null && lockedRange[1] == null) {
+          this.rightLockedRange = this.rightRenderedRange;
+        } else {
+          this.rightLockedRange = lockedRange;
+        }
+        this.rightUnitConversion = unitConversion;
+        break;
     }
     this.updateAxisLabels();
+  }
+
+  /** Clears the fields for a legend. */
+  clearAxis(legend: string) {
+    switch (legend) {
+      case "left":
+        this.leftFields = [];
+        while (this.LEFT_LIST.children[1]) this.LEFT_LIST.removeChild(this.LEFT_LIST.children[1]);
+        break;
+
+      case "discrete":
+        this.discreteFields = [];
+        while (this.DISCRETE_LIST.children[1]) this.DISCRETE_LIST.removeChild(this.DISCRETE_LIST.children[1]);
+        break;
+
+      case "right":
+        this.rightFields = [];
+        while (this.RIGHT_LIST.children[1]) this.RIGHT_LIST.removeChild(this.RIGHT_LIST.children[1]);
+        break;
+    }
   }
 
   refresh() {

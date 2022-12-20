@@ -276,56 +276,70 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "ask-edit-axis":
-      let isLeft: boolean = message.data.isLeft;
-      let lockedRange: [number, number] | null = message.data.lockedRange;
-      let unitConversion: UnitConversionPreset = message.data.unitConversion;
-
+      let legend: string = message.data.legend;
       const editAxisMenu = new Menu();
-      editAxisMenu.append(
-        new MenuItem({
-          label: "Lock Axis",
-          type: "checkbox",
-          checked: lockedRange != null,
-          click() {
-            sendMessage(window, "edit-axis", {
-              isLeft: isLeft,
-              lockedRange: lockedRange == null ? [null, null] : null,
-              unitConversion: unitConversion
-            });
-          }
-        })
-      );
-      editAxisMenu.append(
-        new MenuItem({
-          label: "Edit Range...",
-          enabled: lockedRange != null,
-          click() {
-            createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
+
+      // Left and right controls
+      if (legend != "discrete") {
+        let lockedRange: [number, number] | null = message.data.lockedRange;
+        let unitConversion: UnitConversionPreset = message.data.unitConversion;
+
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Lock Axis",
+            type: "checkbox",
+            checked: lockedRange != null,
+            click() {
               sendMessage(window, "edit-axis", {
-                isLeft: isLeft,
-                lockedRange: newLockedRange,
+                legend: legend,
+                lockedRange: lockedRange == null ? [null, null] : null,
                 unitConversion: unitConversion
               });
-            });
-          }
-        })
-      );
-      editAxisMenu.append(
-        new MenuItem({
-          type: "separator"
-        })
-      );
-      editAxisMenu.append(
-        new MenuItem({
-          label: "Unit Conversion...",
-          click() {
-            createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
-              sendMessage(window, "edit-axis", {
-                isLeft: isLeft,
-                lockedRange: lockedRange,
-                unitConversion: newUnitConversion
+            }
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Edit Range...",
+            enabled: lockedRange != null,
+            click() {
+              createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
+                sendMessage(window, "edit-axis", {
+                  legend: legend,
+                  lockedRange: newLockedRange,
+                  unitConversion: unitConversion
+                });
               });
-            });
+            }
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            type: "separator"
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Unit Conversion...",
+            click() {
+              createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
+                sendMessage(window, "edit-axis", {
+                  legend: legend,
+                  lockedRange: lockedRange,
+                  unitConversion: newUnitConversion
+                });
+              });
+            }
+          })
+        );
+      }
+
+      // Always include clear button
+      editAxisMenu.append(
+        new MenuItem({
+          label: "Clear All",
+          click() {
+            sendMessage(window, "clear-axis", legend);
           }
         })
       );
