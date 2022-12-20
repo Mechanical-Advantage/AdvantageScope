@@ -216,6 +216,7 @@ export default class ConsoleController implements TabController {
     };
     switch (window.selection.getMode()) {
       case SelectionMode.Idle:
+        highlight(null, "selected");
         highlight(window.selection.getHoveredTime(), "hovered");
         break;
       case SelectionMode.Static:
