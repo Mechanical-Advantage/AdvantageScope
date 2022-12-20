@@ -1290,10 +1290,6 @@ table.timeline-viz-config td {
   overflow: hidden;
 }
 
-table.timeline-viz-config td.undivided-right {
-  border-right: 1px solid #eee;
-}
-
 table.timeline-viz-config td:last-child,
 table.timeline-viz-config th:last-child {
   border-right: none;
@@ -1361,10 +1357,6 @@ table.timeline-viz-config button {
   table.timeline-viz-config td {
     border-right: 1px solid #999;
     border-bottom: 1px solid #333;
-  }
-
-  table.timeline-viz-config td.undivided-right {
-    border-right: 1px solid #333;
   }
 
   table.timeline-viz-config div.list-item {

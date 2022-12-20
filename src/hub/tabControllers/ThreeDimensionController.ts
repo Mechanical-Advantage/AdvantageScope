@@ -1,7 +1,9 @@
 import * as THREE from "three";
+import { pose2dTo3d, Pose3d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
 import TabType from "../../shared/TabType";
-import ThreeDimensionVisualizer, { Pose3d } from "../../shared/visualizers/ThreeDimensionVisualizer";
+import { convert } from "../../shared/units";
+import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
@@ -10,6 +12,8 @@ export default class ThreeDimensionController extends TimelineVizController {
   private FIELD_SOURCE_LINK: HTMLInputElement;
   private ROBOT: HTMLInputElement;
   private ROBOT_SOURCE_LINK: HTMLInputElement;
+  private UNIT_DISTANCE: HTMLInputElement;
+  private UNIT_ROTATION: HTMLInputElement;
 
   private lastOptions: { [id: string]: any } | null = null;
 
@@ -18,32 +22,43 @@ export default class ThreeDimensionController extends TimelineVizController {
     super(
       content,
       TabType.ThreeDimension,
+      [],
       [
-        // Robot
         {
           element: configBody.children[1].children[0] as HTMLElement,
-          type: LoggableType.NumberArray
+          type: LoggableType.NumberArray,
+          options: [
+            "Robot",
+            "Ghost",
+            "AprilTag",
+            "Camera Override",
+            "Vision Target",
+            "Axes",
+            "Blue Cone (Front)",
+            "Blue Cone (Center)",
+            "Blue Cone (Back)",
+            "Yellow Cone (Front)",
+            "Yellow Cone (Center)",
+            "Yellow Cone (Back)"
+          ]
         },
-
-        // Green cones
-        {
-          element: configBody.children[2].children[0] as HTMLElement,
-          type: LoggableType.NumberArray
-        },
-
-        // Blue cones
         {
           element: configBody.children[1].children[1] as HTMLElement,
-          type: LoggableType.NumberArray
-        },
-
-        // Yellow cones
-        {
-          element: configBody.children[2].children[1] as HTMLElement,
-          type: LoggableType.NumberArray
+          type: LoggableType.NumberArray,
+          options: [
+            "Robot",
+            "Ghost",
+            "Trajectory",
+            "Vision Target",
+            "Blue Cone (Front)",
+            "Blue Cone (Center)",
+            "Blue Cone (Back)",
+            "Yellow Cone (Front)",
+            "Yellow Cone (Center)",
+            "Yellow Cone (Back)"
+          ]
         }
       ],
-      [],
       new ThreeDimensionVisualizer(
         content,
         content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement,
@@ -55,24 +70,20 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.FIELD = configBody.children[1].children[2].children[1] as HTMLInputElement;
     this.ALLIANCE = configBody.children[1].children[2].children[2] as HTMLInputElement;
     this.FIELD_SOURCE_LINK = configBody.children[1].children[2].children[3] as HTMLInputElement;
-    this.ROBOT = configBody.children[2].children[2].children[1] as HTMLInputElement;
-    this.ROBOT_SOURCE_LINK = configBody.children[2].children[2].children[2] as HTMLInputElement;
+    this.ROBOT = configBody.children[2].children[0].children[1] as HTMLInputElement;
+    this.ROBOT_SOURCE_LINK = configBody.children[2].children[0].children[2] as HTMLInputElement;
+    this.UNIT_DISTANCE = configBody.children[3].children[0].children[1] as HTMLInputElement;
+    this.UNIT_ROTATION = configBody.children[3].children[0].children[2] as HTMLInputElement;
 
     // Bind source links
-    this.FIELD.addEventListener("change", () => {
-      let fieldConfig = window.frcData?.field3ds.find((game) => game.title == this.FIELD.value);
-      this.FIELD_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
-    });
+    this.FIELD.addEventListener("change", () => this.updateFieldRobotOptions());
     this.FIELD_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
         window.frcData?.field3ds.find((field) => field.title == this.FIELD.value)?.sourceUrl
       );
     });
-    this.ROBOT.addEventListener("change", () => {
-      let config = window.frcData?.robots.find((game) => game.title == this.ROBOT.value);
-      this.ROBOT_SOURCE_LINK.hidden = config != undefined && config.sourceUrl == undefined;
-    });
+    this.ROBOT.addEventListener("change", () => this.updateFieldRobotOptions());
     this.ROBOT_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
@@ -81,11 +92,24 @@ export default class ThreeDimensionController extends TimelineVizController {
     });
   }
 
+  /** Updates the alliance and source buttons based on the selected value. */
+  private updateFieldRobotOptions() {
+    let fieldConfig = window.frcData?.field3ds.find((game) => game.title == this.FIELD.value);
+    this.FIELD_SOURCE_LINK.hidden = fieldConfig == undefined || fieldConfig.sourceUrl == undefined;
+    if (this.FIELD.value == "Axes") this.ALLIANCE.value = "blue";
+    this.ALLIANCE.hidden = this.FIELD.value == "Axes";
+
+    let robotConfig = window.frcData?.robots.find((game) => game.title == this.ROBOT.value);
+    this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
+  }
+
   get options(): { [id: string]: any } {
     return {
       field: this.FIELD.value,
       alliance: this.ALLIANCE.value,
-      robot: this.ROBOT.value
+      robot: this.ROBOT.value,
+      unitDistance: this.UNIT_DISTANCE.value,
+      unitRotation: this.UNIT_ROTATION.value
     };
   }
 
@@ -94,12 +118,9 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.FIELD.value = options.field;
     this.ALLIANCE.value = options.alliance;
     this.ROBOT.value = options.robot;
-
-    // Set whether source links are hidden
-    let fieldConfig = window.frcData?.field3ds.find((game) => game.title == this.FIELD.value);
-    this.FIELD_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
-    let robotConfig = window.frcData?.robots.find((game) => game.title == this.ROBOT.value);
-    this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
+    this.UNIT_DISTANCE.value = options.unitDistance;
+    this.UNIT_ROTATION.value = options.unitRotation;
+    this.updateFieldRobotOptions();
   }
 
   /** Switches the selected camera for the main visualizer. */
@@ -112,9 +133,9 @@ export default class ThreeDimensionController extends TimelineVizController {
 
     // Add field and robot options
     if (this.FIELD.children.length == 0 && this.ROBOT.children.length == 0 && window.frcData) {
-      window.frcData.field3ds.forEach((game) => {
+      [...window.frcData.field3ds.map((game) => game.title), "Axes"].forEach((title) => {
         let option = document.createElement("option");
-        option.innerText = game.title;
+        option.innerText = title;
         this.FIELD.appendChild(option);
       });
       window.frcData.robots.forEach((robot) => {
@@ -125,52 +146,185 @@ export default class ThreeDimensionController extends TimelineVizController {
       if (this.lastOptions) this.options = this.lastOptions;
     }
 
-    // Get robot pose
-    let robotPose: Pose3d | null = null;
-    if (fields[0] != null) {
-      let logData = window.log.getNumberArray(fields[0], time, time);
-      if (logData && logData.timestamps[0] <= time) {
-        if (logData.values[0].length == 3) {
-          let quaternion = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), logData.values[0][2]);
-          robotPose = {
-            position: [logData.values[0][0], logData.values[0][1], 0],
-            rotation: [quaternion.w, quaternion.x, quaternion.y, quaternion.z]
-          };
-        } else if (logData.values[0].length == 7) {
-          robotPose = {
-            position: [logData.values[0][0], logData.values[0][1], logData.values[0][2]],
-            rotation: [logData.values[0][3], logData.values[0][4], logData.values[0][5], logData.values[0][6]]
-          };
+    // Returns the current value for a 3D field
+    let get3DValue = (key: string): Pose3d[] => {
+      let logData = window.log.getNumberArray(key, time, time);
+      if (logData && logData.timestamps[0] <= time && logData.values[0].length % 7 == 0) {
+        let poses: Pose3d[] = [];
+        for (let i = 0; i < logData.values[0].length; i += 7) {
+          poses.push({
+            translation: [
+              convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
+              convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters"),
+              convert(logData.values[0][i + 2], this.UNIT_DISTANCE.value, "meters")
+            ],
+            rotation: [
+              logData.values[0][i + 3],
+              logData.values[0][i + 4],
+              logData.values[0][i + 5],
+              logData.values[0][i + 6]
+            ]
+          });
         }
-      }
-    }
-
-    // Read data for cones
-    let getConeData = (key: string | null): Pose3d[] => {
-      if (key != null) {
-        let logData = window.log.getNumberArray(key, time, time);
-        if (logData && logData.timestamps[0] <= time && logData.values[0].length % 7 == 0) {
-          let poses: Pose3d[] = [];
-          let rawPoseData = logData.values[0];
-          for (let i = 0; i < rawPoseData.length; i += 7) {
-            poses.push({
-              position: [rawPoseData[i], rawPoseData[i + 1], rawPoseData[i + 2]],
-              rotation: [rawPoseData[i + 3], rawPoseData[i + 4], rawPoseData[i + 5], rawPoseData[i + 6]]
-            });
-          }
-          return poses;
-        }
+        return poses;
+      } else {
       }
       return [];
     };
 
+    // Returns the current value for a 2D field
+    let get2DValue = (key: string, height: number = 0): Pose3d[] => {
+      let logData = window.log.getNumberArray(key, time, time);
+      if (
+        logData &&
+        logData.timestamps[0] <= time &&
+        (logData.values[0].length == 2 || logData.values[0].length % 3 == 0)
+      ) {
+        let poses: Pose3d[] = [];
+        if (logData.values[0].length == 2) {
+          poses.push(
+            pose2dTo3d(
+              {
+                translation: [
+                  convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
+                  convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
+                ],
+                rotation: 0
+              },
+              height
+            )
+          );
+        } else {
+          for (let i = 0; i < logData.values[0].length; i += 3) {
+            poses.push(
+              pose2dTo3d(
+                {
+                  translation: [
+                    convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
+                    convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters")
+                  ],
+                  rotation: convert(logData.values[0][i + 2], this.UNIT_ROTATION.value, "radians")
+                },
+                height
+              )
+            );
+          }
+        }
+        return poses;
+      } else {
+      }
+      return [];
+    };
+
+    // Set up data
+    let robotData: Pose3d[] = [];
+    let ghostData: Pose3d[] = [];
+    let aprilTagData: Pose3d[] = [];
+    let cameraOverrideData: Pose3d[] = [];
+    let trajectoryData: Pose3d[][] = [];
+    let visionTargetData: Pose3d[] = [];
+    let axesData: Pose3d[] = [];
+    let coneBlueFrontData: Pose3d[] = [];
+    let coneBlueCenterData: Pose3d[] = [];
+    let coneBlueBackData: Pose3d[] = [];
+    let coneYellowFrontData: Pose3d[] = [];
+    let coneYellowCenterData: Pose3d[] = [];
+    let coneYellowBackData: Pose3d[] = [];
+
+    // Get 3D data
+    this.getListFields()[0].forEach((field) => {
+      switch (field.type) {
+        case "Robot":
+          robotData = robotData.concat(get3DValue(field.key));
+          break;
+        case "Ghost":
+          ghostData = ghostData.concat(get3DValue(field.key));
+          break;
+        case "AprilTag":
+          aprilTagData = aprilTagData.concat(get3DValue(field.key));
+          break;
+        case "Camera Override":
+          cameraOverrideData = cameraOverrideData.concat(get3DValue(field.key));
+          break;
+        case "Vision Target":
+          visionTargetData = visionTargetData.concat(get3DValue(field.key));
+          break;
+        case "Axes":
+          axesData = axesData.concat(get3DValue(field.key));
+          break;
+        case "Blue Cone (Front)":
+          coneBlueFrontData = coneBlueFrontData.concat(get3DValue(field.key));
+          break;
+        case "Blue Cone (Center)":
+          coneBlueCenterData = coneBlueCenterData.concat(get3DValue(field.key));
+          break;
+        case "Blue Cone (Back)":
+          coneBlueBackData = coneBlueBackData.concat(get3DValue(field.key));
+          break;
+        case "Yellow Cone (Front)":
+          coneYellowFrontData = coneYellowFrontData.concat(get3DValue(field.key));
+          break;
+        case "Yellow Cone (Center)":
+          coneYellowCenterData = coneYellowCenterData.concat(get3DValue(field.key));
+          break;
+        case "Yellow Cone (Back)":
+          coneYellowBackData = coneYellowBackData.concat(get3DValue(field.key));
+          break;
+      }
+    });
+
+    // Get 2D data
+    this.getListFields()[1].forEach((field) => {
+      switch (field.type) {
+        case "Robot":
+          robotData = robotData.concat(get2DValue(field.key));
+          break;
+        case "Ghost":
+          ghostData = ghostData.concat(get2DValue(field.key));
+          break;
+        case "Trajectory":
+          trajectoryData.push(get2DValue(field.key, 0.02)); // Render outside the floor
+          break;
+        case "Vision Target":
+          visionTargetData = visionTargetData.concat(get2DValue(field.key, 0.75));
+          break;
+        case "Blue Cone (Front)":
+          coneBlueFrontData = coneBlueFrontData.concat(get2DValue(field.key));
+          break;
+        case "Blue Cone (Center)":
+          coneBlueCenterData = coneBlueCenterData.concat(get2DValue(field.key));
+          break;
+        case "Blue Cone (Back)":
+          coneBlueBackData = coneBlueBackData.concat(get2DValue(field.key));
+          break;
+        case "Yellow Cone (Front)":
+          coneYellowFrontData = coneYellowFrontData.concat(get2DValue(field.key));
+          break;
+        case "Yellow Cone (Center)":
+          coneYellowCenterData = coneYellowCenterData.concat(get2DValue(field.key));
+          break;
+        case "Yellow Cone (Back)":
+          coneYellowBackData = coneYellowBackData.concat(get2DValue(field.key));
+          break;
+      }
+    });
+
     // Package command data
     return {
       poses: {
-        robot: robotPose,
-        green: getConeData(fields[1]),
-        blue: getConeData(fields[2]),
-        yellow: getConeData(fields[3])
+        robot: robotData,
+        ghost: ghostData,
+        aprilTag: aprilTagData,
+        cameraOverride: cameraOverrideData,
+        trajectory: trajectoryData,
+        visionTarget: visionTargetData,
+        axes: axesData,
+        coneBlueFront: coneBlueFrontData,
+        coneBlueCenter: coneBlueCenterData,
+        coneBlueBack: coneBlueBackData,
+        coneYellowFront: coneYellowFrontData,
+        coneYellowCenter: coneYellowCenterData,
+        coneYellowBack: coneYellowBackData
       },
       options: this.options
     };

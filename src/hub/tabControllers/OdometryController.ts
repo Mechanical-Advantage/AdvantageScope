@@ -31,7 +31,7 @@ export default class OdometryController extends TimelineVizController {
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
           type: LoggableType.NumberArray,
-          options: ["Robot", "Ghost", "Vision Target", "Trajectory", "Arrow (Front)", "Arrow (Center)", "Arrow (Back)"]
+          options: ["Robot", "Ghost", "Trajectory", "Vision Target", "Arrow (Front)", "Arrow (Center)", "Arrow (Back)"]
         }
       ],
       new OdometryVisualizer(content.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement)
@@ -160,7 +160,7 @@ export default class OdometryController extends TimelineVizController {
       return [];
     };
 
-    // Get basic data
+    // Get data
     let robotData: Pose2d[] = [];
     let trailData: Translation2d[][] = [];
     let ghostData: Pose2d[] = [];
@@ -172,7 +172,7 @@ export default class OdometryController extends TimelineVizController {
     fields.forEach((field) => {
       switch (field.type) {
         case "Robot":
-          let currentRobotData = getCurrentValue(field.key) as Pose2d[];
+          let currentRobotData = getCurrentValue(field.key);
           robotData = robotData.concat(currentRobotData);
 
           // Get trails
@@ -206,22 +206,22 @@ export default class OdometryController extends TimelineVizController {
           trailData = trailData.concat(trailsTemp);
           break;
         case "Ghost":
-          ghostData = ghostData.concat(getCurrentValue(field.key) as Pose2d[]);
+          ghostData = ghostData.concat(getCurrentValue(field.key));
           break;
         case "Trajectory":
-          trajectoryData.push(getCurrentValue(field.key) as Pose2d[]);
+          trajectoryData.push(getCurrentValue(field.key));
           break;
         case "Vision Target":
-          visionTargetData = visionTargetData.concat(getCurrentValue(field.key) as Pose2d[]);
+          visionTargetData = visionTargetData.concat(getCurrentValue(field.key));
           break;
         case "Arrow (Front)":
-          arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key) as Pose2d[]);
+          arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key));
           break;
         case "Arrow (Center)":
-          arrowCenterData = arrowCenterData.concat(getCurrentValue(field.key) as Pose2d[]);
+          arrowCenterData = arrowCenterData.concat(getCurrentValue(field.key));
           break;
         case "Arrow (Back)":
-          arrowBackData = arrowBackData.concat(getCurrentValue(field.key) as Pose2d[]);
+          arrowBackData = arrowBackData.concat(getCurrentValue(field.key));
           break;
       }
     });

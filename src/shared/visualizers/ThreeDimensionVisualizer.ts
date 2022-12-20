@@ -1,8 +1,9 @@
+import { TimeScale } from "chart.js";
 import * as THREE from "three";
-import { Quaternion, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Config3d_Rotation } from "../FRCData";
+import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
+import { Pose3d, rotation3dToQuaternion } from "../geometry";
 import { convert } from "../units";
 import Visualizer from "./Visualizer";
 
@@ -12,7 +13,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private ORBIT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
   private ORBIT_FIELD_DEFAULT_POSITION = new THREE.Vector3(0, 6, -12);
   private ORBIT_ROBOT_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
-  private WPILIB_ROTATION = this.getQuaternionFromRotSeq([
+  private WPILIB_ROTATION = getQuaternionFromRotSeq([
     {
       axis: "x",
       degrees: -90
@@ -20,6 +21,16 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     {
       axis: "y",
       degrees: 180
+    }
+  ]);
+  private CAMERA_ROTATION = getQuaternionFromRotSeq([
+    {
+      axis: "z",
+      degrees: -90
+    },
+    {
+      axis: "y",
+      degrees: -90
     }
   ]);
 
@@ -34,12 +45,24 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private controls: OrbitControls;
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
+  private fixedCameraGroup: THREE.Group;
+  private fixedCameraObj: THREE.Object3D;
+  private fixedCameraOverrideObj: THREE.Object3D;
+
+  private axesTemplate: THREE.Object3D;
   private field: THREE.Object3D | null = null;
-  private robot: THREE.Object3D | null = null;
-  private robotCameras: THREE.Object3D[] = [];
-  private greenCones: THREE.Object3D[] = [];
-  private blueCones: THREE.Object3D[] = [];
-  private yellowCones: THREE.Object3D[] = [];
+  private robotSet: ObjectSet;
+  private ghostSet: ObjectSet;
+  private aprilTagSet: ObjectSet;
+  private trajectories: THREE.Line[] = [];
+  private visionTargets: THREE.Line[] = [];
+  private axesSet: ObjectSet;
+  private coneBlueFrontSet: ObjectSet;
+  private coneBlueCenterSet: ObjectSet;
+  private coneBlueBackSet: ObjectSet;
+  private coneYellowFrontSet: ObjectSet;
+  private coneYellowCenterSet: ObjectSet;
+  private coneYellowBackSet: ObjectSet;
 
   private command: any;
   private shouldRender = false;
@@ -56,14 +79,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private lastFrcDataString: string = "";
   private lastFieldTitle: string = "";
   private lastRobotTitle: string = "";
-  private lastRobotVisible: boolean = false;
-
-  private coneTextureGreen: THREE.Texture;
-  private coneTextureGreenBase: THREE.Texture;
-  private coneTextureBlue: THREE.Texture;
-  private coneTextureBlueBase: THREE.Texture;
-  private coneTextureYellow: THREE.Texture;
-  private coneTextureYellowBase: THREE.Texture;
 
   constructor(content: HTMLElement, canvas: HTMLCanvasElement, alert: HTMLElement) {
     this.content = content;
@@ -112,11 +127,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Create controls
-    this.controls = new OrbitControls(this.camera, canvas);
-    this.controls.target.copy(this.ORBIT_DEFAULT_TARGET);
-    this.controls.maxDistance = 30;
-    this.controls.enabled = true;
-    this.controls.update();
+    {
+      this.controls = new OrbitControls(this.camera, canvas);
+      this.controls.target.copy(this.ORBIT_DEFAULT_TARGET);
+      this.controls.maxDistance = 30;
+      this.controls.enabled = true;
+      this.controls.update();
+    }
 
     // Add lights
     {
@@ -141,17 +158,137 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.scene.add(light);
     }
 
-    // Load cone textures
+    // Create fixed camera objects
+    {
+      this.fixedCameraObj = new THREE.Object3D();
+      this.fixedCameraGroup = new THREE.Group().add(this.fixedCameraObj);
+      this.fixedCameraOverrideObj = new THREE.Object3D();
+      this.wpilibFieldCoordinateGroup.add(this.fixedCameraGroup, this.fixedCameraOverrideObj);
+    }
+
+    // Set up object sets
+    {
+      this.robotSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.ghostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.aprilTagSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.axesSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.coneBlueFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.coneBlueCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.coneBlueBackSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.coneYellowFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.coneYellowCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.coneYellowBackSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+    }
+
+    // Create axes template
+    {
+      this.axesTemplate = new THREE.Object3D();
+      const radius = 0.02;
+
+      const center = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 8, 4),
+        new THREE.MeshPhongMaterial({ color: 0xffffff })
+      );
+      this.axesTemplate.add(center);
+
+      const xAxis = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius, radius, 1),
+        new THREE.MeshPhongMaterial({ color: 0xff0000 })
+      );
+      xAxis.position.set(0.5, 0.0, 0.0);
+      xAxis.rotateZ(Math.PI / 2);
+      this.axesTemplate.add(xAxis);
+
+      const yAxis = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius, radius, 1),
+        new THREE.MeshPhongMaterial({ color: 0x00ff00 })
+      );
+      yAxis.position.set(0.0, 0.5, 0.0);
+      this.axesTemplate.add(yAxis);
+
+      const zAxis = new THREE.Mesh(
+        new THREE.CylinderGeometry(radius, radius, 1),
+        new THREE.MeshPhongMaterial({ color: 0x2020ff })
+      );
+      zAxis.position.set(0.0, 0.0, 0.5);
+      zAxis.rotateX(Math.PI / 2);
+      this.axesTemplate.add(zAxis);
+
+      let poseAxes = this.axesTemplate.clone(true);
+      poseAxes.scale.set(0.25, 0.25, 0.25);
+      this.axesSet.setSource(poseAxes);
+    }
+
+    // Create cone models
     const loader = new THREE.TextureLoader();
-    this.coneTextureGreen = loader.load("../www/textures/cone-green.png");
-    this.coneTextureBlue = loader.load("../www/textures/cone-blue.png");
-    this.coneTextureYellow = loader.load("../www/textures/cone-yellow.png");
-    this.coneTextureGreen.offset.set(0.25, 0);
-    this.coneTextureBlue.offset.set(0.25, 0);
-    this.coneTextureYellow.offset.set(0.25, 0);
-    this.coneTextureGreenBase = loader.load("../www/textures/cone-green-base.png");
-    this.coneTextureBlueBase = loader.load("../www/textures/cone-blue-base.png");
-    this.coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
+    {
+      let coneTextureBlue = loader.load("../www/textures/cone-blue.png");
+      let coneTextureBlueBase = loader.load("../www/textures/cone-blue-base.png");
+      coneTextureBlue.offset.set(0.25, 0);
+
+      let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.25, 16, 32), [
+        new THREE.MeshPhongMaterial({
+          map: coneTextureBlue
+        }),
+        new THREE.MeshPhongMaterial(),
+        new THREE.MeshPhongMaterial({
+          map: coneTextureBlueBase
+        })
+      ]);
+      coneMesh.rotateZ(-Math.PI / 2);
+      coneMesh.rotateY(-Math.PI / 2);
+
+      this.coneBlueCenterSet.setSource(new THREE.Group().add(coneMesh));
+      let frontMesh = coneMesh.clone(true);
+      frontMesh.position.set(-0.125, 0, 0);
+      this.coneBlueFrontSet.setSource(new THREE.Group().add(frontMesh));
+      let backMesh = coneMesh.clone(true);
+      backMesh.position.set(0.125, 0, 0);
+      this.coneBlueBackSet.setSource(new THREE.Group().add(backMesh));
+    }
+    {
+      let coneTextureYellow = loader.load("../www/textures/cone-yellow.png");
+      let coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
+      coneTextureYellow.offset.set(0.25, 0);
+
+      let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.25, 16, 32), [
+        new THREE.MeshPhongMaterial({
+          map: coneTextureYellow
+        }),
+        new THREE.MeshPhongMaterial(),
+        new THREE.MeshPhongMaterial({
+          map: coneTextureYellowBase
+        })
+      ]);
+      coneMesh.rotateZ(-Math.PI / 2);
+      coneMesh.rotateY(-Math.PI / 2);
+
+      this.coneYellowCenterSet.setSource(new THREE.Group().add(coneMesh));
+      let frontMesh = coneMesh.clone(true);
+      frontMesh.position.set(-0.125, 0, 0);
+      this.coneYellowFrontSet.setSource(new THREE.Group().add(frontMesh));
+      let backMesh = coneMesh.clone(true);
+      backMesh.position.set(0.125, 0, 0);
+      this.coneYellowBackSet.setSource(new THREE.Group().add(backMesh));
+    }
+
+    // Create AprilTag model
+    {
+      let aprilTagTexture = loader.load("../www/textures/apriltag.png");
+      let whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+      let mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(0.02, convert(8, "inches", "meters"), convert(8, "inches", "meters")),
+        [
+          new THREE.MeshPhongMaterial({ map: aprilTagTexture }),
+          whiteMaterial,
+          whiteMaterial,
+          whiteMaterial,
+          whiteMaterial,
+          whiteMaterial
+        ]
+      );
+      this.aprilTagSet.setSource(new THREE.Group().add(mesh));
+    }
 
     // Render when camera is moved
     this.controls.addEventListener("change", () => (this.shouldRender = true));
@@ -232,89 +369,91 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Get config
     let fieldTitle = this.command.options.field;
     let robotTitle = this.command.options.robot;
-    let fieldConfig = window.frcData?.field3ds.find((fieldData) => fieldData.title === fieldTitle);
-    let robotConfig = window.frcData?.robots.find((robotData) => robotData.title === robotTitle);
-    if (fieldConfig == undefined || robotConfig == undefined) return;
+    let fieldConfig: Config3dField;
+    let robotConfig: Config3dRobot;
+    if (fieldTitle == "Axes") {
+      fieldConfig = {
+        title: "",
+        path: "",
+        rotations: [],
+        widthInches: 0.0,
+        heightInches: 0.0
+      };
+    } else {
+      let fieldConfigTmp = window.frcData?.field3ds.find((fieldData) => fieldData.title === fieldTitle);
+      if (fieldConfigTmp == undefined) return;
+      fieldConfig = fieldConfigTmp;
+    }
+    {
+      let robotConfigTmp = window.frcData?.robots.find((robotData) => robotData.title === robotTitle);
+      if (robotConfigTmp == undefined) return;
+      robotConfig = robotConfigTmp;
+    }
 
     // Check for new FRC data
     let frcDataString = JSON.stringify(window.frcData);
     let newFrcData = frcDataString != this.lastFrcDataString;
     if (newFrcData) this.lastFrcDataString = frcDataString;
 
-    // Update alert
-    this.alert.hidden = this.cameraIndex == -1 || this.command.poses.robot != null;
-    if (!this.alert.hidden) {
-      if (this.cameraIndex == -2) {
-        this.alertCamera.innerText = "Orbit Robot";
-      } else if (robotConfig) {
-        this.alertCamera.innerText = robotConfig.cameras[this.cameraIndex].name;
-      } else {
-        this.alertCamera.innerText = "???";
-      }
-    }
-
-    // Add field
+    // Update field
     if (fieldTitle != this.lastFieldTitle) {
       this.lastFieldTitle = fieldTitle;
       if (this.field) {
         this.wpilibCoordinateGroup.remove(this.field);
       }
-      const loader = new GLTFLoader();
-      loader.load(fieldConfig.path, (gltf) => {
-        if (fieldConfig == undefined) return;
-
+      if (fieldTitle == "Axes") {
         // Add to scene
-        this.field = gltf.scene;
-        this.field.rotation.setFromQuaternion(this.getQuaternionFromRotSeq(fieldConfig.rotations));
+        let axes = this.axesTemplate.clone(true);
+        axes.add(new THREE.AxesHelper(1));
+        this.field = axes;
         this.wpilibCoordinateGroup.add(this.field);
 
         // Render new frame
         this.shouldRender = true;
-      });
+      } else {
+        const loader = new GLTFLoader();
+        loader.load(fieldConfig.path, (gltf) => {
+          if (fieldConfig == undefined) return;
+
+          // Add to scene
+          this.field = gltf.scene;
+          this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+          this.wpilibCoordinateGroup.add(this.field);
+
+          // Render new frame
+          this.shouldRender = true;
+        });
+      }
     }
 
-    // Add robot
+    // Update robot
     if (robotTitle != this.lastRobotTitle || newFrcData) {
       this.lastRobotTitle = robotTitle;
-      if (this.robot && this.lastRobotVisible) {
-        this.wpilibFieldCoordinateGroup.remove(this.robot);
-      }
-      this.robot = null;
-      this.robotCameras = [];
-
       const loader = new GLTFLoader();
       loader.load(robotConfig.path, (gltf) => {
         if (robotConfig == undefined) return;
 
         // Set position and rotation of model
         let robotModel = gltf.scene;
-        robotModel.rotation.setFromQuaternion(this.getQuaternionFromRotSeq(robotConfig.rotations));
+        robotModel.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
         robotModel.position.set(...robotConfig.position);
 
-        // Create group and add to scene
-        this.robot = new THREE.Group().add(robotModel);
-        if (this.lastRobotVisible) {
-          this.wpilibFieldCoordinateGroup.add(this.robot);
-        }
-
-        // Set up cameras
-        this.robotCameras = robotConfig.cameras.map((camera) => {
-          let cameraObj = new THREE.Object3D();
-          const extraRotations: Config3d_Rotation[] = [
-            {
-              axis: "z",
-              degrees: -90
-            },
-            {
-              axis: "y",
-              degrees: -90
-            }
-          ];
-          cameraObj.rotation.setFromQuaternion(this.getQuaternionFromRotSeq([...extraRotations, ...camera.rotations]));
-          cameraObj.position.set(...camera.position);
-          this.robot?.add(cameraObj);
-          return cameraObj;
+        // Create ghost model
+        let ghostModel = robotModel.clone(true);
+        let ghostMaterial = new THREE.MeshPhongMaterial();
+        ghostMaterial.color = new THREE.Color("#00ff00");
+        ghostMaterial.transparent = true;
+        ghostMaterial.opacity = 0.35;
+        ghostModel.traverse((node: any) => {
+          let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+          if (mesh.isMesh) {
+            mesh.material = ghostMaterial;
+          }
         });
+
+        // Create group and update robot sets
+        this.robotSet.setSource(new THREE.Group().add(robotModel));
+        this.ghostSet.setSource(new THREE.Group().add(ghostModel));
 
         // Render new frame
         this.shouldRender = true;
@@ -332,79 +471,76 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       );
     }
 
-    // Set robot position
-    if (this.robot) {
-      let robotPose: Pose3d | null = this.command.poses.robot;
-      if (robotPose != null) {
-        if (!this.lastRobotVisible) {
-          this.wpilibFieldCoordinateGroup.add(this.robot);
-        }
+    // Update robot poses
+    this.robotSet.setPoses(this.command.poses.robot.slice(0, 7)); // Max of 6 poses
+    this.ghostSet.setPoses(this.command.poses.ghost.slice(0, 7)); // Max of 6 poses
 
-        // Set position and rotation
-        this.robot.position.set(...robotPose.position);
-        this.robot.rotation.setFromQuaternion(
-          new Quaternion(robotPose.rotation[1], robotPose.rotation[2], robotPose.rotation[3], robotPose.rotation[0])
-        );
-      } else if (this.lastRobotVisible) {
-        // Robot is no longer visible, remove
-        this.wpilibFieldCoordinateGroup.remove(this.robot);
+    // Update AprilTag poses
+    this.aprilTagSet.setPoses(this.command.poses.aprilTag);
+
+    // Update vision target lines
+    if (this.command.poses.robot.length == 0) {
+      // Remove all lines
+      while (this.visionTargets.length > 0) {
+        this.wpilibFieldCoordinateGroup.remove(this.visionTargets[0]);
+        this.visionTargets.shift();
       }
-      this.lastRobotVisible = robotPose != null;
+    } else {
+      let material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+      while (this.visionTargets.length > this.command.poses.visionTarget.length) {
+        // Remove extra lines
+        this.wpilibFieldCoordinateGroup.remove(this.visionTargets[0]);
+        this.visionTargets.shift();
+      }
+      while (this.visionTargets.length < this.command.poses.visionTarget.length) {
+        // Add new lines
+        let line = new THREE.Line(new THREE.BufferGeometry(), material);
+        this.visionTargets.push(line);
+        this.wpilibFieldCoordinateGroup.add(line);
+      }
+      for (let i = 0; i < this.visionTargets.length; i++) {
+        // Update poses
+        this.visionTargets[i].geometry.setFromPoints([
+          new THREE.Vector3(...this.command.poses.robot[0].translation).add(new THREE.Vector3(0, 0, 0.75)),
+          new THREE.Vector3(...this.command.poses.visionTarget[i].translation)
+        ]);
+      }
     }
 
-    // Function to update a set of cones
-    let updateCones = (
-      poseData: Pose3d[],
-      objectArray: THREE.Object3D[],
-      texture: THREE.Texture,
-      textureBase: THREE.Texture
-    ) => {
-      // Remove extra cones
-      while (poseData.length < objectArray.length) {
-        let cone = objectArray.pop();
-        if (cone) this.wpilibFieldCoordinateGroup.remove(cone);
+    // Update trajectories
+    {
+      while (this.trajectories.length > this.command.poses.trajectory.length) {
+        // Remove extra lines
+        this.wpilibFieldCoordinateGroup.remove(this.trajectories[0]);
+        this.trajectories.shift();
       }
-
-      // Add new cones
-      while (poseData.length > objectArray.length) {
-        let cone = new THREE.Group();
-        let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.25, 16, 32), [
-          new THREE.MeshPhongMaterial({
-            map: texture
-          }),
-          new THREE.MeshPhongMaterial(),
-          new THREE.MeshPhongMaterial({
-            map: textureBase
-          })
-        ]);
-        coneMesh.position.set(-0.125, 0, 0);
-        coneMesh.rotateZ(-Math.PI / 2);
-        coneMesh.rotateY(-Math.PI / 2);
-        cone.add(coneMesh);
-        objectArray.push(cone);
-        this.wpilibFieldCoordinateGroup.add(cone);
+      while (this.trajectories.length < this.command.poses.trajectory.length) {
+        // Add new lines
+        let line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffa500 }));
+        this.trajectories.push(line);
+        this.wpilibFieldCoordinateGroup.add(line);
       }
-
-      // Set cone poses
-      poseData.forEach((pose, index) => {
-        if (!fieldConfig) return;
-        let cone = objectArray[index];
-        cone.position.set(...pose.position);
-        cone.rotation.setFromQuaternion(
-          new Quaternion(pose.rotation[1], pose.rotation[2], pose.rotation[3], pose.rotation[0])
+      for (let i = 0; i < this.trajectories.length; i++) {
+        // Update poses
+        this.trajectories[i].geometry.setFromPoints(
+          this.command.poses.trajectory[i].map((pose: Pose3d) => new THREE.Vector3(...pose.translation))
         );
-      });
-    };
+      }
+    }
 
-    // Update all sets of cones
-    updateCones(this.command.poses.green, this.greenCones, this.coneTextureGreen, this.coneTextureGreenBase);
-    updateCones(this.command.poses.blue, this.blueCones, this.coneTextureBlue, this.coneTextureBlueBase);
-    updateCones(this.command.poses.yellow, this.yellowCones, this.coneTextureYellow, this.coneTextureYellowBase);
+    // Update axes and cones
+    this.axesSet.setPoses(this.command.poses.axes);
+    this.coneBlueFrontSet.setPoses(this.command.poses.coneBlueFront);
+    this.coneBlueCenterSet.setPoses(this.command.poses.coneBlueCenter);
+    this.coneBlueBackSet.setPoses(this.command.poses.coneBlueBack);
+    this.coneYellowFrontSet.setPoses(this.command.poses.coneYellowFront);
+    this.coneYellowCenterSet.setPoses(this.command.poses.coneYellowCenter);
+    this.coneYellowBackSet.setPoses(this.command.poses.coneYellowBack);
 
     // Set camera for fixed views
     {
       // Reset camera index if invalid
-      if (this.cameraIndex >= this.robotCameras.length) this.cameraIndex = -1;
+      if (this.cameraIndex >= robotConfig.cameras.length) this.cameraIndex = -1;
 
       // Update camera controls
       let orbitalCamera = this.cameraIndex < 0;
@@ -423,12 +559,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
-        } else if (this.robot) {
+        } else if (this.command.poses.robot.length > 0) {
           // Shift based on robot location
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(new THREE.Quaternion());
-          let position = this.robot.getWorldPosition(new THREE.Vector3());
-          let rotation = this.robot.getWorldQuaternion(new THREE.Quaternion()).multiply(this.WPILIB_ROTATION);
+          let robotObj = this.robotSet.getChildren()[0];
+          let position = robotObj.getWorldPosition(new THREE.Vector3());
+          let rotation = robotObj.getWorldQuaternion(new THREE.Quaternion()).multiply(this.WPILIB_ROTATION);
           position.negate();
           rotation.invert();
           this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
@@ -455,11 +592,43 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.canvas.style.aspectRatio = aspectRatio.toString();
 
           // Update camera position
-          if (this.lastRobotVisible) {
-            let cameraObj = this.robotCameras[this.cameraIndex];
-            this.camera.position.copy(cameraObj.getWorldPosition(new THREE.Vector3()));
-            this.camera.rotation.setFromQuaternion(cameraObj.getWorldQuaternion(new THREE.Quaternion()));
+          let referenceObj: THREE.Object3D | null = null;
+          if (this.command.poses.cameraOverride.length > 0) {
+            let cameraPose: Pose3d = this.command.poses.cameraOverride[0];
+            this.fixedCameraOverrideObj.position.set(...cameraPose.translation);
+            this.fixedCameraOverrideObj.rotation.setFromQuaternion(
+              rotation3dToQuaternion(cameraPose.rotation).multiply(this.CAMERA_ROTATION)
+            );
+            referenceObj = this.fixedCameraOverrideObj;
+          } else if (this.command.poses.robot.length > 0) {
+            let robotPose: Pose3d = this.command.poses.robot[0];
+            this.fixedCameraGroup.position.set(...robotPose.translation);
+            this.fixedCameraGroup.rotation.setFromQuaternion(rotation3dToQuaternion(robotPose.rotation));
+            this.fixedCameraObj.position.set(...cameraConfig.position);
+            this.fixedCameraObj.rotation.setFromQuaternion(
+              getQuaternionFromRotSeq(cameraConfig.rotations).multiply(this.CAMERA_ROTATION)
+            );
+            referenceObj = this.fixedCameraObj;
           }
+          if (referenceObj) {
+            this.camera.position.copy(referenceObj.getWorldPosition(new THREE.Vector3()));
+            this.camera.rotation.setFromQuaternion(referenceObj.getWorldQuaternion(new THREE.Quaternion()));
+          }
+        }
+      }
+
+      // Update camera alert
+      if (this.cameraIndex == -2) {
+        this.alert.hidden = this.command.poses.robot.length > 0;
+        this.alertCamera.innerText = "Orbit Robot";
+      } else if (this.cameraIndex == -1) {
+        this.alert.hidden = true;
+      } else {
+        this.alert.hidden = this.command.poses.robot.length > 0 || this.command.poses.cameraOverride.length > 0;
+        if (robotConfig) {
+          this.alertCamera.innerText = robotConfig.cameras[this.cameraIndex].name;
+        } else {
+          this.alertCamera.innerText = "???";
         }
       }
 
@@ -486,24 +655,80 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.render(this.scene, this.camera);
   }
+}
 
-  /** Converts a rotation sequence to a quaternion. */
-  private getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Quaternion {
-    let quaternion = new THREE.Quaternion();
-    rotations.forEach((rotation) => {
-      let axis = new THREE.Vector3(0, 0, 0);
-      if (rotation.axis == "x") axis.setX(1);
-      if (rotation.axis == "y") axis.setY(1);
-      if (rotation.axis == "z") axis.setZ(1);
-      quaternion.premultiply(
-        new THREE.Quaternion().setFromAxisAngle(axis, convert(rotation.degrees, "degrees", "radians"))
-      );
-    });
-    return quaternion;
+/** Represents a set of cloned objects updated from an array of poses. */
+class ObjectSet {
+  private parent: THREE.Object3D;
+  private source: THREE.Object3D = new THREE.Object3D();
+  private children: THREE.Object3D[] = [];
+  private poses: Pose3d[] = [];
+  private displayedPoses = 0;
+
+  constructor(parent: THREE.Object3D) {
+    this.parent = parent;
+  }
+
+  /** Updates the source object, regenerating the clones based on the current poses. */
+  setSource(newSource: THREE.Object3D) {
+    this.source = newSource;
+
+    // Remove all children
+    while (this.children.length > 0) {
+      this.parent.remove(this.children[0]);
+      this.children.shift();
+    }
+    this.displayedPoses = 0;
+
+    // Recreate children
+    this.setPoses(this.poses);
+  }
+
+  /** Updates the list of displayed poses, adding or removing children as necessary. */
+  setPoses(poses: Pose3d[]) {
+    this.poses = poses;
+
+    // Clone new children
+    while (this.children.length < poses.length) {
+      this.children.push(this.source.clone(true));
+    }
+
+    // Remove extra children from parent
+    while (this.displayedPoses > poses.length) {
+      this.parent.remove(this.children[this.displayedPoses - 1]);
+      this.displayedPoses -= 1;
+    }
+
+    // Add new children to parent
+    while (this.displayedPoses < poses.length) {
+      this.parent.add(this.children[this.displayedPoses]);
+      this.displayedPoses += 1;
+    }
+
+    // Update poses
+    for (let i = 0; i < this.poses.length; i++) {
+      this.children[i].position.set(...poses[i].translation);
+      this.children[i].rotation.setFromQuaternion(rotation3dToQuaternion(poses[i].rotation));
+    }
+  }
+
+  /** Returns the set of cloned objects. */
+  getChildren() {
+    return [...this.children];
   }
 }
 
-export interface Pose3d {
-  position: [number, number, number]; // X, Y, Z
-  rotation: [number, number, number, number]; // W, X, Y, Z
+/** Converts a rotation sequence to a quaternion. */
+function getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Quaternion {
+  let quaternion = new THREE.Quaternion();
+  rotations.forEach((rotation) => {
+    let axis = new THREE.Vector3(0, 0, 0);
+    if (rotation.axis == "x") axis.setX(1);
+    if (rotation.axis == "y") axis.setY(1);
+    if (rotation.axis == "z") axis.setZ(1);
+    quaternion.premultiply(
+      new THREE.Quaternion().setFromAxisAngle(axis, convert(rotation.degrees, "degrees", "radians"))
+    );
+  });
+  return quaternion;
 }

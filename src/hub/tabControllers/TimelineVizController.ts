@@ -121,8 +121,13 @@ export default abstract class TimelineVizController implements TabController {
               this.fields[index] = key;
             } else {
               // List field
+              let selectedOptions = this.listFields[index].map((field) => field.type);
+              let availableOptions = this.listConfig[index].options.filter(
+                (option) => !selectedOptions.includes(option)
+              );
+              if (availableOptions.length == 0) availableOptions.push(this.listConfig[index].options[0]);
               this.listFields[index].push({
-                type: this.listConfig[index].options[0],
+                type: availableOptions[0],
                 key: key
               });
             }
