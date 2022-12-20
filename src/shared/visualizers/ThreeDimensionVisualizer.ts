@@ -10,9 +10,14 @@ import Visualizer from "./Visualizer";
 export default class ThreeDimensionVisualizer implements Visualizer {
   private EFFICIENCY_MAX_FPS = 15;
   private ORBIT_FOV = 50;
-  private ORBIT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
+  private ORBIT_FIELD_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
+  private ORBIT_AXES_DEFAULT_TARGET = new THREE.Vector3(0, 0, 0);
+  private ORBIT_ROBOT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
   private ORBIT_FIELD_DEFAULT_POSITION = new THREE.Vector3(0, 6, -12);
+  private ORBIT_AXES_DEFAULT_POSITION = new THREE.Vector3(2, 2, -4);
   private ORBIT_ROBOT_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
+  private AXES_FIELD_LENGTH = convert(54, "feet", "meters");
+  private AXES_FIELD_WIDTH = convert(27, "feet", "meters");
   private WPILIB_ROTATION = getQuaternionFromRotSeq([
     {
       axis: "x",
@@ -122,18 +127,18 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       const near = 0.1;
       const far = 100;
       this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-      this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
-      this.camera.lookAt(this.ORBIT_DEFAULT_TARGET.x, this.ORBIT_DEFAULT_TARGET.y, this.ORBIT_DEFAULT_TARGET.z);
     }
 
     // Create controls
     {
       this.controls = new OrbitControls(this.camera, canvas);
-      this.controls.target.copy(this.ORBIT_DEFAULT_TARGET);
       this.controls.maxDistance = 30;
       this.controls.enabled = true;
       this.controls.update();
     }
+
+    // Reset camera and controls
+    this.resetCamera();
 
     // Add lights
     {
@@ -315,6 +320,23 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     return this.lastAspectRatio;
   }
 
+  /** Resets the camera position and controls target. */
+  private resetCamera() {
+    if (this.cameraIndex == -1) {
+      if (this.command && this.command.options.field == "Axes") {
+        this.camera.position.copy(this.ORBIT_AXES_DEFAULT_POSITION);
+        this.controls.target.copy(this.ORBIT_AXES_DEFAULT_TARGET);
+      } else {
+        this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
+        this.controls.target.copy(this.ORBIT_FIELD_DEFAULT_TARGET);
+      }
+    } else if (this.cameraIndex == -2) {
+      this.camera.position.copy(this.ORBIT_ROBOT_DEFAULT_POSITION);
+      this.controls.target.copy(this.ORBIT_ROBOT_DEFAULT_TARGET);
+    }
+    this.controls.update();
+  }
+
   private renderFrame() {
     // Check for new render mode
     if (window.preferences) {
@@ -404,7 +426,17 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (fieldTitle == "Axes") {
         // Add to scene
         let axes = this.axesTemplate.clone(true);
-        axes.add(new THREE.AxesHelper(1));
+        let outline = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(),
+            new THREE.Vector3(this.AXES_FIELD_LENGTH, 0, 0),
+            new THREE.Vector3(this.AXES_FIELD_LENGTH, this.AXES_FIELD_WIDTH, 0),
+            new THREE.Vector3(0, this.AXES_FIELD_WIDTH, 0),
+            new THREE.Vector3()
+          ]),
+          new THREE.LineBasicMaterial({ color: 0x444444 })
+        );
+        axes.add(outline);
         this.field = axes;
         this.wpilibCoordinateGroup.add(this.field);
 
@@ -424,6 +456,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.shouldRender = true;
         });
       }
+      this.resetCamera();
     }
 
     // Update robot
@@ -572,13 +605,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
         }
         if (this.cameraIndex != this.lastCameraIndex) {
-          if (this.cameraIndex == -1) {
-            this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
-          } else {
-            this.camera.position.copy(this.ORBIT_ROBOT_DEFAULT_POSITION);
-          }
-          this.controls.target.copy(this.ORBIT_DEFAULT_TARGET);
-          this.controls.update();
+          this.resetCamera();
         }
       } else {
         this.canvas.classList.add("fixed");
