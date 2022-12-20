@@ -1,4 +1,3 @@
-import * as THREE from "three";
 import { pose2dTo3d, Pose3d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
 import TabType from "../../shared/TabType";

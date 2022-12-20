@@ -1,4 +1,4 @@
-import { convertLVTime, getPDType, PowerDistributionType } from "./DSUtil";
+import { convertLVTime } from "./DSUtil";
 
 /** Represents a single entry from a DSEvents file */
 export interface DSEventsEntry {
