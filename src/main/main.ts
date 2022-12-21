@@ -79,6 +79,7 @@ let downloadRetryTimeout: NodeJS.Timeout | null = null;
 let downloadRefreshInterval: NodeJS.Timer | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
+let downloadFileSizeCache: { [id: string]: number } = {};
 
 // WINDOW MESSAGE HANDLING
 
@@ -666,6 +667,7 @@ function downloadStart() {
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
   downloadClient?.end();
+  downloadFileSizeCache = {};
   downloadClient = new Client()
     .once("ready", () => {
       // Successful SSH connection
@@ -687,15 +689,22 @@ function downloadStart() {
                     downloadWindow,
                     "set-list",
                     list
-                      .map((file) => file.filename)
+                      .map((file) => {
+                        return { name: file.filename, size: file.attrs.size };
+                      })
                       .filter(
-                        (filename) =>
-                          !filename.startsWith(".") && (filename.endsWith(".rlog") || filename.endsWith(".wpilog"))
+                        (file) =>
+                          !file.name.startsWith(".") && (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog"))
                       )
-                      .sort()
+                      .sort((a, b) => a.name.localeCompare(b.name))
                       .reverse()
                   );
                 }
+
+                // Save cache of file sizes
+                list.forEach((file) => {
+                  downloadFileSizeCache[file.filename] = file.attrs.size;
+                });
               }
             });
           };
@@ -774,85 +783,116 @@ function downloadSave(files: string[]) {
           if (downloadWindow) sendMessage(downloadWindow, "set-progress", null);
           if (files.length == 1) {
             // Single file
-            sftp.fastGet(downloadPath + files[0], savePath, (error) => {
-              if (error) {
-                downloadError(error.message);
-              } else {
-                if (!downloadWindow) return;
-                sendMessage(downloadWindow, "set-progress", 1);
+            sftp.fastGet(
+              downloadPath + files[0],
+              savePath,
+              {
+                step: (sizeTransferred, _, sizeTotal) => {
+                  if (!downloadWindow) return;
+                  sendMessage(downloadWindow, "set-progress", sizeTransferred / sizeTotal);
+                }
+              },
+              (error) => {
+                if (error) {
+                  downloadError(error.message);
+                } else {
+                  if (!downloadWindow) return;
+                  sendMessage(downloadWindow, "set-progress", 1);
 
-                // Ask if the log should be opened
-                dialog
-                  .showMessageBox(downloadWindow, {
-                    type: "question",
-                    message: "Open log?",
-                    detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
-                    icon: WINDOW_ICON,
-                    buttons: ["Open", "Skip"],
-                    defaultId: 0
-                  })
-                  .then((result) => {
-                    if (result.response == 0) {
-                      downloadWindow?.destroy();
-                      downloadStop();
-                      hubWindows[0].focus();
-                      sendMessage(hubWindows[0], "open-file", savePath);
-                    }
-                  });
+                  // Ask if the log should be opened
+                  dialog
+                    .showMessageBox(downloadWindow, {
+                      type: "question",
+                      message: "Open log?",
+                      detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
+                      icon: WINDOW_ICON,
+                      buttons: ["Open", "Skip"],
+                      defaultId: 0
+                    })
+                    .then((result) => {
+                      if (result.response == 0) {
+                        downloadWindow?.destroy();
+                        downloadStop();
+                        hubWindows[0].focus();
+                        sendMessage(hubWindows[0], "open-file", savePath);
+                      }
+                    });
+                }
               }
-            });
+            );
           } else {
             // Multiple files
             let completeCount = 0;
             let skipCount = 0;
-            files.forEach((file) => {
+            let allSizesTransferred: number[] = new Array(files.length).fill(0);
+            let allSizesTotal = 0;
+            files.forEach((file, index) => {
+              let fileSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
+              allSizesTotal += fileSize;
               fs.stat(savePath + "/" + file, (statErr) => {
                 if (statErr == null) {
                   // File exists already, skip downloading
                   completeCount++;
                   skipCount++;
+                  allSizesTotal -= fileSize; // Remove from total size of files
                   if (skipCount == files.length) {
                     // All files skipped
                     if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
                   }
                 } else {
                   // File not found, download
-                  sftp.fastGet(downloadPath + file, savePath + "/" + file, (error) => {
-                    if (error) {
-                      downloadError(error.message);
-                    } else {
-                      completeCount++;
-                      let progress = (completeCount - skipCount) / (files.length - skipCount);
-                      if (downloadWindow) sendMessage(downloadWindow, "set-progress", progress);
+                  sftp.fastGet(
+                    downloadPath + file,
+                    savePath + "/" + file,
+                    {
+                      step: (sizeTransferred) => {
+                        allSizesTransferred[index] = sizeTransferred;
+                        if (!downloadWindow) return;
+                        let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
+                        sendMessage(
+                          downloadWindow,
+                          "set-progress",
+                          allSizesTotal == 0 ? null : sumSizeTransferred / allSizesTotal
+                        );
+                      }
+                    },
+                    (error) => {
+                      if (error) {
+                        downloadError(error.message);
+                      } else {
+                        completeCount++;
 
-                      if (completeCount >= files.length) {
-                        let message = "";
-                        if (skipCount > 0) {
-                          let newCount = completeCount - skipCount;
-                          message =
-                            "Saved " +
-                            newCount.toString() +
-                            " new log" +
-                            (newCount == 1 ? "" : "s") +
-                            " (" +
-                            skipCount.toString() +
-                            " skipped) to <u>" +
-                            savePath +
-                            "</u>";
-                        } else {
-                          message =
-                            "Saved " +
-                            completeCount.toString() +
-                            " log" +
-                            (completeCount == 1 ? "" : "s") +
-                            " to <u>" +
-                            savePath +
-                            "</u>";
+                        if (completeCount >= files.length) {
+                          let message = "";
+                          if (skipCount > 0) {
+                            let newCount = completeCount - skipCount;
+                            message =
+                              "Saved " +
+                              newCount.toString() +
+                              " new log" +
+                              (newCount == 1 ? "" : "s") +
+                              " (" +
+                              skipCount.toString() +
+                              " skipped) to <u>" +
+                              savePath +
+                              "</u>";
+                          } else {
+                            message =
+                              "Saved " +
+                              completeCount.toString() +
+                              " log" +
+                              (completeCount == 1 ? "" : "s") +
+                              " to <u>" +
+                              savePath +
+                              "</u>";
+                          }
+                          if (!downloadWindow) return;
+                          sendMessage(downloadWindow, "set-progress", 1);
+                          sendMessage(downloadWindow, "show-alert", message);
                         }
-                        if (downloadWindow) sendMessage(downloadWindow, "show-alert", message);
                       }
                     }
-                  });
+                  );
                 }
               });
             });

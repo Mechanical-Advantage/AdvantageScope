@@ -64,6 +64,15 @@ div.file-item img.mac {
   padding-right: 4px;
 }
 
+div.file-item > span:last-child {
+  font-weight: 300;
+  color: #777;
+}
+
+div.file-item.selected > span:last-child {
+  color: #555;
+}
+
 @media (prefers-color-scheme: dark) {
   div.file-list {
     background-color: #111;
@@ -76,6 +85,10 @@ div.file-item img.mac {
 
   div.file-item img {
     filter: drop-shadow(0px 0.5px 4px #000);
+  }
+
+  div.file-item.selected > span:last-child {
+    color: #999;
   }
 }
 

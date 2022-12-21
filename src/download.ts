@@ -139,13 +139,14 @@ function handleMainMessage(message: NamedMessage) {
       }
 
       // Add new list items
-      filenames = message.data;
-      filenames.forEach((filename, index) => {
+      let fileData: { name: string; size: number }[] = message.data;
+      filenames = fileData.map((file) => file.name);
+      fileData.forEach((file, index) => {
         let item = document.createElement("div");
         FILE_LIST_ITEMS.appendChild(item);
         item.classList.add("file-item");
 
-        if (selectedFiles.includes(filename)) {
+        if (selectedFiles.includes(file.name)) {
           item.classList.add("selected");
         }
         item.addEventListener("click", (event) => {
@@ -162,15 +163,15 @@ function handleMainMessage(message: NamedMessage) {
                 FILE_LIST_ITEMS.children[i].classList.remove("selected");
               }
             }
-          } else if (selectedFiles.includes(filename)) {
+          } else if (selectedFiles.includes(file.name)) {
             // Deselect item
-            selectedFiles.splice(selectedFiles.indexOf(filename), 1);
+            selectedFiles.splice(selectedFiles.indexOf(file.name), 1);
             item.classList.remove("selected");
             lastClickedIndex = index;
             lastClickedSelect = false;
           } else {
             // Select item
-            selectedFiles.push(filename);
+            selectedFiles.push(file.name);
             item.classList.add("selected");
             lastClickedIndex = index;
             lastClickedSelect = true;
@@ -179,7 +180,7 @@ function handleMainMessage(message: NamedMessage) {
 
         let img = document.createElement("img");
         item.appendChild(img);
-        let filenameComponents = filename.split(".");
+        let filenameComponents = file.name.split(".");
         let extension = filenameComponents[filenameComponents.length - 1];
         switch (platform) {
           case "darwin":
@@ -193,9 +194,12 @@ function handleMainMessage(message: NamedMessage) {
             img.src = "../icons/download/" + extension + "-icon-linux.png";
             break;
         }
-        let span = document.createElement("span");
-        item.appendChild(span);
-        span.innerText = filename;
+        let filenameSpan = document.createElement("span");
+        item.appendChild(filenameSpan);
+        filenameSpan.innerText = file.name;
+        let sizeSpan = document.createElement("span");
+        item.appendChild(sizeSpan);
+        sizeSpan.innerText = " (" + (file.size < 10e5 ? "<0.1" : Math.round(file.size / 10e5) / 10) + " MB)";
       });
 
       updateFiller();
@@ -250,5 +254,21 @@ EXIT_BUTTON.addEventListener("click", () => {
 });
 DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
-  if (event.code == "Enter") save();
+  if (event.code == "Enter") {
+    save();
+  } else if (event.key == "a" && (platform == "darwin" ? event.metaKey : event.ctrlKey)) {
+    if (filenames.length == selectedFiles.length) {
+      // Deselect all
+      selectedFiles = [];
+      Array.from(FILE_LIST_ITEMS.children).forEach((row) => {
+        row.classList.remove("selected");
+      });
+    } else {
+      // Select all
+      selectedFiles = [...filenames];
+      Array.from(FILE_LIST_ITEMS.children).forEach((row) => {
+        row.classList.add("selected");
+      });
+    }
+  }
 });
