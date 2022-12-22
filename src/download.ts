@@ -237,7 +237,7 @@ function handleMainMessage(message: NamedMessage) {
         filenameSpan.innerText = file.name;
         let sizeSpan = document.createElement("span");
         item.appendChild(sizeSpan);
-        sizeSpan.innerText = " (" + (file.size < 10e5 ? "<0.1" : Math.round(file.size / 10e5) / 10) + " MB)";
+        sizeSpan.innerText = " (" + (file.size < 1e5 ? "<0.1" : Math.round(file.size / 1e5) / 10) + " MB)";
       });
 
       updateFiller();
