@@ -203,10 +203,25 @@ div.alert-text {
 
 progress {
   position: absolute;
-  bottom: 14px;
+  bottom: 23px;
   height: 18px;
   left: 12px;
   width: calc(100% - 12px - 85px);
+}
+
+div.progress-details {
+  position: absolute;
+  bottom: 5px;
+  height: 18px;
+  left: 12px;
+  width: calc(100% - 12px - 85px);
+  text-align: center;
+
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: monospace;
 }
 
 button {

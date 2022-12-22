@@ -54,6 +54,14 @@ export function shiftColor(color: string, shift: number): string {
   return "rgb(" + shiftedColorArray.toString() + ")";
 }
 
+/** Pad a number with zeroes up to the specified length. */
+export function zfill(number: string, length: number): string {
+  while (number.length < length) {
+    number = "0" + number;
+  }
+  return number;
+}
+
 /** Cleans up floating point errors. */
 export function cleanFloat(float: number) {
   let output = Math.round(float * 1e6) / 1e6;

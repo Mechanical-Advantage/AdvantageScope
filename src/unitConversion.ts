@@ -92,7 +92,6 @@ window.addEventListener("message", (event) => {
         let factorSuccess = true;
         try {
           let factorEvaluated = evaluate(EXTRA_FACTOR.value);
-          console.log(factorEvaluated, typeof factorEvaluated.value);
           if (typeof factorEvaluated === "number") {
             factor = factorEvaluated;
           } else {

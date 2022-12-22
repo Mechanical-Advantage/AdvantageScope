@@ -1,12 +1,14 @@
 import { USB_ADDRESS } from "./shared/IPAddresses";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
+import { zfill } from "./shared/util";
 
 const FILE_LIST: HTMLElement = document.getElementsByClassName("file-list")[0] as HTMLElement;
 const FILE_LIST_ITEMS: HTMLElement = FILE_LIST.children[0] as HTMLElement;
 const LOADING_ANIMATION: HTMLElement = document.getElementsByClassName("loading")[0] as HTMLElement;
-const PROGRESS_BAR: HTMLProgressElement = document.getElementsByTagName("progress")[0] as HTMLProgressElement;
 const ALERT_TEXT: HTMLElement = document.getElementsByClassName("alert-text")[0] as HTMLElement;
+const PROGRESS_BAR: HTMLProgressElement = document.getElementsByTagName("progress")[0] as HTMLProgressElement;
+const PROGRESS_DETAILS: HTMLElement = document.getElementsByClassName("progress-details")[0] as HTMLElement;
 const EXIT_BUTTON: HTMLElement = document.getElementById("exit") as HTMLElement;
 const DOWNLOAD_BUTTON: HTMLElement = document.getElementById("download") as HTMLElement;
 
@@ -19,6 +21,7 @@ let preferences: Preferences | null = null;
 
 let lastAddress: string = "";
 let loading = true;
+let startTime: number | null = null;
 let alertIsError = false;
 let filenames: string[] = [];
 let selectedFiles: string[] = [];
@@ -75,8 +78,10 @@ function handleMainMessage(message: NamedMessage) {
       // Show loading animation and alert text
       LOADING_ANIMATION.hidden = false;
       loading = true;
+      startTime = null;
       ALERT_TEXT.hidden = false;
       PROGRESS_BAR.hidden = true;
+      PROGRESS_DETAILS.hidden = true;
 
       // Remove list items
       while (FILE_LIST_ITEMS.firstChild) {
@@ -107,6 +112,8 @@ function handleMainMessage(message: NamedMessage) {
       // Show alert text (don't change file list/loading animation)
       ALERT_TEXT.hidden = false;
       PROGRESS_BAR.hidden = true;
+      PROGRESS_DETAILS.hidden = true;
+      startTime = null;
       alertIsError = false;
       ALERT_TEXT.innerHTML = message.data;
       break;
@@ -115,12 +122,42 @@ function handleMainMessage(message: NamedMessage) {
       // Show progress bar
       ALERT_TEXT.hidden = true;
       PROGRESS_BAR.hidden = false;
+      PROGRESS_DETAILS.hidden = false;
+
       alertIsError = false;
-      let progress: number | null = message.data;
-      if (progress == null) {
-        PROGRESS_BAR.removeAttribute("value"); // Show indeterminate
+      if (message.data === 0) {
+        PROGRESS_BAR.value = 0;
+        PROGRESS_DETAILS.innerText = "Preparing";
+      } else if (message.data === 1) {
+        PROGRESS_BAR.value = 1;
+        PROGRESS_DETAILS.innerText = "Finished";
       } else {
-        PROGRESS_BAR.value = progress;
+        let currentSize: number = message.data.current;
+        let totalSize: number = message.data.total;
+        if (startTime == null) startTime = new Date().getTime() / 1000;
+
+        let detailsText =
+          Math.floor(currentSize / 1e6).toString() + "MB / " + Math.floor(totalSize / 1e6).toString() + "MB";
+        if (new Date().getTime() / 1000 - startTime > 0.5) {
+          // Wait to establish speed
+          let speed = Math.round((currentSize / (new Date().getTime() / 1000 - startTime) / 1e6) * 8);
+          let remainingSeconds = Math.floor(
+            ((new Date().getTime() / 1000 - startTime) / currentSize) * (totalSize - currentSize)
+          );
+          let remainingMinutes = Math.floor(remainingSeconds / 60);
+          remainingSeconds -= remainingMinutes * 60;
+          detailsText +=
+            " (" +
+            speed.toString() +
+            "Mb/s, " +
+            remainingMinutes.toString() +
+            "m" +
+            zfill(remainingSeconds.toString(), 2) +
+            "s)";
+        }
+
+        PROGRESS_BAR.value = totalSize == 0 ? 0 : currentSize / totalSize;
+        PROGRESS_DETAILS.innerText = detailsText;
       }
       break;
 
@@ -131,6 +168,7 @@ function handleMainMessage(message: NamedMessage) {
       if (alertIsError) {
         ALERT_TEXT.hidden = true;
         PROGRESS_BAR.hidden = true;
+        PROGRESS_DETAILS.hidden = true;
       }
 
       // Remove old list items

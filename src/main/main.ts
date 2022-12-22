@@ -780,7 +780,7 @@ function downloadSave(files: string[]) {
         if (error) {
           downloadError(error.message);
         } else {
-          if (downloadWindow) sendMessage(downloadWindow, "set-progress", null);
+          if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
           if (files.length == 1) {
             // Single file
             sftp.fastGet(
@@ -789,7 +789,7 @@ function downloadSave(files: string[]) {
               {
                 step: (sizeTransferred, _, sizeTotal) => {
                   if (!downloadWindow) return;
-                  sendMessage(downloadWindow, "set-progress", sizeTransferred / sizeTotal);
+                  sendMessage(downloadWindow, "set-progress", { current: sizeTransferred, total: sizeTotal });
                 }
               },
               (error) => {
@@ -849,11 +849,10 @@ function downloadSave(files: string[]) {
                         allSizesTransferred[index] = sizeTransferred;
                         if (!downloadWindow) return;
                         let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
-                        sendMessage(
-                          downloadWindow,
-                          "set-progress",
-                          allSizesTotal == 0 ? null : sumSizeTransferred / allSizesTotal
-                        );
+                        sendMessage(downloadWindow, "set-progress", {
+                          current: sumSizeTransferred,
+                          total: allSizesTotal
+                        });
                       }
                     },
                     (error) => {
