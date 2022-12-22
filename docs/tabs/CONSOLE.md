@@ -4,6 +4,7 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The console view is designed to view a single string field with console data. Some suggested fields are listed below.
 
+- **DSEvents** - Robot log from a ".dsevents" file.
 - **messages** - Saved by WPILib's built-in logging based on calls to the [_DataLogManager.log_](<https://first.wpi.edu/wpilib/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) method.
 - **/RealOutputs/Console** - Saved by AdvantageKit automatically during robot operation (use _System.out.println_ as normal).
 - **/ReplayOutputs/Console** - Saved by AdvantageKit automatically during log replay (use _System.out.println_ as normal).

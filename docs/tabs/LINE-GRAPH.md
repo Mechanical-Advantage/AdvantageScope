@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-The line graph is the default view in AdvantageScope. It supports both continuous (numerical) and discrete fields. To get started, drag a field to one of the three legends. Delete a field using the "X" button or hide it temporarily by clicking the colored circle.
+The line graph is the default view in AdvantageScope. It supports both continuous (numerical) and discrete fields. To get started, drag a field to one of the three legends. Delete a field using the "X" button or hide it temporarily by clicking the colored circle. To remove all fields, click the three dots near the axis title and then "Clear All".
 
 To zoom, place the cursor over the main graph and scroll up or down. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the graph. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 

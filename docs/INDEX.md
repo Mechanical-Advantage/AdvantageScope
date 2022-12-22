@@ -9,7 +9,7 @@ AdvantageScope is a robot diagnostics, log review/analysis, and data visualizati
 These links cover the basics of getting around in AdvantageScope and and accessing data.
 
 - [App Navigation](/docs/NAVIGATION.md)
-- [Downloading/Opening Log Files](/docs/OPEN-FILE.md)
+- [Opening/Downloading Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
 - [Exporting Log Data](/docs/EXPORT.md)
 

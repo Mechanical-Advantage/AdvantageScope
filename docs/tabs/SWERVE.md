@@ -14,7 +14,7 @@ To selected a field, drag it to one of the labeled boxes. To remove a field, rig
 
 ### States
 
-Two sets of module states can be displayed simultaneously in <span style="color: red;">red</span> and <span style="color: blue;">red</span>. For instance, the measured states can be compared to the setpoints.
+Two sets of module states can be displayed simultaneously in <span style="color: red;">red</span> and <span style="color: blue;">blue</span>. For instance, the measured states can be compared to the setpoints.
 
 The state fields should be numeric arrays with the format shown below. The rotation units are configurable (radians or degrees), and the velocity units should match the configured "Max Speed". The order of the modules is also configurable.
 

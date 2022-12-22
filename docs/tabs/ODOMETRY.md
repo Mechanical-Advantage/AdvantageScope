@@ -10,31 +10,33 @@ The odometry tab shows a 2D visualization of the robot overlayed on a map of the
 
 ## Pose Data
 
-To selected a field, drag it to one of the labeled boxes. To remove a field, right-click the box. The purpose and expected format of each field is shown below.
+To add a field with pose data, drag it from the sidebar to the box under "Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name under "Poses".
 
-### Robot Pose
+All pose data must be stored as a numeric array describing one or more 2D poses with the following format:
 
-This pose describes the location of the robot. The provided field must be a numeric array with values [x, y, rotation]. The rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The origin and units are configurable.
+```
+[
+  x, y, rot,
+  x, y, rot,
+  ...
+]
+```
 
-The robot is displayed as a square with an arrow indicating direction, as seen below. The path of the robot for the preceding and subsequent five seconds is also shown.
+Multiple poses are typically shown as duplicate objects, except for trajectories (where each pose is a point along the trajectory). The rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The origin and units are configurable.
 
-> Note: To log a Pose2d using AdvantageKit, call _Logger.getInstance().recordOutput(key, pose);_
+> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call _Logger.getInstance().recordOutput(key, poses...);_ or _Logger.getInstance().recordOutput(key, trajectory);_
 
-![Robot pose](/docs/resources/odometry/odometry-2.png)
+## Objects
 
-### Ghost Pose
+The following objects are supported:
 
-This pose is rendered as a translucent robot, as seen below. Example use cases include trajectory reference poses or unfiltered vision poses. The expected format is the same as the standard robot pose (see previous section).
+- Robot
+- Ghost
+- Trajectory
+- Vision Target
+- Arrow (Front/Center/Back)
 
-![Ghost pose](/docs/resources/odometry/odometry-3.png)
-
-### Vision Coordinates
-
-This field includes one or more translations indicating active vision targets. A green line is rendered from the robot to each target, as seen below. The provided field must be a numeric array with values [x_1, y_1, x_2, y_2, ...]. Any number of translations may be provided.
-
-> Note: To log a Translation2d using AdvantageKit, call _Logger.getInstance().recordOutput(key, translation);_ or _Logger.getInstance().recordOutput(key, translation[]);_
-
-![Vision coordinates](/docs/resources/odometry/odometry-4.png)
+![Odometry with objects](/docs/resources/odometry/odometry-2.png)
 
 ## Configuration
 

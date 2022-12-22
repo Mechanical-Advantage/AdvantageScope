@@ -8,21 +8,27 @@ This tab shows a 3D visualization of the robot and field. It can be used with re
 
 ![Overview of 3D field tab](/docs/resources/3d-field/3d-field-1.png)
 
-## Input Data
+## Pose Data
 
-To selected a field, drag it to one of the labeled boxes. To remove a field, right-click the box. The purpose and expected format of each field is shown below.
+To add a field with pose data, drag it from the sidebar to the box under "3D Poses" or "2D Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name.
 
-> Note: For all fields, the linear units are **meters** and the angular units are **radians**.
+All pose data must be stored as a numeric array describing one or more poses with the formats shown below.
 
-### Robot
+### 2D Poses
 
-This field describes the current location of the robot in 2D or 3D. A 2D pose must be a numeric array with values [x, y, rotation], following the [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). A 3D pose must be a numeric array with values [x, y, z, w_rot, x_rot, y_rot, z_rot]. The w, x, y, and z rotation values represent a quaternion, which is used internally by WPILib's Rotation3d class.
+```
+[
+  x, y, rot,
+  x, y, rot,
+  ...
+]
+```
 
-> Note: To log a Pose2d or Pose3d using AdvantageKit, call _Logger.getInstance().recordOutput(key, pose);_
+The 2D rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The linear and angular units are configurable.
 
-### Cones
+> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call _Logger.getInstance().recordOutput(key, poses...);_ or _Logger.getInstance().recordOutput(key, trajectory);_
 
-Each of the non-robot fields can be used to display a set of cones at arbitrary 3D poses. For example, they could indicate the locations of detected AprilTags or estimated camera positions. Each field must be a numeric array describing a series of 3D poses with the following format:
+### 3D Poses
 
 ```
 [
@@ -32,27 +38,25 @@ Each of the non-robot fields can be used to display a set of cones at arbitrary 
 ]
 ```
 
-> Note: To log an array of Pose3d objects using AdvantageKit, call _Logger.getInstance().recordOutput(key, poses[]);_
+The w, x, y, and z rotation values represent a quaternion, which is used internally by WPILib's Rotation3d class. The linear units are configurable.
 
-The tip of each cone shows the translation component, and the rotation matches the pose. The dark band is rendered on top of each cone and shows the rotation around its axis.
+> Note: To log Pose3d values with AdvantageKit, call _Logger.getInstance().recordOutput(key, poses...);_
 
-![3D cones](/docs/resources/3d-field/3d-field-2.gif)
+## Objects
 
-## Configuration
+The following objects are supported:
 
-The following configuration options are available:
+- Robot
+- Ghost
+- AprilTag
+- Axes
+- Trajectory
+- Vision Target
+- Camera Override (more details under "Camera Options")
+- Blue Cone (Front/Center/Back)
+- Yellow Cone (Front/Center/Back)
 
-- **Field:** The field model to use, defaults to the most recent game. We recommend using the "Evergreen" field for devices with limited graphical performance.
-- **Alliance:** The current alliance color, which flips the origin to the opposite side of the field if necessary.
-- **Robot:** The robot model to use. AdvantageScope includes a default set of robots from some of our fellow New England [#OpenAlliance](https://www.theopenalliance.com) teams. We recommend using the "KitBot" model for devices with limited graphical performance.
-
-> Note: To add a custom field or robot model, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
-
-The 3D field also supports an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). The available options for the "3D Mode" are:
-
-- **Prioritize quality:** Always render at the screen's native resolution and framerate.
-- **Prioritize efficiency:** Always lower the framerate and resolution to reduce battery consumption and provide more consistent performance on low-end devices.
-- **Prioritize efficiency on battery:** Prioritize efficiency when running on battery power, otherwise prioritize quality.
+![3D with objects](/docs/resources/3d-field/3d-field-2.gif)
 
 ## Camera Options
 
@@ -75,3 +79,22 @@ This mode has the same controls as the "Orbit Field" mode, but the camera's posi
 Each robot model is configured with a set of fixed cameras, like vision and driver cameras. These cameras have fixed positions, aspect ratios, and FOVs. These views are often useful to check vision data or to simulate a driver camera view. In the example below, a driver camera and Limelight view are shown.
 
 ![Fixed camera](/docs/resources/3d-field/3d-field-5.gif)
+
+If a "Camera Override" pose is provided, it replaces the default poses of all fixed cameras while retaining their configured FOVs and aspect ratios. This allows the robot code to provide the position of a moving camera, like one mounted to a turret or shooter hood.
+
+> Note: As with all other pose data, the "Camera Override" pose must be _field relative_, not robot relative.
+
+## Configuration
+
+The following configuration options are available:
+
+- **Field:** The field model to use, defaults to the most recent game. We recommend using the "Evergreen" field for devices with limited graphical performance. The "Axes" field displays only XYZ axes at the origin with a field outline for scale.
+- **Alliance:** The current alliance color, which flips the origin to the opposite side of the field if necessary.
+- **Robot:** The robot model to use. AdvantageScope includes a default set of robots from some of our fellow New England [#OpenAlliance](https://www.theopenalliance.com) teams. We recommend using the "KitBot" model for devices with limited graphical performance. To add a custom field or robot model, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
+- **Units:** The linear and angular units of the provided fields. Meters, inches, radians, and degrees are supported. The rotations units do no affect 3D poses.
+
+The 3D field also supports an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). The available options for the "3D Mode" are:
+
+- **Prioritize quality:** Always render at the screen's native resolution and framerate.
+- **Prioritize efficiency:** Always lower the framerate and resolution to reduce battery consumption and provide more consistent performance on low-end devices.
+- **Prioritize efficiency on battery:** Prioritize efficiency when running on battery power, otherwise prioritize quality.
