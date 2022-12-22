@@ -33,7 +33,7 @@
     "@types/three": "^0.144.0",
     "chart.js": "^3.9.1",
     "download": "^8.0.0",
-    "electron": "^20.0.0",
+    "electron": "^22.0.0",
     "electron-builder": "^23.3.3",
     "mathjs": "^11.3.0",
     "prettier": "2.7.1",
