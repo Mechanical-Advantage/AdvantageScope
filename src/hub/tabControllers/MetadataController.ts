@@ -59,6 +59,15 @@ export default class MetadataController implements TabController {
     if ("ReplayMetadata" in tree) {
       scanTree(tree["ReplayMetadata"], "/ReplayMetadata", false);
     }
+    if ("AdvantageKit" in tree) {
+      let akitTable = tree["AdvantageKit"].children;
+      if ("RealMetadata" in akitTable) {
+        scanTree(akitTable["RealMetadata"], "/AdvantageKit/RealMetadata", true);
+      }
+      if ("ReplayMetadata" in akitTable) {
+        scanTree(akitTable["ReplayMetadata"], "/AdvantageKit/ReplayMetadata", false);
+      }
+    }
 
     // Add rows
     let keys = Object.keys(data);
