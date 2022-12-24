@@ -18,6 +18,7 @@ import WorkerManager from "./WorkerManager";
 // Constants
 const SAVE_PERIOD_MS = 250;
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
+const UPDATE_BUTTON = document.getElementsByClassName("update")[0] as HTMLElement;
 
 // Global variables
 declare global {
@@ -373,6 +374,10 @@ window.addEventListener("message", (event) => {
   }
 });
 
+UPDATE_BUTTON.addEventListener("click", () => {
+  window.sendMainMessage("prompt-update");
+});
+
 function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "restore-state":
@@ -412,6 +417,11 @@ function handleMainMessage(message: NamedMessage) {
 
     case "set-frc-data":
       window.frcData = message.data;
+      break;
+
+    case "show-update-button":
+      document.documentElement.style.setProperty("--show-update-button", message.data ? "1" : "0");
+      UPDATE_BUTTON.hidden = !message.data;
       break;
 
     case "historical-data":

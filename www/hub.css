@@ -2,6 +2,7 @@
   --side-bar-width: 300px;
   --show-side-bar: 1;
   --show-lock-buttons: 0;
+  --show-update-button: 0;
 }
 
 /* Title bar layout */
@@ -28,7 +29,7 @@ div.title-bar-text {
   top: 0px;
   bottom: 0px;
   left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
-  right: calc(182px + var(--show-lock-buttons) * 28px);
+  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
 
   text-align: left;
   line-height: 38px;
@@ -297,7 +298,7 @@ div.field-item-label.known {
 div.tab-bar {
   position: absolute;
   left: 10px;
-  right: 210px;
+  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
   top: 0px;
   height: 50px;
 
@@ -438,6 +439,20 @@ body.fancy-title-bar button.tab-control {
   top: 8px;
 }
 
+button.update {
+  right: calc(182px + var(--show-lock-buttons) * 28px);
+}
+
+button.update > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(60%) sepia(41%) saturate(3324%) hue-rotate(356deg) brightness(96%) contrast(112%);
+}
+
+button.update.blurred > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(85%) sepia(44%) saturate(1384%) hue-rotate(314deg) brightness(114%) contrast(101%);
+}
+
 button.play,
 button.pause {
   right: calc(144px + var(--show-lock-buttons) * 28px);
@@ -459,6 +474,11 @@ button.unlock.blurred > img {
 }
 
 @media (prefers-color-scheme: dark) {
+  button.update.blurred > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(30%) sepia(37%) saturate(3821%) hue-rotate(26deg) brightness(97%) contrast(101%);
+  }
+
   button.unlock.blurred > img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     filter: invert(37%) sepia(16%) saturate(1793%) hue-rotate(314deg) brightness(98%) contrast(77%);

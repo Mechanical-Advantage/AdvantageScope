@@ -26,7 +26,6 @@ import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
-import checkForUpdate from "./checkForUpdate";
 import {
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
@@ -47,6 +46,7 @@ import {
 } from "./Constants";
 import { createExtraFRCDataFolder, loadFRCData } from "./frcDataUtil";
 import StateTracker from "./StateTracker";
+import UpdateChecker from "./UpdateChecker";
 import videoExtensions from "./videoExtensions";
 
 // Global variables
@@ -57,6 +57,7 @@ let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 
 let hubStateTracker = new StateTracker();
+let updateChecker = new UpdateChecker();
 let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
 let videoProcesses: { [id: string]: ChildProcess } = {}; // Key is tab UUID
@@ -150,6 +151,10 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "save-state":
       hubStateTracker.saveRendererState(window, message.data);
+      break;
+
+    case "prompt-update":
+      updateChecker.showPrompt();
       break;
 
     case "historical-start":
@@ -1327,6 +1332,7 @@ function createHubWindow() {
       platformRelease: os.release(),
       appVersion: app.isPackaged ? app.getVersion() : "dev"
     });
+    sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
     sendAllPreferences();
     if (firstLoad) {
       if (rendererState) sendMessage(window, "restore-state", rendererState); // Use state from file
@@ -1729,6 +1735,17 @@ if (process.platform == "linux" && fs.existsSync(PREFS_FILENAME)) {
   }
 }
 
+function checkForUpdate(alwaysPrompt: boolean) {
+  updateChecker.check().then(() => {
+    hubWindows.forEach((window) => {
+      sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
+    });
+    if (alwaysPrompt) {
+      updateChecker.showPrompt();
+    }
+  });
+}
+
 app.whenReady().then(() => {
   // Check preferences and set theme
   if (!fs.existsSync(PREFS_FILENAME)) {
@@ -1793,8 +1810,8 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length == 0) createHubWindow();
   });
 
-  // Send update notification once the window is ready
-  window.once("show", () => checkForUpdate(false));
+  // Check for update and show button on hub windows (but don't prompt)
+  checkForUpdate(false);
 });
 
 app.on("window-all-closed", () => {
