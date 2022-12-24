@@ -224,14 +224,42 @@ export default abstract class TimelineVizController implements TabController {
     });
   }
 
+  /** Called when this tab's title changes, so that the updated title can be sent to the satellites. */
+  setTitle(title: string) {
+    this.title = title;
+  }
+
   refresh() {
+    // Update fields
+    this.updateFields();
+  }
+
+  periodic() {}
+
+  /** Called every 15ms (regardless of the visible tab). */
+  private customPeriodic() {
+    // Get time to render
+    let time = 0;
+    let range = window.log.getTimestampRange();
+    let selectionMode = window.selection.getMode();
+    let hoveredTime = window.selection.getHoveredTime();
+    let selectedTime = window.selection.getSelectedTime();
+    if (selectionMode == SelectionMode.Playback || selectionMode == SelectionMode.Locked) {
+      time = selectedTime as number;
+    } else if (hoveredTime !== null) {
+      time = hoveredTime;
+    } else if (selectedTime !== null) {
+      time = selectedTime;
+    } else {
+      time = range[0];
+    }
+
     // Render timeline sections
     while (this.TIMELINE_MARKER_CONTAINER.firstChild) {
       this.TIMELINE_MARKER_CONTAINER.removeChild(this.TIMELINE_MARKER_CONTAINER.firstChild);
     }
-    let range = window.log.getTimestampRange();
     let isLocked = window.selection.getMode() == SelectionMode.Locked;
-    if (isLocked) range[1] = window.selection.getSelectedTime() as number;
+    if (isLocked) range[1] = selectedTime as number;
     this.TIMELINE_INPUT.min = range[0].toString();
     this.TIMELINE_INPUT.max = range[1].toString();
     this.TIMELINE_INPUT.disabled = isLocked;
@@ -251,40 +279,11 @@ export default abstract class TimelineVizController implements TabController {
       }
     }
 
-    // Jump to end of timeline if locked
-    if (window.selection.getMode() == SelectionMode.Locked) this.TIMELINE_INPUT.value = this.TIMELINE_INPUT.max;
-
-    // Update fields
-    this.updateFields();
-  }
-
-  /** Called when this tab's title changes, so that the updated title can be sent to the satellites. */
-  setTitle(title: string) {
-    this.title = title;
-  }
-
-  periodic() {}
-
-  /** Called every 15ms (regardless of the visible tab). */
-  private customPeriodic() {
-    // Get time to render
-    let time = 0;
-    let selectionMode = window.selection.getMode();
-    let hoveredTime = window.selection.getHoveredTime();
-    let selectedTime = window.selection.getSelectedTime();
-    if (selectionMode == SelectionMode.Playback || selectionMode == SelectionMode.Locked) {
-      time = selectedTime as number;
-    } else if (hoveredTime) {
-      time = hoveredTime;
-    } else if (selectedTime) {
-      time = selectedTime;
+    // Update timeline value
+    if (selectedTime !== null) {
+      this.TIMELINE_INPUT.value = selectedTime.toString();
     } else {
-      time = window.log.getTimestampRange()[0];
-    }
-
-    // Update timeline
-    if (window.selection.getMode() != SelectionMode.Locked) {
-      this.TIMELINE_INPUT.value = time.toString();
+      this.TIMELINE_INPUT.value = range[0].toString();
     }
 
     // Update content height
