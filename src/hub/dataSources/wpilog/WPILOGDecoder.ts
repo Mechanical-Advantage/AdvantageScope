@@ -158,7 +158,7 @@ export class WPILOGDecoderRecord {
   getFloatArray(): number[] {
     if (this.data.length % 4 != 0) throw "Not a float array";
     let array: number[] = [];
-    for (let position = 0; position < this.data.length; position += 8) {
+    for (let position = 0; position < this.data.length; position += 4) {
       array.push(this.dataView.getFloat32(position, true));
     }
     return array;
