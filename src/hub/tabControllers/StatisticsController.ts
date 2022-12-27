@@ -299,9 +299,9 @@ export default class StatisticsController implements TabController {
     const isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (isLight !== this.lastIsLight) {
       this.lastIsLight = isLight;
-      (this.histogram.options.plugins?.legend as LegendOptions<"bar">).labels.color = isLight ? "#222" : "#eee";
-      let xAxisOptions = this.histogram.options.scales?.x as LinearScaleOptions;
-      let yAxisOptions = this.histogram.options.scales?.y as LinearScaleOptions;
+      (this.histogram.options.plugins!.legend as LegendOptions<"bar">).labels.color = isLight ? "#222" : "#eee";
+      let xAxisOptions = this.histogram.options.scales!.x as LinearScaleOptions;
+      let yAxisOptions = this.histogram.options.scales!.y as LinearScaleOptions;
       xAxisOptions.ticks.color = isLight ? "#222" : "#eee";
       yAxisOptions.ticks.color = isLight ? "#222" : "#eee";
       xAxisOptions.grid.borderColor = isLight ? "#222" : "#eee";
@@ -538,8 +538,8 @@ export default class StatisticsController implements TabController {
         };
         return dataset;
       });
-      (this.histogram.options.scales?.x as LinearScaleOptions).ticks.stepSize = step;
-      (this.histogram.options.plugins?.tooltip?.callbacks as TooltipCallbacks<"bar">).title = (items) => {
+      (this.histogram.options.scales!.x as LinearScaleOptions).ticks.stepSize = step;
+      (this.histogram.options.plugins!.tooltip!.callbacks as TooltipCallbacks<"bar">).title = (items) => {
         if (items.length < 1) {
           return "";
         }
