@@ -22,14 +22,17 @@ export default class UpdateChecker {
     // Read release data from GitHub
     let releaseData;
     try {
-      releaseData = await fetch("https://api.github.com/repos/" + REPOSITORY + "/releases", {
+      // @ts-ignore
+      let response = await fetch.default("https://api.github.com/repos/" + REPOSITORY + "/releases", {
         method: "GET",
         headers: {
           pragma: "no-cache",
           "cache-control": "no-cache"
         }
-      }).then((res) => res.json());
-    } catch {
+      });
+      releaseData = await response.json();
+    } catch (error) {
+      console.error(error);
       this.alertMessage = "Cannot check for updates";
       this.alertDetail =
         "Failed to retrieve update information from GitHub. Please check your internet connection and try again.";
