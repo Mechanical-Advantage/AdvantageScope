@@ -1,7 +1,8 @@
-import { pose2dTo3d, Pose3d } from "../../shared/geometry";
+import { AprilTag, pose2dTo3d, Pose3d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
+import { cleanFloat } from "../../shared/util";
 import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
@@ -30,6 +31,7 @@ export default class ThreeDimensionController extends TimelineVizController {
             "Robot",
             "Ghost",
             "AprilTag",
+            "AprilTag ID",
             "Camera Override",
             "Vision Target",
             "Axes",
@@ -166,7 +168,6 @@ export default class ThreeDimensionController extends TimelineVizController {
           });
         }
         return poses;
-      } else {
       }
       return [];
     };
@@ -210,7 +211,6 @@ export default class ThreeDimensionController extends TimelineVizController {
           }
         }
         return poses;
-      } else {
       }
       return [];
     };
@@ -218,7 +218,9 @@ export default class ThreeDimensionController extends TimelineVizController {
     // Set up data
     let robotData: Pose3d[] = [];
     let ghostData: Pose3d[] = [];
-    let aprilTagData: Pose3d[] = [];
+    let aprilTagData: AprilTag[] = [];
+    let aprilTagPoseData: Pose3d[] = [];
+    let aprilTagIdData: number[] = [];
     let cameraOverrideData: Pose3d[] = [];
     let trajectoryData: Pose3d[][] = [];
     let visionTargetData: Pose3d[] = [];
@@ -240,7 +242,15 @@ export default class ThreeDimensionController extends TimelineVizController {
           ghostData = ghostData.concat(get3DValue(field.key));
           break;
         case "AprilTag":
-          aprilTagData = aprilTagData.concat(get3DValue(field.key));
+          aprilTagPoseData = aprilTagPoseData.concat(get3DValue(field.key));
+          break;
+        case "AprilTag ID":
+          let logData = window.log.getNumberArray(field.key, time, time);
+          if (logData && logData.timestamps[0] <= time) {
+            for (let i = 0; i < logData.values[0].length; i += 1) {
+              aprilTagIdData.push(logData.values[0][i]);
+            }
+          }
           break;
         case "Camera Override":
           cameraOverrideData = cameraOverrideData.concat(get3DValue(field.key));
@@ -305,6 +315,22 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Yellow Cone (Back)":
           coneYellowBackData = coneYellowBackData.concat(get2DValue(field.key));
           break;
+      }
+    });
+
+    // Combine AprilTag data
+    aprilTagData = aprilTagPoseData.map((pose) => {
+      return {
+        id: null,
+        pose: pose
+      };
+    });
+    aprilTagIdData.forEach((id, index) => {
+      if (index < aprilTagData.length) {
+        let cleanId = cleanFloat(id);
+        if (cleanId >= 0 && cleanId <= 29) {
+          aprilTagData[index].id = cleanId;
+        }
       }
     });
 

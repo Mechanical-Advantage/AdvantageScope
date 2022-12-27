@@ -56,6 +56,8 @@ The following objects are supported:
 - Blue Cone (Front/Center/Back)
 - Yellow Cone (Front/Center/Back)
 
+> Note: AprilTags use a smile texture by default. Add a field as "AprilTag ID" to specific an ID (0-29) for each displayed tag. The ID field must be a numeric array where each item corresponds to a tag.
+
 ![3D with objects](/docs/resources/3d-field/3d-field-2.gif)
 
 ## Camera Options

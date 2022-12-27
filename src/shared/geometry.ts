@@ -14,6 +14,10 @@ export type Pose3d = {
   translation: Translation3d;
   rotation: Rotation3d;
 };
+export type AprilTag = {
+  id: number | null;
+  pose: Pose3d;
+};
 
 export function translation2dTo3d(input: Translation2d, z: number = 0): Translation3d {
   return [...input, z];

@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
-import { Pose3d, rotation3dToQuaternion } from "../geometry";
+import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
 import { convert } from "../units";
 import Visualizer from "./Visualizer";
 
@@ -57,7 +57,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private field: THREE.Object3D | null = null;
   private robotSet: ObjectSet;
   private ghostSet: ObjectSet;
-  private aprilTagSet: ObjectSet;
+  private aprilTagSets: Map<number | null, ObjectSet> = new Map();
   private trajectories: THREE.Line[] = [];
   private visionTargets: THREE.Line[] = [];
   private axesSet: ObjectSet;
@@ -174,7 +174,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     {
       this.robotSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.ghostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.aprilTagSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.axesSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
@@ -276,9 +275,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.coneYellowBackSet.setSource(new THREE.Group().add(backMesh));
     }
 
-    // Create AprilTag model
-    {
-      let aprilTagTexture = loader.load("../www/textures/apriltag.png");
+    // Create AprilTag models
+    [null, ...Array(30).keys()].forEach((id) => {
+      let aprilTagTexture = loader.load("../www/textures/apriltag/" + (id === null ? "smile" : id.toString()) + ".png");
+      aprilTagTexture.minFilter = THREE.NearestFilter;
+      aprilTagTexture.magFilter = THREE.NearestFilter;
       let whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
       let mesh = new THREE.Mesh(
         new THREE.BoxGeometry(0.02, convert(8, "inches", "meters"), convert(8, "inches", "meters")),
@@ -291,8 +292,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           whiteMaterial
         ]
       );
-      this.aprilTagSet.setSource(new THREE.Group().add(mesh));
-    }
+      mesh.rotateX(Math.PI / 2);
+      let objectSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      objectSet.setSource(new THREE.Group().add(mesh));
+      this.aprilTagSets.set(id, objectSet);
+    });
 
     // Render when camera is moved
     this.controls.addEventListener("change", () => (this.shouldRender = true));
@@ -508,7 +512,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.ghostSet.setPoses(this.command.poses.ghost.slice(0, 7)); // Max of 6 poses
 
     // Update AprilTag poses
-    this.aprilTagSet.setPoses(this.command.poses.aprilTag);
+    let aprilTags: AprilTag[] = this.command.poses.aprilTag;
+    [null, ...Array(30).keys()].forEach((id) => {
+      this.aprilTagSets.get(id)?.setPoses(aprilTags.filter((tag) => tag.id === id).map((tag) => tag.pose));
+    });
 
     // Update vision target lines
     if (this.command.poses.robot.length == 0) {
