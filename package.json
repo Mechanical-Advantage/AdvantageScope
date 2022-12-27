@@ -24,7 +24,7 @@
     "@electron/notarize": "^1.2.3",
     "@rollup/plugin-commonjs": "^24.0.0",
     "@rollup/plugin-node-resolve": "^15.0.1",
-    "@rollup/plugin-typescript": "^10.0.1",
+    "@rollup/plugin-typescript": "10.0.1",
     "@types/chart.js": "^2.9.37",
     "@types/jsonfile": "^6.1.0",
     "@types/mathjs": "^9.4.2",
@@ -43,7 +43,7 @@
     "simple-statistics": "^7.7.6",
     "three": "^0.144.0",
     "tslib": "^2.4.0",
-    "typescript": "^4.7.4"
+    "typescript": "4.7.4"
   },
   "dependencies": {
     "electron-fetch": "^1.7.4",
