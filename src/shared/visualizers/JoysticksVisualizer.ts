@@ -1,5 +1,3 @@
-import { contextBridge } from "electron";
-import { ConfigJoystick, ConfigJoystick_Button } from "../FRCData";
 import { JoystickState } from "../log/LogUtil";
 import { scaleValue } from "../util";
 import Visualizer from "./Visualizer";
