@@ -14,6 +14,10 @@ export default class UpdateChecker {
   async check() {
     // Check if running in dev environment
     if (!app.isPackaged) {
+      this.shouldPrompt = false;
+      this.alertOptions = null;
+      this.alertCancelId = null;
+      this.alertDownloadUrl = null;
       this.alertMessage = "Cannot check for updates";
       this.alertDetail = "This app is running in a development environment.";
       return;
@@ -33,6 +37,10 @@ export default class UpdateChecker {
       releaseData = await response.json();
     } catch (error) {
       console.error(error);
+      this.shouldPrompt = false;
+      this.alertOptions = null;
+      this.alertCancelId = null;
+      this.alertDownloadUrl = null;
       this.alertMessage = "Cannot check for updates";
       this.alertDetail =
         "Failed to retrieve update information from GitHub. Please check your internet connection and try again.";
@@ -52,6 +60,7 @@ export default class UpdateChecker {
     this.alertOptions =
       process.platform == "darwin" ? ["Download", "Later", "View Changelog"] : ["Download", "View Changelog", "Later"];
     this.alertCancelId = process.platform == "darwin" ? 1 : 2;
+    this.alertDownloadUrl = null;
 
     // Set appropriate prompt
     if (currentVersion != latestVersion && translated) {
@@ -84,6 +93,7 @@ export default class UpdateChecker {
       this.alertCancelId = null;
       this.alertMessage = "No updates available";
       this.alertDetail = "You're currently running version " + currentVersion + " (released " + latestDateText + ").";
+      return;
     }
 
     // Get download URL
