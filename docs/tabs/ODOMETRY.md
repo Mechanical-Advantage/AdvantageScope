@@ -36,6 +36,8 @@ The following objects are supported:
 - Vision Target
 - Arrow (Front/Center/Back)
 
+> Note: The robot pose is always centered on the robot. The crossbar on the arrow indicates the location of the pose (at the front, center, or back).
+
 ![Odometry with objects](/docs/resources/odometry/odometry-2.png)
 
 ## Configuration

@@ -304,12 +304,18 @@ export default class OdometryVisualizer implements Visualizer {
             robotLengthPixels * (-0.15 + 0.3 * index),
             robotLengthPixels * -0.15
           ]);
+          let crossbarLeft = transformPx(position, rotation, [0, robotLengthPixels * (index == 0 ? 0.15 : 0.1)]);
+          let crossbarRight = transformPx(position, rotation, [0, robotLengthPixels * -(index == 0 ? 0.15 : 0.1)]);
           context.beginPath();
           context.moveTo(arrowBack[0], arrowBack[1]);
           context.lineTo(arrowFront[0], arrowFront[1]);
           context.lineTo(arrowLeft[0], arrowLeft[1]);
           context.moveTo(arrowFront[0], arrowFront[1]);
           context.lineTo(arrowRight[0], arrowRight[1]);
+          context.stroke();
+          context.beginPath();
+          context.moveTo(crossbarLeft[0], crossbarLeft[1]);
+          context.lineTo(crossbarRight[0], crossbarRight[1]);
           context.stroke();
         });
       }
