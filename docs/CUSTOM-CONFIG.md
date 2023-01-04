@@ -22,7 +22,7 @@ Files must follow the naming convention "Field2d_NAME.json" and "Field2d_NAME.pn
 
 ## 3D Field Models
 
-Files must follow the naming convention "Field3d_NAME.json" and "Field3d_NAME.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to gLTF (.glb). The JSON file must be in the following format:
+Files must follow the naming convention "Field3d_NAME.json" and "Field3d_NAME.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to glTF; see [this page](/docs/GLTF-CONVERT.md) for details. The JSON file must be in the following format:
 
 ```
 {
@@ -35,7 +35,7 @@ Files must follow the naming convention "Field3d_NAME.json" and "Field3d_NAME.gl
 
 ## 3D Robot Models
 
-Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". CAD files must be converted to gLTF (.glb). The JSON file must be in the following format:
+Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". CAD files must be converted to glTF; see [this page](/docs/GLTF-CONVERT.md) for details. The JSON file must be in the following format:
 
 ```
 {

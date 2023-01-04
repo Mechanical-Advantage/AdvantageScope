@@ -35,5 +35,6 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 - [AdvantageScope Repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
 - [Sample Log Data](https://drive.google.com/drive/folders/14Bbp10csQPjh2VcApNM07lwt2v77-z_I?usp=share_link) (6328 @ 2022 Championship)
 - [Custom Fields/Robots/Joysticks](/docs/CUSTOM-CONFIG.md)
+- [Converting Onshape & STEP Files to glTF](/docs/GLTF-CONVERT.md)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.
