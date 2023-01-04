@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { MeshStandardMaterial } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
@@ -452,6 +453,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
           // Add to scene
           this.field = gltf.scene;
+          this.field.traverse((node: any) => {
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
+              let material = mesh.material as MeshStandardMaterial;
+              material.metalness = 0;
+              material.roughness = 1;
+            }
+          });
           this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
           this.wpilibCoordinateGroup.add(this.field);
 
@@ -471,6 +480,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Set position and rotation of model
         let robotModel = gltf.scene;
+        robotModel.traverse((node: any) => {
+          let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+          if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
+            let material = mesh.material as MeshStandardMaterial;
+            material.metalness = 0;
+            material.roughness = 1;
+          }
+        });
         robotModel.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
         robotModel.position.set(...robotConfig.position);
 
