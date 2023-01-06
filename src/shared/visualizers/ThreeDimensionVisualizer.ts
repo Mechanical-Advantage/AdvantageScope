@@ -143,7 +143,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Add lights
     {
       const skyColor = 0xffffff;
-      const groundColor = 0x000000;
+      const groundColor = 0x444444;
       const intensity = 0.5;
       const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
       this.scene.add(light);
@@ -152,15 +152,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       const color = 0xffffff;
       const intensity = 0.2;
       const light = new THREE.PointLight(color, intensity);
-      light.position.set(-12, 10, -12);
-      this.scene.add(light);
-    }
-    {
-      const color = 0xffffff;
-      const intensity = 0.2;
-      const light = new THREE.PointLight(color, intensity);
-      light.position.set(0, -10, 0);
-      this.scene.add(light);
+      light.position.set(0, 0, 10);
+      this.wpilibCoordinateGroup.add(light);
     }
 
     // Create fixed camera objects
