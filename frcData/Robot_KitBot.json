@@ -19,6 +19,38 @@
       "position": [-0.2, 0, 0.8],
       "resolution": [960, 720],
       "fov": 100
+    },
+    {
+      "name": "Left Camera",
+      "rotations": [
+        {
+          "axis": "y",
+          "degrees": 20
+        },
+        {
+          "axis": "z",
+          "degrees": 90
+        }
+      ],
+      "position": [0, 0.2, 0.8],
+      "resolution": [960, 720],
+      "fov": 90
+    },
+    {
+      "name": "Right Camera",
+      "rotations": [
+        {
+          "axis": "y",
+          "degrees": 20
+        },
+        {
+          "axis": "z",
+          "degrees": -90
+        }
+      ],
+      "position": [0, -0.2, 0.8],
+      "resolution": [960, 720],
+      "fov": 90
     }
   ]
 }
