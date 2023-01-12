@@ -113,9 +113,9 @@ export default class Tabs {
 
     // Periodic function
     let periodic = () => {
-      this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) == 0 ? "0" : "1";
+      this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
       this.SHADOW_RIGHT.style.opacity =
-        Math.ceil(this.TAB_BAR.scrollLeft) == this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
+        Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
       this.tabList[this.selectedTab].controller.periodic();
       this.scrollSensor.periodic();
       window.requestAnimationFrame(periodic);
