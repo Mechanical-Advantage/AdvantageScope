@@ -7,6 +7,7 @@ import ConsoleController from "./tabControllers/ConsoleController";
 import DocumentationController from "./tabControllers/DocumentationController";
 import JoysticksController from "./tabControllers/JoysticksController";
 import LineGraphController from "./tabControllers/LineGraphController";
+import MechanismController from "./tabControllers/MechanismController";
 import MetadataController from "./tabControllers/MetadataController";
 import OdometryController from "./tabControllers/OdometryController";
 import PointsController from "./tabControllers/PointsController";
@@ -218,13 +219,18 @@ export default class Tabs {
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
         controller = new SwerveController(contentElement);
         break;
-      case TabType.Points:
+      case TabType.Mechanism:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
+        controller = new MechanismController(contentElement);
+        break;
+      case TabType.Points:
+        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[12].cloneNode(true));
         controller = new PointsController(contentElement);
         break;
       case TabType.Metadata:
-        contentElement = this.CONTENT_TEMPLATES.children[12].cloneNode(true) as HTMLElement;
+        contentElement = this.CONTENT_TEMPLATES.children[13].cloneNode(true) as HTMLElement;
         controller = new MetadataController(contentElement);
         break;
     }

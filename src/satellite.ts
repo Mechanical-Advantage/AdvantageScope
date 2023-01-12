@@ -4,6 +4,7 @@ import Preferences from "./shared/Preferences";
 import TabType, { getTabIcon } from "./shared/TabType";
 import { htmlEncode } from "./shared/util";
 import JoysticksVisualizer from "./shared/visualizers/JoysticksVisualizer";
+import MechanismVisualizer from "./shared/visualizers/MechanismVisualizer";
 import OdometryVisualizer from "./shared/visualizers/OdometryVisualizer";
 import PointsVisualizer from "./shared/visualizers/PointsVisualizer";
 import SwerveVisualizer from "./shared/visualizers/SwerveVisualizer";
@@ -56,9 +57,10 @@ window.addEventListener("message", (event) => {
           (document.getElementById("odometry") as HTMLElement).hidden = type != TabType.Odometry;
           (document.getElementById("threeDimension") as HTMLElement).hidden = type != TabType.ThreeDimension;
           (document.getElementById("video") as HTMLElement).hidden = type != TabType.Video;
-          (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
           (document.getElementById("joysticks") as HTMLElement).hidden = type != TabType.Joysticks;
           (document.getElementById("swerve") as HTMLElement).hidden = type != TabType.Swerve;
+          (document.getElementById("mechanism") as HTMLElement).hidden = type != TabType.Mechanism;
+          (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
 
           // Create visualizer
           switch (type) {
@@ -75,17 +77,22 @@ window.addEventListener("message", (event) => {
             case TabType.Video:
               visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
               break;
-            case TabType.Points:
-              visualizer = new PointsVisualizer(
-                document.getElementsByClassName("points-background-container")[0] as HTMLElement
-              );
-              break;
             case TabType.Joysticks:
               visualizer = new JoysticksVisualizer(document.getElementById("joysticksCanvas") as HTMLCanvasElement);
               break;
             case TabType.Swerve:
               visualizer = new SwerveVisualizer(
                 document.getElementsByClassName("swerve-canvas-container")[0] as HTMLElement
+              );
+              break;
+            case TabType.Mechanism:
+              visualizer = new MechanismVisualizer(
+                document.getElementsByClassName("mechanism-svg-container")[0] as HTMLElement
+              );
+              break;
+            case TabType.Points:
+              visualizer = new PointsVisualizer(
+                document.getElementsByClassName("points-background-container")[0] as HTMLElement
               );
               break;
           }

@@ -9,6 +9,7 @@ enum TabType {
   Video,
   Joysticks,
   Swerve,
+  Mechanism,
   Points,
   Metadata
 }
@@ -21,7 +22,8 @@ export const TIMELINE_VIZ_TYPES: TabType[] = [
   TabType.Video,
   TabType.Points,
   TabType.Joysticks,
-  TabType.Swerve
+  TabType.Swerve,
+  TabType.Mechanism
 ];
 
 export function getAllTabTypes(): TabType[] {
@@ -50,6 +52,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Joysticks";
     case TabType.Swerve:
       return "Swerve";
+    case TabType.Mechanism:
+      return "Mechanism";
     case TabType.Points:
       return "Points";
     case TabType.Metadata:
@@ -81,6 +85,8 @@ export function getTabIcon(type: TabType): string {
       return "🎮";
     case TabType.Swerve:
       return "🦀";
+    case TabType.Mechanism:
+      return "🦾";
     case TabType.Points:
       return "🔵";
     case TabType.Metadata:

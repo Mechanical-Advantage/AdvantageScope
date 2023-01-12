@@ -67,7 +67,11 @@ export default class Log {
 
   /** Returns the constant field type. */
   getType(key: string): LoggableType | undefined {
-    return this.fields[key].getType();
+    if (key in this.fields) {
+      return this.fields[key].getType();
+    } else {
+      return undefined;
+    }
   }
 
   /** Returns the combined timestamps from a set of fields.
@@ -118,11 +122,13 @@ export default class Log {
   }
 
   /** Organizes the fields into a tree structure. */
-  getFieldTree(includeArrayItems: boolean = true): { [id: string]: LogFieldTree } {
+  getFieldTree(includeArrayItems: boolean = true, prefix: string = ""): { [id: string]: LogFieldTree } {
     let root: { [id: string]: LogFieldTree } = {};
     Object.keys(this.fields).forEach((key) => {
       if (!includeArrayItems && this.arrayItemFields.includes(key)) return;
+      if (!key.startsWith(prefix)) return;
       let position: LogFieldTree = { fullKey: null, children: root };
+      key = key.slice(prefix.length);
       key
         .slice(key.startsWith("/") ? 1 : 0)
         .split(new RegExp(/\/|:/))

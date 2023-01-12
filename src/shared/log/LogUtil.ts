@@ -27,6 +27,16 @@ export function getLogValueText(value: any, type: LoggableType): string {
   }
 }
 
+export function getOrDefault(log: Log, key: string, type: LoggableType, timestamp: number, defaultValue: any): any {
+  if (log.getType(key) === type) {
+    let logData = log.getRange(key, timestamp, timestamp);
+    if (logData !== undefined && logData.values.length > 0) {
+      return logData.values[0];
+    }
+  }
+  return defaultValue;
+}
+
 export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!enabledKey) return null;

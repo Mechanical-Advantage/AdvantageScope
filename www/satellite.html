@@ -39,6 +39,22 @@
       <img class="video-image" />
     </span>
 
+    <span id="joysticks" hidden>
+      <canvas id="joysticksCanvas"></canvas>
+    </span>
+
+    <span id="swerve" hidden>
+      <div class="swerve-canvas-container">
+        <canvas class="swerve-canvas" width="100" height="100"></canvas>
+      </div>
+    </span>
+
+    <span id="mechanism" hidden>
+      <div class="mechanism-svg-container">
+        <svg class="mechanism-svg"></svg>
+      </div>
+    </span>
+
     <span id="points" hidden>
       <div class="points-background-container">
         <div class="points-background"></div>
@@ -55,16 +71,6 @@
             <circle cx="10" cy="10" r="7"></circle>
           </svg>
         </span>
-      </div>
-    </span>
-
-    <span id="joysticks" hidden>
-      <canvas id="joysticksCanvas"></canvas>
-    </span>
-
-    <span id="swerve" hidden>
-      <div class="swerve-canvas-container">
-        <canvas class="swerve-canvas" width="100" height="100"></canvas>
       </div>
     </span>
   </body>

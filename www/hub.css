@@ -1531,6 +1531,25 @@ canvas.swerve-canvas {
   }
 }
 
+div.mechanism-svg-container {
+  position: absolute;
+  top: 30px;
+  height: calc(100% - 30px - var(--bottom-margin));
+  left: 0px;
+  width: 100%;
+}
+
+svg.mechanism-svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+td.mechanism-config {
+  text-align: center;
+}
+
 div.points-background-container {
   position: absolute;
   top: 30px;

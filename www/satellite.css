@@ -62,37 +62,6 @@
   }
 }
 
-div.points-background-container {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  left: 0px;
-  width: 100%;
-  overflow: hidden;
-}
-
-div.points-background {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  background-color: #f4f4f4;
-  border: 1px solid #555;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.points-background {
-    background-color: #292929;
-    border: 1px solid #999;
-  }
-}
-
-div.points-background svg {
-  position: absolute;
-  stroke-width: 5px;
-}
-
 img.video-image {
   position: absolute;
   left: 0%;
@@ -126,4 +95,50 @@ canvas.swerve-canvas {
     background-color: #292929;
     border: 1px solid #999;
   }
+}
+
+div.mechanism-svg-container {
+  position: absolute;
+  top: 0px;
+  height: 100%;
+  left: 0px;
+  width: 100%;
+}
+
+svg.mechanism-svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+div.points-background-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+div.points-background {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.points-background {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}
+
+div.points-background svg {
+  position: absolute;
+  stroke-width: 5px;
 }
