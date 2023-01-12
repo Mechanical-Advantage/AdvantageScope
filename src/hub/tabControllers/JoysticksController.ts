@@ -68,12 +68,16 @@ export default class JoysticksController extends TimelineVizController {
     if (newLayouts && this.lastOptions) this.options = this.lastOptions;
 
     // Read data
-    return this.CONFIG_LAYOUTS.filter((layoutInput) => layoutInput.value != "None").map((layoutInput, index) => {
-      let joystickId = Number(this.CONFIG_IDS[index].value);
-      return {
-        layoutTitle: layoutInput.value,
-        state: getJoystickState(window.log, joystickId, time)
-      };
+    let command: any[] = [];
+    this.CONFIG_LAYOUTS.forEach((layoutInput, index) => {
+      if (layoutInput.value !== "None") {
+        let joystickId = Number(this.CONFIG_IDS[index].value);
+        command.push({
+          layoutTitle: layoutInput.value,
+          state: getJoystickState(window.log, joystickId, time)
+        });
+      }
     });
+    return command;
   }
 }
