@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { MeshStandardMaterial } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
 import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
 import { convert } from "../units";
@@ -468,38 +468,76 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     if (robotTitle != this.lastRobotTitle || newFrcData) {
       this.lastRobotTitle = robotTitle;
       const loader = new GLTFLoader();
-      loader.load(robotConfig.path, (gltf) => {
+      Promise.all([
+        new Promise((resolve) => {
+          loader.load(robotConfig.path, resolve);
+        }),
+        ...robotConfig.components.map(
+          (_, index) =>
+            new Promise((resolve) => {
+              loader.load(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
+            })
+        )
+      ]).then((gltfs) => {
+        let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
         if (robotConfig == undefined) return;
 
-        // Set position and rotation of model
-        let robotModel = gltf.scene;
-        robotModel.traverse((node: any) => {
-          let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-          if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
-            let material = mesh.material as MeshStandardMaterial;
-            material.metalness = 0;
-            material.roughness = 1;
-          }
-        });
-        robotModel.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
-        robotModel.position.set(...robotConfig.position);
-
-        // Create ghost model
-        let ghostModel = robotModel.clone(true);
+        // Define ghost material
         let ghostMaterial = new THREE.MeshPhongMaterial();
         ghostMaterial.color = new THREE.Color("#00ff00");
         ghostMaterial.transparent = true;
         ghostMaterial.opacity = 0.35;
-        ghostModel.traverse((node: any) => {
-          let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-          if (mesh.isMesh) {
-            mesh.material = ghostMaterial;
-          }
+
+        // Update model materials and set up groups
+        let robotGroup = new THREE.Group();
+        let ghostGroup = new THREE.Group();
+        gltfScenes.forEach((originalScene, index) => {
+          originalScene.traverse((node: any) => {
+            // Adjust materials
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
+              let material = mesh.material as MeshStandardMaterial;
+              material.metalness = 0;
+              material.roughness = 1;
+            }
+          });
+          let ghostScene = originalScene.clone(true);
+          ghostScene.traverse((node: any) => {
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh) {
+              mesh.material = ghostMaterial;
+            }
+          });
+
+          // Set up groups
+          [true, false].forEach((isOriginal) => {
+            let scene = isOriginal ? originalScene : ghostScene;
+            if (index == 0) {
+              // Root model, set position and add directly
+              if (isOriginal) {
+                robotGroup.add(scene);
+              } else {
+                ghostGroup.add(scene);
+              }
+              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+              scene.position.set(...robotConfig.position);
+            } else {
+              // Component model, add name and store in group
+              let componentGroup = new THREE.Group();
+              componentGroup.name = "AdvantageScope_Component" + (index - 1).toString();
+              componentGroup.add(scene);
+              if (isOriginal) {
+                robotGroup.add(componentGroup);
+              } else {
+                ghostGroup.add(componentGroup);
+              }
+            }
+          });
         });
 
-        // Create group and update robot sets
-        this.robotSet.setSource(new THREE.Group().add(robotModel));
-        this.ghostSet.setSource(new THREE.Group().add(ghostModel));
+        // Update robot sets
+        this.robotSet.setSource(robotGroup);
+        this.ghostSet.setSource(ghostGroup);
 
         // Render new frame
         this.shouldRender = true;
@@ -520,6 +558,53 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Update robot poses
     this.robotSet.setPoses(this.command.poses.robot.slice(0, 7)); // Max of 6 poses
     this.ghostSet.setPoses(this.command.poses.ghost.slice(0, 7)); // Max of 6 poses
+
+    // Update robot components
+    if (robotConfig && robotConfig.components.length > 0) {
+      [true, false].forEach((isOriginal) => {
+        if (
+          (isOriginal ? this.command.poses.componentRobot.length : this.command.poses.componentGhost.length) !==
+          robotConfig.components.length
+        ) {
+          // Ignore component data, reset to default positions
+          (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
+            for (let i = 0; i < robotConfig.components.length; i++) {
+              let componentGroup = childRobot.getObjectByName("AdvantageScope_Component" + i.toString());
+              let componentModel = componentGroup?.children[0];
+
+              // The group has the user's pose, reset to origin
+              componentGroup?.rotation.set(0, 0, 0);
+              componentGroup?.position.set(0, 0, 0);
+
+              // The model should use the robot's default pose offset
+              componentModel?.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+              componentModel?.position.set(...robotConfig.position);
+            }
+          });
+        } else {
+          // Use component data
+          (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
+            for (let i = 0; i < robotConfig.components.length; i++) {
+              let componentGroup = childRobot.getObjectByName("AdvantageScope_Component" + i.toString());
+              let componentModel = componentGroup?.children[0];
+              let componentPose = (
+                isOriginal ? this.command.poses.componentRobot[i] : this.command.poses.componentGhost[i]
+              ) as Pose3d;
+
+              // The group has the user's pose
+              componentGroup?.rotation.setFromQuaternion(rotation3dToQuaternion(componentPose.rotation));
+              componentGroup?.position.set(...componentPose.translation);
+
+              // The model should use the component's zeroed pose offset
+              componentModel?.rotation.setFromQuaternion(
+                getQuaternionFromRotSeq(robotConfig.components[i].zeroedRotations)
+              );
+              componentModel?.position.set(...robotConfig.components[i].zeroedPosition);
+            }
+          });
+        }
+      });
+    }
 
     // Update AprilTag poses
     let aprilTags: AprilTag[] = this.command.poses.aprilTag;

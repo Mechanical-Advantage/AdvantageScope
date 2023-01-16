@@ -33,6 +33,8 @@ export default class ThreeDimensionController extends TimelineVizController {
             "AprilTag",
             "AprilTag ID",
             "Camera Override",
+            "Component (Robot)",
+            "Component (Ghost)",
             "Vision Target",
             "Axes",
             "Blue Cone (Front)",
@@ -222,6 +224,8 @@ export default class ThreeDimensionController extends TimelineVizController {
     let aprilTagPoseData: Pose3d[] = [];
     let aprilTagIdData: number[] = [];
     let cameraOverrideData: Pose3d[] = [];
+    let componentRobotData: Pose3d[] = [];
+    let componentGhostData: Pose3d[] = [];
     let trajectoryData: Pose3d[][] = [];
     let visionTargetData: Pose3d[] = [];
     let axesData: Pose3d[] = [];
@@ -254,6 +258,12 @@ export default class ThreeDimensionController extends TimelineVizController {
           break;
         case "Camera Override":
           cameraOverrideData = cameraOverrideData.concat(get3DValue(field.key));
+          break;
+        case "Component (Robot)":
+          componentRobotData = componentRobotData.concat(get3DValue(field.key));
+          break;
+        case "Component (Ghost)":
+          componentGhostData = componentGhostData.concat(get3DValue(field.key));
           break;
         case "Vision Target":
           visionTargetData = visionTargetData.concat(get3DValue(field.key));
@@ -341,6 +351,8 @@ export default class ThreeDimensionController extends TimelineVizController {
         ghost: ghostData,
         aprilTag: aprilTagData,
         cameraOverride: cameraOverrideData,
+        componentRobot: componentRobotData,
+        componentGhost: componentGhostData,
         trajectory: trajectoryData,
         visionTarget: visionTargetData,
         axes: axesData,
