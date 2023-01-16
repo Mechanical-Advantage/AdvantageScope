@@ -6,7 +6,9 @@ enum LoggableType {
   String,
   BooleanArray,
   NumberArray,
-  StringArray
+  StringArray,
+
+  PhotonPacked2023_1_2
 }
 
 export default LoggableType;
