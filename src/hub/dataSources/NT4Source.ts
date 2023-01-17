@@ -2,34 +2,8 @@ import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
-import { Transform3d, Translation3d, Rotation3d } from "../../shared/geometry";
 import { NT4_Client, NT4_Topic } from "./nt4/NT4";
-import { number } from "mathjs";
-
-class TargetCorner {
-  x: number = 0;
-  y: number = 0;
-}
-
-class PhotonTrackedTarget {
-  yaw: number = 0;
-  pitch: number = 0;
-  area: number = 0;
-  skew: number = 0;
-  fiducialId: number = 0;
-  bestCameraToTarget: number[] = [];
-  altCameraToTarget: number[] = [];
-  poseAmbiguity: number = 0;
-  minAreaRectCorners: TargetCorner[] = [];
-  detectedCorners: TargetCorner[] = [];
-}
-
-class PhotonPipelineResult {
-  latency: number = 0;
-  timestamp: number = 0;
-  targets: PhotonTrackedTarget[] = [];
-}
-
+import Schemas from "./schema/Schemas";
 
 export default class NT4Source extends LiveDataSource {
   private AKIT_PREFIX = "/AdvantageKit";
@@ -119,6 +93,9 @@ export default class NT4Source extends LiveDataSource {
               case LoggableType.Raw:
                 if (value instanceof Uint8Array) {
                   this.log?.putRaw(key, timestamp, value);
+                  if (Schemas.has(topic.type)) {
+                    Schemas.get(topic.type)!(this.log, key, timestamp, value);
+                  }
                   updated = true;
                 } else {
                   console.warn('Expected a raw value for "' + key + '" but got:', value);
@@ -172,13 +149,6 @@ export default class NT4Source extends LiveDataSource {
                   console.warn('Expected a string[] value for "' + key + '" but got:', value);
                 }
                 break;
-              case LoggableType.PhotonPacked2023_1_2:
-                if (value instanceof Uint8Array) {
-                  this.parsePhotonPacket(key, timestamp, value);
-                  updated = true;
-                } else {
-                  console.warn('Expected a PhotonVision packed value for "' + key + '" but got:', value);
-                }
             }
           }
           if (updated) this.shouldRunOutputCallback = true;
@@ -214,123 +184,6 @@ export default class NT4Source extends LiveDataSource {
     }
   }
 
-  parseTransform3d(view: DataView, offset: number): number[] {
-    let tx = view.getFloat64(offset);
-    offset += 8;
-    let ty = view.getFloat64(offset);
-    offset += 8;
-    let tz = view.getFloat64(offset);
-    offset += 8;
-    let qw = view.getFloat64(offset);
-    offset += 8;
-    let qx = view.getFloat64(offset);
-    offset += 8;
-    let qy = view.getFloat64(offset);
-    offset += 8;
-    let qz = view.getFloat64(offset);
-    offset += 8;
-
-    return [tx, ty, tz, qw, qx, qy, qz];
-  }
-
-  /**
-   * 
-   * @param key Base key for the entry
-   * @param timestamp 
-   * @param value Byte array coming in
-   */
-  parsePhotonPacket(key: string, timestamp: number, value: Uint8Array) {
-    let view = new DataView(value.buffer, value.byteOffset, value.byteLength);
-    
-    let offset = 0;
-    
-    let result = new PhotonPipelineResult();
-
-    result.latency = view.getFloat64(offset);
-    result.timestamp = timestamp - result.latency;
-    offset += 8;
-
-    const numTargets = view.getInt8(offset);
-    offset += 1
-
-    result.targets = [];
-    for (let i = 0; i < numTargets; i++) {
-      let target = new PhotonTrackedTarget();
-      target.yaw = view.getFloat64(offset);
-      offset += 8;
-      target.pitch = view.getFloat64(offset);
-      offset += 8;
-      target.area = view.getFloat64(offset);
-      offset += 8;
-      target.skew = view.getFloat64(offset);
-      offset += 8;
-      target.fiducialId = view.getInt32(offset);
-      offset += 4;
-
-      target.bestCameraToTarget = this.parseTransform3d(view, offset);
-      offset += 7 * 8;
-      target.altCameraToTarget = this.parseTransform3d(view, offset);
-      offset += 7 * 8;
-      target.poseAmbiguity = view.getFloat64(offset);
-      offset += 8;
-
-      target.minAreaRectCorners = [];
-      for (let j = 0; j < 4; j++) {
-        let x = view.getFloat64(offset);
-        offset += 8;
-        let y = view.getFloat64(offset);
-        offset += 8;
-        target.minAreaRectCorners.push({ x: x, y: y });
-      }
-
-      target.detectedCorners = [];
-      const numCorners = view.getInt8(offset);
-      offset += 1
-      for (let j = 0; j < numCorners; j++) {
-        let x = view.getFloat64(offset);
-        offset += 8;
-        let y = view.getFloat64(offset);
-        offset += 8;
-        target.detectedCorners.push({ x: x, y: y });
-      }
-
-      result.targets.push(target)
-    }
-
-    this.encodeResult(result, timestamp, key);
-  }
-
-  encodeResult(result: PhotonPipelineResult, timestamp: number, ntKey: string) {
-    this.log?.putNumber(ntKey + "/latency", timestamp, result.latency)
-    this.log?.putNumber(ntKey + "/timestamp", timestamp, result.timestamp)
-
-    for (const [idx, target] of result.targets.entries()) {
-      
-      Object.entries(target)
-        .forEach(([key, value]) => {
-          if (typeof value == "number") {
-            this.log?.putNumber(ntKey + `/target_${idx}/${key}` , timestamp, Number(value))
-          }
-          if (Array.isArray(value)) {
-            if (typeof value[0] == "number") {
-              this.log?.putNumberArray(ntKey+ `/target_${idx}/${key}` , timestamp, value)
-            } else if (typeof value[0] == "object") {
-              let xArray: number[] = [];
-              let yArray: number[] = [];
-              value.forEach(it => { xArray.push(it.x); yArray.push(it.y); })
-              this.log?.putNumberArray(ntKey + `/target_${idx}/${key}_x` , timestamp, xArray)
-              this.log?.putNumberArray(ntKey + `/target_${idx}/${key}_y` , timestamp, yArray)
-            }
-          }
-        })
-
-      // this.log?.putNumber(key + `/target_${idx}/yaw` , timestamp, target.yaw)
-      // this.log?.putNumber(key + `/target_${idx}/pitch` , timestamp, target.pitch)
-      // this.log?.putNumberArray(key + `/target_${idx}/bestPose` , timestamp, target.bestCameraToTarget)
-      // this.log?.putNumberArray(key + `/target_${idx}/altPose` , timestamp, target.altCameraToTarget)
-    }
-  }
-
   stop() {
     super.stop();
     this.client?.disconnect();
@@ -345,7 +198,7 @@ export default class NT4Source extends LiveDataSource {
     }
   }
 
-  private getLogType(ntType: string): LoggableType | null {
+  private getLogType(ntType: string): LoggableType {
     switch (ntType) {
       case "boolean":
         return LoggableType.Boolean;
@@ -356,11 +209,6 @@ export default class NT4Source extends LiveDataSource {
       case "string":
       case "json":
         return LoggableType.String;
-      case "raw":
-      case "rpc":
-      case "msgpack":
-      case "protobuf":
-        return LoggableType.Raw;
       case "boolean[]":
         return LoggableType.BooleanArray;
       case "int[]":
@@ -369,10 +217,8 @@ export default class NT4Source extends LiveDataSource {
         return LoggableType.NumberArray;
       case "string[]":
         return LoggableType.StringArray;
-      case "rawBytes":
-        return LoggableType.PhotonPacked2023_1_2;
-      default:
-        return null;
+      default: // Default to raw
+        return LoggableType.Raw;
     }
   }
 }
