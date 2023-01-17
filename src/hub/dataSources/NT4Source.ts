@@ -3,6 +3,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import { NT4_Client, NT4_Topic } from "./nt4/NT4";
+import Schemas from "./schema/Schemas";
 
 export default class NT4Source extends LiveDataSource {
   private AKIT_PREFIX = "/AdvantageKit";
@@ -92,6 +93,9 @@ export default class NT4Source extends LiveDataSource {
               case LoggableType.Raw:
                 if (value instanceof Uint8Array) {
                   this.log?.putRaw(key, timestamp, value);
+                  if (Schemas.has(topic.type)) {
+                    Schemas.get(topic.type)!(this.log, key, timestamp, value);
+                  }
                   updated = true;
                 } else {
                   console.warn('Expected a raw value for "' + key + '" but got:', value);
@@ -194,7 +198,7 @@ export default class NT4Source extends LiveDataSource {
     }
   }
 
-  private getLogType(ntType: string): LoggableType | null {
+  private getLogType(ntType: string): LoggableType {
     switch (ntType) {
       case "boolean":
         return LoggableType.Boolean;
@@ -205,11 +209,6 @@ export default class NT4Source extends LiveDataSource {
       case "string":
       case "json":
         return LoggableType.String;
-      case "raw":
-      case "rpc":
-      case "msgpack":
-      case "protobuf":
-        return LoggableType.Raw;
       case "boolean[]":
         return LoggableType.BooleanArray;
       case "int[]":
@@ -218,8 +217,8 @@ export default class NT4Source extends LiveDataSource {
         return LoggableType.NumberArray;
       case "string[]":
         return LoggableType.StringArray;
-      default:
-        return null;
+      default: // Default to raw
+        return LoggableType.Raw;
     }
   }
 }

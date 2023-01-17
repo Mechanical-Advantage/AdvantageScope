@@ -1,5 +1,6 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
+import Schemas from "./schema/Schemas";
 import { WPILOGDecoder } from "./wpilog/WPILOGDecoder";
 
 self.onmessage = (event) => {
@@ -27,9 +28,6 @@ self.onmessage = (event) => {
           entryIds[startData.entry] = startData.name;
           entryTypes[startData.entry] = startData.type;
           switch (startData.type) {
-            case "raw":
-              log.createBlankField(startData.name, LoggableType.Raw);
-              break;
             case "boolean":
               log.createBlankField(startData.name, LoggableType.Boolean);
               break;
@@ -63,9 +61,6 @@ self.onmessage = (event) => {
         let type = entryTypes[record.getEntry()];
         let timestamp = record.getTimestamp() / 1000000.0;
         switch (type) {
-          case "raw":
-            log.putRaw(key, timestamp, record.getRaw());
-            break;
           case "boolean":
             log.putBoolean(key, timestamp, record.getBoolean());
             break;
@@ -99,6 +94,9 @@ self.onmessage = (event) => {
             break;
           default: // Default to raw
             log.putRaw(key, timestamp, record.getRaw());
+            if (Schemas.has(type)) {
+              Schemas.get(type)!(log, key, timestamp, record.getRaw());
+            }
             break;
         }
       }
