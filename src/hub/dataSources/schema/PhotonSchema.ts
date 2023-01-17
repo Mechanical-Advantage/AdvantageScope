@@ -67,27 +67,27 @@ function parsePacket(value: Uint8Array, timestamp: number): PhotonPipelineResult
 }
 
 /** Saves a pipeline result to a log file. */
-function saveResult(log: Log, key: string, timestamp: number, result: PhotonPipelineResult) {
-  log.putNumber(key + "/latency", timestamp, result.latency);
-  log.putNumber(key + "/timestamp", timestamp, result.timestamp);
+function saveResult(log: Log, baseKey: string, timestamp: number, result: PhotonPipelineResult) {
+  log.putNumber(baseKey + "/latency", timestamp, result.latency);
+  log.putNumber(baseKey + "/timestamp", timestamp, result.timestamp);
 
   for (const [idx, target] of result.targets.entries()) {
-    Object.entries(target).forEach(([key, value]) => {
-      if (typeof value == "number") {
-        log.putNumber(key + `/target_${idx}/${key}`, timestamp, Number(value));
+    Object.entries(target).forEach(([objectFieldName, objectFieldValue]) => {
+      if (typeof objectFieldValue == "number") {
+        log.putNumber(baseKey + `/target_${idx}/${objectFieldName}`, timestamp, Number(objectFieldValue));
       }
-      if (Array.isArray(value)) {
-        if (typeof value[0] == "number") {
-          log.putNumberArray(key + `/target_${idx}/${key}`, timestamp, value);
-        } else if (typeof value[0] == "object") {
+      if (Array.isArray(objectFieldValue)) {
+        if (typeof objectFieldValue[0] == "number") {
+          log.putNumberArray(baseKey + `/target_${idx}/${objectFieldName}`, timestamp, objectFieldValue);
+        } else if (typeof objectFieldValue[0] == "object") {
           let xArray: number[] = [];
           let yArray: number[] = [];
-          value.forEach((it) => {
+          objectFieldValue.forEach((it) => {
             xArray.push(it.x);
             yArray.push(it.y);
           });
-          log.putNumberArray(key + `/target_${idx}/${key}_x`, timestamp, xArray);
-          log.putNumberArray(key + `/target_${idx}/${key}_y`, timestamp, yArray);
+          log.putNumberArray(baseKey + `/target_${idx}/${objectFieldName}_x`, timestamp, xArray);
+          log.putNumberArray(baseKey + `/target_${idx}/${objectFieldName}_y`, timestamp, yArray);
         }
       }
     });
