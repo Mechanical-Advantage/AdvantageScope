@@ -21,19 +21,19 @@ export default class JoysticksController extends TimelineVizController {
         // Status (red)
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
+          types: [LoggableType.NumberArray]
         },
 
         // Status (blue)
         {
           element: configBody.children[2].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
+          types: [LoggableType.NumberArray]
         },
 
         // Robot rotation
         {
           element: configBody.children[3].firstElementChild as HTMLElement,
-          type: LoggableType.Number
+          types: [LoggableType.Number]
         }
       ],
       [],

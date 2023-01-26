@@ -1,5 +1,6 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
+import { getMechanismKeys } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual, smartSort } from "../shared/util";
 
 export default class Sidebar {
@@ -146,10 +147,12 @@ export default class Sidebar {
   private addFields(title: string, fullTitle: string, field: LogFieldTree, parentElement: HTMLElement, indent: number) {
     let hasChildren = Object.keys(field.children).length > 0;
 
+    // Create element
     let fieldElement = document.createElement("div");
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
 
+    // Add icons
     let closedIcon = this.ICON_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
     let openIcon = this.ICON_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
     let neutralIcon = this.ICON_TEMPLATES.children[2].cloneNode(true) as HTMLElement;
@@ -158,6 +161,14 @@ export default class Sidebar {
     openIcon.style.display = "none";
     neutralIcon.style.display = hasChildren ? "none" : "initial";
 
+    // Check if mechanism
+    let mechanismKeys = getMechanismKeys(window.log);
+    let isMechanism = mechanismKeys.includes(fullTitle);
+    if (isMechanism) {
+      field.fullKey = fullTitle; // Acts like a normal field
+    }
+
+    // Create label
     let label = document.createElement("div");
     fieldElement.appendChild(label);
     label.classList.add("field-item-label");
@@ -168,11 +179,13 @@ export default class Sidebar {
       label.classList.add("known");
     }
     label.innerText = title;
-    label.style.fontStyle = field.fullKey == null ? "normal" : "italic";
-    label.style.cursor = field.fullKey == null ? "auto" : "grab";
-    if (field.fullKey != null) {
+    label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
+    label.style.cursor = field.fullKey === null ? "auto" : "grab";
+
+    // Dragging support
+    if (field.fullKey !== null) {
       let dragEvent = (x: number, y: number, offsetX: number, offsetY: number) => {
-        let isGroup = this.selectGroup.includes(field.fullKey != null ? field.fullKey : "");
+        let isGroup = this.selectGroup.includes(field.fullKey !== null ? field.fullKey : "");
         this.DRAG_ITEM.innerText = title + (isGroup ? "..." : "");
         this.DRAG_ITEM.style.fontWeight = isGroup ? "bolder" : "initial";
         window.startDrag(x, y, offsetX, offsetY, {
@@ -207,9 +220,9 @@ export default class Sidebar {
             Math.abs(event.clientX - mouseDownInfo[0]) < this.FIELD_DRAG_THRESHOLD_PX &&
             Math.abs(event.clientY - mouseDownInfo[1]) < this.FIELD_DRAG_THRESHOLD_PX
           ) {
-            let index = this.selectGroup.indexOf(field.fullKey != null ? field.fullKey : "");
+            let index = this.selectGroup.indexOf(field.fullKey !== null ? field.fullKey : "");
             if (index == -1) {
-              this.selectGroup.push(field.fullKey != null ? field.fullKey : "");
+              this.selectGroup.push(field.fullKey !== null ? field.fullKey : "");
               label.style.fontWeight = "bolder";
             } else {
               this.selectGroup.splice(index, 1);
@@ -235,6 +248,7 @@ export default class Sidebar {
       });
     }
 
+    // Add children
     if (hasChildren) {
       let childSpan = document.createElement("span");
       parentElement.appendChild(childSpan);

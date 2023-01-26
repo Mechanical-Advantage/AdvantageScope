@@ -19,13 +19,13 @@ export default class PointsController extends TimelineVizController {
         // X
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
+          types: [LoggableType.NumberArray]
         },
 
         // Y
         {
           element: configBody.children[2].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray
+          types: [LoggableType.NumberArray]
         }
       ],
       [],

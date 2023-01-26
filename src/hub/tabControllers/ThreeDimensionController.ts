@@ -1,5 +1,6 @@
 import { AprilTag, pose2dTo3d, Pose3d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
+import { getMechanismState, MechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import { cleanFloat } from "../../shared/util";
@@ -26,39 +27,44 @@ export default class ThreeDimensionController extends TimelineVizController {
       [
         {
           element: configBody.children[1].children[0] as HTMLElement,
-          type: LoggableType.NumberArray,
+          types: [LoggableType.NumberArray],
           options: [
-            "Robot",
-            "Ghost",
-            "AprilTag",
-            "AprilTag ID",
-            "Camera Override",
-            "Component (Robot)",
-            "Component (Ghost)",
-            "Vision Target",
-            "Axes",
-            "Blue Cone (Front)",
-            "Blue Cone (Center)",
-            "Blue Cone (Back)",
-            "Yellow Cone (Front)",
-            "Yellow Cone (Center)",
-            "Yellow Cone (Back)"
+            [
+              "Robot",
+              "Ghost",
+              "AprilTag",
+              "AprilTag ID",
+              "Camera Override",
+              "Component (Robot)",
+              "Component (Ghost)",
+              "Vision Target",
+              "Axes",
+              "Blue Cone (Front)",
+              "Blue Cone (Center)",
+              "Blue Cone (Back)",
+              "Yellow Cone (Front)",
+              "Yellow Cone (Center)",
+              "Yellow Cone (Back)"
+            ]
           ]
         },
         {
           element: configBody.children[1].children[1] as HTMLElement,
-          type: LoggableType.NumberArray,
+          types: [LoggableType.NumberArray, "mechanism"],
           options: [
-            "Robot",
-            "Ghost",
-            "Trajectory",
-            "Vision Target",
-            "Blue Cone (Front)",
-            "Blue Cone (Center)",
-            "Blue Cone (Back)",
-            "Yellow Cone (Front)",
-            "Yellow Cone (Center)",
-            "Yellow Cone (Back)"
+            [
+              "Robot",
+              "Ghost",
+              "Trajectory",
+              "Vision Target",
+              "Blue Cone (Front)",
+              "Blue Cone (Center)",
+              "Blue Cone (Back)",
+              "Yellow Cone (Front)",
+              "Yellow Cone (Center)",
+              "Yellow Cone (Back)"
+            ],
+            ["Mechanism (Robot)", "Mechanism (Ghost)"]
           ]
         }
       ],
@@ -235,6 +241,8 @@ export default class ThreeDimensionController extends TimelineVizController {
     let coneYellowFrontData: Pose3d[] = [];
     let coneYellowCenterData: Pose3d[] = [];
     let coneYellowBackData: Pose3d[] = [];
+    let mechanismRobotData: MechanismState | null = null;
+    let mechanismGhostData: MechanismState | null = null;
 
     // Get 3D data
     this.getListFields()[0].forEach((field) => {
@@ -325,6 +333,26 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Yellow Cone (Back)":
           coneYellowBackData = coneYellowBackData.concat(get2DValue(field.key));
           break;
+        case "Mechanism (Robot)":
+          let mechanismRobotState = getMechanismState(window.log, field.key, time);
+          if (mechanismRobotState) {
+            if (mechanismRobotData === null) {
+              mechanismRobotData = mechanismRobotState;
+            } else {
+              mechanismRobotData = mergeMechanismStates([mechanismRobotData, mechanismRobotState]);
+            }
+          }
+          break;
+        case "Mechanism (Ghost)":
+          let mechanismGhostState = getMechanismState(window.log, field.key, time);
+          if (mechanismGhostState) {
+            if (mechanismGhostData === null) {
+              mechanismGhostData = mechanismGhostState;
+            } else {
+              mechanismGhostData = mergeMechanismStates([mechanismGhostData, mechanismGhostState]);
+            }
+          }
+          break;
       }
     });
 
@@ -361,7 +389,9 @@ export default class ThreeDimensionController extends TimelineVizController {
         coneBlueBack: coneBlueBackData,
         coneYellowFront: coneYellowFrontData,
         coneYellowCenter: coneYellowCenterData,
-        coneYellowBack: coneYellowBackData
+        coneYellowBack: coneYellowBackData,
+        mechanismRobot: mechanismRobotData,
+        mechanismGhost: mechanismGhostData
       },
       options: this.options
     };
