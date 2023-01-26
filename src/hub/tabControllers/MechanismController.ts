@@ -1,7 +1,5 @@
-import LoggableType from "../../shared/log/LoggableType";
-import { getMechanismKeys, getMechanismState, MechanismState } from "../../shared/log/LogUtil";
+import { getMechanismState, MechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
-import { arraysEqual } from "../../shared/util";
 import MechanismVisualizer from "../../shared/visualizers/MechanismVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
@@ -36,7 +34,7 @@ export default class MechanismController extends TimelineVizController {
 
   set options(options: { [id: string]: any }) {}
 
-  getCommand(time: number): MechanismState[] {
+  getCommand(time: number): MechanismState | null {
     let states: MechanismState[] = [];
     this.getFields()
       .filter((field) => field !== null)
@@ -44,6 +42,11 @@ export default class MechanismController extends TimelineVizController {
         let state = getMechanismState(window.log, field!, time);
         if (state !== null) states.push(state);
       });
-    return states;
+
+    if (states.length == 0) {
+      return null;
+    } else {
+      return mergeMechanismStates(states);
+    }
   }
 }
