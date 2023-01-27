@@ -1079,7 +1079,7 @@ function setupMenu() {
             createHubWindow();
           }
         },
-        isMac ? { role: "close", accelerator: "Shift+Cmd+W" } : { role: "quit" }
+        { role: "close", accelerator: "Shift+CmdOrCtrl+W" }
       ]
     },
     { role: "editMenu" },
@@ -1147,10 +1147,14 @@ function setupMenu() {
         { type: "separator" },
         {
           label: "Close Tab",
-          accelerator: isMac ? "Cmd+W" : "Ctrl+Q",
+          accelerator: "CmdOrCtrl+W",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
-            sendMessage(window, "close-tab");
+            if (window == null) return;
+            if (hubWindows.includes(window)) {
+              sendMessage(window, "close-tab");
+            } else {
+              window.destroy();
+            }
           }
         }
       ]
