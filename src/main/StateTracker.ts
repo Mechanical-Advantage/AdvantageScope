@@ -47,13 +47,8 @@ export default class StateTracker {
           );
         });
       } catch (e) {
-        dialog.showMessageBox({
-          type: "error",
-          title: "Error Loading State",
-          message: "Error Loading State",
-          detail: "Unable to load state. Reverting to default settings.",
-          buttons: ["Close"]
-        });
+        console.error("Unable to load state. Reverting to default settings.", e);
+        fs.copyFileSync(STATE_FILENAME, STATE_FILENAME.slice(0, -5) + "-corrupted.json");
         resetToDefault = true;
       }
     } else {
@@ -62,10 +57,12 @@ export default class StateTracker {
 
     if (resetToDefault) {
       const bounds = screen.getPrimaryDisplay().bounds;
-      state.x = bounds.x + bounds.width / 2 - defaultWidth / 2;
-      state.y = bounds.y + bounds.height / 2 - defaultHeight / 2;
-      state.width = defaultWidth;
-      state.height = defaultHeight;
+      state = {
+        x: bounds.x + bounds.width / 2 - defaultWidth / 2,
+        y: bounds.y + bounds.height / 2 - defaultHeight / 2,
+        width: defaultWidth,
+        height: defaultHeight
+      };
     }
 
     return state;
