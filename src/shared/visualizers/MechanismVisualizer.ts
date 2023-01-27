@@ -1,4 +1,5 @@
 import { Translation2d } from "../geometry";
+import { MechanismState } from "../log/LogUtil";
 import Visualizer from "./Visualizer";
 
 export default class MechanismVisualizer implements Visualizer {
@@ -11,7 +12,7 @@ export default class MechanismVisualizer implements Visualizer {
   }
 
   render(command: MechanismState | null): number | null {
-    this.SVG.hidden = command === null;
+    this.SVG.style.display = command === null ? "none" : "initial";
     if (command === null) return null;
 
     // Update svg size and background
@@ -66,16 +67,3 @@ export default class MechanismVisualizer implements Visualizer {
     return command.dimensions[0] / command.dimensions[1];
   }
 }
-
-export type MechanismState = {
-  backgroundColor: string;
-  dimensions: [number, number];
-  lines: MechanismLine[];
-};
-
-export type MechanismLine = {
-  start: Translation2d;
-  end: Translation2d;
-  color: string;
-  weight: number;
-};

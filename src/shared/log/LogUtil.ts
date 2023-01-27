@@ -1,4 +1,7 @@
+import { Rotation2d, Translation2d } from "../geometry";
+import { convert } from "../units";
 import Log from "./Log";
+import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
 
@@ -132,4 +135,132 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   }
 
   return state;
+}
+
+export function getMechanismKeys(log: Log): string[] {
+  let keyOptions: string[] = [];
+  log.getFieldKeys().forEach((key) => {
+    if (key.endsWith("/.type")) {
+      let value = getOrDefault(log, key, LoggableType.String, Infinity, "");
+      if (value === "Mechanism2d") {
+        keyOptions.push(key.slice(0, -6));
+      }
+    }
+  });
+  keyOptions.sort();
+  return keyOptions;
+}
+
+export type MechanismState = {
+  backgroundColor: string;
+  dimensions: [number, number];
+  lines: MechanismLine[];
+};
+
+export type MechanismLine = {
+  start: Translation2d;
+  end: Translation2d;
+  color: string;
+  weight: number;
+};
+
+export function getMechanismState(log: Log, key: string, time: number): MechanismState | null {
+  // Get general config
+  let backgroundColor = getOrDefault(log, key + "/backgroundColor", LoggableType.String, time, null);
+  let dimensions = getOrDefault(log, key + "/dims", LoggableType.NumberArray, time, null);
+  if (backgroundColor === null || dimensions === null) {
+    return null;
+  }
+
+  // Get all lines
+  let lines: MechanismLine[] = [];
+  try {
+    // Add a line and children recursively
+    let addLine = (lineTree: LogFieldTree, startTranslation: Translation2d, startRotation: Rotation2d) => {
+      let angle = getOrDefault(
+        log,
+        key! + "/" + lineTree.children["angle"].fullKey,
+        LoggableType.Number,
+        time,
+        0
+      ) as number;
+      let length = getOrDefault(
+        log,
+        key! + "/" + lineTree.children["length"].fullKey,
+        LoggableType.Number,
+        time,
+        0
+      ) as number;
+      let color = getOrDefault(
+        log,
+        key! + "/" + lineTree.children["color"].fullKey,
+        LoggableType.String,
+        time,
+        0
+      ) as string;
+      let weight = getOrDefault(
+        log,
+        key! + "/" + lineTree.children["weight"].fullKey,
+        LoggableType.Number,
+        time,
+        0
+      ) as number;
+
+      let endRotation = startRotation + convert(angle, "degrees", "radians");
+      let endTranslation: Translation2d = [
+        startTranslation[0] + Math.cos(endRotation) * length,
+        startTranslation[1] + Math.sin(endRotation) * length
+      ];
+      lines.push({
+        start: startTranslation,
+        end: endTranslation,
+        color: color,
+        weight: weight
+      });
+      for (let [childKey, childTree] of Object.entries(lineTree.children)) {
+        if ([".type", "angle", "color", "length", "weight"].includes(childKey)) continue;
+        addLine(childTree, endTranslation, endRotation);
+      }
+    };
+
+    // Find all roots and add children
+    for (let [mechanismChildKey, mechanismChildTree] of Object.entries(log.getFieldTree(false, key + "/"))) {
+      if (mechanismChildKey.startsWith(".") || mechanismChildKey == "backgroundColor" || mechanismChildKey == "dims") {
+        continue;
+      }
+      let translation: Translation2d = [
+        getOrDefault(log, key + "/" + mechanismChildTree.children["x"].fullKey!, LoggableType.Number, time, 0),
+        getOrDefault(log, key + "/" + mechanismChildTree.children["y"].fullKey!, LoggableType.Number, time, 0)
+      ];
+      for (let [rootChildKey, rootChildTree] of Object.entries(mechanismChildTree.children)) {
+        if (rootChildKey == "x" || rootChildKey == "y") continue;
+        addLine(rootChildTree, translation, 0.0);
+      }
+    }
+  } catch {
+    console.error("Failed to parse mechanism data");
+  }
+
+  // Return result
+  return {
+    backgroundColor: backgroundColor,
+    dimensions: dimensions,
+    lines: lines
+  };
+}
+
+export function mergeMechanismStates(states: MechanismState[]): MechanismState {
+  let lines: MechanismLine[] = [];
+  states.forEach((state) => {
+    lines = lines.concat(state.lines);
+  });
+
+  return {
+    backgroundColor: states[0].backgroundColor,
+    dimensions: [
+      Math.max(...states.map((state) => state.dimensions[0])),
+      Math.max(...states.map((state) => state.dimensions[1]))
+    ],
+    lines: lines
+  };
 }

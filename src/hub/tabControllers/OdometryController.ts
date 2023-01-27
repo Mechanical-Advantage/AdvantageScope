@@ -30,8 +30,10 @@ export default class OdometryController extends TimelineVizController {
       [
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
-          type: LoggableType.NumberArray,
-          options: ["Robot", "Ghost", "Trajectory", "Vision Target", "Arrow (Front)", "Arrow (Center)", "Arrow (Back)"]
+          types: [LoggableType.NumberArray],
+          options: [
+            ["Robot", "Ghost", "Trajectory", "Vision Target", "Arrow (Front)", "Arrow (Center)", "Arrow (Back)"]
+          ]
         }
       ],
       new OdometryVisualizer(content.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement)

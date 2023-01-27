@@ -34,6 +34,7 @@ export interface Config3dRobot {
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   cameras: Config3dRobot_Camera[];
+  components: Config3dRobot_Component[];
 }
 
 export interface Config3dRobot_Camera {
@@ -42,6 +43,11 @@ export interface Config3dRobot_Camera {
   position: [number, number, number];
   resolution: [number, number];
   fov: number;
+}
+
+export interface Config3dRobot_Component {
+  zeroedRotations: Config3d_Rotation[];
+  zeroedPosition: [number, number, number];
 }
 
 export interface Config3d_Rotation {

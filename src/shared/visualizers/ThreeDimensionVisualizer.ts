@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import { MeshStandardMaterial } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
 import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
+import { MechanismState } from "../log/LogUtil";
 import { convert } from "../units";
 import Visualizer from "./Visualizer";
 
@@ -58,6 +59,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private field: THREE.Object3D | null = null;
   private robotSet: ObjectSet;
   private ghostSet: ObjectSet;
+  private ghostMaterial: THREE.Material;
   private aprilTagSets: Map<number | null, ObjectSet> = new Map();
   private trajectories: THREE.Line[] = [];
   private visionTargets: THREE.Line[] = [];
@@ -292,6 +294,15 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.aprilTagSets.set(id, objectSet);
     });
 
+    // Define ghost material
+    {
+      let material = new THREE.MeshPhongMaterial();
+      material.color = new THREE.Color("#00ff00");
+      material.transparent = true;
+      material.opacity = 0.35;
+      this.ghostMaterial = material;
+    }
+
     // Render when camera is moved
     this.controls.addEventListener("change", () => (this.shouldRender = true));
 
@@ -468,38 +479,78 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     if (robotTitle != this.lastRobotTitle || newFrcData) {
       this.lastRobotTitle = robotTitle;
       const loader = new GLTFLoader();
-      loader.load(robotConfig.path, (gltf) => {
+      Promise.all([
+        new Promise((resolve) => {
+          loader.load(robotConfig.path, resolve);
+        }),
+        ...robotConfig.components.map(
+          (_, index) =>
+            new Promise((resolve) => {
+              loader.load(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
+            })
+        )
+      ]).then((gltfs) => {
+        let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
         if (robotConfig == undefined) return;
 
-        // Set position and rotation of model
-        let robotModel = gltf.scene;
-        robotModel.traverse((node: any) => {
-          let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-          if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
-            let material = mesh.material as MeshStandardMaterial;
-            material.metalness = 0;
-            material.roughness = 1;
-          }
-        });
-        robotModel.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
-        robotModel.position.set(...robotConfig.position);
+        // Update model materials and set up groups
+        let robotGroup = new THREE.Group();
+        let ghostGroup = new THREE.Group();
+        gltfScenes.forEach((originalScene, index) => {
+          originalScene.traverse((node: any) => {
+            // Adjust materials
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
+              let material = mesh.material as MeshStandardMaterial;
+              material.metalness = 0;
+              material.roughness = 1;
+            }
+          });
+          let ghostScene = originalScene.clone(true);
+          ghostScene.traverse((node: any) => {
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh) {
+              mesh.material = this.ghostMaterial;
+            }
+          });
 
-        // Create ghost model
-        let ghostModel = robotModel.clone(true);
-        let ghostMaterial = new THREE.MeshPhongMaterial();
-        ghostMaterial.color = new THREE.Color("#00ff00");
-        ghostMaterial.transparent = true;
-        ghostMaterial.opacity = 0.35;
-        ghostModel.traverse((node: any) => {
-          let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-          if (mesh.isMesh) {
-            mesh.material = ghostMaterial;
-          }
+          // Set up groups
+          [true, false].forEach((isOriginal) => {
+            let scene = isOriginal ? originalScene : ghostScene;
+            if (index == 0) {
+              // Root model, set position and add directly
+              if (isOriginal) {
+                robotGroup.add(scene);
+              } else {
+                ghostGroup.add(scene);
+              }
+              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+              scene.position.set(...robotConfig.position);
+            } else {
+              // Component model, add name and store in group
+              let componentGroup = new THREE.Group();
+              componentGroup.name = "AdvantageScope_Component" + (index - 1).toString();
+              componentGroup.add(scene);
+              if (isOriginal) {
+                robotGroup.add(componentGroup);
+              } else {
+                ghostGroup.add(componentGroup);
+              }
+            }
+          });
         });
 
-        // Create group and update robot sets
-        this.robotSet.setSource(new THREE.Group().add(robotModel));
-        this.ghostSet.setSource(new THREE.Group().add(ghostModel));
+        // Add mechanism roots
+        let robotMechanismRoot = new THREE.Object3D();
+        let ghostMechanismRoot = new THREE.Object3D();
+        robotMechanismRoot.name = "AdvantageScope_MechanismRoot";
+        ghostMechanismRoot.name = "AdvantageScope_MechanismRoot";
+        robotGroup.add(robotMechanismRoot);
+        ghostGroup.add(ghostMechanismRoot);
+
+        // Update robot sets
+        this.robotSet.setSource(robotGroup);
+        this.ghostSet.setSource(ghostGroup);
 
         // Render new frame
         this.shouldRender = true;
@@ -520,6 +571,95 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Update robot poses
     this.robotSet.setPoses(this.command.poses.robot.slice(0, 7)); // Max of 6 poses
     this.ghostSet.setPoses(this.command.poses.ghost.slice(0, 7)); // Max of 6 poses
+
+    // Update robot components
+    if (robotConfig && robotConfig.components.length > 0) {
+      [true, false].forEach((isOriginal) => {
+        (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
+          for (let i = 0; i < robotConfig.components.length; i++) {
+            let componentGroup = childRobot.getObjectByName("AdvantageScope_Component" + i.toString());
+            let componentModel = componentGroup?.children[0];
+
+            // Use component data or reset to default position
+            if (
+              i < (isOriginal ? this.command.poses.componentRobot.length : this.command.poses.componentGhost.length)
+            ) {
+              let componentPose = (
+                isOriginal ? this.command.poses.componentRobot[i] : this.command.poses.componentGhost[i]
+              ) as Pose3d;
+
+              // The group has the user's pose
+              componentGroup?.rotation.setFromQuaternion(rotation3dToQuaternion(componentPose.rotation));
+              componentGroup?.position.set(...componentPose.translation);
+
+              // The model should use the component's zeroed pose offset
+              componentModel?.rotation.setFromQuaternion(
+                getQuaternionFromRotSeq(robotConfig.components[i].zeroedRotations)
+              );
+              componentModel?.position.set(...robotConfig.components[i].zeroedPosition);
+            } else {
+              // The group has the user's pose, reset to origin
+              componentGroup?.rotation.set(0, 0, 0);
+              componentGroup?.position.set(0, 0, 0);
+
+              // The model should use the robot's default pose offset
+              componentModel?.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+              componentModel?.position.set(...robotConfig.position);
+            }
+          }
+        });
+      });
+    }
+
+    // Update mechanisms
+    [true, false].forEach((isOriginal) => {
+      (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
+        let mechanismRoot = childRobot.getObjectByName("AdvantageScope_MechanismRoot")!;
+        let state: MechanismState | null = isOriginal
+          ? this.command.poses.mechanismRobot
+          : this.command.poses.mechanismGhost;
+
+        if (state === null) {
+          // No mechanism data, remove all children
+          while (mechanismRoot.children.length > 0) {
+            mechanismRoot.remove(mechanismRoot.children[0]);
+          }
+        } else {
+          // Remove extra children
+          while (mechanismRoot.children.length > state.lines.length) {
+            mechanismRoot.remove(mechanismRoot.children[0]);
+          }
+
+          // Add new children
+          while (mechanismRoot.children.length < state.lines.length) {
+            const lineObject = new THREE.Mesh(
+              new THREE.BoxGeometry(0.0, 0.0, 0.0),
+              isOriginal ? new THREE.MeshPhongMaterial() : this.ghostMaterial
+            );
+            const lineGroup = new THREE.Group().add(lineObject);
+            mechanismRoot.add(lineGroup);
+          }
+
+          // Update children
+          for (let i = 0; i < mechanismRoot.children.length; i++) {
+            const line = state.lines[i];
+            const lineGroup = mechanismRoot.children[i];
+            const lineObject = lineGroup.children[0] as THREE.Mesh<THREE.BoxGeometry, THREE.MeshPhongMaterial>;
+
+            const length = Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]);
+            const angle = Math.atan2(line.end[1] - line.start[1], line.end[0] - line.start[0]);
+
+            lineGroup.position.set(line.start[0] - state!.dimensions[0] / 2, 0.0, line.start[1]);
+            lineGroup.rotation.set(0.0, -angle, 0.0);
+            lineObject.position.set(length / 2, 0.0, 0.0);
+            lineObject.geometry = new THREE.BoxGeometry(length, line.weight * 0.01, line.weight * 0.01);
+            if (isOriginal) {
+              lineObject.material.color = new THREE.Color(line.color);
+            }
+          }
+        }
+      });
+    });
 
     // Update AprilTag poses
     let aprilTags: AprilTag[] = this.command.poses.aprilTag;

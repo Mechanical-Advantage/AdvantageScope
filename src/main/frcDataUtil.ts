@@ -6,6 +6,7 @@ import {
   Config3dField,
   Config3dRobot,
   Config3dRobot_Camera,
+  Config3dRobot_Component,
   ConfigJoystick,
   ConfigJoystick_Axis,
   ConfigJoystick_Button,
@@ -116,7 +117,8 @@ export function loadFRCData(): FRCData {
           path: path.join(folder, "Robot_" + title + ".glb"),
           rotations: [],
           position: [0, 0, 0],
-          cameras: []
+          cameras: [],
+          components: []
         };
         if (typeof configRaw == "object") {
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
@@ -186,6 +188,36 @@ export function loadFRCData(): FRCData {
               }
               if ("fov" in cameraRaw && typeof cameraRaw.fov === "number") {
                 camera.fov = cameraRaw.fov;
+              }
+            });
+          }
+          if ("components" in configRaw && Array.isArray(configRaw.components)) {
+            configRaw.components.forEach((componentRaw: any) => {
+              let component: Config3dRobot_Component = {
+                zeroedRotations: [],
+                zeroedPosition: [0, 0, 0]
+              };
+              config.components.push(component);
+              if (
+                "zeroedRotations" in componentRaw &&
+                Array.isArray(componentRaw.zeroedRotations) &&
+                componentRaw.zeroedRotations.every(
+                  (rotation: any) =>
+                    typeof rotation === "object" &&
+                    "axis" in rotation &&
+                    (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+                    "degrees" in rotation &&
+                    typeof rotation.degrees === "number"
+                )
+              ) {
+                component.zeroedRotations = componentRaw.zeroedRotations;
+              }
+              if (
+                "zeroedPosition" in componentRaw &&
+                checkArrayType(componentRaw.zeroedPosition, "number") &&
+                componentRaw.zeroedPosition.length == 3
+              ) {
+                component.zeroedPosition = componentRaw.zeroedPosition;
               }
             });
           }

@@ -92,7 +92,7 @@ The following configuration options are available:
 
 - **Field:** The field model to use, defaults to the most recent game. We recommend using the "Evergreen" field for devices with limited graphical performance. The "Axes" field displays only XYZ axes at the origin with a field outline for scale.
 - **Alliance:** The current alliance color, which flips the origin to the opposite side of the field if necessary.
-- **Robot:** The robot model to use. AdvantageScope includes a default set of robots from some of our fellow New England [#OpenAlliance](https://www.theopenalliance.com) teams. We recommend using the "KitBot" model for devices with limited graphical performance. To add a custom field or robot model, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
+- **Robot:** The robot model to use. We recommend using the "KitBot" model for devices with limited graphical performance. To add a custom field or robot model, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
 - **Units:** The linear and angular units of the provided fields. Meters, inches, radians, and degrees are supported. The rotations units do no affect 3D poses.
 
 The 3D field also supports an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). The available options for the "3D Mode" are:

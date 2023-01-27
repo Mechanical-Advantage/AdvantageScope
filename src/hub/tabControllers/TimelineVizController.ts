@@ -17,19 +17,19 @@ export default abstract class TimelineVizController implements TabController {
 
   private type: TabType;
   private title: string = "";
-  private fieldConfig: { element: HTMLElement; type: LoggableType }[];
+  private fieldConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[] }[];
   private fields: (string | null)[] = [];
-  private listConfig: { element: HTMLElement; type: LoggableType; options: string[] }[];
-  private listFields: { type: string; key: string }[][] = [];
+  private listConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[]; options: string[][] }[];
+  private listFields: { type: string; key: string; fieldTypeIndex: number }[][] = [];
   private lastListFieldsStr: string = "";
-  private lastAvailableKeys: string[] = [];
+  private lastAllKeys: string[] = [];
   protected visualizer: Visualizer;
 
   constructor(
     content: HTMLElement,
     type: TabType,
-    fieldConfig: { element: HTMLElement; type: LoggableType }[],
-    listConfig: { element: HTMLElement; type: LoggableType; options: string[] }[],
+    fieldConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[] }[],
+    listConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[]; options: string[][] }[],
     visualizer: Visualizer
   ) {
     this.CONTENT = content;
@@ -110,8 +110,9 @@ export default abstract class TimelineVizController implements TabController {
         let rect = field.element.getBoundingClientRect();
         let active =
           dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-        let type = window.log.getType(dragData.data.fields[0]);
-        let validType = type == field.type;
+        let rawType = window.log.getType(dragData.data.fields[0]);
+        let type: LoggableType | "mechanism" = rawType === undefined ? "mechanism" : rawType!;
+        let validType = field.types.includes(type);
 
         if (active && validType) {
           if (dragData.end) {
@@ -122,13 +123,15 @@ export default abstract class TimelineVizController implements TabController {
             } else {
               // List field
               let selectedOptions = this.listFields[index].map((field) => field.type);
-              let availableOptions = this.listConfig[index].options.filter(
+              let typeIndex = this.listConfig[index].types.indexOf(type);
+              let availableOptions = this.listConfig[index].options[typeIndex].filter(
                 (option) => !selectedOptions.includes(option)
               );
-              if (availableOptions.length == 0) availableOptions.push(this.listConfig[index].options[0]);
+              if (availableOptions.length == 0) availableOptions.push(this.listConfig[index].options[typeIndex][0]);
               this.listFields[index].push({
                 type: availableOptions[0],
-                key: key
+                key: key,
+                fieldTypeIndex: typeIndex
               });
             }
             this.updateFields();
@@ -145,9 +148,20 @@ export default abstract class TimelineVizController implements TabController {
     });
   }
 
+  /** Checks if a key or its children are available. */
+  private keyAvailable(key: string): boolean {
+    let allKeys = window.log.getFieldKeys();
+    for (let i = 0; i < allKeys.length; i++) {
+      if (allKeys[i].startsWith(key)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /** Updates the field elements based on the internal field list. */
   private updateFields() {
-    let availableKeys = window.log.getFieldKeys();
+    let allKeys = window.log.getFieldKeys();
 
     // Single fields
     Object.values(this.fieldConfig).forEach((field, index) => {
@@ -157,7 +171,7 @@ export default abstract class TimelineVizController implements TabController {
       if (key == null) {
         textElement.innerText = "<Drag Here>";
         textElement.style.textDecoration = "";
-      } else if (!availableKeys.includes(key)) {
+      } else if (!this.keyAvailable(key)) {
         textElement.innerText = key;
         textElement.style.textDecoration = "line-through";
       } else {
@@ -168,10 +182,10 @@ export default abstract class TimelineVizController implements TabController {
 
     // Exit if list fields and available fields have not changed
     let listFieldsStr = JSON.stringify(this.listFields);
-    if (arraysEqual(availableKeys, this.lastAvailableKeys) && listFieldsStr == this.lastListFieldsStr) {
+    if (arraysEqual(allKeys, this.lastAllKeys) && listFieldsStr == this.lastListFieldsStr) {
       return;
     }
-    this.lastAvailableKeys = availableKeys;
+    this.lastAllKeys = allKeys;
     this.lastListFieldsStr = listFieldsStr;
 
     // List fields
@@ -205,7 +219,7 @@ export default abstract class TimelineVizController implements TabController {
         itemElement.appendChild(labelElement);
 
         let selectElement = labelElement.firstChild as HTMLSelectElement;
-        list.options.forEach((option) => {
+        list.options[field.fieldTypeIndex].forEach((option) => {
           let optionElement = document.createElement("option");
           optionElement.innerText = option;
           selectElement.appendChild(optionElement);
@@ -218,7 +232,7 @@ export default abstract class TimelineVizController implements TabController {
         let fieldNameElement = document.createElement("span");
         fieldNameElement.classList.add("field-name");
         fieldNameElement.innerText = field.key;
-        fieldNameElement.style.textDecoration = availableKeys.includes(field.key) ? "" : "line-through";
+        fieldNameElement.style.textDecoration = this.keyAvailable(field.key) ? "" : "line-through";
         itemElement.appendChild(fieldNameElement);
       });
     });

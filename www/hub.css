@@ -1546,10 +1546,6 @@ svg.mechanism-svg {
   transform: translate(-50%, -50%);
 }
 
-td.mechanism-config {
-  text-align: center;
-}
-
 div.points-background-container {
   position: absolute;
   top: 30px;
