@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from "electron";
+import { BrowserWindow, screen, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import { STATE_FILENAME } from "./Constants";
@@ -36,15 +36,26 @@ export default class StateTracker {
 
     let resetToDefault = false;
     if (fs.existsSync(STATE_FILENAME)) {
-      state = jsonfile.readFileSync(STATE_FILENAME);
-      resetToDefault = !screen.getAllDisplays().some((display) => {
-        return (
-          state.x >= display.bounds.x &&
-          state.y >= display.bounds.y &&
-          state.x + state.width <= display.bounds.x + display.bounds.width &&
-          state.y + state.height <= display.bounds.y + display.bounds.height
-        );
-      });
+      try {
+        state = jsonfile.readFileSync(STATE_FILENAME);
+        resetToDefault = !screen.getAllDisplays().some((display) => {
+          return (
+            state.x >= display.bounds.x &&
+            state.y >= display.bounds.y &&
+            state.x + state.width <= display.bounds.x + display.bounds.width &&
+            state.y + state.height <= display.bounds.y + display.bounds.height
+          );
+        });
+      } catch (e) {
+        dialog.showMessageBox({
+          type: "error",
+          title: "Error Loading State",
+          message: "Error Loading State",
+          detail: "Unable to load state. Reverting to default settings.",
+          buttons: ["Close"]
+        });
+        resetToDefault = true;
+      }
     } else {
       resetToDefault = true;
     }
