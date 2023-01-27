@@ -1,4 +1,4 @@
-import { BrowserWindow, screen } from "electron";
+import { BrowserWindow, screen, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import { STATE_FILENAME } from "./Constants";
@@ -36,25 +36,33 @@ export default class StateTracker {
 
     let resetToDefault = false;
     if (fs.existsSync(STATE_FILENAME)) {
-      state = jsonfile.readFileSync(STATE_FILENAME);
-      resetToDefault = !screen.getAllDisplays().some((display) => {
-        return (
-          state.x >= display.bounds.x &&
-          state.y >= display.bounds.y &&
-          state.x + state.width <= display.bounds.x + display.bounds.width &&
-          state.y + state.height <= display.bounds.y + display.bounds.height
-        );
-      });
+      try {
+        state = jsonfile.readFileSync(STATE_FILENAME);
+        resetToDefault = !screen.getAllDisplays().some((display) => {
+          return (
+            state.x >= display.bounds.x &&
+            state.y >= display.bounds.y &&
+            state.x + state.width <= display.bounds.x + display.bounds.width &&
+            state.y + state.height <= display.bounds.y + display.bounds.height
+          );
+        });
+      } catch (e) {
+        console.error("Unable to load state. Reverting to default settings.", e);
+        fs.copyFileSync(STATE_FILENAME, STATE_FILENAME.slice(0, -5) + "-corrupted.json");
+        resetToDefault = true;
+      }
     } else {
       resetToDefault = true;
     }
 
     if (resetToDefault) {
       const bounds = screen.getPrimaryDisplay().bounds;
-      state.x = bounds.x + bounds.width / 2 - defaultWidth / 2;
-      state.y = bounds.y + bounds.height / 2 - defaultHeight / 2;
-      state.width = defaultWidth;
-      state.height = defaultHeight;
+      state = {
+        x: bounds.x + bounds.width / 2 - defaultWidth / 2,
+        y: bounds.y + bounds.height / 2 - defaultHeight / 2,
+        width: defaultWidth,
+        height: defaultHeight
+      };
     }
 
     return state;
