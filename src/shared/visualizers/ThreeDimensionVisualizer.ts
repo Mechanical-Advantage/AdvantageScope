@@ -541,8 +541,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         });
 
         // Add mechanism roots
-        let robotMechanismRoot = new THREE.Object3D();
-        let ghostMechanismRoot = new THREE.Object3D();
+        let robotMechanismRoot = new THREE.Group();
+        let ghostMechanismRoot = new THREE.Group();
         robotMechanismRoot.name = "AdvantageScope_MechanismRoot";
         ghostMechanismRoot.name = "AdvantageScope_MechanismRoot";
         robotGroup.add(robotMechanismRoot);
@@ -578,6 +578,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
           for (let i = 0; i < robotConfig.components.length; i++) {
             let componentGroup = childRobot.getObjectByName("AdvantageScope_Component" + i.toString());
+            if (componentGroup === undefined) continue;
             let componentModel = componentGroup?.children[0];
 
             // Use component data or reset to default position
@@ -614,7 +615,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Update mechanisms
     [true, false].forEach((isOriginal) => {
       (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
-        let mechanismRoot = childRobot.getObjectByName("AdvantageScope_MechanismRoot")!;
+        let mechanismRoot = childRobot.getObjectByName("AdvantageScope_MechanismRoot");
+        if (mechanismRoot === undefined) return;
         let state: MechanismState | null = isOriginal
           ? this.command.poses.mechanismRobot
           : this.command.poses.mechanismGhost;
