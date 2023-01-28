@@ -42,6 +42,16 @@ Files must follow the naming convention "Robot_NAME.json" and "Robot_NAME.glb". 
   "sourceUrl": string // Optional, link to the original file
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
+  "cameras": [ // Fixed camera positions, can be empty
+    {
+      "name": string // Camera name
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
+      "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
+      "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
+      "fov": number // Horizontal field of view in degrees
+    }
+  ],
+  "components": [...] // See "Articulated Components"
 }
 ```
 
@@ -53,6 +63,21 @@ override3dRobotConfig("6328 (Bot-Bot Strikes Back)", [{ "axis": "x", "degrees": 
 ```
 
 The values set using this method are not retained when the app is closed; copy them to the JSON config file when finished.
+
+### Articulated Components
+
+Robot models can contain articulated components for visualizing mechanism data (see [here](/docs/tabs/3D-FIELD.md) for details). The base glTF model should include no components, then each component should be exported as a separate glTF model. Components models follow the naming convention "Robot_NAME_INDEX.glb". For example, the first component of the robot "Duck Bot" would be named "Robot_Duck Bot_0.glb".
+
+Component configuration is provided in the robot's JSON file (each robot only has one JSON file). An array of components should be provided under the "components" key. When no component poses are provided by the user, the component models will be positioned using the default robot rotations and position (see above). When component poses are provided by the user, the "zeroed" rotations and position are instead applied to bring each component to the robot origin. The user's poses are then applied to move each component to the correct location on the robot.
+
+```
+"components": [
+  {
+    "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
+    "zeroedPosition": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
+  }
+]
+```
 
 ## Joysticks
 

@@ -33,5 +33,6 @@
       "resolution": [320, 240],
       "fov": 90
     }
-  ]
+  ],
+  "components": []
 }

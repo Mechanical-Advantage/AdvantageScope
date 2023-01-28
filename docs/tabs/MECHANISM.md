@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-The mechanism tab displays a a jointed mechanism created with one or more [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) objects.
+The mechanism tab displays a a jointed mechanism created with one or more [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) objects.
 
 > Note: To view the mechanism visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
 
