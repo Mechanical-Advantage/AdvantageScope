@@ -559,7 +559,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Update field coordinates
     if (fieldConfig) {
-      let isBlue = this.command.options.alliance == "blue";
+      let isBlue = !this.command.allianceRedOrigin;
       this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), isBlue ? 0 : Math.PI);
       this.wpilibFieldCoordinateGroup.position.set(
         convert(fieldConfig.widthInches / 2, "inches", "meters") * (isBlue ? -1 : 1),

@@ -345,10 +345,16 @@
                     </select>
                   </td>
                   <td>
-                    <span class="label">Alliance Color:</span>
+                    <span class="label">Alliance:</span>
                     <select tabindex="-1">
-                      <option>blue</option>
-                      <option>red</option>
+                      <option value="auto">auto bumpers</option>
+                      <option value="blue">blue bumpers</option>
+                      <option value="red">red bumpers</option>
+                    </select>
+                    <select tabindex="-1">
+                      <option value="auto">auto origin</option>
+                      <option value="blue">blue origin</option>
+                      <option value="red">red origin</option>
                     </select>
                   </td>
                 </tr>
@@ -399,8 +405,9 @@
                     <span class="label">Field:</span>
                     <select tabindex="-1"></select>
                     <select tabindex="-1">
-                      <option>blue</option>
-                      <option>red</option>
+                      <option value="auto">auto origin</option>
+                      <option value="blue">blue origin</option>
+                      <option value="red">red origin</option>
                     </select>
                     <a class="credit-link" href="#" tabindex="-1">Source</a>
                   </td>

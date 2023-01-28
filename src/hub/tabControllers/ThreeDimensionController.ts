@@ -1,6 +1,6 @@
 import { AprilTag, pose2dTo3d, Pose3d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
-import { getMechanismState, MechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
+import { getIsRedAlliance, getMechanismState, MechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import { cleanFloat } from "../../shared/util";
@@ -83,6 +83,9 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.ROBOT_SOURCE_LINK = configBody.children[2].children[0].children[2] as HTMLInputElement;
     this.UNIT_DISTANCE = configBody.children[3].children[0].children[1] as HTMLInputElement;
     this.UNIT_ROTATION = configBody.children[3].children[0].children[2] as HTMLInputElement;
+
+    // Set default alliance value
+    this.ALLIANCE.value = "blue";
 
     // Bind source links
     this.FIELD.addEventListener("change", () => this.updateFieldRobotOptions());
@@ -372,6 +375,20 @@ export default class ThreeDimensionController extends TimelineVizController {
       }
     });
 
+    // Get origin location
+    let allianceRedOrigin = false;
+    switch (this.ALLIANCE.value) {
+      case "auto":
+        allianceRedOrigin = getIsRedAlliance(window.log);
+        break;
+      case "blue":
+        allianceRedOrigin = false;
+        break;
+      case "red":
+        allianceRedOrigin = true;
+        break;
+    }
+
     // Package command data
     return {
       poses: {
@@ -393,7 +410,8 @@ export default class ThreeDimensionController extends TimelineVizController {
         mechanismRobot: mechanismRobotData,
         mechanismGhost: mechanismGhostData
       },
-      options: this.options
+      options: this.options,
+      allianceRedOrigin: allianceRedOrigin
     };
   }
 }

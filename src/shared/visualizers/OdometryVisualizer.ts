@@ -59,7 +59,7 @@ export default class OdometryVisualizer implements Visualizer {
     }
 
     // Determine if objects are flipped
-    let objectsFlipped = command.options.alliance == "red";
+    let objectsFlipped = command.allianceRedOrigin;
 
     // Render background
     let fieldWidth = gameData.bottomRight[0] - gameData.topLeft[0];
@@ -211,7 +211,7 @@ export default class OdometryVisualizer implements Visualizer {
 
       // Render robot
       context.fillStyle = "#222";
-      context.strokeStyle = command.options.alliance;
+      context.strokeStyle = command.allianceRedBumpers ? "red" : "blue";
       context.lineWidth = 3 * pixelsPerInch;
       let backLeft = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
       let frontLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);
@@ -251,7 +251,7 @@ export default class OdometryVisualizer implements Visualizer {
       context.lineCap = "round";
       context.lineJoin = "round";
       context.fillStyle = "#222";
-      context.strokeStyle = command.options.alliance;
+      context.strokeStyle = command.allianceRedBumpers ? "red" : "blue";
       context.lineWidth = 3 * pixelsPerInch;
       let backLeft = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
       let frontLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);

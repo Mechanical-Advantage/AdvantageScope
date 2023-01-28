@@ -1,6 +1,6 @@
-import { config } from "mathjs";
 import { Pose2d, Translation2d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
+import { getIsRedAlliance } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
@@ -14,7 +14,8 @@ export default class OdometryController extends TimelineVizController {
   private ORIGIN: HTMLInputElement;
   private SIZE: HTMLInputElement;
   private SIZE_TEXT: HTMLElement;
-  private ALLIANCE: HTMLInputElement;
+  private ALLIANCE_BUMPERS: HTMLInputElement;
+  private ALLIANCE_ORIGIN: HTMLInputElement;
   private ORIENTATION: HTMLInputElement;
 
   private TRAIL_LENGTH_SECS = 5;
@@ -47,8 +48,13 @@ export default class OdometryController extends TimelineVizController {
     this.ORIGIN = configBody.children[3].children[0].lastElementChild as HTMLInputElement;
     this.SIZE = configBody.children[1].lastElementChild?.children[1] as HTMLInputElement;
     this.SIZE_TEXT = configBody.children[1].lastElementChild?.lastElementChild as HTMLElement;
-    this.ALLIANCE = configBody.children[2].lastElementChild?.lastElementChild as HTMLInputElement;
+    this.ALLIANCE_BUMPERS = configBody.children[2].lastElementChild?.children[1] as HTMLInputElement;
+    this.ALLIANCE_ORIGIN = configBody.children[2].lastElementChild?.children[2] as HTMLInputElement;
     this.ORIENTATION = configBody.children[3].lastElementChild?.lastElementChild as HTMLInputElement;
+
+    // Set default alliance values
+    this.ALLIANCE_BUMPERS.value = "auto";
+    this.ALLIANCE_ORIGIN.value = "blue";
 
     // Unit conversion for distance
     this.UNIT_DISTANCE.addEventListener("change", () => {
@@ -93,7 +99,8 @@ export default class OdometryController extends TimelineVizController {
       unitRotation: this.UNIT_ROTATION.value,
       origin: this.ORIGIN.value,
       size: Number(this.SIZE.value),
-      alliance: this.ALLIANCE.value,
+      allianceBumpers: this.ALLIANCE_BUMPERS.value,
+      allianceOrigin: this.ALLIANCE_ORIGIN.value,
       orientation: this.ORIENTATION.value
     };
   }
@@ -107,7 +114,8 @@ export default class OdometryController extends TimelineVizController {
     this.SIZE.value = options.size;
     this.SIZE_TEXT.innerText = options.unitDistance;
     this.lastUnitDistance = options.unitDistance;
-    this.ALLIANCE.value = options.alliance;
+    this.ALLIANCE_BUMPERS.value = options.allianceBumpers;
+    this.ALLIANCE_ORIGIN.value = options.allianceOrigin;
     this.ORIENTATION.value = options.orientation;
 
     // Set whether source link is hidden
@@ -228,6 +236,33 @@ export default class OdometryController extends TimelineVizController {
       }
     });
 
+    // Get alliance colors
+    let allianceRedBumpers = false;
+    let allianceRedOrigin = false;
+    let autoRedAlliance = getIsRedAlliance(window.log);
+    switch (this.ALLIANCE_BUMPERS.value) {
+      case "auto":
+        allianceRedBumpers = autoRedAlliance;
+        break;
+      case "blue":
+        allianceRedBumpers = false;
+        break;
+      case "red":
+        allianceRedBumpers = true;
+        break;
+    }
+    switch (this.ALLIANCE_ORIGIN.value) {
+      case "auto":
+        allianceRedOrigin = autoRedAlliance;
+        break;
+      case "blue":
+        allianceRedOrigin = false;
+        break;
+      case "red":
+        allianceRedOrigin = true;
+        break;
+    }
+
     // Package command data
     return {
       poses: {
@@ -240,7 +275,9 @@ export default class OdometryController extends TimelineVizController {
         arrowCenter: arrowCenterData,
         arrowBack: arrowBackData
       },
-      options: this.options
+      options: this.options,
+      allianceRedBumpers: allianceRedBumpers,
+      allianceRedOrigin: allianceRedOrigin
     };
   }
 }

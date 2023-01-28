@@ -13,6 +13,13 @@ const ENABLED_KEYS = [
   "/DSLog/Status/DSDisabled"
 ];
 
+const ALLIANCE_KEYS = [
+  "/DriverStation/AllianceStation",
+  "/AdvantageKit/DriverStation/AllianceStation",
+  "/FMSInfo/IsRedAlliance",
+  "NT:/FMSInfo/IsRedAlliance"
+];
+
 const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
 
 export function getLogValueText(value: any, type: LoggableType): string {
@@ -64,6 +71,27 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
     }
   }
   return enabledData;
+}
+
+export function getIsRedAlliance(log: Log): boolean {
+  let allianceKey = ALLIANCE_KEYS.find((key) => log.getFieldKeys().includes(key));
+  if (!allianceKey) return false;
+
+  if (allianceKey.endsWith("AllianceStation")) {
+    // Integer value (station) from AdvantageKit
+    let tempAllianceData = log.getNumber(allianceKey, Infinity, Infinity);
+    if (tempAllianceData && tempAllianceData.values.length > 0) {
+      return tempAllianceData.values[tempAllianceData.values.length - 1] <= 2;
+    }
+  } else {
+    // Boolean value from NT
+    let tempAllianceData = log.getBoolean(allianceKey, Infinity, Infinity);
+    if (tempAllianceData && tempAllianceData.values.length > 0) {
+      return tempAllianceData.values[tempAllianceData.values.length - 1];
+    }
+  }
+
+  return false;
 }
 
 export interface JoystickState {
