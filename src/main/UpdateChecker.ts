@@ -150,12 +150,12 @@ export default class UpdateChecker {
     let responseString = this.alertOptions[result.response];
     if (responseString == "Download") {
       if (this.alertDownloadUrl === null) {
-        shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
+        await shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
       } else {
-        shell.openExternal(this.alertDownloadUrl);
+        await shell.openExternal(this.alertDownloadUrl);
       }
     } else if (responseString == "View Changelog") {
-      shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
+      await shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
     }
   }
 }
