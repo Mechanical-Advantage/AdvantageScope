@@ -12,7 +12,7 @@ export default class ScrollSensor {
 
   /**
    * Creates a new ScrollSensor.
-   * @param element The container element. The overflow should be "scroll" and the scrollbar should be hidden. The child element should have the dimensions 1000000x1000000px.
+   * @param container The container element. The overflow should be "scroll" and the scrollbar should be hidden. The child element should have the dimensions 1000000x1000000px.
    * @param callback A function to be called after each scroll event, with the relative change in x and y.
    */
   constructor(container: HTMLElement, callback: (dx: number, dy: number) => void) {

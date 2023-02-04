@@ -1364,6 +1364,8 @@ function createHubWindow() {
 /**
  * Creates a new window to edit axis range.
  * @param parentWindow The parent window to use for alignment
+ * @param range The window range
+ * @param callback Window callback
  */
 function createEditRangeWindow(
   parentWindow: Electron.BrowserWindow,
@@ -1406,6 +1408,8 @@ function createEditRangeWindow(
 /**
  * Creates a new window to edit unit conversion for axis.
  * @param parentWindow The parent window to use for alignment
+ * @param unitConversion Unit conversion preset to use.
+ * @param callback Window callback
  */
 function createUnitConversionWindow(
   parentWindow: Electron.BrowserWindow,
@@ -1448,6 +1452,8 @@ function createUnitConversionWindow(
 /**
  * Creates a new window to edit a tab name.
  * @param parentWindow The parent window to use for alignment
+ * @param name Name to use.
+ * @param callback Window Callback.
  */
 function createRenameTabWindow(
   parentWindow: Electron.BrowserWindow,
@@ -1490,6 +1496,7 @@ function createRenameTabWindow(
 /**
  * Creates a new window for export options.
  * @param parentWindow The parent window to use for alignment
+ * @param currentLogPath The current log path
  */
 function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath: string | null) {
   const exportWindow = new BrowserWindow({
@@ -1559,6 +1566,8 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
 /**
  * Creates a new satellite window.
  * @param parentWindow The parent (source) window
+ * @param uuid UUID to use.
+ * @param type TabType to use.
  */
 function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, type: TabType) {
   const width = 900;
