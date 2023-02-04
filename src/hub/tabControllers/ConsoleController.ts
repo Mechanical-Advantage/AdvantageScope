@@ -72,14 +72,13 @@ export default class ConsoleController implements TabController {
       if (targetRow == -1) targetRow = this.lastData.timestamps.length;
       if (targetRow < 1) targetRow = 1;
       targetRow -= 1;
-      let scrollPos = Array.from(this.TABLE_BODY.children).reduce((totalHeight, row, rowIndex) => {
+      this.TABLE_CONTAINER.scrollTop = Array.from(this.TABLE_BODY.children).reduce((totalHeight, row, rowIndex) => {
         if (rowIndex > 0 && rowIndex < targetRow + 1) {
           return totalHeight + row.clientHeight;
         } else {
           return totalHeight;
         }
       }, 0);
-      this.TABLE_CONTAINER.scrollTop = scrollPos;
     };
     this.JUMP_INPUT.addEventListener("keydown", (event) => {
       if (event.code == "Enter") jump();

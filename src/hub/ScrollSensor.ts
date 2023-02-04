@@ -36,8 +36,7 @@ export default class ScrollSensor {
 
   /** Measure the scroll and update if necessary. */
   private update() {
-    let currentTime = new Date().getTime();
-    this.lastScrollUpdate = currentTime;
+    this.lastScrollUpdate = new Date().getTime();
 
     // Reset if necessary
     if (this.resetNext) {
