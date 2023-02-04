@@ -13,7 +13,7 @@ export function serialize(data, options) {
   let array = new Uint8Array(128);
   let length = 0;
 
-  var th = "";
+  let th = "";
   if (options && options.typeHint) {
     th = options.typeHint;
   }
@@ -78,7 +78,7 @@ export function serialize(data, options) {
   }
 
   function appendNumber(data, th) {
-    var isInteger = th === "int" || (isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
+    const isInteger = th === "int" || (isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
     if (isInteger) {
       // Integer
       if (data >= 0 && data <= 0x7f) {
