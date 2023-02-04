@@ -27,7 +27,6 @@
     "@rollup/plugin-typescript": "10.0.1",
     "@types/chart.js": "^2.9.37",
     "@types/jsonfile": "^6.1.0",
-    "@types/mathjs": "^9.4.2",
     "@types/remarkable": "^2.0.3",
     "@types/ssh2": "^1.11.5",
     "@types/three": "^0.144.0",
