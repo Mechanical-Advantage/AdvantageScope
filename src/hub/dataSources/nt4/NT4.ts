@@ -94,7 +94,6 @@ export class NT4_Client {
 
   private serverBaseAddr;
   private ws: WebSocket | null = null;
-  private clientIdx = 0;
   private useSecure = false;
   private serverAddr = "";
   private serverConnectionActive = false;
@@ -102,7 +101,6 @@ export class NT4_Client {
   private serverTimeOffset_us: number | null = null;
   private networkLatency_us: number = 0;
 
-  private uidCounter = 0;
   private subscriptions: Map<number, NT4_Subscription> = new Map();
   private publishedTopics: Map<string, NT4_Topic> = new Map();
   private serverTopics: Map<string, NT4_Topic> = new Map();
@@ -411,7 +409,7 @@ export class NT4_Client {
   private ws_onOpen() {
     // Set the flag allowing general server communication
     this.serverConnectionActive = true;
-    console.log("[NT4] Connected with idx " + this.clientIdx.toString());
+    console.log('[NT4] Connected with identity "' + this.appName + '"');
 
     // Sync timestamps
     this.ws_sendTimestamp();
@@ -557,8 +555,6 @@ export class NT4_Client {
   }
 
   private ws_connect() {
-    this.clientIdx = Math.floor(Math.random() * 99999999);
-
     let port = 5810;
     let prefix = "ws://";
     if (this.useSecure) {
@@ -566,8 +562,7 @@ export class NT4_Client {
       port = 5811;
     }
 
-    this.serverAddr =
-      prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.appName + "_" + this.clientIdx.toString();
+    this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.appName;
 
     this.ws = new WebSocket(this.serverAddr, "networktables.first.wpi.edu");
     this.ws.binaryType = "arraybuffer";
@@ -581,7 +576,6 @@ export class NT4_Client {
   // General utilties
 
   private getNewUID() {
-    this.uidCounter++;
-    return this.uidCounter + this.clientIdx;
+    return Math.floor(Math.random() * 99999999);
   }
 }
