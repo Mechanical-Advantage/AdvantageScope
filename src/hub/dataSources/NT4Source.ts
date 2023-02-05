@@ -15,6 +15,8 @@ export default class NT4Source extends LiveDataSource {
   private shouldRunOutputCallback = false;
   private connectServerTime: number | null = null;
   private noFieldsTimeout: NodeJS.Timeout | null = null;
+  private resubscribeTimeout: NodeJS.Timeout | null = null;
+  private subscriptionId: number | null = null;
 
   constructor(akitMode: boolean) {
     super();
@@ -167,20 +169,37 @@ export default class NT4Source extends LiveDataSource {
               });
             }, 5000);
           }
+
+          // Subscribe with low periodic rate, then resubscribe after topics are received
+          if (this.subscriptionId !== null) {
+            this.client?.unsubscribe(this.subscriptionId);
+          }
+          this.subscriptionId = this.client!.subscribe(
+            [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+            true,
+            true,
+            0.25
+          );
+          this.resubscribeTimeout = setTimeout(() => {
+            if (this.subscriptionId !== null) this.client!.unsubscribe(this.subscriptionId);
+            this.subscriptionId = this.client!.subscribe(
+              [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+              true,
+              true,
+              0.02
+            );
+          }, 1000);
         },
         () => {
           // Disconnected
           this.setStatus(LiveDataSourceStatus.Connecting);
           this.shouldRunOutputCallback = false;
           this.connectServerTime = null;
+          if (this.resubscribeTimeout) clearTimeout(this.resubscribeTimeout);
+          if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
         }
       );
       this.client.connect();
-      if (this.akitMode) {
-        this.client?.subscribe([this.AKIT_PREFIX + "/"], true, true, 0);
-      } else {
-        this.client?.subscribe(["/"], true, true, 0);
-      }
     }
   }
 
