@@ -155,7 +155,7 @@ export default class OdometryVisualizer implements Visualizer {
       command.poses.visionTarget.forEach((target: Pose2d) => {
         let robotPose = command.poses.robot[0];
         context.strokeStyle = "lightgreen";
-        context.lineWidth = 1 * pixelsPerInch;
+        context.lineWidth = pixelsPerInch;
         context.beginPath();
         context.moveTo(robotPos[0], robotPos[1]);
         context.lineTo(...calcCoordinates(target.translation));
@@ -194,7 +194,7 @@ export default class OdometryVisualizer implements Visualizer {
       gradient.addColorStop(1, "rgba(170, 170, 170, 0)");
 
       context.strokeStyle = gradient;
-      context.lineWidth = 1 * pixelsPerInch;
+      context.lineWidth = pixelsPerInch;
       context.lineCap = "round";
       context.lineJoin = "round";
       context.beginPath();
