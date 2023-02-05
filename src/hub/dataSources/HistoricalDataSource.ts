@@ -1,7 +1,7 @@
 import Log from "../../shared/log/Log";
 import WorkerManager from "../WorkerManager";
 
-/** A provider of historial log data (i.e. all of the data is returned at once). */
+/** A provider of historial log data (i.e. all the data is returned at once). */
 export class HistorialDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",

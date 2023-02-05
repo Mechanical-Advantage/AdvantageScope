@@ -80,7 +80,7 @@ function saveResult(log: Log, baseKey: string, timestamp: number, result: Photon
         log.putNumber(baseKey + `/target_${idx}/${objectFieldName}`, timestamp, Number(objectFieldValue));
       }
 
-      // If it's an array, it's either a number array or a array of TargetCorner classes
+      // If it's an array, it's either a number array or an array of TargetCorner classes
       if (Array.isArray(objectFieldValue)) {
         // First entry is a number -- log as array
         if (typeof objectFieldValue[0] == "number") {

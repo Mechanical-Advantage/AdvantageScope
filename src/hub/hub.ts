@@ -93,7 +93,7 @@ function updateFancyWindow() {
     document.body.classList.remove("fancy-title-bar");
   }
 
-  // Using fancy side bar?
+  // Using fancy sidebar?
   if (window.platform == "darwin") {
     document.body.classList.add("fancy-side-bar");
   } else {
