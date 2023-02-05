@@ -578,7 +578,7 @@ export class NT4_Client {
   }
 
   //////////////////////////////////////////////////////////////
-  // General utilties
+  // General utilities
 
   private getNewUID() {
     this.uidCounter++;

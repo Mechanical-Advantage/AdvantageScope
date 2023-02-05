@@ -43,7 +43,7 @@ export const GROUPED_UNITS: { [id: string]: { [id: string]: number } } = {
     days: 1 / 86400
   },
   temperature: {
-    celcius: 1,
+    celsius: 1,
     fahrenheit: 1 // Requires custom conversion
   },
   energy: {
