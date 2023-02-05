@@ -504,7 +504,7 @@ function decodeUtf8(bytes, start, length) {
       } else if (c > 239 && c < 248) {
         if (i + 2 >= length) throw new Error("UTF-8 decode: incomplete 4-byte sequence");
         c = ((c & 7) << 18) | ((bytes[i++] & 63) << 12) | ((bytes[i++] & 63) << 6) | (bytes[i++] & 63);
-      } else throw new Error("UTF-8 decode: unknown multibyte start 0x" + c.toString(16) + " at index " + (i - 1));
+      } else throw new Error("UTF-8 decode: unknown multibyte start 0x" + c.toString() + " at index " + (i - 1));
     }
     if (c <= 0xffff) str += String.fromCharCode(c);
     else if (c <= 0x10ffff) {
