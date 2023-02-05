@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, dialog } from "electron";
+import { BrowserWindow, screen } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import { STATE_FILENAME } from "./Constants";

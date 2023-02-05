@@ -1,4 +1,3 @@
-import { e, row } from "mathjs";
 import ExportOptions from "../shared/ExportOptions";
 import Log from "../shared/log/Log";
 import LogFieldTree from "../shared/log/LogFieldTree";
