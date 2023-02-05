@@ -34,7 +34,7 @@ export default class StateTracker {
       height: 0
     };
 
-    let resetToDefault = false;
+    let resetToDefault: boolean;
     if (fs.existsSync(STATE_FILENAME)) {
       try {
         state = jsonfile.readFileSync(STATE_FILENAME);

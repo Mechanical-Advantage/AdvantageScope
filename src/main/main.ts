@@ -450,7 +450,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 platformString = "win";
                 break;
             }
-            let ffmpegPath = "";
+            let ffmpegPath: string;
             if (app.isPackaged) {
               ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + platformString + "-" + process.arch);
             } else {
@@ -867,7 +867,7 @@ function downloadSave(files: string[]) {
                         completeCount++;
 
                         if (completeCount >= files.length) {
-                          let message = "";
+                          let message: string;
                           if (skipCount > 0) {
                             let newCount = completeCount - skipCount;
                             message =

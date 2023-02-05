@@ -74,7 +74,7 @@ export default class OdometryVisualizer implements Visualizer {
     let extendedFieldWidth = fieldWidth + margin * 2;
     let extendedFieldHeight = fieldHeight + margin * 2;
     let constrainHeight = width / height > extendedFieldWidth / extendedFieldHeight;
-    let imageScalar = 1;
+    let imageScalar: number;
     if (constrainHeight) {
       imageScalar = height / extendedFieldHeight;
     } else {

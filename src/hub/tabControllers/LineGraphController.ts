@@ -574,7 +574,7 @@ export default class LineGraphController implements TabController {
 
     // Clean up step size
     let useCustomUnit = customUnit != null && stepValueApprox > customUnit;
-    let roundBase = 1;
+    let roundBase;
     if (useCustomUnit) {
       roundBase = customUnit * 10 ** Math.floor(Math.log10(stepValueApprox / customUnit));
     } else {
