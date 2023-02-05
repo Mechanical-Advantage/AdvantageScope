@@ -71,7 +71,8 @@ export class HistoricalDataSource {
     }
     WorkerManager.request("../bundles/" + selectedWorkerName, fileContents)
       .then((response: any) => {
-        if (this.status == HistoricalDataSourceStatus.Error || this.status == HistoricalDataSourceStatus.Stopped) return;
+        if (this.status == HistoricalDataSourceStatus.Error || this.status == HistoricalDataSourceStatus.Stopped)
+          return;
         if (this.outputCallback != null) this.outputCallback(Log.fromSerialized(response));
         this.setStatus(HistoricalDataSourceStatus.Ready);
       })

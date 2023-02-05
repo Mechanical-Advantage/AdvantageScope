@@ -78,7 +78,8 @@ export function serialize(data, options) {
   }
 
   function appendNumber(data, th) {
-    const isInteger = th === "int" || (isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
+    const isInteger =
+      th === "int" || (isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
     if (isInteger) {
       // Integer
       if (data >= 0 && data <= 0x7f) {
