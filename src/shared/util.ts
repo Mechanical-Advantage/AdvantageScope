@@ -123,29 +123,5 @@ export function createUUID(): string {
 
 /** Sorting function that finds numbers at the start and end of strings. */
 export function smartSort(a: string, b: string): number {
-  function getNum(text: string): number | null {
-    for (let i = 0; i < text.length; i += 1) {
-      let num = Number(text.slice(i));
-      if (!isNaN(num)) {
-        return num;
-      }
-    }
-    for (let i = text.length; i > 0; i -= 1) {
-      let num = Number(text.slice(0, i));
-      if (!isNaN(num)) {
-        return num;
-      }
-    }
-    return null;
-  }
-  let aNum = getNum(a);
-  let bNum = getNum(b);
-  if (aNum != null && bNum != null) {
-    return aNum - bNum;
-  } else if (a > b) {
-    return 1;
-  } else if (a < b) {
-    return -1;
-  }
-  return 0;
+  return a.localeCompare(b, undefined, { numeric: true });
 }
