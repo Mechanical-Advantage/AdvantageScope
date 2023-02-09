@@ -120,8 +120,3 @@ export function createUUID(): string {
 
   return outString;
 }
-
-/** Sorting function that finds numbers at the start and end of strings. */
-export function smartSort(a: string, b: string): number {
-  return a.localeCompare(b, undefined, { numeric: true });
-}
