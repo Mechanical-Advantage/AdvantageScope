@@ -107,7 +107,13 @@ export default class LogField {
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
-    if (this.data.timestamps.includes(timestamp)) return;
+    // Check if the timestamp already exists
+    if (this.data.timestamps.includes(timestamp)) {
+      this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
+      return;
+    }
+
+    // Find position to insert based on timestamp
     let insertIndex: number;
     if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
       // There's a good chance this data is at the end of the log, so check that first
