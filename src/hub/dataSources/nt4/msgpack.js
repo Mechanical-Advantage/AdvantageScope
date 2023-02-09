@@ -13,7 +13,7 @@ export function serialize(data, options) {
   let array = new Uint8Array(128);
   let length = 0;
 
-  var th = "";
+  let th = "";
   if (options && options.typeHint) {
     th = options.typeHint;
   }
@@ -78,7 +78,8 @@ export function serialize(data, options) {
   }
 
   function appendNumber(data, th) {
-    var isInteger = th === "int" || (isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
+    const isInteger =
+      th === "int" || (isFinite(data) && Math.floor(data) === data && th !== "double" && th !== "float");
     if (isInteger) {
       // Integer
       if (data >= 0 && data <= 0x7f) {
@@ -105,7 +106,7 @@ export function serialize(data, options) {
         appendBytes([0xd2, data >>> 24, data >>> 16, data >>> 8, data]);
       } else if (data > 0 && data <= 0xffffffffffffffff) {
         // uint64
-        // Split 64 bit number into two 32 bit numbers because JavaScript only regards
+        // Split 64-bit number into two 32-bit numbers because JavaScript only regards
         // 32 bits for bitwise operations.
         let hi = data / pow32;
         let lo = data % pow32;
@@ -241,7 +242,7 @@ export function serialize(data, options) {
   }
 
   function appendInt64(value) {
-    // Split 64 bit number into two 32 bit numbers because JavaScript only regards 32 bits for
+    // Split 64-bit number into two 32-bit numbers because JavaScript only regards 32 bits for
     // bitwise operations.
     let hi, lo;
     if (value >= 0) {

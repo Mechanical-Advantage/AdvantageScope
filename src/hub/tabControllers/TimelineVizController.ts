@@ -253,7 +253,7 @@ export default abstract class TimelineVizController implements TabController {
   /** Called every 15ms (regardless of the visible tab). */
   private customPeriodic() {
     // Get time to render
-    let time = 0;
+    let time: number;
     let range = window.log.getTimestampRange();
     let selectionMode = window.selection.getMode();
     let hoveredTime = window.selection.getHoveredTime();

@@ -159,8 +159,7 @@ export default class VideoController extends TimelineVizController {
     if ("path" in data) {
       // Set name
       let components = data.path.split(window.platform == "win32" ? "\\" : "/");
-      let friendlyName = components[components.length - 1];
-      this.SOURCE_CELL.innerText = friendlyName;
+      this.SOURCE_CELL.innerText = components[components.length - 1];
 
       this.locked = false;
       this.playing = false;

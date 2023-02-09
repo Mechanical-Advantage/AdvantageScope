@@ -1,8 +1,8 @@
 import Log from "../../shared/log/Log";
 import WorkerManager from "../WorkerManager";
 
-/** A provider of historial log data (i.e. all of the data is returned at once). */
-export class HistorialDataSource {
+/** A provider of historical log data (i.e. all the data is returned at once). */
+export class HistoricalDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
@@ -11,8 +11,8 @@ export class HistorialDataSource {
   };
 
   private path: string | null = null;
-  private status: HistorialDataSourceStatus = HistorialDataSourceStatus.Waiting;
-  private statusCallback: ((status: HistorialDataSourceStatus) => void) | null = null;
+  private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
+  private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private outputCallback: ((log: Log) => void) | null = null;
 
   /**
@@ -23,13 +23,13 @@ export class HistorialDataSource {
    */
   openFile(
     path: string,
-    statusCallback: (status: HistorialDataSourceStatus) => void,
+    statusCallback: (status: HistoricalDataSourceStatus) => void,
     outputCallback: (log: Log) => void
   ) {
     this.path = path;
     this.statusCallback = statusCallback;
     this.outputCallback = outputCallback;
-    this.setStatus(HistorialDataSourceStatus.Reading);
+    this.setStatus(HistoricalDataSourceStatus.Reading);
 
     // Post message to start reading
     let paths = [path];
@@ -43,18 +43,18 @@ export class HistorialDataSource {
 
   /** Cancels the read operation. */
   stop() {
-    this.setStatus(HistorialDataSourceStatus.Stopped);
+    this.setStatus(HistoricalDataSourceStatus.Stopped);
   }
 
   /** Process new data from the main process, send to worker. */
   handleMainMessage(data: any) {
-    if (this.status != HistorialDataSourceStatus.Reading) return;
-    this.setStatus(HistorialDataSourceStatus.Decoding);
+    if (this.status != HistoricalDataSourceStatus.Reading) return;
+    this.setStatus(HistoricalDataSourceStatus.Decoding);
     let fileContents: string[] = data;
 
     // Check for read error
     if (fileContents.every((contents) => contents === null)) {
-      this.setStatus(HistorialDataSourceStatus.Error);
+      this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
 
@@ -66,30 +66,31 @@ export class HistorialDataSource {
       }
     });
     if (!selectedWorkerName) {
-      this.setStatus(HistorialDataSourceStatus.Error);
+      this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
     WorkerManager.request("../bundles/" + selectedWorkerName, fileContents)
       .then((response: any) => {
-        if (this.status == HistorialDataSourceStatus.Error || this.status == HistorialDataSourceStatus.Stopped) return;
+        if (this.status == HistoricalDataSourceStatus.Error || this.status == HistoricalDataSourceStatus.Stopped)
+          return;
         if (this.outputCallback != null) this.outputCallback(Log.fromSerialized(response));
-        this.setStatus(HistorialDataSourceStatus.Ready);
+        this.setStatus(HistoricalDataSourceStatus.Ready);
       })
       .catch(() => {
-        this.setStatus(HistorialDataSourceStatus.Error);
+        this.setStatus(HistoricalDataSourceStatus.Error);
       });
   }
 
   /** Updates the current status and triggers the callback if necessary. */
-  private setStatus(status: HistorialDataSourceStatus) {
-    if (status != this.status && this.status != HistorialDataSourceStatus.Stopped) {
+  private setStatus(status: HistoricalDataSourceStatus) {
+    if (status != this.status && this.status != HistoricalDataSourceStatus.Stopped) {
       this.status = status;
       if (this.statusCallback != null) this.statusCallback(status);
     }
   }
 }
 
-export enum HistorialDataSourceStatus {
+export enum HistoricalDataSourceStatus {
   Waiting,
   Reading,
   Decoding,

@@ -78,3 +78,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# IDE Specific Files
+.idea

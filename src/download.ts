@@ -13,7 +13,7 @@ const EXIT_BUTTON: HTMLElement = document.getElementById("exit") as HTMLElement;
 const DOWNLOAD_BUTTON: HTMLElement = document.getElementById("download") as HTMLElement;
 
 const FILE_ITEM_HEIGHT_PX = 25;
-const BOTTOM_FILLTER_MARGIN_PX = 5;
+const BOTTOM_FILLER_MARGIN_PX = 5;
 
 let messagePort: MessagePort | null = null;
 let platform: string = "";
@@ -254,7 +254,7 @@ function updateFiller() {
   if (loading) return;
   let itemCount = Array.from(FILE_LIST_ITEMS.children).filter((x) => x.childElementCount != 0).length;
   let targetFillerCount = Math.ceil(
-    (FILE_LIST.getBoundingClientRect().height - BOTTOM_FILLTER_MARGIN_PX - itemCount * FILE_ITEM_HEIGHT_PX) /
+    (FILE_LIST.getBoundingClientRect().height - BOTTOM_FILLER_MARGIN_PX - itemCount * FILE_ITEM_HEIGHT_PX) /
       FILE_ITEM_HEIGHT_PX
   );
   if (targetFillerCount < 0) targetFillerCount = 0;

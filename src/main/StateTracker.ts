@@ -1,4 +1,4 @@
-import { BrowserWindow, screen, dialog } from "electron";
+import { BrowserWindow, screen } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import { STATE_FILENAME } from "./Constants";
@@ -34,7 +34,7 @@ export default class StateTracker {
       height: 0
     };
 
-    let resetToDefault = false;
+    let resetToDefault: boolean;
     if (fs.existsSync(STATE_FILENAME)) {
       try {
         state = jsonfile.readFileSync(STATE_FILENAME);

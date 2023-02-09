@@ -32,8 +32,8 @@ export default class LogField {
 
   /** Returns the values in the specified timestamp range. */
   getRange(start: number, end: number): LogValueSetAny {
-    let timestamps: number[] = [];
-    let values: any[] = [];
+    let timestamps: number[];
+    let values: any[];
 
     let startValueIndex = this.data.timestamps.findIndex((x) => x > start);
     if (startValueIndex == -1) {

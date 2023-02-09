@@ -242,8 +242,7 @@ export default class StatisticsController implements TabController {
 
       if (active && validType) {
         if (dragData.end) {
-          let key = dragData.data.fields[0];
-          this.fields[index] = key;
+          this.fields[index] = dragData.data.fields[0];
           this.updateFields();
         } else {
           let contentRect = this.CONTENT.getBoundingClientRect();

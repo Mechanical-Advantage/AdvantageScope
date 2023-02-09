@@ -128,7 +128,7 @@ export default class Selection {
     }
   }
 
-  /** Switches to idle if possible.. */
+  /** Switches to idle if possible */
   goIdle() {
     switch (this.mode) {
       case SelectionMode.Static:

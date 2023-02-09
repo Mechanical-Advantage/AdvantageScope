@@ -573,7 +573,7 @@ export class NT4_Client {
   }
 
   //////////////////////////////////////////////////////////////
-  // General utilties
+  // General utilities
 
   private getNewUID() {
     return Math.floor(Math.random() * 99999999);

@@ -357,7 +357,7 @@ export default class TableController implements TabController {
         rowOffset = this.timestamps.length - this.currentRange[1] - 1;
       }
     } else if (window.selection.getMode() == SelectionMode.Locked) {
-      // Always go to latest data
+      // Always go to the latest data
       rowOffset = this.timestamps.length - 1 - this.currentRange[1];
     } else {
       // Determine if rows need to be updated based on scroll

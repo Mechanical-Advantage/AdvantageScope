@@ -6,7 +6,7 @@ import { getEnabledData } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { htmlEncode } from "../shared/util";
-import { HistorialDataSource, HistorialDataSourceStatus } from "./dataSources/HistoricalDataSource";
+import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import NT4Source from "./dataSources/NT4Source";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
@@ -57,7 +57,7 @@ window.sidebar = new Sidebar();
 window.tabs = new Tabs();
 window.messagePort = null;
 
-let historicalSource: HistorialDataSource | null;
+let historicalSource: HistoricalDataSource | null;
 let liveSource: LiveDataSource | null;
 let logPath: string | null = null;
 let liveConnected = false;
@@ -93,7 +93,7 @@ function updateFancyWindow() {
     document.body.classList.remove("fancy-title-bar");
   }
 
-  // Using fancy side bar?
+  // Using fancy sidebar?
   if (window.platform == "darwin") {
     document.body.classList.add("fancy-side-bar");
   } else {
@@ -205,23 +205,23 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
   historicalSource?.stop();
   liveSource?.stop();
 
-  historicalSource = new HistorialDataSource();
+  historicalSource = new HistoricalDataSource();
   historicalSource.openFile(
     path,
-    (status: HistorialDataSourceStatus) => {
+    (status: HistoricalDataSourceStatus) => {
       let components = path.split(window.platform == "win32" ? "\\" : "/");
       let friendlyName = components[components.length - 1];
       switch (status) {
-        case HistorialDataSourceStatus.Reading:
-        case HistorialDataSourceStatus.Decoding:
+        case HistoricalDataSourceStatus.Reading:
+        case HistoricalDataSourceStatus.Decoding:
           if (!shouldMerge) setWindowTitle(friendlyName, "Loading");
           setLoading(true);
           break;
-        case HistorialDataSourceStatus.Ready:
+        case HistoricalDataSourceStatus.Ready:
           if (!shouldMerge) setWindowTitle(friendlyName);
           setLoading(false);
           break;
-        case HistorialDataSourceStatus.Error:
+        case HistoricalDataSourceStatus.Error:
           if (!shouldMerge) setWindowTitle(friendlyName, "Error");
           setLoading(false);
           window.sendMainMessage("error", {
@@ -229,7 +229,7 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
             content: "There was a problem while reading the log file. Please try again."
           });
           break;
-        case HistorialDataSourceStatus.Stopped:
+        case HistoricalDataSourceStatus.Stopped:
           setLoading(false);
           break;
       }

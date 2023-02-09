@@ -74,7 +74,7 @@ export default class OdometryVisualizer implements Visualizer {
     let extendedFieldWidth = fieldWidth + margin * 2;
     let extendedFieldHeight = fieldHeight + margin * 2;
     let constrainHeight = width / height > extendedFieldWidth / extendedFieldHeight;
-    let imageScalar = 1;
+    let imageScalar: number;
     if (constrainHeight) {
       imageScalar = height / extendedFieldHeight;
     } else {
@@ -155,7 +155,7 @@ export default class OdometryVisualizer implements Visualizer {
       command.poses.visionTarget.forEach((target: Pose2d) => {
         let robotPose = command.poses.robot[0];
         context.strokeStyle = "lightgreen";
-        context.lineWidth = 1 * pixelsPerInch;
+        context.lineWidth = 1 * pixelsPerInch; // 1 inch
         context.beginPath();
         context.moveTo(robotPos[0], robotPos[1]);
         context.lineTo(...calcCoordinates(target.translation));
@@ -194,7 +194,7 @@ export default class OdometryVisualizer implements Visualizer {
       gradient.addColorStop(1, "rgba(170, 170, 170, 0)");
 
       context.strokeStyle = gradient;
-      context.lineWidth = 1 * pixelsPerInch;
+      context.lineWidth = 1 * pixelsPerInch; // 1 inch
       context.lineCap = "round";
       context.lineJoin = "round";
       context.beginPath();
