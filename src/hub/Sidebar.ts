@@ -1,7 +1,7 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import { getMechanismKeys } from "../shared/log/LogUtil";
-import { arraysEqual, setsEqual, smartSort } from "../shared/util";
+import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
   private SIDEBAR = document.getElementsByClassName("side-bar")[0] as HTMLElement;
@@ -293,6 +293,6 @@ export default class Sidebar {
       if (!this.KNOWN_KEYS.includes(a) && this.KNOWN_KEYS.includes(b)) return -1;
     }
 
-    return smartSort(a, b);
+    return a.localeCompare(b, undefined, { numeric: true });
   }
 }

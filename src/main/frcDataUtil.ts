@@ -13,7 +13,7 @@ import {
   ConfigJoystick_Joystick,
   FRCData
 } from "../shared/FRCData";
-import { checkArrayType, smartSort } from "../shared/util";
+import { checkArrayType } from "../shared/util";
 import { EXTRA_FRC_DATA } from "./Constants";
 
 /** Creates extra FRC data folder and updates README. */
@@ -363,7 +363,7 @@ export function loadFRCData(): FRCData {
   frcData.robots.sort((a, b) => {
     if (a.title == "KitBot") return -1;
     if (b.title == "KitBot") return 1;
-    return smartSort(a.title, b.title);
+    return a.title.localeCompare(b.title, undefined, { numeric: true });
   });
   frcData.joysticks.sort((a, b) => (a.title > b.title ? -1 : b.title > a.title ? 1 : 0));
 
