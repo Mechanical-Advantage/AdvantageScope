@@ -18,7 +18,7 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - name: Install Node.js dependencies
-        run: npm install
+        run: npm ci
       - name: Check formatting
         run: npm run check-format
 
@@ -53,7 +53,7 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - name: Install Node.js dependencies
-        run: npm install
+        run: npm ci
       - name: Install Linux dependencies
         if: matrix.host.os == 'ubuntu-latest'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools
