@@ -12,6 +12,7 @@ These links cover the basics of getting around in AdvantageScope and and accessi
 - [Opening/Downloading Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
 - [Exporting Log Data](/docs/EXPORT.md)
+- [Configurable Network Tables](/docs/NT4CONFIGURABLE.md)
 
 ## Tab Information
 
