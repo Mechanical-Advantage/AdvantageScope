@@ -50,9 +50,11 @@ window.addEventListener("message", (event) => {
           if (THEME.value == "dark") theme = "dark";
           if (THEME.value == "system") theme = "system";
 
-          let liveMode: "nt4" | "nt4-akit" | "rlog" = "nt4";
+          let liveMode: "nt4" | "nt4-akit" | "nt4-configurable" | "rlog";
+          liveMode = "nt4";
           if (LIVE_MODE.value == "nt4") liveMode = "nt4";
           if (LIVE_MODE.value == "nt4-akit") liveMode = "nt4-akit";
+          if (LIVE_MODE.value == "nt4-configurable") liveMode = "nt4-configurable";
           if (LIVE_MODE.value == "rlog") liveMode = "rlog";
 
           let threeDimensionMode: "quality" | "efficiency" | "auto" = "quality";
@@ -60,13 +62,17 @@ window.addEventListener("message", (event) => {
           if (THREE_DIMENSION_MODE.value == "efficiency") threeDimensionMode = "efficiency";
           if (THREE_DIMENSION_MODE.value == "auto") threeDimensionMode = "auto";
 
+          // Preserve old NT4 config keys
+          let keys = oldPrefs.keys;
+
           let newPrefs: Preferences = {
             theme: theme,
             rioAddress: RIO_ADDRESS.value,
             rioPath: RIO_PATH.value,
             liveMode: liveMode,
             rlogPort: Number(RLOG_PORT.value),
-            threeDimensionMode: threeDimensionMode
+            threeDimensionMode: threeDimensionMode,
+            keys: keys
           };
           messagePort.postMessage(newPrefs);
         } else {

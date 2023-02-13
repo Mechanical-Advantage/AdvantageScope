@@ -283,10 +283,13 @@ function startLive(isSim: boolean) {
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
     case "nt4":
-      liveSource = new NT4Source(false);
+      liveSource = new NT4Source(false, false);
       break;
     case "nt4-akit":
-      liveSource = new NT4Source(true);
+      liveSource = new NT4Source(true, false);
+      break;
+    case "nt4-configurable":
+      liveSource = new NT4Source(false, true);
       break;
     case "rlog":
       liveSource = new RLOGServerSource();

@@ -9,6 +9,7 @@ export default class NT4Source extends LiveDataSource {
   private AKIT_PREFIX = "/AdvantageKit";
 
   private akitMode: boolean;
+  private configurableMode: boolean;
   private log: Log | null = null;
   private client: NT4_Client | null = null;
 
@@ -18,9 +19,10 @@ export default class NT4Source extends LiveDataSource {
   private resubscribeTimeout: NodeJS.Timeout | null = null;
   private subscriptionId: number | null = null;
 
-  constructor(akitMode: boolean) {
+  constructor(akitMode: boolean, configurableMode: boolean) {
     super();
     this.akitMode = akitMode;
+    this.configurableMode = configurableMode;
 
     // Check periodically if output callback should be triggered
     // (prevents running the callback many times for each frame)
@@ -169,26 +171,27 @@ export default class NT4Source extends LiveDataSource {
               });
             }, 5000);
           }
-
-          // Subscribe with low periodic rate, then resubscribe after topics are received
-          if (this.subscriptionId !== null) {
-            this.client?.unsubscribe(this.subscriptionId);
-          }
-          this.subscriptionId = this.client!.subscribe(
-            [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
-            true,
-            true,
-            0.25
-          );
-          this.resubscribeTimeout = setTimeout(() => {
-            if (this.subscriptionId !== null) this.client!.unsubscribe(this.subscriptionId);
+          if (!this.configurableMode) {
+            // Subscribe with low periodic rate, then resubscribe after topics are received
+            if (this.subscriptionId !== null) {
+              this.client?.unsubscribe(this.subscriptionId);
+            }
             this.subscriptionId = this.client!.subscribe(
               [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
               true,
               true,
-              0.02
+              0.25
             );
-          }, 1000);
+            this.resubscribeTimeout = setTimeout(() => {
+              if (this.subscriptionId !== null) this.client!.unsubscribe(this.subscriptionId);
+              this.subscriptionId = this.client!.subscribe(
+                [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+                true,
+                true,
+                0.02
+              );
+            }, 1000);
+          }
         },
         () => {
           // Disconnected
@@ -200,6 +203,18 @@ export default class NT4Source extends LiveDataSource {
         }
       );
       this.client.connect();
+      if (this.akitMode) {
+        this.client?.subscribe([this.AKIT_PREFIX + "/"], true, true, 0);
+      } else if (this.configurableMode) {
+        for (const key of window.preferences.keys) {
+          console.log(
+            "Key: " + key + " key[0] " + key[0] + " key[1] " + key[1] + " key[2] " + key[2] + " key[3] " + key[3]
+          );
+          this.client?.subscribe([key[0]], key[1], key[2], key[3]);
+        }
+      } else {
+        this.client?.subscribe(["/"], true, true, 0);
+      }
     }
   }
 
