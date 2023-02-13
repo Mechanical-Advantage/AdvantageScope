@@ -2,6 +2,14 @@
 
 Configurable subscribers using an imported json file.
 
+### While Using
+
+![Example In Use](/docs/resources/nt4-configurable/configured%20example.png)
+
+### Without using
+
+![Example Not In Use](/docs/resources/nt4-configurable/unconfigured%20example.png)
+
 ## JSON Setup
 
 The string at the beginning is either the full string of the network table value you want or the start of it if you have prefix mode set to true.
@@ -30,3 +38,5 @@ Click "File" > "Import NT4 Config..." & then select your config json
 ## Setting your Network Tables to configurable
 
 Click "Help" > "Show Preferences..." > "Live Mode" & select "NetworkTables 4 (Configurable)" & then click the check mark.
+
+![Pref Window](/docs/resources/nt4-configurable/pref%20window.png)
