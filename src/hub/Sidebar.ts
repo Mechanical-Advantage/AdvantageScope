@@ -255,7 +255,9 @@ export default class Sidebar {
       childSpan.style.setProperty("--indent", (indent + this.INDENT_SIZE_PX).toString() + "px");
       childSpan.hidden = true;
 
+      let firstExpand = true;
       let setExpanded = (expanded: boolean) => {
+        // Update icon and span display
         childSpan.hidden = !expanded;
         closedIcon.style.display = expanded ? "none" : "initial";
         openIcon.style.display = expanded ? "initial" : "none";
@@ -264,24 +266,28 @@ export default class Sidebar {
         } else {
           this.expandedFields.delete(fullTitle);
         }
+
+        // Add children if first time
+        if (firstExpand) {
+          firstExpand = false;
+          let childKeys = Object.keys(field.children);
+          if (fullTitle == "/AdvantageKit") {
+            // Apply hidden and known keys
+            childKeys = childKeys
+              .filter((key) => !this.HIDDEN_KEYS.includes(key))
+              .sort((a, b) => this.sortKeys(a, b, true));
+          } else {
+            childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
+          }
+          childKeys.forEach((key) => {
+            this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
+          });
+        }
       };
 
       closedIcon.addEventListener("click", () => setExpanded(true));
       openIcon.addEventListener("click", () => setExpanded(false));
       if (this.expandedFields.has(fullTitle)) setExpanded(true);
-
-      let childKeys = Object.keys(field.children);
-      if (fullTitle == "/AdvantageKit") {
-        // Apply hidden and known keys
-        childKeys = childKeys
-          .filter((key) => !this.HIDDEN_KEYS.includes(key))
-          .sort((a, b) => this.sortKeys(a, b, true));
-      } else {
-        childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
-      }
-      childKeys.forEach((key) => {
-        this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
-      });
     }
   }
 
