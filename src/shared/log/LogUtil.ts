@@ -1,6 +1,7 @@
 import { Rotation2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import Log from "./Log";
+import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
@@ -165,18 +166,18 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   return state;
 }
 
-export function getMechanismKeys(log: Log): string[] {
-  let keyOptions: string[] = [];
-  log.getFieldKeys().forEach((key) => {
-    if (key.endsWith("/.type")) {
-      let value = getOrDefault(log, key, LoggableType.String, Infinity, "");
-      if (value === "Mechanism2d") {
-        keyOptions.push(key.slice(0, -6));
-      }
-    }
-  });
-  keyOptions.sort();
-  return keyOptions;
+export function getFullKeyIfMechanism(field: LogFieldTree): string | null {
+  const typeKey = ".type";
+  if (
+    typeKey in field.children &&
+    field.children[typeKey].fullKey !== null &&
+    getOrDefault(window.log, field.children[typeKey].fullKey, LoggableType.String, Infinity, "") === "Mechanism2d"
+  ) {
+    let key = field.children[typeKey].fullKey;
+    return key.substring(0, key.length - typeKey.length - 1);
+  } else {
+    return null;
+  }
 }
 
 export type MechanismState = {

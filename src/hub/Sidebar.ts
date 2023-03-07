@@ -1,6 +1,6 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import { getMechanismKeys } from "../shared/log/LogUtil";
+import { getFullKeyIfMechanism } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
@@ -162,10 +162,9 @@ export default class Sidebar {
     neutralIcon.style.display = hasChildren ? "none" : "initial";
 
     // Check if mechanism
-    let mechanismKeys = getMechanismKeys(window.log);
-    let isMechanism = mechanismKeys.includes(fullTitle);
-    if (isMechanism) {
-      field.fullKey = fullTitle; // Acts like a normal field
+    let mechanismFullKey = getFullKeyIfMechanism(field);
+    if (mechanismFullKey !== null) {
+      field.fullKey = mechanismFullKey; // Acts like a normal field
     }
 
     // Create label
