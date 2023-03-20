@@ -28,6 +28,7 @@ export const DEFAULT_PREFS: Preferences = {
   rioPath: "/media/sda1/",
   liveMode: "nt4",
   rlogPort: 5800,
+  wpilogNtPrefix: true,
   threeDimensionMode: "quality"
 };
 

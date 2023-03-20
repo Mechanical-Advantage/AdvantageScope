@@ -66,7 +66,7 @@ export class WPILOGDecoderRecord {
   }
 
   /** Decodes a start control record. */
-  getStartData(): StartRecordData {
+  getStartData(wpilogNtPrefix: boolean): StartRecordData {
     if (!this.isStart()) throw "Not a start control record";
 
     let stringResult: { string: string; position: number };
@@ -76,7 +76,7 @@ export class WPILOGDecoderRecord {
     stringResult = this.readInnerString(stringResult.position);
     let type = stringResult.string;
     let metadata = this.readInnerString(stringResult.position).string;
-
+    if (!wpilogNtPrefix && name.startsWith("NT:/")) name = name.substring(3);
     return {
       entry: entry,
       name: name,

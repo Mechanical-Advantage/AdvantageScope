@@ -1789,6 +1789,9 @@ app.whenReady().then(() => {
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort == "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
     }
+    if ("wpilogNtPrefix" in oldPrefs && typeof oldPrefs.wpilogNtPrefix == "boolean") {
+      prefs.wpilogNtPrefix = oldPrefs.wpilogNtPrefix;
+    }
 
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;

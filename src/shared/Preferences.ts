@@ -6,5 +6,6 @@ export default interface Preferences {
   liveMode: "nt4" | "nt4-akit" | "rlog";
   rlogPort: number;
   threeDimensionMode: "quality" | "efficiency" | "auto";
+  wpilogNtPrefix: boolean;
   usb?: boolean;
 }

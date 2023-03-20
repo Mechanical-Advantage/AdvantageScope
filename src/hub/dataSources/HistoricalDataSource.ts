@@ -69,7 +69,11 @@ export class HistoricalDataSource {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
-    WorkerManager.request("../bundles/" + selectedWorkerName, fileContents)
+    let payload: string[] = fileContents;
+    if (selectedWorkerName == this.WORKER_NAMES[".wpilog"]) {
+      payload.push(String(window.preferences?.wpilogNtPrefix));
+    }
+    WorkerManager.request("../bundles/" + selectedWorkerName, payload)
       .then((response: any) => {
         if (this.status == HistoricalDataSourceStatus.Error || this.status == HistoricalDataSourceStatus.Stopped)
           return;

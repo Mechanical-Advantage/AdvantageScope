@@ -6,6 +6,7 @@ const RIO_PATH = document.getElementById("rioPath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const RLOG_PORT = document.getElementById("rlogPort") as HTMLInputElement;
 const THREE_DIMENSION_MODE = document.getElementById("threeDimensionMode") as HTMLInputElement;
+const WPILOG_NT_PREFIX = document.getElementById("wpilogNTPrefix") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
@@ -41,6 +42,7 @@ window.addEventListener("message", (event) => {
       LIVE_MODE.value = oldPrefs.liveMode;
       RLOG_PORT.value = oldPrefs.rlogPort.toString();
       THREE_DIMENSION_MODE.value = oldPrefs.threeDimensionMode;
+      WPILOG_NT_PREFIX.checked = oldPrefs.wpilogNtPrefix;
 
       // Close function
       function close(useNewPrefs: boolean) {
@@ -66,7 +68,8 @@ window.addEventListener("message", (event) => {
             rioPath: RIO_PATH.value,
             liveMode: liveMode,
             rlogPort: Number(RLOG_PORT.value),
-            threeDimensionMode: threeDimensionMode
+            threeDimensionMode: threeDimensionMode,
+            wpilogNtPrefix: WPILOG_NT_PREFIX.checked
           };
           messagePort.postMessage(newPrefs);
         } else {

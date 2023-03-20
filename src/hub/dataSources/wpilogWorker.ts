@@ -24,7 +24,7 @@ self.onmessage = (event) => {
     reader.forEach((record) => {
       if (record.isControl()) {
         if (record.isStart()) {
-          let startData = record.getStartData();
+          let startData = record.getStartData(payload[1] == "true");
           entryIds[startData.entry] = startData.name;
           entryTypes[startData.entry] = startData.type;
           switch (startData.type) {
