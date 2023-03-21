@@ -64,6 +64,7 @@ self.onmessage = (event) => {
           case "boolean":
             log.putBoolean(key, timestamp, record.getBoolean());
             break;
+          case "int":
           case "int64":
             log.putNumber(key, timestamp, record.getInteger());
             break;
