@@ -67,6 +67,7 @@ export default class NT4Source extends LiveDataSource {
         (topic: NT4_Topic) => {
           // Announce
           if (!this.log) return;
+          if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
           let type = this.getLogType(topic.type);
           if (type != null) {
             this.log.createBlankField(this.getKeyFromTopic(topic), type);
@@ -80,7 +81,6 @@ export default class NT4Source extends LiveDataSource {
           // Data
           if (!this.log) return;
 
-          if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
           if (!this.connectServerTime && this.client != null) {
             this.connectServerTime = this.client.getServerTime_us();
           }
