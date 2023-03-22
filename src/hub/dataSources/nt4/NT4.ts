@@ -94,7 +94,6 @@ export class NT4_Client {
 
   private serverBaseAddr;
   private ws: WebSocket | null = null;
-  private useSecure = false;
   private serverAddr = "";
   private serverConnectionActive = false;
   private serverConnectionRequested = false;
@@ -442,9 +441,6 @@ export class NT4_Client {
     if (event.reason !== "") {
       console.log("[NT4] Socket is closed: ", event.reason);
     }
-    if (!event.wasClean) {
-      this.useSecure = !this.useSecure;
-    }
     if (this.serverConnectionRequested) {
       setTimeout(() => this.ws_connect(), 500);
     }
@@ -557,10 +553,6 @@ export class NT4_Client {
   private ws_connect() {
     let port = 5810;
     let prefix = "ws://";
-    if (this.useSecure) {
-      prefix = "wss://";
-      port = 5811;
-    }
 
     this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.appName;
 
