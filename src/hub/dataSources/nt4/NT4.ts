@@ -120,7 +120,7 @@ export class NT4_Client {
     onTopicAnnounce: (topic: NT4_Topic) => void,
     onTopicUnannounce: (topic: NT4_Topic) => void,
     onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void,
-    onConnect: () => void, //
+    onConnect: () => void,
     onDisconnect: () => void
   ) {
     this.serverBaseAddr = serverAddr;
