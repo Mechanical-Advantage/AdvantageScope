@@ -35,9 +35,13 @@ self.onmessage = (event) => {
       log.putBoolean("/DSLog/Status/RobotAuto", entry.timestamp, entry.robotAuto);
       log.putBoolean("/DSLog/Status/RobotDisabled", entry.timestamp, entry.robotDisabled);
       log.putNumber("/DSLog/CANUtilization", entry.timestamp, entry.canUtilization);
-      log.putNumber("/DSLog/WifiDb", entry.timestamp, entry.wifiDb);
-      log.putNumber("/DSLog/WifiMb", entry.timestamp, entry.wifiMb);
       log.putNumberArray("/DSLog/PowerDistributionCurrents", entry.timestamp, entry.powerDistributionCurrents);
+
+      // Signal strength and bandwidth are not logged:
+      // https://www.chiefdelphi.com/t/alternate-viewer-for-driver-station-logs-dslog/120629/11
+      //
+      // log.putNumber("/DSLog/WifiDb", entry.timestamp, entry.wifiDb);
+      // log.putNumber("/DSLog/WifiMb", entry.timestamp, entry.wifiMb);
     });
   }
   if (payload[1] !== null) {
