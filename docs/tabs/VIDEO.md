@@ -16,11 +16,11 @@ To load a video, select the box labeled "\<Click Here\>" under "Source". Most co
 
 When a video is initially loaded and has not yet been synchronized with the log data, the playback controls for the video and log are still independent. Use the timeline and buttons on the bottom right to control the video playback. The following keyboard shortcuts are also supported:
 
-- **Cmd/ctrl + /** = toggle playback
-- **Cmd/ctrl + →** = move forward one frame
-- **Cmd/ctrl + ←** = move backward one frame
-- **Cmd/ctrl + >** = skip forward five seconds
-- **Cmd/ctrl + <** = skip backward five seconds
+- **/** = toggle playback
+- **→** = move forward one frame
+- **←** = move backward one frame
+- **>** = skip forward five seconds
+- **<** = skip backward five seconds
 
 Use these controls to navigate to a known location in the match, typically the start of auto or teleop.
 
