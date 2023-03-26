@@ -490,7 +490,10 @@ function handleMainMessage(message: NamedMessage) {
 
     case "start-export":
       if (logPath != null || liveConnected) {
-        window.sendMainMessage("prompt-export", logPath);
+        window.sendMainMessage("prompt-export", {
+          path: logPath,
+          incompleteWarning: liveConnected && window.preferences?.liveSubscribeMode === "low-bandwidth"
+        });
       } else {
         window.sendMainMessage("error", {
           title: "Cannot export data",
