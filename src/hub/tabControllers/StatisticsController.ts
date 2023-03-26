@@ -288,6 +288,10 @@ export default class StatisticsController implements TabController {
     this.shouldUpdate = true;
   }
 
+  getActiveFields(): string[] {
+    return this.fields.filter((field) => field !== null) as string[];
+  }
+
   periodic() {
     // Update histogram layout
     this.VALUES_TABLE_CONTAINER.style.top = (this.CONFIG_TABLE.clientHeight + 10).toString() + "px";

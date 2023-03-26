@@ -99,6 +99,7 @@ export class NT4_Client {
   private serverConnectionRequested = false;
   private serverTimeOffset_us: number | null = null;
   private networkLatency_us: number = 0;
+  private rxLengthCounter = 0;
 
   private subscriptions: Map<number, NT4_Subscription> = new Map();
   private publishedTopics: Map<string, NT4_Topic> = new Map();
@@ -131,7 +132,15 @@ export class NT4_Client {
     this.onConnect = onConnect;
     this.onDisconnect = onDisconnect;
 
-    setInterval(() => this.ws_sendTimestamp(), 5000);
+    setInterval(() => {
+      // Update timestamp
+      this.ws_sendTimestamp();
+
+      // Log bitrate
+      let bitrateKbPerSec = ((this.rxLengthCounter / 1000) * 8) / 5;
+      this.rxLengthCounter = 0;
+      console.log("[NT4] Bitrate: " + Math.round(bitrateKbPerSec).toString() + " kb/s");
+    }, 5000);
   }
 
   //////////////////////////////////////////////////////////////
@@ -320,11 +329,11 @@ export class NT4_Client {
   }
 
   /** Returns the current server time in microseconds (or null if unknown). */
-  getServerTime_us(): number | null {
+  getServerTime_us(clientTime?: number): number | null {
     if (this.serverTimeOffset_us === null) {
       return null;
     } else {
-      return this.getClientTime_us() + this.serverTimeOffset_us;
+      return (clientTime === undefined ? this.getClientTime_us() : clientTime) + this.serverTimeOffset_us;
     }
   }
 
@@ -453,6 +462,7 @@ export class NT4_Client {
   private ws_onMessage(event: MessageEvent) {
     if (typeof event.data === "string") {
       // JSON array
+      this.rxLengthCounter += event.data.length;
       let msgData = JSON.parse(event.data);
       if (!Array.isArray(msgData)) {
         console.warn("[NT4] Ignoring text message, JSON parsing did not produce an array at the top level.");
@@ -522,6 +532,7 @@ export class NT4_Client {
       });
     } else {
       // MSGPack
+      this.rxLengthCounter += event.data.byteLength;
       deserialize(event.data, { multiple: true }).forEach((unpackedData: number[]) => {
         let topicID = unpackedData[0];
         let timestamp_us = unpackedData[1];

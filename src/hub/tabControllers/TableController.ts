@@ -339,6 +339,10 @@ export default class TableController implements TabController {
     if (rowHeight > 0 && rowHeight != this.ROW_HEIGHT_PX) this.ROW_HEIGHT_PX = rowHeight;
   }
 
+  getActiveFields(): string[] {
+    return this.fields;
+  }
+
   periodic() {
     // Update based on selected & hovered times
     this.updateHighlights();

@@ -1,6 +1,12 @@
 import { AprilTag, pose2dTo3d, Pose3d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
-import { getIsRedAlliance, getMechanismState, MechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
+import {
+  ALLIANCE_KEYS,
+  getIsRedAlliance,
+  getMechanismState,
+  MechanismState,
+  mergeMechanismStates
+} from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import { cleanFloat } from "../../shared/util";
@@ -138,6 +144,14 @@ export default class ThreeDimensionController extends TimelineVizController {
   /** Switches the selected camera for the main visualizer. */
   set3DCamera(index: number) {
     (this.visualizer as ThreeDimensionVisualizer).set3DCamera(index);
+  }
+
+  getAdditionalActiveFields(): string[] {
+    if (this.ALLIANCE.value === "auto") {
+      return ALLIANCE_KEYS;
+    } else {
+      return [];
+    }
   }
 
   getCommand(time: number) {

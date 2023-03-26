@@ -32,9 +32,8 @@ export default class Log {
     }
   }
 
-  /** Updates the timestamp range and set caches if necessary. */
-  private processTimestamp(key: string, timestamp: number) {
-    // Update timestamp range
+  /** Updates the timestamp range to include the provided value. */
+  updateTimestampRange(timestamp: number) {
     if (this.timestampRange == null) {
       this.timestampRange = [timestamp, timestamp];
     } else if (timestamp < this.timestampRange[0]) {
@@ -42,6 +41,12 @@ export default class Log {
     } else if (timestamp > this.timestampRange[1]) {
       this.timestampRange[1] = timestamp;
     }
+  }
+
+  /** Updates the timestamp range and set caches if necessary. */
+  private processTimestamp(key: string, timestamp: number) {
+    // Update timestamp range
+    this.updateTimestampRange(timestamp);
 
     // Update timestamp set caches
     Object.values(this.timestampSetCache).forEach((cache) => {
@@ -72,6 +77,11 @@ export default class Log {
     } else {
       return undefined;
     }
+  }
+
+  /** Returns whether the key is an array field. */
+  isArrayField(key: string) {
+    return this.arrayItemFields.includes(key);
   }
 
   /** Returns the combined timestamps from a set of fields.
@@ -186,6 +196,7 @@ export default class Log {
 
   /** Writes a new Raw value to the field. */
   putRaw(key: string, timestamp: number, value: Uint8Array) {
+    if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Raw);
     this.fields[key].putRaw(timestamp, value);
     if (this.fields[key].getType() == LoggableType.Raw) {

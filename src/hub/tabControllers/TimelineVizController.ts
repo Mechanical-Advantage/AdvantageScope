@@ -248,6 +248,16 @@ export default abstract class TimelineVizController implements TabController {
     this.updateFields();
   }
 
+  getActiveFields(): string[] {
+    let activeFields = this.fields.filter((field) => field !== null) as string[];
+    this.listFields.forEach((group) =>
+      group.forEach((field) => {
+        activeFields.push(field.key);
+      })
+    );
+    return [...activeFields, ...this.getAdditionalActiveFields()];
+  }
+
   periodic() {}
 
   /** Called every 15ms (regardless of the visible tab). */
@@ -333,6 +343,13 @@ export default abstract class TimelineVizController implements TabController {
 
   /** Updates the set of selected options. */
   abstract set options(options: { [id: string]: any });
+
+  /**
+   * Returns the list of fields currently being displayed. This is
+   * used to selectively request fields from live sources, and all
+   * keys matching the provided prefixes will be made available.
+   * */
+  abstract getAdditionalActiveFields(): string[];
 
   /** Returns a command to render a single frame. */
   abstract getCommand(time: number): any;

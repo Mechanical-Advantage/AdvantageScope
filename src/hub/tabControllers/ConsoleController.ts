@@ -105,6 +105,14 @@ export default class ConsoleController implements TabController {
     this.updateData();
   }
 
+  getActiveFields(): string[] {
+    if (this.field == null) {
+      return [];
+    } else {
+      return [this.field];
+    }
+  }
+
   periodic() {
     // Update highlights
     this.updateHighlights();

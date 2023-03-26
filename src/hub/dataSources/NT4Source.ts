@@ -1,5 +1,6 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
+import { TYPE_KEY } from "../../shared/log/LogUtil";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import { NT4_Client, NT4_Topic } from "./nt4/NT4";
@@ -13,19 +14,124 @@ export default class NT4Source extends LiveDataSource {
   private client: NT4_Client | null = null;
 
   private shouldRunOutputCallback = false;
-  private connectServerTime: number | null = null;
+  private connectTime: number | null = null;
   private noFieldsTimeout: NodeJS.Timeout | null = null;
-  private resubscribeTimeout: NodeJS.Timeout | null = null;
-  private subscriptionId: number | null = null;
+  private loggingSubscription: number | null = null;
+  private lowBandwidthTopicSubscription: number | null = null;
+  private lowBandwidthDataSubscriptions: { [id: string]: number } = {};
+  private typeFieldsReceived: Set<string> = new Set(); // Type fields (ending in ".type") that have received a value
+  private schemaFields: Set<string> = new Set(); // Fields with a type matching a custom schema
 
   constructor(akitMode: boolean) {
     super();
     this.akitMode = akitMode;
 
-    // Check periodically if output callback should be triggered
-    // (prevents running the callback many times for each frame)
-    this.shouldRunOutputCallback = false;
     setInterval(() => {
+      // Update timestamp range based on connection time
+      if (this.client !== null && this.connectTime !== null) {
+        let connectServerTime = this.client.getServerTime_us(this.connectTime);
+        if (connectServerTime !== null) window.log.updateTimestampRange(connectServerTime / 1000000);
+      }
+
+      // Update subscriptions
+      if (this.client !== null) {
+        if (window.preferences?.liveSubscribeMode == "logging") {
+          // Switch to logging subscribe mode
+          Object.values(this.lowBandwidthDataSubscriptions).forEach((subscriptionId) => {
+            this.client?.unsubscribe(subscriptionId);
+          });
+          this.lowBandwidthDataSubscriptions = {};
+          if (this.lowBandwidthTopicSubscription !== null) {
+            this.client.unsubscribe(this.lowBandwidthTopicSubscription);
+            this.lowBandwidthTopicSubscription = null;
+          }
+          if (this.loggingSubscription === null) {
+            this.loggingSubscription = this.client.subscribe(
+              [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+              true,
+              true,
+              0.02
+            );
+          }
+        } else {
+          // Switch to low bandwidth subscribe mode
+          if (this.loggingSubscription !== null) {
+            this.client.unsubscribe(this.loggingSubscription);
+            this.loggingSubscription = null;
+          }
+          if (this.lowBandwidthTopicSubscription === null) {
+            this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
+              [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+              true
+            );
+          }
+
+          // Add active fields from tabs
+          let activeFields: Set<string> = new Set();
+          window.tabs.getActiveFields().forEach((key) => {
+            window.log.getFieldKeys().forEach((announcedKey) => {
+              if (window.log.isArrayField(announcedKey)) return;
+              let subscribeKey: string | null = null;
+              if (announcedKey.startsWith(key)) {
+                subscribeKey = key;
+              } else if (key.startsWith(announcedKey)) {
+                subscribeKey = announcedKey;
+              }
+              if (subscribeKey !== null) {
+                if (akitMode) {
+                  activeFields.add(this.AKIT_PREFIX + subscribeKey);
+                } else {
+                  activeFields.add(subscribeKey);
+                }
+              }
+            });
+          });
+
+          // Add all array fields visible in sidebar
+          window.sidebar.getVisibleFieldKeys().forEach((key) => {
+            if (
+              this.log?.getType(key) === LoggableType.BooleanArray ||
+              this.log?.getType(key) === LoggableType.NumberArray ||
+              this.log?.getType(key) === LoggableType.StringArray ||
+              this.schemaFields.has(key)
+            ) {
+              if (akitMode) {
+                activeFields.add(this.AKIT_PREFIX + key);
+              } else {
+                activeFields.add(key);
+              }
+            }
+          });
+
+          // Add all ".type" fields that don't have a value yet
+          window.log.getFieldKeys().forEach((key) => {
+            if (key.endsWith(TYPE_KEY) && !this.typeFieldsReceived.has(key)) {
+              if (akitMode) {
+                activeFields.add(this.AKIT_PREFIX + key);
+              } else {
+                activeFields.add(key);
+              }
+            }
+          });
+
+          // Update subscriptions
+          activeFields.forEach((field) => {
+            if (this.client === null) return;
+            if (!(field in this.lowBandwidthDataSubscriptions)) {
+              this.lowBandwidthDataSubscriptions[field] = this.client.subscribe([field], true, true, 0.02); // Prefix match required for mechanisms, joysticks, and metadata
+            }
+          });
+          Object.entries(this.lowBandwidthDataSubscriptions).forEach(([field, subscriptionId]) => {
+            if (!activeFields.has(field)) {
+              this.client?.unsubscribe(subscriptionId);
+              delete this.lowBandwidthDataSubscriptions[field];
+            }
+          });
+        }
+      }
+
+      // Check if output callback should be triggered (prevents
+      // running the callback many times for each frame)
       if (
         !this.shouldRunOutputCallback ||
         this.status == LiveDataSourceStatus.Stopped ||
@@ -68,9 +174,10 @@ export default class NT4Source extends LiveDataSource {
           // Announce
           if (!this.log) return;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
-          let type = this.getLogType(topic.type);
-          if (type != null) {
-            this.log.createBlankField(this.getKeyFromTopic(topic), type);
+          let modifiedKey = this.getKeyFromTopic(topic);
+          this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
+          if (Schemas.has(topic.type)) {
+            this.schemaFields.add(modifiedKey);
           }
           this.shouldRunOutputCallback = true;
         },
@@ -79,14 +186,11 @@ export default class NT4Source extends LiveDataSource {
         },
         (topic: NT4_Topic, timestamp_us: number, value: unknown) => {
           // Data
-          if (!this.log) return;
-
-          if (!this.connectServerTime && this.client != null) {
-            this.connectServerTime = this.client.getServerTime_us();
-          }
+          if (!this.log || !this.client) return;
 
           let key = this.getKeyFromTopic(topic);
-          let timestamp = Math.max(timestamp_us, this.connectServerTime == null ? 0 : this.connectServerTime) / 1000000;
+          let connectServerTime = this.connectTime === null ? null : this.client.getServerTime_us(this.connectTime);
+          let timestamp = Math.max(timestamp_us, connectServerTime === null ? 0 : connectServerTime) / 1000000;
           let type = this.getLogType(topic.type);
 
           let updated = false;
@@ -126,6 +230,11 @@ export default class NT4Source extends LiveDataSource {
                 } else {
                   console.warn('Expected a string value for "' + key + '" but got:', value);
                 }
+
+                // Record type field as received
+                if (key.endsWith(TYPE_KEY) && value !== "") {
+                  this.typeFieldsReceived.add(key);
+                }
                 break;
               case LoggableType.BooleanArray:
                 if (checkArrayType(value, "boolean")) {
@@ -160,6 +269,9 @@ export default class NT4Source extends LiveDataSource {
           this.setStatus(LiveDataSourceStatus.Active);
           this.log = new Log();
           this.shouldRunOutputCallback = true;
+          if (!this.connectTime && this.client != null) {
+            this.connectTime = this.client.getClientTime_us();
+          }
           if (this.akitMode) {
             this.noFieldsTimeout = setTimeout(() => {
               window.sendMainMessage("error", {
@@ -169,36 +281,19 @@ export default class NT4Source extends LiveDataSource {
               });
             }, 5000);
           }
-
-          // Subscribe with low periodic rate, then resubscribe after topics are received
-          if (this.subscriptionId !== null) {
-            this.client?.unsubscribe(this.subscriptionId);
-          }
-          this.subscriptionId = this.client!.subscribe(
-            [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
-            true,
-            true,
-            0.25
-          );
-          this.resubscribeTimeout = setTimeout(() => {
-            if (this.subscriptionId !== null) this.client!.unsubscribe(this.subscriptionId);
-            this.subscriptionId = this.client!.subscribe(
-              [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
-              true,
-              true,
-              0.02
-            );
-          }, 1000);
         },
         () => {
           // Disconnected
           this.setStatus(LiveDataSourceStatus.Connecting);
           this.shouldRunOutputCallback = false;
-          this.connectServerTime = null;
-          if (this.resubscribeTimeout) clearTimeout(this.resubscribeTimeout);
+          this.connectTime = null;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
+          this.typeFieldsReceived = new Set();
+          this.schemaFields = new Set();
         }
       );
+
+      // Start connection
       this.client.connect();
     }
   }

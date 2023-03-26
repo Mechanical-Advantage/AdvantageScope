@@ -34,6 +34,10 @@ export default class MechanismController extends TimelineVizController {
 
   set options(options: { [id: string]: any }) {}
 
+  getAdditionalActiveFields(): string[] {
+    return [];
+  }
+
   getCommand(time: number): MechanismState | null {
     let states: MechanismState[] = [];
     this.getFields()

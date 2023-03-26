@@ -26,6 +26,10 @@ export default class DocumentationController implements TabController {
 
   refresh(): void {}
 
+  getActiveFields(): string[] {
+    return [];
+  }
+
   periodic(): void {
     // Update screenshot on index page
     if (this.isIndex) {

@@ -466,6 +466,14 @@ export default class LineGraphController implements TabController {
     }
   }
 
+  getActiveFields(): string[] {
+    return [
+      ...this.leftFields.map((field) => field.key),
+      ...this.discreteFields.map((field) => field.key),
+      ...this.rightFields.map((field) => field.key)
+    ];
+  }
+
   /** Apply the scroll and update the timestamp range. */
   private updateScroll(dx: number = 0, dy: number = 0) {
     // Find available timestamp range

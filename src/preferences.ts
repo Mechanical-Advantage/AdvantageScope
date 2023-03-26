@@ -4,6 +4,7 @@ const THEME = document.getElementById("theme") as HTMLInputElement;
 const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;
 const RIO_PATH = document.getElementById("rioPath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
+const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const RLOG_PORT = document.getElementById("rlogPort") as HTMLInputElement;
 const THREE_DIMENSION_MODE = document.getElementById("threeDimensionMode") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
@@ -39,6 +40,7 @@ window.addEventListener("message", (event) => {
       RIO_ADDRESS.value = oldPrefs.rioAddress;
       RIO_PATH.value = oldPrefs.rioPath;
       LIVE_MODE.value = oldPrefs.liveMode;
+      LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       RLOG_PORT.value = oldPrefs.rlogPort.toString();
       THREE_DIMENSION_MODE.value = oldPrefs.threeDimensionMode;
 
@@ -55,6 +57,10 @@ window.addEventListener("message", (event) => {
           if (LIVE_MODE.value == "nt4-akit") liveMode = "nt4-akit";
           if (LIVE_MODE.value == "rlog") liveMode = "rlog";
 
+          let liveSubscribeMode: "low-bandwidth" | "logging" = "low-bandwidth";
+          if (LIVE_SUBSCRIBE_MODE.value == "low-bandwidth") liveSubscribeMode = "low-bandwidth";
+          if (LIVE_SUBSCRIBE_MODE.value == "logging") liveSubscribeMode = "logging";
+
           let threeDimensionMode: "quality" | "efficiency" | "auto" = "quality";
           if (THREE_DIMENSION_MODE.value == "quality") threeDimensionMode = "quality";
           if (THREE_DIMENSION_MODE.value == "efficiency") threeDimensionMode = "efficiency";
@@ -65,6 +71,7 @@ window.addEventListener("message", (event) => {
             rioAddress: RIO_ADDRESS.value,
             rioPath: RIO_PATH.value,
             liveMode: liveMode,
+            liveSubscribeMode: liveSubscribeMode,
             rlogPort: Number(RLOG_PORT.value),
             threeDimensionMode: threeDimensionMode
           };

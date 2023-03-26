@@ -1,4 +1,4 @@
-import { getJoystickState } from "../../shared/log/LogUtil";
+import { getJoystickState, JOYSTICK_KEYS } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import JoysticksVisualizer from "../../shared/visualizers/JoysticksVisualizer";
 import TimelineVizController from "./TimelineVizController";
@@ -50,6 +50,15 @@ export default class JoysticksController extends TimelineVizController {
     this.CONFIG_LAYOUTS.forEach((input, index) => {
       input.value = options.layouts[index];
     });
+  }
+
+  getAdditionalActiveFields(): string[] {
+    let activeFields: string[] = [];
+    this.CONFIG_IDS.forEach((element) => {
+      let joystickId = Number(element.value);
+      activeFields = activeFields.concat(JOYSTICK_KEYS.map((key) => key + joystickId.toString()));
+    });
+    return activeFields;
   }
 
   getCommand(time: number) {

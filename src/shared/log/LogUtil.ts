@@ -1,27 +1,27 @@
 import { Rotation2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import Log from "./Log";
-import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
 
-const ENABLED_KEYS = [
+export const ENABLED_KEYS = [
   "/DriverStation/Enabled",
   "/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
   "/FMSInfo/FMSControlData",
+  "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled"
 ];
-
-const ALLIANCE_KEYS = [
+export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
   "/AdvantageKit/DriverStation/AllianceStation",
   "/FMSInfo/IsRedAlliance",
   "NT:/FMSInfo/IsRedAlliance"
 ];
-
-const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+export const TYPE_KEY = ".type";
+export const MECHANISM_KEY = "Mechanism2d";
 
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
@@ -52,8 +52,8 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey == "/FMSInfo/FMSControlData") {
-    let tempEnabledData = log.getNumber("/FMSInfo/FMSControlData", -Infinity, Infinity);
+  if (enabledKey.endsWith("FMSControlData")) {
+    let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
@@ -167,14 +167,13 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
 }
 
 export function getFullKeyIfMechanism(field: LogFieldTree): string | null {
-  const typeKey = ".type";
   if (
-    typeKey in field.children &&
-    field.children[typeKey].fullKey !== null &&
-    getOrDefault(window.log, field.children[typeKey].fullKey, LoggableType.String, Infinity, "") === "Mechanism2d"
+    TYPE_KEY in field.children &&
+    field.children[TYPE_KEY].fullKey !== null &&
+    getOrDefault(window.log, field.children[TYPE_KEY].fullKey, LoggableType.String, Infinity, "") === MECHANISM_KEY
   ) {
-    let key = field.children[typeKey].fullKey;
-    return key.substring(0, key.length - typeKey.length - 1);
+    let key = field.children[TYPE_KEY].fullKey;
+    return key.substring(0, key.length - TYPE_KEY.length - 1);
   } else {
     return null;
   }

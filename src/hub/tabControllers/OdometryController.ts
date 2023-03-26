@@ -1,6 +1,6 @@
 import { Pose2d, Translation2d } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
-import { getIsRedAlliance } from "../../shared/log/LogUtil";
+import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
@@ -121,6 +121,14 @@ export default class OdometryController extends TimelineVizController {
     // Set whether source link is hidden
     let fieldConfig = window.frcData?.field2ds.find((game) => game.title == this.GAME.value);
     this.GAME_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
+  }
+
+  getAdditionalActiveFields(): string[] {
+    if (this.ALLIANCE_BUMPERS.value === "auto" || this.ALLIANCE_ORIGIN.value === "auto") {
+      return ALLIANCE_KEYS;
+    } else {
+      return [];
+    }
   }
 
   getCommand(time: number) {

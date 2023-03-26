@@ -1,6 +1,7 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import { getFullKeyIfMechanism } from "../shared/log/LogUtil";
+import LoggableType from "../shared/log/LoggableType";
+import { getFullKeyIfMechanism, getOrDefault, MECHANISM_KEY, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
@@ -37,7 +38,10 @@ export default class Sidebar {
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
   private lastFieldKeys: string[] = [];
+  private lastMechanismFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
+  private visibleFieldKeys = new Set<string>();
+  private visibleFieldKeysCallbacks: (() => void)[] = [];
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
 
@@ -96,8 +100,16 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
+    let mechanismFieldKeys = window.log
+      .getFieldKeys()
+      .filter((key) => key.endsWith(TYPE_KEY))
+      .filter((key) => getOrDefault(window.log, key, LoggableType.String, Infinity, "") === MECHANISM_KEY);
+    let fieldsChanged =
+      forceRefresh ||
+      !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys) ||
+      !arraysEqual(mechanismFieldKeys, this.lastMechanismFieldKeys);
     this.lastFieldKeys = window.log.getFieldKeys();
+    this.lastMechanismFieldKeys = mechanismFieldKeys;
 
     if (fieldsChanged) {
       // Remove old list
@@ -151,6 +163,17 @@ export default class Sidebar {
     let fieldElement = document.createElement("div");
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
+
+    // Visible fields callback
+    if (field.fullKey !== null) {
+      this.visibleFieldKeysCallbacks.push(() => {
+        if (field.fullKey === null) return;
+        this.visibleFieldKeys.delete(field.fullKey);
+        if (fieldElement.getBoundingClientRect().height > 0) {
+          this.visibleFieldKeys.add(field.fullKey);
+        }
+      });
+    }
 
     // Add icons
     let closedIcon = this.ICON_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
@@ -299,5 +322,11 @@ export default class Sidebar {
     }
 
     return a.localeCompare(b, undefined, { numeric: true });
+  }
+
+  /** Returns the set of field keys that are currently visible. */
+  getVisibleFieldKeys(): Set<string> {
+    this.visibleFieldKeysCallbacks.forEach((callback) => callback());
+    return this.visibleFieldKeys;
   }
 }
