@@ -157,7 +157,7 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
     if (axisData && axisData.timestamps[0] <= time) {
       state.axes = axisData.values[0];
     }
-    let povData = log.getNumberArray(tablePrefix + "axes", time, time);
+    let povData = log.getNumberArray(tablePrefix + "povs", time, time);
     if (povData && povData.timestamps[0] <= time) {
       state.povs = povData.values[0];
     }
