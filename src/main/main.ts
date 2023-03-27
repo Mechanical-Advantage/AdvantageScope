@@ -1046,7 +1046,7 @@ function setupMenu() {
             if (window == null || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
-                title: "Select a layout file to import",
+                title: "Select one or more layout files to import",
                 properties: ["openFile", "multiSelections"],
                 filters: [{ name: "JSON files", extensions: ["json"] }]
               })
@@ -1054,8 +1054,8 @@ function setupMenu() {
                 if (files.filePaths.length > 0) {
                   let data = jsonfile.readFileSync(files.filePaths[0]);
 
+                  // Check for required fields
                   if (!("version" in data && "layout" in data && Array.isArray(data.layout))) {
-                    // Check for required fields
                     dialog.showMessageBox(window, {
                       type: "error",
                       title: "Error",
@@ -1066,6 +1066,7 @@ function setupMenu() {
                     return;
                   }
 
+                  // Merge additional layout files
                   if (files.filePaths.length > 1) {
                     for (const file of files.filePaths.slice(1)) {
                       let additionalLayout = jsonfile.readFileSync(file);
