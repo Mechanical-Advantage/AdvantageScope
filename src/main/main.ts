@@ -406,11 +406,13 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             message: "Incomplete data for export",
             detail:
               'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.',
-            buttons: ["Continue"],
+            buttons: ["Continue", "Cancel"],
             icon: WINDOW_ICON
           })
-          .then(() => {
-            createExportWindow(window, message.data.path);
+          .then((value) => {
+            if (value.response == 0) {
+              createExportWindow(window, message.data.path);
+            }
           });
       } else {
         createExportWindow(window, message.data.path);
