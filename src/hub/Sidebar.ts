@@ -40,8 +40,8 @@ export default class Sidebar {
   private lastFieldKeys: string[] = [];
   private lastMechanismFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
-  private visibleFieldKeys = new Set<string>();
-  private visibleFieldKeysCallbacks: (() => void)[] = [];
+  private activeFields = new Set<string>();
+  private activeFieldCallbacks: (() => void)[] = [];
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
 
@@ -164,16 +164,34 @@ export default class Sidebar {
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
 
-    // Visible fields callback
-    if (field.fullKey !== null) {
-      this.visibleFieldKeysCallbacks.push(() => {
-        if (field.fullKey === null) return;
-        this.visibleFieldKeys.delete(field.fullKey);
-        if (fieldElement.getBoundingClientRect().height > 0) {
-          this.visibleFieldKeys.add(field.fullKey);
+    // Active fields callback
+    this.activeFieldCallbacks.push(() => {
+      let visible = fieldElement.getBoundingClientRect().height > 0;
+
+      // Add full key if available and array
+      if (
+        field.fullKey !== null &&
+        (window.log.getType(field.fullKey) === LoggableType.BooleanArray ||
+          window.log.getType(field.fullKey) === LoggableType.NumberArray ||
+          window.log.getType(field.fullKey) === LoggableType.StringArray)
+      ) {
+        if (visible) {
+          this.activeFields.add(field.fullKey);
+        } else {
+          this.activeFields.delete(field.fullKey);
         }
-      });
-    }
+      }
+
+      // Add type subkey if available
+      if (TYPE_KEY in field.children && field.children[TYPE_KEY].fullKey !== null) {
+        let typeKey = field.children[TYPE_KEY].fullKey;
+        if (visible) {
+          this.activeFields.add(typeKey);
+        } else {
+          this.activeFields.delete(typeKey);
+        }
+      }
+    });
 
     // Add icons
     let closedIcon = this.ICON_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
@@ -325,8 +343,8 @@ export default class Sidebar {
   }
 
   /** Returns the set of field keys that are currently visible. */
-  getVisibleFieldKeys(): Set<string> {
-    this.visibleFieldKeysCallbacks.forEach((callback) => callback());
-    return this.visibleFieldKeys;
+  getActiveFields(): Set<string> {
+    this.activeFieldCallbacks.forEach((callback) => callback());
+    return this.activeFields;
   }
 }

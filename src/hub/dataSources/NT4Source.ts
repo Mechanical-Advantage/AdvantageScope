@@ -19,7 +19,6 @@ export default class NT4Source extends LiveDataSource {
   private loggingSubscription: number | null = null;
   private lowBandwidthTopicSubscription: number | null = null;
   private lowBandwidthDataSubscriptions: { [id: string]: number } = {};
-  private typeFieldsReceived: Set<string> = new Set(); // Type fields (ending in ".type") that have received a value
   private schemaFields: Set<string> = new Set(); // Fields with a type matching a custom schema
 
   constructor(akitMode: boolean) {
@@ -66,9 +65,10 @@ export default class NT4Source extends LiveDataSource {
             );
           }
 
-          // Add active fields from tabs
+          // Add active fields
           let activeFields: Set<string> = new Set();
-          window.tabs.getActiveFields().forEach((key) => {
+          [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
+            // Compare to announced keys
             window.log.getFieldKeys().forEach((announcedKey) => {
               if (window.log.isArrayField(announcedKey)) return;
               let subscribeKey: string | null = null;
@@ -87,38 +87,22 @@ export default class NT4Source extends LiveDataSource {
             });
           });
 
-          // Add all array fields visible in sidebar
-          window.sidebar.getVisibleFieldKeys().forEach((key) => {
-            if (
-              this.log?.getType(key) === LoggableType.BooleanArray ||
-              this.log?.getType(key) === LoggableType.NumberArray ||
-              this.log?.getType(key) === LoggableType.StringArray ||
-              this.schemaFields.has(key)
-            ) {
-              if (akitMode) {
-                activeFields.add(this.AKIT_PREFIX + key);
-              } else {
-                activeFields.add(key);
+          // Remove duplicates based on prefixes
+          let activeFieldsCopy = new Set(activeFields);
+          activeFieldsCopy.forEach((field0) => {
+            activeFieldsCopy.forEach((field1) => {
+              if (field0 != field1 && field0.startsWith(field1)) {
+                activeFields.delete(field0);
               }
-            }
-          });
-
-          // Add all ".type" fields that don't have a value yet
-          window.log.getFieldKeys().forEach((key) => {
-            if (key.endsWith(TYPE_KEY) && !this.typeFieldsReceived.has(key)) {
-              if (akitMode) {
-                activeFields.add(this.AKIT_PREFIX + key);
-              } else {
-                activeFields.add(key);
-              }
-            }
+            });
           });
 
           // Update subscriptions
           activeFields.forEach((field) => {
             if (this.client === null) return;
             if (!(field in this.lowBandwidthDataSubscriptions)) {
-              this.lowBandwidthDataSubscriptions[field] = this.client.subscribe([field], true, true, 0.02); // Prefix match required for mechanisms, joysticks, and metadata
+              // Prefix match required for mechanisms, joysticks, and metadata
+              this.lowBandwidthDataSubscriptions[field] = this.client.subscribe([field], true, true, 0.02);
             }
           });
           Object.entries(this.lowBandwidthDataSubscriptions).forEach(([field, subscriptionId]) => {
@@ -230,11 +214,6 @@ export default class NT4Source extends LiveDataSource {
                 } else {
                   console.warn('Expected a string value for "' + key + '" but got:', value);
                 }
-
-                // Record type field as received
-                if (key.endsWith(TYPE_KEY) && value !== "") {
-                  this.typeFieldsReceived.add(key);
-                }
                 break;
               case LoggableType.BooleanArray:
                 if (checkArrayType(value, "boolean")) {
@@ -288,7 +267,6 @@ export default class NT4Source extends LiveDataSource {
           this.shouldRunOutputCallback = false;
           this.connectTime = null;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
-          this.typeFieldsReceived = new Set();
           this.schemaFields = new Set();
         }
       );
