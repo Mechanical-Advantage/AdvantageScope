@@ -49,5 +49,5 @@ The following configuration options are available:
 - **Origin:** The location of the origin (0, 0) on the field, relative to the robot's alliance wall. The default option (right) aligns with the [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html), and places the origin at the bottom left when looking at the field in its default orientation.
 - **Side Length:** The side length (track width) of the robot in the selected linear units. The robot is always rendered as a square.
 - **Alliance (Bumpers):** The color of the robot's bumpers, set independently of the field origin. "Auto" will select the alliance color based on the available log data.
-- **Alliance (Origin):** The position of the field origin, on the right side of the blue or red alliance wall. "Auto" will select the alliance color based on the available log data.
+- **Alliance (Origin):** The position of the field origin, on the blue or red alliance wall. "Auto" will select the alliance color based on the available log data.
 - **Orientation:** The orientation to use when displaying the field, useful when aligning to a match video or testing field oriented controls.
