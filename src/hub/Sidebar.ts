@@ -120,6 +120,11 @@ export default class Sidebar {
       // Add new list
       this.selectGroupClearCallbacks = [];
       let tree = window.log.getFieldTree();
+      let rootKeys = Object.keys(tree);
+      if (rootKeys.length == 1 && tree[rootKeys[0]].fullKey === null) {
+        // If only one table, use it as the root
+        tree = tree[rootKeys[0]].children;
+      }
       Object.keys(tree)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))
         .sort((a, b) => this.sortKeys(a, b, true))

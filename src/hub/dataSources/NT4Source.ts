@@ -7,6 +7,7 @@ import { NT4_Client, NT4_Topic } from "./nt4/NT4";
 import Schemas from "./schema/Schemas";
 
 export default class NT4Source extends LiveDataSource {
+  private WPILOG_PREFIX = "NT:";
   private AKIT_PREFIX = "/AdvantageKit";
 
   private akitMode: boolean;
@@ -81,7 +82,7 @@ export default class NT4Source extends LiveDataSource {
                 if (akitMode) {
                   activeFields.add(this.AKIT_PREFIX + subscribeKey);
                 } else {
-                  activeFields.add(subscribeKey);
+                  activeFields.add(subscribeKey.slice(this.WPILOG_PREFIX.length));
                 }
               }
             });
@@ -286,7 +287,7 @@ export default class NT4Source extends LiveDataSource {
     if (this.akitMode) {
       return topic.name.slice(this.AKIT_PREFIX.length);
     } else {
-      return topic.name;
+      return this.WPILOG_PREFIX + topic.name;
     }
   }
 

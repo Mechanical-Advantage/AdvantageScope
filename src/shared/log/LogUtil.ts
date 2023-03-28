@@ -7,19 +7,17 @@ import { LogValueSetBoolean } from "./LogValueSets";
 
 export const ENABLED_KEYS = [
   "/DriverStation/Enabled",
-  "/AdvantageKit/DriverStation/Enabled",
+  "NT:/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
-  "/FMSInfo/FMSControlData",
   "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled"
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
-  "/AdvantageKit/DriverStation/AllianceStation",
-  "/FMSInfo/IsRedAlliance",
+  "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/IsRedAlliance"
 ];
-export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "NT:/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
 export const TYPE_KEY = ".type";
 export const MECHANISM_KEY = "Mechanism2d";
 
