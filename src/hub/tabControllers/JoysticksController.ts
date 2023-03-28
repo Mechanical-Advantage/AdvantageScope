@@ -54,9 +54,12 @@ export default class JoysticksController extends TimelineVizController {
 
   getAdditionalActiveFields(): string[] {
     let activeFields: string[] = [];
-    this.CONFIG_IDS.forEach((element) => {
+    this.CONFIG_IDS.forEach((element, index) => {
       let joystickId = Number(element.value);
-      activeFields = activeFields.concat(JOYSTICK_KEYS.map((key) => key + joystickId.toString()));
+      let joystickLayout = this.CONFIG_LAYOUTS[index].value;
+      if (joystickLayout !== "None") {
+        activeFields = activeFields.concat(JOYSTICK_KEYS.map((key) => key + joystickId.toString()));
+      }
     });
     return activeFields;
   }
