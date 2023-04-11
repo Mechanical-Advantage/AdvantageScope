@@ -1800,27 +1800,44 @@ app.whenReady().then(() => {
   } else {
     let oldPrefs = jsonfile.readFileSync(PREFS_FILENAME);
     let prefs = DEFAULT_PREFS;
-    if ("theme" in oldPrefs && (oldPrefs.theme == "light" || oldPrefs.theme == "dark" || oldPrefs.theme == "system")) {
+    if (
+      "theme" in oldPrefs &&
+      (oldPrefs.theme === "light" || oldPrefs.theme === "dark" || oldPrefs.theme === "system")
+    ) {
       prefs.theme = oldPrefs.theme;
     }
-    if ("rioAddress" in oldPrefs && typeof oldPrefs.rioAddress == "string") {
+    if ("rioAddress" in oldPrefs && typeof oldPrefs.rioAddress === "string") {
       prefs.rioAddress = oldPrefs.rioAddress;
     }
-    if ("address" in oldPrefs && typeof oldPrefs.address == "string") {
+    if ("address" in oldPrefs && typeof oldPrefs.address === "string") {
       // Migrate from v1
       prefs.rioAddress = oldPrefs.address;
     }
-    if ("rioPath" in oldPrefs && typeof oldPrefs.rioPath == "string") {
+    if ("rioPath" in oldPrefs && typeof oldPrefs.rioPath === "string") {
       prefs.rioPath = oldPrefs.rioPath;
     }
     if (
       "liveMode" in oldPrefs &&
-      (oldPrefs.liveMode == "nt4" || oldPrefs.liveMode == "nt4-akit" || oldPrefs.liveMode == "rlog")
+      (oldPrefs.liveMode === "nt4" || oldPrefs.liveMode === "nt4-akit" || oldPrefs.liveMode === "rlog")
     ) {
       prefs.liveMode = oldPrefs.liveMode;
     }
+    if (
+      "liveSubscribeMode" in oldPrefs &&
+      (oldPrefs.liveSubscribeMode === "low-bandwidth" || oldPrefs.liveSubscribeMode === "logging")
+    ) {
+      prefs.liveSubscribeMode = oldPrefs.liveSubscribeMode;
+    }
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort == "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
+    }
+    if (
+      "threeDimensionMode" in oldPrefs &&
+      (oldPrefs.threeDimensionMode === "quality" ||
+        oldPrefs.threeDimensionMode === "efficiency" ||
+        oldPrefs.threeDimensionMode === "auto")
+    ) {
+      prefs.threeDimensionMode = oldPrefs.threeDimensionMode;
     }
 
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
