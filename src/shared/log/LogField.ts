@@ -107,6 +107,8 @@ export default class LogField {
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
+    if (value === null) return;
+
     // Check if the timestamp already exists
     if (this.data.timestamps.includes(timestamp)) {
       this.data.values[this.data.timestamps.indexOf(timestamp)] = value;

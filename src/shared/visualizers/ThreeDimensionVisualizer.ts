@@ -654,8 +654,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             lineGroup.position.set(line.start[0] - state!.dimensions[0] / 2, 0.0, line.start[1]);
             lineGroup.rotation.set(0.0, -angle, 0.0);
             lineObject.position.set(length / 2, 0.0, 0.0);
+            lineObject.geometry.dispose();
             lineObject.geometry = new THREE.BoxGeometry(length, line.weight * 0.01, line.weight * 0.01);
             if (isOriginal) {
+              lineObject.material.dispose();
               lineObject.material.color = new THREE.Color(line.color);
             }
           }

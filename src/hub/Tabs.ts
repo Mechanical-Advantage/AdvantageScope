@@ -1,4 +1,5 @@
 import { TabGroupState } from "../shared/HubState";
+import { ENABLED_KEYS } from "../shared/log/LogUtil";
 import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
@@ -157,6 +158,21 @@ export default class Tabs {
     this.tabList.forEach((tab) => {
       tab.controller.refresh();
     });
+  }
+
+  /** Returns the set of fields currently being displayed. */
+  getActiveFields(): Set<string> {
+    let activeFields = new Set<string>();
+    this.tabList.forEach((tab) => {
+      tab.controller.getActiveFields().forEach((field) => {
+        activeFields.add(field);
+      });
+    });
+    let enabledKey = ENABLED_KEYS.find((key) => window.log.getFieldKeys().includes(key));
+    if (enabledKey !== undefined) {
+      activeFields.add(enabledKey);
+    }
+    return activeFields;
   }
 
   /** Creates a new tab. */

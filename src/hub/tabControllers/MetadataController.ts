@@ -1,7 +1,6 @@
 import { TabState } from "../../shared/HubState";
 import LogFieldTree from "../../shared/log/LogFieldTree";
 import TabType from "../../shared/TabType";
-import { arraysEqual } from "../../shared/util";
 import TabController from "../TabController";
 
 export default class MetadataController implements TabController {
@@ -9,7 +8,7 @@ export default class MetadataController implements TabController {
   private TABLE_CONTAINER: HTMLElement;
   private TABLE_BODY: HTMLElement;
 
-  private lastFieldList: string[] = [];
+  private lastDataString: string = "";
 
   constructor(content: HTMLElement) {
     this.NO_DATA_ALERT = content.getElementsByClassName("tab-centered")[0] as HTMLElement;
@@ -24,17 +23,14 @@ export default class MetadataController implements TabController {
 
   restoreState(state: TabState) {}
 
+  getActiveFields(): string[] {
+    return ["/RealMetadata", "/ReplayMetadata", "/AdvantageKit/RealMetadata", "/AdvantageKit/ReplayMetadata"];
+  }
+
   periodic() {}
 
   refresh() {
     let fieldList = window.log.getFieldKeys();
-    if (arraysEqual(fieldList, this.lastFieldList)) return;
-    this.lastFieldList = fieldList;
-
-    // Remove old rows
-    while (this.TABLE_BODY.childElementCount > 1) {
-      this.TABLE_BODY.removeChild(this.TABLE_BODY.lastChild as HTMLElement);
-    }
 
     // Get data
     let tree = window.log.getFieldTree();
@@ -67,6 +63,18 @@ export default class MetadataController implements TabController {
       if ("ReplayMetadata" in akitTable) {
         scanTree(akitTable["ReplayMetadata"], "/AdvantageKit/ReplayMetadata", false);
       }
+    }
+
+    // Exit if nothing has changed
+    let dataString = JSON.stringify(data);
+    if (dataString === this.lastDataString) {
+      return;
+    }
+    this.lastDataString = dataString;
+
+    // Remove old rows
+    while (this.TABLE_BODY.childElementCount > 1) {
+      this.TABLE_BODY.removeChild(this.TABLE_BODY.lastChild as HTMLElement);
     }
 
     // Add rows

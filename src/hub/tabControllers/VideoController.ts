@@ -183,6 +183,10 @@ export default class VideoController extends TimelineVizController {
 
   set options(options: { [id: string]: any }) {}
 
+  getAdditionalActiveFields(): string[] {
+    return [];
+  }
+
   getCommand(time: number) {
     if (this.hasData()) {
       // Set time if locked

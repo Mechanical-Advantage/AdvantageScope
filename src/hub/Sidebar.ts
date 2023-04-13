@@ -1,6 +1,7 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import { getMechanismKeys } from "../shared/log/LogUtil";
+import LoggableType from "../shared/log/LoggableType";
+import { getFullKeyIfMechanism, getOrDefault, MECHANISM_KEY, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
@@ -37,7 +38,10 @@ export default class Sidebar {
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
   private lastFieldKeys: string[] = [];
+  private lastMechanismFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
+  private activeFields = new Set<string>();
+  private activeFieldCallbacks: (() => void)[] = [];
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
 
@@ -96,8 +100,16 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
+    let mechanismFieldKeys = window.log
+      .getFieldKeys()
+      .filter((key) => key.endsWith(TYPE_KEY))
+      .filter((key) => getOrDefault(window.log, key, LoggableType.String, Infinity, "") === MECHANISM_KEY);
+    let fieldsChanged =
+      forceRefresh ||
+      !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys) ||
+      !arraysEqual(mechanismFieldKeys, this.lastMechanismFieldKeys);
     this.lastFieldKeys = window.log.getFieldKeys();
+    this.lastMechanismFieldKeys = mechanismFieldKeys;
 
     if (fieldsChanged) {
       // Remove old list
@@ -108,6 +120,11 @@ export default class Sidebar {
       // Add new list
       this.selectGroupClearCallbacks = [];
       let tree = window.log.getFieldTree();
+      let rootKeys = Object.keys(tree);
+      if (rootKeys.length == 1 && tree[rootKeys[0]].fullKey === null) {
+        // If only one table, use it as the root
+        tree = tree[rootKeys[0]].children;
+      }
       Object.keys(tree)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))
         .sort((a, b) => this.sortKeys(a, b, true))
@@ -152,6 +169,35 @@ export default class Sidebar {
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
 
+    // Active fields callback
+    this.activeFieldCallbacks.push(() => {
+      let visible = fieldElement.getBoundingClientRect().height > 0;
+
+      // Add full key if available and array
+      if (
+        field.fullKey !== null &&
+        (window.log.getType(field.fullKey) === LoggableType.BooleanArray ||
+          window.log.getType(field.fullKey) === LoggableType.NumberArray ||
+          window.log.getType(field.fullKey) === LoggableType.StringArray)
+      ) {
+        if (visible) {
+          this.activeFields.add(field.fullKey);
+        } else {
+          this.activeFields.delete(field.fullKey);
+        }
+      }
+
+      // Add type subkey if available
+      if (TYPE_KEY in field.children && field.children[TYPE_KEY].fullKey !== null) {
+        let typeKey = field.children[TYPE_KEY].fullKey;
+        if (visible) {
+          this.activeFields.add(typeKey);
+        } else {
+          this.activeFields.delete(typeKey);
+        }
+      }
+    });
+
     // Add icons
     let closedIcon = this.ICON_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
     let openIcon = this.ICON_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
@@ -162,10 +208,9 @@ export default class Sidebar {
     neutralIcon.style.display = hasChildren ? "none" : "initial";
 
     // Check if mechanism
-    let mechanismKeys = getMechanismKeys(window.log);
-    let isMechanism = mechanismKeys.includes(fullTitle);
-    if (isMechanism) {
-      field.fullKey = fullTitle; // Acts like a normal field
+    let mechanismFullKey = getFullKeyIfMechanism(field);
+    if (mechanismFullKey !== null) {
+      field.fullKey = mechanismFullKey; // Acts like a normal field
     }
 
     // Create label
@@ -255,7 +300,9 @@ export default class Sidebar {
       childSpan.style.setProperty("--indent", (indent + this.INDENT_SIZE_PX).toString() + "px");
       childSpan.hidden = true;
 
+      let firstExpand = true;
       let setExpanded = (expanded: boolean) => {
+        // Update icon and span display
         childSpan.hidden = !expanded;
         closedIcon.style.display = expanded ? "none" : "initial";
         openIcon.style.display = expanded ? "initial" : "none";
@@ -264,24 +311,28 @@ export default class Sidebar {
         } else {
           this.expandedFields.delete(fullTitle);
         }
+
+        // Add children if first time
+        if (firstExpand) {
+          firstExpand = false;
+          let childKeys = Object.keys(field.children);
+          if (fullTitle == "/AdvantageKit") {
+            // Apply hidden and known keys
+            childKeys = childKeys
+              .filter((key) => !this.HIDDEN_KEYS.includes(key))
+              .sort((a, b) => this.sortKeys(a, b, true));
+          } else {
+            childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
+          }
+          childKeys.forEach((key) => {
+            this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
+          });
+        }
       };
 
       closedIcon.addEventListener("click", () => setExpanded(true));
       openIcon.addEventListener("click", () => setExpanded(false));
       if (this.expandedFields.has(fullTitle)) setExpanded(true);
-
-      let childKeys = Object.keys(field.children);
-      if (fullTitle == "/AdvantageKit") {
-        // Apply hidden and known keys
-        childKeys = childKeys
-          .filter((key) => !this.HIDDEN_KEYS.includes(key))
-          .sort((a, b) => this.sortKeys(a, b, true));
-      } else {
-        childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
-      }
-      childKeys.forEach((key) => {
-        this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
-      });
     }
   }
 
@@ -294,5 +345,11 @@ export default class Sidebar {
     }
 
     return a.localeCompare(b, undefined, { numeric: true });
+  }
+
+  /** Returns the set of field keys that are currently visible. */
+  getActiveFields(): Set<string> {
+    this.activeFieldCallbacks.forEach((callback) => callback());
+    return this.activeFields;
   }
 }

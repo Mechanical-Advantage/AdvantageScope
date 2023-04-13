@@ -80,6 +80,10 @@ export default class JoysticksController extends TimelineVizController {
     this.FORWARD_DIRECTION.value = options.forwardDirection;
   }
 
+  getAdditionalActiveFields(): string[] {
+    return [];
+  }
+
   getCommand(time: number) {
     let fields = this.getFields();
 

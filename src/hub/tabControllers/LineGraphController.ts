@@ -1,11 +1,11 @@
 import { AllColors } from "../../shared/Colors";
+import { LineGraphState } from "../../shared/HubState";
 import LoggableType from "../../shared/log/LoggableType";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
 import { convertWithPreset, UnitConversionPreset } from "../../shared/units";
-import { cleanFloat, scaleValue, shiftColor } from "../../shared/util";
-import { LineGraphState } from "../../shared/HubState";
+import { clampValue, cleanFloat, scaleValue, shiftColor } from "../../shared/util";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
@@ -13,6 +13,9 @@ import TabController from "../TabController";
 export default class LineGraphController implements TabController {
   private MIN_ZOOM_TIME = 0.05;
   private ZOOM_BASE = 1.001;
+  private MIN_AXIS_RANGE = 1e-5;
+  private MAX_AXIS_RANGE = 1e9;
+  private MAX_VALUE = 1e9;
 
   private CONTENT: HTMLElement;
   private LEGEND_ITEM_TEMPLATE: HTMLElement;
@@ -463,6 +466,14 @@ export default class LineGraphController implements TabController {
     }
   }
 
+  getActiveFields(): string[] {
+    return [
+      ...this.leftFields.map((field) => field.key),
+      ...this.discreteFields.map((field) => field.key),
+      ...this.rightFields.map((field) => field.key)
+    ];
+  }
+
   /** Apply the scroll and update the timestamp range. */
   private updateScroll(dx: number = 0, dy: number = 0) {
     // Find available timestamp range
@@ -555,12 +566,38 @@ export default class LineGraphController implements TabController {
     if (lockedRange != null) {
       targetRange = lockedRange;
     } else if (valueRange != null && marginProportion != null) {
-      let margin = (valueRange[1] - valueRange[0]) * marginProportion;
-      targetRange = [valueRange[0] - margin, valueRange[1] + margin];
-      if (targetRange[0] == targetRange[1]) {
-        targetRange[0]--;
-        targetRange[1]++;
+      // Apply extreme limits
+      let adjustedValueRange = [...valueRange];
+      if (adjustedValueRange[0] > this.MAX_VALUE) {
+        adjustedValueRange[0] = this.MAX_VALUE;
       }
+      if (adjustedValueRange[1] > this.MAX_VALUE) {
+        adjustedValueRange[1] = this.MAX_VALUE;
+      }
+      if (adjustedValueRange[0] < -this.MAX_VALUE) {
+        adjustedValueRange[0] = -this.MAX_VALUE;
+      }
+      if (adjustedValueRange[1] < -this.MAX_VALUE) {
+        adjustedValueRange[1] = -this.MAX_VALUE;
+      }
+      if (adjustedValueRange[0] == adjustedValueRange[1]) {
+        adjustedValueRange[0]--;
+        adjustedValueRange[1]++;
+      }
+      if (adjustedValueRange[1] - adjustedValueRange[0] > this.MAX_AXIS_RANGE) {
+        if (adjustedValueRange[0] + this.MAX_AXIS_RANGE < this.MAX_VALUE) {
+          adjustedValueRange[1] = adjustedValueRange[0] + this.MAX_AXIS_RANGE;
+        } else {
+          adjustedValueRange[0] = adjustedValueRange[1] - this.MAX_AXIS_RANGE;
+        }
+      }
+      if (adjustedValueRange[1] - adjustedValueRange[0] < this.MIN_AXIS_RANGE) {
+        adjustedValueRange[1] = adjustedValueRange[0] + this.MIN_AXIS_RANGE;
+      }
+
+      // Calculate target range with margin
+      let margin = (adjustedValueRange[1] - adjustedValueRange[0]) * marginProportion;
+      targetRange = [adjustedValueRange[0] - margin, adjustedValueRange[1] + margin];
     }
 
     // How many steps?
@@ -836,7 +873,11 @@ export default class LineGraphController implements TabController {
         context.moveTo(
           graphLeft + graphWidth,
           scaleValue(
-            convertWithPreset(data.values[data.values.length - 1], unitConversion),
+            clampValue(
+              convertWithPreset(data.values[data.values.length - 1], unitConversion),
+              -this.MAX_VALUE,
+              this.MAX_VALUE
+            ),
             [axis.min, axis.max],
             [graphTop + graphHeightOpen, graphTop]
           )
@@ -848,7 +889,11 @@ export default class LineGraphController implements TabController {
           let x = scaleValue(data.timestamps[i], this.timestampRange, [graphLeft, graphLeft + graphWidth]);
 
           // Render start of current data point
-          let convertedValue = convertWithPreset(data.values[i], unitConversion);
+          let convertedValue = clampValue(
+            convertWithPreset(data.values[i], unitConversion),
+            -this.MAX_VALUE,
+            this.MAX_VALUE
+          );
           context.lineTo(x, scaleValue(convertedValue, [axis.min, axis.max], [graphTop + graphHeightOpen, graphTop]));
 
           // Find previous data point and vertical range
@@ -857,7 +902,11 @@ export default class LineGraphController implements TabController {
           let vertRange = [convertedValue, convertedValue];
           do {
             i--;
-            let convertedValue = convertWithPreset(data.values[i], unitConversion);
+            let convertedValue = clampValue(
+              convertWithPreset(data.values[i], unitConversion),
+              -this.MAX_VALUE,
+              this.MAX_VALUE
+            );
             if (convertedValue < vertRange[0]) vertRange[0] = convertedValue;
             if (convertedValue > vertRange[1]) vertRange[1] = convertedValue;
             newX = Math.floor(
@@ -875,7 +924,7 @@ export default class LineGraphController implements TabController {
           context.moveTo(
             x,
             scaleValue(
-              convertWithPreset(data.values[i], unitConversion),
+              clampValue(convertWithPreset(data.values[i], unitConversion), -this.MAX_VALUE, this.MAX_VALUE),
               [axis.min, axis.max],
               [graphTop + graphHeightOpen, graphTop]
             )

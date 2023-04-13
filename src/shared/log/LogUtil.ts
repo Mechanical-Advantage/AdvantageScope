@@ -5,22 +5,21 @@ import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
 
-const ENABLED_KEYS = [
+export const ENABLED_KEYS = [
   "/DriverStation/Enabled",
-  "/AdvantageKit/DriverStation/Enabled",
+  "NT:/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
-  "/FMSInfo/FMSControlData",
+  "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled"
 ];
-
-const ALLIANCE_KEYS = [
+export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
-  "/AdvantageKit/DriverStation/AllianceStation",
-  "/FMSInfo/IsRedAlliance",
+  "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/IsRedAlliance"
 ];
-
-const JOYSTICK_KEYS = ["/DriverStation/Joystick", "/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "NT:/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+export const TYPE_KEY = ".type";
+export const MECHANISM_KEY = "Mechanism2d";
 
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
@@ -51,8 +50,8 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey == "/FMSInfo/FMSControlData") {
-    let tempEnabledData = log.getNumber("/FMSInfo/FMSControlData", -Infinity, Infinity);
+  if (enabledKey.endsWith("FMSControlData")) {
+    let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
@@ -156,7 +155,7 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
     if (axisData && axisData.timestamps[0] <= time) {
       state.axes = axisData.values[0];
     }
-    let povData = log.getNumberArray(tablePrefix + "axes", time, time);
+    let povData = log.getNumberArray(tablePrefix + "povs", time, time);
     if (povData && povData.timestamps[0] <= time) {
       state.povs = povData.values[0];
     }
@@ -165,18 +164,17 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   return state;
 }
 
-export function getMechanismKeys(log: Log): string[] {
-  let keyOptions: string[] = [];
-  log.getFieldKeys().forEach((key) => {
-    if (key.endsWith("/.type")) {
-      let value = getOrDefault(log, key, LoggableType.String, Infinity, "");
-      if (value === "Mechanism2d") {
-        keyOptions.push(key.slice(0, -6));
-      }
-    }
-  });
-  keyOptions.sort();
-  return keyOptions;
+export function getFullKeyIfMechanism(field: LogFieldTree): string | null {
+  if (
+    TYPE_KEY in field.children &&
+    field.children[TYPE_KEY].fullKey !== null &&
+    getOrDefault(window.log, field.children[TYPE_KEY].fullKey, LoggableType.String, Infinity, "") === MECHANISM_KEY
+  ) {
+    let key = field.children[TYPE_KEY].fullKey;
+    return key.substring(0, key.length - TYPE_KEY.length - 1);
+  } else {
+    return null;
+  }
 }
 
 export type MechanismState = {

@@ -27,6 +27,7 @@ export const DEFAULT_PREFS: Preferences = {
   rioAddress: "10.63.28.2",
   rioPath: "/media/sda1/",
   liveMode: "nt4",
+  liveSubscribeMode: "low-bandwidth",
   rlogPort: 5800,
   threeDimensionMode: "quality",
   keys: []
