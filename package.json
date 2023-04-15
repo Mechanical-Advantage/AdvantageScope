@@ -84,7 +84,7 @@
         "ext": "wpilog",
         "name": "WPILib robot log",
         "description": "WPILib robot log",
-        "mimeType": "application/octet-stream",
+        "mimeType": "application/x-wpilog",
         "role": "Viewer",
         "icon": "icons/app/wpilog-icon"
       },
@@ -92,7 +92,7 @@
         "ext": "rlog",
         "name": "Robot log",
         "description": "Robot log",
-        "mimeType": "application/octet-stream",
+        "mimeType": "application/x-rlog",
         "role": "Viewer",
         "icon": "icons/app/rlog-icon"
       },
@@ -100,7 +100,7 @@
         "ext": "dslog",
         "name": "FRC Driver Station log",
         "description": "FRC Driver Station log",
-        "mimeType": "application/octet-stream",
+        "mimeType": "application/x-dslog",
         "role": "Viewer",
         "icon": "icons/app/dslog-icon"
       },
@@ -108,7 +108,7 @@
         "ext": "dsevents",
         "name": "FRC Driver Station events",
         "description": "FRC Driver Station events",
-        "mimeType": "application/octet-stream",
+        "mimeType": "application/x-dsevents",
         "role": "Viewer",
         "icon": "icons/app/dsevents-icon"
       }
