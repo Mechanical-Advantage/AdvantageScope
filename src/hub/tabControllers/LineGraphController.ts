@@ -935,16 +935,19 @@ export default class LineGraphController implements TabController {
       });
     });
 
+    //Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
     let formatTimestampText = (time: number): string=> {
       let axis = this.calcAutoAxis(null, graphWidth, 100, null, this.timestampRange, 0, 60);
       axis.step = axis.step / 10;
+      let fractionDigits = Math.max(0, -Math.floor(Math.log10(axis.step)));
+
       context.textBaseline = "top";
       context.textAlign = "center";
-      let roundedTime = Math.ceil(cleanFloat(time / axis.step)) * axis.step;
-      let text = cleanFloat(roundedTime / axis.unit).toString() + (axis.unit == 60 ? "m" : "s");
+      let text = time.toFixed(fractionDigits) + (axis.unit == 60 ? "m" : "s");
       return text;
     };
 
+    //Write formatted timestamp popups to graph view
     let writeCenteredTime = (text: string, x: number, alpha: number, drawRect: boolean) => {
       let textSize = context.measureText(text);
       context.globalAlpha = alpha;
@@ -992,8 +995,8 @@ export default class LineGraphController implements TabController {
         let selectedX = scaleValue(selectedTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
         let hoverX = scaleValue(hoveredTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
         let xSpace = selectedX - hoverX;
-        let textHalfWidths = (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoverText).width + 10) / 2;
-        let deltaWidth = context.measureText(deltaText).width + 10;
+        let textHalfWidths = (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoverText).width + 10) / 2 + 4;
+        let deltaWidth = context.measureText(deltaText).width + 10 +4;
         let offsetAmount = textHalfWidths - Math.abs(xSpace);
         let doesDeltaFit = deltaWidth <= Math.abs(xSpace);
         if (doesDeltaFit) {
