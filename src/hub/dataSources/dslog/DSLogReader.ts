@@ -92,10 +92,11 @@ export class DSLogReader {
 
       // Get power distribution data
       let pdType = getPDType(this.dataView.getUint8(position + 3));
-      position += 5;
+
       let currents: number[] = [];
       switch (pdType) {
         case PowerDistributionType.REV:
+	  position += 5;	
           // Read bytes
           let ints: number[] = [];
           for (let i = 0; i < 6; ++i) {
@@ -127,6 +128,7 @@ export class DSLogReader {
           break;
 
         case PowerDistributionType.CTRE:
+          position += 5;
           // Convert to boolean array
           let booleanData: boolean[] = [];
           this.data.subarray(position, position + 21).forEach((byte) => {
@@ -148,6 +150,10 @@ export class DSLogReader {
           // Skip extra metadata
           position += 21 + 3;
           break;
+
+	case PowerDistributionType.None:
+	  position += 4;
+	  break;
       }
       entry.powerDistributionCurrents = currents;
 
