@@ -14,10 +14,9 @@ export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt"
 export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantagescope-videos");
 export const WINDOW_ICON: string | undefined = (() => {
   switch (process.platform) {
-    case "win32": // Square icon
-      return path.join(__dirname, "../icons/window/window-icon-win.png");
-    case "linux": // Rounded icon
-      return path.join(__dirname, "../icons/window/window-icon-linux.png");
+    case "linux":
+    case "win32":
+      return path.join(__dirname, "../icons/window-icon.png");
     default: // macOS uses the app icon by default
       return undefined;
   }

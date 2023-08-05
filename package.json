@@ -63,6 +63,7 @@
       "www/**/*",
       "bundles/*",
       "icons/**/*",
+      "!icons/**/*.iconset",
       "frcData/**/*",
       "docs/**/*",
       "!**/.*"

@@ -225,11 +225,9 @@ function handleMainMessage(message: NamedMessage) {
             img.src = "../icons/download/" + extension + "-icon-mac.png";
             img.classList.add("mac");
             break;
-          case "win32":
-            img.src = "../icons/download/" + extension + "-icon-win.png";
-            break;
           case "linux":
-            img.src = "../icons/download/" + extension + "-icon-linux.png";
+          case "win32":
+            img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
             break;
         }
         let filenameSpan = document.createElement("span");
