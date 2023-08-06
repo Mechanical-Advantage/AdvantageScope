@@ -25,16 +25,17 @@ jobs:
   build:
     strategy:
       matrix:
-        platform:
-          - { displayName: "macOS", os: macos-latest, shortName: "mac", artifactExt: "dmg" }
-          - { displayName: "Windows", os: windows-latest, shortName: "win", artifactExt: "exe" }
-          - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", artifactExt: "deb" }
-          - { displayName: "Linux/snap", os: ubuntu-latest, shortName: "linux", artifactExt: "snap" }
-          - { displayName: "Linux/AppImage", os: ubuntu-latest, shortName: "linux", artifactExt: "AppImage" }
         arch: ["x64", "arm64"]
+        platform:
+          - mac: { displayName: "macOS", os: macos-latest, shortName: "mac", artifactExt: "dmg" }
+          - win: { displayName: "Windows", os: windows-latest, shortName: "win", artifactExt: "exe" }
+          - linux-deb: { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", artifactExt: "deb" }
+          - linux-snap: { displayName: "Linux/snap", os: ubuntu-latest, shortName: "linux", artifactExt: "snap" }
+          - linux-AppImage:
+              { displayName: "Linux/AppImage", os: ubuntu-latest, shortName: "linux", artifactExt: "AppImage" }
         exclude:
           - arch: arm64
-            platform.displayName: "Linux/snap"
+            platform: linux-snap
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
     runs-on: ${{ matrix.platform.os }}
