@@ -108,7 +108,7 @@ jobs:
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Build app
-        run: npm run build -- --${{ matrix.arch }} {{ matrix.platform.build-arg }} --publish never
+        run: npm run build -- --${{ matrix.arch }} ${{ matrix.platform.build-arg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare macOS artifact
