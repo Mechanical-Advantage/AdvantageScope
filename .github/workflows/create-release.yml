@@ -25,32 +25,32 @@ jobs:
   build:
     strategy:
       matrix:
-        host:
+        arch: ["x64", "arm64"]
+        platform:
           - {
+              displayName: "macOS",
               os: macos-latest,
               shortName: "mac",
-              displayName: "macOS",
               artifactExt: "dmg",
               artifactType: "application/octet-stream"
             }
           - {
-              os: ubuntu-latest,
-              shortName: "linux",
-              displayName: "Linux",
-              artifactExt: "zip",
-              artifactType: "application/zip"
-            }
-          - {
+              displayName: "Windows",
               os: windows-latest,
               shortName: "win",
-              displayName: "Windows",
               artifactExt: "exe",
               artifactType: "application/octet-stream"
             }
-        arch: ["x64", "arm64"]
+          - {
+              displayName: "Linux",
+              os: ubuntu-latest,
+              shortName: "linux",
+              artifactExt: "zip",
+              artifactType: "application/zip"
+            }
 
-    name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
-    runs-on: ${{ matrix.host.os }}
+    name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.platform.os }}
 
     steps:
       - name: Checkout repository
@@ -68,10 +68,10 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
       - name: Install Linux dependencies
-        if: matrix.host.os == 'ubuntu-latest'
+        if: matrix.platform.os == 'ubuntu-latest'
         run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools
       - name: Prepare macOS certificate
-        if: matrix.host.os == 'macos-latest'
+        if: matrix.platform.os == 'macos-latest'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
@@ -83,17 +83,17 @@ jobs:
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare macOS artifact
-        if: matrix.host.os == 'macos-latest'
+        if: matrix.platform.os == 'macos-latest'
         run: |
           mv dist/AdvantageScope-*.dmg artifact
       - name: Prepare Linux artifact
-        if: matrix.host.os == 'ubuntu-latest'
+        if: matrix.platform.os == 'ubuntu-latest'
         run: |
           cd dist
           zip ../artifact.zip ./advantagescope*
           mv ../artifact.zip ../artifact
       - name: Prepare Windows artifact
-        if: matrix.host.os == 'windows-latest'
+        if: matrix.platform.os == 'windows-latest'
         run: |
           Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "artifact"
       - name: Upload artifacts
@@ -103,5 +103,5 @@ jobs:
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: artifact
-          asset_name: advantagescope-${{ matrix.host.shortName }}-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.host.artifactExt }}
-          asset_content_type: ${{ matrix.host.artifactType }}
+          asset_name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.platform.artifactExt }}
+          asset_content_type: ${{ matrix.platform.artifactType }}

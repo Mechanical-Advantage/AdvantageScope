@@ -120,8 +120,8 @@
     "linux": {
       "target": [
         "deb",
-        "rpm",
-        "pacman"
+        "snap",
+        "AppImage"
       ],
       "icon": "icons/app/app-icon.icns",
       "category": "Utility"

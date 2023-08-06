@@ -25,24 +25,14 @@ jobs:
   build:
     strategy:
       matrix:
-        host:
-          - { os: macos-latest, shortName: "mac", displayName: "macOS", artifactPath: "dist/AdvantageScope-*.dmg" }
-          - {
-              os: ubuntu-latest,
-              shortName: "linux",
-              displayName: "Linux",
-              artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman"
-            }
-          - {
-              os: windows-latest,
-              shortName: "win",
-              displayName: "Windows",
-              artifactPath: "dist/AdvantageScope Setup *.exe"
-            }
+        platform:
+          - { displayName: "macOS", os: macos-latest, shortName: "mac", artifactExt: "dmg" }
+          - { displayName: "Windows", os: windows-latest, shortName: "win", artifactExt: "exe" }
+          - { displayName: "Linux", os: ubuntu-latest, shortName: "linux", artifactExt: "zip" }
         arch: ["x64", "arm64"]
 
-    name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
-    runs-on: ${{ matrix.host.os }}
+    name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.platform.os }}
 
     steps:
       - name: Checkout repository
@@ -55,10 +45,10 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
       - name: Install Linux dependencies
-        if: matrix.host.os == 'ubuntu-latest'
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
       - name: Prepare macOS certificate
-        if: matrix.host.os == 'macos-latest' && github.event_name == 'push'
+        if: matrix.platform.os == 'macos-latest' && github.event_name == 'push'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
@@ -66,8 +56,22 @@ jobs:
         run: npm run build -- --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare macOS artifact
+        if: matrix.platform.os == 'macos-latest'
+        run: |
+          mv dist/AdvantageScope-*.dmg artifact
+      - name: Prepare Linux artifact
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: |
+          cd dist
+          zip ../artifact.zip ./advantagescope*
+          mv ../artifact.zip ../artifact
+      - name: Prepare Windows artifact
+        if: matrix.platform.os == 'windows-latest'
+        run: |
+          Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "artifact"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-${{ matrix.host.shortname }}-${{ matrix.arch }}-dev
-          path: ${{ matrix.host.artifactPath }}
+          name: advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          path: "artifact"
