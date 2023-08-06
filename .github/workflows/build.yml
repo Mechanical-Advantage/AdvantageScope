@@ -76,17 +76,17 @@ jobs:
       - name: Prepare macOS artifact
         if: matrix.platform.os == 'macos-latest'
         run: |
-          mv dist/AdvantageScope-*.dmg artifact
+          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
       - name: Prepare Linux artifact
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
-          mv dist/*.${{ matrix.platform.artifactExt }} artifact
+          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
       - name: Prepare Windows artifact
         if: matrix.platform.os == 'windows-latest'
         run: |
-          Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "artifact"
+          Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
-          path: "artifact"
+          path: advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
