@@ -1,5 +1,5 @@
 export enum Distributor {
-  Team6328,
+  LittletonRobotics,
   WPILib
 }
 

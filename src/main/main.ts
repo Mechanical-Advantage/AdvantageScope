@@ -48,6 +48,7 @@ import { createExtraFRCDataFolder, loadFRCData } from "./frcDataUtil";
 import StateTracker from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import videoExtensions from "./videoExtensions";
+import { BUILD_DATE, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -1229,7 +1230,12 @@ function setupMenu() {
     template.splice(0, 0, {
       role: "appMenu",
       submenu: [
-        { role: "about" },
+        {
+          label: "About AdvantageScope",
+          click() {
+            createAboutWindow();
+          }
+        },
         { type: "separator" },
         {
           label: "Preferences...",
@@ -1239,12 +1245,16 @@ function setupMenu() {
             openPreferences(window);
           }
         },
-        {
-          label: "Check for Updates...",
-          click() {
-            checkForUpdate(true);
-          }
-        },
+        ...(DISTRIBUTOR === Distributor.LittletonRobotics
+          ? [
+              {
+                label: "Check for Updates...",
+                click() {
+                  checkForUpdate(true);
+                }
+              }
+            ]
+          : []),
         { type: "separator" },
         { role: "services" },
         { type: "separator" },
@@ -1262,14 +1272,7 @@ function setupMenu() {
       {
         label: "About AdvantageScope",
         click() {
-          dialog.showMessageBox({
-            type: "info",
-            title: "About",
-            message: "AdvantageScope",
-            detail: "Version: " + app.getVersion() + "\nPlatform: " + process.platform + "-" + process.arch,
-            buttons: ["Close"],
-            icon: WINDOW_ICON
-          });
+          createAboutWindow();
         }
       },
       {
@@ -1280,18 +1283,40 @@ function setupMenu() {
           openPreferences(window);
         }
       },
-      {
-        label: "Check for Updates...",
-        click() {
-          checkForUpdate(true);
-        }
-      },
+      ...(DISTRIBUTOR === Distributor.LittletonRobotics
+        ? [
+            {
+              label: "Check for Updates...",
+              click() {
+                checkForUpdate(true);
+              }
+            }
+          ]
+        : []),
       { type: "separator" }
     );
   }
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
+}
+
+/** Creates the "About AdvantageScope" window. */
+function createAboutWindow() {
+  let detailLines: string[] = [];
+  detailLines.push("Version: " + (app.isPackaged ? app.getVersion() : "Development"));
+  detailLines.push("Distributor: " + (DISTRIBUTOR === Distributor.WPILib ? "WPILib" : "Littleton Robotics"));
+  detailLines.push("Platform: " + process.platform + "-" + process.arch);
+  detailLines.push("Build Date: " + BUILD_DATE);
+  dialog.showMessageBox({
+    type: "info",
+    title: "About",
+    message: "AdvantageScope",
+    detail: detailLines.join("\n"),
+    buttons: ["Close"],
+    // textWidth: 200,
+    icon: WINDOW_ICON
+  });
 }
 
 /** Creates a new hub window. */
@@ -1874,7 +1899,9 @@ app.whenReady().then(() => {
   });
 
   // Check for update and show button on hub windows (but don't prompt)
-  checkForUpdate(false);
+  if (DISTRIBUTOR === Distributor.LittletonRobotics) {
+    checkForUpdate(false);
+  }
 });
 
 app.on("window-all-closed", () => {
