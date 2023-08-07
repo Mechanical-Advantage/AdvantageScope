@@ -89,7 +89,6 @@ jobs:
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
-          latest: true
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
