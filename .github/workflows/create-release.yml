@@ -178,7 +178,7 @@ jobs:
       - name: Prepare Linux artifact
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
-          mv dist/*.${{ matrix.platform.artifactExt }} artifact
+          mv dist/*.AppImage artifact
       - name: Prepare Windows artifact
         if: matrix.platform.os == 'windows-latest'
         run: |
