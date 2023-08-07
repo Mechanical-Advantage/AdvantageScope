@@ -146,13 +146,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     {
       const skyColor = 0xffffff;
       const groundColor = 0x444444;
-      const intensity = 0.5;
+      const intensity = 2.0;
       const light = new THREE.HemisphereLight(skyColor, groundColor, intensity);
       this.scene.add(light);
     }
     {
       const color = 0xffffff;
-      const intensity = 0.2;
+      const intensity = 0.5;
       const light = new THREE.PointLight(color, intensity);
       light.position.set(0, 0, 10);
       this.wpilibCoordinateGroup.add(light);
