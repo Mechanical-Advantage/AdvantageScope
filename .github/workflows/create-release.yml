@@ -124,7 +124,7 @@ jobs:
         run: |
           Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "artifact"
       - name: Upload artifacts
-        uses: actions/upload-release-asset@v1
+        uses: tanyagray/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -132,3 +132,96 @@ jobs:
           asset_path: artifact
           asset_name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.platform.artifactExt }}
           asset_content_type: ${{ matrix.platform.artifactType }}
+
+  # build-wpilib:
+  #   strategy:
+  #     matrix:
+  #       platform:
+  #         - {
+  #             displayName: "macOS",
+  #             os: macos-latest,
+  #             arch: "x64",
+  #             shortName: "mac",
+  #             build-arg: "-m dir",
+  #             artifactExt: "dmg"
+  #           }
+  #         - {
+  #             displayName: "macOS",
+  #             os: macos-latest,
+  #             arch: "arm64",
+  #             shortName: "mac",
+  #             build-arg: "-m dir",
+  #             artifactExt: "dmg"
+  #           }
+  #         - {
+  #             displayName: "Windows",
+  #             os: windows-latest,
+  #             shortName: "win",
+  #             arch: "x64",
+  #             build-arg: "-w portable",
+  #             artifactExt: "exe"
+  #           }
+  #         - {
+  #             displayName: "Linux",
+  #             os: ubuntu-latest,
+  #             shortName: "linux",
+  #             arch: "x64",
+  #             build-arg: "-l AppImage",
+  #             artifactExt: "AppImage"
+  #           }
+
+  #   name: Build for WPILib ${{ matrix.platform.displayName }} (${{ matrix.platform.arch }})
+  #   runs-on: ${{ matrix.platform.os }}
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #     - name: Get release info
+  #       id: get_release_info
+  #       uses: bruceadams/get-release@v1.2.3
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: "18.x"
+  #         cache: "npm"
+  #     - name: Install Node.js dependencies
+  #       run: npm ci
+  #     - name: Install Linux dependencies
+  #       if: matrix.platform.os == 'ubuntu-latest'
+  #       run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
+  #     - name: Prepare macOS certificate
+  #       if: matrix.platform.os == 'macos-latest'
+  #       run: |
+  #         echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+  #         echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+  #         echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
+  #         echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
+  #         echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
+  #     - name: Build app
+  #       run: npm run build -- --${{ matrix.platform.arch }} ${{ matrix.platform.build-arg }} --publish never
+  #       env:
+  #         NODE_OPTIONS: --max-old-space-size=4096
+  #         ASCOPE_DISTRIBUTOR: WPILIB
+  #     - name: Prepare macOS artifact
+  #       if: matrix.platform.os == 'macos-latest'
+  #       run: |
+  #         mv dist/mac-*/AdvantageScope.app artifact
+  #     - name: Prepare Linux artifact
+  #       if: matrix.platform.os == 'ubuntu-latest'
+  #       run: |
+  #         mv dist/*.${{ matrix.platform.artifactExt }} artifact
+  #     - name: Prepare Windows artifact
+  #       if: matrix.platform.os == 'windows-latest'
+  #       run: |
+  #         Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "artifact"
+  #     - name: Upload artifacts
+  #       uses: actions/upload-release-asset@v1
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #       with:
+  #         upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+  #         asset_path: artifact
+  #         asset_name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.platform.artifactExt }}
+  #         asset_content_type: ${{ matrix.platform.artifactType }}
