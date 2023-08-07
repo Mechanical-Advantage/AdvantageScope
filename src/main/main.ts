@@ -1211,13 +1211,19 @@ function setupMenu() {
           }
         },
         {
-          label: "View Repository",
+          label: "GitHub Repository",
           click() {
             shell.openExternal("https://github.com/" + REPOSITORY);
           }
         },
         {
-          label: "Team Website",
+          label: "WPILib Documentation",
+          click() {
+            shell.openExternal("https://docs.wpilib.org");
+          }
+        },
+        {
+          label: "Littleton Robotics",
           click() {
             shell.openExternal("https://littletonrobotics.org");
           }
