@@ -174,7 +174,7 @@ jobs:
       - name: Prepare macOS artifact
         if: matrix.platform.os == 'macos-latest'
         run: |
-          mv dist/mac-*/AdvantageScope.app artifact
+          mv dist/mac*/AdvantageScope.app artifact
       - name: Prepare Linux artifact
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
