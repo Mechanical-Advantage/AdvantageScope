@@ -35,7 +35,7 @@
     "download": "^8.0.0",
     "electron": "^25.4.0",
     "electron-builder": "^24.6.3",
-    "mathjs": "^11.9.1",
+    "mathjs": "11.3.0",
     "prettier": "3.0.1",
     "remarkable": "^2.0.1",
     "rollup": "^3.27.2",
