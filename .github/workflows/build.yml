@@ -26,21 +26,21 @@ jobs:
     strategy:
       matrix:
         platform:
-          - { displayName: "macOS", os: macos-latest, shortName: "mac", build-arg: "-m", artifactExt: "dmg" }
-          - { displayName: "Windows", os: windows-latest, shortName: "win", build-arg: "-w", artifactExt: "exe" }
-          - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", build-arg: "-l deb", artifactExt: "deb" }
+          - { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
+          - { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
+          - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", buildArg: "-l deb", artifactExt: "deb" }
           - {
               displayName: "Linux/snap",
               os: ubuntu-latest,
               shortName: "linux",
-              build-arg: "-l snap",
+              buildArg: "-l snap",
               artifactExt: "snap"
             }
           - {
               displayName: "Linux/AppImage",
               os: ubuntu-latest,
               shortName: "linux",
-              build-arg: "-l AppImage",
+              buildArg: "-l AppImage",
               artifactExt: "AppImage"
             }
         arch: ["x64", "arm64"]
@@ -70,23 +70,23 @@ jobs:
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
       - name: Build app
-        run: npm run build -- --${{ matrix.arch }} ${{ matrix.platform.build-arg }} --publish never
+        run: npm run build -- --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare macOS artifact
         if: matrix.platform.os == 'macos-latest'
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
       - name: Prepare Linux artifact
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
-          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
       - name: Prepare Windows artifact
         if: matrix.platform.os == 'windows-latest'
         run: |
-          Move-Item -Path "dist\AdvantageScope Setup *.exe" -Destination "advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}"
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
-          path: advantagescope-${{ matrix.platform.shortname }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
