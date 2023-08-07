@@ -1308,6 +1308,9 @@ function createAboutWindow() {
   detailLines.push("Distributor: " + (DISTRIBUTOR === Distributor.WPILib ? "WPILib" : "Littleton Robotics"));
   detailLines.push("Platform: " + process.platform + "-" + process.arch);
   detailLines.push("Build Date: " + BUILD_DATE);
+  detailLines.push("Electron: " + process.versions.electron);
+  detailLines.push("Chromium: " + process.versions.chrome);
+  detailLines.push("Node: " + process.versions.node);
   dialog.showMessageBox({
     type: "info",
     title: "About",

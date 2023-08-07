@@ -307,8 +307,8 @@ export default class StatisticsController implements TabController {
       let yAxisOptions = this.histogram.options.scales!.y as LinearScaleOptions;
       xAxisOptions.ticks.color = isLight ? "#222" : "#eee";
       yAxisOptions.ticks.color = isLight ? "#222" : "#eee";
-      xAxisOptions.grid.borderColor = isLight ? "#222" : "#eee";
-      yAxisOptions.grid.borderColor = isLight ? "#222" : "#eee";
+      xAxisOptions.border.color = isLight ? "#222" : "#eee";
+      yAxisOptions.border.color = isLight ? "#222" : "#eee";
       xAxisOptions.grid.color = isLight ? "#eee" : "#333";
       yAxisOptions.grid.color = isLight ? "#eee" : "#333";
       this.histogram.update();

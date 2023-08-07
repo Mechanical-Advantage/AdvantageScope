@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { MeshStandardMaterial } from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
 import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
 import { MechanismState } from "../log/LogUtil";

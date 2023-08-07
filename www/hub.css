@@ -385,7 +385,9 @@ div.tab {
   line-height: 30px;
   white-space: nowrap;
 
-  transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+  transition:
+    background-color 0.2s ease-in-out,
+    border 0.2s ease-in-out;
   background-color: #eee;
   border: 1px solid #aaa;
 }
@@ -433,6 +435,7 @@ button.tab-control {
   top: 11px; /* Center vertically in tab bar when inline */
   height: 28px;
   width: 28px;
+  -webkit-app-region: no-drag;
 }
 
 body.fancy-title-bar button.tab-control {
