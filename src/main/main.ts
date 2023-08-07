@@ -1,13 +1,13 @@
 import { ChildProcess, spawn } from "child_process";
 import {
-  app,
   BrowserWindow,
   BrowserWindowConstructorOptions,
-  dialog,
   Menu,
   MenuItem,
   MessageChannelMain,
   MessagePortMain,
+  app,
+  dialog,
   nativeTheme,
   powerMonitor,
   shell
@@ -24,6 +24,7 @@ import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import { BUILD_DATE, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { UnitConversionPreset } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 import {
@@ -44,11 +45,10 @@ import {
   VIDEO_CACHE,
   WINDOW_ICON
 } from "./Constants";
-import { createExtraFRCDataFolder, loadFRCData } from "./frcDataUtil";
 import StateTracker from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
+import { createExtraFRCDataFolder, loadFRCData } from "./frcDataUtil";
 import videoExtensions from "./videoExtensions";
-import { BUILD_DATE, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -1878,19 +1878,14 @@ app.whenReady().then(() => {
   let window = createHubWindow();
 
   // Check for file path given as argument
-  if (app.isPackaged) {
-    if (process.argv.length > 1) {
-      firstOpenPath = process.argv[1];
-    }
-  } else {
-    if (process.argv.length > 2) {
-      firstOpenPath = process.argv[2];
-    }
+  let argv = [...process.argv];
+  argv.shift(); // Remove executable path
+  if (!app.isPackaged) {
+    argv.shift(); // Remove bundle path in dev mode
   }
-
-  // Open file if exists
-  if (firstOpenPath != null) {
-    sendMessage(window, "open-file", firstOpenPath);
+  argv = argv.filter((arg) => !arg.startsWith("--"));
+  if (argv.length > 0) {
+    sendMessage(window, "open-file", argv[0]);
   }
 
   // Create new window if activated while none exist
