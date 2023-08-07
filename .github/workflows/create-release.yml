@@ -186,7 +186,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.platform.shortName }}-${{ matrix.platform.arch }}
+          name: wpilib-${{ matrix.platform.shortName }}-${{ matrix.platform.arch }}
           path: artifact
 
   upload-wpilib:
@@ -203,26 +203,26 @@ jobs:
       - name: Download artifact (macOS, x64)
         uses: actions/download-artifact@v3
         with:
-          name: mac-x64
+          name: wpilib-mac-x64
           path: AdvantageScope (Intel).app
       - name: Download artifact (macOS, arm64)
         uses: actions/download-artifact@v3
         with:
-          name: mac-arm64
+          name: wpilib-mac-arm64
           path: AdvantageScope (Arm64).app
       - name: Download artifact (Windows, x64)
         uses: actions/download-artifact@v3
         with:
-          name: win-x64
+          name: wpilib-win-x64
           path: AdvantageScope.exe
       - name: Download artifact (Linux, x64)
         uses: actions/download-artifact@v3
         with:
-          name: linux-x64
+          name: wpilib-linux-x64
           path: AdvantageScope.AppImage
       - name: Create zip archive
         run: |
-          zip archive.zip AdvantageScope*
+          zip -r archive.zip AdvantageScope*
       - name: Upload archive
         uses: actions/upload-release-asset@v1
         env:
