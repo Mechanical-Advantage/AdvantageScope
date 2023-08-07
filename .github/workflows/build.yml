@@ -25,24 +25,31 @@ jobs:
   build:
     strategy:
       matrix:
-        host:
-          - { os: macos-latest, shortName: "mac", displayName: "macOS", artifactPath: "dist/AdvantageScope-*.dmg" }
+        platform:
+          - { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
+          - { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
+          - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", buildArg: "-l deb", artifactExt: "deb" }
           - {
+              displayName: "Linux/snap",
               os: ubuntu-latest,
               shortName: "linux",
-              displayName: "Linux",
-              artifactPath: "dist/*.deb\ndist/*.rpm\ndist/*.pacman"
+              buildArg: "-l snap",
+              artifactExt: "snap"
             }
           - {
-              os: windows-latest,
-              shortName: "win",
-              displayName: "Windows",
-              artifactPath: "dist/AdvantageScope Setup *.exe"
+              displayName: "Linux/AppImage",
+              os: ubuntu-latest,
+              shortName: "linux",
+              buildArg: "-l AppImage",
+              artifactExt: "AppImage"
             }
         arch: ["x64", "arm64"]
+        exclude:
+          - arch: arm64
+            platform: { displayName: "Linux/snap", os: ubuntu-latest, shortName: "linux", artifactExt: "snap" }
 
-    name: Build for ${{ matrix.host.displayName }} (${{ matrix.arch }})
-    runs-on: ${{ matrix.host.os }}
+    name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.platform.os }}
 
     steps:
       - name: Checkout repository
@@ -55,19 +62,31 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
       - name: Install Linux dependencies
-        if: matrix.host.os == 'ubuntu-latest'
-        run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
       - name: Prepare macOS certificate
-        if: matrix.host.os == 'macos-latest' && github.event_name == 'push'
+        if: matrix.platform.os == 'macos-latest' && github.event_name == 'push'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
       - name: Build app
-        run: npm run build -- --${{ matrix.arch }} --publish never
+        run: npm run build -- --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare macOS artifact
+        if: matrix.platform.os == 'macos-latest'
+        run: |
+          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+      - name: Prepare Linux artifact
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: |
+          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+      - name: Prepare Windows artifact
+        if: matrix.platform.os == 'windows-latest'
+        run: |
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-${{ matrix.host.shortname }}-${{ matrix.arch }}-dev
-          path: ${{ matrix.host.artifactPath }}
+          name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}

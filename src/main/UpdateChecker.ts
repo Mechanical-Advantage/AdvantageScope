@@ -110,11 +110,12 @@ export default class UpdateChecker {
         break;
     }
     let arch = translated ? "arm64" : process.arch; // If under translation, switch to ARM
-    latestVersionInfo["assets"].forEach((asset: any) => {
-      if (asset.name.includes(platformKey) && asset.name.includes(arch)) {
-        this.alertDownloadUrl = asset.browser_download_url;
-      }
+    let downloadAssets = latestVersionInfo["assets"].filter((asset: any) => {
+      return asset.name.includes(platformKey) && asset.name.includes(arch);
     });
+    if (downloadAssets.length === 1) {
+      this.alertDownloadUrl = downloadAssets[0].browser_download_url;
+    }
   }
 
   /** Returns whether the user should be prompted to update. */
