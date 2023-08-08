@@ -87,7 +87,6 @@ jobs:
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
     runs-on: ${{ matrix.platform.os }}
-    needs: compile
 
     steps:
       - name: Checkout repository
@@ -115,6 +114,12 @@ jobs:
           echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
+      - name: Wait for compile
+        uses: yogeshlonkar/wait-for-jobs@v0
+        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          jobs: "Check & Compile"
+          ttl: "10"
       - name: Download bundles
         uses: actions/download-artifact@v3
         with:
