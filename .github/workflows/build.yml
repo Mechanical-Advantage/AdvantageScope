@@ -18,7 +18,7 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Check formatting
         run: npm run check-format
       - name: Compile bundles
@@ -81,6 +81,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: bundles
+          path: bundles
+      - name: Print debug info
+        run: |
+          ls
+          ls bundles
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
