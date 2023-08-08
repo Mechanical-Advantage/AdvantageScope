@@ -5,8 +5,8 @@ on:
     types: [published]
 
 jobs:
-  format:
-    name: Check Formatting
+  compile:
+    name: Check & Compile
     runs-on: ubuntu-latest
 
     steps:
@@ -18,9 +18,16 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
       - name: Check formatting
         run: npm run check-format
+      - name: Compile bundles
+        run: npm run compile
+      - name: Upload bundles
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles
+          path: bundles/*.js
 
   build:
     strategy:
@@ -80,6 +87,7 @@ jobs:
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
     runs-on: ${{ matrix.platform.os }}
+    needs: compile
 
     steps:
       - name: Checkout repository
@@ -107,8 +115,13 @@ jobs:
           echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: bundles
       - name: Build app
-        run: npm run build -- --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
+        run: npx electron-builder build --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare macOS artifact
