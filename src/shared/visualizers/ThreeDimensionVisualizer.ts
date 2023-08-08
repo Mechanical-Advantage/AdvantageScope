@@ -93,7 +93,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.alert = alert;
     this.alertCamera = alert.getElementsByTagName("span")[0];
     this.renderer = new THREE.WebGLRenderer({ canvas });
-    this.renderer.outputEncoding = THREE.sRGBEncoding;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.scene = new THREE.Scene();
 
     // Change camera menu
