@@ -76,10 +76,11 @@ jobs:
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-      - uses: yogeshlonkar/wait-for-jobs@v0
+      - name: Wait for compile
+        uses: yogeshlonkar/wait-for-jobs@v0
         with:
           gh-token: ${{ secrets.GITHUB_TOKEN }}
-          jobs: "compile"
+          jobs: "Check & Compile"
           ttl: "10"
       - name: Download bundles
         uses: actions/download-artifact@v3
