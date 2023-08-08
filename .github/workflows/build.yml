@@ -82,10 +82,6 @@ jobs:
         with:
           name: bundles
           path: bundles
-      - name: Print debug info
-        run: |
-          ls
-          ls bundles
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
