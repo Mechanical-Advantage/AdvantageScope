@@ -57,7 +57,6 @@ jobs:
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
     runs-on: ${{ matrix.platform.os }}
-    needs: compile
 
     steps:
       - name: Checkout repository
@@ -77,6 +76,11 @@ jobs:
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - uses: yogeshlonkar/wait-for-jobs@v0
+        with:
+          gh-token: ${{ secrets.GITHUB_TOKEN }}
+          jobs: "compile"
+          ttl: "10"
       - name: Download bundles
         uses: actions/download-artifact@v3
         with:
