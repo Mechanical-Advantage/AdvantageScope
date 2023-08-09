@@ -38,6 +38,7 @@ export default class ThreeDimensionController extends TimelineVizController {
             [
               "Robot",
               "Ghost",
+              "GhostYellow",
               "AprilTag",
               "AprilTag ID",
               "Camera Override",
@@ -61,6 +62,7 @@ export default class ThreeDimensionController extends TimelineVizController {
             [
               "Robot",
               "Ghost",
+              "GhostYellow",
               "Trajectory",
               "Vision Target",
               "Blue Cone (Front)",
@@ -243,6 +245,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     // Set up data
     let robotData: Pose3d[] = [];
     let ghostData: Pose3d[] = [];
+    let ghostYellowData: Pose3d[] = [];
     let aprilTagData: AprilTag[] = [];
     let aprilTagPoseData: Pose3d[] = [];
     let aprilTagIdData: number[] = [];
@@ -269,6 +272,9 @@ export default class ThreeDimensionController extends TimelineVizController {
           break;
         case "Ghost":
           ghostData = ghostData.concat(get3DValue(field.key));
+          break;
+        case "GhostYellow":
+          ghostYellowData = ghostYellowData.concat(get3DValue(field.key));
           break;
         case "AprilTag":
           aprilTagPoseData = aprilTagPoseData.concat(get3DValue(field.key));
@@ -325,6 +331,9 @@ export default class ThreeDimensionController extends TimelineVizController {
           break;
         case "Ghost":
           ghostData = ghostData.concat(get2DValue(field.key));
+          break;
+        case "GhostYellow":
+          ghostYellowData = ghostYellowData.concat(get2DValue(field.key));
           break;
         case "Trajectory":
           trajectoryData.push(get2DValue(field.key, 0.02)); // Render outside the floor
@@ -408,6 +417,7 @@ export default class ThreeDimensionController extends TimelineVizController {
       poses: {
         robot: robotData,
         ghost: ghostData,
+        ghostYellow: ghostYellowData,
         aprilTag: aprilTagData,
         cameraOverride: cameraOverrideData,
         componentRobot: componentRobotData,
