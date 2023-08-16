@@ -24,7 +24,7 @@ import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
-import { BUILD_DATE, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
+import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { UnitConversionPreset } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 import {
@@ -1251,7 +1251,7 @@ function setupMenu() {
             openPreferences(window);
           }
         },
-        ...(DISTRIBUTOR === Distributor.LittletonRobotics
+        ...(DISTRIBUTOR === Distributor.FRC6328
           ? [
               {
                 label: "Check for Updates...",
@@ -1289,7 +1289,7 @@ function setupMenu() {
           openPreferences(window);
         }
       },
-      ...(DISTRIBUTOR === Distributor.LittletonRobotics
+      ...(DISTRIBUTOR === Distributor.FRC6328
         ? [
             {
               label: "Check for Updates...",
@@ -1311,7 +1311,7 @@ function setupMenu() {
 function createAboutWindow() {
   let detailLines: string[] = [];
   detailLines.push("Version: " + (app.isPackaged ? app.getVersion() : "Development"));
-  detailLines.push("Distributor: " + (DISTRIBUTOR === Distributor.WPILib ? "WPILib" : "Littleton Robotics"));
+  detailLines.push("Distributor: " + (DISTRIBUTOR === Distributor.WPILib ? "WPILib" : "FRC 6328"));
   detailLines.push("Platform: " + process.platform + "-" + process.arch);
   detailLines.push("Build Date: " + BUILD_DATE);
   detailLines.push("Electron: " + process.versions.electron);
@@ -1321,9 +1321,8 @@ function createAboutWindow() {
     type: "info",
     title: "About",
     message: "AdvantageScope",
-    detail: detailLines.join("\n"),
+    detail: COPYRIGHT + "\n\n" + detailLines.join("\n"),
     buttons: ["Close"],
-    // textWidth: 200,
     icon: WINDOW_ICON
   });
 }
@@ -1903,7 +1902,7 @@ app.whenReady().then(() => {
   });
 
   // Check for update and show button on hub windows (but don't prompt)
-  if (DISTRIBUTOR === Distributor.LittletonRobotics) {
+  if (DISTRIBUTOR === Distributor.FRC6328) {
     checkForUpdate(false);
   }
 });

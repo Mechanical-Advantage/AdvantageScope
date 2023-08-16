@@ -3,6 +3,7 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
 import cleanup from "rollup-plugin-cleanup";
+import fs from "fs";
 
 function bundle(input, output, isMain, external = []) {
   let isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
@@ -20,7 +21,7 @@ function bundle(input, output, isMain, external = []) {
       replace({
         preventAssignment: true,
         values: {
-          __distributor__: isWpilib ? "WPILib" : "LittletonRobotics",
+          __distributor__: isWpilib ? "WPILib" : "FRC6328",
           __build_date__: new Date().toLocaleString("en-US", {
             timeZone: "UTC",
             hour12: false,
@@ -31,7 +32,8 @@ function bundle(input, output, isMain, external = []) {
             minute: "numeric",
             second: "numeric",
             timeZoneName: "short"
-          })
+          }),
+          __copyright__: JSON.parse(fs.readFileSync("package.json")).build.copyright
         }
       })
     ],
