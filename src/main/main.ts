@@ -18,8 +18,8 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { Client } from "ssh2";
+import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import ExportOptions from "../shared/ExportOptions";
-import { FRCData } from "../shared/FRCData";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
@@ -34,7 +34,6 @@ import {
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
-  EXTRA_FRC_DATA,
   LAST_OPEN_FILE,
   PREFS_FILENAME,
   REPOSITORY,
@@ -42,12 +41,13 @@ import {
   RLOG_DATA_TIMEOUT_MS,
   RLOG_HEARTBEAT_DATA,
   RLOG_HEARTBEAT_DELAY_MS,
+  USER_ASSETS,
   VIDEO_CACHE,
   WINDOW_ICON
 } from "./Constants";
 import StateTracker from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
-import { createExtraFRCDataFolder, loadFRCData } from "./frcDataUtil";
+import { createAssetsFolders, loadAssets } from "./assetsUtil";
 import videoExtensions from "./videoExtensions";
 
 // Global variables
@@ -63,7 +63,7 @@ let usingUsb = false; // Menu bar setting, bundled with other prefs for renderer
 let firstOpenPath: string | null = null; // Cache path to open immediately
 let videoProcesses: { [id: string]: ChildProcess } = {}; // Key is tab UUID
 let videoFolderUUIDs: string[] = [];
-let frcData: FRCData = {
+let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
   field3ds: [],
   robots: [],
@@ -1198,9 +1198,9 @@ function setupMenu() {
       role: "help",
       submenu: [
         {
-          label: "Show FRC Data Folder",
+          label: "Show Assets Folder",
           click() {
-            shell.openPath(EXTRA_FRC_DATA);
+            shell.openPath(USER_ASSETS);
           }
         },
         { type: "separator" },
@@ -1394,7 +1394,7 @@ function createHubWindow() {
     }
 
     // Init messages
-    sendMessage(window, "set-frc-data", frcData);
+    sendMessage(window, "set-assets", advantageScopeAssets);
     sendMessage(window, "set-fullscreen", window.isFullScreen());
     sendMessage(window, "set-battery", powerMonitor.isOnBatteryPower());
     sendMessage(window, "set-version", {
@@ -1683,7 +1683,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
       }
     });
     port2.start();
-    sendMessage(satellite, "set-frc-data", frcData);
+    sendMessage(satellite, "set-assets", advantageScopeAssets);
     sendMessage(satellite, "set-type", type);
     sendAllPreferences();
   });
@@ -1877,9 +1877,9 @@ app.whenReady().then(() => {
     nativeTheme.themeSource = prefs.theme;
   }
 
-  // Load FRC data
-  createExtraFRCDataFolder();
-  frcData = loadFRCData();
+  // Load assets
+  createAssetsFolders();
+  advantageScopeAssets = loadAssets();
 
   // Create menu and window
   setupMenu();

@@ -98,26 +98,26 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.FIELD_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.frcData?.field3ds.find((field) => field.title == this.FIELD.value)?.sourceUrl
+        window.assets?.field3ds.find((field) => field.name == this.FIELD.value)?.sourceUrl
       );
     });
     this.ROBOT.addEventListener("change", () => this.updateFieldRobotOptions());
     this.ROBOT_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.frcData?.robots.find((robot) => robot.title == this.ROBOT.value)?.sourceUrl
+        window.assets?.robots.find((robot) => robot.name == this.ROBOT.value)?.sourceUrl
       );
     });
   }
 
   /** Updates the alliance and source buttons based on the selected value. */
   private updateFieldRobotOptions() {
-    let fieldConfig = window.frcData?.field3ds.find((game) => game.title == this.FIELD.value);
+    let fieldConfig = window.assets?.field3ds.find((game) => game.name == this.FIELD.value);
     this.FIELD_SOURCE_LINK.hidden = fieldConfig == undefined || fieldConfig.sourceUrl == undefined;
     if (this.FIELD.value == "Axes") this.ALLIANCE.value = "blue";
     this.ALLIANCE.hidden = this.FIELD.value == "Axes";
 
-    let robotConfig = window.frcData?.robots.find((game) => game.title == this.ROBOT.value);
+    let robotConfig = window.assets?.robots.find((game) => game.name == this.ROBOT.value);
     this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
   }
 
@@ -158,15 +158,15 @@ export default class ThreeDimensionController extends TimelineVizController {
     let fields = this.getFields();
 
     // Add field and robot options
-    if (this.FIELD.children.length == 0 && this.ROBOT.children.length == 0 && window.frcData) {
-      [...window.frcData.field3ds.map((game) => game.title), "Axes"].forEach((title) => {
+    if (this.FIELD.children.length == 0 && this.ROBOT.children.length == 0 && window.assets) {
+      [...window.assets.field3ds.map((game) => game.name), "Axes"].forEach((title) => {
         let option = document.createElement("option");
         option.innerText = title;
         this.FIELD.appendChild(option);
       });
-      window.frcData.robots.forEach((robot) => {
+      window.assets.robots.forEach((robot) => {
         let option = document.createElement("option");
-        option.innerText = robot.title;
+        option.innerText = robot.name;
         this.ROBOT.appendChild(option);
       });
       if (this.lastOptions) this.options = this.lastOptions;

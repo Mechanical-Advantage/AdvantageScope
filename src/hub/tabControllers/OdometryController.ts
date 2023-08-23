@@ -75,13 +75,13 @@ export default class OdometryController extends TimelineVizController {
 
     // Bind source link
     this.GAME.addEventListener("change", () => {
-      let config = window.frcData?.field2ds.find((game) => game.title == this.GAME.value);
+      let config = window.assets?.field2ds.find((game) => game.name == this.GAME.value);
       this.GAME_SOURCE_LINK.hidden = config != undefined && config.sourceUrl == undefined;
     });
     this.GAME_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.frcData?.field2ds.find((game) => game.title == this.GAME.value)?.sourceUrl
+        window.assets?.field2ds.find((game) => game.name == this.GAME.value)?.sourceUrl
       );
     });
 
@@ -119,7 +119,7 @@ export default class OdometryController extends TimelineVizController {
     this.ORIENTATION.value = options.orientation;
 
     // Set whether source link is hidden
-    let fieldConfig = window.frcData?.field2ds.find((game) => game.title == this.GAME.value);
+    let fieldConfig = window.assets?.field2ds.find((game) => game.name == this.GAME.value);
     this.GAME_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
   }
 
@@ -135,10 +135,10 @@ export default class OdometryController extends TimelineVizController {
     let fields = this.getListFields()[0];
 
     // Add game options
-    if (this.GAME.children.length == 0 && window.frcData) {
-      window.frcData.field2ds.forEach((game) => {
+    if (this.GAME.children.length == 0 && window.assets) {
+      window.assets.field2ds.forEach((game) => {
         let option = document.createElement("option");
-        option.innerText = game.title;
+        option.innerText = game.name;
         this.GAME.appendChild(option);
       });
       if (this.lastOptions) this.options = this.lastOptions;

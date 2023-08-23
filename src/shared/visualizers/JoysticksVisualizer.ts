@@ -37,7 +37,7 @@ export default class JoysticksVisualizer implements Visualizer {
 
     // Iterate over joysticks
     command.forEach((joystick, index) => {
-      let config = window.frcData?.joysticks.find((joystickConfig) => joystickConfig.title == joystick.layoutTitle);
+      let config = window.assets?.joysticks.find((joystickConfig) => joystickConfig.name == joystick.layoutTitle);
 
       // Update image element
       let imageElement = this.IMAGES[index];

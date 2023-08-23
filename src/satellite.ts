@@ -1,4 +1,4 @@
-import { FRCData } from "./shared/FRCData";
+import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import TabType, { getTabIcon } from "./shared/TabType";
@@ -16,7 +16,7 @@ const MAX_ASPECT_RATIO = 5;
 
 declare global {
   interface Window {
-    frcData: FRCData | null;
+    assets: AdvantageScopeAssets | null;
     preferences: Preferences | null;
     sendMainMessage: (name: string, data?: any) => void;
   }
@@ -42,8 +42,8 @@ window.addEventListener("message", (event) => {
     messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
       switch (message.name) {
-        case "set-frc-data":
-          window.frcData = message.data;
+        case "set-assets":
+          window.assets = message.data;
           break;
 
         case "set-preferences":

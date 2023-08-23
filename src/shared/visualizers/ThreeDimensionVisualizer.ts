@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { MeshStandardMaterial } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { Config3dField, Config3dRobot, Config3d_Rotation } from "../FRCData";
+import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageScopeAssets";
 import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import { convert } from "../units";
@@ -83,7 +83,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private lastAspectRatio: number | null = null;
   private lastPrefsMode = "";
   private lastIsBattery = false;
-  private lastFrcDataString: string = "";
+  private lastAssetsString: string = "";
   private lastFieldTitle: string = "";
   private lastRobotTitle: string = "";
 
@@ -105,7 +105,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (startPx && event.x == startPx[0] && event.y == startPx[1]) {
         if (!this.command) return;
         let robotTitle = this.command.options.robot;
-        let robotConfig = window.frcData?.robots.find((robotData) => robotData.title === robotTitle);
+        let robotConfig = window.assets?.robots.find((robotData) => robotData.name === robotTitle);
         if (robotConfig == undefined) return;
         window.sendMainMessage("ask-3d-camera", {
           options: robotConfig.cameras.map((camera) => camera.name),
@@ -403,27 +403,27 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     let robotConfig: Config3dRobot;
     if (fieldTitle == "Axes") {
       fieldConfig = {
-        title: "",
+        name: "",
         path: "",
         rotations: [],
         widthInches: 0.0,
         heightInches: 0.0
       };
     } else {
-      let fieldConfigTmp = window.frcData?.field3ds.find((fieldData) => fieldData.title === fieldTitle);
+      let fieldConfigTmp = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
       if (fieldConfigTmp == undefined) return;
       fieldConfig = fieldConfigTmp;
     }
     {
-      let robotConfigTmp = window.frcData?.robots.find((robotData) => robotData.title === robotTitle);
+      let robotConfigTmp = window.assets?.robots.find((robotData) => robotData.name === robotTitle);
       if (robotConfigTmp == undefined) return;
       robotConfig = robotConfigTmp;
     }
 
-    // Check for new FRC data
-    let frcDataString = JSON.stringify(window.frcData);
-    let newFrcData = frcDataString != this.lastFrcDataString;
-    if (newFrcData) this.lastFrcDataString = frcDataString;
+    // Check for new assets
+    let assetsString = JSON.stringify(window.assets);
+    let newAssets = assetsString != this.lastAssetsString;
+    if (newAssets) this.lastAssetsString = assetsString;
 
     // Update field
     if (fieldTitle != this.lastFieldTitle) {
@@ -476,7 +476,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Update robot
-    if (robotTitle != this.lastRobotTitle || newFrcData) {
+    if (robotTitle != this.lastRobotTitle || newAssets) {
       this.lastRobotTitle = robotTitle;
       const loader = new GLTFLoader();
       Promise.all([
