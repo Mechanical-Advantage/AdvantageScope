@@ -68,9 +68,9 @@ export default class JoysticksController extends TimelineVizController {
     // Add layout options
     let newLayouts = false;
     this.CONFIG_LAYOUTS.forEach((input) => {
-      if (input.children.length == 0 && window.frcData) {
+      if (input.children.length == 0 && window.assets) {
         newLayouts = true;
-        ["None", "Generic Joystick", ...window.frcData.joysticks.map((joystick) => joystick.title)].forEach((title) => {
+        ["None", "Generic Joystick", ...window.assets.joysticks.map((joystick) => joystick.name)].forEach((title) => {
           let option = document.createElement("option");
           option.innerText = title;
           input.appendChild(option);

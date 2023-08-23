@@ -1,4 +1,4 @@
-import { Config3d_Rotation, FRCData } from "../shared/FRCData";
+import { Config3d_Rotation, AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
@@ -25,7 +25,7 @@ declare global {
   interface Window {
     log: Log;
     preferences: Preferences | null;
-    frcData: FRCData | null;
+    assets: AdvantageScopeAssets | null;
     platform: string;
     platformRelease: string;
     appVersion: string;
@@ -45,7 +45,7 @@ declare global {
 }
 window.log = new Log();
 window.preferences = null;
-window.frcData = null;
+window.assets = null;
 window.platform = "";
 window.platformRelease = "";
 window.isFullscreen = false;
@@ -104,11 +104,11 @@ function updateFancyWindow() {
 // FRC DATA OVERRIDE
 
 window.override3dRobotConfig = (title, rotations, position) => {
-  if (!window.frcData) {
+  if (!window.assets) {
     console.error("FRC data not loaded yet.");
     return;
   }
-  let index = window.frcData.robots.findIndex((robot) => robot.title == title);
+  let index = window.assets.robots.findIndex((robot) => robot.name == title);
   if (index == -1) {
     console.error(
       'Could not find robot "' +
@@ -121,8 +121,8 @@ window.override3dRobotConfig = (title, rotations, position) => {
     );
     return;
   }
-  window.frcData.robots[index].rotations = rotations;
-  window.frcData.robots[index].position = position;
+  window.assets.robots[index].rotations = rotations;
+  window.assets.robots[index].position = position;
 };
 
 // MANAGE STATE
@@ -415,8 +415,8 @@ function handleMainMessage(message: NamedMessage) {
       window.preferences = message.data;
       break;
 
-    case "set-frc-data":
-      window.frcData = message.data;
+    case "set-assets":
+      window.assets = message.data;
       break;
 
     case "show-update-button":
