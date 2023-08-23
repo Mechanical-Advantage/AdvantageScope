@@ -7,7 +7,7 @@ export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
 export const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
 export const STATE_FILENAME = path.join(
   app.getPath("userData"),
-  "state-" + app.getVersion().replaceAll(".", "_") + ".json"
+  "state-" + (app.isPackaged ? app.getVersion().replaceAll(".", "_") : "dev") + ".json"
 );
 export const EXTRA_FRC_DATA = path.join(app.getPath("userData"), "frcData");
 export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
