@@ -47,7 +47,7 @@ import {
 } from "./Constants";
 import StateTracker from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
-import { createAssetsFolders, loadAssets } from "./assetsUtil";
+import { convertLegacyAssets, createAssetFolders, loadAssets } from "./assetsUtil";
 import videoExtensions from "./videoExtensions";
 
 // Global variables
@@ -1094,7 +1094,7 @@ function setupMenu() {
                       buttons: ["Continue", "Cancel"],
                       icon: WINDOW_ICON
                     });
-                    if (result != 0) return;
+                    if (result !== 0) return;
                   }
 
                   // Send to hub
@@ -1878,7 +1878,8 @@ app.whenReady().then(() => {
   }
 
   // Load assets
-  createAssetsFolders();
+  createAssetFolders();
+  convertLegacyAssets();
   advantageScopeAssets = loadAssets();
 
   // Create menu and window
