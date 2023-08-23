@@ -1,3 +1,4 @@
+import { dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
@@ -14,13 +15,14 @@ import {
   ConfigJoystick_Joystick
 } from "../shared/AdvantageScopeAssets";
 import { checkArrayType } from "../shared/util";
-import { AUTO_ASSETS, USER_ASSETS } from "./Constants";
+import { AUTO_ASSETS, LEGACY_ASSETS, USER_ASSETS, WINDOW_ICON } from "./Constants";
 
 const userAssetsReadme =
   'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/CUSTOM-CONFIG.md';
+const convertLegacyAllowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWxYZabcdefghijklnopqrstuvwxyz0123456789".split("");
 
 /** Creates folders for user and automatic assets. */
-export function createAssetsFolders() {
+export function createAssetFolders() {
   if (!fs.existsSync(AUTO_ASSETS)) {
     fs.mkdirSync(AUTO_ASSETS);
   }
@@ -28,6 +30,78 @@ export function createAssetsFolders() {
     fs.mkdirSync(USER_ASSETS);
   }
   fs.writeFileSync(path.join(USER_ASSETS, "README.txt"), userAssetsReadme);
+}
+
+/** Converts any custom "FRC Data" assets to the current format. */
+export function convertLegacyAssets() {
+  if (!fs.existsSync(LEGACY_ASSETS)) return;
+
+  // Prompt user to confirm
+  let result = dialog.showMessageBoxSync({
+    type: "info",
+    title: "Info",
+    message: "Convert legacy AdvantageScope assets?",
+    detail:
+      'Legacy "FRC Data" assets found. Click "Continue" to convert to a format compatible with this version of AdvantageScope.',
+    buttons: ["Continue", "Cancel"],
+    icon: WINDOW_ICON
+  });
+  if (result !== 0) return;
+
+  // Convert assets
+  fs.readdirSync(LEGACY_ASSETS).forEach((file) => {
+    if (!file.endsWith(".json")) return;
+    let title = file.split("_").slice(1).join("_").split(".").slice(0, -1).join(".");
+    let config = jsonfile.readFileSync(path.join(LEGACY_ASSETS, file));
+    let isField2d = file.startsWith("Field2d_");
+    let isField3d = file.startsWith("Field3d_");
+    let isRobot = file.startsWith("Robot_");
+    let isJoystick = file.startsWith("Joystick_");
+
+    // Create target folder
+    let targetPath = path.join(
+      USER_ASSETS,
+      file.split("_")[0] +
+        "_" +
+        title
+          .split("")
+          .filter((x) => convertLegacyAllowedCharacters.includes(x))
+          .join("")
+    );
+    if (fs.existsSync(targetPath)) return;
+    fs.mkdirSync(targetPath);
+
+    // Copy assets
+    if (isField2d) {
+      fs.copyFileSync(path.join(LEGACY_ASSETS, "Field2d_" + title + ".png"), path.join(targetPath, "image.png"));
+    } else if (isField3d) {
+      fs.copyFileSync(path.join(LEGACY_ASSETS, "Field3d_" + title + ".glb"), path.join(targetPath, "model.glb"));
+    } else if (isRobot) {
+      fs.copyFileSync(path.join(LEGACY_ASSETS, "Robot_" + title + ".glb"), path.join(targetPath, "model.glb"));
+      let index = 0;
+      while (true) {
+        let source = path.join(LEGACY_ASSETS, "Robot_" + title + "_" + index.toString() + ".glb");
+        if (!fs.existsSync(source)) break;
+        fs.copyFileSync(source, path.join(targetPath, "model_" + index.toString() + ".glb"));
+        index++;
+      }
+    } else if (isJoystick) {
+      fs.copyFileSync(path.join(LEGACY_ASSETS, "Joystick_" + title + ".png"), path.join(targetPath, "image.png"));
+    }
+
+    // Update config
+    if (isJoystick) {
+      config = {
+        name: title,
+        components: config
+      };
+    }
+    config.name = title;
+    jsonfile.writeFileSync(path.join(targetPath, "config.json"), config, { spaces: 2 });
+  });
+
+  // Delete FRC data folder
+  fs.rmSync(LEGACY_ASSETS, { recursive: true });
 }
 
 /** Loads all current FRC data (bundled and extra). */
