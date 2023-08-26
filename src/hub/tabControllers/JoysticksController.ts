@@ -23,6 +23,9 @@ export default class JoysticksController extends TimelineVizController {
       (cell) => cell.lastElementChild as HTMLInputElement
     );
 
+    // Add initial set of options
+    this.resetLayoutOptions();
+
     // Enforce range
     this.CONFIG_IDS.forEach((input) => {
       input.addEventListener("change", () => {

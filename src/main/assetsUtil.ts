@@ -15,7 +15,7 @@ import {
   ConfigJoystick_Joystick
 } from "../shared/AdvantageScopeAssets";
 import { checkArrayType } from "../shared/util";
-import { AUTO_ASSETS, LEGACY_ASSETS, USER_ASSETS, WINDOW_ICON } from "./Constants";
+import { AUTO_ASSETS, BUNDLED_ASSETS, LEGACY_ASSETS, USER_ASSETS, WINDOW_ICON } from "./Constants";
 
 const USER_ASSETS_README =
   'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/CUSTOM-CONFIG.md';
@@ -113,8 +113,8 @@ export function loadAssets(): AdvantageScopeAssets {
     joysticks: []
   };
 
-  // Load user assets first so they take priority
-  [USER_ASSETS, AUTO_ASSETS].forEach((parentFolder) => {
+  // Highest priority is first
+  [USER_ASSETS, AUTO_ASSETS, BUNDLED_ASSETS].forEach((parentFolder) => {
     fs.readdirSync(parentFolder, { withFileTypes: true })
       .sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0)) // Inverse order so newer versions take priority
       .forEach((object) => {
@@ -475,10 +475,23 @@ export function loadAssets(): AdvantageScopeAssets {
   assets = uniqueAssets;
 
   // Sort assets
-  assets.field2ds.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
-  assets.field3ds.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
-  assets.robots.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-  assets.joysticks.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
+  {
+    // Evergeen field in asset files, sort to end of list
+    assets.field2ds.sort((a, b) => {
+      if (a.name == "Evergreen") return 1;
+      if (b.name == "Evergreen") return -1;
+      return a.name > b.name ? -1 : b.name > a.name ? 1 : 0;
+    });
+
+    // Built-in fields added in code to end of list
+    assets.field3ds.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
+
+    // All robots in asset files, no special sorting required
+    assets.robots.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+
+    // Built-in joysticks added in code to beginning of list
+    assets.joysticks.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
+  }
 
   return assets;
 }

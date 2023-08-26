@@ -15,6 +15,7 @@ export const STATE_FILENAME = path.join(
   app.getPath("userData"),
   "state-" + (app.isPackaged ? app.getVersion().replaceAll(".", "_") : "dev") + ".json"
 );
+export const BUNDLED_ASSETS = path.join(__dirname, "..", "bundledAssets");
 export const AUTO_ASSETS = path.join(app.getPath("userData"), "autoAssets");
 export const USER_ASSETS = path.join(app.getPath("userData"), "userAssets");
 export const LEGACY_ASSETS = path.join(app.getPath("userData"), "frcData");
