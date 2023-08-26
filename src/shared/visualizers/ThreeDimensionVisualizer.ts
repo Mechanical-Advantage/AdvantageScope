@@ -17,8 +17,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private ORBIT_FIELD_DEFAULT_POSITION = new THREE.Vector3(0, 6, -12);
   private ORBIT_AXES_DEFAULT_POSITION = new THREE.Vector3(2, 2, -4);
   private ORBIT_ROBOT_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
-  private AXES_FIELD_LENGTH = convert(54, "feet", "meters");
-  private AXES_FIELD_WIDTH = convert(27, "feet", "meters");
+  private STANDARD_FIELD_LENGTH = convert(54, "feet", "meters");
+  private STANDARD_FIELD_WIDTH = convert(27, "feet", "meters");
   private WPILIB_ROTATION = getQuaternionFromRotSeq([
     {
       axis: "x",
@@ -401,13 +401,21 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     let robotTitle = this.command.options.robot;
     let fieldConfig: Config3dField;
     let robotConfig: Config3dRobot;
-    if (fieldTitle == "Axes") {
+    if (fieldTitle == "Evergreen") {
       fieldConfig = {
-        name: "",
+        name: "Evergreen",
         path: "",
         rotations: [],
-        widthInches: 0.0,
-        heightInches: 0.0
+        widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
+        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches")
+      };
+    } else if (fieldTitle == "Axes") {
+      fieldConfig = {
+        name: "Axes",
+        path: "",
+        rotations: [],
+        widthInches: 0,
+        heightInches: 0
       };
     } else {
       let fieldConfigTmp = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
@@ -431,15 +439,161 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (this.field) {
         this.wpilibCoordinateGroup.remove(this.field);
       }
-      if (fieldTitle == "Axes") {
-        // Add to scene
+      if (fieldTitle == "Evergreen") {
+        this.field = new THREE.Group();
+        this.wpilibCoordinateGroup.add(this.field);
+
+        // Floor
+        this.field.add(
+          new THREE.Mesh(
+            new THREE.PlaneGeometry(this.STANDARD_FIELD_LENGTH + 4, this.STANDARD_FIELD_WIDTH + 1),
+            new THREE.MeshPhongMaterial({ color: 0x888888, side: THREE.DoubleSide })
+          )
+        );
+
+        // Guardrails
+        const guardrailHeight = convert(20, "inches", "meters");
+        [-this.STANDARD_FIELD_WIDTH / 2, this.STANDARD_FIELD_WIDTH / 2].forEach((y) => {
+          [0, guardrailHeight].forEach((z) => {
+            let guardrail = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.02, 0.02, this.STANDARD_FIELD_LENGTH, 12),
+              new THREE.MeshPhongMaterial({ color: 0xdddddd })
+            );
+            this.field!.add(guardrail);
+            guardrail.rotateZ(Math.PI / 2);
+            guardrail.position.set(0, y, z);
+          });
+          {
+            let panel = new THREE.Mesh(
+              new THREE.PlaneGeometry(this.STANDARD_FIELD_LENGTH, guardrailHeight),
+              new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                side: THREE.DoubleSide,
+                opacity: 0.25,
+                transparent: true
+              })
+            );
+            this.field!.add(panel);
+            panel.rotateX(Math.PI / 2);
+            panel.position.set(0, y, guardrailHeight / 2);
+          }
+          for (
+            let x = -this.STANDARD_FIELD_LENGTH / 2;
+            x < this.STANDARD_FIELD_LENGTH / 2;
+            x += this.STANDARD_FIELD_LENGTH / 16
+          ) {
+            if (x === -this.STANDARD_FIELD_LENGTH / 2) continue;
+            let guardrail = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.02, 0.02, guardrailHeight, 12),
+              new THREE.MeshPhongMaterial({ color: 0xdddddd })
+            );
+            this.field!.add(guardrail);
+            guardrail.rotateX(Math.PI / 2);
+            guardrail.position.set(x, y, guardrailHeight / 2);
+          }
+        });
+
+        // Alliance stations
+        const allianceStationWidth = convert(69, "inches", "meters");
+        const allianceStationHeight = convert(78, "inches", "meters");
+        const allianceStationSolidHeight = convert(36.75, "inches", "meters");
+        const allianceStationShelfDepth = convert(12.25, "inches", "meters");
+        const fillerWidth = (this.STANDARD_FIELD_WIDTH - allianceStationWidth * 3) / 2;
+        const blueColor = 0x6379a6;
+        const redColor = 0xa66363;
+        [-this.STANDARD_FIELD_LENGTH / 2, this.STANDARD_FIELD_LENGTH / 2].forEach((x) => {
+          [0, allianceStationSolidHeight, allianceStationHeight].forEach((z) => {
+            let guardrail = new THREE.Mesh(
+              new THREE.CylinderGeometry(
+                0.02,
+                0.02,
+                z === allianceStationSolidHeight ? allianceStationWidth * 3 : this.STANDARD_FIELD_WIDTH,
+                12
+              ),
+              new THREE.MeshPhongMaterial({ color: 0xdddddd })
+            );
+            this.field!.add(guardrail);
+            guardrail.position.set(x, 0, z);
+          });
+          [
+            -this.STANDARD_FIELD_WIDTH / 2,
+            allianceStationWidth * -1.5,
+            allianceStationWidth * -0.5,
+            allianceStationWidth * 0.5,
+            allianceStationWidth * 1.5,
+            this.STANDARD_FIELD_WIDTH / 2
+          ].forEach((y) => {
+            let guardrail = new THREE.Mesh(
+              new THREE.CylinderGeometry(0.02, 0.02, allianceStationHeight, 12),
+              new THREE.MeshPhongMaterial({ color: 0xdddddd })
+            );
+            this.field!.add(guardrail);
+            guardrail.rotateX(Math.PI / 2);
+            guardrail.position.set(x, y, allianceStationHeight / 2);
+          });
+          [-this.STANDARD_FIELD_WIDTH / 2 + fillerWidth / 2, this.STANDARD_FIELD_WIDTH / 2 - fillerWidth / 2].forEach(
+            (y) => {
+              let filler = new THREE.Mesh(
+                new THREE.PlaneGeometry(allianceStationHeight, fillerWidth),
+                new THREE.MeshPhongMaterial({ color: x < 0 ? blueColor : redColor, side: THREE.DoubleSide })
+              );
+              this.field!.add(filler);
+              filler.rotateY(Math.PI / 2);
+              filler.position.set(x, y, allianceStationHeight / 2);
+            }
+          );
+          {
+            let allianceWall = new THREE.Mesh(
+              new THREE.PlaneGeometry(allianceStationSolidHeight, allianceStationWidth * 3),
+              new THREE.MeshPhongMaterial({ color: x < 0 ? blueColor : redColor, side: THREE.DoubleSide })
+            );
+            this.field!.add(allianceWall);
+            allianceWall.rotateY(Math.PI / 2);
+            allianceWall.position.set(x, 0, allianceStationSolidHeight / 2);
+          }
+          {
+            let allianceGlass = new THREE.Mesh(
+              new THREE.PlaneGeometry(allianceStationHeight - allianceStationSolidHeight, allianceStationWidth * 3),
+              new THREE.MeshPhongMaterial({
+                color: x < 0 ? blueColor : redColor,
+                side: THREE.DoubleSide,
+                opacity: 0.25,
+                transparent: true
+              })
+            );
+            this.field!.add(allianceGlass);
+            allianceGlass.rotateY(Math.PI / 2);
+            allianceGlass.position.set(
+              x,
+              0,
+              allianceStationSolidHeight + (allianceStationHeight - allianceStationSolidHeight) / 2
+            );
+          }
+          {
+            let allianceShelves = new THREE.Mesh(
+              new THREE.PlaneGeometry(allianceStationShelfDepth, allianceStationWidth * 3),
+              new THREE.MeshPhongMaterial({ color: x < 0 ? blueColor : redColor, side: THREE.DoubleSide })
+            );
+            this.field!.add(allianceShelves);
+            allianceShelves.position.set(
+              x + (allianceStationShelfDepth / 2) * (x > 0 ? 1 : -1),
+              0,
+              allianceStationSolidHeight
+            );
+          }
+        });
+
+        // Render new frame
+        this.shouldRender = true;
+      } else if (fieldTitle == "Axes") {
+        // Add axes to scene
         let axes = this.axesTemplate.clone(true);
         let outline = new THREE.Line(
           new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(),
-            new THREE.Vector3(this.AXES_FIELD_LENGTH, 0, 0),
-            new THREE.Vector3(this.AXES_FIELD_LENGTH, this.AXES_FIELD_WIDTH, 0),
-            new THREE.Vector3(0, this.AXES_FIELD_WIDTH, 0),
+            new THREE.Vector3(this.STANDARD_FIELD_LENGTH, 0, 0),
+            new THREE.Vector3(this.STANDARD_FIELD_LENGTH, this.STANDARD_FIELD_WIDTH, 0),
+            new THREE.Vector3(0, this.STANDARD_FIELD_WIDTH, 0),
             new THREE.Vector3()
           ]),
           new THREE.LineBasicMaterial({ color: 0x444444 })

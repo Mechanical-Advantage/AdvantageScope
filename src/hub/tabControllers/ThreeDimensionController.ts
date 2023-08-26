@@ -120,7 +120,7 @@ export default class ThreeDimensionController extends TimelineVizController {
       }
       let options: string[] = [];
       if (window.assets !== null) {
-        options = [...window.assets.field3ds.map((game) => game.name), "Axes"];
+        options = [...window.assets.field3ds.map((game) => game.name), "Evergreen", "Axes"];
         options.forEach((title) => {
           let option = document.createElement("option");
           option.innerText = title;
