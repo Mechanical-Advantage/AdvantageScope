@@ -99,6 +99,8 @@ export default class TableController implements TabController {
     this.updateFields();
   }
 
+  newAssets() {}
+
   /** Processes a drag event, including adding a field if necessary. */
   private handleDrag(dragData: any) {
     if (this.CONTENT.hidden) return;

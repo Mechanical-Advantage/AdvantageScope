@@ -22,15 +22,17 @@ export default class DocumentationController implements TabController {
     };
   }
 
-  restoreState(state: TabState): void {}
+  restoreState(state: TabState) {}
 
-  refresh(): void {}
+  refresh() {}
+
+  newAssets() {}
 
   getActiveFields(): string[] {
     return [];
   }
 
-  periodic(): void {
+  periodic() {
     // Update screenshot on index page
     if (this.isIndex) {
       let images = this.TEXT.getElementsByTagName("img");

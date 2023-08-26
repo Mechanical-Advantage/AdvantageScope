@@ -50,7 +50,8 @@ const mainBundles = [
     "net",
     "os",
     "path",
-    "ssh2"
+    "ssh2",
+    "download"
   ]),
   bundle("preload.ts", "preload.js", true, ["electron"])
 ];

@@ -11,6 +11,9 @@ export default interface TabController {
   /** Refresh based on new log data. */
   refresh(): void;
 
+  /** Notify that the set of assets was updated. */
+  newAssets(): void;
+
   /**
    * Returns the list of fields currently being displayed. This is
    * used to selectively request fields from live sources, and all

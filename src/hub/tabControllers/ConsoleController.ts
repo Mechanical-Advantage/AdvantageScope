@@ -105,6 +105,8 @@ export default class ConsoleController implements TabController {
     this.updateData();
   }
 
+  newAssets() {}
+
   getActiveFields(): string[] {
     if (this.field == null) {
       return [];

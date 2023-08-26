@@ -34,6 +34,8 @@ export default class MechanismController extends TimelineVizController {
 
   set options(options: { [id: string]: any }) {}
 
+  newAssets() {}
+
   getAdditionalActiveFields(): string[] {
     return [];
   }

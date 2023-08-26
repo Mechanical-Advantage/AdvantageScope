@@ -344,6 +344,9 @@ export default abstract class TimelineVizController implements TabController {
   /** Updates the set of selected options. */
   abstract set options(options: { [id: string]: any });
 
+  /** Notify that the set of assets was updated. */
+  abstract newAssets(): void;
+
   /**
    * Returns the list of fields currently being displayed. This is
    * used to selectively request fields from live sources, and all
