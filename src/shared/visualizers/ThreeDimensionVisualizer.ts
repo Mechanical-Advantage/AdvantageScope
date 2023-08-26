@@ -426,7 +426,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     if (newAssets) this.lastAssetsString = assetsString;
 
     // Update field
-    if (fieldTitle != this.lastFieldTitle) {
+    if (fieldTitle != this.lastFieldTitle || newAssets) {
       this.lastFieldTitle = fieldTitle;
       if (this.field) {
         this.wpilibCoordinateGroup.remove(this.field);

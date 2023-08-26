@@ -70,6 +70,8 @@ export default class PointsController extends TimelineVizController {
     this.POINT_SIZE.value = options.pointSize;
   }
 
+  newAssets() {}
+
   getAdditionalActiveFields(): string[] {
     return [];
   }

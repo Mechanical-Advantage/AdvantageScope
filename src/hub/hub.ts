@@ -1,4 +1,4 @@
-import { Config3d_Rotation, AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
+import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
@@ -39,8 +39,6 @@ declare global {
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
-
-    override3dRobotConfig: (title: string, rotations: Config3d_Rotation[], position: [number, number, number]) => void;
   }
 }
 window.log = new Log();
@@ -100,30 +98,6 @@ function updateFancyWindow() {
     document.body.classList.remove("fancy-side-bar");
   }
 }
-
-// FRC DATA OVERRIDE
-
-window.override3dRobotConfig = (title, rotations, position) => {
-  if (!window.assets) {
-    console.error("FRC data not loaded yet.");
-    return;
-  }
-  let index = window.assets.robots.findIndex((robot) => robot.name == title);
-  if (index == -1) {
-    console.error(
-      'Could not find robot "' +
-        title +
-        '"\n\nCheck that your config files have the following names: "Robot_' +
-        title +
-        '.json" and "Robot_' +
-        title +
-        '.glb"'
-    );
-    return;
-  }
-  window.assets.robots[index].rotations = rotations;
-  window.assets.robots[index].position = position;
-};
 
 // MANAGE STATE
 
@@ -416,7 +390,10 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "set-assets":
-      window.assets = message.data;
+      if (JSON.stringify(window.assets) !== JSON.stringify(message.data)) {
+        window.assets = message.data;
+        window.tabs.newAssets();
+      }
       break;
 
     case "show-update-button":

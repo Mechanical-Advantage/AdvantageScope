@@ -7,8 +7,6 @@ export default class JoysticksController extends TimelineVizController {
   private CONFIG_IDS: HTMLInputElement[];
   private CONFIG_LAYOUTS: HTMLInputElement[];
 
-  private lastOptions: { [id: string]: any } | null = null;
-
   constructor(content: HTMLElement) {
     super(
       content,
@@ -35,6 +33,30 @@ export default class JoysticksController extends TimelineVizController {
     });
   }
 
+  /** Clears all options for the layout selectors then updates them with the latest options. */
+  private resetLayoutOptions() {
+    let options = ["None", "Generic Joystick"];
+    if (window.assets !== null) {
+      options = [...options, ...window.assets.joysticks.map((joystick) => joystick.name)];
+    }
+    this.CONFIG_LAYOUTS.forEach((select) => {
+      let value = select.value;
+      while (select.firstChild) {
+        select.removeChild(select.firstChild);
+      }
+      options.forEach((title) => {
+        let option = document.createElement("option");
+        option.innerText = title;
+        select.appendChild(option);
+      });
+      if (options.includes(value)) {
+        select.value = value;
+      } else {
+        select.value = options[0];
+      }
+    });
+  }
+
   get options(): { [id: string]: any } {
     return {
       ids: this.CONFIG_IDS.map((input) => Number(input.value)),
@@ -43,13 +65,17 @@ export default class JoysticksController extends TimelineVizController {
   }
 
   set options(options: { [id: string]: any }) {
-    this.lastOptions = options;
+    this.resetLayoutOptions();
     this.CONFIG_IDS.forEach((input, index) => {
       input.value = options.ids[index];
     });
     this.CONFIG_LAYOUTS.forEach((input, index) => {
       input.value = options.layouts[index];
     });
+  }
+
+  newAssets() {
+    this.resetLayoutOptions();
   }
 
   getAdditionalActiveFields(): string[] {
@@ -65,21 +91,6 @@ export default class JoysticksController extends TimelineVizController {
   }
 
   getCommand(time: number) {
-    // Add layout options
-    let newLayouts = false;
-    this.CONFIG_LAYOUTS.forEach((input) => {
-      if (input.children.length == 0 && window.assets) {
-        newLayouts = true;
-        ["None", "Generic Joystick", ...window.assets.joysticks.map((joystick) => joystick.name)].forEach((title) => {
-          let option = document.createElement("option");
-          option.innerText = title;
-          input.appendChild(option);
-        });
-      }
-    });
-    if (newLayouts && this.lastOptions) this.options = this.lastOptions;
-
-    // Read data
     let command: any[] = [];
     this.CONFIG_LAYOUTS.forEach((layoutInput, index) => {
       if (layoutInput.value !== "None") {

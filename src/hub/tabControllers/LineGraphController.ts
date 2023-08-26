@@ -312,6 +312,8 @@ export default class LineGraphController implements TabController {
     });
   }
 
+  newAssets() {}
+
   /** Processes a drag event, including adding a field if necessary. */
   private handleDrag(dragData: any) {
     if (this.CONTENT.hidden) return;

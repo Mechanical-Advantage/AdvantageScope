@@ -160,6 +160,13 @@ export default class Tabs {
     });
   }
 
+  /** Refresh based on new log data. */
+  newAssets() {
+    this.tabList.forEach((tab) => {
+      tab.controller.newAssets();
+    });
+  }
+
   /** Returns the set of fields currently being displayed. */
   getActiveFields(): Set<string> {
     let activeFields = new Set<string>();

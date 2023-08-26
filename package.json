@@ -27,12 +27,12 @@
     "@rollup/plugin-replace": "^5.0.2",
     "@rollup/plugin-typescript": "11.1.2",
     "@types/chart.js": "^2.9.37",
+    "@types/download": "^8.0.2",
     "@types/jsonfile": "^6.1.1",
     "@types/remarkable": "^2.0.3",
     "@types/ssh2": "^1.11.13",
     "@types/three": "^0.155.0",
     "chart.js": "^4.3.3",
-    "download": "^8.0.0",
     "electron": "^25.4.0",
     "electron-builder": "^24.6.3",
     "mathjs": "11.3.0",
@@ -46,6 +46,8 @@
     "typescript": "5.1.6"
   },
   "dependencies": {
+    "check-disk-space": "^3.4.0",
+    "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
     "ssh2": "^1.14.0"

@@ -20,7 +20,6 @@ export default class OdometryController extends TimelineVizController {
 
   private TRAIL_LENGTH_SECS = 5;
   private lastUnitDistance = "meters";
-  private lastOptions: { [id: string]: any } | null = null;
 
   constructor(content: HTMLElement) {
     let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
@@ -55,6 +54,9 @@ export default class OdometryController extends TimelineVizController {
     // Set default alliance values
     this.ALLIANCE_BUMPERS.value = "auto";
     this.ALLIANCE_ORIGIN.value = "blue";
+
+    // Add initial set of options
+    this.resetGameOptions();
 
     // Unit conversion for distance
     this.UNIT_DISTANCE.addEventListener("change", () => {
@@ -92,6 +94,35 @@ export default class OdometryController extends TimelineVizController {
     });
   }
 
+  /** Clears all options from the game selector then updates it with the latest options. */
+  private resetGameOptions() {
+    let value = this.GAME.value;
+    while (this.GAME.firstChild) {
+      this.GAME.removeChild(this.GAME.firstChild);
+    }
+    let options: string[] = [];
+    if (window.assets !== null) {
+      options = window.assets.field2ds.map((game) => game.name);
+      options.forEach((title) => {
+        let option = document.createElement("option");
+        option.innerText = title;
+        this.GAME.appendChild(option);
+      });
+    }
+    if (options.includes(value)) {
+      this.GAME.value = value;
+    } else {
+      this.GAME.value = options[0];
+    }
+    this.updateGameSourceLink();
+  }
+
+  /** Shows or hides the source link based on the selected game. */
+  private updateGameSourceLink() {
+    let fieldConfig = window.assets?.field2ds.find((game) => game.name == this.GAME.value);
+    this.GAME_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
+  }
+
   get options(): { [id: string]: any } {
     return {
       game: this.GAME.value,
@@ -106,7 +137,7 @@ export default class OdometryController extends TimelineVizController {
   }
 
   set options(options: { [id: string]: any }) {
-    this.lastOptions = options;
+    this.resetGameOptions();
     this.GAME.value = options.game;
     this.UNIT_DISTANCE.value = options.unitDistance;
     this.UNIT_ROTATION.value = options.unitRotation;
@@ -117,10 +148,11 @@ export default class OdometryController extends TimelineVizController {
     this.ALLIANCE_BUMPERS.value = options.allianceBumpers;
     this.ALLIANCE_ORIGIN.value = options.allianceOrigin;
     this.ORIENTATION.value = options.orientation;
+    this.updateGameSourceLink();
+  }
 
-    // Set whether source link is hidden
-    let fieldConfig = window.assets?.field2ds.find((game) => game.name == this.GAME.value);
-    this.GAME_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
+  newAssets() {
+    this.resetGameOptions();
   }
 
   getAdditionalActiveFields(): string[] {
@@ -132,18 +164,6 @@ export default class OdometryController extends TimelineVizController {
   }
 
   getCommand(time: number) {
-    let fields = this.getListFields()[0];
-
-    // Add game options
-    if (this.GAME.children.length == 0 && window.assets) {
-      window.assets.field2ds.forEach((game) => {
-        let option = document.createElement("option");
-        option.innerText = game.name;
-        this.GAME.appendChild(option);
-      });
-      if (this.lastOptions) this.options = this.lastOptions;
-    }
-
     // Returns the current value for a field
     let getCurrentValue = (key: string): Pose2d[] => {
       let logData = window.log.getNumberArray(key, time, time);
@@ -187,7 +207,7 @@ export default class OdometryController extends TimelineVizController {
     let arrowFrontData: Pose2d[] = [];
     let arrowCenterData: Pose2d[] = [];
     let arrowBackData: Pose2d[] = [];
-    fields.forEach((field) => {
+    this.getListFields()[0].forEach((field) => {
       switch (field.type) {
         case "Robot":
           let currentRobotData = getCurrentValue(field.key);

@@ -17,9 +17,9 @@ import {
 import { checkArrayType } from "../shared/util";
 import { AUTO_ASSETS, LEGACY_ASSETS, USER_ASSETS, WINDOW_ICON } from "./Constants";
 
-const userAssetsReadme =
+const USER_ASSETS_README =
   'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/CUSTOM-CONFIG.md';
-const convertLegacyAllowedCharacters = "ABCDEFGHIJKLMNOPQRSTUVWxYZabcdefghijklnopqrstuvwxyz0123456789".split("");
+const CONVERT_LEGACY_ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWxYZabcdefghijklnopqrstuvwxyz0123456789".split("");
 
 /** Creates folders for user and automatic assets. */
 export function createAssetFolders() {
@@ -29,7 +29,7 @@ export function createAssetFolders() {
   if (!fs.existsSync(USER_ASSETS)) {
     fs.mkdirSync(USER_ASSETS);
   }
-  fs.writeFileSync(path.join(USER_ASSETS, "README.txt"), userAssetsReadme);
+  fs.writeFileSync(path.join(USER_ASSETS, "README.txt"), USER_ASSETS_README);
 }
 
 /** Converts any custom "FRC Data" assets to the current format. */
@@ -65,7 +65,7 @@ export function convertLegacyAssets() {
         "_" +
         title
           .split("")
-          .filter((x) => convertLegacyAllowedCharacters.includes(x))
+          .filter((x) => CONVERT_LEGACY_ALLOWED_CHARS.includes(x))
           .join("")
     );
     if (fs.existsSync(targetPath)) return;

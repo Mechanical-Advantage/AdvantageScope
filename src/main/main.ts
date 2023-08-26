@@ -47,6 +47,7 @@ import {
 } from "./Constants";
 import StateTracker from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
+import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, loadAssets } from "./assetsUtil";
 import videoExtensions from "./videoExtensions";
 
@@ -119,6 +120,23 @@ function sendAllPreferences() {
     });
   });
   if (downloadWindow != null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
+}
+
+/** Sends the current set of assets to all windows. */
+function sendAssets() {
+  advantageScopeAssets = loadAssets();
+  Object.values(satelliteWindows).forEach((windowCollection) => {
+    windowCollection.forEach((window) => {
+      if (!window.isDestroyed()) {
+        sendMessage(window, "set-assets", advantageScopeAssets);
+      }
+    });
+  });
+  hubWindows.forEach((window) => {
+    if (!window.isDestroyed()) {
+      sendMessage(window, "set-assets", advantageScopeAssets);
+    }
+  });
 }
 
 /**
@@ -1203,6 +1221,19 @@ function setupMenu() {
             shell.openPath(USER_ASSETS);
           }
         },
+        {
+          label: "Asset Download Status...",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "About",
+              message: "Asset Download Status",
+              detail: getAssetDownloadStatus(),
+              buttons: ["Close"],
+              icon: WINDOW_ICON
+            });
+          }
+        },
         { type: "separator" },
         {
           label: "Report a Problem",
@@ -1372,8 +1403,7 @@ function createHubWindow() {
   let window = new BrowserWindow(prefs);
   hubWindows.push(window);
 
-  // Finish setup
-  if (!app.isPackaged) window.webContents.openDevTools();
+  // Show window when loaded
   window.once("ready-to-show", window.show);
 
   let firstLoad = true;
@@ -1391,6 +1421,11 @@ function createHubWindow() {
     if (!firstLoad) {
       createPorts(); // Create ports on reload
       rlogSockets[window.id]?.destroy(); // Destroy any existing RLOG sockets
+    }
+
+    // Launch dev tools
+    if (firstLoad && !app.isPackaged) {
+      window.webContents.openDevTools();
     }
 
     // Init messages
@@ -1880,6 +1915,15 @@ app.whenReady().then(() => {
   // Load assets
   createAssetFolders();
   convertLegacyAssets();
+  startAssetDownload(() => {
+    advantageScopeAssets = loadAssets();
+    sendAssets();
+  });
+  setInterval(() => {
+    // Periodically load assets in case they are updated
+    advantageScopeAssets = loadAssets();
+    sendAssets();
+  }, 5000);
   advantageScopeAssets = loadAssets();
 
   // Create menu and window

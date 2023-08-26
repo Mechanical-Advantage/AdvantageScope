@@ -14,15 +14,13 @@ import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVis
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
-  private FIELD: HTMLInputElement;
-  private ALLIANCE: HTMLInputElement;
+  private FIELD: HTMLSelectElement;
+  private ALLIANCE: HTMLSelectElement;
   private FIELD_SOURCE_LINK: HTMLInputElement;
-  private ROBOT: HTMLInputElement;
+  private ROBOT: HTMLSelectElement;
   private ROBOT_SOURCE_LINK: HTMLInputElement;
   private UNIT_DISTANCE: HTMLInputElement;
   private UNIT_ROTATION: HTMLInputElement;
-
-  private lastOptions: { [id: string]: any } | null = null;
 
   constructor(content: HTMLElement) {
     let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
@@ -82,10 +80,10 @@ export default class ThreeDimensionController extends TimelineVizController {
     );
 
     // Get option inputs
-    this.FIELD = configBody.children[1].children[2].children[1] as HTMLInputElement;
-    this.ALLIANCE = configBody.children[1].children[2].children[2] as HTMLInputElement;
+    this.FIELD = configBody.children[1].children[2].children[1] as HTMLSelectElement;
+    this.ALLIANCE = configBody.children[1].children[2].children[2] as HTMLSelectElement;
     this.FIELD_SOURCE_LINK = configBody.children[1].children[2].children[3] as HTMLInputElement;
-    this.ROBOT = configBody.children[2].children[0].children[1] as HTMLInputElement;
+    this.ROBOT = configBody.children[2].children[0].children[1] as HTMLSelectElement;
     this.ROBOT_SOURCE_LINK = configBody.children[2].children[0].children[2] as HTMLInputElement;
     this.UNIT_DISTANCE = configBody.children[3].children[0].children[1] as HTMLInputElement;
     this.UNIT_ROTATION = configBody.children[3].children[0].children[2] as HTMLInputElement;
@@ -93,15 +91,18 @@ export default class ThreeDimensionController extends TimelineVizController {
     // Set default alliance value
     this.ALLIANCE.value = "blue";
 
+    // Add initial set of options
+    this.resetFieldRobotOptions();
+
     // Bind source links
-    this.FIELD.addEventListener("change", () => this.updateFieldRobotOptions());
+    this.FIELD.addEventListener("change", () => this.updateFieldRobotExtraControls());
     this.FIELD_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
         window.assets?.field3ds.find((field) => field.name == this.FIELD.value)?.sourceUrl
       );
     });
-    this.ROBOT.addEventListener("change", () => this.updateFieldRobotOptions());
+    this.ROBOT.addEventListener("change", () => this.updateFieldRobotExtraControls());
     this.ROBOT_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
@@ -110,12 +111,57 @@ export default class ThreeDimensionController extends TimelineVizController {
     });
   }
 
+  /** Clears all options from the field and robot selectors then updates them with the latest options. */
+  private resetFieldRobotOptions() {
+    {
+      let value = this.FIELD.value;
+      while (this.FIELD.firstChild) {
+        this.FIELD.removeChild(this.FIELD.firstChild);
+      }
+      let options: string[] = [];
+      if (window.assets !== null) {
+        options = [...window.assets.field3ds.map((game) => game.name), "Axes"];
+        options.forEach((title) => {
+          let option = document.createElement("option");
+          option.innerText = title;
+          this.FIELD.appendChild(option);
+        });
+      }
+      if (options.includes(value)) {
+        this.FIELD.value = value;
+      } else {
+        this.FIELD.value = options[0];
+      }
+    }
+    {
+      let value = this.ROBOT.value;
+      while (this.ROBOT.firstChild) {
+        this.ROBOT.removeChild(this.ROBOT.firstChild);
+      }
+      let options: string[] = [];
+      if (window.assets !== null) {
+        options = window.assets.robots.map((robot) => robot.name);
+        options.forEach((title) => {
+          let option = document.createElement("option");
+          option.innerText = title;
+          this.ROBOT.appendChild(option);
+        });
+      }
+      if (options.includes(value)) {
+        this.ROBOT.value = value;
+      } else {
+        this.ROBOT.value = options[0];
+      }
+    }
+    this.updateFieldRobotExtraControls();
+  }
+
   /** Updates the alliance and source buttons based on the selected value. */
-  private updateFieldRobotOptions() {
+  private updateFieldRobotExtraControls() {
     let fieldConfig = window.assets?.field3ds.find((game) => game.name == this.FIELD.value);
     this.FIELD_SOURCE_LINK.hidden = fieldConfig == undefined || fieldConfig.sourceUrl == undefined;
-    if (this.FIELD.value == "Axes") this.ALLIANCE.value = "blue";
-    this.ALLIANCE.hidden = this.FIELD.value == "Axes";
+    if (this.FIELD.value === "Axes") this.ALLIANCE.value = "blue";
+    this.ALLIANCE.hidden = this.FIELD.value === "Axes";
 
     let robotConfig = window.assets?.robots.find((game) => game.name == this.ROBOT.value);
     this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
@@ -132,13 +178,17 @@ export default class ThreeDimensionController extends TimelineVizController {
   }
 
   set options(options: { [id: string]: any }) {
-    this.lastOptions = options;
+    this.resetFieldRobotOptions(); // Cannot set field and robot values without options
     this.FIELD.value = options.field;
     this.ALLIANCE.value = options.alliance;
     this.ROBOT.value = options.robot;
     this.UNIT_DISTANCE.value = options.unitDistance;
     this.UNIT_ROTATION.value = options.unitRotation;
-    this.updateFieldRobotOptions();
+    this.updateFieldRobotExtraControls();
+  }
+
+  newAssets() {
+    this.resetFieldRobotOptions();
   }
 
   /** Switches the selected camera for the main visualizer. */
@@ -155,23 +205,6 @@ export default class ThreeDimensionController extends TimelineVizController {
   }
 
   getCommand(time: number) {
-    let fields = this.getFields();
-
-    // Add field and robot options
-    if (this.FIELD.children.length == 0 && this.ROBOT.children.length == 0 && window.assets) {
-      [...window.assets.field3ds.map((game) => game.name), "Axes"].forEach((title) => {
-        let option = document.createElement("option");
-        option.innerText = title;
-        this.FIELD.appendChild(option);
-      });
-      window.assets.robots.forEach((robot) => {
-        let option = document.createElement("option");
-        option.innerText = robot.name;
-        this.ROBOT.appendChild(option);
-      });
-      if (this.lastOptions) this.options = this.lastOptions;
-    }
-
     // Returns the current value for a 3D field
     let get3DValue = (key: string): Pose3d[] => {
       let logData = window.log.getNumberArray(key, time, time);

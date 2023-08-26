@@ -110,4 +110,6 @@ export default class MetadataController implements TabController {
     this.NO_DATA_ALERT.hidden = showTable;
     this.TABLE_CONTAINER.hidden = !showTable;
   }
+
+  newAssets() {}
 }

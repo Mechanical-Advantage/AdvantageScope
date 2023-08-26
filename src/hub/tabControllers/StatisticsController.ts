@@ -288,6 +288,8 @@ export default class StatisticsController implements TabController {
     this.shouldUpdate = true;
   }
 
+  newAssets() {}
+
   getActiveFields(): string[] {
     return this.fields.filter((field) => field !== null) as string[];
   }
