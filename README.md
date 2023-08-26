@@ -56,3 +56,9 @@ For development, run:
 npm run watch
 npm start
 ```
+
+## Assets
+
+For details on adding custom assets, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
+
+Bundled assets are stored under [`bundledAssets`](/bundledAssets/). Larger assets are downloaded automatically by AdvantageScope from the [AdvantageScopeAssets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) repository.
