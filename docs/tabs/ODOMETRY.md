@@ -44,7 +44,7 @@ The following objects are supported:
 
 The following configuration options are available:
 
-- **Game:** The field image to use, defaults to the most recent game. To add a custom field image, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md).
+- **Game:** The field image to use, defaults to the most recent game. To add a custom field image, see ["Custom Assets"](/docs/CUSTOM-ASSETS.md).
 - **Units:** The linear and angular units of the provided fields. Meters, inches, radians, and degrees are supported.
 - **Origin:** The location of the origin (0, 0) on the field, relative to the robot's alliance wall. The default option (right) aligns with the [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html), and places the origin at the bottom left when looking at the field in its default orientation.
 - **Side Length:** The side length (track width) of the robot in the selected linear units. The robot is always rendered as a square.

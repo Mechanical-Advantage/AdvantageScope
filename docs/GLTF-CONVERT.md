@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-AdvantageScope's 3D view accepts custom models for fields and robots, which can be installed using the process described [here](/docs/CUSTOM-CONFIG.md). All models must use the [glTF](https://www.khronos.org/gltf/) file format, chosen for its efficiency when storing and loading models. Note that AdvantageScope uses the binary form (.glb), which includes all resources in a single file, rather than the pure JSON form (.gltf).
+AdvantageScope's 3D view accepts custom models for fields and robots, which can be installed using the process described [here](/docs/CUSTOM-ASSETS.md). All models must use the [glTF](https://www.khronos.org/gltf/) file format, chosen for its efficiency when storing and loading models. Note that AdvantageScope uses the binary form (.glb), which includes all resources in a single file, rather than the pure JSON form (.gltf).
 
 ## Converting Onshape to STEP
 

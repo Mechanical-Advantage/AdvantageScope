@@ -12,7 +12,7 @@ The joysticks tab shows the state of up to three connected controllers. The vide
 
 Select the joysticks IDs and types in the table at the bottom of the tab. Joystick IDs range from 0 to 5, and match the IDs in the Driver Station and WPILib. More information about joysticks can be found in the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 
-AdvantageScope includes a set of common joysticks, including a "Generic Joystick" with all buttons, axes, and POVs in a grid format (seen above). To add a custom joystick, see ["Custom Fields/Robots/Joysticks"](/docs/CUSTOM-CONFIG.md). An example of a custom joystick is shown below (the overrides on 6328's operator console).
+AdvantageScope includes a set of common joysticks, including a "Generic Joystick" with all buttons, axes, and POVs in a grid format (seen above). To add a custom joystick, see ["Custom Assets"](/docs/CUSTOM-ASSETS.md). An example of a custom joystick is shown below (the overrides on 6328's operator console).
 
 > Note: The source fields are automatically selected from the log data. WPILib logs (with [joystick logging enabled](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), AdvantageKit logs, and AdvantageKit streaming are supported. **Joystick data is NOT available via an NT4 connection with stock WPILib.**
 
