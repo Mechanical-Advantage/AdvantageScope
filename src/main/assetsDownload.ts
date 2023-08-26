@@ -100,21 +100,18 @@ async function getAssetInfo(): Promise<AssetDownloadInfo[]> {
 
 /** Downloads and extracts any new assets and deletes old assets. */
 async function updateLocalAssets(downloadInfo: AssetDownloadInfo[]) {
-  await Promise.all([
-    // Download new assets
-    ...downloadInfo
+  // Download new assets
+  await Promise.all(
+    downloadInfo
       .filter((assetInfo) => !fs.existsSync(assetInfo.target))
-      .map((assetInfo) => download(assetInfo.source, assetInfo.target, { extract: true })),
+      .map((assetInfo) => download(assetInfo.source, assetInfo.target, { extract: true }))
+  );
 
-    // Delete old assets
-    new Promise<void>((resolve) => {
-      fs.readdirSync(AUTO_ASSETS).forEach((folder) => {
-        let folderPath = path.join(AUTO_ASSETS, folder);
-        if (!downloadInfo.some((assetInfo) => assetInfo.target === folderPath)) {
-          fs.rmSync(folderPath, { recursive: true });
-        }
-      });
-      resolve();
-    })
-  ]);
+  // Delete old assets
+  fs.readdirSync(AUTO_ASSETS).forEach((folder) => {
+    let folderPath = path.join(AUTO_ASSETS, folder);
+    if (!downloadInfo.some((assetInfo) => assetInfo.target === folderPath)) {
+      fs.rmSync(folderPath, { recursive: true });
+    }
+  });
 }
