@@ -1013,10 +1013,11 @@ export default class LineGraphController implements TabController {
         hoveredText = hoveredText as string;
 
         let deltaText = "\u0394" + formatMarkedTimestampText(hoveredTime - selectedTime);
-        let xSpace = selectedX - hoveredX;
+        let xSpace = clampValue(selectedX, graphLeft, graphLeft + graphWidth) - hoveredX;
         let textHalfWidths =
           (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoveredText).width + 10) / 2 + 4;
-        let deltaWidth = context.measureText(deltaText).width + 10 + 4;
+        let deltaTextMetrics = context.measureText(deltaText);
+        let deltaWidth = deltaTextMetrics.width + 10 + 4;
         let offsetAmount = textHalfWidths - Math.abs(xSpace);
         let doesDeltaFit = deltaWidth <= Math.abs(xSpace);
         if (doesDeltaFit) {
@@ -1024,7 +1025,7 @@ export default class LineGraphController implements TabController {
           offsetAmount = textHalfWidths + deltaWidth - Math.abs(xSpace);
 
           // Draw connecting line between two cursors, overlapping parts will be automatically cleared
-          let centerY = (context.measureText(deltaText).actualBoundingBoxDescent + 10) / 2 + graphTop;
+          let centerY = (deltaTextMetrics.actualBoundingBoxDescent + 10) / 2 + graphTop;
           context.globalAlpha = 0.35;
           context.lineWidth = 1;
           context.setLineDash([]);
@@ -1036,7 +1037,13 @@ export default class LineGraphController implements TabController {
           context.globalAlpha = 1;
 
           // Draw delta text
-          writeCenteredTime(deltaText, (selectedX + hoveredX) / 2, 0.35, false);
+          let deltaX = (selectedX + hoveredX) / 2;
+          if (selectedTime < this.timestampRange[0]) {
+            deltaX = Math.max(deltaX, graphLeft + deltaWidth / 2 - 2);
+          } else if (selectedTime > this.timestampRange[1]) {
+            deltaX = Math.min(deltaX, graphLeft + graphWidth - deltaWidth / 2 + 2);
+          }
+          writeCenteredTime(deltaText, deltaX, 0.35, false);
         }
         if (offsetAmount > 0) {
           selectedX = selectedX + (offsetAmount / 2) * (selectedX < hoveredX ? -1 : 1);
