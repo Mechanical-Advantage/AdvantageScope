@@ -1101,8 +1101,7 @@ function setupMenu() {
                   }
 
                   // Check version compatability
-                  let currentVersion = app.isPackaged ? app.getVersion() : "dev";
-                  if (data.version !== currentVersion) {
+                  if (app.isPackaged && data.version !== app.getVersion()) {
                     let result = dialog.showMessageBoxSync(window, {
                       type: "warning",
                       title: "Warning",
