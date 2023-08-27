@@ -35,6 +35,11 @@ export function createAssetFolders() {
 /** Converts any custom "FRC Data" assets to the current format. */
 export function convertLegacyAssets() {
   if (!fs.existsSync(LEGACY_ASSETS)) return;
+  if (fs.readdirSync(LEGACY_ASSETS).filter((x) => !x.startsWith(".")).length <= 1) {
+    // Delete unused FRC data folder
+    fs.rmSync(LEGACY_ASSETS, { recursive: true });
+    return;
+  }
 
   // Prompt user to confirm
   let result = dialog.showMessageBoxSync({
