@@ -65,45 +65,48 @@ self.onmessage = (event) => {
         let key = entryIds[record.getEntry()];
         let type = entryTypes[record.getEntry()];
         let timestamp = record.getTimestamp() / 1000000.0;
-        switch (type) {
-          case "boolean":
-            log.putBoolean(key, timestamp, record.getBoolean());
-            break;
-          case "int":
-          case "int64":
-            log.putNumber(key, timestamp, record.getInteger());
-            break;
-          case "float":
-            log.putNumber(key, timestamp, record.getFloat());
-            break;
-          case "double":
-            log.putNumber(key, timestamp, record.getDouble());
-            break;
-          case "string":
-          case "json":
-            log.putString(key, timestamp, record.getString());
-            break;
-          case "boolean[]":
-            log.putBooleanArray(key, timestamp, record.getBooleanArray());
-            break;
-          case "int64[]":
-            log.putNumberArray(key, timestamp, record.getIntegerArray());
-            break;
-          case "float[]":
-            log.putNumberArray(key, timestamp, record.getFloatArray());
-            break;
-          case "double[]":
-            log.putNumberArray(key, timestamp, record.getDoubleArray());
-            break;
-          case "string[]":
-            log.putStringArray(key, timestamp, record.getStringArray());
-            break;
-          default: // Default to raw
-            log.putRaw(key, timestamp, record.getRaw());
-            if (Schemas.has(type)) {
-              Schemas.get(type)!(log, key, timestamp, record.getRaw());
-            }
-            break;
+        if (timestamp > 0) {
+          // Some corrupted WPILOGs include negative timestamps which are very slow to process
+          switch (type) {
+            case "boolean":
+              log.putBoolean(key, timestamp, record.getBoolean());
+              break;
+            case "int":
+            case "int64":
+              log.putNumber(key, timestamp, record.getInteger());
+              break;
+            case "float":
+              log.putNumber(key, timestamp, record.getFloat());
+              break;
+            case "double":
+              log.putNumber(key, timestamp, record.getDouble());
+              break;
+            case "string":
+            case "json":
+              log.putString(key, timestamp, record.getString());
+              break;
+            case "boolean[]":
+              log.putBooleanArray(key, timestamp, record.getBooleanArray());
+              break;
+            case "int64[]":
+              log.putNumberArray(key, timestamp, record.getIntegerArray());
+              break;
+            case "float[]":
+              log.putNumberArray(key, timestamp, record.getFloatArray());
+              break;
+            case "double[]":
+              log.putNumberArray(key, timestamp, record.getDoubleArray());
+              break;
+            case "string[]":
+              log.putStringArray(key, timestamp, record.getStringArray());
+              break;
+            default: // Default to raw
+              log.putRaw(key, timestamp, record.getRaw());
+              if (Schemas.has(type)) {
+                Schemas.get(type)!(log, key, timestamp, record.getRaw());
+              }
+              break;
+          }
         }
       }
 
