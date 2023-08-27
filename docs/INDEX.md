@@ -32,6 +32,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 
 ## Other Links
 
+- [WPILib Documentation](https://docs.wpilib.org)
 - [AdvantageKit Documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
 - [AdvantageScope Repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
 - [Sample Log Data](https://drive.google.com/drive/folders/14Bbp10csQPjh2VcApNM07lwt2v77-z_I?usp=share_link) (6328 @ 2022 Championship)
