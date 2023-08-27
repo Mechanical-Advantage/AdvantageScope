@@ -37,13 +37,14 @@ export default class ThreeDimensionController extends TimelineVizController {
           options: [
             [
               "Robot",
-              "Ghost",
-              "GhostYellow",
+              "Green Ghost",
+              "Yellow Ghost",
               "AprilTag",
               "AprilTag ID",
               "Camera Override",
               "Component (Robot)",
-              "Component (Ghost)",
+              "Component (Green Ghost)",
+              "Component (Yellow Ghost)",
               "Vision Target",
               "Axes",
               "Blue Cone (Front)",
@@ -61,8 +62,8 @@ export default class ThreeDimensionController extends TimelineVizController {
           options: [
             [
               "Robot",
-              "Ghost",
-              "GhostYellow",
+              "Green Ghost",
+              "Yellow Ghost",
               "Trajectory",
               "Vision Target",
               "Blue Cone (Front)",
@@ -72,7 +73,7 @@ export default class ThreeDimensionController extends TimelineVizController {
               "Yellow Cone (Center)",
               "Yellow Cone (Back)"
             ],
-            ["Mechanism (Robot)", "Mechanism (Ghost)"]
+            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"]
           ]
         }
       ],
@@ -244,14 +245,15 @@ export default class ThreeDimensionController extends TimelineVizController {
 
     // Set up data
     let robotData: Pose3d[] = [];
-    let ghostData: Pose3d[] = [];
-    let ghostYellowData: Pose3d[] = [];
+    let greenGhostData: Pose3d[] = [];
+    let yellowGhostData: Pose3d[] = [];
     let aprilTagData: AprilTag[] = [];
     let aprilTagPoseData: Pose3d[] = [];
     let aprilTagIdData: number[] = [];
     let cameraOverrideData: Pose3d[] = [];
     let componentRobotData: Pose3d[] = [];
-    let componentGhostData: Pose3d[] = [];
+    let componentGreenGhostData: Pose3d[] = [];
+    let componentYellowGhostData: Pose3d[] = [];
     let trajectoryData: Pose3d[][] = [];
     let visionTargetData: Pose3d[] = [];
     let axesData: Pose3d[] = [];
@@ -262,7 +264,8 @@ export default class ThreeDimensionController extends TimelineVizController {
     let coneYellowCenterData: Pose3d[] = [];
     let coneYellowBackData: Pose3d[] = [];
     let mechanismRobotData: MechanismState | null = null;
-    let mechanismGhostData: MechanismState | null = null;
+    let mechanismGreenGhostData: MechanismState | null = null;
+    let mechanismYellowGhostData: MechanismState | null = null;
 
     // Get 3D data
     this.getListFields()[0].forEach((field) => {
@@ -270,11 +273,11 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Robot":
           robotData = robotData.concat(get3DValue(field.key));
           break;
-        case "Ghost":
-          ghostData = ghostData.concat(get3DValue(field.key));
+        case "Green Ghost":
+          greenGhostData = greenGhostData.concat(get3DValue(field.key));
           break;
-        case "GhostYellow":
-          ghostYellowData = ghostYellowData.concat(get3DValue(field.key));
+        case "Yellow Ghost":
+          yellowGhostData = yellowGhostData.concat(get3DValue(field.key));
           break;
         case "AprilTag":
           aprilTagPoseData = aprilTagPoseData.concat(get3DValue(field.key));
@@ -293,8 +296,11 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Component (Robot)":
           componentRobotData = componentRobotData.concat(get3DValue(field.key));
           break;
-        case "Component (Ghost)":
-          componentGhostData = componentGhostData.concat(get3DValue(field.key));
+        case "Component (Green Ghost)":
+          componentGreenGhostData = componentGreenGhostData.concat(get3DValue(field.key));
+          break;
+        case "Component (Yellow Ghost)":
+          componentYellowGhostData = componentYellowGhostData.concat(get3DValue(field.key));
           break;
         case "Vision Target":
           visionTargetData = visionTargetData.concat(get3DValue(field.key));
@@ -329,11 +335,11 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Robot":
           robotData = robotData.concat(get2DValue(field.key));
           break;
-        case "Ghost":
-          ghostData = ghostData.concat(get2DValue(field.key));
+        case "Green Ghost":
+          greenGhostData = greenGhostData.concat(get2DValue(field.key));
           break;
-        case "GhostYellow":
-          ghostYellowData = ghostYellowData.concat(get2DValue(field.key));
+        case "Yellow Ghost":
+          yellowGhostData = yellowGhostData.concat(get2DValue(field.key));
           break;
         case "Trajectory":
           trajectoryData.push(get2DValue(field.key, 0.02)); // Render outside the floor
@@ -360,22 +366,38 @@ export default class ThreeDimensionController extends TimelineVizController {
           coneYellowBackData = coneYellowBackData.concat(get2DValue(field.key));
           break;
         case "Mechanism (Robot)":
-          let mechanismRobotState = getMechanismState(window.log, field.key, time);
-          if (mechanismRobotState) {
-            if (mechanismRobotData === null) {
-              mechanismRobotData = mechanismRobotState;
-            } else {
-              mechanismRobotData = mergeMechanismStates([mechanismRobotData, mechanismRobotState]);
+          {
+            let mechanismState = getMechanismState(window.log, field.key, time);
+            if (mechanismState) {
+              if (mechanismRobotData === null) {
+                mechanismRobotData = mechanismState;
+              } else {
+                mechanismRobotData = mergeMechanismStates([mechanismRobotData, mechanismState]);
+              }
             }
           }
           break;
-        case "Mechanism (Ghost)":
-          let mechanismGhostState = getMechanismState(window.log, field.key, time);
-          if (mechanismGhostState) {
-            if (mechanismGhostData === null) {
-              mechanismGhostData = mechanismGhostState;
-            } else {
-              mechanismGhostData = mergeMechanismStates([mechanismGhostData, mechanismGhostState]);
+        case "Mechanism (Green Ghost)":
+          {
+            let mechanismState = getMechanismState(window.log, field.key, time);
+            if (mechanismState) {
+              if (mechanismGreenGhostData === null) {
+                mechanismGreenGhostData = mechanismState;
+              } else {
+                mechanismGreenGhostData = mergeMechanismStates([mechanismGreenGhostData, mechanismState]);
+              }
+            }
+          }
+          break;
+        case "Mechanism (Yellow Ghost)":
+          {
+            let mechanismState = getMechanismState(window.log, field.key, time);
+            if (mechanismState) {
+              if (mechanismYellowGhostData === null) {
+                mechanismYellowGhostData = mechanismState;
+              } else {
+                mechanismYellowGhostData = mergeMechanismStates([mechanismYellowGhostData, mechanismState]);
+              }
             }
           }
           break;
@@ -416,12 +438,13 @@ export default class ThreeDimensionController extends TimelineVizController {
     return {
       poses: {
         robot: robotData,
-        ghost: ghostData,
-        ghostYellow: ghostYellowData,
+        greenGhost: greenGhostData,
+        yellowGhost: yellowGhostData,
         aprilTag: aprilTagData,
         cameraOverride: cameraOverrideData,
         componentRobot: componentRobotData,
-        componentGhost: componentGhostData,
+        componentGreenGhost: componentGreenGhostData,
+        componentYellowGhost: componentYellowGhostData,
         trajectory: trajectoryData,
         visionTarget: visionTargetData,
         axes: axesData,
@@ -432,7 +455,8 @@ export default class ThreeDimensionController extends TimelineVizController {
         coneYellowCenter: coneYellowCenterData,
         coneYellowBack: coneYellowBackData,
         mechanismRobot: mechanismRobotData,
-        mechanismGhost: mechanismGhostData
+        mechanismGreenGhost: mechanismGreenGhostData,
+        mechanismYellowGhost: mechanismYellowGhostData
       },
       options: this.options,
       allianceRedOrigin: allianceRedOrigin

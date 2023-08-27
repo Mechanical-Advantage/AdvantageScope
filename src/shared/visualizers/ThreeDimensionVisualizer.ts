@@ -58,10 +58,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private axesTemplate: THREE.Object3D;
   private field: THREE.Object3D | null = null;
   private robotSet: ObjectSet;
-  private ghostSet: ObjectSet;
-  private ghostYellowSet: ObjectSet;
-  private ghostMaterial: THREE.Material;
-  private ghostYellowMaterial: THREE.Material;
+  private greenGhostSet: ObjectSet;
+  private yellowGhostSet: ObjectSet;
+  private greenGhostMaterial: THREE.Material;
+  private yellowGhostMaterial: THREE.Material;
   private aprilTagSets: Map<number | null, ObjectSet> = new Map();
   private trajectories: THREE.Line[] = [];
   private visionTargets: THREE.Line[] = [];
@@ -171,8 +171,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Set up object sets
     {
       this.robotSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.ghostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.ghostYellowSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.greenGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.yellowGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.axesSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
@@ -297,22 +297,20 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.aprilTagSets.set(id, objectSet);
     });
 
-    // Define ghost material
+    // Define ghost materials
     {
       let material = new THREE.MeshPhongMaterial();
       material.color = new THREE.Color("#00ff00");
       material.transparent = true;
       material.opacity = 0.35;
-      this.ghostMaterial = material;
+      this.greenGhostMaterial = material;
     }
-
-    // Define ghostYellow material
     {
       let material = new THREE.MeshPhongMaterial();
       material.color = new THREE.Color("#ffff00");
       material.transparent = true;
       material.opacity = 0.35;
-      this.ghostYellowMaterial = material;
+      this.yellowGhostMaterial = material;
     }
 
     // Render when camera is moved
@@ -507,8 +505,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Update model materials and set up groups
         let robotGroup = new THREE.Group();
-        let ghostGroup = new THREE.Group();
-        let ghostYellowGroup = new THREE.Group();
+        let greenGhostGroup = new THREE.Group();
+        let yellowGhostGroup = new THREE.Group();
         gltfScenes.forEach((originalScene, index) => {
           originalScene.traverse((node: any) => {
             // Adjust materials
@@ -519,34 +517,32 @@ export default class ThreeDimensionVisualizer implements Visualizer {
               material.roughness = 1;
             }
           });
-          let ghostScene = originalScene.clone(true);
-          let ghostYellowScene = originalScene.clone(true);
-          ghostScene.traverse((node: any) => {
+          let greenGhostScene = originalScene.clone(true);
+          let yellowGhostScene = originalScene.clone(true);
+          greenGhostScene.traverse((node: any) => {
             let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
             if (mesh.isMesh) {
-
-              mesh.material = this.ghostMaterial;
+              mesh.material = this.greenGhostMaterial;
             }
           });
-          ghostYellowScene.traverse((node: any) => {
+          yellowGhostScene.traverse((node: any) => {
             let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
             if (mesh.isMesh) {
-
-              mesh.material = this.ghostYellowMaterial;
+              mesh.material = this.yellowGhostMaterial;
             }
           });
-          let sceneList = [originalScene, ghostScene, ghostYellowScene ];
+          let sceneList = [originalScene, greenGhostScene, yellowGhostScene];
           // Set up groups
           [0, 1, 2].forEach((i: number) => {
             let scene = sceneList[i];
-            if (index == 0) {
+            if (index === 0) {
               // Root model, set position and add directly
-              if (i == 0) {
+              if (i === 0) {
                 robotGroup.add(scene);
-              } else if(i == 1){
-                ghostGroup.add(scene);
+              } else if (i === 1) {
+                greenGhostGroup.add(scene);
               } else {
-                ghostYellowGroup.add(scene);
+                yellowGhostGroup.add(scene);
               }
               scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
               scene.position.set(...robotConfig.position);
@@ -555,12 +551,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
               let componentGroup = new THREE.Group();
               componentGroup.name = "AdvantageScope_Component" + (index - 1).toString();
               componentGroup.add(scene);
-              if (i == 0) {
+              if (i === 0) {
                 robotGroup.add(componentGroup);
-              } else if (i == 1) {
-                ghostGroup.add(componentGroup);
+              } else if (i === 1) {
+                greenGhostGroup.add(componentGroup);
               } else {
-                ghostYellowGroup.add(componentGroup);
+                yellowGhostGroup.add(componentGroup);
               }
             }
           });
@@ -568,16 +564,19 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Add mechanism roots
         let robotMechanismRoot = new THREE.Group();
-        let ghostMechanismRoot = new THREE.Group();
+        let greenGhostMechanismRoot = new THREE.Group();
+        let yellowGhostMechanismRoot = new THREE.Group();
         robotMechanismRoot.name = "AdvantageScope_MechanismRoot";
-        ghostMechanismRoot.name = "AdvantageScope_MechanismRoot";
+        greenGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
+        yellowGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
         robotGroup.add(robotMechanismRoot);
-        ghostGroup.add(ghostMechanismRoot);
+        greenGhostGroup.add(greenGhostMechanismRoot);
+        yellowGhostGroup.add(yellowGhostMechanismRoot);
 
         // Update robot sets
         this.robotSet.setSource(robotGroup);
-        this.ghostSet.setSource(ghostGroup);
-        this.ghostYellowSet.setSource(ghostYellowGroup);
+        this.greenGhostSet.setSource(greenGhostGroup);
+        this.yellowGhostSet.setSource(yellowGhostGroup);
 
         // Render new frame
         this.shouldRender = true;
@@ -597,24 +596,27 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Update robot poses
     this.robotSet.setPoses(this.command.poses.robot.slice(0, 7)); // Max of 6 poses
-    this.ghostSet.setPoses(this.command.poses.ghost.slice(0, 7)); // Max of 6 poses
-    this.ghostYellowSet.setPoses(this.command.poses.ghostYellow.slice(0, 7));
+    this.greenGhostSet.setPoses(this.command.poses.greenGhost.slice(0, 7)); // Max of 6 poses
+    this.yellowGhostSet.setPoses(this.command.poses.yellowGhost.slice(0, 7)); // Max of 6 poses
+
     // Update robot components
     if (robotConfig && robotConfig.components.length > 0) {
-      [true, false].forEach((isOriginal) => {
-        (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
+      (
+        [
+          [this.robotSet, this.command.poses.componentRobot],
+          [this.greenGhostSet, this.command.poses.componentGreenGhost],
+          [this.yellowGhostSet, this.command.poses.componentYellowGhost]
+        ] as [ObjectSet, Pose3d[]][]
+      ).forEach(([objectSet, poseData]) => {
+        objectSet.getChildren().forEach((childRobot) => {
           for (let i = 0; i < robotConfig.components.length; i++) {
             let componentGroup = childRobot.getObjectByName("AdvantageScope_Component" + i.toString());
             if (componentGroup === undefined) continue;
             let componentModel = componentGroup?.children[0];
 
             // Use component data or reset to default position
-            if (
-              i < (isOriginal ? this.command.poses.componentRobot.length : this.command.poses.componentGhost.length)
-            ) {
-              let componentPose = (
-                isOriginal ? this.command.poses.componentRobot[i] : this.command.poses.componentGhost[i]
-              ) as Pose3d;
+            if (i < poseData.length) {
+              let componentPose = poseData[i];
 
               // The group has the user's pose
               componentGroup?.rotation.setFromQuaternion(rotation3dToQuaternion(componentPose.rotation));
@@ -640,31 +642,43 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Update mechanisms
-    [true, false].forEach((isOriginal) => {
-      (isOriginal ? this.robotSet : this.ghostSet).getChildren().forEach((childRobot) => {
+    (
+      [
+        [this.robotSet, this.command.poses.mechanismRobot, () => new THREE.MeshPhongMaterial(), true],
+        [this.greenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial, false],
+        [this.yellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial, false]
+      ] as [ObjectSet, MechanismState | null, () => THREE.MeshPhongMaterial, boolean][]
+    ).forEach(([objectSet, state, getMaterial, updateColors]) => {
+      objectSet.getChildren().forEach((childRobot) => {
         let mechanismRoot = childRobot.getObjectByName("AdvantageScope_MechanismRoot");
         if (mechanismRoot === undefined) return;
-        let state: MechanismState | null = isOriginal
-          ? this.command.poses.mechanismRobot
-          : this.command.poses.mechanismGhost;
 
         if (state === null) {
           // No mechanism data, remove all children
           while (mechanismRoot.children.length > 0) {
+            if (updateColors) {
+              // Ghost materials reused, dispose of custom color materials
+              (
+                mechanismRoot.children[0].children[0] as THREE.Mesh<THREE.BoxGeometry, THREE.MeshPhongMaterial>
+              ).material.dispose();
+            }
             mechanismRoot.remove(mechanismRoot.children[0]);
           }
         } else {
           // Remove extra children
           while (mechanismRoot.children.length > state.lines.length) {
+            if (updateColors) {
+              // Ghost materials reused, dispose of custom color materials
+              (
+                mechanismRoot.children[0].children[0] as THREE.Mesh<THREE.BoxGeometry, THREE.MeshPhongMaterial>
+              ).material.dispose();
+            }
             mechanismRoot.remove(mechanismRoot.children[0]);
           }
 
           // Add new children
           while (mechanismRoot.children.length < state.lines.length) {
-            const lineObject = new THREE.Mesh(
-              new THREE.BoxGeometry(0.0, 0.0, 0.0),
-              isOriginal ? new THREE.MeshPhongMaterial() : this.ghostMaterial
-            );
+            const lineObject = new THREE.Mesh(new THREE.BoxGeometry(0.0, 0.0, 0.0), getMaterial());
             const lineGroup = new THREE.Group().add(lineObject);
             mechanismRoot.add(lineGroup);
           }
@@ -683,8 +697,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             lineObject.position.set(length / 2, 0.0, 0.0);
             lineObject.geometry.dispose();
             lineObject.geometry = new THREE.BoxGeometry(length, line.weight * 0.01, line.weight * 0.01);
-            if (isOriginal) {
-              lineObject.material.dispose();
+            if (updateColors) {
               lineObject.material.color = new THREE.Color(line.color);
             }
           }
