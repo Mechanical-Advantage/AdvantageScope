@@ -57,6 +57,7 @@ window.messagePort = null;
 
 let historicalSource: HistoricalDataSource | null;
 let liveSource: LiveDataSource | null;
+let isExporting = false;
 let logPath: string | null = null;
 let liveConnected = false;
 
@@ -75,11 +76,11 @@ function setWindowTitle(name: string, status?: string) {
   document.getElementsByClassName("title-bar-text")[0].innerHTML = title;
 }
 
-function setLoading(active: boolean) {
-  if (active) {
-    document.getElementsByClassName("loading-glow")[0].classList.add("active");
-  } else {
-    document.getElementsByClassName("loading-glow")[0].classList.remove("active");
+/** Shows or hides the loading indicator and updates progress. Pass "null" to disable loading indicator. */
+function setLoading(progress: number | null) {
+  document.documentElement.style.setProperty("--show-loading-glow", progress !== null ? "1" : "0");
+  if (progress !== null) {
+    document.documentElement.style.setProperty("--loading-glow-progress", progress.toString());
   }
 }
 
@@ -178,6 +179,7 @@ window.addEventListener("touchend", () => {
 function startHistorical(path: string, shouldMerge: boolean = false) {
   historicalSource?.stop();
   liveSource?.stop();
+  setLoading(null);
 
   historicalSource = new HistoricalDataSource();
   historicalSource.openFile(
@@ -189,24 +191,25 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
         case HistoricalDataSourceStatus.Reading:
         case HistoricalDataSourceStatus.Decoding:
           if (!shouldMerge) setWindowTitle(friendlyName, "Loading");
-          setLoading(true);
           break;
         case HistoricalDataSourceStatus.Ready:
           if (!shouldMerge) setWindowTitle(friendlyName);
-          setLoading(false);
+          setLoading(null);
           break;
         case HistoricalDataSourceStatus.Error:
           if (!shouldMerge) setWindowTitle(friendlyName, "Error");
-          setLoading(false);
+          setLoading(null);
           window.sendMainMessage("error", {
             title: "Failed to open log",
             content: "There was a problem while reading the log file. Please try again."
           });
           break;
         case HistoricalDataSourceStatus.Stopped:
-          setLoading(false);
           break;
       }
+    },
+    (progress: number) => {
+      setLoading(progress);
     },
     (log: Log) => {
       if (shouldMerge && window.log.getFieldKeys().length > 0) {
@@ -414,15 +417,36 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "open-file":
-      startHistorical(message.data);
+      if (isExporting) {
+        window.sendMainMessage("error", {
+          title: "Cannot open file",
+          content: "Please wait for the export to finish, then try again."
+        });
+      } else {
+        startHistorical(message.data);
+      }
       break;
 
     case "open-file-merge":
-      startHistorical(message.data, true);
+      if (isExporting) {
+        window.sendMainMessage("error", {
+          title: "Cannot open file",
+          content: "Please wait for the export to finish, then try again."
+        });
+      } else {
+        startHistorical(message.data, true);
+      }
       break;
 
     case "start-live":
-      startLive(message.data);
+      if (isExporting) {
+        window.sendMainMessage("error", {
+          title: "Cannot connect",
+          content: "Please wait for the export to finish, then try again."
+        });
+      } else {
+        startLive(message.data);
+      }
       break;
 
     case "set-playback-speed":
@@ -466,25 +490,38 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "start-export":
-      if (logPath != null || liveConnected) {
-        window.sendMainMessage("prompt-export", {
-          path: logPath,
-          incompleteWarning: liveConnected && window.preferences?.liveSubscribeMode === "low-bandwidth"
+      if (isExporting) {
+        window.sendMainMessage("error", {
+          title: "Cannot export data",
+          content: "Please wait for the previous export to finish, then try again."
         });
-      } else {
+      } else if (logPath === null && !liveConnected) {
         window.sendMainMessage("error", {
           title: "Cannot export data",
           content: "Please open a log file or connect to a live source, then try again."
+        });
+      } else {
+        isExporting = true;
+        window.sendMainMessage("prompt-export", {
+          path: logPath,
+          incompleteWarning: liveConnected && window.preferences?.liveSubscribeMode === "low-bandwidth"
         });
       }
       break;
 
     case "prepare-export":
-      setLoading(true);
-      WorkerManager.request("../bundles/hub$exportWorker.js", {
-        options: message.data.options,
-        log: window.log.toSerialized()
-      })
+      setLoading(null);
+      historicalSource?.stop();
+      WorkerManager.request(
+        "../bundles/hub$exportWorker.js",
+        {
+          options: message.data.options,
+          log: window.log.toSerialized()
+        },
+        (progress: number) => {
+          setLoading(progress);
+        }
+      )
         .then((content) => {
           window.sendMainMessage("write-export", {
             path: message.data.path,
@@ -496,11 +533,14 @@ function handleMainMessage(message: NamedMessage) {
             title: "Failed to export data",
             content: "There was a problem while converting to the export format. Please try again."
           });
+        })
+        .finally(() => {
+          isExporting = false;
         });
       break;
 
     case "finish-export":
-      setLoading(false);
+      setLoading(null);
       break;
 
     default:

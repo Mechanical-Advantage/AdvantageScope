@@ -13,6 +13,7 @@ export class HistoricalDataSource {
   private path: string | null = null;
   private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
+  private progressCallback: ((progress: number) => void) | null = null;
   private outputCallback: ((log: Log) => void) | null = null;
 
   /**
@@ -24,10 +25,12 @@ export class HistoricalDataSource {
   openFile(
     path: string,
     statusCallback: (status: HistoricalDataSourceStatus) => void,
+    progressCallback: (progress: number) => void,
     outputCallback: (log: Log) => void
   ) {
     this.path = path;
     this.statusCallback = statusCallback;
+    this.progressCallback = progressCallback;
     this.outputCallback = outputCallback;
     this.setStatus(HistoricalDataSourceStatus.Reading);
 
@@ -69,7 +72,11 @@ export class HistoricalDataSource {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
-    WorkerManager.request("../bundles/" + selectedWorkerName, fileContents)
+    WorkerManager.request("../bundles/" + selectedWorkerName, fileContents, (progress) => {
+      if (this.progressCallback && this.status === HistoricalDataSourceStatus.Decoding) {
+        this.progressCallback(progress);
+      }
+    })
       .then((response: any) => {
         if (this.status == HistoricalDataSourceStatus.Error || this.status == HistoricalDataSourceStatus.Stopped)
           return;

@@ -7,6 +7,9 @@ self.onmessage = (event) => {
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });
   }
+  function progress(percent: number) {
+    self.postMessage({ id: id, progress: percent });
+  }
   function reject() {
     self.postMessage({ id: id });
   }
@@ -16,7 +19,7 @@ self.onmessage = (event) => {
   // Run worker
   let log = new Log();
   let decoder = new RLOGDecoder();
-  let success = decoder.decode(log, payload[0]);
+  let success = decoder.decode(log, payload[0], progress);
   if (success) {
     resolve(log.toSerialized());
   } else {

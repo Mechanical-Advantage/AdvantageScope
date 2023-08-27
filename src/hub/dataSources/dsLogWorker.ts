@@ -8,6 +8,9 @@ self.onmessage = (event) => {
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });
   }
+  function progress(percent: number) {
+    self.postMessage({ id: id, progress: percent });
+  }
   function reject() {
     self.postMessage({ id: id });
   }
@@ -15,6 +18,7 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   // Run worker
+  progress(1); // Loading is fast and we don't know how long dslog vs dsevents will take
   let log = new Log();
   if (payload[0] !== null) {
     let dsLog = new DSLogReader(payload[0]);

@@ -247,7 +247,7 @@ export class WPILOGDecoder {
   }
 
   /** Runs the specified function for each record in the log. */
-  forEach(callback: (record: WPILOGDecoderRecord) => void) {
+  forEach(callback: (record: WPILOGDecoderRecord, byteCount: number) => void) {
     if (!this.isValid()) throw "Log is not valid";
     let extraHeaderSize = this.dataView.getUint32(8, true);
     let position = 12 + extraHeaderSize;
@@ -263,14 +263,16 @@ export class WPILOGDecoder {
       let size = this.readVariableInteger(position + 1 + entryLength, sizeLength);
       let timestamp = this.readVariableInteger(position + 1 + entryLength + sizeLength, timestampLength);
       if (this.data.length < position + headerLength + size) break;
+      let newPosition = position + headerLength + size;
       callback(
         new WPILOGDecoderRecord(
           entry,
           timestamp,
           this.data.subarray(position + headerLength, position + headerLength + size)
-        )
+        ),
+        newPosition
       );
-      position += headerLength + size;
+      position = newPosition;
     }
   }
 }

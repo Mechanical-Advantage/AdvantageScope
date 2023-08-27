@@ -3,6 +3,8 @@
   --show-side-bar: 1;
   --show-lock-buttons: 0;
   --show-update-button: 0;
+  --show-loading-glow: 0;
+  --loading-glow-progress: 0;
 }
 
 /* Title bar layout */
@@ -54,18 +56,22 @@ body.fancy-title-bar div.main-view {
 
 /* Loading glow */
 
-div.loading-glow {
+div.loading-glow-container {
   position: absolute;
   z-index: 6;
   left: var(--side-bar-width);
-  right: 0px;
+  width: calc((100% - var(--side-bar-width)) * var(--loading-glow-progress));
   top: 0px;
-  height: 0px;
+  height: calc(3px * var(--show-loading-glow));
   transition: height 0.3s;
   overflow: hidden;
 }
 
-div.loading-glow.active {
+div.loading-glow {
+  position: absolute;
+  left: 0px;
+  width: calc(100vw - var(--side-bar-width));
+  top: 0px;
   height: 3px;
 }
 
@@ -90,7 +96,7 @@ div.loading-glow-element {
 }
 
 div.loading-glow-element:nth-child(2n) {
-  background-color: #e8c24f;
+  background-color: #b0beff;
 }
 
 div.loading-glow-element:nth-child(1) {

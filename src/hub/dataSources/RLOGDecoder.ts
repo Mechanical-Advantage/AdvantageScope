@@ -12,7 +12,7 @@ export default class RLOGDecoder {
   private lastTimestampCorrupted: number | null = null;
   private keyIDs: { [id: number]: string } = {};
 
-  decode(log: Log, dataArray: Buffer): boolean {
+  decode(log: Log, dataArray: Buffer, progressCallback?: (progress: number) => void): boolean {
     let dataBuffer = new DataView(dataArray.buffer);
     let offset = 0;
 
@@ -162,6 +162,11 @@ export default class RLOGDecoder {
                   break;
               }
               break;
+          }
+
+          // Send progress update
+          if (progressCallback !== undefined) {
+            progressCallback(offset / dataBuffer.byteLength);
           }
         }
       }

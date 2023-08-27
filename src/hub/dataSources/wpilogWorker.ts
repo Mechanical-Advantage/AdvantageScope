@@ -9,6 +9,9 @@ self.onmessage = (event) => {
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });
   }
+  function progress(percent: number) {
+    self.postMessage({ id: id, progress: percent });
+  }
   function reject() {
     self.postMessage({ id: id });
   }
@@ -18,10 +21,11 @@ self.onmessage = (event) => {
   // Run worker
   let log = new Log();
   let reader = new WPILOGDecoder(payload[0]);
+  let totalBytes = (payload[0] as Uint8Array).byteLength;
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
   try {
-    reader.forEach((record) => {
+    reader.forEach((record, byteCount) => {
       if (record.isControl()) {
         if (record.isStart()) {
           let startData = record.getStartData();
@@ -101,6 +105,9 @@ self.onmessage = (event) => {
             break;
         }
       }
+
+      // Send progress update
+      progress(byteCount / totalBytes);
     });
   } catch (exception) {
     console.error(exception);
