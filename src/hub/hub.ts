@@ -509,6 +509,10 @@ function handleMainMessage(message: NamedMessage) {
       }
       break;
 
+    case "cancel-export":
+      isExporting = false;
+      break;
+
     case "prepare-export":
       setLoading(null);
       historicalSource?.stop();

@@ -431,6 +431,8 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           .then((value) => {
             if (value.response === 0) {
               createExportWindow(window, message.data.path);
+            } else {
+              sendMessage(window, "cancel-export");
             }
           });
       } else {
@@ -1624,6 +1626,7 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
       if (event.data === null) {
         // Exit button
         exportWindow.destroy();
+        sendMessage(parentWindow, "cancel-export");
       } else if (typeof event.data === "string") {
         // Help button
         shell.openExternal(event.data);
