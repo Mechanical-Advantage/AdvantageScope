@@ -20,7 +20,7 @@ function updateUnitOptions() {
 
   // Create new options
   let type = UNIT_TYPE.value;
-  if (type == "none") {
+  if (type === "none") {
     FROM_UNIT.disabled = true;
     TO_UNIT.disabled = true;
 
@@ -41,13 +41,13 @@ function updateUnitOptions() {
       option = document.createElement("option");
       option.innerText = unit;
       TO_UNIT.appendChild(option);
-      if (index == 1) TO_UNIT.value = unit;
+      if (index === 1) TO_UNIT.value = unit;
     });
   }
 }
 
 window.addEventListener("message", (event) => {
-  if (event.source == window && event.data == "port") {
+  if (event.source === window && event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       // Update button focus
@@ -74,7 +74,7 @@ window.addEventListener("message", (event) => {
       UNIT_TYPE.addEventListener("change", () => updateUnitOptions());
 
       // Update values
-      if (originalConversion.type == null) {
+      if (originalConversion.type === null) {
         UNIT_TYPE.value = "none";
         updateUnitOptions();
       } else {
@@ -106,12 +106,12 @@ window.addEventListener("message", (event) => {
         }
 
         // Save data
-        let unitType = UNIT_TYPE.value == "none" ? null : UNIT_TYPE.value;
+        let unitType = UNIT_TYPE.value === "none" ? null : UNIT_TYPE.value;
         let conversion: UnitConversionPreset = {
           type: unitType,
           factor: factor
         };
-        if (unitType != null) {
+        if (unitType !== null) {
           conversion.from = FROM_UNIT.value;
           conversion.to = TO_UNIT.value;
         }
@@ -124,7 +124,7 @@ window.addEventListener("message", (event) => {
       });
       CONFIRM_BUTTON.addEventListener("click", confirm);
       window.addEventListener("keydown", (event) => {
-        if (event.code == "Enter") confirm();
+        if (event.code === "Enter") confirm();
       });
     };
   }

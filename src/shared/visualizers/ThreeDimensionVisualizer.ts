@@ -104,11 +104,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       startPx = [event.x, event.y];
     });
     canvas.addEventListener("mouseup", (event) => {
-      if (startPx && event.x == startPx[0] && event.y == startPx[1]) {
+      if (startPx && event.x === startPx[0] && event.y === startPx[1]) {
         if (!this.command) return;
         let robotTitle = this.command.options.robot;
         let robotConfig = window.assets?.robots.find((robotData) => robotData.name === robotTitle);
-        if (robotConfig == undefined) return;
+        if (robotConfig === undefined) return;
         window.sendMainMessage("ask-3d-camera", {
           options: robotConfig.cameras.map((camera) => camera.name),
           selectedIndex: this.cameraIndex >= robotConfig.cameras.length ? -1 : this.cameraIndex
@@ -331,7 +331,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   }
 
   render(command: any): number | null {
-    if (JSON.stringify(command) != JSON.stringify(this.command)) {
+    if (JSON.stringify(command) !== JSON.stringify(this.command)) {
       this.shouldRender = true;
     }
     this.command = command;
@@ -340,15 +340,15 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
   /** Resets the camera position and controls target. */
   private resetCamera() {
-    if (this.cameraIndex == -1) {
-      if (this.command && this.command.options.field == "Axes") {
+    if (this.cameraIndex === -1) {
+      if (this.command && this.command.options.field === "Axes") {
         this.camera.position.copy(this.ORBIT_AXES_DEFAULT_POSITION);
         this.controls.target.copy(this.ORBIT_AXES_DEFAULT_TARGET);
       } else {
         this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
         this.controls.target.copy(this.ORBIT_FIELD_DEFAULT_TARGET);
       }
-    } else if (this.cameraIndex == -2) {
+    } else if (this.cameraIndex === -2) {
       this.camera.position.copy(this.ORBIT_ROBOT_DEFAULT_POSITION);
       this.controls.target.copy(this.ORBIT_ROBOT_DEFAULT_TARGET);
     }
@@ -358,7 +358,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private renderFrame() {
     // Check for new render mode
     if (window.preferences) {
-      if (window.preferences.threeDimensionMode != this.lastPrefsMode || window.isBattery != this.lastIsBattery) {
+      if (window.preferences.threeDimensionMode !== this.lastPrefsMode || window.isBattery !== this.lastIsBattery) {
         this.shouldRender = true;
         this.lastPrefsMode = window.preferences.threeDimensionMode;
         this.lastIsBattery = window.isBattery;
@@ -368,10 +368,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Check for new size, device pixel ratio, or theme
     let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (
-      this.renderer.domElement.clientWidth != this.lastWidth ||
-      this.renderer.domElement.clientHeight != this.lastHeight ||
-      window.devicePixelRatio != this.lastDevicePixelRatio ||
-      isDark != this.lastIsDark
+      this.renderer.domElement.clientWidth !== this.lastWidth ||
+      this.renderer.domElement.clientHeight !== this.lastHeight ||
+      window.devicePixelRatio !== this.lastDevicePixelRatio ||
+      isDark !== this.lastIsDark
     ) {
       this.lastWidth = this.renderer.domElement.clientWidth;
       this.lastHeight = this.renderer.domElement.clientHeight;
@@ -392,8 +392,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Limit FPS in efficiency mode
     let isEfficiency =
-      window.preferences?.threeDimensionMode == "efficiency" ||
-      (window.preferences?.threeDimensionMode == "auto" && window.isBattery);
+      window.preferences?.threeDimensionMode === "efficiency" ||
+      (window.preferences?.threeDimensionMode === "auto" && window.isBattery);
     let now = new Date().getTime();
     if (isEfficiency && now - this.lastFrameTime < 1000 / this.EFFICIENCY_MAX_FPS) {
       return; // Continue trying to render
@@ -411,7 +411,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     let robotTitle = this.command.options.robot;
     let fieldConfig: Config3dField;
     let robotConfig: Config3dRobot;
-    if (fieldTitle == "Evergreen") {
+    if (fieldTitle === "Evergreen") {
       fieldConfig = {
         name: "Evergreen",
         path: "",
@@ -419,7 +419,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
         heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches")
       };
-    } else if (fieldTitle == "Axes") {
+    } else if (fieldTitle === "Axes") {
       fieldConfig = {
         name: "Axes",
         path: "",
@@ -429,27 +429,27 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       };
     } else {
       let fieldConfigTmp = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
-      if (fieldConfigTmp == undefined) return;
+      if (fieldConfigTmp === undefined) return;
       fieldConfig = fieldConfigTmp;
     }
     {
       let robotConfigTmp = window.assets?.robots.find((robotData) => robotData.name === robotTitle);
-      if (robotConfigTmp == undefined) return;
+      if (robotConfigTmp === undefined) return;
       robotConfig = robotConfigTmp;
     }
 
     // Check for new assets
     let assetsString = JSON.stringify(window.assets);
-    let newAssets = assetsString != this.lastAssetsString;
+    let newAssets = assetsString !== this.lastAssetsString;
     if (newAssets) this.lastAssetsString = assetsString;
 
     // Update field
-    if (fieldTitle != this.lastFieldTitle || newAssets) {
+    if (fieldTitle !== this.lastFieldTitle || newAssets) {
       this.lastFieldTitle = fieldTitle;
       if (this.field) {
         this.wpilibCoordinateGroup.remove(this.field);
       }
-      if (fieldTitle == "Evergreen") {
+      if (fieldTitle === "Evergreen") {
         this.field = new THREE.Group();
         this.wpilibCoordinateGroup.add(this.field);
 
@@ -595,7 +595,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Render new frame
         this.shouldRender = true;
-      } else if (fieldTitle == "Axes") {
+      } else if (fieldTitle === "Axes") {
         // Add axes to scene
         let axes = this.axesTemplate.clone(true);
         let outline = new THREE.Line(
@@ -617,7 +617,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       } else {
         const loader = new GLTFLoader();
         loader.load(fieldConfig.path, (gltf) => {
-          if (fieldConfig == undefined) return;
+          if (fieldConfig === undefined) return;
 
           // Add to scene
           this.field = gltf.scene;
@@ -640,7 +640,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Update robot
-    if (robotTitle != this.lastRobotTitle || newAssets) {
+    if (robotTitle !== this.lastRobotTitle || newAssets) {
       this.lastRobotTitle = robotTitle;
       const loader = new GLTFLoader();
       Promise.all([
@@ -655,7 +655,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         )
       ]).then((gltfs) => {
         let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
-        if (robotConfig == undefined) return;
+        if (robotConfig === undefined) return;
 
         // Update model materials and set up groups
         let robotGroup = new THREE.Group();
@@ -866,7 +866,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     });
 
     // Update vision target lines
-    if (this.command.poses.robot.length == 0) {
+    if (this.command.poses.robot.length === 0) {
       // Remove all lines
       while (this.visionTargets.length > 0) {
         this.wpilibFieldCoordinateGroup.remove(this.visionTargets[0]);
@@ -931,7 +931,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
       // Update camera controls
       let orbitalCamera = this.cameraIndex < 0;
-      if (orbitalCamera != this.controls.enabled) {
+      if (orbitalCamera !== this.controls.enabled) {
         this.controls.enabled = orbitalCamera;
         this.controls.update();
       }
@@ -942,7 +942,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (orbitalCamera) {
         this.canvas.classList.remove("fixed");
         this.canvas.style.aspectRatio = "";
-        if (this.cameraIndex == -1) {
+        if (this.cameraIndex === -1) {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
@@ -958,7 +958,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
         }
-        if (this.cameraIndex != this.lastCameraIndex) {
+        if (this.cameraIndex !== this.lastCameraIndex) {
           this.resetCamera();
         }
       } else {
@@ -999,10 +999,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       }
 
       // Update camera alert
-      if (this.cameraIndex == -2) {
+      if (this.cameraIndex === -2) {
         this.alert.hidden = this.command.poses.robot.length > 0;
         this.alertCamera.innerText = "Orbit Robot";
-      } else if (this.cameraIndex == -1) {
+      } else if (this.cameraIndex === -1) {
         this.alert.hidden = true;
       } else {
         this.alert.hidden = this.command.poses.robot.length > 0 || this.command.poses.cameraOverride.length > 0;
@@ -1014,7 +1014,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       }
 
       // Update camera FOV
-      if (fov != this.camera.fov) {
+      if (fov !== this.camera.fov) {
         this.camera.fov = fov;
         this.camera.updateProjectionMatrix();
       }
@@ -1027,7 +1027,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     const canvas = this.renderer.domElement;
     const clientWidth = canvas.clientWidth;
     const clientHeight = canvas.clientHeight;
-    if (canvas.width / devicePixelRatio != clientWidth || canvas.height / devicePixelRatio != clientHeight) {
+    if (canvas.width / devicePixelRatio !== clientWidth || canvas.height / devicePixelRatio !== clientHeight) {
       this.renderer.setSize(clientWidth, clientHeight, false);
       this.camera.aspect = clientWidth / clientHeight;
       this.camera.updateProjectionMatrix();
@@ -1104,9 +1104,9 @@ function getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Quaterni
   let quaternion = new THREE.Quaternion();
   rotations.forEach((rotation) => {
     let axis = new THREE.Vector3(0, 0, 0);
-    if (rotation.axis == "x") axis.setX(1);
-    if (rotation.axis == "y") axis.setY(1);
-    if (rotation.axis == "z") axis.setZ(1);
+    if (rotation.axis === "x") axis.setX(1);
+    if (rotation.axis === "y") axis.setY(1);
+    if (rotation.axis === "z") axis.setZ(1);
     quaternion.premultiply(
       new THREE.Quaternion().setFromAxisAngle(axis, convert(rotation.degrees, "degrees", "radians"))
     );

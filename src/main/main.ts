@@ -119,7 +119,7 @@ function sendAllPreferences() {
       }
     });
   });
-  if (downloadWindow != null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
+  if (downloadWindow !== null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
 }
 
 /** Sends the current set of assets to all windows. */
@@ -189,7 +189,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         fs.open(path, "r", (error, file) => {
           if (error) {
             completedCount++;
-            if (completedCount == paths.length) {
+            if (completedCount === paths.length) {
               sendMessage(window, "historical-data", results);
             }
             return;
@@ -199,7 +199,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             if (!error) {
               results[index] = buffer;
             }
-            if (completedCount == paths.length) {
+            if (completedCount === paths.length) {
               sendMessage(window, "historical-data", results);
             }
           });
@@ -228,7 +228,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       rlogDataArrays[windowId] = new Uint8Array();
       rlogSockets[windowId].on("data", (data) => {
         appendArray(data);
-        if (rlogSocketTimeouts[windowId] != null) clearTimeout(rlogSocketTimeouts[windowId]);
+        if (rlogSocketTimeouts[windowId] !== null) clearTimeout(rlogSocketTimeouts[windowId]);
         rlogSocketTimeouts[windowId] = setTimeout(() => {
           rlogSockets[windowId]?.destroy();
         }, RLOG_DATA_TIMEOUT_MS);
@@ -282,7 +282,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           new MenuItem({
             label: (value * 100).toString() + "%",
             type: "checkbox",
-            checked: value == message.data.speed,
+            checked: value === message.data.speed,
             click() {
               sendMessage(window, "set-playback-speed", value);
             }
@@ -305,7 +305,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       const editAxisMenu = new Menu();
 
       // Left and right controls
-      if (legend != "discrete") {
+      if (legend !== "discrete") {
         let lockedRange: [number, number] | null = message.data.lockedRange;
         let unitConversion: UnitConversionPreset = message.data.unitConversion;
 
@@ -313,11 +313,11 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           new MenuItem({
             label: "Lock Axis",
             type: "checkbox",
-            checked: lockedRange != null,
+            checked: lockedRange !== null,
             click() {
               sendMessage(window, "edit-axis", {
                 legend: legend,
-                lockedRange: lockedRange == null ? [null, null] : null,
+                lockedRange: lockedRange === null ? [null, null] : null,
                 unitConversion: unitConversion
               });
             }
@@ -326,7 +326,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         editAxisMenu.append(
           new MenuItem({
             label: "Edit Range...",
-            enabled: lockedRange != null,
+            enabled: lockedRange !== null,
             click() {
               createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
                 sendMessage(window, "edit-axis", {
@@ -429,7 +429,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             icon: WINDOW_ICON
           })
           .then((value) => {
-            if (value.response == 0) {
+            if (value.response === 0) {
               createExportWindow(window, message.data.path);
             }
           });
@@ -551,7 +551,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               }
               if (text.startsWith("frame=")) {
                 // Exit if initial information not collected
-                if (fps == 0 || durationSecs == 0) {
+                if (fps === 0 || durationSecs === 0) {
                   sendError();
                   return;
                 }
@@ -578,7 +578,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             // Finished, check status code
             ffmpeg.on("close", (code) => {
               if (!running) return;
-              if (code == 0) {
+              if (code === 0) {
                 sendMessage(window, "video-data", {
                   uuid: uuid,
                   imgFolder: cachePath,
@@ -586,7 +586,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   totalFrames: completedFrames, // In case original value was inaccurate
                   completedFrames: completedFrames
                 });
-              } else if (code == 1) {
+              } else if (code === 1) {
                 sendError();
               }
             });
@@ -637,7 +637,7 @@ function select3DCameraPopup(window: BrowserWindow, options: string[], selectedI
     new MenuItem({
       label: "Orbit Field",
       type: "checkbox",
-      checked: selectedIndex == -1,
+      checked: selectedIndex === -1,
       click() {
         sendMessage(window, "set-3d-camera", -1);
       }
@@ -647,7 +647,7 @@ function select3DCameraPopup(window: BrowserWindow, options: string[], selectedI
     new MenuItem({
       label: "Orbit Robot",
       type: "checkbox",
-      checked: selectedIndex == -2,
+      checked: selectedIndex === -2,
       click() {
         sendMessage(window, "set-3d-camera", -2);
       }
@@ -665,7 +665,7 @@ function select3DCameraPopup(window: BrowserWindow, options: string[], selectedI
       new MenuItem({
         label: option,
         type: "checkbox",
-        checked: index == selectedIndex,
+        checked: index === selectedIndex,
         click() {
           sendMessage(window, "set-3d-camera", index);
         }
@@ -798,7 +798,7 @@ function downloadSave(files: string[]) {
     });
   } else {
     let extension = path.extname(files[0]).slice(1);
-    let name = extension == "wpilog" ? "WPILib robot logs" : "Robot logs";
+    let name = extension === "wpilog" ? "WPILib robot logs" : "Robot logs";
     selectPromise = dialog.showSaveDialog(downloadWindow, {
       title: "Select save location for robot log",
       defaultPath: files[0],
@@ -816,14 +816,14 @@ function downloadSave(files: string[]) {
     } else {
       savePath = (response as Electron.SaveDialogReturnValue).filePath as string;
     }
-    if (savePath != "") {
+    if (savePath !== "") {
       // Start saving
       downloadClient?.sftp((error, sftp) => {
         if (error) {
           downloadError(error.message);
         } else {
           if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
-          if (files.length == 1) {
+          if (files.length === 1) {
             // Single file
             sftp.fastGet(
               downloadPath + files[0],
@@ -852,7 +852,7 @@ function downloadSave(files: string[]) {
                       defaultId: 0
                     })
                     .then((result) => {
-                      if (result.response == 0) {
+                      if (result.response === 0) {
                         downloadWindow?.destroy();
                         downloadStop();
                         hubWindows[0].focus();
@@ -872,12 +872,12 @@ function downloadSave(files: string[]) {
               let fileSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
               allSizesTotal += fileSize;
               fs.stat(savePath + "/" + file, (statErr) => {
-                if (statErr == null) {
+                if (statErr === null) {
                   // File exists already, skip downloading
                   completeCount++;
                   skipCount++;
                   allSizesTotal -= fileSize; // Remove from total size of files
-                  if (skipCount == files.length) {
+                  if (skipCount === files.length) {
                     // All files skipped
                     if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
                   }
@@ -911,7 +911,7 @@ function downloadSave(files: string[]) {
                               "Saved " +
                               newCount.toString() +
                               " new log" +
-                              (newCount == 1 ? "" : "s") +
+                              (newCount === 1 ? "" : "s") +
                               " (" +
                               skipCount.toString() +
                               " skipped) to <u>" +
@@ -922,7 +922,7 @@ function downloadSave(files: string[]) {
                               "Saved " +
                               completeCount.toString() +
                               " log" +
-                              (completeCount == 1 ? "" : "s") +
+                              (completeCount === 1 ? "" : "s") +
                               " to <u>" +
                               savePath +
                               "</u>";
@@ -958,7 +958,7 @@ function setupMenu() {
           label: "Open Log...",
           accelerator: "CmdOrCtrl+O",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
@@ -976,7 +976,7 @@ function setupMenu() {
           label: "Merge Log...",
           accelerator: "CmdOrCtrl+Shift+O",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
                 title: "Select a robot log file to merge with the current data",
@@ -994,7 +994,7 @@ function setupMenu() {
           label: "Connect to Robot",
           accelerator: "CmdOrCtrl+K",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "start-live", false);
           }
         },
@@ -1002,7 +1002,7 @@ function setupMenu() {
           label: "Connect to Simulator",
           accelerator: "CmdOrCtrl+Shift+K",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "start-live", true);
           }
         },
@@ -1010,7 +1010,7 @@ function setupMenu() {
           label: "Download Logs...",
           accelerator: "CmdOrCtrl+D",
           click(_, window) {
-            if (window == null) return;
+            if (window === undefined) return;
             openDownload(window);
           }
         },
@@ -1018,7 +1018,7 @@ function setupMenu() {
           label: "Export Data...",
           accelerator: "CmdOrCtrl+E",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "start-export");
           }
         },
@@ -1036,7 +1036,7 @@ function setupMenu() {
         {
           label: "Export Layout...",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showSaveDialog(window, {
                 title: "Select export location for layout file",
@@ -1062,7 +1062,7 @@ function setupMenu() {
         {
           label: "Import Layout...",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
                 title: "Select one or more layout files to import",
@@ -1093,7 +1093,7 @@ function setupMenu() {
                         "version" in additionalLayout &&
                         "layout" in additionalLayout &&
                         Array.isArray(additionalLayout.layout) &&
-                        additionalLayout.version == data.version
+                        additionalLayout.version === data.version
                       ) {
                         data.layout = data.layout.concat(additionalLayout.layout);
                       }
@@ -1147,7 +1147,7 @@ function setupMenu() {
                 label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
                 accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
                 click(_, window) {
-                  if (window == null || !hubWindows.includes(window)) return;
+                  if (window === undefined || !hubWindows.includes(window)) return;
                   sendMessage(window, "new-tab", tabType);
                 }
               };
@@ -1166,7 +1166,7 @@ function setupMenu() {
           label: "Previous Tab",
           accelerator: "CmdOrCtrl+Left",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "move-tab", -1);
           }
         },
@@ -1174,7 +1174,7 @@ function setupMenu() {
           label: "Next Tab",
           accelerator: "CmdOrCtrl+Right",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "move-tab", 1);
           }
         },
@@ -1183,7 +1183,7 @@ function setupMenu() {
           label: "Shift Left",
           accelerator: "CmdOrCtrl+[",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "shift-tab", -1);
           }
         },
@@ -1191,7 +1191,7 @@ function setupMenu() {
           label: "Shift Right",
           accelerator: "CmdOrCtrl+]",
           click(_, window) {
-            if (window == null || !hubWindows.includes(window)) return;
+            if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "shift-tab", 1);
           }
         },
@@ -1200,7 +1200,7 @@ function setupMenu() {
           label: "Close Tab",
           accelerator: "CmdOrCtrl+W",
           click(_, window) {
-            if (window == null) return;
+            if (window === undefined) return;
             if (hubWindows.includes(window)) {
               sendMessage(window, "close-tab");
             } else {
@@ -1277,7 +1277,7 @@ function setupMenu() {
           label: "Preferences...",
           accelerator: "Cmd+,",
           click(_, window) {
-            if (window == null) return;
+            if (window === undefined) return;
             openPreferences(window);
           }
         },
@@ -1315,7 +1315,7 @@ function setupMenu() {
         label: "Show Preferences...",
         accelerator: "Ctrl+,",
         click(_, window) {
-          if (window == null) return;
+          if (window === undefined) return;
           openPreferences(window);
         }
       },
@@ -1374,14 +1374,14 @@ function createHubWindow() {
   let rendererState: any = null;
   const defaultWidth = 1100;
   const defaultHeight = 650;
-  if (hubWindows.length == 0) {
+  if (hubWindows.length === 0) {
     let state = hubStateTracker.getState(defaultWidth, defaultHeight);
     prefs.x = state.x;
     prefs.y = state.y;
     prefs.width = state.width;
     prefs.height = state.height;
     if (state.rendererState) rendererState = state.rendererState;
-  } else if (focusedWindow != null) {
+  } else if (focusedWindow !== null) {
     let bounds = focusedWindow.getBounds();
     prefs.x = bounds.x + 30;
     prefs.y = bounds.y + 30;
@@ -1393,7 +1393,7 @@ function createHubWindow() {
   }
 
   // Set fancy window effects
-  if (process.platform == "darwin") {
+  if (process.platform === "darwin") {
     prefs.vibrancy = "sidebar";
     if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset";
   }
@@ -1474,7 +1474,7 @@ function createEditRangeWindow(
 ) {
   const editWindow = new BrowserWindow({
     width: 300,
-    height: process.platform == "win32" ? 125 : 108, // "useContentSize" is broken on Windows when not resizable
+    height: process.platform === "win32" ? 125 : 108, // "useContentSize" is broken on Windows when not resizable
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -1518,7 +1518,7 @@ function createUnitConversionWindow(
 ) {
   const unitConversionWindow = new BrowserWindow({
     width: 300,
-    height: process.platform == "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    height: process.platform === "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -1562,7 +1562,7 @@ function createRenameTabWindow(
 ) {
   const renameTabWindow = new BrowserWindow({
     width: 300,
-    height: process.platform == "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    height: process.platform === "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -1601,7 +1601,7 @@ function createRenameTabWindow(
 function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath: string | null) {
   const exportWindow = new BrowserWindow({
     width: 300,
-    height: process.platform == "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    height: process.platform === "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -1630,7 +1630,7 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
       } else if (typeof event.data === "object") {
         // Confirm
         let exportOptions: ExportOptions = event.data;
-        let extension = exportOptions.format == "wpilog" ? "wpilog" : "csv";
+        let extension = exportOptions.format === "wpilog" ? "wpilog" : "csv";
         let defaultPath = undefined;
         if (currentLogPath !== null) {
           let pathComponents = currentLogPath.split(".");
@@ -1643,7 +1643,7 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
             defaultPath: defaultPath,
             properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
             filters: [
-              extension == "csv"
+              extension === "csv"
                 ? { name: "Comma-separated values", extensions: ["csv"] }
                 : { name: "WPILib robot logs", extensions: ["wpilog"] }
             ]
@@ -1742,13 +1742,13 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
  * @param parentWindow The parent window to use for alignment
  */
 function openPreferences(parentWindow: Electron.BrowserWindow) {
-  if (prefsWindow != null && !prefsWindow.isDestroyed()) {
+  if (prefsWindow !== null && !prefsWindow.isDestroyed()) {
     prefsWindow.focus();
     return;
   }
 
   const width = 400;
-  const height = process.platform == "win32" ? 303 : 243; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform === "win32" ? 303 : 243; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -1790,7 +1790,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
  * @param parentWindow The parent window to use for alignment
  */
 function openDownload(parentWindow: Electron.BrowserWindow) {
-  if (downloadWindow != null && !downloadWindow.isDestroyed()) {
+  if (downloadWindow !== null && !downloadWindow.isDestroyed()) {
     downloadWindow.focus();
     return;
   }
@@ -1820,7 +1820,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
   downloadWindow.once("close", downloadStop);
   downloadWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
-    if (downloadWindow == null) return;
+    if (downloadWindow === null) return;
     const { port1, port2 } = new MessageChannelMain();
     downloadWindow.webContents.postMessage("port", null, [port1]);
     windowPorts[downloadWindow.id] = port2;
@@ -1841,9 +1841,9 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
 // APPLICATION EVENTS
 
 // Workaround to set menu bar color on some Linux environments
-if (process.platform == "linux" && fs.existsSync(PREFS_FILENAME)) {
+if (process.platform === "linux" && fs.existsSync(PREFS_FILENAME)) {
   let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  if (prefs.theme == "dark") {
+  if (prefs.theme === "dark") {
     process.env["GTK_THEME"] = "Adwaita:dark";
   }
 }
@@ -1895,7 +1895,7 @@ app.whenReady().then(() => {
     ) {
       prefs.liveSubscribeMode = oldPrefs.liveSubscribeMode;
     }
-    if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort == "number") {
+    if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
     }
     if (
@@ -1947,7 +1947,7 @@ app.whenReady().then(() => {
 
   // Create new window if activated while none exist
   app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length == 0) createHubWindow();
+    if (BrowserWindow.getAllWindows().length === 0) createHubWindow();
   });
 
   // Check for update and show button on hub windows (but don't prompt)

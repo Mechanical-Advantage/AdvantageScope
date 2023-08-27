@@ -8,7 +8,7 @@ export default class VideoVisualizer implements Visualizer {
   }
 
   render(command: any): number | null {
-    this.IMAGE.hidden = command == "";
+    this.IMAGE.hidden = command === "";
     this.IMAGE.src = command;
     let width = this.IMAGE.naturalWidth;
     let height = this.IMAGE.naturalHeight;

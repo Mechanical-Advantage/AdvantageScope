@@ -37,9 +37,9 @@ export abstract class LiveDataSource {
 
   /** Updates the current status and triggers the callback if necessary. */
   protected setStatus(status: LiveDataSourceStatus) {
-    if (status != this.status && this.status != LiveDataSourceStatus.Stopped) {
+    if (status !== this.status && this.status !== LiveDataSourceStatus.Stopped) {
       this.status = status;
-      if (this.statusCallback != null) this.statusCallback(status);
+      if (this.statusCallback !== null) this.statusCallback(status);
     }
   }
 }

@@ -59,7 +59,7 @@ export default class Tabs {
     });
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
       this.tabList.forEach((tab, index) => {
-        if (index == 0) return;
+        if (index === 0) return;
         let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
@@ -185,8 +185,8 @@ export default class Tabs {
   /** Creates a new tab. */
   addTab(type: TabType) {
     // Select existing metadata tab
-    if (type == TabType.Metadata) {
-      let existingIndex = this.tabList.findIndex((tab) => tab.type == TabType.Metadata);
+    if (type === TabType.Metadata) {
+      let existingIndex = this.tabList.findIndex((tab) => tab.type === TabType.Metadata);
       if (existingIndex >= 0) {
         this.setSelected(existingIndex);
         return;
@@ -264,7 +264,7 @@ export default class Tabs {
     titleElement.innerText = getTabIcon(type) + " " + getDefaultTabTitle(type);
 
     // Save to tab list
-    if (this.tabList.length == 0) {
+    if (this.tabList.length === 0) {
       this.selectedTab = -1;
     }
     this.tabList.splice(this.selectedTab + 1, 0, {
@@ -307,10 +307,10 @@ export default class Tabs {
 
   /** Moves the specified tab left or right. */
   shift(index: number, shift: number) {
-    if (index == 0) return;
+    if (index === 0) return;
     if (index + shift < 1) shift = 1 - index;
     if (index + shift > this.tabList.length - 1) shift = this.tabList.length - 1 - index;
-    if (this.selectedTab == index) this.selectedTab += shift;
+    if (this.selectedTab === index) this.selectedTab += shift;
 
     let tab = this.tabList.splice(index, 1)[0];
     this.tabList.splice(index + shift, 0, tab);
@@ -329,21 +329,21 @@ export default class Tabs {
 
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
   editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
-    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
+    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
       (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
     }
   }
 
   /** Clear the fields for an axis on the selected line graph. */
   clearAxis(legend: string) {
-    if (this.tabList[this.selectedTab].type == TabType.LineGraph) {
+    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
       (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
     }
   }
 
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {
-    if (this.tabList[this.selectedTab].type == TabType.ThreeDimension) {
+    if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
       (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
     }
   }
@@ -351,7 +351,7 @@ export default class Tabs {
   /** Sends video data to all video controllers. */
   processVideoData(data: any) {
     this.tabList.forEach((tab) => {
-      if (tab.type == TabType.Video) {
+      if (tab.type === TabType.Video) {
         (tab.controller as VideoController).processVideoData(data);
       }
     });
@@ -367,7 +367,7 @@ export default class Tabs {
     // Add title elements
     this.tabList.forEach((item, index) => {
       this.TAB_BAR.appendChild(item.titleElement);
-      if (index == this.selectedTab) {
+      if (index === this.selectedTab) {
         item.titleElement.classList.add("tab-selected");
         item.contentElement.hidden = false;
       } else {

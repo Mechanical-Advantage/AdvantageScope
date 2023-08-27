@@ -8,8 +8,8 @@ export function convertLVTime(seconds: bigint, fractional: bigint): number {
 
 /** Converts an ID to a power distribution type. */
 export function getPDType(id: number): PowerDistributionType {
-  if (id == 33) return PowerDistributionType.REV;
-  if (id == 25) return PowerDistributionType.CTRE;
+  if (id === 33) return PowerDistributionType.REV;
+  if (id === 25) return PowerDistributionType.CTRE;
   return PowerDistributionType.None;
 }
 

@@ -11,7 +11,7 @@ export default class StateTracker {
 
   constructor() {
     setInterval(() => {
-      if (this.focusedWindow == null) return;
+      if (this.focusedWindow === null) return;
       if (this.focusedWindow.isDestroyed()) return;
       let bounds = this.focusedWindow.getBounds();
       let state: WindowState = {

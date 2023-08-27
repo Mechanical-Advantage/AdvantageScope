@@ -160,7 +160,7 @@ export class WPILOGEncoderRecord {
   /** Encodes an integer using the fewest necessary bytes. */
   private encodeInteger(int: number): Uint8Array {
     int = Math.floor(int);
-    if (int == 0) return new Uint8Array(1);
+    if (int === 0) return new Uint8Array(1);
     let length = Math.floor(Math.log(int) / Math.log(256)) + 1;
     let array = new Uint8Array(length);
     for (let i = 0; i < length; i++) {

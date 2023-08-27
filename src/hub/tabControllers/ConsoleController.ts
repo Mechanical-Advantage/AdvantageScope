@@ -39,7 +39,7 @@ export default class ConsoleController implements TabController {
       let rect = this.CONTENT.getBoundingClientRect();
       let active =
         dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-      let validType = window.log.getType(dragData.data.fields[0]) == LoggableType.String;
+      let validType = window.log.getType(dragData.data.fields[0]) === LoggableType.String;
       this.DRAG_HIGHLIGHT.hidden = true;
       if (active && validType) {
         if (dragData.end) {
@@ -59,8 +59,8 @@ export default class ConsoleController implements TabController {
     let jump = () => {
       // Determine target time
       let targetTime = Number(this.JUMP_INPUT.value);
-      if (this.JUMP_INPUT.value == "") {
-        if (window.selection.getMode() != SelectionMode.Idle) {
+      if (this.JUMP_INPUT.value === "") {
+        if (window.selection.getMode() !== SelectionMode.Idle) {
           targetTime = window.selection.getSelectedTime() as number;
         } else {
           targetTime = 0;
@@ -69,7 +69,7 @@ export default class ConsoleController implements TabController {
 
       // Find target row
       let targetRow = this.lastData.timestamps.findIndex((value) => value > targetTime);
-      if (targetRow == -1) targetRow = this.lastData.timestamps.length;
+      if (targetRow === -1) targetRow = this.lastData.timestamps.length;
       if (targetRow < 1) targetRow = 1;
       targetRow -= 1;
       this.TABLE_CONTAINER.scrollTop = Array.from(this.TABLE_BODY.children).reduce((totalHeight, row, rowIndex) => {
@@ -81,7 +81,7 @@ export default class ConsoleController implements TabController {
       }, 0);
     };
     this.JUMP_INPUT.addEventListener("keydown", (event) => {
-      if (event.code == "Enter") jump();
+      if (event.code === "Enter") jump();
     });
     this.JUMP_BUTTON.addEventListener("click", jump);
 
@@ -108,7 +108,7 @@ export default class ConsoleController implements TabController {
   newAssets() {}
 
   getActiveFields(): string[] {
-    if (this.field == null) {
+    if (this.field === null) {
       return [];
     } else {
       return [this.field];
@@ -121,11 +121,11 @@ export default class ConsoleController implements TabController {
 
     // Update placeholder for jump input
     let selectedTime = window.selection.getSelectedTime();
-    let placeholder = selectedTime == null ? 0 : selectedTime;
+    let placeholder = selectedTime === null ? 0 : selectedTime;
     this.JUMP_INPUT.placeholder = formatTimeWithMS(placeholder);
 
     // Scroll to bottom if locked
-    if (window.selection.getMode() == SelectionMode.Locked) {
+    if (window.selection.getMode() === SelectionMode.Locked) {
       this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
     }
   }
@@ -133,7 +133,7 @@ export default class ConsoleController implements TabController {
   /** Updates the field text and data. */
   updateData() {
     // Update field text
-    if (this.field == null) {
+    if (this.field === null) {
       this.FIELD_TEXT.innerText = "<Drag Here>";
       this.FIELD_TEXT.style.textDecoration = "";
     } else if (!window.log.getFieldKeys().includes(this.field)) {
@@ -149,7 +149,7 @@ export default class ConsoleController implements TabController {
       timestamps: [],
       values: []
     };
-    if (this.field != null) {
+    if (this.field !== null) {
       let logDataTemp = window.log.getString(this.field, -Infinity, Infinity);
       if (logDataTemp) logData = logDataTemp;
     }
@@ -191,7 +191,10 @@ export default class ConsoleController implements TabController {
       let hasChanged = false;
       if (i > this.lastData.timestamps.length) {
         hasChanged = true; // New row
-      } else if (logData.timestamps[i] != this.lastData.timestamps[i] || logData.values[i] != this.lastData.values[i]) {
+      } else if (
+        logData.timestamps[i] !== this.lastData.timestamps[i] ||
+        logData.values[i] !== this.lastData.values[i]
+      ) {
         hasChanged = true; // Data has changed
       }
 
@@ -212,12 +215,12 @@ export default class ConsoleController implements TabController {
 
   /** Updates highlighted times (selected & hovered). */
   private updateHighlights() {
-    if (this.lastData.timestamps.length == 0) return;
+    if (this.lastData.timestamps.length === 0) return;
     let highlight = (time: number | null, className: string) => {
       Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove(className));
       if (time) {
         let target = this.lastData.timestamps.findIndex((value) => value > time);
-        if (target == -1) target = this.lastData.timestamps.length;
+        if (target === -1) target = this.lastData.timestamps.length;
         if (target < 1) target = 1;
         target -= 1;
         this.TABLE_BODY.children[target + 1].classList.add(className);

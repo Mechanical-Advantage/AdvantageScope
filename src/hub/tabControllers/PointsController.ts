@@ -42,8 +42,8 @@ export default class PointsController extends TimelineVizController {
     // Enforce range
     [this.WIDTH, this.HEIGHT, this.GROUP].forEach((input, index) => {
       input.addEventListener("change", () => {
-        if (Number(input.value) % 1 != 0) input.value = Math.round(Number(input.value)).toString();
-        if (index == 2) {
+        if (Number(input.value) % 1 !== 0) input.value = Math.round(Number(input.value)).toString();
+        if (index === 2) {
           if (Number(input.value) < 0) input.value = "0";
         } else {
           if (Number(input.value) <= 0) input.value = "1";
@@ -83,13 +83,13 @@ export default class PointsController extends TimelineVizController {
     let xData: number[] = [];
     let yData: number[] = [];
 
-    if (fields[0] != null) {
+    if (fields[0] !== null) {
       let xDataTemp = window.log.getNumberArray(fields[0], time, time);
       if (xDataTemp && xDataTemp.timestamps[0] <= time) {
         xData = xDataTemp.values[0];
       }
     }
-    if (fields[1] != null) {
+    if (fields[1] !== null) {
       let yDataTemp = window.log.getNumberArray(fields[1], time, time);
       if (yDataTemp && yDataTemp.timestamps[0] <= time) {
         yData = yDataTemp.values[0];

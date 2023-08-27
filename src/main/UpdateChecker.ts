@@ -53,17 +53,17 @@ export default class UpdateChecker {
     let latestVersion = latestVersionInfo["tag_name"].slice(1);
     let latestDate = new Date(latestVersionInfo["published_at"]);
     let latestDateText = latestDate.toLocaleDateString();
-    let translated = process.arch != "arm64" && app.runningUnderARM64Translation;
+    let translated = process.arch !== "arm64" && app.runningUnderARM64Translation;
 
     // Update alert settings
     this.shouldPrompt = true;
     this.alertOptions =
-      process.platform == "darwin" ? ["Download", "Later", "View Changelog"] : ["Download", "View Changelog", "Later"];
-    this.alertCancelId = process.platform == "darwin" ? 1 : 2;
+      process.platform === "darwin" ? ["Download", "Later", "View Changelog"] : ["Download", "View Changelog", "Later"];
+    this.alertCancelId = process.platform === "darwin" ? 1 : 2;
     this.alertDownloadUrl = null;
 
     // Set appropriate prompt
-    if (currentVersion != latestVersion && translated) {
+    if (currentVersion !== latestVersion && translated) {
       this.alertMessage = "Download latest native version?";
       this.alertDetail =
         "Version " +
@@ -73,7 +73,7 @@ export default class UpdateChecker {
         "). You're currently running the x86 build of version " +
         currentVersion +
         " on an arm64 platform. Would you like to download the latest native version?";
-    } else if (currentVersion != latestVersion) {
+    } else if (currentVersion !== latestVersion) {
       this.alertMessage = "Download latest version?";
       this.alertDetail =
         "Version " +
@@ -149,13 +149,13 @@ export default class UpdateChecker {
       cancelId: this.alertCancelId
     });
     let responseString = this.alertOptions[result.response];
-    if (responseString == "Download") {
+    if (responseString === "Download") {
       if (this.alertDownloadUrl === null) {
         await shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
       } else {
         await shell.openExternal(this.alertDownloadUrl);
       }
-    } else if (responseString == "View Changelog") {
+    } else if (responseString === "View Changelog") {
       await shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
     }
   }

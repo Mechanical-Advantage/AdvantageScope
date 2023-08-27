@@ -64,7 +64,7 @@ export default class VideoController extends TimelineVizController {
       if (this.locked) {
         this.playing = false;
         let selectedTime = window.selection.getSelectedTime();
-        if (selectedTime == null) selectedTime = 0;
+        if (selectedTime === null) selectedTime = 0;
         this.lockedStartLog = selectedTime - (Number(this.VIDEO_TIMELINE_INPUT.value) - 1) / this.fps!;
       }
       this.updateButtons();
@@ -109,7 +109,7 @@ export default class VideoController extends TimelineVizController {
     this.SKIP_BACK_BUTTON.addEventListener("click", () => skipTime(-5));
     this.SKIP_FORWARD_BUTTON.addEventListener("click", () => skipTime(5));
     window.addEventListener("keydown", (event) => {
-      if (content.parentElement == null || content.hidden || event.target != document.body || event.metaKey) return;
+      if (content.parentElement === null || content.hidden || event.target !== document.body || event.metaKey) return;
       switch (event.code) {
         case "ArrowUp":
         case "ArrowDown":
@@ -135,7 +135,7 @@ export default class VideoController extends TimelineVizController {
   }
 
   private hasData(): boolean {
-    return this.imgFolder != null && this.fps != null && this.totalFrames != null && this.completedFrames != null;
+    return this.imgFolder !== null && this.fps !== null && this.totalFrames !== null && this.completedFrames !== null;
   }
 
   private updateButtons() {
@@ -154,11 +154,11 @@ export default class VideoController extends TimelineVizController {
   }
 
   processVideoData(data: any) {
-    if (data.uuid != this.UUID) return;
+    if (data.uuid !== this.UUID) return;
 
     if ("path" in data) {
       // Set name
-      let components = data.path.split(window.platform == "win32" ? "\\" : "/");
+      let components = data.path.split(window.platform === "win32" ? "\\" : "/");
       this.SOURCE_CELL.innerText = components[components.length - 1];
 
       this.locked = false;
@@ -171,7 +171,7 @@ export default class VideoController extends TimelineVizController {
       this.totalFrames = data.totalFrames;
       this.completedFrames = data.completedFrames;
 
-      if (this.totalFrames == null || this.completedFrames == null) return;
+      if (this.totalFrames === null || this.completedFrames === null) return;
       this.VIDEO_TIMELINE_PROGRESS.style.width = ((this.completedFrames / this.totalFrames) * 100).toString() + "%";
       this.VIDEO_TIMELINE_INPUT.max = this.totalFrames.toString();
     }

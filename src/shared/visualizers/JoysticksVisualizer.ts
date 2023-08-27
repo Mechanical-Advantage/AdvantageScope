@@ -37,12 +37,12 @@ export default class JoysticksVisualizer implements Visualizer {
 
     // Iterate over joysticks
     command.forEach((joystick, index) => {
-      let config = window.assets?.joysticks.find((joystickConfig) => joystickConfig.name == joystick.layoutTitle);
+      let config = window.assets?.joysticks.find((joystickConfig) => joystickConfig.name === joystick.layoutTitle);
 
       // Update image element
       let imageElement = this.IMAGES[index];
       if (config) {
-        if (imageElement.src != config.path) {
+        if (imageElement.src !== config.path) {
           imageElement.src = config.path;
         }
         if (!(imageElement.width > 0 && imageElement.height > 0)) {
@@ -69,7 +69,7 @@ export default class JoysticksVisualizer implements Visualizer {
           joystickRegionTop = 0;
           break;
         case 3:
-          if (index == 2) {
+          if (index === 2) {
             joystickRegionWidth = canvasWidth;
             joystickRegionHeight = canvasHeight / 2;
             joystickRegionLeft = 0;
@@ -264,16 +264,16 @@ export default class JoysticksVisualizer implements Visualizer {
                   let povValue = joystick.state.povs[component.sourceIndex];
                   switch (component.sourcePov) {
                     case "up":
-                      active = povValue == 315 || povValue == 0 || povValue == 45;
+                      active = povValue === 315 || povValue === 0 || povValue === 45;
                       break;
                     case "right":
-                      active = povValue == 45 || povValue == 90 || povValue == 135;
+                      active = povValue === 45 || povValue === 90 || povValue === 135;
                       break;
                     case "down":
-                      active = povValue == 135 || povValue == 180 || povValue == 225;
+                      active = povValue === 135 || povValue === 180 || povValue === 225;
                       break;
                     case "left":
-                      active = povValue == 225 || povValue == 270 || povValue == 315;
+                      active = povValue === 225 || povValue === 270 || povValue === 315;
                       break;
                   }
                 }
@@ -326,7 +326,7 @@ export default class JoysticksVisualizer implements Visualizer {
           context.font = (buttonLayout[3] * 0.5).toString() + "px sans-serif";
           context.textAlign = "center";
           context.textBaseline = "middle";
-          context.fillStyle = isLight == buttonValue ? this.WHITE_COLOR : this.BLACK_COLOR;
+          context.fillStyle = isLight === buttonValue ? this.WHITE_COLOR : this.BLACK_COLOR;
           context.fillText((index + 1).toString(), buttonLayout[0], buttonLayout[1]);
         });
 
@@ -356,10 +356,10 @@ export default class JoysticksVisualizer implements Visualizer {
                 Math.ceil(joystick.state.axes.length / 6)) *
                 100
           ];
-          let upActive = povValue == 315 || povValue == 0 || povValue == 45;
-          let rightActive = povValue == 45 || povValue == 90 || povValue == 135;
-          let downActive = povValue == 135 || povValue == 180 || povValue == 225;
-          let leftActive = povValue == 225 || povValue == 270 || povValue == 315;
+          let upActive = povValue === 315 || povValue === 0 || povValue === 45;
+          let rightActive = povValue === 45 || povValue === 90 || povValue === 135;
+          let downActive = povValue === 135 || povValue === 180 || povValue === 225;
+          let leftActive = povValue === 225 || povValue === 270 || povValue === 315;
           drawButton(false, false, [povCenter[0], povCenter[1] - 30], [40, 20], upActive);
           drawButton(false, false, [povCenter[0] + 30, povCenter[1]], [20, 40], rightActive);
           drawButton(false, false, [povCenter[0], povCenter[1] + 30], [40, 20], downActive);
@@ -376,7 +376,11 @@ export default class JoysticksVisualizer implements Visualizer {
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
           context.fillText(index.toString(), scaledPovCenter[0], scaledPovCenter[1]);
         });
-        if (joystick.state.buttons.length == 0 && joystick.state.axes.length == 0 && joystick.state.povs.length == 0) {
+        if (
+          joystick.state.buttons.length === 0 &&
+          joystick.state.axes.length === 0 &&
+          joystick.state.povs.length === 0
+        ) {
           context.font = "italic 16px sans-serif";
           context.textAlign = "center";
           context.textBaseline = "middle";
@@ -387,7 +391,7 @@ export default class JoysticksVisualizer implements Visualizer {
     });
 
     // Render message if no joysticks
-    if (command.length == 0) {
+    if (command.length === 0) {
       context.font = "italic 16px sans-serif";
       context.textAlign = "center";
       context.textBaseline = "middle";

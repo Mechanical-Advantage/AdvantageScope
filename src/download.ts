@@ -29,14 +29,14 @@ let lastClickedIndex: number | null = null;
 let lastClickedSelect = true;
 
 function sendMainMessage(name: string, data?: any) {
-  if (messagePort != null) {
+  if (messagePort !== null) {
     let message: NamedMessage = { name: name, data: data };
     messagePort.postMessage(message);
   }
 }
 
 window.addEventListener("message", (event) => {
-  if (event.source == window && event.data == "port") {
+  if (event.source === window && event.data === "port") {
     messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
@@ -91,15 +91,15 @@ function handleMainMessage(message: NamedMessage) {
       // Set error text
       console.warn(message.data);
       let friendlyText = "";
-      if (message.data == "No such file") {
+      if (message.data === "No such file") {
         friendlyText = "Failed to open log folder at <u>" + preferences?.rioPath + "</u>";
-      } else if (message.data == "Timed out while waiting for handshake") {
+      } else if (message.data === "Timed out while waiting for handshake") {
         friendlyText = "roboRIO not found at <u>" + lastAddress + "</u> (check connection)";
       } else if (message.data.includes("ENOTFOUND")) {
         friendlyText = "Unknown address <u>" + lastAddress + "</u>";
-      } else if (message.data == "All configured authentication methods failed") {
+      } else if (message.data === "All configured authentication methods failed") {
         friendlyText = "Failed to authenticate to roboRIO at <u>" + lastAddress + "</u>";
-      } else if (message.data == "Not connected") {
+      } else if (message.data === "Not connected") {
         friendlyText = "Lost connection to roboRIO";
       } else {
         friendlyText = "Unknown error: " + message.data;
@@ -134,7 +134,7 @@ function handleMainMessage(message: NamedMessage) {
       } else {
         let currentSize: number = message.data.current;
         let totalSize: number = message.data.total;
-        if (startTime == null) startTime = new Date().getTime() / 1000;
+        if (startTime === null) startTime = new Date().getTime() / 1000;
 
         let detailsText =
           Math.floor(currentSize / 1e6).toString() + "MB / " + Math.floor(totalSize / 1e6).toString() + "MB";
@@ -156,7 +156,7 @@ function handleMainMessage(message: NamedMessage) {
             "s)";
         }
 
-        PROGRESS_BAR.value = totalSize == 0 ? 0 : currentSize / totalSize;
+        PROGRESS_BAR.value = totalSize === 0 ? 0 : currentSize / totalSize;
         PROGRESS_DETAILS.innerText = detailsText;
       }
       break;
@@ -188,7 +188,7 @@ function handleMainMessage(message: NamedMessage) {
           item.classList.add("selected");
         }
         item.addEventListener("click", (event) => {
-          if (event.shiftKey && lastClickedIndex != null) {
+          if (event.shiftKey && lastClickedIndex !== null) {
             // Update a range of items
             let range = [Math.min(index, lastClickedIndex), Math.max(index, lastClickedIndex)];
             for (let i = range[0]; i < range[1] + 1; i++) {
@@ -250,7 +250,7 @@ function handleMainMessage(message: NamedMessage) {
 /** Add/remove filler rows (zebra striping). */
 function updateFiller() {
   if (loading) return;
-  let itemCount = Array.from(FILE_LIST_ITEMS.children).filter((x) => x.childElementCount != 0).length;
+  let itemCount = Array.from(FILE_LIST_ITEMS.children).filter((x) => x.childElementCount !== 0).length;
   let targetFillerCount = Math.ceil(
     (FILE_LIST.getBoundingClientRect().height - BOTTOM_FILLER_MARGIN_PX - itemCount * FILE_ITEM_HEIGHT_PX) /
       FILE_ITEM_HEIGHT_PX
@@ -259,7 +259,7 @@ function updateFiller() {
 
   // Update rows
   let getCurrentFillerCount = () => {
-    return Array.from(FILE_LIST_ITEMS.children).filter((x) => x.childElementCount == 0).length;
+    return Array.from(FILE_LIST_ITEMS.children).filter((x) => x.childElementCount === 0).length;
   };
   while (getCurrentFillerCount() > targetFillerCount) {
     FILE_LIST_ITEMS.removeChild(FILE_LIST_ITEMS.lastElementChild as HTMLElement);
@@ -276,7 +276,7 @@ function updateFiller() {
 
 /** Starts the download process for the selected files. */
 function save() {
-  if (selectedFiles.length == 0) {
+  if (selectedFiles.length === 0) {
     alert("Please select a log to download.");
   } else {
     sendMainMessage("save", selectedFiles);
@@ -290,10 +290,10 @@ EXIT_BUTTON.addEventListener("click", () => {
 });
 DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
-  if (event.code == "Enter") {
+  if (event.code === "Enter") {
     save();
-  } else if (event.key == "a" && (platform == "darwin" ? event.metaKey : event.ctrlKey)) {
-    if (filenames.length == selectedFiles.length) {
+  } else if (event.key === "a" && (platform === "darwin" ? event.metaKey : event.ctrlKey)) {
+    if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];
       Array.from(FILE_LIST_ITEMS.children).forEach((row) => {

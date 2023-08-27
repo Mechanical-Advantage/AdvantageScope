@@ -219,8 +219,8 @@ export default class LineGraphController implements TabController {
 
   /** Updates the axis labels based on the locked and unit conversion status. */
   updateAxisLabels() {
-    let leftLocked = this.leftLockedRange != null;
-    let leftConverted = this.leftUnitConversion.type != null || this.leftUnitConversion.factor != 1;
+    let leftLocked = this.leftLockedRange !== null;
+    let leftConverted = this.leftUnitConversion.type !== null || this.leftUnitConversion.factor !== 1;
     if (leftLocked && leftConverted) {
       this.LEFT_LABELS.innerText = " [Locked, Converted]";
     } else if (leftLocked) {
@@ -231,8 +231,8 @@ export default class LineGraphController implements TabController {
       this.LEFT_LABELS.innerText = "";
     }
 
-    let rightLocked = this.rightLockedRange != null;
-    let rightConverted = this.rightUnitConversion.type != null || this.rightUnitConversion.factor != 1;
+    let rightLocked = this.rightLockedRange !== null;
+    let rightConverted = this.rightUnitConversion.type !== null || this.rightUnitConversion.factor !== 1;
     if (rightLocked && rightConverted) {
       this.RIGHT_LABELS.innerText = " [Locked, Converted]";
     } else if (rightLocked) {
@@ -248,9 +248,9 @@ export default class LineGraphController implements TabController {
   editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     switch (legend) {
       case "left":
-        if (lockedRange == null) {
+        if (lockedRange === null) {
           this.leftLockedRange = null;
-        } else if (lockedRange[0] == null && lockedRange[1] == null) {
+        } else if (lockedRange[0] === null && lockedRange[1] === null) {
           this.leftLockedRange = this.leftRenderedRange;
         } else {
           this.leftLockedRange = lockedRange;
@@ -259,9 +259,9 @@ export default class LineGraphController implements TabController {
         break;
 
       case "right":
-        if (lockedRange == null) {
+        if (lockedRange === null) {
           this.rightLockedRange = null;
-        } else if (lockedRange[0] == null && lockedRange[1] == null) {
+        } else if (lockedRange[0] === null && lockedRange[1] === null) {
           this.rightLockedRange = this.rightRenderedRange;
         } else {
           this.rightLockedRange = lockedRange;
@@ -364,7 +364,7 @@ export default class LineGraphController implements TabController {
         if (normalTypes.includes(type)) {
           validType = true;
         }
-        if (dragData.data.fields.length == 1) {
+        if (dragData.data.fields.length === 1) {
           if (arrayTypes.includes(type)) {
             validType = true;
           }
@@ -381,7 +381,7 @@ export default class LineGraphController implements TabController {
               this.addField(legend, key);
             } else if (arrayTypes.includes(type)) {
               // Single array
-              if (dragData.data.fields.length == 1) {
+              if (dragData.data.fields.length === 1) {
                 dragData.data.children.forEach((childKey: string) => {
                   this.addField(legend, childKey);
                 });
@@ -398,7 +398,7 @@ export default class LineGraphController implements TabController {
   /** Adds a new field. */
   private addField(legend: "left" | "discrete" | "right", key: string, color?: string, show: boolean = true) {
     // Get color if not provided
-    if (color == null) {
+    if (color !== null) {
       let usedColors: string[] = [];
       [this.leftFields, this.discreteFields, this.rightFields].forEach((legend) => {
         legend.forEach((field) => {
@@ -406,7 +406,7 @@ export default class LineGraphController implements TabController {
         });
       });
       let availableColors = AllColors.filter((color) => !usedColors.includes(color));
-      if (availableColors.length == 0) {
+      if (availableColors.length === 0) {
         color = AllColors[Math.floor(Math.random() * AllColors.length)];
       } else {
         color = availableColors[0];
@@ -482,7 +482,7 @@ export default class LineGraphController implements TabController {
     let availableRange = window.log.getTimestampRange();
     availableRange = [availableRange[0], availableRange[1]];
     let liveTime = window.selection.getCurrentLiveTime();
-    if (liveTime != null) {
+    if (liveTime !== null) {
       availableRange[1] = liveTime;
     }
     if (availableRange[1] - availableRange[0] < this.MIN_ZOOM_TIME) {
@@ -490,26 +490,26 @@ export default class LineGraphController implements TabController {
     }
 
     // Apply horizontal scroll
-    if (window.selection.getMode() == SelectionMode.Locked) {
+    if (window.selection.getMode() === SelectionMode.Locked) {
       let zoom = this.timestampRange[1] - this.timestampRange[0];
       this.timestampRange[0] = availableRange[1] - zoom;
       this.timestampRange[1] = availableRange[1];
       if (dx < 0) window.selection.unlock(); // Unlock if attempting to scroll away
-    } else if (dx != 0) {
+    } else if (dx !== 0) {
       let secsPerPixel = (this.timestampRange[1] - this.timestampRange[0]) / this.SCROLL_OVERLAY.clientWidth;
       this.timestampRange[0] += dx * secsPerPixel;
       this.timestampRange[1] += dx * secsPerPixel;
     }
 
     // Apply vertical scroll
-    if (dy != 0) {
+    if (dy !== 0) {
       let zoomPercent = Math.pow(this.ZOOM_BASE, dy);
       let newZoom = (this.timestampRange[1] - this.timestampRange[0]) * zoomPercent;
       if (newZoom < this.MIN_ZOOM_TIME) newZoom = this.MIN_ZOOM_TIME;
       if (newZoom > availableRange[1] - availableRange[0]) newZoom = availableRange[1] - availableRange[0];
 
       let hoveredTime = window.selection.getHoveredTime();
-      if (hoveredTime != null) {
+      if (hoveredTime !== null) {
         let hoveredPercent = (hoveredTime - this.timestampRange[0]) / (this.timestampRange[1] - this.timestampRange[0]);
         this.timestampRange[0] = hoveredTime - newZoom * hoveredPercent;
         this.timestampRange[1] = hoveredTime + newZoom * (1 - hoveredPercent);
@@ -522,7 +522,7 @@ export default class LineGraphController implements TabController {
     if (this.timestampRange[1] - this.timestampRange[0] > availableRange[1] - availableRange[0]) {
       this.timestampRange = availableRange;
     }
-    this.maxZoom = this.timestampRange[1] - this.timestampRange[0] == availableRange[1] - availableRange[0];
+    this.maxZoom = this.timestampRange[1] - this.timestampRange[0] === availableRange[1] - availableRange[0];
 
     // Enforce left limit
     if (this.timestampRange[0] < availableRange[0]) {
@@ -565,9 +565,9 @@ export default class LineGraphController implements TabController {
   ): AxisConfig {
     // Calc target range
     let targetRange: [number, number] = [0, 1];
-    if (lockedRange != null) {
+    if (lockedRange !== null) {
       targetRange = lockedRange;
-    } else if (valueRange != null && marginProportion != null) {
+    } else if (valueRange !== null && marginProportion !== null) {
       // Apply extreme limits
       let adjustedValueRange = [...valueRange];
       if (adjustedValueRange[0] > this.MAX_VALUE) {
@@ -582,7 +582,7 @@ export default class LineGraphController implements TabController {
       if (adjustedValueRange[1] < -this.MAX_VALUE) {
         adjustedValueRange[1] = -this.MAX_VALUE;
       }
-      if (adjustedValueRange[0] == adjustedValueRange[1]) {
+      if (adjustedValueRange[0] === adjustedValueRange[1]) {
         adjustedValueRange[0]--;
         adjustedValueRange[1]++;
       }
@@ -604,15 +604,15 @@ export default class LineGraphController implements TabController {
 
     // How many steps?
     let stepCount: number = 1;
-    if (primaryAxis != null) {
+    if (primaryAxis !== null) {
       stepCount = (primaryAxis.max - primaryAxis.min) / primaryAxis.step;
-    } else if (sizePx != null && targetStepPx != null) {
+    } else if (sizePx !== null && targetStepPx !== null) {
       stepCount = sizePx / targetStepPx;
     }
     let stepValueApprox = (targetRange[1] - targetRange[0]) / stepCount;
 
     // Clean up step size
-    let useCustomUnit = customUnit != null && stepValueApprox > customUnit;
+    let useCustomUnit = customUnit !== null && stepValueApprox > customUnit;
     let roundBase;
     if (useCustomUnit) {
       roundBase = customUnit * 10 ** Math.floor(Math.log10(stepValueApprox / customUnit));
@@ -620,7 +620,7 @@ export default class LineGraphController implements TabController {
       roundBase = 10 ** Math.floor(Math.log10(stepValueApprox));
     }
     let multiplierLookup: number[];
-    if (primaryAxis == null) {
+    if (primaryAxis === null) {
       multiplierLookup = [0, 1, 2, 2, 5, 5, 5, 5, 5, 10, 10]; // Use friendly numbers if possible
     } else {
       multiplierLookup = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; // Use all numbers to get a better fit
@@ -628,7 +628,7 @@ export default class LineGraphController implements TabController {
     let stepValue = roundBase * multiplierLookup[Math.round(stepValueApprox / roundBase)];
 
     // Adjust to match primary gridlines
-    if (primaryAxis != null) {
+    if (primaryAxis !== null) {
       let midPrimary = (primaryAxis.min + primaryAxis.max) / 2;
       let midSecondary = (targetRange[0] + targetRange[1]) / 2;
       let midStepPrimary = Math.ceil(cleanFloat(midPrimary / primaryAxis.step)) * primaryAxis.step;
@@ -660,7 +660,7 @@ export default class LineGraphController implements TabController {
     this.updateScroll(0, 0);
 
     // Update hovered time
-    if (this.lastCursorX == null) {
+    if (this.lastCursorX === null) {
       window.selection.setHoveredTime(null);
     } else {
       window.selection.setHoveredTime(
@@ -705,17 +705,17 @@ export default class LineGraphController implements TabController {
         }
 
         // Update range for left & right legends
-        if (legendIndex != 1 && typeCache[field.key] == LoggableType.Number) {
+        if (legendIndex !== 1 && typeCache[field.key] === LoggableType.Number) {
           if (
-            dataCache[field.key].timestamps.length == 1 &&
+            dataCache[field.key].timestamps.length === 1 &&
             dataCache[field.key].timestamps[0] > this.timestampRange[1]
           ) {
             return; // Not displayed
           }
 
           (dataCache[field.key] as LogValueSetNumber).values.forEach((value) => {
-            if (legendIndex == 0) value = convertWithPreset(value, this.leftUnitConversion);
-            if (legendIndex == 2) value = convertWithPreset(value, this.rightUnitConversion);
+            if (legendIndex === 0) value = convertWithPreset(value, this.leftUnitConversion);
+            if (legendIndex === 2) value = convertWithPreset(value, this.rightUnitConversion);
             if (value < range[0]) range[0] = value;
             if (value > range[1]) range[1] = value;
           });
@@ -725,8 +725,8 @@ export default class LineGraphController implements TabController {
       // Save range
       if (!isFinite(range[0])) range[0] = -1;
       if (!isFinite(range[1])) range[1] = 1;
-      if (legendIndex == 0) leftRange = range;
-      if (legendIndex == 2) rightRange = range;
+      if (legendIndex === 0) leftRange = range;
+      if (legendIndex === 2) rightRange = range;
     });
 
     let visibleFieldsLeft = this.leftFields.filter((field) => field.show && Object.keys(dataCache).includes(field.key));
@@ -748,11 +748,11 @@ export default class LineGraphController implements TabController {
     const TARGET_STEP_PX = 50;
     const PRIMARY_MARGIN = 0.05;
     const SECONDARY_MARGIN = 0.3;
-    let showLeftAxis = visibleFieldsLeft.length > 0 || this.leftLockedRange != null;
-    let showRightAxis = visibleFieldsRight.length > 0 || this.rightLockedRange != null;
+    let showLeftAxis = visibleFieldsLeft.length > 0 || this.leftLockedRange !== null;
+    let showRightAxis = visibleFieldsRight.length > 0 || this.rightLockedRange !== null;
     if (!showLeftAxis && !showRightAxis) showLeftAxis = true;
-    let leftIsPrimary = this.leftLockedRange != null;
-    let rightIsPrimary = this.rightLockedRange != null;
+    let leftIsPrimary = this.leftLockedRange !== null;
+    let rightIsPrimary = this.rightLockedRange !== null;
     if (!leftIsPrimary && !rightIsPrimary) {
       if (visibleFieldsRight.length > visibleFieldsLeft.length) {
         rightIsPrimary = true;
@@ -833,11 +833,11 @@ export default class LineGraphController implements TabController {
       let type = typeCache[field.key];
       let data = dataCache[field.key];
 
-      let isDark = window.log.getTimestamps([field.key]).indexOf(data.timestamps[0]) % 2 == 0;
+      let isDark = window.log.getTimestamps([field.key]).indexOf(data.timestamps[0]) % 2 === 0;
       for (let i = 0; i < data.timestamps.length; i++) {
         let startX = scaleValue(data.timestamps[i], this.timestampRange, [graphLeft, graphLeft + graphWidth]);
         let endX: number;
-        if (i == data.timestamps.length - 1) {
+        if (i === data.timestamps.length - 1) {
           endX = graphLeft + graphWidth;
         } else {
           endX = scaleValue(data.timestamps[i + 1], this.timestampRange, [graphLeft, graphLeft + graphWidth]);
@@ -847,7 +847,7 @@ export default class LineGraphController implements TabController {
 
         // Draw rectangle
         isDark = !isDark;
-        if (type == LoggableType.Boolean) isDark = data.values[i];
+        if (type === LoggableType.Boolean) isDark = data.values[i];
         context.fillStyle = isDark ? shiftColor(field.color, -30) : shiftColor(field.color, 30);
         context.fillRect(startX, topY, endX - startX, 15);
 
@@ -1142,7 +1142,7 @@ export default class LineGraphController implements TabController {
         x = graphLeft + graphWidth;
       }
 
-      let text = cleanFloat(stepPos / xAxis.unit).toString() + (xAxis.unit == 60 ? "m" : "s");
+      let text = cleanFloat(stepPos / xAxis.unit).toString() + (xAxis.unit === 60 ? "m" : "s");
 
       context.globalAlpha = 1;
       context.fillText(text, x, graphTop + graphHeight + 15);
@@ -1173,7 +1173,7 @@ export default class LineGraphController implements TabController {
         show: boolean;
       }[];
       Array.from(parentElement.children).forEach((itemElement, index) => {
-        if (index == 0) return;
+        if (index === 0) return;
         let valueElement = itemElement.getElementsByClassName("legend-value")[0] as HTMLElement;
         let key = fieldList[index - 1].key;
         let hasValue = false;
@@ -1185,8 +1185,8 @@ export default class LineGraphController implements TabController {
             currentData.timestamps[0] <= (selectedTime as number)
           ) {
             let value = currentData.values[0];
-            if (legendIndex == 0) value = convertWithPreset(value, this.leftUnitConversion);
-            if (legendIndex == 2) value = convertWithPreset(value, this.rightUnitConversion);
+            if (legendIndex === 0) value = convertWithPreset(value, this.leftUnitConversion);
+            if (legendIndex === 2) value = convertWithPreset(value, this.rightUnitConversion);
             let text = getLogValueText(value, window.log.getType(key)!);
             if (text !== valueElement.innerText) valueElement.innerText = text;
             hasValue = true;

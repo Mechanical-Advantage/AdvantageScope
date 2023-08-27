@@ -51,7 +51,7 @@ export class HistoricalDataSource {
 
   /** Process new data from the main process, send to worker. */
   handleMainMessage(data: any) {
-    if (this.status != HistoricalDataSourceStatus.Reading) return;
+    if (this.status !== HistoricalDataSourceStatus.Reading) return;
     this.setStatus(HistoricalDataSourceStatus.Decoding);
     let fileContents: string[] = data;
 
@@ -78,9 +78,9 @@ export class HistoricalDataSource {
       }
     })
       .then((response: any) => {
-        if (this.status == HistoricalDataSourceStatus.Error || this.status == HistoricalDataSourceStatus.Stopped)
+        if (this.status === HistoricalDataSourceStatus.Error || this.status === HistoricalDataSourceStatus.Stopped)
           return;
-        if (this.outputCallback != null) this.outputCallback(Log.fromSerialized(response));
+        if (this.outputCallback !== null) this.outputCallback(Log.fromSerialized(response));
         this.setStatus(HistoricalDataSourceStatus.Ready);
       })
       .catch(() => {
@@ -90,9 +90,9 @@ export class HistoricalDataSource {
 
   /** Updates the current status and triggers the callback if necessary. */
   private setStatus(status: HistoricalDataSourceStatus) {
-    if (status != this.status && this.status != HistoricalDataSourceStatus.Stopped) {
+    if (status !== this.status && this.status !== HistoricalDataSourceStatus.Stopped) {
       this.status = status;
-      if (this.statusCallback != null) this.statusCallback(status);
+      if (this.statusCallback !== null) this.statusCallback(status);
     }
   }
 }

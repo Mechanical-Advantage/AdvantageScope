@@ -97,7 +97,7 @@ export default class DocumentationController implements TabController {
         });
 
         // App adjustments for index page
-        this.isIndex = markdownPath == "../docs/INDEX.md";
+        this.isIndex = markdownPath === "../docs/INDEX.md";
         if (this.isIndex) {
           // Update screenshot
           if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
@@ -130,7 +130,7 @@ export default class DocumentationController implements TabController {
   }
 
   private fixRelativePath(input: string): string {
-    if (window.platform == "win32") {
+    if (window.platform === "win32") {
       return "../" + input.slice(11); // Remove "file:///X:/"
     } else {
       return "../" + input.slice(8); // Remove "file:///"

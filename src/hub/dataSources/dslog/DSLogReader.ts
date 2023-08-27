@@ -43,7 +43,7 @@ export class DSLogReader {
 
   /** Returns whether this log uses a supported version. */
   isSupportedVersion(): boolean {
-    return this.getVersion() == 4;
+    return this.getVersion() === 4;
   }
 
   /** Returns the initial timestamp of the log, using unix time in seconds. */
@@ -76,13 +76,13 @@ export class DSLogReader {
         packetLoss: Math.min(Math.max(this.dataView.getInt8(position + 1) * 4 * 0.01, 0), 1),
         batteryVolts: batteryVolts,
         rioCpuUtilization: this.dataView.getUint8(position + 4) * 0.5 * 0.01,
-        brownout: (mask & (1 << 7)) == 0,
-        watchdog: (mask & (1 << 6)) == 0,
-        dsTeleop: (mask & (1 << 5)) == 0,
-        dsDisabled: (mask & (1 << 3)) == 0,
-        robotTeleop: (mask & (1 << 2)) == 0,
-        robotAuto: (mask & (1 << 1)) == 0,
-        robotDisabled: (mask & 1) == 0,
+        brownout: (mask & (1 << 7)) === 0,
+        watchdog: (mask & (1 << 6)) === 0,
+        dsTeleop: (mask & (1 << 5)) === 0,
+        dsDisabled: (mask & (1 << 3)) === 0,
+        robotTeleop: (mask & (1 << 2)) === 0,
+        robotAuto: (mask & (1 << 1)) === 0,
+        robotDisabled: (mask & 1) === 0,
         canUtilization: this.dataView.getUint8(position + 6) * 0.5 * 0.01,
         wifiDb: this.dataView.getUint8(position + 7) * 0.5,
         wifiMb: this.dataView.getUint16(position + 8) / Math.pow(2, 8),
@@ -131,7 +131,7 @@ export class DSLogReader {
           let booleanData: boolean[] = [];
           this.data.subarray(position, position + 21).forEach((byte) => {
             for (let i = 0; i < 8; i++) {
-              booleanData.push((byte & (1 << i)) != 0);
+              booleanData.push((byte & (1 << i)) !== 0);
             }
           });
 

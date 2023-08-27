@@ -68,12 +68,12 @@ export default class StatisticsController implements TabController {
 
     // Bind input disabling
     this.SELECTION_TYPE.addEventListener("change", () => {
-      let disabled = this.SELECTION_TYPE.value != "range";
+      let disabled = this.SELECTION_TYPE.value !== "range";
       this.SELECTION_RANGE_MIN.disabled = disabled;
       this.SELECTION_RANGE_MAX.disabled = disabled;
     });
     this.MEASUREMENT_SAMPLING.addEventListener("change", () => {
-      this.MEASUREMENT_SAMPLING_PERIOD.disabled = this.MEASUREMENT_SAMPLING.value != "fixed";
+      this.MEASUREMENT_SAMPLING_PERIOD.disabled = this.MEASUREMENT_SAMPLING.value !== "fixed";
     });
 
     // Drag handling
@@ -220,9 +220,9 @@ export default class StatisticsController implements TabController {
     this.HISTOGRAM_STEP.value = state.histogramStep.toString();
     this.updateHistogramInputs();
 
-    this.SELECTION_RANGE_MIN.disabled = state.selectionType != "range";
-    this.SELECTION_RANGE_MAX.disabled = state.selectionType != "range";
-    this.MEASUREMENT_SAMPLING_PERIOD.disabled = state.measurementSampling != "fixed";
+    this.SELECTION_RANGE_MIN.disabled = state.selectionType !== "range";
+    this.SELECTION_RANGE_MAX.disabled = state.selectionType !== "range";
+    this.MEASUREMENT_SAMPLING_PERIOD.disabled = state.measurementSampling !== "fixed";
 
     this.fields = state.fields;
     this.updateFields();
@@ -238,7 +238,7 @@ export default class StatisticsController implements TabController {
       let active =
         dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
       let type = window.log.getType(dragData.data.fields[0]);
-      let validType = type == LoggableType.Number;
+      let validType = type === LoggableType.Number;
 
       if (active && validType) {
         if (dragData.end) {
@@ -260,7 +260,7 @@ export default class StatisticsController implements TabController {
   private updateFields() {
     this.shouldUpdate = true;
     const titles =
-      this.MEASUREMENT_TYPE.value == "independent"
+      this.MEASUREMENT_TYPE.value === "independent"
         ? ["Field #1", "Field #2", "Field #3"]
         : ["Reference", "Measurement #1", "Measurement #2"];
     Object.values(this.FIELD_CELLS).forEach((cell, index) => {
@@ -270,7 +270,7 @@ export default class StatisticsController implements TabController {
       let fieldElement = cell.lastElementChild as HTMLElement;
       let key = this.fields[index];
       let availableKeys = window.log.getFieldKeys();
-      if (key == null) {
+      if (key === null) {
         fieldElement.innerText = "<Drag Here>";
         fieldElement.style.textDecoration = "";
       } else if (!availableKeys.includes(key)) {
@@ -335,7 +335,7 @@ export default class StatisticsController implements TabController {
               if (enabledData.values[i]) {
                 let startTime = enabledData.timestamps[i];
                 let endTime =
-                  i == enabledData.values.length - 1
+                  i === enabledData.values.length - 1
                     ? window.log.getTimestampRange()[1]
                     : enabledData.timestamps[i + 1];
                 sampleRanges.push([startTime, endTime]);
@@ -372,7 +372,7 @@ export default class StatisticsController implements TabController {
       // Get valid fields and sample data
       let sampleData: (number | null)[][] = this.fields.map((field) => {
         let blankData: (number | null)[] = sampleTimes.map(() => null);
-        if (field == null) return blankData;
+        if (field === null) return blankData;
         let logData = window.log.getNumber(field!, -Infinity, Infinity);
         if (!logData) return blankData;
 
@@ -391,13 +391,13 @@ export default class StatisticsController implements TabController {
       });
 
       // Calculate errors if using reference
-      if (this.MEASUREMENT_TYPE.value != "independent") {
-        let isAbsolute = this.MEASUREMENT_TYPE.value == "absolute";
+      if (this.MEASUREMENT_TYPE.value !== "independent") {
+        let isAbsolute = this.MEASUREMENT_TYPE.value === "absolute";
         for (let valueIndex = 0; valueIndex < sampleTimes.length; valueIndex++) {
           let reference = sampleData[0][valueIndex];
           for (let fieldIndex = 1; fieldIndex < 3; fieldIndex++) {
             let measurement = sampleData[fieldIndex][valueIndex];
-            if (reference == null || measurement == null) {
+            if (reference === null || measurement === null) {
               sampleData[fieldIndex][valueIndex] = null;
             } else {
               let error = measurement - reference;
@@ -410,14 +410,14 @@ export default class StatisticsController implements TabController {
 
       // Find which fields have valid data
       let fieldsHaveData = sampleData.map((data) => {
-        return data.length > 0 && !data.every((value) => value == null);
+        return data.length > 0 && !data.every((value) => value === null);
       });
       let fieldHavaDataCount = fieldsHaveData.filter((hasData) => hasData).length;
 
       // Sort sample data
       sampleData.forEach((data) => {
         data.sort((a, b) => {
-          if (a == null || b == null) return 0;
+          if (a === null || b === null) return 0;
           return a - b;
         });
       });
@@ -430,7 +430,7 @@ export default class StatisticsController implements TabController {
       // Add a new title row
       let addTitle = () => {
         let titles =
-          this.MEASUREMENT_TYPE.value == "independent"
+          this.MEASUREMENT_TYPE.value === "independent"
             ? ["Field #1", "Field #2", "Field #3"]
             : ["Error #1", "Error #2"];
         let row = document.createElement("tr");
@@ -439,7 +439,7 @@ export default class StatisticsController implements TabController {
         let cell = document.createElement("td");
         row.appendChild(cell);
         titles.forEach((title, index) => {
-          if (fieldsHaveData[index] || (fieldHavaDataCount == 0 && index == 0)) {
+          if (fieldsHaveData[index] || (fieldHavaDataCount === 0 && index === 0)) {
             let cell = document.createElement("td");
             row.appendChild(cell);
             cell.innerText = title;
@@ -467,12 +467,12 @@ export default class StatisticsController implements TabController {
         row.appendChild(titleCell);
         titleCell.innerText = title;
         for (let i = 0; i < sampleData.length; i++) {
-          if (fieldsHaveData[i] || (fieldHavaDataCount == 0 && i == 0)) {
+          if (fieldsHaveData[i] || (fieldHavaDataCount === 0 && i === 0)) {
             let valueCell = document.createElement("td");
             row.appendChild(valueCell);
             valueCell.innerText = "-";
             try {
-              let value = calcFunction(sampleData[i].filter((value) => value != null) as number[]);
+              let value = calcFunction(sampleData[i].filter((value) => value !== null) as number[]);
               if (!isNaN(value) && isFinite(value)) {
                 valueCell.innerText = value.toFixed(digits);
               }
@@ -522,7 +522,7 @@ export default class StatisticsController implements TabController {
       let counts: number[][] = sampleData.map(() => bins.map(() => 0));
       sampleData.forEach((field, fieldIndex) => {
         field.forEach((value) => {
-          if (value != null) {
+          if (value !== null) {
             let binIndex = Math.floor((value - min) / step);
             if (binIndex >= 0 && binIndex < bins.length) {
               counts[fieldIndex][binIndex]++;
@@ -535,7 +535,7 @@ export default class StatisticsController implements TabController {
       this.histogram.data.labels = bins.map((value) => value + step / 2);
       this.histogram.data.datasets = counts.map((data, index) => {
         const dataset: ChartDataset = {
-          label: (this.MEASUREMENT_TYPE.value == "independent" ? "Field" : "Error") + " #" + (index + 1).toString(),
+          label: (this.MEASUREMENT_TYPE.value === "independent" ? "Field" : "Error") + " #" + (index + 1).toString(),
           data: data,
           backgroundColor: SimpleColors[index],
           barPercentage: 1,

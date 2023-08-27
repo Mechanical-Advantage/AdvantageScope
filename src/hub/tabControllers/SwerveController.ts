@@ -92,16 +92,16 @@ export default class JoysticksController extends TimelineVizController {
     // Get module states
     let getModuleStates = (isRed: boolean): NormalizedModuleState[] | null => {
       let key = fields[isRed ? 0 : 1];
-      if (key != null) {
+      if (key !== null) {
         let moduleData = window.log.getNumberArray(key, time, time);
-        if (moduleData && moduleData.timestamps[0] <= time && moduleData.values[0].length == 8) {
+        if (moduleData && moduleData.timestamps[0] <= time && moduleData.values[0].length === 8) {
           return this.ARRANGEMENT.value.split(",").map((stateIndex) => {
             let stateIndexNum = Number(stateIndex);
             let rotationValue = moduleData!.values[0][stateIndexNum * 2];
             let velocityValue = moduleData!.values[0][stateIndexNum * 2 + 1];
             let state: NormalizedModuleState = {
               rotation:
-                this.ROTATION_UNITS.value == "radians" ? rotationValue : convert(rotationValue, "degrees", "radians"),
+                this.ROTATION_UNITS.value === "radians" ? rotationValue : convert(rotationValue, "degrees", "radians"),
               normalizedVelocity: Math.min(Math.max(velocityValue / Number(this.MAX_SPEED.value), -1), 1)
             };
             return state;
@@ -127,10 +127,10 @@ export default class JoysticksController extends TimelineVizController {
         robotRotation = -Math.PI / 2;
         break;
     }
-    if (fields[2] != null) {
+    if (fields[2] !== null) {
       let robotRotationData = window.log.getNumber(fields[2], time, time);
       if (robotRotationData && robotRotationData.timestamps[0] <= time) {
-        if (this.ROTATION_UNITS.value == "radians") {
+        if (this.ROTATION_UNITS.value === "radians") {
           robotRotation += robotRotationData.values[0];
         } else {
           robotRotation += convert(robotRotationData.values[0], "degrees", "radians");

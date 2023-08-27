@@ -76,16 +76,16 @@ function saveResult(log: Log, baseKey: string, timestamp: number, result: Photon
     // Loop over every member of the target class
     Object.entries(target).forEach(([objectFieldName, objectFieldValue]) => {
       // If it's a number, we can log directly
-      if (typeof objectFieldValue == "number") {
+      if (typeof objectFieldValue === "number") {
         log.putNumber(baseKey + `/target_${idx}/${objectFieldName}`, timestamp, Number(objectFieldValue));
       }
 
       // If it's an array, it's either a number array or an array of TargetCorner classes
       if (Array.isArray(objectFieldValue)) {
         // First entry is a number -- log as array
-        if (typeof objectFieldValue[0] == "number") {
+        if (typeof objectFieldValue[0] === "number") {
           log.putNumberArray(baseKey + `/target_${idx}/${objectFieldName}`, timestamp, objectFieldValue);
-        } else if (typeof objectFieldValue[0] == "object") {
+        } else if (typeof objectFieldValue[0] === "object") {
           // we can only ever have TargetCorners, so this parsing code works (for now)
           let xArray: number[] = [];
           let yArray: number[] = [];

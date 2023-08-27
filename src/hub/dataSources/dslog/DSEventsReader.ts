@@ -27,7 +27,7 @@ export class DSEventsReader {
 
   /** Returns whether this log uses a supported version. */
   isSupportedVersion(): boolean {
-    return this.getVersion() == 4;
+    return this.getVersion() === 4;
   }
 
   /** Returns the initial timestamp of the log, using unix time in seconds. */

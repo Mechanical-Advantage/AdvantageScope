@@ -151,14 +151,14 @@ export function loadAssets(): AdvantageScopeAssets {
           if (
             "topLeft" in configRaw &&
             checkArrayType(configRaw.topLeft, "number") &&
-            (configRaw.topLeft as number[]).length == 2
+            (configRaw.topLeft as number[]).length === 2
           ) {
             config.topLeft = configRaw.topLeft as [number, number];
           }
           if (
             "bottomRight" in configRaw &&
             checkArrayType(configRaw.bottomRight, "number") &&
-            (configRaw.bottomRight as number[]).length == 2
+            (configRaw.bottomRight as number[]).length === 2
           ) {
             config.bottomRight = configRaw.bottomRight as [number, number];
           }
@@ -238,7 +238,7 @@ export function loadAssets(): AdvantageScopeAssets {
           if (
             "position" in configRaw &&
             checkArrayType(configRaw.position, "number") &&
-            (configRaw.position as number[]).length == 3
+            (configRaw.position as number[]).length === 3
           ) {
             config.position = configRaw.position as [number, number, number];
           }
@@ -272,14 +272,14 @@ export function loadAssets(): AdvantageScopeAssets {
               if (
                 "position" in cameraRaw &&
                 checkArrayType(cameraRaw.position, "number") &&
-                cameraRaw.position.length == 3
+                cameraRaw.position.length === 3
               ) {
                 camera.position = cameraRaw.position;
               }
               if (
                 "resolution" in cameraRaw &&
                 checkArrayType(cameraRaw.resolution, "number") &&
-                cameraRaw.resolution.length == 2
+                cameraRaw.resolution.length === 2
               ) {
                 camera.resolution = cameraRaw.resolution;
               }
@@ -312,7 +312,7 @@ export function loadAssets(): AdvantageScopeAssets {
               if (
                 "zeroedPosition" in componentRaw &&
                 checkArrayType(componentRaw.zeroedPosition, "number") &&
-                componentRaw.zeroedPosition.length == 3
+                componentRaw.zeroedPosition.length === 3
               ) {
                 component.zeroedPosition = componentRaw.zeroedPosition;
               }
@@ -339,7 +339,7 @@ export function loadAssets(): AdvantageScopeAssets {
               if (
                 "centerPx" in componentRaw &&
                 checkArrayType(componentRaw.centerPx, "number") &&
-                (componentRaw.centerPx as number[]).length == 2
+                (componentRaw.centerPx as number[]).length === 2
               ) {
                 centerPx = componentRaw.centerPx as [number, number];
               }
@@ -361,7 +361,7 @@ export function loadAssets(): AdvantageScopeAssets {
                     if (
                       "sizePx" in componentRaw &&
                       checkArrayType(componentRaw.sizePx, "number") &&
-                      (componentRaw.sizePx as number[]).length == 2
+                      (componentRaw.sizePx as number[]).length === 2
                     ) {
                       buttonComponent.sizePx = componentRaw.sizePx as [number, number];
                     }
@@ -371,10 +371,10 @@ export function loadAssets(): AdvantageScopeAssets {
                     if (
                       "sourcePov" in componentRaw &&
                       typeof componentRaw.sourcePov === "string" &&
-                      (componentRaw.sourcePov == "up" ||
-                        componentRaw.sourcePov == "right" ||
-                        componentRaw.sourcePov == "down" ||
-                        componentRaw.sourcePov == "left")
+                      (componentRaw.sourcePov === "up" ||
+                        componentRaw.sourcePov === "right" ||
+                        componentRaw.sourcePov === "down" ||
+                        componentRaw.sourcePov === "left")
                     ) {
                       buttonComponent.sourcePov = componentRaw.sourcePov;
                     }
@@ -425,7 +425,7 @@ export function loadAssets(): AdvantageScopeAssets {
                     if (
                       "sizePx" in componentRaw &&
                       checkArrayType(componentRaw.sizePx, "number") &&
-                      (componentRaw.sizePx as number[]).length == 2
+                      (componentRaw.sizePx as number[]).length === 2
                     ) {
                       axisComponent.sizePx = componentRaw.sizePx as [number, number];
                     }
@@ -435,7 +435,7 @@ export function loadAssets(): AdvantageScopeAssets {
                     if (
                       "sourceRange" in componentRaw &&
                       checkArrayType(componentRaw.sourceRange, "number") &&
-                      (componentRaw.sourceRange as number[]).length == 2
+                      (componentRaw.sourceRange as number[]).length === 2
                     ) {
                       axisComponent.sourceRange = componentRaw.sourceRange as [number, number];
                     }
@@ -483,8 +483,8 @@ export function loadAssets(): AdvantageScopeAssets {
   {
     // Evergeen field in asset files, sort to end of list
     assets.field2ds.sort((a, b) => {
-      if (a.name == "Evergreen") return 1;
-      if (b.name == "Evergreen") return -1;
+      if (a.name === "Evergreen") return 1;
+      if (b.name === "Evergreen") return -1;
       return a.name > b.name ? -1 : b.name > a.name ? 1 : 0;
     });
 

@@ -61,9 +61,9 @@ export default class OdometryController extends TimelineVizController {
     // Unit conversion for distance
     this.UNIT_DISTANCE.addEventListener("change", () => {
       let newUnit = this.UNIT_DISTANCE.value;
-      if (newUnit != this.lastUnitDistance) {
+      if (newUnit !== this.lastUnitDistance) {
         let oldSize = Number(this.SIZE.value);
-        if (newUnit == "meters") {
+        if (newUnit === "meters") {
           this.SIZE.value = (Math.round(convert(oldSize, "inches", "meters") * 1000) / 1000).toString();
           this.SIZE.step = "0.01";
         } else {
@@ -77,20 +77,20 @@ export default class OdometryController extends TimelineVizController {
 
     // Bind source link
     this.GAME.addEventListener("change", () => {
-      let config = window.assets?.field2ds.find((game) => game.name == this.GAME.value);
-      this.GAME_SOURCE_LINK.hidden = config != undefined && config.sourceUrl == undefined;
+      let config = window.assets?.field2ds.find((game) => game.name === this.GAME.value);
+      this.GAME_SOURCE_LINK.hidden = config !== undefined && config.sourceUrl === undefined;
     });
     this.GAME_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.assets?.field2ds.find((game) => game.name == this.GAME.value)?.sourceUrl
+        window.assets?.field2ds.find((game) => game.name === this.GAME.value)?.sourceUrl
       );
     });
 
     // Enforce side length range
     this.SIZE.addEventListener("change", () => {
       if (Number(this.SIZE.value) < 0) this.SIZE.value = "0.1";
-      if (Number(this.SIZE.value) == 0) this.SIZE.value = "0.1";
+      if (Number(this.SIZE.value) === 0) this.SIZE.value = "0.1";
     });
   }
 
@@ -119,8 +119,8 @@ export default class OdometryController extends TimelineVizController {
 
   /** Shows or hides the source link based on the selected game. */
   private updateGameSourceLink() {
-    let fieldConfig = window.assets?.field2ds.find((game) => game.name == this.GAME.value);
-    this.GAME_SOURCE_LINK.hidden = fieldConfig != undefined && fieldConfig.sourceUrl == undefined;
+    let fieldConfig = window.assets?.field2ds.find((game) => game.name === this.GAME.value);
+    this.GAME_SOURCE_LINK.hidden = fieldConfig !== undefined && fieldConfig.sourceUrl === undefined;
   }
 
   get options(): { [id: string]: any } {
@@ -170,10 +170,10 @@ export default class OdometryController extends TimelineVizController {
       if (
         logData &&
         logData.timestamps[0] <= time &&
-        (logData.values[0].length == 2 || logData.values[0].length % 3 == 0)
+        (logData.values[0].length === 2 || logData.values[0].length % 3 === 0)
       ) {
         let poses: Pose2d[] = [];
-        if (logData.values[0].length == 2) {
+        if (logData.values[0].length === 2) {
           poses.push({
             translation: [
               convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
@@ -230,7 +230,7 @@ export default class OdometryController extends TimelineVizController {
               trailLogData.values.pop();
             }
             trailLogData.values.forEach((value) => {
-              if (value.length % 3 == 0) {
+              if (value.length % 3 === 0) {
                 for (let i = 0; i < value.length / 3; i += 1) {
                   if (i >= trailsTemp.length) continue;
                   trailsTemp[i].push([

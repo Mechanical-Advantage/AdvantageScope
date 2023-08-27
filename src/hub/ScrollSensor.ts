@@ -45,7 +45,7 @@ export default class ScrollSensor {
     }
 
     // Exit if not visible (cannot get scroll position)
-    if (this.container.offsetWidth == 0 && this.container.offsetHeight == 0) {
+    if (this.container.offsetWidth === 0 && this.container.offsetHeight === 0) {
       this.resetNext = true;
       return;
     }

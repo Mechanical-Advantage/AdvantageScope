@@ -35,7 +35,7 @@ export default class NT4Source extends LiveDataSource {
 
       // Update subscriptions
       if (this.client !== null) {
-        if (window.preferences?.liveSubscribeMode == "logging") {
+        if (window.preferences?.liveSubscribeMode === "logging") {
           // Switch to logging subscribe mode
           Object.values(this.lowBandwidthDataSubscriptions).forEach((subscriptionId) => {
             this.client?.unsubscribe(subscriptionId);
@@ -92,7 +92,7 @@ export default class NT4Source extends LiveDataSource {
           let activeFieldsCopy = new Set(activeFields);
           activeFieldsCopy.forEach((field0) => {
             activeFieldsCopy.forEach((field1) => {
-              if (field0 != field1 && field0.startsWith(field1)) {
+              if (field0 !== field1 && field0.startsWith(field1)) {
                 activeFields.delete(field0);
               }
             });
@@ -119,7 +119,7 @@ export default class NT4Source extends LiveDataSource {
       // running the callback many times for each frame)
       if (
         !this.shouldRunOutputCallback ||
-        this.status == LiveDataSourceStatus.Stopped ||
+        this.status === LiveDataSourceStatus.Stopped ||
         !this.outputCallback ||
         !this.log
       )
@@ -148,7 +148,7 @@ export default class NT4Source extends LiveDataSource {
     super.connect(address, statusCallback, outputCallback);
     this.shouldRunOutputCallback = false;
 
-    if (window.preferences == null) {
+    if (window.preferences === null) {
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
       this.log = new Log();
@@ -179,7 +179,7 @@ export default class NT4Source extends LiveDataSource {
           let type = this.getLogType(topic.type);
 
           let updated = false;
-          if (type != null) {
+          if (type !== null) {
             switch (type) {
               case LoggableType.Raw:
                 if (value instanceof Uint8Array) {
@@ -249,7 +249,7 @@ export default class NT4Source extends LiveDataSource {
           this.setStatus(LiveDataSourceStatus.Active);
           this.log = new Log();
           this.shouldRunOutputCallback = true;
-          if (!this.connectTime && this.client != null) {
+          if (!this.connectTime && this.client !== null) {
             this.connectTime = this.client.getClientTime_us();
           }
           if (this.akitMode) {

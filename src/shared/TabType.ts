@@ -27,7 +27,7 @@ export const TIMELINE_VIZ_TYPES: TabType[] = [
 ];
 
 export function getAllTabTypes(): TabType[] {
-  return Object.values(TabType).filter((tabType) => typeof tabType == "number") as TabType[];
+  return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }
 
 export function getDefaultTabTitle(type: TabType): string {

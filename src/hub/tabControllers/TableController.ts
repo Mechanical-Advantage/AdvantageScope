@@ -44,8 +44,8 @@ export default class TableController implements TabController {
     let jump = () => {
       // Determine target time
       let targetTime = Number(this.INPUT_FIELD.value);
-      if (this.INPUT_FIELD.value == "") {
-        if (window.selection.getMode() != SelectionMode.Idle) {
+      if (this.INPUT_FIELD.value === "") {
+        if (window.selection.getMode() !== SelectionMode.Idle) {
           targetTime = window.selection.getSelectedTime() as number;
         } else {
           targetTime = 0;
@@ -55,7 +55,7 @@ export default class TableController implements TabController {
       this.jumpToTime(targetTime);
     };
     this.INPUT_FIELD.addEventListener("keydown", (event) => {
-      if (event.code == "Enter") jump();
+      if (event.code === "Enter") jump();
     });
     content.getElementsByClassName("data-table-jump-button")[0].addEventListener("click", jump);
   }
@@ -113,15 +113,15 @@ export default class TableController implements TabController {
     if (dragData.y > tableBox.y) {
       for (let i = 0; i < header.childElementCount; i++) {
         let targetX = 0;
-        if (i == 0 && this.fields.length > 0) {
+        if (i === 0 && this.fields.length > 0) {
           targetX = header.children[1].getBoundingClientRect().left;
         } else {
           targetX = header.children[i].getBoundingClientRect().right;
         }
         if (targetX < (header.firstElementChild as HTMLElement).getBoundingClientRect().right) continue;
-        let leftBound = i == 0 ? tableBox.x : targetX - header.children[i].getBoundingClientRect().width / 2;
+        let leftBound = i === 0 ? tableBox.x : targetX - header.children[i].getBoundingClientRect().width / 2;
         let rightBound =
-          i == header.childElementCount - 1
+          i === header.childElementCount - 1
             ? Infinity
             : targetX + header.children[i + 1].getBoundingClientRect().width / 2;
         if (leftBound < dragData.x && rightBound > dragData.x) {
@@ -134,13 +134,13 @@ export default class TableController implements TabController {
     // Update highlight or add field
     if (dragData.end) {
       this.DRAG_HIGHLIGHT.hidden = true;
-      if (selected != null) {
+      if (selected !== null) {
         this.fields.splice(selected, 0, ...dragData.data.fields);
         this.updateFields();
       }
     } else {
-      this.DRAG_HIGHLIGHT.hidden = selected == null;
-      if (selected != null && selectedX != null) {
+      this.DRAG_HIGHLIGHT.hidden = selected === null;
+      if (selected !== null && selectedX !== null) {
         this.DRAG_HIGHLIGHT.style.left = (selectedX - tableBox.x - 12.5).toString() + "px";
       }
     }
@@ -149,14 +149,14 @@ export default class TableController implements TabController {
   /** Jumps to the specified time */
   private jumpToTime(targetTime: number, offsetPx: number = 0) {
     // If no data, clear table
-    if (this.timestamps.length == 0) {
+    if (this.timestamps.length === 0) {
       this.clearTable();
       return;
     }
 
     // Find index
     let target = this.timestamps.findIndex((value) => value > targetTime);
-    if (target == -1) target = this.timestamps.length;
+    if (target === -1) target = this.timestamps.length;
     if (target < 1) target = 1;
     target -= 1;
 
@@ -235,12 +235,12 @@ export default class TableController implements TabController {
 
   /** Updates highlighted times (selected & hovered). */
   private updateHighlights() {
-    if (this.timestamps.length == 0) return;
+    if (this.timestamps.length === 0) return;
     let highlight = (time: number | null, className: string) => {
       Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove(className));
       if (time) {
         let target = this.timestamps.findIndex((value) => value > time);
-        if (target == -1) target = this.timestamps.length;
+        if (target === -1) target = this.timestamps.length;
         if (target < 1) target = 1;
         target -= 1;
         if (target >= this.currentRange[0] && target <= this.currentRange[1]) {
@@ -282,8 +282,8 @@ export default class TableController implements TabController {
       let fullData = [];
       for (let i = range[0]; i < range[1] + 1; i++) {
         let nextIndex = data.timestamps.findIndex((value) => value > this.timestamps[i]);
-        if (nextIndex == -1) nextIndex = data?.timestamps.length;
-        if (nextIndex == 0) {
+        if (nextIndex === -1) nextIndex = data?.timestamps.length;
+        if (nextIndex === 0) {
           fullData.push(null);
         } else {
           fullData.push(data.values[nextIndex - 1]);
@@ -338,7 +338,7 @@ export default class TableController implements TabController {
 
     // Update row height (not all platforms render the same way)
     let rowHeight = this.TABLE_BODY.children[1].getBoundingClientRect().height;
-    if (rowHeight > 0 && rowHeight != this.ROW_HEIGHT_PX) this.ROW_HEIGHT_PX = rowHeight;
+    if (rowHeight > 0 && rowHeight !== this.ROW_HEIGHT_PX) this.ROW_HEIGHT_PX = rowHeight;
   }
 
   getActiveFields(): string[] {
@@ -349,11 +349,11 @@ export default class TableController implements TabController {
     // Update based on selected & hovered times
     this.updateHighlights();
     let selectedTime = window.selection.getSelectedTime();
-    let placeholder = selectedTime == null ? 0 : selectedTime;
+    let placeholder = selectedTime === null ? 0 : selectedTime;
     this.INPUT_FIELD.placeholder = formatTimeWithMS(placeholder);
 
     // Stop if no data
-    if (this.timestamps.length == 0) return;
+    if (this.timestamps.length === 0) return;
 
     let atMaxRows = this.currentRange[1] - this.currentRange[0] + 1 >= this.MAX_ROWS;
     let rowOffset = 0;
@@ -362,7 +362,7 @@ export default class TableController implements TabController {
       if (this.timestamps.length > 0) {
         rowOffset = this.timestamps.length - this.currentRange[1] - 1;
       }
-    } else if (window.selection.getMode() == SelectionMode.Locked) {
+    } else if (window.selection.getMode() === SelectionMode.Locked) {
       // Always go to the latest data
       rowOffset = this.timestamps.length - 1 - this.currentRange[1];
     } else {
@@ -384,7 +384,7 @@ export default class TableController implements TabController {
     }
 
     // Update rows
-    if (rowOffset != 0) {
+    if (rowOffset !== 0) {
       if (this.currentRange[0] + rowOffset < 0) rowOffset = -this.currentRange[0];
       if (this.currentRange[1] + rowOffset > this.timestamps.length - 1) {
         rowOffset = this.timestamps.length - 1 - this.currentRange[1];
@@ -421,7 +421,7 @@ export default class TableController implements TabController {
     }
 
     // Scroll to bottom if locked
-    if (window.selection.getMode() == SelectionMode.Locked) {
+    if (window.selection.getMode() === SelectionMode.Locked) {
       this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
     }
   }

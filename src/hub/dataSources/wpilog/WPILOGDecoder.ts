@@ -42,7 +42,7 @@ export class WPILOGDecoderRecord {
 
   /** Returns true if the record is a start control record. */
   isControl(): boolean {
-    return this.entry == CONTROL_ENTRY;
+    return this.entry === CONTROL_ENTRY;
   }
 
   /** Returns the type of the control record. */
@@ -52,17 +52,17 @@ export class WPILOGDecoderRecord {
 
   /** Returns true if the record is a start control record. */
   isStart(): boolean {
-    return this.isControl() && this.data.length >= 17 && this.getControlType() == CONTROL_START;
+    return this.isControl() && this.data.length >= 17 && this.getControlType() === CONTROL_START;
   }
 
   /** Returns true if the record is a finish control record. */
   isFinish(): boolean {
-    return this.isControl() && this.data.length == 5 && this.getControlType() == CONTROL_FINISH;
+    return this.isControl() && this.data.length === 5 && this.getControlType() === CONTROL_FINISH;
   }
 
   /** Returns true if the record is a set metadata control record. */
   isSetMetadata(): boolean {
-    return this.isControl() && this.data.length >= 9 && this.getControlType() == CONTROL_SET_METADATA;
+    return this.isControl() && this.data.length >= 9 && this.getControlType() === CONTROL_SET_METADATA;
   }
 
   /** Decodes a start control record. */
@@ -108,25 +108,25 @@ export class WPILOGDecoderRecord {
 
   /** Decodes a data record as a boolean. */
   getBoolean(): boolean {
-    if (this.data.length != 1) throw "Not a boolean";
-    return this.data[0] != 0;
+    if (this.data.length !== 1) throw "Not a boolean";
+    return this.data[0] !== 0;
   }
 
   /** Decodes a data record as an integer. */
   getInteger(): number {
-    if (this.data.length != 8) throw "Not an integer";
+    if (this.data.length !== 8) throw "Not an integer";
     return Number(this.dataView.getBigInt64(0, true));
   }
 
   /** Decodes a data record as a float. */
   getFloat(): number {
-    if (this.data.length != 4) throw "Not a float";
+    if (this.data.length !== 4) throw "Not a float";
     return this.dataView.getFloat32(0, true);
   }
 
   /** Decodes a data record as a double. */
   getDouble(): number {
-    if (this.data.length != 8) throw "Not a double";
+    if (this.data.length !== 8) throw "Not a double";
     return this.dataView.getFloat64(0, true);
   }
 
@@ -139,14 +139,14 @@ export class WPILOGDecoderRecord {
   getBooleanArray(): boolean[] {
     let array: boolean[] = [];
     this.data.forEach((x) => {
-      array.push(x != 0);
+      array.push(x !== 0);
     });
     return array;
   }
 
   /** Decodes a data record as an integer array. */
   getIntegerArray(): number[] {
-    if (this.data.length % 8 != 0) throw "Not an integer array";
+    if (this.data.length % 8 !== 0) throw "Not an integer array";
     let array: number[] = [];
     for (let position = 0; position < this.data.length; position += 8) {
       array.push(Number(this.dataView.getBigInt64(position, true)));
@@ -156,7 +156,7 @@ export class WPILOGDecoderRecord {
 
   /** Decodes a data record as a float array. */
   getFloatArray(): number[] {
-    if (this.data.length % 4 != 0) throw "Not a float array";
+    if (this.data.length % 4 !== 0) throw "Not a float array";
     let array: number[] = [];
     for (let position = 0; position < this.data.length; position += 4) {
       array.push(this.dataView.getFloat32(position, true));
@@ -166,7 +166,7 @@ export class WPILOGDecoderRecord {
 
   /** Decodes a data record as a double array. */
   getDoubleArray(): number[] {
-    if (this.data.length % 8 != 0) throw "Not a double array";
+    if (this.data.length % 8 !== 0) throw "Not a double array";
     let array: number[] = [];
     for (let position = 0; position < this.data.length; position += 8) {
       array.push(this.dataView.getFloat64(position, true));
@@ -214,8 +214,8 @@ export class WPILOGDecoder {
   isValid(): boolean {
     return (
       this.data.length >= 12 &&
-      TEXT_DECODER.decode(this.data.subarray(0, 6)) == HEADER_STRING &&
-      this.getVersion() == HEADER_VERSION
+      TEXT_DECODER.decode(this.data.subarray(0, 6)) === HEADER_STRING &&
+      this.getVersion() === HEADER_VERSION
     );
   }
 

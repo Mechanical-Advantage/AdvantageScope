@@ -91,13 +91,13 @@ export default class MetadataController implements TabController {
       }
 
       cells[0].innerText = key.substring(1);
-      if (data[key].real != null) {
+      if (data[key].real !== null) {
         cells[1].innerText = data[key].real as string;
       } else {
         cells[1].innerText = "NA";
         cells[1].classList.add("no-data");
       }
-      if (data[key].replay != null) {
+      if (data[key].replay !== null) {
         cells[2].innerText = data[key].replay as string;
       } else {
         cells[2].innerText = "NA";

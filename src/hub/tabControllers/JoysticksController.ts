@@ -18,8 +18,10 @@ export default class JoysticksController extends TimelineVizController {
 
     // Get option inputs
     let cells = content.getElementsByClassName("joysticks-config")[0].firstElementChild?.lastElementChild?.children;
-    this.CONFIG_IDS = Array.from(cells == null ? [] : cells).map((cell) => cell.firstElementChild as HTMLInputElement);
-    this.CONFIG_LAYOUTS = Array.from(cells == null ? [] : cells).map(
+    this.CONFIG_IDS = Array.from(cells === undefined ? [] : cells).map(
+      (cell) => cell.firstElementChild as HTMLInputElement
+    );
+    this.CONFIG_LAYOUTS = Array.from(cells === undefined ? [] : cells).map(
       (cell) => cell.lastElementChild as HTMLInputElement
     );
 
@@ -31,7 +33,7 @@ export default class JoysticksController extends TimelineVizController {
       input.addEventListener("change", () => {
         if (Number(input.value) < 0) input.value = "0";
         if (Number(input.value) > 5) input.value = "5";
-        if (Number(input.value) % 1 != 0) input.value = Math.round(Number(input.value)).toString();
+        if (Number(input.value) % 1 !== 0) input.value = Math.round(Number(input.value)).toString();
       });
     });
   }

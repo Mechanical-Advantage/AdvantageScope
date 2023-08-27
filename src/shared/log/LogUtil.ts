@@ -24,7 +24,7 @@ export const MECHANISM_KEY = "Mechanism2d";
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
     return "null";
-  } else if (type == LoggableType.Raw) {
+  } else if (type === LoggableType.Raw) {
     let array: Uint8Array = value;
     let textArray: string[] = [];
     array.forEach((byte: number) => {
@@ -55,14 +55,14 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
     if (tempEnabledData) {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
-        values: tempEnabledData.values.map((controlWord) => controlWord % 2 == 1)
+        values: tempEnabledData.values.map((controlWord) => controlWord % 2 === 1)
       };
     }
   } else {
     let tempEnabledData = log.getBoolean(enabledKey, -Infinity, Infinity);
     if (!tempEnabledData) return null;
     enabledData = tempEnabledData;
-    if (enabledKey == "/DSLog/Status/DSDisabled") {
+    if (enabledKey === "/DSLog/Status/DSDisabled") {
       enabledData = {
         timestamps: enabledData.timestamps,
         values: enabledData.values.map((value) => !value)
@@ -105,18 +105,18 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
     axes: [],
     povs: []
   };
-  if (joystickId < 0 || joystickId > 5 || joystickId % 1 != 0) return state;
+  if (joystickId < 0 || joystickId > 5 || joystickId % 1 !== 0) return state;
 
   // Find joystick table
   let tablePrefix = "";
   let isAkit = false;
-  if (log.getFieldKeys().find((key) => key.startsWith(JOYSTICK_KEYS[0] + joystickId.toString())) != undefined) {
+  if (log.getFieldKeys().find((key) => key.startsWith(JOYSTICK_KEYS[0] + joystickId.toString())) !== undefined) {
     tablePrefix = JOYSTICK_KEYS[0] + joystickId.toString() + "/";
     isAkit = true;
-  } else if (log.getFieldKeys().find((key) => key.startsWith(JOYSTICK_KEYS[1] + joystickId.toString())) != undefined) {
+  } else if (log.getFieldKeys().find((key) => key.startsWith(JOYSTICK_KEYS[1] + joystickId.toString())) !== undefined) {
     tablePrefix = JOYSTICK_KEYS[1] + joystickId.toString() + "/";
     isAkit = true;
-  } else if (log.getFieldKeys().find((key) => key.startsWith(JOYSTICK_KEYS[2] + joystickId.toString())) != undefined) {
+  } else if (log.getFieldKeys().find((key) => key.startsWith(JOYSTICK_KEYS[2] + joystickId.toString())) !== undefined) {
     tablePrefix = JOYSTICK_KEYS[2] + joystickId.toString() + "/";
     isAkit = false;
   } else {
@@ -135,7 +135,7 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
     state.buttons = [];
     if (buttonValueData && buttonValueData.timestamps[0] <= time) {
       for (let i = 0; i < buttonCount; i++) {
-        state.buttons.push(((1 << i) & buttonValueData.values[0]) != 0);
+        state.buttons.push(((1 << i) & buttonValueData.values[0]) !== 0);
       }
     }
     let axisData = log.getNumberArray(tablePrefix + "AxisValues", time, time);
@@ -251,7 +251,11 @@ export function getMechanismState(log: Log, key: string, time: number): Mechanis
 
     // Find all roots and add children
     for (let [mechanismChildKey, mechanismChildTree] of Object.entries(log.getFieldTree(false, key + "/"))) {
-      if (mechanismChildKey.startsWith(".") || mechanismChildKey == "backgroundColor" || mechanismChildKey == "dims") {
+      if (
+        mechanismChildKey.startsWith(".") ||
+        mechanismChildKey === "backgroundColor" ||
+        mechanismChildKey === "dims"
+      ) {
         continue;
       }
       let translation: Translation2d = [
@@ -259,7 +263,7 @@ export function getMechanismState(log: Log, key: string, time: number): Mechanis
         getOrDefault(log, key + "/" + mechanismChildTree.children["y"].fullKey!, LoggableType.Number, time, 0)
       ];
       for (let [rootChildKey, rootChildTree] of Object.entries(mechanismChildTree.children)) {
-        if (rootChildKey == "x" || rootChildKey == "y") continue;
+        if (rootChildKey === "x" || rootChildKey === "y") continue;
         addLine(rootChildTree, translation, 0.0);
       }
     }

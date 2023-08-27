@@ -49,7 +49,7 @@ export default class MechanismController extends TimelineVizController {
         if (state !== null) states.push(state);
       });
 
-    if (states.length == 0) {
+    if (states.length === 0) {
       return null;
     } else {
       return mergeMechanismStates(states);

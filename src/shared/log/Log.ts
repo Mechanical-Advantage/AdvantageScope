@@ -27,14 +27,14 @@ export default class Log {
   public createBlankField(key: string, type: LoggableType) {
     if (key in this.fields) return;
     this.fields[key] = new LogField(type);
-    if (type == LoggableType.BooleanArray || type == LoggableType.NumberArray || type == LoggableType.StringArray) {
+    if (type === LoggableType.BooleanArray || type === LoggableType.NumberArray || type === LoggableType.StringArray) {
       this.arrayLengths[key] = 0;
     }
   }
 
   /** Updates the timestamp range to include the provided value. */
   updateTimestampRange(timestamp: number) {
-    if (this.timestampRange == null) {
+    if (this.timestampRange === null) {
       this.timestampRange = [timestamp, timestamp];
     } else if (timestamp < this.timestampRange[0]) {
       this.timestampRange[0] = timestamp;
@@ -52,7 +52,7 @@ export default class Log {
     Object.values(this.timestampSetCache).forEach((cache) => {
       if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
         let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
-        if (insertIndex == -1) {
+        if (insertIndex === -1) {
           insertIndex = cache.timestamps.length;
         }
         cache.timestamps.splice(insertIndex, 0, timestamp);
@@ -94,7 +94,7 @@ export default class Log {
     if (keys.length > 1) {
       // Multiple fields, read from cache if possible
       let saveCache = false;
-      if (uuid != null) {
+      if (uuid !== null) {
         if (uuid in this.timestampSetCache && arraysEqual(this.timestampSetCache[uuid].keys, keys)) {
           return [...this.timestampSetCache[uuid].timestamps];
         }
@@ -109,7 +109,7 @@ export default class Log {
       output = [...new Set(keys.map((key) => this.fields[key].getTimestamps()).flat())];
       output.sort((a, b) => a - b);
       if (saveCache && uuid) this.timestampSetCache[uuid].timestamps = output;
-    } else if (keys.length == 1) {
+    } else if (keys.length === 1) {
       // Single field
       output = [...this.fields[keys[0]].getTimestamps()];
     }
@@ -118,7 +118,7 @@ export default class Log {
 
   /** Returns the range of timestamps across all fields. */
   getTimestampRange(): [number, number] {
-    if (this.timestampRange == null) {
+    if (this.timestampRange === null) {
       return [...this.DEFAULT_TIMESTAMP_RANGE];
     } else {
       return [...this.timestampRange];
@@ -143,7 +143,7 @@ export default class Log {
         .slice(key.startsWith("/") ? 1 : 0)
         .split(new RegExp(/\/|:/))
         .forEach((table) => {
-          if (table == "") return;
+          if (table === "") return;
           if (!(table in position.children)) {
             position.children[table] = { fullKey: null, children: {} };
           }
@@ -199,7 +199,7 @@ export default class Log {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Raw);
     this.fields[key].putRaw(timestamp, value);
-    if (this.fields[key].getType() == LoggableType.Raw) {
+    if (this.fields[key].getType() === LoggableType.Raw) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
   }
@@ -209,7 +209,7 @@ export default class Log {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Boolean);
     this.fields[key].putBoolean(timestamp, value);
-    if (this.fields[key].getType() == LoggableType.Boolean) {
+    if (this.fields[key].getType() === LoggableType.Boolean) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
   }
@@ -219,7 +219,7 @@ export default class Log {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Number);
     this.fields[key].putNumber(timestamp, value);
-    if (this.fields[key].getType() == LoggableType.Number) {
+    if (this.fields[key].getType() === LoggableType.Number) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
   }
@@ -229,7 +229,7 @@ export default class Log {
     if (this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.String);
     this.fields[key].putString(timestamp, value);
-    if (this.fields[key].getType() == LoggableType.String) {
+    if (this.fields[key].getType() === LoggableType.String) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
   }
@@ -237,7 +237,7 @@ export default class Log {
   /** Writes a new BooleanArray value to the field. */
   putBooleanArray(key: string, timestamp: number, value: boolean[]) {
     this.createBlankField(key, LoggableType.BooleanArray);
-    if (this.fields[key].getType() == LoggableType.BooleanArray) {
+    if (this.fields[key].getType() === LoggableType.BooleanArray) {
       this.processTimestamp(key, timestamp);
       this.fields[key].putBooleanArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
@@ -257,7 +257,7 @@ export default class Log {
   /** Writes a new NumberArray value to the field. */
   putNumberArray(key: string, timestamp: number, value: number[]) {
     this.createBlankField(key, LoggableType.NumberArray);
-    if (this.fields[key].getType() == LoggableType.NumberArray) {
+    if (this.fields[key].getType() === LoggableType.NumberArray) {
       this.processTimestamp(key, timestamp);
       this.fields[key].putNumberArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {
@@ -277,7 +277,7 @@ export default class Log {
   /** Writes a new StringArray value to the field. */
   putStringArray(key: string, timestamp: number, value: string[]) {
     this.createBlankField(key, LoggableType.StringArray);
-    if (this.fields[key].getType() == LoggableType.StringArray) {
+    if (this.fields[key].getType() === LoggableType.StringArray) {
       this.processTimestamp(key, timestamp);
       this.fields[key].putStringArray(timestamp, value);
       if (value.length > this.arrayLengths[key]) {

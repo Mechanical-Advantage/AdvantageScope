@@ -69,7 +69,7 @@ export default class Sidebar {
 
     // Set up shadow when scrolling
     this.SIDEBAR.addEventListener("scroll", () => {
-      this.SIDEBAR_SHADOW.style.opacity = this.SIDEBAR.scrollTop == 0 ? "0" : "1";
+      this.SIDEBAR_SHADOW.style.opacity = this.SIDEBAR.scrollTop === 0 ? "0" : "1";
     });
   }
 
@@ -83,7 +83,7 @@ export default class Sidebar {
 
   /** Restores to the provided state. */
   restoreState(state: SidebarState) {
-    let widthEqual = state.width == this.sidebarWidth;
+    let widthEqual = state.width === this.sidebarWidth;
     let expandedSet = new Set<string>(state.expanded);
     let expandedEqual = setsEqual(expandedSet, this.expandedFields);
     this.sidebarWidth = state.width;
@@ -121,7 +121,7 @@ export default class Sidebar {
       this.selectGroupClearCallbacks = [];
       let tree = window.log.getFieldTree();
       let rootKeys = Object.keys(tree);
-      if (rootKeys.length == 1 && tree[rootKeys[0]].fullKey === null) {
+      if (rootKeys.length === 1 && tree[rootKeys[0]].fullKey === null) {
         // If only one table, use it as the root
         tree = tree[rootKeys[0]].children;
       }
@@ -136,7 +136,7 @@ export default class Sidebar {
     // Update title
     let range = window.log.getTimestampRange();
     let fieldCount = window.log.getFieldCount();
-    if (fieldCount == 0) {
+    if (fieldCount === 0) {
       this.SIDEBAR_TITLE.innerText = "No data available";
     } else {
       let runtime = range[1] - range[0];
@@ -152,7 +152,7 @@ export default class Sidebar {
       this.SIDEBAR_TITLE.innerText =
         fieldCount.toString() +
         " field" +
-        (fieldCount == 1 ? "" : "s") +
+        (fieldCount === 1 ? "" : "s") +
         ", " +
         Math.round(runtime).toString() +
         runtimeUnit +
@@ -218,7 +218,7 @@ export default class Sidebar {
     fieldElement.appendChild(label);
     label.classList.add("field-item-label");
     if (
-      (indent == 0 || (indent == this.INDENT_SIZE_PX && fullTitle.startsWith("/AdvantageKit"))) &&
+      (indent === 0 || (indent === this.INDENT_SIZE_PX && fullTitle.startsWith("/AdvantageKit"))) &&
       this.KNOWN_KEYS.includes(title)
     ) {
       label.classList.add("known");
@@ -248,7 +248,7 @@ export default class Sidebar {
         mouseDownInfo = [event.clientX, event.clientY, event.offsetX, event.offsetY];
       });
       window.addEventListener("mousemove", (event) => {
-        if (mouseDownInfo != null) {
+        if (mouseDownInfo !== null) {
           if (
             Math.abs(event.clientX - mouseDownInfo[0]) >= this.FIELD_DRAG_THRESHOLD_PX ||
             Math.abs(event.clientY - mouseDownInfo[1]) >= this.FIELD_DRAG_THRESHOLD_PX
@@ -259,14 +259,14 @@ export default class Sidebar {
         }
       });
       label.addEventListener("mouseup", (event) => {
-        if (mouseDownInfo != null) {
+        if (mouseDownInfo !== null) {
           if (
             (event.ctrlKey || event.metaKey) &&
             Math.abs(event.clientX - mouseDownInfo[0]) < this.FIELD_DRAG_THRESHOLD_PX &&
             Math.abs(event.clientY - mouseDownInfo[1]) < this.FIELD_DRAG_THRESHOLD_PX
           ) {
             let index = this.selectGroup.indexOf(field.fullKey !== null ? field.fullKey : "");
-            if (index == -1) {
+            if (index === -1) {
               this.selectGroup.push(field.fullKey !== null ? field.fullKey : "");
               label.style.fontWeight = "bolder";
             } else {
@@ -316,7 +316,7 @@ export default class Sidebar {
         if (firstExpand) {
           firstExpand = false;
           let childKeys = Object.keys(field.children);
-          if (fullTitle == "/AdvantageKit") {
+          if (fullTitle === "/AdvantageKit") {
             // Apply hidden and known keys
             childKeys = childKeys
               .filter((key) => !this.HIDDEN_KEYS.includes(key))

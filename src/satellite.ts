@@ -30,14 +30,14 @@ let lastAspectRatio: number | null = null;
 let lastCommand: any = null;
 
 window.sendMainMessage = (name: string, data?: any) => {
-  if (messagePort != null) {
+  if (messagePort !== null) {
     let message: NamedMessage = { name: name, data: data };
     messagePort.postMessage(message);
   }
 };
 
 window.addEventListener("message", (event) => {
-  if (event.source == window && event.data == "port") {
+  if (event.source === window && event.data === "port") {
     messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
@@ -54,13 +54,13 @@ window.addEventListener("message", (event) => {
           type = message.data as TabType;
 
           // Update visible elements
-          (document.getElementById("odometry") as HTMLElement).hidden = type != TabType.Odometry;
-          (document.getElementById("threeDimension") as HTMLElement).hidden = type != TabType.ThreeDimension;
-          (document.getElementById("video") as HTMLElement).hidden = type != TabType.Video;
-          (document.getElementById("joysticks") as HTMLElement).hidden = type != TabType.Joysticks;
-          (document.getElementById("swerve") as HTMLElement).hidden = type != TabType.Swerve;
-          (document.getElementById("mechanism") as HTMLElement).hidden = type != TabType.Mechanism;
-          (document.getElementById("points") as HTMLElement).hidden = type != TabType.Points;
+          (document.getElementById("odometry") as HTMLElement).hidden = type !== TabType.Odometry;
+          (document.getElementById("threeDimension") as HTMLElement).hidden = type !== TabType.ThreeDimension;
+          (document.getElementById("video") as HTMLElement).hidden = type !== TabType.Video;
+          (document.getElementById("joysticks") as HTMLElement).hidden = type !== TabType.Joysticks;
+          (document.getElementById("swerve") as HTMLElement).hidden = type !== TabType.Swerve;
+          (document.getElementById("mechanism") as HTMLElement).hidden = type !== TabType.Mechanism;
+          (document.getElementById("points") as HTMLElement).hidden = type !== TabType.Points;
 
           // Create visualizer
           switch (type) {
@@ -102,7 +102,7 @@ window.addEventListener("message", (event) => {
           // Update title
           let titleElement = document.getElementsByTagName("title")[0] as HTMLElement;
           let newTitle = message.data.title;
-          if (newTitle != title) {
+          if (newTitle !== title) {
             titleElement.innerHTML =
               (type ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; AdvantageScope";
             title = newTitle;
@@ -117,7 +117,7 @@ window.addEventListener("message", (event) => {
           break;
 
         case "set-3d-camera":
-          if (type == TabType.ThreeDimension) {
+          if (type === TabType.ThreeDimension) {
             (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
           }
           break;
@@ -131,7 +131,7 @@ window.addEventListener("message", (event) => {
 });
 
 window.addEventListener("resize", () => {
-  if (visualizer == null || lastCommand == null) {
+  if (visualizer === null || lastCommand === null) {
     return;
   }
   let aspectRatio = visualizer.render(lastCommand);
@@ -139,7 +139,7 @@ window.addEventListener("resize", () => {
 });
 
 function processAspectRatio(aspectRatio: number | null) {
-  if (aspectRatio != lastAspectRatio) {
+  if (aspectRatio !== lastAspectRatio) {
     lastAspectRatio = aspectRatio;
     if (aspectRatio !== null) {
       if (aspectRatio > MAX_ASPECT_RATIO) aspectRatio = MAX_ASPECT_RATIO;

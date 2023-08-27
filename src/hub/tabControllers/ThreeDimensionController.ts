@@ -102,14 +102,14 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.FIELD_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.assets?.field3ds.find((field) => field.name == this.FIELD.value)?.sourceUrl
+        window.assets?.field3ds.find((field) => field.name === this.FIELD.value)?.sourceUrl
       );
     });
     this.ROBOT.addEventListener("change", () => this.updateFieldRobotExtraControls());
     this.ROBOT_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.assets?.robots.find((robot) => robot.name == this.ROBOT.value)?.sourceUrl
+        window.assets?.robots.find((robot) => robot.name === this.ROBOT.value)?.sourceUrl
       );
     });
   }
@@ -161,13 +161,13 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   /** Updates the alliance and source buttons based on the selected value. */
   private updateFieldRobotExtraControls() {
-    let fieldConfig = window.assets?.field3ds.find((game) => game.name == this.FIELD.value);
-    this.FIELD_SOURCE_LINK.hidden = fieldConfig == undefined || fieldConfig.sourceUrl == undefined;
+    let fieldConfig = window.assets?.field3ds.find((game) => game.name === this.FIELD.value);
+    this.FIELD_SOURCE_LINK.hidden = fieldConfig === undefined || fieldConfig.sourceUrl === undefined;
     if (this.FIELD.value === "Axes") this.ALLIANCE.value = "blue";
     this.ALLIANCE.hidden = this.FIELD.value === "Axes";
 
-    let robotConfig = window.assets?.robots.find((game) => game.name == this.ROBOT.value);
-    this.ROBOT_SOURCE_LINK.hidden = robotConfig != undefined && robotConfig.sourceUrl == undefined;
+    let robotConfig = window.assets?.robots.find((game) => game.name === this.ROBOT.value);
+    this.ROBOT_SOURCE_LINK.hidden = robotConfig !== undefined && robotConfig.sourceUrl === undefined;
   }
 
   get options(): { [id: string]: any } {
@@ -211,7 +211,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     // Returns the current value for a 3D field
     let get3DValue = (key: string): Pose3d[] => {
       let logData = window.log.getNumberArray(key, time, time);
-      if (logData && logData.timestamps[0] <= time && logData.values[0].length % 7 == 0) {
+      if (logData && logData.timestamps[0] <= time && logData.values[0].length % 7 === 0) {
         let poses: Pose3d[] = [];
         for (let i = 0; i < logData.values[0].length; i += 7) {
           poses.push({
@@ -239,10 +239,10 @@ export default class ThreeDimensionController extends TimelineVizController {
       if (
         logData &&
         logData.timestamps[0] <= time &&
-        (logData.values[0].length == 2 || logData.values[0].length % 3 == 0)
+        (logData.values[0].length === 2 || logData.values[0].length % 3 === 0)
       ) {
         let poses: Pose3d[] = [];
-        if (logData.values[0].length == 2) {
+        if (logData.values[0].length === 2) {
           poses.push(
             pose2dTo3d(
               {

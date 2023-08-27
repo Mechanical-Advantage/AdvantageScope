@@ -21,7 +21,7 @@ export default class OdometryVisualizer implements Visualizer {
     // Set up canvas
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let isVertical =
-      command.options.orientation == "blue bottom, red top" || command.options.orientation == "red bottom, blue top";
+      command.options.orientation === "blue bottom, red top" || command.options.orientation === "red bottom, blue top";
     let width = isVertical ? this.CONTAINER.clientHeight : this.CONTAINER.clientWidth;
     let height = isVertical ? this.CONTAINER.clientWidth : this.CONTAINER.clientHeight;
     this.CANVAS.style.width = width.toString() + "px";
@@ -48,9 +48,9 @@ export default class OdometryVisualizer implements Visualizer {
     }
 
     // Get game data and update image element
-    let gameData = window.assets?.field2ds.find((game) => game.name == command.options.game);
+    let gameData = window.assets?.field2ds.find((game) => game.name === command.options.game);
     if (!gameData) return null;
-    if (gameData.path != this.lastImageSource) {
+    if (gameData.path !== this.lastImageSource) {
       this.lastImageSource = gameData.path;
       this.IMAGE.src = gameData.path;
     }
@@ -304,8 +304,8 @@ export default class OdometryVisualizer implements Visualizer {
             robotLengthPixels * (-0.15 + 0.3 * index),
             robotLengthPixels * -0.15
           ]);
-          let crossbarLeft = transformPx(position, rotation, [0, robotLengthPixels * (index == 0 ? 0.15 : 0.1)]);
-          let crossbarRight = transformPx(position, rotation, [0, robotLengthPixels * -(index == 0 ? 0.15 : 0.1)]);
+          let crossbarLeft = transformPx(position, rotation, [0, robotLengthPixels * (index === 0 ? 0.15 : 0.1)]);
+          let crossbarRight = transformPx(position, rotation, [0, robotLengthPixels * -(index === 0 ? 0.15 : 0.1)]);
           context.beginPath();
           context.moveTo(arrowBack[0], arrowBack[1]);
           context.lineTo(arrowFront[0], arrowFront[1]);

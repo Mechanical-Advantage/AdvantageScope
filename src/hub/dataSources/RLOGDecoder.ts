@@ -22,7 +22,7 @@ export default class RLOGDecoder {
 
     try {
       // Check log revision
-      if (this.logRevision == null) {
+      if (this.logRevision === null) {
         this.logRevision = dataArray[shiftOffset(1)];
         if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
           return false;
@@ -34,13 +34,13 @@ export default class RLOGDecoder {
         if (offset >= dataArray.length) break mainLoop; // No more data, so we can't start a new entry
         let timestamp = dataBuffer.getFloat64(shiftOffset(8));
         if (
-          this.lastTimestamp != null &&
+          this.lastTimestamp !== null &&
           (isNaN(timestamp) ||
-            timestamp == null ||
+            timestamp === null ||
             timestamp < this.lastTimestamp + this.MIN_TIMESTAMP_STEP ||
             timestamp > this.lastTimestamp + this.MAX_TIMESTAMP_STEP)
         ) {
-          if (this.lastTimestamp != this.lastTimestampCorrupted) {
+          if (this.lastTimestamp !== this.lastTimestampCorrupted) {
             console.warn(
               "Corrupted log data skipped near " +
                 this.lastTimestamp.toFixed(2) +
@@ -57,7 +57,7 @@ export default class RLOGDecoder {
 
         readLoop: while (true) {
           let type = dataArray[shiftOffset(1)];
-          if (type == undefined) break readLoop; // This was the last cycle, save the data
+          if (type === undefined) break readLoop; // This was the last cycle, save the data
 
           switch (type) {
             case 0: // New timestamp
@@ -101,7 +101,7 @@ export default class RLOGDecoder {
                   }
                   break;
                 case 1: // Boolean
-                  log.putBoolean(key, timestamp, dataArray[shiftOffset(1)] != 0);
+                  log.putBoolean(key, timestamp, dataArray[shiftOffset(1)] !== 0);
                   break;
                 case 9: // Byte
                   log.putRaw(key, timestamp, new Uint8Array([dataArray[shiftOffset(1)]]));
@@ -122,7 +122,7 @@ export default class RLOGDecoder {
                   let booleanArrayLength = dataBuffer.getInt16(shiftOffset(2));
                   let booleanArray: boolean[] = [];
                   for (let i = 0; i < booleanArrayLength; i++) {
-                    booleanArray.push(dataArray[shiftOffset(1)] != 0);
+                    booleanArray.push(dataArray[shiftOffset(1)] !== 0);
                   }
                   log.putBooleanArray(key, timestamp, booleanArray);
                   break;

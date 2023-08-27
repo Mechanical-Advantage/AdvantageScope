@@ -93,7 +93,7 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   restoreState(state: TimelineVisualizerState) {
-    if (state.type != this.type) return;
+    if (state.type !== this.type) return;
     this.fields = state.fields;
     this.listFields = state.listFields;
     this.options = state.options;
@@ -117,7 +117,7 @@ export default abstract class TimelineVizController implements TabController {
         if (active && validType) {
           if (dragData.end) {
             let key = dragData.data.fields[0];
-            if (configIndex == 0) {
+            if (configIndex === 0) {
               // Single field
               this.fields[index] = key;
             } else {
@@ -127,7 +127,7 @@ export default abstract class TimelineVizController implements TabController {
               let availableOptions = this.listConfig[index].options[typeIndex].filter(
                 (option) => !selectedOptions.includes(option)
               );
-              if (availableOptions.length == 0) availableOptions.push(this.listConfig[index].options[typeIndex][0]);
+              if (availableOptions.length === 0) availableOptions.push(this.listConfig[index].options[typeIndex][0]);
               this.listFields[index].push({
                 type: availableOptions[0],
                 key: key,
@@ -168,7 +168,7 @@ export default abstract class TimelineVizController implements TabController {
       let textElement = field.element.lastElementChild as HTMLElement;
       let key = this.fields[index];
 
-      if (key == null) {
+      if (key === null) {
         textElement.innerText = "<Drag Here>";
         textElement.style.textDecoration = "";
       } else if (!this.keyAvailable(key)) {
@@ -182,7 +182,7 @@ export default abstract class TimelineVizController implements TabController {
 
     // Exit if list fields and available fields have not changed
     let listFieldsStr = JSON.stringify(this.listFields);
-    if (arraysEqual(allKeys, this.lastAllKeys) && listFieldsStr == this.lastListFieldsStr) {
+    if (arraysEqual(allKeys, this.lastAllKeys) && listFieldsStr === this.lastListFieldsStr) {
       return;
     }
     this.lastAllKeys = allKeys;
@@ -196,7 +196,7 @@ export default abstract class TimelineVizController implements TabController {
       }
 
       // Add filler if necessary
-      if (this.listFields[index].length == 0) {
+      if (this.listFields[index].length === 0) {
         let fillerElement = document.createElement("div");
         fillerElement.classList.add("list-filler");
         fillerElement.innerText = "<Drag Here>";
@@ -268,7 +268,7 @@ export default abstract class TimelineVizController implements TabController {
     let selectionMode = window.selection.getMode();
     let hoveredTime = window.selection.getHoveredTime();
     let selectedTime = window.selection.getSelectedTime();
-    if (selectionMode == SelectionMode.Playback || selectionMode == SelectionMode.Locked) {
+    if (selectionMode === SelectionMode.Playback || selectionMode === SelectionMode.Locked) {
       time = selectedTime as number;
     } else if (hoveredTime !== null) {
       time = hoveredTime;
@@ -282,7 +282,7 @@ export default abstract class TimelineVizController implements TabController {
     while (this.TIMELINE_MARKER_CONTAINER.firstChild) {
       this.TIMELINE_MARKER_CONTAINER.removeChild(this.TIMELINE_MARKER_CONTAINER.firstChild);
     }
-    let isLocked = window.selection.getMode() == SelectionMode.Locked;
+    let isLocked = window.selection.getMode() === SelectionMode.Locked;
     if (isLocked) range[1] = selectedTime as number;
     this.TIMELINE_INPUT.min = range[0].toString();
     this.TIMELINE_INPUT.max = range[1].toString();
@@ -295,7 +295,7 @@ export default abstract class TimelineVizController implements TabController {
           let div = document.createElement("div");
           this.TIMELINE_MARKER_CONTAINER.appendChild(div);
           let leftPercent = ((enabledData.timestamps[i] - range[0]) / (range[1] - range[0])) * 100;
-          let nextTime = i == enabledData.values.length - 1 ? range[1] : enabledData.timestamps[i + 1];
+          let nextTime = i === enabledData.values.length - 1 ? range[1] : enabledData.timestamps[i + 1];
           let widthPercent = ((nextTime - enabledData.timestamps[i]) / (range[1] - range[0])) * 100;
           div.style.left = leftPercent.toString() + "%";
           div.style.width = widthPercent.toString() + "%";

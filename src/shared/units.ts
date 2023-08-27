@@ -59,12 +59,12 @@ export function convert(value: number, from: string, to: string): number {
   if (!(from in ALL_UNITS && to in ALL_UNITS)) throw "Invalid unit provided";
 
   let standardValue;
-  if (from == "fahrenheit") {
+  if (from === "fahrenheit") {
     standardValue = (value - 32) / 1.8;
   } else {
     standardValue = value / ALL_UNITS[from];
   }
-  if (to == "fahrenheit") {
+  if (to === "fahrenheit") {
     return standardValue * 1.8 + 32;
   } else {
     return standardValue * ALL_UNITS[to];
@@ -72,7 +72,7 @@ export function convert(value: number, from: string, to: string): number {
 }
 
 export function convertWithPreset(value: number, preset: UnitConversionPreset) {
-  if (preset.type == null || preset.from == undefined || preset.to == undefined) {
+  if (preset.type === null || preset.from === undefined || preset.to === undefined) {
     return value * preset.factor;
   } else {
     return convert(value, preset.from, preset.to) * preset.factor;

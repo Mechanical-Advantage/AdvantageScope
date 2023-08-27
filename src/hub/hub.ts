@@ -86,14 +86,14 @@ function setLoading(progress: number | null) {
 
 function updateFancyWindow() {
   // Using fancy title bar?
-  if (window.platform == "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
+  if (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
     document.body.classList.add("fancy-title-bar");
   } else {
     document.body.classList.remove("fancy-title-bar");
   }
 
   // Using fancy sidebar?
-  if (window.platform == "darwin") {
+  if (window.platform === "darwin") {
     document.body.classList.add("fancy-side-bar");
   } else {
     document.body.classList.remove("fancy-side-bar");
@@ -185,7 +185,7 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
   historicalSource.openFile(
     path,
     (status: HistoricalDataSourceStatus) => {
-      let components = path.split(window.platform == "win32" ? "\\" : "/");
+      let components = path.split(window.platform === "win32" ? "\\" : "/");
       let friendlyName = components[components.length - 1];
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
@@ -301,7 +301,7 @@ function startLive(isSim: boolean) {
           break;
       }
 
-      if (status != LiveDataSourceStatus.Active) {
+      if (status !== LiveDataSourceStatus.Active) {
         window.selection.setLiveDisconnected();
       }
     },
@@ -335,14 +335,14 @@ document.addEventListener("drop", (event) => {
 // MAIN MESSAGE HANDLING
 
 window.sendMainMessage = (name: string, data?: any) => {
-  if (window.messagePort != null) {
+  if (window.messagePort !== null) {
     let message: NamedMessage = { name: name, data: data };
     window.messagePort.postMessage(message);
   }
 };
 
 window.addEventListener("message", (event) => {
-  if (event.source == window && event.data == "port") {
+  if (event.source === window && event.data === "port") {
     window.messagePort = event.ports[0];
     window.messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
@@ -405,13 +405,13 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "historical-data":
-      if (historicalSource != null) {
+      if (historicalSource !== null) {
         historicalSource.handleMainMessage(message.data);
       }
       break;
 
     case "live-rlog-data":
-      if (liveSource != null) {
+      if (liveSource !== null) {
         liveSource.handleMainMessage(message.data);
       }
       break;

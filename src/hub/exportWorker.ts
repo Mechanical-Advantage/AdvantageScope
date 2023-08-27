@@ -31,7 +31,7 @@ self.onmessage = (event) => {
       Object.keys(data)
         .sort()
         .forEach((key) => {
-          if (data[key].fullKey != null) {
+          if (data[key].fullKey !== null) {
             fields.push(data[key].fullKey as string);
           }
           if (Object.keys(data[key].children).length > 0) {
@@ -50,7 +50,7 @@ self.onmessage = (event) => {
           let fieldSeries = field.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
           if (fieldSeries.length < prefixSeries.length) return;
           if (
-            prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() == prefix.toLowerCase()) &&
+            prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) &&
             !filteredFields.includes(field)
           ) {
             filteredFields.push(field);
@@ -68,7 +68,7 @@ self.onmessage = (event) => {
             log,
             fields,
             progress,
-            options.samplingMode == "fixed" ? options.samplingPeriod / 1000 : null
+            options.samplingMode === "fixed" ? options.samplingPeriod / 1000 : null
           )
         );
         break;
@@ -117,9 +117,9 @@ function generateCsvTable(
     timestamps.forEach((timestamp, timestampIndex) => {
       if (fieldData === undefined || fieldType === undefined) return;
       let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
-      if (nextIndex == -1) nextIndex = fieldData.timestamps.length;
+      if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
       let value: any = null;
-      if (nextIndex != 0) {
+      if (nextIndex !== 0) {
         value = fieldData.values[nextIndex - 1];
       }
       data[timestampIndex + 1].push(getLogValueText(value, fieldType).replaceAll(",", ";"));
