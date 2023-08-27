@@ -10,6 +10,7 @@ export default class RLOGDecoder {
   private logRevision: number | null = null;
   private lastTimestamp: number | null = null;
   private lastTimestampCorrupted: number | null = null;
+  private lastProgressTimestamp = 0;
   private keyIDs: { [id: number]: string } = {};
 
   decode(log: Log, dataArray: Buffer, progressCallback?: (progress: number) => void): boolean {
@@ -166,7 +167,11 @@ export default class RLOGDecoder {
 
           // Send progress update
           if (progressCallback !== undefined) {
-            progressCallback(offset / dataBuffer.byteLength);
+            let now = new Date().getTime();
+            if (now - this.lastProgressTimestamp > 1000 / 60) {
+              this.lastProgressTimestamp = now;
+              progressCallback(offset / dataBuffer.byteLength);
+            }
           }
         }
       }

@@ -24,6 +24,7 @@ self.onmessage = (event) => {
   let totalBytes = (payload[0] as Uint8Array).byteLength;
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
+  let lastProgressTimestamp = new Date().getTime();
   try {
     reader.forEach((record, byteCount) => {
       if (record.isControl()) {
@@ -107,7 +108,11 @@ self.onmessage = (event) => {
       }
 
       // Send progress update
-      progress(byteCount / totalBytes);
+      let now = new Date().getTime();
+      if (now - lastProgressTimestamp > 1000 / 60) {
+        lastProgressTimestamp = now;
+        progress(byteCount / totalBytes);
+      }
     });
   } catch (exception) {
     console.error(exception);

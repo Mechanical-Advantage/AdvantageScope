@@ -196,7 +196,7 @@ export default class Log {
 
   /** Writes a new Raw value to the field. */
   putRaw(key: string, timestamp: number, value: Uint8Array) {
-    if (this.arrayItemFields.includes(key)) return;
+    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Raw);
     this.fields[key].putRaw(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
@@ -206,7 +206,7 @@ export default class Log {
 
   /** Writes a new Boolean value to the field. */
   putBoolean(key: string, timestamp: number, value: boolean) {
-    if (this.arrayItemFields.includes(key)) return;
+    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Boolean);
     this.fields[key].putBoolean(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Boolean) {
@@ -216,7 +216,7 @@ export default class Log {
 
   /** Writes a new Number value to the field. */
   putNumber(key: string, timestamp: number, value: number) {
-    if (this.arrayItemFields.includes(key)) return;
+    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.Number);
     this.fields[key].putNumber(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Number) {
@@ -226,7 +226,7 @@ export default class Log {
 
   /** Writes a new String value to the field. */
   putString(key: string, timestamp: number, value: string) {
-    if (this.arrayItemFields.includes(key)) return;
+    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
     this.createBlankField(key, LoggableType.String);
     this.fields[key].putString(timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {

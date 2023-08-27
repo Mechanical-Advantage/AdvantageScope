@@ -109,12 +109,6 @@ export default class LogField {
   private putData(timestamp: number, value: any) {
     if (value === null) return;
 
-    // Check if the timestamp already exists
-    if (this.data.timestamps.includes(timestamp)) {
-      this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
-      return;
-    }
-
     // Find position to insert based on timestamp
     let insertIndex: number;
     if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
@@ -122,12 +116,20 @@ export default class LogField {
       insertIndex = this.data.timestamps.length;
     } else {
       // Adding in the middle, find where to insert it
-      insertIndex = this.data.timestamps.findIndex((x) => x > timestamp);
-      if (insertIndex === -1) {
-        insertIndex = this.data.timestamps.length;
+      let alreadyExists = false;
+      insertIndex =
+        this.data.timestamps.findLastIndex((x) => {
+          if (alreadyExists) return;
+          if (x === timestamp) alreadyExists = true;
+          return x < timestamp;
+        }) + 1;
+      if (alreadyExists) {
+        this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
+        return;
       }
     }
 
+    // Compare to adjacent values
     if (insertIndex > 0 && this.areEqual(this.type, value, this.data.values[insertIndex - 1])) {
       // Same as the previous value
     } else if (
