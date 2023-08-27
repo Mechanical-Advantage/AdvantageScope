@@ -115,7 +115,7 @@ The following configuration options are available:
 - **Robot:** The robot model to use. We recommend using the "KitBot" model for devices with limited graphical performance. To add a custom field or robot model, see ["Custom Assets"](/docs/CUSTOM-ASSETS.md).
 - **Units:** The linear and angular units of the provided fields. Meters, inches, radians, and degrees are supported. The rotations units do no affect 3D poses.
 
-The 3D field also supports an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). The available options for the "3D Mode" are:
+The 3D field also supports an "efficiency" mode, which optionally reduces the framerate and resolution when enabled from the AdvantageScope preferences. Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Settings..." (macOS). The available options for the "3D Mode" are:
 
 - **Prioritize quality:** Always render at the screen's native resolution and framerate.
 - **Prioritize efficiency:** Always lower the framerate and resolution to reduce battery consumption and provide more consistent performance on low-end devices.
