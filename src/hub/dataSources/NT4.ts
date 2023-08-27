@@ -1,4 +1,4 @@
-import { serialize, deserialize } from "./msgpack";
+import { Decoder, Encoder } from "@msgpack/msgpack";
 
 const typestrIdxLookup: { [id: string]: number } = {
   boolean: 0,
@@ -104,6 +104,9 @@ export class NT4_Client {
   private subscriptions: Map<number, NT4_Subscription> = new Map();
   private publishedTopics: Map<string, NT4_Topic> = new Map();
   private serverTopics: Map<string, NT4_Topic> = new Map();
+
+  private msgpackDecoder = new Decoder();
+  private msgpackEncoder = new Encoder();
 
   /**
    * Creates a new NT4 client without connecting.
@@ -316,7 +319,7 @@ export class NT4_Client {
     if (!topicObj) {
       throw 'Topic "' + topic + '" not found';
     }
-    let txData = serialize([topicObj.uid, timestamp, topicObj.getTypeIdx(), value]);
+    let txData = this.msgpackEncoder.encode([topicObj.uid, timestamp, topicObj.getTypeIdx(), value]);
     this.ws_sendBinary(txData);
   }
 
@@ -344,7 +347,7 @@ export class NT4_Client {
 
   private ws_sendTimestamp() {
     let timeToSend = this.getClientTime_us();
-    let txData = serialize([-1, 0, typestrIdxLookup["int"], timeToSend]);
+    let txData = this.msgpackEncoder.encode([-1, 0, typestrIdxLookup["int"], timeToSend]);
     this.ws_sendBinary(txData);
   }
 
@@ -533,11 +536,11 @@ export class NT4_Client {
     } else {
       // MSGPack
       this.rxLengthCounter += event.data.byteLength;
-      deserialize(event.data, { multiple: true }).forEach((unpackedData: number[]) => {
-        let topicID = unpackedData[0];
-        let timestamp_us = unpackedData[1];
-        let typeIdx = unpackedData[2];
-        let value = unpackedData[3];
+      for (let unpackedData of this.msgpackDecoder.decodeMulti(event.data)) {
+        let topicID = (unpackedData as unknown[])[0] as number;
+        let timestamp_us = (unpackedData as unknown[])[1] as number;
+        let typeIdx = (unpackedData as unknown[])[2] as number;
+        let value = (unpackedData as unknown[])[3];
 
         if (topicID >= 0) {
           let topic: NT4_Topic | null = null;
@@ -553,11 +556,11 @@ export class NT4_Client {
           }
           this.onNewTopicData(topic, timestamp_us, value);
         } else if (topicID === -1) {
-          this.ws_handleReceiveTimestamp(timestamp_us, value);
+          this.ws_handleReceiveTimestamp(timestamp_us, value as number);
         } else {
           console.warn("[NT4] Ignoring binary data - invalid topic ID " + topicID.toString());
         }
-      });
+      }
     }
   }
 

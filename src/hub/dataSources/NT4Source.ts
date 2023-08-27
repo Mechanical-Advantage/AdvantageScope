@@ -1,9 +1,8 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
-import { TYPE_KEY } from "../../shared/log/LogUtil";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
-import { NT4_Client, NT4_Topic } from "./nt4/NT4";
+import { NT4_Client, NT4_Topic } from "./NT4";
 import Schemas from "./schema/Schemas";
 
 export default class NT4Source extends LiveDataSource {

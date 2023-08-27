@@ -13,6 +13,7 @@ function bundle(input, output, isMain, external = []) {
       file: "bundles/" + output,
       format: isMain ? "cjs" : "es"
     },
+    context: "this",
     plugins: [
       typescript(),
       nodeResolve(),
