@@ -1938,7 +1938,12 @@ app.whenReady().then(() => {
   }
   argv = argv.filter((arg) => !arg.startsWith("--"));
   if (argv.length > 0) {
-    sendMessage(window, "open-file", argv[0]);
+    firstOpenPath = argv[0];
+  }
+
+  // Open file if exists
+  if (firstOpenPath !== null) {
+    sendMessage(window, "open-file", firstOpenPath);
   }
 
   // Create new window if activated while none exist
@@ -1958,6 +1963,7 @@ app.on("window-all-closed", () => {
 
 // macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (_, path) => {
+  console.log(path);
   if (app.isReady()) {
     // Already running, create a new window
     let window = createHubWindow();
