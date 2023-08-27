@@ -56,6 +56,7 @@ jobs:
             platform: { displayName: "Linux/snap", os: ubuntu-latest, shortName: "linux", artifactExt: "snap" }
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
+    needs: compile
     runs-on: ${{ matrix.platform.os }}
 
     steps:
@@ -76,12 +77,6 @@ jobs:
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-      - name: Wait for compile
-        uses: yogeshlonkar/wait-for-jobs@v0
-        with:
-          gh-token: ${{ secrets.GITHUB_TOKEN }}
-          jobs: "Check & Compile"
-          ttl: "10"
       - name: Download bundles
         uses: actions/download-artifact@v3
         with:
