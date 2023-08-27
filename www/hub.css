@@ -1407,6 +1407,14 @@ div.odometry-canvas-container canvas {
   transform: translate(-50%, -50%);
 }
 
+div.odometry-canvas-container div {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  top: 0%;
+  height: 100%;
+}
+
 canvas.three-dimension-canvas:not(.fixed) {
   position: absolute;
   left: 0%;

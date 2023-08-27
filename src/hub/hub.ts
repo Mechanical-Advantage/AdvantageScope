@@ -81,7 +81,6 @@ function setLoading(progress: number | null) {
   let showLoadingGlowProperty = progress !== null ? "1" : "0";
   if (document.documentElement.style.getPropertyValue("--show-loading-glow") !== showLoadingGlowProperty) {
     document.documentElement.style.setProperty("--show-loading-glow", showLoadingGlowProperty);
-    console.log(showLoadingGlowProperty);
   }
   if (progress !== null) {
     document.documentElement.style.setProperty("--loading-glow-progress", progress.toString());

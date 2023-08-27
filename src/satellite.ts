@@ -65,7 +65,10 @@ window.addEventListener("message", (event) => {
           // Create visualizer
           switch (type) {
             case TabType.Odometry:
-              visualizer = new OdometryVisualizer(document.getElementById("odometryCanvasContainer") as HTMLElement);
+              visualizer = new OdometryVisualizer(
+                document.getElementById("odometryCanvasContainer") as HTMLElement,
+                document.getElementById("odometryHeatmapContainer") as HTMLElement
+              );
               break;
             case TabType.ThreeDimension:
               visualizer = new ThreeDimensionVisualizer(

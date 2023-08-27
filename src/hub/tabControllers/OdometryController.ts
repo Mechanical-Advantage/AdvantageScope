@@ -1,12 +1,14 @@
-import { Pose2d, Translation2d } from "../../shared/geometry";
-import LoggableType from "../../shared/log/LoggableType";
-import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
+import { Pose2d, Translation2d } from "../../shared/geometry";
+import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance } from "../../shared/log/LogUtil";
+import LoggableType from "../../shared/log/LoggableType";
 import { convert } from "../../shared/units";
 import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class OdometryController extends TimelineVizController {
+  private HEATMAP_DT = 0.1;
+
   private GAME: HTMLInputElement;
   private GAME_SOURCE_LINK: HTMLElement;
   private UNIT_DISTANCE: HTMLInputElement;
@@ -32,11 +34,24 @@ export default class OdometryController extends TimelineVizController {
           element: configBody.children[1].firstElementChild as HTMLElement,
           types: [LoggableType.NumberArray],
           options: [
-            ["Robot", "Ghost", "Trajectory", "Vision Target", "Arrow (Front)", "Arrow (Center)", "Arrow (Back)"]
+            [
+              "Robot",
+              "Ghost",
+              "Trajectory",
+              "Vision Target",
+              "Heatmap",
+              "Heatmap (Enabled)",
+              "Arrow (Front)",
+              "Arrow (Center)",
+              "Arrow (Back)"
+            ]
           ]
         }
       ],
-      new OdometryVisualizer(content.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement)
+      new OdometryVisualizer(
+        content.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement,
+        content.getElementsByClassName("odometry-heatmap-container")[0] as HTMLElement
+      )
     );
 
     // Get option inputs
@@ -204,6 +219,7 @@ export default class OdometryController extends TimelineVizController {
     let ghostData: Pose2d[] = [];
     let trajectoryData: Pose2d[][] = [];
     let visionTargetData: Pose2d[] = [];
+    let heatmapData: { timestamp: number; value: Translation2d }[] = [];
     let arrowFrontData: Pose2d[] = [];
     let arrowCenterData: Pose2d[] = [];
     let arrowBackData: Pose2d[] = [];
@@ -252,6 +268,41 @@ export default class OdometryController extends TimelineVizController {
         case "Vision Target":
           visionTargetData = visionTargetData.concat(getCurrentValue(field.key));
           break;
+        case "Heatmap":
+        case "Heatmap (Enabled)":
+          let enabledFilter = field.type === "Heatmap (Enabled)";
+          let enabledData = enabledFilter ? getEnabledData(window.log) : null;
+          let distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
+
+          let heatmapLogData = window.log.getNumberArray(field.key, -Infinity, Infinity);
+          if (heatmapLogData) {
+            heatmapLogData.values.forEach((value, index) => {
+              // Check if enabled
+              let timestamp = heatmapLogData!.timestamps[index];
+              if (enabledFilter) {
+                let enabledDataIndex = enabledData!.timestamps.findLastIndex((x) => x <= timestamp);
+                if (enabledDataIndex === -1) return;
+                let enabled = enabledData!.values[enabledDataIndex];
+                if (!enabled) return;
+              }
+
+              // Generate samples
+              let nextTimestamp =
+                index < heatmapLogData!.timestamps.length - 1 ? heatmapLogData!.timestamps[index + 1] : timestamp;
+              let sampleCount = Math.ceil((nextTimestamp - timestamp) / this.HEATMAP_DT);
+              for (let i = 0; i < sampleCount; i++) {
+                if (value.length % 3 === 0) {
+                  for (let i = 0; i < value.length / 3; i += 1) {
+                    heatmapData.push({
+                      timestamp: timestamp + i * this.HEATMAP_DT,
+                      value: [value[i * 3] * distanceConversion, value[i * 3 + 1] * distanceConversion]
+                    });
+                  }
+                }
+              }
+            });
+          }
+          break;
         case "Arrow (Front)":
           arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key));
           break;
@@ -261,6 +312,17 @@ export default class OdometryController extends TimelineVizController {
         case "Arrow (Back)":
           arrowBackData = arrowBackData.concat(getCurrentValue(field.key));
           break;
+      }
+    });
+
+    // Filter heatmap data (remove samples with too small dts)
+    let heatmapDataValues: Translation2d[] = [];
+    let lastTimestamp = 0;
+    heatmapData.sort((a, b) => a.timestamp - b.timestamp);
+    heatmapData.forEach((sample) => {
+      if (sample.timestamp === lastTimestamp || sample.timestamp - lastTimestamp >= this.HEATMAP_DT) {
+        heatmapDataValues.push(sample.value);
+        lastTimestamp = sample.timestamp;
       }
     });
 
@@ -299,6 +361,7 @@ export default class OdometryController extends TimelineVizController {
         ghost: ghostData,
         trajectory: trajectoryData,
         visionTarget: visionTargetData,
+        heatmap: heatmapDataValues,
         arrowFront: arrowFrontData,
         arrowCenter: arrowCenterData,
         arrowBack: arrowBackData

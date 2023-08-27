@@ -34,6 +34,7 @@ The following objects are supported:
 - Ghost
 - Trajectory
 - Vision Target
+- Heatmap
 - Arrow (Front/Center/Back)
 
 > Note: The robot pose is always centered on the robot. The crossbar on the arrow indicates the location of the pose (at the front, center, or back).

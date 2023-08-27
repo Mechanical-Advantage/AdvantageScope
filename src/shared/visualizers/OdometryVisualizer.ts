@@ -1,18 +1,28 @@
+import h337 from "heatmap.js";
 import { Pose2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {
+  private HEATMAP_MAX = 10 / 0.1; // 10 seconds divided by sample dt
+  private HEATMAP_RADIUS = 0.1; // Fraction of field height
+
   private CONTAINER: HTMLElement;
+  private HEATMAP_CONTAINER: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;
 
+  private heatmap: h337.Heatmap<"value", "x", "y"> | null = null;
+  private lastWidth = 0;
+  private lastHeight = 0;
+  private lastHeatmapData = "";
   private lastImageSource = "";
 
-  constructor(container: HTMLElement) {
+  constructor(container: HTMLElement, heatmapContainer: HTMLElement) {
     this.CONTAINER = container;
     this.CANVAS = container.firstElementChild as HTMLCanvasElement;
+    this.HEATMAP_CONTAINER = heatmapContainer;
     this.IMAGE = document.createElement("img");
     this.CANVAS.appendChild(this.IMAGE);
   }
@@ -129,6 +139,49 @@ export default class OdometryVisualizer implements Visualizer {
       }
       return positionPixels;
     };
+
+    // Recreate heatmap canvas
+    let newHeatmapInstance = false;
+    if (width !== this.lastWidth || height !== this.lastHeight || !this.heatmap) {
+      newHeatmapInstance = true;
+      this.lastWidth = width;
+      this.lastHeight = height;
+      while (this.HEATMAP_CONTAINER.firstChild) {
+        this.HEATMAP_CONTAINER.removeChild(this.HEATMAP_CONTAINER.firstChild);
+      }
+      this.HEATMAP_CONTAINER.style.width = width.toString() + "px";
+      this.HEATMAP_CONTAINER.style.height = height.toString() + "px";
+      this.heatmap = h337.create({
+        container: this.HEATMAP_CONTAINER,
+        radius: this.IMAGE.height * imageScalar * this.HEATMAP_RADIUS
+      });
+    }
+
+    // Update heatmap data
+    let heatmapDataString = JSON.stringify(command.poses.heatmap);
+    if (heatmapDataString !== this.lastHeatmapData || newHeatmapInstance) {
+      this.lastHeatmapData = heatmapDataString;
+      let heatmapData: { x: number; y: number; value: number }[] = [];
+      (command.poses.heatmap as Translation2d[]).forEach((translation) => {
+        let coordinates = calcCoordinates(translation);
+        coordinates = [Math.round(coordinates[0]), Math.round(coordinates[1])];
+        if (coordinates[0] >= 0 && coordinates[1] < width && coordinates[1] >= 0 && coordinates[1] < height) {
+          heatmapData.push({
+            x: coordinates[0],
+            y: coordinates[1],
+            value: 1
+          });
+        }
+      });
+      this.heatmap.setData({
+        min: 0,
+        max: this.HEATMAP_MAX,
+        data: heatmapData
+      });
+    }
+
+    // Copy heatmap to main canvas
+    context.drawImage(this.HEATMAP_CONTAINER.firstElementChild as HTMLCanvasElement, 0, 0);
 
     // Draw trajectories
     command.poses.trajectory.forEach((trajectory: Pose2d[]) => {
