@@ -1,11 +1,10 @@
-import { median, sign } from "mathjs";
 import { AllColors } from "../../shared/Colors";
 import { LineGraphState } from "../../shared/HubState";
-import LoggableType from "../../shared/log/LoggableType";
+import TabType from "../../shared/TabType";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
-import TabType from "../../shared/TabType";
-import { convertWithPreset, UnitConversionPreset } from "../../shared/units";
+import LoggableType from "../../shared/log/LoggableType";
+import { UnitConversionPreset, convertWithPreset } from "../../shared/units";
 import { clampValue, cleanFloat, scaleValue, shiftColor } from "../../shared/util";
 import ScrollSensor from "../ScrollSensor";
 import { SelectionMode } from "../Selection";
@@ -743,7 +742,7 @@ export default class LineGraphController implements TabController {
     let graphHeightOpen = graphHeight - visibleFieldsDiscrete.length * 20 - (visibleFieldsDiscrete.length > 0 ? 5 : 0);
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
-    // Calculate axes
+    // Calculate y axes
     const TARGET_STEP_PX = 50;
     const PRIMARY_MARGIN = 0.05;
     const SECONDARY_MARGIN = 0.3;
@@ -816,6 +815,9 @@ export default class LineGraphController implements TabController {
     let graphRight = 25 + (showRightAxis ? getTextWidth(rightAxis) : 0);
     let graphWidth = width - graphLeft - graphRight;
     if (graphWidth < 1) graphWidth = 1;
+
+    // Calculate x axis
+    let xAxis = this.calcAutoAxis(null, graphWidth, 100, null, this.timestampRange, 0, 60);
 
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
@@ -936,33 +938,37 @@ export default class LineGraphController implements TabController {
     });
 
     //Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
-    let formatTimestampText = (time: number): string=> {
-      let axis = this.calcAutoAxis(null, graphWidth, 100, null, this.timestampRange, 0, 60);
-      axis.step = axis.step / 10;
-      let fractionDigits = Math.max(0, -Math.floor(Math.log10(axis.step)));
-
-      context.textBaseline = "top";
-      context.textAlign = "center";
-      let text = time.toFixed(fractionDigits) + (axis.unit == 60 ? "m" : "s");
-      return text;
+    let formatMarkedTimestampText = (time: number): string => {
+      let fractionDigits = Math.max(0, -Math.floor(Math.log10(xAxis.step / 10)));
+      return time.toFixed(fractionDigits) + "s";
     };
 
-    //Write formatted timestamp popups to graph view
+    // Write formatted timestamp popups to graph view
     let writeCenteredTime = (text: string, x: number, alpha: number, drawRect: boolean) => {
-      let textSize = context.measureText(text);
       context.globalAlpha = alpha;
       context.strokeStyle = light ? "#222" : "#eee";
       context.fillStyle = light ? "#222" : "#eee";
-      context.clearRect(x - textSize.actualBoundingBoxLeft - 5, graphTop, textSize.width + 10, textSize.actualBoundingBoxDescent + 10);
+      let textSize = context.measureText(text);
+      context.clearRect(
+        x - textSize.actualBoundingBoxLeft - 5,
+        graphTop,
+        textSize.width + 10,
+        textSize.actualBoundingBoxDescent + 10
+      );
       if (drawRect) {
-        context.strokeRect(x - textSize.actualBoundingBoxLeft-5, graphTop, textSize.width+10, textSize.actualBoundingBoxDescent+10);
+        context.strokeRect(
+          x - textSize.actualBoundingBoxLeft - 5,
+          graphTop,
+          textSize.width + 10,
+          textSize.actualBoundingBoxDescent + 10
+        );
       }
 
       context.fillText(text, x, graphTop + 5);
       context.globalAlpha = 1;
     };
 
-    // Render selected times
+    // Draw a vertical dotted line at the time
     let markTime = (time: number, alpha: number) => {
       if (time >= this.timestampRange[0] && time <= this.timestampRange[1]) {
         context.globalAlpha = alpha;
@@ -980,29 +986,44 @@ export default class LineGraphController implements TabController {
         context.globalAlpha = 1;
       }
     };
+
+    // Render selected times
+    context.textBaseline = "top";
+    context.textAlign = "center";
     let selectionMode = window.selection.getMode();
+    let selectedTime = window.selection.getSelectedTime();
     let hoveredTime = window.selection.getHoveredTime();
-    if (selectionMode == SelectionMode.Static || selectionMode == SelectionMode.Playback) {
-      let selectedTime = window.selection.getSelectedTime() as number;
-      markTime(selectedTime, 1);
-      if (hoveredTime != null && hoveredTime != selectedTime) {
-        markTime(hoveredTime, 0.35);
-        //maybe shift off to the side to accomodate other text
+    let selectedX =
+      selectedTime === null ? null : scaleValue(selectedTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
+    let hoveredX =
+      hoveredTime === null ? null : scaleValue(hoveredTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
+    let selectedText = selectedTime === null ? null : formatMarkedTimestampText(selectedTime);
+    let hoveredText = hoveredTime === null ? null : formatMarkedTimestampText(hoveredTime);
+    if (hoveredTime !== null) markTime(hoveredTime!, 0.35);
+    if (selectionMode === SelectionMode.Static || selectionMode === SelectionMode.Playback) {
+      // There is a valid selected time
+      selectedTime = selectedTime as number;
+      selectedX = selectedX as number;
+      selectedText = selectedText as string;
+      markTime(selectedTime!, 1);
+      if (hoveredTime !== null && hoveredTime !== selectedTime) {
+        // Write both selected and hovered time, figure out layout
         hoveredTime = hoveredTime as number;
-        let selectedText = formatTimestampText(selectedTime);
-        let hoverText = formatTimestampText(hoveredTime);
-        let deltaText = '\u0394'+formatTimestampText(hoveredTime-selectedTime);
-        let selectedX = scaleValue(selectedTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
-        let hoverX = scaleValue(hoveredTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]);
-        let xSpace = selectedX - hoverX;
-        let textHalfWidths = (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoverText).width + 10) / 2 + 4;
-        let deltaWidth = context.measureText(deltaText).width + 10 +4;
+        hoveredX = hoveredX as number;
+        hoveredText = hoveredText as string;
+
+        let deltaText = "\u0394" + formatMarkedTimestampText(hoveredTime - selectedTime);
+        let xSpace = selectedX - hoveredX;
+        let textHalfWidths =
+          (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoveredText).width + 10) / 2 + 4;
+        let deltaWidth = context.measureText(deltaText).width + 10 + 4;
         let offsetAmount = textHalfWidths - Math.abs(xSpace);
         let doesDeltaFit = deltaWidth <= Math.abs(xSpace);
         if (doesDeltaFit) {
-          //enough space for delta text
-          offsetAmount = (textHalfWidths + deltaWidth) - Math.abs(xSpace);
-          //make connecting line between two cursors, overlapping parts will be automatically cleared
+          // Enough space for delta text
+          offsetAmount = textHalfWidths + deltaWidth - Math.abs(xSpace);
+
+          // Draw connecting line between two cursors, overlapping parts will be automatically cleared
           let centerY = (context.measureText(deltaText).actualBoundingBoxDescent + 10) / 2 + graphTop;
           context.globalAlpha = 0.35;
           context.lineWidth = 1;
@@ -1010,29 +1031,26 @@ export default class LineGraphController implements TabController {
           context.strokeStyle = light ? "#222" : "#eee";
           context.beginPath();
           context.moveTo(selectedX, centerY);
-          context.lineTo(hoverX, centerY);
+          context.lineTo(hoveredX, centerY);
           context.stroke();
           context.globalAlpha = 1;
+
+          // Draw delta text
+          writeCenteredTime(deltaText, (selectedX + hoveredX) / 2, 0.35, false);
         }
         if (offsetAmount > 0) {
-          selectedX = selectedX + offsetAmount / 2*sign(selectedX-hoverX);
-          hoverX = hoverX - offsetAmount / 2 * sign(selectedX - hoverX);
+          selectedX = selectedX + (offsetAmount / 2) * (selectedX < hoveredX ? -1 : 1);
+          hoveredX = hoveredX - (offsetAmount / 2) * (selectedX < hoveredX ? -1 : 1);
         }
         writeCenteredTime(selectedText, selectedX, 1, true);
-        writeCenteredTime(hoverText, hoverX, 0.35, true);
-        if (doesDeltaFit) {
-          //enough space for delta text, this time actually draw it
-          writeCenteredTime(deltaText,median(selectedX,hoverX),0.35,false)
-        }
-
+        writeCenteredTime(hoveredText, hoveredX, 0.35, true);
       } else {
-        //only writing selected time
-        writeCenteredTime(formatTimestampText(selectedTime), scaleValue(selectedTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]), 1, true);
+        // No valid hovered time, only write selected time
+        writeCenteredTime(selectedText, selectedX, 1, true);
       }
-    } else if (hoveredTime != null) {
-      //only writing hovered time
-      markTime(hoveredTime, 0.35);
-      writeCenteredTime(formatTimestampText(hoveredTime), scaleValue(hoveredTime, this.timestampRange, [graphLeft, graphLeft + graphWidth]), 0.35, true);
+    } else if (hoveredTime !== null) {
+      // No valid selected time, only write hovered time
+      writeCenteredTime(hoveredText!, hoveredX!, 0.35, true);
     }
 
     // Clear overflow & draw graph outline
@@ -1103,11 +1121,10 @@ export default class LineGraphController implements TabController {
     }
 
     // Render x axis
-    let axis = this.calcAutoAxis(null, graphWidth, 100, null, this.timestampRange, 0, 60);
     context.textAlign = "center";
-    let stepPos = Math.ceil(cleanFloat(axis.min / axis.step)) * axis.step;
+    let stepPos = Math.ceil(cleanFloat(xAxis.min / xAxis.step)) * xAxis.step;
     while (true) {
-      let x = scaleValue(stepPos, [axis.min, axis.max], [graphLeft, graphLeft + graphWidth]);
+      let x = scaleValue(stepPos, [xAxis.min, xAxis.max], [graphLeft, graphLeft + graphWidth]);
 
       // Clean up final x (scroll can cause rounding problems)
       if (x - graphLeft - graphWidth > 1) {
@@ -1116,7 +1133,7 @@ export default class LineGraphController implements TabController {
         x = graphLeft + graphWidth;
       }
 
-      let text = cleanFloat(stepPos / axis.unit).toString() + (axis.unit == 60 ? "m" : "s");
+      let text = cleanFloat(stepPos / xAxis.unit).toString() + (xAxis.unit == 60 ? "m" : "s");
 
       context.globalAlpha = 1;
       context.fillText(text, x, graphTop + graphHeight + 15);
@@ -1131,11 +1148,10 @@ export default class LineGraphController implements TabController {
       context.lineTo(x, graphTop + graphHeight);
       context.stroke();
 
-      stepPos += axis.step;
+      stepPos += xAxis.step;
     }
 
     // Update value preview
-    let selectedTime = window.selection.getSelectedTime();
     [
       [this.LEFT_LIST, this.leftFields],
       [this.DISCRETE_LIST, this.discreteFields],
