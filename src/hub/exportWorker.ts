@@ -129,7 +129,9 @@ function generateCsvTable(
     });
   });
 
-  return data.map((x) => x.join(",")).join("\n");
+  let text = data.map((x) => x.join(",")).join("\n");
+  progress(1);
+  return text;
 }
 
 function generateCsvList(log: Log, fields: string[], progress: (progress: number) => void) {
@@ -151,7 +153,9 @@ function generateCsvList(log: Log, fields: string[], progress: (progress: number
   // Sort and add header
   rows.sort((a, b) => (a[0] as number) - (b[0] as number));
   rows.splice(0, 0, ["Timestamp", "Key", "Value"]);
-  return rows.map((x) => x.join(",")).join("\n");
+  let text = rows.map((x) => x.join(",")).join("\n");
+  progress(1);
+  return text;
 }
 
 function generateWPILOG(log: Log, fields: string[], progress: (progress: number) => void) {
@@ -230,5 +234,6 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
   });
 
   // Encode full log
+  progress(1);
   return encoder.getEncoded();
 }

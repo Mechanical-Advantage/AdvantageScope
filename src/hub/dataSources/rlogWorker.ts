@@ -21,7 +21,11 @@ self.onmessage = (event) => {
   let decoder = new RLOGDecoder();
   let success = decoder.decode(log, payload[0], progress);
   if (success) {
-    resolve(log.toSerialized());
+    progress(1);
+    setTimeout(() => {
+      // Allow progress message to get through first
+      resolve(log.toSerialized());
+    }, 0);
   } else {
     reject();
   }

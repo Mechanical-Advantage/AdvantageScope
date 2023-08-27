@@ -122,5 +122,9 @@ self.onmessage = (event) => {
     reject();
     return;
   }
-  resolve(log.toSerialized());
+  progress(1);
+  setTimeout(() => {
+    // Allow progress message to get through first
+    resolve(log.toSerialized());
+  }, 0);
 };
