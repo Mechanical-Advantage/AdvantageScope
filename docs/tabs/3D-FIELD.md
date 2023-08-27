@@ -26,7 +26,7 @@ All pose data must be stored as a numeric array describing one or more poses wit
 
 The 2D rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The linear and angular units are configurable.
 
-> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call _Logger.getInstance().recordOutput(key, poses...);_ or _Logger.getInstance().recordOutput(key, trajectory);_
+> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call `Logger.getInstance().recordOutput(key, poses...);` or `Logger.getInstance().recordOutput(key, trajectory);`
 
 ### 3D Poses
 
@@ -40,7 +40,7 @@ The 2D rotation must be CCW+, which matches the standard [WPILib coordinate syst
 
 The w, x, y, and z rotation values represent a quaternion, which is used internally by WPILib's Rotation3d class. The linear units are configurable.
 
-> Note: To log Pose3d values with AdvantageKit, call _Logger.getInstance().recordOutput(key, poses...);_
+> Note: To log Pose3d values with AdvantageKit, call `Logger.getInstance().recordOutput(key, poses...);`
 
 ## Objects
 

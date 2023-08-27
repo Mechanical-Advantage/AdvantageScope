@@ -24,7 +24,7 @@ All pose data must be stored as a numeric array describing one or more 2D poses 
 
 Multiple poses are typically shown as duplicate objects, except for trajectories (where each pose is a point along the trajectory). The rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The origin and units are configurable.
 
-> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call _Logger.getInstance().recordOutput(key, poses...);_ or _Logger.getInstance().recordOutput(key, trajectory);_
+> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call `Logger.getInstance().recordOutput(key, poses...);` or `Logger.getInstance().recordOutput(key, trajectory);`
 
 ## Objects
 

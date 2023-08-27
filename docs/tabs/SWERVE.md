@@ -27,7 +27,7 @@ The state fields should be numeric arrays with the format shown below. The rotat
 ]
 ```
 
-> Note: To log an array of SwerveModuleState objects using AdvantageKit, call _Logger.getInstance().recordOutput(key, states[]);_
+> Note: To log an array of SwerveModuleState objects using AdvantageKit, call `Logger.getInstance().recordOutput(key, states[]);`
 
 ### Robot Rotation
 

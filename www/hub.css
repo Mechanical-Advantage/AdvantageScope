@@ -577,6 +577,10 @@ div.documentation-text a:hover {
 }
 
 div.documentation-text code {
+  font-size: 17px;
+}
+
+div.documentation-text pre > code {
   display: block;
   font-size: 14px;
   background-color: #ddd;
