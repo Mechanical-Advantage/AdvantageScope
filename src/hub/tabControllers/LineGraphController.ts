@@ -87,7 +87,7 @@ export default class LineGraphController implements TabController {
 
     // Scroll handling
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
-      this.lastCursorX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
+      this.lastCursorX = event.clientX - this.CONTENT.getBoundingClientRect().x;
     });
     this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
       this.lastCursorX = null;
@@ -659,17 +659,6 @@ export default class LineGraphController implements TabController {
     // Update to ensure smoothness when locked
     this.updateScroll(0, 0);
 
-    // Update hovered time
-    if (this.lastCursorX === null) {
-      window.selection.setHoveredTime(null);
-    } else {
-      window.selection.setHoveredTime(
-        (this.lastCursorX / this.SCROLL_OVERLAY.getBoundingClientRect().width) *
-          (this.timestampRange[1] - this.timestampRange[0]) +
-          this.timestampRange[0]
-      );
-    }
-
     // Initial setup and scaling
     const devicePixelRatio = window.devicePixelRatio;
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
@@ -820,6 +809,15 @@ export default class LineGraphController implements TabController {
 
     // Calculate x axis
     let xAxis = this.calcAutoAxis(null, graphWidth, 100, null, this.timestampRange, 0, 60);
+
+    // Update hovered time based on graph layout
+    if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
+      window.selection.setHoveredTime(null);
+    } else {
+      window.selection.setHoveredTime(
+        scaleValue(this.lastCursorX, [graphLeft, graphLeft + graphWidth], this.timestampRange)
+      );
+    }
 
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
