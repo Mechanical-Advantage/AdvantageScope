@@ -284,6 +284,74 @@ div.side-bar-title {
   text-overflow: ellipsis;
 }
 
+div.side-bar-search-container {
+  position: relative;
+}
+
+input.side-bar-search {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  left: 18px;
+  height: 29px;
+  width: calc(100% - 18px - 18px);
+
+  font-size: 13px;
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont;
+  padding: 5px;
+  padding-left: 28px;
+  border-radius: 6px;
+  outline: none;
+
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 0.5px solid rgba(183, 183, 183, 0.3);
+  color: black;
+}
+
+input.side-bar-search::placeholder {
+  color: rgba(0, 0, 0, 0.25);
+}
+
+input.side-bar-search::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 1em;
+  width: 1em;
+  background: url("symbols/xmark.circle.fill.svg") no-repeat 50% 50%;
+  background-size: contain;
+}
+
+img.side-bar-search-icon {
+  position: absolute;
+  left: 25px;
+  top: 50%;
+  height: 13px;
+  transform: translateY(-50%);
+}
+
+@media (prefers-color-scheme: dark) {
+  input.side-bar-search {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    color: white;
+  }
+
+  input.side-bar-search::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+  }
+
+  input.side-bar-search::-webkit-search-cancel-button {
+    filter: invert(100%);
+  }
+
+  img.side-bar-search-icon {
+    filter: invert(100%);
+  }
+}
+
 div.field-item {
   position: relative;
   width: 100%;
