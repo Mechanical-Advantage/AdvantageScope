@@ -329,3 +329,19 @@ export function mergeMechanismStates(states: MechanismState[]): MechanismState {
     lines: lines
   };
 }
+
+export function searchFields(log: Log, query: string): string[] {
+  query = query.toLowerCase();
+  let fieldStrings = log
+    .getFieldKeys()
+    .filter((field) => !log.isArrayField(field) && field.toLowerCase().includes(query));
+  let fields = fieldStrings.map((field) => {
+    return {
+      string: field,
+      endDistance: field.length - field.toLowerCase().lastIndexOf(query)
+    };
+  });
+  fields.sort((a, b) => a.string.localeCompare(b.string, undefined, { numeric: true }));
+  fields.sort((a, b) => a.endDistance - b.endDistance);
+  return fields.map((field) => field.string);
+}

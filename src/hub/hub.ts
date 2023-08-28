@@ -2,7 +2,7 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
-import { getEnabledData } from "../shared/log/LogUtil";
+import { getEnabledData, searchFields } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { htmlEncode } from "../shared/util";
@@ -40,6 +40,8 @@ declare global {
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
+
+    search: (query: string) => void;
   }
 }
 window.log = new Log();
@@ -50,6 +52,8 @@ window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
 window.isBattery = false;
+
+window.search = (query) => searchFields(window.log, query);
 
 window.selection = new Selection();
 window.sidebar = new Sidebar();
