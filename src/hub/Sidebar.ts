@@ -9,9 +9,12 @@ export default class Sidebar {
   private SIDEBAR_HANDLE = document.getElementsByClassName("side-bar-handle")[0] as HTMLElement;
   private SIDEBAR_SHADOW = document.getElementsByClassName("side-bar-shadow")[0] as HTMLElement;
   private SIDEBAR_TITLE = document.getElementsByClassName("side-bar-title")[0] as HTMLElement;
+  private SEARCH_INPUT = document.getElementsByClassName("side-bar-search")[0] as HTMLInputElement;
   private FIELD_LIST = document.getElementById("fieldList") as HTMLElement;
   private ICON_TEMPLATES = document.getElementById("fieldItemIconTemplates") as HTMLElement;
   private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
+
+  private SEARCH_RESULTS = document.getElementsByClassName("search-results")[0] as HTMLElement;
 
   private KNOWN_KEYS = [
     "DriverStation",
@@ -71,6 +74,24 @@ export default class Sidebar {
     this.SIDEBAR.addEventListener("scroll", () => {
       this.SIDEBAR_SHADOW.style.opacity = this.SIDEBAR.scrollTop === 0 ? "0" : "1";
     });
+
+    // Update search results position
+    let searchInputFocused = false;
+    this.SEARCH_INPUT.addEventListener("focus", () => (searchInputFocused = true));
+    this.SEARCH_INPUT.addEventListener("blur", () => {
+      searchInputFocused = false;
+    });
+    this.SIDEBAR.addEventListener("scroll", () => {
+      if (this.SIDEBAR.scrollTop > 50 && searchInputFocused) {
+        this.SEARCH_INPUT.blur();
+      }
+    });
+    let periodic = () => {
+      this.SEARCH_RESULTS.style.top = this.SEARCH_INPUT.getBoundingClientRect().bottom.toString() + "px";
+      this.SEARCH_RESULTS.hidden = !searchInputFocused || this.SEARCH_INPUT.value.length === 0;
+      window.requestAnimationFrame(periodic);
+    };
+    window.requestAnimationFrame(periodic);
   }
 
   /** Returns the current state. */
