@@ -1,7 +1,7 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
-import { getFullKeyIfMechanism, getOrDefault, MECHANISM_KEY, TYPE_KEY } from "../shared/log/LogUtil";
+import { getFullKeyIfMechanism, getOrDefault, MECHANISM_KEY, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
@@ -47,6 +47,8 @@ export default class Sidebar {
   private activeFieldCallbacks: (() => void)[] = [];
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
+  private searchKey: string | null = null;
+  private searchExpandCallbacks: (() => void)[] = [];
 
   constructor() {
     // Set up handle for resizing
@@ -75,11 +77,12 @@ export default class Sidebar {
       this.SIDEBAR_SHADOW.style.opacity = this.SIDEBAR.scrollTop === 0 ? "0" : "1";
     });
 
-    // Update search results position
+    // Search controls
     let searchInputFocused = false;
     this.SEARCH_INPUT.addEventListener("focus", () => (searchInputFocused = true));
-    this.SEARCH_INPUT.addEventListener("blur", () => {
-      searchInputFocused = false;
+    this.SEARCH_INPUT.addEventListener("blur", () => (searchInputFocused = false));
+    this.SEARCH_INPUT.addEventListener("input", () => {
+      this.updateSearchResults();
     });
     this.SIDEBAR.addEventListener("scroll", () => {
       if (this.SIDEBAR.scrollTop > 50 && searchInputFocused) {
@@ -88,7 +91,12 @@ export default class Sidebar {
     });
     let periodic = () => {
       this.SEARCH_RESULTS.style.top = this.SEARCH_INPUT.getBoundingClientRect().bottom.toString() + "px";
-      this.SEARCH_RESULTS.hidden = !searchInputFocused || this.SEARCH_INPUT.value.length === 0;
+      let hidden = !searchInputFocused || this.SEARCH_INPUT.value.length === 0;
+      let unhiding = !hidden && this.SEARCH_RESULTS.hidden;
+      this.SEARCH_RESULTS.hidden = hidden;
+      if (unhiding) {
+        this.SEARCH_RESULTS.scrollTop = 0;
+      }
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -111,6 +119,43 @@ export default class Sidebar {
     this.expandedFields = expandedSet;
     if (!widthEqual) this.updateWidth();
     if (!expandedEqual) this.refresh(true);
+  }
+
+  /** Updates the set of results based on the current query. */
+  private updateSearchResults() {
+    let query = this.SEARCH_INPUT.value;
+    let results = query.length === 0 ? [] : searchFields(window.log, query);
+    results = results.filter((field) => {
+      let show = true;
+      this.HIDDEN_KEYS.forEach((hiddenKey) => {
+        if (field.startsWith("/" + hiddenKey)) show = false;
+        if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
+      });
+      return show;
+    });
+    while (this.SEARCH_RESULTS.firstChild) {
+      this.SEARCH_RESULTS.removeChild(this.SEARCH_RESULTS.firstChild);
+    }
+    results.forEach((field, index) => {
+      let div = document.createElement("div");
+      this.SEARCH_RESULTS.appendChild(div);
+      div.classList.add("search-results-item");
+      div.innerText = field;
+      let search = () => {
+        this.searchKey = field;
+        this.searchExpandCallbacks.forEach((callback) => callback());
+        this.searchKey = null;
+      };
+      div.addEventListener("mousedown", search);
+      div.addEventListener("touchdown", search);
+      if (index === 0) {
+        this.SEARCH_INPUT.addEventListener("keydown", (event) => {
+          if (div.getBoundingClientRect().height > 0 && event.code === "Enter") {
+            search();
+          }
+        });
+      }
+    });
   }
 
   /** Updates the displayed width based on the current state. */
@@ -152,6 +197,9 @@ export default class Sidebar {
         .forEach((key) => {
           this.addFields(key, "/" + key, tree[key], this.FIELD_LIST, 0);
         });
+
+      // Update search
+      this.updateSearchResults();
     }
 
     // Update title
@@ -248,8 +296,9 @@ export default class Sidebar {
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
 
-    // Dragging support
+    // Full key fields
     if (field.fullKey !== null) {
+      // Dragging support
       let dragEvent = (x: number, y: number, offsetX: number, offsetY: number) => {
         let isGroup = this.selectGroup.includes(field.fullKey !== null ? field.fullKey : "");
         this.DRAG_ITEM.innerText = title + (isGroup ? "..." : "");
@@ -312,6 +361,18 @@ export default class Sidebar {
       this.selectGroupClearCallbacks.push(() => {
         label.style.fontWeight = "initial";
       });
+
+      // Search expand callback
+      let highlightForSearch = () => {
+        if (this.searchKey !== null && field.fullKey === this.searchKey) {
+          // @ts-expect-error
+          fieldElement.scrollIntoViewIfNeeded(); // Available in Chromium but not standard
+          fieldElement.classList.add("highlight");
+          setTimeout(() => fieldElement.classList.remove("highlight"), 3000);
+        }
+      };
+      this.searchExpandCallbacks.push(highlightForSearch);
+      highlightForSearch(); // Try immediately in case this field was generating while expanding for search
     }
 
     // Add children
@@ -322,7 +383,10 @@ export default class Sidebar {
       childSpan.hidden = true;
 
       let firstExpand = true;
+      let currentlyExpanded = false;
       let setExpanded = (expanded: boolean) => {
+        currentlyExpanded = expanded;
+
         // Update icon and span display
         childSpan.hidden = !expanded;
         closedIcon.style.display = expanded ? "none" : "initial";
@@ -351,6 +415,26 @@ export default class Sidebar {
         }
       };
 
+      // Search expand callback
+      let expandForSearch = () => {
+        if (this.searchKey === null) return;
+        let foundSearchKey = false;
+        let searchTree = (tree: LogFieldTree) => {
+          if (tree.fullKey === this.searchKey) {
+            foundSearchKey = true;
+          } else {
+            Object.values(tree.children).forEach((tree) => searchTree(tree));
+          }
+        };
+        Object.values(field.children).forEach((tree) => searchTree(tree));
+        if (foundSearchKey && !currentlyExpanded) {
+          setExpanded(true);
+        }
+      };
+      this.searchExpandCallbacks.push(expandForSearch);
+      expandForSearch(); // Try immediately in case this field was generating while expanding for search
+
+      // User controls
       closedIcon.addEventListener("click", () => setExpanded(true));
       openIcon.addEventListener("click", () => setExpanded(false));
       if (this.expandedFields.has(fullTitle)) setExpanded(true);

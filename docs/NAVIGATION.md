@@ -12,6 +12,8 @@ The screenshot below shows the important elements of the main AdvantageScope win
 
 To the left is the <span style="color: red;">sidebar (red)</span> with the list of available tables and fields. Selectable fields are shown in _italics_ and built-in tables (from WPILib or AdvantageKit) are <u>underlined</u>. Click the arrow to expand nested tables. **Drag a single field** to select it or **hold cmd/ctrl** to select a collection of fields by clicking each one. Start dragging the collection of fields to finish the selection.
 
+To search for a field, begin typing in the search box. A dropdown of fields will display, then the selected field will be highlighted in the sidebar and scrolled into view.
+
 > Note: Click and drag on the right edge to resize or hide the sidebar.
 
 ![Selecting a collection of fields](/docs/resources/navigation/navigation-2.gif)

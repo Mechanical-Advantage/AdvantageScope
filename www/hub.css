@@ -356,6 +356,17 @@ div.field-item {
   position: relative;
   width: 100%;
   height: 30px;
+  transition: background 0.25s;
+}
+
+div.field-item.highlight {
+  background-color: rgb(255, 255, 0);
+}
+
+@media (prefers-color-scheme: dark) {
+  div.field-item.highlight {
+    background-color: #ce9421;
+  }
 }
 
 svg.field-item-icon {
@@ -394,9 +405,11 @@ div.search-results {
   position: absolute;
   left: 18px;
   top: 0px;
-  width: 500px;
-  height: 300px;
+  max-width: 700px;
+  max-height: 290px;
   z-index: 12;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   background-color: #ffffff;
   border-radius: 15px;
@@ -404,10 +417,44 @@ div.search-results {
   box-shadow: 0px 0px 3px 2px #ddd;
 }
 
+div.search-results-item {
+  position: relative;
+  height: 25px;
+  font-size: 12px;
+  line-height: 25px;
+  padding-left: 8px;
+  padding-right: 20px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.search-results-item:last-child {
+  padding-bottom: 3px;
+}
+
+div.search-results-item:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+div.search-results-item:hover {
+  background-color: #ccc;
+}
+
 @media (prefers-color-scheme: dark) {
   div.search-results {
-    box-shadow: 0px 0px 3px 0px #000;
-    background-color: #222;
+    box-shadow: none;
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    background-color: #222222;
+  }
+
+  div.search-results-item:nth-child(even) {
+    background-color: #272727;
+  }
+
+  div.search-results-item:hover {
+    background-color: #555;
   }
 }
 
