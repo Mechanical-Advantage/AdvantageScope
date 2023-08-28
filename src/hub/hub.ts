@@ -8,6 +8,7 @@ import Preferences from "../shared/Preferences";
 import { htmlEncode } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
+import { NT4Publisher } from "./dataSources/NT4Publisher";
 import NT4Source from "./dataSources/NT4Source";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
 import Selection from "./Selection";
@@ -55,10 +56,12 @@ window.sidebar = new Sidebar();
 window.tabs = new Tabs();
 window.messagePort = null;
 
-let historicalSource: HistoricalDataSource | null;
-let liveSource: LiveDataSource | null;
+let historicalSource: HistoricalDataSource | null = null;
+let liveSource: LiveDataSource | null = null;
+let publisher: NT4Publisher | null = null;
 let isExporting = false;
 let logPath: string | null = null;
+let liveActive = false;
 let liveConnected = false;
 
 let dragActive = false;
@@ -182,6 +185,7 @@ window.addEventListener("touchend", () => {
 function startHistorical(path: string, shouldMerge: boolean = false) {
   historicalSource?.stop();
   liveSource?.stop();
+  liveActive = false;
   setLoading(null);
 
   historicalSource = new HistoricalDataSource();
@@ -259,6 +263,8 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
 function startLive(isSim: boolean) {
   historicalSource?.stop();
   liveSource?.stop();
+  publisher?.stop();
+  liveActive = true;
 
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
@@ -450,6 +456,27 @@ function handleMainMessage(message: NamedMessage) {
       } else {
         startLive(message.data);
       }
+      break;
+
+    case "start-publish":
+      if (liveActive) {
+        window.sendMainMessage("error", {
+          title: "Cannot publish",
+          content: "Publishing is is not allowed from a live source."
+        });
+      } else if (!("NT" in window.log.getFieldTree())) {
+        window.sendMainMessage("error", {
+          title: "Cannot publish",
+          content: "Please open a log file with NetworkTables data, then try again."
+        });
+      } else {
+        publisher?.stop();
+        publisher = new NT4Publisher(message.data);
+      }
+      break;
+
+    case "stop-publish":
+      publisher?.stop();
       break;
 
     case "set-playback-speed":

@@ -5,6 +5,7 @@ const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;
 const RIO_PATH = document.getElementById("rioPath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
+const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const RLOG_PORT = document.getElementById("rlogPort") as HTMLInputElement;
 const THREE_DIMENSION_MODE = document.getElementById("threeDimensionMode") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
@@ -41,6 +42,7 @@ window.addEventListener("message", (event) => {
       RIO_PATH.value = oldPrefs.rioPath;
       LIVE_MODE.value = oldPrefs.liveMode;
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
+      PUBLISH_FILTER.value = oldPrefs.publishFilter;
       RLOG_PORT.value = oldPrefs.rlogPort.toString();
       THREE_DIMENSION_MODE.value = oldPrefs.threeDimensionMode;
 
@@ -72,6 +74,7 @@ window.addEventListener("message", (event) => {
             rioPath: RIO_PATH.value,
             liveMode: liveMode,
             liveSubscribeMode: liveSubscribeMode,
+            publishFilter: PUBLISH_FILTER.value,
             rlogPort: Number(RLOG_PORT.value),
             threeDimensionMode: threeDimensionMode
           };

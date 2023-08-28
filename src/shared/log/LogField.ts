@@ -1,5 +1,5 @@
-import { arraysEqual } from "../util";
 import LoggableType from "./LoggableType";
+import { logValuesEqual } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -89,22 +89,6 @@ export default class LogField {
     if (this.type === LoggableType.StringArray) return this.getRange(start, end);
   }
 
-  /** Checks if two log values are equal. */
-  private areEqual(type: LoggableType, a: any, b: any): boolean {
-    switch (type) {
-      case LoggableType.Boolean:
-      case LoggableType.Number:
-      case LoggableType.String:
-        return a === b;
-      case LoggableType.BooleanArray:
-      case LoggableType.NumberArray:
-      case LoggableType.StringArray:
-        return arraysEqual(a, b);
-      case LoggableType.Raw:
-        return arraysEqual(Array.from(a as Uint8Array), Array.from(b as Uint8Array));
-    }
-  }
-
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
     if (value === null) return;
@@ -130,11 +114,11 @@ export default class LogField {
     }
 
     // Compare to adjacent values
-    if (insertIndex > 0 && this.areEqual(this.type, value, this.data.values[insertIndex - 1])) {
+    if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
       // Same as the previous value
     } else if (
       insertIndex < this.data.values.length &&
-      this.areEqual(this.type, value, this.data.values[insertIndex])
+      logValuesEqual(this.type, value, this.data.values[insertIndex])
     ) {
       // Same as the next value
       this.data.timestamps[insertIndex] = timestamp;

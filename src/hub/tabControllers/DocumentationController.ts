@@ -105,7 +105,7 @@ export default class DocumentationController implements TabController {
           }
 
           // Add link to online documentation
-          let list = this.TEXT.getElementsByTagName("ul")[2];
+          let list = this.TEXT.getElementsByTagName("ul")[3];
           let listItem = document.createElement("li");
           list.insertBefore(listItem, list.firstChild);
           let link = document.createElement("a");
@@ -113,10 +113,7 @@ export default class DocumentationController implements TabController {
           link.innerText = "Online Documentation";
           link.href = "#";
           link.addEventListener("click", () => {
-            window.sendMainMessage(
-              "open-link",
-              "https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/INDEX.md"
-            );
+            window.sendMainMessage("open-link", "https://github.com/Mechanical-Advantage/blob/main/docs/INDEX.md");
           });
 
           // Add version text

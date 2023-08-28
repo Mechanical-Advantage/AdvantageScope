@@ -2,7 +2,7 @@ import ExportOptions from "../shared/ExportOptions";
 import Log from "../shared/log/Log";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
-import { getLogValueText } from "../shared/log/LogUtil";
+import { filterFieldByPrefixes, getLogValueText } from "../shared/log/LogUtil";
 import { cleanFloat } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
 
@@ -42,23 +42,7 @@ self.onmessage = (event) => {
     processTree(log.getFieldTree(false));
 
     // Filter by prefix
-    if (options.prefixes !== "") {
-      let filteredFields: string[] = [];
-      options.prefixes.split(",").forEach((prefix) => {
-        let prefixSeries = prefix.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
-        fields.forEach((field) => {
-          let fieldSeries = field.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
-          if (fieldSeries.length < prefixSeries.length) return;
-          if (
-            prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) &&
-            !filteredFields.includes(field)
-          ) {
-            filteredFields.push(field);
-          }
-        });
-      });
-      fields = filteredFields;
-    }
+    fields = filterFieldByPrefixes(fields, options.prefixes);
 
     // Convert to requested format
     switch (options.format) {

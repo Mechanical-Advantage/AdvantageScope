@@ -1,5 +1,6 @@
 import { Rotation2d, Translation2d } from "../geometry";
 import { convert } from "../units";
+import { arraysEqual } from "../util";
 import Log from "./Log";
 import LogFieldTree from "./LogFieldTree";
 import LoggableType from "./LoggableType";
@@ -44,6 +45,40 @@ export function getOrDefault(log: Log, key: string, type: LoggableType, timestam
     }
   }
   return defaultValue;
+}
+
+export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
+  switch (type) {
+    case LoggableType.Boolean:
+    case LoggableType.Number:
+    case LoggableType.String:
+      return a === b;
+    case LoggableType.BooleanArray:
+    case LoggableType.NumberArray:
+    case LoggableType.StringArray:
+      return arraysEqual(a, b);
+    case LoggableType.Raw:
+      return arraysEqual(Array.from(a as Uint8Array), Array.from(b as Uint8Array));
+  }
+}
+
+export function filterFieldByPrefixes(fields: string[], prefixes: string, ntOnly = false) {
+  let filteredFields: string[] = [];
+  prefixes.split(",").forEach((prefix) => {
+    let prefixSeries = prefix.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
+    if (ntOnly) prefixSeries.splice(0, 0, "NT");
+    fields.forEach((field) => {
+      let fieldSeries = field.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
+      if (fieldSeries.length < prefixSeries.length) return;
+      if (
+        prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) &&
+        !filteredFields.includes(field)
+      ) {
+        filteredFields.push(field);
+      }
+    });
+  });
+  return filteredFields;
 }
 
 export function getEnabledData(log: Log): LogValueSetBoolean | null {

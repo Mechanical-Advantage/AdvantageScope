@@ -6,7 +6,7 @@ All visualizations in AdvantageScope are designed to receive live data from a ro
 
 ## Configuration
 
-Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS).
+Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Settings..." (macOS).
 
 ![Diagram of live preferences](/docs/resources/open-live/open-live-1.png)
 

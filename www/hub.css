@@ -5,6 +5,7 @@
   --show-update-button: 0;
   --show-loading-glow: 0;
   --loading-glow-progress: 1;
+  --show-publishing-glow: 0;
 }
 
 /* Title bar layout */
@@ -58,7 +59,7 @@ body.fancy-title-bar div.main-view {
 
 div.loading-glow-container {
   position: absolute;
-  z-index: 6;
+  z-index: 7;
   left: var(--side-bar-width);
   width: calc((100% - var(--side-bar-width)) * var(--loading-glow-progress));
   top: 0px;
@@ -136,6 +137,36 @@ div.loading-glow-element:nth-child(9) {
   left: 75%;
 }
 
+@keyframes publishingGlowPulsing {
+  0% {
+    opacity: 100%;
+  }
+  50% {
+    opacity: 10%;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+div.publishing-glow {
+  position: absolute;
+  z-index: 6;
+  left: var(--side-bar-width);
+  right: 0px;
+  top: 0px;
+  height: 3px;
+  transform: translateY(calc(-3px + 3px * var(--show-publishing-glow)));
+  transition: transform 0.3s;
+  overflow: hidden;
+  animation: publishingGlowPulsing 1s ease-in-out infinite;
+  background-color: #ff0000;
+}
+
+div.publishing-glow.connected {
+  background-color: #00b400;
+}
+
 /* Side bar layout */
 
 div.side-bar-background {
@@ -199,7 +230,7 @@ div.side-bar-handle {
   left: calc(var(--side-bar-width) - 2px);
   width: calc(20px - (var(--show-side-bar) * 16px));
 
-  z-index: 7;
+  z-index: 8;
   cursor: col-resize;
 }
 
@@ -293,7 +324,7 @@ div.field-item-label.known {
 
 #dragItem {
   position: absolute;
-  z-index: 999;
+  z-index: 1099;
   white-space: nowrap;
   font-size: 15px;
   font-style: italic;
@@ -801,7 +832,7 @@ canvas.line-graph-canvas {
 
 div.line-graph-scroll {
   position: absolute;
-  z-index: 8;
+  z-index: 9;
   left: 0px;
   right: 0px;
   top: 8px;
@@ -848,13 +879,13 @@ table.data-table th {
   border-bottom: 1px solid #222;
 
   background-color: #fff;
-  z-index: 7;
+  z-index: 8;
 }
 
 table.data-table th:first-child {
   left: 0px;
   min-width: 97px;
-  z-index: 9;
+  z-index: 10;
 }
 
 table.data-table th:first-child input {
@@ -967,7 +998,7 @@ table.data-table tr.selected td {
 
 div.data-table-drag-highlight {
   position: absolute;
-  z-index: 10;
+  z-index: 11;
   width: 25px;
   top: 0px;
   bottom: 0px;
@@ -983,7 +1014,7 @@ div.console-table-drag-highlight {
   top: 0px;
   width: 100%;
   height: 100%;
-  z-index: 10;
+  z-index: 11;
   background-color: lightgreen;
   opacity: 25%;
 }
@@ -1018,12 +1049,12 @@ table.console-table th {
   font-size: 14px;
 
   background-color: #fff;
-  z-index: 7;
+  z-index: 8;
 }
 
 table.console-table th:first-child {
   width: 97px;
-  z-index: 9;
+  z-index: 10;
 }
 
 table.console-table th:first-child input {
@@ -1221,7 +1252,7 @@ div.stats-histogram-container {
 
 div.stats-drag-highlight {
   position: absolute;
-  z-index: 10;
+  z-index: 11;
   background-color: lightgreen;
   opacity: 25%;
 }
@@ -1285,7 +1316,7 @@ button.timeline-viz-popup-button {
 
 div.timeline-viz-drag-highlight {
   position: absolute;
-  z-index: 10;
+  z-index: 11;
   background-color: lightgreen;
   opacity: 25%;
 }

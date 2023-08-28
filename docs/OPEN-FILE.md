@@ -12,7 +12,7 @@ In the menu bar, click "File" > "Open Log..." or press **cmd/ctrl + O**, then ch
 
 Supported log formats are:
 
-- **WPILOG (.wpilog)** - Produced by WPILib's [build-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit v2 (2023) or later.
+- **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit v2 (2023) or later.
 - **RLOG (.rlog)** - Produced by AdvantageKit v1 (2022).
 - **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) and saved to "\Users\Public\Documents\FRC\Log Files".
 
@@ -28,7 +28,7 @@ Log files of different types can be merged automatically. For example, DS log da
 
 ## Downloading from a roboRIO
 
-Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Preferences..." (macOS). Update the "roboRIO Address" and "roboRIO Log Folder".
+Open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Settings..." (macOS). Update the "roboRIO Address" and "roboRIO Log Folder".
 
 > Note: Click "File" > "Use USB roboRIO Address" to temporarily use the IP address "172.22.11.2" for all connections.
 

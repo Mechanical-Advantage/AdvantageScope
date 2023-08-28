@@ -11,7 +11,6 @@ These links cover the basics of getting around in AdvantageScope and and accessi
 - [App Navigation](/docs/NAVIGATION.md)
 - [Opening/Downloading Log Files](/docs/OPEN-FILE.md)
 - [Connecting to Live Sources](/docs/OPEN-LIVE.md)
-- [Exporting Log Data](/docs/EXPORT.md)
 
 ## Tab Information
 
@@ -30,13 +29,18 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 - 🔵 [Points](/docs/tabs/POINTS.md)
 - 🔍 [Metadata](/docs/tabs/METADATA.md)
 
-## Other Links
+## More Features
+
+- [Exporting Log Data](/docs/EXPORT.md)
+- [Publishing NetworkTables Data](/docs/NT-PUBLISHING.md)
+- [Custom Assets](/docs/CUSTOM-ASSETS.md)
+- [Converting Onshape & STEP Files to glTF](/docs/GLTF-CONVERT.md)
+
+## External Links
 
 - [WPILib Documentation](https://docs.wpilib.org)
 - [AdvantageKit Documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
 - [AdvantageScope Repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
 - [Sample Log Data](https://drive.google.com/drive/folders/14Bbp10csQPjh2VcApNM07lwt2v77-z_I?usp=share_link) (6328 @ 2022 Championship)
-- [Custom Assets](/docs/CUSTOM-ASSETS.md)
-- [Converting Onshape & STEP Files to glTF](/docs/GLTF-CONVERT.md)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.

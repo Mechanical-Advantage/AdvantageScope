@@ -1016,14 +1016,6 @@ function setupMenu() {
             openDownload(window);
           }
         },
-        {
-          label: "Export Data...",
-          accelerator: "CmdOrCtrl+E",
-          click(_, window) {
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-export");
-          }
-        },
         { type: "separator" },
         {
           label: "Use USB roboRIO Address",
@@ -1033,6 +1025,44 @@ function setupMenu() {
             usingUsb = item.checked;
             sendAllPreferences();
           }
+        },
+        { type: "separator" },
+        {
+          label: "Export Data...",
+          accelerator: "CmdOrCtrl+E",
+          click(_, window) {
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "start-export");
+          }
+        },
+        {
+          label: "Publish NT Data",
+          submenu: [
+            {
+              label: "Connect to Robot",
+              accelerator: "CmdOrCtrl+P",
+              click(_, window) {
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "start-publish", false);
+              }
+            },
+            {
+              label: "Connect to Simulator",
+              accelerator: "CmdOrCtrl+Shift+P",
+              click(_, window) {
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "start-publish", true);
+              }
+            },
+            {
+              label: "Stop Publishing",
+              accelerator: "Option+P",
+              click(_, window) {
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "stop-publish");
+              }
+            }
+          ]
         },
         { type: "separator" },
         {
@@ -1276,7 +1306,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Preferences...",
+          label: "Settings...",
           accelerator: "Cmd+,",
           click(_, window) {
             if (window === undefined) return;
@@ -1751,7 +1781,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = process.platform === "win32" ? 303 : 243; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform === "win32" ? 330 : 270; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -1897,6 +1927,9 @@ app.whenReady().then(() => {
       (oldPrefs.liveSubscribeMode === "low-bandwidth" || oldPrefs.liveSubscribeMode === "logging")
     ) {
       prefs.liveSubscribeMode = oldPrefs.liveSubscribeMode;
+    }
+    if ("publishFilter" in oldPrefs && typeof oldPrefs.publishFilter === "string") {
+      prefs.publishFilter = oldPrefs.publishFilter;
     }
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
