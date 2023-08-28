@@ -20,7 +20,7 @@ The following sources of live data are supported by AdvantageScope:
 
 - **NetworkTables 4:** This is the default networking protocol starting in WPILib 2023, and is commonly used by dashboards, coprocessors, etc. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details. Note that NetworkTables 3 (used by WPILib 2022 and older) is not supported by AdvantageScope.
 - **NetworkTables 4 (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the "/AdvantageKit" table in NetworkTables. The only difference from the **NetworkTables 4** mode is that the "/AdvantageKit" table is used as the root, which allows for easier switching between an NT4 connection and an AdvantageKit log file.
-- **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases. Note that the "RLOG Server Port" must be set to use this mode.
+- **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases.
 
 ### Live Mode
 
