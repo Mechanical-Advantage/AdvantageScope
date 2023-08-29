@@ -19,12 +19,13 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   // Run worker
-  let log = new Log();
+  let log = new Log(false); // No timestamp set cache for efficiency
   let reader = new WPILOGDecoder(payload[0]);
   let totalBytes = (payload[0] as Uint8Array).byteLength;
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
   let lastProgressTimestamp = new Date().getTime();
+  let start = performance.now();
   try {
     reader.forEach((record, byteCount) => {
       if (record.isControl()) {
@@ -122,6 +123,8 @@ self.onmessage = (event) => {
     reject();
     return;
   }
+  let end = performance.now();
+  console.log(end - start);
   progress(1);
   setTimeout(() => {
     // Allow progress message to get through first

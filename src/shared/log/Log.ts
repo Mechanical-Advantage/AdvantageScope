@@ -21,7 +21,12 @@ export default class Log {
   private arrayLengths: { [id: string]: number } = {}; // Used to detect when length increases
   private arrayItemFields: string[] = []; // Readonly fields
   private timestampRange: [number, number] | null = null;
+  private enableTimestampSetCache: boolean;
   private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
+
+  constructor(enableTimestampSetCache = true) {
+    this.enableTimestampSetCache = enableTimestampSetCache;
+  }
 
   /** Checks if the field exists and registers it if necessary. */
   public createBlankField(key: string, type: LoggableType) {
@@ -49,15 +54,17 @@ export default class Log {
     this.updateTimestampRange(timestamp);
 
     // Update timestamp set caches
-    Object.values(this.timestampSetCache).forEach((cache) => {
-      if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
-        let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
-        if (insertIndex === -1) {
-          insertIndex = cache.timestamps.length;
+    if (this.enableTimestampSetCache) {
+      Object.values(this.timestampSetCache).forEach((cache) => {
+        if (cache.keys.includes(key) && !cache.timestamps.includes(timestamp)) {
+          let insertIndex = cache.timestamps.findIndex((x) => x > timestamp);
+          if (insertIndex === -1) {
+            insertIndex = cache.timestamps.length;
+          }
+          cache.timestamps.splice(insertIndex, 0, timestamp);
         }
-        cache.timestamps.splice(insertIndex, 0, timestamp);
-      }
-    });
+      });
+    }
   }
 
   /** Returns an array of registered field keys. */
@@ -94,7 +101,7 @@ export default class Log {
     if (keys.length > 1) {
       // Multiple fields, read from cache if possible
       let saveCache = false;
-      if (uuid !== null) {
+      if (uuid !== null && this.enableTimestampSetCache) {
         if (uuid in this.timestampSetCache && arraysEqual(this.timestampSetCache[uuid].keys, keys)) {
           return [...this.timestampSetCache[uuid].timestamps];
         }
@@ -248,7 +255,10 @@ export default class Log {
         this.arrayLengths[key] = value.length;
       }
       for (let i = 0; i < value.length; i++) {
-        this.processTimestamp(key + "/" + i.toString(), timestamp);
+        if (this.enableTimestampSetCache) {
+          // Only useful for timestamp set cache
+          this.processTimestamp(key + "/" + i.toString(), timestamp);
+        }
         this.fields[key + "/" + i.toString()].putBoolean(timestamp, value[i]);
       }
     }
@@ -268,7 +278,10 @@ export default class Log {
         this.arrayLengths[key] = value.length;
       }
       for (let i = 0; i < value.length; i++) {
-        this.processTimestamp(key + "/" + i.toString(), timestamp);
+        if (this.enableTimestampSetCache) {
+          // Only useful for timestamp set cache
+          this.processTimestamp(key + "/" + i.toString(), timestamp);
+        }
         this.fields[key + "/" + i.toString()].putNumber(timestamp, value[i]);
       }
     }
@@ -288,7 +301,10 @@ export default class Log {
         this.arrayLengths[key] = value.length;
       }
       for (let i = 0; i < value.length; i++) {
-        this.processTimestamp(key + "/" + i.toString(), timestamp);
+        if (this.enableTimestampSetCache) {
+          // Only useful for timestamp set cache
+          this.processTimestamp(key + "/" + i.toString(), timestamp);
+        }
         this.fields[key + "/" + i.toString()].putString(timestamp, value[i]);
       }
     }
