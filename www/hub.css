@@ -92,7 +92,7 @@ div.loading-glow-element {
   height: 3px;
   top: 0%;
   transform: skew(-45deg);
-  animation: loadingGlowSlide 1.5s linear infinite;
+  animation: loadingGlowSlide 0.75s linear infinite;
 
   background-color: #303dc9;
 }
