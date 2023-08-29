@@ -25,7 +25,6 @@ self.onmessage = (event) => {
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
   let lastProgressTimestamp = new Date().getTime();
-  let start = performance.now();
   try {
     reader.forEach((record, byteCount) => {
       if (record.isControl()) {
@@ -123,8 +122,6 @@ self.onmessage = (event) => {
     reject();
     return;
   }
-  let end = performance.now();
-  console.log(end - start);
   progress(1);
   setTimeout(() => {
     // Allow progress message to get through first
