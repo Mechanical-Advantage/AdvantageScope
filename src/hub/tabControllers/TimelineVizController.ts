@@ -23,6 +23,7 @@ export default abstract class TimelineVizController implements TabController {
   private listFields: { type: string; key: string; fieldTypeIndex: number }[][] = [];
   private lastListFieldsStr: string = "";
   private lastAllKeys: string[] = [];
+  private periodicInterval: number;
   protected visualizer: Visualizer;
 
   constructor(
@@ -76,10 +77,14 @@ export default abstract class TimelineVizController implements TabController {
     });
 
     // Start periodic cycle
-    window.setInterval(() => this.customPeriodic(), 1000 / 60);
+    this.periodicInterval = window.setInterval(() => this.customPeriodic(), 1000 / 60);
 
     // Refresh timeline immediately
     this.refresh();
+  }
+
+  stopPeriodic() {
+    window.clearInterval(this.periodicInterval);
   }
 
   saveState(): TimelineVisualizerState {

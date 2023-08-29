@@ -286,6 +286,9 @@ export default class Tabs {
   /** Closes the specified tab. */
   close(index: number) {
     if (index < 1 || index > this.tabList.length - 1) return;
+    if (TIMELINE_VIZ_TYPES.includes(this.tabList[index].type)) {
+      (this.tabList[index].controller as TimelineVizController).stopPeriodic();
+    }
     this.VIEWER.removeChild(this.tabList[index].contentElement);
     this.tabList.splice(index, 1);
     if (this.selectedTab > index) this.selectedTab--;
