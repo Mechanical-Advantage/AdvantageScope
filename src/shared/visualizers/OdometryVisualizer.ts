@@ -16,6 +16,7 @@ export default class OdometryVisualizer implements Visualizer {
   private heatmap: h337.Heatmap<"value", "x", "y"> | null = null;
   private lastWidth = 0;
   private lastHeight = 0;
+  private lastObjectsFlipped: boolean | null = null;
   private lastHeatmapData = "";
   private lastImageSource = "";
 
@@ -142,10 +143,16 @@ export default class OdometryVisualizer implements Visualizer {
 
     // Recreate heatmap canvas
     let newHeatmapInstance = false;
-    if (width !== this.lastWidth || height !== this.lastHeight || !this.heatmap) {
+    if (
+      width !== this.lastWidth ||
+      height !== this.lastHeight ||
+      objectsFlipped !== this.lastObjectsFlipped ||
+      !this.heatmap
+    ) {
       newHeatmapInstance = true;
       this.lastWidth = width;
       this.lastHeight = height;
+      this.lastObjectsFlipped = objectsFlipped;
       while (this.HEATMAP_CONTAINER.firstChild) {
         this.HEATMAP_CONTAINER.removeChild(this.HEATMAP_CONTAINER.firstChild);
       }
