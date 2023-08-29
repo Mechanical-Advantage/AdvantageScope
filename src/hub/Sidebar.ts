@@ -91,7 +91,8 @@ export default class Sidebar {
     });
     let periodic = () => {
       this.SEARCH_RESULTS.style.top = this.SEARCH_INPUT.getBoundingClientRect().bottom.toString() + "px";
-      let hidden = !searchInputFocused || this.SEARCH_INPUT.value.length === 0;
+      let hidden =
+        !searchInputFocused || this.SEARCH_INPUT.value.length === 0 || this.SEARCH_RESULTS.childElementCount === 0;
       let unhiding = !hidden && this.SEARCH_RESULTS.hidden;
       this.SEARCH_RESULTS.hidden = hidden;
       if (unhiding) {
