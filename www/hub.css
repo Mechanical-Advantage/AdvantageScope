@@ -57,7 +57,7 @@ body.fancy-title-bar div.main-view {
 
 /* Loading glow */
 
-div.loading-glow-container {
+div.loading-glow {
   position: absolute;
   z-index: 7;
   left: var(--side-bar-width);
@@ -66,75 +66,7 @@ div.loading-glow-container {
   height: 3px;
   transform: translateY(calc(-3px + 3px * var(--show-loading-glow)));
   transition: transform 0.3s;
-  overflow: hidden;
-}
-
-div.loading-glow {
-  position: absolute;
-  left: 0px;
-  width: calc(100vw - var(--side-bar-width));
-  top: 0px;
-  height: 3px;
-}
-
-@keyframes loadingGlowSlide {
-  0% {
-    translate: 0% 0%;
-  }
-  100% {
-    translate: 400% 0%;
-  }
-}
-
-div.loading-glow-element {
-  position: absolute;
-  width: 25%;
-  height: 3px;
-  top: 0%;
-  transform: skew(-45deg);
-  animation: loadingGlowSlide 0.75s linear infinite;
-
   background-color: #303dc9;
-}
-
-div.loading-glow-element:nth-child(2n) {
-  background-color: #b0beff;
-}
-
-div.loading-glow-element:nth-child(1) {
-  left: -125%;
-}
-
-div.loading-glow-element:nth-child(2) {
-  left: -100%;
-}
-
-div.loading-glow-element:nth-child(3) {
-  left: -75%;
-}
-
-div.loading-glow-element:nth-child(4) {
-  left: -50%;
-}
-
-div.loading-glow-element:nth-child(5) {
-  left: -25%;
-}
-
-div.loading-glow-element:nth-child(6) {
-  left: 0%;
-}
-
-div.loading-glow-element:nth-child(7) {
-  left: 25%;
-}
-
-div.loading-glow-element:nth-child(8) {
-  left: 50%;
-}
-
-div.loading-glow-element:nth-child(9) {
-  left: 75%;
 }
 
 @keyframes publishingGlowPulsing {
