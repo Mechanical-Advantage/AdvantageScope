@@ -14,8 +14,9 @@ export default class LineGraphController implements TabController {
   private MIN_ZOOM_TIME = 0.05;
   private ZOOM_BASE = 1.001;
   private MIN_AXIS_RANGE = 1e-5;
-  private MAX_AXIS_RANGE = 1e9;
-  private MAX_VALUE = 1e9;
+  private MAX_AXIS_RANGE = 1e20;
+  private MAX_DECIMAL_VALUE = 1e9; // After this, stop trying to display fractional values
+  private MAX_VALUE = 1e20;
 
   private CONTENT: HTMLElement;
   private LEGEND_ITEM_TEMPLATE: HTMLElement;
@@ -540,6 +541,46 @@ export default class LineGraphController implements TabController {
     }
   }
 
+  /** Adjusts the range to fit the extreme limits. */
+  private limitAxisRange(range: [number, number]): [number, number] {
+    let adjustedRange = [range[0], range[1]] as [number, number];
+    if (adjustedRange[0] > this.MAX_VALUE) {
+      adjustedRange[0] = this.MAX_VALUE;
+    }
+    if (adjustedRange[1] > this.MAX_VALUE) {
+      adjustedRange[1] = this.MAX_VALUE;
+    }
+    if (adjustedRange[0] < -this.MAX_VALUE) {
+      adjustedRange[0] = -this.MAX_VALUE;
+    }
+    if (adjustedRange[1] < -this.MAX_VALUE) {
+      adjustedRange[1] = -this.MAX_VALUE;
+    }
+    if (adjustedRange[0] === adjustedRange[1]) {
+      if (Math.abs(adjustedRange[0]) >= this.MAX_VALUE) {
+        if (adjustedRange[0] > 0) {
+          adjustedRange[0] *= 0.8;
+        } else {
+          adjustedRange[1] *= 0.8;
+        }
+      } else {
+        adjustedRange[0]--;
+        adjustedRange[1]++;
+      }
+    }
+    if (adjustedRange[1] - adjustedRange[0] > this.MAX_AXIS_RANGE) {
+      if (adjustedRange[0] + this.MAX_AXIS_RANGE < this.MAX_VALUE) {
+        adjustedRange[1] = adjustedRange[0] + this.MAX_AXIS_RANGE;
+      } else {
+        adjustedRange[0] = adjustedRange[1] - this.MAX_AXIS_RANGE;
+      }
+    }
+    if (adjustedRange[1] - adjustedRange[0] < this.MIN_AXIS_RANGE) {
+      adjustedRange[1] = adjustedRange[0] + this.MIN_AXIS_RANGE;
+    }
+    return adjustedRange;
+  }
+
   /**
    * Calculates appropriate bounds and steps based on data.
    * @param primaryAxis The config from another axis (gridlines will be aligned).
@@ -566,40 +607,11 @@ export default class LineGraphController implements TabController {
     // Calc target range
     let targetRange: [number, number] = [0, 1];
     if (lockedRange !== null) {
-      targetRange = lockedRange;
+      targetRange = this.limitAxisRange(lockedRange);
     } else if (valueRange !== null && marginProportion !== null) {
-      // Apply extreme limits
-      let adjustedValueRange = [...valueRange];
-      if (adjustedValueRange[0] > this.MAX_VALUE) {
-        adjustedValueRange[0] = this.MAX_VALUE;
-      }
-      if (adjustedValueRange[1] > this.MAX_VALUE) {
-        adjustedValueRange[1] = this.MAX_VALUE;
-      }
-      if (adjustedValueRange[0] < -this.MAX_VALUE) {
-        adjustedValueRange[0] = -this.MAX_VALUE;
-      }
-      if (adjustedValueRange[1] < -this.MAX_VALUE) {
-        adjustedValueRange[1] = -this.MAX_VALUE;
-      }
-      if (adjustedValueRange[0] === adjustedValueRange[1]) {
-        adjustedValueRange[0]--;
-        adjustedValueRange[1]++;
-      }
-      if (adjustedValueRange[1] - adjustedValueRange[0] > this.MAX_AXIS_RANGE) {
-        if (adjustedValueRange[0] + this.MAX_AXIS_RANGE < this.MAX_VALUE) {
-          adjustedValueRange[1] = adjustedValueRange[0] + this.MAX_AXIS_RANGE;
-        } else {
-          adjustedValueRange[0] = adjustedValueRange[1] - this.MAX_AXIS_RANGE;
-        }
-      }
-      if (adjustedValueRange[1] - adjustedValueRange[0] < this.MIN_AXIS_RANGE) {
-        adjustedValueRange[1] = adjustedValueRange[0] + this.MIN_AXIS_RANGE;
-      }
-
-      // Calculate target range with margin
-      let margin = (adjustedValueRange[1] - adjustedValueRange[0]) * marginProportion;
-      targetRange = [adjustedValueRange[0] - margin, adjustedValueRange[1] + margin];
+      let adjustedRange = this.limitAxisRange(valueRange);
+      let margin = (adjustedRange[1] - adjustedRange[0]) * marginProportion;
+      targetRange = [adjustedRange[0] - margin, adjustedRange[1] + margin];
     }
 
     // How many steps?
@@ -680,16 +692,25 @@ export default class LineGraphController implements TabController {
     let availableKeys = window.log.getFieldKeys();
     [this.leftFields, this.discreteFields, this.rightFields].forEach((array, legendIndex) => {
       let range: [number, number] = [Infinity, -Infinity];
-      array.forEach((field, fieldIndex) => {
+      array.forEach((field) => {
         if (!field.show || !availableKeys.includes(field.key)) return;
 
         // Read data for field
         if (!Object.keys(dataCache).includes(field.key)) {
-          dataCache[field.key] = window.log.getRange(
+          let logData = window.log.getRange(
             field.key,
             this.timestampRange[0],
             this.timestampRange[1]
           ) as LogValueSetAny;
+          if (
+            logData.timestamps.length > 0 &&
+            logData.timestamps[logData.timestamps.length - 1] > this.timestampRange[1]
+          ) {
+            // Last value is after end of timestamp range
+            logData.timestamps.pop();
+            logData.values.pop();
+          }
+          dataCache[field.key] = logData;
           typeCache[field.key] = window.log.getType(field.key) as LoggableType;
         }
 
@@ -1083,11 +1104,14 @@ export default class LineGraphController implements TabController {
         if (y > graphTop + graphHeight) break;
 
         context.globalAlpha = 1;
-        context.fillText(cleanFloat(stepPos).toString(), graphLeft - 15, y);
-        context.beginPath();
-        context.moveTo(graphLeft, y);
-        context.lineTo(graphLeft - 5, y);
-        context.stroke();
+        if (Math.abs(stepPos) < this.MAX_DECIMAL_VALUE || stepPos % 1 === 0) {
+          let value = Math.abs(stepPos) < this.MAX_DECIMAL_VALUE ? cleanFloat(stepPos) : Math.round(stepPos);
+          context.fillText(value.toString(), graphLeft - 15, y);
+          context.beginPath();
+          context.moveTo(graphLeft, y);
+          context.lineTo(graphLeft - 5, y);
+          context.stroke();
+        }
 
         if (leftIsPrimary) {
           context.globalAlpha = 0.1;
@@ -1109,11 +1133,14 @@ export default class LineGraphController implements TabController {
         if (y > graphTop + graphHeight) break;
 
         context.globalAlpha = 1;
-        context.fillText(cleanFloat(stepPos).toString(), graphLeft + graphWidth + 15, y);
-        context.beginPath();
-        context.moveTo(graphLeft + graphWidth, y);
-        context.lineTo(graphLeft + graphWidth + 5, y);
-        context.stroke();
+        if (Math.abs(stepPos) < this.MAX_DECIMAL_VALUE || stepPos % 1 === 0) {
+          let value = Math.abs(stepPos) < this.MAX_DECIMAL_VALUE ? cleanFloat(stepPos) : Math.round(stepPos);
+          context.fillText(value.toString(), graphLeft + graphWidth + 15, y);
+          context.beginPath();
+          context.moveTo(graphLeft + graphWidth, y);
+          context.lineTo(graphLeft + graphWidth + 5, y);
+          context.stroke();
+        }
 
         if (!leftIsPrimary) {
           context.globalAlpha = 0.1;
