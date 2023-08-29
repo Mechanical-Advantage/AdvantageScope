@@ -5,7 +5,7 @@ import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {
-  private HEATMAP_MAX = 10 / 0.1; // 10 seconds divided by sample dt
+  private HEATMAP_GRID_SIZE = 0.1;
   private HEATMAP_RADIUS = 0.1; // Fraction of field height
 
   private CONTAINER: HTMLElement;
@@ -160,7 +160,8 @@ export default class OdometryVisualizer implements Visualizer {
       this.HEATMAP_CONTAINER.style.height = height.toString() + "px";
       this.heatmap = h337.create({
         container: this.HEATMAP_CONTAINER,
-        radius: this.IMAGE.height * imageScalar * this.HEATMAP_RADIUS
+        radius: this.IMAGE.height * imageScalar * this.HEATMAP_RADIUS,
+        maxOpacity: 0.75
       });
     }
 
@@ -168,21 +169,49 @@ export default class OdometryVisualizer implements Visualizer {
     let heatmapDataString = JSON.stringify(command.poses.heatmap);
     if (heatmapDataString !== this.lastHeatmapData || newHeatmapInstance) {
       this.lastHeatmapData = heatmapDataString;
-      let heatmapData: { x: number; y: number; value: number }[] = [];
-      (command.poses.heatmap as Translation2d[]).forEach((translation) => {
-        let coordinates = calcCoordinates(translation);
-        coordinates = [Math.round(coordinates[0]), Math.round(coordinates[1])];
-        if (coordinates[0] >= 0 && coordinates[1] < width && coordinates[1] >= 0 && coordinates[1] < height) {
-          heatmapData.push({
-            x: coordinates[0],
-            y: coordinates[1],
-            value: 1
-          });
+      let grid: number[][] = [];
+      let fieldWidthMeters = convert(gameData.widthInches, "inches", "meters");
+      let fieldHeightMeters = convert(gameData.heightInches, "inches", "meters");
+      for (let x = 0; x < fieldWidthMeters + this.HEATMAP_GRID_SIZE; x += this.HEATMAP_GRID_SIZE) {
+        let column: number[] = [];
+        grid.push(column);
+        for (let y = 0; y < fieldHeightMeters + this.HEATMAP_GRID_SIZE; y += this.HEATMAP_GRID_SIZE) {
+          column.push(0);
         }
+      }
+
+      (command.poses.heatmap as Translation2d[]).forEach((translation) => {
+        let gridX = Math.floor(translation[0] / this.HEATMAP_GRID_SIZE);
+        let gridY = Math.floor(translation[1] / this.HEATMAP_GRID_SIZE);
+        if (gridX >= 0 && gridY >= 0 && gridX < grid.length && gridY < grid[0].length) {
+          grid[gridX][gridY] += 1;
+        }
+      });
+
+      let heatmapData: { x: number; y: number; value: number }[] = [];
+      let x = this.HEATMAP_GRID_SIZE / 2;
+      let y: number;
+      let maxValue = 0;
+      grid.forEach((column) => {
+        x += this.HEATMAP_GRID_SIZE;
+        y = this.HEATMAP_GRID_SIZE / 2;
+        column.forEach((gridValue) => {
+          y += this.HEATMAP_GRID_SIZE;
+          let coordinates = calcCoordinates([x, y]);
+          coordinates = [Math.round(coordinates[0]), Math.round(coordinates[1])];
+          maxValue = Math.max(maxValue, gridValue);
+          if (gridValue > 0) {
+            heatmapData.push({
+              x: coordinates[0],
+              y: coordinates[1],
+              value: gridValue
+            });
+          }
+        });
       });
       this.heatmap.setData({
         min: 0,
-        max: this.HEATMAP_MAX,
+        max: maxValue,
         data: heatmapData
       });
     }
