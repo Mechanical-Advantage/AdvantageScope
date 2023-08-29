@@ -1,6 +1,6 @@
 export const AllColors = [
-  "#e5b31b",
   "#2b66a2",
+  "#e5b31b",
   "#af2437",
   "#80588e",
   "#e48b32",
