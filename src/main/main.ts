@@ -1800,6 +1800,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   prefsWindow.setMenu(null);
+  prefsWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   prefsWindow.once("ready-to-show", prefsWindow.show);
   prefsWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
@@ -1849,6 +1850,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   downloadWindow.setMenu(null);
+  downloadWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   downloadWindow.once("ready-to-show", downloadWindow.show);
   downloadWindow.once("close", downloadStop);
   downloadWindow.webContents.on("dom-ready", () => {
