@@ -40,8 +40,6 @@ declare global {
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
-
-    search: (query: string) => void;
   }
 }
 window.log = new Log();
@@ -52,8 +50,6 @@ window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
 window.isBattery = false;
-
-window.search = (query) => searchFields(window.log, query);
 
 window.selection = new Selection();
 window.sidebar = new Sidebar();
