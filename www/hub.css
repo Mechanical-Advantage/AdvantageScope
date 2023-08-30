@@ -440,7 +440,7 @@ div.tab-bar-shadow-left {
 
 div.tab-bar-shadow-right {
   opacity: 100%;
-  right: 210px;
+  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
