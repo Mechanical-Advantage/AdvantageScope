@@ -338,7 +338,7 @@ div.search-results {
   left: 18px;
   top: 0px;
   max-width: 700px;
-  min-width: calc(var(--side-bar-width) - 18px - 18px);
+  min-width: 0px; /* Updated by JS based on width of search input */
   max-height: 290px;
   z-index: 12;
   overflow-x: hidden;

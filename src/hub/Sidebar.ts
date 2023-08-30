@@ -90,7 +90,9 @@ export default class Sidebar {
       }
     });
     let periodic = () => {
-      this.SEARCH_RESULTS.style.top = this.SEARCH_INPUT.getBoundingClientRect().bottom.toString() + "px";
+      let inputRect = this.SEARCH_INPUT.getBoundingClientRect();
+      this.SEARCH_RESULTS.style.top = inputRect.bottom.toString() + "px";
+      this.SEARCH_RESULTS.style.minWidth = inputRect.width.toString() + "px";
       let hidden =
         !searchInputFocused || this.SEARCH_INPUT.value.length === 0 || this.SEARCH_RESULTS.childElementCount === 0;
       let unhiding = !hidden && this.SEARCH_RESULTS.hidden;
