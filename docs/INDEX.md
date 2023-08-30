@@ -1,5 +1,7 @@
 # Welcome to AdvantageScope!
 
+> 🚨 **IMPORTANT: This documentation is for the upcoming 2024 version of AdvantageScope. To access the 2023 documentation, click the 📖 icon is the tab bar of AdvantageScope or click [here](https://github.com/Mechanical-Advantage/AdvantageScope/blob/v2.3.0/docs/INDEX.md).**
+
 AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST Robotics Competition.
 
 ![Example screenshot](/docs/resources/screenshot-light.png)
