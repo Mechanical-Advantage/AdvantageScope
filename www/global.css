@@ -18,6 +18,10 @@ body {
   }
 }
 
+img {
+  -webkit-user-drag: none;
+}
+
 /* Buttons */
 
 button {
