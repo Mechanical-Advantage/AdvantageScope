@@ -7,6 +7,7 @@ const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const THREE_DIMENSION_MODE = document.getElementById("threeDimensionMode") as HTMLInputElement;
+const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
@@ -43,6 +44,7 @@ window.addEventListener("message", (event) => {
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
       THREE_DIMENSION_MODE.value = oldPrefs.threeDimensionMode;
+      TBA_API_KEY.value = oldPrefs.tbaApiKey;
 
       // Close function
       function close(useNewPrefs: boolean) {
@@ -74,7 +76,8 @@ window.addEventListener("message", (event) => {
             liveSubscribeMode: liveSubscribeMode,
             publishFilter: PUBLISH_FILTER.value,
             rlogPort: oldPrefs.rlogPort,
-            threeDimensionMode: threeDimensionMode
+            threeDimensionMode: threeDimensionMode,
+            tbaApiKey: TBA_API_KEY.value
           };
           messagePort.postMessage(newPrefs);
         } else {

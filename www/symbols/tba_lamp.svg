@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 112">
+    <defs>
+        <style>.cls-1{fill:none;stroke:#4555a5;stroke-miterlimit:10;stroke-width:6px;}.cls-2{fill:#4555a5;}</style>
+    </defs>
+    <line class="cls-1" x1="11" y1="20" x2="11" y2="84"/>
+    <line class="cls-1" x1="61" y1="20" x2="61" y2="84"/>
+    <path class="cls-1" d="M39,92a25,25,0,0,0,25,25" transform="translate(-28 -8)"/>
+    <path class="cls-1" d="M89,92a25,25,0,0,1-25,25" transform="translate(-28 -8)"/>
+    <line class="cls-1" x1="36" y1="20" x2="36" y2="109"/>
+    <line class="cls-1" x1="11" y1="81" x2="61" y2="81"/>
+    <line class="cls-1" x1="11" y1="53" x2="61" y2="53"/>
+    <rect class="cls-2" width="72" height="28" rx="4"/>
+</svg>

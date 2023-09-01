@@ -46,7 +46,8 @@
     "simple-statistics": "^7.8.3",
     "three": "^0.155.0",
     "tslib": "^2.6.1",
-    "typescript": "5.1.6"
+    "typescript": "5.1.6",
+    "ytdl-core": "*"
   },
   "dependencies": {
     "check-disk-space": "^3.4.0",

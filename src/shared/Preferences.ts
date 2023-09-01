@@ -8,5 +8,6 @@ export default interface Preferences {
   publishFilter: string;
   rlogPort: number;
   threeDimensionMode: "quality" | "efficiency" | "auto";
+  tbaApiKey: string;
   usb?: boolean;
 }

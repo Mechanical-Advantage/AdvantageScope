@@ -1,9 +1,11 @@
+import { MatchType } from "../../shared/MatchInfo";
 import TabType from "../../shared/TabType";
+import VideoSource from "../../shared/VideoSource";
+import { getMatchInfo } from "../../shared/log/LogUtil";
 import VideoVisualizer from "../../shared/visualizers/VideoVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class VideoController extends TimelineVizController {
-  private SOURCE_CELL: HTMLElement;
   private LOCK_BUTTON: HTMLButtonElement;
   private UNLOCK_BUTTON: HTMLButtonElement;
   private PLAY_BUTTON: HTMLButtonElement;
@@ -36,16 +38,17 @@ export default class VideoController extends TimelineVizController {
     );
 
     // Get elements
-    this.SOURCE_CELL = content.getElementsByClassName("video-source")[0] as HTMLElement;
     let configTable = content.getElementsByClassName("timeline-viz-config")[0] as HTMLElement;
-    this.LOCK_BUTTON = configTable.getElementsByTagName("button")[0] as HTMLButtonElement;
-    this.UNLOCK_BUTTON = configTable.getElementsByTagName("button")[1] as HTMLButtonElement;
-    this.PLAY_BUTTON = configTable.getElementsByTagName("button")[4] as HTMLButtonElement;
-    this.PAUSE_BUTTON = configTable.getElementsByTagName("button")[5] as HTMLButtonElement;
-    this.FRAME_BACK_BUTTON = configTable.getElementsByTagName("button")[3] as HTMLButtonElement;
-    this.FRAME_FORWARD_BUTTON = configTable.getElementsByTagName("button")[6] as HTMLButtonElement;
-    this.SKIP_BACK_BUTTON = configTable.getElementsByTagName("button")[2] as HTMLButtonElement;
-    this.SKIP_FORWARD_BUTTON = configTable.getElementsByTagName("button")[7] as HTMLButtonElement;
+    let controlsCellUpper = configTable.firstElementChild!.children[1].children[1] as HTMLElement;
+    let controlsCellLower = configTable.getElementsByClassName("video-controls")[0] as HTMLElement;
+    this.LOCK_BUTTON = controlsCellUpper.getElementsByTagName("button")[0] as HTMLButtonElement;
+    this.UNLOCK_BUTTON = controlsCellUpper.getElementsByTagName("button")[1] as HTMLButtonElement;
+    this.PLAY_BUTTON = controlsCellLower.getElementsByTagName("button")[2] as HTMLButtonElement;
+    this.PAUSE_BUTTON = controlsCellLower.getElementsByTagName("button")[3] as HTMLButtonElement;
+    this.FRAME_BACK_BUTTON = controlsCellLower.getElementsByTagName("button")[1] as HTMLButtonElement;
+    this.FRAME_FORWARD_BUTTON = controlsCellLower.getElementsByTagName("button")[4] as HTMLButtonElement;
+    this.SKIP_BACK_BUTTON = controlsCellLower.getElementsByTagName("button")[0] as HTMLButtonElement;
+    this.SKIP_FORWARD_BUTTON = controlsCellLower.getElementsByTagName("button")[5] as HTMLButtonElement;
     this.VIDEO_TIMELINE_INPUT = configTable.getElementsByClassName(
       "timeline-viz-timeline-slider"
     )[0] as HTMLInputElement;
@@ -53,8 +56,52 @@ export default class VideoController extends TimelineVizController {
       .firstElementChild as HTMLElement;
 
     // Source selection
-    this.SOURCE_CELL.addEventListener("click", () => {
-      window.sendMainMessage("select-video", this.UUID);
+    let sourceCell = content.getElementsByClassName("video-source")[0] as HTMLElement;
+    sourceCell.children[0].addEventListener("click", () => {
+      window.sendMainMessage("select-video", {
+        uuid: this.UUID,
+        source: VideoSource.Local,
+        matchInfo: null
+      });
+    });
+    sourceCell.children[1].addEventListener("click", () => {
+      window.sendMainMessage("select-video", {
+        uuid: this.UUID,
+        source: VideoSource.YouTube,
+        matchInfo: null
+      });
+    });
+    sourceCell.children[2].addEventListener("click", () => {
+      if (!window.preferences?.tbaApiKey) {
+        window.sendMainMessage("error", {
+          title: "No API key",
+          content:
+            "Please enter an API key for The Blue Alliance in the AdvantageScope settings. An API key can be obtained from the Account page on The Blue Alliance website."
+        });
+        return;
+      }
+      let matchInfo = getMatchInfo(window.log);
+      if (matchInfo === null) {
+        window.sendMainMessage("error", {
+          title: "No match info",
+          content:
+            "Failed to read event and match info from the log data. Please load the video using a YouTube URL or local file instead."
+        });
+        return;
+      }
+      if (matchInfo.matchType === MatchType.Practice) {
+        window.sendMainMessage("error", {
+          title: "No videos for practice match",
+          content:
+            "This is a practice match. No data is available on The Blue Alliance for practice matches, please load the video using a YouTube URL or local file instead."
+        });
+        return;
+      }
+      window.sendMainMessage("select-video", {
+        uuid: this.UUID,
+        source: VideoSource.TheBlueAlliance,
+        matchInfo: matchInfo
+      });
     });
 
     // Lock buttons
@@ -156,15 +203,7 @@ export default class VideoController extends TimelineVizController {
   processVideoData(data: any) {
     if (data.uuid !== this.UUID) return;
 
-    if ("path" in data) {
-      // Set name
-      let components = data.path.split(window.platform === "win32" ? "\\" : "/");
-      this.SOURCE_CELL.innerText = components[components.length - 1];
-
-      this.locked = false;
-      this.playing = false;
-      this.updateButtons();
-    } else {
+    if ("fps" in data) {
       // Set progress
       this.imgFolder = data.imgFolder;
       this.fps = data.fps;
@@ -174,6 +213,11 @@ export default class VideoController extends TimelineVizController {
       if (this.totalFrames === null || this.completedFrames === null) return;
       this.VIDEO_TIMELINE_PROGRESS.style.width = ((this.completedFrames / this.totalFrames) * 100).toString() + "%";
       this.VIDEO_TIMELINE_INPUT.max = this.totalFrames.toString();
+    } else {
+      // Reset controls
+      this.locked = false;
+      this.playing = false;
+      this.updateButtons();
     }
   }
 
