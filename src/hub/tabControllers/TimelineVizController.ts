@@ -63,6 +63,18 @@ export default abstract class TimelineVizController implements TabController {
         }
       }
     });
+    let hideButton = content.getElementsByClassName("timeline-viz-hide-button")[0] as HTMLButtonElement;
+    let showButton = content.getElementsByClassName("timeline-viz-show-button")[0] as HTMLButtonElement;
+    hideButton.addEventListener("click", () => {
+      hideButton.hidden = true;
+      showButton.hidden = false;
+      this.CONFIG_TABLE.hidden = true;
+    });
+    showButton.addEventListener("click", () => {
+      hideButton.hidden = false;
+      showButton.hidden = true;
+      this.CONFIG_TABLE.hidden = false;
+    });
     content.getElementsByClassName("timeline-viz-popup-button")[0].addEventListener("click", () => {
       window.sendMainMessage("create-satellite", {
         uuid: this.UUID,

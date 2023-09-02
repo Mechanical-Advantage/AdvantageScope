@@ -1333,7 +1333,7 @@ div.timeline-viz-timeline-container {
   position: absolute;
   top: 0px;
   left: 38px;
-  right: 38px;
+  right: 71px;
   height: 30px;
 }
 
@@ -1382,6 +1382,15 @@ button.timeline-viz-reset-button {
   height: 28px;
   top: 1px;
   left: 5px;
+}
+
+button.timeline-viz-hide-button,
+button.timeline-viz-show-button {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  top: 1px;
+  right: 38px;
 }
 
 button.timeline-viz-popup-button {
