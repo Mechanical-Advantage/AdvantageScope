@@ -225,7 +225,12 @@ export class VideoProcessor {
         properties: ["openFile"],
         filters: [{ name: "Videos", extensions: VideoProcessor.extensions }]
       })
-      .then((result) => result.filePaths[0]);
+      .then((result) => {
+        if (result.canceled || result.filePaths.length === 0) {
+          throw new Error();
+        }
+        return result.filePaths[0];
+      });
   }
 
   /** Gets the direct download URL based on a YouTube URL */
@@ -332,7 +337,6 @@ export class VideoProcessor {
             new MenuItem({
               label: titles[i],
               click() {
-                console.log(videoKeys[i]);
                 resolved = true;
                 resolve("https://youtube.com/watch?v=" + videoKeys[i]);
               }

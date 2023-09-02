@@ -68,7 +68,7 @@ export default class VideoController extends TimelineVizController {
     this.TBA_SOURCE = sourceCell.children[2] as HTMLButtonElement;
     this.LOCAL_SOURCE.addEventListener("click", () => {
       this.YOUTUBE_SOURCE.classList.remove("animating");
-      this.TBA_SOURCE.classList.add("animating");
+      this.TBA_SOURCE.classList.remove("animating");
       window.sendMainMessage("select-video", {
         uuid: this.UUID,
         source: VideoSource.Local,
