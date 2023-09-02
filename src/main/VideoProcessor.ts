@@ -155,7 +155,9 @@ export class VideoProcessor {
     // Get URL based on source type
     switch (source) {
       case VideoSource.Local:
-        this.getLocalPath(window).then(loadPath);
+        this.getLocalPath(window)
+          .then(loadPath)
+          .catch(() => {});
         break;
       case VideoSource.YouTube:
         let clipboardText = clipboard.readText();
