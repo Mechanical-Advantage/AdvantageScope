@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-> 🚨 **IMPORTANT: This documentation is for the upcoming 2024 version of AdvantageScope. To access the 2023 documentation, click the 📖 icon is the tab bar of AdvantageScope or click [here](https://github.com/Mechanical-Advantage/AdvantageScope/blob/v2.3.0/docs/CUSTOM-CONFIG.md).**
+> 🚨 **IMPORTANT: This documentation is for the upcoming 2024 version of AdvantageScope. To access the 2023 documentation, click the 📖 icon in the tab bar of AdvantageScope or click [here](https://github.com/Mechanical-Advantage/AdvantageScope/blob/v2.3.0/docs/CUSTOM-CONFIG.md).**
 
 AdvantageScope uses a default set of flat field images, field models, robot models, and joystick configurations. Simple assets (e.g. evergreen fields) are included in the initial installation. Detailed assets (e.g. season-specific fields) are downloaded automatically in the background when AdvantageScope is connected to the internet. To check the status of these downloads, click "Help" > "Asset Download Status...".
 
