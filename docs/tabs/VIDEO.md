@@ -6,7 +6,13 @@ The video tab allows for the log data to be compared side-by-side with a match v
 
 ## Step 1: Load the Video
 
-To load a video, select the box labeled "\<Click Here\>" under "Source". Most common video formats are supported. After choosing a file, the timeline on the bottom right begins turning blue to indicate the frames that have been cached (this step is necessary for smooth playback).
+AdvantageScope provides three options for loading a video:
+
+1. **Local File:** Click the gray file icon, then choose the video file to load. Most common video formats are support.
+2. **YouTube:** Copy a YouTube link to the clipboard, then click the red clipboard icon. After a few seconds, the video will begin to download.
+3. **The Blue Alliance:** Click the blue TBA icon to automatically load the match video based on the log file. If multiple videos are available, choose the video to download from the popup menu. This feature requires an API key for TBA, which should be obtained at https://www.thebluealliance.com/account and copied to the AdvantageScope preferences page under "TBA API Key".
+
+After choosing a video, the timeline on the bottom right begins turning blue to indicate the frames that have been cached (this step is necessary for smooth playback).
 
 > Note: This feature is intended for match-length videos. Due to the frame conversion required, loading a much longer video may have a negative impact on performance.
 
