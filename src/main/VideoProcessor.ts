@@ -1,5 +1,5 @@
 import { ChildProcess, spawn } from "child_process";
-import { BrowserWindow, app, clipboard, dialog } from "electron";
+import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
@@ -12,7 +12,6 @@ import { PREFS_FILENAME, VIDEO_CACHE, WINDOW_ICON } from "./Constants";
 
 export class VideoProcessor {
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
-  private static folderUUIDs: string[] = [];
 
   /** Loads a video based on a request from the hub window. */
   static prepare(
@@ -20,6 +19,7 @@ export class VideoProcessor {
     uuid: string,
     source: VideoSource,
     matchInfo: MatchInfo | null,
+    menuCoordinates: null | [number, number],
     callback: (data: any) => void
   ) {
     let loadPath = (videoPath: string) => {
@@ -27,9 +27,7 @@ export class VideoProcessor {
       callback({ uuid: uuid });
 
       // Create cache folder
-      let folderUUID = createUUID();
-      VideoProcessor.folderUUIDs.push(folderUUID);
-      let cachePath = path.join(VIDEO_CACHE, folderUUID) + path.sep;
+      let cachePath = path.join(VIDEO_CACHE, createUUID()) + path.sep;
       if (fs.existsSync(cachePath)) {
         fs.rmSync(cachePath, { recursive: true });
       }
@@ -69,6 +67,7 @@ export class VideoProcessor {
       let sendError = () => {
         running = false;
         ffmpeg.kill();
+        callback({ uuid: uuid, error: true });
         dialog.showMessageBox(window, {
           type: "error",
           title: "Error",
@@ -161,6 +160,7 @@ export class VideoProcessor {
       case VideoSource.YouTube:
         let clipboardText = clipboard.readText();
         if (!clipboardText.includes("youtube.com") && !clipboardText.includes("youtu.be")) {
+          callback({ uuid: uuid, error: true });
           dialog.showMessageBox(window, {
             type: "error",
             title: "Error",
@@ -172,6 +172,7 @@ export class VideoProcessor {
           this.getDirectUrlFromYouTubeUrl(clipboardText)
             .then(loadPath)
             .catch(() => {
+              callback({ uuid: uuid, error: true });
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
@@ -184,11 +185,12 @@ export class VideoProcessor {
         }
         break;
       case VideoSource.TheBlueAlliance:
-        this.getYouTubeUrlFromMatchInfo(matchInfo!)
+        this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
             this.getDirectUrlFromYouTubeUrl(url)
               .then(loadPath)
               .catch(() => {
+                callback({ uuid: uuid, error: true });
                 dialog.showMessageBox(window, {
                   type: "error",
                   title: "Error",
@@ -199,14 +201,15 @@ export class VideoProcessor {
                 });
               });
           })
-          .catch((error) => {
-            console.log(error);
+          .catch((silent) => {
+            callback({ uuid: uuid, error: true });
+            if (silent === true) return;
             dialog.showMessageBox(window, {
               type: "error",
               title: "Error",
-              message: "No match videos found",
+              message: "TBA download failed",
               detail:
-                "No videos were found for this match on The Blue Alliance. Please load the video using a YouTube URL or local file instead.",
+                "There was a problem finding the match video on The Blue Alliance. Please check your API key, or load the video using a YouTube URL or local file instead.",
               icon: WINDOW_ICON
             });
           });
@@ -243,7 +246,11 @@ export class VideoProcessor {
   }
 
   /** Uses the TBA API to get the YouTube URL for a match. */
-  private static async getYouTubeUrlFromMatchInfo(matchInfo: MatchInfo): Promise<string> {
+  private static async getYouTubeUrlFromMatchInfo(
+    matchInfo: MatchInfo,
+    window: BrowserWindow,
+    menuCoordinates: [number, number]
+  ): Promise<string> {
     // Get TBA API key]
     let tbaApikey = (jsonfile.readFileSync(PREFS_FILENAME) as Preferences).tbaApiKey;
     if (!tbaApikey) {
@@ -309,9 +316,43 @@ export class VideoProcessor {
       throw new Error();
     } else if (videoKeys.length === 1) {
       return "https://youtube.com/watch?v=" + videoKeys[0];
-    }
+    } else {
+      // Get titles of videos
+      let titles: string[] = [];
+      for (let i = 0; i < videoKeys.length; i++) {
+        let info = await ytdl.getBasicInfo("https://youtube.com/watch?v=" + videoKeys[i]);
+        titles.push(info.videoDetails.author.name + " (" + info.videoDetails.title + ")");
+      }
 
-    return "";
+      return new Promise((resolve, reject) => {
+        const menu = new Menu();
+        let resolved = false;
+        for (let i = 0; i < videoKeys.length; i++) {
+          menu.append(
+            new MenuItem({
+              label: titles[i],
+              click() {
+                console.log(videoKeys[i]);
+                resolved = true;
+                resolve("https://youtube.com/watch?v=" + videoKeys[i]);
+              }
+            })
+          );
+        }
+        menu.popup({
+          window: window,
+          x: Math.round(menuCoordinates[0]),
+          y: Math.round(menuCoordinates[1])
+        });
+        menu.addListener("menu-will-close", () => {
+          setTimeout(() => {
+            if (!resolved) {
+              reject(true);
+            }
+          }, 100);
+        });
+      });
+    }
   }
 
   /** Cleans up remaining ffmpeg processes and caches */
@@ -319,9 +360,7 @@ export class VideoProcessor {
     Object.values(VideoProcessor.processes).forEach((process) => {
       process.kill();
     });
-    VideoProcessor.folderUUIDs.forEach((uuid) => {
-      fs.rmSync(path.join(VIDEO_CACHE, uuid), { recursive: true });
-    });
+    fs.rmSync(VIDEO_CACHE, { recursive: true });
   }
 
   // https://github.com/sindresorhus/video-extensions

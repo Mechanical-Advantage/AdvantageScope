@@ -383,6 +383,8 @@ export function getMatchInfo(log: Log): MatchInfo | null {
   if (systemTimeKey) {
     let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, Infinity, info.year);
     info.year = new Date(epochMicros / 1000).getUTCFullYear();
+    // Reset to current year if the logged year is clearly wrong
+    if (info.year < 2022) info.year = new Date().getUTCFullYear();
   }
   info.event = getOrDefault(log, eventKey, LoggableType.String, Infinity, info.event);
   let matchType = getOrDefault(log, matchTypeKeys, LoggableType.Number, Infinity, 0);

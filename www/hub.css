@@ -1581,12 +1581,14 @@ td.video-source > button {
   height: 70%;
   width: calc(80% / 3);
   top: 15%;
+  overflow: hidden;
 }
 
 td.video-source > button > img {
   max-height: 50%;
   max-width: 50%;
   transform: translate(-50%, -50%) scale(120%);
+  filter: brightness(0%) saturate(0%) invert(100%);
 }
 
 td.video-source > button:nth-child(2) > img {
@@ -1594,8 +1596,22 @@ td.video-source > button:nth-child(2) > img {
   transform: translate(-50%, -50%) scale(100%);
 }
 
-td.video-source > button > img {
-  filter: brightness(0%) saturate(0%) invert(100%);
+td.video-source > button > svg > path {
+  fill: none;
+  stroke-width: 0px;
+  transition: stroke-width 0.3s;
+}
+
+td.video-source > button.animating > svg > path {
+  stroke-width: 8px;
+}
+
+td.video-source > button:nth-child(2) > svg > path {
+  stroke: #ffb8b8;
+}
+
+td.video-source > button:nth-child(3) > svg > path {
+  stroke: #9aacff;
 }
 
 td.video-source > button:nth-child(1) {
