@@ -1591,11 +1591,6 @@ td.video-source > button > img {
   filter: brightness(0%) saturate(0%) invert(100%);
 }
 
-td.video-source > button:nth-child(2) > img {
-  /* YouTube icon is wide so make it a little smaller */
-  transform: translate(-50%, -50%) scale(100%);
-}
-
 td.video-source > button > svg > path {
   fill: none;
   stroke-width: 0px;
