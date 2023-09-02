@@ -2,12 +2,14 @@ import { TimelineVisualizerState } from "../../shared/HubState";
 import LoggableType from "../../shared/log/LoggableType";
 import { getEnabledData } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
-import { arraysEqual, createUUID } from "../../shared/util";
+import { arraysEqual, createUUID, scaleValue } from "../../shared/util";
 import Visualizer from "../../shared/visualizers/Visualizer";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
 
 export default abstract class TimelineVizController implements TabController {
+  private HANDLE_WIDTH = 4;
+
   protected UUID = createUUID();
   protected CONTENT: HTMLElement;
   private TIMELINE_INPUT: HTMLInputElement;
@@ -49,6 +51,17 @@ export default abstract class TimelineVizController implements TabController {
     // Timeline controls
     this.TIMELINE_INPUT.addEventListener("input", () => {
       window.selection.setSelectedTime(Number(this.TIMELINE_INPUT.value));
+    });
+    content.getElementsByClassName("timeline-viz-reset-button")[0].addEventListener("click", () => {
+      let enabledData = getEnabledData(window.log);
+      if (enabledData) {
+        for (let i = 0; i < enabledData.timestamps.length; i++) {
+          if (enabledData.values[i]) {
+            window.selection.setSelectedTime(enabledData.timestamps[i]);
+            return;
+          }
+        }
+      }
     });
     content.getElementsByClassName("timeline-viz-popup-button")[0].addEventListener("click", () => {
       window.sendMainMessage("create-satellite", {
@@ -299,9 +312,14 @@ export default abstract class TimelineVizController implements TabController {
         if (enabledData.values[i]) {
           let div = document.createElement("div");
           this.TIMELINE_MARKER_CONTAINER.appendChild(div);
-          let leftPercent = ((enabledData.timestamps[i] - range[0]) / (range[1] - range[0])) * 100;
           let nextTime = i === enabledData.values.length - 1 ? range[1] : enabledData.timestamps[i + 1];
-          let widthPercent = ((nextTime - enabledData.timestamps[i]) / (range[1] - range[0])) * 100;
+          let marginPercent = (this.HANDLE_WIDTH / 2 / this.TIMELINE_MARKER_CONTAINER.clientWidth) * 100;
+          let leftPercent = scaleValue(enabledData.timestamps[i], range, [i === 0 ? 0 : marginPercent, 100]);
+          let rightPercent = scaleValue(nextTime, range, [
+            0,
+            100 - (i === enabledData.values.length - 1 ? 0 : marginPercent)
+          ]);
+          let widthPercent = rightPercent - leftPercent;
           div.style.left = leftPercent.toString() + "%";
           div.style.width = widthPercent.toString() + "%";
         }
