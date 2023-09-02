@@ -102,7 +102,7 @@ export default class VideoController extends TimelineVizController {
         window.sendMainMessage("error", {
           title: "No match info",
           content:
-            "Failed to read event and match info from the log data. Please load the video using a YouTube URL or local file instead."
+            "Failed to read event and match info from the log. Please load the video using a YouTube URL or local file instead."
         });
         return;
       }
