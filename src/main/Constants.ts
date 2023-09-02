@@ -38,7 +38,8 @@ export const DEFAULT_PREFS: Preferences = {
   liveSubscribeMode: "low-bandwidth",
   publishFilter: "",
   rlogPort: 5800,
-  threeDimensionMode: "quality"
+  threeDimensionMode: "quality",
+  tbaApiKey: ""
 };
 
 // Live RLOG

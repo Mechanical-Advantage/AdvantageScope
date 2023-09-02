@@ -1576,28 +1576,76 @@ div.video-container img {
   object-fit: contain;
 }
 
-td.video-source {
-  font-family: monospace;
-  font-size: 14px;
-  text-align: center;
+td.video-source > button {
+  position: absolute;
+  height: 70%;
+  width: calc(80% / 3);
+  top: 15%;
+  overflow: hidden;
 }
 
-td.video-source:hover {
-  background-color: #eee;
+td.video-source > button > img {
+  max-height: 50%;
+  max-width: 50%;
+  transform: translate(-50%, -50%) scale(120%);
+  filter: brightness(0%) saturate(0%) invert(100%);
 }
 
-td.video-source:active {
-  background-color: #ddd;
+td.video-source > button > svg > path {
+  fill: none;
+  stroke-width: 0px;
+  transition: stroke-width 0.3s;
 }
 
-@media (prefers-color-scheme: dark) {
-  td.video-source:hover {
-    background-color: #333;
-  }
+td.video-source > button.animating > svg > path {
+  stroke-width: 8px;
+}
 
-  td.video-source:active {
-    background-color: #444;
-  }
+td.video-source > button:nth-child(2) > svg > path {
+  stroke: #ffb8b8;
+}
+
+td.video-source > button:nth-child(3) > svg > path {
+  stroke: #9aacff;
+}
+
+td.video-source > button:nth-child(1) {
+  left: 5%;
+  background-color: #666666;
+}
+
+td.video-source > button:nth-child(2) {
+  left: calc(5% + 80% / 3 + 5%);
+  background-color: #ff0000;
+}
+
+td.video-source > button:nth-child(3) {
+  left: calc(5% + 80% / 3 + 5% + 80% / 3 + 5%);
+  background-color: #4556a5;
+}
+
+td.video-source > button:nth-child(1):hover {
+  background-color: #565656;
+}
+
+td.video-source > button:nth-child(2):hover {
+  background-color: #e00000;
+}
+
+td.video-source > button:nth-child(3):hover {
+  background-color: #354695;
+}
+
+td.video-source > button:nth-child(1):active {
+  background-color: #464646;
+}
+
+td.video-source > button:nth-child(2):active {
+  background-color: #c00000;
+}
+
+td.video-source > button:nth-child(3):active {
+  background-color: #253685;
 }
 
 div.video-timeline-container {

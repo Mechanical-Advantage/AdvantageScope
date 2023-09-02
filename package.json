@@ -53,7 +53,8 @@
     "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
-    "ssh2": "^1.14.0"
+    "ssh2": "^1.14.0",
+    "ytdl-core": "^4.11.5"
   },
   "prettier": {
     "printWidth": 120,

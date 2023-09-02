@@ -1,4 +1,5 @@
 import { Rotation2d, Translation2d } from "../geometry";
+import MatchInfo, { MatchType } from "../MatchInfo";
 import { convert } from "../units";
 import { arraysEqual } from "../util";
 import Log from "./Log";
@@ -21,6 +22,26 @@ export const ALLIANCE_KEYS = [
 export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "NT:/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
 export const TYPE_KEY = ".type";
 export const MECHANISM_KEY = "Mechanism2d";
+export const SYSTEM_TIME_KEYS = [
+  "/SystemStats/EpochTimeMicros",
+  "NT:/AdvantageKit/SystemStats/EpochTimeMicros",
+  "systemTime"
+];
+export const EVENT_KEYS = [
+  "/DriverStation/EventName",
+  "NT:/AdvantageKit/DriverStation/EventName",
+  "NT:/FMSInfo/EventName"
+];
+export const MATCH_TYPE_KEYS = [
+  "/DriverStation/MatchType",
+  "NT:/AdvantageKit/DriverStation/MatchType",
+  "NT:/FMSInfo/MatchType"
+];
+export const MATCH_NUMBER_KEYS = [
+  "/DriverStation/MatchNumber",
+  "NT:/AdvantageKit/DriverStation/MatchNumber",
+  "NT:/FMSInfo/MatchNumber"
+];
 
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
@@ -344,4 +365,35 @@ export function searchFields(log: Log, query: string): string[] {
   fields.sort((a, b) => a.string.localeCompare(b.string, undefined, { numeric: true }));
   fields.sort((a, b) => a.endDistance - b.endDistance);
   return fields.map((field) => field.string);
+}
+
+export function getMatchInfo(log: Log): MatchInfo | null {
+  let systemTimeKey = SYSTEM_TIME_KEYS.find((key) => log.getFieldKeys().includes(key));
+  let eventKey = EVENT_KEYS.find((key) => log.getFieldKeys().includes(key));
+  let matchTypeKeys = MATCH_TYPE_KEYS.find((key) => log.getFieldKeys().includes(key));
+  let matchNumberKeys = MATCH_NUMBER_KEYS.find((key) => log.getFieldKeys().includes(key));
+  if (!eventKey || !matchTypeKeys || !matchNumberKeys) return null;
+
+  let info: MatchInfo = {
+    year: 2022, // Default to 2022 for AdvantageKit logs that didn't include system time
+    event: "",
+    matchType: MatchType.Qualification,
+    matchNumber: 1
+  };
+  if (systemTimeKey) {
+    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, Infinity, info.year);
+    info.year = new Date(epochMicros / 1000).getUTCFullYear();
+    // Reset to current year if the logged year is clearly wrong
+    if (info.year < 2022) info.year = new Date().getUTCFullYear();
+  }
+  info.event = getOrDefault(log, eventKey, LoggableType.String, Infinity, info.event);
+  let matchType = getOrDefault(log, matchTypeKeys, LoggableType.Number, Infinity, 0);
+  if ([1, 2, 3].includes(matchType)) {
+    info.matchType = matchType;
+  } else {
+    // Not a match
+    return null;
+  }
+  info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, Infinity, info.matchNumber);
+  return info;
 }

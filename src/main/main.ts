@@ -1,4 +1,3 @@
-import { ChildProcess, spawn } from "child_process";
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
@@ -26,7 +25,7 @@ import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { UnitConversionPreset } from "../shared/units";
-import { createUUID, jsonCopy } from "../shared/util";
+import { jsonCopy } from "../shared/util";
 import {
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
@@ -42,14 +41,13 @@ import {
   RLOG_HEARTBEAT_DATA,
   RLOG_HEARTBEAT_DELAY_MS,
   USER_ASSETS,
-  VIDEO_CACHE,
   WINDOW_ICON
 } from "./Constants";
 import StateTracker from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
+import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, loadAssets } from "./assetsUtil";
-import videoExtensions from "./videoExtensions";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -62,8 +60,6 @@ let hubStateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
 let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
-let videoProcesses: { [id: string]: ChildProcess } = {}; // Key is tab UUID
-let videoFolderUUIDs: string[] = [];
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
   field3ds: [],
@@ -79,7 +75,7 @@ let rlogDataArrays: { [id: number]: Uint8Array } = {};
 // Download variables
 let downloadClient: Client | null = null;
 let downloadRetryTimeout: NodeJS.Timeout | null = null;
-let downloadRefreshInterval: NodeJS.Timer | null = null;
+let downloadRefreshInterval: NodeJS.Timeout | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
@@ -450,150 +446,14 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "select-video":
-      dialog
-        .showOpenDialog(window, {
-          title: "Select a video to open",
-          properties: ["openFile"],
-          filters: [{ name: "Videos", extensions: videoExtensions }]
-        })
-        .then((result) => {
-          if (result.filePaths.length > 0) {
-            let videoPath = result.filePaths[0];
-            let uuid = message.data;
-
-            // Send name
-            sendMessage(window, "video-data", {
-              uuid: uuid,
-              path: videoPath
-            });
-
-            // Create cache folder
-            let folderUUID = createUUID();
-            videoFolderUUIDs.push(folderUUID);
-            let cachePath = path.join(VIDEO_CACHE, folderUUID) + path.sep;
-            if (fs.existsSync(cachePath)) {
-              fs.rmSync(cachePath, { recursive: true });
-            }
-            fs.mkdirSync(cachePath, { recursive: true });
-
-            // Find ffmpeg path
-            let platformString = "";
-            switch (process.platform) {
-              case "darwin":
-                platformString = "mac";
-                break;
-              case "linux":
-                platformString = "linux";
-                break;
-              case "win32":
-                platformString = "win";
-                break;
-            }
-            let ffmpegPath: string;
-            if (app.isPackaged) {
-              ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + platformString + "-" + process.arch);
-            } else {
-              ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + platformString + "-" + process.arch);
-            }
-
-            // Start ffmpeg
-            if (uuid in videoProcesses) videoProcesses[uuid].kill();
-            let ffmpeg = spawn(ffmpegPath, ["-i", videoPath, "-q:v", "2", path.join(cachePath, "%08d.jpg")]);
-            videoProcesses[uuid] = ffmpeg;
-            let running = true;
-            let fullOutput = "";
-            let fps = 0;
-            let durationSecs = 0;
-            let completedFrames = 0;
-
-            // Send error message and exit
-            let sendError = () => {
-              running = false;
-              ffmpeg.kill();
-              dialog.showMessageBox(window, {
-                type: "error",
-                title: "Error",
-                message: "Failed to open video",
-                detail: "There was a problem while reading the video file. Please try again.",
-                icon: WINDOW_ICON
-              });
-              console.log("*** START FFMPEG OUTPUT ***");
-              console.log(fullOutput);
-              console.log("*** END FFMPEG OUTPUT ***");
-            };
-
-            // New data, get status
-            ffmpeg.stderr.on("data", (data: Buffer) => {
-              if (!running) return;
-              let text = data.toString();
-              fullOutput += text;
-              if (text.includes(" fps, ")) {
-                // Get FPS
-                let fpsIndex = text.lastIndexOf(" fps, ");
-                let fpsStartIndex = text.lastIndexOf(" ", fpsIndex - 1);
-                fps = Number(text.slice(fpsStartIndex + 1, fpsIndex));
-                if (isNaN(fps)) {
-                  sendError();
-                  return;
-                }
-              }
-              if (text.includes("Duration: ")) {
-                // Get duration
-                let durationIndex = text.lastIndexOf("Duration: ");
-                let durationText = text.slice(durationIndex + 10, durationIndex + 21);
-                durationSecs =
-                  Number(durationText.slice(0, 2)) * 3600 +
-                  Number(durationText.slice(3, 5)) * 60 +
-                  Number(durationText.slice(6, 8)) +
-                  Number(durationText.slice(9, 11)) * 0.01;
-                if (isNaN(durationSecs)) {
-                  sendError();
-                  return;
-                }
-              }
-              if (text.startsWith("frame=")) {
-                // Exit if initial information not collected
-                if (fps === 0 || durationSecs === 0) {
-                  sendError();
-                  return;
-                }
-
-                // Updated frame count
-                let fpsIndex = text.indexOf(" fps=");
-                completedFrames = Number(text.slice(6, fpsIndex));
-                if (isNaN(completedFrames)) {
-                  sendError();
-                  return;
-                }
-
-                // Send status
-                sendMessage(window, "video-data", {
-                  uuid: uuid,
-                  imgFolder: cachePath,
-                  fps: fps,
-                  totalFrames: Math.round(durationSecs * fps),
-                  completedFrames: completedFrames
-                });
-              }
-            });
-
-            // Finished, check status code
-            ffmpeg.on("close", (code) => {
-              if (!running) return;
-              if (code === 0) {
-                sendMessage(window, "video-data", {
-                  uuid: uuid,
-                  imgFolder: cachePath,
-                  fps: fps,
-                  totalFrames: completedFrames, // In case original value was inaccurate
-                  completedFrames: completedFrames
-                });
-              } else if (code === 1) {
-                sendError();
-              }
-            });
-          }
-        });
+      VideoProcessor.prepare(
+        window,
+        message.data.uuid,
+        message.data.source,
+        message.data.matchInfo,
+        message.data.menuCoordinates,
+        (data) => sendMessage(window, "video-data", data)
+      );
       break;
 
     default:
@@ -1781,7 +1641,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = process.platform === "win32" ? 303 : 243; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform === "win32" ? 330 : 270; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -1944,6 +1804,9 @@ app.whenReady().then(() => {
     ) {
       prefs.threeDimensionMode = oldPrefs.threeDimensionMode;
     }
+    if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
+      prefs.tbaApiKey = oldPrefs.tbaApiKey;
+    }
 
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
@@ -2014,10 +1877,5 @@ app.on("open-file", (_, path) => {
 // Clean up files on quit
 app.on("quit", () => {
   fs.unlink(LAST_OPEN_FILE, () => {});
-  Object.values(videoProcesses).forEach((process) => {
-    process.kill();
-  });
-  videoFolderUUIDs.forEach((uuid) => {
-    fs.rmSync(path.join(VIDEO_CACHE, uuid), { recursive: true });
-  });
+  VideoProcessor.cleanup();
 });

@@ -52,7 +52,8 @@ const mainBundles = [
     "os",
     "path",
     "ssh2",
-    "download"
+    "download",
+    "ytdl-core"
   ]),
   bundle("preload.ts", "preload.js", true, ["electron"])
 ];
