@@ -360,7 +360,9 @@ export class VideoProcessor {
     Object.values(VideoProcessor.processes).forEach((process) => {
       process.kill();
     });
-    fs.rmSync(VIDEO_CACHE, { recursive: true });
+    if (fs.existsSync(VIDEO_CACHE)) {
+      fs.rmSync(VIDEO_CACHE, { recursive: true });
+    }
   }
 
   // https://github.com/sindresorhus/video-extensions
