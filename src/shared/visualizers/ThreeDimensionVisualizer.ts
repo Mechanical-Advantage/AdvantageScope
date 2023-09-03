@@ -194,7 +194,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.axesTemplate.add(center);
 
       const xAxis = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 1),
+        new THREE.CylinderGeometry(radius, radius, 1, 8),
         new THREE.MeshPhongMaterial({ color: 0xff0000 })
       );
       xAxis.position.set(0.5, 0.0, 0.0);
@@ -202,14 +202,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.axesTemplate.add(xAxis);
 
       const yAxis = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 1),
+        new THREE.CylinderGeometry(radius, radius, 1, 8),
         new THREE.MeshPhongMaterial({ color: 0x00ff00 })
       );
       yAxis.position.set(0.0, 0.5, 0.0);
       this.axesTemplate.add(yAxis);
 
       const zAxis = new THREE.Mesh(
-        new THREE.CylinderGeometry(radius, radius, 1),
+        new THREE.CylinderGeometry(radius, radius, 1, 8),
         new THREE.MeshPhongMaterial({ color: 0x2020ff })
       );
       zAxis.position.set(0.0, 0.0, 0.5);
