@@ -180,7 +180,7 @@ export class VideoProcessor {
                 title: "Error",
                 message: "YouTube download failed",
                 detail:
-                  "There was an error while trying to open the YouTube video. Please choose a local video file instead.",
+                  "There was an error while trying to open the YouTube video. Please choose a local video file instead. Check the AdvantageScope video tab documentation for more information.",
                 icon: WINDOW_ICON
               });
             });
@@ -198,7 +198,7 @@ export class VideoProcessor {
                   title: "Error",
                   message: "YouTube download failed",
                   detail:
-                    "There was an error while trying to open the match video from YouTube. Please choose a local video file instead.",
+                    "There was an error while trying to open the match video from YouTube. Please choose a local video file instead. Check the AdvantageScope video tab documentation for more information.",
                   icon: WINDOW_ICON
                 });
               });
