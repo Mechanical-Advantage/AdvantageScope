@@ -165,6 +165,11 @@ export default abstract class TimelineVizController implements TabController {
               });
             }
             this.updateFields();
+            if (configIndex === 1) {
+              // List field, scroll to bottom
+              let listContent = field.element.firstElementChild as HTMLElement;
+              listContent.scrollTop = listContent.scrollHeight;
+            }
           } else {
             let contentRect = this.CONTENT.getBoundingClientRect();
             this.DRAG_HIGHLIGHT.style.left = (rect.left - contentRect.left).toString() + "px";
@@ -220,9 +225,11 @@ export default abstract class TimelineVizController implements TabController {
 
     // List fields
     Object.values(this.listConfig).forEach((list, index) => {
+      let content = list.element.firstElementChild as HTMLElement;
+
       // Clear elements
-      while (list.element.firstChild) {
-        list.element.removeChild(list.element.firstChild);
+      while (content.firstChild) {
+        content.removeChild(content.firstChild);
       }
 
       // Add filler if necessary
@@ -230,14 +237,14 @@ export default abstract class TimelineVizController implements TabController {
         let fillerElement = document.createElement("div");
         fillerElement.classList.add("list-filler");
         fillerElement.innerText = "<Drag Here>";
-        list.element.appendChild(fillerElement);
+        content.appendChild(fillerElement);
       }
 
       // Add fields
       this.listFields[index].forEach((field, fieldIndex) => {
         let itemElement = document.createElement("div");
         itemElement.classList.add("list-item");
-        list.element.appendChild(itemElement);
+        content.appendChild(itemElement);
         itemElement.addEventListener("contextmenu", () => {
           this.listFields[index].splice(fieldIndex, 1);
           this.updateFields();
