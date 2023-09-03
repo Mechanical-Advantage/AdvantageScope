@@ -428,18 +428,16 @@ div.tab-bar-shadow-right {
   width: 60px;
   top: 0px;
   height: 50px;
-
+  opacity: 0;
   transition: opacity 0.2s ease-in-out;
 }
 
 div.tab-bar-shadow-left {
-  opacity: 0%;
   left: 10px;
   background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
 div.tab-bar-shadow-right {
-  opacity: 100%;
   right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
@@ -1463,6 +1461,37 @@ table.timeline-viz-config td.list div.list-content {
   overflow-y: auto;
   padding: 0px;
   vertical-align: top;
+}
+
+table.timeline-viz-config td.list div.list-shadow-top,
+table.timeline-viz-config td.list div.list-shadow-bottom {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 30px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+}
+
+table.timeline-viz-config td.list div.list-shadow-top {
+  top: 0%;
+  background-image: linear-gradient(to bottom, white, transparent);
+}
+
+table.timeline-viz-config td.list div.list-shadow-bottom {
+  bottom: 0%;
+  background-image: linear-gradient(to top, white, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  table.timeline-viz-config td.list div.list-shadow-top {
+    background-image: linear-gradient(to bottom, #222, transparent);
+  }
+
+  table.timeline-viz-config td.list div.list-shadow-bottom {
+    background-image: linear-gradient(to top, #222, transparent);
+  }
 }
 
 table.timeline-viz-config div.list-filler {

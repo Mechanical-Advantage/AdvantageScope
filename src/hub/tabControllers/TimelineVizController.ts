@@ -295,7 +295,17 @@ export default abstract class TimelineVizController implements TabController {
     return [...activeFields, ...this.getAdditionalActiveFields()];
   }
 
-  periodic() {}
+  periodic() {
+    // Update list shadows
+    Object.values(this.listConfig).forEach((list) => {
+      let content = list.element.firstElementChild as HTMLElement;
+      let shadowTop = list.element.getElementsByClassName("list-shadow-top")[0] as HTMLElement;
+      let shadowBottom = list.element.getElementsByClassName("list-shadow-bottom")[0] as HTMLElement;
+      shadowTop.style.opacity = content.scrollTop === 0 ? "0" : "1";
+      shadowBottom.style.opacity =
+        Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight ? "0" : "1";
+    });
+  }
 
   /** Called every 15ms (regardless of the visible tab). */
   private customPeriodic() {
