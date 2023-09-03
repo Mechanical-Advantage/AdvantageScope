@@ -121,7 +121,7 @@ export default class VideoController extends TimelineVizController {
         uuid: this.UUID,
         source: VideoSource.TheBlueAlliance,
         matchInfo: matchInfo,
-        menuCoordinates: [rect.right, rect.top + 5]
+        menuCoordinates: [rect.right, rect.top]
       });
     });
 
