@@ -65,7 +65,7 @@ export class NT4Publisher {
       window.log.getFieldKeys(),
       window.preferences.publishFilter,
       true
-    ).filter((topic) => !topic.startsWith("$") && !window.log.isArrayField(topic));
+    ).filter((topic) => !topic.startsWith("$") && !window.log.isReadOnly(topic));
     topicsToPublish.forEach((topic) => {
       if (!(topic in this.publishedTopics)) {
         // Publish new topic

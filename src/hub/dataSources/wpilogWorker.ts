@@ -1,6 +1,6 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
-import Schemas from "./schema/Schemas";
+import CustomSchemas from "./schema/Schemas";
 import { WPILOGDecoder } from "./wpilog/WPILOGDecoder";
 
 self.onmessage = (event) => {
@@ -82,7 +82,6 @@ self.onmessage = (event) => {
               log.putNumber(key, timestamp, record.getDouble());
               break;
             case "string":
-            case "json":
               log.putString(key, timestamp, record.getString());
               break;
             case "boolean[]":
@@ -100,10 +99,16 @@ self.onmessage = (event) => {
             case "string[]":
               log.putStringArray(key, timestamp, record.getStringArray());
               break;
+            case "json":
+              log.putJSON(key, timestamp, record.getString());
+              break;
+            case "msgpack":
+              log.putMsgpack(key, timestamp, record.getRaw());
+              break;
             default: // Default to raw
               log.putRaw(key, timestamp, record.getRaw());
-              if (Schemas.has(type)) {
-                Schemas.get(type)!(log, key, timestamp, record.getRaw());
+              if (CustomSchemas.has(type)) {
+                CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
               }
               break;
           }

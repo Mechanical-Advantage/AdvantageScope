@@ -21,10 +21,7 @@ export function setsEqual(a: Set<any>, b: Set<any>): boolean {
 /** Checks whether all values in an array match the given type. */
 export function checkArrayType(value: unknown, type: string): boolean {
   if (!Array.isArray(value)) return false;
-  value.forEach((item) => {
-    if (typeof item !== type) return false;
-  });
-  return true;
+  return value.every((item) => typeof item === type);
 }
 
 /** Creates a deep copy of an object by converting to and from JSON. */

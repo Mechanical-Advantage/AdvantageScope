@@ -3,7 +3,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import { NT4_Client, NT4_Topic } from "./NT4";
-import Schemas from "./schema/Schemas";
+import CustomSchemas from "./schema/Schemas";
 
 export default class NT4Source extends LiveDataSource {
   private WPILOG_PREFIX = "NT:";
@@ -70,7 +70,7 @@ export default class NT4Source extends LiveDataSource {
           [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
             // Compare to announced keys
             window.log.getFieldKeys().forEach((announcedKey) => {
-              if (window.log.isArrayField(announcedKey)) return;
+              if (window.log.isReadOnly(announcedKey)) return;
               let subscribeKey: string | null = null;
               if (announcedKey.startsWith(key)) {
                 subscribeKey = key;
@@ -160,7 +160,7 @@ export default class NT4Source extends LiveDataSource {
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
           let modifiedKey = this.getKeyFromTopic(topic);
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
-          if (Schemas.has(topic.type)) {
+          if (CustomSchemas.has(topic.type)) {
             this.schemaFields.add(modifiedKey);
           }
           this.shouldRunOutputCallback = true;
@@ -175,71 +175,88 @@ export default class NT4Source extends LiveDataSource {
           let key = this.getKeyFromTopic(topic);
           let connectServerTime = this.connectTime === null ? null : this.client.getServerTime_us(this.connectTime);
           let timestamp = Math.max(timestamp_us, connectServerTime === null ? 0 : connectServerTime) / 1000000;
-          let type = this.getLogType(topic.type);
 
           let updated = false;
-          if (type !== null) {
-            switch (type) {
-              case LoggableType.Raw:
-                if (value instanceof Uint8Array) {
-                  this.log?.putRaw(key, timestamp, value);
-                  if (Schemas.has(topic.type)) {
-                    Schemas.get(topic.type)!(this.log, key, timestamp, value);
-                  }
-                  updated = true;
-                } else {
-                  console.warn('Expected a raw value for "' + key + '" but got:', value);
+          switch (topic.type) {
+            case "boolean":
+              if (typeof value === "boolean") {
+                this.log?.putBoolean(key, timestamp, value);
+                updated = true;
+              } else {
+                console.warn('Expected a boolean value for "' + key + '" but got:', value);
+              }
+              break;
+            case "int":
+            case "float":
+            case "double":
+              if (typeof value === "number") {
+                this.log?.putNumber(key, timestamp, value);
+                updated = true;
+              } else {
+                console.warn('Expected a number value for "' + key + '" but got:', value);
+              }
+              break;
+            case "string":
+              if (typeof value === "string") {
+                this.log?.putString(key, timestamp, value);
+                updated = true;
+              } else {
+                console.warn('Expected a string value for "' + key + '" but got:', value);
+              }
+              break;
+            case "boolean[]":
+              if (checkArrayType(value, "boolean")) {
+                this.log?.putBooleanArray(key, timestamp, value as boolean[]);
+                updated = true;
+              } else {
+                console.warn('Expected a boolean[] value for "' + key + '" but got:', value);
+              }
+              break;
+            case "int[]":
+            case "float[]":
+            case "double[]":
+              if (checkArrayType(value, "number")) {
+                this.log?.putNumberArray(key, timestamp, value as number[]);
+                updated = true;
+              } else {
+                console.warn('Expected a number[] value for "' + key + '" but got:', value);
+              }
+              break;
+            case "string[]":
+              if (checkArrayType(value, "string")) {
+                this.log?.putStringArray(key, timestamp, value as string[]);
+                updated = true;
+              } else {
+                console.warn('Expected a string[] value for "' + key + '" but got:', value);
+              }
+              break;
+            case "json":
+              if (typeof value === "string") {
+                this.log?.putJSON(key, timestamp, value);
+                updated = true;
+              } else {
+                console.warn('Expected a string value for "' + key + '" but got:', value);
+              }
+              break;
+            case "msgpack":
+              if (value instanceof Uint8Array) {
+                this.log?.putMsgpack(key, timestamp, value);
+                updated = true;
+              } else {
+                console.warn('Expected a raw value for "' + key + '" but got:', value);
+              }
+              break;
+            default: // Default to raw
+              if (value instanceof Uint8Array) {
+                this.log?.putRaw(key, timestamp, value);
+                if (CustomSchemas.has(topic.type)) {
+                  CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
                 }
-                break;
-              case LoggableType.Boolean:
-                if (typeof value === "boolean") {
-                  this.log?.putBoolean(key, timestamp, value);
-                  updated = true;
-                } else {
-                  console.warn('Expected a boolean value for "' + key + '" but got:', value);
-                }
-                break;
-              case LoggableType.Number:
-                if (typeof value === "number") {
-                  this.log?.putNumber(key, timestamp, value);
-                  updated = true;
-                } else {
-                  console.warn('Expected a number value for "' + key + '" but got:', value);
-                }
-                break;
-              case LoggableType.String:
-                if (typeof value === "string") {
-                  this.log?.putString(key, timestamp, value);
-                  updated = true;
-                } else {
-                  console.warn('Expected a string value for "' + key + '" but got:', value);
-                }
-                break;
-              case LoggableType.BooleanArray:
-                if (checkArrayType(value, "boolean")) {
-                  this.log?.putBooleanArray(key, timestamp, value as boolean[]);
-                  updated = true;
-                } else {
-                  console.warn('Expected a boolean[] value for "' + key + '" but got:', value);
-                }
-                break;
-              case LoggableType.NumberArray:
-                if (checkArrayType(value, "number")) {
-                  this.log?.putNumberArray(key, timestamp, value as number[]);
-                  updated = true;
-                } else {
-                  console.warn('Expected a number[] value for "' + key + '" but got:', value);
-                }
-                break;
-              case LoggableType.StringArray:
-                if (checkArrayType(value, "string")) {
-                  this.log?.putStringArray(key, timestamp, value as string[]);
-                  updated = true;
-                } else {
-                  console.warn('Expected a string[] value for "' + key + '" but got:', value);
-                }
-                break;
-            }
+                updated = true;
+              } else {
+                console.warn('Expected a raw value for "' + key + '" but got:', value);
+              }
+              break;
           }
           if (updated) this.shouldRunOutputCallback = true;
         },

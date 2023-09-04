@@ -1,7 +1,7 @@
-import { arraysEqual } from "../util";
+import { Decoder } from "@msgpack/msgpack";
+import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import LoggableType from "./LoggableType";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -12,14 +12,15 @@ import {
   LogValueSetString,
   LogValueSetStringArray
 } from "./LogValueSets";
+import LoggableType from "./LoggableType";
 
 /** Represents a collection of log fields. */
 export default class Log {
   private DEFAULT_TIMESTAMP_RANGE: [number, number] = [0, 10];
+  private msgpackDecoder = new Decoder();
 
   private fields: { [id: string]: LogField } = {};
-  private arrayLengths: { [id: string]: number } = {}; // Used to detect when length increases
-  private arrayItemFields: string[] = []; // Readonly fields
+  private readOnlyFields: Set<string> = new Set(); // Used for arrays and structured data
   private timestampRange: [number, number] | null = null;
   private enableTimestampSetCache: boolean;
   private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
@@ -32,9 +33,6 @@ export default class Log {
   public createBlankField(key: string, type: LoggableType) {
     if (key in this.fields) return;
     this.fields[key] = new LogField(type);
-    if (type === LoggableType.BooleanArray || type === LoggableType.NumberArray || type === LoggableType.StringArray) {
-      this.arrayLengths[key] = 0;
-    }
   }
 
   /** Updates the timestamp range to include the provided value. */
@@ -74,7 +72,7 @@ export default class Log {
 
   /** Returns the count of fields (excluding array item fields). */
   getFieldCount(): number {
-    return Object.keys(this.fields).filter((field) => !this.arrayItemFields.includes(field)).length;
+    return Object.keys(this.fields).filter((field) => !this.isReadOnly(field)).length;
   }
 
   /** Returns the constant field type. */
@@ -86,9 +84,9 @@ export default class Log {
     }
   }
 
-  /** Returns whether the key is an array field. */
-  isArrayField(key: string) {
-    return this.arrayItemFields.includes(key);
+  /** Returns whether the key is read only. */
+  isReadOnly(key: string) {
+    return this.readOnlyFields.has(key);
   }
 
   /** Returns the combined timestamps from a set of fields.
@@ -139,10 +137,10 @@ export default class Log {
   }
 
   /** Organizes the fields into a tree structure. */
-  getFieldTree(includeArrayItems: boolean = true, prefix: string = ""): { [id: string]: LogFieldTree } {
+  getFieldTree(includeReadOnly: boolean = true, prefix: string = ""): { [id: string]: LogFieldTree } {
     let root: { [id: string]: LogFieldTree } = {};
     Object.keys(this.fields).forEach((key) => {
-      if (!includeArrayItems && this.arrayItemFields.includes(key)) return;
+      if (!includeReadOnly && this.isReadOnly(key)) return;
       if (!key.startsWith(prefix)) return;
       let position: LogFieldTree = { fullKey: null, children: root };
       key = key.slice(prefix.length);
@@ -202,8 +200,8 @@ export default class Log {
   }
 
   /** Writes a new Raw value to the field. */
-  putRaw(key: string, timestamp: number, value: Uint8Array) {
-    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
+  putRaw(key: string, timestamp: number, value: Uint8Array, allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.Raw);
     this.fields[key].putRaw(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
@@ -212,8 +210,8 @@ export default class Log {
   }
 
   /** Writes a new Boolean value to the field. */
-  putBoolean(key: string, timestamp: number, value: boolean) {
-    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
+  putBoolean(key: string, timestamp: number, value: boolean, allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.Boolean);
     this.fields[key].putBoolean(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Boolean) {
@@ -222,8 +220,8 @@ export default class Log {
   }
 
   /** Writes a new Number value to the field. */
-  putNumber(key: string, timestamp: number, value: number) {
-    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
+  putNumber(key: string, timestamp: number, value: number, allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.Number);
     this.fields[key].putNumber(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Number) {
@@ -232,8 +230,8 @@ export default class Log {
   }
 
   /** Writes a new String value to the field. */
-  putString(key: string, timestamp: number, value: string) {
-    if (!isNaN(Number(key.slice(key.length - 1))) && this.arrayItemFields.includes(key)) return;
+  putString(key: string, timestamp: number, value: string, allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.String);
     this.fields[key].putString(timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {
@@ -242,70 +240,162 @@ export default class Log {
   }
 
   /** Writes a new BooleanArray value to the field. */
-  putBooleanArray(key: string, timestamp: number, value: boolean[]) {
+  putBooleanArray(key: string, timestamp: number, value: boolean[], allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.BooleanArray);
+    this.fields[key].putBooleanArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.BooleanArray) {
       this.processTimestamp(key, timestamp);
-      this.fields[key].putBooleanArray(timestamp, value);
-      if (value.length > this.arrayLengths[key]) {
-        for (let i = this.arrayLengths[key]; i < value.length; i++) {
-          this.fields[key + "/" + i.toString()] = new LogField(LoggableType.Boolean);
-          this.arrayItemFields.push(key + "/" + i.toString());
-        }
-        this.arrayLengths[key] = value.length;
-      }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
           // Only useful for timestamp set cache
           this.processTimestamp(key + "/" + i.toString(), timestamp);
         }
-        this.fields[key + "/" + i.toString()].putBoolean(timestamp, value[i]);
+        let itemKey = key + "/" + i.toString();
+        this.createBlankField(itemKey, LoggableType.Boolean);
+        this.fields[itemKey].putBoolean(timestamp, value[i]);
       }
     }
   }
 
   /** Writes a new NumberArray value to the field. */
-  putNumberArray(key: string, timestamp: number, value: number[]) {
+  putNumberArray(key: string, timestamp: number, value: number[], allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.NumberArray);
+    this.fields[key].putNumberArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.NumberArray) {
       this.processTimestamp(key, timestamp);
-      this.fields[key].putNumberArray(timestamp, value);
-      if (value.length > this.arrayLengths[key]) {
-        for (let i = this.arrayLengths[key]; i < value.length; i++) {
-          this.fields[key + "/" + i.toString()] = new LogField(LoggableType.Number);
-          this.arrayItemFields.push(key + "/" + i.toString());
-        }
-        this.arrayLengths[key] = value.length;
-      }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
           // Only useful for timestamp set cache
           this.processTimestamp(key + "/" + i.toString(), timestamp);
         }
-        this.fields[key + "/" + i.toString()].putNumber(timestamp, value[i]);
+        let itemKey = key + "/" + i.toString();
+        this.createBlankField(itemKey, LoggableType.Number);
+        this.fields[itemKey].putNumber(timestamp, value[i]);
       }
     }
   }
 
   /** Writes a new StringArray value to the field. */
-  putStringArray(key: string, timestamp: number, value: string[]) {
+  putStringArray(key: string, timestamp: number, value: string[], allowReadOnly = false) {
+    if (!allowReadOnly && this.isReadOnly(key)) return;
     this.createBlankField(key, LoggableType.StringArray);
+    this.fields[key].putStringArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.StringArray) {
       this.processTimestamp(key, timestamp);
-      this.fields[key].putStringArray(timestamp, value);
-      if (value.length > this.arrayLengths[key]) {
-        for (let i = this.arrayLengths[key]; i < value.length; i++) {
-          this.fields[key + "/" + i.toString()] = new LogField(LoggableType.String);
-          this.arrayItemFields.push(key + "/" + i.toString());
-        }
-        this.arrayLengths[key] = value.length;
-      }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
           // Only useful for timestamp set cache
           this.processTimestamp(key + "/" + i.toString(), timestamp);
         }
-        this.fields[key + "/" + i.toString()].putString(timestamp, value[i]);
+        let itemKey = key + "/" + i.toString();
+        this.createBlankField(itemKey, LoggableType.String);
+        this.fields[itemKey].putString(timestamp, value[i]);
+      }
+    }
+  }
+
+  /** Writes an unknown array or object to the children of the field. */
+  private putUnknownStruct(key: string, timestamp: number, value: unknown, allowRootWrite = false) {
+    if (value === null) return;
+
+    // Check for primitive types first (if first call, writing to the root is not allowed)
+    switch (typeof value) {
+      case "boolean":
+        if (!allowRootWrite) return;
+        this.readOnlyFields.add(key);
+        this.createBlankField(key, LoggableType.Boolean);
+        this.putBoolean(key, timestamp, value, true);
+        if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+        return;
+      case "number":
+        this.readOnlyFields.add(key);
+        this.createBlankField(key, LoggableType.Number);
+        this.putNumber(key, timestamp, value, true);
+        if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+        return;
+      case "string":
+        if (!allowRootWrite) return;
+        this.readOnlyFields.add(key);
+        this.createBlankField(key, LoggableType.String);
+        this.putString(key, timestamp, value, true);
+        if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+        return;
+    }
+    if (value instanceof Uint8Array) {
+      if (!allowRootWrite) return;
+      this.readOnlyFields.add(key);
+      this.createBlankField(key, LoggableType.Raw);
+      this.putRaw(key, timestamp, value, true);
+      if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+      return;
+    }
+
+    // Not a primitive, call recursively
+    if (Array.isArray(value)) {
+      // Add array items
+      for (let i = 0; i < value.length; i++) {
+        this.putUnknownStruct(key + "/" + i.toString(), timestamp, value[i], true);
+      }
+
+      // If all items are the same type, add whole array
+      if (allowRootWrite) {
+        if (checkArrayType(value, "boolean")) {
+          this.readOnlyFields.add(key);
+          this.createBlankField(key, LoggableType.BooleanArray);
+          this.putBooleanArray(key, timestamp, value, true);
+          if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+        } else if (checkArrayType(value, "number")) {
+          this.readOnlyFields.add(key);
+          this.createBlankField(key, LoggableType.NumberArray);
+          this.putNumberArray(key, timestamp, value, true);
+          if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+        } else if (checkArrayType(value, "string")) {
+          this.readOnlyFields.add(key);
+          this.createBlankField(key, LoggableType.StringArray);
+          this.putStringArray(key, timestamp, value, true);
+          if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+        }
+      }
+    } else if (typeof value === "object") {
+      // Add object entries
+      for (const [objectKey, objectValue] of Object.entries(value)) {
+        this.putUnknownStruct(key + "/" + objectKey, timestamp, objectValue, true);
+      }
+    }
+  }
+
+  /** Writes a JSON-encoded string value to the field. */
+  putJSON(key: string, timestamp: number, value: string) {
+    if (this.isReadOnly(key)) return;
+    this.createBlankField(key, LoggableType.String);
+    this.putString(key, timestamp, value);
+    if (this.fields[key].getType() === LoggableType.String) {
+      this.processTimestamp(key, timestamp);
+      let decodedValue: unknown = null;
+      try {
+        decodedValue = JSON.parse(value) as unknown;
+      } catch {}
+      if (decodedValue !== null) {
+        this.putUnknownStruct(key, timestamp, decodedValue);
+      }
+    }
+  }
+
+  /** Writes a msgpack-encoded raw value to the field. */
+  putMsgpack(key: string, timestamp: number, value: Uint8Array) {
+    if (this.isReadOnly(key)) return;
+    this.createBlankField(key, LoggableType.Raw);
+    this.putRaw(key, timestamp, value);
+    if (this.fields[key].getType() === LoggableType.Raw) {
+      this.processTimestamp(key, timestamp);
+      let decodedValue: unknown = null;
+      try {
+        decodedValue = this.msgpackDecoder.decode(value);
+      } catch {}
+      if (decodedValue !== null) {
+        this.putUnknownStruct(key, timestamp, decodedValue);
       }
     }
   }
@@ -314,8 +404,7 @@ export default class Log {
   toSerialized(): any {
     let result: any = {
       fields: {},
-      arrayLengths: this.arrayLengths,
-      arrayItemFields: this.arrayItemFields,
+      readOnlyFields: Array.from(this.readOnlyFields),
       timestampRange: this.timestampRange
     };
     Object.entries(this.fields).forEach(([key, value]) => {
@@ -330,8 +419,7 @@ export default class Log {
     Object.entries(serializedData.fields).forEach(([key, value]) => {
       log.fields[key] = LogField.fromSerialized(value);
     });
-    log.arrayLengths = serializedData.arrayLengths;
-    log.arrayItemFields = serializedData.arrayItemFields;
+    log.readOnlyFields = new Set(serializedData.readOnlyFields);
     log.timestampRange = serializedData.timestampRange;
     return log;
   }
@@ -359,8 +447,7 @@ export default class Log {
     Object.entries(secondSerialized.fields).forEach(([key, value]) => {
       log.fields[key] = LogField.fromSerialized(value);
     });
-    log.arrayLengths = { ...firstSerialized.arrayLengths, ...secondSerialized.arrayLengths };
-    log.arrayItemFields = [...firstSerialized.arrayItemFields, ...secondSerialized.arrayItemFields];
+    log.readOnlyFields = new Set([...firstSerialized.readOnlyFields, ...secondSerialized.readOnlyFields]);
     if (firstSerialized.timestampRange && secondSerialized.timestampRange) {
       log.timestampRange = [
         Math.min(firstSerialized.timestampRange[0], secondSerialized.timestampRange[0]),
