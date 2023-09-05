@@ -103,7 +103,7 @@ export class WPILOGDecoderRecord {
 
   /** Gets the raw data. */
   getRaw(): Uint8Array {
-    return this.data;
+    return new Uint8Array(this.data.buffer.slice(this.data.byteOffset, this.data.byteOffset + this.data.byteLength));
   }
 
   /** Decodes a data record as a boolean. */

@@ -67,6 +67,9 @@ self.onmessage = (event) => {
         let timestamp = record.getTimestamp() / 1000000.0;
         if (timestamp > 0) {
           // Some corrupted WPILOGs include negative timestamps which are very slow to process
+          if (key.startsWith("NT:/Pose")) {
+            console.log(key, type);
+          }
           switch (type) {
             case "boolean":
               log.putBoolean(key, timestamp, record.getBoolean());
@@ -106,9 +109,18 @@ self.onmessage = (event) => {
               log.putMsgpack(key, timestamp, record.getRaw());
               break;
             default: // Default to raw
-              log.putRaw(key, timestamp, record.getRaw());
-              if (CustomSchemas.has(type)) {
-                CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+              if (type.startsWith("struct:")) {
+                let schemaType = type.split("struct:")[1];
+                if (schemaType.endsWith("[]")) {
+                  log.putStruct(key, timestamp, record.getRaw(), schemaType.slice(0, -2), true);
+                } else {
+                  log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
+                }
+              } else {
+                log.putRaw(key, timestamp, record.getRaw());
+                if (CustomSchemas.has(type)) {
+                  CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+                }
               }
               break;
           }

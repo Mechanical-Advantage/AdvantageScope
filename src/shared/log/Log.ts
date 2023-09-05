@@ -1,4 +1,4 @@
-import { Decoder } from "@msgpack/msgpack";
+import { Decoder, decode } from "@msgpack/msgpack";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
@@ -13,11 +13,13 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import StructDecoder from "./StructDecoder";
 
 /** Represents a collection of log fields. */
 export default class Log {
   private DEFAULT_TIMESTAMP_RANGE: [number, number] = [0, 10];
   private msgpackDecoder = new Decoder();
+  private structDecoder = new StructDecoder();
 
   private fields: { [id: string]: LogField } = {};
   private readOnlyFields: Set<string> = new Set(); // Used for arrays and structured data
@@ -206,6 +208,11 @@ export default class Log {
     this.fields[key].putRaw(timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
+    }
+
+    // Check for schema
+    if (key.includes("/.schema/struct:")) {
+      this.structDecoder.addSchema(key.split("struct:")[1], value);
     }
   }
 
@@ -415,12 +422,36 @@ export default class Log {
     }
   }
 
+  /** Writes a struct-encoded raw value to the field. */
+  putStruct(key: string, timestamp: number, value: Uint8Array, schemaType: string, isArray: boolean) {
+    if (this.isReadOnly(key)) return;
+    this.createBlankField(key, LoggableType.Raw);
+    this.putRaw(key, timestamp, value);
+    if (this.fields[key].getType() === LoggableType.Raw) {
+      this.processTimestamp(key, timestamp);
+      this.fields[key].schemaType = schemaType + (isArray ? "[]" : "");
+      let decodedData = isArray
+        ? this.structDecoder.decodeArray(schemaType, value)
+        : this.structDecoder.decode(schemaType, value);
+      this.putUnknownStruct(key, timestamp, decodedData.data);
+      Object.entries(decodedData.schemaTypes).forEach(([childKey, schemaType]) => {
+        // Create the key so it can be dragged even though it doesn't have data
+        let fullChildKey = key + "/" + childKey;
+        this.createBlankField(fullChildKey, LoggableType.Raw);
+        this.processTimestamp(fullChildKey, timestamp);
+        this.readOnlyFields.add(fullChildKey);
+        this.fields[fullChildKey].schemaType = schemaType;
+      });
+    }
+  }
+
   /** Returns a serialized version of the data from this log. */
   toSerialized(): any {
     let result: any = {
       fields: {},
       readOnlyFields: Array.from(this.readOnlyFields),
-      timestampRange: this.timestampRange
+      timestampRange: this.timestampRange,
+      structDecoder: this.structDecoder.toSerialized()
     };
     Object.entries(this.fields).forEach(([key, value]) => {
       result.fields[key] = value.toSerialized();
@@ -436,6 +467,7 @@ export default class Log {
     });
     log.readOnlyFields = new Set(serializedData.readOnlyFields);
     log.timestampRange = serializedData.timestampRange;
+    log.structDecoder = StructDecoder.fromSerialized(serializedData.structDecoder);
     return log;
   }
 

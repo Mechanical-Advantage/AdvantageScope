@@ -248,9 +248,18 @@ export default class NT4Source extends LiveDataSource {
               break;
             default: // Default to raw
               if (value instanceof Uint8Array) {
-                this.log?.putRaw(key, timestamp, value);
-                if (CustomSchemas.has(topic.type)) {
-                  CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                if (topic.type.startsWith("struct:")) {
+                  let schemaType = topic.type.split("struct:")[1];
+                  if (schemaType.endsWith("[]")) {
+                    this.log?.putStruct(key, timestamp, value, schemaType.slice(0, -2), true);
+                  } else {
+                    this.log?.putStruct(key, timestamp, value, schemaType, false);
+                  }
+                } else {
+                  this.log?.putRaw(key, timestamp, value);
+                  if (CustomSchemas.has(topic.type)) {
+                    CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                  }
                 }
                 updated = true;
               } else {
