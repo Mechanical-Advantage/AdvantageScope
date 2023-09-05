@@ -246,6 +246,13 @@ export default class Log {
     this.fields[key].putBooleanArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.BooleanArray) {
       this.processTimestamp(key, timestamp);
+      {
+        let lengthKey = key + "/length";
+        this.createBlankField(lengthKey, LoggableType.Number);
+        this.processTimestamp(lengthKey, timestamp);
+        this.readOnlyFields.add(lengthKey);
+        this.fields[lengthKey].putNumber(timestamp, value.length);
+      }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
           // Only useful for timestamp set cache
@@ -253,6 +260,7 @@ export default class Log {
         }
         let itemKey = key + "/" + i.toString();
         this.createBlankField(itemKey, LoggableType.Boolean);
+        this.readOnlyFields.add(itemKey);
         this.fields[itemKey].putBoolean(timestamp, value[i]);
       }
     }
@@ -265,6 +273,13 @@ export default class Log {
     this.fields[key].putNumberArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.NumberArray) {
       this.processTimestamp(key, timestamp);
+      {
+        let lengthKey = key + "/length";
+        this.createBlankField(lengthKey, LoggableType.Number);
+        this.processTimestamp(lengthKey, timestamp);
+        this.readOnlyFields.add(lengthKey);
+        this.fields[lengthKey].putNumber(timestamp, value.length);
+      }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
           // Only useful for timestamp set cache
@@ -272,6 +287,7 @@ export default class Log {
         }
         let itemKey = key + "/" + i.toString();
         this.createBlankField(itemKey, LoggableType.Number);
+        this.readOnlyFields.add(itemKey);
         this.fields[itemKey].putNumber(timestamp, value[i]);
       }
     }
@@ -284,6 +300,13 @@ export default class Log {
     this.fields[key].putStringArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.StringArray) {
       this.processTimestamp(key, timestamp);
+      {
+        let lengthKey = key + "/length";
+        this.createBlankField(lengthKey, LoggableType.Number);
+        this.processTimestamp(lengthKey, timestamp);
+        this.readOnlyFields.add(lengthKey);
+        this.fields[lengthKey].putNumber(timestamp, value.length);
+      }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
           // Only useful for timestamp set cache
@@ -291,6 +314,7 @@ export default class Log {
         }
         let itemKey = key + "/" + i.toString();
         this.createBlankField(itemKey, LoggableType.String);
+        this.readOnlyFields.add(itemKey);
         this.fields[itemKey].putString(timestamp, value[i]);
       }
     }
@@ -305,57 +329,48 @@ export default class Log {
       case "boolean":
         if (!allowRootWrite) return;
         this.readOnlyFields.add(key);
-        this.createBlankField(key, LoggableType.Boolean);
         this.putBoolean(key, timestamp, value, true);
-        if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
         return;
       case "number":
         this.readOnlyFields.add(key);
-        this.createBlankField(key, LoggableType.Number);
         this.putNumber(key, timestamp, value, true);
-        if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
         return;
       case "string":
         if (!allowRootWrite) return;
         this.readOnlyFields.add(key);
-        this.createBlankField(key, LoggableType.String);
         this.putString(key, timestamp, value, true);
-        if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
         return;
     }
     if (value instanceof Uint8Array) {
       if (!allowRootWrite) return;
       this.readOnlyFields.add(key);
-      this.createBlankField(key, LoggableType.Raw);
       this.putRaw(key, timestamp, value, true);
-      if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
       return;
     }
 
     // Not a primitive, call recursively
     if (Array.isArray(value)) {
-      // Add array items
-      for (let i = 0; i < value.length; i++) {
-        this.putUnknownStruct(key + "/" + i.toString(), timestamp, value[i], true);
-      }
-
       // If all items are the same type, add whole array
-      if (allowRootWrite) {
-        if (checkArrayType(value, "boolean")) {
+      if (allowRootWrite && checkArrayType(value, "boolean")) {
+        this.readOnlyFields.add(key);
+        this.putBooleanArray(key, timestamp, value, true);
+      } else if (allowRootWrite && checkArrayType(value, "number")) {
+        this.readOnlyFields.add(key);
+        this.putNumberArray(key, timestamp, value, true);
+      } else if (allowRootWrite && checkArrayType(value, "string")) {
+        this.readOnlyFields.add(key);
+        this.putStringArray(key, timestamp, value, true);
+      } else {
+        // Add array items as unknown structs
+        {
+          let lengthKey = key + "/length";
+          this.createBlankField(lengthKey, LoggableType.Number);
+          this.processTimestamp(lengthKey, timestamp);
           this.readOnlyFields.add(key);
-          this.createBlankField(key, LoggableType.BooleanArray);
-          this.putBooleanArray(key, timestamp, value, true);
-          if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
-        } else if (checkArrayType(value, "number")) {
-          this.readOnlyFields.add(key);
-          this.createBlankField(key, LoggableType.NumberArray);
-          this.putNumberArray(key, timestamp, value, true);
-          if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
-        } else if (checkArrayType(value, "string")) {
-          this.readOnlyFields.add(key);
-          this.createBlankField(key, LoggableType.StringArray);
-          this.putStringArray(key, timestamp, value, true);
-          if (this.enableTimestampSetCache) this.processTimestamp(key, timestamp);
+          this.fields[lengthKey].putNumber(timestamp, value.length);
+        }
+        for (let i = 0; i < value.length; i++) {
+          this.putUnknownStruct(key + "/" + i.toString(), timestamp, value[i], true);
         }
       }
     } else if (typeof value === "object") {
