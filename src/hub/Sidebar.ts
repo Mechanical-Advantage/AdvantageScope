@@ -241,6 +241,9 @@ export default class Sidebar {
     let fieldElement = document.createElement("div");
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
+    if (field.fullKey !== null && window.log.isReadOnly(field.fullKey)) {
+      fieldElement.classList.add("read-only");
+    }
 
     // Active fields callback
     this.activeFieldCallbacks.push(() => {
@@ -299,6 +302,15 @@ export default class Sidebar {
     label.innerText = title;
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
+    if (field.fullKey) {
+      let schemaType = window.log.getSchemaType(field.fullKey);
+      if (schemaType !== null) {
+        let typeLabel = document.createElement("span");
+        typeLabel.classList.add("field-item-type-label");
+        label.appendChild(typeLabel);
+        typeLabel.innerText = " : " + schemaType;
+      }
+    }
 
     // Full key fields
     if (field.fullKey !== null) {

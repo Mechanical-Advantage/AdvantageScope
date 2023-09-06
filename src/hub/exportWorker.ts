@@ -99,7 +99,7 @@ function generateCsvTable(
     let fieldType = log.getType(field);
 
     timestamps.forEach((timestamp, timestampIndex) => {
-      if (fieldData === undefined || fieldType === undefined) return;
+      if (fieldData === undefined || fieldType === null) return;
       let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
       if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
       let value: any = null;
@@ -126,7 +126,7 @@ function generateCsvList(log: Log, fields: string[], progress: (progress: number
     let fieldType = log.getType(field);
     if (fieldData === undefined) return;
     fieldData.values.forEach((value, valueIndex) => {
-      if (fieldData === undefined || fieldType === undefined) return;
+      if (fieldData === undefined || fieldType === null) return;
       rows.push([fieldData.timestamps[valueIndex], field, getLogValueText(value, fieldType).replaceAll(",", ";")]);
 
       // Send progress update

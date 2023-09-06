@@ -78,11 +78,20 @@ export default class Log {
   }
 
   /** Returns the constant field type. */
-  getType(key: string): LoggableType | undefined {
+  getType(key: string): LoggableType | null {
     if (key in this.fields) {
       return this.fields[key].getType();
     } else {
-      return undefined;
+      return null;
+    }
+  }
+
+  /** Returns the schema type for a field. */
+  getSchemaType(key: string): string | null {
+    if (key in this.fields) {
+      return this.fields[key].schemaType;
+    } else {
+      return null;
     }
   }
 

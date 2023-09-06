@@ -291,6 +291,10 @@ div.field-item {
   transition: background 0.25s;
 }
 
+div.field-item.read-only {
+  opacity: 0.6;
+}
+
 div.field-item.highlight {
   background-color: rgb(255, 255, 0);
 }
@@ -329,6 +333,19 @@ div.field-item-label {
 
 div.field-item-label.known {
   text-decoration: underline;
+}
+
+span.field-item-type-label {
+  text-decoration: none;
+  font-style: normal;
+  font-weight: normal;
+  /* font-size: 12px; */
+  /* font-family: Menlo; */
+  opacity: 0.3;
+}
+
+div.field-item.read-only span.field-item-type-label {
+  opacity: calc(0.3 / 0.6);
 }
 
 /* Search results */
