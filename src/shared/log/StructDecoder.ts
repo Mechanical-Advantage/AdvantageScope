@@ -168,13 +168,10 @@ export default class StructDecoder {
   }
 
   /** Converts struct-encoded data with a known schema to an object. */
-  decode(
-    name: string,
-    value: Uint8Array
-  ): { data: { [key: string]: unknown }; schemaTypes: { [key: string]: string } } {
+  decode(name: string, value: Uint8Array): { data: unknown; schemaTypes: { [key: string]: string } } {
     if (!(name in this.schemas)) {
       return {
-        data: {},
+        data: null,
         schemaTypes: {}
       };
     }
@@ -208,15 +205,17 @@ export default class StructDecoder {
               )
             );
           }
-          outputData[valueSchema.name] = value;
+          if (type === ValueType.Char) {
+            outputData[valueSchema.name] = value.join("");
+          } else {
+            outputData[valueSchema.name] = value;
+          }
         }
       } else {
         // Child struct
         outputSchemaTypes[valueSchema.name] = valueSchema.type;
         let child = this.decode(valueSchema.type, StructDecoder.toUint8Array(valueBoolArray));
-        Object.keys(child.data).forEach((field) => {
-          outputData[valueSchema.name + "/" + field] = child.data[field];
-        });
+        outputData[valueSchema.name] = child.data;
         Object.keys(child.schemaTypes).forEach((field) => {
           outputSchemaTypes[valueSchema.name + "/" + field] = child.schemaTypes[field];
         });
@@ -229,26 +228,20 @@ export default class StructDecoder {
   }
 
   /** Converts struct-encoded data with a known array schema to an object. */
-  decodeArray(
-    name: string,
-    value: Uint8Array
-  ): { data: { [key: string]: unknown }; schemaTypes: { [key: string]: string } } {
+  decodeArray(name: string, value: Uint8Array): { data: unknown; schemaTypes: { [key: string]: string } } {
     if (!(name in this.schemas)) {
       return {
-        data: {},
+        data: null,
         schemaTypes: {}
       };
     }
-    let outputData: { [key: string]: unknown } = {};
+    let outputData: unknown[] = [];
     let outputSchemaTypes: { [key: string]: string } = {};
     let schemaLength = this.schemas[name].length / 8;
     let length = value.length / schemaLength;
-    outputData["length"] = length;
     for (let i = 0; i < length; i++) {
       let decodedData = this.decode(name, value.slice(i * schemaLength, (i + 1) * schemaLength));
-      Object.entries(decodedData.data).forEach(([itemKey, itemValue]) => {
-        outputData[i.toString() + "/" + itemKey] = itemValue;
-      });
+      outputData.push(decodedData.data);
       Object.entries(decodedData.schemaTypes).forEach(([itemKey, itemSchemaType]) => {
         outputSchemaTypes[i.toString() + "/" + itemKey] = itemSchemaType;
       });

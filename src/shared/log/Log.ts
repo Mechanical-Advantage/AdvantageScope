@@ -339,6 +339,7 @@ export default class Log {
         this.putBoolean(key, timestamp, value, true);
         return;
       case "number":
+        if (!allowRootWrite) return;
         this.readOnlyFields.add(key);
         this.putNumber(key, timestamp, value, true);
         return;
@@ -373,7 +374,7 @@ export default class Log {
           let lengthKey = key + "/length";
           this.createBlankField(lengthKey, LoggableType.Number);
           this.processTimestamp(lengthKey, timestamp);
-          this.readOnlyFields.add(key);
+          this.readOnlyFields.add(lengthKey);
           this.fields[lengthKey].putNumber(timestamp, value.length);
         }
         for (let i = 0; i < value.length; i++) {
