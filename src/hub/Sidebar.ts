@@ -234,14 +234,22 @@ export default class Sidebar {
   }
 
   /** Recursively adds a set of fields. */
-  private addFields(title: string, fullTitle: string, field: LogFieldTree, parentElement: HTMLElement, indent: number) {
+  private addFields(
+    title: string,
+    fullTitle: string,
+    field: LogFieldTree,
+    parentElement: HTMLElement,
+    indent: number,
+    readOnly = false
+  ) {
     let hasChildren = Object.keys(field.children).length > 0;
+    let childrenReadOnly = readOnly || (field.fullKey !== null && window.log.isReadOnlyParent(field.fullKey));
 
     // Create element
     let fieldElement = document.createElement("div");
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
-    if (field.fullKey !== null && window.log.isReadOnly(field.fullKey)) {
+    if (readOnly) {
       fieldElement.classList.add("read-only");
     }
 
@@ -427,11 +435,17 @@ export default class Sidebar {
               .filter((key) => !this.HIDDEN_KEYS.includes(key))
               .sort((a, b) => this.sortKeys(a, b, true));
           } else {
-            console.log(fullTitle);
             childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
           }
           childKeys.forEach((key) => {
-            this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
+            this.addFields(
+              key,
+              fullTitle + "/" + key,
+              field.children[key],
+              childSpan,
+              indent + this.INDENT_SIZE_PX,
+              childrenReadOnly
+            );
           });
         }
       };
