@@ -328,7 +328,7 @@ div.field-item-label {
   font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
 }
 
 div.field-item-label.known {
