@@ -291,7 +291,7 @@ div.field-item {
   transition: background 0.25s;
 }
 
-div.field-item.read-only {
+div.field-item.generated {
   opacity: 0.6;
 }
 
@@ -342,7 +342,7 @@ span.field-item-type-label {
   opacity: 0.3;
 }
 
-div.field-item.read-only span.field-item-type-label {
+div.field-item.generated span.field-item-type-label {
   opacity: calc(0.3 / 0.6);
 }
 

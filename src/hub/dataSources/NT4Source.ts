@@ -70,7 +70,7 @@ export default class NT4Source extends LiveDataSource {
           [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
             // Compare to announced keys
             window.log.getFieldKeys().forEach((announcedKey) => {
-              if (window.log.isReadOnly(announcedKey)) return;
+              if (window.log.isGenerated(announcedKey)) return;
               let subscribeKey: string | null = null;
               if (announcedKey.startsWith(key)) {
                 subscribeKey = key;

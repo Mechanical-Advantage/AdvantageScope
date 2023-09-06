@@ -355,7 +355,7 @@ export function searchFields(log: Log, query: string): string[] {
   query = query.toLowerCase();
   let fieldStrings = log
     .getFieldKeys()
-    .filter((field) => !log.isReadOnly(field) && field.toLowerCase().includes(query));
+    .filter((field) => !log.isGenerated(field) && field.toLowerCase().includes(query));
   let fields = fieldStrings.map((field) => {
     return {
       string: field,

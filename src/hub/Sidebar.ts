@@ -240,17 +240,17 @@ export default class Sidebar {
     field: LogFieldTree,
     parentElement: HTMLElement,
     indent: number,
-    readOnly = false
+    generated = false
   ) {
     let hasChildren = Object.keys(field.children).length > 0;
-    let childrenReadOnly = readOnly || (field.fullKey !== null && window.log.isReadOnlyParent(field.fullKey));
+    let childrenGenerated = generated || (field.fullKey !== null && window.log.isGeneratedParent(field.fullKey));
 
     // Create element
     let fieldElement = document.createElement("div");
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
-    if (readOnly) {
-      fieldElement.classList.add("read-only");
+    if (generated) {
+      fieldElement.classList.add("generated");
     }
 
     // Active fields callback
@@ -315,7 +315,7 @@ export default class Sidebar {
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
     if (field.fullKey) {
-      let schemaType = window.log.getSchemaType(field.fullKey);
+      let schemaType = window.log.getSpecialType(field.fullKey);
       if (schemaType !== null) {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
@@ -444,7 +444,7 @@ export default class Sidebar {
               field.children[key],
               childSpan,
               indent + this.INDENT_SIZE_PX,
-              childrenReadOnly
+              childrenGenerated
             );
           });
         }

@@ -15,7 +15,7 @@ import {
 export default class LogField {
   private type: LoggableType;
   private data: LogValueSetAny = { timestamps: [], values: [] };
-  public schemaType: string | null = null;
+  public specialType: string | null = null;
 
   constructor(type: LoggableType) {
     this.type = type;
@@ -171,7 +171,7 @@ export default class LogField {
       type: this.type,
       timestamps: this.data.timestamps,
       values: this.data.values,
-      schemaType: this.schemaType
+      schemaType: this.specialType
     };
   }
 
@@ -182,7 +182,7 @@ export default class LogField {
       timestamps: serializedData.timestamps,
       values: serializedData.values
     };
-    field.schemaType = serializedData.schemaType;
+    field.specialType = serializedData.schemaType;
     return field;
   }
 }
