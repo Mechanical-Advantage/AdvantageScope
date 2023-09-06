@@ -249,12 +249,16 @@ export default class Sidebar {
     this.activeFieldCallbacks.push(() => {
       let visible = fieldElement.getBoundingClientRect().height > 0;
 
-      // Add full key if available and array
+      // Add full key if available and array, raw, or string
+      // - raw in case of msgpack, struct, or ptoto
+      // - strin in case of JSON
       if (
         field.fullKey !== null &&
         (window.log.getType(field.fullKey) === LoggableType.BooleanArray ||
           window.log.getType(field.fullKey) === LoggableType.NumberArray ||
-          window.log.getType(field.fullKey) === LoggableType.StringArray)
+          window.log.getType(field.fullKey) === LoggableType.StringArray ||
+          window.log.getType(field.fullKey) === LoggableType.Raw ||
+          window.log.getType(field.fullKey) === LoggableType.String)
       ) {
         if (visible) {
           this.activeFields.add(field.fullKey);
