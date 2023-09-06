@@ -34,7 +34,7 @@ export default class Sidebar {
     "DSLog",
     "DSEvents"
   ];
-  private HIDDEN_KEYS = ["RealMetadata", "ReplayMetadata"];
+  private HIDDEN_KEYS = [".schema", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
 
@@ -132,6 +132,7 @@ export default class Sidebar {
       let show = true;
       this.HIDDEN_KEYS.forEach((hiddenKey) => {
         if (field.startsWith("/" + hiddenKey)) show = false;
+        if (field.startsWith("NT:/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
       });
       return show;
