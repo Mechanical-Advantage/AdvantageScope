@@ -80,6 +80,8 @@ export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
       return arraysEqual(a, b);
     case LoggableType.Raw:
       return arraysEqual(Array.from(a as Uint8Array), Array.from(b as Uint8Array));
+    default:
+      return false;
   }
 }
 

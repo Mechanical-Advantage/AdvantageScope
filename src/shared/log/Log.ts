@@ -441,7 +441,7 @@ export default class Log {
       Object.entries(decodedData.schemaTypes).forEach(([childKey, schemaType]) => {
         // Create the key so it can be dragged even though it doesn't have data
         let fullChildKey = key + "/" + childKey;
-        this.createBlankField(fullChildKey, LoggableType.Raw);
+        this.createBlankField(fullChildKey, LoggableType.Empty);
         this.processTimestamp(fullChildKey, timestamp);
         this.fields[fullChildKey].specialType = schemaType;
       });
