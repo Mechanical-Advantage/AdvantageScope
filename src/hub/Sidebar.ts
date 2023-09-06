@@ -405,12 +405,13 @@ export default class Sidebar {
         if (firstExpand) {
           firstExpand = false;
           let childKeys = Object.keys(field.children);
-          if (fullTitle === "/AdvantageKit") {
+          if (fullTitle === "/AdvantageKit" || fullTitle === "/NT") {
             // Apply hidden and known keys
             childKeys = childKeys
               .filter((key) => !this.HIDDEN_KEYS.includes(key))
               .sort((a, b) => this.sortKeys(a, b, true));
           } else {
+            console.log(fullTitle);
             childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
           }
           childKeys.forEach((key) => {
