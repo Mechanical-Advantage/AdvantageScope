@@ -19,9 +19,9 @@ export default abstract class TimelineVizController implements TabController {
 
   private type: TabType;
   private title: string = "";
-  private fieldConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[] }[];
+  private fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[];
   private fields: (string | null)[] = [];
-  private listConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[]; options: string[][] }[];
+  private listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[];
   private listFields: { type: string; key: string; fieldTypeIndex: number }[][] = [];
   private lastListFieldsStr: string = "";
   private lastAllKeys: string[] = [];
@@ -31,8 +31,8 @@ export default abstract class TimelineVizController implements TabController {
   constructor(
     content: HTMLElement,
     type: TabType,
-    fieldConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[] }[],
-    listConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[]; options: string[][] }[],
+    fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[],
+    listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[],
     visualizer: Visualizer
   ) {
     this.CONTENT = content;
@@ -140,9 +140,11 @@ export default abstract class TimelineVizController implements TabController {
         let rect = field.element.getBoundingClientRect();
         let active =
           dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-        let rawType = window.log.getType(dragData.data.fields[0]);
-        let type: LoggableType | "mechanism" = rawType === undefined ? "mechanism" : rawType!;
-        let validType = field.types.includes(type);
+        let logType = window.log.getType(dragData.data.fields[0]);
+        let specialType = window.log.getSpecialType(dragData.data.fields[0]);
+        let validLogType = logType !== null && field.types.includes(logType);
+        let validSpecialType = specialType !== null && field.types.includes(specialType);
+        let validType = validLogType || validSpecialType;
 
         if (active && validType) {
           if (dragData.end) {
@@ -153,7 +155,7 @@ export default abstract class TimelineVizController implements TabController {
             } else {
               // List field
               let selectedOptions = this.listFields[index].map((field) => field.type);
-              let typeIndex = this.listConfig[index].types.indexOf(type);
+              let typeIndex = this.listConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
               let availableOptions = this.listConfig[index].options[typeIndex].filter(
                 (option) => !selectedOptions.includes(option)
               );

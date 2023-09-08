@@ -56,7 +56,7 @@ export default class ThreeDimensionController extends TimelineVizController {
         },
         {
           element: configBody.children[1].children[1] as HTMLElement,
-          types: [LoggableType.NumberArray, "mechanism"],
+          types: [LoggableType.NumberArray, "Mechanism2d"],
           options: [
             [
               "Robot",

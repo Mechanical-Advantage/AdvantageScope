@@ -12,15 +12,15 @@ export default class MechanismController extends TimelineVizController {
       [
         {
           element: configBody.children[1].children[0] as HTMLElement,
-          types: ["mechanism"]
+          types: ["Mechanism2d"]
         },
         {
           element: configBody.children[1].children[1] as HTMLElement,
-          types: ["mechanism"]
+          types: ["Mechanism2d"]
         },
         {
           element: configBody.children[1].children[2] as HTMLElement,
-          types: ["mechanism"]
+          types: ["Mechanism2d"]
         }
       ],
       [],
