@@ -1,7 +1,7 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
-import { getFullKeyIfMechanism, getOrDefault, MECHANISM_KEY, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
+import { searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
@@ -41,7 +41,6 @@ export default class Sidebar {
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
   private lastFieldKeys: string[] = [];
-  private lastMechanismFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
   private activeFieldCallbacks: (() => void)[] = [];
@@ -170,16 +169,8 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    let mechanismFieldKeys = window.log
-      .getFieldKeys()
-      .filter((key) => key.endsWith(TYPE_KEY))
-      .filter((key) => getOrDefault(window.log, key, LoggableType.String, Infinity, "") === MECHANISM_KEY);
-    let fieldsChanged =
-      forceRefresh ||
-      !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys) ||
-      !arraysEqual(mechanismFieldKeys, this.lastMechanismFieldKeys);
+    let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
     this.lastFieldKeys = window.log.getFieldKeys();
-    this.lastMechanismFieldKeys = mechanismFieldKeys;
 
     if (fieldsChanged) {
       // Remove old list
@@ -295,12 +286,6 @@ export default class Sidebar {
     openIcon.style.display = "none";
     neutralIcon.style.display = hasChildren ? "none" : "initial";
 
-    // Check if mechanism
-    let mechanismFullKey = getFullKeyIfMechanism(field);
-    if (mechanismFullKey !== null) {
-      field.fullKey = mechanismFullKey; // Acts like a normal field
-    }
-
     // Create label
     let label = document.createElement("div");
     fieldElement.appendChild(label);
@@ -311,7 +296,11 @@ export default class Sidebar {
     ) {
       label.classList.add("known");
     }
-    label.innerText = title;
+    {
+      let labelSpan = document.createElement("span");
+      label.appendChild(labelSpan);
+      labelSpan.innerText = title;
+    }
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
     if (field.fullKey) {

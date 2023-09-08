@@ -21,7 +21,6 @@ export const ALLIANCE_KEYS = [
 ];
 export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "NT:/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
 export const TYPE_KEY = ".type";
-export const MECHANISM_KEY = "Mechanism2d";
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros",
   "NT:/AdvantageKit/SystemStats/EpochTimeMicros",
@@ -220,19 +219,6 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   }
 
   return state;
-}
-
-export function getFullKeyIfMechanism(field: LogFieldTree): string | null {
-  if (
-    TYPE_KEY in field.children &&
-    field.children[TYPE_KEY].fullKey !== null &&
-    getOrDefault(window.log, field.children[TYPE_KEY].fullKey, LoggableType.String, Infinity, "") === MECHANISM_KEY
-  ) {
-    let key = field.children[TYPE_KEY].fullKey;
-    return key.substring(0, key.length - TYPE_KEY.length - 1);
-  } else {
-    return null;
-  }
 }
 
 export type MechanismState = {

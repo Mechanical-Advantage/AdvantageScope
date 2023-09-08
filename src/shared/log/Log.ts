@@ -1,7 +1,8 @@
-import { Decoder, decode } from "@msgpack/msgpack";
+import { Decoder } from "@msgpack/msgpack";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
+import { TYPE_KEY } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -13,8 +14,8 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
-import StructDecoder from "./StructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
+import StructDecoder from "./StructDecoder";
 
 /** Represents a collection of log fields. */
 export default class Log {
@@ -76,7 +77,9 @@ export default class Log {
 
   /** Returns the count of fields (excluding array item fields). */
   getFieldCount(): number {
-    return Object.keys(this.fields).filter((field) => !this.isGenerated(field)).length;
+    return Object.keys(this.fields).filter(
+      (field) => !this.isGenerated(field) && this.fields[field].getType() !== LoggableType.Empty
+    ).length;
   }
 
   /** Returns the constant field type. */
@@ -260,6 +263,14 @@ export default class Log {
     this.fields[key].putString(timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
+    }
+
+    // Check for type key
+    if (key.endsWith("/" + TYPE_KEY)) {
+      let parentKey = key.slice(0, -("/" + TYPE_KEY).length);
+      this.createBlankField(parentKey, LoggableType.Empty);
+      this.processTimestamp(parentKey, timestamp);
+      this.fields[parentKey].specialType = value;
     }
   }
 

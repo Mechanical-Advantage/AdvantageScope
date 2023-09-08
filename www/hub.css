@@ -331,7 +331,7 @@ div.field-item-label {
   text-overflow: clip;
 }
 
-div.field-item-label.known {
+div.field-item-label.known > span:first-child {
   text-decoration: underline;
 }
 
