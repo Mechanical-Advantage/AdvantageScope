@@ -4,9 +4,11 @@ import descriptor from "protobufjs/ext/descriptor";
 /** Class to manage decoding protobufs. */
 export default class ProtoDecoder {
   private root = new protobuf.Root();
+  private rawDescriptors: Uint8Array[] = [];
 
   /** Registers a new descriptor. */
   addDescriptor(data: Uint8Array): void {
+    this.rawDescriptors.push(data);
     let fileDescriptor: any = descriptor.FileDescriptorProto.decode(data);
     let filePackage: any = this.root;
     if (fileDescriptor.package && fileDescriptor.package.length > 0) {
@@ -75,5 +77,19 @@ export default class ProtoDecoder {
       result = result.slice("Protobuf".length);
     }
     return result;
+  }
+
+  /** Returns a serialized version of the data from this decoder. */
+  toSerialized(): any {
+    return this.rawDescriptors;
+  }
+
+  /** Creates a new decoder based on the data from `toSerialized()` */
+  static fromSerialized(serializedData: any) {
+    let decoder = new ProtoDecoder();
+    serializedData.forEach((descriptor: Uint8Array) => {
+      decoder.addDescriptor(descriptor);
+    });
+    return decoder;
   }
 }

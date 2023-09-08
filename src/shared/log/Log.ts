@@ -493,7 +493,8 @@ export default class Log {
       fields: {},
       generatedParents: Array.from(this.generatedParents),
       timestampRange: this.timestampRange,
-      structDecoder: this.structDecoder.toSerialized()
+      structDecoder: this.structDecoder.toSerialized(),
+      protoDecoder: this.protoDecoder.toSerialized()
     };
     Object.entries(this.fields).forEach(([key, value]) => {
       result.fields[key] = value.toSerialized();
@@ -510,6 +511,7 @@ export default class Log {
     log.generatedParents = new Set(serializedData.generatedParents);
     log.timestampRange = serializedData.timestampRange;
     log.structDecoder = StructDecoder.fromSerialized(serializedData.structDecoder);
+    log.protoDecoder = ProtoDecoder.fromSerialized(serializedData.protoDecoder);
     return log;
   }
 
@@ -547,6 +549,11 @@ export default class Log {
     } else if (secondSerialized.timestampRange) {
       log.timestampRange = secondSerialized.timestampRange;
     }
+    log.structDecoder = StructDecoder.fromSerialized({
+      schemaString: { ...firstSerialized.structDecoder.schemaStrings, ...secondSerialized.structDecoder.schemaStrings },
+      schemas: { ...firstSerialized.structDecoder.schemas, ...secondSerialized.structDecoder.schemas }
+    });
+    log.protoDecoder = ProtoDecoder.fromSerialized([...firstSerialized.protoDecoder, ...secondSerialized.protoDecoder]);
     return log;
   }
 }
