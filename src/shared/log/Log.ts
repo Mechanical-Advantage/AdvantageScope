@@ -14,12 +14,14 @@ import {
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
 import StructDecoder from "./StructDecoder";
+import ProtoDecoder from "./ProtoDecoder";
 
 /** Represents a collection of log fields. */
 export default class Log {
   private DEFAULT_TIMESTAMP_RANGE: [number, number] = [0, 10];
   private msgpackDecoder = new Decoder();
   private structDecoder = new StructDecoder();
+  private protoDecoder = new ProtoDecoder();
 
   private fields: { [id: string]: LogField } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
@@ -228,7 +230,7 @@ export default class Log {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
 
-    // Check for schema
+    // Check for struct schema
     if (key.includes("/.schema/struct:")) {
       this.structDecoder.addSchema(key.split("struct:")[1], value);
     }
@@ -392,10 +394,8 @@ export default class Log {
 
   /** Writes a JSON-encoded string value to the field. */
   putJSON(key: string, timestamp: number, value: string) {
-    this.createBlankField(key, LoggableType.String);
     this.putString(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {
-      this.processTimestamp(key, timestamp);
       this.generatedParents.add(key);
       this.fields[key].specialType = "JSON";
       let decodedValue: unknown = null;
@@ -410,10 +410,8 @@ export default class Log {
 
   /** Writes a msgpack-encoded raw value to the field. */
   putMsgpack(key: string, timestamp: number, value: Uint8Array) {
-    this.createBlankField(key, LoggableType.Raw);
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.processTimestamp(key, timestamp);
       this.generatedParents.add(key);
       this.fields[key].specialType = "MessagePack";
       let decodedValue: unknown = null;
@@ -426,25 +424,66 @@ export default class Log {
     }
   }
 
-  /** Writes a struct-encoded raw value to the field. */
+  /** Writes a struct-encoded raw value to the field.
+   *
+   * The schema type should not include "struct:" or "[]"
+   */
   putStruct(key: string, timestamp: number, value: Uint8Array, schemaType: string, isArray: boolean) {
-    this.createBlankField(key, LoggableType.Raw);
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.processTimestamp(key, timestamp);
       this.generatedParents.add(key);
       this.fields[key].specialType = schemaType + (isArray ? "[]" : "");
-      let decodedData = isArray
-        ? this.structDecoder.decodeArray(schemaType, value)
-        : this.structDecoder.decode(schemaType, value);
-      this.putUnknownStruct(key, timestamp, decodedData.data);
-      Object.entries(decodedData.schemaTypes).forEach(([childKey, schemaType]) => {
-        // Create the key so it can be dragged even though it doesn't have data
-        let fullChildKey = key + "/" + childKey;
-        this.createBlankField(fullChildKey, LoggableType.Empty);
-        this.processTimestamp(fullChildKey, timestamp);
-        this.fields[fullChildKey].specialType = schemaType;
-      });
+      let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
+      try {
+        decodedData = isArray
+          ? this.structDecoder.decodeArray(schemaType, value)
+          : this.structDecoder.decode(schemaType, value);
+      } catch {}
+      if (decodedData !== null) {
+        this.putUnknownStruct(key, timestamp, decodedData.data);
+        Object.entries(decodedData.schemaTypes).forEach(([childKey, schemaType]) => {
+          // Create the key so it can be dragged even though it doesn't have data
+          let fullChildKey = key + "/" + childKey;
+          this.createBlankField(fullChildKey, LoggableType.Empty);
+          this.processTimestamp(fullChildKey, timestamp);
+          this.fields[fullChildKey].specialType = schemaType;
+        });
+      }
+    }
+  }
+
+  /** Writies a protobuf-encoded raw value to the field.
+   *
+   * The schema type should not include "proto:" but should include
+   * the full package (e.g. "wpi.proto.ProtobufPose2d")
+   */
+  putProto(key: string, timestamp: number, value: Uint8Array, schemaType: string) {
+    // Check for schema
+    if (schemaType === "FileDescriptorProto") {
+      this.protoDecoder.addDescriptor(value);
+      this.putRaw(key, timestamp, value);
+      return;
+    }
+
+    // Not a schema, continue normally
+    this.putRaw(key, timestamp, value);
+    if (this.fields[key].getType() === LoggableType.Raw) {
+      this.generatedParents.add(key);
+      this.fields[key].specialType = ProtoDecoder.getFriendlySchemaType(schemaType);
+      let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
+      try {
+        decodedData = this.protoDecoder.decode(schemaType, value);
+      } catch {}
+      if (decodedData !== null) {
+        this.putUnknownStruct(key, timestamp, decodedData.data);
+        Object.entries(decodedData.schemaTypes).forEach(([childKey, schemaType]) => {
+          // Create the key so it can be dragged even though it doesn't have data
+          let fullChildKey = key + "/" + childKey;
+          this.createBlankField(fullChildKey, LoggableType.Empty);
+          this.processTimestamp(fullChildKey, timestamp);
+          this.fields[fullChildKey].specialType = schemaType;
+        });
+      }
     }
   }
 

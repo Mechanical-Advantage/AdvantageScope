@@ -255,6 +255,9 @@ export default class NT4Source extends LiveDataSource {
                   } else {
                     this.log?.putStruct(key, timestamp, value, schemaType, false);
                   }
+                } else if (topic.type.startsWith("proto:")) {
+                  let schemaType = topic.type.split("proto:")[1];
+                  this.log?.putProto(key, timestamp, value, schemaType);
                 } else {
                   this.log?.putRaw(key, timestamp, value);
                   if (CustomSchemas.has(topic.type)) {

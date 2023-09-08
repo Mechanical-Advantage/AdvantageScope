@@ -1754,6 +1754,9 @@ function checkForUpdate(alwaysPrompt: boolean) {
   });
 }
 
+// "unsafe-eval" is required in the hub for protobufjs
+process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
+
 app.whenReady().then(() => {
   // Check preferences and set theme
   if (!fs.existsSync(PREFS_FILENAME)) {

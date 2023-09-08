@@ -116,6 +116,9 @@ self.onmessage = (event) => {
                 } else {
                   log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
                 }
+              } else if (type.startsWith("proto:")) {
+                let schemaType = type.split("proto:")[1];
+                log.putProto(key, timestamp, record.getRaw(), schemaType);
               } else {
                 log.putRaw(key, timestamp, record.getRaw());
                 if (CustomSchemas.has(type)) {
