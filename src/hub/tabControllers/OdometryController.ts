@@ -245,13 +245,12 @@ export default class OdometryController extends TimelineVizController {
           robotData = robotData.concat(currentRobotData);
 
           // Get trails
+          let timestamps = window.log
+            .getTimestamps([field.key], this.UUID)
+            .filter((x) => x > time - this.TRAIL_LENGTH_SECS && x < time + this.TRAIL_LENGTH_SECS);
           let trailsTemp: Translation2d[][] = currentRobotData.map(() => []);
           if (field.sourceType === LoggableType.NumberArray) {
-            for (
-              let trailTime = time - this.TRAIL_LENGTH_SECS;
-              trailTime < time + this.TRAIL_LENGTH_SECS;
-              trailTime += this.TRAIL_DT
-            ) {
+            timestamps.forEach((trailTime) => {
               let poses = logReadNumberArrayToPose2dArray(
                 window.log,
                 field.key,
@@ -262,31 +261,23 @@ export default class OdometryController extends TimelineVizController {
               for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
                 trailsTemp[i].push(poses[i].translation);
               }
-            }
+            });
           } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
-            for (
-              let trailTime = time - this.TRAIL_LENGTH_SECS;
-              trailTime < time + this.TRAIL_LENGTH_SECS;
-              trailTime += this.TRAIL_DT
-            ) {
+            timestamps.forEach((trailTime) => {
               let poses = logReadPose2dArray(window.log, field.key, trailTime, distanceConversion, rotationConversion);
               for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
                 trailsTemp[i].push(poses[i].translation);
               }
-            }
+            });
           } else if (typeof field.sourceType === "string") {
-            for (
-              let trailTime = time - this.TRAIL_LENGTH_SECS;
-              trailTime < time + this.TRAIL_LENGTH_SECS;
-              trailTime += this.TRAIL_DT
-            ) {
+            timestamps.forEach((trailTime) => {
               if (trailsTemp.length > 0) {
                 let pose = logReadPose2d(window.log, field.key, trailTime, distanceConversion, rotationConversion);
                 if (pose !== null) {
                   trailsTemp[0].push(pose.translation);
                 }
               }
-            }
+            });
           }
           trailData = trailData.concat(trailsTemp);
           break;
