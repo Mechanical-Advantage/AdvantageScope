@@ -14,6 +14,39 @@ import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVis
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
+  private static POSE_3D_TYPES = [
+    "Robot",
+    "Green Ghost",
+    "Yellow Ghost",
+    "AprilTag",
+    "AprilTag ID",
+    "Camera Override",
+    "Component (Robot)",
+    "Component (Green Ghost)",
+    "Component (Yellow Ghost)",
+    "Vision Target",
+    "Axes",
+    "Blue Cone (Front)",
+    "Blue Cone (Center)",
+    "Blue Cone (Back)",
+    "Yellow Cone (Front)",
+    "Yellow Cone (Center)",
+    "Yellow Cone (Back)"
+  ];
+  private static POSE_2D_TYPES = [
+    "Robot",
+    "Green Ghost",
+    "Yellow Ghost",
+    "Trajectory",
+    "Vision Target",
+    "Blue Cone (Front)",
+    "Blue Cone (Center)",
+    "Blue Cone (Back)",
+    "Yellow Cone (Front)",
+    "Yellow Cone (Center)",
+    "Yellow Cone (Back)"
+  ];
+
   private FIELD: HTMLSelectElement;
   private ALLIANCE: HTMLSelectElement;
   private FIELD_SOURCE_LINK: HTMLInputElement;
@@ -31,47 +64,48 @@ export default class ThreeDimensionController extends TimelineVizController {
       [
         {
           element: configBody.children[1].children[0] as HTMLElement,
-          types: [LoggableType.NumberArray],
+          types: [
+            LoggableType.NumberArray,
+            "Pose3d",
+            "Pose3d[]",
+            "Transform3d",
+            "Transform3d[]",
+            "Translation3d",
+            "Translation3d[]"
+          ],
           options: [
-            [
-              "Robot",
-              "Green Ghost",
-              "Yellow Ghost",
-              "AprilTag",
-              "AprilTag ID",
-              "Camera Override",
-              "Component (Robot)",
-              "Component (Green Ghost)",
-              "Component (Yellow Ghost)",
-              "Vision Target",
-              "Axes",
-              "Blue Cone (Front)",
-              "Blue Cone (Center)",
-              "Blue Cone (Back)",
-              "Yellow Cone (Front)",
-              "Yellow Cone (Center)",
-              "Yellow Cone (Back)"
-            ]
+            ThreeDimensionController.POSE_3D_TYPES, // NumberArray
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID"), // Pose3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID" && x !== "Camera Override"), // Pose3d[]
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID"), // Transform3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID" && x !== "Camera Override"), // Transform3d[]
+            ["Vision Target"], // Translation3d
+            ["Vision Target"] // Translation3d[]
           ]
         },
         {
           element: configBody.children[1].children[1] as HTMLElement,
-          types: [LoggableType.NumberArray, "Mechanism2d"],
+          types: [
+            LoggableType.NumberArray,
+            "Pose2d",
+            "Pose2d[]",
+            "Transform2d",
+            "Transform2d[]",
+            "Translation2d",
+            "Translation2d[]",
+            "Trajectory",
+            "Mechanism2d"
+          ],
           options: [
-            [
-              "Robot",
-              "Green Ghost",
-              "Yellow Ghost",
-              "Trajectory",
-              "Vision Target",
-              "Blue Cone (Front)",
-              "Blue Cone (Center)",
-              "Blue Cone (Back)",
-              "Yellow Cone (Front)",
-              "Yellow Cone (Center)",
-              "Yellow Cone (Back)"
-            ],
-            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"]
+            ThreeDimensionController.POSE_2D_TYPES, // NumberArray
+            ThreeDimensionController.POSE_2D_TYPES.filter((x) => x !== "Trajectory"), // Pose2d
+            ThreeDimensionController.POSE_2D_TYPES, // Pose2d[]
+            ThreeDimensionController.POSE_2D_TYPES.filter((x) => x !== "Trajectory"), // Transform2d
+            ThreeDimensionController.POSE_2D_TYPES, // Transform2d[]
+            ["Vision Target"], // Translation2d
+            ["Trajectory", "Vision Target"], // Translation2d[]
+            ["Trajectory"], // Trajectory
+            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"] // Mechanism2d
           ]
         }
       ],

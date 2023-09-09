@@ -22,7 +22,8 @@ export default abstract class TimelineVizController implements TabController {
   private fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[];
   private fields: (string | null)[] = [];
   private listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[];
-  private listFields: { type: string; key: string; fieldTypeIndex: number }[][] = [];
+  private listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][] =
+    [];
   private lastListFieldsStr: string = "";
   private lastAllKeys: string[] = [];
   private periodicInterval: number;
@@ -163,7 +164,8 @@ export default abstract class TimelineVizController implements TabController {
               this.listFields[index].push({
                 type: availableOptions[0],
                 key: key,
-                fieldTypeIndex: typeIndex
+                sourceTypeIndex: typeIndex,
+                sourceType: this.listConfig[index].types[typeIndex]
               });
             }
             this.updateFields();
@@ -258,7 +260,7 @@ export default abstract class TimelineVizController implements TabController {
         itemElement.appendChild(labelElement);
 
         let selectElement = labelElement.firstChild as HTMLSelectElement;
-        list.options[field.fieldTypeIndex].forEach((option) => {
+        list.options[field.sourceTypeIndex].forEach((option) => {
           let optionElement = document.createElement("option");
           optionElement.innerText = option;
           selectElement.appendChild(optionElement);
@@ -388,7 +390,7 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   /** Returns the list of selected fields from lists. */
-  protected getListFields(): { type: string; key: string }[][] {
+  protected getListFields() {
     return this.listFields;
   }
 
