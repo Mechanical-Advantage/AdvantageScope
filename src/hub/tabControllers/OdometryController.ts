@@ -214,16 +214,16 @@ export default class OdometryController extends TimelineVizController {
       if (type === LoggableType.NumberArray) {
         return logReadNumberArrayToPose2dArray(window.log, key, time, distanceConversion, rotationConversion);
       } else if (type === "Trajectory") {
-        return logReadTrajectoryToPose2dArray(window.log, key, time, distanceConversion, rotationConversion);
+        return logReadTrajectoryToPose2dArray(window.log, key, time, distanceConversion);
       } else if (typeof type === "string" && type.endsWith("[]")) {
         return type.startsWith("Translation")
           ? logReadTranslation2dArrayToPose2dArray(window.log, key, time, distanceConversion)
-          : logReadPose2dArray(window.log, key, time, distanceConversion, rotationConversion);
+          : logReadPose2dArray(window.log, key, time, distanceConversion);
       } else {
         let pose =
           typeof type === "string" && type.startsWith("Translation")
             ? logReadTranslation2dToPose2d(window.log, key, time, distanceConversion)
-            : logReadPose2d(window.log, key, time, distanceConversion, rotationConversion);
+            : logReadPose2d(window.log, key, time, distanceConversion);
         return pose === null ? [] : [pose];
       }
     };
@@ -264,7 +264,7 @@ export default class OdometryController extends TimelineVizController {
             });
           } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
             timestamps.forEach((trailTime) => {
-              let poses = logReadPose2dArray(window.log, field.key, trailTime, distanceConversion, rotationConversion);
+              let poses = logReadPose2dArray(window.log, field.key, trailTime, distanceConversion);
               for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
                 trailsTemp[i].push(poses[i].translation);
               }
@@ -272,7 +272,7 @@ export default class OdometryController extends TimelineVizController {
           } else if (typeof field.sourceType === "string") {
             timestamps.forEach((trailTime) => {
               if (trailsTemp.length > 0) {
-                let pose = logReadPose2d(window.log, field.key, trailTime, distanceConversion, rotationConversion);
+                let pose = logReadPose2d(window.log, field.key, trailTime, distanceConversion);
                 if (pose !== null) {
                   trailsTemp[0].push(pose.translation);
                 }
@@ -329,7 +329,7 @@ export default class OdometryController extends TimelineVizController {
               if (!isEnabled(sampleTime)) continue;
               let poses = field.sourceType.startsWith("Translation")
                 ? logReadTranslation2dArrayToPose2dArray(window.log, field.key, sampleTime, distanceConversion)
-                : logReadPose2dArray(window.log, field.key, sampleTime, distanceConversion, rotationConversion);
+                : logReadPose2dArray(window.log, field.key, sampleTime, distanceConversion);
               poses.forEach((pose) => {
                 heatmapData.push(pose.translation);
               });
@@ -343,7 +343,7 @@ export default class OdometryController extends TimelineVizController {
               if (!isEnabled(sampleTime)) continue;
               let pose = field.sourceType.startsWith("Translation")
                 ? logReadTranslation2dToPose2d(window.log, field.key, sampleTime, distanceConversion)
-                : logReadPose2d(window.log, field.key, sampleTime, distanceConversion, rotationConversion);
+                : logReadPose2d(window.log, field.key, sampleTime, distanceConversion);
               if (pose !== null) {
                 heatmapData.push(pose.translation);
               }
