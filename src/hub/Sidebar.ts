@@ -309,7 +309,7 @@ export default class Sidebar {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerText = " : " + schemaType;
+        typeLabel.innerHTML = " &ndash; " + schemaType;
       }
     }
 
