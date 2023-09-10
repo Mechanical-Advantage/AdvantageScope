@@ -515,6 +515,10 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.set3DCamera(message.data);
       break;
 
+    case "edit-fov":
+      window.tabs.setFov(message.data);
+      break;
+
     case "video-data":
       window.tabs.processVideoData(message.data);
       break;

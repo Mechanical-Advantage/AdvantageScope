@@ -199,6 +199,11 @@ export default class ThreeDimensionController extends TimelineVizController {
     (this.visualizer as ThreeDimensionVisualizer).set3DCamera(index);
   }
 
+  /** Switches the orbit FOV for the main visualizer. */
+  setFov(fov: number) {
+    (this.visualizer as ThreeDimensionVisualizer).setFov(fov);
+  }
+
   getAdditionalActiveFields(): string[] {
     if (this.ALLIANCE.value === "auto") {
       return ALLIANCE_KEYS;

@@ -1,5 +1,5 @@
 window.addEventListener("message", (event) => {
-  const NAME_INPUT = document.getElementById("name") as HTMLInputElement;
+  const FOV_INPUT = document.getElementById("fov") as HTMLInputElement;
   const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
   const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
@@ -19,19 +19,20 @@ window.addEventListener("message", (event) => {
       }
 
       // Normal message
-      let oldName: string = event.data;
+      let oldValue: number = event.data;
 
       // Update values
-      NAME_INPUT.value = oldName;
+      FOV_INPUT.value = oldValue.toString();
 
       // Close function
       function confirm() {
-        messagePort.postMessage(NAME_INPUT.value);
+        let value = Number(FOV_INPUT.value);
+        messagePort.postMessage(isNaN(value) ? oldValue : value);
       }
 
       // Set up exit triggers
       EXIT_BUTTON.addEventListener("click", () => {
-        messagePort.postMessage(oldName);
+        messagePort.postMessage(oldValue);
       });
       CONFIRM_BUTTON.addEventListener("click", confirm);
       window.addEventListener("keydown", (event) => {

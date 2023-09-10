@@ -6,11 +6,13 @@ import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageSco
 import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import { convert } from "../units";
+import { clampValue } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
   private EFFICIENCY_MAX_FPS = 15;
-  private ORBIT_FOV = 50;
+  private MAX_ORBIT_FOV = 160;
+  private MIN_ORBIT_FOV = 10;
   private ORBIT_FIELD_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
   private ORBIT_AXES_DEFAULT_TARGET = new THREE.Vector3(0, 0, 0);
   private ORBIT_ROBOT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
@@ -76,6 +78,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private command: any;
   private shouldRender = false;
   private cameraIndex = -1;
+  private orbitFov = 50;
   private lastCameraIndex = -1;
   private lastFrameTime = 0;
   private lastWidth: number | null = 0;
@@ -111,7 +114,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         if (robotConfig === undefined) return;
         window.sendMainMessage("ask-3d-camera", {
           options: robotConfig.cameras.map((camera) => camera.name),
-          selectedIndex: this.cameraIndex >= robotConfig.cameras.length ? -1 : this.cameraIndex
+          selectedIndex: this.cameraIndex >= robotConfig.cameras.length ? -1 : this.cameraIndex,
+          fov: this.orbitFov
         });
       }
       startPx = null;
@@ -126,17 +130,16 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Create camera
     {
-      const fov = this.ORBIT_FOV;
       const aspect = 2;
       const near = 0.1;
-      const far = 100;
-      this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+      const far = 1000;
+      this.camera = new THREE.PerspectiveCamera(this.orbitFov, aspect, near, far);
     }
 
     // Create controls
     {
       this.controls = new OrbitControls(this.camera, canvas);
-      this.controls.maxDistance = 30;
+      this.controls.maxDistance = 250;
       this.controls.enabled = true;
       this.controls.update();
     }
@@ -327,6 +330,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   /** Switches the selected camera. */
   set3DCamera(index: number) {
     this.cameraIndex = index;
+    this.shouldRender = true;
+  }
+
+  /** Updates the orbit FOV. */
+  setFov(fov: number) {
+    this.orbitFov = clampValue(fov, this.MIN_ORBIT_FOV, this.MAX_ORBIT_FOV);
     this.shouldRender = true;
   }
 
@@ -937,7 +946,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       }
 
       // Update container and camera based on mode
-      let fov = this.ORBIT_FOV;
+      let fov = this.orbitFov;
       this.lastAspectRatio = null;
       if (orbitalCamera) {
         this.canvas.classList.remove("fixed");

@@ -351,6 +351,13 @@ export default class Tabs {
     }
   }
 
+  /** Switches the orbit FOV for the selected 3D field. */
+  setFov(fov: number) {
+    if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
+      (this.tabList[this.selectedTab].controller as ThreeDimensionController).setFov(fov);
+    }
+  }
+
   /** Sends video data to all video controllers. */
   processVideoData(data: any) {
     this.tabList.forEach((tab) => {

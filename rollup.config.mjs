@@ -62,6 +62,7 @@ const smallRendererBundles = [
   bundle("editRange.ts", "editRange.js", false),
   bundle("unitConversion.ts", "unitConversion.js", false),
   bundle("renameTab.ts", "renameTab.js", false),
+  bundle("editFov.ts", "editFov.js", false),
   bundle("export.ts", "export.js", false),
   bundle("download.ts", "download.js", false),
   bundle("preferences.ts", "preferences.js", false)
