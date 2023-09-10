@@ -23,7 +23,8 @@ img {
 }
 
 input,
-select {
+select,
+button {
   outline: none;
 }
 
