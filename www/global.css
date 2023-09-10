@@ -22,6 +22,11 @@ img {
   -webkit-user-drag: none;
 }
 
+input,
+select {
+  outline: none;
+}
+
 /* Buttons */
 
 button {
