@@ -467,6 +467,9 @@ export default class ThreeDimensionController extends TimelineVizController {
       }
     });
 
+    // Filter empty trajectories
+    trajectoryData = trajectoryData.filter((trajectory) => trajectory.length > 0);
+
     // Get origin location
     let allianceRedOrigin = false;
     switch (this.ALLIANCE.value) {

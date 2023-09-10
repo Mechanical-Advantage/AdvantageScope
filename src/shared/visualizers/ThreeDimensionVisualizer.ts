@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { MeshStandardMaterial } from "three";
+import { Line2, LineGeometry, LineMaterial } from "three-fatline";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageScopeAssets";
@@ -65,8 +66,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private greenGhostMaterial: THREE.Material;
   private yellowGhostMaterial: THREE.Material;
   private aprilTagSets: Map<number | null, ObjectSet> = new Map();
-  private trajectories: THREE.Line[] = [];
-  private visionTargets: THREE.Line[] = [];
+  private trajectories: Line2[] = [];
+  private visionTargets: Line2[] = [];
   private axesSet: ObjectSet;
   private coneBlueFrontSet: ObjectSet;
   private coneBlueCenterSet: ObjectSet;
@@ -882,23 +883,34 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.visionTargets.shift();
       }
     } else {
-      let material = new THREE.LineBasicMaterial({ color: 0x00ff00 });
       while (this.visionTargets.length > this.command.poses.visionTarget.length) {
         // Remove extra lines
+        this.visionTargets[0].material.dispose();
         this.wpilibFieldCoordinateGroup.remove(this.visionTargets[0]);
         this.visionTargets.shift();
       }
       while (this.visionTargets.length < this.command.poses.visionTarget.length) {
         // Add new lines
-        let line = new THREE.Line(new THREE.BufferGeometry(), material);
+        let line = new Line2(
+          new LineGeometry(),
+          new LineMaterial({
+            color: 0x00ff00,
+            linewidth: 1,
+            resolution: new THREE.Vector2(this.canvas.clientWidth, this.canvas.clientHeight)
+          })
+        );
         this.visionTargets.push(line);
         this.wpilibFieldCoordinateGroup.add(line);
       }
       for (let i = 0; i < this.visionTargets.length; i++) {
         // Update poses
-        this.visionTargets[i].geometry.setFromPoints([
-          new THREE.Vector3(...this.command.poses.robot[0].translation).add(new THREE.Vector3(0, 0, 0.75)),
-          new THREE.Vector3(...this.command.poses.visionTarget[i].translation)
+        this.visionTargets[i].geometry.setPositions([
+          this.command.poses.robot[0].translation[0],
+          this.command.poses.robot[0].translation[1],
+          this.command.poses.robot[0].translation[2] + 0.75,
+          this.command.poses.visionTarget[i].translation[0],
+          this.command.poses.visionTarget[i].translation[1],
+          this.command.poses.visionTarget[i].translation[2]
         ]);
       }
     }
@@ -907,20 +919,32 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     {
       while (this.trajectories.length > this.command.poses.trajectory.length) {
         // Remove extra lines
+        this.trajectories[0].material.dispose();
         this.wpilibFieldCoordinateGroup.remove(this.trajectories[0]);
         this.trajectories.shift();
       }
       while (this.trajectories.length < this.command.poses.trajectory.length) {
         // Add new lines
-        let line = new THREE.Line(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffa500 }));
+        let line = new Line2(
+          new LineGeometry(),
+          new LineMaterial({
+            color: 0xffa500,
+            linewidth: 2,
+            resolution: new THREE.Vector2(this.canvas.clientWidth, this.canvas.clientHeight)
+          })
+        );
         this.trajectories.push(line);
         this.wpilibFieldCoordinateGroup.add(line);
       }
       for (let i = 0; i < this.trajectories.length; i++) {
         // Update poses
-        this.trajectories[i].geometry.setFromPoints(
-          this.command.poses.trajectory[i].map((pose: Pose3d) => new THREE.Vector3(...pose.translation))
-        );
+        if (this.command.poses.trajectory[i].length > 0) {
+          let positions: number[] = [];
+          this.command.poses.trajectory[i].forEach((pose: Pose3d) => {
+            positions = positions.concat(pose.translation);
+          });
+          this.trajectories[i].geometry.setPositions(positions);
+        }
       }
     }
 
@@ -1040,6 +1064,13 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.renderer.setSize(clientWidth, clientHeight, false);
       this.camera.aspect = clientWidth / clientHeight;
       this.camera.updateProjectionMatrix();
+      const resolution = new THREE.Vector2(clientWidth, clientHeight);
+      this.trajectories.forEach((line) => {
+        line.material.resolution = resolution;
+      });
+      this.visionTargets.forEach((line) => {
+        line.material.resolution = resolution;
+      });
     }
     this.scene.background = isDark ? new THREE.Color("#222222") : new THREE.Color("#ffffff");
     this.renderer.setPixelRatio(devicePixelRatio);
