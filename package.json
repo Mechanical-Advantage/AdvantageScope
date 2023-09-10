@@ -18,6 +18,7 @@
     "watch": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
+    "test-ytdl": "node testYtdl.js",
     "postinstall": "node ffmpegDownload.js"
   },
   "devDependencies": {
