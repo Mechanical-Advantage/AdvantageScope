@@ -14,6 +14,8 @@ import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVis
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
+  private TRAJECTORY_MAX_LENGTH = 40;
+
   private FIELD: HTMLSelectElement;
   private ALLIANCE: HTMLSelectElement;
   private FIELD_SOURCE_LINK: HTMLInputElement;
@@ -467,8 +469,24 @@ export default class ThreeDimensionController extends TimelineVizController {
       }
     });
 
-    // Filter empty trajectories
+    // Clean up trajectories (filter empty & resample)
     trajectoryData = trajectoryData.filter((trajectory) => trajectory.length > 0);
+    trajectoryData = trajectoryData.map((trajectory) => {
+      if (trajectory.length < this.TRAJECTORY_MAX_LENGTH) {
+        return trajectory;
+      } else {
+        let newTrajectory: Pose3d[] = [];
+        let lastSourceIndex = -1;
+        for (let i = 0; i < this.TRAJECTORY_MAX_LENGTH; i++) {
+          let sourceIndex = Math.round((i / (this.TRAJECTORY_MAX_LENGTH - 1)) * (trajectory.length - 1));
+          if (sourceIndex !== lastSourceIndex) {
+            lastSourceIndex = sourceIndex;
+            newTrajectory.push(trajectory[sourceIndex]);
+          }
+        }
+        return newTrajectory;
+      }
+    });
 
     // Get origin location
     let allianceRedOrigin = false;
