@@ -55,7 +55,7 @@
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
     "ssh2": "^1.14.0",
-    "ytdl-core": "^4.11.5"
+    "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.5-patch.2"
   },
   "prettier": {
     "printWidth": 120,
