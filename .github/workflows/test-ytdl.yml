@@ -3,7 +3,7 @@ name: Test YTDL
 on:
   workflow_dispatch:
   schedule:
-    - cron: "30 18 * * *" # 1:30PM EST, 2:30PM EDT
+    - cron: "30 0/12 * * *" # 7:30AM/PM EST, 8:30AM/PM EDT
 
 jobs:
   test-ytdl:
