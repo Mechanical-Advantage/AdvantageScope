@@ -23,6 +23,7 @@ window.addEventListener("message", (event) => {
 
       // Update values
       FOV_INPUT.value = oldValue.toString();
+      FOV_INPUT.select();
 
       // Close function
       function confirm() {

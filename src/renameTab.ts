@@ -23,6 +23,7 @@ window.addEventListener("message", (event) => {
 
       // Update values
       NAME_INPUT.value = oldName;
+      NAME_INPUT.select();
 
       // Close function
       function confirm() {

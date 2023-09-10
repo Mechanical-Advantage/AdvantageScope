@@ -27,6 +27,7 @@ window.addEventListener("message", (event) => {
       // Update values
       MIN_INPUT.value = cleanFloat(range[0]).toString();
       MAX_INPUT.value = cleanFloat(range[1]).toString();
+      MAX_INPUT.select();
 
       // Close function
       function confirm() {
