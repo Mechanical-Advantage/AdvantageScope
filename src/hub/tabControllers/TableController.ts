@@ -105,6 +105,11 @@ export default class TableController implements TabController {
   private handleDrag(dragData: any) {
     if (this.CONTENT.hidden) return;
 
+    // Remove empty fields
+    let dragFields = dragData.data.fields as string[];
+    dragFields = dragFields.filter((field) => window.log.getType(field) !== LoggableType.Empty);
+    if (dragFields.length === 0) return;
+
     // Find selected section
     let header = this.TABLE_BODY.firstElementChild as HTMLElement;
     let tableBox = this.TABLE_CONTAINER.getBoundingClientRect();
@@ -135,7 +140,7 @@ export default class TableController implements TabController {
     if (dragData.end) {
       this.DRAG_HIGHLIGHT.hidden = true;
       if (selected !== null) {
-        this.fields.splice(selected, 0, ...dragData.data.fields);
+        this.fields.splice(selected, 0, ...dragFields);
         this.updateFields();
       }
     } else {
