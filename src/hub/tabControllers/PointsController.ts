@@ -84,13 +84,13 @@ export default class PointsController extends TimelineVizController {
     let yData: number[] = [];
 
     if (fields[0] !== null) {
-      let xDataTemp = window.log.getNumberArray(fields[0], time, time);
+      let xDataTemp = window.log.getNumberArray(fields[0].key, time, time);
       if (xDataTemp && xDataTemp.timestamps[0] <= time) {
         xData = xDataTemp.values[0];
       }
     }
     if (fields[1] !== null) {
-      let yDataTemp = window.log.getNumberArray(fields[1], time, time);
+      let yDataTemp = window.log.getNumberArray(fields[1].key, time, time);
       if (yDataTemp && yDataTemp.timestamps[0] <= time) {
         yData = yDataTemp.values[0];
       }

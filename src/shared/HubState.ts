@@ -79,7 +79,7 @@ export interface StatisticsState {
 
 export interface TimelineVisualizerState {
   type: TabType.Odometry | TabType.ThreeDimension | TabType.Video | TabType.Points | TabType.Joysticks;
-  fields: (string | null)[];
+  fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[];
   listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][];
   options: { [id: string]: any };
 }

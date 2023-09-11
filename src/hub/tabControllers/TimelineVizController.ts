@@ -20,7 +20,7 @@ export default abstract class TimelineVizController implements TabController {
   private type: TabType;
   private title: string = "";
   private fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[];
-  private fields: (string | null)[] = [];
+  private fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[] = [];
   private listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[];
   private listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][] =
     [];
@@ -152,7 +152,12 @@ export default abstract class TimelineVizController implements TabController {
             let key = dragData.data.fields[0];
             if (configIndex === 0) {
               // Single field
-              this.fields[index] = key;
+              let typeIndex = this.fieldConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
+              this.fields[index] = {
+                key: key,
+                sourceTypeIndex: typeIndex,
+                sourceType: this.fieldConfig[index].types[typeIndex]
+              };
             } else {
               // List field
               let selectedOptions = this.listFields[index].map((field) => field.type);
@@ -205,9 +210,9 @@ export default abstract class TimelineVizController implements TabController {
     // Single fields
     Object.values(this.fieldConfig).forEach((field, index) => {
       let textElement = field.element.lastElementChild as HTMLElement;
-      let key = this.fields[index];
+      let key = this.fields[index]?.key;
 
-      if (key === null) {
+      if (key === undefined) {
         textElement.innerText = "<Drag Here>";
         textElement.style.textDecoration = "";
       } else if (!this.keyAvailable(key)) {
@@ -290,7 +295,7 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   getActiveFields(): string[] {
-    let activeFields = this.fields.filter((field) => field !== null) as string[];
+    let activeFields = this.fields.filter((field) => field !== null).map((field) => field?.key) as string[];
     this.listFields.forEach((group) =>
       group.forEach((field) => {
         activeFields.push(field.key);
@@ -385,7 +390,7 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   /** Returns the list of selected fields. */
-  protected getFields(): (string | null)[] {
+  protected getFields() {
     return this.fields;
   }
 

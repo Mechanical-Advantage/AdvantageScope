@@ -1,4 +1,5 @@
 import LoggableType from "../../shared/log/LoggableType";
+import { getOrDefault } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import SwerveVisualizer, { NormalizedModuleState } from "../../shared/visualizers/SwerveVisualizer";
@@ -21,19 +22,19 @@ export default class JoysticksController extends TimelineVizController {
         // Status (red)
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
-          types: [LoggableType.NumberArray]
+          types: [LoggableType.NumberArray, "SwerveModuleState[]"]
         },
 
         // Status (blue)
         {
           element: configBody.children[2].firstElementChild as HTMLElement,
-          types: [LoggableType.NumberArray]
+          types: [LoggableType.NumberArray, "SwerveModuleState[]"]
         },
 
         // Robot rotation
         {
           element: configBody.children[3].firstElementChild as HTMLElement,
-          types: [LoggableType.Number]
+          types: [LoggableType.Number, "Rotation2d"]
         }
       ],
       [],
@@ -91,14 +92,42 @@ export default class JoysticksController extends TimelineVizController {
 
     // Get module states
     let getModuleStates = (isRed: boolean): NormalizedModuleState[] | null => {
-      let key = fields[isRed ? 0 : 1];
-      if (key !== null) {
-        let moduleData = window.log.getNumberArray(key, time, time);
-        if (moduleData && moduleData.timestamps[0] <= time && moduleData.values[0].length === 8) {
+      let field = fields[isRed ? 0 : 1];
+      if (field !== null) {
+        if (field.sourceType === LoggableType.NumberArray) {
+          let moduleData = getOrDefault(window.log, field.key, LoggableType.NumberArray, time, []) as number[];
+          if (moduleData.length === 8) {
+            return this.ARRANGEMENT.value.split(",").map((stateIndex) => {
+              let stateIndexNum = Number(stateIndex);
+              let rotationValue = moduleData[stateIndexNum * 2];
+              let velocityValue = moduleData[stateIndexNum * 2 + 1];
+              let state: NormalizedModuleState = {
+                rotation:
+                  this.ROTATION_UNITS.value === "radians"
+                    ? rotationValue
+                    : convert(rotationValue, "degrees", "radians"),
+                normalizedVelocity: Math.min(Math.max(velocityValue / Number(this.MAX_SPEED.value), -1), 1)
+              };
+              return state;
+            });
+          }
+        } else {
           return this.ARRANGEMENT.value.split(",").map((stateIndex) => {
             let stateIndexNum = Number(stateIndex);
-            let rotationValue = moduleData!.values[0][stateIndexNum * 2];
-            let velocityValue = moduleData!.values[0][stateIndexNum * 2 + 1];
+            let rotationValue = getOrDefault(
+              window.log,
+              field!.key + "/" + stateIndex.toString() + "/angle/value",
+              LoggableType.Number,
+              time,
+              0
+            );
+            let velocityValue = getOrDefault(
+              window.log,
+              field!.key + "/" + stateIndex.toString() + "/speed",
+              LoggableType.Number,
+              time,
+              0
+            );
             let state: NormalizedModuleState = {
               rotation:
                 this.ROTATION_UNITS.value === "radians" ? rotationValue : convert(rotationValue, "degrees", "radians"),
@@ -128,13 +157,12 @@ export default class JoysticksController extends TimelineVizController {
         break;
     }
     if (fields[2] !== null) {
-      let robotRotationData = window.log.getNumber(fields[2], time, time);
-      if (robotRotationData && robotRotationData.timestamps[0] <= time) {
-        if (this.ROTATION_UNITS.value === "radians") {
-          robotRotation += robotRotationData.values[0];
-        } else {
-          robotRotation += convert(robotRotationData.values[0], "degrees", "radians");
-        }
+      let key = fields[2].key + (fields[2].sourceType === LoggableType.Number ? "" : "/value");
+      let robotRotationRaw = getOrDefault(window.log, key, LoggableType.Number, time, 0);
+      if (this.ROTATION_UNITS.value === "radians") {
+        robotRotation += robotRotationRaw;
+      } else {
+        robotRotation += convert(robotRotationRaw, "degrees", "radians");
       }
     }
 

@@ -45,7 +45,7 @@ export default class MechanismController extends TimelineVizController {
     this.getFields()
       .filter((field) => field !== null)
       .forEach((field) => {
-        let state = getMechanismState(window.log, field!, time);
+        let state = getMechanismState(window.log, field!.key, time);
         if (state !== null) states.push(state);
       });
 
