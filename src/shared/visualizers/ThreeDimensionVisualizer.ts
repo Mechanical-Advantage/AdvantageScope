@@ -1,7 +1,9 @@
 import * as THREE from "three";
 import { MeshStandardMaterial } from "three";
-import { Line2, LineGeometry, LineMaterial } from "three-fatline";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { Line2 } from "three/examples/jsm/lines/Line2.js";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageScopeAssets";
 import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
