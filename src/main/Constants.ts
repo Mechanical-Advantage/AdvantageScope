@@ -36,6 +36,7 @@ export const DEFAULT_PREFS: Preferences = {
   rioPath: "/U",
   liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",
+  liveDiscard: 1200,
   publishFilter: "",
   rlogPort: 5800,
   threeDimensionMode: "quality",

@@ -88,7 +88,7 @@ export default class Selection {
       case SelectionMode.Idle:
         return null;
       case SelectionMode.Static:
-        return this.staticTime;
+        return Math.max(this.staticTime, window.log.getTimestampRange()[0]);
       case SelectionMode.Playback:
         let time = (this.now() - this.playbackStartReal) * this.playbackSpeed + this.playbackStartLog;
         let lastTime = window.log.getTimestampRange()[1];
@@ -101,7 +101,7 @@ export default class Selection {
           }
           return lastTime;
         } else {
-          return time;
+          return Math.max(time, window.log.getTimestampRange()[0]);
         }
       case SelectionMode.Locked:
         if (this.liveTimeSupplier === null) return 0;
@@ -152,7 +152,7 @@ export default class Selection {
       case SelectionMode.Static:
         if (this.staticTime < window.log.getTimestampRange()[1]) {
           this.setMode(SelectionMode.Playback);
-          this.playbackStartLog = this.staticTime;
+          this.playbackStartLog = Math.max(this.staticTime, window.log.getTimestampRange()[0]);
           this.playbackStartReal = this.now();
         }
         break;

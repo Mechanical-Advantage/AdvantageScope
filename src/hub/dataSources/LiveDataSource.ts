@@ -5,10 +5,14 @@ import { createUUID } from "../../shared/util";
 export abstract class LiveDataSource {
   protected UUID: string = createUUID();
   protected status: LiveDataSourceStatus = LiveDataSourceStatus.Waiting;
+  protected log: Log | null = null;
 
   protected address: string | null = null;
   protected statusCallback: ((status: LiveDataSourceStatus) => void) | null = null;
   protected outputCallback: ((log: Log, timeSupplier: () => number) => void) | null = null;
+
+  private clearDataCallback: NodeJS.Timeout | null = null;
+  private timeSupplier: (() => number) | null = null;
 
   /**
    * Generates log data from a live source.
@@ -23,13 +27,27 @@ export abstract class LiveDataSource {
   ) {
     this.address = address;
     this.statusCallback = statusCallback;
-    this.outputCallback = outputCallback;
+    this.outputCallback = (log: Log, timeSupplier: () => number) => {
+      this.timeSupplier = timeSupplier;
+      outputCallback(log, timeSupplier);
+    };
     this.setStatus(LiveDataSourceStatus.Connecting);
+
+    // Clear old data
+    this.clearDataCallback = setInterval(() => {
+      if (this.log && this.timeSupplier) {
+        let liveDiscardSecs = window.preferences?.liveDiscard;
+        if (liveDiscardSecs !== undefined && liveDiscardSecs !== -1) {
+          this.log.clearBeforeTime(this.timeSupplier() - liveDiscardSecs);
+        }
+      }
+    }, 1000 / 60);
   }
 
   /** Cancels the connection. */
   stop() {
     this.setStatus(LiveDataSourceStatus.Stopped);
+    if (this.clearDataCallback) clearInterval(this.clearDataCallback);
   }
 
   /** Process new data from the main process, overriden by subclass. */

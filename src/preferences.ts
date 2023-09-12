@@ -5,6 +5,7 @@ const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;
 const RIO_PATH = document.getElementById("rioPath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
+const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const THREE_DIMENSION_MODE = document.getElementById("threeDimensionMode") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
@@ -42,6 +43,7 @@ window.addEventListener("message", (event) => {
       RIO_PATH.value = oldPrefs.rioPath;
       LIVE_MODE.value = oldPrefs.liveMode;
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
+      LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
       THREE_DIMENSION_MODE.value = oldPrefs.threeDimensionMode;
       TBA_API_KEY.value = oldPrefs.tbaApiKey;
@@ -74,6 +76,7 @@ window.addEventListener("message", (event) => {
             rioPath: RIO_PATH.value,
             liveMode: liveMode,
             liveSubscribeMode: liveSubscribeMode,
+            liveDiscard: Number(LIVE_DISCARD.value),
             publishFilter: PUBLISH_FILTER.value,
             rlogPort: oldPrefs.rlogPort,
             threeDimensionMode: threeDimensionMode,

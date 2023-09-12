@@ -56,6 +56,17 @@
           </td>
         </tr>
         <tr>
+          <td class="label">Discard Live Data</td>
+          <td class="input" tabindex="-1">
+            <select id="liveDiscard">
+              <option value="60">After 1 minute</option>
+              <option value="300">After 5 minutes</option>
+              <option value="1200">After 20 minutes</option>
+              <option value="-1">Never</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
           <td class="label">NT Publish Prefixes</td>
           <td class="input" tabindex="-1">
             <input type="text" id="publishFilter" />
