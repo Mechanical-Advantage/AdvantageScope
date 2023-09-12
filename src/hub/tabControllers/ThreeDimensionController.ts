@@ -1,4 +1,20 @@
-import { AprilTag, pose2dTo3d, Pose3d } from "../../shared/geometry";
+import {
+  AprilTag,
+  logReadNumberArrayToPose2dArray,
+  logReadNumberArrayToPose3dArray,
+  logReadPose2d,
+  logReadPose2dArray,
+  logReadPose3d,
+  logReadPose3dArray,
+  logReadTrajectoryToPose2dArray,
+  logReadTranslation2dArrayToPose2dArray,
+  logReadTranslation2dToPose2d,
+  logReadTranslation3dArrayToPose3dArray,
+  logReadTranslation3dToPose3d,
+  pose2dArrayTo3d,
+  pose2dTo3d,
+  Pose3d
+} from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
 import {
   ALLIANCE_KEYS,
@@ -15,6 +31,38 @@ import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
   private TRAJECTORY_MAX_LENGTH = 40;
+  private static POSE_3D_TYPES = [
+    "Robot",
+    "Green Ghost",
+    "Yellow Ghost",
+    "AprilTag",
+    "AprilTag ID",
+    "Camera Override",
+    "Component (Robot)",
+    "Component (Green Ghost)",
+    "Component (Yellow Ghost)",
+    "Vision Target",
+    "Axes",
+    "Blue Cone (Front)",
+    "Blue Cone (Center)",
+    "Blue Cone (Back)",
+    "Yellow Cone (Front)",
+    "Yellow Cone (Center)",
+    "Yellow Cone (Back)"
+  ];
+  private static POSE_2D_TYPES = [
+    "Robot",
+    "Green Ghost",
+    "Yellow Ghost",
+    "Trajectory",
+    "Vision Target",
+    "Blue Cone (Front)",
+    "Blue Cone (Center)",
+    "Blue Cone (Back)",
+    "Yellow Cone (Front)",
+    "Yellow Cone (Center)",
+    "Yellow Cone (Back)"
+  ];
 
   private FIELD: HTMLSelectElement;
   private ALLIANCE: HTMLSelectElement;
@@ -36,47 +84,48 @@ export default class ThreeDimensionController extends TimelineVizController {
       [
         {
           element: configBody.children[1].children[0] as HTMLElement,
-          types: [LoggableType.NumberArray],
+          types: [
+            LoggableType.NumberArray,
+            "Pose3d",
+            "Pose3d[]",
+            "Transform3d",
+            "Transform3d[]",
+            "Translation3d",
+            "Translation3d[]"
+          ],
           options: [
-            [
-              "Robot",
-              "Green Ghost",
-              "Yellow Ghost",
-              "AprilTag",
-              "AprilTag ID",
-              "Camera Override",
-              "Component (Robot)",
-              "Component (Green Ghost)",
-              "Component (Yellow Ghost)",
-              "Vision Target",
-              "Axes",
-              "Blue Cone (Front)",
-              "Blue Cone (Center)",
-              "Blue Cone (Back)",
-              "Yellow Cone (Front)",
-              "Yellow Cone (Center)",
-              "Yellow Cone (Back)"
-            ]
+            ThreeDimensionController.POSE_3D_TYPES, // NumberArray
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID"), // Pose3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID" && x !== "Camera Override"), // Pose3d[]
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID"), // Transform3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID" && x !== "Camera Override"), // Transform3d[]
+            ["Vision Target"], // Translation3d
+            ["Vision Target"] // Translation3d[]
           ]
         },
         {
           element: configBody.children[1].children[1] as HTMLElement,
-          types: [LoggableType.NumberArray, "mechanism"],
+          types: [
+            LoggableType.NumberArray,
+            "Pose2d",
+            "Pose2d[]",
+            "Transform2d",
+            "Transform2d[]",
+            "Translation2d",
+            "Translation2d[]",
+            "Trajectory",
+            "Mechanism2d"
+          ],
           options: [
-            [
-              "Robot",
-              "Green Ghost",
-              "Yellow Ghost",
-              "Trajectory",
-              "Vision Target",
-              "Blue Cone (Front)",
-              "Blue Cone (Center)",
-              "Blue Cone (Back)",
-              "Yellow Cone (Front)",
-              "Yellow Cone (Center)",
-              "Yellow Cone (Back)"
-            ],
-            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"]
+            ThreeDimensionController.POSE_2D_TYPES, // NumberArray
+            ThreeDimensionController.POSE_2D_TYPES.filter((x) => x !== "Trajectory"), // Pose2d
+            ThreeDimensionController.POSE_2D_TYPES, // Pose2d[]
+            ThreeDimensionController.POSE_2D_TYPES.filter((x) => x !== "Trajectory"), // Transform2d
+            ThreeDimensionController.POSE_2D_TYPES, // Transform2d[]
+            ["Vision Target"], // Translation2d
+            ["Trajectory", "Vision Target"], // Translation2d[]
+            ["Trajectory"], // Trajectory
+            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"] // Mechanism2d
           ]
         }
       ],
@@ -224,72 +273,49 @@ export default class ThreeDimensionController extends TimelineVizController {
   }
 
   getCommand(time: number) {
+    const distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
+    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "meters");
+
     // Returns the current value for a 3D field
-    let get3DValue = (key: string): Pose3d[] => {
-      let logData = window.log.getNumberArray(key, time, time);
-      if (logData && logData.timestamps[0] <= time && logData.values[0].length % 7 === 0) {
-        let poses: Pose3d[] = [];
-        for (let i = 0; i < logData.values[0].length; i += 7) {
-          poses.push({
-            translation: [
-              convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
-              convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters"),
-              convert(logData.values[0][i + 2], this.UNIT_DISTANCE.value, "meters")
-            ],
-            rotation: [
-              logData.values[0][i + 3],
-              logData.values[0][i + 4],
-              logData.values[0][i + 5],
-              logData.values[0][i + 6]
-            ]
-          });
-        }
-        return poses;
+    let get3DValue = (key: string, type: LoggableType | string): Pose3d[] => {
+      if (type === LoggableType.NumberArray) {
+        return logReadNumberArrayToPose3dArray(window.log, key, time, distanceConversion);
+      } else if (typeof type === "string" && type.endsWith("[]")) {
+        return type.startsWith("Translation")
+          ? logReadTranslation3dArrayToPose3dArray(window.log, key, time, distanceConversion)
+          : logReadPose3dArray(window.log, key, time, distanceConversion);
+      } else {
+        let pose =
+          typeof type === "string" && type.startsWith("Translation")
+            ? logReadTranslation3dToPose3d(window.log, key, time, distanceConversion)
+            : logReadPose3d(window.log, key, time, distanceConversion);
+        return pose === null ? [] : [pose];
       }
-      return [];
     };
 
     // Returns the current value for a 2D field
-    let get2DValue = (key: string, height: number = 0): Pose3d[] => {
-      let logData = window.log.getNumberArray(key, time, time);
-      if (
-        logData &&
-        logData.timestamps[0] <= time &&
-        (logData.values[0].length === 2 || logData.values[0].length % 3 === 0)
-      ) {
-        let poses: Pose3d[] = [];
-        if (logData.values[0].length === 2) {
-          poses.push(
-            pose2dTo3d(
-              {
-                translation: [
-                  convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
-                  convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
-                ],
-                rotation: 0
-              },
-              height
-            )
-          );
-        } else {
-          for (let i = 0; i < logData.values[0].length; i += 3) {
-            poses.push(
-              pose2dTo3d(
-                {
-                  translation: [
-                    convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
-                    convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters")
-                  ],
-                  rotation: convert(logData.values[0][i + 2], this.UNIT_ROTATION.value, "radians")
-                },
-                height
-              )
-            );
-          }
-        }
-        return poses;
+    let get2DValue = (key: string, type: LoggableType | string, height = 0): Pose3d[] => {
+      if (type === LoggableType.NumberArray) {
+        return pose2dArrayTo3d(
+          logReadNumberArrayToPose2dArray(window.log, key, time, distanceConversion, rotationConversion),
+          height
+        );
+      } else if (type === "Trajectory") {
+        return pose2dArrayTo3d(logReadTrajectoryToPose2dArray(window.log, key, time, distanceConversion), height);
+      } else if (typeof type === "string" && type.endsWith("[]")) {
+        return pose2dArrayTo3d(
+          type.startsWith("Translation")
+            ? logReadTranslation2dArrayToPose2dArray(window.log, key, time, distanceConversion)
+            : logReadPose2dArray(window.log, key, time, distanceConversion),
+          height
+        );
+      } else {
+        let pose =
+          typeof type === "string" && type.startsWith("Translation")
+            ? logReadTranslation2dToPose2d(window.log, key, time, distanceConversion)
+            : logReadPose2d(window.log, key, time, distanceConversion);
+        return pose === null ? [] : [pose2dTo3d(pose, height)];
       }
-      return [];
     };
 
     // Set up data
@@ -320,16 +346,16 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.getListFields()[0].forEach((field) => {
       switch (field.type) {
         case "Robot":
-          robotData = robotData.concat(get3DValue(field.key));
+          robotData = robotData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Green Ghost":
-          greenGhostData = greenGhostData.concat(get3DValue(field.key));
+          greenGhostData = greenGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Yellow Ghost":
-          yellowGhostData = yellowGhostData.concat(get3DValue(field.key));
+          yellowGhostData = yellowGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "AprilTag":
-          aprilTagPoseData = aprilTagPoseData.concat(get3DValue(field.key));
+          aprilTagPoseData = aprilTagPoseData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "AprilTag ID":
           let logData = window.log.getNumberArray(field.key, time, time);
@@ -340,40 +366,40 @@ export default class ThreeDimensionController extends TimelineVizController {
           }
           break;
         case "Camera Override":
-          cameraOverrideData = cameraOverrideData.concat(get3DValue(field.key));
+          cameraOverrideData = cameraOverrideData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Component (Robot)":
-          componentRobotData = componentRobotData.concat(get3DValue(field.key));
+          componentRobotData = componentRobotData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Component (Green Ghost)":
-          componentGreenGhostData = componentGreenGhostData.concat(get3DValue(field.key));
+          componentGreenGhostData = componentGreenGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Component (Yellow Ghost)":
-          componentYellowGhostData = componentYellowGhostData.concat(get3DValue(field.key));
+          componentYellowGhostData = componentYellowGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Vision Target":
-          visionTargetData = visionTargetData.concat(get3DValue(field.key));
+          visionTargetData = visionTargetData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Axes":
-          axesData = axesData.concat(get3DValue(field.key));
+          axesData = axesData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Blue Cone (Front)":
-          coneBlueFrontData = coneBlueFrontData.concat(get3DValue(field.key));
+          coneBlueFrontData = coneBlueFrontData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Blue Cone (Center)":
-          coneBlueCenterData = coneBlueCenterData.concat(get3DValue(field.key));
+          coneBlueCenterData = coneBlueCenterData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Blue Cone (Back)":
-          coneBlueBackData = coneBlueBackData.concat(get3DValue(field.key));
+          coneBlueBackData = coneBlueBackData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Yellow Cone (Front)":
-          coneYellowFrontData = coneYellowFrontData.concat(get3DValue(field.key));
+          coneYellowFrontData = coneYellowFrontData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Yellow Cone (Center)":
-          coneYellowCenterData = coneYellowCenterData.concat(get3DValue(field.key));
+          coneYellowCenterData = coneYellowCenterData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Yellow Cone (Back)":
-          coneYellowBackData = coneYellowBackData.concat(get3DValue(field.key));
+          coneYellowBackData = coneYellowBackData.concat(get3DValue(field.key, field.sourceType));
           break;
       }
     });
@@ -382,37 +408,37 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.getListFields()[1].forEach((field) => {
       switch (field.type) {
         case "Robot":
-          robotData = robotData.concat(get2DValue(field.key));
+          robotData = robotData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Green Ghost":
-          greenGhostData = greenGhostData.concat(get2DValue(field.key));
+          greenGhostData = greenGhostData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Yellow Ghost":
-          yellowGhostData = yellowGhostData.concat(get2DValue(field.key));
+          yellowGhostData = yellowGhostData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Trajectory":
-          trajectoryData.push(get2DValue(field.key, 0.02)); // Render outside the floor
+          trajectoryData.push(get2DValue(field.key, field.sourceType, 0.02)); // Render outside the floor
           break;
         case "Vision Target":
-          visionTargetData = visionTargetData.concat(get2DValue(field.key, 0.75));
+          visionTargetData = visionTargetData.concat(get2DValue(field.key, field.sourceType, 0.75));
           break;
         case "Blue Cone (Front)":
-          coneBlueFrontData = coneBlueFrontData.concat(get2DValue(field.key));
+          coneBlueFrontData = coneBlueFrontData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Blue Cone (Center)":
-          coneBlueCenterData = coneBlueCenterData.concat(get2DValue(field.key));
+          coneBlueCenterData = coneBlueCenterData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Blue Cone (Back)":
-          coneBlueBackData = coneBlueBackData.concat(get2DValue(field.key));
+          coneBlueBackData = coneBlueBackData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Yellow Cone (Front)":
-          coneYellowFrontData = coneYellowFrontData.concat(get2DValue(field.key));
+          coneYellowFrontData = coneYellowFrontData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Yellow Cone (Center)":
-          coneYellowCenterData = coneYellowCenterData.concat(get2DValue(field.key));
+          coneYellowCenterData = coneYellowCenterData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Yellow Cone (Back)":
-          coneYellowBackData = coneYellowBackData.concat(get2DValue(field.key));
+          coneYellowBackData = coneYellowBackData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Mechanism (Robot)":
           {

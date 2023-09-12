@@ -1,7 +1,7 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
-import { getFullKeyIfMechanism, getOrDefault, MECHANISM_KEY, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
+import { searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 
 export default class Sidebar {
@@ -34,14 +34,13 @@ export default class Sidebar {
     "DSLog",
     "DSEvents"
   ];
-  private HIDDEN_KEYS = ["RealMetadata", "ReplayMetadata"];
+  private HIDDEN_KEYS = [".schema", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
 
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
   private lastFieldKeys: string[] = [];
-  private lastMechanismFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
   private activeFieldCallbacks: (() => void)[] = [];
@@ -132,6 +131,7 @@ export default class Sidebar {
       let show = true;
       this.HIDDEN_KEYS.forEach((hiddenKey) => {
         if (field.startsWith("/" + hiddenKey)) show = false;
+        if (field.startsWith("NT:/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
       });
       return show;
@@ -169,16 +169,8 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    let mechanismFieldKeys = window.log
-      .getFieldKeys()
-      .filter((key) => key.endsWith(TYPE_KEY))
-      .filter((key) => getOrDefault(window.log, key, LoggableType.String, Infinity, "") === MECHANISM_KEY);
-    let fieldsChanged =
-      forceRefresh ||
-      !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys) ||
-      !arraysEqual(mechanismFieldKeys, this.lastMechanismFieldKeys);
+    let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
     this.lastFieldKeys = window.log.getFieldKeys();
-    this.lastMechanismFieldKeys = mechanismFieldKeys;
 
     if (fieldsChanged) {
       // Remove old list
@@ -233,24 +225,39 @@ export default class Sidebar {
   }
 
   /** Recursively adds a set of fields. */
-  private addFields(title: string, fullTitle: string, field: LogFieldTree, parentElement: HTMLElement, indent: number) {
+  private addFields(
+    title: string,
+    fullTitle: string,
+    field: LogFieldTree,
+    parentElement: HTMLElement,
+    indent: number,
+    generated = false
+  ) {
     let hasChildren = Object.keys(field.children).length > 0;
+    let childrenGenerated = generated || (field.fullKey !== null && window.log.isGeneratedParent(field.fullKey));
 
     // Create element
     let fieldElement = document.createElement("div");
     parentElement.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
+    if (generated) {
+      fieldElement.classList.add("generated");
+    }
 
     // Active fields callback
     this.activeFieldCallbacks.push(() => {
       let visible = fieldElement.getBoundingClientRect().height > 0;
 
-      // Add full key if available and array
+      // Add full key if available and array, raw, or string
+      // - raw in case of msgpack, struct, or ptoto
+      // - strin in case of JSON
       if (
         field.fullKey !== null &&
         (window.log.getType(field.fullKey) === LoggableType.BooleanArray ||
           window.log.getType(field.fullKey) === LoggableType.NumberArray ||
-          window.log.getType(field.fullKey) === LoggableType.StringArray)
+          window.log.getType(field.fullKey) === LoggableType.StringArray ||
+          window.log.getType(field.fullKey) === LoggableType.Raw ||
+          window.log.getType(field.fullKey) === LoggableType.String)
       ) {
         if (visible) {
           this.activeFields.add(field.fullKey);
@@ -279,12 +286,6 @@ export default class Sidebar {
     openIcon.style.display = "none";
     neutralIcon.style.display = hasChildren ? "none" : "initial";
 
-    // Check if mechanism
-    let mechanismFullKey = getFullKeyIfMechanism(field);
-    if (mechanismFullKey !== null) {
-      field.fullKey = mechanismFullKey; // Acts like a normal field
-    }
-
     // Create label
     let label = document.createElement("div");
     fieldElement.appendChild(label);
@@ -295,9 +296,22 @@ export default class Sidebar {
     ) {
       label.classList.add("known");
     }
-    label.innerText = title;
+    {
+      let labelSpan = document.createElement("span");
+      label.appendChild(labelSpan);
+      labelSpan.innerText = title;
+    }
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
+    if (field.fullKey) {
+      let schemaType = window.log.getSpecialType(field.fullKey);
+      if (schemaType !== null) {
+        let typeLabel = document.createElement("span");
+        typeLabel.classList.add("field-item-type-label");
+        label.appendChild(typeLabel);
+        typeLabel.innerHTML = " &ndash; " + schemaType;
+      }
+    }
 
     // Full key fields
     if (field.fullKey !== null) {
@@ -404,7 +418,7 @@ export default class Sidebar {
         if (firstExpand) {
           firstExpand = false;
           let childKeys = Object.keys(field.children);
-          if (fullTitle === "/AdvantageKit") {
+          if (fullTitle === "/AdvantageKit" || fullTitle === "/NT") {
             // Apply hidden and known keys
             childKeys = childKeys
               .filter((key) => !this.HIDDEN_KEYS.includes(key))
@@ -413,7 +427,14 @@ export default class Sidebar {
             childKeys = childKeys.sort((a, b) => this.sortKeys(a, b));
           }
           childKeys.forEach((key) => {
-            this.addFields(key, fullTitle + "/" + key, field.children[key], childSpan, indent + this.INDENT_SIZE_PX);
+            this.addFields(
+              key,
+              fullTitle + "/" + key,
+              field.children[key],
+              childSpan,
+              indent + this.INDENT_SIZE_PX,
+              childrenGenerated
+            );
           });
         }
       };

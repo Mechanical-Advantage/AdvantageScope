@@ -19,10 +19,11 @@ export default abstract class TimelineVizController implements TabController {
 
   private type: TabType;
   private title: string = "";
-  private fieldConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[] }[];
-  private fields: (string | null)[] = [];
-  private listConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[]; options: string[][] }[];
-  private listFields: { type: string; key: string; fieldTypeIndex: number }[][] = [];
+  private fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[];
+  private fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[] = [];
+  private listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[];
+  private listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][] =
+    [];
   private lastListFieldsStr: string = "";
   private lastAllKeys: string[] = [];
   private periodicInterval: number;
@@ -31,8 +32,8 @@ export default abstract class TimelineVizController implements TabController {
   constructor(
     content: HTMLElement,
     type: TabType,
-    fieldConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[] }[],
-    listConfig: { element: HTMLElement; types: (LoggableType | "mechanism")[]; options: string[][] }[],
+    fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[],
+    listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[],
     visualizer: Visualizer
   ) {
     this.CONTENT = content;
@@ -140,30 +141,44 @@ export default abstract class TimelineVizController implements TabController {
         let rect = field.element.getBoundingClientRect();
         let active =
           dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-        let rawType = window.log.getType(dragData.data.fields[0]);
-        let type: LoggableType | "mechanism" = rawType === undefined ? "mechanism" : rawType!;
-        let validType = field.types.includes(type);
+        let anyValidType = false;
+        dragData.data.fields.forEach((dragField: string, dragFieldIndex: number) => {
+          if (configIndex === 0 && anyValidType) return; // Single field and valid field already found
+          let logType = window.log.getType(dragField);
+          let specialType = window.log.getSpecialType(dragField);
+          let validLogType = logType !== null && field.types.includes(logType);
+          let validSpecialType = specialType !== null && field.types.includes(specialType);
+          let validType = validLogType || validSpecialType;
+          anyValidType = anyValidType || validType;
 
-        if (active && validType) {
-          if (dragData.end) {
-            let key = dragData.data.fields[0];
+          if (active && validType && dragData.end) {
             if (configIndex === 0) {
               // Single field
-              this.fields[index] = key;
+              let typeIndex = this.fieldConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
+              this.fields[index] = {
+                key: dragField,
+                sourceTypeIndex: typeIndex,
+                sourceType: this.fieldConfig[index].types[typeIndex]
+              };
             } else {
               // List field
               let selectedOptions = this.listFields[index].map((field) => field.type);
-              let typeIndex = this.listConfig[index].types.indexOf(type);
+              let typeIndex = this.listConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
               let availableOptions = this.listConfig[index].options[typeIndex].filter(
                 (option) => !selectedOptions.includes(option)
               );
               if (availableOptions.length === 0) availableOptions.push(this.listConfig[index].options[typeIndex][0]);
               this.listFields[index].push({
                 type: availableOptions[0],
-                key: key,
-                fieldTypeIndex: typeIndex
+                key: dragField,
+                sourceTypeIndex: typeIndex,
+                sourceType: this.listConfig[index].types[typeIndex]
               });
             }
+          }
+        });
+        if (active && anyValidType) {
+          if (dragData.end) {
             this.updateFields();
             if (configIndex === 1) {
               // List field, scroll to bottom
@@ -201,9 +216,9 @@ export default abstract class TimelineVizController implements TabController {
     // Single fields
     Object.values(this.fieldConfig).forEach((field, index) => {
       let textElement = field.element.lastElementChild as HTMLElement;
-      let key = this.fields[index];
+      let key = this.fields[index]?.key;
 
-      if (key === null) {
+      if (key === undefined) {
         textElement.innerText = "<Drag Here>";
         textElement.style.textDecoration = "";
       } else if (!this.keyAvailable(key)) {
@@ -256,7 +271,7 @@ export default abstract class TimelineVizController implements TabController {
         itemElement.appendChild(labelElement);
 
         let selectElement = labelElement.firstChild as HTMLSelectElement;
-        list.options[field.fieldTypeIndex].forEach((option) => {
+        list.options[field.sourceTypeIndex].forEach((option) => {
           let optionElement = document.createElement("option");
           optionElement.innerText = option;
           selectElement.appendChild(optionElement);
@@ -286,7 +301,7 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   getActiveFields(): string[] {
-    let activeFields = this.fields.filter((field) => field !== null) as string[];
+    let activeFields = this.fields.filter((field) => field !== null).map((field) => field?.key) as string[];
     this.listFields.forEach((group) =>
       group.forEach((field) => {
         activeFields.push(field.key);
@@ -383,12 +398,12 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   /** Returns the list of selected fields. */
-  protected getFields(): (string | null)[] {
+  protected getFields() {
     return this.fields;
   }
 
   /** Returns the list of selected fields from lists. */
-  protected getListFields(): { type: string; key: string }[][] {
+  protected getListFields() {
     return this.listFields;
   }
 

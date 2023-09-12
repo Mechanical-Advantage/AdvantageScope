@@ -6,7 +6,8 @@ enum LoggableType {
   String,
   BooleanArray,
   NumberArray,
-  StringArray
+  StringArray,
+  Empty // Used as a placeholder for child fields of structured data
 }
 
 export default LoggableType;

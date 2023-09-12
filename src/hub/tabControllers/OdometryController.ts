@@ -1,5 +1,14 @@
 import TabType from "../../shared/TabType";
-import { Pose2d, Translation2d } from "../../shared/geometry";
+import {
+  Pose2d,
+  Translation2d,
+  logReadNumberArrayToPose2dArray,
+  logReadPose2d,
+  logReadPose2dArray,
+  logReadTrajectoryToPose2dArray,
+  logReadTranslation2dArrayToPose2dArray,
+  logReadTranslation2dToPose2d
+} from "../../shared/geometry";
 import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { convert } from "../../shared/units";
@@ -8,6 +17,18 @@ import TimelineVizController from "./TimelineVizController";
 
 export default class OdometryController extends TimelineVizController {
   private HEATMAP_DT = 0.1;
+  private TRAIL_DT = 0.05;
+  private static POSE_TYPES = [
+    "Robot",
+    "Ghost",
+    "Trajectory",
+    "Vision Target",
+    "Heatmap",
+    "Heatmap (Enabled)",
+    "Arrow (Front)",
+    "Arrow (Center)",
+    "Arrow (Back)"
+  ];
 
   private GAME: HTMLInputElement;
   private GAME_SOURCE_LINK: HTMLElement;
@@ -32,19 +53,25 @@ export default class OdometryController extends TimelineVizController {
       [
         {
           element: configBody.children[1].firstElementChild as HTMLElement,
-          types: [LoggableType.NumberArray],
+          types: [
+            LoggableType.NumberArray,
+            "Pose2d",
+            "Pose2d[]",
+            "Transform2d",
+            "Transform2d[]",
+            "Translation2d",
+            "Translation2d[]",
+            "Trajectory"
+          ],
           options: [
-            [
-              "Robot",
-              "Ghost",
-              "Trajectory",
-              "Vision Target",
-              "Heatmap",
-              "Heatmap (Enabled)",
-              "Arrow (Front)",
-              "Arrow (Center)",
-              "Arrow (Back)"
-            ]
+            OdometryController.POSE_TYPES, // NumberArray
+            OdometryController.POSE_TYPES.filter((x) => x !== "Trajectory"), // Pose2d
+            OdometryController.POSE_TYPES, // Pose2d[]
+            OdometryController.POSE_TYPES.filter((x) => x !== "Trajectory"), // Transform2d
+            OdometryController.POSE_TYPES, // Transform2d[]
+            ["Vision Target", "Heatmap", "Heatmap (Enabled)"], // Translation2d
+            ["Trajectory", "Vision Target", "Heatmap", "Heatmap (Enabled)"], // Translation2d[]
+            ["Trajectory"] // Trajectory
           ]
         }
       ],
@@ -179,38 +206,26 @@ export default class OdometryController extends TimelineVizController {
   }
 
   getCommand(time: number) {
+    const distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
+    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "meters");
+
     // Returns the current value for a field
-    let getCurrentValue = (key: string): Pose2d[] => {
-      let logData = window.log.getNumberArray(key, time, time);
-      if (
-        logData &&
-        logData.timestamps[0] <= time &&
-        (logData.values[0].length === 2 || logData.values[0].length % 3 === 0)
-      ) {
-        let poses: Pose2d[] = [];
-        if (logData.values[0].length === 2) {
-          poses.push({
-            translation: [
-              convert(logData.values[0][0], this.UNIT_DISTANCE.value, "meters"),
-              convert(logData.values[0][1], this.UNIT_DISTANCE.value, "meters")
-            ],
-            rotation: 0
-          });
-        } else {
-          for (let i = 0; i < logData.values[0].length; i += 3) {
-            poses.push({
-              translation: [
-                convert(logData.values[0][i], this.UNIT_DISTANCE.value, "meters"),
-                convert(logData.values[0][i + 1], this.UNIT_DISTANCE.value, "meters")
-              ],
-              rotation: convert(logData.values[0][i + 2], this.UNIT_ROTATION.value, "radians")
-            });
-          }
-        }
-        return poses;
+    let getCurrentValue = (key: string, type: LoggableType | string): Pose2d[] => {
+      if (type === LoggableType.NumberArray) {
+        return logReadNumberArrayToPose2dArray(window.log, key, time, distanceConversion, rotationConversion);
+      } else if (type === "Trajectory") {
+        return logReadTrajectoryToPose2dArray(window.log, key, time, distanceConversion);
+      } else if (typeof type === "string" && type.endsWith("[]")) {
+        return type.startsWith("Translation")
+          ? logReadTranslation2dArrayToPose2dArray(window.log, key, time, distanceConversion)
+          : logReadPose2dArray(window.log, key, time, distanceConversion);
       } else {
+        let pose =
+          typeof type === "string" && type.startsWith("Translation")
+            ? logReadTranslation2dToPose2d(window.log, key, time, distanceConversion)
+            : logReadPose2d(window.log, key, time, distanceConversion);
+        return pose === null ? [] : [pose];
       }
-      return [];
     };
 
     // Get data
@@ -219,40 +234,47 @@ export default class OdometryController extends TimelineVizController {
     let ghostData: Pose2d[] = [];
     let trajectoryData: Pose2d[][] = [];
     let visionTargetData: Pose2d[] = [];
-    let heatmapData: { timestamp: number; value: Translation2d }[] = [];
+    let heatmapData: Translation2d[] = [];
     let arrowFrontData: Pose2d[] = [];
     let arrowCenterData: Pose2d[] = [];
     let arrowBackData: Pose2d[] = [];
     this.getListFields()[0].forEach((field) => {
       switch (field.type) {
         case "Robot":
-          let currentRobotData = getCurrentValue(field.key);
+          let currentRobotData = getCurrentValue(field.key, field.sourceType);
           robotData = robotData.concat(currentRobotData);
 
           // Get trails
+          let timestamps = window.log
+            .getTimestamps([field.key], this.UUID)
+            .filter((x) => x > time - this.TRAIL_LENGTH_SECS && x < time + this.TRAIL_LENGTH_SECS);
           let trailsTemp: Translation2d[][] = currentRobotData.map(() => []);
-          let trailLogData = window.log.getNumberArray(
-            field.key,
-            time - this.TRAIL_LENGTH_SECS,
-            time + this.TRAIL_LENGTH_SECS
-          );
-          if (trailLogData) {
-            if (time - trailLogData.timestamps[0] > this.TRAIL_LENGTH_SECS) {
-              trailLogData.timestamps.shift();
-              trailLogData.values.shift();
-            }
-            if (trailLogData.timestamps[trailLogData.timestamps.length - 1] - time > this.TRAIL_LENGTH_SECS) {
-              trailLogData.timestamps.pop();
-              trailLogData.values.pop();
-            }
-            trailLogData.values.forEach((value) => {
-              if (value.length % 3 === 0) {
-                for (let i = 0; i < value.length / 3; i += 1) {
-                  if (i >= trailsTemp.length) continue;
-                  trailsTemp[i].push([
-                    convert(value[i * 3], this.UNIT_DISTANCE.value, "meters"),
-                    convert(value[i * 3 + 1], this.UNIT_DISTANCE.value, "meters")
-                  ]);
+          if (field.sourceType === LoggableType.NumberArray) {
+            timestamps.forEach((trailTime) => {
+              let poses = logReadNumberArrayToPose2dArray(
+                window.log,
+                field.key,
+                trailTime,
+                distanceConversion,
+                rotationConversion
+              );
+              for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
+                trailsTemp[i].push(poses[i].translation);
+              }
+            });
+          } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
+            timestamps.forEach((trailTime) => {
+              let poses = logReadPose2dArray(window.log, field.key, trailTime, distanceConversion);
+              for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
+                trailsTemp[i].push(poses[i].translation);
+              }
+            });
+          } else if (typeof field.sourceType === "string") {
+            timestamps.forEach((trailTime) => {
+              if (trailsTemp.length > 0) {
+                let pose = logReadPose2d(window.log, field.key, trailTime, distanceConversion);
+                if (pose !== null) {
+                  trailsTemp[0].push(pose.translation);
                 }
               }
             });
@@ -260,69 +282,83 @@ export default class OdometryController extends TimelineVizController {
           trailData = trailData.concat(trailsTemp);
           break;
         case "Ghost":
-          ghostData = ghostData.concat(getCurrentValue(field.key));
+          ghostData = ghostData.concat(getCurrentValue(field.key, field.sourceType));
           break;
         case "Trajectory":
-          trajectoryData.push(getCurrentValue(field.key));
+          trajectoryData.push(getCurrentValue(field.key, field.sourceType));
           break;
         case "Vision Target":
-          visionTargetData = visionTargetData.concat(getCurrentValue(field.key));
+          visionTargetData = visionTargetData.concat(getCurrentValue(field.key, field.sourceType));
           break;
         case "Heatmap":
         case "Heatmap (Enabled)":
           let enabledFilter = field.type === "Heatmap (Enabled)";
           let enabledData = enabledFilter ? getEnabledData(window.log) : null;
-          let distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
+          let isEnabled = (timestamp: number) => {
+            if (!enabledFilter) return true;
+            if (enabledData === null) return false;
+            let enabledDataIndex = enabledData.timestamps.findLastIndex((x) => x <= timestamp);
+            if (enabledDataIndex === -1) return false;
+            return enabledData.values[enabledDataIndex];
+          };
 
-          let heatmapLogData = window.log.getNumberArray(field.key, -Infinity, Infinity);
-          if (heatmapLogData) {
-            heatmapLogData.values.forEach((value, index) => {
-              // Check if enabled
-              let timestamp = heatmapLogData!.timestamps[index];
-              if (enabledFilter) {
-                let enabledDataIndex = enabledData!.timestamps.findLastIndex((x) => x <= timestamp);
-                if (enabledDataIndex === -1) return;
-                let enabled = enabledData!.values[enabledDataIndex];
-                if (!enabled) return;
+          if (field.sourceType === LoggableType.NumberArray) {
+            for (
+              let sampleTime = window.log.getTimestampRange()[0];
+              sampleTime < window.log.getTimestampRange()[1];
+              sampleTime += this.HEATMAP_DT
+            ) {
+              if (!isEnabled(sampleTime)) continue;
+              let poses = logReadNumberArrayToPose2dArray(
+                window.log,
+                field.key,
+                sampleTime,
+                distanceConversion,
+                rotationConversion
+              );
+              poses.forEach((pose) => {
+                heatmapData.push(pose.translation);
+              });
+            }
+          } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
+            for (
+              let sampleTime = window.log.getTimestampRange()[0];
+              sampleTime < window.log.getTimestampRange()[1];
+              sampleTime += this.HEATMAP_DT
+            ) {
+              if (!isEnabled(sampleTime)) continue;
+              let poses = field.sourceType.startsWith("Translation")
+                ? logReadTranslation2dArrayToPose2dArray(window.log, field.key, sampleTime, distanceConversion)
+                : logReadPose2dArray(window.log, field.key, sampleTime, distanceConversion);
+              poses.forEach((pose) => {
+                heatmapData.push(pose.translation);
+              });
+            }
+          } else if (typeof field.sourceType === "string") {
+            for (
+              let sampleTime = window.log.getTimestampRange()[0];
+              sampleTime < window.log.getTimestampRange()[1];
+              sampleTime += this.HEATMAP_DT
+            ) {
+              if (!isEnabled(sampleTime)) continue;
+              let pose = field.sourceType.startsWith("Translation")
+                ? logReadTranslation2dToPose2d(window.log, field.key, sampleTime, distanceConversion)
+                : logReadPose2d(window.log, field.key, sampleTime, distanceConversion);
+              if (pose !== null) {
+                heatmapData.push(pose.translation);
               }
-
-              // Generate samples
-              let nextTimestamp =
-                index < heatmapLogData!.timestamps.length - 1 ? heatmapLogData!.timestamps[index + 1] : timestamp;
-              let sampleCount = Math.ceil((nextTimestamp - timestamp) / this.HEATMAP_DT);
-              for (let i = 0; i < sampleCount; i++) {
-                if (value.length % 3 === 0) {
-                  for (let i = 0; i < value.length / 3; i += 1) {
-                    heatmapData.push({
-                      timestamp: timestamp + i * this.HEATMAP_DT,
-                      value: [value[i * 3] * distanceConversion, value[i * 3 + 1] * distanceConversion]
-                    });
-                  }
-                }
-              }
-            });
+            }
           }
           break;
         case "Arrow (Front)":
-          arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key));
+          arrowFrontData = arrowFrontData.concat(getCurrentValue(field.key, field.sourceType));
           break;
         case "Arrow (Center)":
-          arrowCenterData = arrowCenterData.concat(getCurrentValue(field.key));
+          arrowCenterData = arrowCenterData.concat(getCurrentValue(field.key, field.sourceType));
           break;
         case "Arrow (Back)":
-          arrowBackData = arrowBackData.concat(getCurrentValue(field.key));
+          arrowBackData = arrowBackData.concat(getCurrentValue(field.key, field.sourceType));
           break;
-      }
-    });
-
-    // Filter heatmap data (remove samples with too small dts)
-    let heatmapDataValues: Translation2d[] = [];
-    let lastTimestamp = 0;
-    heatmapData.sort((a, b) => a.timestamp - b.timestamp);
-    heatmapData.forEach((sample) => {
-      if (sample.timestamp === lastTimestamp || sample.timestamp - lastTimestamp >= this.HEATMAP_DT) {
-        heatmapDataValues.push(sample.value);
-        lastTimestamp = sample.timestamp;
       }
     });
 
@@ -361,7 +397,7 @@ export default class OdometryController extends TimelineVizController {
         ghost: ghostData,
         trajectory: trajectoryData,
         visionTarget: visionTargetData,
-        heatmap: heatmapDataValues,
+        heatmap: heatmapData,
         arrowFront: arrowFrontData,
         arrowCenter: arrowCenterData,
         arrowBack: arrowBackData

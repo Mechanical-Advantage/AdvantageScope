@@ -15,6 +15,7 @@ import {
 export default class LogField {
   private type: LoggableType;
   private data: LogValueSetAny = { timestamps: [], values: [] };
+  public specialType: string | null = null;
 
   // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
   private stripingReference = false;
@@ -187,6 +188,7 @@ export default class LogField {
       type: this.type,
       timestamps: this.data.timestamps,
       values: this.data.values,
+      specialType: this.specialType,
       stripingReference: this.stripingReference
     };
   }
@@ -198,6 +200,7 @@ export default class LogField {
       timestamps: serializedData.timestamps,
       values: serializedData.values
     };
+    field.specialType = serializedData.specialType;
     field.stripingReference = serializedData.stripingReference;
     return field;
   }

@@ -291,6 +291,10 @@ div.field-item {
   transition: background 0.25s;
 }
 
+div.field-item.generated {
+  opacity: 0.6;
+}
+
 div.field-item.highlight {
   background-color: rgb(255, 255, 0);
 }
@@ -324,11 +328,22 @@ div.field-item-label {
   font-size: 15px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  text-overflow: clip;
 }
 
-div.field-item-label.known {
+div.field-item-label.known > span:first-child {
   text-decoration: underline;
+}
+
+span.field-item-type-label {
+  text-decoration: none;
+  font-style: normal;
+  font-weight: normal;
+  opacity: 0.3;
+}
+
+div.field-item.generated span.field-item-type-label {
+  opacity: calc(0.3 / 0.6);
 }
 
 /* Search results */

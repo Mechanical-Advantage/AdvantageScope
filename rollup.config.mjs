@@ -1,12 +1,14 @@
 import commonjs from "@rollup/plugin-commonjs";
+import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import typescript from "@rollup/plugin-typescript";
-import cleanup from "rollup-plugin-cleanup";
 import fs from "fs";
+import cleanup from "rollup-plugin-cleanup";
+import replaceRegEx from "rollup-plugin-re";
 
 function bundle(input, output, isMain, external = []) {
-  let isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
+  const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
   return {
     input: "src/" + input,
     output: {
@@ -14,11 +16,13 @@ function bundle(input, output, isMain, external = []) {
       format: isMain ? "cjs" : "es"
     },
     context: "this",
+    external: external,
     plugins: [
       typescript(),
       nodeResolve(),
       commonjs(),
       cleanup(),
+      json(),
       replace({
         preventAssignment: true,
         values: {
@@ -34,11 +38,30 @@ function bundle(input, output, isMain, external = []) {
             second: "numeric",
             timeZoneName: "short"
           }),
-          __copyright__: JSON.parse(fs.readFileSync("package.json")).build.copyright
+          __copyright__: JSON.parse(
+            fs.readFileSync("package.json", {
+              encoding: "utf-8"
+            })
+          ).build.copyright
         }
+      }),
+      replaceRegEx({
+        patterns: [
+          // Remove unused eval in protobufjs
+          // https://github.com/protobufjs/protobuf.js/issues/593
+          {
+            test: /eval.*\(moduleName\);/g,
+            replace: "undefined;"
+          }
+        ]
       })
     ],
-    external: external
+    onwarn(message, warn) {
+      // Hide warnings about protobufjs circular dependencies
+      // https://github.com/protobufjs/protobuf.js/issues/1402
+      if (message.code === "CIRCULAR_DEPENDENCY") return;
+      warn(message);
+    }
   };
 }
 

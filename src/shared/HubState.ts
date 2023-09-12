@@ -1,4 +1,5 @@
 import TabType from "./TabType";
+import LoggableType from "./log/LoggableType";
 import { UnitConversionPreset } from "./units";
 
 export interface HubState {
@@ -78,7 +79,7 @@ export interface StatisticsState {
 
 export interface TimelineVisualizerState {
   type: TabType.Odometry | TabType.ThreeDimension | TabType.Video | TabType.Points | TabType.Joysticks;
-  fields: (string | null)[];
-  listFields: { type: string; key: string; fieldTypeIndex: number }[][];
+  fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[];
+  listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][];
   options: { [id: string]: any };
 }

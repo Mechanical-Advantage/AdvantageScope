@@ -21,7 +21,6 @@ export const ALLIANCE_KEYS = [
 ];
 export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "NT:/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
 export const TYPE_KEY = ".type";
-export const MECHANISM_KEY = "Mechanism2d";
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros",
   "NT:/AdvantageKit/SystemStats/EpochTimeMicros",
@@ -80,6 +79,8 @@ export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
       return arraysEqual(a, b);
     case LoggableType.Raw:
       return arraysEqual(Array.from(a as Uint8Array), Array.from(b as Uint8Array));
+    default:
+      return false;
   }
 }
 
@@ -220,19 +221,6 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   return state;
 }
 
-export function getFullKeyIfMechanism(field: LogFieldTree): string | null {
-  if (
-    TYPE_KEY in field.children &&
-    field.children[TYPE_KEY].fullKey !== null &&
-    getOrDefault(window.log, field.children[TYPE_KEY].fullKey, LoggableType.String, Infinity, "") === MECHANISM_KEY
-  ) {
-    let key = field.children[TYPE_KEY].fullKey;
-    return key.substring(0, key.length - TYPE_KEY.length - 1);
-  } else {
-    return null;
-  }
-}
-
 export type MechanismState = {
   backgroundColor: string;
   dimensions: [number, number];
@@ -355,7 +343,7 @@ export function searchFields(log: Log, query: string): string[] {
   query = query.toLowerCase();
   let fieldStrings = log
     .getFieldKeys()
-    .filter((field) => !log.isReadOnly(field) && field.toLowerCase().includes(query));
+    .filter((field) => !log.isGenerated(field) && field.toLowerCase().includes(query));
   let fields = fieldStrings.map((field) => {
     return {
       string: field,
