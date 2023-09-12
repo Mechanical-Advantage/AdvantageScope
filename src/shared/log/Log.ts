@@ -253,9 +253,9 @@ export default class Log {
     }
 
     // Check for struct schema
-    if (key.includes("/.schema/struct:")) {
-      this.structDecoder.addSchema(key.split("struct:")[1], value);
-    }
+    // if (key.includes("/.schema/struct:")) {
+    //   this.structDecoder.addSchema(key.split("struct:")[1], value);
+    // }
   }
 
   /** Writes a new Boolean value to the field. */
