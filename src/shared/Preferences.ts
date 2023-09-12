@@ -5,6 +5,7 @@ export default interface Preferences {
   rioPath: string;
   liveMode: "nt4" | "nt4-akit" | "rlog";
   liveSubscribeMode: "low-bandwidth" | "logging";
+  liveDiscard: number;
   publishFilter: string;
   rlogPort: number;
   threeDimensionMode: "quality" | "efficiency" | "auto";

@@ -35,8 +35,24 @@ export default class Log {
     this.fields[key] = new LogField(type);
   }
 
-  /** Updates the timestamp range to include the provided value. */
-  updateTimestampRange(timestamp: number) {
+  /** Clears all data before the provided timestamp. */
+  clearBeforeTime(timestamp: number) {
+    if (this.timestampRange !== null && this.timestampRange[0] < timestamp) {
+      this.timestampRange[0] = timestamp;
+    }
+    Object.values(this.timestampSetCache).forEach((cache) => {
+      while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
+        cache.timestamps.shift();
+      }
+    });
+    Object.values(this.fields).forEach((field) => {
+      field.clearBeforeTime(timestamp);
+    });
+  }
+
+  /** Updates the timestamp range and set caches if necessary. */
+  private processTimestamp(key: string, timestamp: number) {
+    // Update timestamp range
     if (this.timestampRange === null) {
       this.timestampRange = [timestamp, timestamp];
     } else if (timestamp < this.timestampRange[0]) {
@@ -44,12 +60,6 @@ export default class Log {
     } else if (timestamp > this.timestampRange[1]) {
       this.timestampRange[1] = timestamp;
     }
-  }
-
-  /** Updates the timestamp range and set caches if necessary. */
-  private processTimestamp(key: string, timestamp: number) {
-    // Update timestamp range
-    this.updateTimestampRange(timestamp);
 
     // Update timestamp set caches
     if (this.enableTimestampSetCache) {
@@ -81,6 +91,15 @@ export default class Log {
       return this.fields[key].getType();
     } else {
       return undefined;
+    }
+  }
+
+  /** Returns a boolean that toggles when a value is removed from the field. */
+  getStripingReference(key: string): boolean {
+    if (key in this.fields) {
+      return this.fields[key].getStripingReference();
+    } else {
+      return false;
     }
   }
 

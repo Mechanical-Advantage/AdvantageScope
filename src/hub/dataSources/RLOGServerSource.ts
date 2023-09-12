@@ -6,7 +6,6 @@ export default class RLOGServerSource extends LiveDataSource {
   private RECONNECT_DELAY_MS = 500;
   private MIN_LIVE_RESYNC_SECS = 0.15; // Resync live data if out of sync by longer than this
 
-  private log: Log | null = null;
   private decoder: RLOGDecoder | null = null;
   private timeout: NodeJS.Timeout | null = null;
   private liveZeroTime = 0;
