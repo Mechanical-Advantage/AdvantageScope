@@ -1,4 +1,5 @@
 import { TableState } from "../../shared/HubState";
+import LoggableType from "../../shared/log/LoggableType";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetAny } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
