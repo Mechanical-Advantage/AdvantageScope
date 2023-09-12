@@ -1,5 +1,4 @@
 import { TableState } from "../../shared/HubState";
-import LoggableType from "../../shared/log/LoggableType";
 import { getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetAny } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
@@ -18,13 +17,19 @@ export default class TableController implements TabController {
 
   private UUID = createUUID();
   private ROW_HEIGHT_PX = 25; // May be adjusted later based on platform
-  private SCROLL_MARGIN_PX = 3000;
-  private MAX_ROWS = 1000;
+  private DATA_ROW_BUFFER = 15;
+
+  private fillerUpper: HTMLElement;
+  private dataRows: HTMLElement[] = [];
+  private dataRowTimestamps: number[] = [];
+  private fillerLower: HTMLElement;
 
   private fields: string[] = [];
   private timestamps: number[] = [];
-  private currentRange: [number, number] = [0, 0];
   private lastLogFieldList: string[] = [];
+  private lastSelectionMode = SelectionMode.Idle;
+  private scrollToSelectedNext = false;
+  private hoverCursorY: number | null = null;
 
   constructor(content: HTMLElement) {
     this.CONTENT = content;
@@ -40,24 +45,47 @@ export default class TableController implements TabController {
       this.handleDrag((event as CustomEvent).detail);
     });
 
+    // Create filler elements
+    {
+      this.fillerUpper = document.createElement("div");
+      this.TABLE_BODY.appendChild(this.fillerUpper);
+      this.fillerUpper.style.height = "500px";
+      this.fillerUpper.style.width = "0px";
+    }
+    {
+      this.fillerLower = document.createElement("div");
+      this.TABLE_BODY.appendChild(this.fillerLower);
+      this.fillerLower.style.height = "1000px";
+      this.fillerLower.style.width = "0px";
+    }
+
     // Jump input handling
     let jump = () => {
-      // Determine target time
       let targetTime = Number(this.INPUT_FIELD.value);
       if (this.INPUT_FIELD.value === "") {
         if (window.selection.getMode() !== SelectionMode.Idle) {
           targetTime = window.selection.getSelectedTime() as number;
         } else {
           targetTime = 0;
+          window.selection.setSelectedTime(0);
         }
+      } else {
+        window.selection.setSelectedTime(targetTime);
       }
-
-      this.jumpToTime(targetTime);
+      this.scrollToSelected();
     };
     this.INPUT_FIELD.addEventListener("keydown", (event) => {
       if (event.code === "Enter") jump();
     });
     content.getElementsByClassName("data-table-jump-button")[0].addEventListener("click", jump);
+
+    // Bind hover controls
+    this.TABLE_BODY.addEventListener("mousemove", (event) => {
+      this.hoverCursorY = event.clientY;
+    });
+    this.TABLE_BODY.addEventListener("mouseleave", () => {
+      this.hoverCursorY = null;
+    });
   }
 
   saveState(): TableState {
@@ -70,28 +98,6 @@ export default class TableController implements TabController {
   }
 
   refresh() {
-    // Update timestamps (Check if fields were only added at the end. If not, do a full refresh)
-    let fullRefresh = true;
-    let newTimestamps = window.log.getTimestamps(this.fields, this.UUID);
-    if (newTimestamps.length >= this.timestamps.length) {
-      if (arraysEqual(this.timestamps.slice(0, newTimestamps.length), this.timestamps)) {
-        fullRefresh = false;
-      }
-    }
-    if (fullRefresh) {
-      let targetTime = 0;
-      let offsetPx = 0;
-      if (this.timestamps.length > 0) {
-        targetTime =
-          this.timestamps[Math.floor(this.TABLE_CONTAINER.scrollTop / this.ROW_HEIGHT_PX) + this.currentRange[0]];
-        offsetPx = this.TABLE_CONTAINER.scrollTop % this.ROW_HEIGHT_PX;
-      }
-      this.timestamps = newTimestamps;
-      this.jumpToTime(targetTime, offsetPx);
-    } else {
-      this.timestamps = newTimestamps;
-    }
-
     // Check if field list changed
     let fieldList = window.log.getFieldKeys();
     if (arraysEqual(fieldList, this.lastLogFieldList)) return;
@@ -146,34 +152,27 @@ export default class TableController implements TabController {
     }
   }
 
-  /** Jumps to the specified time */
-  private jumpToTime(targetTime: number, offsetPx: number = 0) {
-    // If no data, clear table
-    if (this.timestamps.length === 0) {
-      this.clearTable();
-      return;
-    }
+  /** Scrolls such that the selected time is in view.
+   *
+   * @returns Whether the position was updated
+   */
+  private scrollToSelected() {
+    const selectedTime = window.selection.getSelectedTime();
+    if (selectedTime !== null) {
+      let targetRow = this.timestamps.findLastIndex((timestamp) => timestamp <= selectedTime);
+      if (targetRow === -1) targetRow = 0;
 
-    // Find index
-    let target = this.timestamps.findIndex((value) => value > targetTime);
-    if (target === -1) target = this.timestamps.length;
-    if (target < 1) target = 1;
-    target -= 1;
-
-    // Jump to index
-    if (this.timestamps.length < this.MAX_ROWS) {
-      this.currentRange = [0, this.timestamps.length - 1];
-    } else {
-      this.currentRange = [target - this.MAX_ROWS / 2, target + this.MAX_ROWS / 2 - 1];
-      let offset = 0;
-      if (this.currentRange[0] < 0) offset = this.currentRange[0] * -1;
-      if (this.currentRange[1] > this.timestamps.length - 1) offset = this.timestamps.length - 1 - this.currentRange[1];
-      this.currentRange[0] += offset;
-      this.currentRange[1] += offset;
+      const visibleHeight = this.TABLE_CONTAINER.clientHeight - this.TABLE_BODY.firstElementChild!.clientHeight;
+      let firstVisibleRow = Math.ceil(this.TABLE_CONTAINER.scrollTop / this.ROW_HEIGHT_PX);
+      let lastVisibleRow = Math.ceil(
+        (this.TABLE_CONTAINER.scrollTop + visibleHeight - this.ROW_HEIGHT_PX) / this.ROW_HEIGHT_PX
+      );
+      if (targetRow < firstVisibleRow) {
+        this.TABLE_CONTAINER.scrollTop = targetRow * this.ROW_HEIGHT_PX;
+      } else if (targetRow > lastVisibleRow) {
+        this.TABLE_CONTAINER.scrollTop = targetRow * this.ROW_HEIGHT_PX - visibleHeight + this.ROW_HEIGHT_PX;
+      }
     }
-    this.clearTable();
-    this.fillRange(this.currentRange, false);
-    this.TABLE_CONTAINER.scrollTop = (target - this.currentRange[0]) * this.ROW_HEIGHT_PX + offsetPx;
   }
 
   /** Updates the table based on the current field list */
@@ -209,42 +208,19 @@ export default class TableController implements TabController {
       });
     });
 
-    // Reset table data and timestamps
-    if (this.fields.length > 0) {
-      let targetTime = 0;
-      let offsetPx = 0;
-      if (this.timestamps.length > 0) {
-        targetTime =
-          this.timestamps[Math.floor(this.TABLE_CONTAINER.scrollTop / this.ROW_HEIGHT_PX) + this.currentRange[0]];
-        offsetPx = this.TABLE_CONTAINER.scrollTop % this.ROW_HEIGHT_PX;
-      }
-      this.timestamps = window.log.getTimestamps(this.fields, this.UUID);
-      this.jumpToTime(targetTime, offsetPx);
-    } else {
-      this.timestamps = [];
-      this.clearTable();
-    }
-  }
-
-  /** Clears all data currently in the table. */
-  private clearTable() {
-    while (this.TABLE_BODY.childElementCount > 1) {
-      this.TABLE_BODY.removeChild(this.TABLE_BODY.lastChild as HTMLElement);
-    }
+    // Update timestamps
+    this.timestamps = window.log.getTimestamps(this.fields, this.UUID);
   }
 
   /** Updates highlighted times (selected & hovered). */
   private updateHighlights() {
     if (this.timestamps.length === 0) return;
     let highlight = (time: number | null, className: string) => {
-      Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove(className));
+      this.dataRows.forEach((row) => row.classList.remove(className));
       if (time) {
-        let target = this.timestamps.findIndex((value) => value > time);
-        if (target === -1) target = this.timestamps.length;
-        if (target < 1) target = 1;
-        target -= 1;
-        if (target >= this.currentRange[0] && target <= this.currentRange[1]) {
-          this.TABLE_BODY.children[target - this.currentRange[0] + 1].classList.add(className);
+        let dataRowIndex = this.dataRowTimestamps.findLastIndex((timestamp) => timestamp <= time);
+        if (dataRowIndex !== -1 && dataRowIndex < this.dataRows.length) {
+          this.dataRows[dataRowIndex].classList.add(className);
         }
       }
     };
@@ -260,85 +236,15 @@ export default class TableController implements TabController {
         break;
       case SelectionMode.Locked:
         Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove("selected"));
-        Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove("hovered"));
-        (this.TABLE_BODY.lastElementChild as HTMLElement).classList.add("selected");
+        for (let i = this.dataRows.length - 1; i >= 0; i--) {
+          if (!this.dataRows[i].hidden) {
+            this.dataRows[i].classList.add("selected");
+            break;
+          }
+        }
+        highlight(window.selection.getHoveredTime(), "hovered");
         break;
     }
-  }
-
-  /**
-   * Adds rows on the top or bottom in the specified range.
-   * @param range The range of timestamp indexes to insert
-   * @param top Whether to add the rows at the top or bottom
-   */
-  private fillRange(range: [number, number], top: boolean) {
-    // Get data
-    let dataLookup: { [id: string]: any[] } = {};
-    let typeLookup: { [id: string]: LoggableType } = {};
-    let availableFields = window.log.getFieldKeys();
-    this.fields.forEach((field) => {
-      if (!availableFields.includes(field)) return;
-      let data = window.log.getRange(field, this.timestamps[range[0]], this.timestamps[range[1]]) as LogValueSetAny;
-      let fullData = [];
-      for (let i = range[0]; i < range[1] + 1; i++) {
-        let nextIndex = data.timestamps.findIndex((value) => value > this.timestamps[i]);
-        if (nextIndex === -1) nextIndex = data?.timestamps.length;
-        if (nextIndex === 0) {
-          fullData.push(null);
-        } else {
-          fullData.push(data.values[nextIndex - 1]);
-        }
-      }
-      dataLookup[field] = fullData;
-      typeLookup[field] = window.log.getType(field) as LoggableType;
-    });
-
-    // Add rows
-    let nextRow: HTMLElement | null = null;
-    if (top) nextRow = this.TABLE_BODY.children[1] as HTMLElement;
-    for (let i = range[0]; i < range[1] + 1; i++) {
-      // Create row
-      let row = document.createElement("tr");
-      if (top) {
-        this.TABLE_BODY.insertBefore(row, nextRow);
-      } else {
-        this.TABLE_BODY.appendChild(row);
-      }
-
-      // Bind selection controls
-      row.addEventListener("mouseenter", () => {
-        window.selection.setHoveredTime(this.timestamps[i]);
-      });
-      row.addEventListener("mouseleave", () => {
-        window.selection.setHoveredTime(null);
-      });
-      row.addEventListener("click", () => {
-        window.selection.setSelectedTime(this.timestamps[i]);
-      });
-      row.addEventListener("contextmenu", () => {
-        window.selection.goIdle();
-      });
-
-      // Add timestamp
-      let timestampCell = document.createElement("td");
-      row.appendChild(timestampCell);
-      timestampCell.innerText = formatTimeWithMS(this.timestamps[i]);
-
-      // Add data
-      this.fields.forEach((field) => {
-        let dataCell = document.createElement("td");
-        row.appendChild(dataCell);
-        let value = dataLookup[field][i - range[0]];
-        dataCell.innerText = getLogValueText(value, typeLookup[field]);
-      });
-    }
-
-    // Update highlights
-    this.updateHighlights();
-
-    // Update row height (not all platforms render the same way)
-    let rowHeight = this.TABLE_BODY.children[1].getBoundingClientRect().height;
-    if (rowHeight > 0 && rowHeight !== this.ROW_HEIGHT_PX) this.ROW_HEIGHT_PX = rowHeight;
   }
 
   getActiveFields(): string[] {
@@ -346,83 +252,160 @@ export default class TableController implements TabController {
   }
 
   periodic() {
-    // Update based on selected & hovered times
+    // Update data row count
+    const dataRowCount = Math.ceil(this.TABLE_CONTAINER.clientHeight / this.ROW_HEIGHT_PX) + this.DATA_ROW_BUFFER * 2;
+    while (this.dataRows.length > dataRowCount) {
+      this.TABLE_BODY.removeChild(this.dataRows.pop()!);
+    }
+    while (this.dataRows.length < dataRowCount) {
+      let row = document.createElement("tr");
+      this.TABLE_BODY.insertBefore(row, this.fillerLower);
+      let timestampCell = document.createElement("td");
+      row.appendChild(timestampCell);
+      this.dataRows.push(row);
+
+      // Bind selection controls
+      row.addEventListener("click", () => {
+        let rowIndex = this.dataRows.indexOf(row);
+        if (rowIndex < this.dataRowTimestamps.length) {
+          window.selection.setSelectedTime(this.dataRowTimestamps[rowIndex]);
+        }
+      });
+      row.addEventListener("contextmenu", () => {
+        window.selection.goIdle();
+      });
+    }
+
+    // Update row height (not all platforms render the same way)
+    if (this.dataRows.length > 0) {
+      let rowHeight = this.dataRows[0].clientHeight;
+      if (rowHeight > 0 && rowHeight !== this.ROW_HEIGHT_PX) {
+        this.ROW_HEIGHT_PX = rowHeight;
+      }
+    }
+
+    // Update timestamps, scroll if removed from start
+    let newTimestamps = window.log.getTimestamps(this.fields, this.UUID);
+    let removedRows = this.timestamps.findIndex((timestamp) => timestamp === newTimestamps[0]);
+    this.TABLE_CONTAINER.scrollTop -= removedRows * this.ROW_HEIGHT_PX;
+    this.timestamps = newTimestamps;
+
+    // Update element heights
+    let dataRowStart: number;
+    let dataRowEnd: number;
+    if (this.timestamps.length < dataRowCount) {
+      this.dataRows.forEach((row, index) => {
+        row.hidden = index >= this.timestamps.length;
+      });
+      this.fillerUpper.style.height = "0px";
+      this.fillerLower.style.height = "0px";
+      dataRowStart = 0;
+      dataRowEnd = this.timestamps.length;
+    } else {
+      let scrollRow = Math.floor(this.TABLE_CONTAINER.scrollTop / this.ROW_HEIGHT_PX);
+      let fillerRowsUpper = 0;
+      if (scrollRow > this.DATA_ROW_BUFFER) {
+        fillerRowsUpper = scrollRow - this.DATA_ROW_BUFFER;
+      }
+      if (fillerRowsUpper + dataRowCount > this.timestamps.length) {
+        fillerRowsUpper = this.timestamps.length - dataRowCount;
+      }
+      let fillerRowsLower = this.timestamps.length - dataRowCount - fillerRowsUpper;
+      let scrollTop = this.TABLE_CONTAINER.scrollTop;
+      this.fillerUpper.style.height = (fillerRowsUpper * this.ROW_HEIGHT_PX).toString() + "px";
+      this.fillerLower.style.height = (fillerRowsLower * this.ROW_HEIGHT_PX).toString() + "px";
+      this.dataRows.forEach((row) => {
+        row.hidden = false;
+      });
+      this.TABLE_CONTAINER.scrollTop = scrollTop;
+      dataRowStart = fillerRowsUpper;
+      dataRowEnd = fillerRowsUpper + dataRowCount;
+    }
+
+    // Get cell text
+    let cellText: string[][] = [];
+    this.dataRowTimestamps = [];
+    for (let i = dataRowStart; i < dataRowEnd; i++) {
+      this.dataRowTimestamps.push(this.timestamps[i]);
+      cellText.push([formatTimeWithMS(this.timestamps[i])]);
+    }
+    let availableFields = window.log.getFieldKeys();
+    this.fields.forEach((field) => {
+      if (!availableFields.includes(field)) {
+        for (let i = dataRowStart; i < dataRowEnd; i++) {
+          cellText[i - dataRowStart].push("null");
+        }
+        return;
+      }
+      let data = window.log.getRange(
+        field,
+        this.timestamps[dataRowStart],
+        this.timestamps[dataRowEnd]
+      ) as LogValueSetAny;
+      for (let i = dataRowStart; i < dataRowEnd; i++) {
+        let nextIndex = data.timestamps.findIndex((value) => value > this.timestamps[i]);
+        if (nextIndex === -1) nextIndex = data?.timestamps.length;
+        if (nextIndex === 0) {
+          cellText[i - dataRowStart].push("null");
+        } else {
+          cellText[i - dataRowStart].push(getLogValueText(data.values[nextIndex - 1], window.log.getType(field)!));
+        }
+      }
+    });
+
+    // Update elements
+    this.dataRows.forEach((row, rowIndex) => {
+      if (rowIndex >= cellText.length) return;
+      let cellCount = cellText[rowIndex].length;
+      while (row.children.length > cellCount) {
+        row.removeChild(row.lastChild!);
+      }
+      while (row.children.length < cellCount) {
+        row.appendChild(document.createElement("td"));
+      }
+      cellText[rowIndex].forEach((text, cellIndex) => {
+        let cell = row.children[cellIndex] as HTMLElement;
+        if (cell.innerText !== text) {
+          cell.innerText = text;
+        }
+      });
+    });
+
+    // Scroll automatically based on selection mode
+    switch (window.selection.getMode()) {
+      case SelectionMode.Static:
+        if (this.lastSelectionMode == SelectionMode.Locked) {
+          this.scrollToSelectedNext = true;
+        }
+        break;
+      case SelectionMode.Playback:
+        this.scrollToSelected();
+        break;
+      case SelectionMode.Locked:
+        this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
+        break;
+    }
+    if (this.scrollToSelectedNext) {
+      this.scrollToSelectedNext = false;
+      this.scrollToSelected();
+    }
+    this.lastSelectionMode = window.selection.getMode();
+
+    // Update selected & hovered times
+    let header = this.TABLE_BODY.firstElementChild as HTMLElement;
+    if (this.hoverCursorY !== null && this.hoverCursorY > header.getBoundingClientRect().bottom) {
+      this.dataRows.forEach((row, index) => {
+        let rect = row.getBoundingClientRect();
+        if (this.hoverCursorY! >= rect.top && this.hoverCursorY! < rect.bottom) {
+          window.selection.setHoveredTime(this.dataRowTimestamps[index]);
+        }
+      });
+    } else {
+      window.selection.setHoveredTime(null);
+    }
     this.updateHighlights();
     let selectedTime = window.selection.getSelectedTime();
     let placeholder = selectedTime === null ? 0 : selectedTime;
     this.INPUT_FIELD.placeholder = formatTimeWithMS(placeholder);
-
-    // Stop if no data
-    if (this.timestamps.length === 0) return;
-
-    let atMaxRows = this.currentRange[1] - this.currentRange[0] + 1 >= this.MAX_ROWS;
-    let rowOffset = 0;
-    if (!atMaxRows) {
-      // If not enough rows, add any that are missing
-      if (this.timestamps.length > 0) {
-        rowOffset = this.timestamps.length - this.currentRange[1] - 1;
-      }
-    } else if (window.selection.getMode() === SelectionMode.Locked) {
-      // Always go to the latest data
-      rowOffset = this.timestamps.length - 1 - this.currentRange[1];
-    } else {
-      // Determine if rows need to be updated based on scroll
-      let offsetPx = 0;
-      if (this.TABLE_CONTAINER.scrollTop < this.SCROLL_MARGIN_PX && this.currentRange[0] > 0) {
-        offsetPx = this.TABLE_CONTAINER.scrollTop - this.SCROLL_MARGIN_PX;
-      }
-      if (
-        this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight - this.TABLE_CONTAINER.scrollTop <
-          this.SCROLL_MARGIN_PX &&
-        this.currentRange[1] < this.timestamps.length - 1
-      ) {
-        offsetPx =
-          this.SCROLL_MARGIN_PX -
-          (this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight - this.TABLE_CONTAINER.scrollTop);
-      }
-      rowOffset = Math.floor(offsetPx / this.ROW_HEIGHT_PX);
-    }
-
-    // Update rows
-    if (rowOffset !== 0) {
-      if (this.currentRange[0] + rowOffset < 0) rowOffset = -this.currentRange[0];
-      if (this.currentRange[1] + rowOffset > this.timestamps.length - 1) {
-        rowOffset = this.timestamps.length - 1 - this.currentRange[1];
-      }
-      if (atMaxRows) {
-        // Offset both sides if at row limit
-        this.currentRange[0] += rowOffset;
-        this.currentRange[1] += rowOffset;
-      } else if (rowOffset < 0) {
-        // Add to min range to extend
-        this.currentRange[0] += rowOffset;
-      } else if (rowOffset > 0) {
-        // Add to max range to extend
-        this.currentRange[1] += rowOffset;
-      }
-      if (rowOffset < 0) {
-        let limitedRowOffset = rowOffset < -this.MAX_ROWS ? -this.MAX_ROWS : rowOffset;
-        if (atMaxRows) {
-          for (let i = 0; i < limitedRowOffset * -1; i++) {
-            this.TABLE_BODY.removeChild(this.TABLE_BODY.lastElementChild as HTMLElement);
-          }
-        }
-        this.fillRange([this.currentRange[0], this.currentRange[0] - limitedRowOffset - 1], true);
-      }
-      if (rowOffset > 0) {
-        let limitedRowOffset = rowOffset > this.MAX_ROWS ? this.MAX_ROWS : rowOffset;
-        if (atMaxRows) {
-          for (let i = 0; i < limitedRowOffset; i++) {
-            this.TABLE_BODY.removeChild(this.TABLE_BODY.children[1]);
-          }
-        }
-        this.fillRange([this.currentRange[1] - limitedRowOffset + 1, this.currentRange[1]], false);
-      }
-    }
-
-    // Scroll to bottom if locked
-    if (window.selection.getMode() === SelectionMode.Locked) {
-      this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
-    }
   }
 }
