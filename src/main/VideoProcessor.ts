@@ -367,7 +367,14 @@ export class VideoProcessor {
       process.kill();
     });
     if (fs.existsSync(VIDEO_CACHE)) {
-      fs.rmSync(VIDEO_CACHE, { recursive: true });
+      try {
+        fs.rmSync(VIDEO_CACHE, { recursive: true });
+      } catch {
+        // ffmpeg might not have shut down completely, and "rmSync" will
+        // sometimes throw an exception if files are still being written.
+        // Fail silently instead of crashing since the OS will clear the
+        // few remaining images automatically (or we will on the next shutdown).
+      }
     }
   }
 
