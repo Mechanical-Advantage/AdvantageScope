@@ -141,20 +141,22 @@ export default abstract class TimelineVizController implements TabController {
         let rect = field.element.getBoundingClientRect();
         let active =
           dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-        let logType = window.log.getType(dragData.data.fields[0]);
-        let specialType = window.log.getSpecialType(dragData.data.fields[0]);
-        let validLogType = logType !== null && field.types.includes(logType);
-        let validSpecialType = specialType !== null && field.types.includes(specialType);
-        let validType = validLogType || validSpecialType;
+        let anyValidType = false;
+        dragData.data.fields.forEach((dragField: string, dragFieldIndex: number) => {
+          if (configIndex === 0 && anyValidType) return; // Single field and valid field already found
+          let logType = window.log.getType(dragField);
+          let specialType = window.log.getSpecialType(dragField);
+          let validLogType = logType !== null && field.types.includes(logType);
+          let validSpecialType = specialType !== null && field.types.includes(specialType);
+          let validType = validLogType || validSpecialType;
+          anyValidType = anyValidType || validType;
 
-        if (active && validType) {
-          if (dragData.end) {
-            let key = dragData.data.fields[0];
+          if (active && validType && dragData.end) {
             if (configIndex === 0) {
               // Single field
               let typeIndex = this.fieldConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
               this.fields[index] = {
-                key: key,
+                key: dragField,
                 sourceTypeIndex: typeIndex,
                 sourceType: this.fieldConfig[index].types[typeIndex]
               };
@@ -168,11 +170,15 @@ export default abstract class TimelineVizController implements TabController {
               if (availableOptions.length === 0) availableOptions.push(this.listConfig[index].options[typeIndex][0]);
               this.listFields[index].push({
                 type: availableOptions[0],
-                key: key,
+                key: dragField,
                 sourceTypeIndex: typeIndex,
                 sourceType: this.listConfig[index].types[typeIndex]
               });
             }
+          }
+        });
+        if (active && anyValidType) {
+          if (dragData.end) {
             this.updateFields();
             if (configIndex === 1) {
               // List field, scroll to bottom
