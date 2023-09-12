@@ -40,7 +40,7 @@ export default class LogField {
 
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(timestamp: number) {
-    while (this.data.timestamps.length >= 2 && this.data.timestamps[1] <= timestamp) {
+    while (this.data.timestamps.length >= 2 && this.data.timestamps[1] < timestamp) {
       this.data.timestamps.shift();
       this.data.values.shift();
       this.stripingReference = !this.stripingReference;
