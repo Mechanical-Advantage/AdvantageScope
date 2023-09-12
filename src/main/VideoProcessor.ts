@@ -180,7 +180,7 @@ export class VideoProcessor {
                 title: "Error",
                 message: "YouTube download failed",
                 detail:
-                  "There was an error while trying to open the YouTube video. Please choose a local video file instead. Check the AdvantageScope video tab documentation for more information.",
+                  "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
                 icon: WINDOW_ICON
               });
             });
@@ -198,7 +198,7 @@ export class VideoProcessor {
                   title: "Error",
                   message: "YouTube download failed",
                   detail:
-                    "There was an error while trying to open the match video from YouTube. Please choose a local video file instead. Check the AdvantageScope video tab documentation for more information.",
+                    "There was an error while trying to open the match video from YouTube. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
                   icon: WINDOW_ICON
                 });
               });
@@ -367,7 +367,14 @@ export class VideoProcessor {
       process.kill();
     });
     if (fs.existsSync(VIDEO_CACHE)) {
-      fs.rmSync(VIDEO_CACHE, { recursive: true });
+      try {
+        fs.rmSync(VIDEO_CACHE, { recursive: true });
+      } catch {
+        // ffmpeg might not have shut down completely, and "rmSync" will
+        // sometimes throw an exception if files are still being written.
+        // Fail silently instead of crashing since the OS will clear the
+        // few remaining images automatically (or we will on the next shutdown).
+      }
     }
   }
 

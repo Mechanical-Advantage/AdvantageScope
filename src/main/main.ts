@@ -409,7 +409,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "ask-3d-camera":
-      select3DCameraPopup(window, message.data.options, message.data.selectedIndex);
+      select3DCameraPopup(window, message.data.options, message.data.selectedIndex, message.data.fov);
       break;
 
     case "prompt-export":
@@ -493,7 +493,7 @@ function newTabPopup(window: BrowserWindow) {
   });
 }
 
-function select3DCameraPopup(window: BrowserWindow, options: string[], selectedIndex: number) {
+function select3DCameraPopup(window: BrowserWindow, options: string[], selectedIndex: number, fov: number) {
   const cameraMenu = new Menu();
   cameraMenu.append(
     new MenuItem({
@@ -512,6 +512,16 @@ function select3DCameraPopup(window: BrowserWindow, options: string[], selectedI
       checked: selectedIndex === -2,
       click() {
         sendMessage(window, "set-3d-camera", -2);
+      }
+    })
+  );
+  cameraMenu.append(
+    new MenuItem({
+      label: "Orbit FOV...",
+      click() {
+        createEditFovWindow(window, fov, (newFov) => {
+          sendMessage(window, "edit-fov", newFov);
+        });
       }
     })
   );
@@ -1257,7 +1267,8 @@ function createHubWindow() {
     icon: WINDOW_ICON,
     show: false,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
+      preload: path.join(__dirname, "preload.js"),
+      backgroundThrottling: false
     }
   };
 
@@ -1445,7 +1456,7 @@ function createUnitConversionWindow(
  * Creates a new window to edit a tab name.
  * @param parentWindow The parent window to use for alignment
  * @param name Name to use.
- * @param callback Window Callback.
+ * @param callback Window callback.
  */
 function createRenameTabWindow(
   parentWindow: Electron.BrowserWindow,
@@ -1483,6 +1494,46 @@ function createRenameTabWindow(
     port2.start();
   });
   renameTabWindow.loadFile(path.join(__dirname, "../www/renameTab.html"));
+}
+
+/**
+ * Creates a new window to edit the 3D field FOV.
+ * @param parentWindow The parent window to use for alignment
+ * @param fov Current FOV.
+ * @param callback Window callback.
+ */
+function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, callback: (newFov: number) => void) {
+  const editFovWindow = new BrowserWindow({
+    width: 300,
+    height: process.platform === "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    useContentSize: true,
+    resizable: false,
+    icon: WINDOW_ICON,
+    show: false,
+    parent: parentWindow,
+    modal: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  editFovWindow.setMenu(null);
+  editFovWindow.once("ready-to-show", parentWindow.show);
+  editFovWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    const { port1, port2 } = new MessageChannelMain();
+    editFovWindow.webContents.postMessage("port", null, [port1]);
+    port2.postMessage(fov);
+    port2.on("message", (event) => {
+      editFovWindow.destroy();
+      callback(event.data);
+    });
+    editFovWindow.on("blur", () => port2.postMessage({ isFocused: false }));
+    editFovWindow.on("focus", () => port2.postMessage({ isFocused: true }));
+    port2.start();
+  });
+  editFovWindow.loadFile(path.join(__dirname, "../www/editFov.html"));
 }
 
 /**
@@ -1605,7 +1656,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
           break;
 
         case "ask-3d-camera":
-          select3DCameraPopup(satellite, message.data.options, message.data.selectedIndex);
+          select3DCameraPopup(satellite, message.data.options, message.data.selectedIndex, message.data.fov);
           break;
       }
     });
@@ -1641,7 +1692,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = process.platform === "win32" ? 330 : 270; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform === "win32" ? 357 : 297; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,

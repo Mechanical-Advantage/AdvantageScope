@@ -10,11 +10,11 @@ export default class NT4Source extends LiveDataSource {
   private AKIT_PREFIX = "/AdvantageKit";
 
   private akitMode: boolean;
-  private log: Log | null = null;
   private client: NT4_Client | null = null;
 
   private shouldRunOutputCallback = false;
   private connectTime: number | null = null;
+  private periodicCallback: NodeJS.Timeout | null = null;
   private noFieldsTimeout: NodeJS.Timeout | null = null;
   private loggingSubscription: number | null = null;
   private lowBandwidthTopicSubscription: number | null = null;
@@ -25,11 +25,11 @@ export default class NT4Source extends LiveDataSource {
     super();
     this.akitMode = akitMode;
 
-    setInterval(() => {
+    this.periodicCallback = setInterval(() => {
       // Update timestamp range based on connection time
       if (this.client !== null && this.connectTime !== null) {
         let connectServerTime = this.client.getServerTime_us(this.connectTime);
-        if (connectServerTime !== null) window.log.updateTimestampRange(connectServerTime / 1000000);
+        if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
       }
 
       // Update subscriptions
@@ -173,8 +173,7 @@ export default class NT4Source extends LiveDataSource {
           if (!this.log || !this.client) return;
 
           let key = this.getKeyFromTopic(topic);
-          let connectServerTime = this.connectTime === null ? null : this.client.getServerTime_us(this.connectTime);
-          let timestamp = Math.max(timestamp_us, connectServerTime === null ? 0 : connectServerTime) / 1000000;
+          let timestamp = Math.max(timestamp_us, this.log.getTimestampRange()[0]) / 1000000;
 
           let updated = false;
           switch (topic.type) {
@@ -308,6 +307,7 @@ export default class NT4Source extends LiveDataSource {
   stop() {
     super.stop();
     this.client?.disconnect();
+    if (this.periodicCallback !== null) clearInterval(this.periodicCallback);
   }
 
   /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */

@@ -1,11 +1,8 @@
-import { cleanFloat } from "./shared/util";
-
-const MIN_INPUT = document.getElementById("min") as HTMLInputElement;
-const MAX_INPUT = document.getElementById("max") as HTMLInputElement;
-const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
-const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
-
 window.addEventListener("message", (event) => {
+  const FOV_INPUT = document.getElementById("fov") as HTMLInputElement;
+  const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
+  const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
+
   if (event.source === window && event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
@@ -22,27 +19,21 @@ window.addEventListener("message", (event) => {
       }
 
       // Normal message
-      let range: [number, number] = event.data;
+      let oldValue: number = event.data;
 
       // Update values
-      MIN_INPUT.value = cleanFloat(range[0]).toString();
-      MAX_INPUT.value = cleanFloat(range[1]).toString();
-      MAX_INPUT.select();
+      FOV_INPUT.value = oldValue.toString();
+      FOV_INPUT.select();
 
       // Close function
       function confirm() {
-        let min = Number(MIN_INPUT.value);
-        let max = Number(MAX_INPUT.value);
-        if (min >= max) {
-          alert("Maximum must be greater than minimum.");
-        } else {
-          messagePort.postMessage([min, max]);
-        }
+        let value = Number(FOV_INPUT.value);
+        messagePort.postMessage(isNaN(value) ? oldValue : value);
       }
 
       // Set up exit triggers
       EXIT_BUTTON.addEventListener("click", () => {
-        messagePort.postMessage(range);
+        messagePort.postMessage(oldValue);
       });
       CONFIRM_BUTTON.addEventListener("click", confirm);
       window.addEventListener("keydown", (event) => {

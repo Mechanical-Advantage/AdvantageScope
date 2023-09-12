@@ -30,6 +30,7 @@ import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVis
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
+  private TRAJECTORY_MAX_LENGTH = 40;
   private static POSE_3D_TYPES = [
     "Robot",
     "Green Ghost",
@@ -70,6 +71,9 @@ export default class ThreeDimensionController extends TimelineVizController {
   private ROBOT_SOURCE_LINK: HTMLInputElement;
   private UNIT_DISTANCE: HTMLInputElement;
   private UNIT_ROTATION: HTMLInputElement;
+
+  private lastCameraIndex = -1;
+  private lastFov = 50;
 
   constructor(content: HTMLElement) {
     let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
@@ -226,7 +230,9 @@ export default class ThreeDimensionController extends TimelineVizController {
       alliance: this.ALLIANCE.value,
       robot: this.ROBOT.value,
       unitDistance: this.UNIT_DISTANCE.value,
-      unitRotation: this.UNIT_ROTATION.value
+      unitRotation: this.UNIT_ROTATION.value,
+      cameraIndex: this.lastCameraIndex,
+      fov: this.lastFov
     };
   }
 
@@ -238,6 +244,8 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.UNIT_DISTANCE.value = options.unitDistance;
     this.UNIT_ROTATION.value = options.unitRotation;
     this.updateFieldRobotExtraControls();
+    this.set3DCamera(options.cameraIndex);
+    this.setFov(options.fov);
   }
 
   newAssets() {
@@ -246,7 +254,14 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   /** Switches the selected camera for the main visualizer. */
   set3DCamera(index: number) {
+    this.lastCameraIndex = index;
     (this.visualizer as ThreeDimensionVisualizer).set3DCamera(index);
+  }
+
+  /** Switches the orbit FOV for the main visualizer. */
+  setFov(fov: number) {
+    this.lastFov = fov;
+    (this.visualizer as ThreeDimensionVisualizer).setFov(fov);
   }
 
   getAdditionalActiveFields(): string[] {
@@ -477,6 +492,25 @@ export default class ThreeDimensionController extends TimelineVizController {
         if (cleanId >= 0 && cleanId <= 29) {
           aprilTagData[index].id = cleanId;
         }
+      }
+    });
+
+    // Clean up trajectories (filter empty & resample)
+    trajectoryData = trajectoryData.filter((trajectory) => trajectory.length > 0);
+    trajectoryData = trajectoryData.map((trajectory) => {
+      if (trajectory.length < this.TRAJECTORY_MAX_LENGTH) {
+        return trajectory;
+      } else {
+        let newTrajectory: Pose3d[] = [];
+        let lastSourceIndex = -1;
+        for (let i = 0; i < this.TRAJECTORY_MAX_LENGTH; i++) {
+          let sourceIndex = Math.round((i / (this.TRAJECTORY_MAX_LENGTH - 1)) * (trajectory.length - 1));
+          if (sourceIndex !== lastSourceIndex) {
+            lastSourceIndex = sourceIndex;
+            newTrajectory.push(trajectory[sourceIndex]);
+          }
+        }
+        return newTrajectory;
       }
     });
 

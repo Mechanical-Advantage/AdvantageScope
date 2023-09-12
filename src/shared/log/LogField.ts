@@ -17,6 +17,9 @@ export default class LogField {
   private data: LogValueSetAny = { timestamps: [], values: [] };
   public specialType: string | null = null;
 
+  // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
+  private stripingReference = false;
+
   constructor(type: LoggableType) {
     this.type = type;
   }
@@ -26,9 +29,23 @@ export default class LogField {
     return this.type;
   }
 
+  /** Returns the value of the striping reference. */
+  getStripingReference(): boolean {
+    return this.stripingReference;
+  }
+
   /** Returns the full set of ordered timestamps. */
   getTimestamps(): number[] {
     return this.data.timestamps;
+  }
+
+  /** Clears all data before the provided timestamp. */
+  clearBeforeTime(timestamp: number) {
+    while (this.data.timestamps.length >= 2 && this.data.timestamps[1] < timestamp) {
+      this.data.timestamps.shift();
+      this.data.values.shift();
+      this.stripingReference = !this.stripingReference;
+    }
   }
 
   /** Returns the values in the specified timestamp range. */
@@ -171,7 +188,8 @@ export default class LogField {
       type: this.type,
       timestamps: this.data.timestamps,
       values: this.data.values,
-      schemaType: this.specialType
+      specialType: this.specialType,
+      stripingReference: this.stripingReference
     };
   }
 
@@ -182,7 +200,8 @@ export default class LogField {
       timestamps: serializedData.timestamps,
       values: serializedData.values
     };
-    field.specialType = serializedData.schemaType;
+    field.specialType = serializedData.specialType;
+    field.stripingReference = serializedData.stripingReference;
     return field;
   }
 }

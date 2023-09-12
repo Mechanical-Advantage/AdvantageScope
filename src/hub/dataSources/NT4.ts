@@ -94,6 +94,7 @@ export class NT4_Client {
 
   private serverBaseAddr;
   private ws: WebSocket | null = null;
+  private timestampInterval: NodeJS.Timeout | null = null;
   private serverAddr = "";
   private serverConnectionActive = false;
   private serverConnectionRequested = false;
@@ -134,16 +135,6 @@ export class NT4_Client {
     this.onNewTopicData = onNewTopicData;
     this.onConnect = onConnect;
     this.onDisconnect = onDisconnect;
-
-    setInterval(() => {
-      // Update timestamp
-      this.ws_sendTimestamp();
-
-      // Log bitrate
-      let bitrateKbPerSec = ((this.rxLengthCounter / 1000) * 8) / 5;
-      this.rxLengthCounter = 0;
-      console.log("[NT4] Bitrate: " + Math.round(bitrateKbPerSec).toString() + " kb/s");
-    }, 5000);
   }
 
   //////////////////////////////////////////////////////////////
@@ -154,6 +145,15 @@ export class NT4_Client {
     if (!this.serverConnectionRequested) {
       this.serverConnectionRequested = true;
       this.ws_connect();
+      this.timestampInterval = setInterval(() => {
+        // Update timestamp
+        this.ws_sendTimestamp();
+
+        // Log bitrate
+        let bitrateKbPerSec = ((this.rxLengthCounter / 1000) * 8) / 5;
+        this.rxLengthCounter = 0;
+        console.log("[NT4] Bitrate: " + Math.round(bitrateKbPerSec).toString() + " kb/s");
+      }, 5000);
     }
   }
 
@@ -163,6 +163,9 @@ export class NT4_Client {
       this.serverConnectionRequested = false;
       if (this.serverConnectionActive && this.ws) {
         this.ws.close();
+      }
+      if (this.timestampInterval !== null) {
+        clearInterval(this.timestampInterval);
       }
     }
   }

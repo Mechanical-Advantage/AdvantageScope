@@ -2,7 +2,7 @@ import { TimelineVisualizerState } from "../../shared/HubState";
 import LoggableType from "../../shared/log/LoggableType";
 import { getEnabledData } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
-import { arraysEqual, createUUID, scaleValue } from "../../shared/util";
+import { arraysEqual, clampValue, createUUID, scaleValue } from "../../shared/util";
 import Visualizer from "../../shared/visualizers/Visualizer";
 import { SelectionMode } from "../Selection";
 import TabController from "../TabController";
@@ -363,6 +363,8 @@ export default abstract class TimelineVizController implements TabController {
             0,
             100 - (i === enabledData.values.length - 1 ? 0 : marginPercent)
           ]);
+          leftPercent = clampValue(leftPercent, 0, 100);
+          rightPercent = clampValue(rightPercent, 0, 100);
           let widthPercent = rightPercent - leftPercent;
           div.style.left = leftPercent.toString() + "%";
           div.style.width = widthPercent.toString() + "%";

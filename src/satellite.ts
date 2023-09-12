@@ -125,6 +125,12 @@ window.addEventListener("message", (event) => {
           }
           break;
 
+        case "edit-fov":
+          if (type === TabType.ThreeDimension) {
+            (visualizer as ThreeDimensionVisualizer).setFov(message.data);
+          }
+          break;
+
         default:
           console.warn("Unknown message from main process", message);
           break;

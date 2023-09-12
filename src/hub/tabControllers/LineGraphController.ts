@@ -853,6 +853,7 @@ export default class LineGraphController implements TabController {
       let data = dataCache[field.key];
 
       let isDark = window.log.getTimestamps([field.key]).indexOf(data.timestamps[0]) % 2 === 0;
+      isDark = isDark !== window.log.getStripingReference(field.key);
       for (let i = 0; i < data.timestamps.length; i++) {
         let startX = scaleValue(data.timestamps[i], this.timestampRange, [graphLeft, graphLeft + graphWidth]);
         let endX: number;
