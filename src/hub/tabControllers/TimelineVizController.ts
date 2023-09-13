@@ -21,7 +21,12 @@ export default abstract class TimelineVizController implements TabController {
   private title: string = "";
   private fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[];
   private fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[] = [];
-  private listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[];
+  private listConfig: {
+    element: HTMLElement;
+    types: (LoggableType | string)[];
+    options: string[][];
+    autoAdvanceOptions?: boolean[];
+  }[];
   private listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][] =
     [];
   private lastListFieldsStr: string = "";
@@ -33,7 +38,12 @@ export default abstract class TimelineVizController implements TabController {
     content: HTMLElement,
     type: TabType,
     fieldConfig: { element: HTMLElement; types: (LoggableType | string)[] }[],
-    listConfig: { element: HTMLElement; types: (LoggableType | string)[]; options: string[][] }[],
+    listConfig: {
+      element: HTMLElement;
+      types: (LoggableType | string)[];
+      options: string[][];
+      autoAdvanceOptions?: boolean[];
+    }[],
     visualizer: Visualizer
   ) {
     this.CONTENT = content;
@@ -164,10 +174,16 @@ export default abstract class TimelineVizController implements TabController {
               // List field
               let selectedOptions = this.listFields[index].map((field) => field.type);
               let typeIndex = this.listConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
-              let availableOptions = this.listConfig[index].options[typeIndex].filter(
-                (option) => !selectedOptions.includes(option)
-              );
-              if (availableOptions.length === 0) availableOptions.push(this.listConfig[index].options[typeIndex][0]);
+              let availableOptions = this.listConfig[index].options[typeIndex];
+              if (
+                this.listConfig[index].autoAdvanceOptions === undefined ||
+                this.listConfig[index].autoAdvanceOptions![typeIndex]
+              ) {
+                availableOptions = availableOptions.filter((option) => !selectedOptions.includes(option));
+                if (availableOptions.length === 0) {
+                  availableOptions.push(this.listConfig[index].options[typeIndex][0]);
+                }
+              }
               this.listFields[index].push({
                 type: availableOptions[0],
                 key: dragField,

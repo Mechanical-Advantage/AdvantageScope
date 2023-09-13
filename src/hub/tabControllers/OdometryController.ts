@@ -9,15 +9,16 @@ import {
   logReadTranslation2dArrayToPose2dArray,
   logReadTranslation2dToPose2d
 } from "../../shared/geometry";
-import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance } from "../../shared/log/LogUtil";
+import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance, getOrDefault } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { convert } from "../../shared/units";
+import { scaleValue } from "../../shared/util";
 import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class OdometryController extends TimelineVizController {
-  private HEATMAP_DT = 0.1;
-  private TRAIL_DT = 0.05;
+  private static HEATMAP_DT = 0.25;
+  private static TRAIL_LENGTH_SECS = 3;
   private static POSE_TYPES = [
     "Robot",
     "Ghost",
@@ -41,7 +42,6 @@ export default class OdometryController extends TimelineVizController {
   private ALLIANCE_ORIGIN: HTMLInputElement;
   private ORIENTATION: HTMLInputElement;
 
-  private TRAIL_LENGTH_SECS = 5;
   private lastUnitDistance = "meters";
 
   constructor(content: HTMLElement) {
@@ -61,7 +61,8 @@ export default class OdometryController extends TimelineVizController {
             "Transform2d[]",
             "Translation2d",
             "Translation2d[]",
-            "Trajectory"
+            "Trajectory",
+            "ZebraTranslation"
           ],
           options: [
             OdometryController.POSE_TYPES, // NumberArray
@@ -71,8 +72,10 @@ export default class OdometryController extends TimelineVizController {
             OdometryController.POSE_TYPES, // Transform2d[]
             ["Vision Target", "Heatmap", "Heatmap (Enabled)"], // Translation2d
             ["Trajectory", "Vision Target", "Heatmap", "Heatmap (Enabled)"], // Translation2d[]
-            ["Trajectory"] // Trajectory
-          ]
+            ["Trajectory"], // Trajectory
+            ["Zebra Marker", "Ghost"] // ZebraTranslation
+          ],
+          autoAdvanceOptions: [true, true, true, true, true, true, true, true, false]
         }
       ],
       new OdometryVisualizer(
@@ -238,6 +241,9 @@ export default class OdometryController extends TimelineVizController {
     let arrowFrontData: Pose2d[] = [];
     let arrowCenterData: Pose2d[] = [];
     let arrowBackData: Pose2d[] = [];
+    let zebraData: { [key: string]: { translation: Translation2d; alliance: string } } = {};
+    let zebraGhostDataTranslations: Translation2d[] = [];
+    let zebraGhostData: Pose2d[] = [];
     this.getListFields()[0].forEach((field) => {
       switch (field.type) {
         case "Robot":
@@ -247,7 +253,9 @@ export default class OdometryController extends TimelineVizController {
           // Get trails
           let timestamps = window.log
             .getTimestamps([field.key], this.UUID)
-            .filter((x) => x > time - this.TRAIL_LENGTH_SECS && x < time + this.TRAIL_LENGTH_SECS);
+            .filter(
+              (x) => x > time - OdometryController.TRAIL_LENGTH_SECS && x < time + OdometryController.TRAIL_LENGTH_SECS
+            );
           let trailsTemp: Translation2d[][] = currentRobotData.map(() => []);
           if (field.sourceType === LoggableType.NumberArray) {
             timestamps.forEach((trailTime) => {
@@ -282,7 +290,35 @@ export default class OdometryController extends TimelineVizController {
           trailData = trailData.concat(trailsTemp);
           break;
         case "Ghost":
-          ghostData = ghostData.concat(getCurrentValue(field.key, field.sourceType));
+          if (field.sourceType !== "ZebraTranslation") {
+            ghostData = ghostData.concat(getCurrentValue(field.key, field.sourceType));
+          } else {
+            let x: number | null = null;
+            let y: number | null = null;
+            {
+              let xData = window.log.getNumber(field.key + "/x", time, time);
+              if (xData !== undefined && xData.values.length > 0) {
+                if (xData.values.length === 1) {
+                  x = xData.values[0];
+                } else {
+                  x = scaleValue(time, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
+                }
+              }
+            }
+            {
+              let yData = window.log.getNumber(field.key + "/y", time, time);
+              if (yData !== undefined && yData.values.length > 0) {
+                if (yData.values.length === 1) {
+                  y = yData.values[0];
+                } else {
+                  y = scaleValue(time, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
+                }
+              }
+            }
+            if (x !== null && y !== null) {
+              zebraGhostDataTranslations.push([convert(x, "feet", "meters"), convert(y, "feet", "meters")]);
+            }
+          }
           break;
         case "Trajectory":
           trajectoryData.push(getCurrentValue(field.key, field.sourceType));
@@ -306,7 +342,7 @@ export default class OdometryController extends TimelineVizController {
             for (
               let sampleTime = window.log.getTimestampRange()[0];
               sampleTime < window.log.getTimestampRange()[1];
-              sampleTime += this.HEATMAP_DT
+              sampleTime += OdometryController.HEATMAP_DT
             ) {
               if (!isEnabled(sampleTime)) continue;
               let poses = logReadNumberArrayToPose2dArray(
@@ -324,7 +360,7 @@ export default class OdometryController extends TimelineVizController {
             for (
               let sampleTime = window.log.getTimestampRange()[0];
               sampleTime < window.log.getTimestampRange()[1];
-              sampleTime += this.HEATMAP_DT
+              sampleTime += OdometryController.HEATMAP_DT
             ) {
               if (!isEnabled(sampleTime)) continue;
               let poses = field.sourceType.startsWith("Translation")
@@ -338,7 +374,7 @@ export default class OdometryController extends TimelineVizController {
             for (
               let sampleTime = window.log.getTimestampRange()[0];
               sampleTime < window.log.getTimestampRange()[1];
-              sampleTime += this.HEATMAP_DT
+              sampleTime += OdometryController.HEATMAP_DT
             ) {
               if (!isEnabled(sampleTime)) continue;
               let pose = field.sourceType.startsWith("Translation")
@@ -358,6 +394,38 @@ export default class OdometryController extends TimelineVizController {
           break;
         case "Arrow (Back)":
           arrowBackData = arrowBackData.concat(getCurrentValue(field.key, field.sourceType));
+          break;
+        case "Zebra Marker":
+          let team = field.key.split("FRC")[1];
+          let x: number | null = null;
+          let y: number | null = null;
+          {
+            let xData = window.log.getNumber(field.key + "/x", time, time);
+            if (xData !== undefined && xData.values.length > 0) {
+              if (xData.values.length === 1) {
+                x = xData.values[0];
+              } else {
+                x = scaleValue(time, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
+              }
+            }
+          }
+          {
+            let yData = window.log.getNumber(field.key + "/y", time, time);
+            if (yData !== undefined && yData.values.length > 0) {
+              if (yData.values.length === 1) {
+                y = yData.values[0];
+              } else {
+                y = scaleValue(time, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
+              }
+            }
+          }
+          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, time, "blue");
+          if (x !== null && y !== null) {
+            zebraData[team] = {
+              translation: [convert(x, "feet", "meters"), convert(y, "feet", "meters")],
+              alliance: alliance
+            };
+          }
           break;
       }
     });
@@ -389,6 +457,22 @@ export default class OdometryController extends TimelineVizController {
         break;
     }
 
+    // Apply robot rotation to Zebra ghost translations
+    let robotRotation = 0;
+    if (robotData.length > 0) {
+      robotRotation = robotData[0].rotation;
+      if (!allianceRedOrigin) {
+        // Switch from blue to red origin to match translation
+        robotRotation += Math.PI;
+      }
+    }
+    zebraGhostDataTranslations.forEach((translation) => {
+      zebraGhostData.push({
+        translation: translation,
+        rotation: robotRotation
+      });
+    });
+
     // Package command data
     return {
       poses: {
@@ -400,7 +484,9 @@ export default class OdometryController extends TimelineVizController {
         heatmap: heatmapData,
         arrowFront: arrowFrontData,
         arrowCenter: arrowCenterData,
-        arrowBack: arrowBackData
+        arrowBack: arrowBackData,
+        zebraMarker: zebraData,
+        zebraGhost: zebraGhostData
       },
       options: this.options,
       allianceRedBumpers: allianceRedBumpers,

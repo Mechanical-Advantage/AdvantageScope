@@ -4,8 +4,9 @@ import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
 import ytdl from "ytdl-core";
-import MatchInfo, { MatchType, PlayoffType, getElimMatchString } from "../shared/MatchInfo";
+import MatchInfo from "../shared/MatchInfo";
 import Preferences from "../shared/Preferences";
+import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";
 import VideoSource from "../shared/VideoSource";
 import { createUUID } from "../shared/util";
 import { PREFS_FILENAME, VIDEO_CACHE, WINDOW_ICON } from "./Constants";
@@ -258,62 +259,14 @@ export class VideoProcessor {
     window: BrowserWindow,
     menuCoordinates: [number, number]
   ): Promise<string> {
-    // Get TBA API key]
-    let tbaApikey = (jsonfile.readFileSync(PREFS_FILENAME) as Preferences).tbaApiKey;
-    if (!tbaApikey) {
-      throw new Error();
-    }
-
-    // Get TBA event key (the robot only has the FIRST event key)
-    let tbaEventKey, tbaMatchKey: string;
-    {
-      let response = await fetch("https://www.thebluealliance.com/api/v3/events/" + matchInfo.year.toString(), {
-        method: "GET",
-        signal: AbortSignal.timeout(3000),
-        headers: [["X-TBA-Auth-Key", tbaApikey]]
-      });
-      if (!response.ok) {
-        throw new Error();
-      }
-      let allEvents = (await response.json()) as any[];
-      let event = allEvents.find(
-        (event) =>
-          event["first_event_code"] && event["first_event_code"].toLowerCase() === matchInfo.event.toLowerCase()
-      );
-      if (!event) throw new Error();
-      tbaEventKey = event["key"];
-    }
-
-    // Get match key
-    if (matchInfo.matchType === MatchType.Elimination) {
-      // Get playoff type for event
-      let response = await fetch("https://www.thebluealliance.com/api/v3/event/" + tbaEventKey, {
-        method: "GET",
-        signal: AbortSignal.timeout(3000),
-        headers: [["X-TBA-Auth-Key", tbaApikey]]
-      });
-      if (!response.ok) {
-        throw new Error();
-      }
-      let eventData = await response.json();
-      let playoffType = eventData["playoff_type"] as PlayoffType;
-      tbaMatchKey = tbaEventKey + "_" + getElimMatchString(playoffType, matchInfo.matchNumber);
-    } else {
-      tbaMatchKey = tbaEventKey + "_qm" + matchInfo.matchNumber.toString();
-    }
+    // Get TBA match key
+    let preferences = jsonfile.readFileSync(PREFS_FILENAME) as Preferences;
+    let tbaMatchKey = await getTBAMatchKey(matchInfo, preferences);
 
     // Get videos
     let videoKeys: string[] = [];
     {
-      let response = await fetch("https://www.thebluealliance.com/api/v3/match/" + tbaMatchKey, {
-        method: "GET",
-        signal: AbortSignal.timeout(3000),
-        headers: [["X-TBA-Auth-Key", tbaApikey]]
-      });
-      if (!response.ok) {
-        throw new Error();
-      }
-      let allData = await response.json();
+      let allData = await getTBAMatchInfo(tbaMatchKey, preferences);
       let videoData = allData["videos"] as { key: string; type: string }[];
       videoKeys = videoData.filter((video) => video.type === "youtube").map((video) => video.key);
     }

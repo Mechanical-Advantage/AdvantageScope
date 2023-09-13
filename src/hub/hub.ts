@@ -8,6 +8,7 @@ import Preferences from "../shared/Preferences";
 import { htmlEncode } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
+import loadZebra from "./dataSources/LoadZebra";
 import { NT4Publisher } from "./dataSources/NT4Publisher";
 import NT4Source from "./dataSources/NT4Source";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
@@ -477,6 +478,17 @@ function handleMainMessage(message: NamedMessage) {
 
     case "stop-publish":
       publisher?.stop();
+      break;
+
+    case "load-zebra":
+      setLoading(1);
+      loadZebra()
+        .then(() => {
+          setLoading(null);
+        })
+        .catch(() => {
+          setLoading(null);
+        });
       break;
 
     case "set-playback-speed":

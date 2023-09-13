@@ -886,6 +886,14 @@ function setupMenu() {
             openDownload(window);
           }
         },
+        {
+          label: "Load Zebra MotionWorks™",
+          accelerator: "Option+Z",
+          click(_, window) {
+            if (window === undefined) return;
+            sendMessage(window, "load-zebra");
+          }
+        },
         { type: "separator" },
         {
           label: "Use USB roboRIO Address",

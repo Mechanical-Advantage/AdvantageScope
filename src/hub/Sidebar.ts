@@ -3,6 +3,7 @@ import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
+import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
 
 export default class Sidebar {
   private SIDEBAR = document.getElementsByClassName("side-bar")[0] as HTMLElement;
@@ -32,7 +33,8 @@ export default class Sidebar {
     "messages",
     "systemTime",
     "DSLog",
-    "DSEvents"
+    "DSEvents",
+    ZEBRA_LOG_KEY
   ];
   private HIDDEN_KEYS = [".schema", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;

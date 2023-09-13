@@ -482,7 +482,7 @@ export default class Log {
     }
   }
 
-  /** Writies a protobuf-encoded raw value to the field.
+  /** Writes a protobuf-encoded raw value to the field.
    *
    * The schema type should not include "proto:" but should include
    * the full package (e.g. "wpi.proto.ProtobufPose2d")
@@ -514,6 +514,18 @@ export default class Log {
           this.fields[fullChildKey].specialType = schemaType;
         });
       }
+    }
+  }
+
+  /** Writes a coordinate with the "ZebraTranslation" special type. */
+  putZebraTranslation(key: string, timestamp: number, x: number, y: number, alliance: string) {
+    this.putNumber(key + "/x", timestamp, x);
+    this.putNumber(key + "/y", timestamp, y);
+    this.putString(key + "/alliance", timestamp, alliance);
+    if (!(key in this.fields)) {
+      this.createBlankField(key, LoggableType.Empty);
+      this.processTimestamp(key, timestamp);
+      this.fields[key].specialType = "ZebraTranslation";
     }
   }
 

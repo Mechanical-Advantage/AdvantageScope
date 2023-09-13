@@ -3,6 +3,7 @@ import { Pose2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
+import { typed } from "mathjs";
 
 export default class OdometryVisualizer implements Visualizer {
   private HEATMAP_GRID_SIZE = 0.1;
@@ -111,7 +112,7 @@ export default class OdometryVisualizer implements Visualizer {
     let pixelsPerInch = (canvasFieldHeight / gameData.heightInches + canvasFieldWidth / gameData.widthInches) / 2;
 
     // Convert translation to pixel coordinates
-    let calcCoordinates = (translation: Translation2d): [number, number] => {
+    let calcCoordinates = (translation: Translation2d, alwaysFlipped = false): [number, number] => {
       if (!gameData) return [0, 0];
       let positionInches = [convert(translation[0], "meters", "inches"), convert(translation[1], "meters", "inches")];
 
@@ -131,7 +132,7 @@ export default class OdometryVisualizer implements Visualizer {
         positionInches[0] * (canvasFieldWidth / gameData.widthInches),
         positionInches[1] * (canvasFieldHeight / gameData.heightInches)
       ];
-      if (objectsFlipped) {
+      if (objectsFlipped || alwaysFlipped) {
         positionPixels[0] = canvasFieldLeft + canvasFieldWidth - positionPixels[0];
         positionPixels[1] = canvasFieldTop + canvasFieldHeight - positionPixels[1];
       } else {
@@ -242,7 +243,6 @@ export default class OdometryVisualizer implements Visualizer {
     if (command.poses.robot.length > 0) {
       let robotPos = calcCoordinates(command.poses.robot[0].translation);
       command.poses.visionTarget.forEach((target: Pose2d) => {
-        let robotPose = command.poses.robot[0];
         context.strokeStyle = "lightgreen";
         context.lineWidth = 1 * pixelsPerInch; // 1 inch
         context.beginPath();
@@ -331,44 +331,47 @@ export default class OdometryVisualizer implements Visualizer {
     });
 
     // Draw ghosts
-    command.poses.ghost.forEach((robotPose: Pose2d) => {
-      let robotPos = calcCoordinates(robotPose.translation);
-      let rotation = robotPose.rotation;
-      if (objectsFlipped) rotation += Math.PI;
+    [command.poses.ghost as Pose2d[], command.poses.zebraGhost as Pose2d[]].forEach((ghostSet, index) => {
+      ghostSet.forEach((robotPose: Pose2d) => {
+        const forceFlipped = index === 1; // Zebra data always uses red origin
+        let robotPos = calcCoordinates(robotPose.translation, forceFlipped);
+        let rotation = robotPose.rotation;
+        if (objectsFlipped || forceFlipped) rotation += Math.PI;
 
-      context.globalAlpha = 0.5;
-      context.lineCap = "round";
-      context.lineJoin = "round";
-      context.fillStyle = "#222";
-      context.strokeStyle = command.allianceRedBumpers ? "red" : "blue";
-      context.lineWidth = 3 * pixelsPerInch;
-      let backLeft = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
-      let frontLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);
-      let frontRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * -0.5]);
-      let backRight = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * -0.5]);
-      context.beginPath();
-      context.moveTo(frontLeft[0], frontLeft[1]);
-      context.lineTo(frontRight[0], frontRight[1]);
-      context.lineTo(backRight[0], backRight[1]);
-      context.lineTo(backLeft[0], backLeft[1]);
-      context.closePath();
-      context.fill();
-      context.stroke();
+        context.globalAlpha = 0.5;
+        context.lineCap = "round";
+        context.lineJoin = "round";
+        context.fillStyle = "#222";
+        context.strokeStyle = command.allianceRedBumpers ? "red" : "blue";
+        context.lineWidth = 3 * pixelsPerInch;
+        let backLeft = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
+        let frontLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);
+        let frontRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * -0.5]);
+        let backRight = transformPx(robotPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * -0.5]);
+        context.beginPath();
+        context.moveTo(frontLeft[0], frontLeft[1]);
+        context.lineTo(frontRight[0], frontRight[1]);
+        context.lineTo(backRight[0], backRight[1]);
+        context.lineTo(backLeft[0], backLeft[1]);
+        context.closePath();
+        context.fill();
+        context.stroke();
 
-      context.strokeStyle = "white";
-      context.lineWidth = 1.5 * pixelsPerInch;
-      let arrowBack = transformPx(robotPos, rotation, [robotLengthPixels * -0.3, 0]);
-      let arrowFront = transformPx(robotPos, rotation, [robotLengthPixels * 0.3, 0]);
-      let arrowLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
-      let arrowRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * -0.15]);
-      context.beginPath();
-      context.moveTo(arrowBack[0], arrowBack[1]);
-      context.lineTo(arrowFront[0], arrowFront[1]);
-      context.lineTo(arrowLeft[0], arrowLeft[1]);
-      context.moveTo(arrowFront[0], arrowFront[1]);
-      context.lineTo(arrowRight[0], arrowRight[1]);
-      context.stroke();
-      context.globalAlpha = 1;
+        context.strokeStyle = "white";
+        context.lineWidth = 1.5 * pixelsPerInch;
+        let arrowBack = transformPx(robotPos, rotation, [robotLengthPixels * -0.3, 0]);
+        let arrowFront = transformPx(robotPos, rotation, [robotLengthPixels * 0.3, 0]);
+        let arrowLeft = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
+        let arrowRight = transformPx(robotPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * -0.15]);
+        context.beginPath();
+        context.moveTo(arrowBack[0], arrowBack[1]);
+        context.lineTo(arrowFront[0], arrowFront[1]);
+        context.lineTo(arrowLeft[0], arrowLeft[1]);
+        context.moveTo(arrowFront[0], arrowFront[1]);
+        context.lineTo(arrowRight[0], arrowRight[1]);
+        context.stroke();
+        context.globalAlpha = 1;
+      });
     });
 
     // Draw arrows
@@ -409,6 +412,29 @@ export default class OdometryVisualizer implements Visualizer {
         });
       }
     );
+
+    // Draw Zebra markers
+    context.font =
+      Math.round(12 * pixelsPerInch).toString() + "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+    Object.entries(command.poses.zebraMarker).forEach(([team, value]) => {
+      let typedValue = value as {
+        translation: Translation2d;
+        alliance: string;
+      };
+      let coordinates = calcCoordinates(typedValue.translation, true);
+
+      context.fillStyle = typedValue.alliance;
+      context.strokeStyle = "white";
+      context.lineWidth = 2 * pixelsPerInch;
+      context.beginPath();
+      context.arc(coordinates[0], coordinates[1], 6 * pixelsPerInch, 0, Math.PI * 2);
+      context.fill();
+      context.stroke();
+
+      context.fillStyle = "white";
+      context.textAlign = "center";
+      context.fillText(team, coordinates[0], coordinates[1] - 15 * pixelsPerInch);
+    });
 
     // Return target aspect ratio
     return isVertical ? fieldHeight / fieldWidth : fieldWidth / fieldHeight;
