@@ -60,7 +60,7 @@ export function getLogValueText(value: any, type: LoggableType): string {
 export function getOrDefault(log: Log, key: string, type: LoggableType, timestamp: number, defaultValue: any): any {
   if (log.getType(key) === type) {
     let logData = log.getRange(key, timestamp, timestamp);
-    if (logData !== undefined && logData.values.length > 0) {
+    if (logData !== undefined && logData.values.length > 0 && logData.timestamps[0] <= timestamp) {
       return logData.values[0];
     }
   }
