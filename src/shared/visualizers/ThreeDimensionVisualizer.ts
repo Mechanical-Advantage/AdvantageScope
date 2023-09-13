@@ -5,8 +5,9 @@ import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { CSS2DObject, CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageScopeAssets";
-import { AprilTag, Pose3d, rotation3dToQuaternion } from "../geometry";
+import { AprilTag, Pose3d, Translation2d, rotation3dToQuaternion } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import { convert } from "../units";
 import { clampValue } from "../util";
@@ -47,15 +48,18 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
   private content: HTMLElement;
   private canvas: HTMLCanvasElement;
+  private annotationsDiv: HTMLElement;
   private alert: HTMLElement;
   private alertCamera: HTMLElement;
 
   private renderer: THREE.WebGLRenderer;
+  private cssRenderer: CSS2DRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
+  private wpilibZebraCoordinateGroup: THREE.Group; // Field coordinates (origin at red driver stations)
   private fixedCameraGroup: THREE.Group;
   private fixedCameraObj: THREE.Object3D;
   private fixedCameraOverrideObj: THREE.Object3D;
@@ -77,6 +81,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private coneYellowFrontSet: ObjectSet;
   private coneYellowCenterSet: ObjectSet;
   private coneYellowBackSet: ObjectSet;
+  private zebraMarkerBlueSet: ObjectSet;
+  private zebraMarkerRedSet: ObjectSet;
+  private zebraTeamLabels: { [key: string]: CSS2DObject } = {};
+  private zebraGreenGhostSet: ObjectSet;
+  private zebraYellowGhostSet: ObjectSet;
 
   private command: any;
   private shouldRender = false;
@@ -95,13 +104,15 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private lastFieldTitle: string = "";
   private lastRobotTitle: string = "";
 
-  constructor(content: HTMLElement, canvas: HTMLCanvasElement, alert: HTMLElement) {
+  constructor(content: HTMLElement, canvas: HTMLCanvasElement, annotationsDiv: HTMLElement, alert: HTMLElement) {
     this.content = content;
     this.canvas = canvas;
+    this.annotationsDiv = annotationsDiv;
     this.alert = alert;
     this.alertCamera = alert.getElementsByTagName("span")[0];
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.cssRenderer = new CSS2DRenderer({ element: annotationsDiv });
     this.scene = new THREE.Scene();
 
     // Change camera menu
@@ -130,6 +141,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
     this.wpilibFieldCoordinateGroup = new THREE.Group();
     this.wpilibCoordinateGroup.add(this.wpilibFieldCoordinateGroup);
+    this.wpilibZebraCoordinateGroup = new THREE.Group();
+    this.wpilibCoordinateGroup.add(this.wpilibZebraCoordinateGroup);
 
     // Create camera
     {
@@ -186,6 +199,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.coneYellowFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneYellowCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneYellowBackSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.zebraMarkerBlueSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      this.zebraMarkerRedSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      this.zebraGreenGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      this.zebraYellowGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
     }
 
     // Create axes template
@@ -302,6 +319,28 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       objectSet.setSource(new THREE.Group().add(mesh));
       this.aprilTagSets.set(id, objectSet);
     });
+
+    // Create Zebra marker models
+    {
+      let blueMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 0.1, 1),
+        new THREE.MeshPhongMaterial({
+          color: 0x0000ff
+        })
+      );
+      blueMesh.rotateX(Math.PI / 2);
+      blueMesh.position.set(0, 0, 0.5);
+      this.zebraMarkerBlueSet.setSource(new THREE.Group().add(blueMesh));
+      let redMesh = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.1, 0.1, 1),
+        new THREE.MeshPhongMaterial({
+          color: 0xff0000
+        })
+      );
+      redMesh.rotateX(Math.PI / 2);
+      redMesh.position.set(0, 0, 0.5);
+      this.zebraMarkerRedSet.setSource(new THREE.Group().add(redMesh));
+    }
 
     // Define ghost materials
     {
@@ -743,6 +782,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.robotSet.setSource(robotGroup);
         this.greenGhostSet.setSource(greenGhostGroup);
         this.yellowGhostSet.setSource(yellowGhostGroup);
+        this.zebraGreenGhostSet.setSource(greenGhostGroup);
+        this.zebraYellowGhostSet.setSource(yellowGhostGroup);
 
         // Render new frame
         this.shouldRender = true;
@@ -758,12 +799,24 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         convert(fieldConfig.heightInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
         0
       );
+      this.wpilibZebraCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+      if (fieldConfig.name === "Axes") {
+        this.wpilibZebraCoordinateGroup.position.set(this.STANDARD_FIELD_LENGTH, this.STANDARD_FIELD_WIDTH, 0);
+      } else {
+        this.wpilibZebraCoordinateGroup.position.set(
+          convert(fieldConfig.widthInches / 2, "inches", "meters"),
+          convert(fieldConfig.heightInches / 2, "inches", "meters"),
+          0
+        );
+      }
     }
 
-    // Update robot poses
-    this.robotSet.setPoses(this.command.poses.robot.slice(0, 7)); // Max of 6 poses
-    this.greenGhostSet.setPoses(this.command.poses.greenGhost.slice(0, 7)); // Max of 6 poses
-    this.yellowGhostSet.setPoses(this.command.poses.yellowGhost.slice(0, 7)); // Max of 6 poses
+    // Update robot poses (max of 6 poses each)
+    this.robotSet.setPoses(this.command.poses.robot.slice(0, 7));
+    this.greenGhostSet.setPoses(this.command.poses.greenGhost.slice(0, 7));
+    this.yellowGhostSet.setPoses(this.command.poses.yellowGhost.slice(0, 7));
+    this.zebraGreenGhostSet.setPoses(this.command.poses.zebraGreenGhost.slice(0, 7));
+    this.zebraYellowGhostSet.setPoses(this.command.poses.zebraYellowGhost.slice(0, 7));
 
     // Update robot components
     if (robotConfig && robotConfig.components.length > 0) {
@@ -771,7 +824,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         [
           [this.robotSet, this.command.poses.componentRobot],
           [this.greenGhostSet, this.command.poses.componentGreenGhost],
-          [this.yellowGhostSet, this.command.poses.componentYellowGhost]
+          [this.yellowGhostSet, this.command.poses.componentYellowGhost],
+          [this.zebraGreenGhostSet, this.command.poses.componentGreenGhost],
+          [this.zebraYellowGhostSet, this.command.poses.componentYellowGhost]
         ] as [ObjectSet, Pose3d[]][]
       ).forEach(([objectSet, poseData]) => {
         objectSet.getChildren().forEach((childRobot) => {
@@ -812,7 +867,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       [
         [this.robotSet, this.command.poses.mechanismRobot, () => new THREE.MeshPhongMaterial(), true],
         [this.greenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial, false],
-        [this.yellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial, false]
+        [this.yellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial, false],
+        [this.zebraGreenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial, false],
+        [this.zebraYellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial, false]
       ] as [ObjectSet, MechanismState | null, () => THREE.MeshPhongMaterial, boolean][]
     ).forEach(([objectSet, state, getMaterial, updateColors]) => {
       objectSet.getChildren().forEach((childRobot) => {
@@ -959,6 +1016,44 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.coneYellowCenterSet.setPoses(this.command.poses.coneYellowCenter);
     this.coneYellowBackSet.setPoses(this.command.poses.coneYellowBack);
 
+    // Update Zebra markers
+    let bluePoses = Object.values(this.command.poses.zebraMarker)
+      .filter((x: any) => x.alliance === "blue")
+      .map((x: any) => {
+        return {
+          translation: [x.translation[0], x.translation[1], 0],
+          rotation: [0, 0, 0, 0]
+        } as Pose3d;
+      });
+    let redPoses = Object.values(this.command.poses.zebraMarker)
+      .filter((x: any) => x.alliance === "red")
+      .map((x: any) => {
+        return {
+          translation: [x.translation[0], x.translation[1], 0],
+          rotation: [0, 0, 0, 0]
+        } as Pose3d;
+      });
+    this.zebraMarkerBlueSet.setPoses(bluePoses);
+    this.zebraMarkerRedSet.setPoses(redPoses);
+
+    // Update Zebra team labels
+    (Object.keys(this.command.poses.zebraMarker) as string[]).forEach((team) => {
+      if (!(team in this.zebraTeamLabels)) {
+        let labelDiv = document.createElement("div");
+        labelDiv.innerText = team;
+        this.zebraTeamLabels[team] = new CSS2DObject(labelDiv);
+      }
+    });
+    Object.entries(this.zebraTeamLabels).forEach(([team, object]) => {
+      if (team in this.command.poses.zebraMarker) {
+        this.wpilibZebraCoordinateGroup.add(object);
+        let translation = this.command.poses.zebraMarker[team].translation as Translation2d;
+        object.position.set(translation[0], translation[1], 1.25);
+      } else {
+        this.wpilibZebraCoordinateGroup.remove(object);
+      }
+    });
+
     // Set camera for fixed views
     {
       // Reset camera index if invalid
@@ -976,7 +1071,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.lastAspectRatio = null;
       if (orbitalCamera) {
         this.canvas.classList.remove("fixed");
+        this.annotationsDiv.classList.remove("fixed");
         this.canvas.style.aspectRatio = "";
+        this.annotationsDiv.style.aspectRatio = "";
         if (this.cameraIndex === -1) {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
@@ -998,6 +1095,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         }
       } else {
         this.canvas.classList.add("fixed");
+        this.annotationsDiv.classList.add("fixed");
         let aspectRatio = 16 / 9;
         if (robotConfig) {
           // Get fixed aspect ratio and FOV
@@ -1006,6 +1104,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.lastAspectRatio = aspectRatio;
           fov = (cameraConfig.fov * aspectRatio) / 2;
           this.canvas.style.aspectRatio = aspectRatio.toString();
+          this.annotationsDiv.style.aspectRatio = aspectRatio.toString();
 
           // Update camera position
           let referenceObj: THREE.Object3D | null = null;
@@ -1064,6 +1163,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     const clientHeight = canvas.clientHeight;
     if (canvas.width / devicePixelRatio !== clientWidth || canvas.height / devicePixelRatio !== clientHeight) {
       this.renderer.setSize(clientWidth, clientHeight, false);
+      this.cssRenderer.setSize(clientWidth, clientHeight);
       this.camera.aspect = clientWidth / clientHeight;
       this.camera.updateProjectionMatrix();
       const resolution = new THREE.Vector2(clientWidth, clientHeight);
@@ -1077,6 +1177,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.scene.background = isDark ? new THREE.Color("#222222") : new THREE.Color("#ffffff");
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.render(this.scene, this.camera);
+    this.cssRenderer.render(this.scene, this.camera);
   }
 }
 

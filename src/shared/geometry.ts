@@ -32,6 +32,16 @@ export function rotation2dTo3d(input: Rotation2d): Rotation3d {
   return [quaternion.w, quaternion.x, quaternion.y, quaternion.z];
 }
 
+export function rotation3dTo2d(input: Rotation3d): Rotation2d {
+  const w = input[0];
+  const x = input[1];
+  const y = input[2];
+  const z = input[3];
+
+  // https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Quaternion_to_Euler_angles_(in_3-2-1_sequence)_conversion
+  return Math.atan2(2.0 * (w * z + x * y), 1.0 - 2.0 * (y * y + z * z));
+}
+
 export function pose2dTo3d(input: Pose2d, z: number = 0): Pose3d {
   return {
     translation: translation2dTo3d(input.translation, z),
@@ -45,6 +55,10 @@ export function pose2dArrayTo3d(input: Pose2d[], z: number = 0): Pose3d[] {
 
 export function rotation3dToQuaternion(input: Rotation3d): THREE.Quaternion {
   return new Quaternion(input[1], input[2], input[3], input[0]);
+}
+
+export function quaternionToRotation3d(input: THREE.Quaternion): Rotation3d {
+  return [input.w, input.x, input.y, input.z];
 }
 
 // LOG READING UTILITIES

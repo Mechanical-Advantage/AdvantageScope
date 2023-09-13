@@ -481,14 +481,21 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "load-zebra":
-      setLoading(1);
-      loadZebra()
-        .then(() => {
-          setLoading(null);
-        })
-        .catch(() => {
-          setLoading(null);
+      if (liveActive) {
+        window.sendMainMessage("error", {
+          title: "Cannot load Zebra data",
+          content: "Loading Zebra data is not allowed while connected to a live source."
         });
+      } else {
+        setLoading(1);
+        loadZebra()
+          .then(() => {
+            setLoading(null);
+          })
+          .catch(() => {
+            setLoading(null);
+          });
+      }
       break;
 
     case "set-playback-speed":

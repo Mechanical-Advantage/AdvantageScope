@@ -13,19 +13,23 @@ import {
   logReadTranslation3dToPose3d,
   pose2dArrayTo3d,
   pose2dTo3d,
-  Pose3d
+  Pose3d,
+  rotation2dTo3d,
+  rotation3dTo2d,
+  Translation2d
 } from "../../shared/geometry";
 import LoggableType from "../../shared/log/LoggableType";
 import {
   ALLIANCE_KEYS,
   getIsRedAlliance,
   getMechanismState,
+  getOrDefault,
   MechanismState,
   mergeMechanismStates
 } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
-import { cleanFloat } from "../../shared/util";
+import { cleanFloat, scaleValue } from "../../shared/util";
 import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
@@ -114,7 +118,8 @@ export default class ThreeDimensionController extends TimelineVizController {
             "Translation2d",
             "Translation2d[]",
             "Trajectory",
-            "Mechanism2d"
+            "Mechanism2d",
+            "ZebraTranslation"
           ],
           options: [
             ThreeDimensionController.POSE_2D_TYPES, // NumberArray
@@ -125,13 +130,16 @@ export default class ThreeDimensionController extends TimelineVizController {
             ["Vision Target"], // Translation2d
             ["Trajectory", "Vision Target"], // Translation2d[]
             ["Trajectory"], // Trajectory
-            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"] // Mechanism2d
-          ]
+            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)"], // Mechanism2d
+            ["Zebra Marker", "Green Ghost", "Yellow Ghost"] // ZebraTranslation
+          ],
+          autoAdvanceOptions: [true, true, true, true, true, true, true, true, true, false]
         }
       ],
       new ThreeDimensionVisualizer(
         content,
         content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement,
+        content.getElementsByClassName("three-dimension-annotations")[0] as HTMLElement,
         content.getElementsByClassName("three-dimension-alert")[0] as HTMLElement
       )
     );
@@ -341,6 +349,11 @@ export default class ThreeDimensionController extends TimelineVizController {
     let mechanismRobotData: MechanismState | null = null;
     let mechanismGreenGhostData: MechanismState | null = null;
     let mechanismYellowGhostData: MechanismState | null = null;
+    let zebraMarkerData: { [key: string]: { translation: Translation2d; alliance: string } } = {};
+    let zebraGreenGhostDataTranslations: Translation2d[] = [];
+    let zebraGreenGhostData: Pose3d[] = [];
+    let zebraYellowGhostDataTranslations: Translation2d[] = [];
+    let zebraYellowGhostData: Pose3d[] = [];
 
     // Get 3D data
     this.getListFields()[0].forEach((field) => {
@@ -411,10 +424,42 @@ export default class ThreeDimensionController extends TimelineVizController {
           robotData = robotData.concat(get2DValue(field.key, field.sourceType));
           break;
         case "Green Ghost":
-          greenGhostData = greenGhostData.concat(get2DValue(field.key, field.sourceType));
-          break;
         case "Yellow Ghost":
-          yellowGhostData = yellowGhostData.concat(get2DValue(field.key, field.sourceType));
+          if (field.sourceType !== "ZebraTranslation") {
+            if (field.type === "Green Ghost") {
+              greenGhostData = greenGhostData.concat(get2DValue(field.key, field.sourceType));
+            } else {
+              yellowGhostData = yellowGhostData.concat(get2DValue(field.key, field.sourceType));
+            }
+          } else {
+            let x: number | null = null;
+            let y: number | null = null;
+            {
+              let xData = window.log.getNumber(field.key + "/x", time, time);
+              if (xData !== undefined && xData.values.length > 0) {
+                if (xData.values.length === 1) {
+                  x = xData.values[0];
+                } else {
+                  x = scaleValue(time, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
+                }
+              }
+            }
+            {
+              let yData = window.log.getNumber(field.key + "/y", time, time);
+              if (yData !== undefined && yData.values.length > 0) {
+                if (yData.values.length === 1) {
+                  y = yData.values[0];
+                } else {
+                  y = scaleValue(time, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
+                }
+              }
+            }
+            if (x !== null && y !== null) {
+              let ghostDataTranslations =
+                field.type === "Green Ghost" ? zebraGreenGhostDataTranslations : zebraYellowGhostDataTranslations;
+              ghostDataTranslations.push([convert(x, "feet", "meters"), convert(y, "feet", "meters")]);
+            }
+          }
           break;
         case "Trajectory":
           trajectoryData.push(get2DValue(field.key, field.sourceType, 0.02)); // Render outside the floor
@@ -476,6 +521,38 @@ export default class ThreeDimensionController extends TimelineVizController {
             }
           }
           break;
+        case "Zebra Marker":
+          let team = field.key.split("FRC")[1];
+          let x: number | null = null;
+          let y: number | null = null;
+          {
+            let xData = window.log.getNumber(field.key + "/x", time, time);
+            if (xData !== undefined && xData.values.length > 0) {
+              if (xData.values.length === 1) {
+                x = xData.values[0];
+              } else {
+                x = scaleValue(time, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
+              }
+            }
+          }
+          {
+            let yData = window.log.getNumber(field.key + "/y", time, time);
+            if (yData !== undefined && yData.values.length > 0) {
+              if (yData.values.length === 1) {
+                y = yData.values[0];
+              } else {
+                y = scaleValue(time, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
+              }
+            }
+          }
+          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, time, "blue");
+          if (x !== null && y !== null) {
+            zebraMarkerData[team] = {
+              translation: [convert(x, "feet", "meters"), convert(y, "feet", "meters")],
+              alliance: alliance
+            };
+          }
+          break;
       }
     });
 
@@ -528,6 +605,29 @@ export default class ThreeDimensionController extends TimelineVizController {
         break;
     }
 
+    // Apply robot rotation to Zebra ghost translations
+    let robotRotation2d = 0;
+    if (robotData.length > 0) {
+      robotRotation2d = rotation3dTo2d(robotData[0].rotation);
+      if (!allianceRedOrigin) {
+        // Switch from blue to red origin to match translation
+        robotRotation2d += Math.PI;
+      }
+    }
+    let robotRotation3d = rotation2dTo3d(robotRotation2d);
+    zebraGreenGhostDataTranslations.forEach((translation) => {
+      zebraGreenGhostData.push({
+        translation: [translation[0], translation[1], 0],
+        rotation: robotRotation3d
+      });
+    });
+    zebraYellowGhostDataTranslations.forEach((translation) => {
+      zebraYellowGhostData.push({
+        translation: [translation[0], translation[1], 0],
+        rotation: robotRotation3d
+      });
+    });
+
     // Package command data
     return {
       poses: {
@@ -550,7 +650,10 @@ export default class ThreeDimensionController extends TimelineVizController {
         coneYellowBack: coneYellowBackData,
         mechanismRobot: mechanismRobotData,
         mechanismGreenGhost: mechanismGreenGhostData,
-        mechanismYellowGhost: mechanismYellowGhostData
+        mechanismYellowGhost: mechanismYellowGhostData,
+        zebraMarker: zebraMarkerData,
+        zebraGreenGhost: zebraGreenGhostData,
+        zebraYellowGhost: zebraYellowGhostData
       },
       options: this.options,
       allianceRedOrigin: allianceRedOrigin

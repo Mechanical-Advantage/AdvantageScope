@@ -241,7 +241,7 @@ export default class OdometryController extends TimelineVizController {
     let arrowFrontData: Pose2d[] = [];
     let arrowCenterData: Pose2d[] = [];
     let arrowBackData: Pose2d[] = [];
-    let zebraData: { [key: string]: { translation: Translation2d; alliance: string } } = {};
+    let zebraMarkerData: { [key: string]: { translation: Translation2d; alliance: string } } = {};
     let zebraGhostDataTranslations: Translation2d[] = [];
     let zebraGhostData: Pose2d[] = [];
     this.getListFields()[0].forEach((field) => {
@@ -421,7 +421,7 @@ export default class OdometryController extends TimelineVizController {
           }
           let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, time, "blue");
           if (x !== null && y !== null) {
-            zebraData[team] = {
+            zebraMarkerData[team] = {
               translation: [convert(x, "feet", "meters"), convert(y, "feet", "meters")],
               alliance: alliance
             };
@@ -485,7 +485,7 @@ export default class OdometryController extends TimelineVizController {
         arrowFront: arrowFrontData,
         arrowCenter: arrowCenterData,
         arrowBack: arrowBackData,
-        zebraMarker: zebraData,
+        zebraMarker: zebraMarkerData,
         zebraGhost: zebraGhostData
       },
       options: this.options,
