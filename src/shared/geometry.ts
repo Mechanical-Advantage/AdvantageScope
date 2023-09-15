@@ -63,15 +63,8 @@ export function quaternionToRotation3d(input: THREE.Quaternion): Rotation3d {
 
 // LOG READING UTILITIES
 
-export function logReadNumberArrayToPose2dArray(
-  log: Log,
-  key: string,
-  timestamp: number,
-  distanceConversion = 1,
-  rotationConversion = 1
-): Pose2d[] {
+export function numberArrayToPose2dArray(array: number[], distanceConversion = 1, rotationConversion = 1): Pose2d[] {
   let poses: Pose2d[] = [];
-  let array = getOrDefault(log, key, LoggableType.NumberArray, timestamp, []);
   if (array.length === 2) {
     poses.push({
       translation: [array[0] * distanceConversion, array[1] * distanceConversion],
@@ -86,6 +79,20 @@ export function logReadNumberArrayToPose2dArray(
     }
   }
   return poses;
+}
+
+export function logReadNumberArrayToPose2dArray(
+  log: Log,
+  key: string,
+  timestamp: number,
+  distanceConversion = 1,
+  rotationConversion = 1
+): Pose2d[] {
+  return numberArrayToPose2dArray(
+    getOrDefault(log, key, LoggableType.NumberArray, timestamp, []),
+    distanceConversion,
+    rotationConversion
+  );
 }
 
 export function logReadPose2d(log: Log, key: string, timestamp: number, distanceConversion = 1): Pose2d | null {

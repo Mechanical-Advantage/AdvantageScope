@@ -7,7 +7,8 @@ import {
   logReadPose2dArray,
   logReadTrajectoryToPose2dArray,
   logReadTranslation2dArrayToPose2dArray,
-  logReadTranslation2dToPose2d
+  logReadTranslation2dToPose2d,
+  numberArrayToPose2dArray
 } from "../../shared/geometry";
 import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance, getOrDefault } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
@@ -17,8 +18,8 @@ import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class OdometryController extends TimelineVizController {
-  private static HEATMAP_DT = 0.25;
-  private static TRAIL_LENGTH_SECS = 3;
+  private static HEATMAP_DT = 0.1;
+  private static TRAIL_LENGTH_SECS = 5;
   private static POSE_TYPES = [
     "Robot",
     "Ghost",
@@ -250,42 +251,82 @@ export default class OdometryController extends TimelineVizController {
           let currentRobotData = getCurrentValue(field.key, field.sourceType);
           robotData = robotData.concat(currentRobotData);
 
-          // Get trails
+          // Get timestamps for trail
+          let keys: string[] = [];
+          let arrayLength = 0;
+          if (field.sourceType === LoggableType.NumberArray) {
+            keys = [field.key];
+          } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
+            arrayLength = getOrDefault(window.log, field.key + "/length", LoggableType.Number, time, 0);
+            for (let i = 0; i < arrayLength; i++) {
+              let itemKey = field.key + "/" + i.toString();
+              keys = keys.concat([itemKey + "/translation/x", itemKey + "/translation/y", itemKey + "/rotation/value"]);
+            }
+          } else if (typeof field.sourceType === "string") {
+            keys = [field.key + "/translation/x", field.key + "/translation/y", field.key + "/rotation/value"];
+          }
           let timestamps = window.log
             .getTimestamps([field.key], this.UUID)
             .filter(
               (x) => x > time - OdometryController.TRAIL_LENGTH_SECS && x < time + OdometryController.TRAIL_LENGTH_SECS
             );
+
+          // Get trail data
           let trailsTemp: Translation2d[][] = currentRobotData.map(() => []);
           if (field.sourceType === LoggableType.NumberArray) {
-            timestamps.forEach((trailTime) => {
-              let poses = logReadNumberArrayToPose2dArray(
-                window.log,
-                field.key,
-                trailTime,
-                distanceConversion,
-                rotationConversion
-              );
-              for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
-                trailsTemp[i].push(poses[i].translation);
-              }
-            });
-          } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
-            timestamps.forEach((trailTime) => {
-              let poses = logReadPose2dArray(window.log, field.key, trailTime, distanceConversion);
-              for (let i = 0; i < Math.min(trailsTemp.length, poses.length); i++) {
-                trailsTemp[i].push(poses[i].translation);
-              }
-            });
-          } else if (typeof field.sourceType === "string") {
-            timestamps.forEach((trailTime) => {
-              if (trailsTemp.length > 0) {
-                let pose = logReadPose2d(window.log, field.key, trailTime, distanceConversion);
-                if (pose !== null) {
-                  trailsTemp[0].push(pose.translation);
+            let data = window.log.getNumberArray(field.key, timestamps[0], timestamps[timestamps.length - 1]);
+            if (data !== undefined) {
+              let dataIndex = 1;
+              timestamps.forEach((timestamp) => {
+                let poses = numberArrayToPose2dArray(
+                  data!.values[dataIndex - 1],
+                  distanceConversion,
+                  rotationConversion
+                );
+                poses.forEach((pose, index) => {
+                  trailsTemp[index].push(pose.translation);
+                });
+                while (dataIndex < data!.timestamps.length && data!.timestamps[dataIndex] < timestamp) {
+                  dataIndex++;
                 }
+              });
+            }
+          } else if (typeof field.sourceType === "string") {
+            let addTrail = (key: string, trailIndex = 0) => {
+              let xData = window.log.getNumber(
+                key + "/translation/x",
+                timestamps[0],
+                timestamps[timestamps.length - 1]
+              );
+              let yData = window.log.getNumber(
+                key + "/translation/y",
+                timestamps[0],
+                timestamps[timestamps.length - 1]
+              );
+              if (xData !== undefined && yData !== undefined) {
+                let xDataIndex = 1;
+                let yDataIndex = 1;
+                timestamps.forEach((timestamp) => {
+                  trailsTemp[trailIndex].push([
+                    xData!.values[xDataIndex - 1] * distanceConversion,
+                    yData!.values[yDataIndex - 1] * distanceConversion
+                  ]);
+                  while (xDataIndex < xData!.timestamps.length && xData!.timestamps[xDataIndex] < timestamp) {
+                    xDataIndex++;
+                  }
+                  while (yDataIndex < yData!.timestamps.length && yData!.timestamps[yDataIndex] < timestamp) {
+                    yDataIndex++;
+                  }
+                });
               }
-            });
+            };
+            if (field.sourceType.endsWith("[]")) {
+              for (let i = 0; i < arrayLength; i++) {
+                addTrail(field.key + "/" + i.toString(), i);
+              }
+            } else {
+              addTrail(field.key);
+            }
           }
           trailData = trailData.concat(trailsTemp);
           break;
@@ -328,60 +369,85 @@ export default class OdometryController extends TimelineVizController {
           break;
         case "Heatmap":
         case "Heatmap (Enabled)":
-          let enabledFilter = field.type === "Heatmap (Enabled)";
-          let enabledData = enabledFilter ? getEnabledData(window.log) : null;
-          let isEnabled = (timestamp: number) => {
-            if (!enabledFilter) return true;
-            if (enabledData === null) return false;
-            let enabledDataIndex = enabledData.timestamps.findLastIndex((x) => x <= timestamp);
-            if (enabledDataIndex === -1) return false;
-            return enabledData.values[enabledDataIndex];
-          };
+          {
+            // Get enabled data
+            let enabledFilter = field.type === "Heatmap (Enabled)";
+            let enabledData = enabledFilter ? getEnabledData(window.log) : null;
+            let isEnabled = (timestamp: number) => {
+              if (!enabledFilter) return true;
+              if (enabledData === null) return false;
+              let enabledDataIndex = enabledData.timestamps.findLastIndex((x) => x <= timestamp);
+              if (enabledDataIndex === -1) return false;
+              return enabledData.values[enabledDataIndex];
+            };
 
-          if (field.sourceType === LoggableType.NumberArray) {
+            // Get timestamps
+            let timestamps: number[] = [];
             for (
               let sampleTime = window.log.getTimestampRange()[0];
               sampleTime < window.log.getTimestampRange()[1];
               sampleTime += OdometryController.HEATMAP_DT
             ) {
-              if (!isEnabled(sampleTime)) continue;
-              let poses = logReadNumberArrayToPose2dArray(
-                window.log,
-                field.key,
-                sampleTime,
-                distanceConversion,
-                rotationConversion
-              );
-              poses.forEach((pose) => {
-                heatmapData.push(pose.translation);
-              });
+              timestamps.push(sampleTime);
             }
-          } else if (typeof field.sourceType === "string" && field.sourceType.endsWith("[]")) {
-            for (
-              let sampleTime = window.log.getTimestampRange()[0];
-              sampleTime < window.log.getTimestampRange()[1];
-              sampleTime += OdometryController.HEATMAP_DT
-            ) {
-              if (!isEnabled(sampleTime)) continue;
-              let poses = field.sourceType.startsWith("Translation")
-                ? logReadTranslation2dArrayToPose2dArray(window.log, field.key, sampleTime, distanceConversion)
-                : logReadPose2dArray(window.log, field.key, sampleTime, distanceConversion);
-              poses.forEach((pose) => {
-                heatmapData.push(pose.translation);
-              });
-            }
-          } else if (typeof field.sourceType === "string") {
-            for (
-              let sampleTime = window.log.getTimestampRange()[0];
-              sampleTime < window.log.getTimestampRange()[1];
-              sampleTime += OdometryController.HEATMAP_DT
-            ) {
-              if (!isEnabled(sampleTime)) continue;
-              let pose = field.sourceType.startsWith("Translation")
-                ? logReadTranslation2dToPose2d(window.log, field.key, sampleTime, distanceConversion)
-                : logReadPose2d(window.log, field.key, sampleTime, distanceConversion);
-              if (pose !== null) {
-                heatmapData.push(pose.translation);
+
+            // Get data
+            if (field.sourceType === LoggableType.NumberArray) {
+              let data = window.log.getNumberArray(field.key, timestamps[0], timestamps[timestamps.length - 1]);
+              if (data !== undefined) {
+                let dataIndex = 1;
+                timestamps.forEach((timestamp) => {
+                  if (!isEnabled(timestamp)) return;
+                  let poses = numberArrayToPose2dArray(
+                    data!.values[dataIndex - 1],
+                    distanceConversion,
+                    rotationConversion
+                  );
+                  poses.forEach((pose, index) => {
+                    heatmapData.push(pose.translation);
+                  });
+                  while (dataIndex < data!.timestamps.length && data!.timestamps[dataIndex] < timestamp) {
+                    dataIndex++;
+                  }
+                });
+              }
+            } else if (typeof field.sourceType === "string") {
+              let addData = (key: string) => {
+                let xData = window.log.getNumber(
+                  key + "/translation/x",
+                  timestamps[0],
+                  timestamps[timestamps.length - 1]
+                );
+                let yData = window.log.getNumber(
+                  key + "/translation/y",
+                  timestamps[0],
+                  timestamps[timestamps.length - 1]
+                );
+                if (xData !== undefined && yData !== undefined) {
+                  let xDataIndex = 1;
+                  let yDataIndex = 1;
+                  timestamps.forEach((timestamp) => {
+                    if (!isEnabled(timestamp)) return;
+                    heatmapData.push([
+                      xData!.values[xDataIndex - 1] * distanceConversion,
+                      yData!.values[yDataIndex - 1] * distanceConversion
+                    ]);
+                    while (xDataIndex < xData!.timestamps.length && xData!.timestamps[xDataIndex] < timestamp) {
+                      xDataIndex++;
+                    }
+                    while (yDataIndex < yData!.timestamps.length && yData!.timestamps[yDataIndex] < timestamp) {
+                      yDataIndex++;
+                    }
+                  });
+                }
+              };
+              if (field.sourceType.endsWith("[]")) {
+                let length = getOrDefault(window.log, field.key + "/length", LoggableType.Number, time, 0);
+                for (let i = 0; i < length; i++) {
+                  addData(field.key + "/" + i.toString());
+                }
+              } else {
+                addData(field.key);
               }
             }
           }
