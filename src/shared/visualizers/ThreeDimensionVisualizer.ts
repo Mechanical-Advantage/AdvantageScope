@@ -7,10 +7,17 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { CSS2DObject, CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageScopeAssets";
-import { AprilTag, Pose3d, Translation2d, rotation3dToQuaternion } from "../geometry";
+import {
+  APRIL_TAG_16H5_COUNT,
+  APRIL_TAG_36H11_COUNT,
+  AprilTag,
+  Pose3d,
+  Translation2d,
+  rotation3dToQuaternion
+} from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import { convert } from "../units";
-import { clampValue } from "../util";
+import { clampValue, zfill } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
@@ -57,6 +64,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
+  private textureLoader: THREE.TextureLoader;
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private wpilibZebraCoordinateGroup: THREE.Group; // Field coordinates (origin at red driver stations)
@@ -71,7 +79,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private yellowGhostSet: ObjectSet;
   private greenGhostMaterial: THREE.Material;
   private yellowGhostMaterial: THREE.Material;
-  private aprilTagSets: Map<number | null, ObjectSet> = new Map();
+  private aprilTag36h11Sets: Map<number | null, ObjectSet> = new Map();
+  private aprilTag16h5Sets: Map<number | null, ObjectSet> = new Map();
   private trajectories: Line2[] = [];
   private visionTargets: Line2[] = [];
   private axesSet: ObjectSet;
@@ -245,10 +254,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Create cone models
-    const loader = new THREE.TextureLoader();
+    this.textureLoader = new THREE.TextureLoader();
     {
-      let coneTextureBlue = loader.load("../www/textures/cone-blue.png");
-      let coneTextureBlueBase = loader.load("../www/textures/cone-blue-base.png");
+      let coneTextureBlue = this.textureLoader.load("../www/textures/cone-blue.png");
+      let coneTextureBlueBase = this.textureLoader.load("../www/textures/cone-blue-base.png");
       coneTextureBlue.offset.set(0.25, 0);
 
       let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.25, 16, 32), [
@@ -272,8 +281,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.coneBlueBackSet.setSource(new THREE.Group().add(backMesh));
     }
     {
-      let coneTextureYellow = loader.load("../www/textures/cone-yellow.png");
-      let coneTextureYellowBase = loader.load("../www/textures/cone-yellow-base.png");
+      let coneTextureYellow = this.textureLoader.load("../www/textures/cone-yellow.png");
+      let coneTextureYellowBase = this.textureLoader.load("../www/textures/cone-yellow-base.png");
       coneTextureYellow.offset.set(0.25, 0);
 
       let coneMesh = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.25, 16, 32), [
@@ -296,29 +305,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       backMesh.position.set(0.125, 0, 0);
       this.coneYellowBackSet.setSource(new THREE.Group().add(backMesh));
     }
-
-    // Create AprilTag models
-    [null, ...Array(30).keys()].forEach((id) => {
-      let aprilTagTexture = loader.load("../www/textures/apriltag/" + (id === null ? "smile" : id.toString()) + ".png");
-      aprilTagTexture.minFilter = THREE.NearestFilter;
-      aprilTagTexture.magFilter = THREE.NearestFilter;
-      let whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
-      let mesh = new THREE.Mesh(
-        new THREE.BoxGeometry(0.02, convert(8, "inches", "meters"), convert(8, "inches", "meters")),
-        [
-          new THREE.MeshPhongMaterial({ map: aprilTagTexture }),
-          whiteMaterial,
-          whiteMaterial,
-          whiteMaterial,
-          whiteMaterial,
-          whiteMaterial
-        ]
-      );
-      mesh.rotateX(Math.PI / 2);
-      let objectSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      objectSet.setSource(new THREE.Group().add(mesh));
-      this.aprilTagSets.set(id, objectSet);
-    });
 
     // Create Zebra marker models
     {
@@ -929,9 +915,49 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     });
 
     // Update AprilTag poses
-    let aprilTags: AprilTag[] = this.command.poses.aprilTag;
-    [null, ...Array(30).keys()].forEach((id) => {
-      this.aprilTagSets.get(id)?.setPoses(aprilTags.filter((tag) => tag.id === id).map((tag) => tag.pose));
+    let aprilTags36h11: AprilTag[] = this.command.poses.aprilTag36h11;
+    let aprilTags16h5: AprilTag[] = this.command.poses.aprilTag16h5;
+    [aprilTags36h11, aprilTags16h5].forEach((tags, index) => {
+      let is36h11 = index === 0;
+      let sets = is36h11 ? this.aprilTag36h11Sets : this.aprilTag16h5Sets;
+      tags.forEach((tag) => {
+        let id = tag.id;
+        if (!sets.has(id)) {
+          let aprilTagTexture = this.textureLoader.load(
+            "../www/textures/apriltag-" +
+              (is36h11 ? "36h11" : "16h5") +
+              "/" +
+              (id === null ? "smile" : zfill(id.toString(), 3)) +
+              ".png"
+          );
+          aprilTagTexture.minFilter = THREE.NearestFilter;
+          aprilTagTexture.magFilter = THREE.NearestFilter;
+          let whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+          let size = convert(is36h11 ? 8.125 : 8, "inches", "meters");
+          let mesh = new THREE.Mesh(new THREE.BoxGeometry(0.02, size, size), [
+            new THREE.MeshPhongMaterial({ map: aprilTagTexture }),
+            whiteMaterial,
+            whiteMaterial,
+            whiteMaterial,
+            whiteMaterial,
+            whiteMaterial
+          ]);
+          mesh.rotateX(Math.PI / 2);
+          let objectSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+          objectSet.setSource(new THREE.Group().add(mesh));
+          if (is36h11) {
+            sets.set(id, objectSet);
+          } else {
+            sets.set(id, objectSet);
+          }
+        }
+      });
+    });
+    [null, ...Array(APRIL_TAG_36H11_COUNT).keys()].forEach((id) => {
+      this.aprilTag36h11Sets.get(id)?.setPoses(aprilTags36h11.filter((tag) => tag.id === id).map((tag) => tag.pose));
+    });
+    [null, ...Array(APRIL_TAG_16H5_COUNT).keys()].forEach((id) => {
+      this.aprilTag16h5Sets.get(id)?.setPoses(aprilTags16h5.filter((tag) => tag.id === id).map((tag) => tag.pose));
     });
 
     // Update vision target lines

@@ -18,6 +18,9 @@ export type Pose3d = {
   rotation: Rotation3d;
 };
 
+export const APRIL_TAG_36H11_COUNT = 587;
+export const APRIL_TAG_16H5_COUNT = 30;
+
 export type AprilTag = {
   id: number | null;
   pose: Pose3d;
