@@ -58,6 +58,18 @@ export default class ThreeDimensionController extends TimelineVizController {
     "Yellow Cone (Center)",
     "Yellow Cone (Back)"
   ];
+  private static APRIL_TAG_TYPES = [
+    "AprilTag 36h11",
+    "AprilTag 16h5",
+    "Vision Target",
+    "Axes",
+    "Blue Cone (Front)",
+    "Blue Cone (Center)",
+    "Blue Cone (Back)",
+    "Yellow Cone (Front)",
+    "Yellow Cone (Center)",
+    "Yellow Cone (Back)"
+  ];
   private static POSE_2D_TYPES = [
     "Robot",
     "Green Ghost",
@@ -99,16 +111,20 @@ export default class ThreeDimensionController extends TimelineVizController {
             "Transform3d",
             "Transform3d[]",
             "Translation3d",
-            "Translation3d[]"
+            "Translation3d[]",
+            "AprilTag",
+            "AprilTag[]"
           ],
           options: [
             ThreeDimensionController.POSE_3D_TYPES, // NumberArray
-            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID"), // Pose3d
-            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID" && x !== "Camera Override"), // Pose3d[]
-            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID"), // Transform3d
-            ThreeDimensionController.POSE_3D_TYPES.filter((x) => x !== "AprilTag ID" && x !== "Camera Override"), // Transform3d[]
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID")), // Pose3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID") && x !== "Camera Override"), // Pose3d[]
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID")), // Transform3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID") && x !== "Camera Override"), // Transform3d[]
             ["Vision Target"], // Translation3d
-            ["Vision Target"] // Translation3d[]
+            ["Vision Target"], // Translation3d[]
+            ThreeDimensionController.APRIL_TAG_TYPES, // AprilTag
+            ThreeDimensionController.APRIL_TAG_TYPES // AprilTag[]
           ]
         },
         {
@@ -292,6 +308,19 @@ export default class ThreeDimensionController extends TimelineVizController {
     let get3DValue = (key: string, type: LoggableType | string): Pose3d[] => {
       if (type === LoggableType.NumberArray) {
         return logReadNumberArrayToPose3dArray(window.log, key, time, distanceConversion);
+      } else if (type === "AprilTag[]") {
+        let length = getOrDefault(window.log, key + "/length", LoggableType.Number, time, 0);
+        let poses: Pose3d[] = [];
+        for (let i = 0; i < length; i++) {
+          let pose = logReadPose3d(window.log, key + "/" + i.toString() + "/pose", time, distanceConversion);
+          if (pose !== null) {
+            poses.push(pose);
+          }
+        }
+        return poses;
+      } else if (type === "AprilTag") {
+        let pose = logReadPose3d(window.log, key + "/pose", time, distanceConversion);
+        return pose === null ? [] : [pose];
       } else if (typeof type === "string" && type.endsWith("[]")) {
         return type.startsWith("Translation")
           ? logReadTranslation3dArrayToPose3dArray(window.log, key, time, distanceConversion)
@@ -375,27 +404,32 @@ export default class ThreeDimensionController extends TimelineVizController {
           yellowGhostData = yellowGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "AprilTag 36h11":
-          aprilTag36h11PoseData = aprilTag36h11PoseData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "AprilTag 36h11 ID":
-          {
-            let logData = window.log.getNumberArray(field.key, time, time);
-            if (logData && logData.timestamps[0] <= time) {
-              for (let i = 0; i < logData.values[0].length; i += 1) {
-                aprilTag36h11IdData.push(logData.values[0][i]);
-              }
+        case "AprilTag 16h5":
+          if (field.type === "AprilTag 36h11") {
+            aprilTag36h11PoseData = aprilTag36h11PoseData.concat(get3DValue(field.key, field.sourceType));
+          } else {
+            aprilTag16h5PoseData = aprilTag16h5PoseData.concat(get3DValue(field.key, field.sourceType));
+          }
+          let idData = field.type === "AprilTag 36h11" ? aprilTag36h11IdData : aprilTag16h5IdData;
+          if (field.sourceType === "AprilTag") {
+            idData.push(getOrDefault(window.log, field.key + "/id", LoggableType.Number, time, 0));
+          } else if (field.sourceType === "AprilTag[]") {
+            let length = getOrDefault(window.log, field.key + "/length", LoggableType.Number, time, 0);
+            for (let i = 0; i < length; i++) {
+              idData.push(
+                getOrDefault(window.log, field.key + "/" + i.toString() + "/id", LoggableType.Number, time, 0)
+              );
             }
           }
           break;
-        case "AprilTag 16h5":
-          aprilTag16h5PoseData = aprilTag16h5PoseData.concat(get3DValue(field.key, field.sourceType));
-          break;
+        case "AprilTag 36h11 ID":
         case "AprilTag 16h5 ID":
           {
+            let idData = field.type === "AprilTag 36h11 ID" ? aprilTag36h11IdData : aprilTag16h5IdData;
             let logData = window.log.getNumberArray(field.key, time, time);
             if (logData && logData.timestamps[0] <= time) {
               for (let i = 0; i < logData.values[0].length; i += 1) {
-                aprilTag16h5IdData.push(logData.values[0][i]);
+                idData.push(logData.values[0][i]);
               }
             }
           }
