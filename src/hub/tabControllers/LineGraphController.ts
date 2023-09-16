@@ -365,12 +365,19 @@ export default class LineGraphController implements TabController {
         if (normalTypes.includes(type)) {
           validType = true;
         }
-        if (dragData.data.fields.length === 1) {
-          if (arrayTypes.includes(type)) {
-            validType = true;
-          }
+        if (arrayTypes.includes(type)) {
+          validType = true;
         }
       });
+      if (
+        dragData.data.children.length > 0 &&
+        dragData.data.children.some((childKey: string) => {
+          let childType = window.log.getType(childKey);
+          return childType !== null && normalTypes.includes(childType);
+        })
+      ) {
+        validType = true;
+      }
 
       // Add field
       if (dragData.end) {
@@ -380,13 +387,13 @@ export default class LineGraphController implements TabController {
             let type = window.log.getType(key) as LoggableType;
             if (normalTypes.includes(type)) {
               this.addField(legend, key);
-            } else if (arrayTypes.includes(type)) {
-              // Single array
-              if (dragData.data.fields.length === 1) {
-                dragData.data.children.forEach((childKey: string) => {
+            } else {
+              dragData.data.children.forEach((childKey: string) => {
+                let childType = window.log.getType(childKey);
+                if (childType !== null && normalTypes.includes(childType)) {
                   this.addField(legend, childKey);
-                });
-              }
+                }
+              });
             }
           });
         }

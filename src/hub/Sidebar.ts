@@ -324,7 +324,11 @@ export default class Sidebar {
         this.DRAG_ITEM.style.fontWeight = isGroup ? "bolder" : "initial";
         window.startDrag(x, y, offsetX, offsetY, {
           fields: isGroup ? this.selectGroup : [field.fullKey],
-          children: isGroup ? [] : Object.values(field.children).map((x) => x.fullKey)
+          children: isGroup
+            ? []
+            : Object.values(field.children)
+                .map((x) => x.fullKey)
+                .filter((x) => x !== null && !x.endsWith("/length"))
         });
         if (isGroup) {
           this.selectGroup = [];
