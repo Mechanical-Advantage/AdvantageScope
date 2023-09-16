@@ -1,6 +1,6 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
-import CustomSchemas from "./schema/Schemas";
+import CustomSchemas from "./schema/CustomSchemas";
 import { WPILOGDecoder } from "./wpilog/WPILOGDecoder";
 
 self.onmessage = (event) => {

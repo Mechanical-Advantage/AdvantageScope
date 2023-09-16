@@ -3,7 +3,7 @@ import LoggableType from "../../shared/log/LoggableType";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 import { NT4_Client, NT4_Topic } from "./NT4";
-import CustomSchemas from "./schema/Schemas";
+import CustomSchemas from "./schema/CustomSchemas";
 
 export default class NT4Source extends LiveDataSource {
   private WPILOG_PREFIX = "NT:";
