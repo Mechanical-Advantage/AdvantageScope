@@ -923,33 +923,35 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       tags.forEach((tag) => {
         let id = tag.id;
         if (!sets.has(id)) {
-          let aprilTagTexture = this.textureLoader.load(
+          this.textureLoader.load(
             "../www/textures/apriltag-" +
               (is36h11 ? "36h11" : "16h5") +
               "/" +
               (id === null ? "smile" : zfill(id.toString(), 3)) +
-              ".png"
+              ".png",
+            (texture) => {
+              texture.minFilter = THREE.NearestFilter;
+              texture.magFilter = THREE.NearestFilter;
+              let whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
+              let size = convert(is36h11 ? 8.125 : 8, "inches", "meters");
+              let mesh = new THREE.Mesh(new THREE.BoxGeometry(0.02, size, size), [
+                new THREE.MeshPhongMaterial({ map: texture }),
+                whiteMaterial,
+                whiteMaterial,
+                whiteMaterial,
+                whiteMaterial,
+                whiteMaterial
+              ]);
+              mesh.rotateX(Math.PI / 2);
+              let objectSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+              objectSet.setSource(new THREE.Group().add(mesh));
+              if (is36h11) {
+                sets.set(id, objectSet);
+              } else {
+                sets.set(id, objectSet);
+              }
+            }
           );
-          aprilTagTexture.minFilter = THREE.NearestFilter;
-          aprilTagTexture.magFilter = THREE.NearestFilter;
-          let whiteMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff });
-          let size = convert(is36h11 ? 8.125 : 8, "inches", "meters");
-          let mesh = new THREE.Mesh(new THREE.BoxGeometry(0.02, size, size), [
-            new THREE.MeshPhongMaterial({ map: aprilTagTexture }),
-            whiteMaterial,
-            whiteMaterial,
-            whiteMaterial,
-            whiteMaterial,
-            whiteMaterial
-          ]);
-          mesh.rotateX(Math.PI / 2);
-          let objectSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-          objectSet.setSource(new THREE.Group().add(mesh));
-          if (is36h11) {
-            sets.set(id, objectSet);
-          } else {
-            sets.set(id, objectSet);
-          }
         }
       });
     });
