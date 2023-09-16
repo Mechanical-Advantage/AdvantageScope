@@ -49,9 +49,9 @@ export function getLogValueText(value: any, type: LoggableType): string {
     let array: Uint8Array = value;
     let textArray: string[] = [];
     array.forEach((byte: number) => {
-      textArray.push("0x" + (byte & 0xff).toString(16).padStart(2, "0"));
+      textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
     });
-    return "[" + textArray.toString() + "]";
+    return textArray.join("-");
   } else {
     return JSON.stringify(value);
   }
