@@ -252,7 +252,7 @@ export default class Sidebar {
 
       // Add full key if available and array, raw, or string
       // - raw in case of msgpack, struct, or ptoto
-      // - strin in case of JSON
+      // - string in case of JSON
       if (
         field.fullKey !== null &&
         (window.log.getType(field.fullKey) === LoggableType.BooleanArray ||
