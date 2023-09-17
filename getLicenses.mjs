@@ -6,6 +6,10 @@ let licenses = [];
 let packageLock = JSON.parse(fs.readFileSync("package-lock.json"));
 Object.keys(packageLock.packages).forEach(async (modulePath) => {
   let moduleName = modulePath === "" ? "AdvantageScope" : modulePath.replaceAll("node_modules/", "");
+  if (modulePath !== "" && !fs.existsSync(modulePath)) {
+    // Module not installed
+    return;
+  }
   let licenseFiles = fs
     .readdirSync(modulePath === "" ? "." : modulePath)
     .filter(
@@ -26,6 +30,7 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
     );
     if (!request.ok) {
       console.error('Failed to get license for "' + moduleName + '"');
+      return;
     }
     let spdxLicense = await request.json();
     licenseText = spdxLicense.licenseText;
