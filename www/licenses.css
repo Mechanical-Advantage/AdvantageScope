@@ -1,0 +1,22 @@
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: break-spaces;
+  user-select: text;
+  padding: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #222;
+  }
+}
+
+div {
+  margin-bottom: 25px;
+}
+
+div.module-text {
+  font-weight: bold;
+  font-size: 30px;
+}

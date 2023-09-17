@@ -53,6 +53,7 @@ import { convertLegacyAssets, createAssetFolders, loadAssets } from "./assetsUti
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
 let downloadWindow: BrowserWindow | null = null;
 let prefsWindow: BrowserWindow | null = null;
+let licensesWindow: BrowserWindow | null = null;
 let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 
@@ -1201,6 +1202,13 @@ function setupMenu() {
               }
             ]
           : []),
+        {
+          label: "Show Licenses...",
+          click(_, window) {
+            if (window === undefined) return;
+            openLicenses(window);
+          }
+        },
         { type: "separator" },
         { role: "services" },
         { type: "separator" },
@@ -1239,6 +1247,13 @@ function setupMenu() {
             }
           ]
         : []),
+      {
+        label: "Show Licenses...",
+        click(_, window) {
+          if (window === undefined) return;
+          openLicenses(window);
+        }
+      },
       { type: "separator" }
     );
   }
@@ -1790,6 +1805,42 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
   downloadWindow.on("blur", () => sendMessage(downloadWindow!, "set-focused", false));
   downloadWindow.on("focus", () => sendMessage(downloadWindow!, "set-focused", true));
   downloadWindow.loadFile(path.join(__dirname, "../www/download.html"));
+}
+
+/**
+ * Creates a new licenses window if it doesn't already exist.
+ * @param parentWindow The parent window to use for alignment
+ */
+function openLicenses(parentWindow: Electron.BrowserWindow) {
+  if (licensesWindow !== null && !licensesWindow.isDestroyed()) {
+    licensesWindow.focus();
+    return;
+  }
+
+  const width = 600;
+  const height = 625;
+  licensesWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    minWidth: width,
+    minHeight: height,
+    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
+    resizable: true,
+    icon: WINDOW_ICON,
+    show: false,
+    fullscreenable: false,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  licensesWindow.setMenu(null);
+  licensesWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
+  licensesWindow.once("ready-to-show", licensesWindow.show);
+  licensesWindow.once("close", downloadStop);
+  licensesWindow.loadFile(path.join(__dirname, "../www/licenses.html"));
 }
 
 // APPLICATION EVENTS

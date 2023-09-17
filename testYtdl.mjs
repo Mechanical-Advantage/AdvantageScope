@@ -1,4 +1,4 @@
-const ytdl = require("ytdl-core");
+import ytdl from "ytdl-core";
 
 const testUrl = "https://youtu.be/R8lg6DM11fM";
 

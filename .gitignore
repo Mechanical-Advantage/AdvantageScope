@@ -3,6 +3,8 @@ node_modules
 dist
 bundles
 ffmpeg
+src/licenses.json
+ThirdPartyLicenses.txt
 
 ### Linux ###
 *~

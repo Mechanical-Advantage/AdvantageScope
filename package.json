@@ -18,8 +18,8 @@
     "watch": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "test-ytdl": "node testYtdl.js",
-    "postinstall": "node ffmpegDownload.js"
+    "test-ytdl": "node testYtdl.mjs",
+    "postinstall": "node getLicenses.mjs && node ffmpegDownload.mjs"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
@@ -41,6 +41,7 @@
     "electron-builder": "^24.6.4",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
     "mathjs": "11.3.0",
+    "node-fetch": "^3.3.2",
     "prettier": "3.0.3",
     "protobufjs": "^7.2.5",
     "remarkable": "^2.0.1",
@@ -85,7 +86,9 @@
         "filter": [
           "ffmpeg-${os}-${arch}*"
         ]
-      }
+      },
+      "LICENSE",
+      "ThirdPartyLicenses.txt"
     ],
     "fileAssociations": [
       {

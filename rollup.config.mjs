@@ -88,7 +88,8 @@ const smallRendererBundles = [
   bundle("editFov.ts", "editFov.js", false),
   bundle("export.ts", "export.js", false),
   bundle("download.ts", "download.js", false),
-  bundle("preferences.ts", "preferences.js", false)
+  bundle("preferences.ts", "preferences.js", false),
+  bundle("licenses.ts", "licenses.js", false)
 ];
 const workerBundles = [
   bundle("hub/dataSources/rlogWorker.ts", "hub$rlogWorker.js", false),

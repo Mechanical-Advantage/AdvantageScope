@@ -19,6 +19,8 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - name: Install Node.js dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
       - name: Test YTDL
         run: npm run test-ytdl

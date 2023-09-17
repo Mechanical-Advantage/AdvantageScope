@@ -18,7 +18,9 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - name: Install Node.js dependencies
-        run: npm ci --ignore-scripts
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
       - name: Compile bundles

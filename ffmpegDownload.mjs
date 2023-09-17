@@ -1,6 +1,11 @@
-const path = require("path");
-const download = require("download");
-const fs = require("fs");
+import path from "path";
+import download from "download";
+import fs from "fs";
+
+// Exit if disabled
+if (process.env.ASCOPE_NO_FFMPEG === "true") {
+  process.exit();
+}
 
 // Configuration
 const folder = "ffmpeg";
@@ -19,11 +24,11 @@ if (!fs.existsSync(folder)) {
   fs.mkdirSync(folder);
 }
 for (let [filename, url] of Object.entries(versions)) {
-  if (fs.existsSync(path.join(__dirname, folder, filename))) {
+  if (fs.existsSync(path.join(process.cwd(), folder, filename))) {
     console.log('Skipped downloading "' + filename + '"');
   } else {
-    download(url, path.join(__dirname, folder), { filename: filename }).then(() => {
-      fs.chmodSync(path.join(__dirname, folder, filename), 0o755);
+    download(url, path.join(process.cwd(), folder), { filename: filename }).then(() => {
+      fs.chmodSync(path.join(process.cwd(), folder, filename), 0o755);
       console.log('Finished downloading "' + filename + '"');
     });
   }
