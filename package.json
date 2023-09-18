@@ -128,7 +128,8 @@
       "target": "dmg",
       "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
-      "entitlementsInherit": "entitlements.mac.plist"
+      "entitlementsInherit": "entitlements.mac.plist",
+      "notarize": false
     },
     "linux": {
       "target": [
