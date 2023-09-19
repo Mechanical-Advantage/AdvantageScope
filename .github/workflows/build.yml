@@ -165,9 +165,15 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - { electronArch: "x64", flatpakArch: "x86_64", formats: "deb rpm pacman AppImage snap flatpak" }
-          - { electronArch: "arm64", flatpakArch: "aarch64", formats: "deb rpm pacman AppImage flatpak" }
-          - { electronArch: "armv7l", flatpakArch: "", formats: "deb rpm pacman AppImage snap" }
+          - { electronArch: "x64", flatpakArch: "x86_64" }
+          - { electronArch: "arm64", flatpakArch: "aarch64" }
+          - { electronArch: "armv7l", flatpakArch: "" }
+        format: ["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]
+        exclude:
+          - arch: { electronArch: "arm64", flatpakArch: "aarch64" }
+            format: "snap"
+          - arch: { electronArch: "armv7l", flatpakArch: "" }
+            format: "flatpak"
 
     steps:
       - name: Checkout repository
@@ -183,7 +189,7 @@ jobs:
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
       - name: Install flatpak packages
-        if: matrix.arch.flatpakArch != ''
+        if: matrix.format == 'flatpak'
         run: |
           sudo apt-get install -y flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
@@ -196,120 +202,32 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.arch.formats }} --publish never
+        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-      - name: Prepare artifacts (deb, rpm, pacman, AppImage)
+      - name: Prepare artifact
         run: |
-          mv dist/*.deb advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
-          mv dist/*.rpm advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
-          mv dist/*.pacman advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
-          mv dist/*.AppImage advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
-      - name: Prepare artifact (snap)
-        if: matrix.arch.electronArch != 'arm64'
-        run: |
-          mv dist/*.snap advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
-      - name: Prepare artifact (flatpak)
-        if: matrix.arch.electronArch != 'armv7l'
-        run: |
-          mv dist/*.flatpak advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
-      - name: Upload development artifact (deb)
+          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
+      - name: Upload development artifact
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
-      - name: Upload development artifact (rpm)
-        uses: actions/upload-artifact@v3
-        with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
-      - name: Upload development artifact (pacman)
-        uses: actions/upload-artifact@v3
-        with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
-      - name: Upload development artifact (AppImage)
-        uses: actions/upload-artifact@v3
-        with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
-      - name: Upload development artifact (snap)
-        if: matrix.arch.electronArch != 'arm64'
-        uses: actions/upload-artifact@v3
-        with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
-      - name: Upload development artifact (flatpak)
-        if: matrix.arch.electronArch != 'armv7l'
-        uses: actions/upload-artifact@v3
-        with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
-      - name: "Release: Upload artifact (deb)"
+      - name: "Release: Upload artifact"
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.deb
-          asset_content_type: "application/octet-stream"
-      - name: "Release: Upload artifact (rpm)"
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.rpm
-          asset_content_type: "application/octet-stream"
-      - name: "Release: Upload artifact (pacman)"
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.pacman
-          asset_content_type: "application/octet-stream"
-      - name: "Release: Upload artifact (AppImage)"
-        if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.AppImage
-          asset_content_type: "application/octet-stream"
-      - name: "Release: Upload artifact (snap)"
-        if: github.event_name == 'release' && matrix.arch.electronArch != 'arm64'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.snap
-          asset_content_type: "application/octet-stream"
-      - name: "Release: Upload artifact (flatpak)"
-        if: github.event_name == 'release' && matrix.arch.electronArch != 'armv7l'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.flatpak
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.format }}
           asset_content_type: "application/octet-stream"
 
   finalize-release:
