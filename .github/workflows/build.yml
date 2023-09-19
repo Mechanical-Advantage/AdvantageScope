@@ -95,6 +95,7 @@ jobs:
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft flatpak flatpak-builder
+          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak install flathub org.freedesktop.Platform/x86_64/20.08
           flatpak install flathub org.freedesktop.Platform/aarch64/20.08
           flatpak install flathub org.electronjs.Electron2.BaseApp/x86_64/latest
