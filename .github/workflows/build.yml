@@ -29,13 +29,13 @@ jobs:
           ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
-      # - name: Compile bundles
-      #   run: npm run compile
-      # - name: Upload bundles
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: bundles
-      #     path: bundles/*.js
+      - name: Compile bundles
+        run: npm run compile
+      - name: Upload bundles
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles
+          path: bundles/*.js
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
