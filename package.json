@@ -140,7 +140,7 @@
         "rpm",
         "pacman"
       ],
-      "icon": "icons/app/app-icon.icns",
+      "icon": "icons/app/app-icons-linux",
       "category": "Utility"
     },
     "flatpak": {
