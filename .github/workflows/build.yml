@@ -46,6 +46,13 @@ jobs:
               artifactExt: "AppImage"
             }
           - {
+              displayName: "Linux/snap",
+              os: ubuntu-latest,
+              shortName: "linux",
+              buildArg: "-l snap",
+              artifactExt: "snap"
+            }
+          - {
               displayName: "Linux/flatpak",
               os: ubuntu-latest,
               shortName: "linux",
@@ -60,13 +67,6 @@ jobs:
               shortName: "linux",
               buildArg: "-l pacman",
               artifactExt: "pacman"
-            }
-          - {
-              displayName: "Linux/snap",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l snap",
-              artifactExt: "snap"
             }
 
         arch: ["x64", "arm64", "armv7l"]
@@ -129,6 +129,7 @@ jobs:
         run: npx electron-builder build --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          DEBUG: "@malept/flatpak-bundler"
       - name: Prepare macOS artifact
         if: matrix.platform.os == 'macos-latest'
         run: |
