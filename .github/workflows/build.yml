@@ -87,8 +87,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.exe
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.exe
+          asset_path: advantagescope-win-${{ matrix.arch }}-dev.exe
+          asset_name: advantagescope-win-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.exe
           asset_content_type: "application/octet-stream"
 
   build-mac:
@@ -152,8 +152,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.dmg
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.dmg
+          asset_path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
+          asset_name: advantagescope-mac-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.dmg
           asset_content_type: "application/octet-stream"
 
   build-linux:
@@ -223,35 +223,35 @@ jobs:
       - name: Upload development artifact (deb)
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.deb
-          path: advantagescope-mac-${{ matrix.arch }}-dev.deb
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
       - name: Upload development artifact (rpm)
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.rpm
-          path: advantagescope-mac-${{ matrix.arch }}-dev.rpm
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
       - name: Upload development artifact (pacman)
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.pacman
-          path: advantagescope-mac-${{ matrix.arch }}-dev.pacman
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
       - name: Upload development artifact (AppImage)
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.AppImage
-          path: advantagescope-mac-${{ matrix.arch }}-dev.AppImage
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
       - name: Upload development artifact (snap)
         if: matrix.arch.electronArch != 'arm64'
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.snap
-          path: advantagescope-mac-${{ matrix.arch }}-dev.snap
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
       - name: Upload development artifact (flatpak)
         if: matrix.arch.electronArch != 'armv7l'
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.flatpak
-          path: advantagescope-mac-${{ matrix.arch }}-dev.flatpak
+          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -265,8 +265,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.deb
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.deb
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.deb
           asset_content_type: "application/octet-stream"
       - name: "Release: Upload artifact (rpm)"
         if: github.event_name == 'release'
@@ -275,8 +275,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.rpm
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.rpm
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.rpm
           asset_content_type: "application/octet-stream"
       - name: "Release: Upload artifact (pacman)"
         if: github.event_name == 'release'
@@ -285,8 +285,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.pacman
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.pacman
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.pacman
           asset_content_type: "application/octet-stream"
       - name: "Release: Upload artifact (AppImage)"
         if: github.event_name == 'release'
@@ -295,8 +295,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.AppImage
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.AppImage
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.AppImage
           asset_content_type: "application/octet-stream"
       - name: "Release: Upload artifact (snap)"
         if: github.event_name == 'release' && matrix.arch.electronArch != 'arm64'
@@ -305,8 +305,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.snap
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.snap
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.snap
           asset_content_type: "application/octet-stream"
       - name: "Release: Upload artifact (flatpak)"
         if: github.event_name == 'release' && matrix.arch.electronArch != 'armv7l'
@@ -315,8 +315,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-max-${{ matrix.arch }}-dev.flatpak
-          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.flatpak
+          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
+          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.flatpak
           asset_content_type: "application/octet-stream"
 
   finalize-release:
