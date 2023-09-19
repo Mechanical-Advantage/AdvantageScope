@@ -96,10 +96,10 @@ jobs:
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.freedesktop.Platform/x86_64/20.08
-          sudo flatpak install flathub org.freedesktop.Platform/aarch64/20.08
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/x86_64/latest
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/aarch64/latest
+          sudo flatpak install flathub org.freedesktop.Platform/x86_64/20.08 --assumeyes
+          sudo flatpak install flathub org.freedesktop.Platform/aarch64/20.08 --assumeyes
+          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/x86_64/latest --assumeyes
+          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/aarch64/latest --assumeyes
       - name: Prepare macOS certificate
         if: matrix.platform.os == 'macos-latest' && github.event_name == 'push'
         run: |
