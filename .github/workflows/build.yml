@@ -110,6 +110,7 @@ jobs:
         run: npx electron-builder build --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
+          DEBUG: "@malept/flatpak-bundler"
       - name: Prepare macOS artifact
         if: matrix.platform.os == 'macos-latest'
         run: |
