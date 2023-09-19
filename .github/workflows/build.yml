@@ -69,14 +69,19 @@ jobs:
               artifactExt: "pacman"
             }
 
-        arch: ["x64", "arm64", "armv7l"]
+        arch:
+          [
+            { electron: "x64", flatpak: "x86_64" },
+            { electron: "arm64", flatpak: "aarch64" },
+            { electron: "armv7l", flatpak: "arm" }
+          ]
         exclude:
-          - arch: armv7l
+          - arch: { electron: "armv7l", flatpak: "arm" }
             platform: { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
-          - arch: armv7l
+          - arch: { electron: "armv7l", flatpak: "arm" }
             platform:
               { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
-          - arch: arm64
+          - arch: { electron: "arm64", flatpak: "aarch64" }
             platform:
               {
                 displayName: "Linux/snap",
@@ -109,14 +114,11 @@ jobs:
         run: |
           sudo apt-get install flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.freedesktop.Platform/x86_64/22.08 --assumeyes
-          sudo flatpak install flathub org.freedesktop.Platform/aarch64/22.08 --assumeyes
-          sudo flatpak install flathub org.freedesktop.Sdk/x86_64/22.08 --assumeyes
-          sudo flatpak install flathub org.freedesktop.Sdk/aarch64/22.08 --assumeyes
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/x86_64/22.08 --assumeyes
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/aarch64/22.08 --assumeyes
-      - name: Prepare macOS certificate
-        if: matrix.platform.os == 'macos-latest' && github.event_name == 'push'
+          sudo flatpak install flathub org.freedesktop.Platform/${{ matrix.arch.flatpak }}/22.08 --assumeyes
+          sudo flatpak install flathub org.freedesktop.Sdk/${{ matrix.arch.flatpak }}/22.08 --assumeyes
+          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/${{ matrix.arch.flatpak }}/22.08 --assumeyes
+      - name: Load macOS certificate
+        if: matrix.platform.os == 'macos-latest' && github.event_name != 'pull_request'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
@@ -126,24 +128,24 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} ${{ matrix.platform.buildArg }} --publish never
+        run: npx electron-builder build --${{ matrix.arch.electron }} ${{ matrix.platform.buildArg }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
           DEBUG: "@malept/flatpak-bundler"
       - name: Prepare macOS artifact
         if: matrix.platform.os == 'macos-latest'
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
       - name: Prepare Linux artifact
         if: matrix.platform.os == 'ubuntu-latest'
         run: |
-          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
       - name: Prepare Windows artifact
         if: matrix.platform.os == 'windows-latest'
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}"
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
-          path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch }}-dev.${{ matrix.platform.artifactExt }}
+          name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
+          path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
