@@ -100,10 +100,10 @@ jobs:
         run: |
           sudo apt-get install flatpak flatpak-builder
           sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.freedesktop.Platform/x86_64/22.08 --assumeyes
-          sudo flatpak install flathub org.freedesktop.Platform/aarch64/22.08 --assumeyes
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/x86_64/22.08 --assumeyes
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/aarch64/22.08 --assumeyes
+          flatpak install flathub org.freedesktop.Platform/x86_64/22.08 --assumeyes
+          flatpak install flathub org.freedesktop.Platform/aarch64/22.08 --assumeyes
+          flatpak install flathub org.electronjs.Electron2.BaseApp/x86_64/22.08 --assumeyes
+          flatpak install flathub org.electronjs.Electron2.BaseApp/aarch64/22.08 --assumeyes
       - name: Prepare macOS certificate
         if: matrix.platform.os == 'macos-latest' && github.event_name == 'push'
         run: |
