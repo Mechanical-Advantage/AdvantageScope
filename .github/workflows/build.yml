@@ -69,19 +69,14 @@ jobs:
               artifactExt: "snap"
             }
 
-        arch: ["x64", "arm64"]
+        arch: ["x64", "arm64", "armv7l"]
         exclude:
-          - arch: arm64
-            platform:
-              {
-                displayName: "Linux/snap",
-                os: ubuntu-latest,
-                shortName: "linux",
-                buildArg: "-l snap",
-                artifactExt: "snap"
-              }
-        include:
           - arch: armv7l
+            platform: { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
+          - arch: armv7l
+            platform:
+              { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
+          - arch: arm64
             platform:
               {
                 displayName: "Linux/snap",
