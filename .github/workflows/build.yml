@@ -3,6 +3,8 @@ name: Build
 on:
   push:
   pull_request:
+  release:
+    types: [published]
 
 jobs:
   compile:
@@ -131,6 +133,12 @@ jobs:
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - name: Load macOS notarizations credentials
+        if: matrix.platform.os == 'macos-latest' && github.event_name == 'release'
+        run: |
+          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
+          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
+          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
         uses: actions/download-artifact@v3
         with:
@@ -153,8 +161,23 @@ jobs:
         if: matrix.platform.os == 'windows-latest'
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}"
-      - name: Upload artifacts
+      - name: Upload development artifact
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
           path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
+          asset_name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.platform.artifactExt }}
+          asset_content_type: "application/octet-stream"
