@@ -14,6 +14,8 @@ jobs:
   compile:
     name: Check & Compile
     runs-on: ubuntu-latest
+    outputs:
+      linux-formats-json: ${{ steps.linux-formats.outputs.json }}
 
     steps:
       - name: Checkout repository
@@ -36,6 +38,15 @@ jobs:
         with:
           name: bundles
           path: bundles/*.js
+      - name: Make Linux format list
+        id: linux-formats
+        run: |
+          if [ ${{ github.event_name }} = "release" ]
+          then
+            echo 'json=[\"deb\", \"rpm\", \"pacman\", \"AppImage\", \"snap\", \"flatpak\"]' >> $GITHUB_OUTPUT
+          else
+            echo 'json=[\"AppImage\"]' >> $GITHUB_OUTPUT
+          fi
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
@@ -168,7 +179,7 @@ jobs:
           - { electronArch: "x64", flatpakArch: "x86_64" }
           - { electronArch: "arm64", flatpakArch: "aarch64" }
           - { electronArch: "armv7l", flatpakArch: "" }
-        format: ${{ github.event_name == 'release' && '["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]' || '["AppImage"]' }}
+        format: ${{ fromJson(needs.compile.outputs.linux-formats-json) }}
         exclude:
           - arch: { electronArch: "arm64", flatpakArch: "aarch64" }
             format: "snap"
