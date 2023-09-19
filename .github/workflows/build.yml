@@ -157,7 +157,7 @@ jobs:
           asset_content_type: "application/octet-stream"
 
   build-linux:
-    name: Build for Linux (${{ matrix.arch.electronArch }})
+    name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
     needs: compile
     runs-on: ubuntu-latest
 
@@ -168,7 +168,7 @@ jobs:
           - { electronArch: "x64", flatpakArch: "x86_64" }
           - { electronArch: "arm64", flatpakArch: "aarch64" }
           - { electronArch: "armv7l", flatpakArch: "" }
-        format: ["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]
+        format: ${{ github.event_name == 'release' && '["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]' || '["AppImage"]' }}
         exclude:
           - arch: { electronArch: "arm64", flatpakArch: "aarch64" }
             format: "snap"
