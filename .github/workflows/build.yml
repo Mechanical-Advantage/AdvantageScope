@@ -137,7 +137,7 @@ jobs:
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-      - name: Load macOS notarizations credentials
+      - name: Load macOS notarization credentials
         if: matrix.platform.os == 'macos-latest' && github.event_name == 'release'
         run: |
           echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
@@ -177,6 +177,7 @@ jobs:
         with:
           token: ${{ github.token }}
       - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
