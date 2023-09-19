@@ -199,7 +199,6 @@ jobs:
         run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.arch.formats }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-          DEBUG: "@malept/flatpak-bundler"
       - name: Prepare artifact (deb)
         run: |
           mv dist/*.deb advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
