@@ -73,12 +73,12 @@ jobs:
           [
             { electron: "x64", flatpak: "x86_64" },
             { electron: "arm64", flatpak: "aarch64" },
-            { electron: "armv7l", flatpak: "arm" }
+            { electron: "armv7l", flatpak: "" }
           ]
         exclude:
-          - arch: { electron: "armv7l", flatpak: "arm" }
+          - arch: { electron: "armv7l", flatpak: "" }
             platform: { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
-          - arch: { electron: "armv7l", flatpak: "arm" }
+          - arch: { electron: "armv7l", flatpak: "" }
             platform:
               { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
           - arch: { electron: "arm64", flatpak: "aarch64" }
@@ -89,6 +89,15 @@ jobs:
                 shortName: "linux",
                 buildArg: "-l snap",
                 artifactExt: "snap"
+              }
+          - arch: { electron: "armv7l", flatpak: "" }
+            platform:
+              {
+                displayName: "Linux/flatpak",
+                os: ubuntu-latest,
+                shortName: "linux",
+                buildArg: "-l flatpak",
+                artifactExt: "flatpak"
               }
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch.electron }})
