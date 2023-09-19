@@ -37,78 +37,15 @@ jobs:
           name: bundles
           path: bundles/*.js
 
-  build:
+  build-win:
+    name: Build for Windows (${{ matrix.arch }})
+    needs: compile
+    runs-on: windows-latest
+
     strategy:
       fail-fast: false
       matrix:
-        platform:
-          - { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
-          - { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
-          - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", buildArg: "-l deb", artifactExt: "deb" }
-          - { displayName: "Linux/rpm", os: ubuntu-latest, shortName: "linux", buildArg: "-l rpm", artifactExt: "rpm" }
-          - {
-              displayName: "Linux/pacman",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l pacman",
-              artifactExt: "pacman"
-            }
-          - {
-              displayName: "Linux/AppImage",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l AppImage",
-              artifactExt: "AppImage"
-            }
-          - {
-              displayName: "Linux/snap",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l snap",
-              artifactExt: "snap"
-            }
-          - {
-              displayName: "Linux/flatpak",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l flatpak",
-              artifactExt: "flatpak"
-            }
-
-        arch:
-          [
-            { electron: "x64", flatpak: "x86_64" },
-            { electron: "arm64", flatpak: "aarch64" },
-            { electron: "armv7l", flatpak: "" }
-          ]
-        exclude:
-          - arch: { electron: "armv7l", flatpak: "" }
-            platform: { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
-          - arch: { electron: "armv7l", flatpak: "" }
-            platform:
-              { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
-          - arch: { electron: "arm64", flatpak: "aarch64" }
-            platform:
-              {
-                displayName: "Linux/snap",
-                os: ubuntu-latest,
-                shortName: "linux",
-                buildArg: "-l snap",
-                artifactExt: "snap"
-              }
-          - arch: { electron: "armv7l", flatpak: "" }
-            platform:
-              {
-                displayName: "Linux/flatpak",
-                os: ubuntu-latest,
-                shortName: "linux",
-                buildArg: "-l flatpak",
-                artifactExt: "flatpak"
-              }
-
-    name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch.electron }})
-    needs: compile
-    runs-on: ${{ matrix.platform.os }}
+        arch: ["x64", "arm64"]
 
     steps:
       - name: Checkout repository
@@ -120,56 +57,23 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-      - name: Install Linux dependencies
-        if: matrix.platform.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
-      - name: Install Linux dependencies (flatpak)
-        if: matrix.platform.artifactExt == 'flatpak'
-        run: |
-          sudo apt-get install flatpak flatpak-builder
-          sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          sudo flatpak install flathub org.freedesktop.Platform/${{ matrix.arch.flatpak }}/22.08 --assumeyes
-          sudo flatpak install flathub org.freedesktop.Sdk/${{ matrix.arch.flatpak }}/22.08 --assumeyes
-          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/${{ matrix.arch.flatpak }}/22.08 --assumeyes
-      - name: Load macOS certificate
-        if: matrix.platform.os == 'macos-latest' && github.event_name != 'pull_request'
-        run: |
-          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
-          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
-      - name: Load macOS notarization credentials
-        if: matrix.platform.os == 'macos-latest' && github.event_name == 'release'
-        run: |
-          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
-          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
-          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
         uses: actions/download-artifact@v3
         with:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch.electron }} ${{ matrix.platform.buildArg }} --publish never
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
-          DEBUG: "@malept/flatpak-bundler"
-      - name: Prepare macOS artifact
-        if: matrix.platform.os == 'macos-latest'
+      - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
-      - name: Prepare Linux artifact
-        if: matrix.platform.os == 'ubuntu-latest'
-        run: |
-          mv dist/*.${{ matrix.platform.artifactExt }} advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
-      - name: Prepare Windows artifact
-        if: matrix.platform.os == 'windows-latest'
-        run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}"
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-dev.exe"
       - name: Upload development artifact
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
-          path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
+          name: advantagescope-win-${{ matrix.arch }}-dev.exe
+          path: advantagescope-win-${{ matrix.arch }}-dev.exe
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -183,13 +87,241 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
-          asset_name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.platform.artifactExt }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.exe
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.exe
+          asset_content_type: "application/octet-stream"
+
+  build-mac:
+    name: Build for macOS (${{ matrix.arch }})
+    needs: compile
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64", "arm64"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Load macOS certificate
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - name: Load macOS notarization credentials
+        if: github.event_name == 'release'
+        run: |
+          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
+          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
+          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-dev.dmg
+      - name: Upload development artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.dmg
+          path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.dmg
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.dmg
+          asset_content_type: "application/octet-stream"
+
+  build-linux:
+    name: Build for Linux (${{ matrix.arch }})
+    needs: compile
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - { electronArch: "x64", flatpakArch: "x86_64", formats: "deb rpm pacman AppImage snap flatpak" }
+          - { electronArch: "arm64", flatpakArch: "aarch64", formats: "deb rpm pacman AppImage flatpak" }
+          - { electronArch: "armv7l", flatpakArch: "", formats: "deb rpm pacman AppImage snap" }
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Install Linux packages
+        run: |
+          sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
+      - name: Install flatpak packages
+        if: matrix.arch.flatpakArch != ''
+        run: |
+          sudo apt-get install -y flatpak flatpak-builder
+          sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          sudo flatpak install flathub org.freedesktop.Platform/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
+          sudo flatpak install flathub org.freedesktop.Sdk/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
+          sudo flatpak install flathub org.electronjs.Electron2.BaseApp/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.arch.formats }} --publish never
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+          DEBUG: "@malept/flatpak-bundler"
+      - name: Prepare artifact (deb)
+        run: |
+          mv dist/*.deb advantagescope-linux-${{ matrix.arch.electronArch }}-dev.deb
+      - name: Prepare artifact (rpm)
+        run: |
+          mv dist/*.rpm advantagescope-linux-${{ matrix.arch.electronArch }}-dev.rpm
+      - name: Prepare artifact (pacman)
+        run: |
+          mv dist/*.pacman advantagescope-linux-${{ matrix.arch.electronArch }}-dev.pacman
+      - name: Prepare artifact (AppImage)
+        run: |
+          mv dist/*.AppImage advantagescope-linux-${{ matrix.arch.electronArch }}-dev.AppImage
+      - name: Prepare artifact (snap)
+        if: matrix.arch.electronArch != 'arm64'
+        run: |
+          mv dist/*.snap advantagescope-linux-${{ matrix.arch.electronArch }}-dev.snap
+      - name: Prepare artifact (flatpak)
+        if: matrix.arch.electronArch != 'armv7l'
+        run: |
+          mv dist/*.flatpak advantagescope-linux-${{ matrix.arch.electronArch }}-dev.flatpak
+      - name: Upload development artifact (deb)
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.deb
+          path: advantagescope-mac-${{ matrix.arch }}-dev.deb
+      - name: Upload development artifact (rpm)
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.rpm
+          path: advantagescope-mac-${{ matrix.arch }}-dev.rpm
+      - name: Upload development artifact (pacman)
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.pacman
+          path: advantagescope-mac-${{ matrix.arch }}-dev.pacman
+      - name: Upload development artifact (AppImage)
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.AppImage
+          path: advantagescope-mac-${{ matrix.arch }}-dev.AppImage
+      - name: Upload development artifact (snap)
+        if: matrix.arch.electronArch != 'arm64'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.snap
+          path: advantagescope-mac-${{ matrix.arch }}-dev.snap
+      - name: Upload development artifact (flatpak)
+        if: matrix.arch.electronArch != 'armv7l'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-dev.flatpak
+          path: advantagescope-mac-${{ matrix.arch }}-dev.flatpak
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact (deb)"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.deb
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.deb
+          asset_content_type: "application/octet-stream"
+      - name: "Release: Upload artifact (rpm)"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.rpm
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.rpm
+          asset_content_type: "application/octet-stream"
+      - name: "Release: Upload artifact (pacman)"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.pacman
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.pacman
+          asset_content_type: "application/octet-stream"
+      - name: "Release: Upload artifact (AppImage)"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.AppImage
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.AppImage
+          asset_content_type: "application/octet-stream"
+      - name: "Release: Upload artifact (snap)"
+        if: github.event_name == 'release' && matrix.arch.electronArch != 'arm64'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.snap
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.snap
+          asset_content_type: "application/octet-stream"
+      - name: "Release: Upload artifact (flatpak)"
+        if: github.event_name == 'release' && matrix.arch.electronArch != 'armv7l'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-max-${{ matrix.arch }}-dev.flatpak
+          asset_name: advantagescope-max-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.flatpak
           asset_content_type: "application/octet-stream"
 
   finalize-release:
     name: Finalize Release
-    needs: build
+    needs: [build-win, build-mac, build-linux]
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
 
