@@ -14,8 +14,6 @@ jobs:
   compile:
     name: Check & Compile
     runs-on: ubuntu-latest
-    outputs:
-      linux-formats-json: ${{ steps.linux-formats.outputs.json }}
 
     steps:
       - name: Checkout repository
@@ -31,22 +29,13 @@ jobs:
           ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
-      - name: Compile bundles
-        run: npm run compile
-      - name: Upload bundles
-        uses: actions/upload-artifact@v3
-        with:
-          name: bundles
-          path: bundles/*.js
-      - name: Make Linux format list
-        id: linux-formats
-        run: |
-          if [ ${{ github.event_name }} = "release" ]
-          then
-            echo 'json=[\"deb\", \"rpm\", \"pacman\", \"AppImage\", \"snap\", \"flatpak\"]' >> $GITHUB_OUTPUT
-          else
-            echo 'json=[\"AppImage\"]' >> $GITHUB_OUTPUT
-          fi
+      # - name: Compile bundles
+      #   run: npm run compile
+      # - name: Upload bundles
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: bundles
+      #     path: bundles/*.js
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
@@ -179,7 +168,7 @@ jobs:
           - { electronArch: "x64", flatpakArch: "x86_64" }
           - { electronArch: "arm64", flatpakArch: "aarch64" }
           - { electronArch: "armv7l", flatpakArch: "" }
-        format: ${{ fromJson(needs.compile.outputs.linux-formats-json) }}
+        format: ${{ fromJson(github.event_name == 'release' && '["deb", "rpm", "pacman", "AppImage", "snap", "flatpak"]' || '["AppImage"]') }}
         exclude:
           - arch: { electronArch: "arm64", flatpakArch: "aarch64" }
             format: "snap"
