@@ -42,38 +42,38 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
+          # - { displayName: "macOS", os: macos-latest, shortName: "mac", buildArg: "-m", artifactExt: "dmg" }
           - { displayName: "Windows", os: windows-latest, shortName: "win", buildArg: "-w", artifactExt: "exe" }
-          - {
-              displayName: "Linux/AppImage",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l AppImage",
-              artifactExt: "AppImage"
-            }
-          - {
-              displayName: "Linux/snap",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l snap",
-              artifactExt: "snap"
-            }
-          - {
-              displayName: "Linux/flatpak",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l flatpak",
-              artifactExt: "flatpak"
-            }
-          - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", buildArg: "-l deb", artifactExt: "deb" }
-          - { displayName: "Linux/rpm", os: ubuntu-latest, shortName: "linux", buildArg: "-l rpm", artifactExt: "rpm" }
-          - {
-              displayName: "Linux/pacman",
-              os: ubuntu-latest,
-              shortName: "linux",
-              buildArg: "-l pacman",
-              artifactExt: "pacman"
-            }
+          # - {
+          #     displayName: "Linux/AppImage",
+          #     os: ubuntu-latest,
+          #     shortName: "linux",
+          #     buildArg: "-l AppImage",
+          #     artifactExt: "AppImage"
+          #   }
+          # - {
+          #     displayName: "Linux/snap",
+          #     os: ubuntu-latest,
+          #     shortName: "linux",
+          #     buildArg: "-l snap",
+          #     artifactExt: "snap"
+          #   }
+          # - {
+          #     displayName: "Linux/flatpak",
+          #     os: ubuntu-latest,
+          #     shortName: "linux",
+          #     buildArg: "-l flatpak",
+          #     artifactExt: "flatpak"
+          #   }
+          # - { displayName: "Linux/deb", os: ubuntu-latest, shortName: "linux", buildArg: "-l deb", artifactExt: "deb" }
+          # - { displayName: "Linux/rpm", os: ubuntu-latest, shortName: "linux", buildArg: "-l rpm", artifactExt: "rpm" }
+          # - {
+          #     displayName: "Linux/pacman",
+          #     os: ubuntu-latest,
+          #     shortName: "linux",
+          #     buildArg: "-l pacman",
+          #     artifactExt: "pacman"
+          #   }
 
         arch:
           [
@@ -186,3 +186,24 @@ jobs:
           asset_path: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-dev.${{ matrix.platform.artifactExt }}
           asset_name: advantagescope-${{ matrix.platform.shortName }}-${{ matrix.arch.electron }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.platform.artifactExt }}
           asset_content_type: "application/octet-stream"
+
+  finalize-release:
+    name: Finalize Release
+    needs: build
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get release info
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: Edit release
+        uses: irongut/EditRelease@v1.2.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          id: ${{ github.event.release.id }}
+          prerelease: false
+          replacebody: false
+          body: '<table><tr><th colspan=4>Common Downloads<tr><td colspan=4>🪟 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">Windows x64</a><tr><td colspan=4>🍎 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Apple Silicon</a><tr><td colspan=4>🍎 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Intel</a><tr><td colspan=4>🐧 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">Linux x86 Deb</a><tr><th colspan=4>All Downloads<tr><td>Windows<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-arm64-${{ steps.get_release_info.outputs.tag_name }}.exe">arm64</a><td><tr><td>macOS<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">arm64</a><td><tr><td>Linux/AppImage<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm32</a><tr><td>Linux/snap<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.snap">x64</a><td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.snap">arm32</a><tr><td>Linux/flatpak<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">arm64</a><td><tr><td>Linux/deb<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.deb">arm64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.deb">arm32</a><tr><td>Linux/rpm<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.rpm">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm32</a><tr><td>Linux/pacman<td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.pacman">x64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm64</a><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm32</a></table>'
