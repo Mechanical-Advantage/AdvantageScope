@@ -143,6 +143,10 @@
       "icon": "icons/app/app-icon.icns",
       "category": "Utility"
     },
+    "flatpak": {
+      "runtimeVersion": "22.08",
+      "baseVersion": "22.08"
+    },
     "win": {
       "target": "nsis",
       "icon": "icons/app/app-icon.ico"
