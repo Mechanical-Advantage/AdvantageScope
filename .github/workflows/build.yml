@@ -66,24 +66,31 @@ jobs:
               os: ubuntu-latest,
               shortName: "linux",
               buildArg: "-l pacman",
-              artifactExt: "pkg.tar.zst"
+              artifactExt: "pacman"
             }
 
         arch: ["x64", "arm64"]
-        exclude:
-          - arch: arm64
-            platform: { displayName: "Linux/snap", os: ubuntu-latest, shortName: "linux", artifactExt: "snap" }
+        # exclude:
+        #   - arch: arm64
+        #     platform: { displayName: "Linux/snap", os: ubuntu-latest, shortName: "linux", artifactExt: "snap" }
 
     name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
     needs: compile
     runs-on: ${{ matrix.platform.os }}
-    container: electronuserland/builder:18
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+      - name: Install Linux dependencies
+        if: matrix.platform.os == 'ubuntu-latest'
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft flatpak flatpak-builder
       - name: Prepare macOS certificate
         if: matrix.platform.os == 'macos-latest' && github.event_name == 'push'
         run: |
