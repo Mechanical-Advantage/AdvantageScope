@@ -70,6 +70,7 @@ jobs:
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-dev.exe"
       - name: Upload development artifact
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-win-${{ matrix.arch }}-dev.exe
@@ -135,6 +136,7 @@ jobs:
         run: |
           mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-dev.dmg
       - name: Upload development artifact
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-mac-${{ matrix.arch }}-dev.dmg
@@ -209,6 +211,7 @@ jobs:
         run: |
           mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
       - name: Upload development artifact
+        if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
