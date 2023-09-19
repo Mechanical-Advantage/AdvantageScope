@@ -91,7 +91,7 @@ jobs:
                 artifactExt: "snap"
               }
 
-    name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch }})
+    name: Build for ${{ matrix.platform.displayName }} (${{ matrix.arch.electron }})
     needs: compile
     runs-on: ${{ matrix.platform.os }}
 
