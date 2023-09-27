@@ -122,3 +122,18 @@ export function createUUID(): string {
 
   return outString;
 }
+
+/** Combines arrays of raw data. */
+export function concatBuffers(arrays: Uint8Array[]): Uint8Array {
+  let size = 0;
+  arrays.forEach((array) => {
+    size += array.byteLength;
+  });
+  let result = new Uint8Array(size);
+  let position = 0;
+  arrays.forEach((array) => {
+    result.set(array, position);
+    position += array.byteLength;
+  });
+  return result;
+}

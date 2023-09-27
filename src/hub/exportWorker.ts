@@ -5,6 +5,7 @@ import LoggableType from "../shared/log/LoggableType";
 import { filterFieldByPrefixes, getLogValueText } from "../shared/log/LogUtil";
 import { cleanFloat } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
+import { McapWriter } from "@mcap/core";
 
 self.onmessage = (event) => {
   // WORKER SETUP
@@ -61,6 +62,9 @@ self.onmessage = (event) => {
         break;
       case "wpilog":
         resolve(generateWPILOG(log, fields, progress));
+        break;
+      case "mcap":
+        resolve(generateMCAP(log, fields, progress));
         break;
     }
   } catch {
@@ -220,4 +224,37 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
   // Encode full log
   progress(1);
   return encoder.getEncoded();
+}
+
+function generateMCAP(log: Log, fields: string[], progress: (progress: number) => void) {
+  // Create MCAP writer
+  let writerBuffers: Uint8Array[] = [];
+  let writerPosition: bigint = BigInt(0);
+  const writer = new McapWriter({
+    writable: {
+      async write(buffer) {
+        writerBuffers.push(buffer);
+        writerPosition += BigInt(buffer.length);
+      },
+
+      position() {
+        return writerPosition;
+      }
+    }
+  });
+
+  // Add fields
+  fields.forEach(async (field) => {
+    let fieldData = log.getRange(field, -Infinity, Infinity);
+    let fieldType = log.getType(field);
+    if (fieldData === undefined || fieldType === undefined) return;
+
+    // Register channel
+    let channelId = await writer.registerChannel({
+      messageEncoding: "",
+      metadata: new Map(),
+      schemaId: 0,
+      topic: field
+    });
+  });
 }
