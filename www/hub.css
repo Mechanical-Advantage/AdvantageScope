@@ -1389,6 +1389,36 @@ div.timeline-viz-timeline-marker-container div {
   background-color: lightgreen;
 }
 
+div.timeline-viz-timeline-label {
+  position: absolute;
+  top: 30px;
+  left: 0px;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-size: 12px;
+  padding: 8px;
+  user-select: none;
+  pointer-events: none;
+
+  background-color: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0px 0px 3px 2px #00000020;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+div.timeline-viz-timeline-label.show {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.timeline-viz-timeline-label {
+    box-shadow: none;
+    border: 0.5px solid rgba(255, 255, 255, 0.3);
+    background-color: #222222;
+  }
+}
+
 button.timeline-viz-reset-button {
   position: absolute;
   width: 28px;

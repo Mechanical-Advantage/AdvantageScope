@@ -14,6 +14,7 @@ export default abstract class TimelineVizController implements TabController {
   protected CONTENT: HTMLElement;
   private TIMELINE_INPUT: HTMLInputElement;
   private TIMELINE_MARKER_CONTAINER: HTMLElement;
+  private TIMELINE_LABEL: HTMLElement;
   private DRAG_HIGHLIGHT: HTMLElement;
   private CONFIG_TABLE: HTMLElement;
 
@@ -56,6 +57,7 @@ export default abstract class TimelineVizController implements TabController {
     this.TIMELINE_MARKER_CONTAINER = content.getElementsByClassName(
       "timeline-viz-timeline-marker-container"
     )[0] as HTMLElement;
+    this.TIMELINE_LABEL = content.getElementsByClassName("timeline-viz-timeline-label")[0] as HTMLElement;
     this.DRAG_HIGHLIGHT = content.getElementsByClassName("timeline-viz-drag-highlight")[0] as HTMLElement;
     this.CONFIG_TABLE = content.getElementsByClassName("timeline-viz-config")[0] as HTMLElement;
 
@@ -91,6 +93,12 @@ export default abstract class TimelineVizController implements TabController {
         uuid: this.UUID,
         type: this.type
       });
+    });
+    this.TIMELINE_INPUT.addEventListener("mouseenter", () => {
+      this.TIMELINE_LABEL.classList.add("show");
+    });
+    this.TIMELINE_INPUT.addEventListener("mouseleave", () => {
+      this.TIMELINE_LABEL.classList.remove("show");
     });
 
     // Drag handling
@@ -336,6 +344,19 @@ export default abstract class TimelineVizController implements TabController {
       shadowBottom.style.opacity =
         Math.ceil(content.scrollTop + content.clientHeight) >= content.scrollHeight ? "0" : "1";
     });
+
+    // Update timeline label position
+    {
+      let contentBox = this.CONTENT.getBoundingClientRect();
+      let timelineBox = this.TIMELINE_MARKER_CONTAINER.getBoundingClientRect();
+      let windowX = scaleValue(
+        Number(this.TIMELINE_INPUT.value),
+        [Number(this.TIMELINE_INPUT.min), Number(this.TIMELINE_INPUT.max)],
+        [timelineBox.left + this.HANDLE_WIDTH / 2, timelineBox.right - this.HANDLE_WIDTH / 2]
+      );
+      let contentX = windowX - contentBox.left;
+      this.TIMELINE_LABEL.style.left = contentX.toString() + "px";
+    }
   }
 
   /** Called every 15ms (regardless of the visible tab). */
@@ -394,6 +415,14 @@ export default abstract class TimelineVizController implements TabController {
     } else {
       this.TIMELINE_INPUT.value = range[0].toString();
     }
+
+    // Update timeline label
+    let labelNumber = Math.round(time * 10) / 10;
+    let labelString = labelNumber.toString();
+    if (labelNumber % 1 === 0) {
+      labelString += ".0";
+    }
+    this.TIMELINE_LABEL.innerText = labelString + "s";
 
     // Update content height
     this.CONTENT.style.setProperty(
