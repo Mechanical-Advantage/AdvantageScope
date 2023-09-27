@@ -128,16 +128,24 @@
       "target": "dmg",
       "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
-      "entitlementsInherit": "entitlements.mac.plist"
+      "entitlementsInherit": "entitlements.mac.plist",
+      "notarize": false
     },
     "linux": {
       "target": [
-        "deb",
+        "AppImage",
         "snap",
-        "AppImage"
+        "flatpak",
+        "deb",
+        "rpm",
+        "pacman"
       ],
-      "icon": "icons/app/app-icon.icns",
+      "icon": "icons/app/app-icons-linux",
       "category": "Utility"
+    },
+    "flatpak": {
+      "runtimeVersion": "22.08",
+      "baseVersion": "22.08"
     },
     "win": {
       "target": "nsis",
