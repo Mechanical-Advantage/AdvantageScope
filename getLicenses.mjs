@@ -16,11 +16,11 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
       (filename) =>
         filename.toLowerCase().startsWith("license") && !filename.endsWith(".js") && !filename.endsWith(".json")
     );
-  let licenseText = "";
+  let licenseText = null;
   if (licenseFiles.length > 0) {
     // Get license text from local files
     licenseText = licenseFiles.map((filename) => fs.readFileSync(path.join(modulePath, filename))).join("\n");
-  } else {
+  } else if (fs.existsSync(path.join(modulePath, "package.json"))) {
     // Read from package.json
     let packageJson = JSON.parse(fs.readFileSync(path.join(modulePath, "package.json")));
     let request = await fetch(
@@ -35,10 +35,12 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
     let spdxLicense = await request.json();
     licenseText = spdxLicense.licenseText;
   }
-  licenses.push({
-    module: moduleName,
-    text: licenseText
-  });
+  if (licenseText !== null) {
+    licenses.push({
+      module: moduleName,
+      text: licenseText
+    });
+  }
 });
 
 // Save JSON version
