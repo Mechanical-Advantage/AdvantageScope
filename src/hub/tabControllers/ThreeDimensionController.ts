@@ -601,7 +601,7 @@ export default class ThreeDimensionController extends TimelineVizController {
               }
             }
           }
-          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, time, "blue");
+          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, Infinity, "blue");
           if (x !== null && y !== null) {
             zebraMarkerData[team] = {
               translation: [convert(x, "feet", "meters"), convert(y, "feet", "meters")],
