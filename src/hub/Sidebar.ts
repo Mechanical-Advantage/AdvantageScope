@@ -201,6 +201,10 @@ export default class Sidebar {
 
     // Update title
     let range = window.log.getTimestampRange();
+    let liveTime = window.selection.getCurrentLiveTime();
+    if (liveTime !== null) {
+      range[1] = liveTime;
+    }
     let fieldCount = window.log.getFieldCount();
     if (fieldCount === 0) {
       this.SIDEBAR_TITLE.innerText = "No data available";

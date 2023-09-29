@@ -44,6 +44,9 @@ export default class Log {
   clearBeforeTime(timestamp: number) {
     if (this.timestampRange !== null && this.timestampRange[0] < timestamp) {
       this.timestampRange[0] = timestamp;
+      if (this.timestampRange[1] < this.timestampRange[0]) {
+        this.timestampRange[1] = this.timestampRange[0];
+      }
     }
     Object.values(this.timestampSetCache).forEach((cache) => {
       while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
