@@ -289,6 +289,11 @@ div.field-item {
   width: 100%;
   height: 30px;
   transition: background 0.25s;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
+    rgba(0, 0, 0, 0) calc(100% - 10px)
+  );
 }
 
 div.field-item.generated {
@@ -321,7 +326,7 @@ svg.field-item-icon {
 div.field-item-label {
   position: absolute;
   left: calc(35px + var(--indent, 0px));
-  max-width: calc(100% - 35px - var(--indent, 0px) - 18px);
+  max-width: calc(100% - 35px - var(--indent, 0px) - 10px);
   top: 5px;
   height: 20px;
 
@@ -343,6 +348,7 @@ span.field-item-type-label {
 }
 
 div.field-item.generated span.field-item-type-label {
+  /* Restore to same color as type label for non-generated field */
   opacity: calc(0.3 / 0.6);
 }
 
