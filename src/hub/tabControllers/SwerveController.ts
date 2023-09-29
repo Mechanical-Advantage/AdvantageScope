@@ -159,7 +159,7 @@ export default class JoysticksController extends TimelineVizController {
     if (fields[2] !== null) {
       let key = fields[2].key + (fields[2].sourceType === LoggableType.Number ? "" : "/value");
       let robotRotationRaw = getOrDefault(window.log, key, LoggableType.Number, time, 0);
-      if (this.ROTATION_UNITS.value === "radians") {
+      if (this.ROTATION_UNITS.value === "radians" || fields[2].sourceType !== LoggableType.Number) {
         robotRotation += robotRotationRaw;
       } else {
         robotRotation += convert(robotRotationRaw, "degrees", "radians");
