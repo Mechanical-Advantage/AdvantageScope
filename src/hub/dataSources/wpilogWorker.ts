@@ -123,6 +123,7 @@ self.onmessage = (event) => {
               log.putRaw(key, timestamp, record.getRaw());
               if (CustomSchemas.has(type)) {
                 CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+                log.setGeneratedParent(key);
               }
               // }
               break;

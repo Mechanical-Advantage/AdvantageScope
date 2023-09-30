@@ -19,7 +19,6 @@ export default class NT4Source extends LiveDataSource {
   private loggingSubscription: number | null = null;
   private lowBandwidthTopicSubscription: number | null = null;
   private lowBandwidthDataSubscriptions: { [id: string]: number } = {};
-  private schemaFields: Set<string> = new Set(); // Fields with a type matching a custom schema
 
   constructor(akitMode: boolean) {
     super();
@@ -167,9 +166,6 @@ export default class NT4Source extends LiveDataSource {
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
           let modifiedKey = this.getKeyFromTopic(topic);
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
-          if (CustomSchemas.has(topic.type)) {
-            this.schemaFields.add(modifiedKey);
-          }
           this.shouldRunOutputCallback = true;
         },
         (topic: NT4_Topic) => {
@@ -268,6 +264,7 @@ export default class NT4Source extends LiveDataSource {
                 this.log?.putRaw(key, timestamp, value);
                 if (CustomSchemas.has(topic.type)) {
                   CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                  this.log.setGeneratedParent(key);
                 }
                 // }
                 updated = true;
@@ -305,7 +302,6 @@ export default class NT4Source extends LiveDataSource {
           this.shouldRunOutputCallback = false;
           this.connectTime = null;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
-          this.schemaFields = new Set();
         }
       );
 

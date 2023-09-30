@@ -137,6 +137,11 @@ export default class Log {
     return this.generatedParents.has(key);
   }
 
+  /** Sets the key to cause its children to be marked generated. */
+  setGeneratedParent(key: string) {
+    this.generatedParents.add(key);
+  }
+
   /** Returns the combined timestamps from a set of fields.
    *
    * If a UUID is provided, the last set of keys will be cached so
@@ -302,7 +307,7 @@ export default class Log {
     this.fields[key].putBooleanArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.BooleanArray) {
       this.processTimestamp(key, timestamp);
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
@@ -327,7 +332,7 @@ export default class Log {
     this.fields[key].putNumberArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.NumberArray) {
       this.processTimestamp(key, timestamp);
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
@@ -352,7 +357,7 @@ export default class Log {
     this.fields[key].putStringArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.StringArray) {
       this.processTimestamp(key, timestamp);
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
@@ -429,7 +434,7 @@ export default class Log {
   putJSON(key: string, timestamp: number, value: string) {
     this.putString(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       this.fields[key].specialType = "JSON";
       let decodedValue: unknown = null;
       try {
@@ -445,7 +450,7 @@ export default class Log {
   putMsgpack(key: string, timestamp: number, value: Uint8Array) {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       this.fields[key].specialType = "MessagePack";
       let decodedValue: unknown = null;
       try {
@@ -464,7 +469,7 @@ export default class Log {
   putStruct(key: string, timestamp: number, value: Uint8Array, schemaType: string, isArray: boolean) {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       this.fields[key].specialType = schemaType + (isArray ? "[]" : "");
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
@@ -501,7 +506,7 @@ export default class Log {
     // Not a schema, continue normally
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       this.fields[key].specialType = ProtoDecoder.getFriendlySchemaType(schemaType);
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
