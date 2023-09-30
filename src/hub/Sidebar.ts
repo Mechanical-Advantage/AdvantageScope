@@ -90,7 +90,7 @@ export default class Sidebar {
         this.SEARCH_INPUT.blur();
       }
     });
-    let periodic = () => {
+    let searchPeriodic = () => {
       let inputRect = this.SEARCH_INPUT.getBoundingClientRect();
       this.SEARCH_RESULTS.style.top = inputRect.bottom.toString() + "px";
       this.SEARCH_RESULTS.style.minWidth = inputRect.width.toString() + "px";
@@ -101,6 +101,12 @@ export default class Sidebar {
       if (unhiding) {
         this.SEARCH_RESULTS.scrollTop = 0;
       }
+    };
+
+    // Periodic function
+    let periodic = () => {
+      searchPeriodic();
+      this.updateTitle();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -169,6 +175,38 @@ export default class Sidebar {
     document.documentElement.style.setProperty("--show-side-bar", this.sidebarWidth > 0 ? "1" : "0");
   }
 
+  /** Updates the title with the duration and field count. */
+  private updateTitle() {
+    let range = window.log.getTimestampRange();
+    let liveTime = window.selection.getCurrentLiveTime();
+    if (liveTime !== null) {
+      range[1] = liveTime;
+    }
+    let fieldCount = window.log.getFieldCount();
+    if (fieldCount === 0) {
+      this.SIDEBAR_TITLE.innerText = "No data available";
+    } else {
+      let runtime = range[1] - range[0];
+      let runtimeUnit = "s";
+      if (runtime > 120) {
+        runtime /= 60;
+        runtimeUnit = "m";
+      }
+      if (runtime > 120) {
+        runtime /= 60;
+        runtimeUnit = "h";
+      }
+      this.SIDEBAR_TITLE.innerText =
+        fieldCount.toString() +
+        " field" +
+        (fieldCount === 1 ? "" : "s") +
+        ", " +
+        Math.round(runtime).toString() +
+        runtimeUnit +
+        " runtime";
+    }
+  }
+
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
     let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
@@ -197,36 +235,6 @@ export default class Sidebar {
 
       // Update search
       this.updateSearchResults();
-    }
-
-    // Update title
-    let range = window.log.getTimestampRange();
-    let liveTime = window.selection.getCurrentLiveTime();
-    if (liveTime !== null) {
-      range[1] = liveTime;
-    }
-    let fieldCount = window.log.getFieldCount();
-    if (fieldCount === 0) {
-      this.SIDEBAR_TITLE.innerText = "No data available";
-    } else {
-      let runtime = range[1] - range[0];
-      let runtimeUnit = "s";
-      if (runtime > 120) {
-        runtime /= 60;
-        runtimeUnit = "m";
-      }
-      if (runtime > 120) {
-        runtime /= 60;
-        runtimeUnit = "h";
-      }
-      this.SIDEBAR_TITLE.innerText =
-        fieldCount.toString() +
-        " field" +
-        (fieldCount === 1 ? "" : "s") +
-        ", " +
-        Math.round(runtime).toString() +
-        runtimeUnit +
-        " runtime";
     }
   }
 
