@@ -284,11 +284,19 @@ img.side-bar-search-icon {
   }
 }
 
-div.field-item {
+div.field-item-container {
   position: relative;
   width: 100%;
   height: 30px;
   transition: background 0.25s;
+}
+
+div.field-item {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
   -webkit-mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
@@ -300,12 +308,12 @@ div.field-item.generated {
   opacity: 0.6;
 }
 
-div.field-item.highlight {
-  background-color: rgb(255, 255, 0);
+div.field-item-container.highlight {
+  background-color: #ffff00;
 }
 
 @media (prefers-color-scheme: dark) {
-  div.field-item.highlight {
+  div.field-item-container.highlight {
     background-color: #ce9421;
   }
 }

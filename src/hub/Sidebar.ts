@@ -254,8 +254,11 @@ export default class Sidebar {
     let childrenGenerated = generated || (field.fullKey !== null && window.log.isGeneratedParent(field.fullKey));
 
     // Create element
+    let fieldElementContainer = document.createElement("div");
+    parentElement.appendChild(fieldElementContainer);
+    fieldElementContainer.classList.add("field-item-container");
     let fieldElement = document.createElement("div");
-    parentElement.appendChild(fieldElement);
+    fieldElementContainer.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
     if (generated) {
       fieldElement.classList.add("generated");
@@ -405,8 +408,8 @@ export default class Sidebar {
         if (this.searchKey !== null && field.fullKey === this.searchKey) {
           // @ts-expect-error
           fieldElement.scrollIntoViewIfNeeded(); // Available in Chromium but not standard
-          fieldElement.classList.add("highlight");
-          setTimeout(() => fieldElement.classList.remove("highlight"), 3000);
+          fieldElementContainer.classList.add("highlight");
+          setTimeout(() => fieldElementContainer.classList.remove("highlight"), 3000);
         }
       };
       this.searchExpandCallbacks.push(highlightForSearch);
