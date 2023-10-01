@@ -351,6 +351,7 @@ export function searchFields(log: Log, query: string): string[] {
     };
   });
   fields.sort((a, b) => a.string.localeCompare(b.string, undefined, { numeric: true }));
+  fields.sort((a, b) => a.string.length - b.string.length);
   fields.sort((a, b) => a.endDistance - b.endDistance);
   return fields.map((field) => field.string);
 }
