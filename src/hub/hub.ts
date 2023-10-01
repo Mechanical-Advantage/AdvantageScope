@@ -223,17 +223,20 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
       if (shouldMerge && window.log.getFieldKeys().length > 0) {
         // Check for field conflicts
         let newFields = log.getFieldKeys();
-        let canMerge = true;
+        let hasOverlap = false;
         window.log.getFieldKeys().forEach((key) => {
-          if (newFields.includes(key)) canMerge = false;
+          if (newFields.includes(key)) hasOverlap = true;
         });
-        if (!canMerge) {
-          window.sendMainMessage("error", {
-            title: "Failed to merge logs",
-            content:
-              "The logs contain conflicting fields. Merging is only possible when the logged fields don't overlap."
-          });
-          return;
+
+        // Generate prefix
+        let prefix = "";
+        if (hasOverlap) {
+          let i = 0;
+          let oldTree = window.log.getFieldTree();
+          while ("MergedLog" + i.toString() in oldTree) {
+            i += 1;
+          }
+          prefix = "/MergedLog" + i.toString();
         }
 
         // Merge based on first enable
@@ -247,7 +250,7 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
         if (newEnabledData && newEnabledData.values.includes(true)) {
           newFirstEnabled = newEnabledData.timestamps[newEnabledData.values.indexOf(true)];
         }
-        window.log = Log.mergeLogs(window.log, log, currentFirstEnable - newFirstEnabled);
+        window.log = Log.mergeLogs(window.log, log, currentFirstEnable - newFirstEnabled, prefix);
       } else {
         window.log = log;
         logPath = path;

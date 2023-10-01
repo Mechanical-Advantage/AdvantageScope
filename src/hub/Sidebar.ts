@@ -17,6 +17,7 @@ export default class Sidebar {
 
   private SEARCH_RESULTS = document.getElementsByClassName("search-results")[0] as HTMLElement;
 
+  private MERGED_KEY = "MergedLog";
   private KNOWN_KEYS = [
     "DriverStation",
     "NetworkTables",
@@ -311,8 +312,10 @@ export default class Sidebar {
     fieldElement.appendChild(label);
     label.classList.add("field-item-label");
     if (
-      (indent === 0 || (indent === this.INDENT_SIZE_PX && fullTitle.startsWith("/AdvantageKit"))) &&
-      this.KNOWN_KEYS.includes(title)
+      (indent === 0 ||
+        (indent === this.INDENT_SIZE_PX &&
+          (fullTitle.startsWith("/AdvantageKit") || fullTitle.startsWith("/" + this.MERGED_KEY)))) &&
+      (this.KNOWN_KEYS.includes(title) || title.startsWith(this.MERGED_KEY))
     ) {
       label.classList.add("known");
     }
@@ -442,7 +445,7 @@ export default class Sidebar {
         if (firstExpand) {
           firstExpand = false;
           let childKeys = Object.keys(field.children);
-          if (fullTitle === "/AdvantageKit" || fullTitle === "/NT") {
+          if (fullTitle === "/AdvantageKit" || fullTitle === "/NT" || fullTitle.startsWith("/" + this.MERGED_KEY)) {
             // Apply hidden and known keys
             childKeys = childKeys
               .filter((key) => !this.HIDDEN_KEYS.includes(key))
@@ -493,10 +496,14 @@ export default class Sidebar {
   private sortKeys(a: string, b: string, useKnown: boolean = false): number {
     // Check for known keys
     if (useKnown) {
-      if (this.KNOWN_KEYS.includes(a) && !this.KNOWN_KEYS.includes(b)) return 1;
-      if (!this.KNOWN_KEYS.includes(a) && this.KNOWN_KEYS.includes(b)) return -1;
-    }
+      let isMerged = (key: string) => key.startsWith(this.MERGED_KEY);
+      if (isMerged(a) && !isMerged(b)) return 1;
+      if (!isMerged(a) && isMerged(b)) return -1;
 
+      let isKnown = (key: string) => this.KNOWN_KEYS.includes(key);
+      if (isKnown(a) && !isKnown(b)) return 1;
+      if (!isKnown(a) && isKnown(b)) return -1;
+    }
     return a.localeCompare(b, undefined, { numeric: true });
   }
 

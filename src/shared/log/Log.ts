@@ -566,7 +566,7 @@ export default class Log {
   }
 
   /** Merges two log objects with no overlapping fields. */
-  static mergeLogs(firstLog: Log, secondLog: Log, timestampOffset: number): Log {
+  static mergeLogs(firstLog: Log, secondLog: Log, timestampOffset: number, secondPrefix = ""): Log {
     // Serialize logs and adjust timestamps
     let firstSerialized = firstLog.toSerialized();
     let secondSerialized = secondLog.toSerialized();
@@ -586,9 +586,24 @@ export default class Log {
       log.fields[key] = LogField.fromSerialized(value);
     });
     Object.entries(secondSerialized.fields).forEach(([key, value]) => {
-      log.fields[key] = LogField.fromSerialized(value);
+      let newKey = key;
+      if (secondPrefix !== "") {
+        newKey = newKey.startsWith("/") ? newKey : "/" + newKey; // Add slash if missing
+        newKey = secondPrefix + newKey; // Add prefix
+      }
+      log.fields[newKey] = LogField.fromSerialized(value);
     });
-    log.generatedParents = new Set([...firstSerialized.generatedParents, ...secondSerialized.generatedParents]);
+    log.generatedParents = new Set([
+      ...firstSerialized.generatedParents,
+      ...secondSerialized.generatedParents.map((key: string) => {
+        let newKey = key;
+        if (secondPrefix !== "") {
+          newKey = newKey.startsWith("/") ? newKey : "/" + newKey; // Add slash if missing
+          newKey = secondPrefix + newKey; // Add prefix
+        }
+        return newKey;
+      })
+    ]);
     if (firstSerialized.timestampRange && secondSerialized.timestampRange) {
       log.timestampRange = [
         Math.min(firstSerialized.timestampRange[0], secondSerialized.timestampRange[0]),
