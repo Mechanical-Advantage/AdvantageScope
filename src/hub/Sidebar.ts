@@ -42,6 +42,7 @@ export default class Sidebar {
 
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
+  private fieldCount = 0;
   private lastFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
@@ -182,8 +183,7 @@ export default class Sidebar {
     if (liveTime !== null) {
       range[1] = liveTime;
     }
-    let fieldCount = window.log.getFieldCount();
-    if (fieldCount === 0) {
+    if (this.fieldCount === 0) {
       this.SIDEBAR_TITLE.innerText = "No data available";
     } else {
       let runtime = range[1] - range[0];
@@ -197,9 +197,9 @@ export default class Sidebar {
         runtimeUnit = "h";
       }
       this.SIDEBAR_TITLE.innerText =
-        fieldCount.toString() +
+        this.fieldCount.toString() +
         " field" +
-        (fieldCount === 1 ? "" : "s") +
+        (this.fieldCount === 1 ? "" : "s") +
         ", " +
         Math.round(runtime).toString() +
         runtimeUnit +
@@ -213,6 +213,9 @@ export default class Sidebar {
     this.lastFieldKeys = window.log.getFieldKeys();
 
     if (fieldsChanged) {
+      // Update field count
+      this.fieldCount = window.log.getFieldCount();
+
       // Remove old list
       while (this.FIELD_LIST.firstChild) {
         this.FIELD_LIST.removeChild(this.FIELD_LIST.firstChild);
