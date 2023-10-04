@@ -17,6 +17,8 @@ export default abstract class TimelineVizController implements TabController {
   private TIMELINE_LABEL: HTMLElement;
   private DRAG_HIGHLIGHT: HTMLElement;
   private CONFIG_TABLE: HTMLElement;
+  private HIDE_BUTTON: HTMLButtonElement;
+  private SHOW_BUTTON: HTMLButtonElement;
 
   private type: TabType;
   private title: string = "";
@@ -76,16 +78,16 @@ export default abstract class TimelineVizController implements TabController {
         }
       }
     });
-    let hideButton = content.getElementsByClassName("timeline-viz-hide-button")[0] as HTMLButtonElement;
-    let showButton = content.getElementsByClassName("timeline-viz-show-button")[0] as HTMLButtonElement;
-    hideButton.addEventListener("click", () => {
-      hideButton.hidden = true;
-      showButton.hidden = false;
+    this.HIDE_BUTTON = content.getElementsByClassName("timeline-viz-hide-button")[0] as HTMLButtonElement;
+    this.SHOW_BUTTON = content.getElementsByClassName("timeline-viz-show-button")[0] as HTMLButtonElement;
+    this.HIDE_BUTTON.addEventListener("click", () => {
+      this.HIDE_BUTTON.hidden = true;
+      this.SHOW_BUTTON.hidden = false;
       this.CONFIG_TABLE.hidden = true;
     });
-    showButton.addEventListener("click", () => {
-      hideButton.hidden = false;
-      showButton.hidden = true;
+    this.SHOW_BUTTON.addEventListener("click", () => {
+      this.HIDE_BUTTON.hidden = false;
+      this.SHOW_BUTTON.hidden = true;
       this.CONFIG_TABLE.hidden = false;
     });
     content.getElementsByClassName("timeline-viz-popup-button")[0].addEventListener("click", () => {
@@ -137,7 +139,8 @@ export default abstract class TimelineVizController implements TabController {
       type: type,
       fields: this.fields,
       listFields: this.listFields,
-      options: this.options
+      options: this.options,
+      configHidden: this.CONFIG_TABLE.hidden
     };
   }
 
@@ -146,6 +149,9 @@ export default abstract class TimelineVizController implements TabController {
     this.fields = state.fields;
     this.listFields = state.listFields;
     this.options = state.options;
+    this.HIDE_BUTTON.hidden = state.configHidden;
+    this.SHOW_BUTTON.hidden = !state.configHidden;
+    this.CONFIG_TABLE.hidden = state.configHidden;
     this.updateFields();
   }
 
