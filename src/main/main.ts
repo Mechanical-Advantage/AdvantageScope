@@ -1962,6 +1962,9 @@ app.whenReady().then(() => {
     ) {
       prefs.liveSubscribeMode = oldPrefs.liveSubscribeMode;
     }
+    if ("liveDiscard" in oldPrefs && typeof oldPrefs.liveDiscard === "number") {
+      prefs.liveDiscard = oldPrefs.liveDiscard;
+    }
     if ("publishFilter" in oldPrefs && typeof oldPrefs.publishFilter === "string") {
       prefs.publishFilter = oldPrefs.publishFilter;
     }
@@ -1969,6 +1972,7 @@ app.whenReady().then(() => {
       prefs.rlogPort = oldPrefs.rlogPort;
     }
     if ("threeDimensionMode" in oldPrefs) {
+      // Migrate from v2
       switch (oldPrefs.threeDimensionMode) {
         case "quality":
           prefs.threeDimensionModeAc = "standard";
