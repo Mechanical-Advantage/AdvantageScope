@@ -2,10 +2,10 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
-import { getEnabledData, searchFields } from "../shared/log/LogUtil";
+import { getEnabledData } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
-import { htmlEncode } from "../shared/util";
+import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import loadZebra from "./dataSources/LoadZebra";
@@ -368,6 +368,23 @@ UPDATE_BUTTON.addEventListener("click", () => {
   window.sendMainMessage("prompt-update");
 });
 
+// Update touch bar slider position
+setInterval(() => {
+  if (window.platform === "darwin") {
+    let range = window.log.getTimestampRange();
+    let liveTime = window.selection.getCurrentLiveTime();
+    if (liveTime !== null) {
+      range[1] = liveTime;
+    }
+    let selectedTime = window.selection.getSelectedTime();
+    if (selectedTime === null) {
+      selectedTime = range[0];
+    }
+    let timePercent = clampValue(scaleValue(selectedTime, range, [0, 1]), 0, 1);
+    window.sendMainMessage("update-touch-bar-slider", timePercent);
+  }
+}, 1000 / 60);
+
 function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "restore-state":
@@ -601,6 +618,15 @@ function handleMainMessage(message: NamedMessage) {
 
     case "finish-export":
       setLoading(null);
+      break;
+
+    case "update-touch-bar-slider":
+      let range = window.log.getTimestampRange();
+      let liveTime = window.selection.getCurrentLiveTime();
+      if (liveTime !== null) {
+        range[1] = liveTime;
+      }
+      window.selection.setSelectedTime(scaleValue(message.data, [0, 1], range));
       break;
 
     default:

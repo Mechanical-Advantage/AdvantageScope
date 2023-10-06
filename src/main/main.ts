@@ -5,8 +5,11 @@ import {
   MenuItem,
   MessageChannelMain,
   MessagePortMain,
+  TouchBar,
+  TouchBarSlider,
   app,
   dialog,
+  nativeImage,
   nativeTheme,
   powerMonitor,
   shell
@@ -56,6 +59,7 @@ let prefsWindow: BrowserWindow | null = null;
 let licensesWindow: BrowserWindow | null = null;
 let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
+let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 
 let hubStateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
@@ -455,6 +459,13 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         message.data.menuCoordinates,
         (data) => sendMessage(window, "video-data", data)
       );
+      break;
+
+    case "update-touch-bar-slider":
+      if (window.id in hubTouchBarSliders) {
+        let slider = hubTouchBarSliders[window.id];
+        slider.value = Math.round(message.data * slider.maxValue);
+      }
       break;
 
     default:
@@ -1327,6 +1338,54 @@ function createHubWindow() {
   // Create window
   let window = new BrowserWindow(prefs);
   hubWindows.push(window);
+
+  // Add touch bar menu
+  let resetTouchBar = () => {
+    let newCreated = false;
+    let slider = new TouchBar.TouchBarSlider({
+      value: window.id in hubTouchBarSliders ? hubTouchBarSliders[window.id].value : 0,
+      minValue: 0,
+      maxValue: 10000,
+      change(newValue) {
+        sendMessage(window, "update-touch-bar-slider", newValue / slider.maxValue);
+      }
+    });
+    hubTouchBarSliders[window.id] = slider;
+    window.setTouchBar(
+      new TouchBar({
+        items: [
+          new TouchBar.TouchBarOtherItemsProxy(),
+          new TouchBar.TouchBarPopover({
+            icon: nativeImage.createFromPath(path.join(__dirname, "../icons/touch-bar-plus.png")),
+            showCloseButton: true,
+            items: new TouchBar({
+              items: [
+                new TouchBar.TouchBarScrubber({
+                  selectedStyle: "background",
+                  continuous: false,
+                  items: getAllTabTypes()
+                    .slice(1)
+                    .map((type) => {
+                      return {
+                        label: getTabIcon(type) + " " + getDefaultTabTitle(type)
+                      };
+                    }),
+                  select(index) {
+                    if (newCreated) return;
+                    newCreated = true;
+                    sendMessage(window, "new-tab", index + 1);
+                    setTimeout(resetTouchBar, 350);
+                  }
+                })
+              ]
+            })
+          }),
+          slider
+        ]
+      })
+    );
+  };
+  resetTouchBar();
 
   // Show window when loaded
   window.once("ready-to-show", window.show);
