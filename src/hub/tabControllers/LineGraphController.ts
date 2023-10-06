@@ -1034,7 +1034,6 @@ export default class LineGraphController implements TabController {
       selectedTime = selectedTime as number;
       selectedX = selectedX as number;
       selectedText = selectedText as string;
-      let selectedVisible = selectedX >= graphLeft && selectedX <= graphLeft + graphWidth;
       markTime(selectedTime!, 1);
       if (hoveredTime !== null && hoveredTime !== selectedTime) {
         // Write both selected and hovered time, figure out layout
@@ -1079,11 +1078,11 @@ export default class LineGraphController implements TabController {
           selectedX = selectedX + (offsetAmount / 2) * (selectedX < hoveredX ? -1 : 1);
           hoveredX = hoveredX - (offsetAmount / 2) * (selectedX < hoveredX ? -1 : 1);
         }
-        if (selectedVisible) writeCenteredTime(selectedText, selectedX, 1, true);
+        writeCenteredTime(selectedText, selectedX, 1, true);
         writeCenteredTime(hoveredText, hoveredX, 0.35, true);
       } else {
         // No valid hovered time, only write selected time
-        if (selectedVisible) writeCenteredTime(selectedText, selectedX, 1, true);
+        writeCenteredTime(selectedText, selectedX, 1, true);
       }
     } else if (hoveredTime !== null) {
       // No valid selected time, only write hovered time
