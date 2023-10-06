@@ -39,7 +39,8 @@ export const DEFAULT_PREFS: Preferences = {
   liveDiscard: 1200,
   publishFilter: "",
   rlogPort: 5800,
-  threeDimensionMode: "quality",
+  threeDimensionModeAc: "standard",
+  threeDimensionModeBattery: "",
   tbaApiKey: ""
 };
 

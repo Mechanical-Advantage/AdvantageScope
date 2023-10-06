@@ -1715,7 +1715,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = process.platform === "win32" ? 357 : 297; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform === "win32" ? 384 : 324; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -1909,13 +1909,40 @@ app.whenReady().then(() => {
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
     }
+    if ("threeDimensionMode" in oldPrefs) {
+      switch (oldPrefs.threeDimensionMode) {
+        case "quality":
+          prefs.threeDimensionModeAc = "standard";
+          prefs.threeDimensionModeBattery = "";
+          break;
+        case "efficiency":
+          prefs.threeDimensionModeAc = "low-power";
+          prefs.threeDimensionModeBattery = "";
+          break;
+        case "auto":
+          prefs.threeDimensionModeAc = "standard";
+          prefs.threeDimensionModeBattery = "low-power";
+          break;
+        default:
+          break;
+      }
+    }
     if (
-      "threeDimensionMode" in oldPrefs &&
-      (oldPrefs.threeDimensionMode === "quality" ||
-        oldPrefs.threeDimensionMode === "efficiency" ||
-        oldPrefs.threeDimensionMode === "auto")
+      "threeDimensionModeAc" in oldPrefs &&
+      (oldPrefs.threeDimensionModeAc === "cinematic" ||
+        oldPrefs.threeDimensionModeAc === "standard" ||
+        oldPrefs.threeDimensionModeAc === "low-power")
     ) {
-      prefs.threeDimensionMode = oldPrefs.threeDimensionMode;
+      prefs.threeDimensionModeAc = oldPrefs.threeDimensionModeAc;
+    }
+    if (
+      "threeDimensionModeBattery" in oldPrefs &&
+      (oldPrefs.threeDimensionModeBattery === "" ||
+        oldPrefs.threeDimensionModeBattery === "cinematic" ||
+        oldPrefs.threeDimensionModeBattery === "standard" ||
+        oldPrefs.threeDimensionModeBattery === "low-power")
+    ) {
+      prefs.threeDimensionModeBattery = oldPrefs.threeDimensionModeBattery;
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;

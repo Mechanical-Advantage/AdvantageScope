@@ -9,6 +9,7 @@ import OdometryVisualizer from "./shared/visualizers/OdometryVisualizer";
 import PointsVisualizer from "./shared/visualizers/PointsVisualizer";
 import SwerveVisualizer from "./shared/visualizers/SwerveVisualizer";
 import ThreeDimensionVisualizer from "./shared/visualizers/ThreeDimensionVisualizer";
+import ThreeDimensionVisualizerSwitching from "./shared/visualizers/ThreeDimensionVisualizerSwitching";
 import VideoVisualizer from "./shared/visualizers/VideoVisualizer";
 import Visualizer from "./shared/visualizers/Visualizer";
 
@@ -71,7 +72,7 @@ window.addEventListener("message", (event) => {
               );
               break;
             case TabType.ThreeDimension:
-              visualizer = new ThreeDimensionVisualizer(
+              visualizer = new ThreeDimensionVisualizerSwitching(
                 document.body,
                 document.getElementById("threeDimensionCanvas") as HTMLCanvasElement,
                 document.getElementById("threeDimensionAnnotations") as HTMLElement,

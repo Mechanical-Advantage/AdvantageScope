@@ -8,7 +8,8 @@ export default interface Preferences {
   liveDiscard: number;
   publishFilter: string;
   rlogPort: number;
-  threeDimensionMode: "quality" | "efficiency" | "auto";
+  threeDimensionModeAc: "cinematic" | "standard" | "low-power";
+  threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
   tbaApiKey: string;
   usb?: boolean;
 }
