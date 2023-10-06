@@ -90,9 +90,7 @@ export default class Log {
 
   /** Returns the count of fields (excluding array item fields). */
   getFieldCount(): number {
-    return Object.keys(this.fields).filter(
-      (field) => !this.isGenerated(field) && this.fields[field].getType() !== LoggableType.Empty
-    ).length;
+    return Object.keys(this.fields).filter((field) => !this.isGenerated(field)).length;
   }
 
   /** Returns the constant field type. */
@@ -119,6 +117,13 @@ export default class Log {
       return this.fields[key].specialType;
     } else {
       return null;
+    }
+  }
+
+  /** Sets the special type string for a field. */
+  setSpecialType(key: string, type: string) {
+    if (key in this.fields) {
+      this.fields[key].specialType = type;
     }
   }
 

@@ -11,6 +11,7 @@ import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSour
 import loadZebra from "./dataSources/LoadZebra";
 import { NT4Publisher } from "./dataSources/NT4Publisher";
 import NT4Source from "./dataSources/NT4Source";
+import PathPlannerSource from "./dataSources/PathPlannerSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
@@ -278,6 +279,9 @@ function startLive(isSim: boolean) {
     case "nt4-akit":
       liveSource = new NT4Source(true);
       break;
+    case "pathplanner":
+      liveSource = new PathPlannerSource();
+      break;
     case "rlog":
       liveSource = new RLOGServerSource();
       break;
@@ -440,7 +444,7 @@ function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "live-rlog-data":
+    case "live-data":
       if (liveSource !== null) {
         liveSource.handleMainMessage(message.data);
       }
