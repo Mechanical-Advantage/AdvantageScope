@@ -1181,6 +1181,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.command.poses.visionTarget[i].translation[1],
           this.command.poses.visionTarget[i].translation[2]
         ]);
+        this.visionTargets[i].geometry.attributes.position.needsUpdate = true;
       }
     }
 
@@ -1188,6 +1189,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     {
       while (this.trajectories.length > this.command.poses.trajectory.length) {
         // Remove extra lines
+        this.trajectories[0].geometry.dispose();
         this.trajectories[0].material.dispose();
         this.wpilibFieldCoordinateGroup.remove(this.trajectories[0]);
         this.trajectories.shift();
@@ -1213,6 +1215,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             positions = positions.concat(pose.translation);
           });
           this.trajectories[i].geometry.setPositions(positions);
+          this.trajectories[i].geometry.attributes.position.needsUpdate = true;
         }
       }
     }
