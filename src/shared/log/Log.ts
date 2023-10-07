@@ -42,7 +42,9 @@ export default class Log {
 
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(timestamp: number) {
-    if (this.timestampRange !== null && this.timestampRange[0] < timestamp) {
+    if (this.timestampRange === null) {
+      this.timestampRange = [timestamp, timestamp];
+    } else if (this.timestampRange[0] < timestamp) {
       this.timestampRange[0] = timestamp;
       if (this.timestampRange[1] < this.timestampRange[0]) {
         this.timestampRange[1] = this.timestampRange[0];

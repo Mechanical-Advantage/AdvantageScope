@@ -202,7 +202,7 @@ export default class Sidebar {
         " field" +
         (this.fieldCount === 1 ? "" : "s") +
         ", " +
-        Math.round(runtime).toString() +
+        Math.floor(runtime).toString() +
         runtimeUnit +
         " runtime";
     }
