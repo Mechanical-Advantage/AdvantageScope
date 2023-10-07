@@ -63,25 +63,27 @@ export default class NT4Source extends LiveDataSource {
 
           // Add active fields
           let activeFields: Set<string> = new Set([akitMode ? "/AdvantageKit/.schema" : "/.schema"]);
-          [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
-            // Compare to announced keys
-            window.log.getFieldKeys().forEach((announcedKey) => {
-              if (window.log.isGenerated(announcedKey)) return;
-              let subscribeKey: string | null = null;
-              if (announcedKey.startsWith(key)) {
-                subscribeKey = key;
-              } else if (key.startsWith(announcedKey)) {
-                subscribeKey = announcedKey;
-              }
-              if (subscribeKey !== null) {
-                if (akitMode) {
-                  activeFields.add(this.AKIT_PREFIX + subscribeKey);
-                } else {
-                  activeFields.add(subscribeKey.slice(this.WPILOG_PREFIX.length));
+          if (window.log === this.log) {
+            [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
+              // Compare to announced keys
+              window.log.getFieldKeys().forEach((announcedKey) => {
+                if (window.log.isGenerated(announcedKey)) return;
+                let subscribeKey: string | null = null;
+                if (announcedKey.startsWith(key)) {
+                  subscribeKey = key;
+                } else if (key.startsWith(announcedKey)) {
+                  subscribeKey = announcedKey;
                 }
-              }
+                if (subscribeKey !== null) {
+                  if (akitMode) {
+                    activeFields.add(this.AKIT_PREFIX + subscribeKey);
+                  } else {
+                    activeFields.add(subscribeKey.slice(this.WPILOG_PREFIX.length));
+                  }
+                }
+              });
             });
-          });
+          }
 
           // Remove duplicates based on prefixes
           let activeFieldsCopy = new Set(activeFields);
@@ -164,6 +166,7 @@ export default class NT4Source extends LiveDataSource {
           // Announce
           if (!this.log) return;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
+          if (topic.name === "") return;
           let modifiedKey = this.getKeyFromTopic(topic);
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.shouldRunOutputCallback = true;
@@ -173,7 +176,7 @@ export default class NT4Source extends LiveDataSource {
         },
         (topic: NT4_Topic, timestamp_us: number, value: unknown) => {
           // Data
-          if (!this.log || !this.client) return;
+          if (!this.log || !this.client || topic.name === "") return;
 
           let key = this.getKeyFromTopic(topic);
           let timestamp = Math.max(timestamp_us, this.log.getTimestampRange()[0]) / 1000000;

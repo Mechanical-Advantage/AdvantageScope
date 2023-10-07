@@ -85,6 +85,12 @@ export class NT4_Topic {
 }
 
 export class NT4_Client {
+  private RECONNECT_TIMEOUT_MS = 500;
+  private RTT_PERIOD_MS_V40 = 1000;
+  private RTT_PERIOD_MS_V41 = 250;
+  private TIMEOUT_MS_V40 = 3000;
+  private TIMEOUT_MS_V41 = 500;
+
   private appName: string;
   private onTopicAnnounce: (topic: NT4_Topic) => void;
   private onTopicUnannounce: (topic: NT4_Topic) => void;
@@ -94,13 +100,15 @@ export class NT4_Client {
 
   private serverBaseAddr;
   private ws: WebSocket | null = null;
+  private rttWs: WebSocket | null = null;
   private timestampInterval: NodeJS.Timeout | null = null;
+  private rttWsTimestampInterval: NodeJS.Timeout | null = null;
+  private disconnectTimeout: NodeJS.Timeout | null = null;
   private serverAddr = "";
   private serverConnectionActive = false;
   private serverConnectionRequested = false;
   private serverTimeOffset_us: number | null = null;
   private networkLatency_us: number = 0;
-  private rxLengthCounter = 0;
 
   private subscriptions: Map<number, NT4_Subscription> = new Map();
   private publishedTopics: Map<string, NT4_Topic> = new Map();
@@ -146,14 +154,17 @@ export class NT4_Client {
       this.serverConnectionRequested = true;
       this.ws_connect();
       this.timestampInterval = setInterval(() => {
-        // Update timestamp
-        this.ws_sendTimestamp();
-
-        // Log bitrate
-        let bitrateKbPerSec = ((this.rxLengthCounter / 1000) * 8) / 5;
-        this.rxLengthCounter = 0;
-        console.log("[NT4] Bitrate: " + Math.round(bitrateKbPerSec).toString() + " kb/s");
-      }, 5000);
+        if (this.rttWs === null) {
+          // Use v4.0 timeout (RTT ws not created)
+          this.ws_sendTimestamp();
+        }
+      }, this.RTT_PERIOD_MS_V40);
+      this.rttWsTimestampInterval = setInterval(() => {
+        if (this.rttWs !== null) {
+          // Use v4.1 timeout (RTT ws was created)
+          this.ws_sendTimestamp();
+        }
+      }, this.RTT_PERIOD_MS_V41);
     }
   }
 
@@ -161,11 +172,18 @@ export class NT4_Client {
   disconnect() {
     if (this.serverConnectionRequested) {
       this.serverConnectionRequested = false;
-      if (this.serverConnectionActive && this.ws) {
-        this.ws.close();
+      if (this.serverConnectionActive) {
+        this.ws?.close();
+        this.rttWs?.close();
       }
       if (this.timestampInterval !== null) {
         clearInterval(this.timestampInterval);
+      }
+      if (this.rttWsTimestampInterval !== null) {
+        clearInterval(this.rttWsTimestampInterval);
+      }
+      if (this.disconnectTimeout !== null) {
+        clearTimeout(this.disconnectTimeout);
       }
     }
   }
@@ -351,7 +369,7 @@ export class NT4_Client {
   private ws_sendTimestamp() {
     let timeToSend = this.getClientTime_us();
     let txData = this.msgpackEncoder.encode([-1, 0, typestrIdxLookup["int"], timeToSend]);
-    this.ws_sendBinary(txData);
+    this.ws_sendBinary(txData, this.rttWs !== null);
   }
 
   private ws_handleReceiveTimestamp(serverTimestamp: number, clientTimestamp: number) {
@@ -362,14 +380,6 @@ export class NT4_Client {
     this.networkLatency_us = rtt / 2.0;
     let serverTimeAtRx = serverTimestamp + this.networkLatency_us;
     this.serverTimeOffset_us = serverTimeAtRx - rxTime;
-
-    console.log(
-      "[NT4] New server time: " +
-        (this.getServerTime_us()! / 1000000.0).toString() +
-        "s with " +
-        (this.networkLatency_us / 1000.0).toString() +
-        "ms latency"
-    );
   }
 
   //////////////////////////////////////////////////////////////
@@ -411,40 +421,50 @@ export class NT4_Client {
     }
   }
 
-  private ws_sendBinary(data: Uint8Array) {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(data);
+  private ws_sendBinary(data: Uint8Array, rttWs = false) {
+    let ws = rttWs ? this.rttWs : this.ws;
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(data);
     }
   }
 
   //////////////////////////////////////////////////////////////
   // Websocket connection Maintenance
 
-  private ws_onOpen() {
+  private ws_onOpen(ws: WebSocket) {
     // Set the flag allowing general server communication
     this.serverConnectionActive = true;
-    console.log('[NT4] Connected with identity "' + this.appName + '"');
+    console.log('[NT4] Connected with protocol "' + ws.protocol + '"');
 
-    // Sync timestamps
-    this.ws_sendTimestamp();
-
-    // Publish any existing topics
-    for (const topic of this.publishedTopics.values()) {
-      this.ws_publish(topic);
+    // If v4.1, start RTT only ws
+    if (ws.protocol === "v4.1.networktables.first.wpi.edu") {
+      this.ws_connect(true);
+    } else {
+      // v4.0 and RTT only should send timestamp
+      this.ws_sendTimestamp();
     }
 
-    // Subscribe to existing subscriptions
-    for (const subscription of this.subscriptions.values()) {
-      this.ws_subscribe(subscription);
-    }
+    if (ws.protocol !== "rtt.networktables.first.wpi.edu") {
+      // Publish any existing topics
+      for (const topic of this.publishedTopics.values()) {
+        this.ws_publish(topic);
+      }
 
-    // User connection-opened hook
-    this.onConnect();
+      // Subscribe to existing subscriptions
+      for (const subscription of this.subscriptions.values()) {
+        this.ws_subscribe(subscription);
+      }
+
+      // User connection-opened hook
+      this.onConnect();
+    }
   }
 
   private ws_onClose(event: CloseEvent) {
     // Clear flags to stop server communication
     this.ws = null;
+    this.rttWs?.close();
+    this.rttWs = null;
     this.serverConnectionActive = false;
 
     // User connection-closed hook
@@ -457,18 +477,25 @@ export class NT4_Client {
       console.log("[NT4] Socket is closed: ", event.reason);
     }
     if (this.serverConnectionRequested) {
-      setTimeout(() => this.ws_connect(), 500);
+      setTimeout(() => this.ws_connect(), this.RECONNECT_TIMEOUT_MS);
     }
   }
 
   private ws_onError() {
-    if (this.ws) this.ws.close();
+    this.ws?.close();
+    this.rttWs?.close();
   }
 
-  private ws_onMessage(event: MessageEvent) {
+  private ws_onMessage(event: MessageEvent, rttOnly: boolean) {
+    this.ws_resetTimeout();
+
     if (typeof event.data === "string") {
+      // Exit if RTT only
+      if (rttOnly) {
+        console.warn("[NT4] Ignoring text message, received by RTT only connection.");
+      }
+
       // JSON array
-      this.rxLengthCounter += event.data.length;
       let msgData = JSON.parse(event.data);
       if (!Array.isArray(msgData)) {
         console.warn("[NT4] Ignoring text message, JSON parsing did not produce an array at the top level.");
@@ -538,7 +565,6 @@ export class NT4_Client {
       });
     } else {
       // MSGPack
-      this.rxLengthCounter += event.data.byteLength;
       for (let unpackedData of this.msgpackDecoder.decodeMulti(event.data)) {
         let topicID = (unpackedData as unknown[])[0] as number;
         let timestamp_us = (unpackedData as unknown[])[1] as number;
@@ -546,6 +572,9 @@ export class NT4_Client {
         let value = (unpackedData as unknown[])[3];
 
         if (topicID >= 0) {
+          if (rttOnly) {
+            console.warn("[NT4] Ignoring binary data, not an RTT message but received by RTT only connection");
+          }
           let topic: NT4_Topic | null = null;
           for (let serverTopic of this.serverTopics.values()) {
             if (serverTopic.uid === topicID) {
@@ -567,18 +596,42 @@ export class NT4_Client {
     }
   }
 
-  private ws_connect() {
+  private ws_resetTimeout() {
+    if (this.disconnectTimeout !== null) {
+      clearTimeout(this.disconnectTimeout);
+    }
+    const timeout = this.rttWs === null ? this.TIMEOUT_MS_V40 : this.TIMEOUT_MS_V41;
+    this.disconnectTimeout = setTimeout(() => {
+      console.log("[NT4] No data for " + timeout.toString() + "ms, closing");
+      this.ws?.close();
+      this.rttWs?.close();
+    }, timeout);
+  }
+
+  private ws_connect(rttWs = false) {
     let port = 5810;
     let prefix = "ws://";
 
     this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.appName;
 
-    this.ws = new WebSocket(this.serverAddr, "networktables.first.wpi.edu");
-    this.ws.binaryType = "arraybuffer";
-    this.ws.addEventListener("open", () => this.ws_onOpen());
-    this.ws.addEventListener("message", (event: MessageEvent) => this.ws_onMessage(event));
-    this.ws.addEventListener("close", (event: CloseEvent) => this.ws_onClose(event));
-    this.ws.addEventListener("error", () => this.ws_onError());
+    let ws = new WebSocket(
+      this.serverAddr,
+      rttWs ? ["rtt.networktables.first.wpi.edu"] : ["v4.1.networktables.first.wpi.edu", "networktables.first.wpi.edu"]
+    );
+    if (rttWs) {
+      this.rttWs = ws;
+    } else {
+      this.ws = ws;
+    }
+    ws.binaryType = "arraybuffer";
+    this.ws_resetTimeout();
+    ws.addEventListener("open", () => this.ws_onOpen(ws));
+    ws.addEventListener("message", (event: MessageEvent) => this.ws_onMessage(event, rttWs));
+    ws.addEventListener("error", () => this.ws_onError());
+    if (!rttWs) {
+      // Don't run two callbacks when on normal and RTT close
+      ws.addEventListener("close", (event: CloseEvent) => this.ws_onClose(event));
+    }
   }
 
   //////////////////////////////////////////////////////////////
