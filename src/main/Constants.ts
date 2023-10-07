@@ -53,7 +53,7 @@ export const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
 // Live PathPlanner
 export const PATHPLANNER_PORT = 5811;
 export const PATHPLANNER_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
-export const PATHPLANNER_DATA_TIMEOUT_MS = 500; // How long with no data until timeout
+export const PATHPLANNER_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout
 export const PATHPLANNER_PING_DELAY_MS = 250; // How long to wait between pings
 export const PATHPLANNER_PING_TEXT = "ping";
 
