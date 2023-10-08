@@ -88,8 +88,8 @@ export class NT4_Client {
   private RECONNECT_TIMEOUT_MS = 500;
   private RTT_PERIOD_MS_V40 = 1000;
   private RTT_PERIOD_MS_V41 = 250;
-  private TIMEOUT_MS_V40 = 3000;
-  private TIMEOUT_MS_V41 = 500;
+  private TIMEOUT_MS_V40 = 5000;
+  private TIMEOUT_MS_V41 = 1000;
 
   private appName: string;
   private onTopicAnnounce: (topic: NT4_Topic) => void;
