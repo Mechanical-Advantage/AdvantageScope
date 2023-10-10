@@ -262,7 +262,7 @@ export class WPILOGDecoder {
       let entry = this.readVariableInteger(position + 1, entryLength);
       let size = this.readVariableInteger(position + 1 + entryLength, sizeLength);
       let timestamp = this.readVariableInteger(position + 1 + entryLength + sizeLength, timestampLength);
-      if (this.data.length < position + headerLength + size) break;
+      if (this.data.length < position + headerLength + size || entry < 0 || size < 0 || timestamp < 0) break;
       let newPosition = position + headerLength + size;
       callback(
         new WPILOGDecoderRecord(

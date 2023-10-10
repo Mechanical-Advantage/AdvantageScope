@@ -65,11 +65,7 @@ self.onmessage = (event) => {
         let key = entryIds[record.getEntry()];
         let type = entryTypes[record.getEntry()];
         let timestamp = record.getTimestamp() / 1000000.0;
-        if (timestamp > 0) {
-          // Some corrupted WPILOGs include negative timestamps which are very slow to process
-          if (key.startsWith("NT:/Pose")) {
-            console.log(key, type);
-          }
+        if (key && type) {
           switch (type) {
             case "boolean":
               log.putBoolean(key, timestamp, record.getBoolean());
