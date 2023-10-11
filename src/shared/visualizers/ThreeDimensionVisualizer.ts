@@ -136,7 +136,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.annotationsDiv = annotationsDiv;
     this.alert = alert;
     this.alertCamera = alert.getElementsByTagName("span")[0];
-    this.renderer = new THREE.WebGLRenderer({ canvas });
+    this.renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default"
+    });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = mode === "cinematic";
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
