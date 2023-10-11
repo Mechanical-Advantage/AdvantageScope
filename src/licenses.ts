@@ -27,9 +27,5 @@ window.addEventListener("load", () => {
     cleanText = cleanText.replaceAll("<br> ", "<br>");
     textElement.innerHTML = cleanText;
     document.body.appendChild(textElement);
-
-    if (license.module === "prettier") {
-      console.log(cleanText);
-    }
   });
 });
