@@ -166,6 +166,22 @@ div.side-bar-handle {
   cursor: col-resize;
 }
 
+/* FPS indicator */
+
+div.fps {
+  position: absolute;
+  right: 10px;
+  bottom: 7px;
+  z-index: 13;
+  pointer-events: none;
+
+  font-family: "Courier New", Courier, monospace;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  color: #ff5900;
+}
+
 /* Viewing area layout */
 
 div.viewer-background {

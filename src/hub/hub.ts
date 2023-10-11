@@ -35,6 +35,7 @@ declare global {
     isFullscreen: boolean;
     isFocused: boolean;
     isBattery: boolean;
+    fps: boolean;
 
     selection: Selection;
     sidebar: Sidebar;
@@ -52,6 +53,7 @@ window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
 window.isBattery = false;
+window.fps = false;
 
 window.selection = new Selection();
 window.sidebar = new Sidebar();
@@ -180,6 +182,29 @@ window.addEventListener("mouseup", () => {
 window.addEventListener("touchend", () => {
   dragEnd();
 });
+
+// FPS MEASUREMENT
+
+const fpsDiv = document.getElementsByClassName("fps")[0] as HTMLElement;
+const sampleLength = 10;
+let frameTimes: number[] = [];
+let periodic = () => {
+  frameTimes.push(window.performance.now());
+  while (frameTimes.length > sampleLength) {
+    frameTimes.shift();
+  }
+  let fps = 0;
+  if (frameTimes.length > 1) {
+    let avgFrameTime = (frameTimes[frameTimes.length - 1] - frameTimes[0]) / (frameTimes.length - 1);
+    fps = 1000 / avgFrameTime;
+  }
+  fpsDiv.hidden = !window.fps;
+  if (window.fps) {
+    fpsDiv.innerText = "FPS: " + fps.toFixed(1);
+  }
+  window.requestAnimationFrame(periodic);
+};
+window.requestAnimationFrame(periodic);
 
 // DATA SOURCE HANDLING
 
