@@ -382,16 +382,18 @@ export default abstract class TimelineVizController implements TabController {
     } else {
       time = range[0];
     }
+    let liveTime = window.selection.getCurrentLiveTime();
+    if (liveTime !== null) {
+      range[1] = liveTime;
+    }
 
     // Render timeline sections
     while (this.TIMELINE_MARKER_CONTAINER.firstChild) {
       this.TIMELINE_MARKER_CONTAINER.removeChild(this.TIMELINE_MARKER_CONTAINER.firstChild);
     }
-    let isLocked = window.selection.getMode() === SelectionMode.Locked;
-    if (isLocked) range[1] = selectedTime as number;
     this.TIMELINE_INPUT.min = range[0].toString();
     this.TIMELINE_INPUT.max = range[1].toString();
-    this.TIMELINE_INPUT.disabled = isLocked;
+    this.TIMELINE_INPUT.disabled = window.selection.getMode() === SelectionMode.Locked;
 
     let enabledData = getEnabledData(window.log);
     if (enabledData) {
