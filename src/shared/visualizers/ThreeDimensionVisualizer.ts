@@ -220,12 +220,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.wpilibCoordinateGroup.add(light, light.target);
       });
       {
-        const light = new THREE.PointLight(0xff0000, 40);
+        const light = new THREE.PointLight(0xff0000, 60);
         light.position.set(4.5, 0, 5);
         this.wpilibCoordinateGroup.add(light);
       }
       {
-        const light = new THREE.PointLight(0x0000ff, 40);
+        const light = new THREE.PointLight(0x0000ff, 60);
         light.position.set(-4.5, 0, 5);
         this.wpilibCoordinateGroup.add(light);
       }
