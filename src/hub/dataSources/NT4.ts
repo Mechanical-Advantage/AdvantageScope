@@ -85,7 +85,7 @@ export class NT4_Topic {
 }
 
 export class NT4_Client {
-  private RECONNECT_TIMEOUT_MS = 500;
+  private RECONNECT_TIMEOUT_MS = 250;
   private RTT_PERIOD_MS_V40 = 1000;
   private RTT_PERIOD_MS_V41 = 250;
   private TIMEOUT_MS_V40 = 5000;
@@ -460,15 +460,21 @@ export class NT4_Client {
     }
   }
 
-  private ws_onClose(event: CloseEvent) {
-    // Clear flags to stop server communication
-    this.ws = null;
+  private ws_onClose(event: CloseEvent, reconnect = true) {
+    // Stop server communication
+    this.ws?.close();
     this.rttWs?.close();
+    this.ws = null;
     this.rttWs = null;
-    this.serverConnectionActive = false;
+    if (this.disconnectTimeout !== null) {
+      clearTimeout(this.disconnectTimeout);
+    }
 
     // User connection-closed hook
-    this.onDisconnect();
+    if (this.serverConnectionActive) {
+      this.onDisconnect();
+      this.serverConnectionActive = false;
+    }
 
     // Clear out any local cache of server state
     this.serverTopics.clear();
@@ -476,7 +482,7 @@ export class NT4_Client {
     if (event.reason !== "") {
       console.log("[NT4] Socket is closed: ", event.reason);
     }
-    if (this.serverConnectionRequested) {
+    if (reconnect && this.serverConnectionRequested) {
       setTimeout(() => this.ws_connect(), this.RECONNECT_TIMEOUT_MS);
     }
   }
@@ -603,8 +609,12 @@ export class NT4_Client {
     const timeout = this.rttWs === null ? this.TIMEOUT_MS_V40 : this.TIMEOUT_MS_V41;
     this.disconnectTimeout = setTimeout(() => {
       console.log("[NT4] No data for " + timeout.toString() + "ms, closing");
-      this.ws?.close();
-      this.rttWs?.close();
+
+      // Close sockets and act like the connection was closed normally. If
+      // communication was lost another close event will be emitted on
+      // reconnection once the close message goes through. The second event
+      // will trigger the reconnect, so don't do it here.
+      this.ws_onClose(new CloseEvent("close"), false);
     }, timeout);
   }
 
@@ -624,7 +634,6 @@ export class NT4_Client {
       this.ws = ws;
     }
     ws.binaryType = "arraybuffer";
-    this.ws_resetTimeout();
     ws.addEventListener("open", () => this.ws_onOpen(ws));
     ws.addEventListener("message", (event: MessageEvent) => this.ws_onMessage(event, rttWs));
     ws.addEventListener("error", () => this.ws_onError());
