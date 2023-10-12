@@ -327,12 +327,12 @@ export default class Sidebar {
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
     if (field.fullKey) {
-      let schemaType = window.log.getSpecialType(field.fullKey);
-      if (schemaType !== null) {
+      let structuredType = window.log.getStructuredType(field.fullKey);
+      if (structuredType !== null) {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerHTML = " &ndash; " + schemaType;
+        typeLabel.innerHTML = " &ndash; " + structuredType;
       }
     }
 

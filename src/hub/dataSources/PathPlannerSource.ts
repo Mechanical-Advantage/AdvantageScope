@@ -69,18 +69,18 @@ export default class PathPlannerSource extends LiveDataSource {
 
             this.log.createBlankField("/TargetPose", LoggableType.Empty);
             this.log.createBlankField("/ActualPose", LoggableType.Empty);
-            this.log.setSpecialType("/TargetPose", "Pose2d");
-            this.log.setSpecialType("/ActualPose", "Pose2d");
+            this.log.setStructuredType("/TargetPose", "Pose2d");
+            this.log.setStructuredType("/ActualPose", "Pose2d");
 
             this.log.createBlankField("/TargetPose/translation", LoggableType.Empty);
             this.log.createBlankField("/ActualPose/translation", LoggableType.Empty);
-            this.log.setSpecialType("/TargetPose/translation", "Translation2d");
-            this.log.setSpecialType("/ActualPose/translation", "Translation2d");
+            this.log.setStructuredType("/TargetPose/translation", "Translation2d");
+            this.log.setStructuredType("/ActualPose/translation", "Translation2d");
 
             this.log.createBlankField("/TargetPose/rotation", LoggableType.Empty);
             this.log.createBlankField("/ActualPose/rotation", LoggableType.Empty);
-            this.log.setSpecialType("/TargetPose/rotation", "Rotation2d");
-            this.log.setSpecialType("/ActualPose/rotation", "Rotation2d");
+            this.log.setStructuredType("/TargetPose/rotation", "Rotation2d");
+            this.log.setStructuredType("/ActualPose/rotation", "Rotation2d");
 
             this.log.putNumber("/TargetPose/translation/x", timestamp, decoded.targetPose.x);
             this.log.putNumber("/TargetPose/translation/y", timestamp, decoded.targetPose.y);
@@ -92,14 +92,14 @@ export default class PathPlannerSource extends LiveDataSource {
           case "activePath":
             this.log.setGeneratedParent("/ActivePath");
             this.log.createBlankField("/ActivePath", LoggableType.Empty);
-            this.log.setSpecialType("/ActivePath", "Translation2d[]");
+            this.log.setStructuredType("/ActivePath", "Translation2d[]");
 
             const length = decoded.states.length;
             this.log.putNumber("/ActivePath/length", timestamp, length);
 
             for (let i = 0; i < length; i++) {
               this.log.createBlankField("/ActivePath/" + i.toString(), LoggableType.Empty);
-              this.log.setSpecialType("/ActivePath/" + i.toString(), "Translation2d");
+              this.log.setStructuredType("/ActivePath/" + i.toString(), "Translation2d");
               this.log.putNumber("/ActivePath/" + i.toString() + "/x", timestamp, decoded.states[i][0]);
               this.log.putNumber("/ActivePath/" + i.toString() + "/y", timestamp, decoded.states[i][1]);
             }

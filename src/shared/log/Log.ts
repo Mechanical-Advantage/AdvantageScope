@@ -113,19 +113,19 @@ export default class Log {
     }
   }
 
-  /** Returns the special type string for a field. */
-  getSpecialType(key: string): string | null {
+  /** Returns the structured type string for a field. */
+  getStructuredType(key: string): string | null {
     if (key in this.fields) {
-      return this.fields[key].specialType;
+      return this.fields[key].structuredType;
     } else {
       return null;
     }
   }
 
-  /** Sets the special type string for a field. */
-  setSpecialType(key: string, type: string) {
+  /** Sets the structured type string for a field. */
+  setStructuredType(key: string, type: string) {
     if (key in this.fields) {
-      this.fields[key].specialType = type;
+      this.fields[key].structuredType = type;
     }
   }
 
@@ -304,7 +304,7 @@ export default class Log {
       let parentKey = key.slice(0, -("/" + TYPE_KEY).length);
       this.createBlankField(parentKey, LoggableType.Empty);
       this.processTimestamp(parentKey, timestamp);
-      this.fields[parentKey].specialType = value;
+      this.fields[parentKey].structuredType = value;
     }
   }
 
@@ -442,7 +442,7 @@ export default class Log {
     this.putString(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {
       this.setGeneratedParent(key);
-      this.fields[key].specialType = "JSON";
+      this.fields[key].structuredType = "JSON";
       let decodedValue: unknown = null;
       try {
         decodedValue = JSON.parse(value) as unknown;
@@ -458,7 +458,7 @@ export default class Log {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
-      this.fields[key].specialType = "MessagePack";
+      this.fields[key].structuredType = "MessagePack";
       let decodedValue: unknown = null;
       try {
         decodedValue = this.msgpackDecoder.decode(value);
@@ -477,7 +477,7 @@ export default class Log {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
-      this.fields[key].specialType = schemaType + (isArray ? "[]" : "");
+      this.fields[key].structuredType = schemaType + (isArray ? "[]" : "");
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
         decodedData = isArray
@@ -491,7 +491,7 @@ export default class Log {
           let fullChildKey = key + "/" + childKey;
           this.createBlankField(fullChildKey, LoggableType.Empty);
           this.processTimestamp(fullChildKey, timestamp);
-          this.fields[fullChildKey].specialType = schemaType;
+          this.fields[fullChildKey].structuredType = schemaType;
         });
       }
     }
@@ -514,7 +514,7 @@ export default class Log {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
-      this.fields[key].specialType = ProtoDecoder.getFriendlySchemaType(schemaType);
+      this.fields[key].structuredType = ProtoDecoder.getFriendlySchemaType(schemaType);
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
         decodedData = this.protoDecoder.decode(schemaType, value);
@@ -526,7 +526,7 @@ export default class Log {
           let fullChildKey = key + "/" + childKey;
           this.createBlankField(fullChildKey, LoggableType.Empty);
           this.processTimestamp(fullChildKey, timestamp);
-          this.fields[fullChildKey].specialType = schemaType;
+          this.fields[fullChildKey].structuredType = schemaType;
         });
       }
     }
@@ -540,7 +540,7 @@ export default class Log {
     if (!(key in this.fields)) {
       this.createBlankField(key, LoggableType.Empty);
       this.processTimestamp(key, timestamp);
-      this.fields[key].specialType = "ZebraTranslation";
+      this.fields[key].structuredType = "ZebraTranslation";
     }
   }
 

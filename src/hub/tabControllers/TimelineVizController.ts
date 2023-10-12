@@ -169,16 +169,16 @@ export default abstract class TimelineVizController implements TabController {
         dragData.data.fields.forEach((dragField: string, dragFieldIndex: number) => {
           if (configIndex === 0 && anyValidType) return; // Single field and valid field already found
           let logType = window.log.getType(dragField);
-          let specialType = window.log.getSpecialType(dragField);
+          let structuredType = window.log.getStructuredType(dragField);
           let validLogType = logType !== null && field.types.includes(logType);
-          let validSpecialType = specialType !== null && field.types.includes(specialType);
-          let validType = validLogType || validSpecialType;
+          let validStructuredType = structuredType !== null && field.types.includes(structuredType);
+          let validType = validLogType || validStructuredType;
           anyValidType = anyValidType || validType;
 
           if (active && validType && dragData.end) {
             if (configIndex === 0) {
               // Single field
-              let typeIndex = this.fieldConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
+              let typeIndex = this.fieldConfig[index].types.indexOf(validStructuredType ? structuredType! : logType!);
               this.fields[index] = {
                 key: dragField,
                 sourceTypeIndex: typeIndex,
@@ -187,7 +187,7 @@ export default abstract class TimelineVizController implements TabController {
             } else {
               // List field
               let selectedOptions = this.listFields[index].map((field) => field.type);
-              let typeIndex = this.listConfig[index].types.indexOf(validSpecialType ? specialType! : logType!);
+              let typeIndex = this.listConfig[index].types.indexOf(validStructuredType ? structuredType! : logType!);
               let availableOptions = this.listConfig[index].options[typeIndex];
               if (
                 this.listConfig[index].autoAdvanceOptions === undefined ||
