@@ -147,6 +147,7 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
   fields.forEach((field, fieldIndex) => {
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
+    let wpilibType = log.getWpilibType(field);
     if (fieldData === undefined || fieldType === undefined) return;
 
     // Start record
@@ -175,6 +176,17 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
         typeStr = "string[]";
         break;
     }
+    if (wpilibType !== null) {
+      typeStr = wpilibType;
+
+      // NT4 uses "int" but wpilog uses "int64"
+      if (typeStr === "int") {
+        typeStr = "int64";
+      }
+      if (typeStr === "int[]") {
+        typeStr = "int64[]";
+      }
+    }
     encoder.add(
       WPILOGEncoderRecord.makeControlStart(0, {
         entry: entryId, // Entry 0 is reserved
@@ -186,29 +198,42 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
 
     // Add data
     fieldData.values.forEach((value, valueIndex) => {
-      if (fieldData === undefined || fieldType === undefined) return;
+      if (fieldData === undefined || typeStr === "") return;
       let timestamp = fieldData.timestamps[valueIndex] * 1000000;
-      switch (fieldType) {
-        case LoggableType.Raw:
-          encoder.add(WPILOGEncoderRecord.makeRaw(entryId, timestamp, value));
-          break;
-        case LoggableType.Boolean:
+      switch (typeStr) {
+        case "boolean":
           encoder.add(WPILOGEncoderRecord.makeBoolean(entryId, timestamp, value));
           break;
-        case LoggableType.Number:
+        case "int64":
+          encoder.add(WPILOGEncoderRecord.makeInteger(entryId, timestamp, value));
+          break;
+        case "float":
+          encoder.add(WPILOGEncoderRecord.makeFloat(entryId, timestamp, value));
+          break;
+        case "double":
           encoder.add(WPILOGEncoderRecord.makeDouble(entryId, timestamp, value));
           break;
-        case LoggableType.String:
+        case "string":
+        case "json":
           encoder.add(WPILOGEncoderRecord.makeString(entryId, timestamp, value));
           break;
-        case LoggableType.BooleanArray:
+        case "boolean[]":
           encoder.add(WPILOGEncoderRecord.makeBooleanArray(entryId, timestamp, value));
           break;
-        case LoggableType.NumberArray:
+        case "int64[]":
+          encoder.add(WPILOGEncoderRecord.makeIntegerArray(entryId, timestamp, value));
+          break;
+        case "float[]":
+          encoder.add(WPILOGEncoderRecord.makeFloatArray(entryId, timestamp, value));
+          break;
+        case "double[]":
           encoder.add(WPILOGEncoderRecord.makeDoubleArray(entryId, timestamp, value));
           break;
-        case LoggableType.StringArray:
+        case "string[]":
           encoder.add(WPILOGEncoderRecord.makeStringArray(entryId, timestamp, value));
+          break;
+        default:
+          encoder.add(WPILOGEncoderRecord.makeRaw(entryId, timestamp, value));
           break;
       }
 

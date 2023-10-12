@@ -130,6 +130,22 @@ export default class Log {
     }
   }
 
+  /** Returns the WPILib type string for a field. */
+  getWpilibType(key: string): string | null {
+    if (key in this.fields) {
+      return this.fields[key].wpilibType;
+    } else {
+      return null;
+    }
+  }
+
+  /** Sets the WPILib type string for a field. */
+  setWpilibType(key: string, type: string) {
+    if (key in this.fields) {
+      this.fields[key].wpilibType = type;
+    }
+  }
+
   /** Returns whether the key is generated. */
   isGenerated(key: string) {
     let parentKeys = Array.from(this.generatedParents);

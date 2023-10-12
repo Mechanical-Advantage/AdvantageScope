@@ -36,6 +36,7 @@ self.onmessage = (event) => {
             case "boolean":
               log.createBlankField(startData.name, LoggableType.Boolean);
               break;
+            case "int":
             case "int64":
             case "float":
             case "double":
@@ -48,6 +49,7 @@ self.onmessage = (event) => {
             case "boolean[]":
               log.createBlankField(startData.name, LoggableType.BooleanArray);
               break;
+            case "int[]":
             case "int64[]":
             case "float[]":
             case "double[]":
@@ -60,6 +62,7 @@ self.onmessage = (event) => {
               log.createBlankField(startData.name, LoggableType.Raw);
               break;
           }
+          log.setWpilibType(startData.name, startData.type);
         }
       } else {
         let key = entryIds[record.getEntry()];
@@ -86,6 +89,7 @@ self.onmessage = (event) => {
             case "boolean[]":
               log.putBooleanArray(key, timestamp, record.getBooleanArray());
               break;
+            case "int[]":
             case "int64[]":
               log.putNumberArray(key, timestamp, record.getIntegerArray());
               break;

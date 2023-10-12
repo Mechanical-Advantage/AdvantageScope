@@ -93,6 +93,18 @@ export class NT4Publisher {
             type = "string[]";
             break;
         }
+        let wpilibType = window.log.getWpilibType(topic);
+        if (wpilibType !== null) {
+          type = wpilibType;
+
+          // NT4 uses "int" but wpilog uses "int64"
+          if (type === "int64") {
+            type = "int";
+          }
+          if (type === "int64[]") {
+            type = "int[]";
+          }
+        }
         this.client.publishTopic(topic.slice(3), type);
         this.publishedTopics[topic] = null;
       }
@@ -136,13 +148,13 @@ export class NT4Publisher {
           value = getOrDefault(window.log, topic, LoggableType.String, time, "");
           break;
         case LoggableType.BooleanArray:
-          value = getOrDefault(window.log, topic, LoggableType.Boolean, time, []);
+          value = getOrDefault(window.log, topic, LoggableType.BooleanArray, time, []);
           break;
         case LoggableType.NumberArray:
-          value = getOrDefault(window.log, topic, LoggableType.Number, time, []);
+          value = getOrDefault(window.log, topic, LoggableType.NumberArray, time, []);
           break;
         case LoggableType.StringArray:
-          value = getOrDefault(window.log, topic, LoggableType.String, time, []);
+          value = getOrDefault(window.log, topic, LoggableType.StringArray, time, []);
           break;
       }
       let hasChanged = lastValue === null || !logValuesEqual(type, value, lastValue);
