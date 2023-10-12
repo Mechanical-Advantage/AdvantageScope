@@ -1,4 +1,5 @@
 import { Decoder } from "@msgpack/msgpack";
+import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
@@ -532,15 +533,62 @@ export default class Log {
     }
   }
 
-  /** Writes a coordinate with the "ZebraTranslation" special type. */
+  /** Writes a pose with the "Pose2d" structured type. */
+  putPose(key: string, timestamp: number, pose: Pose2d) {
+    const translationKey = key + "/translation";
+    const rotationKey = key + "/rotation";
+    this.putNumber(translationKey + "/x", timestamp, pose.translation[0]);
+    this.putNumber(translationKey + "/y", timestamp, pose.translation[1]);
+    this.putNumber(rotationKey + "/value", timestamp, pose.rotation);
+    if (!(key in this.fields)) {
+      this.createBlankField(key, LoggableType.Empty);
+      this.setStructuredType(key, "Pose2d");
+      this.setGeneratedParent(key);
+      this.processTimestamp(key, timestamp);
+    }
+    if (!(translationKey in this.fields)) {
+      this.createBlankField(translationKey, LoggableType.Empty);
+      this.setStructuredType(translationKey, "Translation2d");
+      this.processTimestamp(translationKey, timestamp);
+    }
+    if (!(rotationKey in this.fields)) {
+      this.createBlankField(rotationKey, LoggableType.Empty);
+      this.setStructuredType(rotationKey, "Rotation2d");
+      this.processTimestamp(rotationKey, timestamp);
+    }
+  }
+
+  /** Writes a translation array with the "Translation2d[]" structured type. */
+  putTranslationArray(key: string, timestamp: number, translations: Translation2d[]) {
+    if (!(key in this.fields)) {
+      this.createBlankField(key, LoggableType.Empty);
+      this.setStructuredType(key, "Translation2d[]");
+      this.setGeneratedParent(key);
+      this.processTimestamp(key, timestamp);
+    }
+    this.putNumber(key + "/length", timestamp, translations.length);
+    for (let i = 0; i < translations.length; i++) {
+      const itemKey = key + "/" + i.toString();
+      if (!(itemKey in this.fields)) {
+        this.createBlankField(itemKey, LoggableType.Empty);
+        this.setStructuredType(itemKey, "Translation2d");
+        this.processTimestamp(itemKey, timestamp);
+      }
+      this.putNumber(itemKey + "/x", timestamp, translations[i][0]);
+      this.putNumber(itemKey + "/y", timestamp, translations[i][1]);
+    }
+  }
+
+  /** Writes a coordinate with the "ZebraTranslation" structured type. */
   putZebraTranslation(key: string, timestamp: number, x: number, y: number, alliance: string) {
     this.putNumber(key + "/x", timestamp, x);
     this.putNumber(key + "/y", timestamp, y);
     this.putString(key + "/alliance", timestamp, alliance);
     if (!(key in this.fields)) {
       this.createBlankField(key, LoggableType.Empty);
+      this.setStructuredType(key, "ZebraTranslation");
+      this.setGeneratedParent(key);
       this.processTimestamp(key, timestamp);
-      this.fields[key].structuredType = "ZebraTranslation";
     }
   }
 

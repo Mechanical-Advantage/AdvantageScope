@@ -64,45 +64,17 @@ export default class PathPlannerSource extends LiveDataSource {
         const timestamp = new Date().getTime() / 1000 - this.liveZeroTime;
         switch (decoded.command) {
           case "pathFollowingData":
-            this.log.setGeneratedParent("/TargetPose");
-            this.log.setGeneratedParent("/ActualPose");
-
-            this.log.createBlankField("/TargetPose", LoggableType.Empty);
-            this.log.createBlankField("/ActualPose", LoggableType.Empty);
-            this.log.setStructuredType("/TargetPose", "Pose2d");
-            this.log.setStructuredType("/ActualPose", "Pose2d");
-
-            this.log.createBlankField("/TargetPose/translation", LoggableType.Empty);
-            this.log.createBlankField("/ActualPose/translation", LoggableType.Empty);
-            this.log.setStructuredType("/TargetPose/translation", "Translation2d");
-            this.log.setStructuredType("/ActualPose/translation", "Translation2d");
-
-            this.log.createBlankField("/TargetPose/rotation", LoggableType.Empty);
-            this.log.createBlankField("/ActualPose/rotation", LoggableType.Empty);
-            this.log.setStructuredType("/TargetPose/rotation", "Rotation2d");
-            this.log.setStructuredType("/ActualPose/rotation", "Rotation2d");
-
-            this.log.putNumber("/TargetPose/translation/x", timestamp, decoded.targetPose.x);
-            this.log.putNumber("/TargetPose/translation/y", timestamp, decoded.targetPose.y);
-            this.log.putNumber("/TargetPose/rotation/value", timestamp, decoded.targetPose.theta);
-            this.log.putNumber("/ActualPose/translation/x", timestamp, decoded.actualPose.x);
-            this.log.putNumber("/ActualPose/translation/y", timestamp, decoded.actualPose.y);
-            this.log.putNumber("/ActualPose/rotation/value", timestamp, decoded.actualPose.theta);
+            this.log.putPose("/TargetPose", timestamp, {
+              translation: [decoded.targetPose.x, decoded.targetPose.y],
+              rotation: decoded.targetPose.theta
+            });
+            this.log.putPose("/ActualPose", timestamp, {
+              translation: [decoded.actualPose.x, decoded.actualPose.y],
+              rotation: decoded.actualPose.theta
+            });
             break;
           case "activePath":
-            this.log.setGeneratedParent("/ActivePath");
-            this.log.createBlankField("/ActivePath", LoggableType.Empty);
-            this.log.setStructuredType("/ActivePath", "Translation2d[]");
-
-            const length = decoded.states.length;
-            this.log.putNumber("/ActivePath/length", timestamp, length);
-
-            for (let i = 0; i < length; i++) {
-              this.log.createBlankField("/ActivePath/" + i.toString(), LoggableType.Empty);
-              this.log.setStructuredType("/ActivePath/" + i.toString(), "Translation2d");
-              this.log.putNumber("/ActivePath/" + i.toString() + "/x", timestamp, decoded.states[i][0]);
-              this.log.putNumber("/ActivePath/" + i.toString() + "/y", timestamp, decoded.states[i][1]);
-            }
+            this.log.putTranslationArray("/ActivePath", timestamp, decoded.states);
             break;
           default:
             console.warn("Unknown PathPlanner data", decoded);
