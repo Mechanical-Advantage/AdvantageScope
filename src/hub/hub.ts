@@ -9,7 +9,7 @@ import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import loadZebra from "./dataSources/LoadZebra";
-import { NT4Publisher } from "./dataSources/NT4Publisher";
+import { NT4Publisher, NT4PublisherStatus } from "./dataSources/NT4Publisher";
 import NT4Source from "./dataSources/NT4Source";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
@@ -65,6 +65,7 @@ let liveSource: LiveDataSource | null = null;
 let publisher: NT4Publisher | null = null;
 let isExporting = false;
 let logPath: string | null = null;
+let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
 
@@ -220,18 +221,18 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
     path,
     (status: HistoricalDataSourceStatus) => {
       let components = path.split(window.platform === "win32" ? "\\" : "/");
-      let friendlyName = components[components.length - 1];
+      logFriendlyName = components[components.length - 1];
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
         case HistoricalDataSourceStatus.Decoding:
-          if (!shouldMerge) setWindowTitle(friendlyName, "Loading");
+          if (!shouldMerge) setWindowTitle(logFriendlyName, "Loading");
           break;
         case HistoricalDataSourceStatus.Ready:
-          if (!shouldMerge) setWindowTitle(friendlyName);
+          if (!shouldMerge) setWindowTitle(logFriendlyName);
           setLoading(null);
           break;
         case HistoricalDataSourceStatus.Error:
-          if (!shouldMerge) setWindowTitle(friendlyName, "Error");
+          if (!shouldMerge) setWindowTitle(logFriendlyName, "Error");
           setLoading(null);
           window.sendMainMessage("error", {
             title: "Failed to open log",
@@ -521,7 +522,20 @@ function handleMainMessage(message: NamedMessage) {
         });
       } else {
         publisher?.stop();
-        publisher = new NT4Publisher(message.data);
+        publisher = new NT4Publisher(message.data, (status) => {
+          if (logFriendlyName === null) return;
+          switch (status) {
+            case NT4PublisherStatus.Connecting:
+              setWindowTitle(logFriendlyName, "Searching");
+              break;
+            case NT4PublisherStatus.Active:
+              setWindowTitle(logFriendlyName, "Publishing");
+              break;
+            case NT4PublisherStatus.Stopped:
+              setWindowTitle(logFriendlyName);
+              break;
+          }
+        });
       }
       break;
 

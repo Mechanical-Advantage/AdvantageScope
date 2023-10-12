@@ -7,13 +7,14 @@ import { NT4_Client } from "./NT4";
 export class NT4Publisher {
   private PERIOD = 0.02;
 
-  private GLOW: HTMLElement;
   private client: NT4_Client;
+  private statusCallback: (status: NT4PublisherStatus) => void;
   private interval: number | null = null;
+  private stopped = false;
   private publishedTopics: { [key: string]: any } = {};
 
-  constructor(isSim: boolean) {
-    this.GLOW = document.getElementsByClassName("publishing-glow")[0] as HTMLElement;
+  constructor(isSim: boolean, statusCallback: (status: NT4PublisherStatus) => void) {
+    this.statusCallback = statusCallback;
 
     // Get address
     let address = "";
@@ -28,7 +29,7 @@ export class NT4Publisher {
     }
 
     // Create client
-    this.GLOW.classList.remove("connected");
+    statusCallback(NT4PublisherStatus.Connecting);
     this.client = new NT4_Client(
       address,
       "AdvantageScope",
@@ -36,21 +37,25 @@ export class NT4Publisher {
       () => {},
       () => {},
       () => {
-        this.GLOW.classList.add("connected");
+        if (!this.stopped) {
+          statusCallback(NT4PublisherStatus.Active);
+        }
       },
       () => {
-        this.GLOW.classList.remove("connected");
+        if (!this.stopped) {
+          statusCallback(NT4PublisherStatus.Connecting);
+        }
       }
     );
 
     // Start
-    document.documentElement.style.setProperty("--show-publishing-glow", "1");
     this.client.connect();
     this.interval = window.setInterval(() => this.periodic(), this.PERIOD * 1000);
   }
 
   stop() {
-    document.documentElement.style.setProperty("--show-publishing-glow", "0");
+    this.stopped = true;
+    this.statusCallback(NT4PublisherStatus.Stopped);
     this.client.disconnect();
     if (this.interval !== null) window.clearInterval(this.interval);
   }
@@ -164,4 +169,10 @@ export class NT4Publisher {
       }
     });
   }
+}
+
+export enum NT4PublisherStatus {
+  Connecting,
+  Active,
+  Stopped
 }

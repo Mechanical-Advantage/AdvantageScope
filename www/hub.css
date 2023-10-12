@@ -5,7 +5,6 @@
   --show-update-button: 0;
   --show-loading-glow: 0;
   --loading-glow-progress: 1;
-  --show-publishing-glow: 0;
 }
 
 /* Title bar layout */
@@ -80,25 +79,6 @@ div.loading-glow {
     opacity: 100%;
   }
 }
-
-div.publishing-glow {
-  position: absolute;
-  z-index: 6;
-  left: var(--side-bar-width);
-  right: 0px;
-  top: 0px;
-  height: 3px;
-  transform: translateY(calc(-3px + 3px * var(--show-publishing-glow)));
-  transition: transform 0.3s;
-  overflow: hidden;
-  animation: publishingGlowPulsing 1s ease-in-out infinite;
-  background-color: #ff0000;
-}
-
-div.publishing-glow.connected {
-  background-color: #00b400;
-}
-
 /* Side bar layout */
 
 div.side-bar-background {
