@@ -62,7 +62,7 @@ export default class NT4Source extends LiveDataSource {
           }
 
           // Add active fields
-          let activeFields: Set<string> = new Set([akitMode ? "/AdvantageKit/.schema" : "/.schema"]);
+          let activeFields: Set<string> = new Set(["/.schema"]);
           if (window.log === this.log) {
             [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
               // Compare to announced keys
