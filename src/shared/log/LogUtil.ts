@@ -129,19 +129,19 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   return enabledData;
 }
 
-export function getIsRedAlliance(log: Log): boolean {
+export function getIsRedAlliance(log: Log, time: number): boolean {
   let allianceKey = ALLIANCE_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!allianceKey) return false;
 
   if (allianceKey.endsWith("AllianceStation")) {
     // Integer value (station) from AdvantageKit
-    let tempAllianceData = log.getNumber(allianceKey, Infinity, Infinity);
+    let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
       return tempAllianceData.values[tempAllianceData.values.length - 1] <= 2;
     }
   } else {
     // Boolean value from NT
-    let tempAllianceData = log.getBoolean(allianceKey, Infinity, Infinity);
+    let tempAllianceData = log.getBoolean(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
       return tempAllianceData.values[tempAllianceData.values.length - 1];
     }

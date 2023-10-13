@@ -665,7 +665,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     let allianceRedOrigin = false;
     switch (this.ALLIANCE.value) {
       case "auto":
-        allianceRedOrigin = getIsRedAlliance(window.log);
+        allianceRedOrigin = getIsRedAlliance(window.log, time);
         break;
       case "blue":
         allianceRedOrigin = false;

@@ -499,7 +499,7 @@ export default class OdometryController extends TimelineVizController {
     // Get alliance colors
     let allianceRedBumpers = false;
     let allianceRedOrigin = false;
-    let autoRedAlliance = getIsRedAlliance(window.log);
+    let autoRedAlliance = getIsRedAlliance(window.log, time);
     switch (this.ALLIANCE_BUMPERS.value) {
       case "auto":
         allianceRedBumpers = autoRedAlliance;
