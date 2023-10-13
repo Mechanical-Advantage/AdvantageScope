@@ -12,8 +12,7 @@ export const GROUPED_UNITS: { [id: string]: { [id: string]: number } } = {
   angle: {
     radians: 1,
     degrees: 180 / Math.PI,
-    rotations: 1 / (Math.PI * 2),
-    "Falcon counts": 2048 / (Math.PI * 2)
+    rotations: 1 / (Math.PI * 2)
   },
   velocity: {
     "meters/second": 1,
@@ -25,8 +24,7 @@ export const GROUPED_UNITS: { [id: string]: { [id: string]: number } } = {
     "radians/second": 1,
     "degrees/second": 180 / Math.PI,
     "rotations/second": 1 / (Math.PI * 2),
-    "rotations/minute": 60 / (Math.PI * 2),
-    "Falcon velocity": 2048 / (Math.PI * 2 * 10)
+    "rotations/minute": 60 / (Math.PI * 2)
   },
   acceleration: {
     "meters/second^2": 1,
