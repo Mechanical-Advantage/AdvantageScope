@@ -96,7 +96,7 @@ export class DSLogReader {
       let currents: number[] = [];
       switch (pdType) {
         case PowerDistributionType.REV:
-	  position += 5;	
+          position += 5;
           // Read bytes
           let ints: number[] = [];
           for (let i = 0; i < 6; ++i) {
@@ -151,9 +151,9 @@ export class DSLogReader {
           position += 21 + 3;
           break;
 
-	case PowerDistributionType.None:
-	  position += 4;
-	  break;
+        case PowerDistributionType.None:
+          position += 4;
+          break;
       }
       entry.powerDistributionCurrents = currents;
 
