@@ -1,15 +1,12 @@
 import { app } from "electron";
 import path from "path";
 import Preferences from "../shared/Preferences";
-import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 
 // General
 export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
 export const ASSETS_REPOSITORY = "Mechanical-Advantage/AdvantageScopeAssets";
-export const ASSET_TAGS = new Set([
-  "default-assets-v1",
-  ...(DISTRIBUTOR === Distributor.FRC6328 ? ["frc-6328-assets-v1"] : [])
-]);
+export const ASSET_TAG_DEFAULT = "default-assets-v1";
+export const ASSET_TAG_FRC6328 = "frc-6328-assets-v1";
 export const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
 export const STATE_FILENAME = path.join(
   app.getPath("userData"),
