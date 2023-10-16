@@ -3,6 +3,7 @@
   "productName": "AdvantageScope",
   "version": "2.3.0",
   "description": "Robot telemetry application for FRC",
+  "copyright": "Copyright © 2021-2023 FRC 6328",
   "author": {
     "name": "FRC 6328",
     "email": "info@littletonrobotics.org",

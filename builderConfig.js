@@ -1,9 +1,16 @@
+const fs = require("fs");
+
 module.exports = () => {
   const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
+  const package = JSON.parse(
+    fs.readFileSync("package.json", {
+      encoding: "utf-8"
+    })
+  );
   return {
     productName: isWpilib ? "AdvantageScope (WPILib)" : "AdvantageScope",
     appId: "org.littletonrobotics.advantagescope",
-    copyright: "Copyright © 2021-2023 FRC 6328",
+    copyright: package.copyright,
     npmRebuild: false,
     publish: [],
     afterSign: "notarize.js",
