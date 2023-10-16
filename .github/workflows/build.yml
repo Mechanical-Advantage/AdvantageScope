@@ -281,7 +281,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-win-${{ matrix.arch }}-wpilib-dev.zip
-          path: advantagescope-win-${{ matrix.arch }}-wpilib-dev.zip
+          path: advantagescope-win-${{ matrix.arch }}-wpilib.zip
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -346,7 +346,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-mac-${{ matrix.arch }}-wpilib-dev.zip
-          path: advantagescope-mac-${{ matrix.arch }}-wpilib-dev.zip
+          path: advantagescope-mac-${{ matrix.arch }}-wpilib.zip
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -403,7 +403,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: advantagescope-linux-${{ matrix.arch }}-wpilib-dev.zip
-          path: advantagescope-linux-${{ matrix.arch }}-wpilib-dev.zip
+          path: advantagescope-linux-${{ matrix.arch }}-wpilib.zip
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
