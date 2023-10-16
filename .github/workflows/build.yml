@@ -29,12 +29,21 @@ jobs:
           ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
-      - name: Compile bundles
+      - name: Compile bundles (FRC 6328)
         run: npm run compile
-      - name: Upload bundles
+      - name: Upload bundles (FRC 6328)
         uses: actions/upload-artifact@v3
         with:
           name: bundles
+          path: bundles/*.js
+      - name: Compile bundles (WPILib)
+        run: npm run compile
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+      - name: Upload bundles (WPILib)
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles-wpilib
           path: bundles/*.js
 
   build-win:
@@ -63,7 +72,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch }} --publish never
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -129,7 +138,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch }} --publish never
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -204,7 +213,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
+        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -233,9 +242,195 @@ jobs:
           asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.format }}
           asset_content_type: "application/octet-stream"
 
+  build-wpilib-win:
+    name: "WPILib: Build for Windows (${{ matrix.arch }})"
+    needs: compile
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -w portable
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "AdvantageScope (WPILib).exe"
+          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
+      - name: Upload development artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          asset_name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          asset_content_type: "application/octet-stream"
+
+  build-wpilib-mac:
+    name: "WPILib: Build for macOS (${{ matrix.arch }})"
+    needs: compile
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64", "arm64"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Load macOS certificate
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - name: Load macOS notarization credentials
+        if: github.event_name == 'release'
+        run: |
+          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
+          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
+          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          if [ "${{ matrix.arch }}" == "arm64" ]; then
+            mv dist/mac-arm64/AdvantageScope.app "AdvantageScope (WPILib).app"
+          else
+            mv dist/mac/AdvantageScope.app "AdvantageScope (WPILib).app"
+          fi
+          zip -r advantagescope-wpilib-mac-${{ matrix.arch }}.zip "AdvantageScope (WPILib).app"
+      - name: Upload development artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          path: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          asset_content_type: "application/octet-stream"
+
+  build-wpilib-linux:
+    name: "WPILib: Build for Linux (${{ matrix.arch }})"
+    needs: compile
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -l AppImage
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          mv dist/AdvantageScope*.AppImage "AdvantageScope (WPILib).AppImage"
+          zip advantagescope-wpilib-linux-${{ matrix.arch }}.zip "AdvantageScope (WPILib).AppImage"
+      - name: Upload development artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          asset_name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          asset_content_type: "application/octet-stream"
+
   finalize-release:
     name: Finalize Release
-    needs: [build-win, build-mac, build-linux]
+    needs: [build-win, build-mac, build-linux, build-wpilib-win, build-wpilib-mac, build-wpilib-linux]
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
 
