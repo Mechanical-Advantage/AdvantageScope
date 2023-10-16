@@ -63,7 +63,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never
+        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -129,7 +129,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch }} --publish never
+        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -204,7 +204,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
+        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
