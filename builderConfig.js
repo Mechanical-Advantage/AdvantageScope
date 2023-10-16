@@ -58,7 +58,7 @@ module.exports = () => {
       }
     ],
     mac: {
-      target: isWpilib ? "dir" : "dmg",
+      target: isWpilib ? "zip" : "dmg",
       icon: "icons/app/app-icon.icns",
       entitlements: "entitlements.mac.plist",
       entitlementsInherit: "entitlements.mac.plist",

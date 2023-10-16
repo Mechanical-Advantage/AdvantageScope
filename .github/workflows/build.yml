@@ -29,12 +29,23 @@ jobs:
           ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
-      - name: Compile bundles
+      - name: Compile bundles (FRC 6328)
         run: npm run compile
-      - name: Upload bundles
+      - name: Upload bundles (FRC 6328)
         uses: actions/upload-artifact@v3
         with:
           name: bundles
+          path: bundles/*.js
+      - name: Compile bundles (WPILib)
+        if: github.event_name == 'release'
+        run: npm run compile
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+      - name: Upload bundles (WPILib)
+        if: github.event_name == 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: bundles-wpilib
           path: bundles/*.js
 
   build-win:
@@ -233,9 +244,157 @@ jobs:
           asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.format }}
           asset_content_type: "application/octet-stream"
 
+  build-wpilib-win:
+    name: Build for Windows (x64, WPILib)
+    if: github.event_name == 'release'
+    needs: compile
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --config builderConfig.js --publish never
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "AdvantageScope (WPILib).exe"
+          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-win-x64-wpilib.zip"
+      - name: "Release: Get release info"
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-win-x64-wpilib.zip
+          asset_name: advantagescope-win-x64-wpilib.zip
+          asset_content_type: "application/octet-stream"
+
+  build-wpilib-mac:
+    name: Build for macOS (${{ matrix.arch }}, WPILib)
+    needs: compile
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64", "arm64"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Load macOS certificate
+        if: github.event_name != 'pull_request'
+        run: |
+          echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
+      - name: Load macOS notarization credentials
+        if: github.event_name == 'release'
+        run: |
+          echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
+          echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
+          echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --config builderConfig.js --publish never --${{ matrix.arch }}
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          mv dist/AdvantageScope*.zip advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+      - name: "Release: Get release info"
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+          asset_name: advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+          asset_content_type: "application/octet-stream"
+
+  build-wpilib-linux:
+    name: Build for Linux (x64, WPILib)
+    needs: compile
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+      - name: Download bundles
+        uses: actions/download-artifact@v3
+        with:
+          name: bundles-wpilib
+          path: bundles
+      - name: Build app
+        run: npx electron-builder build --config builderConfig.js --publish never
+        env:
+          ASCOPE_DISTRIBUTOR: WPILIB
+          NODE_OPTIONS: --max-old-space-size=4096
+      - name: Prepare artifact
+        run: |
+          mv dist/AdvantageScope*.AppImage "AdvantageScope (WPILib).AppImage"
+          zip advantagescope-linux-x64-wpilib.zip "AdvantageScope (WPILib).AppImage"
+      - name: "Release: Get release info"
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescope-linux-x64-wpilib.zip
+          asset_name: advantagescope-linux-x64-wpilib.zip
+          asset_content_type: "application/octet-stream"
+
   finalize-release:
     name: Finalize Release
-    needs: [build-win, build-mac, build-linux]
+    needs: [build-win, build-mac, build-linux, build-wpilib-win, build-wpilib-mac, build-wpilib-linux]
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
 
@@ -252,9 +411,9 @@ jobs:
           id: ${{ github.event.release.id }}
           prerelease: false
           replacebody: false
-          body: '<table><tr><th colspan="4">Common Downloads</th></tr><tr><td colspan="4">🪟 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">Windows x64</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Apple Silicon</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Intel</a></td></tr><tr><td colspan="4">🐧 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">Linux x86 Deb</a></td></tr><tr><th colspan="4">All Downloads</th></tr><tr><td>Windows</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-arm64-${{ steps.get_release_info.outputs.tag_name }}.exe">arm64</a></td><td></td></tr><tr><td>macOS</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">arm64</a></td><td></td></tr><tr><td>Linux/deb</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.deb">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.deb">arm32</a></td></tr><tr><td>Linux/rpm</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.rpm">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm32</a></td></tr><tr><td>Linux/pacman</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.pacman">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm32</a></td></tr><tr><td>Linux/AppImage</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm32</a></td></tr><tr><td>Linux/snap</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.snap">x64</a></td><td></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.snap">arm32</a></td></tr><tr><td>Linux/flatpak</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">arm64</a></td><td></td></tr></table>'
+          body: '<table><tr><th colspan="4">Common Downloads</th></tr><tr><td colspan="4">🪟 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">Windows x64</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Apple Silicon</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Intel</a></td></tr><tr><td colspan="4">🐧 <a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">Linux x86 Deb</a></td></tr><tr><th colspan="4">All Downloads</th></tr><tr><td>Windows</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-arm64-${{ steps.get_release_info.outputs.tag_name }}.exe">arm64</a></td><td></td></tr><tr><td>macOS</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">arm64</a></td><td></td></tr><tr><td>Linux/deb</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.deb">arm64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.deb">arm32</a></td></tr><tr><td>Linux/rpm</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.rpm">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm32</a></td></tr><tr><td>Linux/pacman</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.pacman">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm32</a></td></tr><tr><td>Linux/AppImage</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm32</a></td></tr><tr><td>Linux/snap</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.snap">x64</a></td><td></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.snap">arm32</a></td></tr><tr><td>Linux/flatpak</td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">x64</a></td><td><a href="https://github.com/jwbonner/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">arm64</a></td><td></td></tr></table>'
       - name: Mark as latest
         run: |
-          gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/Mechanical-Advantage/AdvantageScope/releases/${{ github.event.release.id }} -f make_latest=true
+          gh api --method PATCH -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/jwbonner/AdvantageScope/releases/${{ github.event.release.id }} -f make_latest=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
