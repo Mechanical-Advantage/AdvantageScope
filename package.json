@@ -3,7 +3,6 @@
   "productName": "AdvantageScope",
   "version": "3.1.0",
   "description": "Robot telemetry application for FRC",
-  "copyright": "Copyright © 2021-2023 FRC 6328",
   "author": {
     "name": "FRC 6328",
     "email": "info@littletonrobotics.org",
@@ -14,8 +13,8 @@
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rollup -c --configMain && rollup -c --configLargeRenderers && rollup -c --configSmallRenderers && rollup -c --configWorkers",
-    "build": "npm run compile && electron-builder build --config builderConfig.js",
-    "fast-build": "npm run compile && electron-builder build --dir --config builderConfig.js",
+    "build": "npm run compile && electron-builder build",
+    "fast-build": "npm run compile && electron-builder build --dir",
     "watch": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
@@ -65,5 +64,92 @@
   "prettier": {
     "printWidth": 120,
     "trailingComma": "none"
+  },
+  "build": {
+    "appId": "org.littletonrobotics.advantagescope",
+    "copyright": "Copyright © 2021-2023 FRC 6328",
+    "npmRebuild": false,
+    "publish": [],
+    "afterSign": "notarize.js",
+    "files": [
+      "www/**/*",
+      "bundles/*",
+      "icons/**/*",
+      "!icons/**/*.iconset",
+      "bundledAssets/**/*",
+      "docs/**/*",
+      "!**/.*"
+    ],
+    "extraResources": [
+      {
+        "from": "ffmpeg",
+        "filter": [
+          "ffmpeg-${os}-${arch}*"
+        ]
+      },
+      "LICENSE",
+      "ThirdPartyLicenses.txt"
+    ],
+    "fileAssociations": [
+      {
+        "ext": "wpilog",
+        "name": "WPILib robot log",
+        "description": "WPILib robot log",
+        "mimeType": "application/x-wpilog",
+        "role": "Viewer",
+        "icon": "icons/app/wpilog-icon"
+      },
+      {
+        "ext": "rlog",
+        "name": "Robot log",
+        "description": "Robot log",
+        "mimeType": "application/x-rlog",
+        "role": "Viewer",
+        "icon": "icons/app/rlog-icon"
+      },
+      {
+        "ext": "dslog",
+        "name": "FRC Driver Station log",
+        "description": "FRC Driver Station log",
+        "mimeType": "application/x-dslog",
+        "role": "Viewer",
+        "icon": "icons/app/dslog-icon"
+      },
+      {
+        "ext": "dsevents",
+        "name": "FRC Driver Station events",
+        "description": "FRC Driver Station events",
+        "mimeType": "application/x-dsevents",
+        "role": "Viewer",
+        "icon": "icons/app/dsevents-icon"
+      }
+    ],
+    "mac": {
+      "target": "dmg",
+      "icon": "icons/app/app-icon.icns",
+      "entitlements": "entitlements.mac.plist",
+      "entitlementsInherit": "entitlements.mac.plist",
+      "notarize": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "snap",
+        "flatpak",
+        "deb",
+        "rpm",
+        "pacman"
+      ],
+      "icon": "icons/app/app-icons-linux",
+      "category": "Utility"
+    },
+    "flatpak": {
+      "runtimeVersion": "22.08",
+      "baseVersion": "22.08"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icons/app/app-icon.ico"
+    }
   }
 }

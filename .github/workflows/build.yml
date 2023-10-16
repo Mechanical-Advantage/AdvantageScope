@@ -72,7 +72,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch }} --publish never
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -138,7 +138,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch }} --publish never
+        run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -213,7 +213,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
+        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -268,7 +268,7 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --publish never --${{ matrix.arch }}
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -w portable
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
@@ -336,13 +336,18 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --publish never --${{ matrix.arch }}
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope*.zip advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          if [ "${{ matrix.arch }}" == "arm64" ]; then
+            mv dist/mac-arm64/AdvantageScope.app "AdvantageScope (WPILib).app"
+          else
+            mv dist/mac/AdvantageScope.app "AdvantageScope (WPILib).app"
+          fi
+          zip advantagescope-wpilib-mac-${{ matrix.arch }}.zip "AdvantageScope (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
@@ -392,7 +397,7 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --publish never --${{ matrix.arch }}
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -l AppImage
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
