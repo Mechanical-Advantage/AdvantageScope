@@ -245,10 +245,15 @@ jobs:
           asset_content_type: "application/octet-stream"
 
   build-wpilib-win:
-    name: Build for Windows (x64, WPILib)
+    name: Build for Windows (${{ matrix.arch }}, WPILib)
     if: github.event_name == 'release'
     needs: compile
     runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64"]
 
     steps:
       - name: Checkout repository
@@ -266,14 +271,14 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --publish never
+        run: npx electron-builder build --config builderConfig.js --publish never --${{ matrix.arch }}
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "AdvantageScope (WPILib).exe"
-          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-win-x64-wpilib.zip"
+          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-win-${{ matrix.arch }}-wpilib.zip"
       - name: "Release: Get release info"
         id: get_release_info
         uses: kaliber5/action-get-release@v1
@@ -285,12 +290,13 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-win-x64-wpilib.zip
-          asset_name: advantagescope-win-x64-wpilib.zip
+          asset_path: advantagescope-win-${{ matrix.arch }}-wpilib.zip
+          asset_name: advantagescope-win-${{ matrix.arch }}-wpilib.zip
           asset_content_type: "application/octet-stream"
 
   build-wpilib-mac:
     name: Build for macOS (${{ matrix.arch }}, WPILib)
+    if: github.event_name == 'release'
     needs: compile
     runs-on: macos-latest
 
@@ -310,12 +316,10 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
       - name: Load macOS certificate
-        if: github.event_name != 'pull_request'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
       - name: Load macOS notarization credentials
-        if: github.event_name == 'release'
         run: |
           echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
@@ -349,9 +353,15 @@ jobs:
           asset_content_type: "application/octet-stream"
 
   build-wpilib-linux:
-    name: Build for Linux (x64, WPILib)
+    name: Build for Linux (${{ matrix.arch }}, WPILib)
+    if: github.event_name == 'release'
     needs: compile
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: ["x64"]
 
     steps:
       - name: Checkout repository
@@ -369,14 +379,14 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build app
-        run: npx electron-builder build --config builderConfig.js --publish never
+        run: npx electron-builder build --config builderConfig.js --publish never --${{ matrix.arch }}
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
           mv dist/AdvantageScope*.AppImage "AdvantageScope (WPILib).AppImage"
-          zip advantagescope-linux-x64-wpilib.zip "AdvantageScope (WPILib).AppImage"
+          zip advantagescope-linux-${{ matrix.arch }}-wpilib.zip "AdvantageScope (WPILib).AppImage"
       - name: "Release: Get release info"
         id: get_release_info
         uses: kaliber5/action-get-release@v1
@@ -388,8 +398,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-x64-wpilib.zip
-          asset_name: advantagescope-linux-x64-wpilib.zip
+          asset_path: advantagescope-linux-${{ matrix.arch }}-wpilib.zip
+          asset_name: advantagescope-linux-${{ matrix.arch }}-wpilib.zip
           asset_content_type: "application/octet-stream"
 
   finalize-release:
