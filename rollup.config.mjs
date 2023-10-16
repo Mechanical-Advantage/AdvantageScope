@@ -42,7 +42,7 @@ function bundle(input, output, isMain, external = []) {
             fs.readFileSync("package.json", {
               encoding: "utf-8"
             })
-          ).copyright
+          ).build.copyright
         }
       }),
       replaceRegEx({
