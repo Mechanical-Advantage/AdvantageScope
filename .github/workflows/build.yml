@@ -320,10 +320,12 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
       - name: Load macOS certificate
+        if: github.event_name != 'pull_request'
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
       - name: Load macOS notarization credentials
+        if: github.event_name == 'release'
         run: |
           echo "APPLE_ID=${{ secrets.MACOS_APPLE_ID }}" >> $GITHUB_ENV
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
