@@ -347,7 +347,7 @@ jobs:
           else
             mv dist/mac/AdvantageScope.app "AdvantageScope (WPILib).app"
           fi
-          zip advantagescope-wpilib-mac-${{ matrix.arch }}.zip "AdvantageScope (WPILib).app"
+          zip -r advantagescope-wpilib-mac-${{ matrix.arch }}.zip "AdvantageScope (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
