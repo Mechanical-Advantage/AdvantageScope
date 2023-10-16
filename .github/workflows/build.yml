@@ -275,13 +275,13 @@ jobs:
       - name: Prepare artifact
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "AdvantageScope (WPILib).exe"
-          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-win-${{ matrix.arch }}-wpilib.zip"
+          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-win-${{ matrix.arch }}-wpilib-dev.zip
-          path: advantagescope-win-${{ matrix.arch }}-wpilib.zip
+          name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -295,8 +295,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-win-${{ matrix.arch }}-wpilib.zip
-          asset_name: advantagescope-win-${{ matrix.arch }}-wpilib.zip
+          asset_path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          asset_name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
           asset_content_type: "application/octet-stream"
 
   build-wpilib-mac:
@@ -342,13 +342,13 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope*.zip advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+          mv dist/AdvantageScope*.zip advantagescope-wpilib-mac-${{ matrix.arch }}.zip
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-wpilib-dev.zip
-          path: advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+          name: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          path: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -362,8 +362,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-mac-${{ matrix.arch }}-wpilib.zip
-          asset_name: advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
           asset_content_type: "application/octet-stream"
 
   build-wpilib-linux:
@@ -399,13 +399,13 @@ jobs:
       - name: Prepare artifact
         run: |
           mv dist/AdvantageScope*.AppImage "AdvantageScope (WPILib).AppImage"
-          zip advantagescope-linux-${{ matrix.arch }}-wpilib.zip "AdvantageScope (WPILib).AppImage"
+          zip advantagescope-wpilib-linux-${{ matrix.arch }}.zip "AdvantageScope (WPILib).AppImage"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-linux-${{ matrix.arch }}-wpilib-dev.zip
-          path: advantagescope-linux-${{ matrix.arch }}-wpilib.zip
+          name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -419,8 +419,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch }}-wpilib.zip
-          asset_name: advantagescope-linux-${{ matrix.arch }}-wpilib.zip
+          asset_path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          asset_name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
           asset_content_type: "application/octet-stream"
 
   finalize-release:
