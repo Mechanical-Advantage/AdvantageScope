@@ -37,12 +37,10 @@ jobs:
           name: bundles
           path: bundles/*.js
       - name: Compile bundles (WPILib)
-        if: github.event_name == 'release'
         run: npm run compile
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
       - name: Upload bundles (WPILib)
-        if: github.event_name == 'release'
         uses: actions/upload-artifact@v3
         with:
           name: bundles-wpilib
@@ -246,7 +244,6 @@ jobs:
 
   build-wpilib-win:
     name: Build for Windows (${{ matrix.arch }}, WPILib)
-    if: github.event_name == 'release'
     needs: compile
     runs-on: windows-latest
 
@@ -279,12 +276,20 @@ jobs:
         run: |
           Move-Item -Path "dist\AdvantageScope*.exe" -Destination "AdvantageScope (WPILib).exe"
           Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-win-${{ matrix.arch }}-wpilib.zip"
+      - name: Upload development artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-win-${{ matrix.arch }}-wpilib-dev.zip
+          path: advantagescope-win-${{ matrix.arch }}-wpilib-dev.zip
       - name: "Release: Get release info"
+        if: github.event_name == 'release'
         id: get_release_info
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
       - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -296,7 +301,6 @@ jobs:
 
   build-wpilib-mac:
     name: Build for macOS (${{ matrix.arch }}, WPILib)
-    if: github.event_name == 'release'
     needs: compile
     runs-on: macos-latest
 
@@ -337,12 +341,20 @@ jobs:
       - name: Prepare artifact
         run: |
           mv dist/AdvantageScope*.zip advantagescope-mac-${{ matrix.arch }}-wpilib.zip
+      - name: Upload development artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-mac-${{ matrix.arch }}-wpilib-dev.zip
+          path: advantagescope-mac-${{ matrix.arch }}-wpilib-dev.zip
       - name: "Release: Get release info"
+        if: github.event_name == 'release'
         id: get_release_info
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
       - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -354,7 +366,6 @@ jobs:
 
   build-wpilib-linux:
     name: Build for Linux (${{ matrix.arch }}, WPILib)
-    if: github.event_name == 'release'
     needs: compile
     runs-on: ubuntu-latest
 
@@ -387,12 +398,20 @@ jobs:
         run: |
           mv dist/AdvantageScope*.AppImage "AdvantageScope (WPILib).AppImage"
           zip advantagescope-linux-${{ matrix.arch }}-wpilib.zip "AdvantageScope (WPILib).AppImage"
+      - name: Upload development artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v3
+        with:
+          name: advantagescope-linux-${{ matrix.arch }}-wpilib-dev.zip
+          path: advantagescope-linux-${{ matrix.arch }}-wpilib-dev.zip
       - name: "Release: Get release info"
+        if: github.event_name == 'release'
         id: get_release_info
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
       - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
