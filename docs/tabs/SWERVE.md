@@ -4,13 +4,15 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, and robot rotation. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-> Note: To view the swerve visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
+> Note: To view the swerve visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
 
-![Overview of swerve tab](/docs/resources/swerve/swerve-1.gif)
+![Overview of swerve tab](/docs/resources/swerve/swerve-1.png)
 
 ## Fields
 
 To selected a field, drag it to one of the labeled boxes. To remove a field, right-click the box. The purpose and expected format of each field is shown below.
+
+> Note: WPILib and AdvantageKit are planning to add struct & protobuf support before the 2024 season. This will allow for swerve states to be directly logged from robot code without converting to numeric arrays. More information about this feature will be available soon.
 
 ### States
 

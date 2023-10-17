@@ -730,7 +730,7 @@ div.documentation-text blockquote p {
 }
 
 @media (prefers-color-scheme: dark) {
-  div.documentation-text code {
+  div.documentation-text pre > code {
     background-color: #444;
   }
 

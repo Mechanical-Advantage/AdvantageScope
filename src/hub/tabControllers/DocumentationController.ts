@@ -76,18 +76,6 @@ export default class DocumentationController implements TabController {
           if (img.src.startsWith("file:///")) {
             img.src = this.fixRelativePath(img.src);
           }
-
-          // Replace GIFs with videos
-          if (img.src.endsWith(".gif")) {
-            let video = document.createElement("video");
-            video.controls = true;
-            video.disablePictureInPicture = true;
-            video.disableRemotePlayback = true;
-            video.autoplay = true;
-            video.loop = true;
-            video.src = img.src.slice(0, -4) + ".mp4";
-            img.parentElement?.replaceChild(video, img);
-          }
         });
 
         // Apply span colors (removed earlier b/c inline styles aren't allowed)

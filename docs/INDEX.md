@@ -33,6 +33,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 
 ## More Features
 
+- [Loading Zebra MotionWorks™ Data](/docs/ZEBRA.md)
 - [Exporting Log Data](/docs/EXPORT.md)
 - [Publishing NetworkTables Data](/docs/NT-PUBLISHING.md)
 - [Custom Assets](/docs/CUSTOM-ASSETS.md)
@@ -43,6 +44,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 - [WPILib Documentation](https://docs.wpilib.org)
 - [AdvantageKit Documentation](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/README.md)
 - [AdvantageScope Repository](https://github.com/Mechanical-Advantage/AdvantageScope/)
-- [Sample Log Data](https://drive.google.com/drive/folders/14Bbp10csQPjh2VcApNM07lwt2v77-z_I?usp=share_link) (6328 @ 2022 Championship)
+- [Sample Log Data: 6328 @ 2023 Championship](https://drive.google.com/drive/folders/1nTfrXo5HNhGMoFqlJ_Y2eI2bKiRWK8t_?usp=share_link)
+- [Sample Log Data: 6328 @ 2022 Championship](https://drive.google.com/drive/folders/14Bbp10csQPjh2VcApNM07lwt2v77-z_I?usp=share_link)
 
 To submit a bug report or feature request, please visit our [GitHub issues](https://github.com/Mechanical-Advantage/AdvantageScope/issues) page.

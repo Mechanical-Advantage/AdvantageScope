@@ -4,11 +4,13 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The odometry tab shows a 2D visualization of the robot overlayed on a map of the field. It can also show extra data like vision targeting status and reference poses. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-> Note: To view the odometry visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
+> Note: To view the odometry visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
 
 ![Overview of odometry tab](/docs/resources/odometry/odometry-1.png)
 
 ## Pose Data
+
+> Note: WPILib and AdvantageKit are planning to add struct & protobuf support before the 2024 season. This will allow for poses to be directly logged from robot code without converting to numeric arrays. More information about this feature will be available soon.
 
 To add a field with pose data, drag it from the sidebar to the box under "Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name under "Poses".
 
@@ -36,6 +38,7 @@ The following objects are supported:
 - Vision Target
 - Heatmap
 - Arrow (Front/Center/Back)
+- Zebra Marker (see [Loading Zebra MotionWorks™ Data](/docs/ZEBRA.md))
 
 > Note: The robot pose is always centered on the robot. The crossbar on the arrow indicates the location of the pose (at the front, center, or back).
 
@@ -45,7 +48,7 @@ The following objects are supported:
 
 The following configuration options are available:
 
-- **Game:** The field image to use, defaults to the most recent game. To add a custom field image, see ["Custom Assets"](/docs/CUSTOM-ASSETS.md).
+- **Game:** The field image to use, defaults to the most recent game. To add a custom field image, see [Custom Assets](/docs/CUSTOM-ASSETS.md).
 - **Units:** The linear and angular units of the provided fields. Meters, inches, radians, and degrees are supported.
 - **Origin:** The location of the origin (0, 0) on the field, relative to the robot's alliance wall. The default option (right) aligns with the [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html), and places the origin at the bottom left when looking at the field in its default orientation.
 - **Side Length:** The side length (track width) of the robot in the selected linear units. The robot is always rendered as a square.

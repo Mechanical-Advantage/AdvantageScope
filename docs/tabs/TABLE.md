@@ -12,4 +12,4 @@ The table view is designed to show the specific value changes for a set of field
 
 The selected time in the table is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).
 
-![Jumping to a time](/docs/resources/table/table-3.gif)
+![Jumping to a time](/docs/resources/table/table-3.png)
