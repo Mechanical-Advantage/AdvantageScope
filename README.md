@@ -15,7 +15,7 @@ It includes the following tools:
 - Log statistics analysis
 - Flexible export options, with support for CSV and WPILOG
 
-**View the [online documentation](https://github.com/Mechanical-Advantage/AdvantageScope/blob/v2.3.0/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
+**View the [online documentation](/docs/INDEX.md) or find it offline by clicking the 📖 icon in the tab bar.**
 
 ![Example screenshot](/docs/resources/screenshot-light.png)
 
