@@ -237,13 +237,21 @@ export class WPILOGDecoder {
     return TEXT_DECODER.decode(this.data.subarray(12, 12 + size));
   }
 
-  /** Reads an integer with an arbitrary length. */
-  private readVariableInteger(position: number, length: number) {
-    let value = 0;
-    for (let i = 0; i < length; i++) {
-      value |= this.data[position + i] << (i * 8);
+  /** Reads an integer with an arbitrary length (up to signed int64). */
+  private readVariableInteger(position: number, length: number): number {
+    let value = BigInt(0);
+    for (let i = 0; i < Math.min(8, length); i++) {
+      let byte = this.data[position + i];
+      if (i === 7) {
+        // Last byte, apply sign
+        if ((byte & (1 << 7)) !== 0) {
+          value = value - (BigInt(1) << BigInt(63));
+        }
+        byte &= ~(1 << 7);
+      }
+      value |= BigInt(byte) << BigInt(i * 8);
     }
-    return value;
+    return Number(value);
   }
 
   /** Runs the specified function for each record in the log. */
@@ -262,7 +270,7 @@ export class WPILOGDecoder {
       let entry = this.readVariableInteger(position + 1, entryLength);
       let size = this.readVariableInteger(position + 1 + entryLength, sizeLength);
       let timestamp = this.readVariableInteger(position + 1 + entryLength + sizeLength, timestampLength);
-      if (this.data.length < position + headerLength + size || entry < 0 || size < 0 || timestamp < 0) break;
+      if (this.data.length < position + headerLength + size || entry < 0 || size < 0) break;
       let newPosition = position + headerLength + size;
       callback(
         new WPILOGDecoderRecord(
