@@ -169,6 +169,7 @@ export default class NT4Source extends LiveDataSource {
           if (topic.name === "") return;
           let modifiedKey = this.getKeyFromTopic(topic);
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
+          this.log.setWpilibType(modifiedKey, topic.type);
           this.shouldRunOutputCallback = true;
         },
         (topic: NT4_Topic) => {
