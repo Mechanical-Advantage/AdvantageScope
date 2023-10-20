@@ -109,23 +109,23 @@ self.onmessage = (event) => {
               log.putMsgpack(key, timestamp, record.getRaw());
               break;
             default: // Default to raw
-              // if (type.startsWith("struct:")) {
-              //   let schemaType = type.split("struct:")[1];
-              //   if (schemaType.endsWith("[]")) {
-              //     log.putStruct(key, timestamp, record.getRaw(), schemaType.slice(0, -2), true);
-              //   } else {
-              //     log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
-              //   }
-              // } else if (type.startsWith("proto:")) {
-              //   let schemaType = type.split("proto:")[1];
-              //   log.putProto(key, timestamp, record.getRaw(), schemaType);
-              // } else {
-              log.putRaw(key, timestamp, record.getRaw());
-              if (CustomSchemas.has(type)) {
-                CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
-                log.setGeneratedParent(key);
+              if (type.startsWith("struct:")) {
+                let schemaType = type.split("struct:")[1];
+                if (schemaType.endsWith("[]")) {
+                  log.putStruct(key, timestamp, record.getRaw(), schemaType.slice(0, -2), true);
+                } else {
+                  log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
+                }
+              } else if (type.startsWith("proto:")) {
+                let schemaType = type.split("proto:")[1];
+                log.putProto(key, timestamp, record.getRaw(), schemaType);
+              } else {
+                log.putRaw(key, timestamp, record.getRaw());
+                if (CustomSchemas.has(type)) {
+                  CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+                  log.setGeneratedParent(key);
+                }
               }
-              // }
               break;
           }
         }

@@ -62,7 +62,7 @@ export default class NT4Source extends LiveDataSource {
           }
 
           // Add active fields
-          let activeFields: Set<string> = new Set(["/.schema"]);
+          let activeFields: Set<string> = new Set([(akitMode ? this.AKIT_PREFIX : "") + "/.schema"]);
           if (window.log === this.log) {
             [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
               // Compare to announced keys
@@ -253,23 +253,23 @@ export default class NT4Source extends LiveDataSource {
               break;
             default: // Default to raw
               if (value instanceof Uint8Array) {
-                // if (topic.type.startsWith("struct:")) {
-                //   let schemaType = topic.type.split("struct:")[1];
-                //   if (schemaType.endsWith("[]")) {
-                //     this.log?.putStruct(key, timestamp, value, schemaType.slice(0, -2), true);
-                //   } else {
-                //     this.log?.putStruct(key, timestamp, value, schemaType, false);
-                //   }
-                // } else if (topic.type.startsWith("proto:")) {
-                //   let schemaType = topic.type.split("proto:")[1];
-                //   this.log?.putProto(key, timestamp, value, schemaType);
-                // } else {
-                this.log?.putRaw(key, timestamp, value);
-                if (CustomSchemas.has(topic.type)) {
-                  CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
-                  this.log.setGeneratedParent(key);
+                if (topic.type.startsWith("struct:")) {
+                  let schemaType = topic.type.split("struct:")[1];
+                  if (schemaType.endsWith("[]")) {
+                    this.log?.putStruct(key, timestamp, value, schemaType.slice(0, -2), true);
+                  } else {
+                    this.log?.putStruct(key, timestamp, value, schemaType, false);
+                  }
+                } else if (topic.type.startsWith("proto:")) {
+                  let schemaType = topic.type.split("proto:")[1];
+                  this.log?.putProto(key, timestamp, value, schemaType);
+                } else {
+                  this.log?.putRaw(key, timestamp, value);
+                  if (CustomSchemas.has(topic.type)) {
+                    CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                    this.log.setGeneratedParent(key);
+                  }
                 }
-                // }
                 updated = true;
               } else {
                 console.warn('Expected a raw value for "' + key + '" but got:', value);
