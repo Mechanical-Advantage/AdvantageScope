@@ -5,7 +5,7 @@ import path from "path";
 import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { ASSETS_REPOSITORY, ASSET_TAG_DEFAULT, ASSET_TAG_FRC6328, AUTO_ASSETS } from "./Constants";
 
-const REQUIRED_SPACE_GB = 25;
+const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
 const SUCCESS_TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
 
