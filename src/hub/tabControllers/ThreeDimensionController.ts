@@ -302,7 +302,7 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   getCommand(time: number) {
     const distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
-    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "meters");
+    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "radians");
 
     // Returns the current value for a 3D field
     let get3DValue = (key: string, type: LoggableType | string): Pose3d[] => {

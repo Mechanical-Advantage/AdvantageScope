@@ -211,7 +211,7 @@ export default class OdometryController extends TimelineVizController {
 
   getCommand(time: number) {
     const distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
-    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "meters");
+    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "radians");
 
     // Returns the current value for a field
     let getCurrentValue = (key: string, type: LoggableType | string): Pose2d[] => {
