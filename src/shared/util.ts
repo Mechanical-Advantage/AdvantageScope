@@ -102,10 +102,13 @@ export function transformPx(
 
 /** Wraps a radian value to a range of negative pi to pi. */
 export function wrapRadians(radians: number): number {
-  if (radians > Math.PI || radians < -Math.PI) {
-    return radians - Math.round(radians/(Math.PI * 2)) * Math.PI * 2;
+  let wrapped = ((radians + Math.PI) % (2 * Math.PI));
+  if (wrapped > 0) {
+    return wrapped - Math.PI;
   }
-  return radians;
+  else {
+    return wrapped + Math.PI;
+  }
 }
 
 /** Generates a random string of characters. */
