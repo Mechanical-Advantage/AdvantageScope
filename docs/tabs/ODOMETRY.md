@@ -23,7 +23,7 @@ Pose data can be stored as a byte-encoded struct or protobuf. The following data
 - `Transform2d`
 - `Trajectory`
 
-The example code below show how to log pose data using WPILib or AdvantageKit.
+The example code below shows how to log pose data using WPILib or AdvantageKit.
 
 ```java
 Pose2d poseA = new Pose2d();
