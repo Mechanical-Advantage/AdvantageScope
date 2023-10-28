@@ -70,7 +70,10 @@ export class NT4Publisher {
       window.log.getFieldKeys(),
       window.preferences.publishFilter,
       true
-    ).filter((topic) => !topic.startsWith("$") && !window.log.isGenerated(topic));
+    ).filter(
+      (topic) =>
+        !topic.startsWith("$") && !window.log.isGenerated(topic) && window.log.getType(topic) != LoggableType.Empty
+    );
     topicsToPublish.forEach((topic) => {
       if (!(topic in this.publishedTopics)) {
         // Publish new topic
@@ -165,7 +168,9 @@ export class NT4Publisher {
       let hasChanged = lastValue === null || !logValuesEqual(type, value, lastValue);
       if (hasChanged) {
         this.publishedTopics[topic] = value;
-        this.client.addTimestampedSample(topic.slice(3), serverTime!, value);
+        if (value !== null) {
+          this.client.addTimestampedSample(topic.slice(3), serverTime!, value);
+        }
       }
     });
   }
