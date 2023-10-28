@@ -1,3 +1,5 @@
+import hljs from "highlight.js/lib/core";
+import java from "highlight.js/lib/languages/java";
 import { Remarkable } from "remarkable";
 import { TabState } from "../../shared/HubState";
 import TabType from "../../shared/TabType";
@@ -9,10 +11,13 @@ export default class DocumentationController implements TabController {
   private remarkable = new Remarkable({ html: true });
   private isIndex = false;
 
+  static {
+    hljs.registerLanguage("java", java);
+  }
+
   constructor(content: HTMLElement) {
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
     this.TEXT = content.getElementsByClassName("documentation-text")[0] as HTMLElement;
-
     this.loadMarkdown("../docs/INDEX.md");
   }
 
@@ -82,6 +87,13 @@ export default class DocumentationController implements TabController {
         Array.from(this.TEXT.getElementsByTagName("span")).forEach((span) => {
           let color = span.getAttribute("color");
           if (color) span.style.color = color.slice(0, -1);
+        });
+
+        // Apply code formatting
+        Array.from(this.TEXT.querySelectorAll("pre > code")).forEach((element) => {
+          if (element.getAttribute("class")) {
+            hljs.highlightElement(element as HTMLElement);
+          }
         });
 
         // App adjustments for index page

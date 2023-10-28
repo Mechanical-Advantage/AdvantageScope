@@ -707,7 +707,7 @@ div.documentation-text code {
 div.documentation-text pre > code {
   display: block;
   font-size: 14px;
-  background-color: #ddd;
+  background-color: #eee;
   padding: 8px;
   overflow-x: auto;
 }
@@ -720,7 +720,7 @@ div.documentation-text video {
 }
 
 div.documentation-text blockquote {
-  background-color: #ddd;
+  background-color: #eee;
   margin: 12px 0px 12px 0px;
   padding: 10px;
 }
@@ -731,11 +731,11 @@ div.documentation-text blockquote p {
 
 @media (prefers-color-scheme: dark) {
   div.documentation-text pre > code {
-    background-color: #444;
+    background-color: #111;
   }
 
   div.documentation-text blockquote {
-    background-color: #444;
+    background-color: #111;
   }
 }
 
