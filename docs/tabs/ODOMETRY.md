@@ -10,11 +10,47 @@ The odometry tab shows a 2D visualization of the robot overlayed on a map of the
 
 ## Pose Data
 
-> Note: WPILib and AdvantageKit are planning to add struct & protobuf support before the 2024 season. This will allow for poses to be directly logged from robot code without converting to numeric arrays. More information about this feature will be available soon.
+To add a field with pose data, drag it from the sidebar to the box under "Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name.
 
-To add a field with pose data, drag it from the sidebar to the box under "Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name under "Poses".
+Multiple poses are typically shown as duplicate objects, except for trajectories (where each pose is a point along the trajectory). The origin and units are configurable.
 
-All pose data must be stored as a numeric array describing one or more 2D poses with the following format:
+### Structured Format
+
+Pose data can be stored as a byte-encoded struct or protobuf. The following data types are supported:
+
+- `Pose2d`
+- `Translation2d`
+- `Transform2d`
+- `Trajectory`
+
+The example code below show how to log pose data using WPILib or AdvantageKit.
+
+```java
+Pose2d poseA = new Pose2d();
+Pose2d poseB = new Pose2d();
+
+// WPILib
+StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("MyPose", Pose2d.struct).publish();
+StructArrayPublisher<Pose2d> arrayPublisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyPoseArray", Pose2d.struct).publish();
+
+periodic() {
+    publisher.set(poseA);
+    arrayPublisher.set(new Pose2d[] {poseA, poseB});
+}
+
+// AdvantageKit
+Logger.recordOutput("MyPose", poseA);
+Logger.recordOutput("MyPoseArray", poseA, poseB);
+Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of pose data together.
+
+### Legacy Format
+
+Alternatively, pose data can be stored as a numeric array describing one or more 2D poses with the following format:
 
 ```
 [
@@ -24,9 +60,7 @@ All pose data must be stored as a numeric array describing one or more 2D poses 
 ]
 ```
 
-Multiple poses are typically shown as duplicate objects, except for trajectories (where each pose is a point along the trajectory). The rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The origin and units are configurable.
-
-> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call `Logger.getInstance().recordOutput(key, poses...);` or `Logger.getInstance().recordOutput(key, trajectory);`
+The rotation must be CCW+, and the units (radians/degrees) are configurable.
 
 ## Objects
 

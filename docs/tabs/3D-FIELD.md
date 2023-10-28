@@ -10,13 +10,49 @@ This tab shows a 3D visualization of the robot and field. It can be used with re
 
 ## Pose Data
 
-> Note: WPILib and AdvantageKit are planning to add struct & protobuf support before the 2024 season. This will allow for poses to be directly logged from robot code without converting to numeric arrays. More information about this feature will be available soon.
+To add a field with pose data, drag it from the sidebar to the box under "3D Poses" or "2D Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name. The origin and units are configurable.
 
-To add a field with pose data, drag it from the sidebar to the box under "3D Poses" or "2D Poses" and use the drop down to select an object type. Multiple sets of objects can be added this way, and fields can be included multiple times. To remove a set of objects, right-click the field name.
+### Structured Format
 
-All pose data must be stored as a numeric array describing one or more poses with the formats shown below.
+Pose data can be stored as a byte-encoded struct or protobuf. The following data types are supported:
 
-### 2D Poses
+- `Pose3d`
+- `Pose2d`
+- `Translation3d`
+- `Translation2d`
+- `Transform3d`
+- `Transform2d`
+- `AprilTag`
+- `Trajectory`
+
+The example code below show how to log pose data using WPILib or AdvantageKit.
+
+```java
+Pose3d poseA = new Pose3d();
+Pose3d poseB = new Pose3d();
+
+// WPILib
+StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("MyPose", Pose3d.struct).publish();
+StructArrayPublisher<Pose3d> arrayPublisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
+
+periodic() {
+    publisher.set(poseA);
+    arrayPublisher.set(new Pose3d[] {poseA, poseB});
+}
+
+// AdvantageKit
+Logger.recordOutput("MyPose", poseA);
+Logger.recordOutput("MyPoseArray", poseA, poseB);
+Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+### Legacy Format
+
+Alternatively, pose data can be stored as a numeric array describing one or more poses with the formats shown below.
+
+**2D Poses**
 
 ```
 [
@@ -26,11 +62,9 @@ All pose data must be stored as a numeric array describing one or more poses wit
 ]
 ```
 
-The 2D rotation must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html). The linear and angular units are configurable.
+The 2D rotation must be CCW+, and the units (radians/degrees) are configurable.
 
-> Note: To log Pose2d and trajectory values with WPILib, use the [Field2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class. With AdvantageKit, call `Logger.getInstance().recordOutput(key, poses...);` or `Logger.getInstance().recordOutput(key, trajectory);`
-
-### 3D Poses
+**3D Poses**
 
 ```
 [
@@ -40,9 +74,7 @@ The 2D rotation must be CCW+, which matches the standard [WPILib coordinate syst
 ]
 ```
 
-The w, x, y, and z rotation values represent a quaternion, which is used internally by WPILib's Rotation3d class. The linear units are configurable.
-
-> Note: To log Pose3d values with AdvantageKit, call `Logger.getInstance().recordOutput(key, poses...);`
+The w, x, y, and z rotation values represent a quaternion, which is used internally by WPILib's `Rotation3d` class.
 
 ## Objects
 
