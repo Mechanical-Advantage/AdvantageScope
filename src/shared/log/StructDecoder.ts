@@ -170,12 +170,8 @@ export default class StructDecoder {
   /** Converts struct-encoded data with a known schema to an object. */
   decode(name: string, value: Uint8Array): { data: unknown; schemaTypes: { [key: string]: string } } {
     if (!(name in this.schemas)) {
-      return {
-        data: null,
-        schemaTypes: {}
-      };
+      throw new Error("Schema not defined");
     }
-
     let outputData: { [key: string]: unknown } = {};
     let outputSchemaTypes: { [key: string]: string } = {};
     let schema = this.schemas[name];
@@ -230,10 +226,7 @@ export default class StructDecoder {
   /** Converts struct-encoded data with a known array schema to an object. */
   decodeArray(name: string, value: Uint8Array): { data: unknown; schemaTypes: { [key: string]: string } } {
     if (!(name in this.schemas)) {
-      return {
-        data: null,
-        schemaTypes: {}
-      };
+      throw new Error("Schema not defined");
     }
     let outputData: unknown[] = [];
     let outputSchemaTypes: { [key: string]: string } = {};

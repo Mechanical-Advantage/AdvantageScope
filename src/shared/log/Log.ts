@@ -31,6 +31,10 @@ export default class Log {
   private enableTimestampSetCache: boolean;
   private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
 
+  private queuedStructs: QueuedStructure[] = [];
+  private queuedStructArrays: QueuedStructure[] = [];
+  private queuedProtos: QueuedStructure[] = [];
+
   constructor(enableTimestampSetCache = true) {
     this.enableTimestampSetCache = enableTimestampSetCache;
   }
@@ -236,6 +240,28 @@ export default class Log {
     return root;
   }
 
+  /** Try to write all of the queued structures. */
+  private attemptQueuedStructures() {
+    let queuedStructs = [...this.queuedStructs];
+    let queuedStructArrays = [...this.queuedStructArrays];
+    let queuedProtos = [...this.queuedProtos];
+    this.queuedStructs = [];
+    this.queuedStructArrays = [];
+    this.queuedProtos = [];
+    queuedStructs.forEach((item) => {
+      this.putStruct(item.key, item.timestamp, item.value, item.schemaType, false);
+      console.log(item);
+    });
+    queuedStructArrays.forEach((item) => {
+      this.putStruct(item.key, item.timestamp, item.value, item.schemaType, true);
+      console.log(item);
+    });
+    queuedProtos.forEach((item) => {
+      this.putProto(item.key, item.timestamp, item.value, item.schemaType);
+      console.log(item);
+    });
+  }
+
   /** Reads a set of generic values from the field. */
   getRange(key: string, start: number, end: number): LogValueSetAny | undefined {
     if (key in this.fields) return this.fields[key].getRange(start, end);
@@ -287,6 +313,7 @@ export default class Log {
     // Check for struct schema
     if (key.includes("/.schema/struct:")) {
       this.structDecoder.addSchema(key.split("struct:")[1], value);
+      this.attemptQueuedStructures();
     }
   }
 
@@ -510,6 +537,13 @@ export default class Log {
           this.processTimestamp(fullChildKey, timestamp);
           this.setStructuredType(fullChildKey, schemaType);
         });
+      } else {
+        (isArray ? this.queuedStructArrays : this.queuedStructs).push({
+          key: key,
+          timestamp: timestamp,
+          value: value,
+          schemaType: schemaType
+        });
       }
     }
   }
@@ -524,6 +558,7 @@ export default class Log {
     if (schemaType === "FileDescriptorProto") {
       this.protoDecoder.addDescriptor(value);
       this.putRaw(key, timestamp, value);
+      this.attemptQueuedStructures();
       return;
     }
 
@@ -544,6 +579,13 @@ export default class Log {
           this.createBlankField(fullChildKey, LoggableType.Empty);
           this.processTimestamp(fullChildKey, timestamp);
           this.setStructuredType(fullChildKey, schemaType);
+        });
+      } else {
+        this.queuedProtos.push({
+          key: key,
+          timestamp: timestamp,
+          value: value,
+          schemaType: schemaType
         });
       }
     }
@@ -615,7 +657,10 @@ export default class Log {
       generatedParents: Array.from(this.generatedParents),
       timestampRange: this.timestampRange,
       structDecoder: this.structDecoder.toSerialized(),
-      protoDecoder: this.protoDecoder.toSerialized()
+      protoDecoder: this.protoDecoder.toSerialized(),
+      queuedStructs: this.queuedStructs,
+      queuedStructArrays: this.queuedStructArrays,
+      queuedProtos: this.queuedProtos
     };
     Object.entries(this.fields).forEach(([key, value]) => {
       result.fields[key] = value.toSerialized();
@@ -633,6 +678,9 @@ export default class Log {
     log.timestampRange = serializedData.timestampRange;
     log.structDecoder = StructDecoder.fromSerialized(serializedData.structDecoder);
     log.protoDecoder = ProtoDecoder.fromSerialized(serializedData.protoDecoder);
+    log.queuedStructs = serializedData.queuedStructs;
+    log.queuedStructArrays = serializedData.queuedStructArrays;
+    log.queuedProtos = serializedData.queuedProtos;
     return log;
   }
 
@@ -690,6 +738,17 @@ export default class Log {
       schemas: { ...firstSerialized.structDecoder.schemas, ...secondSerialized.structDecoder.schemas }
     });
     log.protoDecoder = ProtoDecoder.fromSerialized([...firstSerialized.protoDecoder, ...secondSerialized.protoDecoder]);
+    log.queuedStructs = [...firstSerialized.queuedStructs, ...secondSerialized.queuedStructs];
+    log.queuedStructArrays = [...firstSerialized.queuedStructArrays, ...secondSerialized.queuedStructArrays];
+    log.queuedProtos = [...firstSerialized.queuedProtos, ...secondSerialized.queuedProtos];
+    log.attemptQueuedStructures();
     return log;
   }
 }
+
+type QueuedStructure = {
+  key: string;
+  timestamp: number;
+  value: Uint8Array;
+  schemaType: string;
+};
