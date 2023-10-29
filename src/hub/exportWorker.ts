@@ -40,7 +40,7 @@ self.onmessage = (event) => {
           }
         });
     };
-    processTree(log.getFieldTree(options.format !== "wpilog")); // Include generated field if not wpilog
+    processTree(log.getFieldTree(options.format === "csv-table" || options.format === "csv-list")); // Include generated field if not wpilog
 
     // Filter by type and prefix
     fields = fields.filter((field) => log.getType(field) !== LoggableType.Empty);
