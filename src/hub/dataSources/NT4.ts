@@ -159,6 +159,7 @@ export class NT4_Client {
   }
 
   private async connectOnAlive() {
+    if (!this.serverConnectionRequested) return;
     let result: Response | null = null;
     let requestStart = new Date().getTime();
     try {
