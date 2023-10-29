@@ -85,7 +85,7 @@ export class NT4_Topic {
 }
 
 export class NT4_Client {
-  private RECONNECT_TIMEOUT_MS = 250;
+  private PORT = 5810;
   private RTT_PERIOD_MS_V40 = 1000;
   private RTT_PERIOD_MS_V41 = 250;
   private TIMEOUT_MS_V40 = 5000;
@@ -143,6 +143,35 @@ export class NT4_Client {
     this.onNewTopicData = onNewTopicData;
     this.onConnect = onConnect;
     this.onDisconnect = onDisconnect;
+
+    this.timestampInterval = setInterval(() => {
+      if (this.rttWs === null) {
+        // Use v4.0 timeout (RTT ws not created)
+        this.ws_sendTimestamp();
+      }
+    }, this.RTT_PERIOD_MS_V40);
+    this.rttWsTimestampInterval = setInterval(() => {
+      if (this.rttWs !== null) {
+        // Use v4.1 timeout (RTT ws was created)
+        this.ws_sendTimestamp();
+      }
+    }, this.RTT_PERIOD_MS_V41);
+  }
+
+  private async connectOnAlive() {
+    let result: Response | null = null;
+    let requestStart = new Date().getTime();
+    try {
+      result = await fetch("http://" + this.serverBaseAddr + ":" + this.PORT.toString(), {
+        signal: AbortSignal.timeout(250)
+      });
+    } catch (err) {}
+    if (result === null || !result.ok) {
+      let requestLength = new Date().getTime() - requestStart;
+      setTimeout(() => this.connectOnAlive(), 350 - requestLength);
+    } else {
+      this.ws_connect();
+    }
   }
 
   //////////////////////////////////////////////////////////////
@@ -152,19 +181,7 @@ export class NT4_Client {
   connect() {
     if (!this.serverConnectionRequested) {
       this.serverConnectionRequested = true;
-      this.ws_connect();
-      this.timestampInterval = setInterval(() => {
-        if (this.rttWs === null) {
-          // Use v4.0 timeout (RTT ws not created)
-          this.ws_sendTimestamp();
-        }
-      }, this.RTT_PERIOD_MS_V40);
-      this.rttWsTimestampInterval = setInterval(() => {
-        if (this.rttWs !== null) {
-          // Use v4.1 timeout (RTT ws was created)
-          this.ws_sendTimestamp();
-        }
-      }, this.RTT_PERIOD_MS_V41);
+      this.connectOnAlive();
     }
   }
 
@@ -172,9 +189,8 @@ export class NT4_Client {
   disconnect() {
     if (this.serverConnectionRequested) {
       this.serverConnectionRequested = false;
-      if (this.serverConnectionActive) {
-        this.ws?.close();
-        this.rttWs?.close();
+      if (this.serverConnectionActive && this.ws) {
+        this.ws_onClose(new CloseEvent("close"), this.ws);
       }
       if (this.timestampInterval !== null) {
         clearInterval(this.timestampInterval);
@@ -460,7 +476,9 @@ export class NT4_Client {
     }
   }
 
-  private ws_onClose(event: CloseEvent, reconnect = true) {
+  private ws_onClose(event: CloseEvent, source: WebSocket) {
+    if (source !== this.ws) return;
+
     // Stop server communication
     this.ws?.close();
     this.rttWs?.close();
@@ -479,15 +497,19 @@ export class NT4_Client {
     // Clear out any local cache of server state
     this.serverTopics.clear();
 
+    // Print reason
     if (event.reason !== "") {
       console.log("[NT4] Socket is closed: ", event.reason);
     }
-    if (reconnect && this.serverConnectionRequested) {
-      setTimeout(() => this.ws_connect(), this.RECONNECT_TIMEOUT_MS);
+
+    // Reconnect when alive again
+    if (this.serverConnectionRequested) {
+      this.connectOnAlive();
     }
   }
 
-  private ws_onError() {
+  private ws_onError(source: WebSocket) {
+    if (source !== this.ws) return;
     this.ws?.close();
     this.rttWs?.close();
   }
@@ -609,20 +631,14 @@ export class NT4_Client {
     const timeout = this.rttWs === null ? this.TIMEOUT_MS_V40 : this.TIMEOUT_MS_V41;
     this.disconnectTimeout = setTimeout(() => {
       console.log("[NT4] No data for " + timeout.toString() + "ms, closing");
-
-      // Close sockets and act like the connection was closed normally. If
-      // communication was lost another close event will be emitted on
-      // reconnection once the close message goes through. The second event
-      // will trigger the reconnect, so don't do it here.
-      this.ws_onClose(new CloseEvent("close"), false);
+      if (this.ws) {
+        this.ws_onClose(new CloseEvent("close"), this.ws);
+      }
     }, timeout);
   }
 
   private ws_connect(rttWs = false) {
-    let port = 5810;
-    let prefix = "ws://";
-
-    this.serverAddr = prefix + this.serverBaseAddr + ":" + port.toString() + "/nt/" + this.appName;
+    this.serverAddr = "ws://" + this.serverBaseAddr + ":" + this.PORT.toString() + "/nt/" + this.appName;
 
     let ws = new WebSocket(
       this.serverAddr,
@@ -636,10 +652,10 @@ export class NT4_Client {
     ws.binaryType = "arraybuffer";
     ws.addEventListener("open", () => this.ws_onOpen(ws));
     ws.addEventListener("message", (event: MessageEvent) => this.ws_onMessage(event, rttWs));
-    ws.addEventListener("error", () => this.ws_onError());
     if (!rttWs) {
       // Don't run two callbacks when on normal and RTT close
-      ws.addEventListener("close", (event: CloseEvent) => this.ws_onClose(event));
+      ws.addEventListener("error", () => this.ws_onError(ws));
+      ws.addEventListener("close", (event: CloseEvent) => this.ws_onClose(event, ws));
     }
   }
 
