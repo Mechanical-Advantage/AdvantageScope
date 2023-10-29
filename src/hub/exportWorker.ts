@@ -39,9 +39,10 @@ self.onmessage = (event) => {
           }
         });
     };
-    processTree(log.getFieldTree(false));
+    processTree(log.getFieldTree(options.format !== "wpilog")); // Include generated field if not wpilog
 
-    // Filter by prefix
+    // Filter by type and prefix
+    fields = fields.filter((field) => log.getType(field) !== LoggableType.Empty);
     fields = filterFieldByPrefixes(fields, options.prefixes, options.format === "wpilog");
 
     // Convert to requested format
