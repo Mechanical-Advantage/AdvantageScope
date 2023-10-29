@@ -18,15 +18,9 @@ export const USER_ASSETS = path.join(app.getPath("userData"), "userAssets");
 export const LEGACY_ASSETS = path.join(app.getPath("userData"), "frcData");
 export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
 export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantagescope-videos");
-export const WINDOW_ICON: string | undefined = (() => {
-  switch (process.platform) {
-    case "linux":
-    case "win32":
-      return path.join(__dirname, "../icons/window-icon.png");
-    default: // macOS uses the app icon by default
-      return undefined;
-  }
-})();
+export const OPEN_DEFAULT_PATH =
+  process.platform === "win32" ? "C:\\Users\\Public\\Documents\\FRC\\Log Files" : undefined;
+export const WINDOW_ICON = process.platform === "darwin" ? undefined : path.join(__dirname, "../icons/window-icon.png");
 export const DEFAULT_PREFS: Preferences = {
   theme: process.platform === "linux" ? "light" : "system",
   rioAddress: "10.00.00.2",

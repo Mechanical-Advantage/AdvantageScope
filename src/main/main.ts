@@ -37,6 +37,7 @@ import {
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
   LAST_OPEN_FILE,
+  OPEN_DEFAULT_PATH,
   PATHPLANNER_CONNECT_TIMEOUT_MS,
   PATHPLANNER_DATA_TIMEOUT_MS,
   PATHPLANNER_PING_DELAY_MS,
@@ -911,7 +912,8 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+                defaultPath: OPEN_DEFAULT_PATH
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -929,7 +931,8 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to merge with the current data",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+                defaultPath: OPEN_DEFAULT_PATH
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
