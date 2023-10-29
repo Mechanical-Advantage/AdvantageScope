@@ -84,8 +84,13 @@ export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
   }
 }
 
-export function filterFieldByPrefixes(fields: string[], prefixes: string, ntOnly = false) {
-  let filteredFields: string[] = [];
+export function filterFieldByPrefixes(
+  fields: string[],
+  prefixes: string,
+  alwaysIncludeSchemas = false,
+  ntOnly = false
+) {
+  let filteredFields: Set<string> = new Set();
   prefixes.split(",").forEach((prefix) => {
     let prefixSeries = prefix.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
     if (ntOnly) prefixSeries.splice(0, 0, "NT");
@@ -93,14 +98,14 @@ export function filterFieldByPrefixes(fields: string[], prefixes: string, ntOnly
       let fieldSeries = field.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
       if (fieldSeries.length < prefixSeries.length) return;
       if (
-        prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) &&
-        !filteredFields.includes(field)
+        prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) ||
+        (alwaysIncludeSchemas && field.includes("/.schema/"))
       ) {
-        filteredFields.push(field);
+        filteredFields.add(field);
       }
     });
   });
-  return filteredFields;
+  return [...filteredFields];
 }
 
 export function getEnabledData(log: Log): LogValueSetBoolean | null {

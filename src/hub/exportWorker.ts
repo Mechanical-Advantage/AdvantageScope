@@ -42,7 +42,7 @@ self.onmessage = (event) => {
     processTree(log.getFieldTree(false));
 
     // Filter by prefix
-    fields = filterFieldByPrefixes(fields, options.prefixes);
+    fields = filterFieldByPrefixes(fields, options.prefixes, options.format === "wpilog");
 
     // Convert to requested format
     switch (options.format) {

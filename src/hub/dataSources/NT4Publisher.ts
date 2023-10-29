@@ -69,6 +69,7 @@ export class NT4Publisher {
     let topicsToPublish = filterFieldByPrefixes(
       window.log.getFieldKeys(),
       window.preferences.publishFilter,
+      true,
       true
     ).filter(
       (topic) =>
