@@ -600,6 +600,21 @@ export class NT4_Client {
         let typeIdx = (unpackedData as unknown[])[2] as number;
         let value = (unpackedData as unknown[])[3];
 
+        // Validate types
+        if (typeof topicID !== "number") {
+          console.warn("[NT4] Ignoring binary data, topic ID is not a number");
+          return;
+        }
+        if (typeof timestamp_us !== "number") {
+          console.warn("[NT4] Ignoring binary data, timestamp is not a number");
+          return;
+        }
+        if (typeof typeIdx !== "number") {
+          console.warn("[NT4] Ignoring binary data, type index is not a number");
+          return;
+        }
+
+        // Process data
         if (topicID >= 0) {
           if (rttOnly) {
             console.warn("[NT4] Ignoring binary data, not an RTT message but received by RTT only connection");
