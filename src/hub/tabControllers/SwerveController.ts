@@ -112,29 +112,33 @@ export default class JoysticksController extends TimelineVizController {
             });
           }
         } else {
-          return this.ARRANGEMENT.value.split(",").map((stateIndex) => {
-            let stateIndexNum = Number(stateIndex);
-            let rotationValue = getOrDefault(
-              window.log,
-              field!.key + "/" + stateIndex.toString() + "/angle/value",
-              LoggableType.Number,
-              time,
-              0
-            );
-            let velocityValue = getOrDefault(
-              window.log,
-              field!.key + "/" + stateIndex.toString() + "/speed",
-              LoggableType.Number,
-              time,
-              0
-            );
-            let state: NormalizedModuleState = {
-              rotation:
-                this.ROTATION_UNITS.value === "radians" ? rotationValue : convert(rotationValue, "degrees", "radians"),
-              normalizedVelocity: Math.min(Math.max(velocityValue / Number(this.MAX_SPEED.value), -1), 1)
-            };
-            return state;
-          });
+          let length = getOrDefault(window.log, field!.key + "/length", LoggableType.Number, time, 0);
+          if (length === 4) {
+            return this.ARRANGEMENT.value.split(",").map((stateIndex) => {
+              let rotationValue = getOrDefault(
+                window.log,
+                field!.key + "/" + stateIndex + "/angle/value",
+                LoggableType.Number,
+                time,
+                0
+              );
+              let velocityValue = getOrDefault(
+                window.log,
+                field!.key + "/" + stateIndex + "/speed",
+                LoggableType.Number,
+                time,
+                0
+              );
+              let state: NormalizedModuleState = {
+                rotation:
+                  this.ROTATION_UNITS.value === "radians"
+                    ? rotationValue
+                    : convert(rotationValue, "degrees", "radians"),
+                normalizedVelocity: Math.min(Math.max(velocityValue / Number(this.MAX_SPEED.value), -1), 1)
+              };
+              return state;
+            });
+          }
         }
       }
       return null;

@@ -16,7 +16,7 @@ To selected a field, drag it to one of the labeled boxes. To remove a field, rig
 
 Two sets of module states can be displayed simultaneously in <span style="color: red;">red</span> and <span style="color: blue;">blue</span>. For instance, the measured states can be compared to the setpoints.
 
-Pose data can be stored as a struct array of `SwerveModuleState` objects. The example code below shows how to log this data using WPILib or AdvantageKit. The velocity units should match the configured "Max Speed". The order of the modules is also configurable.
+Pose data can be stored as a struct array of four `SwerveModuleState` objects. The example code below shows how to log this data using WPILib or AdvantageKit. The velocity units should match the configured "Max Speed". The order of the modules is also configurable.
 
 ```java
 SwerveModuleState[] states = new SwerveModuleState[] {
