@@ -47,6 +47,9 @@ export default class LogField {
       this.data.values.shift();
       this.stripingReference = !this.stripingReference;
     }
+    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < timestamp) {
+      this.data.timestamps[0] = timestamp;
+    }
   }
 
   /** Returns the values in the specified timestamp range. */

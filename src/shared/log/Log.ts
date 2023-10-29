@@ -59,6 +59,9 @@ export default class Log {
       while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
         cache.timestamps.shift();
       }
+      if (cache.timestamps.length > 0 && cache.timestamps[0] < timestamp) {
+        cache.timestamps[0] = timestamp;
+      }
     });
     Object.values(this.fields).forEach((field) => {
       field.clearBeforeTime(timestamp);
