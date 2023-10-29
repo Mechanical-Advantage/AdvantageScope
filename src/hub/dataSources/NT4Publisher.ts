@@ -7,13 +7,14 @@ import { NT4_Client } from "./NT4";
 export class NT4Publisher {
   private PERIOD = 0.02;
 
-  private GLOW: HTMLElement;
   private client: NT4_Client;
+  private statusCallback: (status: NT4PublisherStatus) => void;
   private interval: number | null = null;
+  private stopped = false;
   private publishedTopics: { [key: string]: any } = {};
 
-  constructor(isSim: boolean) {
-    this.GLOW = document.getElementsByClassName("publishing-glow")[0] as HTMLElement;
+  constructor(isSim: boolean, statusCallback: (status: NT4PublisherStatus) => void) {
+    this.statusCallback = statusCallback;
 
     // Get address
     let address = "";
@@ -28,7 +29,7 @@ export class NT4Publisher {
     }
 
     // Create client
-    this.GLOW.classList.remove("connected");
+    statusCallback(NT4PublisherStatus.Connecting);
     this.client = new NT4_Client(
       address,
       "AdvantageScope",
@@ -36,21 +37,25 @@ export class NT4Publisher {
       () => {},
       () => {},
       () => {
-        this.GLOW.classList.add("connected");
+        if (!this.stopped) {
+          statusCallback(NT4PublisherStatus.Active);
+        }
       },
       () => {
-        this.GLOW.classList.remove("connected");
+        if (!this.stopped) {
+          statusCallback(NT4PublisherStatus.Connecting);
+        }
       }
     );
 
     // Start
-    document.documentElement.style.setProperty("--show-publishing-glow", "1");
     this.client.connect();
     this.interval = window.setInterval(() => this.periodic(), this.PERIOD * 1000);
   }
 
   stop() {
-    document.documentElement.style.setProperty("--show-publishing-glow", "0");
+    this.stopped = true;
+    this.statusCallback(NT4PublisherStatus.Stopped);
     this.client.disconnect();
     if (this.interval !== null) window.clearInterval(this.interval);
   }
@@ -64,8 +69,12 @@ export class NT4Publisher {
     let topicsToPublish = filterFieldByPrefixes(
       window.log.getFieldKeys(),
       window.preferences.publishFilter,
+      true,
       true
-    ).filter((topic) => !topic.startsWith("$") && !window.log.isGenerated(topic));
+    ).filter(
+      (topic) =>
+        !topic.startsWith("$") && !window.log.isGenerated(topic) && window.log.getType(topic) != LoggableType.Empty
+    );
     topicsToPublish.forEach((topic) => {
       if (!(topic in this.publishedTopics)) {
         // Publish new topic
@@ -92,6 +101,18 @@ export class NT4Publisher {
           case LoggableType.StringArray:
             type = "string[]";
             break;
+        }
+        let wpilibType = window.log.getWpilibType(topic);
+        if (wpilibType !== null) {
+          type = wpilibType;
+
+          // NT4 uses "int" but wpilog uses "int64"
+          if (type === "int64") {
+            type = "int";
+          }
+          if (type === "int64[]") {
+            type = "int[]";
+          }
         }
         this.client.publishTopic(topic.slice(3), type);
         this.publishedTopics[topic] = null;
@@ -136,20 +157,28 @@ export class NT4Publisher {
           value = getOrDefault(window.log, topic, LoggableType.String, time, "");
           break;
         case LoggableType.BooleanArray:
-          value = getOrDefault(window.log, topic, LoggableType.Boolean, time, []);
+          value = getOrDefault(window.log, topic, LoggableType.BooleanArray, time, []);
           break;
         case LoggableType.NumberArray:
-          value = getOrDefault(window.log, topic, LoggableType.Number, time, []);
+          value = getOrDefault(window.log, topic, LoggableType.NumberArray, time, []);
           break;
         case LoggableType.StringArray:
-          value = getOrDefault(window.log, topic, LoggableType.String, time, []);
+          value = getOrDefault(window.log, topic, LoggableType.StringArray, time, []);
           break;
       }
       let hasChanged = lastValue === null || !logValuesEqual(type, value, lastValue);
       if (hasChanged) {
         this.publishedTopics[topic] = value;
-        this.client.addTimestampedSample(topic.slice(3), serverTime!, value);
+        if (value !== null) {
+          this.client.addTimestampedSample(topic.slice(3), serverTime!, value);
+        }
       }
     });
   }
+}
+
+export enum NT4PublisherStatus {
+  Connecting,
+  Active,
+  Stopped
 }

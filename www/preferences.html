@@ -42,6 +42,7 @@
             <select id="liveMode">
               <option value="nt4">NetworkTables 4</option>
               <option value="nt4-akit">NetworkTables 4 (AdvantageKit)</option>
+              <option value="pathplanner">PathPlanner 2023</option>
               <option value="rlog">RLOG Server</option>
             </select>
           </td>
@@ -73,12 +74,23 @@
           </td>
         </tr>
         <tr>
-          <td class="label">3D Mode</td>
+          <td class="label">3D Mode (Default)</td>
           <td class="input" tabindex="-1">
-            <select id="threeDimensionMode">
-              <option value="quality">Prioritize quality</option>
-              <option value="efficiency">Prioritize efficiency</option>
-              <option value="auto">Prioritize efficiency on battery</option>
+            <select id="threeDimensionModeAc">
+              <option value="cinematic">Cinematic</option>
+              <option value="standard">Standard</option>
+              <option value="low-power">Low Power</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">3D Mode (Battery)</td>
+          <td class="input" tabindex="-1">
+            <select id="threeDimensionModeBattery">
+              <option value="">Default</option>
+              <option value="cinematic">Cinematic</option>
+              <option value="standard">Standard</option>
+              <option value="low-power">Low Power</option>
             </select>
           </td>
         </tr>

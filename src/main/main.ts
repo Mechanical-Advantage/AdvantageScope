@@ -5,8 +5,11 @@ import {
   MenuItem,
   MessageChannelMain,
   MessagePortMain,
+  TouchBar,
+  TouchBarSlider,
   app,
   dialog,
+  nativeImage,
   nativeTheme,
   powerMonitor,
   shell
@@ -34,6 +37,12 @@ import {
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
   LAST_OPEN_FILE,
+  OPEN_DEFAULT_PATH,
+  PATHPLANNER_CONNECT_TIMEOUT_MS,
+  PATHPLANNER_DATA_TIMEOUT_MS,
+  PATHPLANNER_PING_DELAY_MS,
+  PATHPLANNER_PING_TEXT,
+  PATHPLANNER_PORT,
   PREFS_FILENAME,
   REPOSITORY,
   RLOG_CONNECT_TIMEOUT_MS,
@@ -56,6 +65,7 @@ let prefsWindow: BrowserWindow | null = null;
 let licensesWindow: BrowserWindow | null = null;
 let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
+let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 
 let hubStateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
@@ -72,6 +82,11 @@ let advantageScopeAssets: AdvantageScopeAssets = {
 let rlogSockets: { [id: number]: net.Socket } = {};
 let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 let rlogDataArrays: { [id: number]: Uint8Array } = {};
+
+// PathPlanner variables
+let pathPlannerSockets: { [id: number]: net.Socket } = {};
+let pathPlannerSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
+let pathPlannerDataStrings: { [id: number]: string } = {};
 
 // Download variables
 let downloadClient: Client | null = null;
@@ -212,7 +227,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
 
       rlogSockets[windowId].setTimeout(RLOG_CONNECT_TIMEOUT_MS, () => {
-        sendMessage(window, "live-rlog-data", { uuid: message.data.uuid, status: false });
+        sendMessage(window, "live-data", { uuid: message.data.uuid, status: false });
       });
 
       let appendArray = (newArray: Uint8Array) => {
@@ -244,7 +259,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           let singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
           rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
 
-          let success = sendMessage(window, "live-rlog-data", {
+          let success = sendMessage(window, "live-data", {
             uuid: message.data.uuid,
             success: true,
             raw: new Uint8Array(singleArray)
@@ -256,16 +271,65 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
 
       rlogSockets[windowId].on("error", () => {
-        sendMessage(window, "live-rlog-data", { uuid: message.data.uuid, success: false });
+        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
       });
 
       rlogSockets[windowId].on("close", () => {
-        sendMessage(window, "live-rlog-data", { uuid: message.data.uuid, success: false });
+        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
       });
       break;
 
     case "live-rlog-stop":
       rlogSockets[windowId]?.destroy();
+      break;
+
+    case "live-pathplanner-start":
+      pathPlannerSockets[windowId]?.destroy();
+      pathPlannerSockets[windowId] = net.createConnection({
+        host: message.data.address,
+        port: PATHPLANNER_PORT
+      });
+
+      pathPlannerSockets[windowId].setTimeout(PATHPLANNER_CONNECT_TIMEOUT_MS, () => {
+        sendMessage(window, "live-data", { uuid: message.data.uuid, status: false });
+      });
+
+      const textDecoder = new TextDecoder();
+      pathPlannerDataStrings[windowId] = "";
+      pathPlannerSockets[windowId].on("data", (data) => {
+        pathPlannerDataStrings[windowId] += textDecoder.decode(data);
+        if (pathPlannerSocketTimeouts[windowId] !== null) clearTimeout(pathPlannerSocketTimeouts[windowId]);
+        pathPlannerSocketTimeouts[windowId] = setTimeout(() => {
+          pathPlannerSockets[windowId]?.destroy();
+        }, PATHPLANNER_DATA_TIMEOUT_MS);
+
+        while (pathPlannerDataStrings[windowId].includes("\n")) {
+          let newLineIndex = pathPlannerDataStrings[windowId].indexOf("\n");
+          let line = pathPlannerDataStrings[windowId].slice(0, newLineIndex);
+          pathPlannerDataStrings[windowId] = pathPlannerDataStrings[windowId].slice(newLineIndex + 1);
+
+          let success = sendMessage(window, "live-data", {
+            uuid: message.data.uuid,
+            success: true,
+            string: line
+          });
+          if (!success) {
+            pathPlannerSockets[windowId]?.destroy();
+          }
+        }
+      });
+
+      pathPlannerSockets[windowId].on("error", () => {
+        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
+      });
+
+      pathPlannerSockets[windowId].on("close", () => {
+        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
+      });
+      break;
+
+    case "live-pathplanner-stop":
+      pathPlannerSockets[windowId]?.destroy();
       break;
 
     case "open-link":
@@ -457,18 +521,30 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       break;
 
+    case "update-touch-bar-slider":
+      if (window.id in hubTouchBarSliders) {
+        let slider = hubTouchBarSliders[window.id];
+        slider.value = Math.round(message.data * slider.maxValue);
+      }
+      break;
+
     default:
       console.warn("Unknown message from hub renderer process", message);
       break;
   }
 }
 
-// Send live RLOG heartbeats
+// Send live RLOG heartbeats & PathPlanner pings
 setInterval(() => {
   Object.values(rlogSockets).forEach((socket) => {
     socket.write(RLOG_HEARTBEAT_DATA);
   });
 }, RLOG_HEARTBEAT_DELAY_MS);
+setInterval(() => {
+  Object.values(pathPlannerSockets).forEach((socket) => {
+    socket.write(PATHPLANNER_PING_TEXT + "\n");
+  });
+}, PATHPLANNER_PING_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow) {
@@ -836,7 +912,8 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+                defaultPath: OPEN_DEFAULT_PATH
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -854,7 +931,8 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to merge with the current data",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }]
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+                defaultPath: OPEN_DEFAULT_PATH
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -1328,6 +1406,54 @@ function createHubWindow() {
   let window = new BrowserWindow(prefs);
   hubWindows.push(window);
 
+  // Add touch bar menu
+  let resetTouchBar = () => {
+    let newCreated = false;
+    let slider = new TouchBar.TouchBarSlider({
+      value: window.id in hubTouchBarSliders ? hubTouchBarSliders[window.id].value : 0,
+      minValue: 0,
+      maxValue: 10000,
+      change(newValue) {
+        sendMessage(window, "update-touch-bar-slider", newValue / slider.maxValue);
+      }
+    });
+    hubTouchBarSliders[window.id] = slider;
+    window.setTouchBar(
+      new TouchBar({
+        items: [
+          new TouchBar.TouchBarOtherItemsProxy(),
+          new TouchBar.TouchBarPopover({
+            icon: nativeImage.createFromPath(path.join(__dirname, "../icons/touch-bar-plus.png")),
+            showCloseButton: true,
+            items: new TouchBar({
+              items: [
+                new TouchBar.TouchBarScrubber({
+                  selectedStyle: "background",
+                  continuous: false,
+                  items: getAllTabTypes()
+                    .slice(1)
+                    .map((type) => {
+                      return {
+                        label: getTabIcon(type) + " " + getDefaultTabTitle(type)
+                      };
+                    }),
+                  select(index) {
+                    if (newCreated) return;
+                    newCreated = true;
+                    sendMessage(window, "new-tab", index + 1);
+                    setTimeout(resetTouchBar, 350);
+                  }
+                })
+              ]
+            })
+          }),
+          slider
+        ]
+      })
+    );
+  };
+  resetTouchBar();
+
   // Show window when loaded
   window.once("ready-to-show", window.show);
 
@@ -1715,7 +1841,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = process.platform === "win32" ? 357 : 297; // "useContentSize" is broken on Windows when not resizable
+  const height = process.platform === "win32" ? 384 : 324; // "useContentSize" is broken on Windows when not resizable
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -1893,7 +2019,10 @@ app.whenReady().then(() => {
     }
     if (
       "liveMode" in oldPrefs &&
-      (oldPrefs.liveMode === "nt4" || oldPrefs.liveMode === "nt4-akit" || oldPrefs.liveMode === "rlog")
+      (oldPrefs.liveMode === "nt4" ||
+        oldPrefs.liveMode === "nt4-akit" ||
+        oldPrefs.liveMode === "pathplanner" ||
+        oldPrefs.liveMode === "rlog")
     ) {
       prefs.liveMode = oldPrefs.liveMode;
     }
@@ -1903,19 +2032,50 @@ app.whenReady().then(() => {
     ) {
       prefs.liveSubscribeMode = oldPrefs.liveSubscribeMode;
     }
+    if ("liveDiscard" in oldPrefs && typeof oldPrefs.liveDiscard === "number") {
+      prefs.liveDiscard = oldPrefs.liveDiscard;
+    }
     if ("publishFilter" in oldPrefs && typeof oldPrefs.publishFilter === "string") {
       prefs.publishFilter = oldPrefs.publishFilter;
     }
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
     }
+    if ("threeDimensionMode" in oldPrefs) {
+      // Migrate from v2
+      switch (oldPrefs.threeDimensionMode) {
+        case "quality":
+          prefs.threeDimensionModeAc = "standard";
+          prefs.threeDimensionModeBattery = "";
+          break;
+        case "efficiency":
+          prefs.threeDimensionModeAc = "low-power";
+          prefs.threeDimensionModeBattery = "";
+          break;
+        case "auto":
+          prefs.threeDimensionModeAc = "standard";
+          prefs.threeDimensionModeBattery = "low-power";
+          break;
+        default:
+          break;
+      }
+    }
     if (
-      "threeDimensionMode" in oldPrefs &&
-      (oldPrefs.threeDimensionMode === "quality" ||
-        oldPrefs.threeDimensionMode === "efficiency" ||
-        oldPrefs.threeDimensionMode === "auto")
+      "threeDimensionModeAc" in oldPrefs &&
+      (oldPrefs.threeDimensionModeAc === "cinematic" ||
+        oldPrefs.threeDimensionModeAc === "standard" ||
+        oldPrefs.threeDimensionModeAc === "low-power")
     ) {
-      prefs.threeDimensionMode = oldPrefs.threeDimensionMode;
+      prefs.threeDimensionModeAc = oldPrefs.threeDimensionModeAc;
+    }
+    if (
+      "threeDimensionModeBattery" in oldPrefs &&
+      (oldPrefs.threeDimensionModeBattery === "" ||
+        oldPrefs.threeDimensionModeBattery === "cinematic" ||
+        oldPrefs.threeDimensionModeBattery === "standard" ||
+        oldPrefs.threeDimensionModeBattery === "low-power")
+    ) {
+      prefs.threeDimensionModeBattery = oldPrefs.threeDimensionModeBattery;
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;

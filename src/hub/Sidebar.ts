@@ -17,6 +17,7 @@ export default class Sidebar {
 
   private SEARCH_RESULTS = document.getElementsByClassName("search-results")[0] as HTMLElement;
 
+  private MERGED_KEY = "MergedLog";
   private KNOWN_KEYS = [
     "DriverStation",
     "NetworkTables",
@@ -42,6 +43,7 @@ export default class Sidebar {
 
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
+  private fieldCount = 0;
   private lastFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
@@ -90,7 +92,7 @@ export default class Sidebar {
         this.SEARCH_INPUT.blur();
       }
     });
-    let periodic = () => {
+    let searchPeriodic = () => {
       let inputRect = this.SEARCH_INPUT.getBoundingClientRect();
       this.SEARCH_RESULTS.style.top = inputRect.bottom.toString() + "px";
       this.SEARCH_RESULTS.style.minWidth = inputRect.width.toString() + "px";
@@ -101,6 +103,12 @@ export default class Sidebar {
       if (unhiding) {
         this.SEARCH_RESULTS.scrollTop = 0;
       }
+    };
+
+    // Periodic function
+    let periodic = () => {
+      searchPeriodic();
+      this.updateTitle();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -169,12 +177,46 @@ export default class Sidebar {
     document.documentElement.style.setProperty("--show-side-bar", this.sidebarWidth > 0 ? "1" : "0");
   }
 
+  /** Updates the title with the duration and field count. */
+  private updateTitle() {
+    let range = window.log.getTimestampRange();
+    let liveTime = window.selection.getCurrentLiveTime();
+    if (liveTime !== null) {
+      range[1] = liveTime;
+    }
+    if (this.fieldCount === 0) {
+      this.SIDEBAR_TITLE.innerText = "No data available";
+    } else {
+      let runtime = range[1] - range[0];
+      let runtimeUnit = "s";
+      if (runtime > 120) {
+        runtime /= 60;
+        runtimeUnit = "m";
+      }
+      if (runtime > 120) {
+        runtime /= 60;
+        runtimeUnit = "h";
+      }
+      this.SIDEBAR_TITLE.innerText =
+        this.fieldCount.toString() +
+        " field" +
+        (this.fieldCount === 1 ? "" : "s") +
+        ", " +
+        Math.floor(runtime).toString() +
+        runtimeUnit +
+        " runtime";
+    }
+  }
+
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
     let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
     this.lastFieldKeys = window.log.getFieldKeys();
 
     if (fieldsChanged) {
+      // Update field count
+      this.fieldCount = window.log.getFieldCount();
+
       // Remove old list
       while (this.FIELD_LIST.firstChild) {
         this.FIELD_LIST.removeChild(this.FIELD_LIST.firstChild);
@@ -198,32 +240,6 @@ export default class Sidebar {
       // Update search
       this.updateSearchResults();
     }
-
-    // Update title
-    let range = window.log.getTimestampRange();
-    let fieldCount = window.log.getFieldCount();
-    if (fieldCount === 0) {
-      this.SIDEBAR_TITLE.innerText = "No data available";
-    } else {
-      let runtime = range[1] - range[0];
-      let runtimeUnit = "s";
-      if (runtime > 120) {
-        runtime /= 60;
-        runtimeUnit = "m";
-      }
-      if (runtime > 120) {
-        runtime /= 60;
-        runtimeUnit = "h";
-      }
-      this.SIDEBAR_TITLE.innerText =
-        fieldCount.toString() +
-        " field" +
-        (fieldCount === 1 ? "" : "s") +
-        ", " +
-        Math.round(runtime).toString() +
-        runtimeUnit +
-        " runtime";
-    }
   }
 
   /** Recursively adds a set of fields. */
@@ -239,8 +255,11 @@ export default class Sidebar {
     let childrenGenerated = generated || (field.fullKey !== null && window.log.isGeneratedParent(field.fullKey));
 
     // Create element
+    let fieldElementContainer = document.createElement("div");
+    parentElement.appendChild(fieldElementContainer);
+    fieldElementContainer.classList.add("field-item-container");
     let fieldElement = document.createElement("div");
-    parentElement.appendChild(fieldElement);
+    fieldElementContainer.appendChild(fieldElement);
     fieldElement.classList.add("field-item");
     if (generated) {
       fieldElement.classList.add("generated");
@@ -293,8 +312,10 @@ export default class Sidebar {
     fieldElement.appendChild(label);
     label.classList.add("field-item-label");
     if (
-      (indent === 0 || (indent === this.INDENT_SIZE_PX && fullTitle.startsWith("/AdvantageKit"))) &&
-      this.KNOWN_KEYS.includes(title)
+      (indent === 0 ||
+        (indent === this.INDENT_SIZE_PX &&
+          (fullTitle.startsWith("/AdvantageKit") || fullTitle.startsWith("/" + this.MERGED_KEY)))) &&
+      (this.KNOWN_KEYS.includes(title) || title.startsWith(this.MERGED_KEY))
     ) {
       label.classList.add("known");
     }
@@ -306,12 +327,12 @@ export default class Sidebar {
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
     if (field.fullKey) {
-      let schemaType = window.log.getSpecialType(field.fullKey);
-      if (schemaType !== null) {
+      let structuredType = window.log.getStructuredType(field.fullKey);
+      if (structuredType !== null) {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerHTML = " &ndash; " + schemaType;
+        typeLabel.innerHTML = " &ndash; " + structuredType;
       }
     }
 
@@ -390,8 +411,8 @@ export default class Sidebar {
         if (this.searchKey !== null && field.fullKey === this.searchKey) {
           // @ts-expect-error
           fieldElement.scrollIntoViewIfNeeded(); // Available in Chromium but not standard
-          fieldElement.classList.add("highlight");
-          setTimeout(() => fieldElement.classList.remove("highlight"), 3000);
+          fieldElementContainer.classList.add("highlight");
+          setTimeout(() => fieldElementContainer.classList.remove("highlight"), 3000);
         }
       };
       this.searchExpandCallbacks.push(highlightForSearch);
@@ -424,7 +445,7 @@ export default class Sidebar {
         if (firstExpand) {
           firstExpand = false;
           let childKeys = Object.keys(field.children);
-          if (fullTitle === "/AdvantageKit" || fullTitle === "/NT") {
+          if (fullTitle === "/AdvantageKit" || fullTitle === "/NT" || fullTitle.startsWith("/" + this.MERGED_KEY)) {
             // Apply hidden and known keys
             childKeys = childKeys
               .filter((key) => !this.HIDDEN_KEYS.includes(key))
@@ -475,10 +496,14 @@ export default class Sidebar {
   private sortKeys(a: string, b: string, useKnown: boolean = false): number {
     // Check for known keys
     if (useKnown) {
-      if (this.KNOWN_KEYS.includes(a) && !this.KNOWN_KEYS.includes(b)) return 1;
-      if (!this.KNOWN_KEYS.includes(a) && this.KNOWN_KEYS.includes(b)) return -1;
-    }
+      let isMerged = (key: string) => key.startsWith(this.MERGED_KEY);
+      if (isMerged(a) && !isMerged(b)) return 1;
+      if (!isMerged(a) && isMerged(b)) return -1;
 
+      let isKnown = (key: string) => this.KNOWN_KEYS.includes(key);
+      if (isKnown(a) && !isKnown(b)) return 1;
+      if (!isKnown(a) && isKnown(b)) return -1;
+    }
     return a.localeCompare(b, undefined, { numeric: true });
   }
 

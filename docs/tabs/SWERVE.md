@@ -4,9 +4,9 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, and robot rotation. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-> Note: To view the swerve visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
+> Note: To view the swerve visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
 
-![Overview of swerve tab](/docs/resources/swerve/swerve-1.gif)
+![Overview of swerve tab](/docs/resources/swerve/swerve-1.png)
 
 ## Fields
 
@@ -16,7 +16,29 @@ To selected a field, drag it to one of the labeled boxes. To remove a field, rig
 
 Two sets of module states can be displayed simultaneously in <span style="color: red;">red</span> and <span style="color: blue;">blue</span>. For instance, the measured states can be compared to the setpoints.
 
-The state fields should be numeric arrays with the format shown below. The rotation units are configurable (radians or degrees), and the velocity units should match the configured "Max Speed". The order of the modules is also configurable.
+Pose data can be stored as a struct array of `SwerveModuleState` objects. The example code below shows how to log this data using WPILib or AdvantageKit. The velocity units should match the configured "Max Speed". The order of the modules is also configurable.
+
+```java
+SwerveModuleState[] states = new SwerveModuleState[] {
+    new SwerveModuleState(),
+    new SwerveModuleState(),
+    new SwerveModuleState(),
+    new SwerveModuleState()
+}
+
+// WPILib
+StructArrayPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", Pose2d.struct).publish();
+
+periodic() {
+    publisher.set(states);
+}
+
+// AdvantageKit
+Logger.recordOutput("MyStates", states);
+```
+
+Alternatively, the state fields can be numeric arrays with the format shown below. The rotation units are configurable (radians or degrees).
 
 ```
 [
@@ -27,11 +49,9 @@ The state fields should be numeric arrays with the format shown below. The rotat
 ]
 ```
 
-> Note: To log an array of SwerveModuleState objects using AdvantageKit, call `Logger.getInstance().recordOutput(key, states[]);`
-
 ### Robot Rotation
 
-This field can optionally be used to show the robot's current rotation (based on odometry or a gyro). The provided field should be a number in radians or degrees (the same units as the module rotations). If the robot's pose is already logged for the [odometry](/docs/tabs/ODOMETRY.md) tab, consider using the last item in the pose array as the robot rotation for swerve.
+This field can optionally be used to show the robot's current rotation (based on odometry or a gyro). The provided field should be a byte-encoded `Rotation2d` (struct/protobuf) or a number in radians/degrees (the same units as the module rotations). If the robot's pose is already logged, consider using the rotation element or the last item in the pose array as the robot rotation for swerve.
 
 ![Pose data as a rotation](/docs/resources/swerve/swerve-2.png)
 

@@ -2,15 +2,16 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
-import { getEnabledData, searchFields } from "../shared/log/LogUtil";
+import { getEnabledData } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
-import { htmlEncode } from "../shared/util";
+import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import loadZebra from "./dataSources/LoadZebra";
-import { NT4Publisher } from "./dataSources/NT4Publisher";
+import { NT4Publisher, NT4PublisherStatus } from "./dataSources/NT4Publisher";
 import NT4Source from "./dataSources/NT4Source";
+import PathPlannerSource from "./dataSources/PathPlannerSource";
 import RLOGServerSource from "./dataSources/RLOGServerSource";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
@@ -34,6 +35,7 @@ declare global {
     isFullscreen: boolean;
     isFocused: boolean;
     isBattery: boolean;
+    fps: boolean;
 
     selection: Selection;
     sidebar: Sidebar;
@@ -51,6 +53,7 @@ window.platformRelease = "";
 window.isFullscreen = false;
 window.isFocused = true;
 window.isBattery = false;
+window.fps = false;
 
 window.selection = new Selection();
 window.sidebar = new Sidebar();
@@ -62,6 +65,7 @@ let liveSource: LiveDataSource | null = null;
 let publisher: NT4Publisher | null = null;
 let isExporting = false;
 let logPath: string | null = null;
+let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
 
@@ -180,6 +184,29 @@ window.addEventListener("touchend", () => {
   dragEnd();
 });
 
+// FPS MEASUREMENT
+
+const fpsDiv = document.getElementsByClassName("fps")[0] as HTMLElement;
+const sampleLength = 10;
+let frameTimes: number[] = [];
+let periodic = () => {
+  frameTimes.push(window.performance.now());
+  while (frameTimes.length > sampleLength) {
+    frameTimes.shift();
+  }
+  let fps = 0;
+  if (frameTimes.length > 1) {
+    let avgFrameTime = (frameTimes[frameTimes.length - 1] - frameTimes[0]) / (frameTimes.length - 1);
+    fps = 1000 / avgFrameTime;
+  }
+  fpsDiv.hidden = !window.fps;
+  if (window.fps) {
+    fpsDiv.innerText = "FPS: " + fps.toFixed(1);
+  }
+  window.requestAnimationFrame(periodic);
+};
+window.requestAnimationFrame(periodic);
+
 // DATA SOURCE HANDLING
 
 /** Connects to a historical data source. */
@@ -194,18 +221,18 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
     path,
     (status: HistoricalDataSourceStatus) => {
       let components = path.split(window.platform === "win32" ? "\\" : "/");
-      let friendlyName = components[components.length - 1];
+      logFriendlyName = components[components.length - 1];
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
         case HistoricalDataSourceStatus.Decoding:
-          if (!shouldMerge) setWindowTitle(friendlyName, "Loading");
+          if (!shouldMerge) setWindowTitle(logFriendlyName, "Loading");
           break;
         case HistoricalDataSourceStatus.Ready:
-          if (!shouldMerge) setWindowTitle(friendlyName);
+          if (!shouldMerge) setWindowTitle(logFriendlyName);
           setLoading(null);
           break;
         case HistoricalDataSourceStatus.Error:
-          if (!shouldMerge) setWindowTitle(friendlyName, "Error");
+          if (!shouldMerge) setWindowTitle(logFriendlyName, "Error");
           setLoading(null);
           window.sendMainMessage("error", {
             title: "Failed to open log",
@@ -223,17 +250,20 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
       if (shouldMerge && window.log.getFieldKeys().length > 0) {
         // Check for field conflicts
         let newFields = log.getFieldKeys();
-        let canMerge = true;
+        let hasOverlap = false;
         window.log.getFieldKeys().forEach((key) => {
-          if (newFields.includes(key)) canMerge = false;
+          if (newFields.includes(key)) hasOverlap = true;
         });
-        if (!canMerge) {
-          window.sendMainMessage("error", {
-            title: "Failed to merge logs",
-            content:
-              "The logs contain conflicting fields. Merging is only possible when the logged fields don't overlap."
-          });
-          return;
+
+        // Generate prefix
+        let prefix = "";
+        if (hasOverlap) {
+          let i = 0;
+          let oldTree = window.log.getFieldTree();
+          while ("MergedLog" + i.toString() in oldTree) {
+            i += 1;
+          }
+          prefix = "/MergedLog" + i.toString();
         }
 
         // Merge based on first enable
@@ -247,7 +277,7 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
         if (newEnabledData && newEnabledData.values.includes(true)) {
           newFirstEnabled = newEnabledData.timestamps[newEnabledData.values.indexOf(true)];
         }
-        window.log = Log.mergeLogs(window.log, log, currentFirstEnable - newFirstEnabled);
+        window.log = Log.mergeLogs(window.log, log, currentFirstEnable - newFirstEnabled, prefix);
       } else {
         window.log = log;
         logPath = path;
@@ -274,6 +304,9 @@ function startLive(isSim: boolean) {
       break;
     case "nt4-akit":
       liveSource = new NT4Source(true);
+      break;
+    case "pathplanner":
+      liveSource = new PathPlannerSource();
       break;
     case "rlog":
       liveSource = new RLOGServerSource();
@@ -365,6 +398,23 @@ UPDATE_BUTTON.addEventListener("click", () => {
   window.sendMainMessage("prompt-update");
 });
 
+// Update touch bar slider position
+setInterval(() => {
+  if (window.platform === "darwin") {
+    let range = window.log.getTimestampRange();
+    let liveTime = window.selection.getCurrentLiveTime();
+    if (liveTime !== null) {
+      range[1] = liveTime;
+    }
+    let selectedTime = window.selection.getSelectedTime();
+    if (selectedTime === null) {
+      selectedTime = range[0];
+    }
+    let timePercent = clampValue(scaleValue(selectedTime, range, [0, 1]), 0, 1);
+    window.sendMainMessage("update-touch-bar-slider", timePercent);
+  }
+}, 1000 / 60);
+
 function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "restore-state":
@@ -420,7 +470,7 @@ function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "live-rlog-data":
+    case "live-data":
       if (liveSource !== null) {
         liveSource.handleMainMessage(message.data);
       }
@@ -472,7 +522,20 @@ function handleMainMessage(message: NamedMessage) {
         });
       } else {
         publisher?.stop();
-        publisher = new NT4Publisher(message.data);
+        publisher = new NT4Publisher(message.data, (status) => {
+          if (logFriendlyName === null) return;
+          switch (status) {
+            case NT4PublisherStatus.Connecting:
+              setWindowTitle(logFriendlyName, "Searching");
+              break;
+            case NT4PublisherStatus.Active:
+              setWindowTitle(logFriendlyName, "Publishing");
+              break;
+            case NT4PublisherStatus.Stopped:
+              setWindowTitle(logFriendlyName);
+              break;
+          }
+        });
       }
       break;
 
@@ -598,6 +661,15 @@ function handleMainMessage(message: NamedMessage) {
 
     case "finish-export":
       setLoading(null);
+      break;
+
+    case "update-touch-bar-slider":
+      let range = window.log.getTimestampRange();
+      let liveTime = window.selection.getCurrentLiveTime();
+      if (liveTime !== null) {
+        range[1] = liveTime;
+      }
+      window.selection.setSelectedTime(scaleValue(message.data, [0, 1], range));
       break;
 
     default:

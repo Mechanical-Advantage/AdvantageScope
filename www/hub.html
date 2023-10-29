@@ -4,15 +4,16 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src https://www.thebluealliance.com ws: wss: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src https://www.thebluealliance.com ws: wss: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="hub.css" />
+    <link rel="stylesheet" href="code.css" />
     <script type="module" src="../bundles/hub.js"></script>
     <title>AdvantageScope</title>
   </head>
@@ -59,8 +60,6 @@
 
     <div class="loading-glow"></div>
 
-    <div class="publishing-glow"></div>
-
     <div class="search-results" hidden></div>
 
     <div class="main-view">
@@ -86,6 +85,8 @@
 
         <span id="fieldList"></span>
       </div>
+
+      <div class="fps"></div>
 
       <div class="viewer">
         <div class="tab-bar"></div>
@@ -302,6 +303,7 @@
               />
               <div class="timeline-viz-timeline-marker-container"></div>
             </div>
+            <div class="timeline-viz-timeline-label"></div>
             <button class="timeline-viz-hide-button" tabindex="-1">
               <img src="symbols/eye.slash.svg" />
             </button>

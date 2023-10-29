@@ -4,7 +4,7 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The points tab shows a 2D visualization of arbitrary points. This is a very flexible tool, allowing for custom visualizations of vision data/pipelines, mechanism states, etc. Several examples are shown below. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-> Note: To view the point visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls.
+> Note: To view the point visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
 
 ![Point tab example #1](/docs/resources/points/points-1.png)
 

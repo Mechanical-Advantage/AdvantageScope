@@ -4,6 +4,8 @@ _[< Return to homepage](/docs/INDEX.md)_
 
 The video tab allows for the log data to be compared side-by-side with a match video that was separately recorded. The steps below show how to load a video and synchronize it with the log.
 
+> Note: To view the video alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
+
 ## Step 1: Load the Video
 
 AdvantageScope provides three options for loading a video:
@@ -12,11 +14,11 @@ AdvantageScope provides three options for loading a video:
 2. **YouTube:** Copy a YouTube link to the clipboard, then click the red clipboard icon. After a few seconds, the video will begin to download.
 3. **The Blue Alliance:** Click the blue TBA icon to automatically load the match video based on the log file. If multiple videos are available, choose the video to download from the popup menu. This feature requires an API key for TBA, which should be obtained at [thebluealliance.com/account](https://www.thebluealliance.com/account) and copied to the AdvantageScope preferences page under "TBA API Key".
 
+![Source chooser](/docs/resources/video/video-1.png)
+
 After choosing a video, the timeline on the bottom right begins turning blue to indicate the frames that have been cached (this step is necessary for smooth playback). This feature is intended for match-length videos only due to the frame conversion required.
 
 > Note: YouTube and TBA video download may failed unexpectedly due to changes on YouTube's servers. In case of issues, trying updating AdvantageScope or using a local video file instead.
-
-![Loading a video](/docs/resources/video/video-1.gif)
 
 ## Step 2: Navigate the Video
 
@@ -30,20 +32,24 @@ When a video is initially loaded and has not yet been synchronized with the log 
 
 Use these controls to navigate to a known location in the match, typically the start of auto or teleop.
 
-![Navigating a video](/docs/resources/video/video-2.gif)
+![Video controls](/docs/resources/video/video-2.png)
 
 ## Step 3: Synchronize With the Log
 
-Select the time in the log file that aligns with the current frame of the video. The timeline at the top of the video tab is often sufficient for quick alignment, but we recommend using another tab like the table or line graph to select a timestamp more precisely (as shown below).
+Select the time in the log file that aligns with the current frame of the video. For quick alignment, click the arrow button to the left of the timeline to jump to the first time the robot was enabled.
 
-Once the video and log are aligned, click the lock icon next to the video timeline (or press **cmd/ctrl + ↑ or ↓**). The video controls are now disabled. Click the lock icon again to unlock the video playback.
+![Jump to enabled button](/docs/resources/video/video-3.png)
 
-![Synchronizing with a log](/docs/resources/video/video-3.gif)
+Once the video and log are aligned, click the lock icon next to the video timeline (or press **↑ or ↓**). The video controls are now disabled. Click the lock icon again to unlock the video playback.
+
+![Lock button](/docs/resources/video/video-4.png)
 
 ## Step 4: Playback
 
-Once locked, the video playback stays aligned with the selected time in the log. To view the video alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. For example, the video can be compared to the robot's odometry data as seen below.
+Once locked, the video playback stays aligned with the selected time in the log. Note that sound playback is not supported since the original video is converted to a frame-by-frame representation to support log synchronization.
 
-> Note: Sound playback is not supported. The original video is converted to a frame-by-frame representation to support log synchronization.
+To view the video alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. For example, the video can be compared to the robot's odometry data as seen below.
 
-![Video playback with odometry](/docs/resources/video/video-4.gif)
+> Note: If desired, the camera FOV can be adjusted in the 3D field view to match the look of the video. For details, see "Camera Options" on the 👀 [3D Field](/docs/tabs/3D-FIELD.md) page.
+
+![Video snapshot with odometry](/docs/resources/video/video-5.png)

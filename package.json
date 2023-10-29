@@ -1,7 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "2.3.0",
+  "version": "3.0.0-beta-3",
   "description": "Robot telemetry application for FRC",
   "author": {
     "name": "FRC 6328",
@@ -41,6 +41,7 @@
     "electron": "^26.2.1",
     "electron-builder": "^24.6.4",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
+    "highlight.js": "^11.9.0",
     "mathjs": "11.3.0",
     "node-fetch": "^3.3.2",
     "prettier": "3.0.3",

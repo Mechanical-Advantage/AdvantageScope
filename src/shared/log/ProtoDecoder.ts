@@ -8,8 +8,9 @@ export default class ProtoDecoder {
 
   /** Registers a new descriptor. */
   addDescriptor(data: Uint8Array): void {
-    this.rawDescriptors.push(data);
     let fileDescriptor: any = descriptor.FileDescriptorProto.decode(data);
+    if (this.root.files.includes(fileDescriptor.name)) return; // Duplicate filename
+    this.rawDescriptors.push(data);
     let filePackage: any = this.root;
     if (fileDescriptor.package && fileDescriptor.package.length > 0) {
       filePackage = this.root.define(fileDescriptor.package);

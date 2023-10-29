@@ -16,7 +16,7 @@ To search for a field, begin typing in the search box. A dropdown of fields will
 
 > Note: Click and drag on the right edge to resize or hide the sidebar.
 
-![Selecting a collection of fields](/docs/resources/navigation/navigation-2.gif)
+![Dragging a field from the sidebar](/docs/resources/navigation/navigation-2.png)
 
 ## Tab Bar
 
@@ -28,13 +28,11 @@ Use the <span style="color: blue;">tab bar (blue)</span> to switch between diffe
 
 The <span style="color: green;">navigation buttons (green)</span> on the top manage the tabs and control playback. The "+" icon adds a new tab (this can be accessed quickly by pressing **cmd/ctrl + T**). The "X" icon closes the selected tab (**cmd/ctrl + W**) and the arrow buttons move the selected tab left or right (**cmd/ctrl + [ OR ]**). Quickly switch between tabs using the arrow keys (**cmd/ctrl + ← OR →**).
 
-![Creating a new tab](/docs/resources/navigation/navigation-3.gif)
+![Choosing a tab type](/docs/resources/navigation/navigation-3.png)
 
 Playback can be toggled using the play/pause button or by pressing the **space bar**. The selected time is synchronized between all tabs, including the line graph, table, field views, and more.
 
 > Note: To adjust the playback speed, **right-click** on the play/pause button.
-
-![Managing playback](/docs/resources/navigation/navigation-4.gif)
 
 ## Window Pop-Out
 
@@ -42,4 +40,11 @@ It is often useful to view multiple tabs at the same time. Since AdvantageScope 
 
 > Note: When using pop-out windows, playback is controlled from the main AdvantageScope window.
 
-![Creating a pop-out window](/docs/resources/navigation/navigation-5.gif)
+![Creating a pop-out window](/docs/resources/navigation/navigation-4.png)
+
+## Touch Bar
+
+Navigation is possible using the Touch Bar on supported MacBooks. The slider can be used to scrub through the log, and the "+" button adds a new tab.
+
+![Touch Bar scrubbing interface](/docs/resources/navigation/navigation-5.png)
+![Touch Bar new tab interface](/docs/resources/navigation/navigation-6.png)

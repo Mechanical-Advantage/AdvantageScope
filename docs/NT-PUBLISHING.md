@@ -8,16 +8,16 @@ AdvantageScope supports publishing NetworkTables data stored in a log file back 
 - Mimicking data from a coprocessor on a real robot.
 - Debugging driver dashboard applications using realistic match data.
 
-This feature requires a log file with a full capture of NetworkTables data, which can be generated using WPILib's [built-in data logger](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html). Note that AdvantageKit does not support this feature as it instead enables more thorough deterministic replay in simulation.
+This feature requires a log file with a full capture of NetworkTables data, which can be generated using WPILib's [built-in data logger](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html). Note that AdvantageKit does not support this feature as it instead enables more complete deterministic replay in simulation.
 
 To start publishing, a log file containing NetworkTables data must be open. Then, follow these steps:
 
 - **Publish to Robot:** Click "File" > "Publish NT Data" > "Connect to Robot" or press **cmd/ctrl + P**
 - **Publish to Simulator:** Click "File" > "Publish NT Data" > "Connect to Simulator" or press **shirt + cmd/ctrl + P**
 
-The top of the window will begin pulsing in <span style="color: red;">red</span> or <span style="color: green;">green</span> to indicate that publishing is active. Green pulsing indicates that AdvantageScope is currently connected to the server.
+The top of the window displays the text "Searching" or "Publishing" to indicate the status of data publishing. AdvantageScope attempts to reconnect automatically using the same settings after a disconnect.
 
-All fields will be published using their stored values at the _selected timestamp_ already used by many AdvantageScope tabs. This allows for real-time network playback through the same mechanism as playback within AdvantageScope. See ["App Navigation"](/docs/NAVIGATION.md) for more details. If no timestamp is selected, fields are published using their stored values at the _hovered timestamp_.
+All fields will be published using their stored values at the _selected timestamp_ used by many AdvantageScope tabs. This allows for real-time network playback through the same mechanism as playback within AdvantageScope. See [App Navigation](/docs/NAVIGATION.md) for more details. If no timestamp is selected, fields are published using their stored values at the _hovered timestamp_.
 
 To stop publishing, click "File" > "Publish NT Data" > "Stop Publishing" or press **option + P**
 
@@ -33,6 +33,6 @@ The "NT Publish Prefixes" option sets the allowable prefixes for fields publishe
 
 ## Limitations
 
-- All fields are collapsed to a limited set of types natively supported by AdvantageScope, regardless of how they were originally published. These types are "raw", "boolean", "double", "string", "boolean[]", "double[]", and "string[]".
 - AdvantageScope does not support creating its own NetworkTables server. It must be connected to a separate server like a robot, simulator, etc. Note that OutlineViewer can be configured as an NT server if desired.
 - Fields are published every 20ms, so NetworkTables data originally published at a higher frequency will skip samples.
+- The timestamps of published samples are not preserved. This would be impossible when scrubbing back and forth in time or playing back at different speeds.

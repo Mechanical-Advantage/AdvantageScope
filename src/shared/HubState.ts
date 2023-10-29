@@ -82,4 +82,5 @@ export interface TimelineVisualizerState {
   fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[];
   listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][];
   options: { [id: string]: any };
+  configHidden: boolean;
 }

@@ -84,8 +84,13 @@ export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
   }
 }
 
-export function filterFieldByPrefixes(fields: string[], prefixes: string, ntOnly = false) {
-  let filteredFields: string[] = [];
+export function filterFieldByPrefixes(
+  fields: string[],
+  prefixes: string,
+  alwaysIncludeSchemas = false,
+  ntOnly = false
+) {
+  let filteredFields: Set<string> = new Set();
   prefixes.split(",").forEach((prefix) => {
     let prefixSeries = prefix.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
     if (ntOnly) prefixSeries.splice(0, 0, "NT");
@@ -93,14 +98,14 @@ export function filterFieldByPrefixes(fields: string[], prefixes: string, ntOnly
       let fieldSeries = field.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
       if (fieldSeries.length < prefixSeries.length) return;
       if (
-        prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) &&
-        !filteredFields.includes(field)
+        prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) ||
+        (alwaysIncludeSchemas && field.includes("/.schema/"))
       ) {
-        filteredFields.push(field);
+        filteredFields.add(field);
       }
     });
   });
-  return filteredFields;
+  return [...filteredFields];
 }
 
 export function getEnabledData(log: Log): LogValueSetBoolean | null {
@@ -129,19 +134,19 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   return enabledData;
 }
 
-export function getIsRedAlliance(log: Log): boolean {
+export function getIsRedAlliance(log: Log, time: number): boolean {
   let allianceKey = ALLIANCE_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!allianceKey) return false;
 
   if (allianceKey.endsWith("AllianceStation")) {
     // Integer value (station) from AdvantageKit
-    let tempAllianceData = log.getNumber(allianceKey, Infinity, Infinity);
+    let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
       return tempAllianceData.values[tempAllianceData.values.length - 1] <= 2;
     }
   } else {
     // Boolean value from NT
-    let tempAllianceData = log.getBoolean(allianceKey, Infinity, Infinity);
+    let tempAllianceData = log.getBoolean(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
       return tempAllianceData.values[tempAllianceData.values.length - 1];
     }
@@ -294,7 +299,7 @@ export function getMechanismState(log: Log, key: string, time: number): Mechanis
     };
 
     // Find all roots and add children
-    for (let [mechanismChildKey, mechanismChildTree] of Object.entries(log.getFieldTree(false, key + "/"))) {
+    for (let [mechanismChildKey, mechanismChildTree] of Object.entries(log.getFieldTree(true, key + "/"))) {
       if (
         mechanismChildKey.startsWith(".") ||
         mechanismChildKey === "backgroundColor" ||
@@ -351,6 +356,7 @@ export function searchFields(log: Log, query: string): string[] {
     };
   });
   fields.sort((a, b) => a.string.localeCompare(b.string, undefined, { numeric: true }));
+  fields.sort((a, b) => a.string.length - b.string.length);
   fields.sort((a, b) => a.endDistance - b.endDistance);
   return fields.map((field) => field.string);
 }

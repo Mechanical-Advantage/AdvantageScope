@@ -211,7 +211,7 @@ export default class OdometryController extends TimelineVizController {
 
   getCommand(time: number) {
     const distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
-    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "meters");
+    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "radians");
 
     // Returns the current value for a field
     let getCurrentValue = (key: string, type: LoggableType | string): Pose2d[] => {
@@ -485,7 +485,7 @@ export default class OdometryController extends TimelineVizController {
               }
             }
           }
-          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, time, "blue");
+          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, Infinity, "blue");
           if (x !== null && y !== null) {
             zebraMarkerData[team] = {
               translation: [convert(x, "feet", "meters"), convert(y, "feet", "meters")],
@@ -499,7 +499,7 @@ export default class OdometryController extends TimelineVizController {
     // Get alliance colors
     let allianceRedBumpers = false;
     let allianceRedOrigin = false;
-    let autoRedAlliance = getIsRedAlliance(window.log);
+    let autoRedAlliance = getIsRedAlliance(window.log, time);
     switch (this.ALLIANCE_BUMPERS.value) {
       case "auto":
         allianceRedBumpers = autoRedAlliance;

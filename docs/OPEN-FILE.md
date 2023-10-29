@@ -8,7 +8,7 @@ This section describes how to open log files for analysis.
 
 In the menu bar, click "File" > "Open Log..." or press **cmd/ctrl + O**, then choose a log file from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.
 
-![Opening a saved log](/docs/resources/open-file/open-file-1.gif)
+![Opening a saved log](/docs/resources/open-file/open-file-1.png)
 
 Supported log formats are:
 
@@ -20,11 +20,16 @@ Supported log formats are:
 
 ## Merging Logs
 
-Log files of different types can be merged automatically. For example, DS log data can be combined with a WPILOG file from the robot. Click "File" > "Merge Log..." or press **shift + cmd/ctrl + O**, then choose a log file from the local disk. The timestamps of the logs are aligned based on when the robot was first enabled (usually the start of the match).
+Log files can be merged automatically. Possible use cases include:
 
-> Note: Merging is only possible when the logs do not contain conflicting (shared) fields.
+- Merging DS log data with WPILOG data from the robot.
+- Merging WPILOG data from different matches to compare data.
 
-![Merging a log file](/docs/resources/open-file/open-file-2.gif)
+Click "File" > "Merge Log..." or press **shift + cmd/ctrl + O**, then choose a log file from the local disk. The timestamps of the logs are aligned based on when the robot was first enabled (usually the start of the match). This process can be repeated to merge several log files.
+
+> Note: If the logs contain conflicting fields, fields from the merged log will include the prefix "/MergedLogX" (e.g. "/MergedLog0/SystemStats/BatteryVoltage").
+
+![Merging a log file](/docs/resources/open-file/open-file-2.png)
 
 ## Downloading from a roboRIO
 
@@ -38,4 +43,4 @@ Click "File" > "Download Logs..." or press **cmd/ctrl + D** to open the download
 
 > Note: When downloading multiple files, AdvantageScope skips any that are already found in the destination folder.
 
-![Downloading log files](/docs/resources/open-file/open-file-4.gif)
+![Downloading log files](/docs/resources/open-file/open-file-4.png)

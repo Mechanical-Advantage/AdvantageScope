@@ -91,15 +91,18 @@ export default class Selection {
         return Math.max(this.staticTime, window.log.getTimestampRange()[0]);
       case SelectionMode.Playback:
         let time = (this.now() - this.playbackStartReal) * this.playbackSpeed + this.playbackStartLog;
-        let lastTime = window.log.getTimestampRange()[1];
-        if (time > lastTime) {
+        let maxTime = window.log.getTimestampRange()[1];
+        if (this.liveTimeSupplier !== null) {
+          maxTime = Math.max(maxTime, this.liveTimeSupplier());
+        }
+        if (time > maxTime) {
           if (this.liveConnected) {
             this.setMode(SelectionMode.Locked);
           } else {
             this.setMode(SelectionMode.Static);
-            this.staticTime = lastTime;
+            this.staticTime = maxTime;
           }
-          return lastTime;
+          return maxTime;
         } else {
           return Math.max(time, window.log.getTimestampRange()[0]);
         }
@@ -150,7 +153,11 @@ export default class Selection {
         this.playbackStartReal = this.now();
         break;
       case SelectionMode.Static:
-        if (this.staticTime < window.log.getTimestampRange()[1]) {
+        let maxTime = window.log.getTimestampRange()[1];
+        if (this.liveTimeSupplier !== null) {
+          maxTime = Math.max(maxTime, this.liveTimeSupplier());
+        }
+        if (this.staticTime < maxTime) {
           this.setMode(SelectionMode.Playback);
           this.playbackStartLog = Math.max(this.staticTime, window.log.getTimestampRange()[0]);
           this.playbackStartReal = this.now();

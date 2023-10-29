@@ -129,7 +129,9 @@ export function loadAssets(): AdvantageScopeAssets {
         let isRobot = object.name.startsWith("Robot_");
         let isJoystick = object.name.startsWith("Joystick_");
 
-        let configRaw = jsonfile.readFileSync(path.join(parentFolder, object.name, "config.json")) as unknown;
+        let configPath = path.join(parentFolder, object.name, "config.json");
+        if (!fs.existsSync(configPath)) return;
+        let configRaw = jsonfile.readFileSync(configPath) as unknown;
         if (configRaw === null || typeof configRaw !== "object") return;
 
         if (isField2d) {

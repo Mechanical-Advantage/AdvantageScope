@@ -32,7 +32,7 @@ import {
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import { cleanFloat, scaleValue } from "../../shared/util";
-import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVisualizer";
+import ThreeDimensionVisualizerSwitching from "../../shared/visualizers/ThreeDimensionVisualizerSwitching";
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {
@@ -156,7 +156,7 @@ export default class ThreeDimensionController extends TimelineVizController {
           autoAdvanceOptions: [true, true, true, true, true, true, true, true, true, false]
         }
       ],
-      new ThreeDimensionVisualizer(
+      new ThreeDimensionVisualizerSwitching(
         content,
         content.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement,
         content.getElementsByClassName("three-dimension-annotations")[0] as HTMLElement,
@@ -283,13 +283,13 @@ export default class ThreeDimensionController extends TimelineVizController {
   /** Switches the selected camera for the main visualizer. */
   set3DCamera(index: number) {
     this.lastCameraIndex = index;
-    (this.visualizer as ThreeDimensionVisualizer).set3DCamera(index);
+    (this.visualizer as ThreeDimensionVisualizerSwitching).set3DCamera(index);
   }
 
   /** Switches the orbit FOV for the main visualizer. */
   setFov(fov: number) {
     this.lastFov = fov;
-    (this.visualizer as ThreeDimensionVisualizer).setFov(fov);
+    (this.visualizer as ThreeDimensionVisualizerSwitching).setFov(fov);
   }
 
   getAdditionalActiveFields(): string[] {
@@ -302,7 +302,7 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   getCommand(time: number) {
     const distanceConversion = convert(1, this.UNIT_DISTANCE.value, "meters");
-    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "meters");
+    const rotationConversion = convert(1, this.UNIT_ROTATION.value, "radians");
 
     // Returns the current value for a 3D field
     let get3DValue = (key: string, type: LoggableType | string): Pose3d[] => {
@@ -601,7 +601,7 @@ export default class ThreeDimensionController extends TimelineVizController {
               }
             }
           }
-          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, time, "blue");
+          let alliance = getOrDefault(window.log, field.key + "/alliance", LoggableType.String, Infinity, "blue");
           if (x !== null && y !== null) {
             zebraMarkerData[team] = {
               translation: [convert(x, "feet", "meters"), convert(y, "feet", "meters")],
@@ -665,7 +665,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     let allianceRedOrigin = false;
     switch (this.ALLIANCE.value) {
       case "auto":
-        allianceRedOrigin = getIsRedAlliance(window.log);
+        allianceRedOrigin = getIsRedAlliance(window.log, time);
         break;
       case "blue":
         allianceRedOrigin = false;

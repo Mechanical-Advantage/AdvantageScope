@@ -2,9 +2,10 @@ import checkDiskSpace from "check-disk-space";
 import download from "download";
 import fs from "fs";
 import path from "path";
-import { ASSETS_REPOSITORY, ASSET_TAGS, AUTO_ASSETS } from "./Constants";
+import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
+import { ASSETS_REPOSITORY, ASSET_TAG_DEFAULT, ASSET_TAG_FRC6328, AUTO_ASSETS } from "./Constants";
 
-const REQUIRED_SPACE_GB = 25;
+const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
 const SUCCESS_TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
 
@@ -59,6 +60,7 @@ export function getAssetDownloadStatus() {
 interface AssetDownloadInfo {
   source: string;
   target: string;
+  optional: boolean;
 }
 
 /** Gets the set of assets to download from GitHub. */
@@ -86,11 +88,12 @@ async function getAssetInfo(): Promise<AssetDownloadInfo[]> {
   // Extract download info
   let downloadInfo: AssetDownloadInfo[] = [];
   releaseData.forEach((release) => {
-    if (ASSET_TAGS.has(release.tag_name)) {
+    if (release.tag_name === ASSET_TAG_DEFAULT || release.tag_name === ASSET_TAG_FRC6328) {
       release.assets.forEach((asset) => {
         downloadInfo.push({
           target: path.join(AUTO_ASSETS, asset.name.slice(0, asset.name.length - 4)), // Remove ".zip"
-          source: asset.browser_download_url
+          source: asset.browser_download_url,
+          optional: DISTRIBUTOR === Distributor.WPILib && release.tag_name === ASSET_TAG_FRC6328
         });
       });
     }
@@ -103,7 +106,7 @@ async function updateLocalAssets(downloadInfo: AssetDownloadInfo[]) {
   // Download new assets
   await Promise.all(
     downloadInfo
-      .filter((assetInfo) => !fs.existsSync(assetInfo.target))
+      .filter((assetInfo) => !assetInfo.optional && !fs.existsSync(assetInfo.target))
       .map((assetInfo) => download(assetInfo.source, assetInfo.target, { extract: true }))
   );
 

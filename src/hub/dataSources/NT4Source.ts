@@ -19,7 +19,6 @@ export default class NT4Source extends LiveDataSource {
   private loggingSubscription: number | null = null;
   private lowBandwidthTopicSubscription: number | null = null;
   private lowBandwidthDataSubscriptions: { [id: string]: number } = {};
-  private schemaFields: Set<string> = new Set(); // Fields with a type matching a custom schema
 
   constructor(akitMode: boolean) {
     super();
@@ -27,10 +26,7 @@ export default class NT4Source extends LiveDataSource {
 
     this.periodicCallback = setInterval(() => {
       // Update timestamp range based on connection time
-      if (this.client !== null && this.connectTime !== null) {
-        let connectServerTime = this.client.getServerTime_us(this.connectTime);
-        if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
-      }
+      this.clearTimestampsBeforeConnection();
 
       // Update subscriptions
       if (this.client !== null) {
@@ -66,26 +62,28 @@ export default class NT4Source extends LiveDataSource {
           }
 
           // Add active fields
-          let activeFields: Set<string> = new Set([akitMode ? "/AdvantageKit/.schema" : "/.schema"]);
-          [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
-            // Compare to announced keys
-            window.log.getFieldKeys().forEach((announcedKey) => {
-              if (window.log.isGenerated(announcedKey)) return;
-              let subscribeKey: string | null = null;
-              if (announcedKey.startsWith(key)) {
-                subscribeKey = key;
-              } else if (key.startsWith(announcedKey)) {
-                subscribeKey = announcedKey;
-              }
-              if (subscribeKey !== null) {
-                if (akitMode) {
-                  activeFields.add(this.AKIT_PREFIX + subscribeKey);
-                } else {
-                  activeFields.add(subscribeKey.slice(this.WPILOG_PREFIX.length));
+          let activeFields: Set<string> = new Set([(akitMode ? this.AKIT_PREFIX : "") + "/.schema"]);
+          if (window.log === this.log) {
+            [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((key) => {
+              // Compare to announced keys
+              window.log.getFieldKeys().forEach((announcedKey) => {
+                if (window.log.isGenerated(announcedKey)) return;
+                let subscribeKey: string | null = null;
+                if (announcedKey.startsWith(key)) {
+                  subscribeKey = key;
+                } else if (key.startsWith(announcedKey)) {
+                  subscribeKey = announcedKey;
                 }
-              }
+                if (subscribeKey !== null) {
+                  if (akitMode) {
+                    activeFields.add(this.AKIT_PREFIX + subscribeKey);
+                  } else {
+                    activeFields.add(subscribeKey.slice(this.WPILOG_PREFIX.length));
+                  }
+                }
+              });
             });
-          });
+          }
 
           // Remove duplicates based on prefixes
           let activeFieldsCopy = new Set(activeFields);
@@ -139,6 +137,16 @@ export default class NT4Source extends LiveDataSource {
     }, 1000 / 60);
   }
 
+  /** If the connection is active and the server connection time is known,
+   * clear data before that time. This prevents topics that haven't been
+   * updated for a while from altering the timestamp range. */
+  private clearTimestampsBeforeConnection() {
+    if (this.client !== null && this.connectTime !== null) {
+      let connectServerTime = this.client.getServerTime_us(this.connectTime);
+      if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
+    }
+  }
+
   connect(
     address: string,
     statusCallback: (status: LiveDataSourceStatus) => void,
@@ -158,11 +166,10 @@ export default class NT4Source extends LiveDataSource {
           // Announce
           if (!this.log) return;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
+          if (topic.name === "") return;
           let modifiedKey = this.getKeyFromTopic(topic);
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
-          if (CustomSchemas.has(topic.type)) {
-            this.schemaFields.add(modifiedKey);
-          }
+          this.log.setWpilibType(modifiedKey, topic.type);
           this.shouldRunOutputCallback = true;
         },
         (topic: NT4_Topic) => {
@@ -170,7 +177,7 @@ export default class NT4Source extends LiveDataSource {
         },
         (topic: NT4_Topic, timestamp_us: number, value: unknown) => {
           // Data
-          if (!this.log || !this.client) return;
+          if (!this.log || !this.client || topic.name === "") return;
 
           let key = this.getKeyFromTopic(topic);
           let timestamp = Math.max(timestamp_us, this.log.getTimestampRange()[0]) / 1000000;
@@ -247,29 +254,33 @@ export default class NT4Source extends LiveDataSource {
               break;
             default: // Default to raw
               if (value instanceof Uint8Array) {
-                // if (topic.type.startsWith("struct:")) {
-                //   let schemaType = topic.type.split("struct:")[1];
-                //   if (schemaType.endsWith("[]")) {
-                //     this.log?.putStruct(key, timestamp, value, schemaType.slice(0, -2), true);
-                //   } else {
-                //     this.log?.putStruct(key, timestamp, value, schemaType, false);
-                //   }
-                // } else if (topic.type.startsWith("proto:")) {
-                //   let schemaType = topic.type.split("proto:")[1];
-                //   this.log?.putProto(key, timestamp, value, schemaType);
-                // } else {
-                this.log?.putRaw(key, timestamp, value);
-                if (CustomSchemas.has(topic.type)) {
-                  CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                if (topic.type.startsWith("struct:")) {
+                  let schemaType = topic.type.split("struct:")[1];
+                  if (schemaType.endsWith("[]")) {
+                    this.log?.putStruct(key, timestamp, value, schemaType.slice(0, -2), true);
+                  } else {
+                    this.log?.putStruct(key, timestamp, value, schemaType, false);
+                  }
+                } else if (topic.type.startsWith("proto:")) {
+                  let schemaType = topic.type.split("proto:")[1];
+                  this.log?.putProto(key, timestamp, value, schemaType);
+                } else {
+                  this.log?.putRaw(key, timestamp, value);
+                  if (CustomSchemas.has(topic.type)) {
+                    CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                    this.log.setGeneratedParent(key);
+                  }
                 }
-                // }
                 updated = true;
               } else {
                 console.warn('Expected a raw value for "' + key + '" but got:', value);
               }
               break;
           }
-          if (updated) this.shouldRunOutputCallback = true;
+          if (updated) {
+            this.shouldRunOutputCallback = true;
+            this.clearTimestampsBeforeConnection();
+          }
         },
         () => {
           // Connected
@@ -295,7 +306,6 @@ export default class NT4Source extends LiveDataSource {
           this.shouldRunOutputCallback = false;
           this.connectTime = null;
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
-          this.schemaFields = new Set();
         }
       );
 

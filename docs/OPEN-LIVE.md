@@ -20,7 +20,8 @@ The following sources of live data are supported by AdvantageScope:
 
 - **NetworkTables 4:** This is the default networking protocol starting in WPILib 2023, and is commonly used by dashboards, coprocessors, etc. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details. Note that NetworkTables 3 (used by WPILib 2022 and older) is not supported by AdvantageScope.
 - **NetworkTables 4 (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the "/AdvantageKit" table in NetworkTables. The only difference from the **NetworkTables 4** mode is that the "/AdvantageKit" table is used as the root, which allows for easier switching between an NT4 connection and an AdvantageKit log file.
-- **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases.
+- **PathPlanner 2023:** This mode connects using the `PathPlannerServer` protocol used for telemetry by PathPlanner 2023. The connection is always initiated on port 5811. Note that PathPlanner 2024 and later publish telemetry data using NetworkTables, so the **NetworkTables 4** mode should be used.
+- **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases. The connection is initiated on port 5810 by default.
 
 ### Live Mode
 
@@ -28,6 +29,10 @@ When NetworkTables is used as the live source, the following live modes can be s
 
 - **Low Bandwidth (Default):** AdvantageScope only requests data from the server for fields that are actively being used. Data published before a field was selected will not be available. This mode is **highly recommended** when running in an environment with limited network bandwidth, such as on the field.
 - **Logging:** AdvantageScope requests data for all fields regardless of whether they are actively being used. This means that fields can be viewed retroactively by pausing the stream of live data (see below). This mode is often useful during development but **should NOT be used on the field**.
+
+### Discard Live Data
+
+During a live connection, data is stored locally to allow for replay of past data (see "Viewing Live Data" below). To avoid very high memory usage, data is discarded after 20 minutes by default. A shorter period can be selected to reduce memory usage, or "Never" can be selected to store live data indefinitely.
 
 ## Starting the Connection
 
@@ -44,4 +49,4 @@ When connected to a live source, AdvantageScope locks all tabs to the current ti
 
 > Note: Scrolling to the left in the line graph also unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 
-![Live viewing controls](/docs/resources/open-live/open-live-2.gif)
+![Live lock/unlock button](/docs/resources/open-live/open-live-2.png)

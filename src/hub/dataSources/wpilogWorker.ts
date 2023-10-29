@@ -36,6 +36,7 @@ self.onmessage = (event) => {
             case "boolean":
               log.createBlankField(startData.name, LoggableType.Boolean);
               break;
+            case "int":
             case "int64":
             case "float":
             case "double":
@@ -48,6 +49,7 @@ self.onmessage = (event) => {
             case "boolean[]":
               log.createBlankField(startData.name, LoggableType.BooleanArray);
               break;
+            case "int[]":
             case "int64[]":
             case "float[]":
             case "double[]":
@@ -60,16 +62,13 @@ self.onmessage = (event) => {
               log.createBlankField(startData.name, LoggableType.Raw);
               break;
           }
+          log.setWpilibType(startData.name, startData.type);
         }
       } else {
         let key = entryIds[record.getEntry()];
         let type = entryTypes[record.getEntry()];
         let timestamp = record.getTimestamp() / 1000000.0;
-        if (timestamp > 0) {
-          // Some corrupted WPILOGs include negative timestamps which are very slow to process
-          if (key.startsWith("NT:/Pose")) {
-            console.log(key, type);
-          }
+        if (key && type) {
           switch (type) {
             case "boolean":
               log.putBoolean(key, timestamp, record.getBoolean());
@@ -90,6 +89,7 @@ self.onmessage = (event) => {
             case "boolean[]":
               log.putBooleanArray(key, timestamp, record.getBooleanArray());
               break;
+            case "int[]":
             case "int64[]":
               log.putNumberArray(key, timestamp, record.getIntegerArray());
               break;
@@ -109,22 +109,23 @@ self.onmessage = (event) => {
               log.putMsgpack(key, timestamp, record.getRaw());
               break;
             default: // Default to raw
-              // if (type.startsWith("struct:")) {
-              //   let schemaType = type.split("struct:")[1];
-              //   if (schemaType.endsWith("[]")) {
-              //     log.putStruct(key, timestamp, record.getRaw(), schemaType.slice(0, -2), true);
-              //   } else {
-              //     log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
-              //   }
-              // } else if (type.startsWith("proto:")) {
-              //   let schemaType = type.split("proto:")[1];
-              //   log.putProto(key, timestamp, record.getRaw(), schemaType);
-              // } else {
-              log.putRaw(key, timestamp, record.getRaw());
-              if (CustomSchemas.has(type)) {
-                CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+              if (type.startsWith("struct:")) {
+                let schemaType = type.split("struct:")[1];
+                if (schemaType.endsWith("[]")) {
+                  log.putStruct(key, timestamp, record.getRaw(), schemaType.slice(0, -2), true);
+                } else {
+                  log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
+                }
+              } else if (type.startsWith("proto:")) {
+                let schemaType = type.split("proto:")[1];
+                log.putProto(key, timestamp, record.getRaw(), schemaType);
+              } else {
+                log.putRaw(key, timestamp, record.getRaw());
+                if (CustomSchemas.has(type)) {
+                  CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+                  log.setGeneratedParent(key);
+                }
               }
-              // }
               break;
           }
         }

@@ -24,7 +24,7 @@ export default class MetadataController implements TabController {
   restoreState(state: TabState) {}
 
   getActiveFields(): string[] {
-    return ["/RealMetadata", "/ReplayMetadata", "/AdvantageKit/RealMetadata", "/AdvantageKit/ReplayMetadata"];
+    return ["/RealMetadata", "/ReplayMetadata", "NT:/AdvantageKit/RealMetadata", "NT:/AdvantageKit/ReplayMetadata"];
   }
 
   periodic() {}
@@ -55,13 +55,13 @@ export default class MetadataController implements TabController {
     if ("ReplayMetadata" in tree) {
       scanTree(tree["ReplayMetadata"], "/ReplayMetadata", false);
     }
-    if ("AdvantageKit" in tree) {
-      let akitTable = tree["AdvantageKit"].children;
+    if ("NT" in tree && "AdvantageKit" in tree["NT"].children) {
+      let akitTable = tree["NT"].children["AdvantageKit"].children;
       if ("RealMetadata" in akitTable) {
-        scanTree(akitTable["RealMetadata"], "/AdvantageKit/RealMetadata", true);
+        scanTree(akitTable["RealMetadata"], "NT:/AdvantageKit/RealMetadata", true);
       }
       if ("ReplayMetadata" in akitTable) {
-        scanTree(akitTable["ReplayMetadata"], "/AdvantageKit/ReplayMetadata", false);
+        scanTree(akitTable["ReplayMetadata"], "NT:/AdvantageKit/ReplayMetadata", false);
       }
     }
 

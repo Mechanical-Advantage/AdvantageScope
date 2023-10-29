@@ -1,4 +1,5 @@
 import { Decoder } from "@msgpack/msgpack";
+import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
@@ -30,6 +31,10 @@ export default class Log {
   private enableTimestampSetCache: boolean;
   private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
 
+  private queuedStructs: QueuedStructure[] = [];
+  private queuedStructArrays: QueuedStructure[] = [];
+  private queuedProtos: QueuedStructure[] = [];
+
   constructor(enableTimestampSetCache = true) {
     this.enableTimestampSetCache = enableTimestampSetCache;
   }
@@ -42,12 +47,20 @@ export default class Log {
 
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(timestamp: number) {
-    if (this.timestampRange !== null && this.timestampRange[0] < timestamp) {
+    if (this.timestampRange === null) {
+      this.timestampRange = [timestamp, timestamp];
+    } else if (this.timestampRange[0] < timestamp) {
       this.timestampRange[0] = timestamp;
+      if (this.timestampRange[1] < this.timestampRange[0]) {
+        this.timestampRange[1] = this.timestampRange[0];
+      }
     }
     Object.values(this.timestampSetCache).forEach((cache) => {
       while (cache.timestamps.length >= 2 && cache.timestamps[1] <= timestamp) {
         cache.timestamps.shift();
+      }
+      if (cache.timestamps.length > 0 && cache.timestamps[0] < timestamp) {
+        cache.timestamps[0] = timestamp;
       }
     });
     Object.values(this.fields).forEach((field) => {
@@ -87,9 +100,7 @@ export default class Log {
 
   /** Returns the count of fields (excluding array item fields). */
   getFieldCount(): number {
-    return Object.keys(this.fields).filter(
-      (field) => !this.isGenerated(field) && this.fields[field].getType() !== LoggableType.Empty
-    ).length;
+    return Object.keys(this.fields).filter((field) => !this.isGenerated(field)).length;
   }
 
   /** Returns the constant field type. */
@@ -110,12 +121,35 @@ export default class Log {
     }
   }
 
-  /** Returns the special type string for a field. */
-  getSpecialType(key: string): string | null {
+  /** Returns the structured type string for a field. */
+  getStructuredType(key: string): string | null {
     if (key in this.fields) {
-      return this.fields[key].specialType;
+      return this.fields[key].structuredType;
     } else {
       return null;
+    }
+  }
+
+  /** Sets the structured type string for a field. */
+  setStructuredType(key: string, type: string) {
+    if (key in this.fields) {
+      this.fields[key].structuredType = type;
+    }
+  }
+
+  /** Returns the WPILib type string for a field. */
+  getWpilibType(key: string): string | null {
+    if (key in this.fields) {
+      return this.fields[key].wpilibType;
+    } else {
+      return null;
+    }
+  }
+
+  /** Sets the WPILib type string for a field. */
+  setWpilibType(key: string, type: string) {
+    if (key in this.fields) {
+      this.fields[key].wpilibType = type;
     }
   }
 
@@ -132,6 +166,11 @@ export default class Log {
   /** Returns whether this key causes its children to be marked generated. */
   isGeneratedParent(key: string) {
     return this.generatedParents.has(key);
+  }
+
+  /** Sets the key to cause its children to be marked generated. */
+  setGeneratedParent(key: string) {
+    this.generatedParents.add(key);
   }
 
   /** Returns the combined timestamps from a set of fields.
@@ -185,8 +224,8 @@ export default class Log {
   getFieldTree(includeGenerated: boolean = true, prefix: string = ""): { [id: string]: LogFieldTree } {
     let root: { [id: string]: LogFieldTree } = {};
     Object.keys(this.fields).forEach((key) => {
-      if (!includeGenerated && this.isGenerated(key)) return;
       if (!key.startsWith(prefix)) return;
+      if (!includeGenerated && this.isGenerated(key)) return;
       let position: LogFieldTree = { fullKey: null, children: root };
       key = key.slice(prefix.length);
       key
@@ -202,6 +241,25 @@ export default class Log {
       position.fullKey = key;
     });
     return root;
+  }
+
+  /** Try to write all of the queued structures. */
+  private attemptQueuedStructures() {
+    let queuedStructs = [...this.queuedStructs];
+    let queuedStructArrays = [...this.queuedStructArrays];
+    let queuedProtos = [...this.queuedProtos];
+    this.queuedStructs = [];
+    this.queuedStructArrays = [];
+    this.queuedProtos = [];
+    queuedStructs.forEach((item) => {
+      this.putStruct(item.key, item.timestamp, item.value, item.schemaType, false);
+    });
+    queuedStructArrays.forEach((item) => {
+      this.putStruct(item.key, item.timestamp, item.value, item.schemaType, true);
+    });
+    queuedProtos.forEach((item) => {
+      this.putProto(item.key, item.timestamp, item.value, item.schemaType);
+    });
   }
 
   /** Reads a set of generic values from the field. */
@@ -253,9 +311,10 @@ export default class Log {
     }
 
     // Check for struct schema
-    // if (key.includes("/.schema/struct:")) {
-    //   this.structDecoder.addSchema(key.split("struct:")[1], value);
-    // }
+    if (key.includes("/.schema/struct:")) {
+      this.structDecoder.addSchema(key.split("struct:")[1], value);
+      this.attemptQueuedStructures();
+    }
   }
 
   /** Writes a new Boolean value to the field. */
@@ -289,7 +348,7 @@ export default class Log {
       let parentKey = key.slice(0, -("/" + TYPE_KEY).length);
       this.createBlankField(parentKey, LoggableType.Empty);
       this.processTimestamp(parentKey, timestamp);
-      this.fields[parentKey].specialType = value;
+      this.setStructuredType(parentKey, value);
     }
   }
 
@@ -299,7 +358,7 @@ export default class Log {
     this.fields[key].putBooleanArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.BooleanArray) {
       this.processTimestamp(key, timestamp);
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
@@ -324,7 +383,7 @@ export default class Log {
     this.fields[key].putNumberArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.NumberArray) {
       this.processTimestamp(key, timestamp);
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
@@ -349,7 +408,7 @@ export default class Log {
     this.fields[key].putStringArray(timestamp, value);
     if (this.fields[key].getType() === LoggableType.StringArray) {
       this.processTimestamp(key, timestamp);
-      this.generatedParents.add(key);
+      this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
@@ -426,8 +485,8 @@ export default class Log {
   putJSON(key: string, timestamp: number, value: string) {
     this.putString(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.String) {
-      this.generatedParents.add(key);
-      this.fields[key].specialType = "JSON";
+      this.setGeneratedParent(key);
+      this.setStructuredType(key, "JSON");
       let decodedValue: unknown = null;
       try {
         decodedValue = JSON.parse(value) as unknown;
@@ -442,8 +501,8 @@ export default class Log {
   putMsgpack(key: string, timestamp: number, value: Uint8Array) {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.generatedParents.add(key);
-      this.fields[key].specialType = "MessagePack";
+      this.setGeneratedParent(key);
+      this.setStructuredType(key, "MessagePack");
       let decodedValue: unknown = null;
       try {
         decodedValue = this.msgpackDecoder.decode(value);
@@ -461,8 +520,8 @@ export default class Log {
   putStruct(key: string, timestamp: number, value: Uint8Array, schemaType: string, isArray: boolean) {
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.generatedParents.add(key);
-      this.fields[key].specialType = schemaType + (isArray ? "[]" : "");
+      this.setGeneratedParent(key);
+      this.setStructuredType(key, schemaType + (isArray ? "[]" : ""));
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
         decodedData = isArray
@@ -476,7 +535,14 @@ export default class Log {
           let fullChildKey = key + "/" + childKey;
           this.createBlankField(fullChildKey, LoggableType.Empty);
           this.processTimestamp(fullChildKey, timestamp);
-          this.fields[fullChildKey].specialType = schemaType;
+          this.setStructuredType(fullChildKey, schemaType);
+        });
+      } else {
+        (isArray ? this.queuedStructArrays : this.queuedStructs).push({
+          key: key,
+          timestamp: timestamp,
+          value: value,
+          schemaType: schemaType
         });
       }
     }
@@ -492,14 +558,15 @@ export default class Log {
     if (schemaType === "FileDescriptorProto") {
       this.protoDecoder.addDescriptor(value);
       this.putRaw(key, timestamp, value);
+      this.attemptQueuedStructures();
       return;
     }
 
     // Not a schema, continue normally
     this.putRaw(key, timestamp, value);
     if (this.fields[key].getType() === LoggableType.Raw) {
-      this.generatedParents.add(key);
-      this.fields[key].specialType = ProtoDecoder.getFriendlySchemaType(schemaType);
+      this.setGeneratedParent(key);
+      this.setStructuredType(key, ProtoDecoder.getFriendlySchemaType(schemaType));
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
         decodedData = this.protoDecoder.decode(schemaType, value);
@@ -511,21 +578,75 @@ export default class Log {
           let fullChildKey = key + "/" + childKey;
           this.createBlankField(fullChildKey, LoggableType.Empty);
           this.processTimestamp(fullChildKey, timestamp);
-          this.fields[fullChildKey].specialType = schemaType;
+          this.setStructuredType(fullChildKey, schemaType);
+        });
+      } else {
+        this.queuedProtos.push({
+          key: key,
+          timestamp: timestamp,
+          value: value,
+          schemaType: schemaType
         });
       }
     }
   }
 
-  /** Writes a coordinate with the "ZebraTranslation" special type. */
+  /** Writes a pose with the "Pose2d" structured type. */
+  putPose(key: string, timestamp: number, pose: Pose2d) {
+    const translationKey = key + "/translation";
+    const rotationKey = key + "/rotation";
+    this.putNumber(translationKey + "/x", timestamp, pose.translation[0]);
+    this.putNumber(translationKey + "/y", timestamp, pose.translation[1]);
+    this.putNumber(rotationKey + "/value", timestamp, pose.rotation);
+    if (!(key in this.fields)) {
+      this.createBlankField(key, LoggableType.Empty);
+      this.setStructuredType(key, "Pose2d");
+      this.setGeneratedParent(key);
+      this.processTimestamp(key, timestamp);
+    }
+    if (!(translationKey in this.fields)) {
+      this.createBlankField(translationKey, LoggableType.Empty);
+      this.setStructuredType(translationKey, "Translation2d");
+      this.processTimestamp(translationKey, timestamp);
+    }
+    if (!(rotationKey in this.fields)) {
+      this.createBlankField(rotationKey, LoggableType.Empty);
+      this.setStructuredType(rotationKey, "Rotation2d");
+      this.processTimestamp(rotationKey, timestamp);
+    }
+  }
+
+  /** Writes a translation array with the "Translation2d[]" structured type. */
+  putTranslationArray(key: string, timestamp: number, translations: Translation2d[]) {
+    if (!(key in this.fields)) {
+      this.createBlankField(key, LoggableType.Empty);
+      this.setStructuredType(key, "Translation2d[]");
+      this.setGeneratedParent(key);
+      this.processTimestamp(key, timestamp);
+    }
+    this.putNumber(key + "/length", timestamp, translations.length);
+    for (let i = 0; i < translations.length; i++) {
+      const itemKey = key + "/" + i.toString();
+      if (!(itemKey in this.fields)) {
+        this.createBlankField(itemKey, LoggableType.Empty);
+        this.setStructuredType(itemKey, "Translation2d");
+        this.processTimestamp(itemKey, timestamp);
+      }
+      this.putNumber(itemKey + "/x", timestamp, translations[i][0]);
+      this.putNumber(itemKey + "/y", timestamp, translations[i][1]);
+    }
+  }
+
+  /** Writes a coordinate with the "ZebraTranslation" structured type. */
   putZebraTranslation(key: string, timestamp: number, x: number, y: number, alliance: string) {
     this.putNumber(key + "/x", timestamp, x);
     this.putNumber(key + "/y", timestamp, y);
     this.putString(key + "/alliance", timestamp, alliance);
     if (!(key in this.fields)) {
       this.createBlankField(key, LoggableType.Empty);
+      this.setStructuredType(key, "ZebraTranslation");
+      this.setGeneratedParent(key);
       this.processTimestamp(key, timestamp);
-      this.fields[key].specialType = "ZebraTranslation";
     }
   }
 
@@ -536,7 +657,10 @@ export default class Log {
       generatedParents: Array.from(this.generatedParents),
       timestampRange: this.timestampRange,
       structDecoder: this.structDecoder.toSerialized(),
-      protoDecoder: this.protoDecoder.toSerialized()
+      protoDecoder: this.protoDecoder.toSerialized(),
+      queuedStructs: this.queuedStructs,
+      queuedStructArrays: this.queuedStructArrays,
+      queuedProtos: this.queuedProtos
     };
     Object.entries(this.fields).forEach(([key, value]) => {
       result.fields[key] = value.toSerialized();
@@ -554,11 +678,14 @@ export default class Log {
     log.timestampRange = serializedData.timestampRange;
     log.structDecoder = StructDecoder.fromSerialized(serializedData.structDecoder);
     log.protoDecoder = ProtoDecoder.fromSerialized(serializedData.protoDecoder);
+    log.queuedStructs = serializedData.queuedStructs;
+    log.queuedStructArrays = serializedData.queuedStructArrays;
+    log.queuedProtos = serializedData.queuedProtos;
     return log;
   }
 
   /** Merges two log objects with no overlapping fields. */
-  static mergeLogs(firstLog: Log, secondLog: Log, timestampOffset: number): Log {
+  static mergeLogs(firstLog: Log, secondLog: Log, timestampOffset: number, secondPrefix = ""): Log {
     // Serialize logs and adjust timestamps
     let firstSerialized = firstLog.toSerialized();
     let secondSerialized = secondLog.toSerialized();
@@ -578,9 +705,24 @@ export default class Log {
       log.fields[key] = LogField.fromSerialized(value);
     });
     Object.entries(secondSerialized.fields).forEach(([key, value]) => {
-      log.fields[key] = LogField.fromSerialized(value);
+      let newKey = key;
+      if (secondPrefix !== "") {
+        newKey = newKey.startsWith("/") ? newKey : "/" + newKey; // Add slash if missing
+        newKey = secondPrefix + newKey; // Add prefix
+      }
+      log.fields[newKey] = LogField.fromSerialized(value);
     });
-    log.generatedParents = new Set([...firstSerialized.generatedParents, ...secondSerialized.generatedParents]);
+    log.generatedParents = new Set([
+      ...firstSerialized.generatedParents,
+      ...secondSerialized.generatedParents.map((key: string) => {
+        let newKey = key;
+        if (secondPrefix !== "") {
+          newKey = newKey.startsWith("/") ? newKey : "/" + newKey; // Add slash if missing
+          newKey = secondPrefix + newKey; // Add prefix
+        }
+        return newKey;
+      })
+    ]);
     if (firstSerialized.timestampRange && secondSerialized.timestampRange) {
       log.timestampRange = [
         Math.min(firstSerialized.timestampRange[0], secondSerialized.timestampRange[0]),
@@ -596,6 +738,17 @@ export default class Log {
       schemas: { ...firstSerialized.structDecoder.schemas, ...secondSerialized.structDecoder.schemas }
     });
     log.protoDecoder = ProtoDecoder.fromSerialized([...firstSerialized.protoDecoder, ...secondSerialized.protoDecoder]);
+    log.queuedStructs = [...firstSerialized.queuedStructs, ...secondSerialized.queuedStructs];
+    log.queuedStructArrays = [...firstSerialized.queuedStructArrays, ...secondSerialized.queuedStructArrays];
+    log.queuedProtos = [...firstSerialized.queuedProtos, ...secondSerialized.queuedProtos];
+    log.attemptQueuedStructures();
     return log;
   }
 }
+
+type QueuedStructure = {
+  key: string;
+  timestamp: number;
+  value: Uint8Array;
+  schemaType: string;
+};

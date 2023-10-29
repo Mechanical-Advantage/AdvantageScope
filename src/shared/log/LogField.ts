@@ -15,7 +15,8 @@ import {
 export default class LogField {
   private type: LoggableType;
   private data: LogValueSetAny = { timestamps: [], values: [] };
-  public specialType: string | null = null;
+  public structuredType: string | null = null;
+  public wpilibType: string | null = null; // Original type from WPILOG & NT4
 
   // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
   private stripingReference = false;
@@ -45,6 +46,9 @@ export default class LogField {
       this.data.timestamps.shift();
       this.data.values.shift();
       this.stripingReference = !this.stripingReference;
+    }
+    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < timestamp) {
+      this.data.timestamps[0] = timestamp;
     }
   }
 
@@ -188,7 +192,8 @@ export default class LogField {
       type: this.type,
       timestamps: this.data.timestamps,
       values: this.data.values,
-      specialType: this.specialType,
+      structuredType: this.structuredType,
+      wpilibType: this.wpilibType,
       stripingReference: this.stripingReference
     };
   }
@@ -200,7 +205,8 @@ export default class LogField {
       timestamps: serializedData.timestamps,
       values: serializedData.values
     };
-    field.specialType = serializedData.specialType;
+    field.structuredType = serializedData.structuredType;
+    field.wpilibType = serializedData.wpilibType;
     field.stripingReference = serializedData.stripingReference;
     return field;
   }
