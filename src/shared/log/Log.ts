@@ -221,8 +221,8 @@ export default class Log {
   getFieldTree(includeGenerated: boolean = true, prefix: string = ""): { [id: string]: LogFieldTree } {
     let root: { [id: string]: LogFieldTree } = {};
     Object.keys(this.fields).forEach((key) => {
-      if (!includeGenerated && this.isGenerated(key)) return;
       if (!key.startsWith(prefix)) return;
+      if (!includeGenerated && this.isGenerated(key)) return;
       let position: LogFieldTree = { fullKey: null, children: root };
       key = key.slice(prefix.length);
       key

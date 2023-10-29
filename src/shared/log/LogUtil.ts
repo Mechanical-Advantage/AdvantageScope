@@ -294,7 +294,7 @@ export function getMechanismState(log: Log, key: string, time: number): Mechanis
     };
 
     // Find all roots and add children
-    for (let [mechanismChildKey, mechanismChildTree] of Object.entries(log.getFieldTree(false, key + "/"))) {
+    for (let [mechanismChildKey, mechanismChildTree] of Object.entries(log.getFieldTree(true, key + "/"))) {
       if (
         mechanismChildKey.startsWith(".") ||
         mechanismChildKey === "backgroundColor" ||
