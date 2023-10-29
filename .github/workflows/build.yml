@@ -347,13 +347,13 @@ jobs:
           else
             mv dist/mac/AdvantageScope.app "AdvantageScope (WPILib).app"
           fi
-          zip -r advantagescope-wpilib-mac-${{ matrix.arch }}.zip "AdvantageScope (WPILib).app"
+          tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "AdvantageScope (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
         with:
-          name: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
-          path: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
+          path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
       - name: "Release: Get release info"
         if: github.event_name == 'release'
         id: get_release_info
@@ -367,8 +367,8 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.zip
+          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
+          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
           asset_content_type: "application/octet-stream"
 
   build-wpilib-linux:
