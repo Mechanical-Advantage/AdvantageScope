@@ -29,7 +29,7 @@ self.onmessage = (event) => {
     let fields: string[] = [];
     let processTree = (data: { [id: string]: LogFieldTree }) => {
       Object.keys(data)
-        .sort()
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
         .forEach((key) => {
           if (data[key].fullKey !== null) {
             fields.push(data[key].fullKey as string);
