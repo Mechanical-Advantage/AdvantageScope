@@ -250,15 +250,12 @@ export default class Log {
     this.queuedProtos = [];
     queuedStructs.forEach((item) => {
       this.putStruct(item.key, item.timestamp, item.value, item.schemaType, false);
-      console.log(item);
     });
     queuedStructArrays.forEach((item) => {
       this.putStruct(item.key, item.timestamp, item.value, item.schemaType, true);
-      console.log(item);
     });
     queuedProtos.forEach((item) => {
       this.putProto(item.key, item.timestamp, item.value, item.schemaType);
-      console.log(item);
     });
   }
 
