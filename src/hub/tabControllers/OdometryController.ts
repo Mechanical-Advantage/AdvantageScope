@@ -284,7 +284,9 @@ export default class OdometryController extends TimelineVizController {
                   rotationConversion
                 );
                 poses.forEach((pose, index) => {
-                  trailsTemp[index].push(pose.translation);
+                  if (index < trailsTemp.length) {
+                    trailsTemp[index].push(pose.translation);
+                  }
                 });
                 while (dataIndex < data!.timestamps.length && data!.timestamps[dataIndex] < timestamp) {
                   dataIndex++;
@@ -293,6 +295,9 @@ export default class OdometryController extends TimelineVizController {
             }
           } else if (typeof field.sourceType === "string") {
             let addTrail = (key: string, trailIndex = 0) => {
+              if (trailIndex >= trailsTemp.length) {
+                return;
+              }
               let xData = window.log.getNumber(
                 key + "/translation/x",
                 timestamps[0],
