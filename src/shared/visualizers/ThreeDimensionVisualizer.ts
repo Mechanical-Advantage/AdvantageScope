@@ -1288,8 +1288,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (orbitalCamera) {
         this.canvas.classList.remove("fixed");
         this.annotationsDiv.classList.remove("fixed");
-        this.canvas.style.aspectRatio = "";
-        this.annotationsDiv.style.aspectRatio = "";
+        this.canvas.style.width = "";
+        this.canvas.style.height = "";
+        this.annotationsDiv.style.width = "";
+        this.annotationsDiv.style.height = "";
         if (this.cameraIndex === -1) {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
@@ -1318,9 +1320,21 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           let cameraConfig = robotConfig.cameras[this.cameraIndex];
           aspectRatio = cameraConfig.resolution[0] / cameraConfig.resolution[1];
           this.lastAspectRatio = aspectRatio;
-          fov = (cameraConfig.fov * aspectRatio) / 2;
-          this.canvas.style.aspectRatio = aspectRatio.toString();
-          this.annotationsDiv.style.aspectRatio = aspectRatio.toString();
+          fov = cameraConfig.fov / aspectRatio;
+          let parentAspectRatio = this.canvas.parentElement
+            ? this.canvas.parentElement.clientWidth / this.canvas.parentElement.clientHeight
+            : aspectRatio;
+          if (aspectRatio > parentAspectRatio) {
+            this.canvas.style.width = "100%";
+            this.canvas.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
+            this.annotationsDiv.style.width = "100%";
+            this.annotationsDiv.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
+          } else {
+            this.canvas.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
+            this.canvas.style.height = "100%";
+            this.annotationsDiv.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
+            this.annotationsDiv.style.height = "100%";
+          }
 
           // Update camera position
           let referenceObj: THREE.Object3D | null = null;

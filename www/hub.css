@@ -1658,9 +1658,6 @@ div.three-dimension-annotations.fixed {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  aspect-ratio: 2;
-  max-width: 100%;
-  max-height: 100%;
 }
 
 canvas.three-dimension-canvas.fixed {
