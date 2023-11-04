@@ -127,10 +127,7 @@ export default class DocumentationController implements TabController {
   }
 
   private fixRelativePath(input: string): string {
-    if (window.platform === "win32") {
-      return "../" + input.slice(11); // Remove "file:///X:/"
-    } else {
-      return "../" + input.slice(8); // Remove "file:///"
-    }
+    let pathDataIndex = input.indexOf("docs");
+    return "../" + input.slice(pathDataIndex);
   }
 }
