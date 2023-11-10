@@ -264,6 +264,14 @@ export default class Sidebar {
     if (generated) {
       fieldElement.classList.add("generated");
     }
+    let hasValue = field.fullKey !== null && window.log.getType(field.fullKey) !== LoggableType.Raw;
+    if (hasValue) {
+      let valueElement = document.createElement("div");
+      fieldElementContainer.appendChild(valueElement);
+      valueElement.classList.add("field-value");
+      valueElement.innerText = "3.14159265358";
+    }
+    fieldElementContainer.style.setProperty("--has-value", hasValue ? "1" : "0");
 
     // Active fields callback
     this.activeFieldCallbacks.push(() => {
