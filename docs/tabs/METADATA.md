@@ -8,6 +8,6 @@ The metadata tab shows AdvantageKit metadata from the real robot and replay (if 
 
 To save metadata using AdvantageKit, call the method below before starting the logger.
 
-```
+```java
 Logger.getInstance().recordMetadata(key, value);
 ```
