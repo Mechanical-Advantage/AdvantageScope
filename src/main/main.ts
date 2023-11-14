@@ -687,8 +687,24 @@ function downloadStart() {
                         (file) =>
                           !file.name.startsWith(".") && (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog"))
                       )
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .reverse()
+                      .map((file) => {
+                        return {
+                          name: file.name,
+                          size: file.size,
+                          randomized:
+                            file.name.includes("TBD") || // WPILib DataLogManager
+                            (file.name.startsWith("Log_") && !file.name.includes("-")) // AdvantageKit
+                        };
+                      })
+                      .sort((a, b) => {
+                        if (a.randomized && !b.randomized) {
+                          return 1;
+                        } else if (!a.randomized && b.randomized) {
+                          return -1;
+                        } else {
+                          return -a.name.localeCompare(b.name);
+                        }
+                      })
                   );
                 }
 

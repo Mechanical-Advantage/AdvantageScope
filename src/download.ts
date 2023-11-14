@@ -177,7 +177,7 @@ function handleMainMessage(message: NamedMessage) {
       }
 
       // Add new list items
-      let fileData: { name: string; size: number }[] = message.data;
+      let fileData: { name: string; size: number; randomized: boolean }[] = message.data;
       filenames = fileData.map((file) => file.name);
       fileData.forEach((file, index) => {
         let item = document.createElement("div");
