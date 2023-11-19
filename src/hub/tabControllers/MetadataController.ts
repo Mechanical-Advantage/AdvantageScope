@@ -38,7 +38,7 @@ export default class MetadataController implements TabController {
         if (key.startsWith(metadataKey)) {
           let cleanKey = key.slice(metadataKey.length);
           if (key.startsWith("/" + MERGE_PREFIX)) {
-            cleanKey = key.slice(0, MERGE_PREFIX.length + 2) + cleanKey;
+            cleanKey = key.slice(0, key.indexOf("/", MERGE_PREFIX.length + 1)) + cleanKey;
           }
           if (!(cleanKey in data)) {
             data[cleanKey] = { real: null, replay: null };
@@ -65,8 +65,8 @@ export default class MetadataController implements TabController {
     let keys = Object.keys(data);
     keys.sort();
     keys.sort((a, b) => {
-      if (a.startsWith("/" + MERGE_PREFIX)) a = a.slice(MERGE_PREFIX.length + 2);
-      if (b.startsWith("/" + MERGE_PREFIX)) b = b.slice(MERGE_PREFIX.length + 2);
+      if (a.startsWith("/" + MERGE_PREFIX)) a = a.slice(a.indexOf("/", MERGE_PREFIX.length + 1));
+      if (b.startsWith("/" + MERGE_PREFIX)) b = b.slice(b.indexOf("/", MERGE_PREFIX.length + 1));
       return a.localeCompare(b);
     });
     keys.forEach((key) => {
