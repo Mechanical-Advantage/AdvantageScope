@@ -52,6 +52,7 @@ export const MATCH_NUMBER_KEYS = withMergedKeys([
   "NT:/AdvantageKit/DriverStation/MatchNumber",
   "NT:/FMSInfo/MatchNumber"
 ]);
+export const MAX_SEARCH_RESULTS = 128;
 
 /** Returns a set of keys starting  */
 function withMergedKeys(keys: string[]): string[] {
@@ -369,10 +370,9 @@ export function mergeMechanismStates(states: MechanismState[]): MechanismState {
 }
 
 export function searchFields(log: Log, query: string): string[] {
+  if (query.length == 1) return [];
   query = query.toLowerCase();
-  let fieldStrings = log
-    .getFieldKeys()
-    .filter((field) => !log.isGenerated(field) && field.toLowerCase().includes(query));
+  let fieldStrings = log.getFieldKeys().filter((field) => field.toLowerCase().includes(query));
   let fields = fieldStrings.map((field) => {
     return {
       string: field,
@@ -382,7 +382,10 @@ export function searchFields(log: Log, query: string): string[] {
   fields.sort((a, b) => a.string.localeCompare(b.string, undefined, { numeric: true }));
   fields.sort((a, b) => a.string.length - b.string.length);
   fields.sort((a, b) => a.endDistance - b.endDistance);
-  return fields.map((field) => field.string);
+  return fields
+    .slice(0, MAX_SEARCH_RESULTS)
+    .map((field) => field.string)
+    .filter((field) => !log.isGenerated(field));
 }
 
 export function getMatchInfo(log: Log): MatchInfo | null {
