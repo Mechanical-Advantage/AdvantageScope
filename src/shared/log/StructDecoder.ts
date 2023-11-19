@@ -327,7 +327,7 @@ export default class StructDecoder {
   /** Returns a serialized version of the data from this decoder. */
   toSerialized(): any {
     return {
-      schemaString: this.schemaStrings,
+      schemaStrings: this.schemaStrings,
       schemas: this.schemas
     };
   }

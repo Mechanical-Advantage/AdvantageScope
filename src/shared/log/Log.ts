@@ -3,7 +3,7 @@ import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { TYPE_KEY } from "./LogUtil";
+import { TYPE_KEY, getEnabledData } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -15,6 +15,7 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import { MERGE_PREFIX } from "./MergeConstants";
 import ProtoDecoder from "./ProtoDecoder";
 import StructDecoder from "./StructDecoder";
 
@@ -684,64 +685,78 @@ export default class Log {
     return log;
   }
 
-  /** Merges two log objects with no overlapping fields. */
-  static mergeLogs(firstLog: Log, secondLog: Log, timestampOffset: number, secondPrefix = ""): Log {
-    // Serialize logs and adjust timestamps
-    let firstSerialized = firstLog.toSerialized();
-    let secondSerialized = secondLog.toSerialized();
-    Object.values(secondSerialized.fields).forEach((field) => {
-      let newField = field as { timestamps: number[]; values: number[] };
-      newField.timestamps = newField.timestamps.map((timestamp) => timestamp + timestampOffset);
-    });
-    if (secondSerialized.timestampRange) {
-      secondSerialized.timestampRange = (secondSerialized.timestampRange as number[]).map(
-        (timestamp) => timestamp + timestampOffset
-      );
-    }
-
-    // Merge logs
+  /** Merges several logs into one. */
+  static mergeLogs(sources: Log[]): Log {
     let log = new Log();
-    Object.entries(firstSerialized.fields).forEach(([key, value]) => {
-      log.fields[key] = LogField.fromSerialized(value);
-    });
-    Object.entries(secondSerialized.fields).forEach(([key, value]) => {
-      let newKey = key;
-      if (secondPrefix !== "") {
-        newKey = newKey.startsWith("/") ? newKey : "/" + newKey; // Add slash if missing
-        newKey = secondPrefix + newKey; // Add prefix
+
+    // Serialize logs and adjust timestamps
+    let serialized = sources.map((source) => {
+      let firstEnableTime = 0;
+      let enabledData = getEnabledData(source);
+      if (enabledData && enabledData.values.includes(true)) {
+        firstEnableTime = enabledData.timestamps[enabledData.values.indexOf(true)];
       }
-      log.fields[newKey] = LogField.fromSerialized(value);
+      let serializedSource = source.toSerialized();
+      Object.values(serializedSource.fields).forEach((field) => {
+        let typedField = field as { timestamps: number[]; values: number[] };
+        typedField.timestamps = typedField.timestamps.map((timestamp) => timestamp - firstEnableTime);
+      });
+      if (serializedSource.timestampRange !== null) {
+        serializedSource.timestampRange = (serializedSource.timestampRange as number[]).map(
+          (timestamp) => timestamp - firstEnableTime
+        );
+      }
+      return serializedSource;
     });
-    log.generatedParents = new Set([
-      ...firstSerialized.generatedParents,
-      ...secondSerialized.generatedParents.map((key: string) => {
-        let newKey = key;
-        if (secondPrefix !== "") {
-          newKey = newKey.startsWith("/") ? newKey : "/" + newKey; // Add slash if missing
-          newKey = secondPrefix + newKey; // Add prefix
-        }
+
+    // Copy each source to output log
+    let structSchemaStrings: { [key: string]: string } = {};
+    let structSchemas: { [key: string]: string } = {};
+    let protoDescriptors: any[] = [];
+    serialized.forEach((source, index) => {
+      let logName = MERGE_PREFIX + index.toString();
+      let adjustKey = (key: string) => {
+        let newKey = key.startsWith("/") ? key : "/" + key;
+        newKey = "/" + logName + newKey;
         return newKey;
-      })
-    ]);
-    if (firstSerialized.timestampRange && secondSerialized.timestampRange) {
-      log.timestampRange = [
-        Math.min(firstSerialized.timestampRange[0], secondSerialized.timestampRange[0]),
-        Math.max(firstSerialized.timestampRange[1], secondSerialized.timestampRange[1])
-      ];
-    } else if (firstSerialized.timestampRange) {
-      log.timestampRange = firstSerialized.timestampRange;
-    } else if (secondSerialized.timestampRange) {
-      log.timestampRange = secondSerialized.timestampRange;
-    }
-    log.structDecoder = StructDecoder.fromSerialized({
-      schemaString: { ...firstSerialized.structDecoder.schemaStrings, ...secondSerialized.structDecoder.schemaStrings },
-      schemas: { ...firstSerialized.structDecoder.schemas, ...secondSerialized.structDecoder.schemas }
+      };
+
+      // Merge fields
+      Object.entries(source.fields).forEach(([key, value]) => {
+        log.fields[adjustKey(key)] = LogField.fromSerialized(value);
+      });
+
+      // Merge generated parents
+      source.generatedParents.map((key: string) => {
+        log.generatedParents.add(adjustKey(key));
+      });
+
+      // Adjust timestamp range
+      if (source.timestampRange !== null) {
+        if (log.timestampRange === null) {
+          log.timestampRange = [source.timestampRange[0], source.timestampRange[1]];
+        } else {
+          log.timestampRange = [
+            Math.min(log.timestampRange[0], source.timestampRange[0]),
+            Math.max(log.timestampRange[1], source.timestampRange[1])
+          ];
+        }
+      }
+
+      // Merge struct & proto data
+      structSchemaStrings = { ...structSchemaStrings, ...source.structDecoder.schemaStrings };
+      structSchemas = { ...structSchemas, ...source.structDecoder.schemas };
+      source.protoDecoder.forEach((descriptor: any) => {
+        protoDescriptors.push(descriptor);
+      });
     });
-    log.protoDecoder = ProtoDecoder.fromSerialized([...firstSerialized.protoDecoder, ...secondSerialized.protoDecoder]);
-    log.queuedStructs = [...firstSerialized.queuedStructs, ...secondSerialized.queuedStructs];
-    log.queuedStructArrays = [...firstSerialized.queuedStructArrays, ...secondSerialized.queuedStructArrays];
-    log.queuedProtos = [...firstSerialized.queuedProtos, ...secondSerialized.queuedProtos];
-    log.attemptQueuedStructures();
+    log.structDecoder = StructDecoder.fromSerialized({
+      schemaStrings: structSchemaStrings,
+      schemas: structSchemas
+    });
+    log.protoDecoder = ProtoDecoder.fromSerialized(protoDescriptors);
+
+    // Queued structured are discarded
     return log;
   }
 }

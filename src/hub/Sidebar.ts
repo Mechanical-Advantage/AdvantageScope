@@ -17,7 +17,7 @@ export default class Sidebar {
 
   private SEARCH_RESULTS = document.getElementsByClassName("search-results")[0] as HTMLElement;
 
-  private MERGED_KEY = "MergedLog";
+  private MERGED_KEY = "Log";
   private KNOWN_KEYS = [
     "DriverStation",
     "NetworkTables",

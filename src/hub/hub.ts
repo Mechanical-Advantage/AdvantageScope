@@ -210,7 +210,7 @@ window.requestAnimationFrame(periodic);
 // DATA SOURCE HANDLING
 
 /** Connects to a historical data source. */
-function startHistorical(path: string, shouldMerge: boolean = false) {
+function startHistorical(paths: string[]) {
   historicalSource?.stop();
   liveSource?.stop();
   liveActive = false;
@@ -218,25 +218,30 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
 
   historicalSource = new HistoricalDataSource();
   historicalSource.openFile(
-    path,
+    paths,
     (status: HistoricalDataSourceStatus) => {
-      let components = path.split(window.platform === "win32" ? "\\" : "/");
-      logFriendlyName = components[components.length - 1];
+      if (paths.length === 1) {
+        let components = paths[0].split(window.platform === "win32" ? "\\" : "/");
+        logFriendlyName = components[components.length - 1];
+      } else {
+        logFriendlyName = paths.length.toString() + " Log File" + (paths.length === 1 ? "" : "s");
+      }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
         case HistoricalDataSourceStatus.Decoding:
-          if (!shouldMerge) setWindowTitle(logFriendlyName, "Loading");
+          setWindowTitle(logFriendlyName, "Loading");
           break;
         case HistoricalDataSourceStatus.Ready:
-          if (!shouldMerge) setWindowTitle(logFriendlyName);
+          setWindowTitle(logFriendlyName);
           setLoading(null);
           break;
         case HistoricalDataSourceStatus.Error:
-          if (!shouldMerge) setWindowTitle(logFriendlyName, "Error");
+          setWindowTitle(logFriendlyName, "Error");
           setLoading(null);
           window.sendMainMessage("error", {
-            title: "Failed to open log",
-            content: "There was a problem while reading the log file. Please try again."
+            title: "Failed to open log" + (paths.length === 1 ? "" : "s"),
+            content:
+              "There was a problem while reading the log file" + (paths.length === 1 ? "" : "s") + ". Please try again."
           });
           break;
         case HistoricalDataSourceStatus.Stopped:
@@ -247,42 +252,8 @@ function startHistorical(path: string, shouldMerge: boolean = false) {
       setLoading(progress);
     },
     (log: Log) => {
-      if (shouldMerge && window.log.getFieldKeys().length > 0) {
-        // Check for field conflicts
-        let newFields = log.getFieldKeys();
-        let hasOverlap = false;
-        window.log.getFieldKeys().forEach((key) => {
-          if (newFields.includes(key)) hasOverlap = true;
-        });
-
-        // Generate prefix
-        let prefix = "";
-        if (hasOverlap) {
-          let i = 0;
-          let oldTree = window.log.getFieldTree();
-          while ("MergedLog" + i.toString() in oldTree) {
-            i += 1;
-          }
-          prefix = "/MergedLog" + i.toString();
-        }
-
-        // Merge based on first enable
-        let currentFirstEnable = 0;
-        let newFirstEnabled = 0;
-        let currentEnabledData = getEnabledData(window.log);
-        let newEnabledData = getEnabledData(log);
-        if (currentEnabledData && currentEnabledData.values.includes(true)) {
-          currentFirstEnable = currentEnabledData.timestamps[currentEnabledData.values.indexOf(true)];
-        }
-        if (newEnabledData && newEnabledData.values.includes(true)) {
-          newFirstEnabled = newEnabledData.timestamps[newEnabledData.values.indexOf(true)];
-        }
-        window.log = Log.mergeLogs(window.log, log, currentFirstEnable - newFirstEnabled, prefix);
-      } else {
-        window.log = log;
-        logPath = path;
-      }
-
+      window.log = log;
+      logPath = paths[0];
       liveConnected = false;
       window.sidebar.refresh();
       window.tabs.refresh();
@@ -368,9 +339,12 @@ document.addEventListener("drop", (event) => {
   event.stopPropagation();
 
   if (event.dataTransfer) {
+    let files: string[] = [];
     for (const file of event.dataTransfer.files) {
-      startHistorical(file.path);
-      return;
+      files.push(file.path);
+    }
+    if (files.length > 0) {
+      startHistorical(files);
     }
   }
 });
@@ -476,7 +450,7 @@ function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "open-file":
+    case "open-files":
       if (isExporting) {
         window.sendMainMessage("error", {
           title: "Cannot open file",
@@ -484,17 +458,6 @@ function handleMainMessage(message: NamedMessage) {
         });
       } else {
         startHistorical(message.data);
-      }
-      break;
-
-    case "open-file-merge":
-      if (isExporting) {
-        window.sendMainMessage("error", {
-          title: "Cannot open file",
-          content: "Please wait for the export to finish, then try again."
-        });
-      } else {
-        startHistorical(message.data, true);
       }
       break;
 
