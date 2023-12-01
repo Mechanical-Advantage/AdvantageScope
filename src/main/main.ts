@@ -31,6 +31,7 @@ import { MERGE_MAX_FILES } from "../shared/log/MergeConstants";
 import { UnitConversionPreset } from "../shared/units";
 import { jsonCopy } from "../shared/util";
 import {
+  DEFAULT_LOGS_FOLDER,
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
   DOWNLOAD_PASSWORD,
@@ -38,7 +39,6 @@ import {
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
   LAST_OPEN_FILE,
-  OPEN_DEFAULT_PATH,
   PATHPLANNER_CONNECT_TIMEOUT_MS,
   PATHPLANNER_DATA_TIMEOUT_MS,
   PATHPLANNER_PING_DELAY_MS,
@@ -776,7 +776,8 @@ function downloadSave(files: string[]) {
     selectPromise = dialog.showOpenDialog(downloadWindow, {
       title: "Select save location for robot logs",
       buttonLabel: "Save",
-      properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
+      properties: ["openDirectory", "createDirectory", "dontAddToRecent"],
+      defaultPath: DEFAULT_LOGS_FOLDER
     });
   } else {
     let extension = path.extname(files[0]).slice(1);
@@ -946,7 +947,7 @@ function setupMenu() {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
                 filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
-                defaultPath: OPEN_DEFAULT_PATH
+                defaultPath: DEFAULT_LOGS_FOLDER
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -965,7 +966,7 @@ function setupMenu() {
               message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
               properties: ["openFile", "multiSelections"],
               filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
-              defaultPath: OPEN_DEFAULT_PATH
+              defaultPath: DEFAULT_LOGS_FOLDER
             });
             let files = filesResponse.filePaths;
             if (files.length === 0) {
