@@ -24,7 +24,7 @@ export const WINDOW_ICON = process.platform === "darwin" ? undefined : path.join
 export const DEFAULT_PREFS: Preferences = {
   theme: process.platform === "linux" ? "light" : "system",
   rioAddress: "10.00.00.2",
-  rioPath: "/U",
+  rioPath: "/U/logs",
   liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
