@@ -3,7 +3,7 @@ import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { TYPE_KEY, getEnabledData } from "./LogUtil";
+import { SEPARATOR_REGEX, TYPE_KEY, getEnabledData } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -231,7 +231,7 @@ export default class Log {
       key = key.slice(prefix.length);
       key
         .slice(key.startsWith("/") ? 1 : 0)
-        .split(new RegExp(/\/|:/))
+        .split(SEPARATOR_REGEX)
         .forEach((table) => {
           if (table === "") return;
           if (!(table in position.children)) {

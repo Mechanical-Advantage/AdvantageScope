@@ -53,6 +53,7 @@ export const MATCH_NUMBER_KEYS = withMergedKeys([
   "NT:/FMSInfo/MatchNumber"
 ]);
 export const MAX_SEARCH_RESULTS = 128;
+export const SEPARATOR_REGEX = new RegExp(/\/|:|_/);
 
 /** Returns a set of keys starting  */
 function withMergedKeys(keys: string[]): string[] {
@@ -116,10 +117,10 @@ export function filterFieldByPrefixes(
 ) {
   let filteredFields: Set<string> = new Set();
   prefixes.split(",").forEach((prefix) => {
-    let prefixSeries = prefix.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
+    let prefixSeries = prefix.split(SEPARATOR_REGEX).filter((item) => item.length > 0);
     if (ntOnly) prefixSeries.splice(0, 0, "NT");
     fields.forEach((field) => {
-      let fieldSeries = field.split(new RegExp(/\/|:/)).filter((item) => item.length > 0);
+      let fieldSeries = field.split(SEPARATOR_REGEX).filter((item) => item.length > 0);
       if (fieldSeries.length < prefixSeries.length) return;
       if (
         prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) ||
