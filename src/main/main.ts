@@ -2150,7 +2150,7 @@ app.whenReady().then(() => {
 
   // Open file if exists
   if (firstOpenPath !== null) {
-    sendMessage(window, "open-file", firstOpenPath);
+    sendMessage(window, "open-files", [firstOpenPath]);
   }
 
   // Create new window if activated while none exist
