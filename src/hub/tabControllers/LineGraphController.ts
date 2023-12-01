@@ -1,7 +1,7 @@
 import { AllColors } from "../../shared/Colors";
 import { LineGraphState } from "../../shared/HubState";
 import TabType from "../../shared/TabType";
-import { getLogValueText } from "../../shared/log/LogUtil";
+import { getLogValueText, getOrDefault } from "../../shared/log/LogUtil";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
 import LoggableType from "../../shared/log/LoggableType";
 import { UnitConversionPreset, convertWithPreset } from "../../shared/units";
@@ -1194,6 +1194,14 @@ export default class LineGraphController implements TabController {
     }
 
     // Update value preview
+    let previewTime: number | null = null;
+    if (selectionMode === SelectionMode.Playback || selectionMode === SelectionMode.Locked) {
+      previewTime = selectedTime as number;
+    } else if (hoveredTime !== null) {
+      previewTime = hoveredTime;
+    } else if (selectedTime !== null) {
+      previewTime = selectedTime;
+    }
     [
       [this.LEFT_LIST, this.leftFields],
       [this.DISCRETE_LIST, this.discreteFields],
@@ -1210,13 +1218,10 @@ export default class LineGraphController implements TabController {
         let valueElement = itemElement.getElementsByClassName("legend-value")[0] as HTMLElement;
         let key = fieldList[index - 1].key;
         let hasValue = false;
-        if (selectedTime !== null && availableKeys.includes(key)) {
-          let currentData = window.log.getRange(key, selectedTime as number, selectedTime as number);
-          if (
-            currentData &&
-            currentData.timestamps.length > 0 &&
-            currentData.timestamps[0] <= (selectedTime as number)
-          ) {
+        if (previewTime !== null && availableKeys.includes(key)) {
+          getOrDefault;
+          let currentData = window.log.getRange(key, previewTime, previewTime);
+          if (currentData && currentData.timestamps.length > 0 && currentData.timestamps[0] <= previewTime) {
             let value = currentData.values[0];
             if (legendIndex === 0) value = convertWithPreset(value, this.leftUnitConversion);
             if (legendIndex === 2) value = convertWithPreset(value, this.rightUnitConversion);
@@ -1226,7 +1231,7 @@ export default class LineGraphController implements TabController {
           }
         }
 
-        if (selectedTime !== null && availableKeys.includes(key) && hasValue) {
+        if (previewTime !== null && availableKeys.includes(key) && hasValue) {
           itemElement.classList.add("legend-item-with-value");
         } else {
           itemElement.classList.remove("legend-item-with-value");

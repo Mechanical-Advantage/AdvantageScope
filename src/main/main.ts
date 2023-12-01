@@ -27,6 +27,7 @@ import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
+import { MERGE_MAX_FILES } from "../shared/log/MergeConstants";
 import { UnitConversionPreset } from "../shared/units";
 import { jsonCopy } from "../shared/util";
 import {
@@ -194,28 +195,44 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       paths.forEach((path) => app.addRecentDocument(path));
       fs.writeFile(LAST_OPEN_FILE, paths[0], () => {});
 
-      // Read data from file
+      // Send data if all file reads finished
       let completedCount = 0;
-      let results: (Buffer | null)[] = paths.map(() => null);
+      let targetCount = 0;
+      let sendIfReady = () => {
+        if (completedCount === targetCount) {
+          sendMessage(window, "historical-data", results);
+        }
+      };
+
+      // Read data from file
+      let results: (Buffer | null)[][] = paths.map(() => [null]);
       paths.forEach((path, index) => {
-        fs.open(path, "r", (error, file) => {
-          if (error) {
-            completedCount++;
-            if (completedCount === paths.length) {
-              sendMessage(window, "historical-data", results);
+        let openPath = (path: string, callback: (buffer: Buffer) => void) => {
+          targetCount += 1;
+          fs.open(path, "r", (error, file) => {
+            if (error) {
+              completedCount++;
+              sendIfReady();
+              return;
             }
-            return;
-          }
-          fs.readFile(file, (error, buffer) => {
-            completedCount++;
-            if (!error) {
-              results[index] = buffer;
-            }
-            if (completedCount === paths.length) {
-              sendMessage(window, "historical-data", results);
-            }
+            fs.readFile(file, (error, buffer) => {
+              completedCount++;
+              if (!error) {
+                callback(buffer);
+              }
+              sendIfReady();
+            });
           });
-        });
+        };
+        if (!path.endsWith(".dslog")) {
+          // Not DSLog, open normally
+          openPath(path, (buffer) => (results[index][0] = buffer));
+        } else {
+          // DSLog, open DSEvents too
+          results[index] = [null, null];
+          openPath(path, (buffer) => (results[index][0] = buffer));
+          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[index][1] = buffer));
+        }
       });
       break;
 
@@ -687,8 +704,24 @@ function downloadStart() {
                         (file) =>
                           !file.name.startsWith(".") && (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog"))
                       )
-                      .sort((a, b) => a.name.localeCompare(b.name))
-                      .reverse()
+                      .map((file) => {
+                        return {
+                          name: file.name,
+                          size: file.size,
+                          randomized:
+                            file.name.includes("TBD") || // WPILib DataLogManager
+                            (file.name.startsWith("Log_") && !file.name.includes("-")) // AdvantageKit
+                        };
+                      })
+                      .sort((a, b) => {
+                        if (a.randomized && !b.randomized) {
+                          return 1;
+                        } else if (!a.randomized && b.randomized) {
+                          return -1;
+                        } else {
+                          return -a.name.localeCompare(b.name);
+                        }
+                      })
                   );
                 }
 
@@ -904,7 +937,7 @@ function setupMenu() {
       label: "File",
       submenu: [
         {
-          label: "Open Log...",
+          label: "Open...",
           accelerator: "CmdOrCtrl+O",
           click(_, window) {
             if (window === undefined || !hubWindows.includes(window)) return;
@@ -917,28 +950,28 @@ function setupMenu() {
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
-                  sendMessage(window, "open-file", files.filePaths[0]);
+                  sendMessage(window, "open-files", [files.filePaths[0]]);
                 }
               });
           }
         },
         {
-          label: "Merge Log...",
+          label: "Open Multiple...",
           accelerator: "CmdOrCtrl+Shift+O",
-          click(_, window) {
+          async click(_, window) {
             if (window === undefined || !hubWindows.includes(window)) return;
-            dialog
-              .showOpenDialog(window, {
-                title: "Select a robot log file to merge with the current data",
-                properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
-                defaultPath: OPEN_DEFAULT_PATH
-              })
-              .then((files) => {
-                if (files.filePaths.length > 0) {
-                  sendMessage(window, "open-file-merge", files.filePaths[0]);
-                }
-              });
+            let filesResponse = await dialog.showOpenDialog(window, {
+              title: "Select up to " + MERGE_MAX_FILES.toString() + " robot log files to open",
+              message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
+              properties: ["openFile", "multiSelections"],
+              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+              defaultPath: OPEN_DEFAULT_PATH
+            });
+            let files = filesResponse.filePaths;
+            if (files.length === 0) {
+              return;
+            }
+            sendMessage(window, "open-files", files.slice(0, MERGE_MAX_FILES));
           }
         },
         {

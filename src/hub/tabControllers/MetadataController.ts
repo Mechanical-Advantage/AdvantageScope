@@ -1,5 +1,6 @@
 import { TabState } from "../../shared/HubState";
-import LogFieldTree from "../../shared/log/LogFieldTree";
+import { METADATA_KEYS } from "../../shared/log/LogUtil";
+import { MERGE_PREFIX } from "../../shared/log/MergeConstants";
 import TabType from "../../shared/TabType";
 import TabController from "../TabController";
 
@@ -30,40 +31,23 @@ export default class MetadataController implements TabController {
   periodic() {}
 
   refresh() {
-    let fieldList = window.log.getFieldKeys();
-
     // Get data
-    let tree = window.log.getFieldTree();
     let data: { [id: string]: { real: string | null; replay: string | null } } = {};
-    let scanTree = (fieldData: LogFieldTree, prefix: string, isReal: boolean) => {
-      if (fieldData.fullKey) {
-        let cleanKey = fieldData.fullKey.slice(prefix.length);
-        if (!(cleanKey in data)) {
-          data[cleanKey] = { real: null, replay: null };
+    window.log.getFieldKeys().forEach((key) => {
+      METADATA_KEYS.forEach((metadataKey) => {
+        if (key.startsWith(metadataKey)) {
+          let cleanKey = key.slice(metadataKey.length);
+          if (key.startsWith("/" + MERGE_PREFIX)) {
+            cleanKey = key.slice(0, key.indexOf("/", MERGE_PREFIX.length + 1)) + cleanKey;
+          }
+          if (!(cleanKey in data)) {
+            data[cleanKey] = { real: null, replay: null };
+          }
+          let logData = window.log.getString(key, 0, 0);
+          if (logData) data[cleanKey][metadataKey.includes("RealMetadata") ? "real" : "replay"] = logData.values[0];
         }
-        let logData = window.log.getString(fieldData.fullKey, 0, 0);
-        if (logData) data[cleanKey][isReal ? "real" : "replay"] = logData.values[0];
-      } else {
-        Object.values(fieldData.children).forEach((child) => {
-          scanTree(child, prefix, isReal);
-        });
-      }
-    };
-    if ("RealMetadata" in tree) {
-      scanTree(tree["RealMetadata"], "/RealMetadata", true);
-    }
-    if ("ReplayMetadata" in tree) {
-      scanTree(tree["ReplayMetadata"], "/ReplayMetadata", false);
-    }
-    if ("NT" in tree && "AdvantageKit" in tree["NT"].children) {
-      let akitTable = tree["NT"].children["AdvantageKit"].children;
-      if ("RealMetadata" in akitTable) {
-        scanTree(akitTable["RealMetadata"], "NT:/AdvantageKit/RealMetadata", true);
-      }
-      if ("ReplayMetadata" in akitTable) {
-        scanTree(akitTable["ReplayMetadata"], "NT:/AdvantageKit/ReplayMetadata", false);
-      }
-    }
+      });
+    });
 
     // Exit if nothing has changed
     let dataString = JSON.stringify(data);
@@ -80,6 +64,11 @@ export default class MetadataController implements TabController {
     // Add rows
     let keys = Object.keys(data);
     keys.sort();
+    keys.sort((a, b) => {
+      if (a.startsWith("/" + MERGE_PREFIX)) a = a.slice(a.indexOf("/", MERGE_PREFIX.length + 1));
+      if (b.startsWith("/" + MERGE_PREFIX)) b = b.slice(b.indexOf("/", MERGE_PREFIX.length + 1));
+      return a.localeCompare(b);
+    });
     keys.forEach((key) => {
       let row = document.createElement("tr");
       this.TABLE_BODY.appendChild(row);

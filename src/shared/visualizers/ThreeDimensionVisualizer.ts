@@ -94,6 +94,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private aprilTag36h11Sets: Map<number | null, ObjectSet> = new Map();
   private aprilTag16h5Sets: Map<number | null, ObjectSet> = new Map();
   private trajectories: Line2[] = [];
+  private trajectoryLengths: number[] = [];
   private visionTargets: Line2[] = [];
   private axesSet: ObjectSet;
   private coneBlueFrontSet: ObjectSet;
@@ -1196,6 +1197,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.trajectories[0].material.dispose();
         this.wpilibFieldCoordinateGroup.remove(this.trajectories[0]);
         this.trajectories.shift();
+        this.trajectoryLengths.shift();
       }
       while (this.trajectories.length < this.command.poses.trajectory.length) {
         // Add new lines
@@ -1208,6 +1210,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           })
         );
         this.trajectories.push(line);
+        this.trajectoryLengths.push(0);
         this.wpilibFieldCoordinateGroup.add(line);
       }
       for (let i = 0; i < this.trajectories.length; i++) {
@@ -1217,6 +1220,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.command.poses.trajectory[i].forEach((pose: Pose3d) => {
             positions = positions.concat(pose.translation);
           });
+          if (positions.length !== this.trajectoryLengths[i]) {
+            this.trajectories[i].geometry.dispose();
+            this.trajectories[i].geometry = new LineGeometry();
+            this.trajectoryLengths[i] = positions.length;
+          }
           this.trajectories[i].geometry.setPositions(positions);
           this.trajectories[i].geometry.attributes.position.needsUpdate = true;
         }
