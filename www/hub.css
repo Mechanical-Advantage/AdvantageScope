@@ -290,7 +290,7 @@ div.field-item-container {
 div.field-item {
   position: absolute;
   left: 0px;
-  right: calc(var(--has-value) * 50px);
+  right: calc(var(--value-width));
   top: 0px;
   height: 100%;
   -webkit-mask-image: linear-gradient(
@@ -302,19 +302,16 @@ div.field-item {
 
 div.field-value {
   position: absolute;
-  right: 0px;
-  width: 50px;
+  right: 12px;
   top: 0px;
   height: 100%;
-  padding-right: 5px;
   line-height: 30px;
+  font-size: 15px;
 
   font-family: monospace;
-  text-align: center;
-  user-select: text;
+  text-align: right;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 div.field-item.generated {

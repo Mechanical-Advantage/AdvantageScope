@@ -1,9 +1,10 @@
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
-import { searchFields, TYPE_KEY } from "../shared/log/LogUtil";
+import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
+import { SelectionMode } from "./Selection";
 
 export default class Sidebar {
   private SIDEBAR = document.getElementsByClassName("side-bar")[0] as HTMLElement;
@@ -40,6 +41,7 @@ export default class Sidebar {
   private HIDDEN_KEYS = [".schema", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
+  private VALUE_WIDTH_MARGIN_PX = 12;
 
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
@@ -48,6 +50,7 @@ export default class Sidebar {
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
   private activeFieldCallbacks: (() => void)[] = [];
+  private updateValueCallbacks: ((time: number | null) => void)[] = [];
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
   private searchKey: string | null = null;
@@ -109,6 +112,7 @@ export default class Sidebar {
     let periodic = () => {
       searchPeriodic();
       this.updateTitle();
+      this.updateValues();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -208,6 +212,22 @@ export default class Sidebar {
     }
   }
 
+  /** Updates the values displayed next to next field. */
+  private updateValues() {
+    let time: number | null = null;
+    let selectionMode = window.selection.getMode();
+    let hoveredTime = window.selection.getHoveredTime();
+    let selectedTime = window.selection.getSelectedTime();
+    if (selectionMode === SelectionMode.Playback || selectionMode === SelectionMode.Locked) {
+      time = selectedTime as number;
+    } else if (hoveredTime !== null) {
+      time = hoveredTime;
+    } else if (selectedTime !== null) {
+      time = selectedTime;
+    }
+    this.updateValueCallbacks.forEach((callback) => callback(time));
+  }
+
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
     let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
@@ -221,9 +241,12 @@ export default class Sidebar {
       while (this.FIELD_LIST.firstChild) {
         this.FIELD_LIST.removeChild(this.FIELD_LIST.firstChild);
       }
+      this.activeFields = new Set();
+      this.activeFieldCallbacks = [];
+      this.updateValueCallbacks = [];
+      this.selectGroupClearCallbacks = [];
 
       // Add new list
-      this.selectGroupClearCallbacks = [];
       let tree = window.log.getFieldTree();
       let rootKeys = Object.keys(tree);
       if (rootKeys.length === 1 && tree[rootKeys[0]].fullKey === null) {
@@ -264,31 +287,43 @@ export default class Sidebar {
     if (generated) {
       fieldElement.classList.add("generated");
     }
-    let hasValue = field.fullKey !== null && window.log.getType(field.fullKey) !== LoggableType.Raw;
-    if (hasValue) {
-      let valueElement = document.createElement("div");
-      fieldElementContainer.appendChild(valueElement);
-      valueElement.classList.add("field-value");
-      valueElement.innerText = "3.14159265358";
-    }
-    fieldElementContainer.style.setProperty("--has-value", hasValue ? "1" : "0");
+    let valueElement = document.createElement("div");
+    fieldElementContainer.appendChild(valueElement);
+    valueElement.classList.add("field-value");
+    fieldElementContainer.style.setProperty("--value-width", "0px");
 
     // Active fields callback
     this.activeFieldCallbacks.push(() => {
-      let visible = fieldElement.getBoundingClientRect().height > 0;
+      let rect = fieldElement.getBoundingClientRect();
+      let expanded = rect.height > 0;
+      let onScreen = rect.height > 0 && rect.width > 0 && rect.top >= -rect.height && rect.top <= window.innerHeight;
 
-      // Add full key if available and array, raw, or string
-      // - raw in case of msgpack, struct, or ptoto
-      // - string in case of JSON
-      if (
-        field.fullKey !== null &&
-        (window.log.getType(field.fullKey) === LoggableType.BooleanArray ||
-          window.log.getType(field.fullKey) === LoggableType.NumberArray ||
-          window.log.getType(field.fullKey) === LoggableType.StringArray ||
-          window.log.getType(field.fullKey) === LoggableType.Raw ||
-          window.log.getType(field.fullKey) === LoggableType.String)
-      ) {
-        if (visible) {
+      if (field.fullKey !== null) {
+        let isActive = false;
+        let type = window.log.getType(field.fullKey);
+        let structuredType = window.log.getStructuredType(field.fullKey);
+
+        // Active if expanded and array or structured
+        if (
+          expanded &&
+          (type === LoggableType.BooleanArray ||
+            type === LoggableType.NumberArray ||
+            type === LoggableType.StringArray ||
+            (type !== LoggableType.Empty && structuredType !== null))
+        ) {
+          isActive = true;
+        }
+
+        // Active if number, boolean, or string and on screen
+        if (
+          onScreen &&
+          (type === LoggableType.Number || type === LoggableType.Boolean || type === LoggableType.String)
+        ) {
+          isActive = true;
+        }
+
+        // Apply active status
+        if (isActive) {
           this.activeFields.add(field.fullKey);
         } else {
           this.activeFields.delete(field.fullKey);
@@ -298,13 +333,77 @@ export default class Sidebar {
       // Add type subkey if available
       if (TYPE_KEY in field.children && field.children[TYPE_KEY].fullKey !== null) {
         let typeKey = field.children[TYPE_KEY].fullKey;
-        if (visible) {
+        if (expanded) {
           this.activeFields.add(typeKey);
         } else {
           this.activeFields.delete(typeKey);
         }
       }
     });
+
+    // Update value callback
+    if (field.fullKey !== null) {
+      let type = window.log.getType(field.fullKey);
+      if (type === LoggableType.Boolean) {
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        valueElement.appendChild(svg);
+        svg.setAttributeNS(null, "width", "9");
+        svg.setAttributeNS(null, "height", "30");
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        svg.appendChild(circle);
+        circle.setAttributeNS(null, "cx", "4.5");
+        circle.setAttributeNS(null, "cy", "15");
+        circle.setAttributeNS(null, "r", "4.5");
+
+        this.updateValueCallbacks.push((time) => {
+          let value: boolean | null =
+            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Boolean, time, null);
+          if (value !== null) {
+            const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
+          }
+          valueElement.hidden = value === null;
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        });
+      } else if (type === LoggableType.Number) {
+        this.updateValueCallbacks.push((time) => {
+          let value: number | null =
+            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Number, time, null);
+          if (value !== null) {
+            if (Math.abs(value) < 1e-9) {
+              valueElement.innerText = "0";
+            } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
+              valueElement.innerText = value.toExponential(1).replace("+", "");
+            } else if (value % 1 === 0) {
+              valueElement.innerText = value.toString();
+            } else {
+              valueElement.innerText = value.toFixed(3);
+            }
+          } else {
+            valueElement.innerText = "";
+          }
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        });
+      } else if (type === LoggableType.String) {
+        this.updateValueCallbacks.push((time) => {
+          let value: string | null =
+            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.String, time, null);
+          if (value !== null) {
+            if (value.length > 8) {
+              valueElement.innerText = value.substring(0, 8) + "\u2026";
+            } else {
+              valueElement.innerText = value;
+            }
+          } else {
+            valueElement.innerText = "";
+          }
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        });
+      }
+    }
 
     // Add icons
     let closedIcon = this.ICON_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
