@@ -838,7 +838,7 @@ function downloadSave(files: string[]) {
                         downloadWindow?.destroy();
                         downloadStop();
                         hubWindows[0].focus();
-                        sendMessage(hubWindows[0], "open-file", savePath);
+                        sendMessage(hubWindows[0], "open-files", [savePath]);
                       }
                     });
                 }
@@ -2173,7 +2173,7 @@ app.on("open-file", (_, path) => {
   if (app.isReady()) {
     // Already running, create a new window
     let window = createHubWindow();
-    sendMessage(window, "open-file", path);
+    sendMessage(window, "open-files", [path]);
   } else {
     // Not running yet, open in first window
     firstOpenPath = path;
