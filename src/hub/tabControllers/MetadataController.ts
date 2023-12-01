@@ -1,6 +1,5 @@
 import { TabState } from "../../shared/HubState";
-import { METADATA_KEYS } from "../../shared/log/LogUtil";
-import { MERGE_PREFIX } from "../../shared/log/MergeConstants";
+import { MERGE_PREFIX, METADATA_KEYS } from "../../shared/log/LogUtil";
 import TabType from "../../shared/TabType";
 import TabController from "../TabController";
 

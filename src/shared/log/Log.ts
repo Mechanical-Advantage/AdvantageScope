@@ -3,7 +3,7 @@ import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { SEPARATOR_REGEX, TYPE_KEY, getEnabledData } from "./LogUtil";
+import { MERGE_PREFIX, SEPARATOR_REGEX, TYPE_KEY, getEnabledData } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -15,7 +15,6 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
-import { MERGE_PREFIX } from "./MergeConstants";
 import ProtoDecoder from "./ProtoDecoder";
 import StructDecoder from "./StructDecoder";
 

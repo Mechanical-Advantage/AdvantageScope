@@ -27,7 +27,7 @@ import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
-import { MERGE_MAX_FILES } from "../shared/log/MergeConstants";
+import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { UnitConversionPreset } from "../shared/units";
 import { jsonCopy } from "../shared/util";
 import {
