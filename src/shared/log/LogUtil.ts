@@ -8,6 +8,10 @@ import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
 
 export const TYPE_KEY = ".type";
+export const MAX_SEARCH_RESULTS = 128;
+export const MERGE_PREFIX = "Log";
+export const MERGE_MAX_FILES = 10;
+export const SEPARATOR_REGEX = new RegExp(/\/|:|_/);
 export const ENABLED_KEYS = withMergedKeys([
   "/DriverStation/Enabled",
   "NT:/AdvantageKit/DriverStation/Enabled",
@@ -51,10 +55,6 @@ export const MATCH_NUMBER_KEYS = withMergedKeys([
   "NT:/AdvantageKit/DriverStation/MatchNumber",
   "NT:/FMSInfo/MatchNumber"
 ]);
-export const MAX_SEARCH_RESULTS = 128;
-export const MERGE_PREFIX = "Log";
-export const MERGE_MAX_FILES = 10;
-export const SEPARATOR_REGEX = new RegExp(/\/|:|_/);
 
 /** Returns a set of keys starting  */
 function withMergedKeys(keys: string[]): string[] {
