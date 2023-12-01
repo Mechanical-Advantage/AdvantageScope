@@ -224,7 +224,7 @@ function startHistorical(paths: string[]) {
         let components = paths[0].split(window.platform === "win32" ? "\\" : "/");
         logFriendlyName = components[components.length - 1];
       } else {
-        logFriendlyName = paths.length.toString() + " Log File" + (paths.length === 1 ? "" : "s");
+        logFriendlyName = paths.length.toString() + " Log Files";
       }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
