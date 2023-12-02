@@ -66,8 +66,9 @@ export default class NT4Source extends LiveDataSource {
           let activeFields: Set<string> = new Set();
           if (window.log === this.log) {
             [
-              "/.schema",
-              ...(this.akitMode ? [] : [this.WPILOG_PREFIX + this.AKIT_PREFIX + "/.schema"]),
+              ...(this.akitMode
+                ? ["/.schema"]
+                : [this.WPILOG_PREFIX + "/.schema", this.WPILOG_PREFIX + this.AKIT_PREFIX + "/.schema"]),
               ...window.tabs.getActiveFields(),
               ...window.sidebar.getActiveFields()
             ].forEach((key) => {
