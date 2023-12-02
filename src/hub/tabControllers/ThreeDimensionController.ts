@@ -412,12 +412,12 @@ export default class ThreeDimensionController extends TimelineVizController {
           }
           let idData = field.type === "AprilTag 36h11" ? aprilTag36h11IdData : aprilTag16h5IdData;
           if (field.sourceType === "AprilTag") {
-            idData.push(getOrDefault(window.log, field.key + "/id", LoggableType.Number, time, 0));
+            idData.push(getOrDefault(window.log, field.key + "/ID", LoggableType.Number, time, 0));
           } else if (field.sourceType === "AprilTag[]") {
             let length = getOrDefault(window.log, field.key + "/length", LoggableType.Number, time, 0);
             for (let i = 0; i < length; i++) {
               idData.push(
-                getOrDefault(window.log, field.key + "/" + i.toString() + "/id", LoggableType.Number, time, 0)
+                getOrDefault(window.log, field.key + "/" + i.toString() + "/ID", LoggableType.Number, time, 0)
               );
             }
           }
