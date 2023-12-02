@@ -3,7 +3,7 @@ import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { MERGE_PREFIX, SEPARATOR_REGEX, TYPE_KEY, getEnabledData } from "./LogUtil";
+import { MERGE_PREFIX, SEPARATOR_REGEX, STRUCT_PREFIX, TYPE_KEY, getEnabledData } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -131,7 +131,7 @@ export default class Log {
   }
 
   /** Sets the structured type string for a field. */
-  setStructuredType(key: string, type: string) {
+  setStructuredType(key: string, type: string | null) {
     if (key in this.fields) {
       this.fields[key].structuredType = type;
     }
@@ -311,8 +311,8 @@ export default class Log {
     }
 
     // Check for struct schema
-    if (key.includes("/.schema/struct:")) {
-      this.structDecoder.addSchema(key.split("struct:")[1], value);
+    if (key.includes("/.schema/" + STRUCT_PREFIX)) {
+      this.structDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
       this.attemptQueuedStructures();
     }
   }

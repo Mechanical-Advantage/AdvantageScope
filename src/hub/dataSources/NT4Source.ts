@@ -1,4 +1,5 @@
 import Log from "../../shared/log/Log";
+import { PROTO_PREFIX, STRUCT_PREFIX } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { checkArrayType } from "../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
@@ -175,8 +176,18 @@ export default class NT4Source extends LiveDataSource {
           if (this.noFieldsTimeout) clearTimeout(this.noFieldsTimeout);
           if (topic.name === "") return;
           let modifiedKey = this.getKeyFromTopic(topic);
+          let structuredType: string | null = null;
+          if (topic.type.startsWith(STRUCT_PREFIX)) {
+            structuredType = topic.type.split(STRUCT_PREFIX)[1];
+            if (structuredType.endsWith("[]")) {
+              structuredType = structuredType.slice(0, -2);
+            }
+          } else if (topic.type.startsWith(PROTO_PREFIX)) {
+            structuredType = topic.type.split(PROTO_PREFIX)[1];
+          }
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.log.setWpilibType(modifiedKey, topic.type);
+          this.log.setStructuredType(modifiedKey, structuredType);
           this.shouldRunOutputCallback = true;
         },
         (topic: NT4_Topic) => {
@@ -261,15 +272,15 @@ export default class NT4Source extends LiveDataSource {
               break;
             default: // Default to raw
               if (value instanceof Uint8Array) {
-                if (topic.type.startsWith("struct:")) {
-                  let schemaType = topic.type.split("struct:")[1];
+                if (topic.type.startsWith(STRUCT_PREFIX)) {
+                  let schemaType = topic.type.split(STRUCT_PREFIX)[1];
                   if (schemaType.endsWith("[]")) {
                     this.log?.putStruct(key, timestamp, value, schemaType.slice(0, -2), true);
                   } else {
                     this.log?.putStruct(key, timestamp, value, schemaType, false);
                   }
-                } else if (topic.type.startsWith("proto:")) {
-                  let schemaType = topic.type.split("proto:")[1];
+                } else if (topic.type.startsWith(PROTO_PREFIX)) {
+                  let schemaType = topic.type.split(PROTO_PREFIX)[1];
                   this.log?.putProto(key, timestamp, value, schemaType);
                 } else {
                   this.log?.putRaw(key, timestamp, value);

@@ -8,6 +8,8 @@ import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
 
 export const TYPE_KEY = ".type";
+export const STRUCT_PREFIX = "struct:";
+export const PROTO_PREFIX = "proto:";
 export const MAX_SEARCH_RESULTS = 128;
 export const MERGE_PREFIX = "Log";
 export const MERGE_MAX_FILES = 10;

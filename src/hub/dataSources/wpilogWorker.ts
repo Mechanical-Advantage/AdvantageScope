@@ -1,4 +1,5 @@
 import Log from "../../shared/log/Log";
+import { PROTO_PREFIX, STRUCT_PREFIX } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import CustomSchemas from "./schema/CustomSchemas";
 import { WPILOGDecoder } from "./wpilog/WPILOGDecoder";
@@ -109,15 +110,15 @@ self.onmessage = (event) => {
               log.putMsgpack(key, timestamp, record.getRaw());
               break;
             default: // Default to raw
-              if (type.startsWith("struct:")) {
-                let schemaType = type.split("struct:")[1];
+              if (type.startsWith(STRUCT_PREFIX)) {
+                let schemaType = type.split(STRUCT_PREFIX)[1];
                 if (schemaType.endsWith("[]")) {
                   log.putStruct(key, timestamp, record.getRaw(), schemaType.slice(0, -2), true);
                 } else {
                   log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
                 }
-              } else if (type.startsWith("proto:")) {
-                let schemaType = type.split("proto:")[1];
+              } else if (type.startsWith(PROTO_PREFIX)) {
+                let schemaType = type.split(PROTO_PREFIX)[1];
                 log.putProto(key, timestamp, record.getRaw(), schemaType);
               } else {
                 log.putRaw(key, timestamp, record.getRaw());
