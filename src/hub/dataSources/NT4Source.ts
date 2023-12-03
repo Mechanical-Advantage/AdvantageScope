@@ -65,6 +65,7 @@ export default class NT4Source extends LiveDataSource {
           // Add active fields
           let activeFields: Set<string> = new Set();
           if (window.log === this.log) {
+            let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
             [
               ...(this.akitMode
                 ? ["/.schema"]
@@ -73,10 +74,7 @@ export default class NT4Source extends LiveDataSource {
               ...window.sidebar.getActiveFields()
             ].forEach((key) => {
               // Compare to announced keys
-              window.log.getFieldKeys().forEach((announcedKey) => {
-                if (window.log.isGenerated(announcedKey) || window.log.getType(announcedKey) === LoggableType.Empty) {
-                  return;
-                }
+              announcedKeys.forEach((announcedKey) => {
                 let subscribeKey: string | null = null;
                 if (announcedKey.startsWith(key)) {
                   subscribeKey = key;
