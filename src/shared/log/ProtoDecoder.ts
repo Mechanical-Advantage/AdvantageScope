@@ -51,11 +51,26 @@ export default class ProtoDecoder {
     let decodedData = type.decode(data) as any;
     let schemaTypes: { [key: string]: string } = {};
     let findSchemaTypes = (root: any, key: string) => {
-      if (typeof root === "object" && root.$type) {
-        schemaTypes[key] = ProtoDecoder.getFriendlySchemaType(root.$type.name);
-        Object.keys(root).forEach((childKey) => {
-          findSchemaTypes(root[childKey], key + "/" + childKey);
-        });
+      if (typeof root === "object") {
+        if (Array.isArray(root)) {
+          let arrayTypes: Set<string> = new Set();
+          root.forEach((object, index) => {
+            findSchemaTypes(object, key + "/" + index.toString());
+            if (object.$type) {
+              arrayTypes.add(ProtoDecoder.getFriendlySchemaType(root[0].$type.name));
+            }
+          });
+          if (arrayTypes.size === 1) {
+            arrayTypes.forEach((arrayType) => {
+              schemaTypes[key] = arrayType + "[]";
+            });
+          }
+        } else if (root.$type) {
+          schemaTypes[key] = ProtoDecoder.getFriendlySchemaType(root.$type.name);
+          Object.keys(root).forEach((childKey) => {
+            findSchemaTypes(root[childKey], key + "/" + childKey);
+          });
+        }
       }
     };
     Object.keys(decodedData).forEach((key) => {
