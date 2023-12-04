@@ -13,7 +13,7 @@ import { createUUID, zfill } from "../shared/util";
 import { PREFS_FILENAME, VIDEO_CACHE, WINDOW_ICON } from "./Constants";
 
 export class VideoProcessor {
-  private static NUM_TESSERACT_WORKERS = 4;
+  private static NUM_TESSERACT_WORKERS = 8;
   private static TIMER_RECTS = [
     // Small format
     {
@@ -222,13 +222,18 @@ export class VideoProcessor {
                   timerStartFound = true;
 
                   // Find exact frame
+                  let jobs: Promise<string>[] = [];
                   for (let frame = secs14Frame; frame < secs14Frame + fps; frame++) {
-                    let text = await this.readTimerText(cachePath + zfill(frame.toString(), 8) + ".jpg", width, height);
-                    if (text.includes("13")) {
-                      matchStartFrame = Math.round(frame - fps * 2);
-                      break;
-                    }
+                    jobs.push(this.readTimerText(cachePath + zfill(frame.toString(), 8) + ".jpg", width, height));
                   }
+                  const results = await Promise.all(jobs);
+                  results.forEach((timerText, index) => {
+                    if (matchStartFrame > 0) return;
+                    if (timerText.includes("13")) {
+                      let secs13Frame = secs14Frame! + index;
+                      matchStartFrame = Math.round(secs13Frame - fps * 2);
+                    }
+                  });
                 }
               );
               timerSample++;
