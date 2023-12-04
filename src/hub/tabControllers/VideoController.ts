@@ -315,8 +315,6 @@ export default class VideoController extends TimelineVizController {
 
       // Lock time when match start frame received
       if (this.matchStartFrame <= 0 && data.matchStartFrame > 0 && !this.locked) {
-        this.playing = false;
-        this.locked = true;
         let enabledTime: number | null = null;
         let enabledData = getEnabledData(window.log);
         if (enabledData) {
@@ -328,6 +326,8 @@ export default class VideoController extends TimelineVizController {
           }
         }
         if (enabledTime !== null) {
+          this.playing = false;
+          this.locked = true;
           this.lockedStartLog = enabledTime - (data.matchStartFrame - 1) / this.fps!;
           this.updateButtons();
         }
