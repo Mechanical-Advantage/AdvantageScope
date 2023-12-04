@@ -3,16 +3,63 @@ import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron"
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
+import Tesseract, { createWorker } from "tesseract.js";
 import ytdl from "ytdl-core";
 import MatchInfo from "../shared/MatchInfo";
 import Preferences from "../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";
 import VideoSource from "../shared/VideoSource";
-import { createUUID } from "../shared/util";
+import { createUUID, zfill } from "../shared/util";
 import { PREFS_FILENAME, VIDEO_CACHE, WINDOW_ICON } from "./Constants";
 
 export class VideoProcessor {
+  private static NUM_TESSERACT_WORKERS = 4;
+  private static TIMER_RECTS = [
+    // Small format
+    {
+      left: 1040 / 1920,
+      top: 760 / 1080,
+      width: 80 / 1920,
+      height: 40 / 1080
+    },
+
+    // Large banner format (lower)
+    {
+      left: 895 / 1920,
+      top: 905 / 1080,
+      width: 130 / 1920,
+      height: 80 / 1080
+    },
+
+    // Large banner format (upper)
+    {
+      left: 895 / 1920,
+      top: 80 / 1080,
+      width: 130 / 1920,
+      height: 80 / 1080
+    }
+  ];
+
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
+  private static tesseractScheduler = Tesseract.createScheduler();
+
+  static {
+    let langPath: string;
+    if (app.isPackaged) {
+      langPath = path.join(__dirname, "..", "..");
+    } else {
+      langPath = path.join(__dirname, "..");
+    }
+    for (let i = 0; i < this.NUM_TESSERACT_WORKERS; i++) {
+      createWorker("eng", undefined, {
+        langPath: langPath,
+        cacheMethod: "readOnly",
+        gzip: true
+      }).then((worker) => {
+        this.tesseractScheduler.addWorker(worker);
+      });
+    }
+  }
 
   /** Loads a video based on a request from the hub window. */
   static prepare(
@@ -61,8 +108,14 @@ export class VideoProcessor {
       let running = true;
       let fullOutput = "";
       let fps = 0;
+      let width = 0;
+      let height = 0;
       let durationSecs = 0;
       let completedFrames = 0;
+      let matchStartFrame = -1;
+      let timerSample = 0;
+      let timerValues: { frame: number; text: string }[] = [];
+      let timerStartFound = false;
 
       // Send error message and exit
       let sendError = () => {
@@ -95,6 +148,20 @@ export class VideoProcessor {
             sendError();
             return;
           }
+
+          // Get dimensions
+          let regexResult = /, [0-9]+x[0-9]+/.exec(text);
+          if (regexResult === null) {
+            sendError();
+            return;
+          }
+          let dimensionsXIndex = text.indexOf("x", regexResult.index + 2);
+          width = Number(text.substring(regexResult.index + 2, dimensionsXIndex));
+          height = Number(text.substring(dimensionsXIndex + 1, text.indexOf(" ", dimensionsXIndex + 1)));
+          if (isNaN(width) || isNaN(height)) {
+            sendError();
+            return;
+          }
         }
         if (text.includes("Duration: ")) {
           // Get duration
@@ -112,7 +179,7 @@ export class VideoProcessor {
         }
         if (text.startsWith("frame=")) {
           // Exit if initial information not collected
-          if (fps === 0 || durationSecs === 0) {
+          if (fps === 0 || durationSecs === 0 || width === 0 || height === 0) {
             sendError();
             return;
           }
@@ -125,13 +192,57 @@ export class VideoProcessor {
             return;
           }
 
+          // Start finding timer values
+          if (!timerStartFound) {
+            let time = completedFrames / fps;
+            // 2s margin for frames being written
+            while (timerSample < time - 2) {
+              let sampleFrame = Math.round(timerSample * fps) + 1; // Frames are 1-indexed
+              this.readTimerText(cachePath + zfill(sampleFrame.toString(), 8) + ".jpg", width, height).then(
+                async (timerText) => {
+                  if (timerStartFound) return;
+
+                  // Insert frame
+                  timerValues.push({ frame: sampleFrame, text: timerText });
+                  timerValues.sort((a, b) => a.frame - b.frame);
+
+                  // Search for 14 -> 13 transition
+                  let lastIs14 = false;
+                  let secs14Frame: number | null = null;
+                  for (let i = 0; i < timerValues.length; i++) {
+                    let is14 = timerValues[i].text.includes("14");
+                    let is13 = !is14 && timerValues[i].text.includes("13");
+                    if (lastIs14 && is13) {
+                      secs14Frame = timerValues[i - 1].frame;
+                      break;
+                    }
+                    lastIs14 = is14;
+                  }
+                  if (secs14Frame === null) return;
+                  timerStartFound = true;
+
+                  // Find exact frame
+                  for (let frame = secs14Frame; frame < secs14Frame + fps; frame++) {
+                    let text = await this.readTimerText(cachePath + zfill(frame.toString(), 8) + ".jpg", width, height);
+                    if (text.includes("13")) {
+                      matchStartFrame = Math.round(frame - fps * 2);
+                      break;
+                    }
+                  }
+                }
+              );
+              timerSample++;
+            }
+          }
+
           // Send status
           callback({
             uuid: uuid,
             imgFolder: cachePath,
             fps: fps,
             totalFrames: Math.round(durationSecs * fps),
-            completedFrames: completedFrames
+            completedFrames: completedFrames,
+            matchStartFrame: matchStartFrame
           });
         }
       });
@@ -145,7 +256,8 @@ export class VideoProcessor {
             imgFolder: cachePath,
             fps: fps,
             totalFrames: completedFrames, // In case original value was inaccurate
-            completedFrames: completedFrames
+            completedFrames: completedFrames,
+            matchStartFrame: matchStartFrame
           });
         } else if (code === 1) {
           sendError();
@@ -218,6 +330,26 @@ export class VideoProcessor {
           });
         break;
     }
+  }
+
+  private static async readTimerText(imagePath: string, width: number, height: number): Promise<string> {
+    const image = fs.readFileSync(imagePath);
+    let result = "";
+    for (let i = 0; i < this.TIMER_RECTS.length; i++) {
+      let rect = this.TIMER_RECTS[i];
+      const rectResult = await this.tesseractScheduler.addJob("recognize", image, {
+        rectangle: {
+          left: rect.left * width,
+          top: rect.top * height,
+          width: rect.width * width,
+          height: rect.height * height
+        }
+      });
+      if (rectResult) {
+        result += rectResult.data.text;
+      }
+    }
+    return result;
   }
 
   /** Displays a selector for a local file */

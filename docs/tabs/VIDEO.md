@@ -6,7 +6,7 @@ The video tab allows for the log data to be compared side-by-side with a match v
 
 > Note: To view the video alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
 
-## Step 1: Load the Video
+## Loading the Video
 
 AdvantageScope provides three options for loading a video:
 
@@ -20,7 +20,7 @@ After choosing a video, the timeline on the bottom right begins turning blue to 
 
 > Note: YouTube and TBA video download may failed unexpectedly due to changes on YouTube's servers. In case of issues, trying updating AdvantageScope or using a local video file instead.
 
-## Step 2: Navigate the Video
+## Navigating the Video
 
 When a video is initially loaded and has not yet been synchronized with the log data, the playback controls for the video and log are still independent. Use the timeline and buttons on the bottom right to control the video playback. The following keyboard shortcuts are also supported:
 
@@ -30,13 +30,19 @@ When a video is initially loaded and has not yet been synchronized with the log 
 - **>** = skip forward five seconds
 - **<** = skip backward five seconds
 
-Use these controls to navigate to a known location in the match, typically the start of auto or teleop.
-
 ![Video controls](/docs/resources/video/video-2.png)
 
-## Step 3: Synchronize With the Log
+## Automatic Synchronization
 
-Select the time in the log file that aligns with the current frame of the video. For quick alignment, click the arrow button to the left of the timeline to jump to the first time the robot was enabled.
+Most match videos will be synchronized automatically with the log shortly after the frames for the autonomous period of the match are loaded. No action is required; if synchronization succeeds, the video controls will be locked automatically (see "Playback" below).
+
+Note that automatic synchronization only works on match videos that include score overlays, and may not succeed in all cases. If the video controls are not locked automatically once all frames are loaded, manual synchronization is required.
+
+## Manual Synchronization
+
+First, use the video controls to navigate to a known location in the match like the start of auto.
+
+Then, select the time in the log file that aligns with the current frame of the video. For quick alignment, click the arrow button to the left of the timeline to jump to the first time the robot was enabled.
 
 ![Jump to enabled button](/docs/resources/video/video-3.png)
 
@@ -44,7 +50,7 @@ Once the video and log are aligned, click the lock icon next to the video timeli
 
 ![Lock button](/docs/resources/video/video-4.png)
 
-## Step 4: Playback
+## Playback
 
 Once locked, the video playback stays aligned with the selected time in the log. Note that sound playback is not supported since the original video is converted to a frame-by-frame representation to support log synchronization.
 

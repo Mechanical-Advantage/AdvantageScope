@@ -1,7 +1,7 @@
 import { MatchType } from "../../shared/MatchInfo";
 import TabType from "../../shared/TabType";
 import VideoSource from "../../shared/VideoSource";
-import { getMatchInfo } from "../../shared/log/LogUtil";
+import { getEnabledData, getMatchInfo } from "../../shared/log/LogUtil";
 import VideoVisualizer from "../../shared/visualizers/VideoVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
@@ -27,6 +27,7 @@ export default class VideoController extends TimelineVizController {
   private fps: number | null = null;
   private totalFrames: number | null = null;
   private completedFrames: number | null = null;
+  private matchStartFrame = -1;
 
   private locked: boolean = false;
   private lockedStartLog: number = 0;
@@ -305,11 +306,33 @@ export default class VideoController extends TimelineVizController {
       this.VIDEO_TIMELINE_PROGRESS.style.width = ((this.completedFrames / this.totalFrames) * 100).toString() + "%";
       this.VIDEO_TIMELINE_INPUT.max = this.totalFrames.toString();
 
+      // Stop animation if loading new file
       if (this.imgFolder !== this.lastImgFolder) {
         this.lastImgFolder = this.imgFolder;
         this.YOUTUBE_SOURCE.classList.remove("animating");
         this.TBA_SOURCE.classList.remove("animating");
       }
+
+      // Lock time when match start frame received
+      if (this.matchStartFrame <= 0 && data.matchStartFrame > 0 && !this.locked) {
+        this.playing = false;
+        this.locked = true;
+        let enabledTime: number | null = null;
+        let enabledData = getEnabledData(window.log);
+        if (enabledData) {
+          for (let i = 0; i < enabledData.timestamps.length; i++) {
+            if (enabledData.values[i]) {
+              enabledTime = enabledData.timestamps[i];
+              break;
+            }
+          }
+        }
+        if (enabledTime !== null) {
+          this.lockedStartLog = enabledTime - (data.matchStartFrame - 1) / this.fps!;
+          this.updateButtons();
+        }
+      }
+      this.matchStartFrame = data.matchStartFrame;
     } else {
       // Start to load new source, reset controls
       this.locked = false;

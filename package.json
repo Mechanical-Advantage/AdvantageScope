@@ -19,7 +19,7 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
-    "postinstall": "node getLicenses.mjs && node ffmpegDownload.mjs"
+    "postinstall": "node getLicenses.mjs && node ffmpegDownload.mjs && node tesseractLangDownload.mjs"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
@@ -60,6 +60,7 @@
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
     "ssh2": "^1.14.0",
+    "tesseract.js": "^5.0.3",
     "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.5-patch.2"
   },
   "prettier": {
@@ -89,7 +90,8 @@
         ]
       },
       "LICENSE",
-      "ThirdPartyLicenses.txt"
+      "ThirdPartyLicenses.txt",
+      "eng.traineddata.gz"
     ],
     "fileAssociations": [
       {

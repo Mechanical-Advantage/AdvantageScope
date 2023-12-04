@@ -1,10 +1,10 @@
-### Node/Electron ###
 /node_modules
 /dist
 /bundles
 /ffmpeg
 /src/licenses.json
 /ThirdPartyLicenses.txt
+/eng.traineddata.gz
 
 ### Linux ###
 *~

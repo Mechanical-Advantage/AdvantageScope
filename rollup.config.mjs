@@ -76,7 +76,8 @@ const mainBundles = [
     "path",
     "ssh2",
     "download",
-    "ytdl-core"
+    "ytdl-core",
+    "tesseract.js"
   ]),
   bundle("preload.ts", "preload.js", true, ["electron"])
 ];
