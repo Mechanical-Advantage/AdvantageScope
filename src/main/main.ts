@@ -1264,6 +1264,12 @@ function setupMenu() {
           }
         },
         {
+          label: "Contact Us",
+          click() {
+            shell.openExternal("mailto:software@team6328.org");
+          }
+        },
+        {
           label: "GitHub Repository",
           click() {
             shell.openExternal("https://github.com/" + REPOSITORY);
