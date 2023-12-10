@@ -1,7 +1,7 @@
 import { AllColors } from "../../shared/Colors";
 import { LineGraphState } from "../../shared/HubState";
 import TabType from "../../shared/TabType";
-import { getLogValueText, getOrDefault } from "../../shared/log/LogUtil";
+import { ENABLED_KEYS, getLogValueText, getOrDefault } from "../../shared/log/LogUtil";
 import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
 import LoggableType from "../../shared/log/LoggableType";
 import { UnitConversionPreset, convertWithPreset } from "../../shared/units";
@@ -242,6 +242,13 @@ export default class LineGraphController implements TabController {
       this.RIGHT_LABELS.innerText = " [Converted]";
     } else {
       this.RIGHT_LABELS.innerText = "";
+    }
+  }
+  /** Adds the enabled field to the discrete legend. */
+  addDiscreteEnabled() {
+    let enabledKey = ENABLED_KEYS.find((key) => window.log.getFieldKeys().includes(key));
+    if (enabledKey !== undefined) {
+      this.addField("discrete", enabledKey);
     }
   }
 

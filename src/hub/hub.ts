@@ -2,7 +2,6 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
-import { getEnabledData } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
@@ -546,6 +545,10 @@ function handleMainMessage(message: NamedMessage) {
 
     case "rename-tab":
       window.tabs.renameTab(message.data.index, message.data.name);
+      break;
+
+    case "add-discrete-enabled":
+      window.tabs.addDiscreteEnabled();
       break;
 
     case "edit-axis":

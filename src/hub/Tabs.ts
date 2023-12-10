@@ -330,6 +330,13 @@ export default class Tabs {
     }
   }
 
+  /** Adds the enabled field to the discrete legend on the selected line graph. */
+  addDiscreteEnabled() {
+    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
+    }
+  }
+
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
   editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {

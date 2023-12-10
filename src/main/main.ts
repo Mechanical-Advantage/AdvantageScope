@@ -382,8 +382,18 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       let legend: string = message.data.legend;
       const editAxisMenu = new Menu();
 
-      // Left and right controls
-      if (legend !== "discrete") {
+      if (legend === "discrete") {
+        // Discrete controls
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Add Enabled State",
+            click() {
+              sendMessage(window, "add-discrete-enabled");
+            }
+          })
+        );
+      } else {
+        // Left and right controls
         let lockedRange: [number, number] | null = message.data.lockedRange;
         let unitConversion: UnitConversionPreset = message.data.unitConversion;
 
