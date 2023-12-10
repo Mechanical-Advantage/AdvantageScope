@@ -354,7 +354,13 @@ export default class TableController implements TabController {
         if (nextIndex === 0) {
           cellText[i - dataRowStart].push("null");
         } else {
-          cellText[i - dataRowStart].push(getLogValueText(data.values[nextIndex - 1], window.log.getType(field)!));
+          let value = data.values[nextIndex - 1];
+          let type = window.log.getType(field)!;
+          let text = getLogValueText(value, type);
+          if (type === LoggableType.Boolean) {
+            text = (value ? "🟩" : "🟥") + " " + text;
+          }
+          cellText[i - dataRowStart].push(text);
         }
       }
     });
