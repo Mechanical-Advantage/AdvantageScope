@@ -45,8 +45,7 @@ export class HistoricalDataSource {
         window.sendMainMessage("error", {
           title: "CTRE log files are not supported",
           content:
-            "Hoot log files must be opened on Windows. CTRE provides no method of decoding log files on macOS or Linux." +
-            "."
+            "Hoot log files must be opened on Windows. CTRE provides no method of decoding log files on macOS or Linux."
         });
         this.setStatus(HistoricalDataSourceStatus.Stopped);
         return;
