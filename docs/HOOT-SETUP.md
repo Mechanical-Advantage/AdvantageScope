@@ -10,7 +10,7 @@ Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPIL
 
 ## Setup
 
-To support decoding CTRE's proprietary log format, an additional setup process is required to decode Hoot logs. This setup only needs to be completed once.
+To support decoding CTRE's proprietary log format, an additional setup process is required to decode Hoot logs. This setup only needs to be completed once. As shown below, the "WindowsApps" folder must be switched to read-only mode. This folder contains apps that are downloaded from thr Microsoft store, like Phoenix Tuner X.
 
 1. Install the latest version of Phoenix Tuner X from the [Microsoft store](https://apps.microsoft.com/detail/9NVV4PWDW27Z).
 2. Navigate to "C:\Program Files" in File Explorer
