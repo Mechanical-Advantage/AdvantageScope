@@ -19,8 +19,9 @@ export const ENABLED_KEYS = withMergedKeys([
   "NT:/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
   "NT:/FMSInfo/FMSControlData",
-  "/DSLog/Status/DSDisabled"
-]);
+  "/DSLog/Status/DSDisabled",
+  "Phoenix6/.+/DeviceEnable"
+]).map((key) => new RegExp(key));
 export const ALLIANCE_KEYS = withMergedKeys([
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
@@ -58,13 +59,13 @@ export const MATCH_NUMBER_KEYS = withMergedKeys([
   "NT:/FMSInfo/MatchNumber"
 ]);
 
-/** Returns a set of keys starting  */
+/** Returns a set of keys starting with the merged log prefixes. */
 function withMergedKeys(keys: string[]): string[] {
   let output: string[] = [];
   keys.forEach((key) => {
     output.push(key);
     for (let i = 0; i < MERGE_MAX_FILES; i++) {
-      output.push("/" + MERGE_PREFIX + i.toString() + key);
+      output.push("/" + MERGE_PREFIX + i.toString() + (key.startsWith("/") ? "" : "/") + key);
     }
   });
   return output;
@@ -136,8 +137,22 @@ export function filterFieldByPrefixes(
   return [...filteredFields];
 }
 
+export function getEnabledKey(log: Log): string | undefined {
+  let logKeys = log.getFieldKeys();
+  for (let logKeyIndex = 0; logKeyIndex < logKeys.length; logKeyIndex++) {
+    let logKey = logKeys[logKeyIndex];
+    for (let enabledKeyIndex = 0; enabledKeyIndex < ENABLED_KEYS.length; enabledKeyIndex++) {
+      let enabledKey = ENABLED_KEYS[enabledKeyIndex];
+      if (enabledKey.test(logKey)) {
+        return logKey;
+      }
+    }
+  }
+  return undefined;
+}
+
 export function getEnabledData(log: Log): LogValueSetBoolean | null {
-  let enabledKey = ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
+  let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
   if (enabledKey.endsWith("FMSControlData")) {
@@ -146,6 +161,14 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
         values: tempEnabledData.values.map((controlWord) => controlWord % 2 === 1)
+      };
+    }
+  } else if (enabledKey.endsWith("DeviceEnable")) {
+    let tempEnabledData = log.getString(enabledKey, -Infinity, Infinity);
+    if (tempEnabledData) {
+      enabledData = {
+        timestamps: tempEnabledData.timestamps,
+        values: tempEnabledData.values.map((state) => state === "Enabled")
       };
     }
   } else {
