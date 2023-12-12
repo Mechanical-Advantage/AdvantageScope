@@ -239,7 +239,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               title: "Error",
               message: "Failed to decode CTRE log file",
               detail:
-                "Follow the setup instructions in the AdvantageScope documentation for CTRE log file decoding, then try again.",
+                'Follow the setup instructions under "Loading CTRE Log Files" in the AdvantageScope documentation, then try again.',
               icon: WINDOW_ICON
             });
           };

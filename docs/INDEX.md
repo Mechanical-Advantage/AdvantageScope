@@ -33,6 +33,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 
 - [Loading Zebra MotionWorks™ Data](/docs/ZEBRA.md)
 - [Exporting Log Data](/docs/EXPORT.md)
+- [Loading CTRE Log Files (Experimental)](/docs/HOOT-SETUP.md)
 - [Publishing NetworkTables Data](/docs/NT-PUBLISHING.md)
 - [Custom Assets](/docs/CUSTOM-ASSETS.md)
 - [Converting Onshape & STEP Files to glTF](/docs/GLTF-CONVERT.md)
