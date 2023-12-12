@@ -12,6 +12,7 @@ export class HistoricalDataSource {
   };
 
   private paths: string[] = [];
+  private mockProgress: number = 0;
   private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private progressCallback: ((progress: number) => void) | null = null;
@@ -47,7 +48,7 @@ export class HistoricalDataSource {
           content:
             "Hoot log files must be opened on Windows. CTRE provides no method of decoding log files on macOS or Linux."
         });
-        this.setStatus(HistoricalDataSourceStatus.Stopped);
+        this.stop();
         return;
       }
       if (!this.paths.includes(newPath)) {
@@ -56,6 +57,20 @@ export class HistoricalDataSource {
     }
     this.setStatus(HistoricalDataSourceStatus.Reading);
     window.sendMainMessage("historical-start", this.paths);
+
+    // Start mock progress updates
+    let startTime = new Date().getTime();
+    let sendMockProgress = () => {
+      let time = (new Date().getTime() - startTime) / 1000;
+      this.mockProgress = HistoricalDataSource.calcMockProgress(time);
+      if (this.progressCallback !== null) {
+        this.progressCallback(this.mockProgress);
+      }
+      if (this.status === HistoricalDataSourceStatus.Reading) {
+        window.requestAnimationFrame(sendMockProgress);
+      }
+    };
+    window.requestAnimationFrame(sendMockProgress);
   }
 
   /** Cancels the read operation. */
@@ -98,7 +113,8 @@ export class HistoricalDataSource {
       WorkerManager.request("../bundles/" + selectedWorkerName, contents, (progress) => {
         progressValues[i] = progress;
         if (this.progressCallback && this.status === HistoricalDataSourceStatus.Decoding) {
-          let totalProgress = progressValues.reduce((a, b) => a + b, 0) / progressValues.length;
+          let decodeProgress = progressValues.reduce((a, b) => a + b, 0) / progressValues.length;
+          let totalProgress = this.mockProgress + decodeProgress * (1 - this.mockProgress);
           this.progressCallback(totalProgress);
         }
       })
@@ -132,6 +148,12 @@ export class HistoricalDataSource {
       this.status = status;
       if (this.statusCallback !== null) this.statusCallback(status);
     }
+  }
+
+  /** Calculates a mock progress value for the initial load time. */
+  private static calcMockProgress(time: number): number {
+    // https://www.desmos.com/calculator/86u4rnu8ob
+    return 0.5 - 0.5 / (0.1 * time + 1);
   }
 }
 
