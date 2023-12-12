@@ -1,5 +1,7 @@
 # Loading CTRE Log Files (Experimental)
 
+_[< Return to homepage](/docs/INDEX.md)_
+
 AdvantageScope supports directly loading log files produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging). These files are saved to the RIO in the proprietary Hoot (.hoot) log format, but can be opened by AdvantageScope like any other log (after completing the setup instructions here). **This feature is only supported on Windows**, as CTRE provides no method for decoding their logs on macOS or Linux.
 
 Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPILOG format, which can then be opened using AdvantageScope. Those extra steps and intermediate file formats make it more difficult to access CTRE log data; this feature is intended to make the process simpler and faster by opening Hoot logs directly.
