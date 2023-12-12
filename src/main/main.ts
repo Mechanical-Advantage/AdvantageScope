@@ -1,3 +1,4 @@
+import { spawn } from "child_process";
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
@@ -29,7 +30,7 @@ import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shar
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { UnitConversionPreset } from "../shared/units";
-import { jsonCopy } from "../shared/util";
+import { createUUID, jsonCopy } from "../shared/util";
 import {
   DEFAULT_LOGS_FOLDER,
   DEFAULT_PREFS,
@@ -208,7 +209,6 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       let results: (Buffer | null)[][] = paths.map(() => [null]);
       paths.forEach((path, index) => {
         let openPath = (path: string, callback: (buffer: Buffer) => void) => {
-          targetCount += 1;
           fs.open(path, "r", (error, file) => {
             if (error) {
               completedCount++;
@@ -224,14 +224,79 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             });
           });
         };
-        if (!path.endsWith(".dslog")) {
-          // Not DSLog, open normally
-          openPath(path, (buffer) => (results[index][0] = buffer));
-        } else {
+        if (path.endsWith(".dslog")) {
           // DSLog, open DSEvents too
           results[index] = [null, null];
+          targetCount += 2;
           openPath(path, (buffer) => (results[index][0] = buffer));
           openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[index][1] = buffer));
+        } else if (path.endsWith(".hoot")) {
+          // Hoot, convert to WPILOG
+          targetCount += 1;
+          let ctreError = () => {
+            dialog.showMessageBoxSync(window, {
+              type: "error",
+              title: "Error",
+              message: "Failed to decode CTRE log file",
+              detail:
+                "Follow the setup instructions in the AdvantageScope documentation for CTRE log file decoding, then try again.",
+              icon: WINDOW_ICON
+            });
+          };
+          fs.readdir("C:\\Program Files\\WindowsApps", (err, folders) => {
+            if (err) {
+              ctreError();
+              sendIfReady();
+              return;
+            }
+
+            // Find Tuner X folder
+            let tunerXFolder: string | null = null;
+            folders.forEach((folder) => {
+              if (folder.startsWith("CTRElectronics") && folder.includes("x64")) {
+                tunerXFolder = folder;
+              }
+            });
+            if (tunerXFolder === null) {
+              ctreError();
+              sendIfReady();
+              return;
+            }
+
+            // Check for owlet
+            let owletPath = "C:\\Program Files\\WindowsApps\\" + tunerXFolder + "\\windows_assets\\owlet.exe";
+            if (!fs.existsSync(owletPath)) {
+              ctreError();
+              sendIfReady();
+              return;
+            }
+
+            // Run owlet
+            let wpilogPath = app.getPath("temp") + "\\hoot_" + createUUID() + ".wpilog";
+            let owlet = spawn(owletPath, [path, wpilogPath, "-f", "wpilog"]);
+            owlet.once("exit", () => {
+              if (owlet.exitCode !== 0) {
+                dialog.showMessageBoxSync(window, {
+                  type: "error",
+                  title: "Error",
+                  message: "Failed to decode CTRE log file",
+                  detail:
+                    "The log file may be an incompatible version. Try updating Phoenix Tuner X to the latest version.",
+                  icon: WINDOW_ICON
+                });
+                sendIfReady();
+                return;
+              }
+              openPath(wpilogPath, (buffer) => {
+                results[index][0] = buffer;
+                fs.rmSync(wpilogPath);
+              });
+            });
+          });
+        } else {
+          // Not DSLog, open normally
+          targetCount += 1;
+          openPath(path, (buffer) => (results[index][0] = buffer));
         }
       });
       break;
@@ -712,7 +777,8 @@ function downloadStart() {
                       })
                       .filter(
                         (file) =>
-                          !file.name.startsWith(".") && (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog"))
+                          !file.name.startsWith(".") &&
+                          (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog") || file.name.endsWith(".hoot"))
                       )
                       .map((file) => {
                         return {
@@ -791,7 +857,18 @@ function downloadSave(files: string[]) {
     });
   } else {
     let extension = path.extname(files[0]).slice(1);
-    let name = extension === "wpilog" ? "WPILib robot logs" : "Robot logs";
+    let name = "";
+    switch (extension) {
+      case "wpilog":
+        name = "WPILib robot log";
+        break;
+      case "rlog":
+        name = "Robot log";
+        break;
+      case "hoot":
+        name = "CTRE robot log";
+        break;
+    }
     selectPromise = dialog.showSaveDialog(downloadWindow, {
       title: "Select save location for robot log",
       defaultPath: files[0],
@@ -956,7 +1033,7 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "hoot", "dslog", "dsevents"] }],
                 defaultPath: DEFAULT_LOGS_FOLDER
               })
               .then((files) => {
@@ -975,7 +1052,7 @@ function setupMenu() {
               title: "Select up to " + MERGE_MAX_FILES.toString() + " robot log files to open",
               message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
               properties: ["openFile", "multiSelections"],
-              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
+              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "hoot", "dslog", "dsevents"] }],
               defaultPath: DEFAULT_LOGS_FOLDER
             });
             let files = filesResponse.filePaths;
@@ -1788,7 +1865,7 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
             filters: [
               extension === "csv"
                 ? { name: "Comma-separated values", extensions: ["csv"] }
-                : { name: "WPILib robot logs", extensions: ["wpilog"] }
+                : { name: "WPILib robot log", extensions: ["wpilog"] }
             ]
           })
           .then((response) => {
@@ -2166,7 +2243,9 @@ app.whenReady().then(() => {
 
   // Open file if exists
   if (firstOpenPath !== null) {
-    sendMessage(window, "open-files", [firstOpenPath]);
+    window.webContents.once("dom-ready", () => {
+      sendMessage(window, "open-files", [firstOpenPath]);
+    });
   }
 
   // Create new window if activated while none exist
@@ -2190,7 +2269,9 @@ app.on("open-file", (_, path) => {
   if (app.isReady()) {
     // Already running, create a new window
     let window = createHubWindow();
-    sendMessage(window, "open-files", [path]);
+    window.webContents.once("dom-ready", () => {
+      sendMessage(window, "open-files", [path]);
+    });
   } else {
     // Not running yet, open in first window
     firstOpenPath = path;

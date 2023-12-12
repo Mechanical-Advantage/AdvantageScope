@@ -6,6 +6,7 @@ export class HistoricalDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
+    ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js"
   };
@@ -32,18 +33,29 @@ export class HistoricalDataSource {
     this.statusCallback = statusCallback;
     this.progressCallback = progressCallback;
     this.outputCallback = outputCallback;
-    this.setStatus(HistoricalDataSourceStatus.Reading);
 
     // Post message to start reading
-    paths.forEach((path) => {
+    for (let i = 0; i < paths.length; i++) {
+      let path = paths[i];
       let newPath = path;
       if (path.endsWith(".dsevents")) {
         newPath = path.slice(0, -8) + "dslog";
       }
+      if (window.platform !== "win32" && path.endsWith(".hoot")) {
+        window.sendMainMessage("error", {
+          title: "CTRE log files are not supported",
+          content:
+            "Hoot log files must be opened on Windows. CTRE provides no method of decoding log files on macOS or Linux." +
+            "."
+        });
+        this.setStatus(HistoricalDataSourceStatus.Stopped);
+        return;
+      }
       if (!this.paths.includes(newPath)) {
         this.paths.push(newPath);
       }
-    });
+    }
+    this.setStatus(HistoricalDataSourceStatus.Reading);
     window.sendMainMessage("historical-start", this.paths);
   }
 
@@ -58,8 +70,8 @@ export class HistoricalDataSource {
     this.setStatus(HistoricalDataSourceStatus.Decoding);
     let fileContents: (Uint8Array | null)[][] = data;
 
-    // Check for read error
-    if (fileContents.every((contents) => contents === null)) {
+    // Check for read error (no file is all null)
+    if (!fileContents.every((contents) => !contents.every((buffer) => buffer === null))) {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
