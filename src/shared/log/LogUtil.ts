@@ -164,22 +164,12 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
       };
     }
   } else if (enabledKey.endsWith("DeviceEnable")) {
-    if (window.log.getType(enabledKey) === LoggableType.String) {
-      let tempEnabledData = log.getString(enabledKey, -Infinity, Infinity);
-      if (tempEnabledData) {
-        enabledData = {
-          timestamps: tempEnabledData.timestamps,
-          values: tempEnabledData.values.map((state) => state !== "Disabled")
-        };
-      }
-    } else {
-      let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
-      if (tempEnabledData) {
-        enabledData = {
-          timestamps: tempEnabledData.timestamps,
-          values: tempEnabledData.values.map((state) => state !== 0)
-        };
-      }
+    let tempEnabledData = log.getString(enabledKey, -Infinity, Infinity);
+    if (tempEnabledData) {
+      enabledData = {
+        timestamps: tempEnabledData.timestamps,
+        values: tempEnabledData.values.map((state) => state === "Enabled")
+      };
     }
   } else {
     let tempEnabledData = log.getBoolean(enabledKey, -Infinity, Infinity);

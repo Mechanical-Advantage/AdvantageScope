@@ -1,6 +1,7 @@
 import Log from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
+import PhoenixEnums from "./PhoenixEnums";
 
 export default class PhoenixDiagnosticsSource extends LiveDataSource {
   private PORT = 1250;
@@ -54,9 +55,10 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
 
                 // Add fields for all signals
                 signals.forEach((signal) => {
+                  let isEnum = signal.Name in PhoenixEnums;
                   this.log?.createBlankField(
                     this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name,
-                    LoggableType.Number
+                    isEnum ? LoggableType.String : LoggableType.Number
                   );
                 });
                 this.newOutput();
@@ -153,11 +155,15 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
             let signalId = Number(signalIdStr);
             let signal = signals.find((signal) => signal.Id === signalId);
             if (signal === undefined) return;
-            this.log?.putNumber(
-              this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name,
-              point.Timestamp - this.liveStartLogTime!,
-              value
-            );
+            let fieldKey = this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name;
+            let timestamp = point.Timestamp - this.liveStartLogTime!;
+            if (signal.Name in PhoenixEnums) {
+              let valueStr = PhoenixEnums[signal.Name][value];
+              if (valueStr === undefined) valueStr = "";
+              this.log?.putString(fieldKey, timestamp, valueStr);
+            } else {
+              this.log?.putNumber(fieldKey, timestamp, value);
+            }
           });
         });
         this.newOutput();
