@@ -577,7 +577,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             title: "Warning",
             message: "Incomplete data for export",
             detail:
-              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.',
+              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected with NetworkTables, PathPlanner, or RLOG as the live source. Check the AdvantageScope documentation for details.',
             buttons: ["Continue", "Cancel"],
             icon: WINDOW_ICON
           })
@@ -2148,6 +2148,7 @@ app.whenReady().then(() => {
       "liveMode" in oldPrefs &&
       (oldPrefs.liveMode === "nt4" ||
         oldPrefs.liveMode === "nt4-akit" ||
+        oldPrefs.liveMode === "phoenix" ||
         oldPrefs.liveMode === "pathplanner" ||
         oldPrefs.liveMode === "rlog")
     ) {

@@ -175,10 +175,6 @@ export default class Tabs {
         activeFields.add(field);
       });
     });
-    let enabledKey = getEnabledKey(window.log);
-    if (enabledKey !== undefined) {
-      activeFields.add(enabledKey);
-    }
     return activeFields;
   }
 
