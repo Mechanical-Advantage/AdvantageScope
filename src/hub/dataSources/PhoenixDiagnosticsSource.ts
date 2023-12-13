@@ -197,9 +197,9 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
     if (device.Model.startsWith("CANCoder")) {
       name = "CANcoder";
     }
-    name = name + "-" + device.ID.toString();
-    if (device.CANbus.length > 0) {
-      name = device.CANbus + "/" + name;
+    name = name + "-" + (device.Name.startsWith(device.Model) ? device.ID.toString() : device.Name);
+    if (device.CANivoreDevName.length > 0) {
+      name = "CANivore-" + device.CANivoreDevName + "/" + name;
     }
     return name;
   }
@@ -280,8 +280,10 @@ interface Response_GetDevices extends Response {
 
 interface Response_Device {
   CANbus: string;
+  CANivoreDevName: string;
   ID: number;
   Model: string;
+  Name: string;
   // ... incomplete
 }
 
