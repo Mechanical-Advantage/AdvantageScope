@@ -179,7 +179,7 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
 
   /** Runs the output callback with the current log and an appropriate timestamp supplier. */
   private newOutput() {
-    if (this.outputCallback !== null && this.log !== null) {
+    if (this.outputCallback !== null && this.log !== null && this.status !== LiveDataSourceStatus.Stopped) {
       this.log.clearBeforeTime(0.0);
       this.outputCallback(this.log, () => {
         if (this.liveStartRealTime !== null) {
