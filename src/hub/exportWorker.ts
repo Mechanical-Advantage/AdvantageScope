@@ -1,13 +1,14 @@
+import { IWritable, McapWriter } from "@mcap/core";
+import { IReadable } from "@mcap/core/dist/esm/src/types";
 import ExportOptions from "../shared/ExportOptions";
 import Log from "../shared/log/Log";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import LoggableType from "../shared/log/LoggableType";
 import { filterFieldByPrefixes, getLogValueText } from "../shared/log/LogUtil";
+import LoggableType from "../shared/log/LoggableType";
 import { cleanFloat } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
-import { McapWriter } from "@mcap/core";
 
-self.onmessage = (event) => {
+self.onmessage = async (event) => {
   // WORKER SETUP
   let { id, payload } = event.data;
   function resolve(result: any) {
@@ -65,7 +66,7 @@ self.onmessage = (event) => {
         resolve(generateWPILOG(log, fields, progress));
         break;
       case "mcap":
-        resolve(generateMCAP(log, fields, progress));
+        resolve(await generateMCAP(log, fields, progress));
         break;
     }
   } catch {
@@ -123,7 +124,7 @@ function generateCsvTable(
   return text;
 }
 
-function generateCsvList(log: Log, fields: string[], progress: (progress: number) => void) {
+function generateCsvList(log: Log, fields: string[], progress: (progress: number) => void): string {
   // Retrieve data
   let rows: (number | string)[][] = [];
   fields.forEach((field, fieldIndex) => {
@@ -147,7 +148,7 @@ function generateCsvList(log: Log, fields: string[], progress: (progress: number
   return text;
 }
 
-function generateWPILOG(log: Log, fields: string[], progress: (progress: number) => void) {
+function generateWPILOG(log: Log, fields: string[], progress: (progress: number) => void): Uint8Array {
   let encoder = new WPILOGEncoder("AdvantageScope");
   fields.forEach((field, fieldIndex) => {
     let fieldData = log.getRange(field, -Infinity, Infinity);
@@ -252,35 +253,113 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
   return encoder.getEncoded();
 }
 
-function generateMCAP(log: Log, fields: string[], progress: (progress: number) => void) {
+async function generateMCAP(log: Log, fields: string[], progress: (progress: number) => void): Promise<Uint8Array> {
   // Create MCAP writer
-  let writerBuffers: Uint8Array[] = [];
-  let writerPosition: bigint = BigInt(0);
-  const writer = new McapWriter({
-    writable: {
-      async write(buffer) {
-        writerBuffers.push(buffer);
-        writerPosition += BigInt(buffer.length);
-      },
-
-      position() {
-        return writerPosition;
-      }
-    }
+  const textEncoder = new TextEncoder();
+  let logBuffer = new TempBuffer();
+  const writer = new McapWriter({ writable: logBuffer });
+  await writer.start({
+    library: "AdvantageScope",
+    profile: ""
   });
 
+  // Add schemas
+  let getSingleSchema = async (type: string) => {
+    return await writer.registerSchema({
+      name: type,
+      encoding: "jsonschema",
+      data: textEncoder.encode(JSON.stringify({ type: "object", properties: { value: { type: type } } }))
+    });
+  };
+  let getArraySchema = async (type: string) => {
+    return await writer.registerSchema({
+      name: type + "[]",
+      encoding: "jsonschema",
+      data: textEncoder.encode(
+        JSON.stringify({ type: "object", properties: { value: { type: "array", items: { type: type } } } })
+      )
+    });
+  };
+  let schemaIds: Map<LoggableType, number> = new Map();
+  schemaIds.set(LoggableType.Boolean, await getSingleSchema("boolean"));
+  schemaIds.set(LoggableType.Number, await getSingleSchema("number"));
+  schemaIds.set(LoggableType.String, await getSingleSchema("string"));
+  schemaIds.set(LoggableType.BooleanArray, await getArraySchema("boolean"));
+  schemaIds.set(LoggableType.NumberArray, await getArraySchema("number"));
+  schemaIds.set(LoggableType.BooleanArray, await getArraySchema("string"));
+
   // Add fields
-  fields.forEach(async (field) => {
+  let filteredFields = fields.filter((field) => {
+    let type = log.getType(field);
+    return type !== null && schemaIds.has(type) && !log.isGenerated(field);
+  });
+  for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+    let field = filteredFields[fieldIndex];
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
-    if (fieldData === undefined || fieldType === undefined) return;
+    if (fieldData === undefined || fieldType === null) {
+      continue;
+    }
 
     // Register channel
     let channelId = await writer.registerChannel({
-      messageEncoding: "",
+      messageEncoding: "json",
       metadata: new Map(),
-      schemaId: 0,
+      schemaId: schemaIds.get(fieldType)!,
       topic: field
     });
-  });
+
+    // Add data
+    for (let i = 0; i < fieldData.timestamps.length; i++) {
+      let timestamp = BigInt(Math.round(fieldData.timestamps[i] * 1e9)); // MCAP uses nanoseconds
+      let value = textEncoder.encode(JSON.stringify({ value: fieldData.values[i] }));
+      await writer.addMessage({
+        channelId: channelId,
+        data: value,
+        logTime: timestamp,
+        publishTime: timestamp,
+        sequence: i
+      });
+
+      // Send progress update
+      progress((fieldIndex + i / fieldData.values.length) / filteredFields.length);
+    }
+  }
+
+  // Return MCAP data
+  await writer.end();
+  return logBuffer.get();
+}
+
+/** Copied from @mcap/core */
+class TempBuffer implements IReadable, IWritable {
+  #buffer = new ArrayBuffer(1024);
+  #size = 0;
+
+  position(): bigint {
+    return BigInt(this.#size);
+  }
+  async write(data: Uint8Array): Promise<void> {
+    if (this.#size + data.byteLength > this.#buffer.byteLength) {
+      const newBuffer = new ArrayBuffer(this.#size + data.byteLength);
+      new Uint8Array(newBuffer).set(new Uint8Array(this.#buffer));
+      this.#buffer = newBuffer;
+    }
+    new Uint8Array(this.#buffer, this.#size).set(data);
+    this.#size += data.byteLength;
+  }
+
+  async size(): Promise<bigint> {
+    return BigInt(this.#size);
+  }
+  async read(offset: bigint, size: bigint): Promise<Uint8Array> {
+    if (offset < 0n || offset + size > BigInt(this.#buffer.byteLength)) {
+      throw new Error("read out of range");
+    }
+    return new Uint8Array(this.#buffer, Number(offset), Number(size));
+  }
+
+  get(): Uint8Array {
+    return new Uint8Array(this.#buffer, 0, this.#size);
+  }
 }
