@@ -1,4 +1,6 @@
 import Log from "../../shared/log/Log";
+import { PHOENIX_ENABLED_KEY, getOrDefault } from "../../shared/log/LogUtil";
+import LoggableType from "../../shared/log/LoggableType";
 import WorkerManager from "../WorkerManager";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
@@ -61,12 +63,12 @@ export class HistoricalDataSource {
     // Start mock progress updates
     let startTime = new Date().getTime();
     let sendMockProgress = () => {
-      let time = (new Date().getTime() - startTime) / 1000;
-      this.mockProgress = HistoricalDataSource.calcMockProgress(time);
-      if (this.progressCallback !== null) {
-        this.progressCallback(this.mockProgress);
-      }
       if (this.status === HistoricalDataSourceStatus.Reading) {
+        let time = (new Date().getTime() - startTime) / 1000;
+        this.mockProgress = HistoricalDataSource.calcMockProgress(time);
+        if (this.progressCallback !== null) {
+          this.progressCallback(this.mockProgress);
+        }
         window.requestAnimationFrame(sendMockProgress);
       }
     };
@@ -122,7 +124,11 @@ export class HistoricalDataSource {
           if (this.status === HistoricalDataSourceStatus.Error || this.status === HistoricalDataSourceStatus.Stopped) {
             return;
           }
-          decodedLogs[i] = Log.fromSerialized(response);
+          let log = Log.fromSerialized(response);
+          if (path.endsWith(".hoot")) {
+            HistoricalDataSource.addPhoenixRobotEnable(log);
+          }
+          decodedLogs[i] = log;
           completedCount++;
           if (completedCount === fileContents.length && this.status === HistoricalDataSourceStatus.Decoding) {
             // All decodes finised
@@ -154,6 +160,18 @@ export class HistoricalDataSource {
   private static calcMockProgress(time: number): number {
     // https://www.desmos.com/calculator/86u4rnu8ob
     return 0.5 - 0.5 / (0.1 * time + 1);
+  }
+
+  /** For Phoenix logs, compile data from all devices to create a new field with the robot's enabled status. */
+  private static addPhoenixRobotEnable(log: Log) {
+    let enabledFieldRegex = /^Phoenix6\/.+\/DeviceEnable$/;
+    let enabledFields = log.getFieldKeys().filter((key) => enabledFieldRegex.test(key));
+    log.getTimestamps(enabledFields).forEach((timestamp) => {
+      let disabled = enabledFields.every(
+        (field) => getOrDefault(log, field, LoggableType.String, timestamp, "Disabled") !== "Enabled"
+      );
+      log.putBoolean(PHOENIX_ENABLED_KEY, timestamp, !disabled);
+    });
   }
 }
 

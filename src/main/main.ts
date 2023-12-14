@@ -242,11 +242,12 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 'Follow the setup instructions under "Loading CTRE Log Files" in the AdvantageScope documentation, then try again.',
               icon: WINDOW_ICON
             });
+            completedCount++;
+            sendIfReady();
           };
           fs.readdir("C:\\Program Files\\WindowsApps", (err, folders) => {
             if (err) {
               ctreError();
-              sendIfReady();
               return;
             }
 
@@ -259,7 +260,6 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             });
             if (tunerXFolder === null) {
               ctreError();
-              sendIfReady();
               return;
             }
 
@@ -267,7 +267,6 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             let owletPath = "C:\\Program Files\\WindowsApps\\" + tunerXFolder + "\\windows_assets\\owlet.exe";
             if (!fs.existsSync(owletPath)) {
               ctreError();
-              sendIfReady();
               return;
             }
 

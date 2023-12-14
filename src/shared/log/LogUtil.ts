@@ -14,14 +14,15 @@ export const MAX_SEARCH_RESULTS = 128;
 export const MERGE_PREFIX = "Log";
 export const MERGE_MAX_FILES = 10;
 export const SEPARATOR_REGEX = new RegExp(/\/|:|_/);
+export const PHOENIX_ENABLED_KEY = "Phoenix6/RobotEnable";
 export const ENABLED_KEYS = withMergedKeys([
   "/DriverStation/Enabled",
   "NT:/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
   "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled",
-  "Phoenix6/.+/DeviceEnable"
-]).map((key) => new RegExp(key));
+  PHOENIX_ENABLED_KEY
+]);
 export const ALLIANCE_KEYS = withMergedKeys([
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
@@ -138,17 +139,7 @@ export function filterFieldByPrefixes(
 }
 
 export function getEnabledKey(log: Log): string | undefined {
-  let logKeys = log.getFieldKeys();
-  for (let logKeyIndex = 0; logKeyIndex < logKeys.length; logKeyIndex++) {
-    let logKey = logKeys[logKeyIndex];
-    for (let enabledKeyIndex = 0; enabledKeyIndex < ENABLED_KEYS.length; enabledKeyIndex++) {
-      let enabledKey = ENABLED_KEYS[enabledKeyIndex];
-      if (enabledKey.test(logKey)) {
-        return logKey;
-      }
-    }
-  }
-  return undefined;
+  return ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
 }
 
 export function getEnabledData(log: Log): LogValueSetBoolean | null {
@@ -161,14 +152,6 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
       enabledData = {
         timestamps: tempEnabledData.timestamps,
         values: tempEnabledData.values.map((controlWord) => controlWord % 2 === 1)
-      };
-    }
-  } else if (enabledKey.endsWith("DeviceEnable")) {
-    let tempEnabledData = log.getString(enabledKey, -Infinity, Infinity);
-    if (tempEnabledData) {
-      enabledData = {
-        timestamps: tempEnabledData.timestamps,
-        values: tempEnabledData.values.map((state) => state === "Enabled")
       };
     }
   } else {
