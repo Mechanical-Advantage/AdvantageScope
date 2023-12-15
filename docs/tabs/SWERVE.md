@@ -26,20 +26,17 @@ SwerveModuleState[] states = new SwerveModuleState[] {
     new SwerveModuleState()
 }
 
-// WPILib (Coming Soon!)
-//
-// StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-//     .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
-//
-// periodic() {
-//     publisher.set(states);
-// }
+// WPILib
+StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+
+periodic() {
+    publisher.set(states);
+}
 
 // AdvantageKit
 Logger.recordOutput("MyStates", states);
 ```
-
-> Note: Without AdvantageKit, WPILib does not currently support struct logging of swerve module states (as of 2024.1.1-beta-2). Keep an eye out for updates on this feature. In the meantime, swerve states can be logged from WPILib in the legacy format described below.
 
 Alternatively, the state fields can be numeric arrays with the format shown below. The rotation units are configurable (radians or degrees).
 
