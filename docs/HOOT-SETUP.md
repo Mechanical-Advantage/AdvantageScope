@@ -28,4 +28,4 @@ To support decoding CTRE's proprietary log format, an additional setup process i
 8. Click "Apply" > "OK" > "OK" > "OK"
 9. Reboot the computer
 
-Hoot log files can now be downloaded from the RIO, opened individually, or merged with other logs just like any other supported format.
+Hoot log files can now be downloaded from the RIO, opened, merged, and exported (to WPILOG or MCAP) just like any other supported format.
