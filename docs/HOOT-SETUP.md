@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-AdvantageScope supports directly loading log files produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging). These files are saved to the RIO in the proprietary Hoot (.hoot) log format, but can be opened by AdvantageScope like any other log (after completing the setup instructions here). **This feature is only supported on Windows**, as CTRE provides no method for decoding their logs on macOS or Linux.
+AdvantageScope supports directly loading log files produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging). These files are saved to the RIO in the proprietary Hoot (.hoot) log format, but can be opened by AdvantageScope like any other log after completing the setup instructions here. **This feature is only supported on Windows.**
 
 Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPILOG format, which can then be opened using AdvantageScope. Direct loading for AdvantageScope is intended to make this process simpler and easier by removing the requirement to use multiple applications for processing log files.
 
@@ -12,11 +12,9 @@ Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPIL
 
 This feature **does not require a Phoenix Pro license** to use. However, non-Pro devices do not include all of the signals available through [Phoenix diagnostics](/docs/OPEN-LIVE.md) in the Hoot log; only "common" signals are available. Positions and velocities of encoders, applied voltages, etc are included. However, other signals like faults, pitch/roll from a Pigeon, the Talon FX control mode, PID error/state, etc are not available.
 
-> Note: Hoot logs without a Pro-licensed Talon FX cannot be automatically merged with other logs. The "device enabled" status required for automatic merging is not available through other devices or non-Pro Talon FXs.
-
 ## Setup
 
-To support decoding CTRE's proprietary log format, an additional setup process is required to decode Hoot logs. This setup only needs to be completed once. As shown below, the "WindowsApps" folder must be switched to read-only mode. This folder contains apps that are downloaded from thr Microsoft store, like Phoenix Tuner X.
+An additional setup process is required to decode Hoot logs, which only needs to be completed once. As shown below, the "WindowsApps" folder must be switched to read-only mode. This folder contains apps that are downloaded from thr Microsoft store, like Phoenix Tuner X.
 
 1. Install the latest version of Phoenix Tuner X from the [Microsoft store](https://apps.microsoft.com/detail/9NVV4PWDW27Z).
 2. Navigate to "C:\Program Files" in File Explorer

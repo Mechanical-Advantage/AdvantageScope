@@ -47,8 +47,7 @@ export class HistoricalDataSource {
       if (window.platform !== "win32" && path.endsWith(".hoot")) {
         window.sendMainMessage("error", {
           title: "CTRE log files are not supported",
-          content:
-            "Hoot log files must be opened on Windows. CTRE provides no method of decoding log files on macOS or Linux."
+          content: "Hoot log files cannot be decoded on macOS or Linux."
         });
         this.stop();
         return;
