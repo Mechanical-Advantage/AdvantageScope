@@ -14,14 +14,13 @@ export const MAX_SEARCH_RESULTS = 128;
 export const MERGE_PREFIX = "Log";
 export const MERGE_MAX_FILES = 10;
 export const SEPARATOR_REGEX = new RegExp(/\/|:|_/);
-export const PHOENIX_ENABLED_KEY = "Phoenix6/RobotEnable";
 export const ENABLED_KEYS = withMergedKeys([
   "/DriverStation/Enabled",
   "NT:/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
   "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled",
-  PHOENIX_ENABLED_KEY
+  "RobotEnable" // Phoenix
 ]);
 export const ALLIANCE_KEYS = withMergedKeys([
   "/DriverStation/AllianceStation",
