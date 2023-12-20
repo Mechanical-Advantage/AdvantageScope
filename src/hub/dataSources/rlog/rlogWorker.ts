@@ -1,4 +1,4 @@
-import Log from "../../shared/log/Log";
+import Log from "../../../shared/log/Log";
 import RLOGDecoder from "./RLOGDecoder";
 
 self.onmessage = (event) => {

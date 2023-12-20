@@ -1,15 +1,17 @@
-import Log from "../../shared/log/Log";
-import { PROTO_PREFIX, STRUCT_PREFIX } from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
-import { checkArrayType } from "../../shared/util";
-import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
+import Log from "../../../shared/log/Log";
+import { PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import LoggableType from "../../../shared/log/LoggableType";
+import { checkArrayType } from "../../../shared/util";
+import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
+import LiveDataTuner from "../LiveDataTuner";
+import CustomSchemas from "../schema/CustomSchemas";
 import { NT4_Client, NT4_Topic } from "./NT4";
-import CustomSchemas from "./schema/CustomSchemas";
+import NT4Tuner from "./NT4Tuner";
+
+export const WPILOG_PREFIX = "NT:";
+export const AKIT_PREFIX = "/AdvantageKit";
 
 export default class NT4Source extends LiveDataSource {
-  private WPILOG_PREFIX = "NT:";
-  private AKIT_PREFIX = "/AdvantageKit";
-
   private akitMode: boolean;
   private client: NT4_Client | null = null;
 
@@ -43,7 +45,7 @@ export default class NT4Source extends LiveDataSource {
           }
           if (this.loggingSubscription === null) {
             this.loggingSubscription = this.client.subscribe(
-              [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+              [this.akitMode ? AKIT_PREFIX + "/" : "/"],
               true,
               true,
               0.02
@@ -57,7 +59,7 @@ export default class NT4Source extends LiveDataSource {
           }
           if (this.lowBandwidthTopicSubscription === null) {
             this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
-              [this.akitMode ? this.AKIT_PREFIX + "/" : "/"],
+              [this.akitMode ? AKIT_PREFIX + "/" : "/"],
               true
             );
           }
@@ -69,7 +71,7 @@ export default class NT4Source extends LiveDataSource {
             [
               ...(this.akitMode
                 ? ["/.schema"]
-                : [this.WPILOG_PREFIX + "/.schema", this.WPILOG_PREFIX + this.AKIT_PREFIX + "/.schema"]),
+                : [WPILOG_PREFIX + "/.schema", WPILOG_PREFIX + AKIT_PREFIX + "/.schema"]),
               ...window.tabs.getActiveFields(),
               ...window.sidebar.getActiveFields()
             ].forEach((key) => {
@@ -83,9 +85,9 @@ export default class NT4Source extends LiveDataSource {
                 }
                 if (subscribeKey !== null) {
                   if (akitMode) {
-                    activeFields.add(this.AKIT_PREFIX + subscribeKey);
+                    activeFields.add(AKIT_PREFIX + subscribeKey);
                   } else {
-                    activeFields.add(subscribeKey.slice(this.WPILOG_PREFIX.length));
+                    activeFields.add(subscribeKey.slice(WPILOG_PREFIX.length));
                   }
                 }
               });
@@ -337,12 +339,23 @@ export default class NT4Source extends LiveDataSource {
     if (this.periodicCallback !== null) clearInterval(this.periodicCallback);
   }
 
+  getTuner() {
+    if (this.akitMode) {
+      // Tuning is not applicable with AdvantageKit
+      return null;
+    } else if (this.client === null || this.log === null) {
+      throw "Cannot create NT4 tuner before starting connection";
+    } else {
+      return new NT4Tuner(this.client);
+    }
+  }
+
   /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */
   private getKeyFromTopic(topic: NT4_Topic): string {
     if (this.akitMode) {
-      return topic.name.slice(this.AKIT_PREFIX.length);
+      return topic.name.slice(AKIT_PREFIX.length);
     } else {
-      return this.WPILOG_PREFIX + topic.name;
+      return WPILOG_PREFIX + topic.name;
     }
   }
 

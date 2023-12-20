@@ -50,3 +50,14 @@ When connected to a live source, AdvantageScope locks all tabs to the current ti
 > Note: Scrolling to the left in the line graph also unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 
 ![Live lock/unlock button](/docs/resources/open-live/open-live-2.png)
+
+## Tuning Mode
+
+Some live sources support live tuning of numeric and boolean values. For example, this feature can be used to [tune controller gains](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) when connected to a NetworkTables source. Note that the robot code must support receiving gains via NetworkTables.
+
+By default, all values in AdvantageScope are read-only. To toggle tuning mode, **click the slider icon** to the right of the search bar when connected to a supported live source. When the icon is <span style="color: purple;">purple</span>, tuning mode is active and field editing is enabled.
+
+- To edit a **numeric field**, enter a new value using the text box to the right of the field in the sidebar. Leave the text box blank to use the robot-published value.
+- To toggle a **boolean field**, click the red or green circle to the right of the field in the sidebar.
+
+> Note: This feature is not intended for controlling the robot on the field. Support for dashboard-style inputs like choosers, trigger buttons, etc. will not be added.

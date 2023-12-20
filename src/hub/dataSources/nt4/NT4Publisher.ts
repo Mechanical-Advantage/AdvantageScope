@@ -1,6 +1,6 @@
-import { SIM_ADDRESS, USB_ADDRESS } from "../../shared/IPAddresses";
-import { filterFieldByPrefixes, getOrDefault, logValuesEqual } from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
+import { SIM_ADDRESS, USB_ADDRESS } from "../../../shared/IPAddresses";
+import { filterFieldByPrefixes, getOrDefault, logValuesEqual } from "../../../shared/log/LogUtil";
+import LoggableType from "../../../shared/log/LoggableType";
 import { NT4_Client } from "./NT4";
 
 /** Publishes the current values of every field to an NT server. */

@@ -1,8 +1,8 @@
-import Log from "../../shared/log/Log";
-import { PROTO_PREFIX, STRUCT_PREFIX } from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
-import CustomSchemas from "./schema/CustomSchemas";
-import { WPILOGDecoder } from "./wpilog/WPILOGDecoder";
+import Log from "../../../shared/log/Log";
+import { PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import LoggableType from "../../../shared/log/LoggableType";
+import CustomSchemas from "../schema/CustomSchemas";
+import { WPILOGDecoder } from "./WPILOGDecoder";
 
 self.onmessage = (event) => {
   // WORKER SETUP

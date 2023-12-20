@@ -1,7 +1,5 @@
 import Log from "../../shared/log/Log";
-import LoggableType from "../../shared/log/LoggableType";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
-import RLOGDecoder from "./RLOGDecoder";
 
 export default class PathPlannerSource extends LiveDataSource {
   private RECONNECT_DELAY_MS = 500;
