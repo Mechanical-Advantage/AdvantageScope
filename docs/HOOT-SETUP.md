@@ -10,7 +10,7 @@ Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPIL
 
 ## About Licensing
 
-This feature **does not require a Phoenix Pro license** to use. However, non-Pro devices do not include all of the signals available through [Phoenix diagnostics](/docs/OPEN-LIVE.md) in the Hoot log; only "common" signals are available. Positions and velocities of encoders, applied voltages, etc are included. However, other signals like faults, pitch/roll from a Pigeon, the Talon FX control mode, PID error/state, etc are not available.
+This feature **does not require a Phoenix Pro license** to use. However, non-Pro devices do not include all of the signals available through [Phoenix diagnostics](/docs/OPEN-LIVE.md) in the Hoot log; only "common" signals are available. Positions and velocities of encoders, applied voltages, etc are included. However, many signals like faults, pitch/roll from a Pigeon, the Talon FX control mode, PID error/state, etc are not available.
 
 ## Setup
 
