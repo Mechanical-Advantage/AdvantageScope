@@ -39,7 +39,7 @@ export default class Sidebar {
     "DSEvents",
     ZEBRA_LOG_KEY
   ];
-  private HIDDEN_KEYS = [".schema", "RealMetadata", "ReplayMetadata"];
+  private HIDDEN_KEYS = [".schema", "Metadata", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
   private VALUE_WIDTH_MARGIN_PX = 12;

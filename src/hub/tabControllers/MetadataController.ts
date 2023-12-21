@@ -24,14 +24,14 @@ export default class MetadataController implements TabController {
   restoreState(state: TabState) {}
 
   getActiveFields(): string[] {
-    return ["/RealMetadata", "/ReplayMetadata", "NT:/AdvantageKit/RealMetadata", "NT:/AdvantageKit/ReplayMetadata"];
+    return METADATA_KEYS;
   }
 
   periodic() {}
 
   refresh() {
     // Get data
-    let data: { [id: string]: { real: string | null; replay: string | null } } = {};
+    let data: { [id: string]: { generic: string | null; real: string | null; replay: string | null } } = {};
     window.log.getFieldKeys().forEach((key) => {
       METADATA_KEYS.forEach((metadataKey) => {
         if (key.startsWith(metadataKey)) {
@@ -40,10 +40,18 @@ export default class MetadataController implements TabController {
             cleanKey = key.slice(0, key.indexOf("/", MERGE_PREFIX.length + 1)) + cleanKey;
           }
           if (!(cleanKey in data)) {
-            data[cleanKey] = { real: null, replay: null };
+            data[cleanKey] = { generic: null, real: null, replay: null };
           }
-          let logData = window.log.getString(key, 0, 0);
-          if (logData) data[cleanKey][metadataKey.includes("RealMetadata") ? "real" : "replay"] = logData.values[0];
+          let logData = window.log.getString(key, Infinity, Infinity);
+          if (logData) {
+            if (metadataKey.includes("RealMetadata")) {
+              data[cleanKey]["real"] = logData.values[0];
+            } else if (metadataKey.includes("ReplayMetadata")) {
+              data[cleanKey]["replay"] = logData.values[0];
+            } else {
+              data[cleanKey]["generic"] = logData.values[0];
+            }
+          }
         }
       });
     });
@@ -55,9 +63,33 @@ export default class MetadataController implements TabController {
     }
     this.lastDataString = dataString;
 
-    // Remove old rows
+    // Remove old rows and headers
     while (this.TABLE_BODY.childElementCount > 1) {
       this.TABLE_BODY.removeChild(this.TABLE_BODY.lastChild as HTMLElement);
+    }
+    while (this.TABLE_BODY.firstElementChild!.childElementCount > 1) {
+      this.TABLE_BODY.firstElementChild!.removeChild(this.TABLE_BODY.firstElementChild!.lastChild as HTMLElement);
+    }
+
+    // Update headers
+    let visibleTypes: Set<"generic" | "real" | "replay"> = new Set();
+    let visibleTypesArr: ("generic" | "real" | "replay")[] = [];
+    Object.values(data).forEach((value) => {
+      if (value.generic !== null) visibleTypes.add("generic");
+      if (value.real !== null) visibleTypes.add("real");
+      if (value.replay !== null) visibleTypes.add("replay");
+    });
+    if (visibleTypes.has("generic")) {
+      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = "Value";
+      visibleTypesArr.push("generic");
+    }
+    if (visibleTypes.has("real")) {
+      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = "Real";
+      visibleTypesArr.push("real");
+    }
+    if (visibleTypes.has("replay")) {
+      this.TABLE_BODY.firstElementChild!.appendChild(document.createElement("th")).innerText = "Replay";
+      visibleTypesArr.push("replay");
     }
 
     // Add rows
@@ -72,24 +104,24 @@ export default class MetadataController implements TabController {
       let row = document.createElement("tr");
       this.TABLE_BODY.appendChild(row);
       let cells: HTMLTableCellElement[] = [];
-      for (let i = 0; i < 3; i++) {
+      let visibleTypesIdx = 0;
+      for (let i = 0; i < 1 + visibleTypes.size; i++) {
         let cell = document.createElement("td");
         cells.push(cell);
         row.appendChild(cell);
-      }
 
-      cells[0].innerText = key.substring(1);
-      if (data[key].real !== null) {
-        cells[1].innerText = data[key].real as string;
-      } else {
-        cells[1].innerText = "NA";
-        cells[1].classList.add("no-data");
-      }
-      if (data[key].replay !== null) {
-        cells[2].innerText = data[key].replay as string;
-      } else {
-        cells[2].innerText = "NA";
-        cells[2].classList.add("no-data");
+        if (i === 0) {
+          cell.innerText = key.substring(1);
+        } else {
+          let value = data[key][visibleTypesArr[visibleTypesIdx]];
+          if (value !== null) {
+            cell.innerText = value;
+          } else {
+            cell.innerText = "NA";
+            cell.classList.add("no-data");
+          }
+          visibleTypesIdx++;
+        }
       }
     });
 
