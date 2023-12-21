@@ -55,11 +55,12 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
 
                 // Add fields for all signals
                 signals.forEach((signal) => {
+                  let key = this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name;
                   let isEnum = signal.Name in PhoenixEnums;
-                  this.log?.createBlankField(
-                    this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name,
-                    isEnum ? LoggableType.String : LoggableType.Number
-                  );
+                  this.log?.createBlankField(key, isEnum ? LoggableType.String : LoggableType.Number);
+                  if (signal.Units.length > 0) {
+                    this.log?.setMetadataString(key, JSON.stringify({ units: signal.Units }));
+                  }
                 });
                 this.newOutput();
               });
