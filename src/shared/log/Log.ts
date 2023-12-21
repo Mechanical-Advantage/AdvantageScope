@@ -153,19 +153,19 @@ export default class Log {
     }
   }
 
-  /** Returns the WPILib metadata string for a field. */
-  getWpilibMetadata(key: string): string {
+  /** Returns the metadata string for a field. */
+  getMetadataString(key: string): string {
     if (key in this.fields) {
-      return this.fields[key].wpilibMetadata;
+      return this.fields[key].metadataString;
     } else {
       return "";
     }
   }
 
   /** Sets the WPILib metadata string for a field. */
-  setWpilibMetadata(key: string, type: string) {
+  setMetadataString(key: string, type: string) {
     if (key in this.fields) {
-      this.fields[key].wpilibMetadata = type;
+      this.fields[key].metadataString = type;
     }
   }
 

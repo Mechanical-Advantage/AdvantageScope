@@ -64,11 +64,11 @@ self.onmessage = (event) => {
               break;
           }
           log.setWpilibType(startData.name, startData.type);
-          log.setWpilibMetadata(startData.name, startData.metadata);
+          log.setMetadataString(startData.name, startData.metadata);
         } else if (record.isSetMetadata()) {
           let setMetadataData = record.getSetMetadataData();
           if (setMetadataData.entry in entryIds) {
-            log.setWpilibMetadata(entryIds[setMetadataData.entry], setMetadataData.metadata);
+            log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
           }
         }
       } else {

@@ -154,7 +154,7 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
     let wpilibType = log.getWpilibType(field);
-    let wpilibMetadata = log.getWpilibMetadata(field);
+    let metadata = log.getMetadataString(field);
     if (fieldData === undefined || fieldType === undefined) return;
 
     // Start record
@@ -194,13 +194,13 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
         typeStr = "int64[]";
       }
     }
-    if (wpilibMetadata === "") {
-      wpilibMetadata = JSON.stringify({ exportSource: "AdvantageScope" });
+    if (metadata === "") {
+      metadata = JSON.stringify({ exportSource: "AdvantageScope" });
     } else {
       try {
-        let wpilibMetadataParsed = JSON.parse(wpilibMetadata);
-        wpilibMetadataParsed.exportSource = "AdvantageScope";
-        wpilibMetadata = JSON.stringify(wpilibMetadataParsed);
+        let metadataParsed = JSON.parse(metadata);
+        metadataParsed.exportSource = "AdvantageScope";
+        metadata = JSON.stringify(metadataParsed);
       } catch {}
     }
     encoder.add(
@@ -208,7 +208,7 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
         entry: entryId, // Entry 0 is reserved
         name: field,
         type: typeStr,
-        metadata: wpilibMetadata
+        metadata: metadata
       })
     );
 

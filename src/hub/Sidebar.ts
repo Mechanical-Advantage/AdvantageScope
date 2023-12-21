@@ -649,7 +649,7 @@ export default class Sidebar {
 
       // Metadata callback
       let updateMetadata = () => {
-        let metadata = window.log.getWpilibMetadata(field.fullKey!);
+        let metadata = window.log.getMetadataString(field.fullKey!);
         try {
           let metadataParsed = JSON.parse(metadata);
           label.title = Object.keys(metadataParsed)
