@@ -12,6 +12,7 @@ export default class Sidebar {
   private SIDEBAR_SHADOW = document.getElementsByClassName("side-bar-shadow")[0] as HTMLElement;
   private SIDEBAR_TITLE = document.getElementsByClassName("side-bar-title")[0] as HTMLElement;
   private SEARCH_INPUT = document.getElementsByClassName("side-bar-search")[0] as HTMLInputElement;
+  private TUNING_BUTTON = document.getElementsByClassName("side-bar-tuning-button")[0] as HTMLButtonElement;
   private FIELD_LIST = document.getElementById("fieldList") as HTMLElement;
   private ICON_TEMPLATES = document.getElementById("fieldItemIconTemplates") as HTMLElement;
   private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
@@ -38,7 +39,7 @@ export default class Sidebar {
     "DSEvents",
     ZEBRA_LOG_KEY
   ];
-  private HIDDEN_KEYS = [".schema", "RealMetadata", "ReplayMetadata"];
+  private HIDDEN_KEYS = [".schema", "Metadata", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;
   private FIELD_DRAG_THRESHOLD_PX = 3;
   private VALUE_WIDTH_MARGIN_PX = 12;
@@ -46,6 +47,7 @@ export default class Sidebar {
   private sidebarHandleActive = false;
   private sidebarWidth = 300;
   private fieldCount = 0;
+  private isTuningMode = false;
   private lastFieldKeys: string[] = [];
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
@@ -55,6 +57,10 @@ export default class Sidebar {
   private selectGroupClearCallbacks: (() => void)[] = [];
   private searchKey: string | null = null;
   private searchExpandCallbacks: (() => void)[] = [];
+  private setTuningModeActiveCallbacks: ((active: boolean) => void)[] = [];
+  private tuningModePublishCallbacks: (() => void)[] = [];
+  private tuningValueCache: { [key: string]: string } = {};
+  private updateMetadataCallbacks: (() => void)[] = [];
 
   constructor() {
     // Set up handle for resizing
@@ -108,14 +114,23 @@ export default class Sidebar {
       }
     };
 
-    // Periodic function
+    // Tuning button
+    this.TUNING_BUTTON.addEventListener("click", () => {
+      this.setTuningModeActive(!this.isTuningMode);
+    });
+
+    // Periodic functions
     let periodic = () => {
       searchPeriodic();
       this.updateTitle();
       this.updateValues();
+      this.updateTuningButton();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
+    setInterval(() => {
+      this.tuningModePublishCallbacks.forEach((callback) => callback());
+    }, 250);
   }
 
   /** Returns the current state. */
@@ -228,6 +243,31 @@ export default class Sidebar {
     this.updateValueCallbacks.forEach((callback) => callback(time));
   }
 
+  /** Show or hide tuning button based on tuner availability. */
+  private updateTuningButton() {
+    let tuningButtonVisible = !this.TUNING_BUTTON.hidden;
+    let tunerAvailable = window.tuner !== null;
+    if (tuningButtonVisible !== tunerAvailable) {
+      this.TUNING_BUTTON.hidden = !tunerAvailable;
+      document.documentElement.style.setProperty("--show-tuning-button", tunerAvailable ? "1" : "0");
+      if (!tunerAvailable) {
+        this.setTuningModeActive(false);
+      }
+    }
+  }
+
+  private setTuningModeActive(active: boolean) {
+    this.isTuningMode = active;
+    this.setTuningModeActiveCallbacks.forEach((callback) => {
+      callback(active);
+    });
+    if (active) {
+      this.TUNING_BUTTON.classList.add("active");
+    } else {
+      this.TUNING_BUTTON.classList.remove("active");
+    }
+  }
+
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
     let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
@@ -245,6 +285,9 @@ export default class Sidebar {
       this.activeFieldCallbacks = [];
       this.updateValueCallbacks = [];
       this.selectGroupClearCallbacks = [];
+      this.setTuningModeActiveCallbacks = [];
+      this.tuningModePublishCallbacks = [];
+      this.updateMetadataCallbacks = [];
 
       // Add new list
       let tree = window.log.getFieldTree();
@@ -262,6 +305,9 @@ export default class Sidebar {
 
       // Update search
       this.updateSearchResults();
+    } else {
+      // Update metadata
+      this.updateMetadataCallbacks.forEach((callback) => callback());
     }
   }
 
@@ -341,70 +387,6 @@ export default class Sidebar {
       }
     });
 
-    // Update value callback
-    if (field.fullKey !== null) {
-      let type = window.log.getType(field.fullKey);
-      if (type === LoggableType.Boolean) {
-        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        valueElement.appendChild(svg);
-        svg.setAttributeNS(null, "width", "9");
-        svg.setAttributeNS(null, "height", "30");
-        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        svg.appendChild(circle);
-        circle.setAttributeNS(null, "cx", "4.5");
-        circle.setAttributeNS(null, "cy", "15");
-        circle.setAttributeNS(null, "r", "4.5");
-
-        this.updateValueCallbacks.push((time) => {
-          let value: boolean | null =
-            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Boolean, time, null);
-          if (value !== null) {
-            const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
-          }
-          valueElement.hidden = value === null;
-          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
-          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
-        });
-      } else if (type === LoggableType.Number) {
-        this.updateValueCallbacks.push((time) => {
-          let value: number | null =
-            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Number, time, null);
-          if (value !== null) {
-            if (Math.abs(value) < 1e-9) {
-              valueElement.innerText = "0";
-            } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
-              valueElement.innerText = value.toExponential(1).replace("+", "");
-            } else if (value % 1 === 0) {
-              valueElement.innerText = value.toString();
-            } else {
-              valueElement.innerText = value.toFixed(3);
-            }
-          } else {
-            valueElement.innerText = "";
-          }
-          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
-          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
-        });
-      } else if (type === LoggableType.String) {
-        this.updateValueCallbacks.push((time) => {
-          let value: string | null =
-            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.String, time, null);
-          if (value !== null) {
-            if (value.length > 8) {
-              valueElement.innerText = value.substring(0, 8) + "\u2026";
-            } else {
-              valueElement.innerText = value;
-            }
-          } else {
-            valueElement.innerText = "";
-          }
-          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
-          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
-        });
-      }
-    }
-
     // Add icons
     let closedIcon = this.ICON_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
     let openIcon = this.ICON_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
@@ -446,69 +428,70 @@ export default class Sidebar {
     // Full key fields
     if (field.fullKey !== null) {
       // Dragging support
-      let dragEvent = (x: number, y: number, offsetX: number, offsetY: number) => {
-        let isGroup = this.selectGroup.includes(field.fullKey !== null ? field.fullKey : "");
-        this.DRAG_ITEM.innerText = title + (isGroup ? "..." : "");
-        this.DRAG_ITEM.style.fontWeight = isGroup ? "bolder" : "initial";
-        window.startDrag(x, y, offsetX, offsetY, {
-          fields: isGroup ? this.selectGroup : [field.fullKey],
-          children: isGroup
-            ? []
-            : Object.values(field.children)
-                .map((x) => x.fullKey)
-                .filter((x) => x !== null && !x.endsWith("/length"))
-        });
-        if (isGroup) {
-          this.selectGroup = [];
-          this.selectGroupClearCallbacks.forEach((callback) => callback());
-        }
-      };
-
-      let mouseDownInfo: [number, number, number, number] | null = null;
-      label.addEventListener("mousedown", (event) => {
-        mouseDownInfo = [event.clientX, event.clientY, event.offsetX, event.offsetY];
-      });
-      window.addEventListener("mousemove", (event) => {
-        if (mouseDownInfo !== null) {
-          if (
-            Math.abs(event.clientX - mouseDownInfo[0]) >= this.FIELD_DRAG_THRESHOLD_PX ||
-            Math.abs(event.clientY - mouseDownInfo[1]) >= this.FIELD_DRAG_THRESHOLD_PX
-          ) {
-            dragEvent(mouseDownInfo[0], mouseDownInfo[1], mouseDownInfo[2], mouseDownInfo[3]);
-            mouseDownInfo = null;
+      {
+        let dragEvent = (x: number, y: number, offsetX: number, offsetY: number) => {
+          let isGroup = this.selectGroup.includes(field.fullKey !== null ? field.fullKey : "");
+          this.DRAG_ITEM.innerText = title + (isGroup ? "..." : "");
+          this.DRAG_ITEM.style.fontWeight = isGroup ? "bolder" : "initial";
+          window.startDrag(x, y, offsetX, offsetY, {
+            fields: isGroup ? this.selectGroup : [field.fullKey],
+            children: isGroup
+              ? []
+              : Object.values(field.children)
+                  .map((x) => x.fullKey)
+                  .filter((x) => x !== null && !x.endsWith("/length"))
+          });
+          if (isGroup) {
+            this.selectGroup = [];
+            this.selectGroupClearCallbacks.forEach((callback) => callback());
           }
-        }
-      });
-      label.addEventListener("mouseup", (event) => {
-        if (mouseDownInfo !== null) {
-          if (
-            (event.ctrlKey || event.metaKey) &&
-            Math.abs(event.clientX - mouseDownInfo[0]) < this.FIELD_DRAG_THRESHOLD_PX &&
-            Math.abs(event.clientY - mouseDownInfo[1]) < this.FIELD_DRAG_THRESHOLD_PX
-          ) {
-            let index = this.selectGroup.indexOf(field.fullKey !== null ? field.fullKey : "");
-            if (index === -1) {
-              this.selectGroup.push(field.fullKey !== null ? field.fullKey : "");
-              label.style.fontWeight = "bolder";
-            } else {
-              this.selectGroup.splice(index, 1);
-              label.style.fontWeight = "initial";
+        };
+        let mouseDownInfo: [number, number, number, number] | null = null;
+        label.addEventListener("mousedown", (event) => {
+          mouseDownInfo = [event.clientX, event.clientY, event.offsetX, event.offsetY];
+        });
+        window.addEventListener("mousemove", (event) => {
+          if (mouseDownInfo !== null) {
+            if (
+              Math.abs(event.clientX - mouseDownInfo[0]) >= this.FIELD_DRAG_THRESHOLD_PX ||
+              Math.abs(event.clientY - mouseDownInfo[1]) >= this.FIELD_DRAG_THRESHOLD_PX
+            ) {
+              dragEvent(mouseDownInfo[0], mouseDownInfo[1], mouseDownInfo[2], mouseDownInfo[3]);
+              mouseDownInfo = null;
             }
           }
-          mouseDownInfo = null;
-        }
-      });
-      label.addEventListener("touchstart", (event) => {
-        let touch = event.targetTouches[0];
-        dragEvent(
-          touch.clientX,
-          touch.clientY,
-          touch.clientX - label.getBoundingClientRect().x,
-          touch.clientY - label.getBoundingClientRect().y
-        );
-      });
+        });
+        label.addEventListener("mouseup", (event) => {
+          if (mouseDownInfo !== null) {
+            if (
+              (event.ctrlKey || event.metaKey) &&
+              Math.abs(event.clientX - mouseDownInfo[0]) < this.FIELD_DRAG_THRESHOLD_PX &&
+              Math.abs(event.clientY - mouseDownInfo[1]) < this.FIELD_DRAG_THRESHOLD_PX
+            ) {
+              let index = this.selectGroup.indexOf(field.fullKey !== null ? field.fullKey : "");
+              if (index === -1) {
+                this.selectGroup.push(field.fullKey !== null ? field.fullKey : "");
+                label.style.fontWeight = "bolder";
+              } else {
+                this.selectGroup.splice(index, 1);
+                label.style.fontWeight = "initial";
+              }
+            }
+            mouseDownInfo = null;
+          }
+        });
+        label.addEventListener("touchstart", (event) => {
+          let touch = event.targetTouches[0];
+          dragEvent(
+            touch.clientX,
+            touch.clientY,
+            touch.clientX - label.getBoundingClientRect().x,
+            touch.clientY - label.getBoundingClientRect().y
+          );
+        });
+      }
 
-      // Add select update callback
+      // Select update callback
       this.selectGroupClearCallbacks.push(() => {
         label.style.fontWeight = "initial";
       });
@@ -524,6 +507,161 @@ export default class Sidebar {
       };
       this.searchExpandCallbacks.push(highlightForSearch);
       highlightForSearch(); // Try immediately in case this field was generating while expanding for search
+
+      // Update value callback
+      let type = window.log.getType(field.fullKey);
+      let numValueInput: HTMLInputElement | null = null;
+      let numValueSpan: HTMLElement | null = null;
+      if (type === LoggableType.Boolean) {
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        valueElement.appendChild(svg);
+        svg.setAttributeNS(null, "width", "9");
+        svg.setAttributeNS(null, "height", "9");
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        svg.appendChild(circle);
+        circle.setAttributeNS(null, "cx", "4.5");
+        circle.setAttributeNS(null, "cy", "4.5");
+        circle.setAttributeNS(null, "r", "4.5");
+
+        // Update values periodically
+        this.updateValueCallbacks.push((time) => {
+          let value: boolean | null =
+            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Boolean, time, null);
+          if (value !== null) {
+            const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
+          }
+          valueElement.hidden = value === null;
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        });
+
+        // Tuning mode controls
+        svg.addEventListener("click", () => {
+          if (!this.isTuningMode) return;
+          let oldValue = circle.getAttributeNS(null, "fill") !== "red";
+          let value = !oldValue;
+          let liveTime = window.selection.getCurrentLiveTime();
+          if (liveTime !== null) {
+            window.tuner?.publish(field.fullKey!, value);
+            window.log.putBoolean(field.fullKey!, liveTime, value);
+          }
+        });
+        let setTuningModeActive = (active: boolean) => {
+          active = active && window.tuner !== null && window.tuner.isTunable(field.fullKey!);
+          if (active) {
+            svg.classList.add("tunable");
+          } else {
+            svg.classList.remove("tunable");
+          }
+        };
+        this.setTuningModeActiveCallbacks.push(setTuningModeActive);
+        setTuningModeActive(this.isTuningMode);
+      } else if (type === LoggableType.Number) {
+        // Create wrapper elements
+        numValueInput = document.createElement("input");
+        numValueInput.hidden = true;
+        numValueInput.type = "number";
+        valueElement.appendChild(numValueInput);
+        numValueSpan = document.createElement("span");
+        valueElement.appendChild(numValueSpan);
+
+        // Add callback
+        this.updateValueCallbacks.push((time) => {
+          let value: number | null =
+            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Number, time, null);
+          let valueStr = "";
+          if (value !== null) {
+            if (Math.abs(value) < 1e-9) {
+              valueStr = "0";
+            } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
+              valueStr = value.toExponential(1).replace("+", "");
+            } else if (value % 1 === 0) {
+              valueStr = value.toString();
+            } else {
+              valueStr = value.toFixed(3);
+            }
+          }
+          numValueInput!.placeholder = valueStr;
+          numValueSpan!.innerText = valueStr;
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        });
+      } else if (type === LoggableType.String) {
+        this.updateValueCallbacks.push((time) => {
+          let value: string | null =
+            time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.String, time, null);
+          if (value !== null) {
+            if (value.length > 8) {
+              valueElement.innerText = value.substring(0, 8) + "\u2026";
+            } else {
+              valueElement.innerText = value;
+            }
+          } else {
+            valueElement.innerText = "";
+          }
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        });
+      }
+
+      // Tuning mode callbacks for number
+      if (type === LoggableType.Number) {
+        // Enable & disable tuning mode
+        let setTuningModeActive = (active: boolean) => {
+          active = active && window.tuner !== null && window.tuner.isTunable(field.fullKey!);
+          numValueInput!.hidden = !active;
+          numValueSpan!.hidden = active;
+          if (!active) {
+            delete this.tuningValueCache[field.fullKey!];
+          }
+          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+        };
+        this.setTuningModeActiveCallbacks.push(setTuningModeActive);
+        setTuningModeActive(this.isTuningMode);
+
+        // Publish & unpublish value
+        let lastHasValue = false;
+        this.tuningModePublishCallbacks.push(() => {
+          if (!this.isTuningMode) return;
+          let value = Number(numValueInput!.value);
+          let hasValue = numValueInput!.value.length > 0 && !isNaN(value) && isFinite(value);
+          if (hasValue) {
+            this.tuningValueCache[field.fullKey!] = numValueInput!.value;
+            let liveTime = window.selection.getCurrentLiveTime();
+            if (liveTime !== null) {
+              window.tuner?.publish(field.fullKey!, value);
+              window.log.putNumber(field.fullKey!, liveTime, value);
+            }
+          } else if (lastHasValue) {
+            delete this.tuningValueCache[field.fullKey!];
+            window.tuner?.unpublish(field.fullKey!);
+          }
+          lastHasValue = hasValue;
+        });
+
+        // Set initial value from cache
+        if (field.fullKey in this.tuningValueCache) {
+          numValueInput!.value = this.tuningValueCache[field.fullKey];
+        }
+      }
+
+      // Metadata callback
+      let updateMetadata = () => {
+        let metadata = window.log.getMetadataString(field.fullKey!);
+        try {
+          let metadataParsed = JSON.parse(metadata);
+          label.title = Object.keys(metadataParsed)
+            .sort()
+            .map((key) => key + ": " + metadataParsed[key])
+            .join("\n");
+        } catch {
+          label.title = metadata;
+        }
+      };
+      this.updateMetadataCallbacks.push(updateMetadata);
+      updateMetadata();
     }
 
     // Add children

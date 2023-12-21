@@ -1,6 +1,6 @@
-import Log from "../../shared/log/Log";
-import { DSEventsReader } from "./dslog/DSEventsReader";
-import { DSLogReader } from "./dslog/DSLogReader";
+import Log from "../../../shared/log/Log";
+import { DSEventsReader } from "./DSEventsReader";
+import { DSLogReader } from "./DSLogReader";
 
 self.onmessage = (event) => {
   // WORKER SETUP

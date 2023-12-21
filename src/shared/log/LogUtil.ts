@@ -38,8 +38,10 @@ export const SYSTEM_TIME_KEYS = withMergedKeys([
   "systemTime"
 ]);
 export const METADATA_KEYS = withMergedKeys([
+  "/Metadata",
   "/RealMetadata",
   "/ReplayMetadata",
+  "NT:/Metadata",
   "NT:/AdvantageKit/RealMetadata",
   "NT:/AdvantageKit/ReplayMetadata"
 ]);

@@ -1,5 +1,6 @@
 import Log from "../../shared/log/Log";
 import { createUUID } from "../../shared/util";
+import LiveDataTuner from "./LiveDataTuner";
 
 /** A provider of live log data (i.e. the data is updated as it is received). */
 export abstract class LiveDataSource {
@@ -52,6 +53,11 @@ export abstract class LiveDataSource {
 
   /** Process new data from the main process, overriden by subclass. */
   handleMainMessage(data: any) {}
+
+  /** Returns an object to be used for sending tuning data, or null if tuning is not supported. */
+  getTuner(): LiveDataTuner | null {
+    return null;
+  }
 
   /** Updates the current status and triggers the callback if necessary. */
   protected setStatus(status: LiveDataSourceStatus) {

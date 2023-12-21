@@ -1,5 +1,5 @@
-import Log from "../../shared/log/Log";
-import LoggableType from "../../shared/log/LoggableType";
+import Log from "../../../shared/log/Log";
+import LoggableType from "../../../shared/log/LoggableType";
 
 export default class RLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [1];

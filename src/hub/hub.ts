@@ -7,12 +7,13 @@ import Preferences from "../shared/Preferences";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
+import LiveDataTuner from "./dataSources/LiveDataTuner";
 import loadZebra from "./dataSources/LoadZebra";
-import { NT4Publisher, NT4PublisherStatus } from "./dataSources/NT4Publisher";
-import NT4Source from "./dataSources/NT4Source";
+import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
+import NT4Source from "./dataSources/nt4/NT4Source";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
-import RLOGServerSource from "./dataSources/RLOGServerSource";
+import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
 import Tabs from "./Tabs";
@@ -40,6 +41,7 @@ declare global {
     selection: Selection;
     sidebar: Sidebar;
     tabs: Tabs;
+    tuner: LiveDataTuner | null;
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
@@ -58,6 +60,7 @@ window.fps = false;
 window.selection = new Selection();
 window.sidebar = new Sidebar();
 window.tabs = new Tabs();
+window.tuner = null;
 window.messagePort = null;
 
 let historicalSource: HistoricalDataSource | null = null;
@@ -213,6 +216,7 @@ window.requestAnimationFrame(periodic);
 function startHistorical(paths: string[]) {
   historicalSource?.stop();
   liveSource?.stop();
+  window.tuner = null;
   liveActive = false;
   setLoading(null);
 
@@ -271,6 +275,7 @@ function startLive(isSim: boolean) {
   liveSource?.stop();
   publisher?.stop();
   liveActive = true;
+  setLoading(null);
 
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
@@ -335,6 +340,7 @@ function startLive(isSim: boolean) {
       window.tabs.refresh();
     }
   );
+  window.tuner = liveSource.getTuner();
 }
 
 // File dropped on window

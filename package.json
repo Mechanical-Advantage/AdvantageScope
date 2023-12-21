@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
+    "@mcap/core": "^1.3.0",
     "@msgpack/msgpack": "^3.0.0-beta2",
     "@rollup/plugin-commonjs": "^25.0.4",
     "@rollup/plugin-json": "^6.0.0",

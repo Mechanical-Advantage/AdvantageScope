@@ -517,7 +517,8 @@ export default class LineGraphController implements TabController {
     }
 
     // Apply vertical scroll
-    if (dy !== 0) {
+    if (dy !== 0 && (!this.maxZoom || dy < 0)) {
+      // If max zoom, ignore positive scroll (no effect, just apply the max zoom)
       let zoomPercent = Math.pow(this.ZOOM_BASE, dy);
       let newZoom = (this.timestampRange[1] - this.timestampRange[0]) * zoomPercent;
       if (newZoom < this.MIN_ZOOM_TIME) newZoom = this.MIN_ZOOM_TIME;

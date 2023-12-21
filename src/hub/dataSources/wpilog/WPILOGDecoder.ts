@@ -40,7 +40,7 @@ export class WPILOGDecoderRecord {
     return this.timestamp;
   }
 
-  /** Returns true if the record is a start control record. */
+  /** Returns true if the record is a control record. */
   isControl(): boolean {
     return this.entry === CONTROL_ENTRY;
   }

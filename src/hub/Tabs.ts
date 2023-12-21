@@ -159,7 +159,7 @@ export default class Tabs {
     });
   }
 
-  /** Refresh based on new log data. */
+  /** Refresh based on a new set of assets. */
   newAssets() {
     this.tabList.forEach((tab) => {
       tab.controller.newAssets();

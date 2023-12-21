@@ -1,6 +1,7 @@
 :root {
   --side-bar-width: 300px;
   --show-side-bar: 1;
+  --show-tuning-button: 0;
   --show-lock-buttons: 0;
   --show-update-button: 0;
   --show-loading-glow: 0;
@@ -220,9 +221,9 @@ input.side-bar-search {
   position: relative;
   margin-top: 5px;
   margin-bottom: 5px;
-  left: 18px;
+  left: 16px;
   height: 29px;
-  width: calc(100% - 18px - 18px);
+  width: calc(100% - 16px - 16px - var(--show-tuning-button) * 26px);
 
   font-size: 13px;
   font-family:
@@ -254,10 +255,24 @@ input.side-bar-search::-webkit-search-cancel-button {
 
 img.side-bar-search-icon {
   position: absolute;
-  left: 25px;
+  left: 23px;
   top: 50%;
   height: 13px;
   transform: translateY(-50%);
+}
+
+button.side-bar-tuning-button {
+  position: absolute;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  right: 8px;
+  width: 29px;
+  height: 29px;
+}
+
+button.side-bar-tuning-button.active > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(9%) sepia(91%) saturate(7487%) hue-rotate(277deg) brightness(106%) contrast(110%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -277,6 +292,11 @@ img.side-bar-search-icon {
 
   img.side-bar-search-icon {
     filter: invert(100%);
+  }
+
+  button.side-bar-tuning-button.active > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(35%) sepia(76%) saturate(4981%) hue-rotate(259deg) brightness(102%) contrast(101%);
   }
 }
 
@@ -311,7 +331,28 @@ div.field-value {
   font-family: monospace;
   text-align: right;
   white-space: nowrap;
-  overflow: hidden;
+}
+
+div.field-value svg.tunable {
+  transform: scale(175%);
+}
+
+div.field-value svg.tunable:hover {
+  filter: brightness(0.75);
+}
+
+div.field-value input {
+  width: 50px;
+}
+
+div.field-value input::-webkit-outer-spin-button,
+div.field-value input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+div.field-value input::placeholder {
+  opacity: 0.6;
 }
 
 div.field-item.generated {
@@ -374,7 +415,7 @@ div.field-item.generated span.field-item-type-label {
 
 div.search-results {
   position: absolute;
-  left: 18px;
+  left: 16px;
   top: 0px;
   max-width: 700px;
   min-width: 0px; /* Updated by JS based on width of search input */

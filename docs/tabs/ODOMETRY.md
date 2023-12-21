@@ -46,8 +46,6 @@ Logger.recordOutput("MyPoseArray", poseA, poseB);
 Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
 
-> Note: Without AdvantageKit, WPILib does not currently support structured logging of trajectories (as of 2024.1.1-beta-2). Keep an eye out for updates on this feature. In the meantime, trajectories can be logged using `Field2d` or as an array of poses.
-
 WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of pose data together.
 
 ### Legacy Format

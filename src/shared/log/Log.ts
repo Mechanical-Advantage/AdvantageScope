@@ -153,6 +153,22 @@ export default class Log {
     }
   }
 
+  /** Returns the metadata string for a field. */
+  getMetadataString(key: string): string {
+    if (key in this.fields) {
+      return this.fields[key].metadataString;
+    } else {
+      return "";
+    }
+  }
+
+  /** Sets the WPILib metadata string for a field. */
+  setMetadataString(key: string, type: string) {
+    if (key in this.fields) {
+      this.fields[key].metadataString = type;
+    }
+  }
+
   /** Returns whether the key is generated. */
   isGenerated(key: string) {
     let parentKeys = Array.from(this.generatedParents);

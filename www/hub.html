@@ -69,6 +69,9 @@
         <div class="side-bar-search-container">
           <input class="side-bar-search" type="search" placeholder="Search" />
           <img class="side-bar-search-icon" src="symbols/magnifyingglass.svg" />
+          <button class="side-bar-tuning-button" tabindex="-1" hidden>
+            <img src="symbols/slider.horizontal.3.svg" />
+          </button>
         </div>
 
         <span id="fieldItemIconTemplates" hidden>
@@ -732,14 +735,14 @@
 
           <!-- Metadata -->
           <div class="tab-content">
-            <div class="tab-centered">No AdvantageKit metadata.</div>
+            <div class="tab-centered">
+              No metadata found. Check the documentation for details on metadata publishing.
+            </div>
             <div class="metadata-table-container" hidden>
               <table class="metadata-table">
                 <tbody>
                   <tr>
                     <th></th>
-                    <th>Real</th>
-                    <th>Replay</th>
                   </tr>
                 </tbody>
               </table>

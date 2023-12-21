@@ -2,6 +2,7 @@ import { spawn } from "child_process";
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  FileFilter,
   Menu,
   MenuItem,
   MessageChannelMain,
@@ -1839,23 +1840,31 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
       } else if (typeof event.data === "object") {
         // Confirm
         let exportOptions: ExportOptions = event.data;
-        let extension = exportOptions.format === "wpilog" ? "wpilog" : "csv";
+        let extension = exportOptions.format.startsWith("csv") ? "csv" : exportOptions.format;
         let defaultPath = undefined;
         if (currentLogPath !== null) {
           let pathComponents = currentLogPath.split(".");
           pathComponents.pop();
           defaultPath = pathComponents.join(".") + "." + extension;
         }
+        let fileFilters: FileFilter[] = [];
+        switch (extension) {
+          case "csv":
+            fileFilters = [{ name: "Comma-separated values", extensions: ["csv"] }];
+            break;
+          case "wpilog":
+            fileFilters = [{ name: "WPILib robot log", extensions: ["wpilog"] }];
+            break;
+          case "mcap":
+            fileFilters = [{ name: "MCAP log", extensions: ["mcap"] }];
+            break;
+        }
         dialog
           .showSaveDialog(exportWindow, {
             title: "Select export location for robot log",
             defaultPath: defaultPath,
             properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-            filters: [
-              extension === "csv"
-                ? { name: "Comma-separated values", extensions: ["csv"] }
-                : { name: "WPILib robot log", extensions: ["wpilog"] }
-            ]
+            filters: fileFilters
           })
           .then((response) => {
             if (!response.canceled) {
