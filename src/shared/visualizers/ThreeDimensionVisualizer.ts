@@ -480,6 +480,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
   render(command: any): number | null {
     if (JSON.stringify(command) !== JSON.stringify(this.command)) {
+      // Also triggered if new assets counter changes
       this.shouldRender = true;
     }
     this.command = command;

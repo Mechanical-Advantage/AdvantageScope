@@ -94,6 +94,7 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   private lastCameraIndex = -1;
   private lastFov = 50;
+  private newAssetsCounter = 0;
 
   constructor(content: HTMLElement) {
     let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
@@ -278,6 +279,7 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   newAssets() {
     this.resetFieldRobotOptions();
+    this.newAssetsCounter++;
   }
 
   /** Switches the selected camera for the main visualizer. */
@@ -727,7 +729,8 @@ export default class ThreeDimensionController extends TimelineVizController {
         zebraYellowGhost: zebraYellowGhostData
       },
       options: this.options,
-      allianceRedOrigin: allianceRedOrigin
+      allianceRedOrigin: allianceRedOrigin,
+      newAssetsCounter: this.newAssetsCounter
     };
   }
 }
