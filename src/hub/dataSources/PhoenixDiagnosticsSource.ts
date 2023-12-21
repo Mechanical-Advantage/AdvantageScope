@@ -196,8 +196,12 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
   /** Converts a device object to its simple name. */
   private getDeviceName(device: Response_Device): string {
     let name = device.Model.replaceAll(" ", "");
-    if (device.Model.startsWith("CANCoder")) {
+    if (name.startsWith("CANCoder")) {
       name = "CANcoder";
+    } else if (name.startsWith("TalonFX")) {
+      name = "TalonFX";
+    } else if (name.startsWith("Pigeon2")) {
+      name = "Pigeon2";
     }
     name = name + "-" + (device.Name.startsWith(device.Model) ? device.ID.toString() : device.Name);
     if (device.CANivoreDevName.length > 0) {
