@@ -42,8 +42,6 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
           }
           this.setStatus(LiveDataSourceStatus.Active);
           devices.forEach((device) => {
-            // Plotting not supported with non-Pro applications (independent of license state)
-            if (!device.IsPROApplication) return;
             let deviceName = this.getDeviceName(device);
             if (!(deviceName in this.deviceDescriptions)) {
               this.deviceDescriptions[deviceName] = device;
@@ -290,7 +288,6 @@ interface Response_Device {
   ID: number;
   Model: string;
   Name: string;
-  IsPROApplication: boolean;
   // ... incomplete
 }
 
