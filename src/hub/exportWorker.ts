@@ -154,6 +154,7 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
     let wpilibType = log.getWpilibType(field);
+    let wpilibMetadata = log.getWpilibMetadata(field);
     if (fieldData === undefined || fieldType === undefined) return;
 
     // Start record
@@ -193,12 +194,21 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
         typeStr = "int64[]";
       }
     }
+    if (wpilibMetadata === "") {
+      wpilibMetadata = JSON.stringify({ exportSource: "AdvantageScope" });
+    } else {
+      try {
+        let wpilibMetadataParsed = JSON.parse(wpilibMetadata);
+        wpilibMetadataParsed.exportSource = "AdvantageScope";
+        wpilibMetadata = JSON.stringify(wpilibMetadataParsed);
+      } catch {}
+    }
     encoder.add(
       WPILOGEncoderRecord.makeControlStart(0, {
         entry: entryId, // Entry 0 is reserved
         name: field,
         type: typeStr,
-        metadata: ""
+        metadata: wpilibMetadata
       })
     );
 

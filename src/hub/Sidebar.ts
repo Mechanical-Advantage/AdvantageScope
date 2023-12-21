@@ -60,6 +60,7 @@ export default class Sidebar {
   private setTuningModeActiveCallbacks: ((active: boolean) => void)[] = [];
   private tuningModePublishCallbacks: (() => void)[] = [];
   private tuningValueCache: { [key: string]: string } = {};
+  private updateMetadataCallbacks: (() => void)[] = [];
 
   constructor() {
     // Set up handle for resizing
@@ -286,6 +287,7 @@ export default class Sidebar {
       this.selectGroupClearCallbacks = [];
       this.setTuningModeActiveCallbacks = [];
       this.tuningModePublishCallbacks = [];
+      this.updateMetadataCallbacks = [];
 
       // Add new list
       let tree = window.log.getFieldTree();
@@ -303,6 +305,9 @@ export default class Sidebar {
 
       // Update search
       this.updateSearchResults();
+    } else {
+      // Update metadata
+      this.updateMetadataCallbacks.forEach((callback) => callback());
     }
   }
 
@@ -641,6 +646,22 @@ export default class Sidebar {
           numValueInput!.value = this.tuningValueCache[field.fullKey];
         }
       }
+
+      // Metadata callback
+      let updateMetadata = () => {
+        let metadata = window.log.getWpilibMetadata(field.fullKey!);
+        try {
+          let metadataParsed = JSON.parse(metadata);
+          label.title = Object.keys(metadataParsed)
+            .sort()
+            .map((key) => key + ": " + metadataParsed[key])
+            .join("\n");
+        } catch {
+          label.title = metadata;
+        }
+      };
+      this.updateMetadataCallbacks.push(updateMetadata);
+      updateMetadata();
     }
 
     // Add children
