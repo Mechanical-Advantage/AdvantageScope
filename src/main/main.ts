@@ -199,9 +199,10 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       // Send data if all file reads finished
       let completedCount = 0;
       let targetCount = 0;
+      let errorMessage: null | string = null;
       let sendIfReady = () => {
         if (completedCount === targetCount) {
-          sendMessage(window, "historical-data", results);
+          sendMessage(window, "historical-data", { files: results, error: errorMessage });
         }
       };
 
@@ -234,14 +235,8 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Hoot, convert to WPILOG
           targetCount += 1;
           let ctreError = () => {
-            dialog.showMessageBoxSync(window, {
-              type: "error",
-              title: "Error",
-              message: "Failed to decode CTRE log file",
-              detail:
-                'Follow the setup instructions under "Loading CTRE Log Files" in the AdvantageScope documentation, then try again.',
-              icon: WINDOW_ICON
-            });
+            errorMessage =
+              'Follow the setup instructions under "Loading CTRE Log Files" in the AdvantageScope documentation, then try again.';
             completedCount++;
             sendIfReady();
           };
@@ -275,14 +270,9 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             let owlet = spawn(owletPath, [path, wpilogPath, "-f", "wpilog"]);
             owlet.once("exit", () => {
               if (owlet.exitCode !== 0) {
-                dialog.showMessageBoxSync(window, {
-                  type: "error",
-                  title: "Error",
-                  message: "Failed to decode CTRE log file",
-                  detail:
-                    "The log file may be an incompatible version. Try updating Phoenix Tuner X to the latest version.",
-                  icon: WINDOW_ICON
-                });
+                errorMessage =
+                  "The Hoot log file may be incompatible with the installed version of Phoenix Tuner X. Update Phoenix Tuner X to the latest version, then try again.";
+                completedCount++;
                 sendIfReady();
                 return;
               }

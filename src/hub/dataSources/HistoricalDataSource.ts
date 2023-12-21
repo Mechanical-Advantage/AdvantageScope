@@ -17,6 +17,7 @@ export class HistoricalDataSource {
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private progressCallback: ((progress: number) => void) | null = null;
   private outputCallback: ((log: Log) => void) | null = null;
+  private customError: string | null = null;
 
   /**
    * Generates log data from a set of files.
@@ -43,11 +44,8 @@ export class HistoricalDataSource {
         newPath = path.slice(0, -8) + "dslog";
       }
       if (window.platform !== "win32" && path.endsWith(".hoot")) {
-        window.sendMainMessage("error", {
-          title: "CTRE log files are not supported",
-          content: "Hoot log files cannot be decoded on macOS or Linux."
-        });
-        this.stop();
+        this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
+        this.setStatus(HistoricalDataSourceStatus.Error);
         return;
       }
       if (!this.paths.includes(newPath)) {
@@ -77,13 +75,19 @@ export class HistoricalDataSource {
     this.setStatus(HistoricalDataSourceStatus.Stopped);
   }
 
+  /** Returns an alternative error message to be displayed if log loading fails. */
+  getCustomError(): string | null {
+    return this.customError;
+  }
+
   /** Process new data from the main process, send to worker. */
   handleMainMessage(data: any) {
     if (this.status !== HistoricalDataSourceStatus.Reading) return;
     this.setStatus(HistoricalDataSourceStatus.Decoding);
-    let fileContents: (Uint8Array | null)[][] = data;
+    this.customError = data.error;
+    let fileContents: (Uint8Array | null)[][] = data.files;
 
-    // Check for read error (no file is all null)
+    // Check for read error (at least one file is all null)
     if (!fileContents.every((contents) => !contents.every((buffer) => buffer === null))) {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;

@@ -238,10 +238,14 @@ function startHistorical(paths: string[]) {
         case HistoricalDataSourceStatus.Error:
           setWindowTitle(logFriendlyName, "Error");
           setLoading(null);
+          let message =
+            "There was a problem while reading the log file" + (paths.length === 1 ? "" : "s") + ". Please try again.";
+          if (historicalSource && historicalSource.getCustomError() !== null) {
+            message = historicalSource.getCustomError()!;
+          }
           window.sendMainMessage("error", {
             title: "Failed to open log" + (paths.length === 1 ? "" : "s"),
-            content:
-              "There was a problem while reading the log file" + (paths.length === 1 ? "" : "s") + ". Please try again."
+            content: message
           });
           break;
         case HistoricalDataSourceStatus.Stopped:
