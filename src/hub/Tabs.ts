@@ -1,5 +1,4 @@
 import { TabGroupState } from "../shared/HubState";
-import { getEnabledKey } from "../shared/log/LogUtil";
 import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
@@ -175,10 +174,6 @@ export default class Tabs {
         activeFields.add(field);
       });
     });
-    let enabledKey = getEnabledKey(window.log);
-    if (enabledKey !== undefined) {
-      activeFields.add(enabledKey);
-    }
     return activeFields;
   }
 

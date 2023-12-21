@@ -6,15 +6,18 @@ export class HistoricalDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
+    ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js"
   };
 
   private paths: string[] = [];
+  private mockProgress: number = 0;
   private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private progressCallback: ((progress: number) => void) | null = null;
   private outputCallback: ((log: Log) => void) | null = null;
+  private customError: string | null = null;
 
   /**
    * Generates log data from a set of files.
@@ -32,19 +35,39 @@ export class HistoricalDataSource {
     this.statusCallback = statusCallback;
     this.progressCallback = progressCallback;
     this.outputCallback = outputCallback;
-    this.setStatus(HistoricalDataSourceStatus.Reading);
 
     // Post message to start reading
-    paths.forEach((path) => {
+    for (let i = 0; i < paths.length; i++) {
+      let path = paths[i];
       let newPath = path;
       if (path.endsWith(".dsevents")) {
         newPath = path.slice(0, -8) + "dslog";
       }
+      if (window.platform !== "win32" && path.endsWith(".hoot")) {
+        this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
+        this.setStatus(HistoricalDataSourceStatus.Error);
+        return;
+      }
       if (!this.paths.includes(newPath)) {
         this.paths.push(newPath);
       }
-    });
+    }
+    this.setStatus(HistoricalDataSourceStatus.Reading);
     window.sendMainMessage("historical-start", this.paths);
+
+    // Start mock progress updates
+    let startTime = new Date().getTime();
+    let sendMockProgress = () => {
+      if (this.status === HistoricalDataSourceStatus.Reading) {
+        let time = (new Date().getTime() - startTime) / 1000;
+        this.mockProgress = HistoricalDataSource.calcMockProgress(time);
+        if (this.progressCallback !== null) {
+          this.progressCallback(this.mockProgress);
+        }
+        window.requestAnimationFrame(sendMockProgress);
+      }
+    };
+    window.requestAnimationFrame(sendMockProgress);
   }
 
   /** Cancels the read operation. */
@@ -52,14 +75,20 @@ export class HistoricalDataSource {
     this.setStatus(HistoricalDataSourceStatus.Stopped);
   }
 
+  /** Returns an alternative error message to be displayed if log loading fails. */
+  getCustomError(): string | null {
+    return this.customError;
+  }
+
   /** Process new data from the main process, send to worker. */
   handleMainMessage(data: any) {
     if (this.status !== HistoricalDataSourceStatus.Reading) return;
     this.setStatus(HistoricalDataSourceStatus.Decoding);
-    let fileContents: (Uint8Array | null)[][] = data;
+    this.customError = data.error;
+    let fileContents: (Uint8Array | null)[][] = data.files;
 
-    // Check for read error
-    if (fileContents.every((contents) => contents === null)) {
+    // Check for read error (at least one file is all null)
+    if (!fileContents.every((contents) => !contents.every((buffer) => buffer === null))) {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
@@ -87,7 +116,8 @@ export class HistoricalDataSource {
       WorkerManager.request("../bundles/" + selectedWorkerName, contents, (progress) => {
         progressValues[i] = progress;
         if (this.progressCallback && this.status === HistoricalDataSourceStatus.Decoding) {
-          let totalProgress = progressValues.reduce((a, b) => a + b, 0) / progressValues.length;
+          let decodeProgress = progressValues.reduce((a, b) => a + b, 0) / progressValues.length;
+          let totalProgress = this.mockProgress + decodeProgress * (1 - this.mockProgress);
           this.progressCallback(totalProgress);
         }
       })
@@ -121,6 +151,12 @@ export class HistoricalDataSource {
       this.status = status;
       if (this.statusCallback !== null) this.statusCallback(status);
     }
+  }
+
+  /** Calculates a mock progress value for the initial load time. */
+  private static calcMockProgress(time: number): number {
+    // https://www.desmos.com/calculator/86u4rnu8ob
+    return 0.5 - 0.5 / (0.1 * time + 1);
   }
 }
 

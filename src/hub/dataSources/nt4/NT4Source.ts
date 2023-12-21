@@ -1,5 +1,5 @@
 import Log from "../../../shared/log/Log";
-import { PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import { PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
@@ -68,10 +68,12 @@ export default class NT4Source extends LiveDataSource {
           let activeFields: Set<string> = new Set();
           if (window.log === this.log) {
             let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
+            let enabledKey = getEnabledKey(this.log);
             [
               ...(this.akitMode
                 ? ["/.schema"]
                 : [WPILOG_PREFIX + "/.schema", WPILOG_PREFIX + AKIT_PREFIX + "/.schema"]),
+              ...(enabledKey === undefined ? [] : [enabledKey]),
               ...window.tabs.getActiveFields(),
               ...window.sidebar.getActiveFields()
             ].forEach((key) => {

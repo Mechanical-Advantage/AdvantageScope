@@ -12,6 +12,7 @@ import loadZebra from "./dataSources/LoadZebra";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source from "./dataSources/nt4/NT4Source";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
+import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
@@ -241,10 +242,14 @@ function startHistorical(paths: string[]) {
         case HistoricalDataSourceStatus.Error:
           setWindowTitle(logFriendlyName, "Error");
           setLoading(null);
+          let message =
+            "There was a problem while reading the log file" + (paths.length === 1 ? "" : "s") + ". Please try again.";
+          if (historicalSource && historicalSource.getCustomError() !== null) {
+            message = historicalSource.getCustomError()!;
+          }
           window.sendMainMessage("error", {
             title: "Failed to open log" + (paths.length === 1 ? "" : "s"),
-            content:
-              "There was a problem while reading the log file" + (paths.length === 1 ? "" : "s") + ". Please try again."
+            content: message
           });
           break;
         case HistoricalDataSourceStatus.Stopped:
@@ -279,6 +284,9 @@ function startLive(isSim: boolean) {
       break;
     case "nt4-akit":
       liveSource = new NT4Source(true);
+      break;
+    case "phoenix":
+      liveSource = new PhoenixDiagnosticsSource();
       break;
     case "pathplanner":
       liveSource = new PathPlannerSource();
@@ -592,7 +600,9 @@ function handleMainMessage(message: NamedMessage) {
         isExporting = true;
         window.sendMainMessage("prompt-export", {
           path: logPath,
-          incompleteWarning: liveConnected && window.preferences?.liveSubscribeMode === "low-bandwidth"
+          incompleteWarning:
+            liveConnected &&
+            (window.preferences?.liveSubscribeMode === "low-bandwidth" || window.preferences?.liveMode === "phoenix")
         });
       }
       break;
