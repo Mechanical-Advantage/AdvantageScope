@@ -270,6 +270,7 @@ function startLive(isSim: boolean) {
   liveSource?.stop();
   publisher?.stop();
   liveActive = true;
+  setLoading(null);
 
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
