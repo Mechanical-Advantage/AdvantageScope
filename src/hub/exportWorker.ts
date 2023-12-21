@@ -195,11 +195,11 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
       }
     }
     if (metadata === "") {
-      metadata = JSON.stringify({ exportSource: "AdvantageScope" });
+      metadata = JSON.stringify({ exporter: "AdvantageScope" });
     } else {
       try {
         let metadataParsed = JSON.parse(metadata);
-        metadataParsed.exportSource = "AdvantageScope";
+        metadataParsed.exporter = "AdvantageScope";
         metadata = JSON.stringify(metadataParsed);
       } catch {}
     }
