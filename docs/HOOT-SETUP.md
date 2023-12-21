@@ -2,9 +2,9 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-AdvantageScope supports directly loading log files produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging). These files are saved to the RIO in the proprietary Hoot (.hoot) log format, but can be opened by AdvantageScope like any other log after completing the setup instructions here. **This feature is only supported on Windows.**
+AdvantageScope supports loading log files produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging). These files are saved to the RIO in the proprietary Hoot (.hoot) log format, but can be opened by AdvantageScope like any other log after completing the setup instructions here. **This feature is only supported on Windows.**
 
-Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPILOG format, which can then be opened using AdvantageScope. Direct loading for AdvantageScope is intended to make this process simpler and easier by removing the requirement to use multiple applications for processing log files.
+Alternatively, Phoenix Tuner X can be used to convert Hoot log files to the WPILOG format, which can then be opened using AdvantageScope. Direct loading for AdvantageScope is intended to make this process simpler and easier by removing the requirement to use multiple applications for processing log files. Instead, the conversion is handled internally by CTRE’s log utility while loading the log file.
 
 > Note: This feature is **experimental** and is likely to change in the future. The current implementation requires modifying the permissions of some system directories; proceed at your own risk.
 
