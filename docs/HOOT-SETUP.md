@@ -14,7 +14,7 @@ This feature **does not require a Phoenix Pro license** to use. However, non-Pro
 
 ## Setup
 
-An additional setup process is required to decode Hoot logs, which only needs to be completed once. As shown below, the "WindowsApps" folder must be switched to read-only mode. This folder contains apps that are downloaded from thr Microsoft store, like Phoenix Tuner X.
+An additional setup process is required to decode Hoot logs, which only needs to be completed once. As shown below, the "WindowsApps" folder must be made visible in read-only mode. This folder contains apps that are downloaded from the Microsoft store, like Phoenix Tuner X.
 
 1. Install the latest version of Phoenix Tuner X from the [Microsoft store](https://apps.microsoft.com/detail/9NVV4PWDW27Z).
 2. Navigate to "C:\Program Files" in File Explorer
