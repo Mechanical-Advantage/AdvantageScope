@@ -24,6 +24,8 @@ The following sources of live data are supported by AdvantageScope:
 - **PathPlanner 2023:** This mode connects using the `PathPlannerServer` protocol used for telemetry by PathPlanner 2023. The connection is always initiated on port 5811. Note that PathPlanner 2024 and later publish telemetry data using NetworkTables, so the **NetworkTables 4** mode should be used.
 - **RLOG Server:** This protocol is used by AdvantageKit v1 (2022), and is included for compatibility with older code bases. The connection is initiated on port 5810 by default.
 
+> Note: The Phoenix Diagnostics live mode uses an undocumented protocol that may be changed in future Phoenix updates. If this mode does not function properly, please update to the latest version of AdvantageScope. If the issue persists, please [open an issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) to let us know.
+
 ### Live Mode
 
 When NetworkTables is used as the live source, the following live modes can be selected:
