@@ -14,7 +14,6 @@ Supported log formats are:
 
 - **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit v2 (2023) or later.
 - **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) and saved to "\Users\Public\Documents\FRC\Log Files".
-- **Hoot (.hoot)** - (Experimental) Produced by CTRE's Phoenix 6 [signal logging](https://pro.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging) API. An addition setup process is required to support this format. See [Loading CTRE Log Files](/docs/HOOT-SETUP.md).
 - **RLOG (.rlog)** - Produced by AdvantageKit v1 (2022).
 
 > Note: ".dslog" files include numeric/boolean data and ".dsevents" files include console data. When opening either file type, AdvantageScope searches the same directory for the matching log. For example, when opening "/example/log/file.dslog" AdvantageScope searches for "/example/log/file.dsevents". If found, the fields from both files are combined.

@@ -232,57 +232,57 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           targetCount += 2;
           openPath(path, (buffer) => (results[index][0] = buffer));
           openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[index][1] = buffer));
-        } else if (path.endsWith(".hoot")) {
-          // Hoot, convert to WPILOG
-          targetCount += 1;
-          let ctreError = () => {
-            errorMessage =
-              'Follow the setup instructions under "Loading CTRE Log Files" in the AdvantageScope documentation, then try again.';
-            completedCount++;
-            sendIfReady();
-          };
-          fs.readdir("C:\\Program Files\\WindowsApps", (err, folders) => {
-            if (err) {
-              ctreError();
-              return;
-            }
+          // } else if (path.endsWith(".hoot")) {
+          //   // Hoot, convert to WPILOG
+          //   targetCount += 1;
+          //   let ctreError = () => {
+          //     errorMessage =
+          //       'Follow the setup instructions under "Loading CTRE Log Files" in the AdvantageScope documentation, then try again.';
+          //     completedCount++;
+          //     sendIfReady();
+          //   };
+          //   fs.readdir("C:\\Program Files\\WindowsApps", (err, folders) => {
+          //     if (err) {
+          //       ctreError();
+          //       return;
+          //     }
 
-            // Find Tuner X folder
-            let tunerXFolder: string | null = null;
-            folders.forEach((folder) => {
-              if (folder.startsWith("CTRElectronics") && folder.includes("x64")) {
-                tunerXFolder = folder;
-              }
-            });
-            if (tunerXFolder === null) {
-              ctreError();
-              return;
-            }
+          //     // Find Tuner X folder
+          //     let tunerXFolder: string | null = null;
+          //     folders.forEach((folder) => {
+          //       if (folder.startsWith("CTRElectronics") && folder.includes("x64")) {
+          //         tunerXFolder = folder;
+          //       }
+          //     });
+          //     if (tunerXFolder === null) {
+          //       ctreError();
+          //       return;
+          //     }
 
-            // Check for owlet
-            let owletPath = "C:\\Program Files\\WindowsApps\\" + tunerXFolder + "\\windows_assets\\owlet.exe";
-            if (!fs.existsSync(owletPath)) {
-              ctreError();
-              return;
-            }
+          //     // Check for owlet
+          //     let owletPath = "C:\\Program Files\\WindowsApps\\" + tunerXFolder + "\\windows_assets\\owlet.exe";
+          //     if (!fs.existsSync(owletPath)) {
+          //       ctreError();
+          //       return;
+          //     }
 
-            // Run owlet
-            let wpilogPath = app.getPath("temp") + "\\hoot_" + createUUID() + ".wpilog";
-            let owlet = spawn(owletPath, [path, wpilogPath, "-f", "wpilog"]);
-            owlet.once("exit", () => {
-              if (owlet.exitCode !== 0) {
-                errorMessage =
-                  "The Hoot log file may be incompatible with the installed version of Phoenix Tuner X. Update Phoenix Tuner X to the latest version, then try again.";
-                completedCount++;
-                sendIfReady();
-                return;
-              }
-              openPath(wpilogPath, (buffer) => {
-                results[index][0] = buffer;
-                fs.rmSync(wpilogPath);
-              });
-            });
-          });
+          //     // Run owlet
+          //     let wpilogPath = app.getPath("temp") + "\\hoot_" + createUUID() + ".wpilog";
+          //     let owlet = spawn(owletPath, [path, wpilogPath, "-f", "wpilog"]);
+          //     owlet.once("exit", () => {
+          //       if (owlet.exitCode !== 0) {
+          //         errorMessage =
+          //           "The Hoot log file may be incompatible with the installed version of Phoenix Tuner X. Update Phoenix Tuner X to the latest version, then try again.";
+          //         completedCount++;
+          //         sendIfReady();
+          //         return;
+          //       }
+          //       openPath(wpilogPath, (buffer) => {
+          //         results[index][0] = buffer;
+          //         fs.rmSync(wpilogPath);
+          //       });
+          //     });
+          //   });
         } else {
           // Not DSLog, open normally
           targetCount += 1;
@@ -767,8 +767,7 @@ function downloadStart() {
                       })
                       .filter(
                         (file) =>
-                          !file.name.startsWith(".") &&
-                          (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog") || file.name.endsWith(".hoot"))
+                          !file.name.startsWith(".") && (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog"))
                       )
                       .map((file) => {
                         return {
@@ -855,9 +854,9 @@ function downloadSave(files: string[]) {
       case "rlog":
         name = "Robot log";
         break;
-      case "hoot":
-        name = "CTRE robot log";
-        break;
+      // case "hoot":
+      //   name = "CTRE robot log";
+      //   break;
     }
     selectPromise = dialog.showSaveDialog(downloadWindow, {
       title: "Select save location for robot log",
@@ -1023,7 +1022,7 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "hoot", "dslog", "dsevents"] }],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
                 defaultPath: DEFAULT_LOGS_FOLDER
               })
               .then((files) => {
@@ -1042,7 +1041,7 @@ function setupMenu() {
               title: "Select up to " + MERGE_MAX_FILES.toString() + " robot log files to open",
               message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
               properties: ["openFile", "multiSelections"],
-              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "hoot", "dslog", "dsevents"] }],
+              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents"] }],
               defaultPath: DEFAULT_LOGS_FOLDER
             });
             let files = filesResponse.filePaths;

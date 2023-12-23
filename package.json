@@ -112,14 +112,6 @@
         "icon": "icons/app/rlog-icon"
       },
       {
-        "ext": "hoot",
-        "name": "CTRE robot log",
-        "description": "CTRE robot log",
-        "mimeType": "application/x-hoot",
-        "role": "Viewer",
-        "icon": "icons/app/hoot-icon"
-      },
-      {
         "ext": "dslog",
         "name": "FRC Driver Station log",
         "description": "FRC Driver Station log",

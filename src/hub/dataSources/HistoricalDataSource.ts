@@ -6,7 +6,7 @@ export class HistoricalDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
-    ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
+    // ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js"
   };
@@ -43,11 +43,11 @@ export class HistoricalDataSource {
       if (path.endsWith(".dsevents")) {
         newPath = path.slice(0, -8) + "dslog";
       }
-      if (window.platform !== "win32" && path.endsWith(".hoot")) {
-        this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
-        this.setStatus(HistoricalDataSourceStatus.Error);
-        return;
-      }
+      // if (window.platform !== "win32" && path.endsWith(".hoot")) {
+      //   this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
+      //   this.setStatus(HistoricalDataSourceStatus.Error);
+      //   return;
+      // }
       if (!this.paths.includes(newPath)) {
         this.paths.push(newPath);
       }
