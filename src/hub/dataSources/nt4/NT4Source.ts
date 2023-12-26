@@ -288,7 +288,11 @@ export default class NT4Source extends LiveDataSource {
                 } else {
                   this.log?.putRaw(key, timestamp, value);
                   if (CustomSchemas.has(topic.type)) {
-                    CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                    try {
+                      CustomSchemas.get(topic.type)!(this.log, key, timestamp, value);
+                    } catch {
+                      console.error('Failed to decode custom schema "' + topic.type + '"');
+                    }
                     this.log.setGeneratedParent(key);
                   }
                 }

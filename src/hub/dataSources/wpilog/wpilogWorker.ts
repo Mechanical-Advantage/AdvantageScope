@@ -129,7 +129,11 @@ self.onmessage = (event) => {
               } else {
                 log.putRaw(key, timestamp, record.getRaw());
                 if (CustomSchemas.has(type)) {
-                  CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+                  try {
+                    CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
+                  } catch {
+                    console.error('Failed to decode custom schema "' + type + '"');
+                  }
                   log.setGeneratedParent(key);
                 }
               }
