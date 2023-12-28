@@ -4,6 +4,7 @@ import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { arraysEqual, setsEqual } from "../shared/util";
 import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
+import CustomSchemas from "./dataSources/schema/CustomSchemas";
 import { SelectionMode } from "./Selection";
 
 export default class Sidebar {
@@ -348,6 +349,7 @@ export default class Sidebar {
         let isActive = false;
         let type = window.log.getType(field.fullKey);
         let structuredType = window.log.getStructuredType(field.fullKey);
+        let wpilibType = window.log.getWpilibType(field.fullKey);
 
         // Active if expanded and array or structured
         if (
@@ -355,7 +357,8 @@ export default class Sidebar {
           (type === LoggableType.BooleanArray ||
             type === LoggableType.NumberArray ||
             type === LoggableType.StringArray ||
-            (type !== LoggableType.Empty && structuredType !== null))
+            (type !== LoggableType.Empty && structuredType !== null) ||
+            (type === LoggableType.Raw && wpilibType !== null && CustomSchemas.has(wpilibType)))
         ) {
           isActive = true;
         }
