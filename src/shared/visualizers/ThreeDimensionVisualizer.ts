@@ -561,7 +561,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         path: "",
         rotations: [],
         widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches")
+        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches"),
+        defaultOrigin: "auto"
       };
     } else if (fieldTitle === "Axes") {
       fieldConfig = {
@@ -569,7 +570,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         path: "",
         rotations: [],
         widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches")
+        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches"),
+        defaultOrigin: "blue"
       };
     } else {
       let fieldConfigTmp = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
