@@ -22,6 +22,38 @@ export default class REVSchemas {
     "HardLimitReverse"
   ];
 
+  private static PARSE_FUNCTIONS = [
+    this.parsePeriodic0,
+    this.parsePeriodic1,
+    this.parsePeriodic2,
+    this.parsePeriodic3,
+    this.parsePeriodic4,
+    this.parsePeriodic5,
+    this.parsePeriodic6
+  ];
+
+  /**
+   * Parses a set of frames recorded by the unofficial logger.
+   */
+  static parseUnofficialLog(log: Log, key: string, timestamp: number, value: Uint8Array) {
+    const dataView = new DataView(value.buffer, value.byteOffset, value.byteLength);
+
+    for (let position = 0; position < value.length; position += 20) {
+      let messageTimestamp = Number(dataView.getBigUint64(position, true)) / 1e6;
+      let messageId = dataView.getUint32(position + 8, true);
+      let deviceId = messageId & 0x3f;
+      let frameIndex = (messageId >> 6) & 0xf;
+      let messageValue = value.slice(position + 12, position + 20);
+
+      let deviceKey = key + "/Device-" + deviceId.toString();
+      let frameKey = deviceKey + "/PeriodicFrame_" + frameIndex.toFixed();
+      log.putRaw(frameKey, messageTimestamp, messageValue);
+      if (frameIndex >= 0 && frameIndex < REVSchemas.PARSE_FUNCTIONS.length) {
+        REVSchemas.PARSE_FUNCTIONS[frameIndex](log, deviceKey, messageTimestamp, messageValue);
+      }
+    }
+  }
+
   /**
    * Parses periodic status frame 0
    * - Applied Output
@@ -38,17 +70,17 @@ export default class REVSchemas {
     const bits = dataView.getUint8(6);
     const sensorInvert = (bits & 0x01) !== 0;
     const motorInvert = (bits & 0x02) !== 0;
-    const motorType = (bits & 0x10) !== 0 ? "Brushless" : "Brushed";
+    const isBrushless = (bits & 0x10) !== 0;
     const isFollower = (bits & 0x20) !== 0;
 
     log.putNumber(key + "/AppliedOutput", timestamp, appliedOutput);
     REVSchemas.FAULTS.forEach((faultName, index) => {
-      log.putBoolean(key + "/Faults/" + faultName, timestamp, (faults & (1 << index)) !== 0);
-      log.putBoolean(key + "/StickyFaults/" + faultName, timestamp, (stickyFaults & (1 << index)) !== 0);
+      log.putBoolean(key + "/Fault_" + faultName, timestamp, (faults & (1 << index)) !== 0);
+      log.putBoolean(key + "/StickyFault_" + faultName, timestamp, (stickyFaults & (1 << index)) !== 0);
     });
     log.putBoolean(key + "/SensorInvert", timestamp, sensorInvert);
     log.putBoolean(key + "/MotorInvert", timestamp, motorInvert);
-    log.putString(key + "/MotorType", timestamp, motorType);
+    log.putBoolean(key + "/IsBrushless", timestamp, isBrushless);
     log.putBoolean(key + "/IsFollower", timestamp, isFollower);
   }
 
@@ -111,9 +143,9 @@ export default class REVSchemas {
     const sensorVelocity = sensorVelocityRaw / 128.0;
     const sensorPosition = dataView.getFloat32(4, true);
 
-    log.putNumber(key + "/AnalogVoltage", timestamp, sensorVoltage);
-    log.putNumber(key + "/AnalogVelocity", timestamp, sensorVelocity);
-    log.putNumber(key + "/AnalogPosition", timestamp, sensorPosition);
+    log.putNumber(key + "/AnalogSensor_Voltage", timestamp, sensorVoltage);
+    log.putNumber(key + "/AnalogSensor_Velocity", timestamp, sensorVelocity);
+    log.putNumber(key + "/AnalogSensor_Position", timestamp, sensorPosition);
   }
 
   /**
@@ -127,8 +159,8 @@ export default class REVSchemas {
     const encoderVelocity = dataView.getFloat32(0, true);
     const encoderPosition = dataView.getFloat32(4, true);
 
-    log.putNumber(key + "/AlternateVelocityRPM", timestamp, encoderVelocity);
-    log.putNumber(key + "/AlternatePositionRotations", timestamp, encoderPosition);
+    log.putNumber(key + "/AlternateEncoder_VelocityRPM", timestamp, encoderVelocity);
+    log.putNumber(key + "/AlternateEncoder_PositionRotations", timestamp, encoderPosition);
   }
 
   /**
@@ -142,8 +174,8 @@ export default class REVSchemas {
     const encoderPosition = dataView.getFloat32(0, true);
     const encoderAbsoluteAngle = dataView.getUint16(4, true) / 65535.0;
 
-    log.putNumber(key + "/AbsolutePositionRotations", timestamp, encoderPosition);
-    log.putNumber(key + "/AbsolutePositionRotationsNoOffset", timestamp, encoderAbsoluteAngle);
+    log.putNumber(key + "/AbsoluteEncoder_PositionRotations", timestamp, encoderPosition);
+    log.putNumber(key + "/AbsoluteEncoder_PositionRotationsNoOffset", timestamp, encoderAbsoluteAngle);
   }
 
   /**
@@ -157,7 +189,7 @@ export default class REVSchemas {
     const encoderVelocity = dataView.getFloat32(0, true);
     const encoderFrequency = dataView.getUint16(4, true);
 
-    log.putNumber(key + "/AbsoluteVelocityRPM", timestamp, encoderVelocity);
-    log.putNumber(key + "/AbsoluteFrequency", timestamp, encoderFrequency);
+    log.putNumber(key + "/AbsoluteEncoder_VelocityRPM", timestamp, encoderVelocity);
+    log.putNumber(key + "/AbsoluteEncoder_Frequency", timestamp, encoderFrequency);
   }
 }

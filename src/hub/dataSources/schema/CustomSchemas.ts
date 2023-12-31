@@ -7,10 +7,4 @@ const CustomSchemas: Map<string, (log: Log, key: string, timestamp: number, valu
 export default CustomSchemas;
 
 CustomSchemas.set("rawBytes", PhotonSchema); // PhotonVision 2023.1.2
-CustomSchemas.set("sparkmax_periodic0", REVSchemas.parsePeriodic0);
-CustomSchemas.set("sparkmax_periodic1", REVSchemas.parsePeriodic1);
-CustomSchemas.set("sparkmax_periodic2", REVSchemas.parsePeriodic2);
-CustomSchemas.set("sparkmax_periodic3", REVSchemas.parsePeriodic3);
-CustomSchemas.set("sparkmax_periodic4", REVSchemas.parsePeriodic4);
-CustomSchemas.set("sparkmax_periodic5", REVSchemas.parsePeriodic5);
-CustomSchemas.set("sparkmax_periodic6", REVSchemas.parsePeriodic6);
+CustomSchemas.set("unofficialrevlog", REVSchemas.parseUnofficialLog);
