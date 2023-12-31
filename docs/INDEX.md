@@ -32,6 +32,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 ## More Features
 
 - [Loading Zebra MotionWorks™ Data](/docs/ZEBRA.md)
+- [REV Motor Controller Logging](/docs/REV-LOGGING.md)
 - [Exporting Log Data](/docs/EXPORT.md)
 - [Publishing NetworkTables Data](/docs/NT-PUBLISHING.md)
 - [Custom Assets](/docs/CUSTOM-ASSETS.md)
