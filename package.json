@@ -126,6 +126,14 @@
         "mimeType": "application/x-dsevents",
         "role": "Viewer",
         "icon": "icons/app/dsevents-icon"
+      },
+      {
+        "ext": "hoot",
+        "name": "Hoot robot log",
+        "description": "Hoot robot log",
+        "mimeType": "application/x-hoot",
+        "role": "Viewer",
+        "icon": "icons/app/hoot-icon"
       }
     ],
     "mac": {

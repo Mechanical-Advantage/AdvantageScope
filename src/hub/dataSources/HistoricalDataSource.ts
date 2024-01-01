@@ -1,4 +1,6 @@
 import Log from "../../shared/log/Log";
+import { getOrDefault } from "../../shared/log/LogUtil";
+import LoggableType from "../../shared/log/LoggableType";
 import WorkerManager from "../WorkerManager";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
@@ -6,7 +8,7 @@ export class HistoricalDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
-    // ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
+    ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js"
   };
@@ -43,11 +45,11 @@ export class HistoricalDataSource {
       if (path.endsWith(".dsevents")) {
         newPath = path.slice(0, -8) + "dslog";
       }
-      // if (window.platform !== "win32" && path.endsWith(".hoot")) {
-      //   this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
-      //   this.setStatus(HistoricalDataSourceStatus.Error);
-      //   return;
-      // }
+      if (window.platform !== "win32" && path.endsWith(".hoot")) {
+        this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
+        this.setStatus(HistoricalDataSourceStatus.Error);
+        return;
+      }
       if (!this.paths.includes(newPath)) {
         this.paths.push(newPath);
       }
@@ -129,14 +131,38 @@ export class HistoricalDataSource {
           completedCount++;
           if (completedCount === fileContents.length && this.status === HistoricalDataSourceStatus.Decoding) {
             // All decodes finised
+            let log: Log =
+              fileContents.length === 1
+                ? decodedLogs[i]!
+                : Log.mergeLogs(decodedLogs.filter((log) => log !== null) as Log[]);
             if (this.outputCallback !== null) {
-              if (fileContents.length === 1) {
-                this.outputCallback(decodedLogs[i]!);
-              } else {
-                this.outputCallback(Log.mergeLogs(decodedLogs.filter((log) => log !== null) as Log[]));
-              }
+              this.outputCallback(log);
             }
             this.setStatus(HistoricalDataSourceStatus.Ready);
+
+            // CTRE non-Pro warning
+            if (window.localStorage.getItem("skipCTRENonProWarning") === "true") {
+              return;
+            }
+            let nonProDeviceFound = false;
+            log.getFieldKeys().forEach((key) => {
+              if (
+                !nonProDeviceFound &&
+                key.endsWith("IsProLicensed") &&
+                key.includes("Phoenix6") &&
+                getOrDefault(log, key, LoggableType.Number, Infinity, 1) === 0
+              ) {
+                nonProDeviceFound = true;
+              }
+            });
+            if (nonProDeviceFound) {
+              window.localStorage.setItem("skipCTRENonProWarning", "true");
+              window.sendMainMessage("alert", {
+                title: "About Non-Pro Signals",
+                content:
+                  "This log includes CTRE devices that are not Phoenix Pro licensed. Not all signals are available for these devices (check the Phoenix 6 documentation for details). This message will not appear again."
+              });
+            }
           }
         })
         .catch(() => {
