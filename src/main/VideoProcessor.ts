@@ -157,7 +157,13 @@ export class VideoProcessor {
           }
           let dimensionsXIndex = text.indexOf("x", regexResult.index + 2);
           width = Number(text.substring(regexResult.index + 2, dimensionsXIndex));
-          height = Number(text.substring(dimensionsXIndex + 1, text.indexOf(" ", dimensionsXIndex + 1)));
+          let dimensionsHeightEnd = /[^0-9]/.exec(text.substring(dimensionsXIndex + 1));
+          if (dimensionsHeightEnd === null) {
+            sendError();
+            return;
+          }
+          let dimensionsHeightEndIndex = dimensionsXIndex + dimensionsHeightEnd.index;
+          height = Number(text.substring(dimensionsXIndex + 1, dimensionsHeightEndIndex));
           if (isNaN(width) || isNaN(height)) {
             sendError();
             return;
