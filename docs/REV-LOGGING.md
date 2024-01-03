@@ -19,7 +19,7 @@ After setup, periodic CAN frames from all Spark Max and Spark Flex devices are p
 Install the [UnofficialREVLogger](https://github.com/Mechanical-Advantage/UnofficialREVLogger) vendordep by going to "WPILib: Manage Vendor Libraries" > "Install new libraries (online)" in VSCode and pasting in the URL below.
 
 ```
-https://raw.githubusercontent.com/Mechanical-Advantage/UnofficialREVLogger/maven/UnofficialREVLogger.json
+https://raw.githubusercontent.com/jwbonner/UnofficialREVLogger/maven/UnofficialREVLogger.json
 ```
 
 The REV logger publishes to NetworkTables by default, but data can be saved to a log files by enabling WPILib's DataLogManager. The logger should be started in `robotInit`, as shown below in Java and C++.
