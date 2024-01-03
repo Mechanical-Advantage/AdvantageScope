@@ -1774,7 +1774,7 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
 function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath: string | null) {
   const exportWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    height: process.platform === "win32" ? 206 : 189, // "useContentSize" is broken on Windows when not resizable
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,

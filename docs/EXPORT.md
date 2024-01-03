@@ -12,6 +12,8 @@ To view options for exporting, click "File" > "Export Data..." or press **cmd/ct
 
 ![Export options](/docs/resources/export/export-1.png)
 
+## Options
+
 The following options are provided when exporting:
 
 - **Format:** Sets the general format of the exported file. See options below.
@@ -27,6 +29,9 @@ The following options are provided when exporting:
   - "_/DriverStation/Joystick0_": Include all fields starting with "/DriverStation/Joystick0" (data from the first joystick).
   - "_Flywheels,DS:enabled_": Include all fields starting with "/Flywheels" or "DS:enabled" (all data from the flywheel, plus the robot's enabled status).
   - "_Drive/LeftPosition,Drive/RightPosition_": Only include the fields "/Drive/LeftPosition" and "/Drive/RightPosition".
+- **Field Set:** See options below. Generated fields are created by AdvantageScope to break down complex types, and are displayed with gray text in the sidebar. This includes the individual components of arrays, structs, and other schemas.
+  - _Include Generated:_ Export all viewable fields, which includes generated fields. Recommended if the exported data will be opened in an application not capable of parsing complex types.
+  - _Original Only:_ Only export fields that were present in the original log file, which excludes generated fields. Recommended if the exported data will be opened in AdvantageScope or another application capable of parsing complex types.
 
 > Note: Exported log files may not exactly match the original data. Duplicate values recorded in the original log file are discarded, and are not included in the "CSV (List)", "WPILOG", or "MCAP" formats. This effect can be used to reduce the size of WPILOG files with duplicate values, by opening and then exporting again with the "WPILOG" format.
 
