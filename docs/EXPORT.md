@@ -20,7 +20,7 @@ The following options are provided when exporting:
   - _CSV (Table):_ Comma separated values, where each row represents a distinct timestamp and each column represents a field (plus a column for the timestamp value). Each row can represent a change in multiple fields.
   - _CSV (List):_ Comma separated values, where each row represents a change in a single field with columns for timestamp, key, and value.
   - _WPILOG:_ Standard WPILOG file that can be opened again in AdvantageScope.
-  - _MCAP:_ Standard [MCAP](https://mcap.dev) file that can be opened in [Foxglove](https://foxglove.dev). Note that structured data is not supported for MCAP exports.
+  - _MCAP:_ Standard [MCAP](https://mcap.dev) file that can be opened in [Foxglove](https://foxglove.dev).
 - **Timestamps:** Only for "CSV (Table)". Sets the method for creating new rows. See options below.
   - _All Changes:_ Create a new row when any of the included fields are updated. Other columns will show duplicate values.
   - _Fixed:_ Create new rows at a fixed interval, useful for logs without timestamp synchronization (when many fields are being logged with similar, but not identical, timestamps).
