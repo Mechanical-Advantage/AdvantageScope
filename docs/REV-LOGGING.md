@@ -2,7 +2,7 @@
 
 _[< Return to homepage](/docs/INDEX.md)_
 
-Since REV does not provide an official method of automatically recording data from the Spark Max and Spark Flex, we have provided an unofficial alternative. This enables live plotting and logging of all devices similar to CTRE's [Tuner X plotting feature](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) and [signal logging API](https://v6.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging).
+Since REV does not provide an official method of automatically recording data from the Spark Max and Spark Flex, we have provided an unofficial alternative for Java and C++. This enables live plotting and logging of all devices similar to CTRE's [Tuner X plotting feature](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) and [signal logging API](https://v6.docs.ctr-electronics.com/en/latest/docs/yearly-changes/yearly-changelog.html#signal-logging).
 
 After setup, periodic CAN frames from all Spark Max and Spark Flex devices are published to NetworkTables. WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) can be used to capture the data to a log file. These frames are then viewable in AdvantageScope (see [Opening Log Files](/docs/OPEN-FILE.md) and [Connecting to Live Sources](/docs/OPEN-LIVE.md)).
 
@@ -16,17 +16,37 @@ After setup, periodic CAN frames from all Spark Max and Spark Flex devices are p
 
 ## Setup
 
-Install the [UnofficialREVLogger](https://github.com/Mechanical-Advantage/UnofficialREVLogger) vendordep by going to "WPILib: Manage Vendor Libraries" > "Install new libraries (online)" in VSCode and pasting in the URL below. Java and C++ are currently supported.
+Install the [UnofficialREVLogger](https://github.com/Mechanical-Advantage/UnofficialREVLogger) vendordep by going to "WPILib: Manage Vendor Libraries" > "Install new libraries (online)" in VSCode and pasting in the URL below.
 
 ```
-https://raw.githubusercontent.com/jwbonner/UnofficialREVLogger/maven/UnofficialREVLogger.json
+https://raw.githubusercontent.com/Mechanical-Advantage/UnofficialREVLogger/maven/UnofficialREVLogger.json
 ```
 
-Start the logger in `robotInit` (Java example shown).
+The REV logger publishes to NetworkTables by default, but data can be saved to a log files by enabling WPILib's DataLogManager. The logger should be started in `robotInit`, as shown below in Java and C++.
 
 ```java
 public void robotInit() {
   DataLogManager.start();
   UnofficialREVLogger.start();
+}
+```
+
+```cpp
+#include "frc/DataLogManager.h"
+#include "UnofficialREVLogger.h"
+
+void Robot::RobotInit() {
+  frc::DataLogManager::Start();
+  UnofficialREVLogger::Start();
+}
+```
+
+AdvantageKit users should instead add the line shown below in `robotInit` to start recording data to the AdvantageKit log. Note that this feature is provided for convenience only; the data recorded to the log is NOT available in replay. **REV motor controllers must still be within an IO implementation with defined inputs to support replay**.
+
+```java
+public void robotInit() {
+  // ...
+  Logger.registerUnofficialREVLogger(UnofficialREVLogger.startAkit());
+  Logger.start();
 }
 ```
