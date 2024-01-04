@@ -70,7 +70,9 @@ export function convert(value: number, from: string, to: string): number {
 }
 
 export function convertWithPreset(value: number, preset: UnitConversionPreset) {
-  if (preset.type === null || preset.from === undefined || preset.to === undefined) {
+  if (preset.type === null && preset.factor === 1) {
+    return value;
+  } else if (preset.from === undefined || preset.to === undefined) {
     return value * preset.factor;
   } else {
     return convert(value, preset.from, preset.to) * preset.factor;

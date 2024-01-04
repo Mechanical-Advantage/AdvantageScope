@@ -102,16 +102,25 @@ export default class Sidebar {
         this.SEARCH_INPUT.blur();
       }
     });
+    let lastInputRectBottom: number | null = null;
+    let lastInputRectWidth: number | null = null;
     let searchPeriodic = () => {
       let inputRect = this.SEARCH_INPUT.getBoundingClientRect();
-      this.SEARCH_RESULTS.style.top = inputRect.bottom.toString() + "px";
-      this.SEARCH_RESULTS.style.minWidth = inputRect.width.toString() + "px";
+      if (inputRect.bottom !== lastInputRectBottom) {
+        lastInputRectBottom = inputRect.bottom;
+        this.SEARCH_RESULTS.style.top = inputRect.bottom.toString() + "px";
+      }
+      if (inputRect.width !== lastInputRectWidth) {
+        lastInputRectWidth = inputRect.width;
+        this.SEARCH_RESULTS.style.minWidth = inputRect.width.toString() + "px";
+      }
       let hidden =
         !searchInputFocused || this.SEARCH_INPUT.value.length === 0 || this.SEARCH_RESULTS.childElementCount === 0;
-      let unhiding = !hidden && this.SEARCH_RESULTS.hidden;
-      this.SEARCH_RESULTS.hidden = hidden;
-      if (unhiding) {
-        this.SEARCH_RESULTS.scrollTop = 0;
+      if (hidden !== this.SEARCH_RESULTS.hidden) {
+        this.SEARCH_RESULTS.hidden = hidden;
+        if (!hidden && this.SEARCH_RESULTS.hidden) {
+          this.SEARCH_RESULTS.scrollTop = 0;
+        }
       }
     };
 
@@ -204,8 +213,9 @@ export default class Sidebar {
     if (liveTime !== null) {
       range[1] = liveTime;
     }
+    let title: string;
     if (this.fieldCount === 0) {
-      this.SIDEBAR_TITLE.innerText = "No data available";
+      title = "No data available";
     } else {
       let runtime = range[1] - range[0];
       let runtimeUnit = "s";
@@ -217,7 +227,7 @@ export default class Sidebar {
         runtime /= 60;
         runtimeUnit = "h";
       }
-      this.SIDEBAR_TITLE.innerText =
+      title =
         this.fieldCount.toString() +
         " field" +
         (this.fieldCount === 1 ? "" : "s") +
@@ -225,6 +235,9 @@ export default class Sidebar {
         Math.floor(runtime).toString() +
         runtimeUnit +
         " runtime";
+    }
+    if (title !== this.SIDEBAR_TITLE.innerText) {
+      this.SIDEBAR_TITLE.innerText = title;
     }
   }
 
@@ -527,9 +540,20 @@ export default class Sidebar {
         circle.setAttributeNS(null, "r", "4.5");
 
         // Update values periodically
+        let firstUpdate = true;
+        let lastValue: boolean | null = null;
         this.updateValueCallbacks.push((time) => {
+          let rect = fieldElement.getBoundingClientRect();
+          let onScreen =
+            rect.height > 0 && rect.width > 0 && rect.top >= -rect.height && rect.top <= window.innerHeight;
+          if (!onScreen) return;
+
           let value: boolean | null =
             time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Boolean, time, null);
+          if (!firstUpdate && value === lastValue) return;
+          firstUpdate = false;
+          lastValue = value;
+
           if (value !== null) {
             const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
             circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
@@ -570,9 +594,20 @@ export default class Sidebar {
         valueElement.appendChild(numValueSpan);
 
         // Add callback
+        let firstUpdate = true;
+        let lastValue: number | null = null;
         this.updateValueCallbacks.push((time) => {
+          let rect = fieldElement.getBoundingClientRect();
+          let onScreen =
+            rect.height > 0 && rect.width > 0 && rect.top >= -rect.height && rect.top <= window.innerHeight;
+          if (!onScreen) return;
+
           let value: number | null =
             time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.Number, time, null);
+          if (!firstUpdate && value === lastValue) return;
+          firstUpdate = false;
+          lastValue = value;
+
           let valueStr = "";
           if (value !== null) {
             if (Math.abs(value) < 1e-9) {
@@ -591,9 +626,20 @@ export default class Sidebar {
           fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
         });
       } else if (type === LoggableType.String) {
+        let firstUpdate = true;
+        let lastValue: string | null = null;
         this.updateValueCallbacks.push((time) => {
+          let rect = fieldElement.getBoundingClientRect();
+          let onScreen =
+            rect.height > 0 && rect.width > 0 && rect.top >= -rect.height && rect.top <= window.innerHeight;
+          if (!onScreen) return;
+
           let value: string | null =
             time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.String, time, null);
+          if (!firstUpdate && value === lastValue) return;
+          firstUpdate = false;
+          lastValue = value;
+
           if (value !== null) {
             if (value.length > 8) {
               valueElement.innerText = value.substring(0, 8) + "\u2026";

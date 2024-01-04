@@ -29,7 +29,10 @@ export default class NT4Source extends LiveDataSource {
 
     this.periodicCallback = setInterval(() => {
       // Update timestamp range based on connection time
-      this.clearTimestampsBeforeConnection();
+      if (this.client !== null && this.connectTime !== null) {
+        let connectServerTime = this.client.getServerTime_us(this.connectTime);
+        if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
+      }
 
       // Update subscriptions
       if (this.client !== null) {
@@ -146,16 +149,6 @@ export default class NT4Source extends LiveDataSource {
         }
       });
     }, 1000 / 60);
-  }
-
-  /** If the connection is active and the server connection time is known,
-   * clear data before that time. This prevents topics that haven't been
-   * updated for a while from altering the timestamp range. */
-  private clearTimestampsBeforeConnection() {
-    if (this.client !== null && this.connectTime !== null) {
-      let connectServerTime = this.client.getServerTime_us(this.connectTime);
-      if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
-    }
   }
 
   connect(
@@ -304,7 +297,6 @@ export default class NT4Source extends LiveDataSource {
           }
           if (updated) {
             this.shouldRunOutputCallback = true;
-            this.clearTimestampsBeforeConnection();
           }
         },
         () => {
