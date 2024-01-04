@@ -142,7 +142,8 @@ export function loadAssets(): AdvantageScopeAssets {
             topLeft: [0, 0],
             bottomRight: [0, 0],
             widthInches: 0,
-            heightInches: 0
+            heightInches: 0,
+            defaultOrigin: "auto"
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
@@ -170,6 +171,15 @@ export function loadAssets(): AdvantageScopeAssets {
           if ("heightInches" in configRaw && typeof configRaw.heightInches === "number") {
             config.heightInches = configRaw.heightInches;
           }
+          if (
+            "defaultOrigin" in configRaw &&
+            typeof configRaw.defaultOrigin === "string" &&
+            (configRaw.defaultOrigin === "auto" ||
+              configRaw.defaultOrigin === "red" ||
+              configRaw.defaultOrigin === "blue")
+          ) {
+            config.defaultOrigin = configRaw.defaultOrigin;
+          }
           assets.field2ds.push(config);
         } else if (isField3d) {
           // ***** 3D FIELD *****
@@ -178,7 +188,8 @@ export function loadAssets(): AdvantageScopeAssets {
             path: path.join(parentFolder, object.name, "model.glb"),
             rotations: [],
             widthInches: 0,
-            heightInches: 0
+            heightInches: 0,
+            defaultOrigin: "auto"
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
@@ -205,6 +216,15 @@ export function loadAssets(): AdvantageScopeAssets {
           }
           if ("heightInches" in configRaw && typeof configRaw.heightInches === "number") {
             config.heightInches = configRaw.heightInches;
+          }
+          if (
+            "defaultOrigin" in configRaw &&
+            typeof configRaw.defaultOrigin === "string" &&
+            (configRaw.defaultOrigin === "auto" ||
+              configRaw.defaultOrigin === "red" ||
+              configRaw.defaultOrigin === "blue")
+          ) {
+            config.defaultOrigin = configRaw.defaultOrigin;
           }
           assets.field3ds.push(config);
         } else if (isRobot) {

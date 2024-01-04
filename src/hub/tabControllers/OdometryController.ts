@@ -99,7 +99,7 @@ export default class OdometryController extends TimelineVizController {
 
     // Set default alliance values
     this.ALLIANCE_BUMPERS.value = "auto";
-    this.ALLIANCE_ORIGIN.value = "blue";
+    this.ALLIANCE_ORIGIN.value = "auto";
 
     // Add initial set of options
     this.resetGameOptions();
@@ -122,10 +122,7 @@ export default class OdometryController extends TimelineVizController {
     });
 
     // Bind source link
-    this.GAME.addEventListener("change", () => {
-      let config = window.assets?.field2ds.find((game) => game.name === this.GAME.value);
-      this.GAME_SOURCE_LINK.hidden = config !== undefined && config.sourceUrl === undefined;
-    });
+    this.GAME.addEventListener("change", () => this.updateGameDependentControls());
     this.GAME_SOURCE_LINK.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
@@ -160,13 +157,17 @@ export default class OdometryController extends TimelineVizController {
     } else {
       this.GAME.value = options[0];
     }
-    this.updateGameSourceLink();
+    this.updateGameDependentControls(this.GAME.value === value); // Skip origin reset if game is unchanged
   }
 
-  /** Shows or hides the source link based on the selected game. */
-  private updateGameSourceLink() {
+  /** Updates the alliance and source buttons based on the selected value. */
+  private updateGameDependentControls(skipOriginReset = false) {
     let fieldConfig = window.assets?.field2ds.find((game) => game.name === this.GAME.value);
     this.GAME_SOURCE_LINK.hidden = fieldConfig !== undefined && fieldConfig.sourceUrl === undefined;
+
+    if (fieldConfig !== undefined && !skipOriginReset) {
+      this.ALLIANCE_ORIGIN.value = fieldConfig.defaultOrigin;
+    }
   }
 
   get options(): { [id: string]: any } {
@@ -194,7 +195,7 @@ export default class OdometryController extends TimelineVizController {
     this.ALLIANCE_BUMPERS.value = options.allianceBumpers;
     this.ALLIANCE_ORIGIN.value = options.allianceOrigin;
     this.ORIENTATION.value = options.orientation;
-    this.updateGameSourceLink();
+    this.updateGameDependentControls(true);
   }
 
   newAssets() {

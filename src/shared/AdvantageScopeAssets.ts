@@ -14,6 +14,7 @@ export interface Config2d {
   bottomRight: [number, number];
   widthInches: number;
   heightInches: number;
+  defaultOrigin: "auto" | "blue" | "red";
 }
 
 export interface Config3dField {
@@ -24,6 +25,7 @@ export interface Config3dField {
   rotations: Config3d_Rotation[];
   widthInches: number;
   heightInches: number;
+  defaultOrigin: "auto" | "blue" | "red";
 }
 
 export interface Config3dRobot {

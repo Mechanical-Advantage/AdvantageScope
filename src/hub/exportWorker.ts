@@ -41,7 +41,7 @@ self.onmessage = async (event) => {
           }
         });
     };
-    processTree(log.getFieldTree(options.format === "csv-table" || options.format === "csv-list")); // Include generated field if not wpilog
+    processTree(log.getFieldTree(options.includeGenerated));
 
     // Filter by type and prefix
     fields = fields.filter((field) => log.getType(field) !== LoggableType.Empty);
@@ -301,7 +301,7 @@ async function generateMCAP(log: Log, fields: string[], progress: (progress: num
   // Add fields
   let filteredFields = fields.filter((field) => {
     let type = log.getType(field);
-    return type !== null && schemaIds.has(type) && !log.isGenerated(field);
+    return type !== null && schemaIds.has(type);
   });
   for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
     let field = filteredFields[fieldIndex];

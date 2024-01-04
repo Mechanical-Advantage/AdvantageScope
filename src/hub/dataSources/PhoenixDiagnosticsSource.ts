@@ -63,7 +63,10 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
                   let isEnum = signal.Name in PhoenixEnums;
                   this.log?.createBlankField(key, isEnum ? LoggableType.String : LoggableType.Number);
                   if (signal.Units.length > 0) {
-                    this.log?.setMetadataString(key, JSON.stringify({ units: signal.Units }));
+                    this.log?.setMetadataString(
+                      key,
+                      JSON.stringify({ units: signal.Units, description: signal.Summary })
+                    );
                   }
                 });
                 this.newOutput();

@@ -1,11 +1,12 @@
 import ExportOptions from "./shared/ExportOptions";
 
-const HELP_URL = "https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/EXPORT.md";
+const HELP_URL = "https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/EXPORT.md#options";
 
 const FORMAT = document.getElementById("format") as HTMLInputElement;
 const SAMPLING_MODE = document.getElementById("samplingMode") as HTMLInputElement;
 const SAMPLING_PERIOD = document.getElementById("samplingPeriod") as HTMLInputElement;
 const PREFIXES = document.getElementById("prefixes") as HTMLInputElement;
+const INCLUDE_GENERATED = document.getElementById("includeGenerated") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 const HELP_BUTTON = document.getElementsByClassName("help-div")[0].firstElementChild as HTMLElement;
@@ -43,7 +44,8 @@ window.addEventListener("message", (event) => {
         format: format,
         samplingMode: samplingMode,
         samplingPeriod: Number(SAMPLING_PERIOD.value),
-        prefixes: PREFIXES.value
+        prefixes: PREFIXES.value,
+        includeGenerated: INCLUDE_GENERATED.value === "true"
       };
       messagePort.postMessage(options);
     }

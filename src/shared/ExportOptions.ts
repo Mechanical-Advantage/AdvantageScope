@@ -3,4 +3,5 @@ export default interface ExportOptions {
   samplingMode: "all" | "fixed";
   samplingPeriod: number;
   prefixes: string;
+  includeGenerated: boolean;
 }
