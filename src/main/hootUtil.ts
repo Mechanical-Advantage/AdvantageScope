@@ -15,7 +15,7 @@ const TUNER_OWLET_PATH = "C:\\Program Files\\WindowsApps\\${TUNERXNAME}\\windows
  */
 export async function convertHoot(hootPath: string): Promise<string> {
   // Check for owlet and copy if necessary
-  // Normally copied at startup, unless Tuner X was installed after AdvantageScope
+  // Normally copied at startup, unless Tuner X was installed after starting AdvantageScope
   if (!fs.existsSync(OWLET_CACHE_PATH)) {
     try {
       await copyOwlet();
@@ -35,6 +35,39 @@ export async function convertHoot(hootPath: string): Promise<string> {
         );
       }
       resolve(wpilogPath);
+    });
+  });
+}
+
+/**
+ * Checks if a Hoot log contains non-Pro devices
+ *
+ * @param hootPath The path to the Hoot file ot check
+ * @returns Whether the Hoot log is Pro-licensed
+ */
+export async function checkHootIsPro(hootPath: string): Promise<boolean> {
+  // Check for owlet and copy if necessary
+  // Normally copied at startup, unless Tuner X was installed after starting AdvantageScope
+  if (!fs.existsSync(OWLET_CACHE_PATH)) {
+    try {
+      await copyOwlet();
+    } catch {
+      throw "Error";
+    }
+  }
+
+  // Run owlet
+  let owlet = spawn(OWLET_CACHE_PATH, [hootPath, "--check-pro"]);
+  return new Promise((resolve, reject) => {
+    let stdout = "";
+    owlet.stdout.on("data", (chunk: string) => {
+      stdout += chunk;
+    });
+    owlet.once("exit", () => {
+      if (owlet.exitCode !== 0) {
+        reject("Error");
+      }
+      resolve(!stdout.includes("NOT"));
     });
   });
 }

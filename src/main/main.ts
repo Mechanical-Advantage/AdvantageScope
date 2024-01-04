@@ -59,7 +59,7 @@ import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, loadAssets } from "./assetsUtil";
-import { convertHoot, copyOwlet } from "./hootUtil";
+import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -201,9 +201,14 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       let completedCount = 0;
       let targetCount = 0;
       let errorMessage: null | string = null;
+      let hasHootNonPro = false;
       let sendIfReady = () => {
         if (completedCount === targetCount) {
-          sendMessage(window, "historical-data", { files: results, error: errorMessage });
+          sendMessage(window, "historical-data", {
+            files: results,
+            error: errorMessage,
+            hasHootNonPro: hasHootNonPro
+          });
         }
       };
 
@@ -235,17 +240,23 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else if (path.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
-          convertHoot(path)
-            .then((wpilogPath) => {
-              openPath(wpilogPath, (buffer) => {
-                results[index][0] = buffer;
-                fs.rmSync(wpilogPath);
-              });
+          checkHootIsPro(path)
+            .then((isPro) => {
+              hasHootNonPro = hasHootNonPro || !isPro;
             })
-            .catch((reason) => {
-              errorMessage = reason;
-              completedCount++;
-              sendIfReady();
+            .finally(() => {
+              convertHoot(path)
+                .then((wpilogPath) => {
+                  openPath(wpilogPath, (buffer) => {
+                    results[index][0] = buffer;
+                    fs.rmSync(wpilogPath);
+                  });
+                })
+                .catch((reason) => {
+                  errorMessage = reason;
+                  completedCount++;
+                  sendIfReady();
+                });
             });
         } else {
           // Not DSLog, open normally
@@ -253,6 +264,27 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           openPath(path, (buffer) => (results[index][0] = buffer));
         }
       });
+      break;
+
+    case "hoot-non-pro-warning":
+      dialog
+        .showMessageBox(window, {
+          type: "info",
+          title: "Alert",
+          message: "About Non-Pro Signals",
+          detail:
+            "This log includes CTRE devices that are not Phoenix Pro licensed. Not all signals are available for these devices (check the Phoenix 6 documentation for details).",
+          checkboxLabel: "Don't Show Again",
+          icon: WINDOW_ICON
+        })
+        .then((response) => {
+          if (response.checkboxChecked) {
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            prefs.skipHootNonProWarning = true;
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
+          }
+        });
       break;
 
     case "live-rlog-start":
@@ -2170,7 +2202,9 @@ app.whenReady().then(() => {
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;
     }
-
+    if ("skipHootNonProWarning" in oldPrefs && typeof oldPrefs.skipHootNonProWarning === "boolean") {
+      prefs.skipHootNonProWarning = oldPrefs.skipHootNonProWarning;
+    }
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
   }

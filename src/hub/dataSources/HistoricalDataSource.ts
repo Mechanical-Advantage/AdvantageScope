@@ -140,28 +140,9 @@ export class HistoricalDataSource {
             }
             this.setStatus(HistoricalDataSourceStatus.Ready);
 
-            // CTRE non-Pro warning
-            if (window.localStorage.getItem("skipCTRENonProWarning") === "true") {
-              return;
-            }
-            let nonProDeviceFound = false;
-            log.getFieldKeys().forEach((key) => {
-              if (
-                !nonProDeviceFound &&
-                key.endsWith("IsProLicensed") &&
-                key.includes("Phoenix6") &&
-                getOrDefault(log, key, LoggableType.Number, Infinity, 1) === 0
-              ) {
-                nonProDeviceFound = true;
-              }
-            });
-            if (nonProDeviceFound) {
-              window.localStorage.setItem("skipCTRENonProWarning", "true");
-              window.sendMainMessage("alert", {
-                title: "About Non-Pro Signals",
-                content:
-                  "This log includes CTRE devices that are not Phoenix Pro licensed. Not all signals are available for these devices (check the Phoenix 6 documentation for details). This message will not appear again."
-              });
+            // Hoot non-Pro warning
+            if (data.hasHootNonPro && !window.preferences?.skipHootNonProWarning) {
+              window.sendMainMessage("hoot-non-pro-warning");
             }
           }
         })

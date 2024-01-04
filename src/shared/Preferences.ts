@@ -11,5 +11,6 @@ export default interface Preferences {
   threeDimensionModeAc: "cinematic" | "standard" | "low-power";
   threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
   tbaApiKey: string;
+  skipHootNonProWarning: boolean;
   usb?: boolean;
 }
