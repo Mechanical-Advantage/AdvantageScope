@@ -9,7 +9,7 @@ After setup, periodic CAN frames from all Spark Max and Spark Flex devices are p
 - **All signals** are captured automatically, with **no manual setup for new devices**.
 - **Every frame is captured**, even when the status frame period is faster than the robot loop cycle.
 - Frames are logged with **timestamps based on the CAN RX time**, enabling more accurate acceleration characterization with [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) compared to traditional logging in user code (see "SysId Usage" below).
-- Logging is **highly efficient**; operations are threaded and run for under 60µs per 20ms periodic cycle, even when logging many devices.
+- Logging is **highly efficient**; operations are threaded and run for under 80µs per 20ms periodic cycle, even when logging a large number of devices.
 - **All functions of REVLib are unaffected.**
 
 > Note: As this library is not an official REV tool, support queries should be directed to the URCL [issues page](https://github.com/Mechanical-Advantage/URCL/issues) or software@team6328.org rather than REV's support contact.
@@ -22,7 +22,7 @@ Install the URCL vendordep by going to "WPILib: Manage Vendor Libraries" > "Inst
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/maven/URCL.json
 ```
 
-URCL publishes to NetworkTables by default, but data can be saved to a log files by enabling WPILib's DataLogManager. The logger should be started in `robotInit`, as shown below in Java and C++.
+URCL publishes to NetworkTables by default, but data can be saved to a log file by enabling WPILib's DataLogManager. The logger should be started in `robotInit`, as shown below in Java and C++.
 
 ```java
 public void robotInit() {
@@ -43,7 +43,7 @@ void Robot::RobotInit() {
 
 AdvantageKit users should instead add the line shown below in `robotInit` to start recording data to the AdvantageKit log. Note that this feature is provided for convenience only; the data recorded to the log is NOT available in replay. **REV motor controllers must still be within an IO implementation with defined inputs to support replay**.
 
-> Note: AdvantageKit v3.0.0 is required for this function.
+> Note: AdvantageKit must be running the 2024 kickoff release (v3.0.0) or later.
 
 ```java
 public void robotInit() {
