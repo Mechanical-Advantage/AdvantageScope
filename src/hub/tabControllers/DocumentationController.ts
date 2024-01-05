@@ -1,4 +1,5 @@
 import hljs from "highlight.js/lib/core";
+import cpp from "highlight.js/lib/languages/cpp";
 import java from "highlight.js/lib/languages/java";
 import { Remarkable } from "remarkable";
 import { TabState } from "../../shared/HubState";
@@ -13,6 +14,7 @@ export default class DocumentationController implements TabController {
 
   static {
     hljs.registerLanguage("java", java);
+    hljs.registerLanguage("cpp", cpp);
   }
 
   constructor(content: HTMLElement) {

@@ -32,6 +32,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 ## More Features
 
 - [Loading Zebra MotionWorks™ Data](/docs/ZEBRA.md)
+- [Unofficial REV-Compatible Logger](/docs/REV-LOGGING.md)
 - [PhotonVision Integration](/docs/PHOTONVISION.md)
 - [Exporting Log Data](/docs/EXPORT.md)
 - [Publishing NetworkTables Data](/docs/NT-PUBLISHING.md)
