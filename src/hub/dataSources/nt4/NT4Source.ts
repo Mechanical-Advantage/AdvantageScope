@@ -1,9 +1,9 @@
 import Log from "../../../shared/log/Log";
 import { PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
+import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
-import LiveDataTuner from "../LiveDataTuner";
 import CustomSchemas from "../schema/CustomSchemas";
 import { NT4_Client, NT4_Topic } from "./NT4";
 import NT4Tuner from "./NT4Tuner";
@@ -179,7 +179,7 @@ export default class NT4Source extends LiveDataSource {
               structuredType = structuredType.slice(0, -2);
             }
           } else if (topic.type.startsWith(PROTO_PREFIX)) {
-            structuredType = topic.type.split(PROTO_PREFIX)[1];
+            structuredType = ProtoDecoder.getFriendlySchemaType(topic.type.split(PROTO_PREFIX)[1]);
           }
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.log.setWpilibType(modifiedKey, topic.type);
