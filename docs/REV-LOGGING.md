@@ -61,7 +61,7 @@ public void robotInit() {
 // Create SysId routine
 var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
-  new SysIdRoutine.Mechaniam(
+  new SysIdRoutine.Mechanism(
     (voltage) -> subsystem.runVolts(voltage),
     null, // No log consumer, since data is recorded by URCL
     subsystem
