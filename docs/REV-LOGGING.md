@@ -91,8 +91,8 @@ new SysIdRoutine.Config(
 
 4. Choose the following fields below to run the analysis using the default encoder. Position and velocity data from secondary encoders can also be used (alternate, external, analog, absolute, etc).
 
-   - Position = "/URCL/&lt;Device&gt;/MotorPositionRotations"
-   - Velocity = "/URCL/&lt;Device&gt;/MotorVelocityRPM"
-   - Voltage = "/URCL/&lt;Device&gt;/AppliedOutputVoltage"
+   - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
+   - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
+   - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
 
 > Note: The gains produced by SysId will use the native units of the Spark Max by default (rotations and RPM). The linear scaling can be adjusted in SysId, or the [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) and [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>) methods can be used to define the units in robot code.
