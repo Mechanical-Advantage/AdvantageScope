@@ -250,13 +250,15 @@ export default class REVSchema {
     const dataView = new DataView(value.buffer, value.byteOffset, value.byteLength);
 
     let motorPosition = dataView.getFloat32(0, true);
-    if (firmware.major >= 24) {
-      motorPosition += dataView.getUint16(4, true) / (1 << 16);
-    } else {
-      const iAccum = dataView.getFloat32(4, true);
-      log.putNumber(key + "/IAccum", timestamp, iAccum);
+    let iAccum: number | undefined;
+    if (firmware.major < 24) {
+      iAccum = dataView.getFloat32(4, true);
+    } else if (model === DeviceModel.SparkFlex) {
+      motorPosition = Math.trunc(motorPosition);
+      motorPosition += Math.sign(motorPosition) * (dataView.getUint16(4, true) / (1 << 16));
     }
     log.putNumber(key + "/MotorPositionRotations", timestamp, motorPosition);
+    if (iAccum !== undefined) log.putNumber(key + "/IAccum", timestamp, iAccum);
   }
 
   /**
