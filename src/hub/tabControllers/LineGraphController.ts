@@ -707,7 +707,10 @@ export default class LineGraphController implements TabController {
       this.refreshCount,
       this.leftFields,
       this.discreteFields,
-      this.rightFields
+      this.rightFields,
+      window.selection.getMode(),
+      window.selection.getSelectedTime(),
+      window.selection.getHoveredTime()
     ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
