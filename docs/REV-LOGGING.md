@@ -55,6 +55,8 @@ public void robotInit() {
 
 ## SysId Usage
 
+> **WARNING: The version of SysId included in WPILib 2024.1.1 is not compatible with WPILOG files exported from AdvantageScope as described below. This will be fixed soon.**
+
 1. After setting up URCL as shown above, configure the SysId routine using `null` for the mechanism log consumer. An example is shown below for Java.
 
 ```java
