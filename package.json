@@ -145,7 +145,12 @@
         "NSUpdateSecurityPolicy": {
           "AllowPackages": [
             "58SET3NSX7"
-          ]
+          ],
+          "AllowProcesses": {
+            "58SET3NSX7": [
+              "WPILibInstaller"
+            ]
+          }
         }
       },
       "notarize": false
