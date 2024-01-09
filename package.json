@@ -141,6 +141,13 @@
       "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
+      "extendInfo": {
+        "NSUpdateSecurityPolicy": {
+          "AllowPackages": [
+            "58SET3NSX7"
+          ]
+        }
+      },
       "notarize": false
     },
     "linux": {
