@@ -203,8 +203,9 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
         metadata = JSON.stringify(metadataParsed);
       } catch {}
     }
+    let startTimestamp = fieldData.timestamps.length > 0 ? fieldData.timestamps[0] : 0;
     encoder.add(
-      WPILOGEncoderRecord.makeControlStart(0, {
+      WPILOGEncoderRecord.makeControlStart(startTimestamp, {
         entry: entryId, // Entry 0 is reserved
         name: field,
         type: typeStr,
@@ -260,7 +261,7 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
 
   // Encode full log
   progress(1);
-  return encoder.getEncoded();
+  return encoder.getEncoded(true);
 }
 
 async function generateMCAP(log: Log, fields: string[], progress: (progress: number) => void): Promise<Uint8Array> {

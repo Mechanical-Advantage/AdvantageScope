@@ -169,6 +169,11 @@ export class WPILOGEncoderRecord {
     return array;
   }
 
+  /** Returns the timestamp in microseconds. */
+  getTimestamp() {
+    return this.timestamp;
+  }
+
   /** Encodes the full contents of this record and returns the result. */
   getEncoded(): Uint8Array {
     // Generate length bitfield
@@ -207,9 +212,10 @@ export class WPILOGEncoder {
   }
 
   /** Encodes the full data log. */
-  getEncoded(): Uint8Array {
+  getEncoded(sortByTimestamp = false): Uint8Array {
     // Encode all records and header data
-    let encodedRecords = this.records.map((record) => record.getEncoded());
+    let records = sortByTimestamp ? this.records.sort((a, b) => a.getTimestamp() - b.getTimestamp()) : this.records;
+    let encodedRecords = records.map((record) => record.getEncoded());
     let totalRecordLength = encodedRecords.reduce((previous, current) => previous + current.length, 0);
     let encodedHeader = TEXT_ENCODER.encode(HEADER_STRING);
     let encodedExtraHeader = TEXT_ENCODER.encode(this.extraHeader);
