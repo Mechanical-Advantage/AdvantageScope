@@ -9,6 +9,7 @@ import {
   TouchBar,
   TouchBarSlider,
   app,
+  clipboard,
   dialog,
   nativeImage,
   nativeTheme,
@@ -1463,14 +1464,22 @@ function createAboutWindow() {
   detailLines.push("Electron: " + process.versions.electron);
   detailLines.push("Chromium: " + process.versions.chrome);
   detailLines.push("Node: " + process.versions.node);
-  dialog.showMessageBox({
-    type: "info",
-    title: "About",
-    message: "AdvantageScope",
-    detail: COPYRIGHT + "\n\n" + detailLines.join("\n"),
-    buttons: ["Close"],
-    icon: WINDOW_ICON
-  });
+  let detail = detailLines.join("\n");
+  dialog
+    .showMessageBox({
+      type: "info",
+      title: "About",
+      message: "AdvantageScope",
+      detail: COPYRIGHT + "\n\n" + detail,
+      buttons: ["Close", "Copy & Close"],
+      defaultId: 0,
+      icon: WINDOW_ICON
+    })
+    .then((response) => {
+      if (response.response === 1) {
+        clipboard.writeText(detail);
+      }
+    });
 }
 
 /** Creates a new hub window. */
