@@ -250,7 +250,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: ["x64"]
+        arch: ["x64", "arm64"]
 
     steps:
       - name: Checkout repository
@@ -379,7 +379,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: ["x64"]
+        arch: ["x64", "arm64"]
 
     steps:
       - name: Checkout repository
