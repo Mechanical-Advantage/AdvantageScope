@@ -371,7 +371,12 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     29: "MotionMagicVelocityDutyCycleFOC",
     30: "MotionMagicVelocityVoltage",
     31: "MotionMagicVelocityVoltageFOC",
-    32: "MotionMagicVelocityTorqueCurrentFOC"
+    32: "MotionMagicVelocityTorqueCurrentFOC",
+    33: "MotionMagicExpoDutyCycle",
+    34: "MotionMagicExpoDutyCycleFOC",
+    35: "MotionMagicExpoVoltage",
+    36: "MotionMagicExpoVoltageFOC",
+    37: "MotionMagicExpoTorqueCurrentFOC"
   },
   DeviceEnable: {
     1: "Enabled",
