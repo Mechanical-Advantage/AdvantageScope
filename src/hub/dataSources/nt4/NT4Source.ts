@@ -48,7 +48,7 @@ export default class NT4Source extends LiveDataSource {
           }
           if (this.loggingSubscription === null) {
             this.loggingSubscription = this.client.subscribe(
-              [this.akitMode ? AKIT_PREFIX + "/" : "/"],
+              [this.akitMode ? AKIT_PREFIX + "/" : ""],
               true,
               true,
               0.02
@@ -62,7 +62,7 @@ export default class NT4Source extends LiveDataSource {
           }
           if (this.lowBandwidthTopicSubscription === null) {
             this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
-              [this.akitMode ? AKIT_PREFIX + "/" : "/"],
+              [this.akitMode ? AKIT_PREFIX + "/" : ""],
               true
             );
           }
