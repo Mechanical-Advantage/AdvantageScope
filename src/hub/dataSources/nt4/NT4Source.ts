@@ -74,8 +74,12 @@ export default class NT4Source extends LiveDataSource {
             let enabledKey = getEnabledKey(this.log);
             [
               ...(this.akitMode
-                ? ["/.schema"]
-                : [WPILOG_PREFIX + "/.schema", WPILOG_PREFIX + AKIT_PREFIX + "/.schema"]),
+                ? ["/.schema", "/Timestamps"]
+                : [
+                    WPILOG_PREFIX + "/.schema",
+                    WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
+                    WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
+                  ]),
               ...(enabledKey === undefined ? [] : [enabledKey]),
               ...window.tabs.getActiveFields(),
               ...window.sidebar.getActiveFields()

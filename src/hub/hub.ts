@@ -2,6 +2,7 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import Log from "../shared/log/Log";
+import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
@@ -598,11 +599,14 @@ function handleMainMessage(message: NamedMessage) {
         });
       } else {
         isExporting = true;
+        const incompleteWarning =
+          liveConnected &&
+          (window.preferences?.liveSubscribeMode === "low-bandwidth" || window.preferences?.liveMode === "phoenix");
+        const supportsAkit = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key)) !== undefined;
         window.sendMainMessage("prompt-export", {
           path: logPath,
-          incompleteWarning:
-            liveConnected &&
-            (window.preferences?.liveSubscribeMode === "low-bandwidth" || window.preferences?.liveMode === "phoenix")
+          incompleteWarning: incompleteWarning,
+          supportsAkit: supportsAkit
         });
       }
       break;
@@ -635,6 +639,7 @@ function handleMainMessage(message: NamedMessage) {
             title: "Failed to export data",
             content: "There was a problem while converting to the export format. Please try again."
           });
+          setLoading(null);
         })
         .finally(() => {
           isExporting = false;

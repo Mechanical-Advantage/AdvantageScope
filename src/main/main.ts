@@ -569,13 +569,13 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           })
           .then((value) => {
             if (value.response === 0) {
-              createExportWindow(window, message.data.path);
+              createExportWindow(window, message.data.supportsAkit, message.data.path);
             } else {
               sendMessage(window, "cancel-export");
             }
           });
       } else {
-        createExportWindow(window, message.data.path);
+        createExportWindow(window, message.data.supportsAkit, message.data.path);
       }
       break;
 
@@ -1801,9 +1801,14 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
 /**
  * Creates a new window for export options.
  * @param parentWindow The parent window to use for alignment
+ * @param supportsAkit Whether AdvantageKit timestamps are supported
  * @param currentLogPath The current log path
  */
-function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath: string | null) {
+function createExportWindow(
+  parentWindow: Electron.BrowserWindow,
+  supportsAkit: boolean,
+  currentLogPath: string | null
+) {
   const exportWindow = new BrowserWindow({
     width: 300,
     height: process.platform === "win32" ? 206 : 189, // "useContentSize" is broken on Windows when not resizable
@@ -1872,6 +1877,7 @@ function createExportWindow(parentWindow: Electron.BrowserWindow, currentLogPath
     });
     exportWindow.on("blur", () => port2.postMessage({ isFocused: false }));
     exportWindow.on("focus", () => port2.postMessage({ isFocused: true }));
+    port2.postMessage({ supportsAkit: supportsAkit });
     port2.start();
   });
   exportWindow.loadFile(path.join(__dirname, "../www/export.html"));

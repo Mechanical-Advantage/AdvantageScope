@@ -4,6 +4,7 @@ const HELP_URL = "https://github.com/Mechanical-Advantage/AdvantageScope/blob/ma
 
 const FORMAT = document.getElementById("format") as HTMLInputElement;
 const SAMPLING_MODE = document.getElementById("samplingMode") as HTMLInputElement;
+const SAMPLING_MODE_AKIT = SAMPLING_MODE.children[2] as HTMLOptionElement;
 const SAMPLING_PERIOD = document.getElementById("samplingPeriod") as HTMLInputElement;
 const PREFIXES = document.getElementById("prefixes") as HTMLInputElement;
 const INCLUDE_GENERATED = document.getElementById("includeGenerated") as HTMLInputElement;
@@ -15,16 +16,22 @@ window.addEventListener("message", (event) => {
   if (event.source === window && event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
-      // Update button focus
-      if (typeof event.data === "object" && "isFocused" in event.data) {
-        Array.from(document.getElementsByTagName("button")).forEach((button) => {
-          if (event.data.isFocused) {
-            button.classList.remove("blurred");
-          } else {
-            button.classList.add("blurred");
-          }
-        });
-        return;
+      if (typeof event.data === "object") {
+        // Update button focus
+        if ("isFocused" in event.data) {
+          Array.from(document.getElementsByTagName("button")).forEach((button) => {
+            if (event.data.isFocused) {
+              button.classList.remove("blurred");
+            } else {
+              button.classList.add("blurred");
+            }
+          });
+        }
+
+        if ("supportsAkit" in event.data) {
+          let supportsAkit: boolean = event.data.supportsAkit;
+          SAMPLING_MODE_AKIT.disabled = !supportsAkit;
+        }
       }
     };
 
@@ -36,9 +43,10 @@ window.addEventListener("message", (event) => {
       if (FORMAT.value === "wpilog") format = "wpilog";
       if (FORMAT.value === "mcap") format = "mcap";
 
-      let samplingMode: "all" | "fixed" = "all";
-      if (SAMPLING_MODE.value === "all") samplingMode = "all";
+      let samplingMode: "changes" | "fixed" | "akit" = "changes";
+      if (SAMPLING_MODE.value === "changes") samplingMode = "changes";
       if (SAMPLING_MODE.value === "fixed") samplingMode = "fixed";
+      if (SAMPLING_MODE.value === "akit") samplingMode = "akit";
 
       let options: ExportOptions = {
         format: format,
@@ -51,11 +59,9 @@ window.addEventListener("message", (event) => {
     }
 
     // Update disabled inputs
-    function updateDisabled() {
-      SAMPLING_MODE.disabled = FORMAT.value !== "csv-table";
-      SAMPLING_PERIOD.disabled = FORMAT.value !== "csv-table" || SAMPLING_MODE.value !== "fixed";
-    }
-    FORMAT.addEventListener("change", updateDisabled);
+    let updateDisabled = () => {
+      SAMPLING_PERIOD.disabled = SAMPLING_MODE.value !== "fixed";
+    };
     SAMPLING_MODE.addEventListener("change", updateDisabled);
     updateDisabled();
 

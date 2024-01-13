@@ -37,6 +37,7 @@ export const SYSTEM_TIME_KEYS = withMergedKeys([
   "NT:/AdvantageKit/SystemStats/EpochTimeMicros",
   "systemTime"
 ]);
+export const AKIT_TIMESTAMP_KEYS = withMergedKeys(["/Timestamp", "NT:/AdvantageKit/Timestamp"]);
 export const METADATA_KEYS = withMergedKeys([
   "/Metadata",
   "/RealMetadata",

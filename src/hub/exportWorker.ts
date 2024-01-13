@@ -3,7 +3,7 @@ import { IReadable } from "@mcap/core/dist/esm/src/types";
 import ExportOptions from "../shared/ExportOptions";
 import Log from "../shared/log/Log";
 import LogFieldTree from "../shared/log/LogFieldTree";
-import { filterFieldByPrefixes, getLogValueText } from "../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, filterFieldByPrefixes, getLogValueText } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { cleanFloat } from "../shared/util";
 import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGEncoder";
@@ -47,26 +47,46 @@ self.onmessage = async (event) => {
     fields = fields.filter((field) => log.getType(field) !== LoggableType.Empty);
     fields = filterFieldByPrefixes(fields, options.prefixes, options.format === "wpilog");
 
+    // Get timestamps based on sampling mode
+    let timestamps: number[] | undefined = undefined;
+    switch (options.samplingMode) {
+      case "fixed":
+        let samplingPeriodSecs = options.samplingPeriod / 1000;
+        let range = log.getTimestampRange();
+        timestamps = [];
+        for (let timestamp = range[0]; timestamp <= range[1]; timestamp += samplingPeriodSecs) {
+          timestamps.push(cleanFloat(timestamp));
+        }
+        break;
+
+      case "akit":
+        let timestampField = log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+        if (timestampField === undefined) {
+          reject();
+          return;
+        }
+        let timestampData = log.getNumber(timestampField, -Infinity, Infinity);
+        if (timestampData === undefined) {
+          reject();
+          return;
+        }
+        timestamps = timestampData.timestamps;
+        break;
+    }
+
     // Convert to requested format
     switch (options.format) {
       case "csv-table":
-        resolve(
-          generateCsvTable(
-            log,
-            fields,
-            progress,
-            options.samplingMode === "fixed" ? options.samplingPeriod / 1000 : null
-          )
-        );
+        resolve(generateCsvTable(log, fields, progress, timestamps));
         break;
       case "csv-list":
-        resolve(generateCsvList(log, fields, progress));
+        resolve(generateCsvList(log, fields, progress, timestamps));
         break;
       case "wpilog":
-        resolve(generateWPILOG(log, fields, progress));
+        resolve(generateWPILOG(log, fields, progress, timestamps));
         break;
       case "mcap":
-        resolve(await generateMCAP(log, fields, progress));
+        resolve(await generateMCAP(log, fields, progress, timestamps));
         break;
     }
   } catch {
@@ -79,17 +99,11 @@ function generateCsvTable(
   log: Log,
   fields: string[],
   progress: (progress: number) => void,
-  samplingPeriodSecs: number | null
+  timestamps?: number[]
 ): string {
-  // Generate timestamps
-  let timestamps: number[] = log.getTimestamps(fields);
-  if (samplingPeriodSecs !== null) {
-    let minTime = Math.floor(timestamps[0] / samplingPeriodSecs) * samplingPeriodSecs;
-    let maxTime = timestamps[timestamps.length - 1];
-    timestamps = [];
-    for (let timestamp = minTime; timestamp <= maxTime; timestamp += samplingPeriodSecs) {
-      timestamps.push(cleanFloat(timestamp));
-    }
+  // Generate timestamps for changes
+  if (timestamps === undefined) {
+    timestamps = log.getTimestamps(fields);
   }
 
   // Record timestamps
@@ -104,7 +118,7 @@ function generateCsvTable(
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
 
-    timestamps.forEach((timestamp, timestampIndex) => {
+    timestamps!.forEach((timestamp, timestampIndex) => {
       if (fieldData === undefined || fieldType === null) return;
       let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
       if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
@@ -115,7 +129,7 @@ function generateCsvTable(
       data[timestampIndex + 1].push(getLogValueText(value, fieldType).replaceAll(",", ";"));
 
       // Send progress update
-      progress((fieldIndex + timestampIndex / timestamps.length) / fields.length);
+      progress((fieldIndex + timestampIndex / timestamps!.length) / fields.length);
     });
   });
 
@@ -124,20 +138,44 @@ function generateCsvTable(
   return text;
 }
 
-function generateCsvList(log: Log, fields: string[], progress: (progress: number) => void): string {
+function generateCsvList(
+  log: Log,
+  fields: string[],
+  progress: (progress: number) => void,
+  timestamps?: number[]
+): string {
   // Retrieve data
   let rows: (number | string)[][] = [];
   fields.forEach((field, fieldIndex) => {
     let fieldData = log.getRange(field, -Infinity, Infinity);
     let fieldType = log.getType(field);
     if (fieldData === undefined) return;
-    fieldData.values.forEach((value, valueIndex) => {
-      if (fieldData === undefined || fieldType === null) return;
-      rows.push([fieldData.timestamps[valueIndex], field, getLogValueText(value, fieldType).replaceAll(",", ";")]);
+    let addValue = (timestamp: number, value: any) => {
+      if (fieldType === null) return;
+      rows.push([timestamp, field, getLogValueText(value, fieldType).replaceAll(",", ";")]);
+    };
 
-      // Send progress update
-      progress((fieldIndex + valueIndex / fieldData.values.length) / fields.length);
-    });
+    if (timestamps === undefined) {
+      // Add all values
+      fieldData.values.forEach((value, valueIndex) => {
+        if (fieldData === undefined) return;
+        addValue(fieldData.timestamps[valueIndex], value);
+        progress((fieldIndex + valueIndex / fieldData.values.length) / fields.length);
+      });
+    } else {
+      // Add samples at timestamps
+      timestamps.forEach((timestamp, timestampIndex) => {
+        if (fieldData === undefined) return;
+        let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
+        if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+        let value: any = null;
+        if (nextIndex !== 0) {
+          value = fieldData.values[nextIndex - 1];
+        }
+        addValue(timestamp, value);
+        progress((fieldIndex + timestampIndex / timestamps.length) / fields.length);
+      });
+    }
   });
 
   // Sort and add header
@@ -148,7 +186,12 @@ function generateCsvList(log: Log, fields: string[], progress: (progress: number
   return text;
 }
 
-function generateWPILOG(log: Log, fields: string[], progress: (progress: number) => void): Uint8Array {
+function generateWPILOG(
+  log: Log,
+  fields: string[],
+  progress: (progress: number) => void,
+  timestamps?: number[]
+): Uint8Array {
   let encoder = new WPILOGEncoder("AdvantageScope");
   fields.forEach((field, fieldIndex) => {
     let fieldData = log.getRange(field, -Infinity, Infinity);
@@ -214,49 +257,64 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
     );
 
     // Add data
-    fieldData.values.forEach((value, valueIndex) => {
-      if (fieldData === undefined || typeStr === "") return;
-      let timestamp = fieldData.timestamps[valueIndex] * 1000000;
+    let addValue = (timestamp: number, value: any) => {
+      let timestampMicros = timestamp * 1000000;
       switch (typeStr) {
         case "boolean":
-          encoder.add(WPILOGEncoderRecord.makeBoolean(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeBoolean(entryId, timestampMicros, value));
           break;
         case "int64":
-          encoder.add(WPILOGEncoderRecord.makeInteger(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeInteger(entryId, timestampMicros, value));
           break;
         case "float":
-          encoder.add(WPILOGEncoderRecord.makeFloat(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeFloat(entryId, timestampMicros, value));
           break;
         case "double":
-          encoder.add(WPILOGEncoderRecord.makeDouble(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeDouble(entryId, timestampMicros, value));
           break;
         case "string":
         case "json":
-          encoder.add(WPILOGEncoderRecord.makeString(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeString(entryId, timestampMicros, value));
           break;
         case "boolean[]":
-          encoder.add(WPILOGEncoderRecord.makeBooleanArray(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeBooleanArray(entryId, timestampMicros, value));
           break;
         case "int64[]":
-          encoder.add(WPILOGEncoderRecord.makeIntegerArray(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeIntegerArray(entryId, timestampMicros, value));
           break;
         case "float[]":
-          encoder.add(WPILOGEncoderRecord.makeFloatArray(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeFloatArray(entryId, timestampMicros, value));
           break;
         case "double[]":
-          encoder.add(WPILOGEncoderRecord.makeDoubleArray(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeDoubleArray(entryId, timestampMicros, value));
           break;
         case "string[]":
-          encoder.add(WPILOGEncoderRecord.makeStringArray(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeStringArray(entryId, timestampMicros, value));
           break;
         default:
-          encoder.add(WPILOGEncoderRecord.makeRaw(entryId, timestamp, value));
+          encoder.add(WPILOGEncoderRecord.makeRaw(entryId, timestampMicros, value));
           break;
       }
-
-      // Send progress update
-      progress((fieldIndex + valueIndex / fieldData.values.length) / fields.length);
-    });
+    };
+    if (timestamps === undefined) {
+      // Add all values
+      fieldData.values.forEach((value, valueIndex) => {
+        if (fieldData === undefined || typeStr === "") return;
+        addValue(fieldData.timestamps[valueIndex], value);
+        progress((fieldIndex + valueIndex / fieldData.values.length) / fields.length);
+      });
+    } else {
+      // Add samples at timestamps
+      timestamps.forEach((timestamp, timestampIndex) => {
+        if (fieldData === undefined) return;
+        let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
+        if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+        if (nextIndex !== 0) {
+          addValue(timestamp, fieldData.values[nextIndex - 1]);
+        }
+        progress((fieldIndex + timestampIndex / timestamps.length) / fields.length);
+      });
+    }
   });
 
   // Encode full log
@@ -264,7 +322,12 @@ function generateWPILOG(log: Log, fields: string[], progress: (progress: number)
   return encoder.getEncoded(true);
 }
 
-async function generateMCAP(log: Log, fields: string[], progress: (progress: number) => void): Promise<Uint8Array> {
+async function generateMCAP(
+  log: Log,
+  fields: string[],
+  progress: (progress: number) => void,
+  timestamps?: number[]
+): Promise<Uint8Array> {
   // Create MCAP writer
   const textEncoder = new TextEncoder();
   let logBuffer = new TempBuffer();
@@ -321,19 +384,32 @@ async function generateMCAP(log: Log, fields: string[], progress: (progress: num
     });
 
     // Add data
-    for (let i = 0; i < fieldData.timestamps.length; i++) {
-      let timestamp = BigInt(Math.round(fieldData.timestamps[i] * 1e9)); // MCAP uses nanoseconds
-      let value = textEncoder.encode(JSON.stringify({ value: fieldData.values[i] }));
+    let addValue = async (timestamp: number, value: any, sequence: number) => {
+      let timestampNanos = BigInt(Math.round(timestamp * 1e9));
+      let valueStr = textEncoder.encode(JSON.stringify({ value: value }));
       await writer.addMessage({
         channelId: channelId,
-        data: value,
-        logTime: timestamp,
-        publishTime: timestamp,
-        sequence: i
+        data: valueStr,
+        logTime: timestampNanos,
+        publishTime: timestampNanos,
+        sequence: sequence
       });
-
-      // Send progress update
-      progress((fieldIndex + i / fieldData.values.length) / filteredFields.length);
+    };
+    if (timestamps === undefined) {
+      for (let i = 0; i < fieldData.timestamps.length; i++) {
+        await addValue(fieldData.timestamps[i], fieldData.values[i], i);
+        progress((fieldIndex + i / fieldData.values.length) / filteredFields.length);
+      }
+    } else {
+      for (let i = 0; i < timestamps.length; i++) {
+        let timestamp = timestamps[i];
+        let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
+        if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
+        if (nextIndex !== 0) {
+          addValue(timestamp, fieldData.values[nextIndex - 1], i);
+        }
+        progress((fieldIndex + i / timestamps.length) / fields.length);
+      }
     }
   }
 
