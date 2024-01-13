@@ -95,10 +95,11 @@ export class VideoProcessor {
           break;
       }
       let ffmpegPath: string;
+      let arch = process.arch === "arm" ? "armv7l" : process.arch;
       if (app.isPackaged) {
-        ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + platformString + "-" + process.arch);
+        ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + platformString + "-" + arch);
       } else {
-        ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + platformString + "-" + process.arch);
+        ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + platformString + "-" + arch);
       }
 
       // Start ffmpeg

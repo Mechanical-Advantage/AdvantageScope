@@ -14,6 +14,7 @@ const versions = {
   "ffmpeg-mac-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/darwin-arm64",
   "ffmpeg-linux-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/linux-x64",
   "ffmpeg-linux-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/linux-arm64",
+  "ffmpeg-linux-armv7l": "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/linux-arm",
   "ffmpeg-win-x64.exe": "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/win32-x64",
   "ffmpeg-win-arm64.exe": "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/win32-ia32"
 };
