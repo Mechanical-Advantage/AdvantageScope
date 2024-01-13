@@ -184,6 +184,10 @@ export default class NT4Source extends LiveDataSource {
             }
           } else if (topic.type.startsWith(PROTO_PREFIX)) {
             structuredType = ProtoDecoder.getFriendlySchemaType(topic.type.split(PROTO_PREFIX)[1]);
+          } else if (topic.type === "msgpack") {
+            structuredType = "MessagePack";
+          } else if (topic.type === "json") {
+            structuredType = "JSON";
           }
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.log.setWpilibType(modifiedKey, topic.type);
