@@ -13,7 +13,9 @@ export const PROTO_PREFIX = "proto:";
 export const MAX_SEARCH_RESULTS = 128;
 export const MERGE_PREFIX = "Log";
 export const MERGE_MAX_FILES = 10;
-export const SEPARATOR_REGEX = new RegExp(/\/|:|_/);
+export const SEPARATOR_REGEX = new RegExp(/\/|:/);
+export const SEPARATOR_REGEX_PHOENIX = new RegExp(/\/|:|_/);
+export const PHOENIX_PREFIX = "Phoenix6";
 export const ENABLED_KEYS = withMergedKeys([
   "/DriverStation/Enabled",
   "NT:/AdvantageKit/DriverStation/Enabled",
@@ -116,6 +118,14 @@ export function logValuesEqual(type: LoggableType, a: any, b: any): boolean {
   }
 }
 
+export function splitLogKey(key: string): string[] {
+  if (key.startsWith(PHOENIX_PREFIX)) {
+    return key.split(SEPARATOR_REGEX_PHOENIX);
+  } else {
+    return key.split(SEPARATOR_REGEX);
+  }
+}
+
 export function filterFieldByPrefixes(
   fields: string[],
   prefixes: string,
@@ -124,10 +134,10 @@ export function filterFieldByPrefixes(
 ) {
   let filteredFields: Set<string> = new Set();
   prefixes.split(",").forEach((prefix) => {
-    let prefixSeries = prefix.split(SEPARATOR_REGEX).filter((item) => item.length > 0);
+    let prefixSeries = splitLogKey(prefix).filter((item) => item.length > 0);
     if (ntOnly) prefixSeries.splice(0, 0, "NT");
     fields.forEach((field) => {
-      let fieldSeries = field.split(SEPARATOR_REGEX).filter((item) => item.length > 0);
+      let fieldSeries = splitLogKey(field).filter((item) => item.length > 0);
       if (fieldSeries.length < prefixSeries.length) return;
       if (
         prefixSeries.every((prefix, index) => fieldSeries[index].toLowerCase() === prefix.toLowerCase()) ||

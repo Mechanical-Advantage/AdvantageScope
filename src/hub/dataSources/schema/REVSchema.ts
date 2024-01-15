@@ -109,7 +109,7 @@ export default class REVSchema {
         // Periodic frame
         let frameIndex = (messageId >> 6) & 0xf;
         let deviceKey = key + "/" + devices[deviceId].model + "-" + deviceId.toString();
-        let frameKey = deviceKey + "/PeriodicFrame_" + frameIndex.toFixed();
+        let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         log.putRaw(frameKey, messageTimestamp, messageValue);
         if (frameIndex >= 0 && frameIndex < REVSchema.PARSE_PERIODIC.length) {
           REVSchema.PARSE_PERIODIC[frameIndex](
@@ -193,8 +193,8 @@ export default class REVSchema {
       log.putNumber(key + "/AppliedOutputVoltage", timestamp, appliedOutput * busVoltage);
     }
     FAULTS.forEach((faultName, index) => {
-      log.putBoolean(key + "/Fault_" + faultName, timestamp, (faults & (1 << index)) !== 0);
-      log.putBoolean(key + "/StickyFault_" + faultName, timestamp, (stickyFaults & (1 << index)) !== 0);
+      log.putBoolean(key + "/Fault/" + faultName, timestamp, (faults & (1 << index)) !== 0);
+      log.putBoolean(key + "/StickyFault/" + faultName, timestamp, (stickyFaults & (1 << index)) !== 0);
     });
     log.putBoolean(key + "/SensorInvert", timestamp, sensorInvert);
     log.putBoolean(key + "/MotorInvert", timestamp, motorInvert);
@@ -287,9 +287,9 @@ export default class REVSchema {
     const sensorVelocity = sensorVelocityRaw / 128.0;
     const sensorPosition = dataView.getFloat32(4, true);
 
-    log.putNumber(key + "/AnalogSensor_Voltage", timestamp, sensorVoltage);
-    log.putNumber(key + "/AnalogSensor_Velocity", timestamp, sensorVelocity);
-    log.putNumber(key + "/AnalogSensor_Position", timestamp, sensorPosition);
+    log.putNumber(key + "/AnalogSensor/Voltage", timestamp, sensorVoltage);
+    log.putNumber(key + "/AnalogSensor/Velocity", timestamp, sensorVelocity);
+    log.putNumber(key + "/AnalogSensor/Position", timestamp, sensorPosition);
   }
 
   /**
@@ -311,8 +311,8 @@ export default class REVSchema {
     const encoderPosition = dataView.getFloat32(4, true);
 
     const name = model === DeviceModel.SparkFlex ? "ExternalEncoder" : "AlternateEncoder";
-    log.putNumber(key + "/" + name + "_VelocityRPM", timestamp, encoderVelocity);
-    log.putNumber(key + "/" + name + "_PositionRotations", timestamp, encoderPosition);
+    log.putNumber(key + "/" + name + "/VelocityRPM", timestamp, encoderVelocity);
+    log.putNumber(key + "/" + name + "/PositionRotations", timestamp, encoderPosition);
   }
 
   /**
@@ -333,8 +333,8 @@ export default class REVSchema {
     const encoderPosition = dataView.getFloat32(0, true);
     const encoderAbsoluteAngle = dataView.getUint16(4, true) / (1 << 16);
 
-    log.putNumber(key + "/AbsoluteEncoder_PositionRotations", timestamp, encoderPosition);
-    log.putNumber(key + "/AbsoluteEncoder_PositionRotationsNoOffset", timestamp, encoderAbsoluteAngle);
+    log.putNumber(key + "/AbsoluteEncoder/PositionRotations", timestamp, encoderPosition);
+    log.putNumber(key + "/AbsoluteEncoder/PositionRotationsNoOffset", timestamp, encoderAbsoluteAngle);
   }
 
   /**
@@ -355,8 +355,8 @@ export default class REVSchema {
     const encoderVelocity = dataView.getFloat32(0, true);
     const encoderFrequency = dataView.getUint16(4, true);
 
-    log.putNumber(key + "/AbsoluteEncoder_VelocityRPM", timestamp, encoderVelocity);
-    log.putNumber(key + "/AbsoluteEncoder_Frequency", timestamp, encoderFrequency);
+    log.putNumber(key + "/AbsoluteEncoder/VelocityRPM", timestamp, encoderVelocity);
+    log.putNumber(key + "/AbsoluteEncoder/Frequency", timestamp, encoderFrequency);
   }
 
   /**

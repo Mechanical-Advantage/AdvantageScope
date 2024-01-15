@@ -1,4 +1,5 @@
 import Log from "../../shared/log/Log";
+import { PHOENIX_PREFIX } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
 
@@ -10,7 +11,6 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
   private PLOT_PERIOD = 50;
   private PLOT_TIMEOUT = 40;
   private PLOT_RESOLUTION = 50;
-  private LOG_PREFIX = "Phoenix6";
 
   private getDevicesInterval: NodeJS.Timeout | null = null;
   private plotInterval: NodeJS.Timeout | null = null;
@@ -59,7 +59,7 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
 
                 // Add fields for all signals
                 signals.forEach((signal) => {
-                  let key = this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name;
+                  let key = PHOENIX_PREFIX + "/" + deviceName + "/" + signal.Name;
                   let isEnum = signal.Name in PhoenixEnums;
                   this.log?.createBlankField(key, isEnum ? LoggableType.String : LoggableType.Number);
                   if (signal.Units.length > 0) {
@@ -88,7 +88,7 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
       let findActiveSignals = (activeFields: string[]) => {
         let activeSignals: { [key: string]: Response_Signal[] } = {};
         activeFields.forEach((activeField) => {
-          if (!activeField.startsWith(this.LOG_PREFIX)) return;
+          if (!activeField.startsWith(PHOENIX_PREFIX)) return;
           let splitKey = activeField.split("/");
           let deviceName: string, signalName: string;
           if (splitKey.length === 3) {
@@ -163,7 +163,7 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
             let signalId = Number(signalIdStr);
             let signal = signals.find((signal) => signal.Id === signalId);
             if (signal === undefined) return;
-            let fieldKey = this.LOG_PREFIX + "/" + deviceName + "/" + signal.Name;
+            let fieldKey = PHOENIX_PREFIX + "/" + deviceName + "/" + signal.Name;
             let timestamp = point.Timestamp - this.liveStartLogTime!;
             if (signal.Name in PhoenixEnums) {
               let valueStr = PhoenixEnums[signal.Name][value];
