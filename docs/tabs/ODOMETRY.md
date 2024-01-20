@@ -46,7 +46,7 @@ Logger.recordOutput("MyPoseArray", poseA, poseB);
 Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
 ```
 
-WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of pose data together.
+WPILib's [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) class can also be used to log several sets of pose data together. Note that `Field2d` publishes rotations in degrees instead of radians; use the configuration at the bottom of the screen to adjust the units.
 
 ### Legacy Format
 
