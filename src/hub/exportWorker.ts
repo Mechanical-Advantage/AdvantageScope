@@ -248,7 +248,7 @@ function generateWPILOG(
     }
     let startTimestamp = fieldData.timestamps.length > 0 ? fieldData.timestamps[0] : 0;
     encoder.add(
-      WPILOGEncoderRecord.makeControlStart(startTimestamp, {
+      WPILOGEncoderRecord.makeControlStart(startTimestamp * 1000000, {
         entry: entryId, // Entry 0 is reserved
         name: field,
         type: typeStr,
