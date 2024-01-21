@@ -55,16 +55,16 @@ public void robotInit() {
 
 ## SysId Usage
 
-> **WARNING: The version of SysId included in WPILib 2024.1.1 is not compatible with WPILOG files exported from AdvantageScope as described below. This will be fixed soon.**
+> Note: Update to the latest version of AdvantageScope and WPILib before attempting to use URCL data with SysId.
 
-1. After setting up URCL as shown above, configure the SysId routine using `null` for the mechanism log consumer. An example is shown below for Java.
+1. After setting up URCL as shown above, configure the SysId routine using `null` for the mechanism log consumer. An example is shown below for Java. This configuration can be performed within the subsystem class.
 
 ```java
-// Create SysId routine
+// Create the SysId routine
 var sysIdRoutine = new SysIdRoutine(
   new SysIdRoutine.Config(),
   new SysIdRoutine.Mechanism(
-    (voltage) -> subsystem.runVolts(voltage),
+    (voltage) -> subsystem.runVolts(voltage.in(Volts)),
     null, // No log consumer, since data is recorded by URCL
     subsystem
   )
@@ -85,7 +85,7 @@ new SysIdRoutine.Config(
 
 2. Run the SysId routine on the robot. The SysId commands can be configured as auto routines or connected to a button trigger.
 
-3. Open the log file in AdvantageScope. In the menu bar, go to "File" > "Export Data...". Set the format to "WPILOG" and the field set to "Include Generated". Click the save icon and choose a location to save the log.
+3. Download the log file and open it in AdvantageScope. In the menu bar, go to "File" > "Export Data...". Set the format to "WPILOG" and the field set to "Include Generated". Click the save icon and choose a location to save the log.
 
 > Note: The log file from the robot must be opened and exported by AdvantageScope _before opening it using the SysId analyzer_. This is required to convert the CAN data recorded by URCL to a format compatible with SysId.
 
