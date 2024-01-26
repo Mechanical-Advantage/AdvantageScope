@@ -19,9 +19,12 @@ declare global {
   interface Window {
     assets: AdvantageScopeAssets | null;
     preferences: Preferences | null;
+    isBattery: boolean;
     sendMainMessage: (name: string, data?: any) => void;
   }
 }
+
+window.isBattery = false;
 
 let visualizer: Visualizer | null = null;
 let type: TabType | null = null;
@@ -49,6 +52,10 @@ window.addEventListener("message", (event) => {
 
         case "set-preferences":
           window.preferences = message.data;
+          break;
+
+        case "set-battery":
+          window.isBattery = message.data;
           break;
 
         case "set-type":

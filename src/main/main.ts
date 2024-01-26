@@ -1948,8 +1948,11 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
     port2.start();
     sendMessage(satellite, "set-assets", advantageScopeAssets);
     sendMessage(satellite, "set-type", type);
+    sendMessage(satellite, "set-battery", powerMonitor.isOnBatteryPower());
     sendAllPreferences();
   });
+  powerMonitor.on("on-ac", () => sendMessage(satellite, "set-battery", false));
+  powerMonitor.on("on-battery", () => sendMessage(satellite, "set-battery", true));
 
   if (!(uuid in satelliteWindows)) {
     satelliteWindows[uuid] = [];
