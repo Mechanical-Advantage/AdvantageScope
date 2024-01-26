@@ -277,7 +277,7 @@ jobs:
           Set-Location -Path "dist\win*"
           Move-Item -Path "AdvantageScope.exe" -Destination "AdvantageScope (WPILib).exe"
           Set-Location -Path "..\.."
-          Compress-Archive -LiteralPath "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
+          Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
