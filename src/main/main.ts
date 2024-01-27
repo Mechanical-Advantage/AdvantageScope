@@ -79,7 +79,8 @@ let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
   field3ds: [],
   robots: [],
-  joysticks: []
+  joysticks: [],
+  loadFailures: []
 };
 
 // Live RLOG variables
@@ -140,7 +141,6 @@ function sendAllPreferences() {
 
 /** Sends the current set of assets to all windows. */
 function sendAssets() {
-  advantageScopeAssets = loadAssets();
   Object.values(satelliteWindows).forEach((windowCollection) => {
     windowCollection.forEach((window) => {
       if (!window.isDestroyed()) {

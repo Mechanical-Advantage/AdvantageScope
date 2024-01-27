@@ -115,7 +115,8 @@ export function loadAssets(): AdvantageScopeAssets {
     field2ds: [],
     field3ds: [],
     robots: [],
-    joysticks: []
+    joysticks: [],
+    loadFailures: []
   };
 
   // Highest priority is first
@@ -124,6 +125,7 @@ export function loadAssets(): AdvantageScopeAssets {
       .sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0)) // Inverse order so newer versions take priority
       .forEach((object) => {
         if (!object.isDirectory() || object.name.startsWith(".")) return;
+        assets.loadFailures.push(object.name); // Assume failure, remove if successful
         let isField2d = object.name.startsWith("Field2d_");
         let isField3d = object.name.startsWith("Field3d_");
         let isRobot = object.name.startsWith("Robot_");
@@ -131,7 +133,12 @@ export function loadAssets(): AdvantageScopeAssets {
 
         let configPath = path.join(parentFolder, object.name, "config.json");
         if (!fs.existsSync(configPath)) return;
-        let configRaw = jsonfile.readFileSync(configPath) as unknown;
+        let configRaw: unknown;
+        try {
+          configRaw = jsonfile.readFileSync(configPath);
+        } catch {
+          return;
+        }
         if (configRaw === null || typeof configRaw !== "object") return;
 
         if (isField2d) {
@@ -139,8 +146,8 @@ export function loadAssets(): AdvantageScopeAssets {
           let config: Config2d = {
             name: "",
             path: encodePath(path.join(parentFolder, object.name, "image.png")),
-            topLeft: [0, 0],
-            bottomRight: [0, 0],
+            topLeft: [-1, -1],
+            bottomRight: [-1, -1],
             widthInches: 0,
             heightInches: 0,
             defaultOrigin: "auto"
@@ -180,7 +187,18 @@ export function loadAssets(): AdvantageScopeAssets {
           ) {
             config.defaultOrigin = configRaw.defaultOrigin;
           }
-          assets.field2ds.push(config);
+          if (
+            config.name.length > 0 &&
+            config.topLeft[0] >= 0 &&
+            config.topLeft[1] >= 0 &&
+            config.bottomRight[0] >= 0 &&
+            config.bottomRight[1] >= 0 &&
+            config.widthInches > 0 &&
+            config.heightInches > 0
+          ) {
+            assets.field2ds.push(config);
+            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+          }
         } else if (isField3d) {
           // ***** 3D FIELD *****
           let config: Config3dField = {
@@ -226,7 +244,10 @@ export function loadAssets(): AdvantageScopeAssets {
           ) {
             config.defaultOrigin = configRaw.defaultOrigin;
           }
-          assets.field3ds.push(config);
+          if (config.name.length > 0 && config.widthInches > 0 && config.heightInches > 0) {
+            assets.field3ds.push(config);
+            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+          }
         } else if (isRobot) {
           // ***** 3D ROBOT *****
           let config: Config3dRobot = {
@@ -340,7 +361,10 @@ export function loadAssets(): AdvantageScopeAssets {
               }
             });
           }
-          assets.robots.push(config);
+          if (config.name.length > 0 && config.cameras.every((camera) => camera.name.length > 0)) {
+            assets.robots.push(config);
+            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+          }
         } else if (isJoystick) {
           // ***** JOYSTICK *****
           let config: ConfigJoystick = {
@@ -375,7 +399,7 @@ export function loadAssets(): AdvantageScopeAssets {
                       isEllipse: false,
                       centerPx: centerPx,
                       sizePx: [0, 0],
-                      sourceIndex: 0
+                      sourceIndex: -1
                     };
                     if ("isEllipse" in componentRaw && typeof componentRaw.isEllipse === "boolean") {
                       buttonComponent.isEllipse = componentRaw.isEllipse;
@@ -409,9 +433,9 @@ export function loadAssets(): AdvantageScopeAssets {
                       isYellow: isYellow,
                       centerPx: centerPx,
                       radiusPx: 0,
-                      xSourceIndex: 0,
+                      xSourceIndex: -1,
                       xSourceInverted: false,
-                      ySourceIndex: 0,
+                      ySourceIndex: -1,
                       ySourceInverted: false
                     };
                     if ("radiusPx" in componentRaw && typeof componentRaw.radiusPx === "number") {
@@ -441,7 +465,7 @@ export function loadAssets(): AdvantageScopeAssets {
                       isYellow: isYellow,
                       centerPx: centerPx,
                       sizePx: [0, 0],
-                      sourceIndex: 0,
+                      sourceIndex: -1,
                       sourceRange: [-1, 1]
                     };
                     if (
@@ -467,7 +491,22 @@ export function loadAssets(): AdvantageScopeAssets {
               }
             });
           }
-          assets.joysticks.push(config);
+          if (
+            config.name.length > 0 &&
+            config.components.every((component) => {
+              switch (component.type) {
+                case "button":
+                  return component.sizePx[0] > 0 && component.sizePx[1] > 0 && component.sourceIndex >= 0;
+                case "joystick":
+                  return component.radiusPx > 0 && component.xSourceIndex >= 0 && component.ySourceIndex >= 0;
+                case "axis":
+                  return component.sizePx[0] > 0 && component.sizePx[1] > 0 && component.sourceIndex >= 0;
+              }
+            })
+          ) {
+            assets.joysticks.push(config);
+            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+          }
         }
       });
   });
@@ -477,7 +516,8 @@ export function loadAssets(): AdvantageScopeAssets {
     field2ds: [],
     field3ds: [],
     robots: [],
-    joysticks: []
+    joysticks: [],
+    loadFailures: assets.loadFailures
   };
   assets.field2ds.forEach((asset) => {
     if (uniqueAssets.field2ds.find((other) => other.name === asset.name) === undefined) {
@@ -518,8 +558,10 @@ export function loadAssets(): AdvantageScopeAssets {
 
     // Built-in joysticks added in code to beginning of list
     assets.joysticks.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
-  }
 
+    // Sort load failures normally
+    assets.loadFailures.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  }
   return assets;
 }
 

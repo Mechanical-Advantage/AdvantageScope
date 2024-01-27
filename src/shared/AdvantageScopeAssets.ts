@@ -3,6 +3,7 @@ export interface AdvantageScopeAssets {
   field3ds: Config3dField[];
   robots: Config3dRobot[];
   joysticks: ConfigJoystick[];
+  loadFailures: string[];
 }
 
 export interface Config2d {

@@ -442,8 +442,28 @@ function handleMainMessage(message: NamedMessage) {
 
     case "set-assets":
       if (JSON.stringify(window.assets) !== JSON.stringify(message.data)) {
+        let oldHadFailed = window.assets && window.assets.loadFailures.length > 0;
+        let newHasFailed = message.data && message.data.loadFailures.length > 0;
         window.assets = message.data;
         window.tabs.newAssets();
+
+        // Alert about failed assets
+        if (newHasFailed) {
+          console.warn(
+            "Failed to load: " +
+              window.assets!.loadFailures.join(", ") +
+              ". Check that all assets follow the format described in the AdvantageScope documentation."
+          );
+        }
+        if (newHasFailed && !oldHadFailed) {
+          window.sendMainMessage("error", {
+            title: "Failed to load assets",
+            content: "Some asset files failed to load. Check the developer console for details."
+          });
+        }
+        if (!newHasFailed && oldHadFailed) {
+          console.log("All assets loaded successfully");
+        }
       }
       break;
 
