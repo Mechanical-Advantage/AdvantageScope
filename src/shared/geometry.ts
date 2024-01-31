@@ -265,7 +265,7 @@ export function logReadTranslation3dToPose3d(
 ): Pose3d | null {
   const x = getOrDefault(log, key + "/x", LoggableType.Number, timestamp, null);
   const y = getOrDefault(log, key + "/y", LoggableType.Number, timestamp, null);
-  const z = getOrDefault(log, key + "/y", LoggableType.Number, timestamp, null);
+  const z = getOrDefault(log, key + "/z", LoggableType.Number, timestamp, null);
   if (x === null || y === null || z === null) {
     return null;
   } else {
