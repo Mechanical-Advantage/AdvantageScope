@@ -268,14 +268,16 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build app
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -w portable
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "AdvantageScope (WPILib).exe"
-          Compress-Archive -LiteralPath "AdvantageScope (WPILib).exe" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
+          Set-Location -Path "dist\win*"
+          Move-Item -Path "AdvantageScope.exe" -Destination "AdvantageScope (WPILib).exe"
+          Set-Location -Path "..\.."
+          Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v3
