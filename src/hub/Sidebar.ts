@@ -628,6 +628,7 @@ export default class Sidebar {
       } else if (type === LoggableType.String) {
         let firstUpdate = true;
         let lastValue: string | null = null;
+        let lastSidebarWidth = 0;
         this.updateValueCallbacks.push((time) => {
           let rect = fieldElement.getBoundingClientRect();
           let onScreen =
@@ -636,13 +637,15 @@ export default class Sidebar {
 
           let value: string | null =
             time === null ? null : getOrDefault(window.log, field.fullKey!, LoggableType.String, time, null);
-          if (!firstUpdate && value === lastValue) return;
+          if (!firstUpdate && value === lastValue && this.sidebarWidth === lastSidebarWidth) return;
           firstUpdate = false;
           lastValue = value;
+          lastSidebarWidth = this.sidebarWidth;
 
           if (value !== null) {
-            if (value.length > 8) {
-              valueElement.innerText = value.substring(0, 8) + "\u2026";
+            const maxCharacters = Math.round(this.sidebarWidth * 0.03);
+            if (value.length > maxCharacters) {
+              valueElement.innerText = value.substring(0, maxCharacters - 1) + "\u2026";
             } else {
               valueElement.innerText = value;
             }
