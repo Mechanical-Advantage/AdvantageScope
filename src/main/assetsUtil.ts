@@ -6,6 +6,8 @@ import {
   AdvantageScopeAssets,
   Config2d,
   Config3dField,
+  Config3dField_GamePiece,
+  Config3dField_GamePieceLocation,
   Config3dRobot,
   Config3dRobot_Camera,
   Config3dRobot_Component,
@@ -207,7 +209,8 @@ export function loadAssets(): AdvantageScopeAssets {
             rotations: [],
             widthInches: 0,
             heightInches: 0,
-            defaultOrigin: "auto"
+            defaultOrigin: "auto",
+            gamePieces: []
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
@@ -243,6 +246,71 @@ export function loadAssets(): AdvantageScopeAssets {
               configRaw.defaultOrigin === "blue")
           ) {
             config.defaultOrigin = configRaw.defaultOrigin;
+          }
+          if ("gamePieces" in configRaw && Array.isArray(configRaw.gamePieces)) {
+            configRaw.gamePieces.forEach((gamePieceRaw: any) => {
+              let gamePiece: Config3dField_GamePiece = {
+                name: "",
+                rotations: [],
+                position: [0, 0, 0],
+                stagedLocations: []
+              };
+              config.gamePieces.push(gamePiece);
+              if ("name" in gamePieceRaw && typeof gamePieceRaw.name === "string") {
+                gamePiece.name = gamePieceRaw.name;
+              }
+              if (
+                "rotations" in gamePieceRaw &&
+                Array.isArray(gamePieceRaw.rotations) &&
+                gamePieceRaw.rotations.every(
+                  (rotation: any) =>
+                    typeof rotation === "object" &&
+                    "axis" in rotation &&
+                    (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+                    "degrees" in rotation &&
+                    typeof rotation.degrees === "number"
+                )
+              ) {
+                gamePiece.rotations = gamePieceRaw.rotations;
+              }
+              if (
+                "position" in gamePieceRaw &&
+                checkArrayType(gamePieceRaw.position, "number") &&
+                gamePieceRaw.position.length === 3
+              ) {
+                gamePiece.position = gamePieceRaw.position;
+              }
+              if ("stagedLocations" in gamePieceRaw && Array.isArray(gamePieceRaw.stagedLocations)) {
+                gamePieceRaw.stagedLocations.forEach((stagedLocationRaw: any) => {
+                  let stagedLocation: Config3dField_GamePieceLocation = {
+                    rotations: [],
+                    position: [0, 0, 0]
+                  };
+                  gamePiece.stagedLocations.push(stagedLocation);
+                  if (
+                    "rotations" in stagedLocationRaw &&
+                    Array.isArray(stagedLocationRaw.rotations) &&
+                    stagedLocationRaw.rotations.every(
+                      (rotation: any) =>
+                        typeof rotation === "object" &&
+                        "axis" in rotation &&
+                        (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+                        "degrees" in rotation &&
+                        typeof rotation.degrees === "number"
+                    )
+                  ) {
+                    stagedLocation.rotations = stagedLocationRaw.rotations;
+                  }
+                  if (
+                    "position" in stagedLocationRaw &&
+                    checkArrayType(stagedLocationRaw.position, "number") &&
+                    stagedLocationRaw.position.length === 3
+                  ) {
+                    stagedLocation.position = stagedLocationRaw.position;
+                  }
+                });
+              }
+            });
           }
           if (config.name.length > 0 && config.widthInches > 0 && config.heightInches > 0) {
             assets.field3ds.push(config);

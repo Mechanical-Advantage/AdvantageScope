@@ -45,6 +45,12 @@ export default class ThreeDimensionController extends TimelineVizController {
     "Component (Robot)",
     "Component (Green Ghost)",
     "Component (Yellow Ghost)",
+    "Game Piece 0",
+    "Game Piece 1",
+    "Game Piece 2",
+    "Game Piece 3",
+    "Game Piece 4",
+    "Game Piece 5",
     "Vision Target",
     "Axes",
     "AprilTag 36h11",
@@ -244,19 +250,33 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.updateFieldRobotDependentControls(!fieldChanged);
   }
 
-  /** Updates the alliance and source buttons based on the selected value. */
+  /** Updates the alliance chooser, source buttons, and game piece names based on the selected value. */
   private updateFieldRobotDependentControls(skipAllianceReset = false) {
     let fieldConfig = window.assets?.field3ds.find((game) => game.name === this.FIELD.value);
     this.FIELD_SOURCE_LINK.hidden = fieldConfig === undefined || fieldConfig.sourceUrl === undefined;
-    if (this.FIELD.value === "Axes") this.ALLIANCE.value = "blue";
-    this.ALLIANCE.hidden = this.FIELD.value === "Axes";
-
     let robotConfig = window.assets?.robots.find((game) => game.name === this.ROBOT.value);
     this.ROBOT_SOURCE_LINK.hidden = robotConfig !== undefined && robotConfig.sourceUrl === undefined;
 
+    if (this.FIELD.value === "Axes") this.ALLIANCE.value = "blue";
+    this.ALLIANCE.hidden = this.FIELD.value === "Axes";
     if (fieldConfig !== undefined && !skipAllianceReset) {
       this.ALLIANCE.value = fieldConfig.defaultOrigin;
     }
+
+    let aliases: { [key: string]: string | null } = {
+      "Game Piece 0": null,
+      "Game Piece 1": null,
+      "Game Piece 2": null,
+      "Game Piece 3": null,
+      "Game Piece 4": null,
+      "Game Piece 5": null
+    };
+    if (fieldConfig !== undefined) {
+      fieldConfig.gamePieces.forEach((gamePiece, index) => {
+        aliases["Game Piece " + index.toString()] = gamePiece.name;
+      });
+    }
+    this.setListOptionAliases(aliases);
   }
 
   get options(): { [id: string]: any } {
@@ -381,6 +401,8 @@ export default class ThreeDimensionController extends TimelineVizController {
     let componentRobotData: Pose3d[] = [];
     let componentGreenGhostData: Pose3d[] = [];
     let componentYellowGhostData: Pose3d[] = [];
+    let gamePieceData: Pose3d[][] = [[], [], [], [], [], []];
+    let hasUserGamePieces = false;
     let trajectoryData: Pose3d[][] = [];
     let visionTargetData: Pose3d[] = [];
     let axesData: Pose3d[] = [];
@@ -453,6 +475,16 @@ export default class ThreeDimensionController extends TimelineVizController {
           break;
         case "Component (Yellow Ghost)":
           componentYellowGhostData = componentYellowGhostData.concat(get3DValue(field.key, field.sourceType));
+          break;
+        case "Game Piece 0":
+        case "Game Piece 1":
+        case "Game Piece 2":
+        case "Game Piece 3":
+        case "Game Piece 4":
+        case "Game Piece 5":
+          let index = Number(field.type[field.type.length - 1]);
+          gamePieceData[index] = gamePieceData[index].concat(get3DValue(field.key, field.sourceType));
+          hasUserGamePieces = true;
           break;
         case "Vision Target":
           visionTargetData = visionTargetData.concat(get3DValue(field.key, field.sourceType));
@@ -718,6 +750,7 @@ export default class ThreeDimensionController extends TimelineVizController {
         componentRobot: componentRobotData,
         componentGreenGhost: componentGreenGhostData,
         componentYellowGhost: componentYellowGhostData,
+        gamePiece: gamePieceData,
         trajectory: trajectoryData,
         visionTarget: visionTargetData,
         axes: axesData,
@@ -736,7 +769,8 @@ export default class ThreeDimensionController extends TimelineVizController {
       },
       options: this.options,
       allianceRedOrigin: allianceRedOrigin,
-      newAssetsCounter: this.newAssetsCounter
+      newAssetsCounter: this.newAssetsCounter,
+      hasUserGamePieces: hasUserGamePieces
     };
   }
 }

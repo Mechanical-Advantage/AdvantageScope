@@ -30,9 +30,11 @@ export default abstract class TimelineVizController implements TabController {
     options: string[][];
     autoAdvanceOptions?: boolean[];
   }[];
+  private listOptionAliases: { [key: string]: string | null } = {};
   private listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][] =
     [];
   private lastListFieldsStr: string = "";
+  private lastListOptionAliasesStr: string = "";
   private lastAllKeys: string[] = [];
   private periodicInterval: number;
   protected visualizer: Visualizer;
@@ -239,6 +241,12 @@ export default abstract class TimelineVizController implements TabController {
     return false;
   }
 
+  /** Updates the set of aliases for list options. Setting the alias to "null" hides the option. */
+  protected setListOptionAliases(aliases: { [key: string]: string | null }) {
+    this.listOptionAliases = aliases;
+    this.updateFields();
+  }
+
   /** Updates the field elements based on the internal field list. */
   private updateFields() {
     let allKeys = window.log.getFieldKeys();
@@ -260,13 +268,19 @@ export default abstract class TimelineVizController implements TabController {
       }
     });
 
-    // Exit if list fields and available fields have not changed
+    // Exit if list fields, list option aliases, and available fields have not changed
     let listFieldsStr = JSON.stringify(this.listFields);
-    if (arraysEqual(allKeys, this.lastAllKeys) && listFieldsStr === this.lastListFieldsStr) {
+    let listOptionAliasesStr = JSON.stringify(this.listOptionAliases);
+    if (
+      arraysEqual(allKeys, this.lastAllKeys) &&
+      listFieldsStr === this.lastListFieldsStr &&
+      listOptionAliasesStr === this.lastListOptionAliasesStr
+    ) {
       return;
     }
     this.lastAllKeys = allKeys;
     this.lastListFieldsStr = listFieldsStr;
+    this.lastListOptionAliasesStr = listOptionAliasesStr;
 
     // List fields
     Object.values(this.listConfig).forEach((list, index) => {
@@ -301,12 +315,23 @@ export default abstract class TimelineVizController implements TabController {
         itemElement.appendChild(labelElement);
 
         let selectElement = labelElement.firstChild as HTMLSelectElement;
+        let validOptions: string[] = [];
         list.options[field.sourceTypeIndex].forEach((option) => {
+          let displayName = option;
+          if (option in this.listOptionAliases) {
+            let alias = this.listOptionAliases[option];
+            if (alias === null) return;
+            displayName = alias;
+          }
           let optionElement = document.createElement("option");
-          optionElement.innerText = option;
+          optionElement.innerText = displayName;
+          optionElement.value = option;
           selectElement.appendChild(optionElement);
+          validOptions.push(option);
         });
-        selectElement.value = field.type;
+        if (validOptions.includes(field.type)) {
+          selectElement.value = field.type;
+        }
         selectElement.addEventListener("change", () => {
           this.listFields[index][fieldIndex].type = selectElement.value;
         });

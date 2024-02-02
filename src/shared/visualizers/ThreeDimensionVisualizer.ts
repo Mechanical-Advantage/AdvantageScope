@@ -95,6 +95,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private aprilTag16h5Sets: Map<number | null, ObjectSet> = new Map();
   private trajectories: Line2[] = [];
   private trajectoryLengths: number[] = [];
+  private stagedGamePieceSets: ObjectSet[] = [];
+  private userGamePieceSets: ObjectSet[] = [];
   private visionTargets: Line2[] = [];
   private axesSet: ObjectSet;
   private coneBlueFrontSet: ObjectSet;
@@ -259,6 +261,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.zebraMarkerRedSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       this.zebraGreenGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       this.zebraYellowGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      for (let i = 0; i < 6; i++) {
+        this.stagedGamePieceSets.push(new ObjectSet(this.wpilibCoordinateGroup));
+        this.userGamePieceSets.push(new ObjectSet(this.wpilibFieldCoordinateGroup));
+      }
     }
 
     // Create axes template
@@ -562,7 +568,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         rotations: [],
         widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
         heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "auto"
+        defaultOrigin: "auto",
+        gamePieces: []
       };
     } else if (fieldTitle === "Axes") {
       fieldConfig = {
@@ -571,7 +578,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         rotations: [],
         widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
         heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "blue"
+        defaultOrigin: "blue",
+        gamePieces: []
       };
     } else {
       let fieldConfigTmp = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
@@ -778,42 +786,85 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.shouldRender = true;
       } else {
         const loader = new GLTFLoader();
-        loader.load(fieldConfig.path, (gltf) => {
+        Promise.all([
+          new Promise((resolve) => {
+            loader.load(fieldConfig.path, resolve);
+          }),
+          ...fieldConfig.gamePieces.map(
+            (_, index) =>
+              new Promise((resolve) => {
+                loader.load(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
+              })
+          )
+        ]).then((gltfs) => {
+          let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
           if (fieldConfig === undefined) return;
-
-          // Add to scene
-          this.field = gltf.scene;
-          this.field.traverse((node: any) => {
-            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-            if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
-              if (this.mode === "cinematic") {
-                // Cinematic, replace with MeshPhongMaterial
-                let newMaterial = new THREE.MeshPhongMaterial({
-                  color: mesh.material.color,
-                  transparent: mesh.material.transparent,
-                  opacity: mesh.material.opacity,
-                  specular: this.MATERIAL_SPECULAR,
-                  shininess: this.MATERIAL_SHININESS
-                });
-                if (mesh.name.toLowerCase().includes("carpet")) {
-                  newMaterial.shininess = 0;
-                  mesh.castShadow = false;
-                  mesh.receiveShadow = true;
+          gltfScenes.forEach((scene, index) => {
+            // Apply adjustments
+            scene.traverse((node: any) => {
+              let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+              if (mesh.isMesh && mesh.material instanceof MeshStandardMaterial) {
+                if (this.mode === "cinematic") {
+                  // Cinematic, replace with MeshPhongMaterial
+                  let newMaterial = new THREE.MeshPhongMaterial({
+                    color: mesh.material.color,
+                    transparent: mesh.material.transparent,
+                    opacity: mesh.material.opacity,
+                    specular: this.MATERIAL_SPECULAR,
+                    shininess: this.MATERIAL_SHININESS
+                  });
+                  if (mesh.name.toLowerCase().includes("carpet")) {
+                    newMaterial.shininess = 0;
+                    mesh.castShadow = false;
+                    mesh.receiveShadow = true;
+                  } else {
+                    mesh.castShadow = !mesh.material.transparent;
+                    mesh.receiveShadow = !mesh.material.transparent;
+                  }
+                  mesh.material.dispose();
+                  mesh.material = newMaterial;
                 } else {
-                  mesh.castShadow = !mesh.material.transparent;
-                  mesh.receiveShadow = !mesh.material.transparent;
+                  // Not cinematic, disable metalness and roughness
+                  mesh.material.metalness = 0;
+                  mesh.material.roughness = 1;
                 }
-                mesh.material.dispose();
-                mesh.material = newMaterial;
-              } else {
-                // Not cinematic, disable metalness and roughness
-                mesh.material.metalness = 0;
-                mesh.material.roughness = 1;
               }
+            });
+
+            // Add to scene
+            if (index === 0) {
+              this.field = scene;
+              this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+              this.wpilibCoordinateGroup.add(this.field);
+            } else {
+              let gamePieceConfig = fieldConfig.gamePieces[index - 1];
+              let gamePieceGroup = new THREE.Group();
+              gamePieceGroup.add(scene);
+              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
+              scene.position.set(...gamePieceConfig.position);
+              this.userGamePieceSets[index - 1].setSource(gamePieceGroup);
+              this.stagedGamePieceSets[index - 1].setSource(gamePieceGroup);
+              this.stagedGamePieceSets[index - 1].setPoses(
+                gamePieceConfig.stagedLocations.map((rawLocation) => {
+                  let quaternion = getQuaternionFromRotSeq(rawLocation.rotations);
+                  return {
+                    translation: rawLocation.position,
+                    rotation: [quaternion.w, quaternion.x, quaternion.y, quaternion.z]
+                  };
+                })
+              );
             }
           });
-          this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-          this.wpilibCoordinateGroup.add(this.field);
+
+          // Delete unused game pieces
+          [this.userGamePieceSets, this.stagedGamePieceSets].forEach((setGroup) => {
+            setGroup.forEach((set, index) => {
+              if (index >= fieldConfig.gamePieces.length) {
+                set.setPoses([]);
+                set.setSource(new THREE.Object3D());
+              }
+            });
+          });
 
           // Render new frame
           this.shouldRender = true;
@@ -1243,6 +1294,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.coneYellowCenterSet.setPoses(this.command.poses.coneYellowCenter);
     this.coneYellowBackSet.setPoses(this.command.poses.coneYellowBack);
 
+    // Update game pieces
+    (this.command.poses.gamePiece as Pose3d[][]).forEach((gamePiecePoses, index) => {
+      this.userGamePieceSets[index].setPoses(gamePiecePoses);
+    });
+    this.stagedGamePieceSets.forEach((set) => {
+      set.setHidden(this.command.hasUserGamePieces);
+    });
+
     // Update Zebra markers
     let bluePoses = Object.values(this.command.poses.zebraMarker)
       .filter((x: any) => x.alliance === "blue")
@@ -1429,6 +1488,7 @@ class ObjectSet {
   private children: THREE.Object3D[] = [];
   private poses: Pose3d[] = [];
   private displayedPoses = 0;
+  private hidden = false;
 
   constructor(parent: THREE.Object3D) {
     this.parent = parent;
@@ -1457,7 +1517,9 @@ class ObjectSet {
 
     // Clone new children
     while (this.children.length < poses.length) {
-      this.children.push(this.source.clone(true));
+      let child = this.source.clone(true);
+      child.visible = !this.hidden;
+      this.children.push(child);
     }
 
     // Remove extra children from parent
@@ -1477,6 +1539,13 @@ class ObjectSet {
       this.children[i].position.set(...poses[i].translation);
       this.children[i].rotation.setFromQuaternion(rotation3dToQuaternion(poses[i].rotation));
     }
+  }
+
+  /** Sets whether to hide all of the objects. */
+  setHidden(hidden: boolean) {
+    this.children.forEach((child) => {
+      child.visible = !hidden;
+    });
   }
 
   /** Returns the set of cloned objects. */

@@ -26,35 +26,6 @@ This folder should contain a file named "config.json" and one or more asset file
 }
 ```
 
-## Flat Field Images
-
-An image must be included in the folder with the name "image.png". It should be oriented with the blue alliance on the left. The config file must be in the following format:
-
-```
-{
-  "name": string // Unique name, required for all asset types
-  "sourceUrl": string // Link to the original file, optional
-  "topLeft": [number, number] // Pixel coordinate (origin at upper left)
-  "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
-  "widthInches": number // Real width of the field (long side)
-  "heightInches": number // Real height of the field (short side)
-}
-```
-
-## 3D Field Models
-
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to glTF; see [this page](/docs/GLTF-CONVERT.md) for details. The config file must be in the following format:
-
-```
-{
-  "name": string // Unique name, required for all asset types
-  "sourceUrl": string // Link to the original file, optional
-  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-  "widthInches": number // Real width of the field (long side)
-  "heightInches": number // Real height of the field (short side)
-}
-```
-
 ## 3D Robot Models
 
 A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](/docs/GLTF-CONVERT.md) for details. The config file must be in the following format:
@@ -146,5 +117,53 @@ An image must be included in the folder with the name "image.png". The config fi
   "sizePx": [number, number]
   "sourceIndex": number,
   "sourceRange": [number, number]; // Min greater than max to invert
+}
+```
+
+## Flat Field Images
+
+An image must be included in the folder with the name "image.png". It should be oriented with the blue alliance on the left. The config file must be in the following format:
+
+```
+{
+  "name": string // Unique name, required for all asset types
+  "sourceUrl": string // Link to the original file, optional
+  "topLeft": [number, number] // Pixel coordinate (origin at upper left)
+  "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
+  "widthInches": number // Real width of the field (long side)
+  "heightInches": number // Real height of the field (short side)
+  "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
+}
+```
+
+## 3D Field Models
+
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to glTF; see [this page](/docs/GLTF-CONVERT.md) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
+
+The config file must be in the following format:
+
+```
+{
+  "name": string // Unique name, required for all asset types
+  "sourceUrl": string // Link to the original file, optional
+  "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
+  "widthInches": number // Real width of the field (long side)
+  "heightInches": number // Real height of the field (short side)
+  "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
+  "gamePieces": [ // List of game piece types
+    {
+      "name": string // Game piece name
+      "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
+      "position": [number, number, number] // Position offset in meters, applied after rotation
+      "stagedLocations": [ // Locations to place game pieces if not specified by the user
+        {
+          "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
+          "position": [number, number, number] // Position offset in meters, applied after rotation
+        },
+        ...
+      ]
+    },
+    ...
+  ]
 }
 ```

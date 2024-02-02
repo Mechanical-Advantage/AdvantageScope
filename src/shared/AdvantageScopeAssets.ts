@@ -27,6 +27,19 @@ export interface Config3dField {
   widthInches: number;
   heightInches: number;
   defaultOrigin: "auto" | "blue" | "red";
+  gamePieces: Config3dField_GamePiece[];
+}
+
+export interface Config3dField_GamePiece {
+  name: string;
+  rotations: Config3d_Rotation[];
+  position: [number, number, number];
+  stagedLocations: Config3dField_GamePieceLocation[];
+}
+
+export interface Config3dField_GamePieceLocation {
+  rotations: Config3d_Rotation[];
+  position: [number, number, number];
 }
 
 export interface Config3dRobot {
