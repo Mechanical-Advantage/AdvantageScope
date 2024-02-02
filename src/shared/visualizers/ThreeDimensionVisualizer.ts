@@ -185,7 +185,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Create camera
     {
       const aspect = 2;
-      const near = 0.1;
+      const near = 0.15;
       const far = 1000;
       this.camera = new THREE.PerspectiveCamera(this.orbitFov, aspect, near, far);
     }
