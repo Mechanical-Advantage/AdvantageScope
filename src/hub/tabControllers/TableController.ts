@@ -28,8 +28,7 @@ export default class TableController implements TabController {
   private fields: string[] = [];
   private timestamps: number[] = [];
   private lastLogFieldList: string[] = [];
-  private lastSelectionMode = SelectionMode.Idle;
-  private scrollToSelectedNext = false;
+  private lastScrollPosition: number | null = null;
   private hoverCursorY: number | null = null;
 
   constructor(content: HTMLElement) {
@@ -258,6 +257,8 @@ export default class TableController implements TabController {
   }
 
   periodic() {
+    let initialScrollPosition = this.TABLE_CONTAINER.scrollTop;
+
     // Update data row count
     const dataRowCount = Math.ceil(this.TABLE_CONTAINER.clientHeight / this.ROW_HEIGHT_PX) + this.DATA_ROW_BUFFER * 2;
     while (this.dataRows.length > dataRowCount) {
@@ -290,10 +291,12 @@ export default class TableController implements TabController {
       }
     }
 
-    // Update timestamps, scroll if removed from start
+    // Update timestamps, count removed rows from start
     let newTimestamps = window.log.getTimestamps(this.fields, this.UUID);
-    let removedRows = this.timestamps.findIndex((timestamp) => timestamp === newTimestamps[0]);
-    this.TABLE_CONTAINER.scrollTop -= removedRows * this.ROW_HEIGHT_PX;
+    let removedRows = this.timestamps.findIndex((timestamp) => timestamp === newTimestamps[1]) - 1;
+    if (removedRows > 0) {
+      this.TABLE_CONTAINER.scrollTop = initialScrollPosition - removedRows * this.ROW_HEIGHT_PX;
+    }
     this.timestamps = newTimestamps;
 
     // Update element heights
@@ -385,23 +388,19 @@ export default class TableController implements TabController {
 
     // Scroll automatically based on selection mode
     switch (window.selection.getMode()) {
-      case SelectionMode.Static:
-        if (this.lastSelectionMode == SelectionMode.Locked) {
-          this.scrollToSelectedNext = true;
-        }
-        break;
       case SelectionMode.Playback:
         this.scrollToSelected();
         break;
       case SelectionMode.Locked:
-        this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
+        if (this.lastScrollPosition !== null && initialScrollPosition < this.lastScrollPosition) {
+          // Scrolling down, unlock
+          window.selection.unlock();
+        } else {
+          this.scrollToSelected();
+        }
         break;
     }
-    if (this.scrollToSelectedNext) {
-      this.scrollToSelectedNext = false;
-      this.scrollToSelected();
-    }
-    this.lastSelectionMode = window.selection.getMode();
+    this.lastScrollPosition = this.TABLE_CONTAINER.scrollTop;
 
     // Update selected & hovered times
     let header = this.TABLE_BODY.firstElementChild as HTMLElement;

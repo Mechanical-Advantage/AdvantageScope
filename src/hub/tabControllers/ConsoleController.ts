@@ -17,6 +17,7 @@ export default class ConsoleController implements TabController {
   private FIELD_TEXT: HTMLElement;
 
   private field: string | null = null;
+  private lastScrollPosition: number | null = null;
   private lastData: LogValueSetString = {
     timestamps: [],
     values: []
@@ -126,8 +127,13 @@ export default class ConsoleController implements TabController {
 
     // Scroll to bottom if locked
     if (window.selection.getMode() === SelectionMode.Locked) {
-      this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
+      if (this.lastScrollPosition !== null && this.TABLE_CONTAINER.scrollTop < this.lastScrollPosition) {
+        window.selection.unlock();
+      } else {
+        this.TABLE_CONTAINER.scrollTop = this.TABLE_CONTAINER.scrollHeight - this.TABLE_CONTAINER.clientHeight;
+      }
     }
+    this.lastScrollPosition = this.TABLE_CONTAINER.scrollTop;
   }
 
   /** Updates the field text and data. */
