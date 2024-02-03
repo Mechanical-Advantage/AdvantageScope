@@ -197,7 +197,8 @@ export function loadAssets(): AdvantageScopeAssets {
             config.bottomRight[0] >= 0 &&
             config.bottomRight[1] >= 0 &&
             config.widthInches > 0 &&
-            config.heightInches > 0
+            config.heightInches > 0 &&
+            fs.existsSync(decodeURIComponent(config.path))
           ) {
             assets.field2ds.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
@@ -322,7 +323,15 @@ export function loadAssets(): AdvantageScopeAssets {
               }
             });
           }
-          if (config.name.length > 0 && config.widthInches > 0 && config.heightInches > 0) {
+          if (
+            config.name.length > 0 &&
+            config.widthInches > 0 &&
+            config.heightInches > 0 &&
+            fs.existsSync(decodeURIComponent(config.path)) &&
+            config.gamePieces.every((value, index) =>
+              fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
+            )
+          ) {
             assets.field3ds.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
@@ -439,7 +448,14 @@ export function loadAssets(): AdvantageScopeAssets {
               }
             });
           }
-          if (config.name.length > 0 && config.cameras.every((camera) => camera.name.length > 0)) {
+          if (
+            config.name.length > 0 &&
+            config.cameras.every((camera) => camera.name.length > 0) &&
+            fs.existsSync(decodeURIComponent(config.path)) &&
+            config.components.every((value, index) =>
+              fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
+            )
+          ) {
             assets.robots.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
@@ -580,7 +596,8 @@ export function loadAssets(): AdvantageScopeAssets {
                 case "axis":
                   return component.sizePx[0] > 0 && component.sizePx[1] > 0 && component.sourceIndex >= 0;
               }
-            })
+            }) &&
+            fs.existsSync(decodeURIComponent(config.path))
           ) {
             assets.joysticks.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
