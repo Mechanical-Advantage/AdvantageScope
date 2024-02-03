@@ -121,17 +121,21 @@ To visualize mechanism data using articulated 3D components, log a set of 3D pos
 
 To switch the selected camera mode, right-click on the rendered field view. The camera mode and position is controlled independently for every pop-up window, allowing for the easy creation of multi-camera views.
 
+> Note: Right-click the rendered field view and click "Set FOV..." to adjust the FOV of the orbiting and Driver Station cameras.
+
 ### Orbit Field
 
 This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** rotates the camera, and **right-click + drag** pans the camera. **Scroll** to zoom in and out.
-
-> Note: Right-click the rendered field view and click "Orbit FOV..." to adjust the FOV of the orbiting camera.
 
 ### Orbit Robot
 
 This mode has the same controls as the "Orbit Field" mode, but the camera's position is locked relative to the robot. This allows for "tracking" shots of the robot's movement.
 
-> Note: Right-click the rendered field view and click "Orbit FOV..." to adjust the FOV of the orbiting camera.
+### Driver Station
+
+This mode locks the camera behind one of the driver stations at typical eye-height. Either manually choose the station to view or choose "Auto" to use the alliance and station number stored in the log data.
+
+> Note: Automatic selection of station number may be inaccurate when viewing log data produced by AdvantageKit 2023 or earlier.
 
 ### Fixed Camera
 
@@ -150,9 +154,11 @@ If a "Camera Override" pose is provided, it replaces the default poses of all fi
 The following configuration options are available:
 
 - **Field:** The field model to use, defaults to the most recent game. We recommend using the "Evergreen" field for devices with limited graphical performance. The "Axes" field displays only XYZ axes at the origin with a field outline for scale.
-- **Alliance:** The current alliance color, which flips the origin to the opposite side of the field.
+- **Alliance:** The position of the field origin, on the blue or red alliance wall. "Auto" will select the alliance color based on the available log data.
 - **Robot:** The robot model to use. We recommend using the "KitBot" model for devices with limited graphical performance. To add a custom field or robot model, see [Custom Assets](/docs/CUSTOM-ASSETS.md).
 - **Units:** The linear and angular units of the provided fields. Meters, inches, radians, and degrees are supported. The rotations units do no affect 3D poses.
+
+> Note: Automatic selection of alliance color may be inaccurate when viewing log data produced by AdvantageKit 2023 or earlier.
 
 ## Rendering Modes
 

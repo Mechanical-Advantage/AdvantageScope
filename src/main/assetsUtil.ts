@@ -14,7 +14,8 @@ import {
   ConfigJoystick,
   ConfigJoystick_Axis,
   ConfigJoystick_Button,
-  ConfigJoystick_Joystick
+  ConfigJoystick_Joystick,
+  DEFAULT_DRIVER_STATIONS
 } from "../shared/AdvantageScopeAssets";
 import { checkArrayType } from "../shared/util";
 import { AUTO_ASSETS, BUNDLED_ASSETS, LEGACY_ASSETS, USER_ASSETS, WINDOW_ICON } from "./Constants";
@@ -210,6 +211,7 @@ export function loadAssets(): AdvantageScopeAssets {
             widthInches: 0,
             heightInches: 0,
             defaultOrigin: "auto",
+            driverStations: DEFAULT_DRIVER_STATIONS,
             gamePieces: []
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
@@ -246,6 +248,14 @@ export function loadAssets(): AdvantageScopeAssets {
               configRaw.defaultOrigin === "blue")
           ) {
             config.defaultOrigin = configRaw.defaultOrigin;
+          }
+          if (
+            "driverStations" in configRaw &&
+            Array.isArray(configRaw.driverStations) &&
+            configRaw.driverStations.length === 6 &&
+            configRaw.driverStations.every((position) => checkArrayType(position, "number") && position.length === 2)
+          ) {
+            config.driverStations = configRaw.driverStations;
           }
           if ("gamePieces" in configRaw && Array.isArray(configRaw.gamePieces)) {
             configRaw.gamePieces.forEach((gamePieceRaw: any) => {

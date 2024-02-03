@@ -6,7 +6,15 @@ import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { CSS2DObject, CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
-import { Config3dField, Config3dRobot, Config3d_Rotation } from "../AdvantageScopeAssets";
+import {
+  ALLIANCE_STATION_WIDTH,
+  Config3dField,
+  Config3dRobot,
+  Config3d_Rotation,
+  DEFAULT_DRIVER_STATIONS,
+  STANDARD_FIELD_LENGTH,
+  STANDARD_FIELD_WIDTH
+} from "../AdvantageScopeAssets";
 import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
@@ -24,22 +32,18 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private LOWER_POWER_MAX_FPS = 30;
   private MAX_ORBIT_FOV = 160;
   private MIN_ORBIT_FOV = 10;
-  private STANDARD_FIELD_LENGTH = convert(54, "feet", "meters");
-  private STANDARD_FIELD_WIDTH = convert(27, "feet", "meters");
   private ORBIT_FIELD_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
-  private ORBIT_AXES_DEFAULT_TARGET = new THREE.Vector3(
-    this.STANDARD_FIELD_LENGTH / 2,
-    0,
-    -this.STANDARD_FIELD_WIDTH / 2
-  );
+  private ORBIT_AXES_DEFAULT_TARGET = new THREE.Vector3(STANDARD_FIELD_LENGTH / 2, 0, -STANDARD_FIELD_WIDTH / 2);
   private ORBIT_ROBOT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
   private ORBIT_FIELD_DEFAULT_POSITION = new THREE.Vector3(0, 6, -12);
   private ORBIT_AXES_DEFAULT_POSITION = new THREE.Vector3(
-    2 + this.STANDARD_FIELD_LENGTH / 2,
+    2 + STANDARD_FIELD_LENGTH / 2,
     2,
-    -4 - this.STANDARD_FIELD_WIDTH / 2
+    -4 - STANDARD_FIELD_WIDTH / 2
   );
   private ORBIT_ROBOT_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
+  private DS_CAMERA_HEIGHT = convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
+  private DS_CAMERA_OFFSET = 1.5; // Distance away from the glass
   private MATERIAL_SPECULAR: THREE.Color | undefined = new THREE.Color(0x666666); // Overridden if not cinematic
   private MATERIAL_SHININESS: number | undefined = 100; // Overridden if not cinematic
   private WPILIB_ROTATION = getQuaternionFromRotSeq([
@@ -69,7 +73,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private canvas: HTMLCanvasElement;
   private annotationsDiv: HTMLElement;
   private alert: HTMLElement;
-  private alertCamera: HTMLElement;
 
   private renderer: THREE.WebGLRenderer;
   private cssRenderer: CSS2DRenderer;
@@ -83,6 +86,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private fixedCameraGroup: THREE.Group;
   private fixedCameraObj: THREE.Object3D;
   private fixedCameraOverrideObj: THREE.Object3D;
+  private dsCameraGroup: THREE.Group;
+  private dsCameraObj: THREE.Object3D;
 
   private axesTemplate: THREE.Object3D;
   private field: THREE.Object3D | null = null;
@@ -113,9 +118,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
   private command: any;
   private shouldRender = false;
-  private cameraIndex = -1;
+  private cameraIndex = -1; // -1 = Orbit Field, -2 = Orbit Robot, -3 = Auto DS, -4 to -9 = B1, B2, B3, R1, R2, R3
   private orbitFov = 50;
   private lastCameraIndex = -1;
+  private lastAutoDriverStation = -1;
   private lastFrameTime = 0;
   private lastWidth: number | null = 0;
   private lastHeight: number | null = 0;
@@ -138,7 +144,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.canvas = canvas;
     this.annotationsDiv = annotationsDiv;
     this.alert = alert;
-    this.alertCamera = alert.getElementsByTagName("span")[0];
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default"
@@ -243,6 +248,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.fixedCameraGroup = new THREE.Group().add(this.fixedCameraObj);
       this.fixedCameraOverrideObj = new THREE.Object3D();
       this.wpilibFieldCoordinateGroup.add(this.fixedCameraGroup, this.fixedCameraOverrideObj);
+    }
+
+    // Create DS camera object
+    {
+      this.dsCameraObj = new THREE.Object3D();
+      this.dsCameraObj.position.set(-this.DS_CAMERA_OFFSET, 0.0, this.DS_CAMERA_HEIGHT);
+      this.dsCameraGroup = new THREE.Group().add(this.dsCameraObj);
+      this.wpilibCoordinateGroup.add(this.dsCameraGroup);
     }
 
     // Set up object sets
@@ -503,6 +516,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   /** Resets the camera position and controls target. */
   private resetCamera() {
     if (this.cameraIndex === -1) {
+      // Orbit field
       if (this.command && this.command.options.field === "Axes") {
         this.camera.position.copy(this.ORBIT_AXES_DEFAULT_POSITION);
         this.controls.target.copy(this.ORBIT_AXES_DEFAULT_TARGET);
@@ -511,10 +525,68 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.controls.target.copy(this.ORBIT_FIELD_DEFAULT_TARGET);
       }
     } else if (this.cameraIndex === -2) {
+      // Orbit robot
       this.camera.position.copy(this.ORBIT_ROBOT_DEFAULT_POSITION);
       this.controls.target.copy(this.ORBIT_ROBOT_DEFAULT_TARGET);
+    } else {
+      // Driver Station
+      let fieldConfig = this.getFieldConfig();
+      if (fieldConfig !== null) {
+        let driverStation = -1;
+        if (this.cameraIndex < -3) {
+          driverStation = -4 - this.cameraIndex;
+        } else {
+          driverStation = this.command.autoDriverStation;
+        }
+        if (driverStation >= 0) {
+          let position = fieldConfig.driverStations[driverStation];
+          this.dsCameraGroup.position.set(position[0], position[1], 0);
+          this.dsCameraGroup.rotation.set(0, 0, Math.atan2(-position[1], -position[0]));
+          this.camera.position.copy(this.dsCameraObj.getWorldPosition(new THREE.Vector3()));
+          this.camera.rotation.setFromQuaternion(this.dsCameraObj.getWorldQuaternion(new THREE.Quaternion()));
+          this.controls.target.copy(this.ORBIT_FIELD_DEFAULT_TARGET); // Look at the center of the field
+        }
+      }
     }
     this.controls.update();
+  }
+
+  private getFieldConfig(): Config3dField | null {
+    let fieldTitle = this.command.options.field;
+    if (fieldTitle === "Evergreen") {
+      return {
+        name: "Evergreen",
+        path: "",
+        rotations: [],
+        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
+        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
+        defaultOrigin: "auto",
+        driverStations: DEFAULT_DRIVER_STATIONS,
+        gamePieces: []
+      };
+    } else if (fieldTitle === "Axes") {
+      return {
+        name: "Axes",
+        path: "",
+        rotations: [],
+        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
+        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
+        defaultOrigin: "blue",
+        driverStations: DEFAULT_DRIVER_STATIONS,
+        gamePieces: []
+      };
+    } else {
+      let fieldConfig = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
+      if (fieldConfig === undefined) return null;
+      return fieldConfig;
+    }
+  }
+
+  private getRobotConfig(): Config3dRobot | null {
+    let robotTitle = this.command.options.robot;
+    let robotConfig = window.assets?.robots.find((robotData) => robotData.name === robotTitle);
+    if (robotConfig === undefined) return null;
+    return robotConfig;
   }
 
   private renderFrame() {
@@ -559,38 +631,11 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Get config
     let fieldTitle = this.command.options.field;
     let robotTitle = this.command.options.robot;
-    let fieldConfig: Config3dField;
-    let robotConfig: Config3dRobot;
-    if (fieldTitle === "Evergreen") {
-      fieldConfig = {
-        name: "Evergreen",
-        path: "",
-        rotations: [],
-        widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "auto",
-        gamePieces: []
-      };
-    } else if (fieldTitle === "Axes") {
-      fieldConfig = {
-        name: "Axes",
-        path: "",
-        rotations: [],
-        widthInches: convert(this.STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(this.STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "blue",
-        gamePieces: []
-      };
-    } else {
-      let fieldConfigTmp = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
-      if (fieldConfigTmp === undefined) return;
-      fieldConfig = fieldConfigTmp;
-    }
-    {
-      let robotConfigTmp = window.assets?.robots.find((robotData) => robotData.name === robotTitle);
-      if (robotConfigTmp === undefined) return;
-      robotConfig = robotConfigTmp;
-    }
+    let fieldConfigTmp = this.getFieldConfig();
+    let robotConfigTmp = this.getRobotConfig();
+    if (fieldConfigTmp === null || robotConfigTmp === null) return;
+    let fieldConfig = fieldConfigTmp;
+    let robotConfig = robotConfigTmp;
 
     // Check for new assets
     let assetsString = JSON.stringify(window.assets);
@@ -608,10 +653,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       // Delete old game pieces
       [this.userGamePieceSets, this.stagedGamePieceSets].forEach((setGroup) => {
         setGroup.forEach((set, index) => {
-          if (index >= fieldConfig.gamePieces.length) {
-            set.setPoses([]);
-            set.setSource(new THREE.Object3D());
-          }
+          set.setPoses([]);
+          set.setSource(new THREE.Object3D());
         });
       });
 
@@ -622,7 +665,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Floor
         let carpet = new THREE.Mesh(
-          new THREE.PlaneGeometry(this.STANDARD_FIELD_LENGTH + 4, this.STANDARD_FIELD_WIDTH + 1),
+          new THREE.PlaneGeometry(STANDARD_FIELD_LENGTH + 4, STANDARD_FIELD_WIDTH + 1),
           new THREE.MeshPhongMaterial({ color: 0x888888, side: THREE.DoubleSide })
         );
         carpet.name = "carpet";
@@ -630,10 +673,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Guardrails
         const guardrailHeight = convert(20, "inches", "meters");
-        [-this.STANDARD_FIELD_WIDTH / 2, this.STANDARD_FIELD_WIDTH / 2].forEach((y) => {
+        [-STANDARD_FIELD_WIDTH / 2, STANDARD_FIELD_WIDTH / 2].forEach((y) => {
           [0, guardrailHeight].forEach((z) => {
             let guardrail = new THREE.Mesh(
-              new THREE.CylinderGeometry(0.02, 0.02, this.STANDARD_FIELD_LENGTH, 12),
+              new THREE.CylinderGeometry(0.02, 0.02, STANDARD_FIELD_LENGTH, 12),
               new THREE.MeshPhongMaterial({ color: 0xdddddd })
             );
             this.field!.add(guardrail);
@@ -642,7 +685,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           });
           {
             let panel = new THREE.Mesh(
-              new THREE.PlaneGeometry(this.STANDARD_FIELD_LENGTH, guardrailHeight),
+              new THREE.PlaneGeometry(STANDARD_FIELD_LENGTH, guardrailHeight),
               new THREE.MeshPhongMaterial({
                 color: 0xffffff,
                 side: THREE.DoubleSide,
@@ -654,12 +697,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             panel.rotateX(Math.PI / 2);
             panel.position.set(0, y, guardrailHeight / 2);
           }
-          for (
-            let x = -this.STANDARD_FIELD_LENGTH / 2;
-            x < this.STANDARD_FIELD_LENGTH / 2;
-            x += this.STANDARD_FIELD_LENGTH / 16
-          ) {
-            if (x === -this.STANDARD_FIELD_LENGTH / 2) continue;
+          for (let x = -STANDARD_FIELD_LENGTH / 2; x < STANDARD_FIELD_LENGTH / 2; x += STANDARD_FIELD_LENGTH / 16) {
+            if (x === -STANDARD_FIELD_LENGTH / 2) continue;
             let guardrail = new THREE.Mesh(
               new THREE.CylinderGeometry(0.02, 0.02, guardrailHeight, 12),
               new THREE.MeshPhongMaterial({ color: 0xdddddd })
@@ -671,20 +710,20 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         });
 
         // Alliance stations
-        const allianceStationWidth = convert(69, "inches", "meters");
+        const allianceStationWidth = ALLIANCE_STATION_WIDTH;
         const allianceStationHeight = convert(78, "inches", "meters");
         const allianceStationSolidHeight = convert(36.75, "inches", "meters");
         const allianceStationShelfDepth = convert(12.25, "inches", "meters");
-        const fillerWidth = (this.STANDARD_FIELD_WIDTH - allianceStationWidth * 3) / 2;
+        const fillerWidth = (STANDARD_FIELD_WIDTH - allianceStationWidth * 3) / 2;
         const blueColor = 0x6379a6;
         const redColor = 0xa66363;
-        [-this.STANDARD_FIELD_LENGTH / 2, this.STANDARD_FIELD_LENGTH / 2].forEach((x) => {
+        [-STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_LENGTH / 2].forEach((x) => {
           [0, allianceStationSolidHeight, allianceStationHeight].forEach((z) => {
             let guardrail = new THREE.Mesh(
               new THREE.CylinderGeometry(
                 0.02,
                 0.02,
-                z === allianceStationSolidHeight ? allianceStationWidth * 3 : this.STANDARD_FIELD_WIDTH,
+                z === allianceStationSolidHeight ? allianceStationWidth * 3 : STANDARD_FIELD_WIDTH,
                 12
               ),
               new THREE.MeshPhongMaterial({ color: 0xdddddd })
@@ -693,12 +732,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             guardrail.position.set(x, 0, z);
           });
           [
-            -this.STANDARD_FIELD_WIDTH / 2,
+            -STANDARD_FIELD_WIDTH / 2,
             allianceStationWidth * -1.5,
             allianceStationWidth * -0.5,
             allianceStationWidth * 0.5,
             allianceStationWidth * 1.5,
-            this.STANDARD_FIELD_WIDTH / 2
+            STANDARD_FIELD_WIDTH / 2
           ].forEach((y) => {
             let guardrail = new THREE.Mesh(
               new THREE.CylinderGeometry(0.02, 0.02, allianceStationHeight, 12),
@@ -708,17 +747,15 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             guardrail.rotateX(Math.PI / 2);
             guardrail.position.set(x, y, allianceStationHeight / 2);
           });
-          [-this.STANDARD_FIELD_WIDTH / 2 + fillerWidth / 2, this.STANDARD_FIELD_WIDTH / 2 - fillerWidth / 2].forEach(
-            (y) => {
-              let filler = new THREE.Mesh(
-                new THREE.PlaneGeometry(allianceStationHeight, fillerWidth),
-                new THREE.MeshPhongMaterial({ color: x < 0 ? blueColor : redColor, side: THREE.DoubleSide })
-              );
-              this.field!.add(filler);
-              filler.rotateY(Math.PI / 2);
-              filler.position.set(x, y, allianceStationHeight / 2);
-            }
-          );
+          [-STANDARD_FIELD_WIDTH / 2 + fillerWidth / 2, STANDARD_FIELD_WIDTH / 2 - fillerWidth / 2].forEach((y) => {
+            let filler = new THREE.Mesh(
+              new THREE.PlaneGeometry(allianceStationHeight, fillerWidth),
+              new THREE.MeshPhongMaterial({ color: x < 0 ? blueColor : redColor, side: THREE.DoubleSide })
+            );
+            this.field!.add(filler);
+            filler.rotateY(Math.PI / 2);
+            filler.position.set(x, y, allianceStationHeight / 2);
+          });
           {
             let allianceWall = new THREE.Mesh(
               new THREE.PlaneGeometry(allianceStationSolidHeight, allianceStationWidth * 3),
@@ -781,15 +818,15 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         this.field = new THREE.Group();
         this.wpilibCoordinateGroup.add(this.field);
         let axes = this.axesTemplate.clone(true);
-        axes.position.set(-this.STANDARD_FIELD_LENGTH / 2, -this.STANDARD_FIELD_WIDTH / 2, 0);
+        axes.position.set(-STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2, 0);
         this.field.add(axes);
         let outline = new THREE.Line(
           new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(-this.STANDARD_FIELD_LENGTH / 2, -this.STANDARD_FIELD_WIDTH / 2, 0),
-            new THREE.Vector3(this.STANDARD_FIELD_LENGTH / 2, -this.STANDARD_FIELD_WIDTH / 2, 0),
-            new THREE.Vector3(this.STANDARD_FIELD_LENGTH / 2, this.STANDARD_FIELD_WIDTH / 2, 0),
-            new THREE.Vector3(-this.STANDARD_FIELD_LENGTH / 2, this.STANDARD_FIELD_WIDTH / 2, 0),
-            new THREE.Vector3(-this.STANDARD_FIELD_LENGTH / 2, -this.STANDARD_FIELD_WIDTH / 2, 0)
+            new THREE.Vector3(-STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2, 0),
+            new THREE.Vector3(STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2, 0),
+            new THREE.Vector3(STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_WIDTH / 2, 0),
+            new THREE.Vector3(-STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_WIDTH / 2, 0),
+            new THREE.Vector3(-STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2, 0)
           ]),
           new THREE.LineBasicMaterial({ color: 0x444444 })
         );
@@ -874,8 +911,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         });
       }
 
-      // Reset camera if switching between axis and non-axis
-      if ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes")) {
+      // Reset camera if switching between axis and non-axis or if using DS camera
+      if ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes") || this.cameraIndex < -2) {
         this.resetCamera();
       }
       this.lastFieldTitle = fieldTitle;
@@ -1007,7 +1044,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       );
       this.wpilibZebraCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
       if (fieldConfig.name === "Axes") {
-        this.wpilibZebraCoordinateGroup.position.set(this.STANDARD_FIELD_LENGTH, this.STANDARD_FIELD_WIDTH, 0);
+        this.wpilibZebraCoordinateGroup.position.set(STANDARD_FIELD_LENGTH, STANDARD_FIELD_WIDTH, 0);
       } else {
         this.wpilibZebraCoordinateGroup.position.set(
           convert(fieldConfig.widthInches / 2, "inches", "meters"),
@@ -1349,7 +1386,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       if (this.cameraIndex >= robotConfig.cameras.length) this.cameraIndex = -1;
 
       // Update camera controls
-      let orbitalCamera = this.cameraIndex < 0;
+      let orbitalCamera = this.cameraIndex === -1 || this.cameraIndex === -2;
+      let dsCamera = this.cameraIndex < -2;
       if (orbitalCamera !== this.controls.enabled) {
         this.controls.enabled = orbitalCamera;
         this.controls.update();
@@ -1358,14 +1396,14 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       // Update container and camera based on mode
       let fov = this.orbitFov;
       this.lastAspectRatio = null;
-      if (orbitalCamera) {
+      if (orbitalCamera || dsCamera) {
         this.canvas.classList.remove("fixed");
         this.annotationsDiv.classList.remove("fixed");
         this.canvas.style.width = "";
         this.canvas.style.height = "";
         this.annotationsDiv.style.width = "";
         this.annotationsDiv.style.height = "";
-        if (this.cameraIndex === -1) {
+        if (this.cameraIndex === -1 || dsCamera) {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
@@ -1381,7 +1419,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
         }
-        if (this.cameraIndex !== this.lastCameraIndex) {
+        if (
+          this.cameraIndex !== this.lastCameraIndex ||
+          (this.cameraIndex === -3 && this.lastAutoDriverStation !== this.command.autoDriverStation)
+        ) {
           this.resetCamera();
         }
       } else {
@@ -1438,16 +1479,18 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       // Update camera alert
       if (this.cameraIndex === -2) {
         this.alert.hidden = this.command.poses.robot.length > 0;
-        this.alertCamera.innerText = "Orbit Robot";
-      } else if (this.cameraIndex === -1) {
+        this.alert.innerHTML = 'Robot pose not available</br>for camera "Orbit Robot".';
+      } else if (this.cameraIndex === -3) {
+        this.alert.hidden = this.command.autoDriverStation >= 0;
+        this.alert.innerHTML = "Driver Station position</br>not available.";
+      } else if (this.cameraIndex === -1 || dsCamera) {
         this.alert.hidden = true;
       } else {
         this.alert.hidden = this.command.poses.robot.length > 0 || this.command.poses.cameraOverride.length > 0;
-        if (robotConfig) {
-          this.alertCamera.innerText = robotConfig.cameras[this.cameraIndex].name;
-        } else {
-          this.alertCamera.innerText = "???";
-        }
+        this.alert.innerHTML =
+          'Robot pose not available</br>for camera "' +
+          (robotConfig ? robotConfig.cameras[this.cameraIndex].name : "???") +
+          '".';
       }
 
       // Update camera FOV
@@ -1457,6 +1500,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       }
 
       this.lastCameraIndex = this.cameraIndex;
+      this.lastAutoDriverStation = this.command.autoDriverStation;
     }
 
     // Render new frame

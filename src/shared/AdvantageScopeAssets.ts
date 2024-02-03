@@ -1,3 +1,17 @@
+import { convert } from "./units";
+
+export const STANDARD_FIELD_LENGTH = convert(54, "feet", "meters");
+export const STANDARD_FIELD_WIDTH = convert(27, "feet", "meters");
+export const ALLIANCE_STATION_WIDTH = convert(69, "inches", "meters");
+export const DEFAULT_DRIVER_STATIONS: [number, number][] = [
+  [-STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
+  [-STANDARD_FIELD_LENGTH / 2, 0],
+  [-STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
+  [STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
+  [STANDARD_FIELD_LENGTH / 2, 0],
+  [STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH]
+];
+
 export interface AdvantageScopeAssets {
   field2ds: Config2d[];
   field3ds: Config3dField[];
@@ -27,6 +41,7 @@ export interface Config3dField {
   widthInches: number;
   heightInches: number;
   defaultOrigin: "auto" | "blue" | "red";
+  driverStations: [number, number][];
   gamePieces: Config3dField_GamePiece[];
 }
 

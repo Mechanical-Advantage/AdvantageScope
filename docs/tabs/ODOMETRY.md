@@ -89,3 +89,5 @@ The following configuration options are available:
 - **Alliance (Bumpers):** The color of the robot's bumpers, set independently of the field origin. "Auto" will select the alliance color based on the available log data.
 - **Alliance (Origin):** The position of the field origin, on the blue or red alliance wall. "Auto" will select the alliance color based on the available log data.
 - **Orientation:** The orientation to use when displaying the field, useful when aligning to a match video or testing field oriented controls.
+
+> Note: Automatic selection of alliance color may be inaccurate when viewing log data produced by AdvantageKit 2023 or earlier.

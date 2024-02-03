@@ -150,6 +150,9 @@ The config file must be in the following format:
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)
   "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
+  "driverStations": [
+    [number, number] (x6) // Driver station positions (X & Y in meters relative to the center of the field), ordered B1, B2, B3, R1, R2, R3
+  ]
   "gamePieces": [ // List of game piece types
     {
       "name": string // Game piece name
@@ -158,7 +161,7 @@ The config file must be in the following format:
       "stagedLocations": [ // Locations to place game pieces if not specified by the user
         {
           "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-          "position": [number, number, number] // Position offset in meters, applied after rotation
+          "position": [number, number, number] // Position in meters, with the origin at the center of the field
         },
         ...
       ]

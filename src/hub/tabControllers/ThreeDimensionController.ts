@@ -23,6 +23,7 @@ import {
 import LoggableType from "../../shared/log/LoggableType";
 import {
   ALLIANCE_KEYS,
+  getDriverStation,
   getIsRedAlliance,
   getMechanismState,
   getOrDefault,
@@ -769,6 +770,7 @@ export default class ThreeDimensionController extends TimelineVizController {
       },
       options: this.options,
       allianceRedOrigin: allianceRedOrigin,
+      autoDriverStation: getDriverStation(window.log, time),
       newAssetsCounter: this.newAssetsCounter,
       hasUserGamePieces: hasUserGamePieces
     };
