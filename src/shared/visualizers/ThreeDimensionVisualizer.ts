@@ -599,10 +599,23 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Update field
     if (fieldTitle !== this.lastFieldTitle || newAssets) {
+      // Delete old field
       if (this.field) {
         this.wpilibCoordinateGroup.remove(this.field);
         disposeObject(this.field);
       }
+
+      // Delete old game pieces
+      [this.userGamePieceSets, this.stagedGamePieceSets].forEach((setGroup) => {
+        setGroup.forEach((set, index) => {
+          if (index >= fieldConfig.gamePieces.length) {
+            set.setPoses([]);
+            set.setSource(new THREE.Object3D());
+          }
+        });
+      });
+
+      // Load new field
       if (fieldTitle === "Evergreen") {
         this.field = new THREE.Group();
         this.wpilibCoordinateGroup.add(this.field);
@@ -854,16 +867,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
                 })
               );
             }
-          });
-
-          // Delete unused game pieces
-          [this.userGamePieceSets, this.stagedGamePieceSets].forEach((setGroup) => {
-            setGroup.forEach((set, index) => {
-              if (index >= fieldConfig.gamePieces.length) {
-                set.setPoses([]);
-                set.setSource(new THREE.Object3D());
-              }
-            });
           });
 
           // Render new frame
