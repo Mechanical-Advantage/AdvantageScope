@@ -158,13 +158,7 @@ The config file must be in the following format:
       "name": string // Game piece name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters, applied after rotation
-      "stagedLocations": [ // Locations to place game pieces if not specified by the user
-        {
-          "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
-          "position": [number, number, number] // Position in meters, with the origin at the center of the field
-        },
-        ...
-      ]
+      "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied
     },
     ...
   ]

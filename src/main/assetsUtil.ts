@@ -264,7 +264,7 @@ export function loadAssets(): AdvantageScopeAssets {
                 name: "",
                 rotations: [],
                 position: [0, 0, 0],
-                stagedLocations: []
+                stagedObjects: []
               };
               config.gamePieces.push(gamePiece);
               if ("name" in gamePieceRaw && typeof gamePieceRaw.name === "string") {
@@ -291,35 +291,8 @@ export function loadAssets(): AdvantageScopeAssets {
               ) {
                 gamePiece.position = gamePieceRaw.position;
               }
-              if ("stagedLocations" in gamePieceRaw && Array.isArray(gamePieceRaw.stagedLocations)) {
-                gamePieceRaw.stagedLocations.forEach((stagedLocationRaw: any) => {
-                  let stagedLocation: Config3dField_GamePieceLocation = {
-                    rotations: [],
-                    position: [0, 0, 0]
-                  };
-                  gamePiece.stagedLocations.push(stagedLocation);
-                  if (
-                    "rotations" in stagedLocationRaw &&
-                    Array.isArray(stagedLocationRaw.rotations) &&
-                    stagedLocationRaw.rotations.every(
-                      (rotation: any) =>
-                        typeof rotation === "object" &&
-                        "axis" in rotation &&
-                        (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
-                        "degrees" in rotation &&
-                        typeof rotation.degrees === "number"
-                    )
-                  ) {
-                    stagedLocation.rotations = stagedLocationRaw.rotations;
-                  }
-                  if (
-                    "position" in stagedLocationRaw &&
-                    checkArrayType(stagedLocationRaw.position, "number") &&
-                    stagedLocationRaw.position.length === 3
-                  ) {
-                    stagedLocation.position = stagedLocationRaw.position;
-                  }
-                });
+              if ("stagedObjects" in gamePieceRaw && checkArrayType(gamePieceRaw.stagedObjects, "string")) {
+                gamePiece.stagedObjects = gamePieceRaw.stagedObjects;
               }
             });
           }

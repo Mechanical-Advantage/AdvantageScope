@@ -100,8 +100,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private aprilTag16h5Sets: Map<number | null, ObjectSet> = new Map();
   private trajectories: Line2[] = [];
   private trajectoryLengths: number[] = [];
-  private stagedGamePieceSets: ObjectSet[] = [];
-  private userGamePieceSets: ObjectSet[] = [];
+  private gamePieceSets: ObjectSet[] = [];
   private visionTargets: Line2[] = [];
   private axesSet: ObjectSet;
   private coneBlueFrontSet: ObjectSet;
@@ -275,8 +274,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.zebraGreenGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       this.zebraYellowGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       for (let i = 0; i < 6; i++) {
-        this.stagedGamePieceSets.push(new ObjectSet(this.wpilibCoordinateGroup));
-        this.userGamePieceSets.push(new ObjectSet(this.wpilibFieldCoordinateGroup));
+        this.gamePieceSets.push(new ObjectSet(this.wpilibFieldCoordinateGroup));
       }
     }
 
@@ -651,11 +649,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       }
 
       // Delete old game pieces
-      [this.userGamePieceSets, this.stagedGamePieceSets].forEach((setGroup) => {
-        setGroup.forEach((set, index) => {
-          set.setPoses([]);
-          set.setSource(new THREE.Object3D());
-        });
+      this.gamePieceSets.forEach((set) => {
+        set.setPoses([]);
+        set.setSource(new THREE.Object3D());
       });
 
       // Load new field
@@ -892,17 +888,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
               gamePieceGroup.add(scene);
               scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
               scene.position.set(...gamePieceConfig.position);
-              this.userGamePieceSets[index - 1].setSource(gamePieceGroup);
-              this.stagedGamePieceSets[index - 1].setSource(gamePieceGroup);
-              this.stagedGamePieceSets[index - 1].setPoses(
-                gamePieceConfig.stagedLocations.map((rawLocation) => {
-                  let quaternion = getQuaternionFromRotSeq(rawLocation.rotations);
-                  return {
-                    translation: rawLocation.position,
-                    rotation: [quaternion.w, quaternion.x, quaternion.y, quaternion.z]
-                  };
-                })
-              );
+              this.gamePieceSets[index - 1].setSource(gamePieceGroup);
             }
           });
 
@@ -1336,10 +1322,17 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Update game pieces
     (this.command.poses.gamePiece as Pose3d[][]).forEach((gamePiecePoses, index) => {
-      this.userGamePieceSets[index].setPoses(gamePiecePoses);
+      this.gamePieceSets[index].setPoses(gamePiecePoses);
     });
-    this.stagedGamePieceSets.forEach((set) => {
-      set.setHidden(this.command.hasUserGamePieces);
+    fieldConfig.gamePieces.forEach((gamePieceConfig) => {
+      gamePieceConfig.stagedObjects.forEach((objectName) => {
+        if (this.field !== null) {
+          let object = this.field.getObjectByName(objectName);
+          if (object) {
+            object.visible = !this.command.hasUserGamePieces;
+          }
+        }
+      });
     });
 
     // Update Zebra markers

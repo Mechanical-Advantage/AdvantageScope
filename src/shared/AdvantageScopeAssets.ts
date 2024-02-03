@@ -49,7 +49,7 @@ export interface Config3dField_GamePiece {
   name: string;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
-  stagedLocations: Config3dField_GamePieceLocation[];
+  stagedObjects: string[];
 }
 
 export interface Config3dField_GamePieceLocation {
