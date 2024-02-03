@@ -52,6 +52,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     "Game Piece 3",
     "Game Piece 4",
     "Game Piece 5",
+    "Trajectory",
     "Vision Target",
     "Axes",
     "AprilTag 36h11",
@@ -125,12 +126,12 @@ export default class ThreeDimensionController extends TimelineVizController {
           ],
           options: [
             ThreeDimensionController.POSE_3D_TYPES, // NumberArray
-            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID")), // Pose3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID") && x !== "Trajectory"), // Pose3d
             ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID") && x !== "Camera Override"), // Pose3d[]
-            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID")), // Transform3d
+            ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID") && x !== "Trajectory"), // Transform3d
             ThreeDimensionController.POSE_3D_TYPES.filter((x) => !x.endsWith("ID") && x !== "Camera Override"), // Transform3d[]
             ["Vision Target"], // Translation3d
-            ["Vision Target"], // Translation3d[]
+            ["Trajectory", "Vision Target"], // Translation3d[]
             ThreeDimensionController.APRIL_TAG_TYPES, // AprilTag
             ThreeDimensionController.APRIL_TAG_TYPES // AprilTag[]
           ]
@@ -486,6 +487,9 @@ export default class ThreeDimensionController extends TimelineVizController {
           let index = Number(field.type[field.type.length - 1]);
           gamePieceData[index] = gamePieceData[index].concat(get3DValue(field.key, field.sourceType));
           hasUserGamePieces = true;
+          break;
+        case "Trajectory":
+          trajectoryData.push(get3DValue(field.key, field.sourceType));
           break;
         case "Vision Target":
           visionTargetData = visionTargetData.concat(get3DValue(field.key, field.sourceType));
