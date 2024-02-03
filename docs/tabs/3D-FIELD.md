@@ -88,6 +88,7 @@ The following objects are supported:
 - Axes
 - Trajectory
 - Vision Target
+- Game Pieces
 - Blue Cone (Front/Center/Back)
 - Yellow Cone (Front/Center/Back)
 - Camera Override (more details under "Camera Options")
