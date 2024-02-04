@@ -42,6 +42,34 @@ export default class PointsVisualizer implements Visualizer {
     for (let i = 0; i < Math.min(command.data.x.length, command.data.y.length); i++) {
       let position = [command.data.x[i], command.data.y[i]];
       let dimensions = [command.options.width, command.options.height];
+      switch (command.options.coordinates) {
+        case "xr,yd":
+          // Default, no changes
+          break;
+        case "xr,yu":
+          position = [position[0], -position[1]];
+          break;
+        case "xu,yl":
+          position = [-position[1], -position[0]];
+          break;
+      }
+      switch (command.options.origin) {
+        case "ul":
+          // Default, no changes
+          break;
+        case "ur":
+          position = [position[0] + dimensions[0], position[1]];
+          break;
+        case "ll":
+          position = [position[0], position[1] + dimensions[1]];
+          break;
+        case "lr":
+          position = [position[0] + dimensions[0], position[1] + dimensions[1]];
+          break;
+        case "c":
+          position = [position[0] + dimensions[0] / 2, position[1] + dimensions[1] / 2];
+          break;
+      }
       if (position[0] < 0 || position[0] > dimensions[0] || position[1] < 0 || position[1] > dimensions[1]) {
         continue;
       }
@@ -76,10 +104,10 @@ export default class PointsVisualizer implements Visualizer {
 
       // Set color
       let color = "";
-      if (command.options.group < 1) {
+      if (command.options.groupSize < 1) {
         color = window.matchMedia("(prefers-color-scheme: dark)").matches ? "white" : "black";
       } else {
-        color = AllColors[Math.floor(i / command.options.group) % AllColors.length];
+        color = AllColors[Math.floor(i / command.options.groupSize) % AllColors.length];
       }
       point.style.fill = color;
       point.style.stroke = color;
