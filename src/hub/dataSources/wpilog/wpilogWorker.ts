@@ -74,7 +74,7 @@ self.onmessage = (event) => {
       } else {
         let key = entryIds[record.getEntry()];
         let type = entryTypes[record.getEntry()];
-        let timestamp = record.getTimestamp() / 1000000.0;
+        let timestamp = Math.max(0, record.getTimestamp() / 1000000.0);
         if (key && type) {
           switch (type) {
             case "boolean":
