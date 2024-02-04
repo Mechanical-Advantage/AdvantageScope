@@ -40,6 +40,7 @@
     "chart.js": "^4.4.0",
     "electron": "^26.2.1",
     "electron-builder": "^24.6.4",
+    "fuse.js": "^7.0.0",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
     "highlight.js": "^11.9.0",
     "mathjs": "11.3.0",

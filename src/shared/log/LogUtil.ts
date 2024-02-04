@@ -1,3 +1,4 @@
+import Fuse from "fuse.js";
 import { Rotation2d, Translation2d } from "../geometry";
 import MatchInfo, { MatchType } from "../MatchInfo";
 import { convert } from "../units";
@@ -444,23 +445,14 @@ export function mergeMechanismStates(states: MechanismState[]): MechanismState {
   };
 }
 
+const SEARCH_FUSE = new Fuse([] as string[], { findAllMatches: true, ignoreLocation: true });
+
 export function searchFields(log: Log, query: string): string[] {
-  if (query.length == 1) return [];
-  query = query.toLowerCase();
-  let fieldStrings = log.getFieldKeys().filter((field) => field.toLowerCase().includes(query));
-  let fields = fieldStrings.map((field) => {
-    return {
-      string: field,
-      endDistance: field.length - field.toLowerCase().lastIndexOf(query)
-    };
-  });
-  fields.sort((a, b) => a.string.localeCompare(b.string, undefined, { numeric: true }));
-  fields.sort((a, b) => a.string.length - b.string.length);
-  fields.sort((a, b) => a.endDistance - b.endDistance);
-  return fields
+  if (query.length == 0) return [];
+  SEARCH_FUSE.setCollection(log.getFieldKeys());
+  return SEARCH_FUSE.search(query)
     .slice(0, MAX_SEARCH_RESULTS)
-    .map((field) => field.string)
-    .filter((field) => !log.isGenerated(field));
+    .map((field) => field.item);
 }
 
 export function getMatchInfo(log: Log): MatchInfo | null {
