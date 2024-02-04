@@ -450,7 +450,7 @@ div.search-results-item:nth-child(even) {
   background-color: #f5f5f5;
 }
 
-div.search-results-item:hover {
+div.search-results-item.hovered {
   background-color: #ccc;
 }
 
@@ -465,7 +465,7 @@ div.search-results-item:hover {
     background-color: #272727;
   }
 
-  div.search-results-item:hover {
+  div.search-results-item.hovered {
     background-color: #555;
   }
 }

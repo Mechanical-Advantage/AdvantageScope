@@ -58,6 +58,8 @@ export default class Sidebar {
   private selectGroupClearCallbacks: (() => void)[] = [];
   private searchKey: string | null = null;
   private searchExpandCallbacks: (() => void)[] = [];
+  private searchHoveredIndex: number | null = null;
+  private searchResults: string[] = [];
   private setTuningModeActiveCallbacks: ((active: boolean) => void)[] = [];
   private tuningModePublishCallbacks: (() => void)[] = [];
   private tuningValueCache: { [key: string]: string } = {};
@@ -117,12 +119,34 @@ export default class Sidebar {
       let hidden =
         !searchInputFocused || this.SEARCH_INPUT.value.length === 0 || this.SEARCH_RESULTS.childElementCount === 0;
       if (hidden !== this.SEARCH_RESULTS.hidden) {
-        this.SEARCH_RESULTS.hidden = hidden;
-        if (!hidden && this.SEARCH_RESULTS.hidden) {
+        if (hidden && !this.SEARCH_RESULTS.hidden) {
           this.SEARCH_RESULTS.scrollTop = 0;
+          this.searchHoveredIndex = null;
+          this.updateSearchHovered(false);
         }
+        this.SEARCH_RESULTS.hidden = hidden;
       }
     };
+    this.SEARCH_INPUT.addEventListener("keydown", (event) => {
+      const resultsCount = this.SEARCH_RESULTS.children.length;
+      if (event.code === "ArrowDown") {
+        if (this.searchHoveredIndex === null || this.searchHoveredIndex >= resultsCount) {
+          this.searchHoveredIndex = 0;
+        } else if (this.searchHoveredIndex < resultsCount - 1) {
+          this.searchHoveredIndex++;
+        }
+        this.updateSearchHovered(true);
+      } else if (event.code === "ArrowUp") {
+        if (this.searchHoveredIndex === null || this.searchHoveredIndex >= resultsCount) {
+          this.searchHoveredIndex = 0;
+        } else if (this.searchHoveredIndex > 0) {
+          this.searchHoveredIndex--;
+        }
+        this.updateSearchHovered(true);
+      } else if (event.code === "Enter") {
+        this.runSearch();
+      }
+    });
 
     // Tuning button
     this.TUNING_BUTTON.addEventListener("click", () => {
@@ -162,11 +186,25 @@ export default class Sidebar {
     if (!expandedEqual) this.refresh(true);
   }
 
+  /** Updates the hovering effect on the search results. */
+  private updateSearchHovered(scroll: boolean) {
+    Array.from(this.SEARCH_RESULTS.children).forEach((element, index) => {
+      if (index === this.searchHoveredIndex) {
+        element.classList.add("hovered");
+        if (scroll) {
+          element.scrollIntoView({ block: "nearest" });
+        }
+      } else {
+        element.classList.remove("hovered");
+      }
+    });
+  }
+
   /** Updates the set of results based on the current query. */
   private updateSearchResults() {
     let query = this.SEARCH_INPUT.value;
-    let results = query.length === 0 ? [] : searchFields(window.log, query);
-    results = results.filter((field) => {
+    this.searchResults = query.length === 0 ? [] : searchFields(window.log, query);
+    this.searchResults = this.searchResults.filter((field) => {
       let show = true;
       this.HIDDEN_KEYS.forEach((hiddenKey) => {
         if (field.startsWith("/" + hiddenKey)) show = false;
@@ -178,26 +216,33 @@ export default class Sidebar {
     while (this.SEARCH_RESULTS.firstChild) {
       this.SEARCH_RESULTS.removeChild(this.SEARCH_RESULTS.firstChild);
     }
-    results.forEach((field, index) => {
+    this.searchResults.forEach((field, index) => {
       let div = document.createElement("div");
       this.SEARCH_RESULTS.appendChild(div);
       div.classList.add("search-results-item");
       div.innerText = field;
-      let search = () => {
-        this.searchKey = field;
-        this.searchExpandCallbacks.forEach((callback) => callback());
-        this.searchKey = null;
-      };
-      div.addEventListener("mousedown", search);
-      div.addEventListener("touchdown", search);
-      if (index === 0) {
-        this.SEARCH_INPUT.addEventListener("keydown", (event) => {
-          if (div.getBoundingClientRect().height > 0 && event.code === "Enter") {
-            search();
-          }
-        });
-      }
+      div.addEventListener("mousedown", () => {
+        this.searchHoveredIndex = index;
+        this.runSearch();
+      });
+      div.addEventListener("touchdown", () => {
+        this.searchHoveredIndex = index;
+        this.runSearch();
+      });
+      div.addEventListener("mousemove", () => {
+        this.searchHoveredIndex = index;
+        this.updateSearchHovered(false);
+      });
     });
+  }
+
+  /** Close the search and highlight the selected field. */
+  private runSearch() {
+    if (this.searchHoveredIndex === null || this.searchHoveredIndex >= this.searchResults.length) return;
+    this.searchKey = this.searchResults[this.searchHoveredIndex];
+    this.searchExpandCallbacks.forEach((callback) => callback());
+    this.searchKey = null;
+    this.SEARCH_INPUT.blur();
   }
 
   /** Updates the displayed width based on the current state. */
