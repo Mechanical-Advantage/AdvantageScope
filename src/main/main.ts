@@ -1370,7 +1370,26 @@ function setupMenu() {
         }
       ]
     },
-    { role: "windowMenu" },
+    isMac
+      ? { role: "windowMenu" }
+      : {
+          label: "Window",
+          submenu: [
+            { role: "minimize" },
+            {
+              label: "Bring All to Front",
+              click(_, window) {
+                hubWindows.forEach((window) => window.moveTop());
+                downloadWindow?.moveTop();
+                prefsWindow?.moveTop();
+                licensesWindow?.moveTop();
+                Object.values(satelliteWindows).forEach((windows) => windows.forEach((window) => window.moveTop()));
+                window?.moveTop();
+              }
+            },
+            { type: "separator" }
+          ]
+        },
     {
       role: "help",
       submenu: [
