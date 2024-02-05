@@ -337,6 +337,7 @@ export default class Sidebar {
       this.fieldCount = window.log.getFieldCount();
 
       // Remove old list
+      let originalScroll = this.SIDEBAR.scrollTop;
       while (this.FIELD_LIST.firstChild) {
         this.FIELD_LIST.removeChild(this.FIELD_LIST.firstChild);
       }
@@ -361,6 +362,7 @@ export default class Sidebar {
         .forEach((key) => {
           this.addFields(key, "/" + key, tree[key], this.FIELD_LIST, 0);
         });
+      this.SIDEBAR.scrollTop = originalScroll;
 
       // Update search
       this.updateSearchResults();
