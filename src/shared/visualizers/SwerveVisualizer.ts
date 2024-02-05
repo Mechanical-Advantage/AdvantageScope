@@ -15,6 +15,12 @@ export default class SwerveVisualizer implements Visualizer {
     this.CANVAS = container.firstElementChild as HTMLCanvasElement;
   }
 
+  saveState() {
+    return null;
+  }
+
+  restoreState(): void {}
+
   render(command: any): number | null {
     // Update canvas size
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;

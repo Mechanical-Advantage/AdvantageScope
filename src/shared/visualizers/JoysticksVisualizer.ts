@@ -19,6 +19,12 @@ export default class JoysticksVisualizer implements Visualizer {
     }
   }
 
+  saveState() {
+    return null;
+  }
+
+  restoreState(): void {}
+
   render(
     command: {
       layoutTitle: string;

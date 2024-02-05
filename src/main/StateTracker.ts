@@ -1,93 +1,152 @@
 import { BrowserWindow, screen } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
-import { STATE_FILENAME } from "./Constants";
+import {
+  HUB_DEFAULT_HEIGHT,
+  HUB_DEFAULT_WIDTH,
+  SATELLITE_DEFAULT_HEIGHT,
+  SATELLITE_DEFAULT_WIDTH,
+  STATE_FILENAME
+} from "./Constants";
 
 export default class StateTracker {
   private SAVE_PERIOD_MS = 250;
-
-  private focusedWindow: BrowserWindow | null = null;
-  private rendererStateCache: { [id: number]: any } = {};
+  private rendererStates: { [id: number]: any } = {};
+  private satelliteUUIDs: { [id: number]: string } = {};
 
   constructor() {
     setInterval(() => {
-      if (this.focusedWindow === null) return;
-      if (this.focusedWindow.isDestroyed()) return;
-      let bounds = this.focusedWindow.getBounds();
-      let state: WindowState = {
-        x: bounds.x,
-        y: bounds.y,
-        width: bounds.width,
-        height: bounds.height,
-        rendererState: this.rendererStateCache[this.focusedWindow.id]
-      };
+      let state: ApplicationState = { hubs: [], satellites: [] };
+      Object.keys(this.rendererStates).forEach((windowId) => {
+        let windowIdNum = Number(windowId);
+        let window = BrowserWindow.fromId(Number(windowIdNum));
+        if (window === null) return;
+        let windowBounds = window.getBounds();
+        let windowState = this.rendererStates[windowIdNum];
+        let satelliteUUID = windowIdNum in this.satelliteUUIDs ? this.satelliteUUIDs[windowIdNum] : null;
+        if (satelliteUUID === null) {
+          state.hubs.push({
+            x: windowBounds.x,
+            y: windowBounds.y,
+            width: windowBounds.width,
+            height: windowBounds.height,
+            state: windowState
+          });
+        } else {
+          state.satellites.push({
+            x: windowBounds.x,
+            y: windowBounds.y,
+            width: windowBounds.width,
+            height: windowBounds.height,
+            state: windowState,
+            uuid: satelliteUUID
+          });
+        }
+      });
       jsonfile.writeFileSync(STATE_FILENAME, state);
     }, this.SAVE_PERIOD_MS);
   }
 
-  /** Reads the saved state from the file. */
-  getState(defaultWidth: number, defaultHeight: number): WindowState {
-    let state: WindowState = {
-      x: 0,
-      y: 0,
-      width: 0,
-      height: 0
-    };
-
-    let resetToDefault: boolean;
+  /** Reads the full application state based on the saved file. */
+  getSavedApplicationState(): ApplicationState | null {
     if (fs.existsSync(STATE_FILENAME)) {
       try {
-        state = jsonfile.readFileSync(STATE_FILENAME);
-        resetToDefault = !screen.getAllDisplays().some((display) => {
-          return (
-            state.x >= display.bounds.x &&
-            state.y >= display.bounds.y &&
-            state.x + state.width <= display.bounds.x + display.bounds.width &&
-            state.y + state.height <= display.bounds.y + display.bounds.height
-          );
+        let state: ApplicationState = jsonfile.readFileSync(STATE_FILENAME);
+        [...state.hubs, ...state.satellites].forEach((window, index) => {
+          let reset = !screen
+            .getAllDisplays()
+            .some(
+              (display) =>
+                window.x >= display.bounds.x &&
+                window.y >= display.bounds.y &&
+                window.x + window.width <= display.bounds.x + display.bounds.width &&
+                window.y + window.height <= display.bounds.y + display.bounds.height
+            );
+          if (reset) {
+            const primaryBounds = screen.getPrimaryDisplay().bounds;
+            const isHub = index < state.hubs.length;
+            const defaultWidth = isHub ? HUB_DEFAULT_WIDTH : SATELLITE_DEFAULT_WIDTH;
+            const defaultHeight = isHub ? HUB_DEFAULT_HEIGHT : SATELLITE_DEFAULT_HEIGHT;
+            window.x = primaryBounds.x + primaryBounds.width / 2 - defaultWidth / 2;
+            window.y = primaryBounds.y + primaryBounds.height / 2 - defaultHeight / 2;
+            window.width = defaultWidth;
+            window.height = defaultHeight;
+          }
         });
+        return state;
       } catch (e) {
         console.error("Unable to load state. Reverting to default settings.", e);
         fs.copyFileSync(STATE_FILENAME, STATE_FILENAME.slice(0, -5) + "-corrupted.json");
-        resetToDefault = true;
+        return null;
       }
     } else {
-      resetToDefault = true;
+      return null;
     }
-
-    if (resetToDefault) {
-      const bounds = screen.getPrimaryDisplay().bounds;
-      state = {
-        x: bounds.x + bounds.width / 2 - defaultWidth / 2,
-        y: bounds.y + bounds.height / 2 - defaultHeight / 2,
-        width: defaultWidth,
-        height: defaultHeight
-      };
-    }
-
-    return state;
   }
 
-  /** Sets the focused window, which will be used to save state.  */
-  setFocusedWindow(window: BrowserWindow) {
-    this.focusedWindow = window;
+  /** Returns the full application state. */
+  getCurrentApplicationState(): ApplicationState {
+    let state: ApplicationState = { hubs: [], satellites: [] };
+    Object.keys(this.rendererStates).forEach((windowId) => {
+      let windowIdNum = Number(windowId);
+      let window = BrowserWindow.fromId(Number(windowIdNum));
+      if (window === null) return;
+      let windowBounds = window.getBounds();
+      let windowState = this.rendererStates[windowIdNum];
+      let satelliteUUID = windowIdNum in this.satelliteUUIDs ? this.satelliteUUIDs[windowIdNum] : null;
+      if (satelliteUUID === null) {
+        state.hubs.push({
+          x: windowBounds.x,
+          y: windowBounds.y,
+          width: windowBounds.width,
+          height: windowBounds.height,
+          state: windowState
+        });
+      } else {
+        state.satellites.push({
+          x: windowBounds.x,
+          y: windowBounds.y,
+          width: windowBounds.width,
+          height: windowBounds.height,
+          state: windowState,
+          uuid: satelliteUUID
+        });
+      }
+    });
+    return state;
   }
 
   /** Caches the renderer state for a window. */
   saveRendererState(window: BrowserWindow, rendererState: any) {
-    this.rendererStateCache[window.id] = rendererState;
+    this.rendererStates[window.id] = rendererState;
   }
 
   /** Returns the cached renderer state for a window. */
   getRendererState(window: BrowserWindow): any {
-    return this.rendererStateCache[window.id];
+    return this.rendererStates[window.id];
+  }
+
+  /** Caches the set of satellite windows for each UUID. */
+  saveSatelliteIds(windows: { [id: string]: BrowserWindow[] }) {
+    this.satelliteUUIDs = {};
+    Object.entries(windows).forEach(([uuid, value]) => {
+      value.forEach((window) => {
+        this.satelliteUUIDs[window.id] = uuid;
+      });
+    });
   }
 }
 
-export interface WindowState {
+export type ApplicationState = { hubs: WindowState[]; satellites: SatelliteWindowState[] };
+
+export type WindowState = {
   x: number;
   y: number;
   width: number;
   height: number;
-  rendererState?: any;
-}
+  state: any;
+};
+
+export type SatelliteWindowState = WindowState & {
+  uuid: string;
+};

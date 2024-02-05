@@ -14,6 +14,7 @@ import VideoVisualizer from "./shared/visualizers/VideoVisualizer";
 import Visualizer from "./shared/visualizers/Visualizer";
 
 const MAX_ASPECT_RATIO = 5;
+const SAVE_PERIOD_MS = 250;
 
 declare global {
   interface Window {
@@ -32,6 +33,57 @@ let title: string | null = null;
 let messagePort: MessagePort | null = null;
 let lastAspectRatio: number | null = null;
 let lastCommand: any = null;
+
+/** Updates the current visualizer based on the type. */
+function updateVisualizer() {
+  if (type === null) return;
+
+  // Update visible elements
+  (document.getElementById("odometry") as HTMLElement).hidden = type !== TabType.Odometry;
+  (document.getElementById("threeDimension") as HTMLElement).hidden = type !== TabType.ThreeDimension;
+  (document.getElementById("video") as HTMLElement).hidden = type !== TabType.Video;
+  (document.getElementById("joysticks") as HTMLElement).hidden = type !== TabType.Joysticks;
+  (document.getElementById("swerve") as HTMLElement).hidden = type !== TabType.Swerve;
+  (document.getElementById("mechanism") as HTMLElement).hidden = type !== TabType.Mechanism;
+  (document.getElementById("points") as HTMLElement).hidden = type !== TabType.Points;
+
+  // Create visualizer
+  switch (type) {
+    case TabType.Odometry:
+      visualizer = new OdometryVisualizer(
+        document.getElementById("odometryCanvasContainer") as HTMLElement,
+        document.getElementById("odometryHeatmapContainer") as HTMLElement
+      );
+      break;
+    case TabType.ThreeDimension:
+      visualizer = new ThreeDimensionVisualizerSwitching(
+        document.body,
+        document.getElementById("threeDimensionCanvas") as HTMLCanvasElement,
+        document.getElementById("threeDimensionAnnotations") as HTMLElement,
+        document.getElementById("threeDimensionAlert") as HTMLElement
+      );
+      break;
+    case TabType.Video:
+      visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
+      break;
+    case TabType.Joysticks:
+      visualizer = new JoysticksVisualizer(document.getElementById("joysticksCanvas") as HTMLCanvasElement);
+      break;
+    case TabType.Swerve:
+      visualizer = new SwerveVisualizer(document.getElementsByClassName("swerve-canvas-container")[0] as HTMLElement);
+      break;
+    case TabType.Mechanism:
+      visualizer = new MechanismVisualizer(
+        document.getElementsByClassName("mechanism-svg-container")[0] as HTMLElement
+      );
+      break;
+    case TabType.Points:
+      visualizer = new PointsVisualizer(
+        document.getElementsByClassName("points-background-container")[0] as HTMLElement
+      );
+      break;
+  }
+}
 
 window.sendMainMessage = (name: string, data?: any) => {
   if (messagePort !== null) {
@@ -59,55 +111,14 @@ window.addEventListener("message", (event) => {
           break;
 
         case "set-type":
-          type = message.data as TabType;
+          type = message.data;
+          updateVisualizer();
+          break;
 
-          // Update visible elements
-          (document.getElementById("odometry") as HTMLElement).hidden = type !== TabType.Odometry;
-          (document.getElementById("threeDimension") as HTMLElement).hidden = type !== TabType.ThreeDimension;
-          (document.getElementById("video") as HTMLElement).hidden = type !== TabType.Video;
-          (document.getElementById("joysticks") as HTMLElement).hidden = type !== TabType.Joysticks;
-          (document.getElementById("swerve") as HTMLElement).hidden = type !== TabType.Swerve;
-          (document.getElementById("mechanism") as HTMLElement).hidden = type !== TabType.Mechanism;
-          (document.getElementById("points") as HTMLElement).hidden = type !== TabType.Points;
-
-          // Create visualizer
-          switch (type) {
-            case TabType.Odometry:
-              visualizer = new OdometryVisualizer(
-                document.getElementById("odometryCanvasContainer") as HTMLElement,
-                document.getElementById("odometryHeatmapContainer") as HTMLElement
-              );
-              break;
-            case TabType.ThreeDimension:
-              visualizer = new ThreeDimensionVisualizerSwitching(
-                document.body,
-                document.getElementById("threeDimensionCanvas") as HTMLCanvasElement,
-                document.getElementById("threeDimensionAnnotations") as HTMLElement,
-                document.getElementById("threeDimensionAlert") as HTMLElement
-              );
-              break;
-            case TabType.Video:
-              visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
-              break;
-            case TabType.Joysticks:
-              visualizer = new JoysticksVisualizer(document.getElementById("joysticksCanvas") as HTMLCanvasElement);
-              break;
-            case TabType.Swerve:
-              visualizer = new SwerveVisualizer(
-                document.getElementsByClassName("swerve-canvas-container")[0] as HTMLElement
-              );
-              break;
-            case TabType.Mechanism:
-              visualizer = new MechanismVisualizer(
-                document.getElementsByClassName("mechanism-svg-container")[0] as HTMLElement
-              );
-              break;
-            case TabType.Points:
-              visualizer = new PointsVisualizer(
-                document.getElementsByClassName("points-background-container")[0] as HTMLElement
-              );
-              break;
-          }
+        case "restore-state":
+          type = message.data.type;
+          updateVisualizer();
+          visualizer?.restoreState(message.data.visualizer);
           break;
 
         case "render":
@@ -166,3 +177,7 @@ function processAspectRatio(aspectRatio: number | null) {
     window.sendMainMessage("set-aspect-ratio", aspectRatio);
   }
 }
+
+setInterval(() => {
+  window.sendMainMessage("save-state", { type: type, visualizer: visualizer?.saveState() });
+}, SAVE_PERIOD_MS);

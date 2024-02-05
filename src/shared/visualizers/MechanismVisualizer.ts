@@ -11,6 +11,12 @@ export default class MechanismVisualizer implements Visualizer {
     this.SVG = container.firstElementChild as HTMLElement;
   }
 
+  saveState() {
+    return null;
+  }
+
+  restoreState(): void {}
+
   render(command: MechanismState | null): number | null {
     this.SVG.style.display = command === null ? "none" : "initial";
     if (command === null) return null;

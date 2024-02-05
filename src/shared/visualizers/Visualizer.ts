@@ -5,4 +5,10 @@ export default interface Visualizer {
    * @returns The target aspect ratio (if it exists)
    */
   render(command: any): number | null;
+
+  /** Returns the current state. */
+  saveState(): any;
+
+  /** Restores to the provided state. */
+  restoreState(state: any): void;
 }

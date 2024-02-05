@@ -29,6 +29,12 @@ export default class OdometryVisualizer implements Visualizer {
     this.CANVAS.appendChild(this.IMAGE);
   }
 
+  saveState() {
+    return null;
+  }
+
+  restoreState(): void {}
+
   render(command: any): number | null {
     // Set up canvas
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;

@@ -7,6 +7,12 @@ export default class VideoVisualizer implements Visualizer {
     this.IMAGE = image;
   }
 
+  saveState() {
+    return null;
+  }
+
+  restoreState(): void {}
+
   render(command: any): number | null {
     this.IMAGE.hidden = command === "";
     this.IMAGE.src = command;

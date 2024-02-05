@@ -100,8 +100,6 @@ export default class ThreeDimensionController extends TimelineVizController {
   private UNIT_DISTANCE: HTMLInputElement;
   private UNIT_ROTATION: HTMLInputElement;
 
-  private lastCameraIndex = -1;
-  private lastFov = 50;
   private newAssetsCounter = 0;
 
   constructor(content: HTMLElement) {
@@ -287,9 +285,7 @@ export default class ThreeDimensionController extends TimelineVizController {
       alliance: this.ALLIANCE.value,
       robot: this.ROBOT.value,
       unitDistance: this.UNIT_DISTANCE.value,
-      unitRotation: this.UNIT_ROTATION.value,
-      cameraIndex: this.lastCameraIndex,
-      fov: this.lastFov
+      unitRotation: this.UNIT_ROTATION.value
     };
   }
 
@@ -301,8 +297,6 @@ export default class ThreeDimensionController extends TimelineVizController {
     this.UNIT_DISTANCE.value = options.unitDistance;
     this.UNIT_ROTATION.value = options.unitRotation;
     this.updateFieldRobotDependentControls(true);
-    this.set3DCamera(options.cameraIndex);
-    this.setFov(options.fov);
   }
 
   newAssets() {
@@ -312,13 +306,11 @@ export default class ThreeDimensionController extends TimelineVizController {
 
   /** Switches the selected camera for the main visualizer. */
   set3DCamera(index: number) {
-    this.lastCameraIndex = index;
     (this.visualizer as ThreeDimensionVisualizerSwitching).set3DCamera(index);
   }
 
   /** Switches the orbit FOV for the main visualizer. */
   setFov(fov: number) {
-    this.lastFov = fov;
     (this.visualizer as ThreeDimensionVisualizerSwitching).setFov(fov);
   }
 

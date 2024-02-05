@@ -12,6 +12,12 @@ export default class PointsVisualizer implements Visualizer {
     this.TEMPLATES = container.children[1] as HTMLElement;
   }
 
+  saveState() {
+    return null;
+  }
+
+  restoreState(): void {}
+
   render(command: any): number | null {
     // Update background size
     let containerWidth = this.CONTAINER.getBoundingClientRect().width;

@@ -10,25 +10,35 @@ export default class ThreeDimensionVisualizerSwitching implements Visualizer {
   private visualizer: ThreeDimensionVisualizer | null = null;
 
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
-  private lastCameraIndex: number | null = null;
-  private lastFov: number | null = null;
 
   constructor(content: HTMLElement, canvas: HTMLCanvasElement, annotationsDiv: HTMLElement, alert: HTMLElement) {
     this.content = content;
     this.canvas = canvas;
     this.annotationsDiv = annotationsDiv;
     this.alert = alert;
+    this.render(null);
+  }
+
+  saveState() {
+    if (this.visualizer !== null) {
+      return this.visualizer.saveState();
+    }
+    return null;
+  }
+
+  restoreState(state: any): void {
+    if (this.visualizer !== null && state !== null) {
+      this.visualizer.restoreState(state);
+    }
   }
 
   /** Switches the selected camera. */
   set3DCamera(index: number) {
-    this.lastCameraIndex = index;
     this.visualizer?.set3DCamera(index);
   }
 
   /** Updates the orbit FOV. */
   setFov(fov: number) {
-    this.lastFov = fov;
     this.visualizer?.setFov(fov);
   }
 
@@ -46,9 +56,9 @@ export default class ThreeDimensionVisualizerSwitching implements Visualizer {
     // Recreate visualizer if necessary
     if (mode !== this.lastMode) {
       this.lastMode = mode;
-      let cameraPositions: [THREE.Vector3, THREE.Vector3] | null = null;
+      let state: any = null;
       if (this.visualizer !== null) {
-        cameraPositions = this.visualizer.cameraPositions;
+        state = this.visualizer.saveState();
         this.visualizer.stop();
       }
       {
@@ -70,13 +80,13 @@ export default class ThreeDimensionVisualizerSwitching implements Visualizer {
         this.annotationsDiv = newDiv;
       }
       this.visualizer = new ThreeDimensionVisualizer(mode, this.content, this.canvas, this.annotationsDiv, this.alert);
-      if (this.lastCameraIndex !== null) this.visualizer.set3DCamera(this.lastCameraIndex);
-      if (this.lastFov !== null) this.visualizer.setFov(this.lastFov);
-      if (cameraPositions !== null) this.visualizer.cameraPositions = cameraPositions;
+      if (state !== null) {
+        this.visualizer.restoreState(state);
+      }
     }
 
     // Send command
-    if (this.visualizer === null) {
+    if (this.visualizer === null || command === null) {
       return null;
     } else {
       return this.visualizer.render(command);

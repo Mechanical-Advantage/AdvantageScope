@@ -470,6 +470,25 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     window.requestAnimationFrame(periodic);
   }
 
+  saveState() {
+    return {
+      cameraIndex: this.cameraIndex,
+      orbitFov: this.orbitFov,
+      cameraPosition: [this.camera.position.x, this.camera.position.y, this.camera.position.z],
+      cameraTarget: [this.controls.target.x, this.controls.target.y, this.controls.target.z]
+    };
+  }
+
+  restoreState(state: any): void {
+    this.cameraIndex = state.cameraIndex;
+    this.orbitFov = state.orbitFov;
+    this.camera.position.set(state.cameraPosition[0], state.cameraPosition[1], state.cameraPosition[2]);
+    this.controls.target.set(state.cameraTarget[0], state.cameraTarget[1], state.cameraTarget[2]);
+    this.controls.update();
+    this.lastCameraIndex = this.cameraIndex; // Don't reset camera position
+    this.shouldRender = true;
+  }
+
   /** Switches the selected camera. */
   set3DCamera(index: number) {
     this.cameraIndex = index;
@@ -480,19 +499,6 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   setFov(fov: number) {
     this.orbitFov = clampValue(fov, this.MIN_ORBIT_FOV, this.MAX_ORBIT_FOV);
     this.shouldRender = true;
-  }
-
-  /** Returns the camera and target positions. */
-  get cameraPositions(): [THREE.Vector3, THREE.Vector3] {
-    return [this.camera.position.clone(), this.controls.target.clone()];
-  }
-
-  /** Sets the camera and target positions. */
-  set cameraPositions(value: [THREE.Vector3, THREE.Vector3]) {
-    this.camera.position.copy(value[0]);
-    this.controls.target.copy(value[1]);
-    this.controls.update();
-    this.lastCameraIndex = this.cameraIndex; // Don't reset camera position
   }
 
   render(command: any): number | null {

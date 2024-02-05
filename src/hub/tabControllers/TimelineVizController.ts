@@ -136,24 +136,27 @@ export default abstract class TimelineVizController implements TabController {
   }
 
   saveState(): TimelineVisualizerState {
-    let type = this.type as TabType.Odometry | TabType.Points | TabType.Video;
     return {
-      type: type,
+      type: this.type as any,
+      uuid: this.UUID,
       fields: this.fields,
       listFields: this.listFields,
       options: this.options,
-      configHidden: this.CONFIG_TABLE.hidden
+      configHidden: this.CONFIG_TABLE.hidden,
+      visualizer: this.visualizer.saveState()
     };
   }
 
   restoreState(state: TimelineVisualizerState) {
     if (state.type !== this.type) return;
     this.fields = state.fields;
+    this.UUID = state.uuid;
     this.listFields = state.listFields;
     this.options = state.options;
     this.HIDE_BUTTON.hidden = state.configHidden;
     this.SHOW_BUTTON.hidden = !state.configHidden;
     this.CONFIG_TABLE.hidden = state.configHidden;
+    this.visualizer.restoreState(state.visualizer);
     this.updateFields();
   }
 

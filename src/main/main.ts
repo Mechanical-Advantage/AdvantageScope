@@ -24,14 +24,12 @@ import path from "path";
 import { Client } from "ssh2";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import ExportOptions from "../shared/ExportOptions";
-import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { UnitConversionPreset } from "../shared/units";
-import { jsonCopy } from "../shared/util";
 import {
   DEFAULT_LOGS_FOLDER,
   DEFAULT_PREFS,
@@ -40,6 +38,8 @@ import {
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
+  HUB_DEFAULT_HEIGHT,
+  HUB_DEFAULT_WIDTH,
   LAST_OPEN_FILE,
   PATHPLANNER_CONNECT_TIMEOUT_MS,
   PATHPLANNER_DATA_TIMEOUT_MS,
@@ -52,10 +52,12 @@ import {
   RLOG_DATA_TIMEOUT_MS,
   RLOG_HEARTBEAT_DATA,
   RLOG_HEARTBEAT_DELAY_MS,
+  SATELLITE_DEFAULT_HEIGHT,
+  SATELLITE_DEFAULT_WIDTH,
   USER_ASSETS,
   WINDOW_ICON
 } from "./Constants";
-import StateTracker from "./StateTracker";
+import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
@@ -71,7 +73,7 @@ let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 
-let hubStateTracker = new StateTracker();
+let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
 let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
@@ -185,7 +187,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "save-state":
-      hubStateTracker.saveRendererState(window, message.data);
+      stateTracker.saveRendererState(window, message.data);
       break;
 
     case "prompt-update":
@@ -536,7 +538,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "create-satellite":
-      createSatellite(window, message.data.uuid, message.data.type);
+      createSatellite({ parentWindow: window, uuid: message.data.uuid, type: message.data.type });
       break;
 
     case "update-satellite":
@@ -1196,7 +1198,7 @@ function setupMenu() {
         {
           label: "Export Layout...",
           click(_, window) {
-            if (window === undefined || !hubWindows.includes(window)) return;
+            if (window === undefined) return;
             dialog
               .showSaveDialog(window, {
                 title: "Select export location for layout file",
@@ -1206,15 +1208,9 @@ function setupMenu() {
               })
               .then((response) => {
                 if (!response.canceled) {
-                  let hubState: HubState = hubStateTracker.getRendererState(window);
-                  jsonfile.writeFile(
-                    response.filePath!,
-                    {
-                      version: app.isPackaged ? app.getVersion() : "dev",
-                      layout: hubState.tabs.tabs
-                    },
-                    { spaces: 2 }
-                  );
+                  let state = stateTracker.getCurrentApplicationState() as ApplicationState & { version: string };
+                  state.version = app.isPackaged ? app.getVersion() : "dev";
+                  jsonfile.writeFile(response.filePath!, state, { spaces: 2 });
                 }
               });
           }
@@ -1222,7 +1218,7 @@ function setupMenu() {
         {
           label: "Import Layout...",
           click(_, window) {
-            if (window === undefined || !hubWindows.includes(window)) return;
+            if (window === undefined) return;
             dialog
               .showOpenDialog(window, {
                 title: "Select one or more layout files to import",
@@ -1234,12 +1230,23 @@ function setupMenu() {
                   let data = jsonfile.readFileSync(files.filePaths[0]);
 
                   // Check for required fields
-                  if (!("version" in data && "layout" in data && Array.isArray(data.layout))) {
+                  if (
+                    !(
+                      "version" in data &&
+                      "hubs" in data &&
+                      Array.isArray(data.hubs) &&
+                      "satellites" in data &&
+                      Array.isArray(data.satellites)
+                    )
+                  ) {
+                    const oldLayout = "layout" in data && Array.isArray(data.layout);
                     dialog.showMessageBox(window, {
                       type: "error",
                       title: "Error",
                       message: "Failed to import layout",
-                      detail: "The selected layout file was not a recognized format.",
+                      detail: oldLayout
+                        ? "The selected layout file uses an older format which is not compatible with the current version of AdvantageScope."
+                        : "The selected layout file was not a recognized format.",
                       icon: WINDOW_ICON
                     });
                     return;
@@ -1251,11 +1258,14 @@ function setupMenu() {
                       let additionalLayout = jsonfile.readFileSync(file);
                       if (
                         "version" in additionalLayout &&
-                        "layout" in additionalLayout &&
-                        Array.isArray(additionalLayout.layout) &&
+                        "hubs" in additionalLayout &&
+                        Array.isArray(additionalLayout.hubs) &&
+                        "satellites" in additionalLayout &&
+                        Array.isArray(additionalLayout.satellites) &&
                         additionalLayout.version === data.version
                       ) {
-                        data.layout = data.layout.concat(additionalLayout.layout);
+                        data.hubs = data.hubs.concat(additionalLayout.hubs);
+                        data.satellites = data.satellites.concat(additionalLayout.satellites);
                       }
                     }
                   }
@@ -1274,10 +1284,28 @@ function setupMenu() {
                     if (result !== 0) return;
                   }
 
-                  // Send to hub
-                  let hubState: HubState = jsonCopy(hubStateTracker.getRendererState(window));
-                  hubState.tabs.tabs = data.layout;
-                  sendMessage(window, "restore-state", hubState);
+                  // Close all current hub and satellite windows
+                  hubWindows.forEach((window) => {
+                    if (!window.isDestroyed()) {
+                      window.close();
+                    }
+                  });
+                  Object.values(satelliteWindows).forEach((windows) =>
+                    windows.forEach((window) => {
+                      if (!window.isDestroyed()) {
+                        window.close();
+                      }
+                    })
+                  );
+
+                  // Create new windows based on layout
+                  let applicationState = data as ApplicationState;
+                  applicationState.hubs.forEach((hubState) => {
+                    createHubWindow(hubState);
+                  });
+                  applicationState.satellites.forEach((satelliteState) => {
+                    createSatellite({ state: satelliteState });
+                  });
                 }
               });
           }
@@ -1379,11 +1407,21 @@ function setupMenu() {
             {
               label: "Bring All to Front",
               click(_, window) {
-                hubWindows.forEach((window) => window.moveTop());
-                downloadWindow?.moveTop();
-                prefsWindow?.moveTop();
-                licensesWindow?.moveTop();
-                Object.values(satelliteWindows).forEach((windows) => windows.forEach((window) => window.moveTop()));
+                hubWindows.forEach((window) => {
+                  if (!window.isDestroyed()) {
+                    window.moveTop();
+                  }
+                });
+                if (downloadWindow && !downloadWindow.isDestroyed()) downloadWindow.moveTop();
+                if (prefsWindow && !prefsWindow.isDestroyed()) prefsWindow?.moveTop();
+                if (licensesWindow && !licensesWindow.isDestroyed()) licensesWindow?.moveTop();
+                Object.values(satelliteWindows).forEach((windows) =>
+                  windows.forEach((window) => {
+                    if (!window.isDestroyed()) {
+                      window.moveTop();
+                    }
+                  })
+                );
                 window?.moveTop();
               }
             },
@@ -1565,7 +1603,7 @@ function createAboutWindow() {
 }
 
 /** Creates a new hub window. */
-function createHubWindow() {
+function createHubWindow(state?: WindowState) {
   let prefs: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 400,
@@ -1579,16 +1617,11 @@ function createHubWindow() {
 
   // Manage window state
   let focusedWindow = BrowserWindow.getFocusedWindow();
-  let rendererState: any = null;
-  const defaultWidth = 1100;
-  const defaultHeight = 650;
-  if (hubWindows.length === 0) {
-    let state = hubStateTracker.getState(defaultWidth, defaultHeight);
+  if (state !== undefined) {
     prefs.x = state.x;
     prefs.y = state.y;
     prefs.width = state.width;
     prefs.height = state.height;
-    if (state.rendererState) rendererState = state.rendererState;
   } else if (focusedWindow !== null) {
     let bounds = focusedWindow.getBounds();
     prefs.x = bounds.x + 30;
@@ -1596,8 +1629,8 @@ function createHubWindow() {
     prefs.width = bounds.width;
     prefs.height = bounds.height;
   } else {
-    prefs.width = defaultWidth;
-    prefs.height = defaultHeight;
+    prefs.width = HUB_DEFAULT_WIDTH;
+    prefs.height = HUB_DEFAULT_HEIGHT;
   }
 
   // Set fancy window effects
@@ -1694,10 +1727,13 @@ function createHubWindow() {
     });
     sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
     sendAllPreferences();
-    if (firstLoad) {
-      if (rendererState) sendMessage(window, "restore-state", rendererState); // Use state from file
+    if (firstLoad && state !== undefined) {
+      sendMessage(window, "restore-state", state.state);
     } else {
-      sendMessage(window, "restore-state", hubStateTracker.getRendererState(window)); // Use last cached state
+      let cachedState = stateTracker.getRendererState(window);
+      if (cachedState !== undefined) {
+        sendMessage(window, "restore-state", stateTracker.getRendererState(window));
+      }
     }
     firstLoad = false;
   });
@@ -1706,7 +1742,6 @@ function createHubWindow() {
   window.on("blur", () => sendMessage(window, "set-focused", false));
   window.on("focus", () => {
     sendMessage(window, "set-focused", true);
-    hubStateTracker.setFocusedWindow(window);
     hubWindows.splice(hubWindows.indexOf(window), 1);
     hubWindows.splice(0, 0, window);
   });
@@ -1980,14 +2015,41 @@ function createExportWindow(
  * @param uuid UUID to use.
  * @param type TabType to use.
  */
-function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, type: TabType) {
-  const width = 900;
-  const height = 500;
+function createSatellite(
+  config:
+    | {
+        parentWindow: Electron.BrowserWindow;
+        uuid: string;
+        type: TabType;
+      }
+    | {
+        state: SatelliteWindowState;
+      }
+) {
+  const configData = !("state" in config)
+    ? (config as {
+        parentWindow: Electron.BrowserWindow;
+        uuid: string;
+        type: TabType;
+      })
+    : undefined;
+  const state = "state" in config ? config.state : undefined;
+
+  const width = state === undefined ? SATELLITE_DEFAULT_WIDTH : state.width;
+  const height = state === undefined ? SATELLITE_DEFAULT_HEIGHT : state.height;
+  const x =
+    configData === undefined
+      ? state?.x
+      : Math.floor(configData.parentWindow.getBounds().x + configData.parentWindow.getBounds().width / 2 - width / 2);
+  const y =
+    configData === undefined
+      ? state?.y
+      : Math.floor(configData.parentWindow.getBounds().y + configData.parentWindow.getBounds().height / 2 - height / 2);
   const satellite = new BrowserWindow({
     width: width,
     height: height,
-    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
-    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
+    x: x,
+    y: y,
     minWidth: 200,
     minHeight: 100,
     resizable: true,
@@ -2000,6 +2062,7 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
   satellite.setMenu(null);
   satellite.once("ready-to-show", satellite.show);
   satellite.loadFile(path.join(__dirname, "../www/satellite.html"));
+  let firstLoad = true;
   satellite.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2025,29 +2088,42 @@ function createSatellite(parentWindow: Electron.BrowserWindow, uuid: string, typ
         case "ask-3d-camera":
           select3DCameraPopup(satellite, message.data.options, message.data.selectedIndex, message.data.fov);
           break;
+
+        case "save-state":
+          stateTracker.saveRendererState(satellite, message.data);
+          break;
       }
     });
     port2.start();
     sendMessage(satellite, "set-assets", advantageScopeAssets);
-    sendMessage(satellite, "set-type", type);
     sendMessage(satellite, "set-battery", powerMonitor.isOnBatteryPower());
+    if (firstLoad) {
+      if (configData !== undefined) {
+        sendMessage(satellite, "set-type", configData.type);
+      } else if (state !== undefined) {
+        sendMessage(satellite, "restore-state", state.state);
+      }
+    } else {
+      let cachedState = stateTracker.getRendererState(satellite);
+      if (cachedState !== undefined) {
+        sendMessage(satellite, "restore-state", stateTracker.getRendererState(satellite));
+      }
+    }
     sendAllPreferences();
+    firstLoad = false;
   });
   powerMonitor.on("on-ac", () => sendMessage(satellite, "set-battery", false));
   powerMonitor.on("on-battery", () => sendMessage(satellite, "set-battery", true));
 
+  const uuid = configData !== undefined ? configData.uuid : state!.uuid;
   if (!(uuid in satelliteWindows)) {
     satelliteWindows[uuid] = [];
   }
   satelliteWindows[uuid].push(satellite);
-
-  let closed = false;
-  parentWindow.once("close", () => {
-    if (!closed) satellite.close();
-  });
+  stateTracker.saveSatelliteIds(satelliteWindows);
   satellite.once("closed", () => {
-    closed = true;
-    satelliteWindows[uuid].splice(satelliteWindows[uuid].indexOf(satellite), 1);
+    satelliteWindows[uuid!].splice(satelliteWindows[uuid!].indexOf(satellite), 1);
+    stateTracker.saveSatelliteIds(satelliteWindows);
   });
 }
 
@@ -2323,9 +2399,21 @@ app.whenReady().then(() => {
   }, 5000);
   advantageScopeAssets = loadAssets();
 
-  // Create menu and window
+  // Create menu and windows
   setupMenu();
-  let window = createHubWindow();
+  let applicationState = stateTracker.getSavedApplicationState();
+  let targetWindow: BrowserWindow | null = null;
+  if (applicationState === null) {
+    targetWindow = createHubWindow();
+  } else {
+    applicationState.hubs.forEach((hubState, index) => {
+      let hubWindow = createHubWindow(hubState);
+      if (index === 0) targetWindow = hubWindow;
+    });
+    applicationState.satellites.forEach((satelliteState) => {
+      createSatellite({ state: satelliteState });
+    });
+  }
 
   // Check for file path given as argument
   let argv = [...process.argv];
@@ -2339,9 +2427,9 @@ app.whenReady().then(() => {
   }
 
   // Open file if exists
-  if (firstOpenPath !== null) {
-    window.webContents.once("dom-ready", () => {
-      sendMessage(window, "open-files", [firstOpenPath]);
+  if (firstOpenPath !== null && targetWindow !== null) {
+    targetWindow.webContents.once("dom-ready", () => {
+      sendMessage(targetWindow!, "open-files", [firstOpenPath]);
     });
   }
 

@@ -35,6 +35,10 @@ export const DEFAULT_PREFS: Preferences = {
   tbaApiKey: "",
   skipHootNonProWarning: false
 };
+export const HUB_DEFAULT_WIDTH = 1100;
+export const HUB_DEFAULT_HEIGHT = 650;
+export const SATELLITE_DEFAULT_WIDTH = 900;
+export const SATELLITE_DEFAULT_HEIGHT = 500;
 
 // Live RLOG
 export const RLOG_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
