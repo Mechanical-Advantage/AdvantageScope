@@ -27,132 +27,133 @@ export default class NT4Source extends LiveDataSource {
     super();
     this.akitMode = akitMode;
 
-    this.periodicCallback = setInterval(() => {
-      // Update timestamp range based on connection time
-      if (this.client !== null && this.connectTime !== null) {
-        let connectServerTime = this.client.getServerTime_us(this.connectTime);
-        if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
-      }
+    let periodic = () => {
+      this.periodic();
+      window.requestIdleCallback(periodic, { timeout: 100 });
+    };
+    window.requestIdleCallback(periodic, { timeout: 100 });
+  }
 
-      // Update subscriptions
-      if (this.client !== null) {
-        if (window.preferences?.liveSubscribeMode === "logging") {
-          // Switch to logging subscribe mode
-          Object.values(this.lowBandwidthDataSubscriptions).forEach((subscriptionId) => {
-            this.client?.unsubscribe(subscriptionId);
-          });
-          this.lowBandwidthDataSubscriptions = {};
-          if (this.lowBandwidthTopicSubscription !== null) {
-            this.client.unsubscribe(this.lowBandwidthTopicSubscription);
-            this.lowBandwidthTopicSubscription = null;
-          }
-          if (this.loggingSubscription === null) {
-            this.loggingSubscription = this.client.subscribe(
-              [this.akitMode ? AKIT_PREFIX + "/" : ""],
-              true,
-              true,
-              0.02
-            );
-          }
-        } else {
-          // Switch to low bandwidth subscribe mode
-          if (this.loggingSubscription !== null) {
-            this.client.unsubscribe(this.loggingSubscription);
-            this.loggingSubscription = null;
-          }
-          if (this.lowBandwidthTopicSubscription === null) {
-            this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
-              [this.akitMode ? AKIT_PREFIX + "/" : ""],
-              true
-            );
-          }
+  private periodic() {
+    // Update timestamp range based on connection time
+    if (this.client !== null && this.connectTime !== null) {
+      let connectServerTime = this.client.getServerTime_us(this.connectTime);
+      if (connectServerTime !== null) window.log.clearBeforeTime(connectServerTime / 1e6);
+    }
 
-          // Add active fields
-          let activeFields: Set<string> = new Set();
-          if (window.log === this.log) {
-            let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
-            let enabledKey = getEnabledKey(this.log);
-            [
-              ...(this.akitMode
-                ? ["/.schema", "/Timestamps"]
-                : [
-                    WPILOG_PREFIX + "/.schema",
-                    WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
-                    WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
-                  ]),
-              ...(enabledKey === undefined ? [] : [enabledKey]),
-              ...window.tabs.getActiveFields(),
-              ...window.sidebar.getActiveFields()
-            ].forEach((key) => {
-              // Compare to announced keys
-              announcedKeys.forEach((announcedKey) => {
-                let subscribeKey: string | null = null;
-                if (announcedKey.startsWith(key)) {
-                  subscribeKey = key;
-                } else if (key.startsWith(announcedKey)) {
-                  subscribeKey = announcedKey;
+    // Update subscriptions
+    if (this.client !== null) {
+      if (window.preferences?.liveSubscribeMode === "logging") {
+        // Switch to logging subscribe mode
+        Object.values(this.lowBandwidthDataSubscriptions).forEach((subscriptionId) => {
+          this.client?.unsubscribe(subscriptionId);
+        });
+        this.lowBandwidthDataSubscriptions = {};
+        if (this.lowBandwidthTopicSubscription !== null) {
+          this.client.unsubscribe(this.lowBandwidthTopicSubscription);
+          this.lowBandwidthTopicSubscription = null;
+        }
+        if (this.loggingSubscription === null) {
+          this.loggingSubscription = this.client.subscribe([this.akitMode ? AKIT_PREFIX + "/" : ""], true, true, 0.02);
+        }
+      } else {
+        // Switch to low bandwidth subscribe mode
+        if (this.loggingSubscription !== null) {
+          this.client.unsubscribe(this.loggingSubscription);
+          this.loggingSubscription = null;
+        }
+        if (this.lowBandwidthTopicSubscription === null) {
+          this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
+            [this.akitMode ? AKIT_PREFIX + "/" : ""],
+            true
+          );
+        }
+
+        // Add active fields
+        let activeFields: Set<string> = new Set();
+        if (window.log === this.log) {
+          let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
+          let enabledKey = getEnabledKey(this.log);
+          [
+            ...(this.akitMode
+              ? ["/.schema", "/Timestamps"]
+              : [
+                  WPILOG_PREFIX + "/.schema",
+                  WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
+                  WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
+                ]),
+            ...(enabledKey === undefined ? [] : [enabledKey]),
+            ...window.tabs.getActiveFields(),
+            ...window.sidebar.getActiveFields()
+          ].forEach((key) => {
+            // Compare to announced keys
+            announcedKeys.forEach((announcedKey) => {
+              let subscribeKey: string | null = null;
+              if (announcedKey.startsWith(key)) {
+                subscribeKey = key;
+              } else if (key.startsWith(announcedKey)) {
+                subscribeKey = announcedKey;
+              }
+              if (subscribeKey !== null) {
+                if (this.akitMode) {
+                  activeFields.add(AKIT_PREFIX + subscribeKey);
+                } else {
+                  activeFields.add(subscribeKey.slice(WPILOG_PREFIX.length));
                 }
-                if (subscribeKey !== null) {
-                  if (akitMode) {
-                    activeFields.add(AKIT_PREFIX + subscribeKey);
-                  } else {
-                    activeFields.add(subscribeKey.slice(WPILOG_PREFIX.length));
-                  }
-                }
-              });
-            });
-          }
-
-          // Remove duplicates based on prefixes
-          let activeFieldsCopy = new Set(activeFields);
-          activeFieldsCopy.forEach((field0) => {
-            activeFieldsCopy.forEach((field1) => {
-              if (field0 !== field1 && field0.startsWith(field1)) {
-                activeFields.delete(field0);
               }
             });
           });
-
-          // Update subscriptions
-          activeFields.forEach((field) => {
-            if (this.client === null) return;
-            if (!(field in this.lowBandwidthDataSubscriptions)) {
-              // Prefix match required for mechanisms, joysticks, and metadata
-              this.lowBandwidthDataSubscriptions[field] = this.client.subscribe([field], true, true, 0.02);
-            }
-          });
-          Object.entries(this.lowBandwidthDataSubscriptions).forEach(([field, subscriptionId]) => {
-            if (!activeFields.has(field)) {
-              this.client?.unsubscribe(subscriptionId);
-              delete this.lowBandwidthDataSubscriptions[field];
-            }
-          });
         }
-      }
 
-      // Check if output callback should be triggered (prevents
-      // running the callback many times for each frame)
-      if (
-        !this.shouldRunOutputCallback ||
-        this.status === LiveDataSourceStatus.Stopped ||
-        !this.outputCallback ||
-        !this.log
-      )
-        return;
-      this.shouldRunOutputCallback = false;
-      this.outputCallback(this.log, () => {
-        if (this.client) {
-          let serverTime = this.client.getServerTime_us();
-          if (serverTime === null) {
-            return 10;
-          } else {
-            return (serverTime - this.client.getNetworkLatency_us()) / 1000000;
+        // Remove duplicates based on prefixes
+        let activeFieldsCopy = new Set(activeFields);
+        activeFieldsCopy.forEach((field0) => {
+          activeFieldsCopy.forEach((field1) => {
+            if (field0 !== field1 && field0.startsWith(field1)) {
+              activeFields.delete(field0);
+            }
+          });
+        });
+
+        // Update subscriptions
+        activeFields.forEach((field) => {
+          if (this.client === null) return;
+          if (!(field in this.lowBandwidthDataSubscriptions)) {
+            // Prefix match required for mechanisms, joysticks, and metadata
+            this.lowBandwidthDataSubscriptions[field] = this.client.subscribe([field], true, true, 0.02);
           }
-        } else {
+        });
+        Object.entries(this.lowBandwidthDataSubscriptions).forEach(([field, subscriptionId]) => {
+          if (!activeFields.has(field)) {
+            this.client?.unsubscribe(subscriptionId);
+            delete this.lowBandwidthDataSubscriptions[field];
+          }
+        });
+      }
+    }
+
+    // Check if output callback should be triggered (prevents
+    // running the callback many times for each frame)
+    if (
+      !this.shouldRunOutputCallback ||
+      this.status === LiveDataSourceStatus.Stopped ||
+      !this.outputCallback ||
+      !this.log
+    )
+      return;
+    this.shouldRunOutputCallback = false;
+    this.outputCallback(this.log, () => {
+      if (this.client) {
+        let serverTime = this.client.getServerTime_us();
+        if (serverTime === null) {
           return 10;
+        } else {
+          return (serverTime - this.client.getNetworkLatency_us()) / 1000000;
         }
-      });
-    }, 1000 / 60);
+      } else {
+        return 10;
+      }
+    });
   }
 
   connect(
