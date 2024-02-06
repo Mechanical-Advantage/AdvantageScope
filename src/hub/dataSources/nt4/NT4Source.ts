@@ -76,7 +76,7 @@ export default class NT4Source extends LiveDataSource {
           let enabledKey = getEnabledKey(this.log);
           [
             ...(this.akitMode
-              ? ["/.schema", "/Timestamps"]
+              ? ["/.schema", "/Timestamp"]
               : [
                   WPILOG_PREFIX + "/.schema",
                   WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
