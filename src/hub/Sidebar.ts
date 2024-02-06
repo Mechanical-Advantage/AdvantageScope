@@ -329,8 +329,9 @@ export default class Sidebar {
 
   /** Refresh based on new log data or expanded field list. */
   refresh(forceRefresh: boolean = false) {
-    let fieldsChanged = forceRefresh || !arraysEqual(window.log.getFieldKeys(), this.lastFieldKeys);
-    this.lastFieldKeys = window.log.getFieldKeys();
+    let fieldKeys = window.log.getFieldKeys();
+    let fieldsChanged = forceRefresh || !arraysEqual(fieldKeys, this.lastFieldKeys);
+    this.lastFieldKeys = fieldKeys;
 
     if (fieldsChanged) {
       // Update field count
@@ -589,6 +590,7 @@ export default class Sidebar {
         // Update values periodically
         let firstUpdate = true;
         let lastValue: boolean | null = null;
+        let lastHidden: boolean | null = null;
         this.updateValueCallbacks.push((time) => {
           let rect = fieldElement.getBoundingClientRect();
           let onScreen =
@@ -605,9 +607,13 @@ export default class Sidebar {
             const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
             circle.setAttributeNS(null, "fill", value ? (darkMode ? "lightgreen" : "green") : "red");
           }
-          valueElement.hidden = value === null;
-          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
-          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+          let hidden = value === null;
+          valueElement.hidden = hidden;
+          if (hidden !== lastHidden) {
+            lastHidden = hidden;
+            let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+            fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+          }
         });
 
         // Tuning mode controls
@@ -643,6 +649,7 @@ export default class Sidebar {
         // Add callback
         let firstUpdate = true;
         let lastValue: number | null = null;
+        let lastCharCount: number | null = null;
         this.updateValueCallbacks.push((time) => {
           let rect = fieldElement.getBoundingClientRect();
           let onScreen =
@@ -669,12 +676,17 @@ export default class Sidebar {
           }
           numValueInput!.placeholder = valueStr;
           numValueSpan!.innerText = valueStr;
-          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
-          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+          let charCount = valueStr.length;
+          if (charCount !== lastCharCount) {
+            lastCharCount = charCount;
+            let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+            fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+          }
         });
       } else if (type === LoggableType.String) {
         let firstUpdate = true;
         let lastValue: string | null = null;
+        let lastCharCount: number | null = null;
         let lastSidebarWidth = 0;
         this.updateValueCallbacks.push((time) => {
           let rect = fieldElement.getBoundingClientRect();
@@ -689,18 +701,24 @@ export default class Sidebar {
           lastValue = value;
           lastSidebarWidth = this.sidebarWidth;
 
+          let valueStr = "";
           if (value !== null) {
             const maxCharacters = Math.round(this.sidebarWidth * 0.03);
             if (value.length > maxCharacters) {
-              valueElement.innerText = value.substring(0, maxCharacters - 1) + "\u2026";
+              valueStr = value.substring(0, maxCharacters - 1) + "\u2026";
             } else {
-              valueElement.innerText = value;
+              valueStr = value;
             }
           } else {
-            valueElement.innerText = "";
+            valueStr = "";
           }
-          let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
-          fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+          valueElement.innerText = valueStr;
+          let charCount = valueStr.length;
+          if (charCount !== lastCharCount) {
+            lastCharCount = charCount;
+            let valueWidth = valueElement.clientWidth === 0 ? 0 : valueElement.clientWidth + this.VALUE_WIDTH_MARGIN_PX;
+            fieldElementContainer.style.setProperty("--value-width", valueWidth.toString() + "px");
+          }
         });
       }
 
@@ -747,8 +765,11 @@ export default class Sidebar {
       }
 
       // Metadata callback
+      let lastMetadata: string | null = null;
       let updateMetadata = () => {
         let metadata = window.log.getMetadataString(field.fullKey!);
+        if (metadata === lastMetadata) return;
+        lastMetadata = metadata;
         try {
           let metadataParsed = JSON.parse(metadata);
           label.title = Object.keys(metadataParsed)
