@@ -65,6 +65,9 @@ export abstract class LiveDataSource {
       this.status = status;
       if (this.statusCallback !== null) this.statusCallback(status);
     }
+    if (status !== LiveDataSourceStatus.Active) {
+      this.timeSupplier = null;
+    }
   }
 }
 
