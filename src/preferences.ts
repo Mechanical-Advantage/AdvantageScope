@@ -92,7 +92,8 @@ window.addEventListener("message", (event) => {
             threeDimensionModeAc: threeDimensionModeAc,
             threeDimensionModeBattery: threeDimensionModeBattery,
             tbaApiKey: TBA_API_KEY.value,
-            skipHootNonProWarning: oldPrefs.skipHootNonProWarning
+            skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
+            skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault
           };
           messagePort.postMessage(newPrefs);
         } else {

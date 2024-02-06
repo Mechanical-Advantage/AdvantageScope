@@ -12,5 +12,6 @@ export default interface Preferences {
   threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
   tbaApiKey: string;
   skipHootNonProWarning: boolean;
+  skipFrcLogFolderDefault: boolean;
   usb?: boolean;
 }

@@ -31,13 +31,13 @@ import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/build
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { UnitConversionPreset } from "../shared/units";
 import {
-  DEFAULT_LOGS_FOLDER,
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
   DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
+  FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   LAST_OPEN_FILE,
@@ -905,7 +905,7 @@ function downloadSave(files: string[]) {
       title: "Select save location for robot logs",
       buttonLabel: "Save",
       properties: ["openDirectory", "createDirectory", "dontAddToRecent"],
-      defaultPath: DEFAULT_LOGS_FOLDER
+      defaultPath: getDefaultLogPath()
     });
   } else {
     let extension = path.extname(files[0]).slice(1);
@@ -1086,7 +1086,7 @@ function setupMenu() {
                 title: "Select a robot log file to open",
                 properties: ["openFile"],
                 filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
-                defaultPath: DEFAULT_LOGS_FOLDER
+                defaultPath: getDefaultLogPath()
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -1105,7 +1105,7 @@ function setupMenu() {
               message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
               properties: ["openFile", "multiSelections"],
               filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
-              defaultPath: DEFAULT_LOGS_FOLDER
+              defaultPath: getDefaultLogPath()
             });
             let files = filesResponse.filePaths;
             if (files.length === 0) {
@@ -2287,6 +2287,17 @@ function checkForUpdate(alwaysPrompt: boolean) {
   });
 }
 
+/** Returns the default path to use for storing log files. */
+function getDefaultLogPath(): string | undefined {
+  if (process.platform !== "win32") return undefined;
+  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+  if (prefs.skipFrcLogFolderDefault) return undefined;
+  prefs.skipFrcLogFolderDefault = true;
+  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+  sendAllPreferences();
+  return FRC_LOG_FOLDER;
+}
+
 // "unsafe-eval" is required in the hub for protobufjs
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
@@ -2380,6 +2391,9 @@ app.whenReady().then(() => {
     }
     if ("skipHootNonProWarning" in oldPrefs && typeof oldPrefs.skipHootNonProWarning === "boolean") {
       prefs.skipHootNonProWarning = oldPrefs.skipHootNonProWarning;
+    }
+    if ("skipFrcLogFolderDefault" in oldPrefs && typeof oldPrefs.skipFrcLogFolderDefault === "boolean") {
+      prefs.skipFrcLogFolderDefault = oldPrefs.skipFrcLogFolderDefault;
     }
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
