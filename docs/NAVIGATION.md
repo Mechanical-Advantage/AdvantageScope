@@ -30,9 +30,9 @@ The <span style="color: green;">navigation buttons (green)</span> on the top man
 
 ![Choosing a tab type](/docs/resources/navigation/navigation-3.png)
 
-Playback can be toggled using the play/pause button or by pressing the **space bar**. The selected time is synchronized between all tabs, including the line graph, table, field views, and more.
+The selected time is synchronized between all tabs, including the line graph, table, field views, and more. Press **←** or **→** to step forward and backward in the log while paused. Playback can be toggled using the play/pause button or by pressing the **space bar**. To adjust the playback speed, **right-click** on the play/pause button.
 
-> Note: To adjust the playback speed, **right-click** on the play/pause button.
+> Note: Stepping through the log uses a 20ms period by default, and uses the synchronized loop cycle times when viewing an AdvantageKit log.
 
 ## Window Pop-Out
 

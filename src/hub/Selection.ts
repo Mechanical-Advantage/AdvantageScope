@@ -1,4 +1,8 @@
+import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
+
 export default class Selection {
+  private STEP_SIZE = 0.02; // When using left-right arrows keys on non-AdvantageKit logs
+
   private PLAY_BUTTON = document.getElementsByClassName("play")[0] as HTMLElement;
   private PAUSE_BUTTON = document.getElementsByClassName("pause")[0] as HTMLElement;
   private LOCK_BUTTON = document.getElementsByClassName("lock")[0] as HTMLElement;
@@ -51,6 +55,30 @@ export default class Selection {
             this.unlock();
           } else {
             this.lock();
+          }
+          break;
+
+        case "ArrowLeft":
+        case "ArrowRight":
+          // Unlocked video uses arrow keys to navigate by frame
+          if (window.tabs.isUnlockedVideoSelected() || this.mode !== SelectionMode.Static || event.metaKey) {
+            return;
+          }
+
+          const akitTimestampKey = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+          const isForward = event.code === "ArrowRight";
+          if (akitTimestampKey !== undefined) {
+            const timestampData = window.log.getNumber(akitTimestampKey, -Infinity, Infinity);
+            if (timestampData === undefined) return;
+            if (isForward) {
+              let next = timestampData.timestamps.find((value) => value > this.staticTime);
+              if (next !== undefined) this.staticTime = next;
+            } else {
+              let prev = timestampData.timestamps.findLast((value) => value < this.staticTime);
+              if (prev !== undefined) this.staticTime = prev;
+            }
+          } else {
+            this.staticTime += isForward ? this.STEP_SIZE : -this.STEP_SIZE;
           }
           break;
       }

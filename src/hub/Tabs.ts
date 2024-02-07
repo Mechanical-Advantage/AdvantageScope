@@ -360,6 +360,17 @@ export default class Tabs {
     }
   }
 
+  /** Returns whether the selected tab is a video which
+   * is unlocked (and thus requires access to the left
+   * and right arrow keys) */
+  isUnlockedVideoSelected(): boolean {
+    if (this.tabList[this.selectedTab].type === TabType.Video) {
+      return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
+    } else {
+      return false;
+    }
+  }
+
   /** Sends video data to all video controllers. */
   processVideoData(data: any) {
     this.tabList.forEach((tab) => {

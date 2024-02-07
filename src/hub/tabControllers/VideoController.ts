@@ -203,6 +203,10 @@ export default class VideoController extends TimelineVizController {
     });
   }
 
+  isLocked(): boolean {
+    return this.locked;
+  }
+
   private hasData(): boolean {
     return this.imgFolder !== null && this.fps !== null && this.totalFrames !== null && this.completedFrames !== null;
   }
