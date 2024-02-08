@@ -164,7 +164,7 @@ export class VideoProcessor {
             return;
           }
           let dimensionsHeightEndIndex = dimensionsXIndex + dimensionsHeightEnd.index;
-          height = Number(text.substring(dimensionsXIndex + 1, dimensionsHeightEndIndex));
+          height = Number(text.substring(dimensionsXIndex + 1, dimensionsHeightEndIndex + 1));
           if (isNaN(width) || isNaN(height)) {
             sendError();
             return;
