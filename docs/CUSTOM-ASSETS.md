@@ -68,6 +68,22 @@ Component configuration is provided in the robot's config file. An array of comp
 ]
 ```
 
+#### Setup Process
+
+To calibrate the positions of the articulated components, we recommend the following process:
+
+1. Export the base model and components in their correct “default” positions. This is how they should be rendered if no component poses are provided in AdvantageScope.
+
+2. Publish a zeroed 2D pose from the robot code, then select it as the robot pose in AdvantageScope. Switch to the "Axes" 3D field, which shows the field origin.
+
+3. Adjust the overall rotations of the robot (not the components) until the full robot is oriented correctly. Then, adjust the overall position to bring the full robot to the origin. The components should be rendered in the same default positions throughout this process.
+
+4. Publish an array of zeroed 3D poses from the robot code matching the number of components in the model, then select it as the set of component poses in AdvantageScope.
+
+5. Adjust the rotations, followed by the positions, for each component until they are aligned to the origin. For example, an arm segment would be aligned with the pivot at the origin while pointed forward along the X axis.
+
+6. Publish the real component poses from the robot code, which will be based on the newly-defined origins for each component. For example, the pose for an arm segment would be positioned at the joint of the arm pointed in the direction of the segment.
+
 ## Joysticks
 
 An image must be included in the folder with the name "image.png". The config file must be in the following format:
