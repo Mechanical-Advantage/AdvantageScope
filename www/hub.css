@@ -1222,12 +1222,40 @@ table.console-table th:first-child button {
 }
 
 table.console-table th:not(:first-child) {
+  border-right: none;
+}
+
+table.console-table th:not(:first-child) div {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 30px;
+  right: 200px;
   padding-left: 5px;
   overflow: hidden;
   font-size: 14px;
+  line-height: 30px;
   text-align: left;
-  border-right: none;
   white-space: nowrap;
+}
+
+table.console-table th:not(:first-child) input {
+  position: absolute;
+  top: 50%;
+  right: 5px;
+  height: 15px;
+  width: 180px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  transform: translateY(-50%);
+}
+
+table.console-table th:not(:first-child) input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  height: 1em;
+  width: 1em;
+  background: url("symbols/xmark.circle.fill.svg") no-repeat 50% 50%;
+  background-size: contain;
 }
 
 table.console-table td {
@@ -1254,11 +1282,11 @@ table.console-table td:last-child {
 }
 
 table.console-table tr.hovered td {
-  background-color: #ddd;
+  background-color: #eee;
 }
 
 table.console-table tr.selected td {
-  background-color: #aaa;
+  background-color: #e3e3e3;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1273,11 +1301,11 @@ table.console-table tr.selected td {
   }
 
   table.console-table tr.hovered td {
-    background-color: #444;
+    background-color: #333;
   }
 
   table.console-table tr.selected td {
-    background-color: #777;
+    background-color: #3e3e3e;
   }
 }
 

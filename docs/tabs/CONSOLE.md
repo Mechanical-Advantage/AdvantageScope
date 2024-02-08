@@ -13,4 +13,4 @@ Drag the desired field to the main view to get started. Each row represents an u
 
 ![Console view](/docs/resources/console/console-1.png)
 
-The controls are identical to the 🔢 [Table](/docs/tabs/TABLE.md) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).
+The controls are similar to the 🔢 [Table](/docs/tabs/TABLE.md) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box). Enter text in the "Filter" input to only display rows which contain the filter text.

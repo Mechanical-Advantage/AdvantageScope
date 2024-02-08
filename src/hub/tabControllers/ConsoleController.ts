@@ -13,6 +13,7 @@ export default class ConsoleController implements TabController {
   private TABLE_BODY: HTMLElement;
   private JUMP_INPUT: HTMLInputElement;
   private JUMP_BUTTON: HTMLInputElement;
+  private FILTER_INPUT: HTMLInputElement;
   private FIELD_CELL: HTMLElement;
   private FIELD_TEXT: HTMLElement;
 
@@ -30,6 +31,7 @@ export default class ConsoleController implements TabController {
     this.TABLE_BODY = this.TABLE_CONTAINER.firstElementChild?.firstElementChild as HTMLElement;
     this.JUMP_INPUT = this.TABLE_BODY.firstElementChild?.firstElementChild?.firstElementChild as HTMLInputElement;
     this.JUMP_BUTTON = this.TABLE_BODY.firstElementChild?.firstElementChild?.lastElementChild as HTMLInputElement;
+    this.FILTER_INPUT = this.TABLE_BODY.firstElementChild?.lastElementChild?.lastElementChild as HTMLInputElement;
     this.FIELD_CELL = this.TABLE_BODY.firstElementChild?.lastElementChild as HTMLElement;
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild as HTMLElement;
 
@@ -85,6 +87,7 @@ export default class ConsoleController implements TabController {
       if (event.code === "Enter") jump();
     });
     this.JUMP_BUTTON.addEventListener("click", jump);
+    this.FILTER_INPUT.addEventListener("input", () => this.updateData());
 
     // Update field text
     this.updateData();
@@ -158,6 +161,21 @@ export default class ConsoleController implements TabController {
     if (this.field !== null) {
       let logDataTemp = window.log.getString(this.field, -Infinity, Infinity);
       if (logDataTemp) logData = logDataTemp;
+    }
+    const filter = this.FILTER_INPUT.value.toLowerCase();
+    if (filter.length > 0) {
+      let filteredLogData: LogValueSetString = {
+        timestamps: [],
+        values: []
+      };
+      for (let i = 0; i < logData.timestamps.length; i++) {
+        let value = logData.values[i];
+        if (value.toLowerCase().includes(filter)) {
+          filteredLogData.timestamps.push(logData.timestamps[i]);
+          filteredLogData.values.push(value);
+        }
+      }
+      logData = filteredLogData;
     }
 
     // Clear extra rows
