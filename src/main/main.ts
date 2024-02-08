@@ -54,14 +54,13 @@ import {
   RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
-  USER_ASSETS,
   WINDOW_ICON
 } from "./Constants";
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
-import { convertLegacyAssets, createAssetFolders, loadAssets } from "./assetsUtil";
+import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
 
 // Global variables
@@ -1071,6 +1070,7 @@ function downloadSave(files: string[]) {
 /** Create the app menu. */
 function setupMenu() {
   const isMac = process.platform === "darwin";
+  const prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
 
   const template: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [
     {
@@ -1197,10 +1197,9 @@ function setupMenu() {
         { type: "separator" },
         {
           label: "Export Layout...",
-          click(_, window) {
-            if (window === undefined) return;
+          click() {
             dialog
-              .showSaveDialog(window, {
+              .showSaveDialog({
                 title: "Select export location for layout file",
                 defaultPath: "AdvantageScope " + new Date().toLocaleDateString().replaceAll("/", "-") + ".json",
                 properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
@@ -1217,10 +1216,9 @@ function setupMenu() {
         },
         {
           label: "Import Layout...",
-          click(_, window) {
-            if (window === undefined) return;
+          click() {
             dialog
-              .showOpenDialog(window, {
+              .showOpenDialog({
                 title: "Select one or more layout files to import",
                 properties: ["openFile", "multiSelections"],
                 filters: [{ name: "JSON files", extensions: ["json"] }]
@@ -1240,7 +1238,7 @@ function setupMenu() {
                     )
                   ) {
                     const oldLayout = "layout" in data && Array.isArray(data.layout);
-                    dialog.showMessageBox(window, {
+                    dialog.showMessageBox({
                       type: "error",
                       title: "Error",
                       message: "Failed to import layout",
@@ -1272,7 +1270,7 @@ function setupMenu() {
 
                   // Check version compatability
                   if (app.isPackaged && data.version !== app.getVersion()) {
-                    let result = dialog.showMessageBoxSync(window, {
+                    let result = dialog.showMessageBoxSync({
                       type: "warning",
                       title: "Warning",
                       message: "Version mismatch",
@@ -1434,7 +1432,33 @@ function setupMenu() {
         {
           label: "Show Assets Folder",
           click() {
-            shell.openPath(USER_ASSETS);
+            shell.openPath(getUserAssetsPath());
+          }
+        },
+        {
+          label: "Use Custom Assets Folder",
+          type: "checkbox",
+          checked: prefs.userAssetsFolder !== null,
+          async click(item) {
+            const isCustom = item.checked;
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            if (isCustom) {
+              let result = await dialog.showOpenDialog({
+                title: "Select folder containing custom AdvantageScope assets",
+                buttonLabel: "Open",
+                properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
+              });
+              if (result.filePaths.length >= 1) {
+                prefs.userAssetsFolder = result.filePaths[0];
+              }
+            } else {
+              prefs.userAssetsFolder = null;
+            }
+            item.checked = prefs.userAssetsFolder !== null;
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            advantageScopeAssets = loadAssets();
+            sendAllPreferences();
+            sendAssets();
           }
         },
         {
@@ -2389,6 +2413,13 @@ app.whenReady().then(() => {
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;
+    }
+    if (
+      "userAssetsFolder" in oldPrefs &&
+      typeof oldPrefs.userAssetsFolder === "string" &&
+      fs.existsSync(oldPrefs.userAssetsFolder)
+    ) {
+      prefs.userAssetsFolder = oldPrefs.userAssetsFolder;
     }
     if ("skipHootNonProWarning" in oldPrefs && typeof oldPrefs.skipHootNonProWarning === "boolean") {
       prefs.skipHootNonProWarning = oldPrefs.skipHootNonProWarning;

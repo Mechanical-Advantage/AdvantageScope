@@ -14,7 +14,7 @@ export const STATE_FILENAME = path.join(
 );
 export const BUNDLED_ASSETS = path.join(__dirname, "..", "bundledAssets");
 export const AUTO_ASSETS = path.join(app.getPath("userData"), "autoAssets");
-export const USER_ASSETS = path.join(app.getPath("userData"), "userAssets");
+export const DEFAULT_USER_ASSETS = path.join(app.getPath("userData"), "userAssets");
 export const LEGACY_ASSETS = path.join(app.getPath("userData"), "frcData");
 export const LAST_OPEN_FILE = path.join(app.getPath("temp"), "akit-log-path.txt");
 export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantagescope-videos");
@@ -32,6 +32,7 @@ export const DEFAULT_PREFS: Preferences = {
   threeDimensionModeAc: "standard",
   threeDimensionModeBattery: "",
   tbaApiKey: "",
+  userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false
 };

@@ -92,6 +92,7 @@ window.addEventListener("message", (event) => {
             threeDimensionModeAc: threeDimensionModeAc,
             threeDimensionModeBattery: threeDimensionModeBattery,
             tbaApiKey: TBA_API_KEY.value,
+            userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
             skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault
           };

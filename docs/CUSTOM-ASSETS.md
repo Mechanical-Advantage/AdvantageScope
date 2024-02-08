@@ -6,6 +6,8 @@ AdvantageScope uses a default set of flat field images, field models, robot mode
 
 The set of assets can be customized to add more options if desired. To open the user assets folder, click "Help" > "Show Assets Folder". The expected formats for the assets are defined below. See the default set of [detailed assets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) and [bundled assets](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) for reference.
 
+> Note: To load assets from an alternative location, click "Help" > "Use Custom Assets Folder". The selected folder should be the _parent folder_ where multiple assets in separate subfolders could be placed. This feature allows custom assets to be stored under version control alongside robot code.
+
 ## General Format
 
 All assets are stored in folders with the naming convention "TYPE_NAME". The NAME used for the folder is not displayed by AdvantageScope. The possible asset types are:
