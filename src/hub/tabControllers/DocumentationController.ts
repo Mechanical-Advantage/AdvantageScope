@@ -2,7 +2,7 @@ import hljs from "highlight.js/lib/core";
 import cpp from "highlight.js/lib/languages/cpp";
 import java from "highlight.js/lib/languages/java";
 import { Remarkable } from "remarkable";
-import { TabState } from "../../shared/HubState";
+import { DocumentationState } from "../../shared/HubState";
 import TabType from "../../shared/TabType";
 import TabController from "../TabController";
 
@@ -10,6 +10,7 @@ export default class DocumentationController implements TabController {
   private CONTAINER: HTMLElement;
   private TEXT: HTMLElement;
   private remarkable = new Remarkable({ html: true });
+  private markdownPath = "../docs/INDEX.md";
   private isIndex = false;
 
   static {
@@ -20,16 +21,20 @@ export default class DocumentationController implements TabController {
   constructor(content: HTMLElement) {
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
     this.TEXT = content.getElementsByClassName("documentation-text")[0] as HTMLElement;
-    this.loadMarkdown("../docs/INDEX.md");
+    this.loadMarkdown(this.markdownPath);
   }
 
-  saveState(): TabState {
+  saveState(): DocumentationState {
     return {
-      type: TabType.Documentation
+      type: TabType.Documentation,
+      path: this.markdownPath
     };
   }
 
-  restoreState(state: TabState) {}
+  restoreState(state: DocumentationState) {
+    this.markdownPath = state.path;
+    this.loadMarkdown(this.markdownPath);
+  }
 
   refresh() {}
 
@@ -60,6 +65,7 @@ export default class DocumentationController implements TabController {
         return response.text();
       })
       .then((text) => {
+        this.markdownPath = markdownPath;
         let html = this.remarkable.render(text);
         html = html.replaceAll('<span style="color: ', '<span color="'); // Remove color span styles (inline styles not allowed)
         this.TEXT.innerHTML = html;

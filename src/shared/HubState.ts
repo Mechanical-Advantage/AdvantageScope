@@ -22,6 +22,11 @@ export interface TabState {
   title?: string;
 }
 
+export interface DocumentationState {
+  type: TabType.Documentation;
+  path: string;
+}
+
 export interface LineGraphState {
   type: TabType.LineGraph;
   legends: {

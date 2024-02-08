@@ -127,9 +127,11 @@ export default class Tabs {
   saveState(): TabGroupState {
     return {
       selected: this.selectedTab,
-      tabs: this.tabList.slice(1).map((tab) => {
+      tabs: this.tabList.map((tab) => {
         let state = tab.controller.saveState();
-        state.title = tab.title;
+        if (tab.type !== TabType.Documentation) {
+          state.title = tab.title;
+        }
         return state;
       })
     };
@@ -142,11 +144,10 @@ export default class Tabs {
     });
     this.tabList = [];
     this.selectedTab = 0;
-    this.addTab(TabType.Documentation); // Add default tab
     state.tabs.forEach((tabState, index) => {
       this.addTab(tabState.type);
-      if (tabState.title) this.renameTab(index + 1, tabState.title);
-      this.tabList[index + 1].controller.restoreState(tabState);
+      if (tabState.title) this.renameTab(index, tabState.title);
+      this.tabList[index].controller.restoreState(tabState);
     });
     this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
     this.updateElements();
