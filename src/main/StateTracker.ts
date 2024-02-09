@@ -15,6 +15,10 @@ export default class StateTracker {
   private satelliteUUIDs: { [id: number]: string } = {};
 
   constructor() {
+    let lastState: ApplicationState | null = null;
+    if (fs.existsSync(STATE_FILENAME)) {
+      lastState = jsonfile.readFileSync(STATE_FILENAME);
+    }
     setInterval(() => {
       let state: ApplicationState = { hubs: [], satellites: [] };
       Object.keys(this.rendererStates).forEach((windowId) => {
@@ -43,7 +47,10 @@ export default class StateTracker {
           });
         }
       });
-      jsonfile.writeFileSync(STATE_FILENAME, state);
+      if (state.hubs.length > 0 && JSON.stringify(state) !== JSON.stringify(lastState)) {
+        jsonfile.writeFileSync(STATE_FILENAME, state);
+        lastState = state;
+      }
     }, this.SAVE_PERIOD_MS);
   }
 

@@ -2449,7 +2449,7 @@ app.whenReady().then(() => {
   setupMenu();
   let applicationState = stateTracker.getSavedApplicationState();
   let targetWindow: BrowserWindow | null = null;
-  if (applicationState === null) {
+  if (applicationState === null || applicationState.hubs.length === 0) {
     targetWindow = createHubWindow();
   } else {
     applicationState.hubs.forEach((hubState, index) => {
