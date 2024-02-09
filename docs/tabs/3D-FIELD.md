@@ -117,6 +117,21 @@ To visualize mechanism data using articulated 3D components, log a set of 3D pos
 
 ![3D mechanism](/docs/resources/3d-field/3d-field-4.png)
 
+## Game Piece Objects
+
+Each field includes a set of game piece object types, allowing game pieces to be rendered at any position on the field using data published by the robot code. This has a variety of applications, including:
+
+- Visualizing the actions of simulated auto routines using simple animations
+- Showing the detected locations of game pieces on the field
+- Indicating where game pieces are located within a robot
+- Viewing shot trajectories based on physics calculations
+
+The AdvantageKit KitBot 2024 example project includes a simple example of a [command](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) that animates a note traveling from the robot to the speaker. This command is incorporated into the standard [launch sequence](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73), triggering the animation whenever a note is released. [This video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) shows how game piece animations can be used to visualize auto routines for several different games.
+
+Another simple use case is showing the state of game pieces within the robot based on sensor data. For example, a beam break sensor within the note path for a 2024 robot could cause a note to appear:
+
+![2024 KitBot note visualization](/docs/resources/3d-field/3d-field-5.png)
+
 ## Camera Options
 
 To switch the selected camera mode, right-click on the rendered field view. The camera mode and position is controlled independently for every pop-up window, allowing for the easy creation of multi-camera views.
@@ -141,7 +156,7 @@ This mode locks the camera behind one of the driver stations at typical eye-heig
 
 Each robot model is configured with a set of fixed cameras, like vision and driver cameras. These cameras have fixed positions, aspect ratios, and FOVs. These views are often useful to check vision data or to simulate a driver camera view. In the example below, a driver camera is shown.
 
-![Fixed camera](/docs/resources/3d-field/3d-field-5.png)
+![Fixed camera](/docs/resources/3d-field/3d-field-6.png)
 
 If a "Camera Override" pose is provided, it replaces the default poses of all fixed cameras while retaining their configured FOVs and aspect ratios. This allows the robot code to provide the position of a moving camera, like one mounted to a turret or shooter hood.
 
@@ -149,7 +164,7 @@ If a "Camera Override" pose is provided, it replaces the default poses of all fi
 
 ## Configuration
 
-![Configuration options](/docs/resources/3d-field/3d-field-6.png)
+![Configuration options](/docs/resources/3d-field/3d-field-7.png)
 
 The following configuration options are available:
 
@@ -168,8 +183,8 @@ The 3D field supports three rendering modes:
 - **Standard (Default):** Render with minimal lighting (no functional difference from cinematic mode).
 - **Low Power:** Lower the framerate and resolution to reduce battery consumption and provide more consistent performance on low-end devices.
 
-![Comparion of rendering modes](/docs/resources/3d-field/3d-field-7.png)
+![Comparion of rendering modes](/docs/resources/3d-field/3d-field-8.png)
 
 To configure the rendering mode, open the preferences window by pressing **cmd/ctrl + comma** or clicking "Help" > "Show Preferences..." (Windows/Linux) or "AdvantageScope" > "Settings..." (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
 
-![Rendering mode preferences](/docs/resources/3d-field/3d-field-8.png)
+![Rendering mode preferences](/docs/resources/3d-field/3d-field-9.png)
