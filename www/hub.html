@@ -461,6 +461,67 @@
             </table>
           </span>
 
+          <!-- Point Cloud Viewer -->
+          <span>
+            <div class="point-clouds-canvas-container">
+              <canvas class="point-clouds-canvas"></canvas>
+              <div class="point-clouds-annotations"></div>
+              <div class="point-clouds-alert" hidden></div>
+            </div>
+            <table class="timeline-viz-config">
+              <tbody>
+                <tr>
+                  <th>3D Poses</th>
+                  <th>2D Poses</th>
+                  <th>Config</th>
+                </tr>
+                <tr>
+                  <td rowspan="3" class="list">
+                    <div class="list-content"></div>
+                    <div class="list-shadow-top"></div>
+                    <div class="list-shadow-bottom"></div>
+                  </td>
+                  <td rowspan="3" class="list">
+                    <div class="list-content"></div>
+                    <div class="list-shadow-top"></div>
+                    <div class="list-shadow-bottom"></div>
+                  </td>
+                  <td>
+                    <span class="label">Field:</span>
+                    <select tabindex="-1"></select>
+                    <select tabindex="-1">
+                      <option value="auto">auto origin</option>
+                      <option value="blue">blue origin</option>
+                      <option value="red">red origin</option>
+                    </select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Robot:</span>
+                    <select tabindex="-1"></select>
+                    <a class="credit-link" href="#" tabindex="-1">Source</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <span class="label">Units:</span>
+                    <select tabindex="-1">
+                      <option>meters</option>
+                      <option>inches</option>
+                    </select>
+                    and
+                    <select tabindex="-1">
+                      <option>radians</option>
+                      <option>degrees</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </span>
+
           <!-- Video -->
           <span>
             <div class="video-container">

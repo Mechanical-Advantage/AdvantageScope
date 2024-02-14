@@ -17,6 +17,7 @@ import TableController from "./tabControllers/TableController";
 import ThreeDimensionController from "./tabControllers/ThreeDimensionController";
 import TimelineVizController from "./tabControllers/TimelineVizController";
 import VideoController from "./tabControllers/VideoController";
+import PointCloudController from "./tabControllers/PointCloudController";
 
 export default class Tabs {
   private VIEWER = document.getElementsByClassName("viewer")[0] as HTMLElement;
@@ -223,33 +224,38 @@ export default class Tabs {
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
         controller = new ThreeDimensionController(contentElement);
         break;
-      case TabType.Video:
+      case TabType.PointClouds:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
         contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
+        controller = new PointCloudController(contentElement);
+        break;
+      case TabType.Video:
+        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
         controller = new VideoController(contentElement);
         break;
       case TabType.Joysticks:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
         controller = new JoysticksController(contentElement);
         break;
       case TabType.Swerve:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
         controller = new SwerveController(contentElement);
         break;
       case TabType.Mechanism:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[12].cloneNode(true));
         controller = new MechanismController(contentElement);
         break;
       case TabType.Points:
         contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[12].cloneNode(true));
+        contentElement.appendChild(this.CONTENT_TEMPLATES.children[13].cloneNode(true));
         controller = new PointsController(contentElement);
         break;
       case TabType.Metadata:
-        contentElement = this.CONTENT_TEMPLATES.children[13].cloneNode(true) as HTMLElement;
+        contentElement = this.CONTENT_TEMPLATES.children[14].cloneNode(true) as HTMLElement;
         controller = new MetadataController(contentElement);
         break;
     }
@@ -352,12 +358,18 @@ export default class Tabs {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
       (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
     }
+    if (this.tabList[this.selectedTab].type === TabType.PointClouds) {
+      (this.tabList[this.selectedTab].controller as PointCloudController).set3DCamera(index);
+    }
   }
 
   /** Switches the orbit FOV for the selected 3D field. */
   setFov(fov: number) {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
       (this.tabList[this.selectedTab].controller as ThreeDimensionController).setFov(fov);
+    }
+    if (this.tabList[this.selectedTab].type === TabType.PointClouds) {
+      (this.tabList[this.selectedTab].controller as PointCloudController).setFov(fov);
     }
   }
 

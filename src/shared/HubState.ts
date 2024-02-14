@@ -83,7 +83,7 @@ export interface StatisticsState {
 }
 
 export interface TimelineVisualizerState {
-  type: TabType.Odometry | TabType.ThreeDimension | TabType.Video | TabType.Points | TabType.Joysticks;
+  type: TabType.Odometry | TabType.ThreeDimension | TabType.PointClouds | TabType.Video | TabType.Points | TabType.Joysticks;
   uuid: string;
   fields: ({ key: string; sourceTypeIndex: number; sourceType: LoggableType | string } | null)[];
   listFields: { type: string; key: string; sourceTypeIndex: number; sourceType: LoggableType | string }[][];

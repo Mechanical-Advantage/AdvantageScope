@@ -11,6 +11,8 @@ import SwerveVisualizer from "./shared/visualizers/SwerveVisualizer";
 import ThreeDimensionVisualizer from "./shared/visualizers/ThreeDimensionVisualizer";
 import ThreeDimensionVisualizerSwitching from "./shared/visualizers/ThreeDimensionVisualizerSwitching";
 import VideoVisualizer from "./shared/visualizers/VideoVisualizer";
+import PointCloudVisualizer from "./shared/visualizers/PointCloudVisualizer";
+import PointCloudVisualizerSwitching from "./shared/visualizers/PointCloudVisualizerSwitching"
 import Visualizer from "./shared/visualizers/Visualizer";
 
 const MAX_ASPECT_RATIO = 5;
@@ -41,6 +43,7 @@ function updateVisualizer() {
   // Update visible elements
   (document.getElementById("odometry") as HTMLElement).hidden = type !== TabType.Odometry;
   (document.getElementById("threeDimension") as HTMLElement).hidden = type !== TabType.ThreeDimension;
+  (document.getElementById("pointClouds") as HTMLElement).hidden = type !== TabType.PointClouds;
   (document.getElementById("video") as HTMLElement).hidden = type !== TabType.Video;
   (document.getElementById("joysticks") as HTMLElement).hidden = type !== TabType.Joysticks;
   (document.getElementById("swerve") as HTMLElement).hidden = type !== TabType.Swerve;
@@ -61,6 +64,14 @@ function updateVisualizer() {
         document.getElementById("threeDimensionCanvas") as HTMLCanvasElement,
         document.getElementById("threeDimensionAnnotations") as HTMLElement,
         document.getElementById("threeDimensionAlert") as HTMLElement
+      );
+      break;
+    case TabType.PointClouds:
+      visualizer = new PointCloudVisualizerSwitching(
+        document.body,
+        document.getElementById("pointCloudsCanvas") as HTMLCanvasElement,
+        document.getElementById("pointCloudsAnnotations") as HTMLElement,
+        document.getElementById("pointCloudsAlert") as HTMLElement
       );
       break;
     case TabType.Video:
@@ -143,11 +154,17 @@ window.addEventListener("message", (event) => {
           if (type === TabType.ThreeDimension) {
             (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
           }
+          if (type === TabType.PointClouds) {
+            (visualizer as PointCloudVisualizer).set3DCamera(message.data);
+          }
           break;
 
         case "edit-fov":
           if (type === TabType.ThreeDimension) {
             (visualizer as ThreeDimensionVisualizer).setFov(message.data);
+          }
+          if (type === TabType.PointClouds) {
+            (visualizer as PointCloudVisualizer).setFov(message.data);
           }
           break;
 

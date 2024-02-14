@@ -6,6 +6,7 @@
 
 #odometryCanvasContainer,
 #threeDimensionCanvasContainer,
+#pointCloudsCanvasContainer
 #joysticksCanvas {
   position: absolute;
   left: 0px;
@@ -21,7 +22,8 @@
   transform: translate(-50%, -50%);
 }
 
-#threeDimensionAnnotations {
+#threeDimensionAnnotations,
+#pointCloudsAnnotations {
   pointer-events: none;
 }
 
@@ -33,7 +35,9 @@
 }
 
 #threeDimensionCanvas:not(.fixed),
-#threeDimensionAnnotations:not(.fixed) {
+#threeDimensionAnnotations:not(.fixed),
+#pointCloudsCanvas:not(.fixed),
+#pointCloudsAnnotations:not(.fixed) {
   position: absolute;
   left: 0%;
   top: 0%;
@@ -42,18 +46,22 @@
 }
 
 #threeDimensionCanvas.fixed,
-#threeDimensionAnnotations.fixed {
+#threeDimensionAnnotations.fixed,
+#pointCloudsCanvas.fixed,
+#pointCloudsAnnotations.fixed {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
 
-#threeDimensionCanvas.fixed {
+#threeDimensionCanvas.fixed,
+#pointCloudsCanvas.fixed {
   border: 1px solid #555;
 }
 
-#threeDimensionAlert {
+#threeDimensionAlert,
+#pointCloudsAlert {
   position: absolute;
   left: 50%;
   top: 20px;
@@ -65,11 +73,13 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  #threeDimensionCanvas.fixed {
+  #threeDimensionCanvas.fixed,
+  #pointCloudsCanvas.fixed {
     border: 1px solid #999;
   }
 
-  #threeDimensionAlert {
+  #threeDimensionAlert,
+  #pointCloudsAlert {
     background-color: #222;
     border: 1px solid #999;
   }

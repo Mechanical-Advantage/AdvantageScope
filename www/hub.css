@@ -1692,6 +1692,7 @@ table.timeline-viz-config button {
 
 div.odometry-canvas-container,
 div.three-dimension-canvas-container,
+div.point-clouds-canvas-container,
 canvas.joysticks-canvas {
   position: absolute;
   top: 30px;
@@ -1715,11 +1716,13 @@ div.odometry-canvas-container div {
   height: 100%;
 }
 
-div.three-dimension-annotations {
+div.three-dimension-annotations,
+div.point-clouds-annotations {
   pointer-events: none;
 }
 
-div.three-dimension-annotations > div {
+div.three-dimension-annotations > div,
+div.point-clouds-annotations > div {
   text-align: center;
   font-weight: bold;
   color: #ffffff;
@@ -1727,7 +1730,9 @@ div.three-dimension-annotations > div {
 }
 
 canvas.three-dimension-canvas:not(.fixed),
-div.three-dimension-annotations:not(.fixed) {
+div.three-dimension-annotations:not(.fixed),
+canvas.point-clouds-canvas:not(.fixed),
+div.point-clouds-annotations:not(.fixed) {
   position: absolute;
   left: 0%;
   top: 0%;
@@ -1736,18 +1741,22 @@ div.three-dimension-annotations:not(.fixed) {
 }
 
 canvas.three-dimension-canvas.fixed,
-div.three-dimension-annotations.fixed {
+div.three-dimension-annotations.fixed,
+canvas.point-clouds-canvas.fixed,
+div.point-clouds-annotations.fixed {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
 
-canvas.three-dimension-canvas.fixed {
+canvas.three-dimension-canvas.fixed,
+canvas.point-clouds-canvas.fixed {
   border: 1px solid #555;
 }
 
-div.three-dimension-alert {
+div.three-dimension-alert,
+div.point-clouds-alert {
   position: absolute;
   left: 50%;
   top: 20px;
@@ -1759,11 +1768,13 @@ div.three-dimension-alert {
 }
 
 @media (prefers-color-scheme: dark) {
-  canvas.three-dimension-canvas.fixed {
+  canvas.three-dimension-canvas.fixed,
+  canvas.point-clouds-canvas.fixed {
     border: 1px solid #999;
   }
 
-  div.three-dimension-alert {
+  div.three-dimension-alert,
+  div.point-clouds-alert {
     background-color: #222;
     border: 1px solid #999;
   }

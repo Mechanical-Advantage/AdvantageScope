@@ -6,6 +6,7 @@ enum TabType {
   Statistics,
   Odometry,
   ThreeDimension,
+  PointClouds,
   Video,
   Joysticks,
   Swerve,
@@ -19,6 +20,7 @@ export default TabType;
 export const TIMELINE_VIZ_TYPES: TabType[] = [
   TabType.Odometry,
   TabType.ThreeDimension,
+  TabType.PointClouds,
   TabType.Video,
   TabType.Points,
   TabType.Joysticks,
@@ -46,6 +48,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Odometry";
     case TabType.ThreeDimension:
       return "3D Field";
+    case TabType.PointClouds:
+      return "Point Clouds"
     case TabType.Video:
       return "Video";
     case TabType.Joysticks:
@@ -79,6 +83,8 @@ export function getTabIcon(type: TabType): string {
       return "🗺";
     case TabType.ThreeDimension:
       return "👀";
+    case TabType.PointClouds:
+      return "☁️";
     case TabType.Video:
       return "🎬";
     case TabType.Joysticks:
