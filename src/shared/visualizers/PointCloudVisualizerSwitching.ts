@@ -34,7 +34,7 @@ export default class PointCloudVisualizerSwitching implements Visualizer {
 
   /** Switches the selected camera. */
   set3DCamera(index: number) {
-    this.visualizer?.set3DCamera(index);
+
   }
 
   /** Updates the orbit FOV. */

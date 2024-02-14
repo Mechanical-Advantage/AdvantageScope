@@ -155,7 +155,7 @@ window.addEventListener("message", (event) => {
             (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
           }
           if (type === TabType.PointClouds) {
-            (visualizer as PointCloudVisualizer).set3DCamera(message.data);
+            // (visualizer as PointCloudVisualizer).set3DCamera(message.data);
           }
           break;
 
