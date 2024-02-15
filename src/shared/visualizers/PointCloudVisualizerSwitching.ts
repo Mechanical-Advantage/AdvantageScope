@@ -54,16 +54,16 @@ export default class PointCloudVisualizerSwitching implements Visualizer {
     }
 
     // Recreate visualizer if necessary
-    if (mode !== this.lastMode) {
+    if (mode !== this.lastMode) {   // this starts as null so this runs on startup as well
       this.lastMode = mode;
       let state: any = null;
-      if (this.visualizer !== null) {
+      if (this.visualizer !== null) {   // save current state if any
         state = this.visualizer.saveState();
         this.visualizer.stop();
       }
-      {
+      {   // create a new canvas
         let newCanvas = document.createElement("canvas");
-        this.canvas.classList.forEach((className) => {
+        this.canvas.classList.forEach((className) => {    // copy all the CSS classes/properties?
           newCanvas.classList.add(className);
         });
         newCanvas.id = this.canvas.id;

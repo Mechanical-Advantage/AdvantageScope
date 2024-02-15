@@ -231,7 +231,7 @@ export default class PointCloudVisualizer implements Visualizer {
   }
 
   render(command: any): number | null {
-    if (JSON.stringify(command) !== JSON.stringify(this.command)) {
+    if (JSON.stringify(command) !== JSON.stringify(this.command)) {   // compare new command and previous command?
       // Also triggered if new assets counter changes
       this.shouldRender = true;
     }

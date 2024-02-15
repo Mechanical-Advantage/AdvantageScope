@@ -20,7 +20,9 @@
 //   rotation3dTo2d,
 //   Translation2d
 // } from "../../shared/geometry";
+// import { getRaw, getNumberArray } from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
+import { LogValueSetNumberArray, LogValueSetRaw } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import { cleanFloat, scaleValue } from "../../shared/util";
@@ -46,7 +48,7 @@ export default class PointCloudController extends TimelineVizController {
       TabType.PointClouds,
       [
         {
-          element: configBody.children[1].children[0] as HTMLElement,
+          element: configBody.children[1].firstElementChild as HTMLElement,
           types: [ LoggableType.Raw, LoggableType.NumberArray ]
         }
       ],
@@ -58,7 +60,9 @@ export default class PointCloudController extends TimelineVizController {
         //     LoggableType.NumberArray,
         //     "Translation3d[]"
         //   ],
-        //   options: []
+        //   options: [
+        //     ["Point Cloud 1"]
+        //   ]
         // }
       ],
       new PointCloudVisualizerSwitching(
@@ -219,6 +223,28 @@ export default class PointCloudController extends TimelineVizController {
   }
 
   getCommand(time: number) {
-    
+    const fields_arr = super.getFields();
+    let packet: LogValueSetRaw | LogValueSetNumberArray | undefined;
+    if (fields_arr.length > 0 && fields_arr[0]) {  // only use the first cloud for now
+      const field = fields_arr[0];
+      switch (field.sourceType) {
+        case LoggableType.Raw: {
+          packet = window.log.getRaw(field.key, time, time);
+          console.log('point data timeline scroll: recieved raw data of length %d', packet?.values[0].length)
+          break;
+        }
+        case LoggableType.NumberArray: {
+          packet = window.log.getNumberArray(field.key, time, time);
+          console.log('point data timeline scroll: received number array of length %d', packet?.values[0].length)
+          break;
+        }
+      }
+    }
+
+    // convert data to Float32Array
+
+    return {
+      // encapsulate point data here (passed to renderer)
+    };
   }
 }
