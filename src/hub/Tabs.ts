@@ -358,9 +358,6 @@ export default class Tabs {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
       (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
     }
-    if (this.tabList[this.selectedTab].type === TabType.PointClouds) {
-      (this.tabList[this.selectedTab].controller as PointCloudController).set3DCamera(index);
-    }
   }
 
   /** Switches the orbit FOV for the selected 3D field. */

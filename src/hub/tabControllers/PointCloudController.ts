@@ -1,45 +1,10 @@
-// import {
-//   APRIL_TAG_16H5_COUNT,
-//   APRIL_TAG_36H11_COUNT,
-//   AprilTag,
-//   logReadNumberArrayToPose2dArray,
-//   logReadNumberArrayToPose3dArray,
-//   logReadPose2d,
-//   logReadPose2dArray,
-//   logReadPose3d,
-//   logReadPose3dArray,
-//   logReadTrajectoryToPose2dArray,
-//   logReadTranslation2dArrayToPose2dArray,
-//   logReadTranslation2dToPose2d,
-//   logReadTranslation3dArrayToPose3dArray,
-//   logReadTranslation3dToPose3d,
-//   pose2dArrayTo3d,
-//   pose2dTo3d,
-//   Pose3d,
-//   rotation2dTo3d,
-//   rotation3dTo2d,
-//   Translation2d
-// } from "../../shared/geometry";
-// import { getRaw, getNumberArray } from "../../shared/log/Log";
 import LoggableType from "../../shared/log/LoggableType";
-import { LogValueSetNumberArray, LogValueSetRaw } from "../../shared/log/LogValueSets";
+// import { LogValueSetNumberArray, LogValueSetRaw } from "../../shared/log/LogValueSets";
 import TabType from "../../shared/TabType";
-import { convert } from "../../shared/units";
-import { cleanFloat, scaleValue } from "../../shared/util";
 import PointCloudVisualizerSwitching from "../../shared/visualizers/PointCloudVisualizerSwitching";
 import TimelineVizController from "./TimelineVizController";
 
 export default class PointCloudController extends TimelineVizController {
-
-  // private FIELD: HTMLSelectElement;
-  // private ALLIANCE: HTMLSelectElement;
-  // private FIELD_SOURCE_LINK: HTMLInputElement;
-  // private ROBOT: HTMLSelectElement;
-  // private ROBOT_SOURCE_LINK: HTMLInputElement;
-  // private UNIT_DISTANCE: HTMLInputElement;
-  // private UNIT_ROTATION: HTMLInputElement;
-
-  // private newAssetsCounter = 0;
 
   constructor(content: HTMLElement) {
     let configBody = content.getElementsByClassName("timeline-viz-config")[0].firstElementChild as HTMLElement;
@@ -73,178 +38,75 @@ export default class PointCloudController extends TimelineVizController {
       )
     );
 
-    // Get option inputs
-    // this.FIELD = configBody.children[1].children[2].children[1] as HTMLSelectElement;
-    // this.ALLIANCE = configBody.children[1].children[2].children[2] as HTMLSelectElement;
-    // this.FIELD_SOURCE_LINK = configBody.children[1].children[2].children[3] as HTMLInputElement;
-    // this.ROBOT = configBody.children[2].children[0].children[1] as HTMLSelectElement;
-    // this.ROBOT_SOURCE_LINK = configBody.children[2].children[0].children[2] as HTMLInputElement;
-    // this.UNIT_DISTANCE = configBody.children[3].children[0].children[1] as HTMLInputElement;
-    // this.UNIT_ROTATION = configBody.children[3].children[0].children[2] as HTMLInputElement;
-
-    // Add initial set of options
-    // this.resetFieldRobotOptions();
-
-    // Bind source links
-    // this.FIELD.addEventListener("change", () => this.updateFieldRobotDependentControls());
-    // this.FIELD_SOURCE_LINK.addEventListener("click", () => {
-    //   window.sendMainMessage(
-    //     "open-link",
-    //     window.assets?.field3ds.find((field) => field.name === this.FIELD.value)?.sourceUrl
-    //   );
-    // });
-    // this.ROBOT.addEventListener("change", () => this.updateFieldRobotDependentControls(true));
-    // this.ROBOT_SOURCE_LINK.addEventListener("click", () => {
-    //   window.sendMainMessage(
-    //     "open-link",
-    //     window.assets?.robots.find((robot) => robot.name === this.ROBOT.value)?.sourceUrl
-    //   );
-    // });
   }
 
-  /** Clears all options from the field and robot selectors then updates them with the latest options. */
-  // private resetFieldRobotOptions() {
-  //   let fieldChanged = false;
-  //   {
-  //     let value = this.FIELD.value;
-  //     while (this.FIELD.firstChild) {
-  //       this.FIELD.removeChild(this.FIELD.firstChild);
-  //     }
-  //     let options: string[] = [];
-  //     if (window.assets !== null) {
-  //       options = [...window.assets.field3ds.map((game) => game.name), "Evergreen", "Axes"];
-  //       options.forEach((title) => {
-  //         let option = document.createElement("option");
-  //         option.innerText = title;
-  //         this.FIELD.appendChild(option);
-  //       });
-  //     }
-  //     if (options.includes(value)) {
-  //       this.FIELD.value = value;
-  //     } else {
-  //       this.FIELD.value = options[0];
-  //     }
-  //     fieldChanged = this.FIELD.value !== value;
-  //   }
-  //   {
-  //     let value = this.ROBOT.value;
-  //     while (this.ROBOT.firstChild) {
-  //       this.ROBOT.removeChild(this.ROBOT.firstChild);
-  //     }
-  //     let options: string[] = [];
-  //     if (window.assets !== null) {
-  //       options = window.assets.robots.map((robot) => robot.name);
-  //       options.forEach((title) => {
-  //         let option = document.createElement("option");
-  //         option.innerText = title;
-  //         this.ROBOT.appendChild(option);
-  //       });
-  //     }
-  //     if (options.includes(value)) {
-  //       this.ROBOT.value = value;
-  //     } else {
-  //       this.ROBOT.value = options[0];
-  //     }
-  //   }
-  //   this.updateFieldRobotDependentControls(!fieldChanged);
-  // }
-
-  /** Updates the alliance chooser, source buttons, and game piece names based on the selected value. */
-  // private updateFieldRobotDependentControls(skipAllianceReset = false) {
-  //   let fieldConfig = window.assets?.field3ds.find((game) => game.name === this.FIELD.value);
-  //   this.FIELD_SOURCE_LINK.hidden = fieldConfig === undefined || fieldConfig.sourceUrl === undefined;
-  //   let robotConfig = window.assets?.robots.find((game) => game.name === this.ROBOT.value);
-  //   this.ROBOT_SOURCE_LINK.hidden = robotConfig !== undefined && robotConfig.sourceUrl === undefined;
-
-  //   if (this.FIELD.value === "Axes") this.ALLIANCE.value = "blue";
-  //   this.ALLIANCE.hidden = this.FIELD.value === "Axes";
-  //   if (fieldConfig !== undefined && !skipAllianceReset) {
-  //     this.ALLIANCE.value = fieldConfig.defaultOrigin;
-  //   }
-
-  //   let aliases: { [key: string]: string | null } = {
-  //     "Game Piece 0": null,
-  //     "Game Piece 1": null,
-  //     "Game Piece 2": null,
-  //     "Game Piece 3": null,
-  //     "Game Piece 4": null,
-  //     "Game Piece 5": null
-  //   };
-  //   if (fieldConfig !== undefined) {
-  //     fieldConfig.gamePieces.forEach((gamePiece, index) => {
-  //       aliases["Game Piece " + index.toString()] = gamePiece.name;
-  //     });
-  //   }
-  //   this.setListOptionAliases(aliases);
-  // }
-
-  get options(): { [id: string]: any } {
-    return {
-      // field: this.FIELD.value,
-      // alliance: this.ALLIANCE.value,
-      // robot: this.ROBOT.value,
-      // unitDistance: this.UNIT_DISTANCE.value,
-      // unitRotation: this.UNIT_ROTATION.value
-    };
-  }
-
-  set options(options: { [id: string]: any }) {
-    // this.resetFieldRobotOptions(); // Cannot set field and robot values without options
-    // this.FIELD.value = options.field;
-    // this.ALLIANCE.value = options.alliance;
-    // this.ROBOT.value = options.robot;
-    // this.UNIT_DISTANCE.value = options.unitDistance;
-    // this.UNIT_ROTATION.value = options.unitRotation;
-    // this.updateFieldRobotDependentControls(true);
-  }
-
-  newAssets() {
-    // this.resetFieldRobotOptions();
-    // this.newAssetsCounter++;
-  }
-
-  /** Switches the selected camera for the main visualizer. */
-  set3DCamera(index: number) {
-    (this.visualizer as PointCloudVisualizerSwitching).set3DCamera(index);
-  }
 
   /** Switches the orbit FOV for the main visualizer. */
   setFov(fov: number) {
     (this.visualizer as PointCloudVisualizerSwitching).setFov(fov);
   }
 
-  getAdditionalActiveFields(): string[] {
-    // if (this.ALLIANCE.value === "auto") {
-    //   return ALLIANCE_KEYS;
-    // } else {
-    //   return [];
-    // }
-    return [];
-  }
 
-  getCommand(time: number) {
-    const fields_arr = super.getFields();
-    let packet: LogValueSetRaw | LogValueSetNumberArray | undefined;
-    if (fields_arr.length > 0 && fields_arr[0]) {  // only use the first cloud for now
-      const field = fields_arr[0];
-      switch (field.sourceType) {
-        case LoggableType.Raw: {
-          packet = window.log.getRaw(field.key, time, time);
-          console.log('point data timeline scroll: recieved raw data of length %d', packet?.values[0].length)
-          break;
-        }
-        case LoggableType.NumberArray: {
-          packet = window.log.getNumberArray(field.key, time, time);
-          console.log('point data timeline scroll: received number array of length %d', packet?.values[0].length)
-          break;
-        }
-      }
-    }
+/** Overrides for TimelineVizController */
 
-    // convert data to Float32Array
-
+  get options(): { [id: string]: any } {
     return {
-      // encapsulate point data here (passed to renderer)
+      // currently we do not have any options
     };
   }
+
+  set options(options: { [id: string]: any }) {
+    // currently we do not have any options
+  }
+
+  newAssets() {}  // shouldn't need to do anything with this
+  getAdditionalActiveFields(): string[] { return []; }    // shouldn't need this for anything either
+
+  /** This gets called every 'control loop' (15hz?) with the currently selected timestamp in the viewer */
+  getCommand(time: number) {
+
+    const fields_arr = super.getFields();
+
+    if (fields_arr.length > 0 && fields_arr[0]) {  // only use the first cloud for now
+      const field = fields_arr[0];    // currently only 1 point cloud slot so use the first idx
+
+      switch (field.sourceType) {
+
+        case LoggableType.Raw: {
+          const valset = window.log.getRaw(field.key, time, time);
+          const arr = valset?.values[0];    // the "range" is only a single timestamp so we only ever should have a single value
+          // console.log('point data timeline scroll: recieved raw data of length %d', arr?.length);
+
+          return {
+            buffer: (arr !== undefined) ? new Float32Array(arr.buffer, 0, arr.length - (arr.length % 16)) : null,
+            src_ts: valset?.timestamps[0]
+          };
+
+        }
+
+        case LoggableType.NumberArray: {
+          const valset = window.log.getNumberArray(field.key, time, time);    // same here
+          const arr = valset?.values[0];
+          // console.log('point data timeline scroll: received number array of length %d', arr?.length);
+
+          return {
+            buffer: (arr !== undefined) ? new Float32Array(arr.slice(0, arr.length - (arr.length % 4))) : null,
+            src_ts: valset?.timestamps[0]
+          };
+
+        }
+
+      }
+
+    }
+
+    // default object with null buffer
+    return {
+      buffer: null,
+      src_ts: undefined
+    };
+
+  }
+
+
 }
