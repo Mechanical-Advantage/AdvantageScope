@@ -1013,7 +1013,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           });
           let sceneList = [originalScene, greenGhostScene, yellowGhostScene, purpleGhostScene, orangeGhostScene];
           // Set up groups
-          [0, 1, 2].forEach((i: number) => {
+          [0, 1, 2, 3, 4].forEach((i: number) => {
             let scene = sceneList[i];
             if (index === 0) {
               // Root model, set position and add directly
