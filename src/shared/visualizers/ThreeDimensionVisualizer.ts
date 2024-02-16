@@ -94,8 +94,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private robotSet: ObjectSet;
   private greenGhostSet: ObjectSet;
   private yellowGhostSet: ObjectSet;
+  private purpleGhostSet: ObjectSet;
+  private orangeGhostSet: ObjectSet;
   private greenGhostMaterial: THREE.Material;
   private yellowGhostMaterial: THREE.Material;
+  private purpleGhostMaterial: THREE.Material;
+  private orangeGhostMaterial: THREE.Material;
   private aprilTag36h11Sets: Map<number | null, ObjectSet> = new Map();
   private aprilTag16h5Sets: Map<number | null, ObjectSet> = new Map();
   private trajectories: Line2[] = [];
@@ -114,6 +118,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private zebraTeamLabels: { [key: string]: CSS2DObject } = {};
   private zebraGreenGhostSet: ObjectSet;
   private zebraYellowGhostSet: ObjectSet;
+  private zebraPurpleGhostSet: ObjectSet;
+  private zebraOrangeGhostSet: ObjectSet;
 
   private command: any;
   private shouldRender = false;
@@ -262,6 +268,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.robotSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.greenGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.yellowGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.purpleGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      this.orangeGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.axesSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
@@ -273,6 +281,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.zebraMarkerRedSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       this.zebraGreenGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       this.zebraYellowGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      this.zebraPurpleGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      this.zebraOrangeGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       for (let i = 0; i < 6; i++) {
         this.gamePieceSets.push(new ObjectSet(this.wpilibFieldCoordinateGroup));
       }
@@ -452,6 +462,20 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     });
     this.yellowGhostMaterial = new THREE.MeshPhongMaterial({
       color: 0xffff00,
+      transparent: true,
+      opacity: 0.35,
+      specular: this.MATERIAL_SPECULAR,
+      shininess: this.MATERIAL_SHININESS
+    });
+    this.purpleGhostMaterial = new THREE.MeshPhongMaterial({
+      color: 0x800080,
+      transparent: true,
+      opacity: 0.35,
+      specular: this.MATERIAL_SPECULAR,
+      shininess: this.MATERIAL_SHININESS
+    });
+    this.orangeGhostMaterial = new THREE.MeshPhongMaterial({
+      color: 0xffa500,
       transparent: true,
       opacity: 0.35,
       specular: this.MATERIAL_SPECULAR,
@@ -932,6 +956,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         let robotGroup = new THREE.Group();
         let greenGhostGroup = new THREE.Group();
         let yellowGhostGroup = new THREE.Group();
+        let purpleGhostGroup = new THREE.Group();
+        let orangeGhostGroup = new THREE.Group();
         gltfScenes.forEach((originalScene, index) => {
           originalScene.traverse((node: any) => {
             // Adjust materials
@@ -959,6 +985,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           });
           let greenGhostScene = originalScene.clone(true);
           let yellowGhostScene = originalScene.clone(true);
+          let purpleGhostScene = originalScene.clone(true);
+          let orangeGhostScene = originalScene.clone(true);
           greenGhostScene.traverse((node: any) => {
             let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
             if (mesh.isMesh) {
@@ -971,7 +999,19 @@ export default class ThreeDimensionVisualizer implements Visualizer {
               mesh.material = this.yellowGhostMaterial.clone();
             }
           });
-          let sceneList = [originalScene, greenGhostScene, yellowGhostScene];
+          purpleGhostScene.traverse((node: any) => {
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh) {
+              mesh.material = this.purpleGhostMaterial.clone();
+            }
+          });
+          orangeGhostScene.traverse((node: any) => {
+            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+            if (mesh.isMesh) {
+              mesh.material = this.orangeGhostMaterial.clone();
+            }
+          });
+          let sceneList = [originalScene, greenGhostScene, yellowGhostScene, purpleGhostScene, orangeGhostScene];
           // Set up groups
           [0, 1, 2].forEach((i: number) => {
             let scene = sceneList[i];
@@ -981,8 +1021,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
                 robotGroup.add(scene);
               } else if (i === 1) {
                 greenGhostGroup.add(scene);
-              } else {
+              } else if (i === 2) {
                 yellowGhostGroup.add(scene);
+              } else if (i === 3) {
+                purpleGhostGroup.add(scene);
+              } else {
+                orangeGhostGroup.add(scene);
               }
               scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
               scene.position.set(...robotConfig.position);
@@ -995,8 +1039,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
                 robotGroup.add(componentGroup);
               } else if (i === 1) {
                 greenGhostGroup.add(componentGroup);
-              } else {
+              } else if( i === 2) {
                 yellowGhostGroup.add(componentGroup);
+              } else if (i === 3) {
+                purpleGhostGroup.add(componentGroup);
+              } else {
+                orangeGhostGroup.add(componentGroup);
               }
             }
           });
@@ -1006,19 +1054,29 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         let robotMechanismRoot = new THREE.Group();
         let greenGhostMechanismRoot = new THREE.Group();
         let yellowGhostMechanismRoot = new THREE.Group();
+        let purpleGhostMechanismRoot = new THREE.Group();
+        let orangeGhostMechanismRoot = new THREE.Group();
         robotMechanismRoot.name = "AdvantageScope_MechanismRoot";
         greenGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
         yellowGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
+        purpleGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
+        orangeGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
         robotGroup.add(robotMechanismRoot);
         greenGhostGroup.add(greenGhostMechanismRoot);
         yellowGhostGroup.add(yellowGhostMechanismRoot);
+        purpleGhostGroup.add(purpleGhostMechanismRoot);
+        orangeGhostGroup.add(orangeGhostMechanismRoot);
 
         // Update robot sets
         this.robotSet.setSource(robotGroup);
         this.greenGhostSet.setSource(greenGhostGroup);
         this.yellowGhostSet.setSource(yellowGhostGroup);
+        this.purpleGhostSet.setSource(purpleGhostGroup);
+        this.orangeGhostSet.setSource(orangeGhostGroup);
         this.zebraGreenGhostSet.setSource(greenGhostGroup);
         this.zebraYellowGhostSet.setSource(yellowGhostGroup);
+        this.zebraPurpleGhostSet.setSource(purpleGhostGroup);
+        this.zebraOrangeGhostSet.setSource(orangeGhostGroup);
 
         // Render new frame
         this.shouldRender = true;
@@ -1050,8 +1108,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     this.robotSet.setPoses(this.command.poses.robot.slice(0, 7));
     this.greenGhostSet.setPoses(this.command.poses.greenGhost.slice(0, 7));
     this.yellowGhostSet.setPoses(this.command.poses.yellowGhost.slice(0, 7));
+    this.purpleGhostSet.setPoses(this.command.poses.purpleGhost.slice(0, 7));
+    this.orangeGhostSet.setPoses(this.command.poses.orangeGhost.slice(0, 7));
     this.zebraGreenGhostSet.setPoses(this.command.poses.zebraGreenGhost.slice(0, 7));
     this.zebraYellowGhostSet.setPoses(this.command.poses.zebraYellowGhost.slice(0, 7));
+    this.zebraPurpleGhostSet.setPoses(this.command.poses.zebraPurpleGhost.slice(0, 7));
+    this.zebraOrangeGhostSet.setPoses(this.command.poses.zebraOrangeGhost.slice(0, 7));
 
     // Update robot components
     if (robotConfig && robotConfig.components.length > 0) {
@@ -1060,8 +1122,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
           [this.robotSet, this.command.poses.componentRobot],
           [this.greenGhostSet, this.command.poses.componentGreenGhost],
           [this.yellowGhostSet, this.command.poses.componentYellowGhost],
+          [this.purpleGhostSet, this.command.poses.componentPurpleGhost],
+          [this.orangeGhostSet, this.command.poses.componentOrangeGhost],
           [this.zebraGreenGhostSet, this.command.poses.componentGreenGhost],
-          [this.zebraYellowGhostSet, this.command.poses.componentYellowGhost]
+          [this.zebraYellowGhostSet, this.command.poses.componentYellowGhost],
+          [this.zebraPurpleGhostSet, this.command.poses.componentPurpleGhost],
+          [this.zebraOrangeGhostSet, this.command.poses.componentOrangeGhost]
         ] as [ObjectSet, Pose3d[]][]
       ).forEach(([objectSet, poseData]) => {
         objectSet.getChildren().forEach((childRobot) => {
@@ -1112,13 +1178,12 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         ],
         [this.greenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial.clone(), false],
         [this.yellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial.clone(), false],
+        [this.purpleGhostSet, this.command.poses.mechanismPurpleGhost, () => this.purpleGhostMaterial.clone(), false],
+        [this.orangeGhostSet, this.command.poses.mechanismOrangeGhost, () => this.orangeGhostMaterial.clone(), false],
         [this.zebraGreenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial.clone(), false],
-        [
-          this.zebraYellowGhostSet,
-          this.command.poses.mechanismYellowGhost,
-          () => this.yellowGhostMaterial.clone(),
-          false
-        ]
+        [this.zebraYellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial.clone(), false],
+        [this.zebraPurpleGhostSet, this.command.poses.mechanismPurpleGhost, () => this.purpleGhostMaterial.clone(), false],
+        [this.zebraOrangeGhostSet, this.command.poses.mechanismOrangeGhost, () => this.orangeGhostMaterial.clone(), false]
       ] as [ObjectSet, MechanismState | null, () => THREE.MeshPhongMaterial, boolean][]
     ).forEach(([objectSet, state, getMaterial, updateColors]) => {
       objectSet.getChildren().forEach((childRobot) => {

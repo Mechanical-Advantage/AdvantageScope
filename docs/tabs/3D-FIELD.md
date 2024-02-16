@@ -83,7 +83,7 @@ The w, x, y, and z rotation values represent a quaternion, which is used interna
 The following objects are supported:
 
 - Robot
-- Ghost (Green & Yellow)
+- Ghost (Green, Yellow, Purple, & Orange)
 - AprilTag (36h11 & 16h5)
 - Axes
 - Trajectory
