@@ -78,7 +78,7 @@ export default class PointCloudController extends TimelineVizController {
           // console.log('point data timeline scroll: recieved raw data of length %d', arr?.length);
 
           return {
-            buffer: (arr !== undefined) ? new Float32Array(arr.buffer, 0, arr.length - (arr.length % 16)) : null,
+            buffer: (arr !== undefined) ? new Float32Array(arr.buffer, 0, (arr.length - (arr.length % 16)) / 16) : null,
             src_ts: valset?.timestamps[0]
           };
 
