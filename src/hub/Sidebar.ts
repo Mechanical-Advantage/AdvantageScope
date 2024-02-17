@@ -53,6 +53,7 @@ export default class Sidebar {
   private expandedFields = new Set<string>();
   private activeFields = new Set<string>();
   private activeFieldCallbacks: (() => void)[] = [];
+  private updateTypeWarningCallbacks: (() => void)[] = [];
   private updateValueCallbacks: ((time: number | null) => void)[] = [];
   private selectGroup: string[] = [];
   private selectGroupClearCallbacks: (() => void)[] = [];
@@ -344,6 +345,7 @@ export default class Sidebar {
       }
       this.activeFields = new Set();
       this.activeFieldCallbacks = [];
+      this.updateTypeWarningCallbacks = [];
       this.updateValueCallbacks = [];
       this.selectGroupClearCallbacks = [];
       this.setTuningModeActiveCallbacks = [];
@@ -368,7 +370,8 @@ export default class Sidebar {
       // Update search
       this.updateSearchResults();
     } else {
-      // Update metadata
+      // Update type warnings and metadata
+      this.updateTypeWarningCallbacks.forEach((callback) => callback());
       this.updateMetadataCallbacks.forEach((callback) => callback());
     }
   }
@@ -480,6 +483,31 @@ export default class Sidebar {
     label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
     label.style.cursor = field.fullKey === null ? "auto" : "grab";
     if (field.fullKey) {
+      {
+        let typeWarningSpan = document.createElement("span");
+        label.appendChild(typeWarningSpan);
+        typeWarningSpan.innerHTML = " &#x26A0;";
+        typeWarningSpan.style.cursor = "help";
+        const warningText =
+          "Values with conflicting types have been written to this field. Only values compatible with the initial type can be viewed and exported.";
+        typeWarningSpan.addEventListener("click", () => {
+          window.sendMainMessage("alert", {
+            title: "Conflicting types",
+            content: warningText
+          });
+        });
+        typeWarningSpan.title = warningText;
+        let lastHidden = false;
+        let updateTypeWarning = () => {
+          let hidden = !window.log.getTypeWarning(field.fullKey!);
+          if (hidden !== lastHidden) {
+            lastHidden = hidden;
+            typeWarningSpan.hidden = hidden;
+          }
+        };
+        this.updateTypeWarningCallbacks.push(updateTypeWarning);
+        updateTypeWarning();
+      }
       let structuredType = window.log.getStructuredType(field.fullKey);
       if (structuredType !== null) {
         let typeLabel = document.createElement("span");

@@ -18,6 +18,7 @@ export default class LogField {
   public structuredType: string | null = null;
   public wpilibType: string | null = null; // Original type from WPILOG & NT4
   public metadataString = "";
+  public typeWarning = false; // Flag that there was an attempt to write a conflicting type
 
   // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
   private stripingReference = false;
@@ -154,37 +155,51 @@ export default class LogField {
 
   /** Writes a new Raw value to the field. */
   putRaw(timestamp: number, value: Uint8Array) {
-    if (this.type === LoggableType.Raw) this.putData(timestamp, value);
+    if (this.type === LoggableType.Raw) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Writes a new Boolean value to the field. */
   putBoolean(timestamp: number, value: boolean) {
-    if (this.type === LoggableType.Boolean) this.putData(timestamp, value);
+    if (this.type === LoggableType.Boolean) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Writes a new Number value to the field. */
   putNumber(timestamp: number, value: number) {
-    if (this.type === LoggableType.Number) this.putData(timestamp, value);
+    if (this.type === LoggableType.Number) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Writes a new String value to the field. */
   putString(timestamp: number, value: string) {
-    if (this.type === LoggableType.String) this.putData(timestamp, value);
+    if (this.type === LoggableType.String) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Writes a new BooleanArray value to the field. */
   putBooleanArray(timestamp: number, value: boolean[]) {
-    if (this.type === LoggableType.BooleanArray) this.putData(timestamp, value);
+    if (this.type === LoggableType.BooleanArray) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Writes a new NumberArray value to the field. */
   putNumberArray(timestamp: number, value: number[]) {
-    if (this.type === LoggableType.NumberArray) this.putData(timestamp, value);
+    if (this.type === LoggableType.NumberArray) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Writes a new StringArray value to the field. */
   putStringArray(timestamp: number, value: string[]) {
-    if (this.type === LoggableType.StringArray) this.putData(timestamp, value);
+    if (this.type === LoggableType.StringArray) {
+      this.putData(timestamp, value);
+    } else this.typeWarning = true;
   }
 
   /** Returns a serialized version of the data from this field. */
@@ -196,7 +211,8 @@ export default class LogField {
       structuredType: this.structuredType,
       wpilibType: this.wpilibType,
       metadataString: this.metadataString,
-      stripingReference: this.stripingReference
+      stripingReference: this.stripingReference,
+      typeWarning: this.typeWarning
     };
   }
 
@@ -211,6 +227,7 @@ export default class LogField {
     field.wpilibType = serializedData.wpilibType;
     field.metadataString = serializedData.metadataString;
     field.stripingReference = serializedData.stripingReference;
+    field.typeWarning = serializedData.typeWarning;
     return field;
   }
 }

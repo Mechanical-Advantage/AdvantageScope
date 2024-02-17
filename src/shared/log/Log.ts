@@ -169,6 +169,15 @@ export default class Log {
     }
   }
 
+  /** Returns whether there was an attempt to write a conflicting type to a field. */
+  getTypeWarning(key: string): boolean {
+    if (key in this.fields) {
+      return this.fields[key].typeWarning;
+    } else {
+      return false;
+    }
+  }
+
   /** Returns whether the key is generated. */
   isGenerated(key: string) {
     let parentKeys = Array.from(this.generatedParents);
