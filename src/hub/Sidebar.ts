@@ -67,11 +67,11 @@ export default class Sidebar {
 
   constructor() {
     // Set up handle for resizing
-    this.SIDEBAR_HANDLE.addEventListener("mousedown", (_) => {
+    this.SIDEBAR_HANDLE.addEventListener("mousedown", () => {
       this.sidebarHandleActive = true;
       document.body.style.cursor = "col-resize";
     });
-    window.addEventListener("mouseup", (_) => {
+    window.addEventListener("mouseup", () => {
       this.sidebarHandleActive = false;
       document.body.style.cursor = "initial";
     });

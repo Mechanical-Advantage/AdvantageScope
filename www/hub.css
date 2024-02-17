@@ -796,16 +796,32 @@ div.documentation-text blockquote p {
 
 /* Line graph */
 
+div.legend-handle {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  bottom: var(--legend-height);
+  height: 6px;
+  transform: translateY(50%);
+  cursor: row-resize;
+
+  z-index: 8;
+  opacity: 0;
+  background-color: #ddd;
+}
+
+div.legend-handle:hover {
+  display: initial;
+  opacity: 0.5;
+}
+
 div.legend-left {
   position: absolute;
   left: 0%;
   width: 33%;
   bottom: 0px;
-  height: 30%;
-  max-height: 200px;
-
+  height: var(--legend-height);
   overflow: auto;
-  padding-bottom: 5px;
 }
 
 div.legend-discrete {
@@ -813,11 +829,9 @@ div.legend-discrete {
   left: 33%;
   width: 33%;
   bottom: 0px;
-  height: 30%;
-  max-height: 200px;
+  height: var(--legend-height);
 
   overflow: auto;
-  padding-bottom: 5px;
   border-left: 1px solid #555;
   border-right: 1px solid #555;
 }
@@ -834,11 +848,8 @@ div.legend-right {
   left: 66%;
   width: 34%;
   bottom: 0px;
-  height: 30%;
-  max-height: 200px;
-
+  height: var(--legend-height);
   overflow: auto;
-  padding-bottom: 5px;
 }
 
 div.legend-drag-target {
@@ -949,6 +960,10 @@ div.legend-item-with-value div.legend-value {
 }
 
 @media (prefers-color-scheme: dark) {
+  div.legend-handle {
+    background-color: #444;
+  }
+
   svg.legend-splotch {
     stroke: #999;
   }
@@ -966,8 +981,7 @@ div.legend-item-with-value div.legend-value {
 div.line-graph-canvas-container {
   position: absolute;
   top: 0px;
-  bottom: 30%;
-  min-height: calc(100% - 200px);
+  bottom: var(--legend-height);
   left: 0px;
   right: 0px;
 }

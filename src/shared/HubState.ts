@@ -29,6 +29,7 @@ export interface DocumentationState {
 
 export interface LineGraphState {
   type: TabType.LineGraph;
+  legendHeight: number;
   legends: {
     left: {
       lockedRange: [number, number] | null;
