@@ -52,6 +52,7 @@ export default class PointCloudVisualizer implements Visualizer {
     this.renderer.shadowMap.enabled = mode === "cinematic";
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.scene = new THREE.Scene();
+    this.scene.fog = new THREE.Fog(0x050505, 2000, 3500);
 
     // Change camera menu
     let startPx: [number, number] | null = null;
@@ -130,7 +131,6 @@ export default class PointCloudVisualizer implements Visualizer {
   }
 
   render(command: any): number | null {
-
     if (
       (this.command === undefined && command.buffer?.length > 0) ||
       (this.command !== undefined && this.command.src_ts !== command.src_ts)
@@ -152,7 +152,7 @@ export default class PointCloudVisualizer implements Visualizer {
   /** Resets the camera position and controls target. */
   private resetCamera() {
     console.log("reset camera");
-    this.camera.position.set(1, 1, 1);   // TODO: fill in with default position and target!
+    this.camera.position.set(1, 1, 1); // TODO: fill in with default position and target!
     this.controls.target.set(0, 0, 0);
     this.controls.update();
   }
@@ -204,13 +204,16 @@ export default class PointCloudVisualizer implements Visualizer {
 
     // Create points objects
     const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position',
-      new THREE.InterleavedBufferAttribute(
-        new THREE.InterleavedBuffer(this.command.buffer, 4),
-        3, 0, false
-      )
+    geometry.setAttribute(
+      "position",
+      new THREE.InterleavedBufferAttribute(new THREE.InterleavedBuffer(this.command.buffer, 4), 3, 0, false)
     );
-    const material = new THREE.PointsMaterial({ size: 1, color: isDark ? 0xffffff : 0x222222 });   // https://threejs.org/docs/#api/en/materials/PointsMaterial
+    const material = new THREE.PointsMaterial({
+      size: 2,
+      sizeAttenuation: false,
+      color: isDark ? 0xffffff : 0xaa00aa
+    }); // https://threejs.org/docs/#api/en/materials/PointsMaterial
+    geometry.computeBoundingSphere();
     const points = new THREE.Points(geometry, material);
 
     // Render new frame
@@ -218,6 +221,7 @@ export default class PointCloudVisualizer implements Visualizer {
     const canvas = this.renderer.domElement;
     const clientWidth = canvas.clientWidth;
     const clientHeight = canvas.clientHeight;
+
     if (canvas.width / devicePixelRatio !== clientWidth || canvas.height / devicePixelRatio !== clientHeight) {
       this.renderer.setSize(clientWidth, clientHeight, false);
       this.camera.aspect = clientWidth / clientHeight;
@@ -238,10 +242,7 @@ export default class PointCloudVisualizer implements Visualizer {
     this.renderer.render(this.scene, this.camera);
 
     console.log("PointCloudVisualizer: render frame completed!");
-
   }
-
-
 }
 
 /** Disposes of all materials and geometries in object. */
