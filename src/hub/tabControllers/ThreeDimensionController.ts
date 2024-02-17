@@ -717,7 +717,6 @@ export default class ThreeDimensionController extends TimelineVizController {
         });
       });
     });
-    console.log(zebraGhostDataTranslations, zebraGhostData);
 
     // Package command data
     return {

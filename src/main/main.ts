@@ -2521,7 +2521,6 @@ app.on("window-all-closed", () => {
 
 // macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (_, path) => {
-  console.log(path);
   if (app.isReady()) {
     // Already running, create a new window
     let window = createHubWindow();
