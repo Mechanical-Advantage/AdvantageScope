@@ -1404,6 +1404,7 @@ function setupMenu() {
             { role: "minimize" },
             {
               label: "Bring All to Front",
+              accelerator: "Ctrl+B",
               click(_, window) {
                 hubWindows.forEach((window) => {
                   if (!window.isDestroyed()) {
