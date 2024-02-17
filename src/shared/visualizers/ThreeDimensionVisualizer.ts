@@ -29,6 +29,7 @@ import { clampValue, zfill } from "../util";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
+  static GHOST_COLORS = ["Green", "Yellow", "Blue", "Red"];
   private LOWER_POWER_MAX_FPS = 30;
   private MAX_ORBIT_FOV = 160;
   private MIN_ORBIT_FOV = 10;
@@ -92,14 +93,8 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private axesTemplate: THREE.Object3D;
   private field: THREE.Object3D | null = null;
   private robotSet: ObjectSet;
-  private greenGhostSet: ObjectSet;
-  private yellowGhostSet: ObjectSet;
-  private purpleGhostSet: ObjectSet;
-  private orangeGhostSet: ObjectSet;
-  private greenGhostMaterial: THREE.Material;
-  private yellowGhostMaterial: THREE.Material;
-  private purpleGhostMaterial: THREE.Material;
-  private orangeGhostMaterial: THREE.Material;
+  private ghostSets: { [key: string]: ObjectSet } = {};
+  private ghostMaterials: { [key: string]: THREE.Material } = {};
   private aprilTag36h11Sets: Map<number | null, ObjectSet> = new Map();
   private aprilTag16h5Sets: Map<number | null, ObjectSet> = new Map();
   private trajectories: Line2[] = [];
@@ -116,10 +111,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private zebraMarkerBlueSet: ObjectSet;
   private zebraMarkerRedSet: ObjectSet;
   private zebraTeamLabels: { [key: string]: CSS2DObject } = {};
-  private zebraGreenGhostSet: ObjectSet;
-  private zebraYellowGhostSet: ObjectSet;
-  private zebraPurpleGhostSet: ObjectSet;
-  private zebraOrangeGhostSet: ObjectSet;
+  private zebraGhostSets: { [key: string]: ObjectSet } = {};
 
   private command: any;
   private shouldRender = false;
@@ -266,10 +258,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     // Set up object sets
     {
       this.robotSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.greenGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.yellowGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.purpleGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
-      this.orangeGhostSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+        this.ghostSets[color] = new ObjectSet(this.wpilibFieldCoordinateGroup);
+      });
       this.axesSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueFrontSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.coneBlueCenterSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
@@ -279,10 +270,9 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       this.coneYellowBackSet = new ObjectSet(this.wpilibFieldCoordinateGroup);
       this.zebraMarkerBlueSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
       this.zebraMarkerRedSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
-      this.zebraGreenGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
-      this.zebraYellowGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
-      this.zebraPurpleGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
-      this.zebraOrangeGhostSet = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+        this.zebraGhostSets[color] = new ObjectSet(this.wpilibZebraCoordinateGroup);
+      });
       for (let i = 0; i < 6; i++) {
         this.gamePieceSets.push(new ObjectSet(this.wpilibFieldCoordinateGroup));
       }
@@ -453,33 +443,19 @@ export default class ThreeDimensionVisualizer implements Visualizer {
     }
 
     // Define ghost materials
-    this.greenGhostMaterial = new THREE.MeshPhongMaterial({
-      color: 0x00ff00,
-      transparent: true,
-      opacity: 0.35,
-      specular: this.MATERIAL_SPECULAR,
-      shininess: this.MATERIAL_SHININESS
-    });
-    this.yellowGhostMaterial = new THREE.MeshPhongMaterial({
-      color: 0xffff00,
-      transparent: true,
-      opacity: 0.35,
-      specular: this.MATERIAL_SPECULAR,
-      shininess: this.MATERIAL_SHININESS
-    });
-    this.purpleGhostMaterial = new THREE.MeshPhongMaterial({
-      color: 0x800080,
-      transparent: true,
-      opacity: 0.35,
-      specular: this.MATERIAL_SPECULAR,
-      shininess: this.MATERIAL_SHININESS
-    });
-    this.orangeGhostMaterial = new THREE.MeshPhongMaterial({
-      color: 0xffa500,
-      transparent: true,
-      opacity: 0.35,
-      specular: this.MATERIAL_SPECULAR,
-      shininess: this.MATERIAL_SHININESS
+    [
+      ["Green", 0x00ff00],
+      ["Yellow", 0xffff00],
+      ["Blue", 0x0000ff],
+      ["Red", 0xff0000]
+    ].forEach(([name, color]) => {
+      this.ghostMaterials[name] = new THREE.MeshPhongMaterial({
+        color: color,
+        transparent: true,
+        opacity: 0.35,
+        specular: this.MATERIAL_SPECULAR,
+        shininess: this.MATERIAL_SHININESS
+      });
     });
 
     // Render when camera is moved
@@ -954,10 +930,10 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
         // Update model materials and set up groups
         let robotGroup = new THREE.Group();
-        let greenGhostGroup = new THREE.Group();
-        let yellowGhostGroup = new THREE.Group();
-        let purpleGhostGroup = new THREE.Group();
-        let orangeGhostGroup = new THREE.Group();
+        let ghostGroups: { [key: string]: THREE.Group } = {};
+        ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+          ghostGroups[color] = new THREE.Group();
+        });
         gltfScenes.forEach((originalScene, index) => {
           originalScene.traverse((node: any) => {
             // Adjust materials
@@ -983,100 +959,63 @@ export default class ThreeDimensionVisualizer implements Visualizer {
               }
             }
           });
-          let greenGhostScene = originalScene.clone(true);
-          let yellowGhostScene = originalScene.clone(true);
-          let purpleGhostScene = originalScene.clone(true);
-          let orangeGhostScene = originalScene.clone(true);
-          greenGhostScene.traverse((node: any) => {
-            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-            if (mesh.isMesh) {
-              mesh.material = this.greenGhostMaterial.clone();
-            }
-          });
-          yellowGhostScene.traverse((node: any) => {
-            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-            if (mesh.isMesh) {
-              mesh.material = this.yellowGhostMaterial.clone();
-            }
-          });
-          purpleGhostScene.traverse((node: any) => {
-            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-            if (mesh.isMesh) {
-              mesh.material = this.purpleGhostMaterial.clone();
-            }
-          });
-          orangeGhostScene.traverse((node: any) => {
-            let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-            if (mesh.isMesh) {
-              mesh.material = this.orangeGhostMaterial.clone();
-            }
-          });
-          let sceneList = [originalScene, greenGhostScene, yellowGhostScene, purpleGhostScene, orangeGhostScene];
-          // Set up groups
-          [0, 1, 2, 3, 4].forEach((i: number) => {
-            let scene = sceneList[i];
+
+          // Add to robot group
+          if (index === 0) {
+            // Root model, set position and add directly
+            robotGroup.add(originalScene);
+            originalScene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+            originalScene.position.set(...robotConfig.position);
+          } else {
+            // Component model, add name and store in group
+            let componentGroup = new THREE.Group();
+            componentGroup.name = "AdvantageScope_Component" + (index - 1).toString();
+            componentGroup.add(originalScene);
+            robotGroup.add(componentGroup);
+          }
+
+          // Create ghosts and add to groups
+          ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+            let ghostScene = originalScene.clone(true);
+            ghostScene.traverse((node: any) => {
+              let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+              if (mesh.isMesh) {
+                mesh.material = this.ghostMaterials[color].clone();
+              }
+            });
+
             if (index === 0) {
               // Root model, set position and add directly
-              if (i === 0) {
-                robotGroup.add(scene);
-              } else if (i === 1) {
-                greenGhostGroup.add(scene);
-              } else if (i === 2) {
-                yellowGhostGroup.add(scene);
-              } else if (i === 3) {
-                purpleGhostGroup.add(scene);
-              } else {
-                orangeGhostGroup.add(scene);
-              }
-              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
-              scene.position.set(...robotConfig.position);
+              ghostGroups[color].add(ghostScene);
+              ghostScene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+              ghostScene.position.set(...robotConfig.position);
             } else {
               // Component model, add name and store in group
               let componentGroup = new THREE.Group();
               componentGroup.name = "AdvantageScope_Component" + (index - 1).toString();
-              componentGroup.add(scene);
-              if (i === 0) {
-                robotGroup.add(componentGroup);
-              } else if (i === 1) {
-                greenGhostGroup.add(componentGroup);
-              } else if( i === 2) {
-                yellowGhostGroup.add(componentGroup);
-              } else if (i === 3) {
-                purpleGhostGroup.add(componentGroup);
-              } else {
-                orangeGhostGroup.add(componentGroup);
-              }
+              componentGroup.add(ghostScene);
+              ghostGroups[color].add(componentGroup);
             }
           });
         });
 
         // Add mechanism roots
         let robotMechanismRoot = new THREE.Group();
-        let greenGhostMechanismRoot = new THREE.Group();
-        let yellowGhostMechanismRoot = new THREE.Group();
-        let purpleGhostMechanismRoot = new THREE.Group();
-        let orangeGhostMechanismRoot = new THREE.Group();
         robotMechanismRoot.name = "AdvantageScope_MechanismRoot";
-        greenGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
-        yellowGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
-        purpleGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
-        orangeGhostMechanismRoot.name = "AdvantageScope_MechanismRoot";
         robotGroup.add(robotMechanismRoot);
-        greenGhostGroup.add(greenGhostMechanismRoot);
-        yellowGhostGroup.add(yellowGhostMechanismRoot);
-        purpleGhostGroup.add(purpleGhostMechanismRoot);
-        orangeGhostGroup.add(orangeGhostMechanismRoot);
+        let ghostMechanismRoots: { [key: string]: THREE.Group } = {};
+        ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+          ghostMechanismRoots[color] = new THREE.Group();
+          ghostMechanismRoots[color].name = "AdvantageScope_MechanismRoot";
+          ghostGroups[color].add(ghostMechanismRoots[color]);
+        });
 
         // Update robot sets
         this.robotSet.setSource(robotGroup);
-        this.greenGhostSet.setSource(greenGhostGroup);
-        this.yellowGhostSet.setSource(yellowGhostGroup);
-        this.purpleGhostSet.setSource(purpleGhostGroup);
-        this.orangeGhostSet.setSource(orangeGhostGroup);
-        this.zebraGreenGhostSet.setSource(greenGhostGroup);
-        this.zebraYellowGhostSet.setSource(yellowGhostGroup);
-        this.zebraPurpleGhostSet.setSource(purpleGhostGroup);
-        this.zebraOrangeGhostSet.setSource(orangeGhostGroup);
+        ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+          this.ghostSets[color].setSource(ghostGroups[color]);
+          this.zebraGhostSets[color].setSource(ghostGroups[color]);
+        });
 
         // Render new frame
         this.shouldRender = true;
@@ -1106,28 +1045,24 @@ export default class ThreeDimensionVisualizer implements Visualizer {
 
     // Update robot poses (max of 6 poses each)
     this.robotSet.setPoses(this.command.poses.robot.slice(0, 7));
-    this.greenGhostSet.setPoses(this.command.poses.greenGhost.slice(0, 7));
-    this.yellowGhostSet.setPoses(this.command.poses.yellowGhost.slice(0, 7));
-    this.purpleGhostSet.setPoses(this.command.poses.purpleGhost.slice(0, 7));
-    this.orangeGhostSet.setPoses(this.command.poses.orangeGhost.slice(0, 7));
-    this.zebraGreenGhostSet.setPoses(this.command.poses.zebraGreenGhost.slice(0, 7));
-    this.zebraYellowGhostSet.setPoses(this.command.poses.zebraYellowGhost.slice(0, 7));
-    this.zebraPurpleGhostSet.setPoses(this.command.poses.zebraPurpleGhost.slice(0, 7));
-    this.zebraOrangeGhostSet.setPoses(this.command.poses.zebraOrangeGhost.slice(0, 7));
+    ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+      this.ghostSets[color].setPoses(this.command.poses.ghost[color].slice(0, 7));
+      this.zebraGhostSets[color].setPoses(this.command.poses.zebraGhost[color].slice(0, 7));
+    });
 
     // Update robot components
     if (robotConfig && robotConfig.components.length > 0) {
       (
         [
           [this.robotSet, this.command.poses.componentRobot],
-          [this.greenGhostSet, this.command.poses.componentGreenGhost],
-          [this.yellowGhostSet, this.command.poses.componentYellowGhost],
-          [this.purpleGhostSet, this.command.poses.componentPurpleGhost],
-          [this.orangeGhostSet, this.command.poses.componentOrangeGhost],
-          [this.zebraGreenGhostSet, this.command.poses.componentGreenGhost],
-          [this.zebraYellowGhostSet, this.command.poses.componentYellowGhost],
-          [this.zebraPurpleGhostSet, this.command.poses.componentPurpleGhost],
-          [this.zebraOrangeGhostSet, this.command.poses.componentOrangeGhost]
+          ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => [
+            this.ghostSets[color],
+            this.command.poses.componentGhost
+          ]),
+          ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => [
+            this.zebraGhostSets[color],
+            this.command.poses.componentGhost
+          ])
         ] as [ObjectSet, Pose3d[]][]
       ).forEach(([objectSet, poseData]) => {
         objectSet.getChildren().forEach((childRobot) => {
@@ -1176,14 +1111,18 @@ export default class ThreeDimensionVisualizer implements Visualizer {
             }),
           true
         ],
-        [this.greenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial.clone(), false],
-        [this.yellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial.clone(), false],
-        [this.purpleGhostSet, this.command.poses.mechanismPurpleGhost, () => this.purpleGhostMaterial.clone(), false],
-        [this.orangeGhostSet, this.command.poses.mechanismOrangeGhost, () => this.orangeGhostMaterial.clone(), false],
-        [this.zebraGreenGhostSet, this.command.poses.mechanismGreenGhost, () => this.greenGhostMaterial.clone(), false],
-        [this.zebraYellowGhostSet, this.command.poses.mechanismYellowGhost, () => this.yellowGhostMaterial.clone(), false],
-        [this.zebraPurpleGhostSet, this.command.poses.mechanismPurpleGhost, () => this.purpleGhostMaterial.clone(), false],
-        [this.zebraOrangeGhostSet, this.command.poses.mechanismOrangeGhost, () => this.orangeGhostMaterial.clone(), false]
+        ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => [
+          this.ghostSets[color],
+          this.command.poses.mechanismGhost,
+          () => this.ghostMaterials[color].clone(),
+          false
+        ]),
+        ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => [
+          this.zebraGhostSets[color],
+          this.command.poses.mechanismGhost,
+          () => this.ghostMaterials[color].clone(),
+          false
+        ])
       ] as [ObjectSet, MechanismState | null, () => THREE.MeshPhongMaterial, boolean][]
     ).forEach(([objectSet, state, getMaterial, updateColors]) => {
       objectSet.getChildren().forEach((childRobot) => {

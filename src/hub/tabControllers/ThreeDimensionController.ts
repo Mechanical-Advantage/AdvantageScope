@@ -33,6 +33,7 @@ import {
 import TabType from "../../shared/TabType";
 import { convert } from "../../shared/units";
 import { cleanFloat, scaleValue } from "../../shared/util";
+import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVisualizer";
 import ThreeDimensionVisualizerSwitching from "../../shared/visualizers/ThreeDimensionVisualizerSwitching";
 import TimelineVizController from "./TimelineVizController";
 
@@ -40,16 +41,10 @@ export default class ThreeDimensionController extends TimelineVizController {
   private TRAJECTORY_MAX_LENGTH = 40;
   private static POSE_3D_TYPES = [
     "Robot",
-    "Green Ghost",
-    "Yellow Ghost",
-    "Purple Ghost",
-    "Orange Ghost",
+    ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => color + " Ghost"),
     "Camera Override",
     "Component (Robot)",
-    "Component (Green Ghost)",
-    "Component (Yellow Ghost)",
-    "Component (Purple Ghost)",
-    "Component (Orange Ghost)",
+    "Component (Ghost)",
     "Game Piece 0",
     "Game Piece 1",
     "Game Piece 2",
@@ -84,10 +79,7 @@ export default class ThreeDimensionController extends TimelineVizController {
   ];
   private static POSE_2D_TYPES = [
     "Robot",
-    "Green Ghost",
-    "Yellow Ghost",
-    "Purple Ghost",
-    "Orange Ghost",
+    ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => color + " Ghost"),
     "Trajectory",
     "Vision Target",
     "Blue Cone (Front)",
@@ -163,8 +155,8 @@ export default class ThreeDimensionController extends TimelineVizController {
             ["Vision Target"], // Translation2d
             ["Trajectory", "Vision Target"], // Translation2d[]
             ["Trajectory"], // Trajectory
-            ["Mechanism (Robot)", "Mechanism (Green Ghost)", "Mechanism (Yellow Ghost)", "Mechanism (Purple Ghost)", "Mechanism (Orange Ghost)"], // Mechanism2d
-            ["Zebra Marker", "Green Ghost", "Yellow Ghost", "Purple Ghost", "Orange Ghost"] // ZebraTranslation
+            ["Mechanism (Robot)", "Mechanism (Ghost)"], // Mechanism2d
+            ["Zebra Marker", ...ThreeDimensionVisualizer.GHOST_COLORS.map((color) => color + " Ghost")] // ZebraTranslation
           ],
           autoAdvanceOptions: [true, true, true, true, true, true, true, true, true, false]
         }
@@ -389,10 +381,8 @@ export default class ThreeDimensionController extends TimelineVizController {
 
     // Set up data
     let robotData: Pose3d[] = [];
-    let greenGhostData: Pose3d[] = [];
-    let yellowGhostData: Pose3d[] = [];
-    let purpleGhostData: Pose3d[] = [];
-    let orangeGhostData: Pose3d[] = [];
+    let ghostData: { [key: string]: Pose3d[] } = {};
+    ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => (ghostData[color] = []));
     let aprilTag36h11Data: AprilTag[] = [];
     let aprilTag36h11PoseData: Pose3d[] = [];
     let aprilTag36h11IdData: number[] = [];
@@ -401,10 +391,7 @@ export default class ThreeDimensionController extends TimelineVizController {
     let aprilTag16h5IdData: number[] = [];
     let cameraOverrideData: Pose3d[] = [];
     let componentRobotData: Pose3d[] = [];
-    let componentGreenGhostData: Pose3d[] = [];
-    let componentYellowGhostData: Pose3d[] = [];
-    let componentPurpleGhostData: Pose3d[] = [];
-    let componentOrangeGhostData: Pose3d[] = [];
+    let componentGhostData: Pose3d[] = [];
     let gamePieceData: Pose3d[][] = [[], [], [], [], [], []];
     let hasUserGamePieces = false;
     let trajectoryData: Pose3d[][] = [];
@@ -417,37 +404,18 @@ export default class ThreeDimensionController extends TimelineVizController {
     let coneYellowCenterData: Pose3d[] = [];
     let coneYellowBackData: Pose3d[] = [];
     let mechanismRobotData: MechanismState | null = null;
-    let mechanismGreenGhostData: MechanismState | null = null;
-    let mechanismYellowGhostData: MechanismState | null = null;
-    let mechanismPurpleGhostData: MechanismState | null = null;
-    let mechanismOrangeGhostData: MechanismState | null = null;
+    let mechanismGhostData: MechanismState | null = null;
     let zebraMarkerData: { [key: string]: { translation: Translation2d; alliance: string } } = {};
-    let zebraGreenGhostDataTranslations: Translation2d[] = [];
-    let zebraGreenGhostData: Pose3d[] = [];
-    let zebraYellowGhostDataTranslations: Translation2d[] = [];
-    let zebraYellowGhostData: Pose3d[] = [];
-    let zebraPurpleGhostDataTranslations: Translation2d[] = [];
-    let zebraPurpleGhostData: Pose3d[] = [];
-    let zebraOrangeGhostDataTranslations: Translation2d[] = [];
-    let zebraOrangeGhostData: Pose3d[] = [];
+    let zebraGhostDataTranslations: { [key: string]: Translation2d[] } = {};
+    ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => (zebraGhostDataTranslations[color] = []));
+    let zebraGhostData: { [key: string]: Pose3d[] } = {};
+    ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => (zebraGhostData[color] = []));
 
     // Get 3D data
     this.getListFields()[0].forEach((field) => {
       switch (field.type) {
         case "Robot":
           robotData = robotData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Green Ghost":
-          greenGhostData = greenGhostData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Yellow Ghost":
-          yellowGhostData = yellowGhostData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Purple Ghost":
-          purpleGhostData = purpleGhostData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Orange Ghost":
-          orangeGhostData = orangeGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "AprilTag 36h11":
         case "AprilTag 16h5":
@@ -486,17 +454,8 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Component (Robot)":
           componentRobotData = componentRobotData.concat(get3DValue(field.key, field.sourceType));
           break;
-        case "Component (Green Ghost)":
-          componentGreenGhostData = componentGreenGhostData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Component (Yellow Ghost)":
-          componentYellowGhostData = componentYellowGhostData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Component (Purple Ghost)":
-          componentPurpleGhostData = componentPurpleGhostData.concat(get3DValue(field.key, field.sourceType));
-          break;
-        case "Component (Orange Ghost)":
-          componentOrangeGhostData = componentOrangeGhostData.concat(get3DValue(field.key, field.sourceType));
+        case "Component (Ghost)":
+          componentGhostData = componentGhostData.concat(get3DValue(field.key, field.sourceType));
           break;
         case "Game Piece 0":
         case "Game Piece 1":
@@ -535,6 +494,13 @@ export default class ThreeDimensionController extends TimelineVizController {
         case "Yellow Cone (Back)":
           coneYellowBackData = coneYellowBackData.concat(get3DValue(field.key, field.sourceType));
           break;
+        default:
+          ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+            if (field.type === color + " Ghost") {
+              ghostData[color] = ghostData[color].concat(get3DValue(field.key, field.sourceType));
+            }
+          });
+          break;
       }
     });
 
@@ -543,56 +509,6 @@ export default class ThreeDimensionController extends TimelineVizController {
       switch (field.type) {
         case "Robot":
           robotData = robotData.concat(get2DValue(field.key, field.sourceType));
-          break;
-        case "Green Ghost":
-        case "Yellow Ghost":
-        case "Purple Ghost":
-        case "Orange Ghost":
-          if (field.sourceType !== "ZebraTranslation") {
-            if (field.type === "Green Ghost") {
-              greenGhostData = greenGhostData.concat(get2DValue(field.key, field.sourceType));
-            } else if (field.type === "Yellow Ghost") {
-              yellowGhostData = yellowGhostData.concat(get2DValue(field.key, field.sourceType));
-            } else if (field.type === "Purple Ghost") {
-              purpleGhostData = purpleGhostData.concat(get2DValue(field.key, field.sourceType));
-            } else {
-              orangeGhostData = orangeGhostData.concat(get2DValue(field.key, field.sourceType));
-            }
-          } else {
-            let x: number | null = null;
-            let y: number | null = null;
-            {
-              let xData = window.log.getNumber(field.key + "/x", time, time);
-              if (xData !== undefined && xData.values.length > 0) {
-                if (xData.values.length === 1) {
-                  x = xData.values[0];
-                } else {
-                  x = scaleValue(time, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
-                }
-              }
-            }
-            {
-              let yData = window.log.getNumber(field.key + "/y", time, time);
-              if (yData !== undefined && yData.values.length > 0) {
-                if (yData.values.length === 1) {
-                  y = yData.values[0];
-                } else {
-                  y = scaleValue(time, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
-                }
-              }
-            }
-            let ghostDataTranslations = zebraGreenGhostDataTranslations;
-            if (x !== null && y !== null) {
-              if (field.type === "Yellow Ghost") { 
-                ghostDataTranslations = zebraYellowGhostDataTranslations;
-              } else if (field.type === "Purple Ghost") {
-                ghostDataTranslations = zebraPurpleGhostDataTranslations;
-              } if (field.type === "Orange Ghost") {
-                ghostDataTranslations = zebraOrangeGhostDataTranslations;
-              }
-              ghostDataTranslations.push([convert(x, "feet", "meters"), convert(y, "feet", "meters")]);
-            }
-          }
           break;
         case "Trajectory":
           trajectoryData.push(get2DValue(field.key, field.sourceType, 0.02)); // Render outside the floor
@@ -630,50 +546,14 @@ export default class ThreeDimensionController extends TimelineVizController {
             }
           }
           break;
-        case "Mechanism (Green Ghost)":
+        case "Mechanism (Ghost)":
           {
             let mechanismState = getMechanismState(window.log, field.key, time);
             if (mechanismState) {
-              if (mechanismGreenGhostData === null) {
-                mechanismGreenGhostData = mechanismState;
+              if (mechanismGhostData === null) {
+                mechanismGhostData = mechanismState;
               } else {
-                mechanismGreenGhostData = mergeMechanismStates([mechanismGreenGhostData, mechanismState]);
-              }
-            }
-          }
-          break;
-        case "Mechanism (Yellow Ghost)":
-          {
-            let mechanismState = getMechanismState(window.log, field.key, time);
-            if (mechanismState) {
-              if (mechanismYellowGhostData === null) {
-                mechanismYellowGhostData = mechanismState;
-              } else {
-                mechanismYellowGhostData = mergeMechanismStates([mechanismYellowGhostData, mechanismState]);
-              }
-            }
-          }
-          break;
-          case "Mechanism (Purple Ghost)":
-          {
-            let mechanismState = getMechanismState(window.log, field.key, time);
-            if (mechanismState) {
-              if (mechanismPurpleGhostData === null) {
-                mechanismPurpleGhostData = mechanismState;
-              } else {
-                mechanismPurpleGhostData = mergeMechanismStates([mechanismPurpleGhostData, mechanismState]);
-              }
-            }
-          }
-          break;
-        case "Mechanism (Orange  Ghost)":
-          {
-            let mechanismState = getMechanismState(window.log, field.key, time);
-            if (mechanismState) {
-              if (mechanismOrangeGhostData === null) {
-                mechanismOrangeGhostData = mechanismState;
-              } else {
-                mechanismOrangeGhostData = mergeMechanismStates([mechanismOrangeGhostData, mechanismState]);
+                mechanismGhostData = mergeMechanismStates([mechanismGhostData, mechanismState]);
               }
             }
           }
@@ -709,6 +589,49 @@ export default class ThreeDimensionController extends TimelineVizController {
               alliance: alliance
             };
           }
+          break;
+        default:
+          ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+            if (field.type === color + " Ghost") {
+              if (field.sourceType !== "ZebraTranslation") {
+                ghostData[color] = ghostData[color].concat(get2DValue(field.key, field.sourceType));
+              } else {
+                let x: number | null = null;
+                let y: number | null = null;
+                {
+                  let xData = window.log.getNumber(field.key + "/x", time, time);
+                  if (xData !== undefined && xData.values.length > 0) {
+                    if (xData.values.length === 1) {
+                      x = xData.values[0];
+                    } else {
+                      x = scaleValue(
+                        time,
+                        [xData.timestamps[0], xData.timestamps[1]],
+                        [xData.values[0], xData.values[1]]
+                      );
+                    }
+                  }
+                }
+                {
+                  let yData = window.log.getNumber(field.key + "/y", time, time);
+                  if (yData !== undefined && yData.values.length > 0) {
+                    if (yData.values.length === 1) {
+                      y = yData.values[0];
+                    } else {
+                      y = scaleValue(
+                        time,
+                        [yData.timestamps[0], yData.timestamps[1]],
+                        [yData.values[0], yData.values[1]]
+                      );
+                    }
+                  }
+                }
+                if (x !== null && y !== null) {
+                  zebraGhostDataTranslations[color].push([convert(x, "feet", "meters"), convert(y, "feet", "meters")]);
+                }
+              }
+            }
+          });
           break;
       }
     });
@@ -786,47 +709,26 @@ export default class ThreeDimensionController extends TimelineVizController {
       }
     }
     let robotRotation3d = rotation2dTo3d(robotRotation2d);
-    zebraGreenGhostDataTranslations.forEach((translation) => {
-      zebraGreenGhostData.push({
-        translation: [translation[0], translation[1], 0],
-        rotation: robotRotation3d
+    ThreeDimensionVisualizer.GHOST_COLORS.forEach((color) => {
+      zebraGhostDataTranslations[color].forEach((translation) => {
+        zebraGhostData[color].push({
+          translation: [translation[0], translation[1], 0],
+          rotation: robotRotation3d
+        });
       });
     });
-    zebraYellowGhostDataTranslations.forEach((translation) => {
-      zebraYellowGhostData.push({
-        translation: [translation[0], translation[1], 0],
-        rotation: robotRotation3d
-      });
-    });
-    zebraPurpleGhostDataTranslations.forEach((translation) => {
-      zebraPurpleGhostData.push({
-        translation: [translation[0], translation[1], 0],
-        rotation: robotRotation3d
-      });
-    });
-    zebraOrangeGhostDataTranslations.forEach((translation) => {
-      zebraOrangeGhostData.push({
-        translation: [translation[0], translation[1], 0],
-        rotation: robotRotation3d
-      });
-    });
+    console.log(zebraGhostDataTranslations, zebraGhostData);
 
     // Package command data
     return {
       poses: {
         robot: robotData,
-        greenGhost: greenGhostData,
-        yellowGhost: yellowGhostData,
-        purpleGhost: purpleGhostData,
-        orangeGhost: orangeGhostData,
+        ghost: ghostData,
         aprilTag36h11: aprilTag36h11Data,
         aprilTag16h5: aprilTag16h5Data,
         cameraOverride: cameraOverrideData,
         componentRobot: componentRobotData,
-        componentGreenGhost: componentGreenGhostData,
-        componentYellowGhost: componentYellowGhostData,
-        componentPurpleGhost: componentPurpleGhostData,
-        componentOrangeGhost: componentOrangeGhostData,
+        componentGhost: componentGhostData,
         gamePiece: gamePieceData,
         trajectory: trajectoryData,
         visionTarget: visionTargetData,
@@ -838,15 +740,9 @@ export default class ThreeDimensionController extends TimelineVizController {
         coneYellowCenter: coneYellowCenterData,
         coneYellowBack: coneYellowBackData,
         mechanismRobot: mechanismRobotData,
-        mechanismGreenGhost: mechanismGreenGhostData,
-        mechanismYellowGhost: mechanismYellowGhostData,
-        mechanismPurpleGhost: mechanismPurpleGhostData,
-        mechanismOrangeGhost: mechanismOrangeGhostData,
+        mechanismGhost: mechanismGhostData,
         zebraMarker: zebraMarkerData,
-        zebraGreenGhost: zebraGreenGhostData,
-        zebraYellowGhost: zebraYellowGhostData,
-        zebraPurpleGhost: zebraPurpleGhostData,
-        zebraOrangeGhost: zebraOrangeGhostData
+        zebraGhost: zebraGhostData
       },
       options: this.options,
       allianceRedOrigin: allianceRedOrigin,
