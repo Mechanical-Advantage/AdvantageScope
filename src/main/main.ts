@@ -226,8 +226,24 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               return;
             }
             fs.readFile(file, (error, buffer) => {
+              let limitLength = false;
+              if (buffer.length > 75 * 1024 * 1024) {
+                let response = dialog.showMessageBoxSync(window, {
+                  type: "warning",
+                  title: "Warning",
+                  message: "Very large log file",
+                  detail: "This log file is very large. Would you like to read the full log or only the first 75MB?",
+                  buttons: ["Read First 75MB", "Read Full Log"],
+                  defaultId: 0,
+                  icon: WINDOW_ICON
+                });
+                limitLength = response === 0;
+              }
               completedCount++;
               if (!error) {
+                if (limitLength) {
+                  buffer = buffer.subarray(0, Math.min(buffer.length, 75 * 1024 * 1024));
+                }
                 callback(buffer);
               }
               sendIfReady();
