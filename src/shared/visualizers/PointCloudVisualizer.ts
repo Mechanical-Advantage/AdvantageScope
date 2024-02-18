@@ -95,7 +95,7 @@ export default class PointCloudVisualizer implements Visualizer {
 
     // Render when camera is moved
     this.controls.addEventListener("change", () => {
-      console.log("point cloud visualizer orbit callback.");
+      // console.log("point cloud visualizer orbit callback.");
       this.shouldRender = true;
     });
 
@@ -142,7 +142,6 @@ export default class PointCloudVisualizer implements Visualizer {
   }
 
   stop() {
-    console.log("stop called!?");
     this.stopped = true;
     this.controls.dispose();
     this.renderer.dispose();
@@ -151,7 +150,6 @@ export default class PointCloudVisualizer implements Visualizer {
 
   /** Resets the camera position and controls target. */
   private resetCamera() {
-    console.log("reset camera");
     this.camera.position.set(1, 1, 1); // TODO: fill in with default position and target!
     this.controls.target.set(0, 0, 0);
     this.controls.update();
