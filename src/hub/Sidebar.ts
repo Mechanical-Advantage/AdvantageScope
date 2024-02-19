@@ -766,10 +766,18 @@ export default class Sidebar {
         this.setTuningModeActiveCallbacks.push(setTuningModeActive);
         setTuningModeActive(this.isTuningMode);
 
+        // Manage focus
+        let isFocused = false;
+        numValueInput?.addEventListener("focus", () => (isFocused = true));
+        numValueInput?.addEventListener("blur", () => (isFocused = false));
+        numValueInput?.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") numValueInput?.blur();
+        });
+
         // Publish & unpublish value
         let lastHasValue = false;
         this.tuningModePublishCallbacks.push(() => {
-          if (!this.isTuningMode) return;
+          if (!this.isTuningMode || isFocused) return;
           let value = Number(numValueInput!.value);
           let hasValue = numValueInput!.value.length > 0 && !isNaN(value) && isFinite(value);
           if (hasValue) {

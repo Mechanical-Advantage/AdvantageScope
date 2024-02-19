@@ -343,6 +343,13 @@ div.field-value svg.tunable:hover {
 
 div.field-value input {
   width: 50px;
+  background-color: #ffffff;
+  border: 1px solid #888888;
+  border-radius: 2px;
+}
+
+div.field-value input:focus {
+  background-color: #ffffaa;
 }
 
 div.field-value input::-webkit-outer-spin-button,
