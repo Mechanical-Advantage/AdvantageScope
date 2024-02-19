@@ -41,9 +41,11 @@ void Robot::RobotInit() {
 }
 ```
 
-AdvantageKit users should instead add the line shown below in `robotInit` to start recording data to the AdvantageKit log. Note that this feature is provided for convenience only; the data recorded to the log is NOT available in replay. **REV motor controllers must still be within an IO implementation with defined inputs to support replay**.
+To more easily identify devices in the log, CAN IDs can be assigned to aliases by passing a map object to the `start()` method. The keys are CAN IDs and the values are strings for the names to use in the log. Any devices not assigned an alias will be logged using their default names.
 
-> Note: AdvantageKit must be running the 2024 kickoff release (v3.0.0) or later.
+AdvantageKit users should replace the standard `start()` method with the line shown below to start recording data to the AdvantageKit log. Note that this feature is provided for convenience only; the data recorded to the log is NOT available in replay. **REV motor controllers must still be within an IO implementation with defined inputs to support replay**.
+
+> Note: AdvantageKit must be running the 2024 kickoff release or later.
 
 ```java
 public void robotInit() {
