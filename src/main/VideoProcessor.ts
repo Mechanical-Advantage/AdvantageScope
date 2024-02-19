@@ -15,7 +15,7 @@ import { PREFS_FILENAME, VIDEO_CACHE, WINDOW_ICON } from "./Constants";
 export class VideoProcessor {
   private static NUM_TESSERACT_WORKERS = 8;
   private static TIMER_RECTS = [
-    // Small format
+    // Small format - 2023 and older
     {
       left: 1040 / 1920,
       top: 760 / 1080,
@@ -23,7 +23,7 @@ export class VideoProcessor {
       height: 40 / 1080
     },
 
-    // Large banner format (lower)
+    // Large banner format (lower) - 2023 and older
     {
       left: 895 / 1920,
       top: 905 / 1080,
@@ -31,12 +31,36 @@ export class VideoProcessor {
       height: 80 / 1080
     },
 
-    // Large banner format (upper)
+    // Large banner format (upper) - 2023 and older
     {
       left: 895 / 1920,
       top: 80 / 1080,
       width: 130 / 1920,
       height: 80 / 1080
+    },
+
+    // Small format - 2024
+    {
+      left: 925 / 1920,
+      top: 1005 / 1080,
+      width: 75 / 1920,
+      height: 30 / 1080
+    },
+
+    // Large banner format (lower) - 2024
+    {
+      left: 865 / 1920,
+      top: 980 / 1080,
+      width: 200 / 1920,
+      height: 90 / 1080
+    },
+
+    // Large banner format (upper) - 2024
+    {
+      left: 865 / 1920,
+      top: 160 / 1080,
+      width: 200 / 1920,
+      height: 90 / 1080
     }
   ];
 

@@ -71,6 +71,7 @@ let licensesWindow: BrowserWindow | null = null;
 let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
+let hubExportingIds: Set<number> = new Set();
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
@@ -225,8 +226,24 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               return;
             }
             fs.readFile(file, (error, buffer) => {
+              let limitLength = false;
+              if (buffer.length > 75 * 1024 * 1024) {
+                let response = dialog.showMessageBoxSync(window, {
+                  type: "warning",
+                  title: "Warning",
+                  message: "Very large log file",
+                  detail: "This log file is very large. Would you like to read the full log or only the first 75MB?",
+                  buttons: ["Read First 75MB", "Read Full Log"],
+                  defaultId: 0,
+                  icon: WINDOW_ICON
+                });
+                limitLength = response === 0;
+              }
               completedCount++;
               if (!error) {
+                if (limitLength) {
+                  buffer = buffer.subarray(0, Math.min(buffer.length, 75 * 1024 * 1024));
+                }
                 callback(buffer);
               }
               sendIfReady();
@@ -588,6 +605,14 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           sendMessage(window, "finish-export");
         }
       });
+      break;
+
+    case "set-exporting":
+      if (message.data) {
+        hubExportingIds.add(window.id);
+      } else {
+        hubExportingIds.delete(window.id);
+      }
       break;
 
     case "select-video":
@@ -1718,7 +1743,6 @@ function createHubWindow(state?: WindowState) {
 
   // Show window when loaded
   window.once("ready-to-show", window.show);
-
   let firstLoad = true;
   let createPorts = () => {
     const { port1, port2 } = new MessageChannelMain();
@@ -1761,6 +1785,19 @@ function createHubWindow(state?: WindowState) {
       }
     }
     firstLoad = false;
+  });
+  window.on("close", (event) => {
+    if (hubExportingIds.has(window.id)) {
+      const choice = dialog.showMessageBoxSync(window, {
+        type: "info",
+        title: "Warning",
+        message: "Export in progress",
+        detail: "Are you sure you want to close the window while an export is in progress? Data will NOT be saved.",
+        buttons: ["Don't Close", "Close"],
+        defaultId: 0
+      });
+      if (choice === 0) event.preventDefault();
+    }
   });
   window.on("enter-full-screen", () => sendMessage(window, "set-fullscreen", true));
   window.on("leave-full-screen", () => sendMessage(window, "set-fullscreen", false));
@@ -2500,7 +2537,6 @@ app.on("window-all-closed", () => {
 
 // macOS only, Linux & Windows start a new process and pass the file as an argument
 app.on("open-file", (_, path) => {
-  console.log(path);
   if (app.isReady()) {
     // Already running, create a new window
     let window = createHubWindow();
