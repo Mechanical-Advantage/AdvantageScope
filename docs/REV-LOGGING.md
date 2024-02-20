@@ -16,6 +16,8 @@ After setup, periodic CAN frames from all Spark Max and Spark Flex devices are p
 
 ## Setup
 
+> **Important: When viewing URCL data over NetworkTables, the "Live Mode" in the AdvantageScope preferences must be configured to "Logging". This will be fixed in a future release.**
+
 Install the URCL vendordep by going to "WPILib: Manage Vendor Libraries" > "Install new libraries (online)" in VSCode and pasting in the URL below.
 
 ```
