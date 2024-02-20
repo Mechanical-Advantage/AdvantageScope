@@ -26,10 +26,16 @@ export default class NT4Tuner implements LiveDataTuner {
     const type = window.log.getWpilibType(key);
     if (type === null) return;
     this.client.publishTopic(remoteKey, type);
-    if (typeof value === "number") {
-      this.client.addSample(remoteKey, type.startsWith("int") ? Math.floor(value) : value);
-    } else {
-      this.client.addSample(remoteKey, value);
+    let timestamp = this.client.getServerTime_us();
+    if (timestamp !== null) {
+      if (typeof value === "number") {
+        let cleanValue = type.startsWith("int") ? Math.floor(value) : value;
+        this.client.addTimestampedSample(remoteKey, timestamp, cleanValue);
+        window.log.putNumber(key, timestamp, cleanValue);
+      } else {
+        this.client.addTimestampedSample(remoteKey, timestamp, value);
+        window.log.putBoolean(key, timestamp, value);
+      }
     }
   }
 

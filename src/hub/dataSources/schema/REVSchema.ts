@@ -17,7 +17,6 @@ const DEVICE_MODEL_IDS: Map<number, DeviceModel> = new Map();
 DEVICE_MODEL_IDS.set(0x2158, DeviceModel.SparkMax);
 DEVICE_MODEL_IDS.set(0x2159, DeviceModel.SparkFlex);
 
-const START_SIZE = 8;
 const PERSISTENT_SIZE = 8;
 const PERIODIC_SIZE = 14;
 const FIRMWARE_API = 0x98;
@@ -43,24 +42,115 @@ const FAULTS = [
   "HardLimitReverse"
 ];
 
+const TEXT_DECODER = new TextDecoder("UTF-8");
+
 export default class REVSchema {
   private constructor() {}
 
   /**
-   * Parses a set of frames recorded by URCL (Unofficial REV-Compatible Logger).
+   * Parses a set of frames recorded by URCL using revision 2.
    */
-  static parseURCL(log: Log, key: string, timestamp: number, value: Uint8Array) {
+  static parseURCLr2(log: Log, key: string, timestamp: number, value: Uint8Array) {
+    let devices: { [key: string]: { alias?: string; model?: DeviceModel; firmware?: FirmwareVersion } } = {};
+    if (!key.endsWith("Raw/Periodic")) return;
+    const rootKey = key.slice(0, key.length - "Raw/Periodic".length);
+    const aliasKey = rootKey + "Raw/Aliases";
+    const persistentKey = rootKey + "Raw/Persistent";
+    let getName = (deviceId: string): string => {
+      if (devices[deviceId].alias === undefined) {
+        return devices[deviceId].model + "-" + deviceId;
+      } else {
+        return devices[deviceId].alias!;
+      }
+    };
+
+    // Read aliases
+    let aliasesRaw = getOrDefault(log, aliasKey, LoggableType.Raw, timestamp, null);
+    if (aliasesRaw === null) return;
+    let aliases = JSON.parse(TEXT_DECODER.decode(aliasesRaw));
+    Object.keys(aliases).forEach((idString) => {
+      devices[idString] = { alias: aliases[idString] };
+    });
+
+    // Read persistent
+    let persistentRaw = getOrDefault(log, persistentKey, LoggableType.Raw, timestamp, null);
+    if (persistentRaw === null) return;
+    const persistentDataView = new DataView(persistentRaw.buffer, persistentRaw.byteOffset, persistentRaw.byteLength);
+    for (let position = 0; position < persistentRaw.length; position += PERSISTENT_SIZE) {
+      let messageId = persistentDataView.getUint16(position, true);
+      let messageValue = persistentRaw.slice(position + 2, position + 8);
+      let deviceId = messageId & 0x3f;
+      if (!(deviceId in devices)) {
+        devices[deviceId] = {};
+      }
+      if (((messageId >> 6) & 0x3ff) === FIRMWARE_API) {
+        // Firmware frame
+        devices[deviceId].firmware = REVSchema.parseFirmware(messageValue);
+      } else if (((messageId >> 6) & 0x3ff) === MODEL_API) {
+        // Device model frame
+        devices[deviceId].model = REVSchema.parseDeviceModel(messageValue);
+      }
+    }
+
+    // Write firmware versions to log
+    Object.keys(devices).forEach((deviceId) => {
+      if (devices[deviceId].model === undefined || devices[deviceId].firmware === undefined) {
+        return;
+      }
+      let firmwareString =
+        devices[deviceId].firmware?.major.toString() +
+        "." +
+        devices[deviceId].firmware?.minor.toString() +
+        "." +
+        devices[deviceId].firmware?.build.toString();
+      let firmwareKey = rootKey + getName(deviceId) + "/Firmware";
+      log.putString(firmwareKey, timestamp, firmwareString);
+      log.createBlankField(rootKey + getName(deviceId), LoggableType.Empty);
+      log.setGeneratedParent(rootKey + getName(deviceId));
+    });
+
+    // Read periodic frames
+    const periodicDataView = new DataView(value.buffer, value.byteOffset, value.byteLength);
+    for (let position = 0; position < value.length; position += PERIODIC_SIZE) {
+      let messageTimestamp = Number(periodicDataView.getUint32(position, true)) / 1e3;
+      let messageId = periodicDataView.getUint16(position + 4, true);
+      let messageValue = value.slice(position + 6, position + 14);
+      let deviceId = messageId & 0x3f;
+      if (!(deviceId in devices) || devices[deviceId].model === undefined || devices[deviceId].firmware === undefined) {
+        continue;
+      }
+
+      if (((messageId >> 10) & 0x3f) === PERIODIC_API_CLASS) {
+        // Periodic frame
+        let frameIndex = (messageId >> 6) & 0xf;
+        let deviceKey = rootKey + getName(deviceId.toString());
+        let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
+        log.putRaw(frameKey, messageTimestamp, messageValue);
+        if (frameIndex >= 0 && frameIndex < REVSchema.PARSE_PERIODIC.length) {
+          REVSchema.PARSE_PERIODIC[frameIndex](
+            log,
+            deviceKey,
+            messageTimestamp,
+            messageValue,
+            devices[deviceId].model!,
+            devices[deviceId].firmware!
+          );
+        }
+      }
+    }
+  }
+
+  /**
+   * Parses a set of frames recorded by URCL using revision 1.
+   */
+  static parseURCLr1(log: Log, key: string, timestamp: number, value: Uint8Array) {
     const dataView = new DataView(value.buffer, value.byteOffset, value.byteLength);
     const persistentCount = dataView.getUint32(0, true);
     const periodicCount = dataView.getUint32(4, true);
 
     // Read persistent frames
     let devices: { [key: string]: { model?: DeviceModel; firmware?: FirmwareVersion } } = {};
-    for (
-      let position = START_SIZE;
-      position < START_SIZE + persistentCount * PERSISTENT_SIZE;
-      position += PERSISTENT_SIZE
-    ) {
+    for (let position = 8; position < 8 + persistentCount * PERSISTENT_SIZE; position += PERSISTENT_SIZE) {
       let messageId = dataView.getUint16(position, true);
       let messageValue = value.slice(position + 2, position + 8);
       let deviceId = messageId & 0x3f;
@@ -93,8 +183,8 @@ export default class REVSchema {
 
     // Read periodic frames
     for (
-      let position = START_SIZE + persistentCount * PERSISTENT_SIZE;
-      position < START_SIZE + persistentCount * PERSISTENT_SIZE + periodicCount * PERIODIC_SIZE;
+      let position = 8 + persistentCount * PERSISTENT_SIZE;
+      position < 8 + persistentCount * PERSISTENT_SIZE + periodicCount * PERIODIC_SIZE;
       position += PERIODIC_SIZE
     ) {
       let messageTimestamp = Number(dataView.getUint32(position, true)) / 1e3;

@@ -60,7 +60,7 @@ Some live sources support live tuning of numeric and boolean values. For example
 
 By default, all values in AdvantageScope are read-only. To toggle tuning mode, **click the slider icon** to the right of the search bar when connected to a supported live source. When the icon is <span style="color: purple;">purple</span>, tuning mode is active and field editing is enabled.
 
-- To edit a **numeric field**, enter a new value using the text box to the right of the field in the sidebar. Leave the text box blank to use the robot-published value.
+- To edit a **numeric field**, enter a new value using the text box to the right of the field in the sidebar. The value is published after the input is deselected or the "Enter" key is pressed. Leave the text box blank to use the robot-published value.
 - To toggle a **boolean field**, click the red or green circle to the right of the field in the sidebar.
 
 > Note: This feature is not intended for controlling the robot on the field. Support for dashboard-style inputs like choosers, trigger buttons, etc. will not be added.

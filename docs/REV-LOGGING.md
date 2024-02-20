@@ -16,6 +16,8 @@ After setup, periodic CAN frames from all Spark Max and Spark Flex devices are p
 
 ## Setup
 
+> **Important: When viewing URCL data over NetworkTables, the "Live Mode" in the AdvantageScope preferences must be configured to "Logging". This will be fixed in a future release.**
+
 Install the URCL vendordep by going to "WPILib: Manage Vendor Libraries" > "Install new libraries (online)" in VSCode and pasting in the URL below.
 
 ```
@@ -41,9 +43,11 @@ void Robot::RobotInit() {
 }
 ```
 
-AdvantageKit users should instead add the line shown below in `robotInit` to start recording data to the AdvantageKit log. Note that this feature is provided for convenience only; the data recorded to the log is NOT available in replay. **REV motor controllers must still be within an IO implementation with defined inputs to support replay**.
+To more easily identify devices in the log, CAN IDs can be assigned to aliases by passing a map object to the `start()` method. The keys are CAN IDs and the values are strings for the names to use in the log. Any devices not assigned an alias will be logged using their default names.
 
-> Note: AdvantageKit must be running the 2024 kickoff release (v3.0.0) or later.
+AdvantageKit users should replace the standard `start()` method with the line shown below to start recording data to the AdvantageKit log. Note that this feature is provided for convenience only; the data recorded to the log is NOT available in replay. **REV motor controllers must still be within an IO implementation with defined inputs to support replay**.
+
+> Note: AdvantageKit must be running the 2024 kickoff release or later.
 
 ```java
 public void robotInit() {

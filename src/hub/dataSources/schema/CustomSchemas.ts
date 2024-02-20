@@ -7,4 +7,5 @@ const CustomSchemas: Map<string, (log: Log, key: string, timestamp: number, valu
 export default CustomSchemas;
 
 CustomSchemas.set("rawBytes", PhotonSchema); // PhotonVision 2023.1.2
-CustomSchemas.set("URCL", REVSchemas.parseURCL);
+CustomSchemas.set("URCL", REVSchemas.parseURCLr1);
+CustomSchemas.set("URCLr2_periodic", REVSchemas.parseURCLr2);
