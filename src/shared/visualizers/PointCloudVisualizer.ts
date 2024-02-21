@@ -20,6 +20,7 @@ export default class PointCloudVisualizer implements Visualizer {
   private camera: THREE.PerspectiveCamera;
   private controls: OrbitControls;
 
+  private sceneAxes: THREE.AxesHelper = new THREE.AxesHelper(1);
   private lastPoints: THREE.Points | null = null;
 
   private command: any;
@@ -53,6 +54,7 @@ export default class PointCloudVisualizer implements Visualizer {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.Fog(0x050505, 2000, 3500);
+    this.scene.add(this.sceneAxes);
 
     // Change camera menu
     let startPx: [number, number] | null = null;
@@ -80,6 +82,7 @@ export default class PointCloudVisualizer implements Visualizer {
       const near = 0.15;
       const far = 1000;
       this.camera = new THREE.PerspectiveCamera(this.orbitFov, aspect, near, far);
+      this.camera.up.set(0, 0, 1);
     }
 
     // Create controls
