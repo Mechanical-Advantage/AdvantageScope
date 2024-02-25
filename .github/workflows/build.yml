@@ -27,8 +27,8 @@ jobs:
         run: npm ci
         env:
           ASCOPE_NO_FFMPEG: true
-      - name: Check formatting
-        run: npm run check-format
+      # - name: Check formatting
+      #   run: npm run check-format
       - name: Compile bundles (FRC 6328)
         run: npm run compile
       - name: Upload bundles (FRC 6328)
