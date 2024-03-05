@@ -56,7 +56,7 @@ export default class LogField {
         break;
       }
       this.data.eraseElementByIterator(itr);
-      itr.next();
+      // itr.next();
     }
   }
 
@@ -65,8 +65,9 @@ export default class LogField {
     var timestamps = [];
     var values = [];
 
-    var itr = this.data.reverseUpperBound({ timestamp: start, values: 0 });
+    var itr = this.data.lowerBound({ timestamp: start, values: 0 });
     while (itr.isAccessible()) {
+      console.log(itr.pointer);
       if (itr.pointer.timestamp > end) {
         break;
       }
@@ -149,20 +150,22 @@ export default class LogField {
     // else do nothing
     // this.data.end();
     var record = { timestamp: timestamp, values: value };
-    this.data.insert(record);
-    return;
+    // this.data.insert(record);
+    // return;
     var needle = this.data.find(record);
 
     if (needle.isAccessible()) {
-      this.data.insert(record);
+      this.data.updateKeyByIterator(needle, record);
     } else {
       var pastElem = this.data.reverseUpperBound(record);
       if (pastElem.isAccessible()) {
-        if (logValuesEqual(this.type, value, pastElem.pointer)) {
-          this.data.updateKeyByIterator(pastElem, record);
+        if (logValuesEqual(this.type, value, pastElem.pointer.values)) {
+          this.data.updateKeyByIterator(pastElem, record); //
         } else {
           this.data.insert(record);
         }
+      } else {
+        this.data.insert(record);
       }
     }
     // // Compare to adjacent values
@@ -248,9 +251,15 @@ export default class LogField {
 
   /** Creates a new field based on the data from `toSerialized()` */
   static fromSerialized(serializedData: any) {
-    console.log("ASDFASDFASDFSDAFASD_A_SDF_ASD_FA_SD_F");
+    // console.log("ASDFASDFASDFSDAFASD_A_SDF_ASD_FA_SD_F");
     let field = new LogField(serializedData.type);
-    field.data = new OrderedSet<{ timestamp: number; values: number }>([], cmp);
+    field.data = new OrderedSet(
+      serializedData.timestamps.map((time: number, index: number) => ({
+        timestamp: time,
+        values: serializedData.values[index]
+      })),
+      cmp
+    );
     field.structuredType = serializedData.structuredType;
     field.wpilibType = serializedData.wpilibType;
     field.metadataString = serializedData.metadataString;
