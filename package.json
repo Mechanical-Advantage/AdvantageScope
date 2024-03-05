@@ -63,7 +63,8 @@
     "jsonfile": "^6.1.0",
     "ssh2": "^1.14.0",
     "tesseract.js": "^5.0.3",
-    "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.5-patch.2"
+    "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.5-patch.2",
+    "js-sdsl": "^4.4.2"
   },
   "prettier": {
     "printWidth": 120,

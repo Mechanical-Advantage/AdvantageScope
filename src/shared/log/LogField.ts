@@ -10,11 +10,14 @@ import {
   LogValueSetString,
   LogValueSetStringArray
 } from "./LogValueSets";
-
+import { OrderedSet } from "js-sdsl";
+function cmp(x: { timestamp: number; values: number }, y: { timestamp: number; values: number }): number {
+  return x.timestamp - y.timestamp;
+}
 /** A full log field that contains data. */
 export default class LogField {
   private type: LoggableType;
-  private data: LogValueSetAny = { timestamps: [], values: [] };
+  private data: OrderedSet<{ timestamp: number; values: number }> = new OrderedSet([], cmp);
   public structuredType: string | null = null;
   public wpilibType: string | null = null; // Original type from WPILOG & NT4
   public metadataString = "";
@@ -39,42 +42,39 @@ export default class LogField {
 
   /** Returns the full set of ordered timestamps. */
   getTimestamps(): number[] {
-    return this.data.timestamps;
+    return Array.from(this.data, (elem) => elem.timestamp);
+  }
+  getValues(): number[] {
+    return Array.from(this.data, (elem) => elem.values);
   }
 
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(timestamp: number) {
-    while (this.data.timestamps.length >= 2 && this.data.timestamps[1] < timestamp) {
-      this.data.timestamps.shift();
-      this.data.values.shift();
-      this.stripingReference = !this.stripingReference;
-    }
-    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < timestamp) {
-      this.data.timestamps[0] = timestamp;
+    var itr = this.data.begin();
+    while (itr.isAccessible) {
+      if (itr.pointer.timestamp >= timestamp) {
+        break;
+      }
+      this.data.eraseElementByIterator(itr);
+      itr.next();
     }
   }
 
   /** Returns the values in the specified timestamp range. */
   getRange(start: number, end: number): LogValueSetAny {
-    let timestamps: number[];
-    let values: any[];
+    var timestamps = [];
+    var values = [];
 
-    let startValueIndex = this.data.timestamps.findIndex((x) => x > start);
-    if (startValueIndex === -1) {
-      startValueIndex = this.data.timestamps.length - 1;
-    } else if (startValueIndex !== 0) {
-      startValueIndex -= 1;
+    var itr = this.data.reverseUpperBound({ timestamp: start, values: 0 });
+    while (itr.isAccessible()) {
+      if (itr.pointer.timestamp > end) {
+        break;
+      }
+      timestamps.push(itr.pointer.timestamp);
+      values.push(itr.pointer.values);
+      itr.next();
     }
 
-    let endValueIndex = this.data.timestamps.findIndex((x) => x >= end);
-    if (endValueIndex === -1 || endValueIndex === this.data.timestamps.length - 1) {
-      // Extend to end of timestamps
-      timestamps = this.data.timestamps.slice(startValueIndex);
-      values = this.data.values.slice(startValueIndex);
-    } else {
-      timestamps = this.data.timestamps.slice(startValueIndex, endValueIndex + 1);
-      values = this.data.values.slice(startValueIndex, endValueIndex + 1);
-    }
     return { timestamps: timestamps, values: values };
   }
 
@@ -112,45 +112,73 @@ export default class LogField {
   getStringArray(start: number, end: number): LogValueSetStringArray | undefined {
     if (this.type === LoggableType.StringArray) return this.getRange(start, end);
   }
+  // private findIndex(func: any)
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
+    // return
     if (value === null) return;
 
     // Find position to insert based on timestamp
-    let insertIndex: number;
-    if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
-      // There's a good chance this data is at the end of the log, so check that first
-      insertIndex = this.data.timestamps.length;
+    // let insertIndex: number;
+    // // this.data.rEnd().
+    // if (this.data.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
+    //   // There's a good chance this data is at the end of the log, so check that first
+    //   insertIndex = this.data.timestamps.length;
+    // } else {
+    //   // Adding in the middle, find where to insert it
+    //   let alreadyExists = false;
+    //   insertIndex =
+    //     this.data.timestamps.findLastIndex((x) => {
+    //       if (alreadyExists) return;
+    //       if (x === timestamp) alreadyExists = true;
+    //       return x < timestamp;
+    //     }) + 1;
+    //   if (alreadyExists) {
+    //     this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
+    //     return;
+    //   }
+    // }
+    // if (insertIndex >= 0) {
+    //   console.log("Looking for past:" + value);
+    // }
+    //find insert point if set overwrite it with new data
+    // if not
+    // check element behind
+    // if that element is not equal set the value
+    // else do nothing
+    // this.data.end();
+    var record = { timestamp: timestamp, values: value };
+    this.data.insert(record);
+    return;
+    var needle = this.data.find(record);
+
+    if (needle.isAccessible()) {
+      this.data.insert(record);
     } else {
-      // Adding in the middle, find where to insert it
-      let alreadyExists = false;
-      insertIndex =
-        this.data.timestamps.findLastIndex((x) => {
-          if (alreadyExists) return;
-          if (x === timestamp) alreadyExists = true;
-          return x < timestamp;
-        }) + 1;
-      if (alreadyExists) {
-        this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
-        return;
+      var pastElem = this.data.reverseUpperBound(record);
+      if (pastElem.isAccessible()) {
+        if (logValuesEqual(this.type, value, pastElem.pointer)) {
+          this.data.updateKeyByIterator(pastElem, record);
+        } else {
+          this.data.insert(record);
+        }
       }
     }
-
-    // Compare to adjacent values
-    if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
-      // Same as the previous value
-    } else if (
-      insertIndex < this.data.values.length &&
-      logValuesEqual(this.type, value, this.data.values[insertIndex])
-    ) {
-      // Same as the next value
-      this.data.timestamps[insertIndex] = timestamp;
-    } else {
-      // New value
-      this.data.timestamps.splice(insertIndex, 0, timestamp);
-      this.data.values.splice(insertIndex, 0, value);
-    }
+    // // Compare to adjacent values
+    // if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+    //   // Same as the previous value
+    // } else if (
+    //   insertIndex < this.data.values.length &&
+    //   logValuesEqual(this.type, value, this.data.values[insertIndex])
+    // ) {
+    //   // Same as the next value
+    //   this.data.timestamps[insertIndex] = timestamp;
+    // } else {
+    //   // New value
+    //   this.data.timestamps.splice(insertIndex, 0, timestamp);
+    //   this.data.values.splice(insertIndex, 0, value);
+    // }
   }
 
   /** Writes a new Raw value to the field. */
@@ -204,10 +232,12 @@ export default class LogField {
 
   /** Returns a serialized version of the data from this field. */
   toSerialized(): any {
+    // console.log(this.getValues());
+    // console.log(this.getTimestamps());
     return {
       type: this.type,
-      timestamps: this.data.timestamps,
-      values: this.data.values,
+      timestamps: this.getTimestamps(),
+      values: this.getValues(),
       structuredType: this.structuredType,
       wpilibType: this.wpilibType,
       metadataString: this.metadataString,
@@ -218,11 +248,9 @@ export default class LogField {
 
   /** Creates a new field based on the data from `toSerialized()` */
   static fromSerialized(serializedData: any) {
+    console.log("ASDFASDFASDFSDAFASD_A_SDF_ASD_FA_SD_F");
     let field = new LogField(serializedData.type);
-    field.data = {
-      timestamps: serializedData.timestamps,
-      values: serializedData.values
-    };
+    field.data = new OrderedSet<{ timestamp: number; values: number }>([], cmp);
     field.structuredType = serializedData.structuredType;
     field.wpilibType = serializedData.wpilibType;
     field.metadataString = serializedData.metadataString;
