@@ -42,10 +42,10 @@ export default class LogField {
 
   /** Returns the full set of ordered timestamps. */
   getTimestamps(): number[] {
-    return Array.from(this.data, (elem) => elem.timestamp);
+    return Array.from(this.data, (elem: { timestamp: number; values: number }) => elem.timestamp);
   }
   getValues(): number[] {
-    return Array.from(this.data, (elem) => elem.values);
+    return Array.from(this.data, (elem: { timestamp: number; values: number }) => elem.values);
   }
 
   /** Clears all data before the provided timestamp. */
