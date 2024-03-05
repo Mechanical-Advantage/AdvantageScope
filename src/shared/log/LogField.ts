@@ -67,7 +67,6 @@ export default class LogField {
 
     var itr = this.data.lowerBound({ timestamp: start, values: 0 });
     while (itr.isAccessible()) {
-      console.log(itr.pointer);
       if (itr.pointer.timestamp > end) {
         break;
       }
