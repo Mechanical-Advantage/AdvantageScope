@@ -112,75 +112,28 @@ export default class LogField {
   getStringArray(start: number, end: number): LogValueSetStringArray | undefined {
     if (this.type === LoggableType.StringArray) return this.getRange(start, end);
   }
-  // private findIndex(func: any)
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
-    // return
     if (value === null) return;
-
-    // Find position to insert based on timestamp
-    // let insertIndex: number;
-    // // this.data.rEnd().
-    // if (this.data.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
-    //   // There's a good chance this data is at the end of the log, so check that first
-    //   insertIndex = this.data.timestamps.length;
-    // } else {
-    //   // Adding in the middle, find where to insert it
-    //   let alreadyExists = false;
-    //   insertIndex =
-    //     this.data.timestamps.findLastIndex((x) => {
-    //       if (alreadyExists) return;
-    //       if (x === timestamp) alreadyExists = true;
-    //       return x < timestamp;
-    //     }) + 1;
-    //   if (alreadyExists) {
-    //     this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
-    //     return;
-    //   }
-    // }
-    // if (insertIndex >= 0) {
-    //   console.log("Looking for past:" + value);
-    // }
-    //find insert point if set overwrite it with new data
-    // if not
-    // check element behind
-    // if that element is not equal set the value
-    // else do nothing
-    // this.data.end();
     var record = { timestamp: timestamp, values: value };
-    // this.data.insert(record);
-    // return;
     var needle = this.data.find(record);
 
     if (needle.isAccessible()) {
-      this.data.updateKeyByIterator(needle, record);
+      this.data.updateKeyByIterator(needle, record); // Overwrite Exising record if they share a timestamp
     } else {
-      var pastElem = this.data.reverseUpperBound(record);
+      var pastElem = this.data.reverseUpperBound(record); // Get prev record
       if (pastElem.isAccessible()) {
         if (logValuesEqual(this.type, value, pastElem.pointer.values)) {
-          this.data.updateKeyByIterator(pastElem, record); //
+          // Check is prev data is the same
+          this.data.updateKeyByIterator(pastElem, record); // replace prev timestamp with new timestamp and same value
         } else {
-          this.data.insert(record);
+          this.data.insert(record); // If different insert
         }
       } else {
-        this.data.insert(record);
+        this.data.insert(record); // if no data exists insert
       }
     }
-    // // Compare to adjacent values
-    // if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
-    //   // Same as the previous value
-    // } else if (
-    //   insertIndex < this.data.values.length &&
-    //   logValuesEqual(this.type, value, this.data.values[insertIndex])
-    // ) {
-    //   // Same as the next value
-    //   this.data.timestamps[insertIndex] = timestamp;
-    // } else {
-    //   // New value
-    //   this.data.timestamps.splice(insertIndex, 0, timestamp);
-    //   this.data.values.splice(insertIndex, 0, value);
-    // }
   }
 
   /** Writes a new Raw value to the field. */
@@ -234,8 +187,6 @@ export default class LogField {
 
   /** Returns a serialized version of the data from this field. */
   toSerialized(): any {
-    // console.log(this.getValues());
-    // console.log(this.getTimestamps());
     return {
       type: this.type,
       timestamps: this.getTimestamps(),
@@ -250,7 +201,6 @@ export default class LogField {
 
   /** Creates a new field based on the data from `toSerialized()` */
   static fromSerialized(serializedData: any) {
-    // console.log("ASDFASDFASDFSDAFASD_A_SDF_ASD_FA_SD_F");
     let field = new LogField(serializedData.type);
     field.data = new OrderedSet(
       serializedData.timestamps.map((time: number, index: number) => ({
