@@ -16,6 +16,9 @@ export class WPILOGDecoderRecord {
   private timestamp: number;
   private data: Uint8Array;
   private dataView: DataView;
+  private length: number;
+  private start: number;
+  private end: number;
 
   /**
    * Creates a new WPILOGDecoderRecord.
@@ -23,11 +26,21 @@ export class WPILOGDecoderRecord {
    * @param timestamp The timestamp in microseconds
    * @param data The payload data
    */
-  constructor(entry: number, timestamp: number, data: Uint8Array) {
+  // constructor(entry: number, timestamp: number, data: Uint8Array) {
+  //   this.entry = entry;
+  //   this.timestamp = timestamp;
+  //   this.data = data;
+  //   this.dataView = new DataView(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+  // }
+  constructor(entry: number, timestamp: number, dataView: DataView, data: Uint8Array, start: number, end: number) {
     this.entry = entry;
     this.timestamp = timestamp;
     this.data = data;
-    this.dataView = new DataView(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+    // this.dataView = new DataView(data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength));
+    this.dataView = dataView;
+    this.start = start;
+    this.end = end;
+    this.length = end - start;
   }
 
   /** Gets the entry ID. */
@@ -47,22 +60,22 @@ export class WPILOGDecoderRecord {
 
   /** Returns the type of the control record. */
   private getControlType(): number {
-    return this.data[0];
+    return this.data[this.start];
   }
 
   /** Returns true if the record is a start control record. */
   isStart(): boolean {
-    return this.isControl() && this.data.length >= 17 && this.getControlType() === CONTROL_START;
+    return this.isControl() && this.length >= 17 && this.getControlType() === CONTROL_START;
   }
 
   /** Returns true if the record is a finish control record. */
   isFinish(): boolean {
-    return this.isControl() && this.data.length === 5 && this.getControlType() === CONTROL_FINISH;
+    return this.isControl() && this.length === 5 && this.getControlType() === CONTROL_FINISH;
   }
 
   /** Returns true if the record is a set metadata control record. */
   isSetMetadata(): boolean {
-    return this.isControl() && this.data.length >= 9 && this.getControlType() === CONTROL_SET_METADATA;
+    return this.isControl() && this.length >= 9 && this.getControlType() === CONTROL_SET_METADATA;
   }
 
   /** Decodes a start control record. */
@@ -70,8 +83,8 @@ export class WPILOGDecoderRecord {
     if (!this.isStart()) throw "Not a start control record";
 
     let stringResult: { string: string; position: number };
-    let entry = this.dataView.getUint32(1, true);
-    stringResult = this.readInnerString(5);
+    let entry = this.dataView.getUint32(this.start + 1, true);
+    stringResult = this.readInnerString(this.start + 5);
     let name = stringResult.string;
     stringResult = this.readInnerString(stringResult.position);
     let type = stringResult.string;
@@ -88,7 +101,7 @@ export class WPILOGDecoderRecord {
   /** Decodes a finish control record. */
   getFinishEntry(): number {
     if (!this.isFinish()) throw "Not a finish control record";
-    return this.dataView.getUint32(1, true);
+    return this.dataView.getUint32(this.start + 1, true);
   }
 
   /** Decodes a set metadata control record. */
@@ -96,59 +109,59 @@ export class WPILOGDecoderRecord {
     if (!this.isSetMetadata()) throw "Not a set metadata control record";
 
     return {
-      entry: this.dataView.getUint32(1, true),
-      metadata: this.readInnerString(5).string
+      entry: this.dataView.getUint32(this.start + 1, true),
+      metadata: this.readInnerString(this.start + 5).string
     };
   }
 
   /** Gets the raw data. */
   getRaw(): Uint8Array {
-    return new Uint8Array(this.data.buffer.slice(this.data.byteOffset, this.data.byteOffset + this.data.byteLength));
+    return new Uint8Array(this.data.subarray(this.start, this.end));
   }
 
   /** Decodes a data record as a boolean. */
   getBoolean(): boolean {
-    if (this.data.length !== 1) throw "Not a boolean";
-    return this.data[0] !== 0;
+    if (this.length !== 1) throw "Not a boolean";
+    return this.data[this.start] !== 0;
   }
 
   /** Decodes a data record as an integer. */
   getInteger(): number {
-    if (this.data.length !== 8) throw "Not an integer";
-    return Number(this.dataView.getBigInt64(0, true));
+    if (this.length !== 8) throw "Not an integer";
+    return Number(this.dataView.getBigInt64(this.start, true));
   }
 
   /** Decodes a data record as a float. */
   getFloat(): number {
-    if (this.data.length !== 4) throw "Not a float";
-    return this.dataView.getFloat32(0, true);
+    if (this.length !== 4) throw "Not a float";
+    return this.dataView.getFloat32(this.start, true);
   }
 
   /** Decodes a data record as a double. */
   getDouble(): number {
-    if (this.data.length !== 8) throw "Not a double";
-    return this.dataView.getFloat64(0, true);
+    if (this.length !== 8) throw "Not a double";
+    return this.dataView.getFloat64(this.start, true);
   }
 
   /** Decodes a data record as a string. */
   getString(): string {
-    return TEXT_DECODER.decode(this.data);
+    return TEXT_DECODER.decode(this.data.subarray(this.start, this.end));
   }
 
   /** Decodes a data record as a boolean array. */
   getBooleanArray(): boolean[] {
     let array: boolean[] = [];
-    this.data.forEach((x) => {
-      array.push(x !== 0);
-    });
+    for (let i = this.start; i < this.end; i++) {
+      array.push(this.data[i] !== 0);
+    }
     return array;
   }
 
   /** Decodes a data record as an integer array. */
   getIntegerArray(): number[] {
-    if (this.data.length % 8 !== 0) throw "Not an integer array";
+    if (this.length % 8 !== 0) throw "Not an integer array";
     let array: number[] = [];
-    for (let position = 0; position < this.data.length; position += 8) {
+    for (let position = this.start; position < this.length; position += 8) {
       array.push(Number(this.dataView.getBigInt64(position, true)));
     }
     return array;
@@ -156,9 +169,9 @@ export class WPILOGDecoderRecord {
 
   /** Decodes a data record as a float array. */
   getFloatArray(): number[] {
-    if (this.data.length % 4 !== 0) throw "Not a float array";
+    if (this.length % 4 !== 0) throw "Not a float array";
     let array: number[] = [];
-    for (let position = 0; position < this.data.length; position += 4) {
+    for (let position = this.start; position < this.length; position += 4) {
       array.push(this.dataView.getFloat32(position, true));
     }
     return array;
@@ -166,9 +179,9 @@ export class WPILOGDecoderRecord {
 
   /** Decodes a data record as a double array. */
   getDoubleArray(): number[] {
-    if (this.data.length % 8 !== 0) throw "Not a double array";
+    if (this.length % 8 !== 0) throw "Not a double array";
     let array: number[] = [];
-    for (let position = 0; position < this.data.length; position += 8) {
+    for (let position = this.start; position < this.length; position += 8) {
       array.push(this.dataView.getFloat64(position, true));
     }
     return array;
@@ -176,10 +189,10 @@ export class WPILOGDecoderRecord {
 
   /** Decodes a data record as a string array. */
   getStringArray(): string[] {
-    let size = this.dataView.getUint32(0, true);
-    if (size > (this.data.length - 4) / 4) throw "Not a string array";
+    let size = this.dataView.getUint32(this.start, true);
+    if (size > (this.length - 4) / 4) throw "Not a string array";
     let array: string[] = [];
-    let position = 4;
+    let position = this.start + 4;
     for (let i = 0; i < size; i++) {
       let stringResult = this.readInnerString(position);
       array.push(stringResult.string);
@@ -192,7 +205,7 @@ export class WPILOGDecoderRecord {
   private readInnerString(position: number): { string: string; position: number } {
     let size = this.dataView.getUint32(position, true);
     let end = position + 4 + size;
-    if (end > this.data.length) throw "Invalid string size";
+    if (end > this.start + this.length) throw "Invalid string size";
     return {
       string: TEXT_DECODER.decode(this.data.subarray(position + 4, end)),
       position: end
@@ -276,7 +289,10 @@ export class WPILOGDecoder {
         new WPILOGDecoderRecord(
           entry,
           timestamp,
-          this.data.subarray(position + headerLength, position + headerLength + size)
+          this.dataView,
+          this.data,
+          position + headerLength,
+          position + headerLength + size
         ),
         newPosition
       );
