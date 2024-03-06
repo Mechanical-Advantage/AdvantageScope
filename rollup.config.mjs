@@ -2,7 +2,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
@@ -16,10 +16,9 @@ function bundle(input, output, isMain, external = []) {
       format: isMain ? "cjs" : "es"
     },
     context: "this",
-    treeshake: true,
     external: external,
     plugins: [
-      typescript({ check: false, sourcemap: false }),
+      typescript(),
       nodeResolve(),
       commonjs(),
       cleanup(),
