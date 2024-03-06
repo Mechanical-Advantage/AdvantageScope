@@ -25,7 +25,7 @@ export default class Log {
   private structDecoder = new StructDecoder();
   private protoDecoder = new ProtoDecoder();
 
-  private fields: { [id: string]: LogField } = {};
+  private fields: Map<String, LogField> = new Map();
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private enableTimestampSetCache: boolean;
@@ -41,8 +41,8 @@ export default class Log {
 
   /** Checks if the field exists and registers it if necessary. */
   public createBlankField(key: string, type: LoggableType) {
-    if (key in this.fields) return;
-    this.fields[key] = new LogField(type);
+    if (this.fields.has(key)) return;
+    this.fields.set(key, new LogField(type));
   }
 
   /** Clears all data before the provided timestamp. */
@@ -105,76 +105,85 @@ export default class Log {
 
   /** Returns the constant field type. */
   getType(key: string): LoggableType | null {
-    if (key in this.fields) {
-      return this.fields[key].getType();
-    } else {
+    let field = this.fields.get(key);
+    if (field === undefined) {
       return null;
+    } else {
+      return field.getType();
     }
   }
 
   /** Returns a boolean that toggles when a value is removed from the field. */
   getStripingReference(key: string): boolean {
-    if (key in this.fields) {
-      return this.fields[key].getStripingReference();
-    } else {
+    let field = this.fields.get(key);
+    if (field === undefined) {
       return false;
+    } else {
+      return field.getStripingReference();
     }
   }
 
   /** Returns the structured type string for a field. */
   getStructuredType(key: string): string | null {
-    if (key in this.fields) {
-      return this.fields[key].structuredType;
-    } else {
+    let field = this.fields.get(key);
+    if (field === undefined) {
       return null;
+    } else {
+      return field.structuredType;
     }
   }
 
   /** Sets the structured type string for a field. */
   setStructuredType(key: string, type: string | null) {
-    if (key in this.fields) {
-      this.fields[key].structuredType = type;
+    let field = this.fields.get(key);
+    if (field !== undefined) {
+      field.structuredType = type;
     }
   }
 
   /** Returns the WPILib type string for a field. */
   getWpilibType(key: string): string | null {
-    if (key in this.fields) {
-      return this.fields[key].wpilibType;
-    } else {
+    let field = this.fields.get(key);
+    if (field === undefined) {
       return null;
+    } else {
+      return field.wpilibType;
     }
   }
 
   /** Sets the WPILib type string for a field. */
   setWpilibType(key: string, type: string) {
-    if (key in this.fields) {
-      this.fields[key].wpilibType = type;
+    let field = this.fields.get(key);
+    if (field !== undefined) {
+      field.wpilibType = type;
     }
   }
 
   /** Returns the metadata string for a field. */
   getMetadataString(key: string): string {
-    if (key in this.fields) {
-      return this.fields[key].metadataString;
-    } else {
+    let field = this.fields.get(key);
+    if (field === undefined) {
       return "";
+    } else {
+      return field.metadataString;
     }
   }
 
   /** Sets the WPILib metadata string for a field. */
   setMetadataString(key: string, type: string) {
-    if (key in this.fields) {
-      this.fields[key].metadataString = type;
+    let field = this.fields.get(key);
+    if (field !== undefined) {
+      field.metadataString = type;
     }
   }
 
   /** Returns whether there was an attempt to write a conflicting type to a field. */
   getTypeWarning(key: string): boolean {
-    if (key in this.fields) {
-      return this.fields[key].typeWarning;
-    } else {
+    let field = this.fields.get(key);
+    if (field === undefined) {
       return false;
+    } else {
+      return field.typeWarning;
     }
   }
 
@@ -204,7 +213,7 @@ export default class Log {
    * that data can be retrieved more quickly for subsequent calls. */
   getTimestamps(keys: string[], uuid: string | null = null): number[] {
     let output: number[] = [];
-    keys = keys.filter((key) => key in this.fields);
+    keys = keys.filter((key) => this.fields.has(key));
     if (keys.length > 1) {
       // Multiple fields, read from cache if possible
       let saveCache = false;
@@ -220,12 +229,28 @@ export default class Log {
       }
 
       // Get new data
-      output = [...new Set(keys.map((key) => this.fields[key].getTimestamps()).flat())];
+      output = [
+        ...new Set(
+          keys
+            .map((key) => {
+              let elem = this.fields.get(key)?.getTimestamps();
+              if (elem === undefined) {
+                throw new Error("Key:" + key + ", Does not exist in Fields");
+              }
+              return elem;
+            })
+            .flat()
+        )
+      ];
       output.sort((a, b) => a - b);
       if (saveCache && uuid) this.timestampSetCache[uuid].timestamps = output;
     } else if (keys.length === 1) {
       // Single field
-      output = [...this.fields[keys[0]].getTimestamps()];
+      let field = this.fields.get(keys[0]);
+      if (field === undefined) {
+        throw new Error("Key:" + keys[0] + ", Does not exist in Fields");
+      }
+      output = [...field.getTimestamps()];
     }
     return output;
   }
@@ -286,49 +311,49 @@ export default class Log {
 
   /** Reads a set of generic values from the field. */
   getRange(key: string, start: number, end: number): LogValueSetAny | undefined {
-    if (key in this.fields) return this.fields[key].getRange(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getRange(start, end);
   }
 
   /** Reads a set of Raw values from the field. */
   getRaw(key: string, start: number, end: number): LogValueSetRaw | undefined {
-    if (key in this.fields) return this.fields[key].getRaw(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getRaw(start, end);
   }
 
   /** Reads a set of Boolean values from the field. */
   getBoolean(key: string, start: number, end: number): LogValueSetBoolean | undefined {
-    if (key in this.fields) return this.fields[key].getBoolean(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getBoolean(start, end);
   }
 
   /** Reads a set of Number values from the field. */
   getNumber(key: string, start: number, end: number): LogValueSetNumber | undefined {
-    if (key in this.fields) return this.fields[key].getNumber(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getNumber(start, end);
   }
 
   /** Reads a set of String values from the field. */
   getString(key: string, start: number, end: number): LogValueSetString | undefined {
-    if (key in this.fields) return this.fields[key].getString(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getString(start, end);
   }
 
   /** Reads a set of BooleanArray values from the field. */
   getBooleanArray(key: string, start: number, end: number): LogValueSetBooleanArray | undefined {
-    if (key in this.fields) return this.fields[key].getBooleanArray(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getBooleanArray(start, end);
   }
 
   /** Reads a set of NumberArray values from the field. */
   getNumberArray(key: string, start: number, end: number): LogValueSetNumberArray | undefined {
-    if (key in this.fields) return this.fields[key].getNumberArray(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getNumberArray(start, end);
   }
 
   /** Reads a set of StringArray values from the field. */
   getStringArray(key: string, start: number, end: number): LogValueSetStringArray | undefined {
-    if (key in this.fields) return this.fields[key].getStringArray(start, end);
+    if (this.fields.has(key)) return this.fields.get(key)?.getStringArray(start, end);
   }
 
   /** Writes a new Raw value to the field. */
   putRaw(key: string, timestamp: number, value: Uint8Array) {
     this.createBlankField(key, LoggableType.Raw);
-    this.fields[key].putRaw(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.Raw) {
+    this.fields.get(key)?.putRaw(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.Raw) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
 
@@ -342,8 +367,8 @@ export default class Log {
   /** Writes a new Boolean value to the field. */
   putBoolean(key: string, timestamp: number, value: boolean) {
     this.createBlankField(key, LoggableType.Boolean);
-    this.fields[key].putBoolean(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.Boolean) {
+    this.fields.get(key)?.putBoolean(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.Boolean) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
   }
@@ -351,8 +376,8 @@ export default class Log {
   /** Writes a new Number value to the field. */
   putNumber(key: string, timestamp: number, value: number) {
     this.createBlankField(key, LoggableType.Number);
-    this.fields[key].putNumber(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.Number) {
+    this.fields.get(key)?.putNumber(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.Number) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
   }
@@ -360,8 +385,8 @@ export default class Log {
   /** Writes a new String value to the field. */
   putString(key: string, timestamp: number, value: string) {
     this.createBlankField(key, LoggableType.String);
-    this.fields[key].putString(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.String) {
+    this.fields.get(key)?.putString(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.String) {
       this.processTimestamp(key, timestamp); // Only update timestamp if type is correct
     }
 
@@ -377,15 +402,15 @@ export default class Log {
   /** Writes a new BooleanArray value to the field. */
   putBooleanArray(key: string, timestamp: number, value: boolean[]) {
     this.createBlankField(key, LoggableType.BooleanArray);
-    this.fields[key].putBooleanArray(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.BooleanArray) {
+    this.fields.get(key)?.putBooleanArray(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.BooleanArray) {
       this.processTimestamp(key, timestamp);
       this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
         this.processTimestamp(lengthKey, timestamp);
-        this.fields[lengthKey].putNumber(timestamp, value.length);
+        this.fields.get(lengthKey)?.putNumber(timestamp, value.length);
       }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
@@ -394,7 +419,7 @@ export default class Log {
         }
         let itemKey = key + "/" + i.toString();
         this.createBlankField(itemKey, LoggableType.Boolean);
-        this.fields[itemKey].putBoolean(timestamp, value[i]);
+        this.fields.get(itemKey)?.putBoolean(timestamp, value[i]);
       }
     }
   }
@@ -402,15 +427,15 @@ export default class Log {
   /** Writes a new NumberArray value to the field. */
   putNumberArray(key: string, timestamp: number, value: number[]) {
     this.createBlankField(key, LoggableType.NumberArray);
-    this.fields[key].putNumberArray(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.NumberArray) {
+    this.fields.get(key)?.putNumberArray(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.NumberArray) {
       this.processTimestamp(key, timestamp);
       this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
         this.processTimestamp(lengthKey, timestamp);
-        this.fields[lengthKey].putNumber(timestamp, value.length);
+        this.fields.get(lengthKey)?.putNumber(timestamp, value.length);
       }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
@@ -419,7 +444,7 @@ export default class Log {
         }
         let itemKey = key + "/" + i.toString();
         this.createBlankField(itemKey, LoggableType.Number);
-        this.fields[itemKey].putNumber(timestamp, value[i]);
+        this.fields.get(itemKey)?.putNumber(timestamp, value[i]);
       }
     }
   }
@@ -427,15 +452,15 @@ export default class Log {
   /** Writes a new StringArray value to the field. */
   putStringArray(key: string, timestamp: number, value: string[]) {
     this.createBlankField(key, LoggableType.StringArray);
-    this.fields[key].putStringArray(timestamp, value);
-    if (this.fields[key].getType() === LoggableType.StringArray) {
+    this.fields.get(key)?.putStringArray(timestamp, value);
+    if (this.fields.get(key)?.getType() === LoggableType.StringArray) {
       this.processTimestamp(key, timestamp);
       this.setGeneratedParent(key);
       {
         let lengthKey = key + "/length";
         this.createBlankField(lengthKey, LoggableType.Number);
         this.processTimestamp(lengthKey, timestamp);
-        this.fields[lengthKey].putNumber(timestamp, value.length);
+        this.fields.get(lengthKey)?.putNumber(timestamp, value.length);
       }
       for (let i = 0; i < value.length; i++) {
         if (this.enableTimestampSetCache) {
@@ -444,7 +469,7 @@ export default class Log {
         }
         let itemKey = key + "/" + i.toString();
         this.createBlankField(itemKey, LoggableType.String);
-        this.fields[itemKey].putString(timestamp, value[i]);
+        this.fields.get(itemKey)?.putString(timestamp, value[i]);
       }
     }
   }
@@ -489,7 +514,7 @@ export default class Log {
           let lengthKey = key + "/length";
           this.createBlankField(lengthKey, LoggableType.Number);
           this.processTimestamp(lengthKey, timestamp);
-          this.fields[lengthKey].putNumber(timestamp, value.length);
+          this.fields.get(lengthKey)?.putNumber(timestamp, value.length);
         }
         for (let i = 0; i < value.length; i++) {
           this.putUnknownStruct(key + "/" + i.toString(), timestamp, value[i], true);
@@ -506,7 +531,7 @@ export default class Log {
   /** Writes a JSON-encoded string value to the field. */
   putJSON(key: string, timestamp: number, value: string) {
     this.putString(key, timestamp, value);
-    if (this.fields[key].getType() === LoggableType.String) {
+    if (this.fields.get(key)?.getType() === LoggableType.String) {
       this.setGeneratedParent(key);
       this.setStructuredType(key, "JSON");
       let decodedValue: unknown = null;
@@ -522,7 +547,7 @@ export default class Log {
   /** Writes a msgpack-encoded raw value to the field. */
   putMsgpack(key: string, timestamp: number, value: Uint8Array) {
     this.putRaw(key, timestamp, value);
-    if (this.fields[key].getType() === LoggableType.Raw) {
+    if (this.fields.get(key)?.getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
       this.setStructuredType(key, "MessagePack");
       let decodedValue: unknown = null;
@@ -541,7 +566,7 @@ export default class Log {
    */
   putStruct(key: string, timestamp: number, value: Uint8Array, schemaType: string, isArray: boolean) {
     this.putRaw(key, timestamp, value);
-    if (this.fields[key].getType() === LoggableType.Raw) {
+    if (this.fields.get(key)?.getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
       this.setStructuredType(key, schemaType + (isArray ? "[]" : ""));
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
@@ -586,7 +611,7 @@ export default class Log {
 
     // Not a schema, continue normally
     this.putRaw(key, timestamp, value);
-    if (this.fields[key].getType() === LoggableType.Raw) {
+    if (this.fields.get(key)?.getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
       this.setStructuredType(key, ProtoDecoder.getFriendlySchemaType(schemaType));
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
@@ -620,18 +645,18 @@ export default class Log {
     this.putNumber(translationKey + "/x", timestamp, pose.translation[0]);
     this.putNumber(translationKey + "/y", timestamp, pose.translation[1]);
     this.putNumber(rotationKey + "/value", timestamp, pose.rotation);
-    if (!(key in this.fields)) {
+    if (!this.fields.has(key)) {
       this.createBlankField(key, LoggableType.Empty);
       this.setStructuredType(key, "Pose2d");
       this.setGeneratedParent(key);
       this.processTimestamp(key, timestamp);
     }
-    if (!(translationKey in this.fields)) {
+    if (!this.fields.has(translationKey)) {
       this.createBlankField(translationKey, LoggableType.Empty);
       this.setStructuredType(translationKey, "Translation2d");
       this.processTimestamp(translationKey, timestamp);
     }
-    if (!(rotationKey in this.fields)) {
+    if (!this.fields.has(rotationKey)) {
       this.createBlankField(rotationKey, LoggableType.Empty);
       this.setStructuredType(rotationKey, "Rotation2d");
       this.processTimestamp(rotationKey, timestamp);
@@ -640,7 +665,7 @@ export default class Log {
 
   /** Writes a translation array with the "Translation2d[]" structured type. */
   putTranslationArray(key: string, timestamp: number, translations: Translation2d[]) {
-    if (!(key in this.fields)) {
+    if (!this.fields.has(key)) {
       this.createBlankField(key, LoggableType.Empty);
       this.setStructuredType(key, "Translation2d[]");
       this.setGeneratedParent(key);
@@ -649,7 +674,7 @@ export default class Log {
     this.putNumber(key + "/length", timestamp, translations.length);
     for (let i = 0; i < translations.length; i++) {
       const itemKey = key + "/" + i.toString();
-      if (!(itemKey in this.fields)) {
+      if (!this.fields.has(itemKey)) {
         this.createBlankField(itemKey, LoggableType.Empty);
         this.setStructuredType(itemKey, "Translation2d");
         this.processTimestamp(itemKey, timestamp);
@@ -664,7 +689,7 @@ export default class Log {
     this.putNumber(key + "/x", timestamp, x);
     this.putNumber(key + "/y", timestamp, y);
     this.putString(key + "/alliance", timestamp, alliance);
-    if (!(key in this.fields)) {
+    if (!this.fields.has(key)) {
       this.createBlankField(key, LoggableType.Empty);
       this.setStructuredType(key, "ZebraTranslation");
       this.setGeneratedParent(key);
@@ -694,7 +719,7 @@ export default class Log {
   static fromSerialized(serializedData: any): Log {
     let log = new Log();
     Object.entries(serializedData.fields).forEach(([key, value]) => {
-      log.fields[key] = LogField.fromSerialized(value);
+      log.fields.set(key, LogField.fromSerialized(value));
     });
     log.generatedParents = new Set(serializedData.generatedParents);
     log.timestampRange = serializedData.timestampRange;
@@ -744,7 +769,7 @@ export default class Log {
 
       // Merge fields
       Object.entries(source.fields).forEach(([key, value]) => {
-        log.fields[adjustKey(key)] = LogField.fromSerialized(value);
+        log.fields.set(adjustKey(key), LogField.fromSerialized(value));
       });
 
       // Merge generated parents
