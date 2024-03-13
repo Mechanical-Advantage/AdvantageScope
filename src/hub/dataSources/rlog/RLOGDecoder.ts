@@ -152,7 +152,7 @@ export default class RLOGDecoder {
                     {
                       if (value.length % 8 !== 0) throw "Not a double array";
                       let array: number[] = [];
-                      for (let position = 0; position < value.length; position += 4) {
+                      for (let position = 0; position < value.length; position += 8) {
                         array.push(dataBuffer.getFloat64(offset + position));
                       }
                       log.putNumberArray(key, timestamp, array);
