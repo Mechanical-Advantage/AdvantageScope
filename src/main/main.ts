@@ -346,13 +346,15 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           let singleArray = rlogDataArrays[windowId].slice(4, expectedLength);
           rlogDataArrays[windowId] = rlogDataArrays[windowId].slice(expectedLength);
 
-          let success = sendMessage(window, "live-data", {
-            uuid: message.data.uuid,
-            success: true,
-            raw: new Uint8Array(singleArray)
-          });
-          if (!success) {
-            rlogSockets[windowId]?.destroy();
+          if (singleArray.length > 0) {
+            let success = sendMessage(window, "live-data", {
+              uuid: message.data.uuid,
+              success: true,
+              raw: new Uint8Array(singleArray)
+            });
+            if (!success) {
+              rlogSockets[windowId]?.destroy();
+            }
           }
         }
       });

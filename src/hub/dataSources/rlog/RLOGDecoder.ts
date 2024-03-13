@@ -10,12 +10,17 @@ export default class RLOGDecoder {
   private MIN_TIMESTAMP_STEP = 0.0001; // Step size less than this many seconds indicates corrupted data
   private MAX_TIMESTAMP_STEP = 60.0; // Step size greater than this many seconds indicates corrupted data
 
+  private isFile;
   private logRevision: number | null = null;
   private lastTimestamp: number | null = null;
   private lastTimestampCorrupted: number | null = null;
   private lastProgressTimestamp = 0;
   private keyIDs: { [id: number]: string } = {};
   private keyTypes: { [id: number]: string } = {};
+
+  constructor(isFile: boolean) {
+    this.isFile = isFile;
+  }
 
   decode(log: Log, dataArray: Buffer, progressCallback?: (progress: number) => void): boolean {
     let dataBuffer = new DataView(dataArray.buffer);
@@ -38,7 +43,9 @@ export default class RLOGDecoder {
       mainLoop: while (true) {
         if (offset >= dataArray.length) break mainLoop; // No more data, so we can't start a new entry
         let timestamp = dataBuffer.getFloat64(shiftOffset(8));
+        if (timestamp < 0) timestamp = 0;
         if (
+          this.isFile &&
           this.lastTimestamp !== null &&
           (isNaN(timestamp) ||
             timestamp === null ||
