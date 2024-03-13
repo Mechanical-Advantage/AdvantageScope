@@ -31,24 +31,26 @@ export default class StateTracker {
       try {
         let state: ApplicationState = jsonfile.readFileSync(STATE_FILENAME);
         [...state.hubs, ...state.satellites].forEach((window, index) => {
-          let reset = !screen
-            .getAllDisplays()
-            .some(
-              (display) =>
-                window.x >= display.bounds.x &&
-                window.y >= display.bounds.y &&
-                window.x + window.width <= display.bounds.x + display.bounds.width &&
-                window.y + window.height <= display.bounds.y + display.bounds.height
-            );
-          if (reset && allowReset) {
-            const primaryBounds = screen.getPrimaryDisplay().bounds;
-            const isHub = index < state.hubs.length;
-            const defaultWidth = isHub ? HUB_DEFAULT_WIDTH : SATELLITE_DEFAULT_WIDTH;
-            const defaultHeight = isHub ? HUB_DEFAULT_HEIGHT : SATELLITE_DEFAULT_HEIGHT;
-            window.x = primaryBounds.x + primaryBounds.width / 2 - defaultWidth / 2;
-            window.y = primaryBounds.y + primaryBounds.height / 2 - defaultHeight / 2;
-            window.width = defaultWidth;
-            window.height = defaultHeight;
+          if (allowReset) {
+            let reset = !screen
+              .getAllDisplays()
+              .some(
+                (display) =>
+                  window.x >= display.bounds.x &&
+                  window.y >= display.bounds.y &&
+                  window.x + window.width <= display.bounds.x + display.bounds.width &&
+                  window.y + window.height <= display.bounds.y + display.bounds.height
+              );
+            if (reset) {
+              const primaryBounds = screen.getPrimaryDisplay().bounds;
+              const isHub = index < state.hubs.length;
+              const defaultWidth = isHub ? HUB_DEFAULT_WIDTH : SATELLITE_DEFAULT_WIDTH;
+              const defaultHeight = isHub ? HUB_DEFAULT_HEIGHT : SATELLITE_DEFAULT_HEIGHT;
+              window.x = primaryBounds.x + primaryBounds.width / 2 - defaultWidth / 2;
+              window.y = primaryBounds.y + primaryBounds.height / 2 - defaultHeight / 2;
+              window.width = defaultWidth;
+              window.height = defaultHeight;
+            }
           }
         });
         return state;
