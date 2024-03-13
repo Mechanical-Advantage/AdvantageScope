@@ -11,10 +11,16 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 
+type LogRecord = {
+  timestamp: number;
+  value: any;
+  index: number;
+};
 /** A full log field that contains data. */
 export default class LogField {
   private type: LoggableType;
   private data: LogValueSetAny = { timestamps: [], values: [] };
+  private rawData: LogRecord[] = [];
   public structuredType: string | null = null;
   public wpilibType: string | null = null; // Original type from WPILOG & NT4
   public metadataString = "";
@@ -116,41 +122,7 @@ export default class LogField {
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
     if (value === null) return;
-
-    // Find position to insert based on timestamp
-    let insertIndex: number;
-    if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
-      // There's a good chance this data is at the end of the log, so check that first
-      insertIndex = this.data.timestamps.length;
-    } else {
-      // Adding in the middle, find where to insert it
-      let alreadyExists = false;
-      insertIndex =
-        this.data.timestamps.findLastIndex((x) => {
-          if (alreadyExists) return;
-          if (x === timestamp) alreadyExists = true;
-          return x < timestamp;
-        }) + 1;
-      if (alreadyExists) {
-        this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
-        return;
-      }
-    }
-
-    // Compare to adjacent values
-    if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
-      // Same as the previous value
-    } else if (
-      insertIndex < this.data.values.length &&
-      logValuesEqual(this.type, value, this.data.values[insertIndex])
-    ) {
-      // Same as the next value
-      this.data.timestamps[insertIndex] = timestamp;
-    } else {
-      // New value
-      this.data.timestamps.splice(insertIndex, 0, timestamp);
-      this.data.values.splice(insertIndex, 0, value);
-    }
+    this.rawData.push({ timestamp: timestamp, value: value, index: this.rawData.length });
   }
 
   /** Writes a new Raw value to the field. */
@@ -204,6 +176,10 @@ export default class LogField {
 
   /** Returns a serialized version of the data from this field. */
   toSerialized(): any {
+    if (this.data.timestamps.length == 0) {
+      this.sortAndProcess();
+    }
+
     return {
       type: this.type,
       timestamps: this.data.timestamps,
@@ -214,6 +190,34 @@ export default class LogField {
       stripingReference: this.stripingReference,
       typeWarning: this.typeWarning
     };
+  }
+  private sortAndProcess() {
+    this.rawData.sort((a: LogRecord, b: LogRecord) => {
+      let cmp = a.timestamp - b.timestamp;
+      if (cmp == 0) {
+        return a.index - b.index;
+      } else {
+        return cmp;
+      }
+    });
+    if (this.rawData.length > 0) {
+      // Bootstrap first value
+      this.data.timestamps.push(this.rawData[0].timestamp);
+      this.data.values.push(this.rawData[0].value);
+    }
+    for (let i = 1; i < this.rawData.length; i++) {
+      if (this.rawData[i].timestamp == this.data.timestamps[this.data.values.length - 1]) {
+        this.data.values[this.data.values.length - 1] = this.rawData[i].value;
+      } else if (
+        logValuesEqual(this.type, this.data.values[this.data.values.length - 1], this.rawData[i].value) &&
+        i < this.rawData.length
+      ) {
+      } else {
+        this.data.timestamps.push(this.rawData[i].timestamp);
+        this.data.values.push(this.rawData[i].value);
+      }
+    }
+    this.rawData = [];
   }
 
   /** Creates a new field based on the data from `toSerialized()` */
