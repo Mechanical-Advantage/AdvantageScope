@@ -4,11 +4,14 @@ import RLOGDecoder from "./RLOGDecoder";
 
 export default class RLOGServerSource extends LiveDataSource {
   private RECONNECT_DELAY_MS = 500;
-  private MIN_LIVE_RESYNC_SECS = 0.15; // Resync live data if out of sync by longer than this
+  private TIME_SYNC_INTERVAL = 0.5;
 
   private decoder: RLOGDecoder | null = null;
   private timeout: NodeJS.Timeout | null = null;
+  private liveShiftInterval: NodeJS.Timeout | null = null;
+  private lastTimeSync = 0;
   private liveZeroTime = 0;
+  private targetLiveZeroTime = 0;
 
   connect(
     address: string,
@@ -21,17 +24,24 @@ export default class RLOGServerSource extends LiveDataSource {
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
       this.log = new Log();
-      this.decoder = new RLOGDecoder();
+      this.decoder = new RLOGDecoder(false);
       window.sendMainMessage("live-rlog-start", {
         uuid: this.UUID,
         address: address,
         port: window.preferences.rlogPort
       });
     }
+
+    // Shift live zero time towards target
+    this.liveShiftInterval = setInterval(() => {
+      this.liveZeroTime = this.liveZeroTime * 0.98 + this.targetLiveZeroTime * 0.02;
+    }, 1000 / 60);
   }
 
   stop() {
     super.stop();
+    if (this.timeout !== null) clearTimeout(this.timeout);
+    if (this.liveShiftInterval !== null) clearInterval(this.liveShiftInterval);
     window.sendMainMessage("live-rlog-stop");
   }
 
@@ -48,16 +58,23 @@ export default class RLOGServerSource extends LiveDataSource {
     if (data.success) {
       let decodeSuccess = this.decoder.decode(this.log, data.raw);
       if (decodeSuccess) {
+        // Reset time sync at start
+        let now = new Date().getTime() / 1000;
+        if (this.status === LiveDataSourceStatus.Connecting) {
+          this.liveZeroTime = now;
+          this.targetLiveZeroTime = now;
+          this.lastTimeSync = now;
+        }
+
         // New data, everything normal
         this.setStatus(LiveDataSourceStatus.Active);
 
         // Update time sync
-        if (this.log.getFieldKeys().length > 0) {
+        if (this.log.getFieldKeys().length > 0 && now - this.lastTimeSync > this.TIME_SYNC_INTERVAL) {
           let logRange = window.log.getTimestampRange();
-          let newLiveZeroTime = new Date().getTime() / 1000 - (logRange[1] - logRange[0]);
-          if (Math.abs(this.liveZeroTime - newLiveZeroTime) > this.MIN_LIVE_RESYNC_SECS) {
-            this.liveZeroTime = newLiveZeroTime;
-          }
+          let newLiveZeroTime = now - (logRange[1] - logRange[0]);
+          this.targetLiveZeroTime = newLiveZeroTime;
+          this.lastTimeSync = now;
         }
 
         // Run output callback
@@ -89,8 +106,9 @@ export default class RLOGServerSource extends LiveDataSource {
       } else {
         // Try to reconnect
         this.log = new Log();
-        this.decoder = new RLOGDecoder();
+        this.decoder = new RLOGDecoder(false);
         this.liveZeroTime = 0;
+        this.targetLiveZeroTime = 0;
         window.sendMainMessage("live-rlog-start", {
           uuid: this.UUID,
           address: this.address,
