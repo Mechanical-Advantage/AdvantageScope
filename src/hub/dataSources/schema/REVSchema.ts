@@ -42,9 +42,9 @@ const FAULTS = [
   "HardLimitReverse"
 ];
 
-const TEXT_DECODER = new TextDecoder("UTF-8");
-
 const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
+
+const TEXT_DECODER = new TextDecoder("UTF-8");
 
 export default class REVSchema {
   private constructor() {}
