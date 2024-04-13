@@ -44,6 +44,8 @@ const FAULTS = [
 
 const TEXT_DECODER = new TextDecoder("UTF-8");
 
+const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
+
 export default class REVSchema {
   private constructor() {}
 
@@ -66,7 +68,7 @@ export default class REVSchema {
 
     // Read aliases
     let aliasesRaw = getOrDefault(log, aliasKey, LoggableType.Raw, timestamp, null);
-    if (aliasesRaw === null) return;
+    if (aliasesRaw === null) aliasesRaw = DEFAULT_ALIASES;
     let aliases = JSON.parse(TEXT_DECODER.decode(aliasesRaw));
     Object.keys(aliases).forEach((idString) => {
       devices[idString] = { alias: aliases[idString] };
