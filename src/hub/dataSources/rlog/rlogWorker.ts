@@ -18,7 +18,7 @@ self.onmessage = (event) => {
 
   // Run worker
   let log = new Log(false); // No timestamp set cache for efficiency
-  let decoder = new RLOGDecoder();
+  let decoder = new RLOGDecoder(true);
   let success = decoder.decode(log, payload[0], progress);
   if (success) {
     progress(1);

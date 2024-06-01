@@ -39,7 +39,8 @@ export abstract class LiveDataSource {
       if (this.log && this.timeSupplier) {
         let liveDiscardSecs = window.preferences?.liveDiscard;
         if (liveDiscardSecs !== undefined && liveDiscardSecs !== -1) {
-          this.log.clearBeforeTime(this.timeSupplier() - liveDiscardSecs);
+          let minTime = this.timeSupplier() - liveDiscardSecs;
+          this.log.clearBeforeTime(Math.max(0, minTime));
         }
       }
     }, 1000 / 60);

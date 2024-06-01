@@ -456,12 +456,26 @@ export function searchFields(log: Log, query: string): string[] {
 }
 
 export function getMatchInfo(log: Log): MatchInfo | null {
+  // Get first enable time
+  let enabledData = getEnabledData(log);
+  let enabledTime: null | number = null;
+  enabledData?.values.forEach((enabled, index) => {
+    if (enabledTime === null && enabled) {
+      enabledTime = enabledData!.timestamps[index];
+    }
+  });
+  if (enabledTime === null) {
+    return null;
+  }
+
+  // Get match info keys
   let systemTimeKey = SYSTEM_TIME_KEYS.find((key) => log.getFieldKeys().includes(key));
   let eventKey = EVENT_KEYS.find((key) => log.getFieldKeys().includes(key));
   let matchTypeKeys = MATCH_TYPE_KEYS.find((key) => log.getFieldKeys().includes(key));
   let matchNumberKeys = MATCH_NUMBER_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!eventKey || !matchTypeKeys || !matchNumberKeys) return null;
 
+  // Read match info
   let info: MatchInfo = {
     year: 2022, // Default to 2022 for AdvantageKit logs that didn't include system time
     event: "",
@@ -469,19 +483,19 @@ export function getMatchInfo(log: Log): MatchInfo | null {
     matchNumber: 1
   };
   if (systemTimeKey) {
-    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, Infinity, info.year);
+    let epochMicros = getOrDefault(log, systemTimeKey, LoggableType.Number, enabledTime, info.year);
     info.year = new Date(epochMicros / 1000).getUTCFullYear();
     // Reset to current year if the logged year is clearly wrong
     if (info.year < 2022) info.year = new Date().getUTCFullYear();
   }
-  info.event = getOrDefault(log, eventKey, LoggableType.String, Infinity, info.event);
-  let matchType = getOrDefault(log, matchTypeKeys, LoggableType.Number, Infinity, 0);
+  info.event = getOrDefault(log, eventKey, LoggableType.String, enabledTime, info.event);
+  let matchType = getOrDefault(log, matchTypeKeys, LoggableType.Number, enabledTime, 0);
   if ([1, 2, 3].includes(matchType)) {
     info.matchType = matchType;
   } else {
     // Not a match
     return null;
   }
-  info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, Infinity, info.matchNumber);
+  info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, enabledTime, info.matchNumber);
   return info;
 }
