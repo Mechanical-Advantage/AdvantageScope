@@ -3,7 +3,32 @@ import { PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import CustomSchemas from "../schema/CustomSchemas";
 import { WPILOGDecoder } from "./WPILOGDecoder";
+// import * as fs from "fs";
+// var self = {
+//   onmessage: function (tmp: any) {},
+//   postMessage: function (data: any) {
+//     return;
+//     console.log(data.id + " " + data.progress);
+//   }
+// };
 
+// function torun() {
+//   //"D:\\FRC_20240302_141552_VAASH_P1.wpilog"
+//   var file = "";
+//   // file = "D:\\Robotics\\robotics logs\\FRC_20240302_141552_VAASH_P1.wpilog";
+//   file = "D:\\Robotics\\robotics logs\\FRC_20240303_205029_VAASH_E10.wpilog";
+//   // file = "D:\\Robotics\\robotics logs\\MIMIL_Q63_C8A241B2394C4853202020500E3318FF_2024-03-02_10-38-03.hoot.wpilog";
+//   const buffer = fs.readFileSync(file);
+//   console.profile();
+//   // for (let i = 0; i < 5; i++) {
+//   console.time("slow-big");
+//   self.onmessage({ data: { id: 0, payload: [buffer] } });
+//   console.timeEnd("slow-big");
+//   // }
+
+//   console.profileEnd();
+//   console.log("Done");
+// }
 self.onmessage = (event) => {
   // WORKER SETUP
   let { id, payload } = event.data;
@@ -20,7 +45,7 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   // Run worker
-  let log = new Log(false); // No timestamp set cache for efficiency
+  let log = new Log(false, false); // No timestamp set cache for efficiency
   let reader = new WPILOGDecoder(payload[0]);
   let totalBytes = (payload[0] as Uint8Array).byteLength;
   let entryIds: { [id: number]: string } = {};
@@ -150,7 +175,7 @@ self.onmessage = (event) => {
       let now = new Date().getTime();
       if (now - lastProgressTimestamp > 1000 / 60) {
         lastProgressTimestamp = now;
-        progress(byteCount / totalBytes);
+        progress((byteCount / totalBytes) * 0.2);
       }
     });
   } catch (exception) {
@@ -158,9 +183,16 @@ self.onmessage = (event) => {
     reject();
     return;
   }
-  progress(1);
+  // progress(1);
   setTimeout(() => {
     // Allow progress message to get through first
-    resolve(log.toSerialized());
+    resolve(
+      log.toSerialized((x) => {
+        progress(0.2 + x * 0.8);
+      })
+    );
+    progress(1);
   }, 0);
 };
+
+// torun();

@@ -1,3 +1,4 @@
+import { re } from "mathjs";
 import LoggableType from "./LoggableType";
 import { logValuesEqual } from "./LogUtil";
 import {
@@ -10,27 +11,25 @@ import {
   LogValueSetString,
   LogValueSetStringArray
 } from "./LogValueSets";
-
 type LogRecord = {
   timestamp: number;
   value: any;
-  index: number;
 };
 /** A full log field that contains data. */
 export default class LogField {
   private type: LoggableType;
   private data: LogValueSetAny = { timestamps: [], values: [] };
-  private rawData: LogRecord[] = [];
   public structuredType: string | null = null;
   public wpilibType: string | null = null; // Original type from WPILOG & NT4
   public metadataString = "";
   public typeWarning = false; // Flag that there was an attempt to write a conflicting type
-
+  private enableLiveSorting: boolean;
   // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
   private stripingReference = false;
-
-  constructor(type: LoggableType) {
+  private rawData: LogRecord[] = [];
+  constructor(type: LoggableType, enableLiveSorting = true) {
     this.type = type;
+    this.enableLiveSorting = enableLiveSorting;
   }
 
   /** Returns the constant field type. */
@@ -121,8 +120,48 @@ export default class LogField {
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
-    if (value === null) return;
-    this.rawData.push({ timestamp: timestamp, value: value, index: this.rawData.length });
+    if (this.enableLiveSorting) {
+      if (value === null) return;
+
+      // Find position to insert based on timestamp
+      let insertIndex: number;
+      if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
+        // There's a good chance this data is at the end of the log, so check that first
+        insertIndex = this.data.timestamps.length;
+      } else {
+        // Adding in the middle, find where to insert it
+        let alreadyExists = false;
+        insertIndex =
+          this.data.timestamps.findLastIndex((x) => {
+            if (alreadyExists) return;
+            if (x === timestamp) alreadyExists = true;
+            return x < timestamp;
+          }) + 1;
+        if (alreadyExists) {
+          this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
+          return;
+        }
+      }
+
+      // Compare to adjacent values
+      if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+        // Same as the previous value
+      } else if (
+        insertIndex < this.data.values.length &&
+        logValuesEqual(this.type, value, this.data.values[insertIndex])
+      ) {
+        // Same as the next value
+        this.data.timestamps[insertIndex] = timestamp;
+      } else {
+        // New value
+        this.data.timestamps.splice(insertIndex, 0, timestamp);
+        this.data.values.splice(insertIndex, 0, value);
+      }
+    } else {
+      // this.data.timestamps.push(timestamp);
+      // this.data.values.push(value);
+      this.rawData.push({ timestamp: timestamp, value: value });
+    }
   }
 
   /** Writes a new Raw value to the field. */
@@ -176,10 +215,9 @@ export default class LogField {
 
   /** Returns a serialized version of the data from this field. */
   toSerialized(): any {
-    if (this.data.timestamps.length == 0) {
+    if (!this.enableLiveSorting) {
       this.sortAndProcess();
     }
-
     return {
       type: this.type,
       timestamps: this.data.timestamps,
@@ -190,34 +228,6 @@ export default class LogField {
       stripingReference: this.stripingReference,
       typeWarning: this.typeWarning
     };
-  }
-  private sortAndProcess() {
-    this.rawData.sort((a: LogRecord, b: LogRecord) => {
-      let cmp = a.timestamp - b.timestamp;
-      if (cmp == 0) {
-        return a.index - b.index;
-      } else {
-        return cmp;
-      }
-    });
-    if (this.rawData.length > 0) {
-      // Bootstrap first value
-      this.data.timestamps.push(this.rawData[0].timestamp);
-      this.data.values.push(this.rawData[0].value);
-    }
-    for (let i = 1; i < this.rawData.length; i++) {
-      if (this.rawData[i].timestamp == this.data.timestamps[this.data.values.length - 1]) {
-        this.data.values[this.data.values.length - 1] = this.rawData[i].value;
-      } else if (
-        logValuesEqual(this.type, this.data.values[this.data.values.length - 1], this.rawData[i].value) &&
-        i < this.rawData.length
-      ) {
-      } else {
-        this.data.timestamps.push(this.rawData[i].timestamp);
-        this.data.values.push(this.rawData[i].value);
-      }
-    }
-    this.rawData = [];
   }
 
   /** Creates a new field based on the data from `toSerialized()` */
@@ -233,5 +243,58 @@ export default class LogField {
     field.stripingReference = serializedData.stripingReference;
     field.typeWarning = serializedData.typeWarning;
     return field;
+  }
+  private sortAndProcess() {
+    this.rawData.sort((a: LogRecord, b: LogRecord) => {
+      return a.timestamp - b.timestamp;
+    });
+    // this.rawData.reverse();
+    // let record = this.rawData.pop();
+    // // Bootstrap first value
+    // if (record) {
+    //   this.data.timestamps.push(record.timestamp);
+    //   this.data.values.push(record.value);
+    // }
+    // record = this.rawData.pop();
+    // while (record) {
+    //   // Check if the timestamp is the same as the last one
+    //   if (record.timestamp == this.data.timestamps[this.data.values.length - 1]) {
+    //     // Overwrite the last value
+    //     this.data.values[this.data.values.length - 1] = record.value;
+    //     // If the values are equal do not add the value
+    //   } else if (
+    //     !logValuesEqual(this.type, this.data.values[this.data.values.length - 1], record.value) ||
+    //     this.rawData.length <= 0
+    //   ) {
+    //     // add the value if the prevous value is different or it is the last value in the rawData (make sure final data point is added)
+    //     this.data.timestamps.push(record.timestamp);
+    //     this.data.values.push(record.value);
+    //   }
+    //   record = this.rawData.pop();
+    // }
+
+    if (this.rawData.length > 0) {
+      // Bootstrap first value
+      this.data.timestamps.push(this.rawData[0].timestamp);
+      this.data.values.push(this.rawData[0].value);
+    }
+    for (let i = 1; i < this.rawData.length; i++) {
+      // Check if the timestamp is the same as the last one
+      if (this.rawData[i].timestamp == this.data.timestamps[this.data.values.length - 1]) {
+        // Overwrite the last value
+        this.data.values[this.data.values.length - 1] = this.rawData[i].value;
+        // If the values are equal do not add the value
+      } else if (
+        logValuesEqual(this.type, this.data.values[this.data.values.length - 1], this.rawData[i].value) &&
+        i < this.rawData.length
+      ) {
+      } else {
+        // add the value
+        this.data.timestamps.push(this.rawData[i].timestamp);
+        this.data.values.push(this.rawData[i].value);
+      }
+    }
+    this.rawData = [];
+    this.enableLiveSorting = true;
   }
 }
