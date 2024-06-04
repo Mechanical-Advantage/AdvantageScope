@@ -284,8 +284,9 @@ export default class LogField {
         // Overwrite the last value
         this.data.values[this.data.values.length - 1] = this.rawData[i].value;
         // If the values are equal do not add the value
+        // }
       } else if (
-        logValuesEqual(this.type, this.data.values[this.data.values.length - 1], this.rawData[i].value) &&
+        logValuesEqual(this.type, this.rawData[i].value, this.data.values[this.data.values.length - 1]) &&
         i < this.rawData.length
       ) {
       } else {
