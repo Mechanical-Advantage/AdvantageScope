@@ -1,4 +1,3 @@
-import { re } from "mathjs";
 import LoggableType from "./LoggableType";
 import { logValuesEqual } from "./LogUtil";
 import {
@@ -158,8 +157,6 @@ export default class LogField {
         this.data.values.splice(insertIndex, 0, value);
       }
     } else {
-      // this.data.timestamps.push(timestamp);
-      // this.data.values.push(value);
       this.rawData.push({ timestamp: timestamp, value: value });
     }
   }
@@ -217,6 +214,7 @@ export default class LogField {
   toSerialized(): any {
     if (!this.enableLiveSorting) {
       this.sortAndProcess();
+      this.enableLiveSorting = true; // After first serilization enable live sorting
     }
     return {
       type: this.type,
@@ -244,58 +242,34 @@ export default class LogField {
     field.typeWarning = serializedData.typeWarning;
     return field;
   }
-  private sortAndProcess() {
-    this.rawData.sort((a: LogRecord, b: LogRecord) => {
-      return a.timestamp - b.timestamp;
-    });
-    // this.rawData.reverse();
-    // let record = this.rawData.pop();
-    // // Bootstrap first value
-    // if (record) {
-    //   this.data.timestamps.push(record.timestamp);
-    //   this.data.values.push(record.value);
-    // }
-    // record = this.rawData.pop();
-    // while (record) {
-    //   // Check if the timestamp is the same as the last one
-    //   if (record.timestamp == this.data.timestamps[this.data.values.length - 1]) {
-    //     // Overwrite the last value
-    //     this.data.values[this.data.values.length - 1] = record.value;
-    //     // If the values are equal do not add the value
-    //   } else if (
-    //     !logValuesEqual(this.type, this.data.values[this.data.values.length - 1], record.value) ||
-    //     this.rawData.length <= 0
-    //   ) {
-    //     // add the value if the prevous value is different or it is the last value in the rawData (make sure final data point is added)
-    //     this.data.timestamps.push(record.timestamp);
-    //     this.data.values.push(record.value);
-    //   }
-    //   record = this.rawData.pop();
-    // }
-
-    if (this.rawData.length > 0) {
-      // Bootstrap first value
-      this.data.timestamps.push(this.rawData[0].timestamp);
-      this.data.values.push(this.rawData[0].value);
-    }
-    for (let i = 1; i < this.rawData.length; i++) {
-      // Check if the timestamp is the same as the last one
-      if (this.rawData[i].timestamp == this.data.timestamps[this.data.values.length - 1]) {
-        // Overwrite the last value
-        this.data.values[this.data.values.length - 1] = this.rawData[i].value;
-        // If the values are equal do not add the value
-        // }
-      } else if (
-        logValuesEqual(this.type, this.rawData[i].value, this.data.values[this.data.values.length - 1]) &&
-        i < this.rawData.length
-      ) {
-      } else {
-        // add the value
-        this.data.timestamps.push(this.rawData[i].timestamp);
-        this.data.values.push(this.rawData[i].value);
+  /** Sorts and processes data all at once */
+  sortAndProcess() {
+    if (!this.enableLiveSorting) {
+      this.rawData.sort((a: LogRecord, b: LogRecord) => {
+        return a.timestamp - b.timestamp;
+      });
+      if (this.rawData.length > 0) {
+        // Bootstrap first value
+        this.data.timestamps.push(this.rawData[0].timestamp);
+        this.data.values.push(this.rawData[0].value);
       }
+      for (let i = 1; i < this.rawData.length; i++) {
+        // Check if the timestamp is the same as the last one
+        if (this.rawData[i].timestamp == this.data.timestamps[this.data.values.length - 1]) {
+          // Overwrite the last value
+          this.data.values[this.data.values.length - 1] = this.rawData[i].value;
+          // If the values are equal do not add the value
+        } else if (
+          logValuesEqual(this.type, this.rawData[i].value, this.data.values[this.data.values.length - 1]) &&
+          i < this.rawData.length
+        ) {
+        } else {
+          // add the value
+          this.data.timestamps.push(this.rawData[i].timestamp);
+          this.data.values.push(this.rawData[i].value);
+        }
+      }
+      this.rawData = [];
     }
-    this.rawData = [];
-    this.enableLiveSorting = true;
   }
 }

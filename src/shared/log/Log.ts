@@ -676,8 +676,9 @@ export default class Log {
 
   /** Returns a serialized version of the data from this log. */
   toSerialized(progressCallback: ((progress: number) => void) | undefined = undefined): any {
-    if (this.enableLiveSorting) {
-      this.enableLiveSorting = false;
+    if (!this.enableLiveSorting) {
+      this.sortAndProcess(progressCallback); // Enable live sorting after first serialization
+      this.enableLiveSorting = true;
     }
     let result: any = {
       fields: {},
@@ -692,11 +693,19 @@ export default class Log {
     let totalFields = Object.keys(this.fields).length;
     Object.entries(this.fields).forEach(([key, value]) => {
       result.fields[key] = value.toSerialized();
-      if (progressCallback != undefined) {
-        progressCallback(Object.keys(result.fields).length / totalFields);
-      }
     });
     return result;
+  }
+  sortAndProcess(progressCallback: ((progress: number) => void) | undefined = undefined) {
+    if (!this.enableLiveSorting) {
+      let entires = Object.values(this.fields);
+      for (let i = 0; i < entires.length; i++) {
+        entires[i].sortAndProcess();
+        if (progressCallback != undefined) {
+          progressCallback(i / entires.length);
+        }
+      }
+    }
   }
 
   /** Creates a new log based on the data from `toSerialized()` */
