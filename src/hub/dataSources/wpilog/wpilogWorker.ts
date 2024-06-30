@@ -20,12 +20,13 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   // Run worker
-  let log = new Log(false); // No timestamp set cache for efficiency
+  let log = new Log(false, false); // No timestamp set cache for efficiency, disable live sorting
   let reader = new WPILOGDecoder(payload[0]);
   let totalBytes = (payload[0] as Uint8Array).byteLength;
   let entryIds: { [id: number]: string } = {};
   let entryTypes: { [id: number]: string } = {};
   let lastProgressTimestamp = new Date().getTime();
+  let customSchemaRecords: { key: string; timestamp: number; value: Uint8Array; type: string }[] = [];
   try {
     reader.forEach((record, byteCount) => {
       if (record.isControl()) {
@@ -130,12 +131,7 @@ self.onmessage = (event) => {
                 } else {
                   log.putRaw(key, timestamp, record.getRaw());
                   if (CustomSchemas.has(type)) {
-                    try {
-                      CustomSchemas.get(type)!(log, key, timestamp, record.getRaw());
-                    } catch {
-                      console.error('Failed to decode custom schema "' + type + '"');
-                    }
-                    log.setGeneratedParent(key);
+                    customSchemaRecords.push({ key: key, timestamp: timestamp, value: record.getRaw(), type: type });
                   }
                 }
                 break;
@@ -150,7 +146,7 @@ self.onmessage = (event) => {
       let now = new Date().getTime();
       if (now - lastProgressTimestamp > 1000 / 60) {
         lastProgressTimestamp = now;
-        progress(byteCount / totalBytes);
+        progress((byteCount / totalBytes) * 0.2); // Show progress of 0-20% for file reading
       }
     });
   } catch (exception) {
@@ -158,9 +154,30 @@ self.onmessage = (event) => {
     reject();
     return;
   }
-  progress(1);
   setTimeout(() => {
     // Allow progress message to get through first
-    resolve(log.toSerialized());
+    log.sortAndProcess((x) => {
+      progress(0.2 + x * 0.5); // Show progress of 20-70% for log processing/sorting
+    });
+
+    // Process custom schemas
+    for (let i = 0; i < customSchemaRecords.length; i++) {
+      let record = customSchemaRecords[i];
+      try {
+        CustomSchemas.get(record.type)!(log, record.key, record.timestamp, record.value);
+      } catch {
+        console.error('Failed to decode custom schema "' + record.type + '"');
+      }
+      log.setGeneratedParent(record.key);
+    }
+
+    resolve(
+      log.toSerialized((x) => {
+        progress(0.2 + x * 0.8); // Show progress of 20-100% for log processing/sorting
+      })
+    );
+    progress(1);
   }, 0);
 };
+
+// torun();
