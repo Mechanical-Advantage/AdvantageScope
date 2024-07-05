@@ -73,6 +73,39 @@ function parsePacket(value: Uint8Array, timestamp: number): PhotonPipelineResult
     });
   }
 
+  const hasMultiTagResult = view.getInt8(offset) !== 0;
+  offset += 1;
+  if (hasMultiTagResult) {
+    const best = parseTransform3d(view, offset);
+    offset += 7 * 8;
+    const alt = parseTransform3d(view, offset);
+    offset += 7 * 8;
+    const bestReprojError = view.getFloat64(offset);
+    offset += 8;
+    const altReprojError = view.getFloat64(offset);
+    offset += 8;
+    const ambiguity = view.getFloat64(offset);
+    offset += 8;
+
+    const fiducialIdsUsed = [];
+    for (let i = 0; i < 32; i++) {
+      const fiducialId = view.getInt16(offset);
+      offset += 2;
+      if (fiducialId >= 0) {
+        fiducialIdsUsed.push(fiducialId);
+      }
+    }
+
+    result.multiTagResult = {
+      best,
+      alt,
+      bestReprojError,
+      altReprojError,
+      ambiguity,
+      fiducialIdsUsed
+    };
+  }
+
   return result;
 }
 
@@ -106,6 +139,16 @@ function saveResult(log: Log, baseKey: string, timestamp: number, result: Photon
           log.putNumberArray(baseKey + `/target_${idx}/${objectFieldName}_x`, timestamp, xArray);
           log.putNumberArray(baseKey + `/target_${idx}/${objectFieldName}_y`, timestamp, yArray);
         }
+      }
+    });
+  }
+
+  if (result.multiTagResult) {
+    Object.entries(result.multiTagResult).forEach(([name, value]) => {
+      if (typeof value === "number") {
+        log.putNumber(`${baseKey}/multiTagResult/${name}`, timestamp, value);
+      } else if (Array.isArray(value)) {
+        log.putNumberArray(`${baseKey}/multiTagResult/${name}`, timestamp, value);
       }
     });
   }
@@ -152,8 +195,18 @@ interface PhotonTrackedTarget {
   detectedCorners: PhotonTargetCorner[];
 }
 
+interface MultiTargetPNPResult {
+  best: Transform3d;
+  alt: Transform3d;
+  bestReprojError: number;
+  altReprojError: number;
+  ambiguity: number;
+  fiducialIdsUsed: number[];
+}
+
 class PhotonPipelineResult {
   latency: number = 0;
   timestamp: number = 0;
   targets: PhotonTrackedTarget[] = [];
+  multiTagResult: MultiTargetPNPResult | undefined;
 }

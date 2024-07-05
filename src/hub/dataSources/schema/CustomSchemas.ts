@@ -6,6 +6,6 @@ import REVSchemas from "./REVSchema";
 const CustomSchemas: Map<string, (log: Log, key: string, timestamp: number, value: Uint8Array) => void> = new Map();
 export default CustomSchemas;
 
-CustomSchemas.set("rawBytes", PhotonSchema); // PhotonVision 2023.1.2
+CustomSchemas.set("rawBytes", PhotonSchema); // PhotonVision 2024.3.1
 CustomSchemas.set("URCL", REVSchemas.parseURCLr1);
 CustomSchemas.set("URCLr2_periodic", REVSchemas.parseURCLr2);
