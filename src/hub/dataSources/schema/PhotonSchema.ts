@@ -45,7 +45,7 @@ function parsePacket(value: Uint8Array, timestamp: number): PhotonPipelineResult
       offset += 8;
       let y = view.getFloat64(offset);
       offset += 8;
-      minAreaRectCorners.push({ x: x, y: y });
+      minAreaRectCorners.push(new PhotonTargetCorner(x, y));
     }
 
     const detectedCorners = [];
@@ -56,7 +56,7 @@ function parsePacket(value: Uint8Array, timestamp: number): PhotonPipelineResult
       offset += 8;
       let y = view.getFloat64(offset);
       offset += 8;
-      detectedCorners.push({ x: x, y: y });
+      detectedCorners.push(new PhotonTargetCorner(x, y));
     }
 
     result.targets.push({
@@ -131,8 +131,10 @@ function parseTransform3d(view: DataView, offset: number): Transform3d {
 }
 
 class PhotonTargetCorner {
-  x: number = 0;
-  y: number = 0;
+  constructor(
+    readonly x: number,
+    readonly y: number
+  ) {}
 }
 
 type Transform3d = [number, number, number, number, number, number, number];
