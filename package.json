@@ -57,13 +57,13 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
+    "@distube/ytdl-core": "^4.14.3",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
     "ssh2": "^1.14.0",
-    "tesseract.js": "^5.0.3",
-    "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.5-patch.2"
+    "tesseract.js": "^5.0.3"
   },
   "prettier": {
     "printWidth": 120,
