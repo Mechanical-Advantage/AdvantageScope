@@ -1,4 +1,4 @@
-import ytdl from "ytdl-core";
+import ytdl from "@distube/ytdl-core";
 
 const testUrl = "https://youtu.be/R8lg6DM11fM";
 
