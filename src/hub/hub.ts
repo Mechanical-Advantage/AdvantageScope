@@ -5,6 +5,7 @@ import Log from "../shared/log/Log";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
+import { SourceListItemState } from "../shared/SourceListConfig";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
@@ -17,6 +18,7 @@ import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 import Selection from "./Selection";
 import Sidebar from "./Sidebar";
+import SourceList from "./SourceList";
 import Tabs from "./Tabs";
 import WorkerManager from "./WorkerManager";
 
@@ -587,6 +589,12 @@ function handleMainMessage(message: NamedMessage) {
 
     case "rename-tab":
       window.tabs.renameTab(message.data.index, message.data.name);
+      break;
+
+    case "source-list-type-response":
+      let uuid: string = message.data.uuid;
+      let state: SourceListItemState = message.data.state;
+      SourceList.promptCallbacks[uuid](state);
       break;
 
     case "add-discrete-enabled":

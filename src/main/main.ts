@@ -62,6 +62,7 @@ import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
+import { SourceListConfig, SourceListItemState } from "../shared/SourceListConfig";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -450,6 +451,117 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       newTabPopup(window);
       break;
 
+    case "source-list-type-prompt":
+      let uuid: string = message.data.uuid;
+      let config: SourceListConfig = message.data.config;
+      let state: SourceListItemState = message.data.state;
+      let coordinates: [number, number] = message.data.coordinates;
+      const menu = new Menu();
+
+      let respond = () => {
+        sendMessage(window, "source-list-type-response", {
+          uuid: uuid,
+          state: state
+        });
+      };
+
+      // Add options
+      let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
+      if (currentTypeConfig.options.length === 1) {
+        let optionConfig = currentTypeConfig.options[0];
+        optionConfig.values.forEach((optionValue) => {
+          menu.append(
+            new MenuItem({
+              label: optionValue.display,
+              type: "radio",
+              checked: optionValue.key === state.options[optionConfig.key],
+              click() {
+                state.options[optionConfig.key] = optionValue.key;
+                respond();
+              }
+            })
+          );
+        });
+      } else {
+        currentTypeConfig.options.forEach((optionConfig) => {
+          menu.append(
+            new MenuItem({
+              label: optionConfig.display,
+              submenu: optionConfig.values.map((optionValue) => {
+                return {
+                  label: optionValue.display,
+                  type: "radio",
+                  checked: optionValue.key === state.options[optionConfig.key],
+                  click() {
+                    state.options[optionConfig.key] = optionValue.key;
+                    respond();
+                  }
+                };
+              })
+            })
+          );
+        });
+      }
+
+      // Add type options
+      if (menu.items.length > 0) {
+        menu.append(
+          new MenuItem({
+            type: "separator"
+          })
+        );
+      }
+      config.types.forEach((typeConfig) => {
+        if (typeConfig.sourceTypes.includes(state.logType) && typeConfig.parentType === currentTypeConfig.parentType) {
+          let current = state.type === typeConfig.key;
+          let optionConfig = current
+            ? undefined
+            : typeConfig.options.find((optionConfig) => optionConfig.key === typeConfig.initialSelectionOption);
+          menu.append(
+            new MenuItem({
+              label: typeConfig.display,
+              type: current ? "checkbox" : optionConfig !== undefined ? "submenu" : "normal",
+              checked: current,
+              submenu:
+                optionConfig === undefined
+                  ? undefined
+                  : optionConfig.values.map((optionValue) => {
+                      return {
+                        label: optionValue.display,
+                        click() {
+                          state.type = typeConfig.key;
+                          state.options = {};
+                          typeConfig.options.forEach((optionConfig) => {
+                            state.options[optionConfig.key] = optionConfig.values[0].key;
+                          });
+                          state.options[typeConfig.initialSelectionOption!] = optionValue.key;
+                          respond();
+                        }
+                      };
+                    }),
+              click:
+                optionConfig !== undefined
+                  ? undefined
+                  : () => {
+                      state.type = typeConfig.key;
+                      state.options = {};
+                      typeConfig.options.forEach((optionConfig) => {
+                        state.options[optionConfig.key] = optionConfig.values[0].key;
+                      });
+                      respond();
+                    }
+            })
+          );
+        }
+      });
+
+      menu.popup({
+        window: window,
+        x: coordinates[0],
+        y: coordinates[1]
+      });
+      break;
+
     case "ask-edit-axis":
       let legend: string = message.data.legend;
       const editAxisMenu = new Menu();
@@ -560,11 +672,11 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "update-satellite":
-      let uuid = message.data.uuid;
+      let satelliteUUID = message.data.uuid;
       let command = message.data.command;
       let title = message.data.title;
-      if (uuid in satelliteWindows) {
-        satelliteWindows[uuid].forEach((satellite) => {
+      if (satelliteUUID in satelliteWindows) {
+        satelliteWindows[satelliteUUID].forEach((satellite) => {
           if (satellite.isVisible()) {
             sendMessage(satellite, "render", { command: command, title: title });
           }

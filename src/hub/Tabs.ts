@@ -2,6 +2,8 @@ import { TabGroupState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
+import SourceList from "./SourceList";
+import { OdometryConfig } from "../shared/SourceListConfig";
 import TabController from "./TabController";
 import ConsoleController from "./tabControllers/ConsoleController";
 import DocumentationController from "./tabControllers/DocumentationController";
@@ -34,7 +36,6 @@ export default class Tabs {
   private tabList: {
     type: TabType;
     title: string;
-    controller: TabController;
     titleElement: HTMLElement;
     contentElement: HTMLElement;
   }[] = [];
@@ -116,54 +117,51 @@ export default class Tabs {
       this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
       this.SHADOW_RIGHT.style.opacity =
         Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
-      this.tabList[this.selectedTab].controller.periodic();
       this.scrollSensor.periodic();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
+
+    let sourceListRoot = (document.getElementsByClassName("tab-content")[0] as HTMLElement)
+      .firstElementChild as HTMLElement;
+    new SourceList(sourceListRoot, OdometryConfig);
   }
 
   /** Returns the current state. */
   saveState(): TabGroupState {
     return {
       selected: this.selectedTab,
-      tabs: this.tabList.map((tab) => {
-        let state = tab.controller.saveState();
-        if (tab.type !== TabType.Documentation) {
-          state.title = tab.title;
-        }
-        return state;
-      })
+      tabs: []
     };
   }
 
   /** Restores to the provided state. */
   restoreState(state: TabGroupState) {
-    this.tabList.forEach((tab) => {
-      this.VIEWER.removeChild(tab.contentElement);
-    });
-    this.tabList = [];
-    this.selectedTab = 0;
-    state.tabs.forEach((tabState, index) => {
-      this.addTab(tabState.type);
-      if (tabState.title) this.renameTab(index, tabState.title);
-      this.tabList[index].controller.restoreState(tabState);
-    });
-    this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
-    this.updateElements();
+    // this.tabList.forEach((tab) => {
+    //   this.VIEWER.removeChild(tab.contentElement);
+    // });
+    // this.tabList = [];
+    // this.selectedTab = 0;
+    // state.tabs.forEach((tabState, index) => {
+    //   this.addTab(tabState.type);
+    //   if (tabState.title) this.renameTab(index, tabState.title);
+    //   // this.tabList[index].controller.restoreState(tabState);
+    // });
+    // this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
+    // this.updateElements();
   }
 
   /** Refresh based on new log data. */
   refresh() {
     this.tabList.forEach((tab) => {
-      tab.controller.refresh();
+      // tab.controller.refresh();
     });
   }
 
   /** Refresh based on a new set of assets. */
   newAssets() {
     this.tabList.forEach((tab) => {
-      tab.controller.newAssets();
+      // tab.controller.newAssets();
     });
   }
 
@@ -171,9 +169,9 @@ export default class Tabs {
   getActiveFields(): Set<string> {
     let activeFields = new Set<string>();
     this.tabList.forEach((tab) => {
-      tab.controller.getActiveFields().forEach((field) => {
-        activeFields.add(field);
-      });
+      // tab.controller.getActiveFields().forEach((field) => {
+      //   activeFields.add(field);
+      // });
     });
     return activeFields;
   }
@@ -189,70 +187,70 @@ export default class Tabs {
       }
     }
 
-    // Add tab
-    let contentElement: HTMLElement;
-    let controller: TabController;
-    switch (type) {
-      case TabType.Documentation:
-        contentElement = this.CONTENT_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
-        controller = new DocumentationController(contentElement);
-        break;
-      case TabType.LineGraph:
-        contentElement = this.CONTENT_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
-        controller = new LineGraphController(contentElement);
-        break;
-      case TabType.Table:
-        contentElement = this.CONTENT_TEMPLATES.children[2].cloneNode(true) as HTMLElement;
-        controller = new TableController(contentElement);
-        break;
-      case TabType.Console:
-        contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-        controller = new ConsoleController(contentElement);
-        break;
-      case TabType.Statistics:
-        contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
-        controller = new StatisticsController(contentElement);
-        break;
-      case TabType.Odometry:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
-        controller = new OdometryController(contentElement);
-        break;
-      case TabType.ThreeDimension:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
-        controller = new ThreeDimensionController(contentElement);
-        break;
-      case TabType.Video:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
-        controller = new VideoController(contentElement);
-        break;
-      case TabType.Joysticks:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
-        controller = new JoysticksController(contentElement);
-        break;
-      case TabType.Swerve:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
-        controller = new SwerveController(contentElement);
-        break;
-      case TabType.Mechanism:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
-        controller = new MechanismController(contentElement);
-        break;
-      case TabType.Points:
-        contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-        contentElement.appendChild(this.CONTENT_TEMPLATES.children[12].cloneNode(true));
-        controller = new PointsController(contentElement);
-        break;
-      case TabType.Metadata:
-        contentElement = this.CONTENT_TEMPLATES.children[13].cloneNode(true) as HTMLElement;
-        controller = new MetadataController(contentElement);
-        break;
-    }
+    // // Add tab
+    // let contentElement: HTMLElement;
+    // let controller: TabController;
+    // switch (type) {
+    //   case TabType.Documentation:
+    //     contentElement = this.CONTENT_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
+    //     controller = new DocumentationController(contentElement);
+    //     break;
+    //   case TabType.LineGraph:
+    //     contentElement = this.CONTENT_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
+    //     controller = new LineGraphController(contentElement);
+    //     break;
+    //   case TabType.Table:
+    //     contentElement = this.CONTENT_TEMPLATES.children[2].cloneNode(true) as HTMLElement;
+    //     controller = new TableController(contentElement);
+    //     break;
+    //   case TabType.Console:
+    //     contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
+    //     controller = new ConsoleController(contentElement);
+    //     break;
+    //   case TabType.Statistics:
+    //     contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
+    //     controller = new StatisticsController(contentElement);
+    //     break;
+    //   case TabType.Odometry:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
+    //     controller = new OdometryController(contentElement);
+    //     break;
+    //   case TabType.ThreeDimension:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
+    //     controller = new ThreeDimensionController(contentElement);
+    //     break;
+    //   case TabType.Video:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
+    //     controller = new VideoController(contentElement);
+    //     break;
+    //   case TabType.Joysticks:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
+    //     controller = new JoysticksController(contentElement);
+    //     break;
+    //   case TabType.Swerve:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
+    //     controller = new SwerveController(contentElement);
+    //     break;
+    //   case TabType.Mechanism:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
+    //     controller = new MechanismController(contentElement);
+    //     break;
+    //   case TabType.Points:
+    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
+    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[12].cloneNode(true));
+    //     controller = new PointsController(contentElement);
+    //     break;
+    //   case TabType.Metadata:
+    //     contentElement = this.CONTENT_TEMPLATES.children[13].cloneNode(true) as HTMLElement;
+    //     controller = new MetadataController(contentElement);
+    //     break;
+    // }
 
     // Create title element
     let titleElement = document.createElement("div");
@@ -266,16 +264,16 @@ export default class Tabs {
     this.tabList.splice(this.selectedTab + 1, 0, {
       type: type,
       title: getDefaultTabTitle(type),
-      controller: controller,
+      // controller: controller,
       titleElement: titleElement,
-      contentElement: contentElement
+      contentElement: document.createElement("div")
     });
     this.selectedTab += 1;
-    this.VIEWER.appendChild(contentElement);
-    controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
-    if (TIMELINE_VIZ_TYPES.includes(type)) {
-      (controller as TimelineVizController).setTitle(getDefaultTabTitle(type));
-    }
+    // this.VIEWER.appendChild(contentElement);
+    // controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
+    // if (TIMELINE_VIZ_TYPES.includes(type)) {
+    //   (controller as TimelineVizController).setTitle(getDefaultTabTitle(type));
+    // }
     this.updateElements();
   }
 
@@ -283,9 +281,9 @@ export default class Tabs {
   close(index: number) {
     if (index < 1 || index > this.tabList.length - 1) return;
     if (TIMELINE_VIZ_TYPES.includes(this.tabList[index].type)) {
-      (this.tabList[index].controller as TimelineVizController).stopPeriodic();
+      // (this.tabList[index].controller as TimelineVizController).stopPeriodic();
     }
-    this.VIEWER.removeChild(this.tabList[index].contentElement);
+    // this.VIEWER.removeChild(this.tabList[index].contentElement);
     this.tabList.splice(index, 1);
     if (this.selectedTab > index) this.selectedTab--;
     if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
@@ -322,42 +320,42 @@ export default class Tabs {
     tab.title = name;
     tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
     if (TIMELINE_VIZ_TYPES.includes(tab.type)) {
-      (tab.controller as TimelineVizController).setTitle(name);
+      // (tab.controller as TimelineVizController).setTitle(name);
     }
   }
 
   /** Adds the enabled field to the discrete legend on the selected line graph. */
   addDiscreteEnabled() {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
+      // (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
     }
   }
 
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
   editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
+      // (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
     }
   }
 
   /** Clear the fields for an axis on the selected line graph. */
   clearAxis(legend: string) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
+      // (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
     }
   }
 
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
-      (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
+      // (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
     }
   }
 
   /** Switches the orbit FOV for the selected 3D field. */
   setFov(fov: number) {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
-      (this.tabList[this.selectedTab].controller as ThreeDimensionController).setFov(fov);
+      // (this.tabList[this.selectedTab].controller as ThreeDimensionController).setFov(fov);
     }
   }
 
@@ -366,7 +364,8 @@ export default class Tabs {
    * and right arrow keys) */
   isUnlockedVideoSelected(): boolean {
     if (this.tabList[this.selectedTab].type === TabType.Video) {
-      return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
+      // return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
+      return false;
     } else {
       return false;
     }
@@ -376,7 +375,7 @@ export default class Tabs {
   processVideoData(data: any) {
     this.tabList.forEach((tab) => {
       if (tab.type === TabType.Video) {
-        (tab.controller as VideoController).processVideoData(data);
+        // (tab.controller as VideoController).processVideoData(data);
       }
     });
   }
