@@ -10,6 +10,10 @@ export default class ScrollSensor {
   private lastScrollLeft: number = 0;
   private lastScrollTop: number = 0;
 
+  private panActive = false;
+  private panStartCursorX = 0;
+  private panLastCursorX = 0;
+
   /**
    * Creates a new ScrollSensor.
    * @param container The container element. The overflow should be "scroll" and the scrollbar should be hidden. The child element should have the dimensions 1000000x1000000px.
@@ -19,9 +23,31 @@ export default class ScrollSensor {
     this.container = container;
     this.callback = callback;
 
+    // Scroll events
     this.resetNext = true;
     this.container.addEventListener("scroll", () => {
       this.update();
+    });
+
+    // Pan events
+    container.addEventListener("mousedown", (event) => {
+      this.panActive = true;
+      let x = event.clientX - container.getBoundingClientRect().x;
+      this.panStartCursorX = x;
+      this.panLastCursorX = x;
+    });
+    container.addEventListener("mouseleave", () => {
+      this.panActive = false;
+    });
+    container.addEventListener("mouseup", () => {
+      this.panActive = false;
+    });
+    container.addEventListener("mousemove", (event) => {
+      if (this.panActive) {
+        let cursorX = event.clientX - container.getBoundingClientRect().x;
+        callback(this.panLastCursorX - cursorX, 0);
+        this.panLastCursorX = cursorX;
+      }
     });
   }
 
