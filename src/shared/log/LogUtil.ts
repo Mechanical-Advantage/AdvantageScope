@@ -25,6 +25,13 @@ export const ENABLED_KEYS = withMergedKeys([
   "/DSLog/Status/DSDisabled",
   "RobotEnable" // Phoenix
 ]);
+export const AUTONOMOUS_KEYS = withMergedKeys([
+  "/DriverStation/Autonomous",
+  "NT:/AdvantageKit/DriverStation/Autonomous",
+  "DS:autonomous",
+  "NT:/FMSInfo/FMSControlData",
+  "/DSLog/Status/DSTeleop"
+]);
 export const ALLIANCE_KEYS = withMergedKeys([
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
@@ -184,6 +191,80 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
     }
   }
   return enabledData;
+}
+
+export function getAutonomousData(log: Log): LogValueSetBoolean | null {
+  let autonomousKey = AUTONOMOUS_KEYS.find((key) => log.getFieldKeys().includes(key));
+  if (!autonomousKey) return null;
+  let autonomousData: LogValueSetBoolean | null = null;
+  if (autonomousKey.endsWith("FMSControlData")) {
+    let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
+    if (tempAutoData) {
+      autonomousData = {
+        timestamps: tempAutoData.timestamps,
+        values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
+      };
+    }
+  } else {
+    let tempAutoData = log.getBoolean(autonomousKey, -Infinity, Infinity);
+    if (!tempAutoData) return null;
+    autonomousData = tempAutoData;
+    if (autonomousKey.endsWith("DSTeleop")) {
+      autonomousData = {
+        timestamps: autonomousData.timestamps,
+        values: autonomousData.values.map((value) => !value)
+      };
+    }
+  }
+  return autonomousData;
+}
+
+export function getRobotStateRanges(log: Log): { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] {
+  let enabledData = getEnabledData(log);
+  let autoData = getAutonomousData(log);
+  if (!enabledData || !autoData) return [];
+
+  // Combine enabled and auto data
+  let allTimestamps = [...enabledData.timestamps, ...autoData.timestamps];
+  allTimestamps = [...new Set(allTimestamps)];
+  allTimestamps.sort((a, b) => Number(a) - Number(b));
+  let combined: { timestamp: number; enabled: boolean; auto: boolean }[] = [];
+  allTimestamps.forEach((timestamp) => {
+    let enabled = enabledData!.values.findLast((_, index) => enabledData!.timestamps[index] <= timestamp);
+    let auto = autoData!.values.findLast((_, index) => autoData!.timestamps[index] <= timestamp);
+    if (enabled === undefined) enabled = false;
+    if (auto === undefined) auto = false;
+    combined.push({
+      timestamp: timestamp,
+      enabled: enabled,
+      auto: auto
+    });
+  });
+
+  // Get ranges
+  let ranges: { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] = [];
+  combined.forEach((sample, index) => {
+    let end: number | undefined = undefined;
+    if (sample.enabled) {
+      if (index < combined.length - 1) {
+        end = combined[index + 1].timestamp;
+      }
+      ranges.push({
+        start: sample.timestamp,
+        end: end,
+        mode: sample.auto ? "auto" : "teleop"
+      });
+    } else {
+      let endSample = combined.find((endSample) => endSample.timestamp > sample.timestamp && endSample.enabled);
+      if (endSample) end = endSample.timestamp;
+      ranges.push({
+        start: sample.timestamp,
+        end: end,
+        mode: "disabled"
+      });
+    }
+  });
+  return ranges;
 }
 
 export function getIsRedAlliance(log: Log, time: number): boolean {

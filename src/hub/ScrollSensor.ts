@@ -11,7 +11,6 @@ export default class ScrollSensor {
   private lastScrollTop: number = 0;
 
   private panActive = false;
-  private panStartCursorX = 0;
   private panLastCursorX = 0;
 
   /**
@@ -33,7 +32,6 @@ export default class ScrollSensor {
     container.addEventListener("mousedown", (event) => {
       this.panActive = true;
       let x = event.clientX - container.getBoundingClientRect().x;
-      this.panStartCursorX = x;
       this.panLastCursorX = x;
     });
     container.addEventListener("mouseleave", () => {

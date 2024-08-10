@@ -19,9 +19,11 @@ import TableController from "./tabControllers/TableController";
 import ThreeDimensionController from "./tabControllers/ThreeDimensionController";
 import TimelineVizController from "./tabControllers/TimelineVizController";
 import VideoController from "./tabControllers/VideoController";
+import Timeline from "./Timeline";
 
 export default class Tabs {
   private VIEWER = document.getElementsByClassName("viewer")[0] as HTMLElement;
+  private TIMELINE_CONTAINER = document.getElementsByClassName("timeline")[0] as HTMLElement;
   private TAB_BAR = document.getElementsByClassName("tab-bar")[0];
   private SHADOW_LEFT = document.getElementsByClassName("tab-bar-shadow-left")[0] as HTMLElement;
   private SHADOW_RIGHT = document.getElementsByClassName("tab-bar-shadow-right")[0] as HTMLElement;
@@ -40,7 +42,8 @@ export default class Tabs {
     contentElement: HTMLElement;
   }[] = [];
   private selectedTab = 0;
-  private scrollSensor: ScrollSensor;
+  private tabsScrollSensor: ScrollSensor;
+  private timeline: Timeline;
 
   constructor() {
     // Hover and click handling
@@ -108,23 +111,23 @@ export default class Tabs {
     this.addTab(TabType.LineGraph);
 
     // Scroll management
-    this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
+    this.tabsScrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
       this.TAB_BAR.scrollLeft += dx + dy;
     });
+
+    // Add timeline
+    this.timeline = new Timeline(this.TIMELINE_CONTAINER);
 
     // Periodic function
     let periodic = () => {
       this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
       this.SHADOW_RIGHT.style.opacity =
         Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
-      this.scrollSensor.periodic();
+      this.tabsScrollSensor.periodic();
+      this.timeline.periodic();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
-
-    let sourceListRoot = (document.getElementsByClassName("tab-content")[0] as HTMLElement)
-      .firstElementChild as HTMLElement;
-    new SourceList(sourceListRoot, OdometryConfig);
   }
 
   /** Returns the current state. */

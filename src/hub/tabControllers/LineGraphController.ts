@@ -1031,7 +1031,7 @@ export default class LineGraphController implements TabController {
       });
     });
 
-    //Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
+    // Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
     let formatMarkedTimestampText = (time: number): string => {
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(xAxis.step / 10)));
       return time.toFixed(fractionDigits) + "s";

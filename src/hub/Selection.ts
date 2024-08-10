@@ -2,6 +2,8 @@ import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 
 export default class Selection {
   private STEP_SIZE = 0.02; // When using left-right arrows keys on non-AdvantageKit logs
+  private TIMELINE_MIN_ZOOM_TIME = 0.05;
+  private TIMELINE_ZOOM_BASE = 1.001;
 
   private PLAY_BUTTON = document.getElementsByClassName("play")[0] as HTMLElement;
   private PAUSE_BUTTON = document.getElementsByClassName("pause")[0] as HTMLElement;
@@ -11,6 +13,8 @@ export default class Selection {
   private mode: SelectionMode = SelectionMode.Idle;
   private hoveredTime: number | null = null;
   private staticTime: number = 0;
+  private timelineRange: [number, number] = [0, 10];
+  private timelineMaxZoom = true; // When at maximum zoom, maintain it as the available range increases
   private playbackStartLog: number = 0;
   private playbackStartReal: number = 0;
   private playbackSpeed: number = 1;
@@ -264,6 +268,78 @@ export default class Selection {
       this.playbackStartReal = this.now();
     }
     this.playbackSpeed = speed;
+  }
+
+  /** Returns the visible range for the timeline. */
+  getTimelineRange(): [number, number] {
+    this.applyTimelineScroll(0, 0, 0);
+    return this.timelineRange;
+  }
+
+  /** Updates the timeline range based on a scroll event. */
+  applyTimelineScroll(dx: number, dy: number, widthPixels: number) {
+    // Find available timestamp range
+    let availableRange = window.log.getTimestampRange();
+    availableRange = [availableRange[0], availableRange[1]];
+    let liveTime = this.getCurrentLiveTime();
+    if (liveTime !== null) {
+      availableRange[1] = liveTime;
+    }
+    if (availableRange[1] - availableRange[0] < this.TIMELINE_MIN_ZOOM_TIME) {
+      availableRange[1] = availableRange[0] + this.TIMELINE_ZOOM_BASE;
+    }
+
+    // Apply horizontal scroll
+    if (this.mode === SelectionMode.Locked) {
+      let zoom = this.timelineRange[1] - this.timelineRange[0];
+      this.timelineRange[0] = availableRange[1] - zoom;
+      this.timelineRange[1] = availableRange[1];
+      if (dx < 0) this.unlock(); // Unlock if attempting to scroll away
+    } else if (dx !== 0) {
+      let secsPerPixel = (this.timelineRange[1] - this.timelineRange[0]) / widthPixels;
+      this.timelineRange[0] += dx * secsPerPixel;
+      this.timelineRange[1] += dx * secsPerPixel;
+    }
+
+    // Apply vertical scroll
+    if (dy !== 0 && (!this.timelineMaxZoom || dy < 0)) {
+      // If max zoom, ignore positive scroll (no effect, just apply the max zoom)
+      let zoomPercent = Math.pow(this.TIMELINE_ZOOM_BASE, dy);
+      let newZoom = (this.timelineRange[1] - this.timelineRange[0]) * zoomPercent;
+      if (newZoom < this.TIMELINE_MIN_ZOOM_TIME) newZoom = this.TIMELINE_MIN_ZOOM_TIME;
+      if (newZoom > availableRange[1] - availableRange[0]) newZoom = availableRange[1] - availableRange[0];
+
+      let hoveredTime = this.getHoveredTime();
+      if (hoveredTime === null) {
+        hoveredTime = (this.timelineRange[0] + this.timelineRange[1]) / 2;
+      }
+      let hoveredPercent = (hoveredTime - this.timelineRange[0]) / (this.timelineRange[1] - this.timelineRange[0]);
+      this.timelineRange[0] = hoveredTime - newZoom * hoveredPercent;
+      this.timelineRange[1] = hoveredTime + newZoom * (1 - hoveredPercent);
+    } else if (this.timelineMaxZoom) {
+      this.timelineRange = availableRange;
+    }
+
+    // Enforce max range
+    if (this.timelineRange[1] - this.timelineRange[0] > availableRange[1] - availableRange[0]) {
+      this.timelineRange = availableRange;
+    }
+    this.timelineMaxZoom = this.timelineRange[1] - this.timelineRange[0] === availableRange[1] - availableRange[0];
+
+    // Enforce left limit
+    if (this.timelineRange[0] < availableRange[0]) {
+      let shift = availableRange[0] - this.timelineRange[0];
+      this.timelineRange[0] += shift;
+      this.timelineRange[1] += shift;
+    }
+
+    // Enforce right limit
+    if (this.timelineRange[1] > availableRange[1]) {
+      let shift = availableRange[1] - this.timelineRange[1];
+      this.timelineRange[0] += shift;
+      this.timelineRange[1] += shift;
+      if (dx > 0) this.lock(); // Lock if action is intentional
+    }
   }
 }
 
