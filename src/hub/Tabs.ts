@@ -3,7 +3,7 @@ import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import SourceList from "./SourceList";
-import { OdometryConfig } from "../shared/SourceListConfig";
+import { LineGraphConfig, OdometryConfig } from "../shared/SourceListConfig";
 import TabController from "./TabController";
 import ConsoleController from "./tabControllers/ConsoleController";
 import DocumentationController from "./tabControllers/DocumentationController";

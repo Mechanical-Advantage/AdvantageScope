@@ -512,7 +512,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         );
       }
       config.types.forEach((typeConfig) => {
-        if (typeConfig.sourceTypes.includes(state.logType) && typeConfig.parentType === currentTypeConfig.parentType) {
+        if (typeConfig.sourceTypes.includes(state.logType) && typeConfig.childOf === currentTypeConfig.childOf) {
           let current = state.type === typeConfig.key;
           let optionConfig = current
             ? undefined
@@ -530,10 +530,20 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                         label: optionValue.display,
                         click() {
                           state.type = typeConfig.key;
-                          state.options = {};
+                          let newOptions: { [key: string]: string } = {};
                           typeConfig.options.forEach((optionConfig) => {
-                            state.options[optionConfig.key] = optionConfig.values[0].key;
+                            if (
+                              optionConfig.key in state.options &&
+                              optionConfig.values
+                                .map((valueConfig) => valueConfig.key)
+                                .includes(state.options[optionConfig.key])
+                            ) {
+                              newOptions[optionConfig.key] = state.options[optionConfig.key];
+                            } else {
+                              newOptions[optionConfig.key] = optionConfig.values[0].key;
+                            }
                           });
+                          state.options = newOptions;
                           state.options[typeConfig.initialSelectionOption!] = optionValue.key;
                           respond();
                         }
@@ -544,10 +554,20 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   ? undefined
                   : () => {
                       state.type = typeConfig.key;
-                      state.options = {};
+                      let newOptions: { [key: string]: string } = {};
                       typeConfig.options.forEach((optionConfig) => {
-                        state.options[optionConfig.key] = optionConfig.values[0].key;
+                        if (
+                          optionConfig.key in state.options &&
+                          optionConfig.values
+                            .map((valueConfig) => valueConfig.key)
+                            .includes(state.options[optionConfig.key])
+                        ) {
+                          newOptions[optionConfig.key] = state.options[optionConfig.key];
+                        } else {
+                          newOptions[optionConfig.key] = optionConfig.values[0].key;
+                        }
                       });
+                      state.options = newOptions;
                       respond();
                     }
             })

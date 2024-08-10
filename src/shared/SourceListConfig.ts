@@ -1,5 +1,8 @@
+import { GraphColors, NeonColors } from "./Colors";
+
 export type SourceListConfig = {
   title: string;
+  autoAdvance: boolean | string; // True advances type, string advances option
   types: SourceListTypeConfig[];
 };
 
@@ -11,7 +14,8 @@ export type SourceListTypeConfig = {
   color: string; // Option key or hex (starting with #)
   darkColor?: string;
   sourceTypes: string[];
-  parentType?: string;
+  parentKey?: string; // Identifies parents with shared children types
+  childOf?: string; // Parent key this child is attached to
 
   // If only one option, show without submenu
   options: SourceListOptionConfig[];
@@ -22,10 +26,12 @@ export type SourceListOptionConfig = {
   key: string;
   display: string;
   showInTypeName: boolean;
-  values: {
-    key: string;
-    display: string;
-  }[];
+  values: SourceListOptionValueConfig[];
+};
+
+export type SourceListOptionValueConfig = {
+  key: string;
+  display: string;
 };
 
 export type SourceListState = SourceListItemState[];
@@ -40,6 +46,7 @@ export type SourceListItemState = {
 
 export const OdometryConfig: SourceListConfig = {
   title: "Poses",
+  autoAdvance: true,
   types: [
     {
       key: "robot",
@@ -60,7 +67,8 @@ export const OdometryConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "model"
+      initialSelectionOption: "model",
+      parentKey: "robot"
     },
     {
       key: "ghost",
@@ -83,17 +91,11 @@ export const OdometryConfig: SourceListConfig = {
           key: "color",
           display: "Color",
           showInTypeName: false,
-          values: [
-            { key: "#ff0000", display: "Red" },
-            { key: "#00ff00", display: "Green" },
-            { key: "#0000ff", display: "Blue" },
-            { key: "#ffff00", display: "Yellow" },
-            { key: "#ff00ff", display: "Magenta" },
-            { key: "#00ffff", display: "Cyan" }
-          ]
+          values: NeonColors
         }
       ],
-      initialSelectionOption: "model"
+      initialSelectionOption: "model",
+      parentKey: "robot"
     },
     {
       key: "component",
@@ -101,9 +103,9 @@ export const OdometryConfig: SourceListConfig = {
       symbol: "puzzlepiece.extension.fill",
       showInTypeName: true,
       color: "#888888",
-      sourceTypes: ["NumberArray", "Pose2d", "Pose2d[]", "Transform2d", "Transform2d[]"],
+      sourceTypes: ["NumberArray", "Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]"],
       options: [],
-      parentType: "robot"
+      childOf: "robot"
     },
     {
       key: "camera",
@@ -111,9 +113,9 @@ export const OdometryConfig: SourceListConfig = {
       symbol: "camera.fill",
       showInTypeName: true,
       color: "#888888",
-      sourceTypes: ["NumberArray", "Pose2d", "Transform2d"],
+      sourceTypes: ["NumberArray", "Pose3d", "Transform3d"],
       options: [],
-      parentType: "robot"
+      childOf: "robot"
     },
     {
       key: "vision",
@@ -202,94 +204,86 @@ export const OdometryConfig: SourceListConfig = {
   ]
 };
 
-// const LineGraphConfig: SourceListConfig = {
-//   name: "Left Axis",
-//   types: [
-//     {
-//       key: "stepped",
-//       display: "Stepped",
-//       symbol: "circle.fill",
-//       showInTypeName: false,
-//       color: "color",
-//       options: [
-//         {
-//           key: "color",
-//           display: "Color",
-//           showInTypeName: false,
-//           values: [
-//             { key: "#ff0000", display: "Red" },
-//             { key: "#00ff00", display: "Green" },
-//             { key: "#0000ff", display: "Blue" }
-//           ]
-//         },
-//         {
-//           key: "thickness",
-//           display: "Thickness",
-//           showInTypeName: false,
-//           values: [
-//             { key: "normal", display: "Normal" },
-//             { key: "bold", display: "Bold" },
-//             { key: "verybold", display: "Very Bold" }
-//           ]
-//         }
-//       ]
-//     },
-//     {
-//       key: "smooth",
-//       display: "Smooth",
-//       symbol: "circle.circle.fill",
-//       showInTypeName: false,
-//       color: "color",
-//       options: [
-//         {
-//           key: "color",
-//           display: "Color",
-//           showInTypeName: false,
-//           values: [
-//             { key: "#ff0000", display: "Red" },
-//             { key: "#00ff00", display: "Green" },
-//             { key: "#0000ff", display: "Blue" }
-//           ]
-//         },
-//         {
-//           key: "thickness",
-//           display: "Thickness",
-//           showInTypeName: false,
-//           values: [
-//             { key: "normal", display: "Normal" },
-//             { key: "bold", display: "Bold" },
-//             { key: "verybold", display: "Very Bold" }
-//           ]
-//         }
-//       ]
-//     },
-//     {
-//       key: "points",
-//       display: "Points",
-//       symbol: "circle.dotted.circle.fill",
-//       showInTypeName: false,
-//       color: "color",
-//       options: [
-//         {
-//           key: "color",
-//           display: "Color",
-//           showInTypeName: false,
-//           values: [
-//             { key: "#ff0000", display: "Red" },
-//             { key: "#00ff00", display: "Green" },
-//             { key: "#0000ff", display: "Blue" }
-//           ]
-//         },
-//         {
-//           key: "size",
-//           display: "Size",
-//           showInTypeName: false,
-//           values: [
-//             { key: "normal", display: "Normal" },
-//             { key: "large", display: "Large" }
-//           ]
-//         }
-//       ]
-//     }
-//   ]
-// };
+export const LineGraphConfig: SourceListConfig = {
+  title: "Left Axis",
+  autoAdvance: "color",
+  types: [
+    {
+      key: "smooth",
+      display: "Smooth",
+      symbol: "scribble.variable",
+      showInTypeName: false,
+      color: "color",
+      sourceTypes: ["Number"],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: GraphColors
+        },
+        {
+          key: "thickness",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" },
+            { key: "verybold", display: "Very Bold" }
+          ]
+        }
+      ]
+    },
+    {
+      key: "stepped",
+      display: "Stepped",
+      symbol: "stairs",
+      showInTypeName: false,
+      color: "color",
+      sourceTypes: ["Number"],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: GraphColors
+        },
+        {
+          key: "thickness",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" },
+            { key: "verybold", display: "Very Bold" }
+          ]
+        }
+      ]
+    },
+    {
+      key: "points",
+      display: "Points",
+      symbol: "smallcircle.filled.circle",
+      showInTypeName: false,
+      color: "color",
+      sourceTypes: ["Number"],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: GraphColors
+        },
+        {
+          key: "size",
+          display: "Size",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "large", display: "Large" }
+          ]
+        }
+      ]
+    }
+  ]
+};

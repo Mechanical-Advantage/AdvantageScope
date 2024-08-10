@@ -1,5 +1,11 @@
 import { hex, hsl } from "color-convert";
-import { SourceListConfig, SourceListItemState, SourceListState } from "../shared/SourceListConfig";
+import {
+  SourceListConfig,
+  SourceListItemState,
+  SourceListOptionValueConfig,
+  SourceListState,
+  SourceListTypeConfig
+} from "../shared/SourceListConfig";
 import LoggableType from "../shared/log/LoggableType";
 import { createUUID } from "../shared/util";
 
@@ -15,8 +21,8 @@ export default class SourceList {
   private stopped = false;
   private config: SourceListConfig;
   private state: SourceListState = [];
-  private allAllowedTypes: Set<string> = new Set();
-  private parentTypes: Set<string> = new Set();
+  private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
+  private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
 
   constructor(root: HTMLElement, config: SourceListConfig) {
     this.config = config;
@@ -39,11 +45,13 @@ export default class SourceList {
 
     // Summarize config
     this.config.types.forEach((typeConfig) => {
-      typeConfig.sourceTypes.forEach((source) => {
-        this.allAllowedTypes.add(source);
-      });
-      if (typeConfig.parentType !== undefined) {
-        this.parentTypes.add(typeConfig.parentType);
+      if (typeConfig.childOf === undefined) {
+        typeConfig.sourceTypes.forEach((source) => {
+          this.independentAllowedTypes.add(source);
+        });
+      }
+      if (typeConfig.parentKey !== undefined) {
+        this.parentKeys.set(typeConfig.key, typeConfig.parentKey);
       }
     });
 
@@ -110,7 +118,7 @@ export default class SourceList {
     for (let i = 0; i < this.LIST.childElementCount; i++) {
       let itemRect = this.LIST.children[i].getBoundingClientRect();
       let withinItem = x > itemRect.left && x < itemRect.right && y > itemRect.top && y < itemRect.bottom;
-      if (withinItem && this.parentTypes.has(this.state[i].type)) {
+      if (withinItem && this.parentKeys.has(this.state[i].type)) {
         parentIndex = i;
       }
     }
@@ -127,19 +135,20 @@ export default class SourceList {
         );
       });
     };
-    let typeValidList = isTypeValid(this.allAllowedTypes);
+    let typeValidList = isTypeValid(this.independentAllowedTypes);
     let typeValidParent = false;
     if (parentIndex !== null) {
+      let parentKey = this.parentKeys.get(this.state[parentIndex!].type);
       let childAllowedTypes: Set<string> = new Set();
       this.config.types.forEach((typeConfig) => {
-        if (typeConfig.parentType === this.state[parentIndex!].type) {
+        if (typeConfig.childOf === parentKey) {
           typeConfig.sourceTypes.forEach((type) => childAllowedTypes.add(type));
         }
       });
       typeValidParent = isTypeValid(childAllowedTypes);
     }
 
-    // Update highlight
+    // Add fields and update highlight
     if (end) {
       this.DRAG_HIGHLIGHT.hidden = true;
       let addChild = typeValidParent && parentIndex !== null;
@@ -149,9 +158,12 @@ export default class SourceList {
           let logType = window.log.getType(field);
           let logTypeString = logType === null ? null : LoggableType[logType];
           let structuredType = window.log.getStructuredType(field);
+
+          // Get all possible types
+          let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number }[] = [];
           for (let i = 0; i < this.config.types.length; i++) {
             let typeConfig = this.config.types[i];
-            if (addChild && typeConfig.parentType !== this.state[parentIndex!].type) {
+            if (addChild && typeConfig.childOf !== this.parentKeys.get(this.state[parentIndex!].type)) {
               // Not a child of this parent
               continue;
             }
@@ -162,28 +174,59 @@ export default class SourceList {
               finalType = logTypeString;
             }
             if (finalType.length > 0) {
-              let options: { [key: string]: string } = {};
-              typeConfig.options.forEach((optionConfig) => {
-                options[optionConfig.key] = optionConfig.values[0].key;
-              });
-              let state: SourceListItemState = {
-                type: typeConfig.key,
-                logKey: field,
+              possibleTypes.push({
+                typeConfig: typeConfig,
                 logType: finalType,
-                visible: true,
-                options: options
-              };
-              if (addChild) {
-                let insertIndex = parentIndex! + 1;
-                while (insertIndex < this.state.length && this.isChild(insertIndex)) {
-                  insertIndex++;
-                }
-                this.addItem(state, insertIndex);
-              } else {
-                this.addItem(state);
-              }
-              break;
+                uses: this.state.filter((itemState) => itemState.type === typeConfig.key).length
+              });
             }
+          }
+
+          // Find best type
+          if (possibleTypes.length === 0) return;
+          if (this.config.autoAdvance === true) {
+            possibleTypes.sort((a, b) => a.uses - b.uses);
+          }
+          let bestType = possibleTypes[0];
+
+          // Add to list
+          let options: { [key: string]: string } = {};
+          bestType.typeConfig.options.forEach((optionConfig) => {
+            if (this.config.autoAdvance !== optionConfig.key) {
+              // Select first value
+              options[optionConfig.key] = optionConfig.values[0].key;
+            } else {
+              // Select least used value
+              let useCounts: { valueConfig: SourceListOptionValueConfig; uses: number }[] = optionConfig.values.map(
+                (valueConfig) => {
+                  return {
+                    valueConfig: valueConfig,
+                    uses: this.state.filter(
+                      (itemState) =>
+                        optionConfig.key in itemState.options && itemState.options[optionConfig.key] === valueConfig.key
+                    ).length
+                  };
+                }
+              );
+              useCounts.sort((a, b) => a.uses - b.uses);
+              options[optionConfig.key] = useCounts[0].valueConfig.key;
+            }
+          });
+          let state: SourceListItemState = {
+            type: bestType.typeConfig.key,
+            logKey: field,
+            logType: bestType.logType,
+            visible: true,
+            options: options
+          };
+          if (addChild) {
+            let insertIndex = parentIndex! + 1;
+            while (insertIndex < this.state.length && this.isChild(insertIndex)) {
+              insertIndex++;
+            }
+            this.addItem(state, insertIndex);
+          } else {
+            this.addItem(state);
           }
         });
       }
@@ -235,7 +278,7 @@ export default class SourceList {
 
     // Check if child type
     let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === state.type);
-    let isChild = typeConfig !== undefined && typeConfig.parentType !== undefined;
+    let isChild = typeConfig !== undefined && typeConfig.childOf !== undefined;
 
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
@@ -255,18 +298,22 @@ export default class SourceList {
         this.state[index] = newState;
         this.updateItem(item, newState);
 
-        if (newState.type !== originalType && !isChild) {
-          // Changed parent type, remove all children
-          index++;
-          if (!this.isChild(index)) return;
-          let removeCount = 0;
-          while (index + removeCount < this.state.length) {
-            removeCount++;
-            if (!this.isChild(index + removeCount)) break;
-          }
-          this.state.splice(index, removeCount);
-          for (let i = 0; i < removeCount; i++) {
-            this.LIST.removeChild(this.LIST.children[index]);
+        if (!isChild) {
+          let originalParentKey = this.config.types.find((typeConfig) => typeConfig.key === originalType)?.parentKey;
+          let newParentKey = this.config.types.find((typeConfig) => typeConfig.key === newState.type)?.parentKey;
+          if (originalParentKey !== newParentKey) {
+            // Changed parent key, remove children
+            index++;
+            if (!this.isChild(index)) return;
+            let childCount = 0;
+            while (index + childCount < this.state.length) {
+              childCount++;
+              if (!this.isChild(index + childCount)) break;
+            }
+            this.state.splice(index, childCount);
+            for (let i = 0; i < childCount; i++) {
+              this.LIST.removeChild(this.LIST.children[index]);
+            }
           }
         }
       };
@@ -406,7 +453,7 @@ export default class SourceList {
   private isChild(index: number) {
     if (index < 0 || index >= this.state.length) return false;
     let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === this.state[index].type);
-    return typeConfig !== undefined && typeConfig.parentType !== undefined;
+    return typeConfig !== undefined && typeConfig.childOf !== undefined;
   }
 
   /**
