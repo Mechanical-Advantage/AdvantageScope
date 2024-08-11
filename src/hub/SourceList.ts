@@ -394,7 +394,13 @@ export default class SourceList {
     if (typeConfig === undefined) throw 'Unknown type "' + state.type + '"';
 
     // Update type icon
-    let typeIcon = item.getElementsByTagName("object")[0] as HTMLObjectElement;
+    let typeIconVisible = item.getElementsByTagName("object")[0] as HTMLObjectElement;
+    let typeIconHidden = item.getElementsByTagName("object")[1] as HTMLObjectElement;
+    if (typeIconVisible.classList.contains("hidden")) {
+      let temp = typeIconVisible;
+      typeIconVisible = typeIconHidden;
+      typeIconHidden = temp;
+    }
     let color: string;
     let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (typeConfig.color.startsWith("#")) {
@@ -410,15 +416,19 @@ export default class SourceList {
     hslVal[2] = isDark ? Math.max(hslVal[2], 65) : Math.min(hslVal[2], 45); // Ensure enough contrast with background
     color = "#" + hsl.hex(hslVal);
     let dataPath = "symbols/sourceList/" + typeConfig.symbol + ".svg";
-    if (dataPath !== typeIcon.getAttribute("data")) {
-      typeIcon.data = dataPath;
-      typeIcon.addEventListener("load", () => {
-        if (typeIcon.contentDocument) {
-          typeIcon.contentDocument.getElementsByTagName("svg")[0].style.color = color;
+    if (dataPath !== typeIconVisible.getAttribute("data")) {
+      // Load new icon on hidden icon
+      typeIconHidden.data = dataPath;
+      typeIconHidden.addEventListener("load", () => {
+        if (typeIconHidden.contentDocument) {
+          typeIconHidden.contentDocument.getElementsByTagName("svg")[0].style.color = color;
+          typeIconHidden.classList.remove("hidden");
+          typeIconVisible.classList.add("hidden");
         }
       });
-    } else if (typeIcon.contentDocument !== null) {
-      let svgs = typeIcon.contentDocument.getElementsByTagName("svg");
+    } else if (typeIconVisible.contentDocument !== null) {
+      // Replace color on visible icon
+      let svgs = typeIconVisible.contentDocument.getElementsByTagName("svg");
       if (svgs.length > 0) {
         svgs[0].style.color = color;
       }

@@ -862,6 +862,10 @@ div.source-list button.type {
   transform: translate(-50%, -50%);
 }
 
+div.source-list button.type object.hidden {
+  opacity: 0;
+}
+
 div.source-list div.hidden button.type,
 div.source-list div.hidden div.type-name,
 div.source-list div.hidden div.key-container {
