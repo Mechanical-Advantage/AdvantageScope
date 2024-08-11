@@ -8,7 +8,6 @@ import {
 } from "../shared/SourceListConfig";
 import LoggableType from "../shared/log/LoggableType";
 import { createUUID } from "../shared/util";
-import TestImageURL from "./TestImageURL";
 
 export default class SourceList {
   static promptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
