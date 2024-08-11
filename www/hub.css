@@ -793,8 +793,6 @@ div.source-list {
   left: 10px;
   width: 50%;
   height: 50%;
-
-  border: 1px solid black;
 }
 
 div.source-list div.title {
@@ -954,4 +952,56 @@ div.source-list div.drag-highlight {
   opacity: 25%;
   user-select: none;
   pointer-events: none;
+}
+
+/* Line graph */
+
+div.line-graph-axis {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  width: calc(100% / 3);
+}
+
+div.line-graph-left {
+  left: 0%;
+}
+
+div.line-graph-right {
+  left: calc(100% / 3 * 2);
+}
+
+div.line-graph-discrete {
+  left: calc(100% / 3);
+  box-sizing: border-box;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.line-graph-discrete {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+}
+
+button.line-graph-edit {
+  position: absolute;
+  top: 15px;
+  transform: translate(-50%, -50%);
+
+  width: 25px;
+  height: 25px;
+}
+
+button.line-graph-edit-left {
+  left: calc(100% / 3 - 15px);
+}
+
+button.line-graph-edit-right {
+  left: calc(100% - 15px);
+}
+
+button.line-graph-edit-discrete {
+  left: calc(100% / 3 * 2 - 15px);
 }

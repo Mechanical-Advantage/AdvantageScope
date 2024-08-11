@@ -1,8 +1,8 @@
-import { MatchType } from "../../shared/MatchInfo";
-import TabType from "../../shared/TabType";
-import VideoSource from "../../shared/VideoSource";
-import { getEnabledData, getMatchInfo } from "../../shared/log/LogUtil";
-import VideoVisualizer from "../../shared/visualizers/VideoVisualizer";
+import { MatchType } from "../../../shared/MatchInfo";
+import TabType from "../../../shared/TabType";
+import VideoSource from "../../../shared/VideoSource";
+import { getEnabledData, getMatchInfo } from "../../../shared/log/LogUtil";
+import VideoVisualizer from "../../../shared/visualizers/VideoVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class VideoController extends TimelineVizController {

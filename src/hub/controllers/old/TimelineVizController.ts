@@ -1,13 +1,12 @@
-import { TimelineVisualizerState } from "../../shared/HubState";
-import LoggableType from "../../shared/log/LoggableType";
-import { getEnabledData } from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
-import { arraysEqual, clampValue, createUUID, scaleValue } from "../../shared/util";
-import Visualizer from "../../shared/visualizers/Visualizer";
-import { SelectionMode } from "../Selection";
+import LoggableType from "../../../shared/log/LoggableType";
+import { getEnabledData } from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
+import { arraysEqual, clampValue, createUUID, scaleValue } from "../../../shared/util";
+import Visualizer from "../../../shared/visualizers/Visualizer";
+import { SelectionMode } from "../../Selection";
 import TabController from "../TabController";
 
-export default abstract class TimelineVizController implements TabController {
+export default abstract class TimelineVizController {
   private HANDLE_WIDTH = 4;
 
   protected UUID = createUUID();
@@ -135,7 +134,7 @@ export default abstract class TimelineVizController implements TabController {
     window.clearInterval(this.periodicInterval);
   }
 
-  saveState(): TimelineVisualizerState {
+  saveState(): unknown {
     return {
       type: this.type as any,
       uuid: this.UUID,
@@ -147,7 +146,7 @@ export default abstract class TimelineVizController implements TabController {
     };
   }
 
-  restoreState(state: TimelineVisualizerState) {
+  restoreState(state: any) {
     if (state.type !== this.type) return;
     this.fields = state.fields;
     this.UUID = state.uuid;

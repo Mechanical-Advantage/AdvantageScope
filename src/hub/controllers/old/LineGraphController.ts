@@ -1,16 +1,15 @@
-import { AllColors } from "../../shared/Colors";
-import { LineGraphState } from "../../shared/HubState";
-import TabType from "../../shared/TabType";
-import { getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
-import { LogValueSetAny, LogValueSetNumber } from "../../shared/log/LogValueSets";
-import LoggableType from "../../shared/log/LoggableType";
-import { UnitConversionPreset, convertWithPreset } from "../../shared/units";
-import { ValueScaler, clampValue, cleanFloat, scaleValue, shiftColor } from "../../shared/util";
-import ScrollSensor from "../ScrollSensor";
-import { SelectionMode } from "../Selection";
+import { AllColors } from "../../../shared/Colors";
+import TabType from "../../../shared/TabType";
+import { getEnabledKey, getLogValueText } from "../../../shared/log/LogUtil";
+import { LogValueSetAny, LogValueSetNumber } from "../../../shared/log/LogValueSets";
+import LoggableType from "../../../shared/log/LoggableType";
+import { UnitConversionPreset, convertWithPreset } from "../../../shared/units";
+import { ValueScaler, clampValue, cleanFloat, scaleValue, shiftColor } from "../../../shared/util";
+import ScrollSensor from "../../ScrollSensor";
+import { SelectionMode } from "../../Selection";
 import TabController from "../TabController";
 
-export default class LineGraphController implements TabController {
+export default class LineGraphController {
   private MIN_ZOOM_TIME = 0.05;
   private ZOOM_BASE = 1.001;
   private MIN_AXIS_RANGE = 1e-5;
@@ -196,7 +195,7 @@ export default class LineGraphController implements TabController {
     this.updateLegendHeight();
   }
 
-  saveState(): LineGraphState {
+  saveState(): unknown {
     return {
       type: TabType.LineGraph,
       legendHeight: this.legendHeightPercent,
@@ -218,7 +217,7 @@ export default class LineGraphController implements TabController {
     };
   }
 
-  restoreState(state: LineGraphState) {
+  restoreState(state: any) {
     this.leftLockedRange = state.legends.left.lockedRange;
     this.rightLockedRange = state.legends.right.lockedRange;
     this.leftUnitConversion = state.legends.left.unitConversion;
@@ -234,13 +233,13 @@ export default class LineGraphController implements TabController {
     while (this.RIGHT_LIST.children[1]) this.RIGHT_LIST.removeChild(this.RIGHT_LIST.children[1]);
 
     // Add new fields
-    state.legends.left.fields.forEach((field) => {
+    state.legends.left.fields.forEach((field: any) => {
       this.addField("left", field.key, field.color, field.show);
     });
-    state.legends.discrete.fields.forEach((field) => {
+    state.legends.discrete.fields.forEach((field: any) => {
       this.addField("discrete", field.key, field.color, field.show);
     });
-    state.legends.right.fields.forEach((field) => {
+    state.legends.right.fields.forEach((field: any) => {
       this.addField("right", field.key, field.color, field.show);
     });
 

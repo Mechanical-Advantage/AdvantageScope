@@ -1,8 +1,8 @@
-import LoggableType from "../../shared/log/LoggableType";
-import { getOrDefault } from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
-import { convert } from "../../shared/units";
-import SwerveVisualizer, { NormalizedModuleState } from "../../shared/visualizers/SwerveVisualizer";
+import LoggableType from "../../../shared/log/LoggableType";
+import { getOrDefault } from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
+import { convert } from "../../../shared/units";
+import SwerveVisualizer, { NormalizedModuleState } from "../../../shared/visualizers/SwerveVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class JoysticksController extends TimelineVizController {

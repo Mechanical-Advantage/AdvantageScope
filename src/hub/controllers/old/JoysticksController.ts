@@ -1,6 +1,6 @@
-import { getJoystickState, JOYSTICK_KEYS } from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
-import JoysticksVisualizer from "../../shared/visualizers/JoysticksVisualizer";
+import { getJoystickState, JOYSTICK_KEYS } from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
+import JoysticksVisualizer from "../../../shared/visualizers/JoysticksVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class JoysticksController extends TimelineVizController {

@@ -8,6 +8,7 @@ import {
 } from "../shared/SourceListConfig";
 import LoggableType from "../shared/log/LoggableType";
 import { createUUID } from "../shared/util";
+import TestImageURL from "./TestImageURL";
 
 export default class SourceList {
   static promptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
@@ -80,16 +81,20 @@ export default class SourceList {
     window.requestAnimationFrame(periodic);
   }
 
+  setTitle(title: string): void {
+    this.TITLE.innerText = title;
+  }
+
   saveState(): SourceListState {
     return this.state;
   }
 
   restoreState(state: SourceListState) {
-    this.state = state;
+    this.state = [];
     while (this.LIST.firstChild) {
       this.LIST.removeChild(this.LIST.firstChild);
     }
-    this.state.forEach((itemState) => {
+    state.forEach((itemState) => {
       this.addItem(itemState);
     });
   }
@@ -414,7 +419,10 @@ export default class SourceList {
         }
       });
     } else if (typeIcon.contentDocument !== null) {
-      typeIcon.contentDocument.getElementsByTagName("svg")[0].style.color = color;
+      let svgs = typeIcon.contentDocument.getElementsByTagName("svg");
+      if (svgs.length > 0) {
+        svgs[0].style.color = color;
+      }
     }
 
     // Update type name

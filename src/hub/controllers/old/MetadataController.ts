@@ -1,9 +1,9 @@
-import { TabState } from "../../shared/HubState";
-import { MERGE_PREFIX, METADATA_KEYS } from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
+import { TabState } from "../../../shared/HubState";
+import { MERGE_PREFIX, METADATA_KEYS } from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
 import TabController from "../TabController";
 
-export default class MetadataController implements TabController {
+export default class MetadataController {
   private NO_DATA_ALERT: HTMLElement;
   private TABLE_CONTAINER: HTMLElement;
   private TABLE_BODY: HTMLElement;
@@ -17,11 +17,11 @@ export default class MetadataController implements TabController {
     this.refresh();
   }
 
-  saveState(): TabState {
+  saveState(): unknown {
     return { type: TabType.Metadata };
   }
 
-  restoreState(state: TabState) {}
+  restoreState(state: any) {}
 
   getActiveFields(): string[] {
     return METADATA_KEYS;

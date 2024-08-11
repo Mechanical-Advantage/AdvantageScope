@@ -1,7 +1,7 @@
-import LoggableType from "../../shared/log/LoggableType";
-import { getOrDefault } from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
-import PointsVisualizer from "../../shared/visualizers/PointsVisualizer";
+import LoggableType from "../../../shared/log/LoggableType";
+import { getOrDefault } from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
+import PointsVisualizer from "../../../shared/visualizers/PointsVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class PointsController extends TimelineVizController {

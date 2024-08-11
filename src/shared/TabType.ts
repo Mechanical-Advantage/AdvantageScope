@@ -16,16 +16,6 @@ enum TabType {
 
 export default TabType;
 
-export const TIMELINE_VIZ_TYPES: TabType[] = [
-  TabType.Odometry,
-  TabType.ThreeDimension,
-  TabType.Video,
-  TabType.Points,
-  TabType.Joysticks,
-  TabType.Swerve,
-  TabType.Mechanism
-];
-
 export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }

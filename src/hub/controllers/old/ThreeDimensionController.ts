@@ -19,8 +19,8 @@ import {
   rotation2dTo3d,
   rotation3dTo2d,
   Translation2d
-} from "../../shared/geometry";
-import LoggableType from "../../shared/log/LoggableType";
+} from "../../../shared/geometry";
+import LoggableType from "../../../shared/log/LoggableType";
 import {
   ALLIANCE_KEYS,
   getDriverStation,
@@ -29,12 +29,12 @@ import {
   getOrDefault,
   MechanismState,
   mergeMechanismStates
-} from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
-import { convert } from "../../shared/units";
-import { cleanFloat, scaleValue } from "../../shared/util";
-import ThreeDimensionVisualizer from "../../shared/visualizers/ThreeDimensionVisualizer";
-import ThreeDimensionVisualizerSwitching from "../../shared/visualizers/ThreeDimensionVisualizerSwitching";
+} from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
+import { convert } from "../../../shared/units";
+import { cleanFloat, scaleValue } from "../../../shared/util";
+import ThreeDimensionVisualizer from "../../../shared/visualizers/ThreeDimensionVisualizer";
+import ThreeDimensionVisualizerSwitching from "../../../shared/visualizers/ThreeDimensionVisualizerSwitching";
 import TimelineVizController from "./TimelineVizController";
 
 export default class ThreeDimensionController extends TimelineVizController {

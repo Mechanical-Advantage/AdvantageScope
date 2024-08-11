@@ -1,4 +1,4 @@
-import TabType from "../../shared/TabType";
+import TabType from "../../../shared/TabType";
 import {
   Pose2d,
   Translation2d,
@@ -9,12 +9,12 @@ import {
   logReadTranslation2dArrayToPose2dArray,
   logReadTranslation2dToPose2d,
   numberArrayToPose2dArray
-} from "../../shared/geometry";
-import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance, getOrDefault } from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
-import { convert } from "../../shared/units";
-import { scaleValue } from "../../shared/util";
-import OdometryVisualizer from "../../shared/visualizers/OdometryVisualizer";
+} from "../../../shared/geometry";
+import { ALLIANCE_KEYS, getEnabledData, getIsRedAlliance, getOrDefault } from "../../../shared/log/LogUtil";
+import LoggableType from "../../../shared/log/LoggableType";
+import { convert } from "../../../shared/units";
+import { scaleValue } from "../../../shared/util";
+import OdometryVisualizer from "../../../shared/visualizers/OdometryVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class OdometryController extends TimelineVizController {

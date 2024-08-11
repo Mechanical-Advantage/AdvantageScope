@@ -2,11 +2,10 @@ import hljs from "highlight.js/lib/core";
 import cpp from "highlight.js/lib/languages/cpp";
 import java from "highlight.js/lib/languages/java";
 import { Remarkable } from "remarkable";
-import { DocumentationState } from "../../shared/HubState";
-import TabType from "../../shared/TabType";
+import TabType from "../../../shared/TabType";
 import TabController from "../TabController";
 
-export default class DocumentationController implements TabController {
+export default class DocumentationController {
   private CONTAINER: HTMLElement;
   private TEXT: HTMLElement;
   private remarkable = new Remarkable({ html: true });
@@ -24,14 +23,14 @@ export default class DocumentationController implements TabController {
     this.loadMarkdown(this.markdownPath);
   }
 
-  saveState(): DocumentationState {
+  saveState(): unknown {
     return {
       type: TabType.Documentation,
       path: this.markdownPath
     };
   }
 
-  restoreState(state: DocumentationState) {
+  restoreState(state: any) {
     this.markdownPath = state.path;
     this.loadMarkdown(this.markdownPath);
   }

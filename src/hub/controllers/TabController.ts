@@ -1,12 +1,10 @@
-import { TabState } from "../shared/HubState";
-
-/** A controller for a single tab. */
+/** A controller for a single tab. Updates user controls and produces commands to be used by renderers. */
 export default interface TabController {
   /** Returns the current state. */
-  saveState(): TabState;
+  saveState(): unknown;
 
   /** Restores to the provided state. */
-  restoreState(state: TabState): void;
+  restoreState(state: unknown): void;
 
   /** Refresh based on new log data. */
   refresh(): void;
@@ -21,6 +19,9 @@ export default interface TabController {
    **/
   getActiveFields(): string[];
 
-  /** Called every animation frame if the tab is visible. */
+  /** Returns data required by renderers. */
+  getCommand(): unknown;
+
+  /** Called once per frame. */
   periodic(): void;
 }

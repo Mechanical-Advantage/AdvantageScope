@@ -1,12 +1,11 @@
-import { ConsoleState } from "../../shared/HubState";
-import LoggableType from "../../shared/log/LoggableType";
-import { LogValueSetString } from "../../shared/log/LogValueSets";
-import TabType from "../../shared/TabType";
-import { formatTimeWithMS, htmlEncode } from "../../shared/util";
-import { SelectionMode } from "../Selection";
+import LoggableType from "../../../shared/log/LoggableType";
+import { LogValueSetString } from "../../../shared/log/LogValueSets";
+import TabType from "../../../shared/TabType";
+import { formatTimeWithMS, htmlEncode } from "../../../shared/util";
+import { SelectionMode } from "../../Selection";
 import TabController from "../TabController";
 
-export default class ConsoleController implements TabController {
+export default class ConsoleController {
   private CONTENT: HTMLElement;
   private DRAG_HIGHLIGHT: HTMLElement;
   private TABLE_CONTAINER: HTMLElement;
@@ -93,14 +92,14 @@ export default class ConsoleController implements TabController {
     this.updateData();
   }
 
-  saveState(): ConsoleState {
+  saveState(): unknown {
     return {
       type: TabType.Console,
       field: this.field
     };
   }
 
-  restoreState(state: ConsoleState) {
+  restoreState(state: any) {
     this.field = state.field;
     this.updateData();
   }

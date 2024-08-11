@@ -1,8 +1,14 @@
 import { TabsState } from "../shared/HubState";
-import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
+import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
+import NoopRenderer from "../shared/renderers/NoopRenderer";
+import TabRenderer from "../shared/renderers/TabRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
+import LineGraphController from "./controllers/LineGraphController";
+import NoopController from "./controllers/NoopController";
+import TabController from "./controllers/TabController";
 
 export default class Tabs {
   private VIEWER = document.getElementsByClassName("viewer")[0] as HTMLElement;
@@ -21,6 +27,8 @@ export default class Tabs {
   private CLOSE_BUTTON = document.getElementsByClassName("close")[0] as HTMLElement;
   private ADD_BUTTON = document.getElementsByClassName("add-tab")[0] as HTMLElement;
 
+  private TAB_CONFIGS: Map<TabType, { showTimeline: boolean; showControls: boolean }> = new Map();
+
   private tabsScrollSensor: ScrollSensor;
   private timeline: Timeline;
 
@@ -28,13 +36,31 @@ export default class Tabs {
     type: TabType;
     title: string;
     titleElement: HTMLElement;
-    contentElement: HTMLElement;
+    controlsElement: HTMLElement;
+    rendererElement: HTMLElement;
+    controller: TabController;
+    renderer: TabRenderer;
   }[] = [];
   private selectedTab = 0;
   private controlsHandleActive = false;
   private controlHeight = 200;
 
   constructor() {
+    // Set up tab configs
+    this.TAB_CONFIGS.set(TabType.Documentation, { showTimeline: false, showControls: false });
+    this.TAB_CONFIGS.set(TabType.LineGraph, { showTimeline: false, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Table, { showTimeline: false, showControls: false });
+    this.TAB_CONFIGS.set(TabType.Console, { showTimeline: false, showControls: false });
+    this.TAB_CONFIGS.set(TabType.Statistics, { showTimeline: false, showControls: false });
+    this.TAB_CONFIGS.set(TabType.Odometry, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.ThreeDimension, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Video, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Joysticks, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Swerve, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Mechanism, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Points, { showTimeline: true, showControls: true });
+    this.TAB_CONFIGS.set(TabType.Metadata, { showTimeline: false, showControls: false });
+
     // Hover and click handling
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       this.tabList.forEach((tab, index) => {
@@ -144,8 +170,20 @@ export default class Tabs {
     let availableHeight = window.innerHeight - this.RENDERER_CONTENT.getBoundingClientRect().top;
     availableHeight -= 150;
     this.controlHeight = Math.min(this.controlHeight, availableHeight);
-    document.documentElement.style.setProperty("--tab-controls-height", this.controlHeight.toString() + "px");
-    document.documentElement.style.setProperty("--show-tab-controls", this.controlHeight > 0 ? "1" : "0");
+
+    let appliedHeight = this.controlHeight;
+    let selectedTab = this.tabList[this.selectedTab];
+    if (selectedTab) {
+      let tabConfig = this.TAB_CONFIGS.get(selectedTab.type);
+      let controlsHidden = tabConfig !== undefined && !tabConfig.showControls;
+      if (controlsHidden) {
+        appliedHeight = 0;
+      }
+      this.CONTROLS_HANDLE.hidden = controlsHidden;
+    }
+    document.documentElement.style.setProperty("--tab-controls-height", appliedHeight.toString() + "px");
+    document.documentElement.style.setProperty("--show-tab-controls", appliedHeight > 0 ? "1" : "0");
+    this.CONTROLS_CONTENT.hidden = appliedHeight === 0;
   }
 
   /** Returns the current state. */
@@ -153,24 +191,33 @@ export default class Tabs {
     return {
       selected: this.selectedTab,
       controlsHeight: this.controlHeight,
-      tabs: []
+      tabs: this.tabList.map((tab) => {
+        return {
+          type: tab.type,
+          title: tab.title,
+          controller: tab.controller.saveState(),
+          renderer: tab.renderer.saveState()
+        };
+      })
     };
   }
 
   /** Restores to the provided state. */
   restoreState(state: TabsState) {
-    // this.tabList.forEach((tab) => {
-    //   this.VIEWER.removeChild(tab.contentElement);
-    // });
-    // this.tabList = [];
-    // this.selectedTab = 0;
-    // state.tabs.forEach((tabState, index) => {
-    //   this.addTab(tabState.type);
-    //   if (tabState.title) this.renameTab(index, tabState.title);
-    //   // this.tabList[index].controller.restoreState(tabState);
-    // });
-    // this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
-    // this.updateElements();
+    this.tabList.forEach((tab) => {
+      this.RENDERER_CONTENT.removeChild(tab.rendererElement);
+      this.CONTROLS_CONTENT.removeChild(tab.controlsElement);
+    });
+    this.tabList = [];
+    this.selectedTab = 0;
+    state.tabs.forEach((tabState, index) => {
+      this.addTab(tabState.type);
+      if (tabState.title) this.renameTab(index, tabState.title);
+      this.tabList[index].controller.restoreState(tabState.controller);
+      this.tabList[index].renderer.restoreState(tabState.renderer);
+    });
+    this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
+    this.updateElements();
 
     this.controlHeight = state.controlsHeight;
     this.updateControlsHeight();
@@ -179,14 +226,14 @@ export default class Tabs {
   /** Refresh based on new log data. */
   refresh() {
     this.tabList.forEach((tab) => {
-      // tab.controller.refresh();
+      tab.controller.refresh();
     });
   }
 
   /** Refresh based on a new set of assets. */
   newAssets() {
     this.tabList.forEach((tab) => {
-      // tab.controller.newAssets();
+      tab.controller.newAssets();
     });
   }
 
@@ -194,9 +241,9 @@ export default class Tabs {
   getActiveFields(): Set<string> {
     let activeFields = new Set<string>();
     this.tabList.forEach((tab) => {
-      // tab.controller.getActiveFields().forEach((field) => {
-      //   activeFields.add(field);
-      // });
+      tab.controller.getActiveFields().forEach((field) => {
+        activeFields.add(field);
+      });
     });
     return activeFields;
   }
@@ -212,70 +259,23 @@ export default class Tabs {
       }
     }
 
-    // // Add tab
-    // let contentElement: HTMLElement;
-    // let controller: TabController;
-    // switch (type) {
-    //   case TabType.Documentation:
-    //     contentElement = this.CONTENT_TEMPLATES.children[0].cloneNode(true) as HTMLElement;
-    //     controller = new DocumentationController(contentElement);
-    //     break;
-    //   case TabType.LineGraph:
-    //     contentElement = this.CONTENT_TEMPLATES.children[1].cloneNode(true) as HTMLElement;
-    //     controller = new LineGraphController(contentElement);
-    //     break;
-    //   case TabType.Table:
-    //     contentElement = this.CONTENT_TEMPLATES.children[2].cloneNode(true) as HTMLElement;
-    //     controller = new TableController(contentElement);
-    //     break;
-    //   case TabType.Console:
-    //     contentElement = this.CONTENT_TEMPLATES.children[3].cloneNode(true) as HTMLElement;
-    //     controller = new ConsoleController(contentElement);
-    //     break;
-    //   case TabType.Statistics:
-    //     contentElement = this.CONTENT_TEMPLATES.children[4].cloneNode(true) as HTMLElement;
-    //     controller = new StatisticsController(contentElement);
-    //     break;
-    //   case TabType.Odometry:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[6].cloneNode(true));
-    //     controller = new OdometryController(contentElement);
-    //     break;
-    //   case TabType.ThreeDimension:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[7].cloneNode(true));
-    //     controller = new ThreeDimensionController(contentElement);
-    //     break;
-    //   case TabType.Video:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[8].cloneNode(true));
-    //     controller = new VideoController(contentElement);
-    //     break;
-    //   case TabType.Joysticks:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[9].cloneNode(true));
-    //     controller = new JoysticksController(contentElement);
-    //     break;
-    //   case TabType.Swerve:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[10].cloneNode(true));
-    //     controller = new SwerveController(contentElement);
-    //     break;
-    //   case TabType.Mechanism:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[11].cloneNode(true));
-    //     controller = new MechanismController(contentElement);
-    //     break;
-    //   case TabType.Points:
-    //     contentElement = this.CONTENT_TEMPLATES.children[5].cloneNode(true) as HTMLElement;
-    //     contentElement.appendChild(this.CONTENT_TEMPLATES.children[12].cloneNode(true));
-    //     controller = new PointsController(contentElement);
-    //     break;
-    //   case TabType.Metadata:
-    //     contentElement = this.CONTENT_TEMPLATES.children[13].cloneNode(true) as HTMLElement;
-    //     controller = new MetadataController(contentElement);
-    //     break;
-    // }
+    // Add tab
+    let controlsElement = document.getElementById("controller" + type.toString())?.cloneNode(true) as HTMLElement;
+    let rendererElement = document.getElementById("renderer" + type.toString())?.cloneNode(true) as HTMLElement;
+    controlsElement.removeAttribute("id");
+    rendererElement.removeAttribute("id");
+    let controller: TabController;
+    let renderer: TabRenderer;
+    switch (type) {
+      case TabType.LineGraph:
+        controller = new LineGraphController(controlsElement);
+        renderer = new LineGraphRenderer();
+        break;
+      default:
+        controller = new NoopController();
+        renderer = new NoopRenderer();
+        break;
+    }
 
     // Create title element
     let titleElement = document.createElement("div");
@@ -289,26 +289,24 @@ export default class Tabs {
     this.tabList.splice(this.selectedTab + 1, 0, {
       type: type,
       title: getDefaultTabTitle(type),
-      // controller: controller,
       titleElement: titleElement,
-      contentElement: document.createElement("div")
+      controlsElement: controlsElement,
+      rendererElement: rendererElement,
+      controller: controller,
+      renderer: renderer
     });
     this.selectedTab += 1;
-    // this.VIEWER.appendChild(contentElement);
-    // controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
-    // if (TIMELINE_VIZ_TYPES.includes(type)) {
-    //   (controller as TimelineVizController).setTitle(getDefaultTabTitle(type));
-    // }
+    this.CONTROLS_CONTENT.appendChild(controlsElement);
+    this.RENDERER_CONTENT.appendChild(rendererElement);
+    controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
     this.updateElements();
   }
 
   /** Closes the specified tab. */
   close(index: number) {
     if (index < 1 || index > this.tabList.length - 1) return;
-    if (TIMELINE_VIZ_TYPES.includes(this.tabList[index].type)) {
-      // (this.tabList[index].controller as TimelineVizController).stopPeriodic();
-    }
-    // this.VIEWER.removeChild(this.tabList[index].contentElement);
+    this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
+    this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
     this.tabList.splice(index, 1);
     if (this.selectedTab > index) this.selectedTab--;
     if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
@@ -344,9 +342,6 @@ export default class Tabs {
     let tab = this.tabList[index];
     tab.title = name;
     tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
-    if (TIMELINE_VIZ_TYPES.includes(tab.type)) {
-      // (tab.controller as TimelineVizController).setTitle(name);
-    }
   }
 
   /** Adds the enabled field to the discrete legend on the selected line graph. */
@@ -417,10 +412,17 @@ export default class Tabs {
       this.TAB_BAR.appendChild(item.titleElement);
       if (index === this.selectedTab) {
         item.titleElement.classList.add("tab-selected");
-        item.contentElement.hidden = false;
+        item.rendererElement.hidden = false;
+        item.controlsElement.hidden = false;
+        let tabConfig = this.TAB_CONFIGS.get(item.type);
+        if (tabConfig) {
+          document.documentElement.style.setProperty("--show-timeline", tabConfig.showTimeline ? "1" : "0");
+          this.TIMELINE_CONTAINER.hidden = !tabConfig.showTimeline;
+        }
       } else {
         item.titleElement.classList.remove("tab-selected");
-        item.contentElement.hidden = true;
+        item.rendererElement.hidden = true;
+        item.controlsElement.hidden = true;
       }
     });
   }

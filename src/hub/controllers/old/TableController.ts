@@ -1,13 +1,12 @@
-import { TableState } from "../../shared/HubState";
-import LoggableType from "../../shared/log/LoggableType";
-import { getLogValueText } from "../../shared/log/LogUtil";
-import { LogValueSetAny } from "../../shared/log/LogValueSets";
-import TabType from "../../shared/TabType";
-import { arraysEqual, createUUID, formatTimeWithMS } from "../../shared/util";
-import { SelectionMode } from "../Selection";
+import LoggableType from "../../../shared/log/LoggableType";
+import { getLogValueText } from "../../../shared/log/LogUtil";
+import { LogValueSetAny } from "../../../shared/log/LogValueSets";
+import TabType from "../../../shared/TabType";
+import { arraysEqual, createUUID, formatTimeWithMS } from "../../../shared/util";
+import { SelectionMode } from "../../Selection";
 import TabController from "../TabController";
 
-export default class TableController implements TabController {
+export default class TableController {
   private CONTENT: HTMLElement;
   private NO_DATA_ALERT: HTMLElement;
   private HEADER_TEMPLATE: HTMLElement;
@@ -88,11 +87,11 @@ export default class TableController implements TabController {
     });
   }
 
-  saveState(): TableState {
+  saveState(): unknown {
     return { type: TabType.Table, fields: this.fields };
   }
 
-  restoreState(state: TableState) {
+  restoreState(state: any) {
     this.fields = state.fields;
     this.updateFields();
   }

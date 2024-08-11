@@ -1,6 +1,6 @@
-import { getMechanismState, MechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
-import TabType from "../../shared/TabType";
-import MechanismVisualizer from "../../shared/visualizers/MechanismVisualizer";
+import { getMechanismState, MechanismState, mergeMechanismStates } from "../../../shared/log/LogUtil";
+import TabType from "../../../shared/TabType";
+import MechanismVisualizer from "../../../shared/visualizers/MechanismVisualizer";
 import TimelineVizController from "./TimelineVizController";
 
 export default class MechanismController extends TimelineVizController {
