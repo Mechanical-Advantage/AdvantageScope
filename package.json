@@ -48,6 +48,7 @@
     "mathjs": "11.3.0",
     "node-fetch": "^3.3.2",
     "prettier": "3.0.3",
+    "prettier-plugin-organize-imports": "^4.0.0",
     "protobufjs": "^7.2.5",
     "remarkable": "^2.0.1",
     "rollup": "^3.29.2",
@@ -69,7 +70,10 @@
   },
   "prettier": {
     "printWidth": 120,
-    "trailingComma": "none"
+    "trailingComma": "none",
+    "plugins": [
+      "prettier-plugin-organize-imports"
+    ]
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",

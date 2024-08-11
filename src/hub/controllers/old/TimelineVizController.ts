@@ -4,7 +4,6 @@ import TabType from "../../../shared/TabType";
 import { arraysEqual, clampValue, createUUID, scaleValue } from "../../../shared/util";
 import Visualizer from "../../../shared/visualizers/Visualizer";
 import { SelectionMode } from "../../Selection";
-import TabController from "../TabController";
 
 export default abstract class TimelineVizController {
   private HANDLE_WIDTH = 4;

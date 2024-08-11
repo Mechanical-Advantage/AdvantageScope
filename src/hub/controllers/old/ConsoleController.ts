@@ -3,7 +3,6 @@ import { LogValueSetString } from "../../../shared/log/LogValueSets";
 import TabType from "../../../shared/TabType";
 import { formatTimeWithMS, htmlEncode } from "../../../shared/util";
 import { SelectionMode } from "../../Selection";
-import TabController from "../TabController";
 
 export default class ConsoleController {
   private CONTENT: HTMLElement;

@@ -4,7 +4,6 @@ import { LogValueSetAny } from "../../../shared/log/LogValueSets";
 import TabType from "../../../shared/TabType";
 import { arraysEqual, createUUID, formatTimeWithMS } from "../../../shared/util";
 import { SelectionMode } from "../../Selection";
-import TabController from "../TabController";
 
 export default class TableController {
   private CONTENT: HTMLElement;

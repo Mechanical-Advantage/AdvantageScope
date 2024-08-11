@@ -1,6 +1,6 @@
 import fs from "fs";
-import path from "path";
 import fetch from "node-fetch";
+import path from "path";
 
 let licenses = [];
 let packageLock = JSON.parse(fs.readFileSync("package-lock.json"));

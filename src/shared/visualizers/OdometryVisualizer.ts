@@ -3,7 +3,6 @@ import { Pose2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { transformPx } from "../util";
 import Visualizer from "./Visualizer";
-import { typed } from "mathjs";
 
 export default class OdometryVisualizer implements Visualizer {
   private HEATMAP_GRID_SIZE = 0.1;

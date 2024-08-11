@@ -1,12 +1,12 @@
 import Fuse from "fuse.js";
-import { Rotation2d, Translation2d } from "../geometry";
 import MatchInfo, { MatchType } from "../MatchInfo";
+import { Rotation2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { arraysEqual } from "../util";
 import Log from "./Log";
 import LogFieldTree from "./LogFieldTree";
-import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
+import LoggableType from "./LoggableType";
 
 export const TYPE_KEY = ".type";
 export const STRUCT_PREFIX = "struct:";

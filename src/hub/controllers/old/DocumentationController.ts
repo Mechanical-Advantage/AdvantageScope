@@ -3,7 +3,6 @@ import cpp from "highlight.js/lib/languages/cpp";
 import java from "highlight.js/lib/languages/java";
 import { Remarkable } from "remarkable";
 import TabType from "../../../shared/TabType";
-import TabController from "../TabController";
 
 export default class DocumentationController {
   private CONTAINER: HTMLElement;

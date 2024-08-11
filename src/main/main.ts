@@ -26,6 +26,7 @@ import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import ExportOptions from "../shared/ExportOptions";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
+import { SourceListConfig, SourceListItemState } from "../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
@@ -62,7 +63,6 @@ import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
-import { SourceListConfig, SourceListItemState } from "../shared/SourceListConfig";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)

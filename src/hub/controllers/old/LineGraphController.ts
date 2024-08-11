@@ -7,7 +7,6 @@ import { UnitConversionPreset, convertWithPreset } from "../../../shared/units";
 import { ValueScaler, clampValue, cleanFloat, scaleValue, shiftColor } from "../../../shared/util";
 import ScrollSensor from "../../ScrollSensor";
 import { SelectionMode } from "../../Selection";
-import TabController from "../TabController";
 
 export default class LineGraphController {
   private MIN_ZOOM_TIME = 0.05;

@@ -5,7 +5,6 @@ import LoggableType from "../../../shared/log/LoggableType";
 import { getEnabledData } from "../../../shared/log/LogUtil";
 import TabType from "../../../shared/TabType";
 import { cleanFloat, createUUID } from "../../../shared/util";
-import TabController from "../TabController";
 
 export default class StatisticsController {
   private UPDATE_PERIOD_MS = 100;

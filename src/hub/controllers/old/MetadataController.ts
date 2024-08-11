@@ -1,7 +1,5 @@
-import { TabState } from "../../../shared/HubState";
 import { MERGE_PREFIX, METADATA_KEYS } from "../../../shared/log/LogUtil";
 import TabType from "../../../shared/TabType";
-import TabController from "../TabController";
 
 export default class MetadataController {
   private NO_DATA_ALERT: HTMLElement;

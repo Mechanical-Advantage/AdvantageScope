@@ -1,6 +1,6 @@
-import path from "path";
 import download from "download";
 import fs from "fs";
+import path from "path";
 
 // Exit if disabled
 if (process.env.ASCOPE_NO_FFMPEG === "true") {

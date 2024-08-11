@@ -1,4 +1,4 @@
-import { GraphColors, NeonColors } from "./Colors";
+import { NeonColors } from "./Colors";
 
 export type SourceListConfig = {
   title: string;
