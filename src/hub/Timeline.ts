@@ -45,11 +45,17 @@ export default class Timeline {
 
     // Scroll handling
     this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
+      if (this.isHidden()) return;
       window.selection.applyTimelineScroll(dx, dy, this.SCROLL_OVERLAY.clientWidth);
     });
   }
 
+  private isHidden() {
+    return this.CONTAINER.clientHeight === 0;
+  }
+
   periodic() {
+    if (this.isHidden()) return;
     this.scrollSensor.periodic();
 
     // Initial setup and scaling

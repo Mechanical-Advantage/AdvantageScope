@@ -1,6 +1,9 @@
 :root {
   --side-bar-width: 300px;
   --show-side-bar: 1;
+  --show-timeline: 1;
+  --tab-controls-height: 200px;
+  --show-tab-controls: 1;
   --show-tuning-button: 0;
   --show-lock-buttons: 0;
   --show-update-button: 0;
@@ -190,6 +193,7 @@ div.viewer {
   right: 0px;
   top: 0px;
   bottom: 0px;
+  overflow: hidden;
 }
 
 /* Field selector */
@@ -696,22 +700,12 @@ button.add-tab {
   right: 12px;
 }
 
-/* Tab content */
-
-div.tab-content {
-  position: absolute;
-  top: 50px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-}
-
 /* Timeline */
 
 div.timeline {
   position: absolute;
   top: 50px;
-  height: 32px;
+  height: calc(32px * var(--show-timeline));
   left: 10px;
   right: 10px;
 }
@@ -753,6 +747,42 @@ div.timeline-scroll::-webkit-scrollbar {
 div.timeline-scroll-content {
   width: 1000000px;
   height: 1000000px;
+}
+
+/* Tab layout */
+
+div.renderer-content {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  top: calc(50px + var(--show-timeline) * 42px);
+  bottom: var(--tab-controls-height);
+}
+
+div.controls-content {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  bottom: 0%;
+  height: var(--tab-controls-height);
+  box-shadow: 0px 0px 3px 2px #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.controls-content {
+    box-shadow: 0px 0px 2px 1px #000;
+  }
+}
+
+div.controls-handle {
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  bottom: calc(var(--tab-controls-height) - 2px);
+  height: calc(20px - (var(--show-tab-controls) * 16px));
+
+  z-index: 9;
+  cursor: row-resize;
 }
 
 /* Source list */

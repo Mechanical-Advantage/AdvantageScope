@@ -1,24 +1,7 @@
-import { TabGroupState } from "../shared/HubState";
+import { TabsState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon, TIMELINE_VIZ_TYPES } from "../shared/TabType";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
-import SourceList from "./SourceList";
-import { LineGraphConfig, OdometryConfig } from "../shared/SourceListConfig";
-import TabController from "./TabController";
-import ConsoleController from "./tabControllers/ConsoleController";
-import DocumentationController from "./tabControllers/DocumentationController";
-import JoysticksController from "./tabControllers/JoysticksController";
-import LineGraphController from "./tabControllers/LineGraphController";
-import MechanismController from "./tabControllers/MechanismController";
-import MetadataController from "./tabControllers/MetadataController";
-import OdometryController from "./tabControllers/OdometryController";
-import PointsController from "./tabControllers/PointsController";
-import StatisticsController from "./tabControllers/StatisticsController";
-import SwerveController from "./tabControllers/SwerveController";
-import TableController from "./tabControllers/TableController";
-import ThreeDimensionController from "./tabControllers/ThreeDimensionController";
-import TimelineVizController from "./tabControllers/TimelineVizController";
-import VideoController from "./tabControllers/VideoController";
 import Timeline from "./Timeline";
 
 export default class Tabs {
@@ -28,12 +11,18 @@ export default class Tabs {
   private SHADOW_LEFT = document.getElementsByClassName("tab-bar-shadow-left")[0] as HTMLElement;
   private SHADOW_RIGHT = document.getElementsByClassName("tab-bar-shadow-right")[0] as HTMLElement;
   private SCROLL_OVERLAY = document.getElementsByClassName("tab-bar-scroll")[0] as HTMLElement;
-  private CONTENT_TEMPLATES = document.getElementById("tabContentTemplates") as HTMLElement;
+
+  private RENDERER_CONTENT = document.getElementsByClassName("renderer-content")[0] as HTMLElement;
+  private CONTROLS_CONTENT = document.getElementsByClassName("controls-content")[0] as HTMLElement;
+  private CONTROLS_HANDLE = document.getElementsByClassName("controls-handle")[0] as HTMLElement;
 
   private LEFT_BUTTON = document.getElementsByClassName("move-left")[0] as HTMLElement;
   private RIGHT_BUTTON = document.getElementsByClassName("move-right")[0] as HTMLElement;
   private CLOSE_BUTTON = document.getElementsByClassName("close")[0] as HTMLElement;
   private ADD_BUTTON = document.getElementsByClassName("add-tab")[0] as HTMLElement;
+
+  private tabsScrollSensor: ScrollSensor;
+  private timeline: Timeline;
 
   private tabList: {
     type: TabType;
@@ -42,8 +31,8 @@ export default class Tabs {
     contentElement: HTMLElement;
   }[] = [];
   private selectedTab = 0;
-  private tabsScrollSensor: ScrollSensor;
-  private timeline: Timeline;
+  private controlsHandleActive = false;
+  private controlHeight = 200;
 
   constructor() {
     // Hover and click handling
@@ -98,6 +87,26 @@ export default class Tabs {
       });
     });
 
+    // Controls handle
+    this.CONTROLS_HANDLE.addEventListener("mousedown", () => {
+      this.controlsHandleActive = true;
+      document.body.style.cursor = "row-resize";
+    });
+    window.addEventListener("mouseup", () => {
+      this.controlsHandleActive = false;
+      document.body.style.cursor = "initial";
+    });
+    window.addEventListener("mousemove", (event) => {
+      if (this.controlsHandleActive) {
+        let height = window.innerHeight - event.clientY;
+        if (height >= 30 && height < 100) height = 100;
+        if (height < 30) height = 0;
+        this.controlHeight = height;
+        this.updateControlsHeight();
+      }
+    });
+    this.updateControlsHeight();
+
     // Control buttons
     this.LEFT_BUTTON.addEventListener("click", () => this.shift(this.selectedTab, -1));
     this.RIGHT_BUTTON.addEventListener("click", () => this.shift(this.selectedTab, 1));
@@ -125,21 +134,31 @@ export default class Tabs {
         Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
       this.tabsScrollSensor.periodic();
       this.timeline.periodic();
+      this.updateControlsHeight();
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
   }
 
+  private updateControlsHeight() {
+    let availableHeight = window.innerHeight - this.RENDERER_CONTENT.getBoundingClientRect().top;
+    availableHeight -= 150;
+    this.controlHeight = Math.min(this.controlHeight, availableHeight);
+    document.documentElement.style.setProperty("--tab-controls-height", this.controlHeight.toString() + "px");
+    document.documentElement.style.setProperty("--show-tab-controls", this.controlHeight > 0 ? "1" : "0");
+  }
+
   /** Returns the current state. */
-  saveState(): TabGroupState {
+  saveState(): TabsState {
     return {
       selected: this.selectedTab,
+      controlsHeight: this.controlHeight,
       tabs: []
     };
   }
 
   /** Restores to the provided state. */
-  restoreState(state: TabGroupState) {
+  restoreState(state: TabsState) {
     // this.tabList.forEach((tab) => {
     //   this.VIEWER.removeChild(tab.contentElement);
     // });
@@ -152,6 +171,9 @@ export default class Tabs {
     // });
     // this.selectedTab = state.selected >= this.tabList.length ? this.tabList.length - 1 : state.selected;
     // this.updateElements();
+
+    this.controlHeight = state.controlsHeight;
+    this.updateControlsHeight();
   }
 
   /** Refresh based on new log data. */

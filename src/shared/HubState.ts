@@ -4,7 +4,7 @@ import { UnitConversionPreset } from "./units";
 
 export interface HubState {
   sidebar: SidebarState;
-  tabs: TabGroupState;
+  tabs: TabsState;
 }
 
 export interface SidebarState {
@@ -12,8 +12,9 @@ export interface SidebarState {
   expanded: string[];
 }
 
-export interface TabGroupState {
+export interface TabsState {
   selected: number;
+  controlsHeight: number;
   tabs: TabState[];
 }
 
