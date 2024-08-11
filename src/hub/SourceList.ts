@@ -89,17 +89,104 @@ export default class SourceList {
   }
 
   restoreState(state: SourceListState) {
-    this.state = [];
-    while (this.LIST.firstChild) {
-      this.LIST.removeChild(this.LIST.firstChild);
-    }
+    this.clear();
     state.forEach((itemState) => {
-      this.addItem(itemState);
+      this.addListItem(itemState);
     });
   }
 
   stop() {
     this.stopped = true;
+  }
+
+  /** Removes all items in the source list. */
+  clear() {
+    this.state = [];
+    while (this.LIST.firstChild) {
+      this.LIST.removeChild(this.LIST.firstChild);
+    }
+  }
+
+  /**
+   * Adds a new field to the list, if the type is valid.
+   *
+   * @param logKey The key for the field to add
+   * @param parentIndex The index of the parent item (optional)
+   */
+  addField(logKey: string, parentIndex?: number) {
+    let logType = window.log.getType(logKey);
+    let logTypeString = logType === null ? null : LoggableType[logType];
+    let structuredType = window.log.getStructuredType(logKey);
+
+    // Get all possible types
+    let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number }[] = [];
+    for (let i = 0; i < this.config.types.length; i++) {
+      let typeConfig = this.config.types[i];
+      if (parentIndex !== undefined && typeConfig.childOf !== this.parentKeys.get(this.state[parentIndex!].type)) {
+        // Not a child of this parent
+        continue;
+      }
+      let finalType = "";
+      if (structuredType !== null && typeConfig.sourceTypes.includes(structuredType)) {
+        finalType = structuredType;
+      } else if (logTypeString !== null && typeConfig.sourceTypes.includes(logTypeString)) {
+        finalType = logTypeString;
+      }
+      if (finalType.length > 0) {
+        possibleTypes.push({
+          typeConfig: typeConfig,
+          logType: finalType,
+          uses: this.state.filter((itemState) => itemState.type === typeConfig.key).length
+        });
+      }
+    }
+
+    // Find best type
+    if (possibleTypes.length === 0) return;
+    if (this.config.autoAdvance === true) {
+      possibleTypes.sort((a, b) => a.uses - b.uses);
+    }
+    let bestType = possibleTypes[0];
+
+    // Add to list
+    let options: { [key: string]: string } = {};
+    bestType.typeConfig.options.forEach((optionConfig) => {
+      if (this.config.autoAdvance !== optionConfig.key) {
+        // Select first value
+        options[optionConfig.key] = optionConfig.values[0].key;
+      } else {
+        // Select least used value
+        let useCounts: { valueConfig: SourceListOptionValueConfig; uses: number }[] = optionConfig.values.map(
+          (valueConfig) => {
+            return {
+              valueConfig: valueConfig,
+              uses: this.state.filter(
+                (itemState) =>
+                  optionConfig.key in itemState.options && itemState.options[optionConfig.key] === valueConfig.key
+              ).length
+            };
+          }
+        );
+        useCounts.sort((a, b) => a.uses - b.uses);
+        options[optionConfig.key] = useCounts[0].valueConfig.key;
+      }
+    });
+    let state: SourceListItemState = {
+      type: bestType.typeConfig.key,
+      logKey: logKey,
+      logType: bestType.logType,
+      visible: true,
+      options: options
+    };
+    if (parentIndex !== undefined) {
+      let insertIndex = parentIndex! + 1;
+      while (insertIndex < this.state.length && this.isChild(insertIndex)) {
+        insertIndex++;
+      }
+      this.addListItem(state, insertIndex);
+    } else {
+      this.addListItem(state);
+    }
   }
 
   /** Processes a drag event, including adding a field if necessary. */
@@ -155,83 +242,10 @@ export default class SourceList {
     // Add fields and update highlight
     if (end) {
       this.DRAG_HIGHLIGHT.hidden = true;
-      let addChild = typeValidParent && parentIndex !== null;
-      let addList = typeValidList && withinList;
-      if (addChild || addList) {
+      if (!typeValidParent) parentIndex = null;
+      if (parentIndex !== null || (typeValidList && withinList)) {
         draggedFields.fields.forEach((field) => {
-          let logType = window.log.getType(field);
-          let logTypeString = logType === null ? null : LoggableType[logType];
-          let structuredType = window.log.getStructuredType(field);
-
-          // Get all possible types
-          let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number }[] = [];
-          for (let i = 0; i < this.config.types.length; i++) {
-            let typeConfig = this.config.types[i];
-            if (addChild && typeConfig.childOf !== this.parentKeys.get(this.state[parentIndex!].type)) {
-              // Not a child of this parent
-              continue;
-            }
-            let finalType = "";
-            if (structuredType !== null && typeConfig.sourceTypes.includes(structuredType)) {
-              finalType = structuredType;
-            } else if (logTypeString !== null && typeConfig.sourceTypes.includes(logTypeString)) {
-              finalType = logTypeString;
-            }
-            if (finalType.length > 0) {
-              possibleTypes.push({
-                typeConfig: typeConfig,
-                logType: finalType,
-                uses: this.state.filter((itemState) => itemState.type === typeConfig.key).length
-              });
-            }
-          }
-
-          // Find best type
-          if (possibleTypes.length === 0) return;
-          if (this.config.autoAdvance === true) {
-            possibleTypes.sort((a, b) => a.uses - b.uses);
-          }
-          let bestType = possibleTypes[0];
-
-          // Add to list
-          let options: { [key: string]: string } = {};
-          bestType.typeConfig.options.forEach((optionConfig) => {
-            if (this.config.autoAdvance !== optionConfig.key) {
-              // Select first value
-              options[optionConfig.key] = optionConfig.values[0].key;
-            } else {
-              // Select least used value
-              let useCounts: { valueConfig: SourceListOptionValueConfig; uses: number }[] = optionConfig.values.map(
-                (valueConfig) => {
-                  return {
-                    valueConfig: valueConfig,
-                    uses: this.state.filter(
-                      (itemState) =>
-                        optionConfig.key in itemState.options && itemState.options[optionConfig.key] === valueConfig.key
-                    ).length
-                  };
-                }
-              );
-              useCounts.sort((a, b) => a.uses - b.uses);
-              options[optionConfig.key] = useCounts[0].valueConfig.key;
-            }
-          });
-          let state: SourceListItemState = {
-            type: bestType.typeConfig.key,
-            logKey: field,
-            logType: bestType.logType,
-            visible: true,
-            options: options
-          };
-          if (addChild) {
-            let insertIndex = parentIndex! + 1;
-            while (insertIndex < this.state.length && this.isChild(insertIndex)) {
-              insertIndex++;
-            }
-            this.addItem(state, insertIndex);
-          } else {
-            this.addItem(state);
-          }
+          this.addField(field, parentIndex === null ? undefined : parentIndex);
         });
       }
     } else if (typeValidParent && parentIndex !== null) {
@@ -269,7 +283,7 @@ export default class SourceList {
   }
 
   /** Make a list item and inserts it into the list. */
-  private addItem(state: SourceListItemState, insertIndex?: number) {
+  private addListItem(state: SourceListItemState, insertIndex?: number) {
     let item = this.ITEM_TEMPLATE.cloneNode(true) as HTMLElement;
     if (insertIndex === undefined) {
       this.LIST.appendChild(item);

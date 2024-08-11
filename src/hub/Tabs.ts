@@ -344,24 +344,24 @@ export default class Tabs {
     tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
   }
 
-  /** Adds the enabled field to the discrete legend on the selected line graph. */
-  addDiscreteEnabled() {
-    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      // (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
-    }
-  }
-
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
   editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      // (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
     }
   }
 
   /** Clear the fields for an axis on the selected line graph. */
   clearAxis(legend: string) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      // (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
+      (this.tabList[this.selectedTab].controller as LineGraphController).clearAxis(legend);
+    }
+  }
+
+  /** Adds the enabled field to the discrete legend on the selected line graph. */
+  addDiscreteEnabled() {
+    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
     }
   }
 

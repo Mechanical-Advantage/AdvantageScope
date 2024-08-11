@@ -279,6 +279,7 @@ export default class LineGraphController {
       this.RIGHT_LABELS.innerText = "";
     }
   }
+
   /** Adds the enabled field to the discrete legend. */
   addDiscreteEnabled() {
     let enabledKey = getEnabledKey(window.log);
