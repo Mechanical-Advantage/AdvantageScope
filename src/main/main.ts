@@ -21,6 +21,7 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
+import { Canvas } from "skia-canvas";
 import { Client } from "ssh2";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import ExportOptions from "../shared/ExportOptions";
@@ -465,6 +466,21 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         });
       };
 
+      // Make color icon
+      let getIcon = (value: string): Electron.NativeImage | undefined => {
+        let icon: Electron.NativeImage | undefined = undefined;
+        if (value.startsWith("#")) {
+          // Make icon with color
+          const size = 15;
+          let canvas = new Canvas(size, size);
+          let context = canvas.getContext("2d");
+          context.fillStyle = value;
+          context.fillRect(0, 0, size, size);
+          icon = nativeImage.createFromDataURL(canvas.toDataURLSync("png"));
+        }
+        return icon;
+      };
+
       // Add options
       let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
       if (currentTypeConfig.options.length === 1) {
@@ -475,6 +491,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               label: optionValue.display,
               type: "radio",
               checked: optionValue.key === state.options[optionConfig.key],
+              icon: getIcon(optionValue.key),
               click() {
                 state.options[optionConfig.key] = optionValue.key;
                 respond();
@@ -492,6 +509,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   label: optionValue.display,
                   type: "radio",
                   checked: optionValue.key === state.options[optionConfig.key],
+                  icon: getIcon(optionValue.key),
                   click() {
                     state.options[optionConfig.key] = optionValue.key;
                     respond();

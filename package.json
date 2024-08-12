@@ -36,6 +36,7 @@
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
     "@types/remarkable": "^2.0.3",
+    "@types/skia-canvas": "^0.9.28",
     "@types/ssh2": "^1.11.13",
     "@types/three": "^0.156.0",
     "chart.js": "^4.4.0",
@@ -64,6 +65,7 @@
     "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
+    "skia-canvas": "^1.0.1",
     "ssh2": "^1.14.0",
     "tesseract.js": "^5.0.3",
     "ytdl-core": "https://github.com/khlevon/node-ytdl-core.git#v4.11.5-patch.2"

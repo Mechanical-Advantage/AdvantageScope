@@ -77,7 +77,8 @@ const mainBundles = [
     "ssh2",
     "download",
     "ytdl-core",
-    "tesseract.js"
+    "tesseract.js",
+    "skia-canvas"
   ]),
   bundle("preload.ts", "preload.js", true, ["electron"])
 ];
