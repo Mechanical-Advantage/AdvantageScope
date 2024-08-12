@@ -24,6 +24,7 @@ import path from "path";
 import { Canvas } from "skia-canvas";
 import { Client } from "ssh2";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
+import { ensureThemeContrast } from "../shared/Colors";
 import ExportOptions from "../shared/ExportOptions";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
@@ -474,7 +475,7 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           const size = 15;
           let canvas = new Canvas(size, size);
           let context = canvas.getContext("2d");
-          context.fillStyle = value;
+          context.fillStyle = ensureThemeContrast(value, nativeTheme.shouldUseDarkColors);
           context.fillRect(0, 0, size, size);
           icon = nativeImage.createFromDataURL(canvas.toDataURLSync("png"));
         }

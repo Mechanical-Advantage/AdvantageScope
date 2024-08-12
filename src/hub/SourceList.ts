@@ -1,4 +1,4 @@
-import { hex, hsl } from "color-convert";
+import { ensureThemeContrast } from "../shared/Colors";
 import {
   SourceListConfig,
   SourceListItemState,
@@ -416,8 +416,8 @@ export default class SourceList {
       typeIconHidden = temp;
     }
     let color: string;
-    let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (typeConfig.color.startsWith("#")) {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (isDark && typeConfig.darkColor !== undefined) {
         color = typeConfig.darkColor;
       } else {
@@ -426,9 +426,7 @@ export default class SourceList {
     } else {
       color = state.options[typeConfig.color];
     }
-    let hslVal = hex.hsl(color.slice(1));
-    hslVal[2] = isDark ? Math.max(hslVal[2], 65) : Math.min(hslVal[2], 45); // Ensure enough contrast with background
-    color = "#" + hsl.hex(hslVal);
+    color = ensureThemeContrast(color);
     let dataPath = "symbols/sourceList/" + typeConfig.symbol + ".svg";
     if (dataPath !== typeIconVisible.getAttribute("data")) {
       // Load new icon on hidden icon
