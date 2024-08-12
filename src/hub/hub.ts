@@ -5,7 +5,7 @@ import Log from "../shared/log/Log";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
-import { SourceListItemState } from "../shared/SourceListConfig";
+import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
@@ -23,7 +23,8 @@ import Tabs from "./Tabs";
 import WorkerManager from "./WorkerManager";
 
 // Constants
-const SAVE_PERIOD_MS = 250;
+const STATE_SAVE_PERIOD_MS = 250;
+const TYPE_MEMORY_SAVE_PERIOD_MS = 1000;
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 const UPDATE_BUTTON = document.getElementsByClassName("update")[0] as HTMLElement;
 
@@ -33,6 +34,7 @@ declare global {
     log: Log;
     preferences: Preferences | null;
     assets: AdvantageScopeAssets | null;
+    typeMemory: SourceListTypeMemory;
     platform: string;
     platformRelease: string;
     appVersion: string;
@@ -53,6 +55,7 @@ declare global {
 window.log = new Log();
 window.preferences = null;
 window.assets = null;
+window.typeMemory = {};
 window.platform = "";
 window.platformRelease = "";
 window.isFullscreen = false;
@@ -142,7 +145,11 @@ function restoreState(state: HubState) {
 
 setInterval(() => {
   window.sendMainMessage("save-state", saveState());
-}, SAVE_PERIOD_MS);
+}, STATE_SAVE_PERIOD_MS);
+
+setInterval(() => {
+  window.sendMainMessage("save-type-memory", window.typeMemory);
+}, TYPE_MEMORY_SAVE_PERIOD_MS);
 
 // MANAGE DRAGGING
 
@@ -416,6 +423,10 @@ function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "restore-state":
       restoreState(message.data);
+      break;
+
+    case "restore-type-memory":
+      window.typeMemory = message.data;
       break;
 
     case "set-fullscreen":

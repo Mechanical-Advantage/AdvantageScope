@@ -4,7 +4,8 @@ import {
   SourceListItemState,
   SourceListOptionValueConfig,
   SourceListState,
-  SourceListTypeConfig
+  SourceListTypeConfig,
+  SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
 import LoggableType from "../shared/log/LoggableType";
 import { createUUID } from "../shared/util";
@@ -118,12 +119,24 @@ export default class SourceList {
     let logTypeString = logType === null ? null : LoggableType[logType];
     let structuredType = window.log.getStructuredType(logKey);
 
+    // Get memory entry
+    let memory: SourceListTypeMemoryEntry | null = null;
+    if (
+      this.config.typeMemoryId &&
+      this.config.typeMemoryId in window.typeMemory &&
+      logKey in window.typeMemory[this.config.typeMemoryId]
+    ) {
+      memory = window.typeMemory[this.config.typeMemoryId][logKey];
+    }
+
     // Get all possible types
     let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number }[] = [];
     for (let i = 0; i < this.config.types.length; i++) {
       let typeConfig = this.config.types[i];
-      if (parentIndex !== undefined && typeConfig.childOf !== this.parentKeys.get(this.state[parentIndex!].type)) {
-        // Not a child of this parent
+      if (
+        (parentIndex === undefined && typeConfig.childOf !== undefined) || // Not inserting as a child
+        (parentIndex !== undefined && typeConfig.childOf !== this.parentKeys.get(this.state[parentIndex!].type)) // Type is not the correct parent
+      ) {
         continue;
       }
       let finalType = "";
@@ -146,12 +159,24 @@ export default class SourceList {
     if (this.config.autoAdvance === true) {
       possibleTypes.sort((a, b) => a.uses - b.uses);
     }
+    let memoryTypeIndex = possibleTypes.findIndex((type) => memory !== null && type.typeConfig.key === memory.type);
+    if (memoryTypeIndex !== -1) {
+      let memoryType = possibleTypes.splice(memoryTypeIndex, 1)[0];
+      possibleTypes.splice(0, 0, memoryType);
+    }
     let bestType = possibleTypes[0];
 
     // Add to list
     let options: { [key: string]: string } = {};
     bestType.typeConfig.options.forEach((optionConfig) => {
-      if (this.config.autoAdvance !== optionConfig.key) {
+      if (
+        memory !== null &&
+        optionConfig.key in memory.options &&
+        optionConfig.values.map((valueConfig) => valueConfig.key).includes(memory.options[optionConfig.key])
+      ) {
+        // Select value from type memory
+        options[optionConfig.key] = memory.options[optionConfig.key];
+      } else if (this.config.autoAdvance !== optionConfig.key) {
         // Select first value
         options[optionConfig.key] = optionConfig.values[0].key;
       } else {
@@ -476,6 +501,14 @@ export default class SourceList {
       item.classList.remove("hidden");
     } else {
       item.classList.add("hidden");
+    }
+
+    // Save to memory
+    if (this.config.typeMemoryId !== undefined) {
+      if (!(this.config.typeMemoryId in window.typeMemory)) {
+        window.typeMemory[this.config.typeMemoryId] = {};
+      }
+      window.typeMemory[this.config.typeMemoryId][state.logKey] = { type: state.type, options: state.options };
     }
   }
 

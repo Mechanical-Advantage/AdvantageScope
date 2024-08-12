@@ -12,6 +12,7 @@ export const STATE_FILENAME = path.join(
   app.getPath("userData"),
   "state-" + (app.isPackaged ? app.getVersion().replaceAll(".", "_") : "dev") + ".json"
 );
+export const TYPE_MEMORY_FILENAME = path.join(app.getPath("userData"), "type-memory.json");
 export const BUNDLED_ASSETS = path.join(__dirname, "..", "bundledAssets");
 export const AUTO_ASSETS = path.join(app.getPath("userData"), "autoAssets");
 export const DEFAULT_USER_ASSETS = path.join(app.getPath("userData"), "userAssets");

@@ -3,6 +3,7 @@ import { NeonColors } from "./Colors";
 export type SourceListConfig = {
   title: string;
   autoAdvance: boolean | string; // True advances type, string advances option
+  typeMemoryId?: string; // If provided, remember types and options for fields
   types: SourceListTypeConfig[];
 };
 
@@ -44,9 +45,23 @@ export type SourceListItemState = {
   options: { [key: string]: string };
 };
 
+export type SourceListTypeMemory = {
+  // Memory ID
+  [key: string]: {
+    // Log key
+    [key: string]: SourceListTypeMemoryEntry;
+  };
+};
+
+export type SourceListTypeMemoryEntry = {
+  type: string;
+  options: { [key: string]: string };
+};
+
 export const OdometryConfig: SourceListConfig = {
   title: "Poses",
   autoAdvance: true,
+  typeMemoryId: "odometry",
   types: [
     {
       key: "robot",

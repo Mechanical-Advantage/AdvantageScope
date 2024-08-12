@@ -28,7 +28,7 @@ import { ensureThemeContrast } from "../shared/Colors";
 import ExportOptions from "../shared/ExportOptions";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
-import { SourceListConfig, SourceListItemState } from "../shared/SourceListConfig";
+import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
@@ -57,6 +57,7 @@ import {
   RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
+  TYPE_MEMORY_FILENAME,
   WINDOW_ICON
 } from "./Constants";
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
@@ -191,6 +192,24 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "save-state":
       stateTracker.saveRendererState(window, message.data);
+      break;
+
+    case "save-type-memory":
+      let typeMemory: SourceListTypeMemory = fs.existsSync(TYPE_MEMORY_FILENAME)
+        ? jsonfile.readFileSync(TYPE_MEMORY_FILENAME)
+        : {};
+      let originalTypeMemoryStr = JSON.stringify(typeMemory);
+      Object.entries(message.data as SourceListTypeMemory).forEach(([memoryId, fields]) => {
+        if (memoryId in typeMemory) {
+          typeMemory[memoryId] = { ...typeMemory[memoryId], ...fields };
+        } else {
+          typeMemory[memoryId] = fields;
+        }
+      });
+      let newTypeMemoryStr = JSON.stringify(typeMemory);
+      if (originalTypeMemoryStr !== newTypeMemoryStr) {
+        jsonfile.writeFileSync(TYPE_MEMORY_FILENAME, typeMemory);
+      }
       break;
 
     case "prompt-update":
@@ -1929,6 +1948,9 @@ function createHubWindow(state?: WindowState) {
     });
     sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
     sendAllPreferences();
+    if (fs.existsSync(TYPE_MEMORY_FILENAME)) {
+      sendMessage(window, "restore-type-memory", jsonfile.readFileSync(TYPE_MEMORY_FILENAME));
+    }
     if (firstLoad && state !== undefined) {
       sendMessage(window, "restore-state", state.state);
     } else {
