@@ -7,7 +7,5 @@ export default class NoopRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {}
 
-  setCommand(command: any): void {}
-
-  render(): void {}
+  render(command: unknown): void {}
 }

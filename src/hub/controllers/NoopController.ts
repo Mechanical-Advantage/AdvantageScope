@@ -18,6 +18,4 @@ export default class NoopController implements TabController {
   getCommand(): unknown {
     return null;
   }
-
-  periodic(): void {}
 }

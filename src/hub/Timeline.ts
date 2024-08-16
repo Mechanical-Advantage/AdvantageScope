@@ -1,5 +1,5 @@
 import { getRobotStateRanges } from "../shared/log/LogUtil";
-import { clampValue, cleanFloat, scaleValue } from "../shared/util";
+import { calcAxisStepSize, clampValue, cleanFloat, scaleValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
 
 export default class Timeline {
@@ -72,14 +72,7 @@ export default class Timeline {
     context.font = "200 12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate step size
-    let stepSize: number;
-    {
-      let stepCount = width / this.STEP_TARGET_PX;
-      let stepValueApprox = (timeRange[1] - timeRange[0]) / stepCount;
-      let roundBase = 10 ** Math.floor(Math.log10(stepValueApprox));
-      let multiplierLookup = [0, 1, 2, 2, 5, 5, 5, 5, 5, 10, 10]; // Use friendly numbers if possible
-      stepSize = roundBase * multiplierLookup[Math.round(stepValueApprox / roundBase)];
-    }
+    let stepSize = calcAxisStepSize(timeRange, width, this.STEP_TARGET_PX);
 
     // Draw state ranges
     context.lineWidth = 1;

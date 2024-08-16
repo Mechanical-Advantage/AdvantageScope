@@ -161,6 +161,7 @@ export default class Tabs {
       this.tabsScrollSensor.periodic();
       this.timeline.periodic();
       this.updateControlsHeight();
+      this.tabList[this.selectedTab].renderer.render(this.tabList[this.selectedTab].controller.getCommand());
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -269,7 +270,7 @@ export default class Tabs {
     switch (type) {
       case TabType.LineGraph:
         controller = new LineGraphController(controlsElement);
-        renderer = new LineGraphRenderer();
+        renderer = new LineGraphRenderer(rendererElement);
         break;
       default:
         controller = new NoopController();
@@ -298,7 +299,6 @@ export default class Tabs {
     this.selectedTab += 1;
     this.CONTROLS_CONTENT.appendChild(controlsElement);
     this.RENDERER_CONTENT.appendChild(rendererElement);
-    controller.periodic(); // Some controllers need to initialize by running a periodic cycle while visible
     this.updateElements();
   }
 

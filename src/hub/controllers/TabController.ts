@@ -21,7 +21,4 @@ export default interface TabController {
 
   /** Returns data required by renderers. */
   getCommand(): unknown;
-
-  /** Called once per frame. */
-  periodic(): void;
 }

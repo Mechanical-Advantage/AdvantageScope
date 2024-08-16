@@ -85,15 +85,19 @@ export default class SourceList {
     this.TITLE.innerText = title;
   }
 
-  saveState(): SourceListState {
+  getState(): SourceListState {
     return this.state;
   }
 
-  restoreState(state: SourceListState) {
+  setState(state: SourceListState) {
     this.clear();
     state.forEach((itemState) => {
       this.addListItem(itemState);
     });
+  }
+
+  getActiveFields(): string[] {
+    return this.state.map((item) => item.logKey);
   }
 
   stop() {

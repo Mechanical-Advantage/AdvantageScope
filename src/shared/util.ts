@@ -78,7 +78,7 @@ export function scaleValue(value: number, oldRange: [number, number], newRange: 
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];
 }
 
-/** Converts a value between two ranges, with caching for better performance.. */
+/** Converts a value between two ranges, with caching for better performance. */
 export class ValueScaler {
   private a: number;
   private b: number;
@@ -150,4 +150,12 @@ export function concatBuffers(arrays: Uint8Array[]): Uint8Array {
     position += array.byteLength;
   });
   return result;
+}
+
+export function calcAxisStepSize(dataRange: [number, number], pixelRange: number, stepSizeTarget: number): number {
+  let stepCount = pixelRange / stepSizeTarget;
+  let stepValueApprox = (dataRange[1] - dataRange[0]) / stepCount;
+  let roundBase = 10 ** Math.floor(Math.log10(stepValueApprox));
+  let multiplierLookup = [0, 1, 2, 2, 5, 5, 5, 5, 5, 10, 10]; // Use friendly numbers if possible
+  return roundBase * multiplierLookup[Math.round(stepValueApprox / roundBase)];
 }

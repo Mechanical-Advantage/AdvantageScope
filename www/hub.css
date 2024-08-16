@@ -1009,3 +1009,30 @@ button.line-graph-edit-right {
 button.line-graph-edit-discrete {
   left: calc(100% / 3 * 2 - 15px);
 }
+
+canvas.line-graph-canvas {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+div.line-graph-scroll {
+  position: absolute;
+  z-index: 9;
+  left: 0px;
+  right: 0px;
+  top: 8px;
+  bottom: 50px;
+  overflow: scroll;
+}
+
+div.line-graph-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+div.line-graph-scroll-content {
+  width: 1000000px;
+  height: 1000000px;
+}
