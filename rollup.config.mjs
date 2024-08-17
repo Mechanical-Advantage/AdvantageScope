@@ -19,7 +19,9 @@ function bundle(input, output, isMain, external = []) {
     external: external,
     plugins: [
       typescript(),
-      nodeResolve(),
+      nodeResolve({
+        preferBuiltins: true
+      }),
       commonjs(),
       cleanup(),
       json(),
@@ -77,8 +79,8 @@ const mainBundles = [
     "ssh2",
     "download",
     "ytdl-core",
-    "tesseract.js",
-    "skia-canvas"
+    "tesseract.js"
+    // "pngjs"
   ]),
   bundle("preload.ts", "preload.js", true, ["electron"])
 ];

@@ -1,3 +1,4 @@
+import { hex } from "color-convert";
 import {
   BrowserWindow,
   BrowserWindowConstructorOptions,
@@ -21,7 +22,7 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
-import { Canvas } from "skia-canvas";
+import { PNG } from "pngjs";
 import { Client } from "ssh2";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { ensureThemeContrast } from "../shared/Colors";
@@ -166,7 +167,7 @@ function sendAssets() {
  * @param window The source hub window
  * @param message The received message
  */
-function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
+async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   if (window.isDestroyed()) return;
   let windowId = window.id;
   switch (message.name) {
@@ -488,17 +489,25 @@ function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
       // Make color icon
       let getIcon = (value: string): Electron.NativeImage | undefined => {
-        let icon: Electron.NativeImage | undefined = undefined;
-        if (value.startsWith("#")) {
-          // Make icon with color
-          const size = 15;
-          let canvas = new Canvas(size, size);
-          let context = canvas.getContext("2d");
-          context.fillStyle = ensureThemeContrast(value, nativeTheme.shouldUseDarkColors);
-          context.fillRect(0, 0, size, size);
-          icon = nativeImage.createFromDataURL(canvas.toDataURLSync("png"));
+        if (!value.startsWith("#")) {
+          return undefined;
         }
-        return icon;
+
+        // Make icon with color
+        const size = 15;
+        const color = hex.rgb(ensureThemeContrast(value, nativeTheme.shouldUseDarkColors));
+        const png = new PNG({ width: size, height: size });
+        for (let y = 0; y < size; y++) {
+          for (let x = 0; x < size; x++) {
+            const idx = (y * size + x) * 4;
+            png.data[idx + 0] = color[0];
+            png.data[idx + 1] = color[1];
+            png.data[idx + 2] = color[2];
+            png.data[idx + 3] = 255;
+          }
+        }
+        const data = PNG.sync.write(png).toString("base64");
+        return nativeImage.createFromDataURL("data:image/png;base64," + data);
       };
 
       // Add options
