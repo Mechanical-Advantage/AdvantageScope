@@ -17,6 +17,7 @@ export default class SourceList {
   private ROOT: HTMLElement;
   private TITLE: HTMLElement;
   private LIST: HTMLElement;
+  private HAND_ICON: HTMLImageElement;
   private DRAG_HIGHLIGHT: HTMLElement;
 
   private stopped = false;
@@ -38,6 +39,12 @@ export default class SourceList {
     this.LIST = document.createElement("div");
     this.ROOT.appendChild(this.LIST);
     this.LIST.classList.add("list");
+
+    this.HAND_ICON = document.createElement("img");
+    this.ROOT.appendChild(this.HAND_ICON);
+    this.HAND_ICON.classList.add("hand-icon");
+    this.HAND_ICON.src = "symbols/rectangle.and.hand.point.up.left.filled.svg";
+    this.updateHandIcon();
 
     this.DRAG_HIGHLIGHT = document.createElement("div");
     this.ROOT.appendChild(this.DRAG_HIGHLIGHT);
@@ -110,6 +117,13 @@ export default class SourceList {
     while (this.LIST.firstChild) {
       this.LIST.removeChild(this.LIST.firstChild);
     }
+    this.updateHandIcon();
+  }
+
+  private updateHandIcon() {
+    let show = this.LIST.childElementCount === 0;
+    this.HAND_ICON.style.transition = show ? "opacity 1s ease-in 1s" : "";
+    this.HAND_ICON.style.opacity = show ? "0.15" : "0";
   }
 
   /**
@@ -322,6 +336,7 @@ export default class SourceList {
       this.state.splice(insertIndex, 0, state);
     }
     this.updateItem(item, state);
+    this.updateHandIcon();
 
     // Check if child type
     let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === state.type);
@@ -360,6 +375,7 @@ export default class SourceList {
             this.state.splice(index, childCount);
             for (let i = 0; i < childCount; i++) {
               this.LIST.removeChild(this.LIST.children[index]);
+              this.updateHandIcon();
             }
           }
         }
@@ -422,6 +438,7 @@ export default class SourceList {
       for (let i = 0; i < removeCount; i++) {
         this.LIST.removeChild(this.LIST.children[index]);
       }
+      this.updateHandIcon();
     });
     return item;
   }

@@ -8,6 +8,7 @@ import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import LineGraphController from "./controllers/LineGraphController";
 import NoopController from "./controllers/NoopController";
+import OdometryController from "./controllers/OdometryController";
 import TabController from "./controllers/TabController";
 
 export default class Tabs {
@@ -271,6 +272,10 @@ export default class Tabs {
       case TabType.LineGraph:
         controller = new LineGraphController(controlsElement);
         renderer = new LineGraphRenderer(rendererElement);
+        break;
+      case TabType.Odometry:
+        controller = new OdometryController(controlsElement);
+        renderer = new NoopRenderer();
         break;
       default:
         controller = new NoopController();

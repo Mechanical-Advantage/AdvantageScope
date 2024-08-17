@@ -575,6 +575,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   : optionConfig.values.map((optionValue) => {
                       return {
                         label: optionValue.display,
+                        icon: getIcon(optionValue.key),
                         click() {
                           state.type = typeConfig.key;
                           let newOptions: { [key: string]: string } = {};

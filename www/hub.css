@@ -962,6 +962,20 @@ div.source-list div.drag-highlight {
   pointer-events: none;
 }
 
+div.source-list img.hand-icon {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 15px);
+  transform: translate(-50%, -50%);
+  width: 60px;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.source-list img.hand-icon {
+    filter: invert(100%);
+  }
+}
+
 /* Line graph */
 
 div.line-graph-axis {
@@ -1039,4 +1053,31 @@ div.line-graph-scroll::-webkit-scrollbar {
 div.line-graph-scroll-content {
   width: 1000000px;
   height: 1000000px;
+}
+
+/* Odometry */
+
+div.odometry-sources {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  left: 0%;
+  width: 60%;
+  min-width: calc(100% - 300px);
+}
+
+div.odometry-settings {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  right: 0%;
+  width: 40%;
+  max-width: 300px;
+  border-left: 1px solid #ddd;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.odometry-settings {
+    border-left: 1px solid black;
+  }
 }
