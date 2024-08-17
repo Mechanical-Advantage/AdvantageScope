@@ -518,7 +518,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           menu.append(
             new MenuItem({
               label: optionValue.display,
-              type: "radio",
+              type: "checkbox",
               checked: optionValue.key === state.options[optionConfig.key],
               icon: getIcon(optionValue.key),
               click() {
@@ -536,7 +536,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               submenu: optionConfig.values.map((optionValue) => {
                 return {
                   label: optionValue.display,
-                  type: "radio",
+                  type: "checkbox",
                   checked: optionValue.key === state.options[optionConfig.key],
                   icon: getIcon(optionValue.key),
                   click() {
