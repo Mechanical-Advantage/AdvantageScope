@@ -26,6 +26,10 @@ div.title-bar {
   -webkit-app-region: drag;
 }
 
+body {
+  overflow: hidden;
+}
+
 body.fancy-title-bar div.title-bar {
   display: initial;
 }
