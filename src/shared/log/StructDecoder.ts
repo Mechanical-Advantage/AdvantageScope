@@ -192,7 +192,7 @@ export default class StructDecoder {
           // Array type
           let value: unknown[] = [];
           let itemLength = (valueSchema.bitRange[1] - valueSchema.bitRange[0]) / valueSchema.arrayLength;
-          for (let position = 0; (position += itemLength); position < valueBoolArray.length) {
+          for (let position = 0; position < valueBoolArray.length; position += itemLength) {
             value.push(
               StructDecoder.decodeValue(
                 StructDecoder.toUint8Array(valueBoolArray.slice(position, position + itemLength)),
