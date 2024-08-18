@@ -35,7 +35,8 @@ export const DEFAULT_PREFS: Preferences = {
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,
-  skipFrcLogFolderDefault: false
+  skipFrcLogFolderDefault: false,
+  skipNumericArrayDeprecationWarning: false
 };
 export const HUB_DEFAULT_WIDTH = 1100;
 export const HUB_DEFAULT_HEIGHT = 650;

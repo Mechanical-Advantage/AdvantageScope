@@ -389,6 +389,19 @@ export default class SourceList {
       promptType([event.clientX, event.clientY]);
     });
 
+    // Warning button
+    let warningButton = item.getElementsByClassName("warning")[0] as HTMLButtonElement;
+    let enableWarning = typeConfig?.numberArrayDeprecated === true && state.logType === "NumberArray";
+    warningButton.hidden = !enableWarning;
+    let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
+    keyContainer.style.setProperty("--has-warning", enableWarning ? "1" : "0");
+    warningButton.addEventListener("click", () => {
+      window.sendMainMessage("numeric-array-deprecation-warning", { force: true });
+    });
+    if (enableWarning) {
+      window.sendMainMessage("numeric-array-deprecation-warning", { force: false });
+    }
+
     // Hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let toggleHidden = () => {

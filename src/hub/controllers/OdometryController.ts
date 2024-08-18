@@ -56,7 +56,7 @@ const SourcesConfig: SourceListConfig = {
           display: "Frame Size",
           showInTypeName: false,
           values: [
-            { key: "30", display: "Full (30 in)" },
+            { key: "30", display: "Max (30 in)" },
             { key: "27", display: "Small (27 in)" },
             { key: "24", display: "Very Small (24 in)" }
           ]
@@ -77,7 +77,7 @@ const SourcesConfig: SourceListConfig = {
           display: "Frame Size",
           showInTypeName: false,
           values: [
-            { key: "30", display: "Full (30 in)" },
+            { key: "30", display: "Max (30 in)" },
             { key: "27", display: "Small (27 in)" },
             { key: "24", display: "Very Small (24 in)" }
           ]
@@ -91,7 +91,8 @@ const SourcesConfig: SourceListConfig = {
             { key: "degrees", display: "Degrees" }
           ]
         }
-      ]
+      ],
+      numberArrayDeprecated: true
     },
     {
       key: "ghost",
@@ -112,7 +113,7 @@ const SourcesConfig: SourceListConfig = {
           display: "Frame Size",
           showInTypeName: false,
           values: [
-            { key: "30", display: "Full (30 in)" },
+            { key: "30", display: "Max (30 in)" },
             { key: "27", display: "Small (27 in)" },
             { key: "24", display: "Very Small (24 in)" }
           ]
@@ -139,7 +140,7 @@ const SourcesConfig: SourceListConfig = {
           display: "Frame Size",
           showInTypeName: false,
           values: [
-            { key: "30", display: "Full (30 in)" },
+            { key: "30", display: "Max (30 in)" },
             { key: "27", display: "Small (27 in)" },
             { key: "24", display: "Very Small (24 in)" }
           ]
@@ -154,7 +155,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "color"
+      initialSelectionOption: "color",
+      numberArrayDeprecated: true
     },
     {
       key: "vision",
@@ -171,7 +173,8 @@ const SourcesConfig: SourceListConfig = {
         "Translation2d",
         "Translation2d[]"
       ],
-      options: []
+      options: [],
+      numberArrayDeprecated: true
     },
     {
       key: "trajectory",
@@ -180,7 +183,8 @@ const SourcesConfig: SourceListConfig = {
       showInTypeName: true,
       color: "#ff8800",
       sourceTypes: ["NumberArray", "Pose2d[]", "Transform2d[]", "Translation2d[]", "Trajectory"],
-      options: []
+      options: [],
+      numberArrayDeprecated: true
     },
     {
       key: "heatmap",
@@ -208,7 +212,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "samples"
+      initialSelectionOption: "samples",
+      numberArrayDeprecated: true
     },
     {
       key: "arrow",
@@ -261,7 +266,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "position"
+      initialSelectionOption: "position",
+      numberArrayDeprecated: true
     },
     {
       key: "zebra",

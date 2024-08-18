@@ -13,6 +13,7 @@ export type SourceListTypeConfig = {
   color: string; // Option key or hex (starting with #)
   darkColor?: string;
   sourceTypes: string[];
+  numberArrayDeprecated?: boolean; // Disable deprecation warning if number array used
   parentKey?: string; // Identifies parents with shared children types
   childOf?: string; // Parent key this child is attached to
 
