@@ -50,18 +50,7 @@ const SourcesConfig: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Pose2d", "Pose2d[]", "Transform2d", "Transform2d[]"],
-      options: [
-        {
-          key: "size",
-          display: "Frame Size",
-          showInTypeName: false,
-          values: [
-            { key: "30", display: "Max (30 in)" },
-            { key: "27", display: "Small (27 in)" },
-            { key: "24", display: "Very Small (24 in)" }
-          ]
-        }
-      ]
+      options: []
     },
     {
       key: "robotLegacy",
@@ -72,16 +61,6 @@ const SourcesConfig: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       options: [
-        {
-          key: "size",
-          display: "Frame Size",
-          showInTypeName: false,
-          values: [
-            { key: "30", display: "Max (30 in)" },
-            { key: "27", display: "Small (27 in)" },
-            { key: "24", display: "Very Small (24 in)" }
-          ]
-        },
         {
           key: "units",
           display: "Rotation Units",
@@ -107,16 +86,6 @@ const SourcesConfig: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
-        },
-        {
-          key: "size",
-          display: "Frame Size",
-          showInTypeName: false,
-          values: [
-            { key: "30", display: "Max (30 in)" },
-            { key: "27", display: "Small (27 in)" },
-            { key: "24", display: "Very Small (24 in)" }
-          ]
         }
       ],
       initialSelectionOption: "color"
@@ -134,16 +103,6 @@ const SourcesConfig: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
-        },
-        {
-          key: "size",
-          display: "Frame Size",
-          showInTypeName: false,
-          values: [
-            { key: "30", display: "Max (30 in)" },
-            { key: "27", display: "Small (27 in)" },
-            { key: "24", display: "Very Small (24 in)" }
-          ]
         },
         {
           key: "units",

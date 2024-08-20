@@ -12,7 +12,6 @@ import OdometryController from "./controllers/OdometryController";
 import TabController from "./controllers/TabController";
 
 export default class Tabs {
-  private VIEWER = document.getElementsByClassName("viewer")[0] as HTMLElement;
   private TIMELINE_CONTAINER = document.getElementsByClassName("timeline")[0] as HTMLElement;
   private TAB_BAR = document.getElementsByClassName("tab-bar")[0];
   private SHADOW_LEFT = document.getElementsByClassName("tab-bar-shadow-left")[0] as HTMLElement;
