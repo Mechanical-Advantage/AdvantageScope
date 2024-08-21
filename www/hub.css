@@ -1252,11 +1252,11 @@ div.odometry-settings div.game > div {
   transform: translateY(-50%);
 }
 
-div.odometry-settings div.game select {
+div.odometry-settings select.game-select {
   height: 25px;
 }
 
-div.odometry-settings div.game a {
+div.odometry-settings a.game-source {
   padding: 5px;
   font-size: 14px;
 }

@@ -171,6 +171,7 @@ export default class Tabs {
     let availableHeight = window.innerHeight - this.RENDERER_CONTENT.getBoundingClientRect().top;
     availableHeight -= 150;
     this.controlHeight = Math.min(this.controlHeight, availableHeight);
+    if (this.controlHeight < 0) this.controlHeight = 0;
 
     let appliedHeight = this.controlHeight;
     let selectedTab = this.tabList[this.selectedTab];
