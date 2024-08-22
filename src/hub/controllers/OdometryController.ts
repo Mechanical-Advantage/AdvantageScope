@@ -1,10 +1,32 @@
 import { NeonColors } from "../../shared/Colors";
 import { SourceListConfig, SourceListItemState } from "../../shared/SourceListConfig";
-import { Orientation } from "../../shared/renderers/OdometryRenderer";
+import {
+  AnnotatedPose2d,
+  AnnotatedPose3d,
+  Translation2d,
+  annotatedPose3dTo2d,
+  grabPosesAuto,
+  translation3dTo2d
+} from "../../shared/geometry";
+import { getEnabledData, getIsRedAlliance, getOrDefault } from "../../shared/log/LogUtil";
+import LoggableType from "../../shared/log/LoggableType";
+import {
+  OdometryRendererCommand,
+  OdometryRendererCommand_AllObjs,
+  Orientation
+} from "../../shared/renderers/OdometryRenderer";
+import { convert } from "../../shared/units";
+import { createUUID } from "../../shared/util";
+import { SelectionMode } from "../Selection";
 import SourceList from "../SourceList";
 import TabController from "./TabController";
 
 export default class OdometryController implements TabController {
+  private static HEATMAP_DT = 0.25;
+  private static TRAIL_LENGTH_SECS = 3;
+  private static TRAIL_DT = 0.1;
+
+  private UUID = createUUID();
   private BUMPER_SWITCHER: HTMLElement;
   private ORIGIN_SWITCHER: HTMLElement;
   private ORIENTATION_SWITCHER: HTMLElement;
@@ -201,8 +223,246 @@ export default class OdometryController implements TabController {
     return this.sourceList.getActiveFields();
   }
 
-  getCommand(): unknown {
-    return null;
+  getCommand(): OdometryRendererCommand {
+    // Get timestamp
+    let time: number;
+    let selectionMode = window.selection.getMode();
+    let hoveredTime = window.selection.getHoveredTime();
+    let selectedTime = window.selection.getSelectedTime();
+    if (selectionMode === SelectionMode.Playback || selectionMode === SelectionMode.Locked) {
+      time = selectedTime as number;
+    } else if (hoveredTime !== null) {
+      time = hoveredTime;
+    } else if (selectedTime !== null) {
+      time = selectedTime;
+    } else {
+      time = window.log.getTimestampRange()[0];
+    }
+
+    // Get game data
+    let gameData = window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value);
+    let fieldWidth = gameData === undefined ? 0 : convert(gameData.widthInches, "inches", "meters");
+    let fieldHeight = gameData === undefined ? 0 : convert(gameData.heightInches, "inches", "meters");
+
+    // Get alliance
+    let autoRedAlliance = getIsRedAlliance(window.log, time);
+    let bumpers: "blue" | "red" =
+      (this.bumperSetting === "auto" && autoRedAlliance) || this.bumperSetting === "red" ? "red" : "blue";
+    let origin: "blue" | "red" =
+      (this.originSetting === "auto" && autoRedAlliance) || this.originSetting === "red" ? "red" : "blue";
+
+    let objects: OdometryRendererCommand_AllObjs[] = [];
+    let sources = this.sourceList.getState();
+    for (let i = 0; i < sources.length; i++) {
+      let source = sources[i];
+
+      // Find children
+      let children: SourceListItemState[] = [];
+      while (
+        sources.length > i + 1 &&
+        SourcesConfig.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !== undefined
+      ) {
+        i++;
+        children.push(sources[i]);
+      }
+
+      // Get pose data
+      let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
+      let numberArrayUnits: "radians" | "degrees" | undefined = undefined;
+      if ("format" in source.options) {
+        let formatRaw = source.options.format;
+        numberArrayFormat =
+          formatRaw === "Pose2d" ||
+          formatRaw === "Pose3d" ||
+          formatRaw === "Translation2d" ||
+          formatRaw === "Translation3d"
+            ? formatRaw
+            : "Pose2d";
+      }
+      if ("units" in source.options) {
+        numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
+      }
+      let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
+      let pose3ds: AnnotatedPose3d[] = [];
+      if (!isHeatmap) {
+        pose3ds = grabPosesAuto(
+          window.log,
+          source.logKey,
+          source.logType,
+          time,
+          numberArrayFormat,
+          numberArrayUnits,
+          origin,
+          fieldWidth,
+          fieldHeight
+        );
+      } else {
+        let isEnabledOnly = source.options.samples === "enabled";
+        let enabledData = isEnabledOnly ? getEnabledData(window.log) : null;
+        let isValid = (timestamp: number) => {
+          if (!isEnabledOnly) return true;
+          if (enabledData === null) return false;
+          let enabledDataIndex = enabledData.timestamps.findLastIndex((x) => x <= timestamp);
+          if (enabledDataIndex === -1) return false;
+          return enabledData.values[enabledDataIndex];
+        };
+        for (
+          let sampleTime = window.log.getTimestampRange()[0];
+          sampleTime < window.log.getTimestampRange()[1];
+          sampleTime += OdometryController.HEATMAP_DT
+        ) {
+          if (!isValid(sampleTime)) continue;
+          pose3ds = pose3ds.concat(
+            grabPosesAuto(
+              window.log,
+              source.logKey,
+              source.logType,
+              sampleTime,
+              numberArrayFormat,
+              numberArrayUnits,
+              origin,
+              fieldWidth,
+              fieldHeight
+            )
+          );
+        }
+      }
+      let poses = pose3ds.map(annotatedPose3dTo2d);
+
+      // Get trail data for robot
+      let trails: Translation2d[][] = Array(poses.length).fill([]);
+      if (source.type === "robot" || source.type === "robotLegacy") {
+        let startTime = Math.max(window.log.getTimestampRange()[0], time - OdometryController.TRAIL_LENGTH_SECS);
+        startTime = Math.ceil(startTime / OdometryController.TRAIL_DT) * OdometryController.TRAIL_DT;
+        for (
+          let sampleTime = startTime;
+          sampleTime < Math.min(window.log.getTimestampRange()[1], time + OdometryController.TRAIL_LENGTH_SECS);
+          sampleTime += OdometryController.TRAIL_DT
+        ) {
+          let pose3ds = grabPosesAuto(
+            window.log,
+            source.logKey,
+            source.logType,
+            sampleTime,
+            numberArrayFormat,
+            numberArrayUnits,
+            origin,
+            fieldWidth,
+            fieldHeight
+          );
+          if (pose3ds.length !== trails.length) continue;
+          pose3ds.forEach((pose, index) => {
+            trails[index].push(translation3dTo2d(pose.pose.translation));
+          });
+        }
+      }
+
+      // Add data from children
+      let visionTargets: AnnotatedPose2d[] = [];
+      children.forEach((child) => {
+        switch (child.type) {
+          case "rotationOverride":
+          case "rotationOverrideLegacy":
+            let isRotation2d = child.logType === "Rotation2d";
+            let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
+            let rotation = getOrDefault(window.log, rotationKey, LoggableType.Number, time, 0);
+            if (!isRotation2d) {
+              rotation = convert(rotation, child.options.units, "radians");
+            }
+            poses.forEach((value) => {
+              value.pose.rotation = rotation;
+            });
+            break;
+
+          case "vision":
+          case "visionLegacy":
+            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
+            if ("format" in source.options) {
+              let formatRaw = source.options.format;
+              numberArrayFormat =
+                formatRaw === "Pose2d" ||
+                formatRaw === "Pose3d" ||
+                formatRaw === "Translation2d" ||
+                formatRaw === "Translation3d"
+                  ? formatRaw
+                  : "Pose2d";
+            }
+            let visionPose3ds = grabPosesAuto(
+              window.log,
+              child.logKey,
+              child.logType,
+              time,
+              numberArrayFormat,
+              "radians"
+            );
+            visionTargets = visionPose3ds.map(annotatedPose3dTo2d);
+            break;
+        }
+      });
+
+      // Add object
+      switch (source.type) {
+        case "robot":
+        case "robotLegacy":
+          objects.push({
+            type: "robot",
+            poses: poses,
+            trails: trails,
+            visionTargets: visionTargets
+          });
+          break;
+        case "ghost":
+        case "ghostLegacy":
+        case "ghostZebra":
+          objects.push({
+            type: "ghost",
+            poses: poses,
+            color: source.options.color,
+            visionTargets: visionTargets
+          });
+          break;
+        case "trajectory":
+        case "trajectoryLegacy":
+          objects.push({
+            type: "trajectory",
+            poses: poses
+          });
+          break;
+        case "heatmap":
+        case "heatmapLegacy":
+          objects.push({
+            type: "heatmap",
+            poses: poses
+          });
+          break;
+        case "arrow":
+        case "arrowLegacy":
+          let positionRaw = source.options.position;
+          let position: "center" | "back" | "front" =
+            positionRaw === "center" || positionRaw === "back" || positionRaw === "front" ? positionRaw : "center";
+          objects.push({
+            type: "arrow",
+            poses: poses,
+            position: position
+          });
+          break;
+        case "zebra":
+          objects.push({
+            type: "zebra",
+            poses: poses
+          });
+          break;
+      }
+    }
+
+    return {
+      game: this.GAME_SELECT.value,
+      bumpers: bumpers,
+      origin: origin,
+      orientation: this.orientationSetting,
+      size: this.sizeSetting,
+      objects: objects
+    };
   }
 }
 
@@ -218,8 +478,18 @@ const SourcesConfig: SourceListConfig = {
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
-      sourceTypes: ["Pose2d", "Pose2d[]", "Transform2d", "Transform2d[]"],
-      options: []
+      sourceTypes: [
+        "Pose2d",
+        "Pose3d",
+        "Pose2d[]",
+        "Pose3d[]",
+        "Transform2d",
+        "Transform3d",
+        "Transform2d[]",
+        "Transform3d[]"
+      ],
+      options: [],
+      parentKey: "robot"
     },
     {
       key: "robotLegacy",
@@ -231,6 +501,17 @@ const SourcesConfig: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [
         {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
+          ]
+        },
+        {
           key: "units",
           display: "Rotation Units",
           showInTypeName: false,
@@ -240,7 +521,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      numberArrayDeprecated: true
+      numberArrayDeprecated: true,
+      parentKey: "robot"
     },
     {
       key: "ghost",
@@ -248,7 +530,16 @@ const SourcesConfig: SourceListConfig = {
       symbol: "location.fill.viewfinder",
       showInTypeName: true,
       color: "color",
-      sourceTypes: ["Pose2d", "Pose2d[]", "Transform2d", "Transform2d[]", "ZebraTranslation"],
+      sourceTypes: [
+        "Pose2d",
+        "Pose3d",
+        "Pose2d[]",
+        "Pose3d[]",
+        "Transform2d",
+        "Transform3d",
+        "Transform2d[]",
+        "Transform3d[]"
+      ],
       options: [
         {
           key: "color",
@@ -257,7 +548,8 @@ const SourcesConfig: SourceListConfig = {
           values: NeonColors
         }
       ],
-      initialSelectionOption: "color"
+      initialSelectionOption: "color",
+      parentKey: "robot"
     },
     {
       key: "ghostLegacy",
@@ -274,6 +566,17 @@ const SourcesConfig: SourceListConfig = {
           values: NeonColors
         },
         {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
+          ]
+        },
+        {
           key: "units",
           display: "Rotation Units",
           showInTypeName: false,
@@ -284,7 +587,58 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
+      parentKey: "robot",
       numberArrayDeprecated: true
+    },
+    {
+      key: "ghostZebra",
+      display: "Ghost",
+      symbol: "location.fill.viewfinder",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: ["ZebraTranslation"],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        }
+      ],
+      initialSelectionOption: "color",
+      parentKey: "robot"
+    },
+    {
+      key: "rotationOverride",
+      display: "Rotation Override",
+      symbol: "angle",
+      showInTypeName: true,
+      color: "#000000",
+      darkColor: "#ffffff",
+      sourceTypes: ["Rotation2d"],
+      options: [],
+      childOf: "robot"
+    },
+    {
+      key: "rotationOverrideLegacy",
+      display: "Rotation Override",
+      symbol: "angle",
+      showInTypeName: true,
+      color: "#000000",
+      darkColor: "#ffffff",
+      sourceTypes: ["Number"],
+      options: [
+        {
+          key: "units",
+          display: "Rotation Units",
+          showInTypeName: false,
+          values: [
+            { key: "radians", display: "Radians" },
+            { key: "degrees", display: "Degrees" }
+          ]
+        }
+      ],
+      childOf: "robot"
     },
     {
       key: "vision",
@@ -293,16 +647,44 @@ const SourcesConfig: SourceListConfig = {
       showInTypeName: true,
       color: "#00bb00",
       sourceTypes: [
-        "NumberArray",
         "Pose2d",
+        "Pose3d",
         "Pose2d[]",
+        "Pose3d[]",
         "Transform2d",
+        "Transform3d",
         "Transform2d[]",
+        "Transform3d[]",
         "Translation2d",
-        "Translation2d[]"
+        "Translation3d",
+        "Translation2d[]",
+        "Translation3d[]"
       ],
       options: [],
-      numberArrayDeprecated: true
+      childOf: "robot"
+    },
+    {
+      key: "visionLegacy",
+      display: "Vision Target",
+      symbol: "scope",
+      showInTypeName: true,
+      color: "#00bb00",
+      sourceTypes: ["NumberArray"],
+      options: [
+        {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
+          ]
+        }
+      ],
+      numberArrayDeprecated: true,
+      childOf: "robot"
     },
     {
       key: "trajectory",
@@ -310,8 +692,37 @@ const SourcesConfig: SourceListConfig = {
       symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
       showInTypeName: true,
       color: "#ff8800",
-      sourceTypes: ["NumberArray", "Pose2d[]", "Transform2d[]", "Translation2d[]", "Trajectory"],
-      options: [],
+      sourceTypes: [
+        "Pose2d[]",
+        "Pose3d[]",
+        "Transform2d[]",
+        "Transform3d[]",
+        "Translation2d[]",
+        "Translation3d[]",
+        "Trajectory"
+      ],
+      options: []
+    },
+    {
+      key: "trajectoryLegacy",
+      display: "Trajectory",
+      symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
+      showInTypeName: true,
+      color: "#ff8800",
+      sourceTypes: ["NumberArray"],
+      options: [
+        {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
+          ]
+        }
+      ],
       numberArrayDeprecated: true
     },
     {
@@ -321,13 +732,19 @@ const SourcesConfig: SourceListConfig = {
       showInTypeName: true,
       color: "#ff0000",
       sourceTypes: [
-        "NumberArray",
         "Pose2d",
+        "Pose3d",
         "Pose2d[]",
+        "Pose3d[]",
         "Transform2d",
+        "Transform3d",
         "Transform2d[]",
+        "Transform3d[]",
         "Translation2d",
-        "Translation2d[]"
+        "Translation3d",
+        "Translation2d[]",
+        "Translation3d[]",
+        "ZebraTranslation"
       ],
       options: [
         {
@@ -337,6 +754,37 @@ const SourcesConfig: SourceListConfig = {
           values: [
             { key: "enabled", display: "Enabled Only" },
             { key: "full", display: "Full Log" }
+          ]
+        }
+      ],
+      initialSelectionOption: "samples"
+    },
+    {
+      key: "heatmapLegacy",
+      display: "Heatmap",
+      symbol: "map.fill",
+      showInTypeName: true,
+      color: "#ff0000",
+      sourceTypes: ["NumberArray"],
+      options: [
+        {
+          key: "samples",
+          display: "Samples",
+          showInTypeName: false,
+          values: [
+            { key: "enabled", display: "Enabled Only" },
+            { key: "full", display: "Full Log" }
+          ]
+        },
+        {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
           ]
         }
       ],
@@ -350,7 +798,17 @@ const SourcesConfig: SourceListConfig = {
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
-      sourceTypes: ["Pose2d", "Pose2d[]", "Transform2d", "Transform2d[]"],
+      sourceTypes: [
+        "Pose2d",
+        "Pose3d",
+        "Pose2d[]",
+        "Pose3d[]",
+        "Transform2d",
+        "Transform3d",
+        "Transform2d[]",
+        "Transform3d[]",
+        "Trajectory"
+      ],
       options: [
         {
           key: "position",
@@ -382,6 +840,17 @@ const SourcesConfig: SourceListConfig = {
             { key: "center", display: "Center" },
             { key: "back", display: "Back" },
             { key: "front", display: "Front" }
+          ]
+        },
+        {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
           ]
         },
         {

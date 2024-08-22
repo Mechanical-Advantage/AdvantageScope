@@ -391,7 +391,7 @@ export default class SourceList {
 
     // Warning button
     let warningButton = item.getElementsByClassName("warning")[0] as HTMLButtonElement;
-    let enableWarning = typeConfig?.numberArrayDeprecated === true && state.logType === "NumberArray";
+    let enableWarning = typeConfig?.numberArrayDeprecated === true;
     warningButton.hidden = !enableWarning;
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     keyContainer.style.setProperty("--has-warning", enableWarning ? "1" : "0");
@@ -519,7 +519,7 @@ export default class SourceList {
       }
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    typeNameElement.innerText = typeNameComponents.join("/") + ":";
+    typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;

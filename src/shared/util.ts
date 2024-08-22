@@ -36,6 +36,11 @@ export function htmlEncode(text: string): string {
   });
 }
 
+/** Returns an array of ascending integers with the specified length. */
+export function indexArray(length: number): number[] {
+  return Array.from({ length: length }, (_, i) => i + 1);
+}
+
 /** Adjust the brightness of a HEX color.*/
 export function shiftColor(color: string, shift: number): string {
   let colorHexArray = color.slice(1).match(/.{1,2}/g);

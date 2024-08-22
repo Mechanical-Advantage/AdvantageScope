@@ -15,14 +15,7 @@ import {
   STANDARD_FIELD_LENGTH,
   STANDARD_FIELD_WIDTH
 } from "../AdvantageScopeAssets";
-import {
-  APRIL_TAG_16H5_COUNT,
-  APRIL_TAG_36H11_COUNT,
-  AprilTag,
-  Pose3d,
-  Translation2d,
-  rotation3dToQuaternion
-} from "../geometry";
+import { APRIL_TAG_16H5_COUNT, APRIL_TAG_36H11_COUNT, AprilTag, Pose3d, Rotation3d, Translation2d } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import { convert } from "../units";
 import { clampValue, zfill } from "../util";
@@ -1632,4 +1625,12 @@ function disposeObject(object: THREE.Object3D) {
       }
     }
   });
+}
+
+export function rotation3dToQuaternion(input: Rotation3d): THREE.Quaternion {
+  return new THREE.Quaternion(input[1], input[2], input[3], input[0]);
+}
+
+export function quaternionToRotation3d(input: THREE.Quaternion): Rotation3d {
+  return [input.w, input.x, input.y, input.z];
 }
