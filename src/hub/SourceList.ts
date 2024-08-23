@@ -247,7 +247,12 @@ export default class SourceList {
     let end = dragData.end;
     let x = dragData.x;
     let y = dragData.y;
-    let draggedFields: { fields: string[]; children: string[] } = dragData.data;
+    let draggedFields: string[];
+    if (this.config.allowChildrenFromDrag) {
+      draggedFields = dragData.data.fields.concat(dragData.data.children);
+    } else {
+      draggedFields = dragData.data.fields;
+    }
 
     // Exit if out of range
     let listRect = this.ROOT.getBoundingClientRect();
@@ -269,7 +274,7 @@ export default class SourceList {
 
     // Check type validity
     let isTypeValid = (sourceTypes: Set<string>): boolean => {
-      return draggedFields.fields.some((field) => {
+      return draggedFields.some((field) => {
         let logType = window.log.getType(field);
         let logTypeString = logType === null ? null : LoggableType[logType];
         let structuredType = window.log.getStructuredType(field);
@@ -279,8 +284,8 @@ export default class SourceList {
         );
       });
     };
-    let typeValidList = isTypeValid(this.independentAllowedTypes);
-    let typeValidParent = false;
+    let typeValidAsRoot = isTypeValid(this.independentAllowedTypes);
+    let typeValidAsChild = false;
     if (parentIndex !== null) {
       let parentKey = this.parentKeys.get(this.state[parentIndex!].type);
       let childAllowedTypes: Set<string> = new Set();
@@ -289,26 +294,26 @@ export default class SourceList {
           typeConfig.sourceTypes.forEach((type) => childAllowedTypes.add(type));
         }
       });
-      typeValidParent = isTypeValid(childAllowedTypes);
+      typeValidAsChild = isTypeValid(childAllowedTypes);
     }
 
     // Add fields and update highlight
     if (end) {
       this.DRAG_HIGHLIGHT.hidden = true;
-      if (!typeValidParent) parentIndex = null;
-      if (parentIndex !== null || (typeValidList && withinList)) {
-        draggedFields.fields.forEach((field) => {
+      if (!typeValidAsChild) parentIndex = null;
+      if (parentIndex !== null || (typeValidAsRoot && withinList)) {
+        draggedFields.forEach((field) => {
           this.addField(field, parentIndex === null ? undefined : parentIndex);
         });
       }
-    } else if (typeValidParent && parentIndex !== null) {
+    } else if (typeValidAsChild && parentIndex !== null) {
       this.DRAG_HIGHLIGHT.style.left = "0%";
       this.DRAG_HIGHLIGHT.style.top =
         (this.LIST.children[parentIndex!].getBoundingClientRect().top - listRect.top).toString() + "px";
       this.DRAG_HIGHLIGHT.style.width = "100%";
       this.DRAG_HIGHLIGHT.style.height = this.LIST.children[parentIndex!].clientHeight.toString() + "px";
       this.DRAG_HIGHLIGHT.hidden = false;
-    } else if (typeValidList && withinList) {
+    } else if (typeValidAsRoot && withinList) {
       this.DRAG_HIGHLIGHT.style.left = "0%";
       this.DRAG_HIGHLIGHT.style.top = "0%";
       this.DRAG_HIGHLIGHT.style.width = "100%";

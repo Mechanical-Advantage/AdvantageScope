@@ -435,6 +435,7 @@ export default class LineGraphController implements TabController {
 const NumericAxisConfig: SourceListConfig = {
   title: "",
   autoAdvance: "color",
+  allowChildrenFromDrag: true,
   types: [
     {
       key: "stepped",
@@ -519,6 +520,7 @@ const NumericAxisConfig: SourceListConfig = {
 const DiscreteFieldsConfig: SourceListConfig = {
   title: "Discrete Fields",
   autoAdvance: "color",
+  allowChildrenFromDrag: false,
   types: [
     {
       key: "stripes",

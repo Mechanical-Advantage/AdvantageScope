@@ -1,6 +1,7 @@
 export type SourceListConfig = {
   title: string;
   autoAdvance: boolean | string; // True advances type, string advances option
+  allowChildrenFromDrag: boolean; // Should be false if parent types (arrays/structs) are supported directly
   typeMemoryId?: string; // If provided, remember types and options for fields
   types: SourceListTypeConfig[];
 };

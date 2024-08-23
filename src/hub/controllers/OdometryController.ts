@@ -485,6 +485,7 @@ export default class OdometryController implements TabController {
 const SourcesConfig: SourceListConfig = {
   title: "Poses",
   autoAdvance: true,
+  allowChildrenFromDrag: false,
   typeMemoryId: "odometry",
   types: [
     {
