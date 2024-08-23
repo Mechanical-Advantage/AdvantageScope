@@ -121,13 +121,28 @@ export default class LineGraphRenderer implements TabRenderer {
     command.discreteFields.forEach((field, renderIndex) => {
       context.beginPath();
       let toggle = field.toggleReference;
+      let skippedSamples = 0;
       for (let i = 0; i < field.timestamps.length; i++) {
+        i += skippedSamples;
+        if (i >= field.timestamps.length) break;
+
         let startX = scaleValue(field.timestamps[i], timeRange, [graphLeft, graphLeft + graphWidth]);
         let endX: number;
         if (i === field.timestamps.length - 1) {
           endX = graphLeft + graphWidth;
         } else {
-          endX = scaleValue(field.timestamps[i + 1], timeRange, [graphLeft, graphLeft + graphWidth]);
+          skippedSamples = 0;
+          while (
+            (endX = scaleValue(field.timestamps[i + skippedSamples + 1], timeRange, [
+              graphLeft,
+              graphLeft + graphWidth
+            ])) -
+              startX <
+            1 / devicePixelRatio
+          ) {
+            skippedSamples++;
+            toggle = !toggle;
+          }
         }
         if (endX > graphLeft + graphWidth) endX = graphLeft + graphWidth;
         let topY = graphTop + graphHeight - 20 - renderIndex * 20;
@@ -153,7 +168,12 @@ export default class LineGraphRenderer implements TabRenderer {
           } else {
             context.fillStyle = field.color;
           }
-          context.fillText(field.values[i], adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
+          context.fillText(
+            field.values[i + skippedSamples],
+            adjustedStartX + 5,
+            topY + 15 / 2,
+            endX - adjustedStartX - 10
+          );
         }
       }
       if (field.type === "graph") {
