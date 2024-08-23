@@ -1,5 +1,5 @@
 import { GraphColors, ensureThemeContrast } from "../../shared/Colors";
-import { SourceListConfig, SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
+import { SourceListConfig, SourceListState } from "../../shared/SourceListConfig";
 import { getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
 import {
   LineGraphRendererCommand,
@@ -36,19 +36,22 @@ export default class LineGraphController implements TabController {
     // Make source lists
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
-      NumericAxisConfig
+      NumericAxisConfig,
+      [() => this.rightSourceList.getState(), () => this.discreteSourceList.getState()]
     );
     this.leftSourceList.setTitle("Left Axis");
 
     this.rightSourceList = new SourceList(
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
-      NumericAxisConfig
+      NumericAxisConfig,
+      [() => this.leftSourceList.getState(), () => this.discreteSourceList.getState()]
     );
     this.rightSourceList.setTitle("Right Axis");
 
     this.discreteSourceList = new SourceList(
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
-      DiscreteFieldsConfig
+      DiscreteFieldsConfig,
+      [() => this.leftSourceList.getState(), () => this.rightSourceList.getState()]
     );
 
     // Edit axis handling
@@ -119,13 +122,13 @@ export default class LineGraphController implements TabController {
     this.updateAxisLabels();
 
     if ("leftSources" in state) {
-      this.leftSourceList.setState(state.leftSources as SourceListItemState[]);
+      this.leftSourceList.setState(state.leftSources as SourceListState);
     }
     if ("rightSources" in state) {
-      this.rightSourceList.setState(state.rightSources as SourceListItemState[]);
+      this.rightSourceList.setState(state.rightSources as SourceListState);
     }
     if ("discreteSources" in state) {
-      this.discreteSourceList.setState(state.discreteSources as SourceListItemState[]);
+      this.discreteSourceList.setState(state.discreteSources as SourceListState);
     }
   }
 

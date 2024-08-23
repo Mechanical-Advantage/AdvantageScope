@@ -1,5 +1,5 @@
 import { NeonColors } from "../../shared/Colors";
-import { SourceListConfig, SourceListItemState } from "../../shared/SourceListConfig";
+import { SourceListConfig, SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import {
   AnnotatedPose2d,
   AnnotatedPose3d,
@@ -42,7 +42,11 @@ export default class OdometryController implements TabController {
   private sizeSetting: 30 | 27 | 24 = 30;
 
   constructor(root: HTMLElement) {
-    this.sourceList = new SourceList(root.getElementsByClassName("odometry-sources")[0] as HTMLElement, SourcesConfig);
+    this.sourceList = new SourceList(
+      root.getElementsByClassName("odometry-sources")[0] as HTMLElement,
+      SourcesConfig,
+      []
+    );
     let settings = root.getElementsByClassName("odometry-settings")[0] as HTMLElement;
     this.GAME_SELECT = root.getElementsByClassName("game-select")[0] as HTMLSelectElement;
     this.GAME_SOURCE = root.getElementsByClassName("game-source")[0] as HTMLElement;
@@ -183,7 +187,7 @@ export default class OdometryController implements TabController {
 
     this.updateGameOptions();
     if ("sources" in state) {
-      this.sourceList.setState(state.sources as SourceListItemState[]);
+      this.sourceList.setState(state.sources as SourceListState);
     }
     if ("game" in state && typeof state.game === "string") {
       this.GAME_SELECT.value = state.game;

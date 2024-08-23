@@ -25,9 +25,18 @@ export default class SourceList {
   private state: SourceListState = [];
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
+  private supplementalStateSuppliers: (() => SourceListState)[];
 
-  constructor(root: HTMLElement, config: SourceListConfig) {
+  /**
+   * Creates a new source list controller
+   *
+   * @param root The top-level HTML element of the source list
+   * @param config The configuration used for controlling the source list
+   * @param supplementalStateSuppliers Suppliers of additional states from other source lists, used when running auto advance logic
+   */
+  constructor(root: HTMLElement, config: SourceListConfig, supplementalStateSuppliers: (() => SourceListState)[]) {
     this.config = config;
+    this.supplementalStateSuppliers = supplementalStateSuppliers;
     this.ROOT = root;
     this.ROOT.classList.add("source-list");
 
@@ -148,6 +157,7 @@ export default class SourceList {
     }
 
     // Get all possible types
+    let stateWithSupplemental = this.state.concat(...this.supplementalStateSuppliers.map((func) => func()));
     let possibleTypes: { typeConfig: SourceListTypeConfig; logType: string; uses: number }[] = [];
     for (let i = 0; i < this.config.types.length; i++) {
       let typeConfig = this.config.types[i];
@@ -167,7 +177,7 @@ export default class SourceList {
         possibleTypes.push({
           typeConfig: typeConfig,
           logType: finalType,
-          uses: this.state.filter((itemState) => itemState.type === typeConfig.key).length
+          uses: stateWithSupplemental.filter((itemState) => itemState.type === typeConfig.key).length
         });
       }
     }
@@ -203,7 +213,7 @@ export default class SourceList {
           (valueConfig) => {
             return {
               valueConfig: valueConfig,
-              uses: this.state.filter(
+              uses: stateWithSupplemental.filter(
                 (itemState) =>
                   optionConfig.key in itemState.options && itemState.options[optionConfig.key] === valueConfig.key
               ).length
