@@ -325,7 +325,7 @@ export default class SourceList {
     }
   }
 
-  /** Make a list item and inserts it into the list. */
+  /** Make a list item element and inserts it into the list. */
   private addListItem(state: SourceListItemState, insertIndex?: number) {
     let item = this.ITEM_TEMPLATE.cloneNode(true) as HTMLElement;
     if (insertIndex === undefined) {
@@ -528,7 +528,16 @@ export default class SourceList {
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
-    keyContainer.style.setProperty("--type-width", typeNameElement.clientWidth.toString() + "px");
+
+    // Update type width, cloning to a new node in case the controls aren't visible
+    let mockTypeName = typeNameElement.cloneNode(true) as HTMLElement;
+    let mockSourceContainer = document.createElement("div");
+    mockSourceContainer.classList.add("source-list");
+    mockSourceContainer.appendChild(mockTypeName);
+    document.body.appendChild(mockSourceContainer);
+    let typeNameWidth = mockTypeName.clientWidth;
+    document.body.removeChild(mockSourceContainer);
+    keyContainer.style.setProperty("--type-width", typeNameWidth.toString() + "px");
 
     // Update hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
