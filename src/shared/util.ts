@@ -38,7 +38,7 @@ export function htmlEncode(text: string): string {
 
 /** Returns an array of ascending integers with the specified length. */
 export function indexArray(length: number): number[] {
-  return Array.from({ length: length }, (_, i) => i + 1);
+  return Array.from({ length: length }, (_, i) => i);
 }
 
 /** Adjust the brightness of a HEX color.*/

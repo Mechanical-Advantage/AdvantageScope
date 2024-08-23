@@ -42,6 +42,7 @@ export const GraphColors: SourceListOptionValueConfig[] = [
 
 export const NeonColors: SourceListOptionValueConfig[] = [
   { key: "#ff0000", display: "Red" },
+  { key: "#ff8c00", display: "Orange" },
   { key: "#ffff00", display: "Yellow" },
   { key: "#00ff00", display: "Green" },
   { key: "#0000ff", display: "Blue" },

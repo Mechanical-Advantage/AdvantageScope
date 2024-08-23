@@ -104,9 +104,16 @@ export function getLogValueText(value: any, type: LoggableType): string {
   }
 }
 
-export function getOrDefault(log: Log, key: string, type: LoggableType, timestamp: number, defaultValue: any): any {
+export function getOrDefault(
+  log: Log,
+  key: string,
+  type: LoggableType,
+  timestamp: number,
+  defaultValue: any,
+  uuid?: string
+): any {
   if (log.getType(key) === type) {
-    let logData = log.getRange(key, timestamp, timestamp);
+    let logData = log.getRange(key, timestamp, timestamp, uuid);
     if (logData !== undefined && logData.values.length > 0 && logData.timestamps[0] <= timestamp) {
       return logData.values[0];
     }
@@ -275,7 +282,10 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
     // Integer value (station) from AdvantageKit
     let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
-      return tempAllianceData.values[tempAllianceData.values.length - 1] <= 3;
+      return (
+        tempAllianceData.values[tempAllianceData.values.length - 1] <= 3 &&
+        tempAllianceData.values[tempAllianceData.values.length - 1] > 0
+      );
     }
   } else {
     // Boolean value from NT

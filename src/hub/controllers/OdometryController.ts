@@ -253,8 +253,10 @@ export default class OdometryController implements TabController {
 
     let objects: OdometryRendererCommand_AllObjs[] = [];
     let sources = this.sourceList.getState();
+    let availableKeys = window.log.getFieldKeys();
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
+      if (!source.visible || !availableKeys.includes(source.logKey)) continue;
 
       // Find children
       let children: SourceListItemState[] = [];
@@ -290,6 +292,7 @@ export default class OdometryController implements TabController {
           source.logKey,
           source.logType,
           time,
+          this.UUID,
           numberArrayFormat,
           numberArrayUnits,
           origin,
@@ -318,6 +321,7 @@ export default class OdometryController implements TabController {
               source.logKey,
               source.logType,
               sampleTime,
+              this.UUID,
               numberArrayFormat,
               numberArrayUnits,
               origin,
@@ -333,28 +337,35 @@ export default class OdometryController implements TabController {
       let trails: Translation2d[][] = Array(poses.length).fill([]);
       if (source.type === "robot" || source.type === "robotLegacy") {
         let startTime = Math.max(window.log.getTimestampRange()[0], time - OdometryController.TRAIL_LENGTH_SECS);
-        startTime = Math.ceil(startTime / OdometryController.TRAIL_DT) * OdometryController.TRAIL_DT;
+        let endTime = Math.min(window.log.getTimestampRange()[1], time + OdometryController.TRAIL_LENGTH_SECS);
+
+        let timestamps = [startTime];
         for (
-          let sampleTime = startTime;
-          sampleTime < Math.min(window.log.getTimestampRange()[1], time + OdometryController.TRAIL_LENGTH_SECS);
+          let sampleTime = Math.ceil(startTime / OdometryController.TRAIL_DT) * OdometryController.TRAIL_DT;
+          sampleTime < endTime;
           sampleTime += OdometryController.TRAIL_DT
         ) {
+          timestamps.push(sampleTime);
+        }
+        timestamps.push(endTime);
+        timestamps.forEach((sampleTime) => {
           let pose3ds = grabPosesAuto(
             window.log,
             source.logKey,
             source.logType,
             sampleTime,
+            this.UUID,
             numberArrayFormat,
             numberArrayUnits,
             origin,
             fieldWidth,
             fieldHeight
           );
-          if (pose3ds.length !== trails.length) continue;
+          if (pose3ds.length !== trails.length) return;
           pose3ds.forEach((pose, index) => {
             trails[index].push(translation3dTo2d(pose.pose.translation));
           });
-        }
+        });
       }
 
       // Add data from children
@@ -365,7 +376,7 @@ export default class OdometryController implements TabController {
           case "rotationOverrideLegacy":
             let isRotation2d = child.logType === "Rotation2d";
             let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
-            let rotation = getOrDefault(window.log, rotationKey, LoggableType.Number, time, 0);
+            let rotation = getOrDefault(window.log, rotationKey, LoggableType.Number, time, 0, this.UUID);
             if (!isRotation2d) {
               rotation = convert(rotation, child.options.units, "radians");
             }
@@ -377,8 +388,8 @@ export default class OdometryController implements TabController {
           case "vision":
           case "visionLegacy":
             let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
-            if ("format" in source.options) {
-              let formatRaw = source.options.format;
+            if ("format" in child.options) {
+              let formatRaw = child.options.format;
               numberArrayFormat =
                 formatRaw === "Pose2d" ||
                 formatRaw === "Pose3d" ||
@@ -392,6 +403,7 @@ export default class OdometryController implements TabController {
               child.logKey,
               child.logType,
               time,
+              this.UUID,
               numberArrayFormat,
               "radians"
             );

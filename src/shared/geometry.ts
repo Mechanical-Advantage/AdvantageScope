@@ -111,6 +111,7 @@ export function grabPosesAuto(
   key: string,
   logType: string,
   timestamp: number,
+  uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
   zebraOrigin?: "blue" | "red",
@@ -119,36 +120,36 @@ export function grabPosesAuto(
 ): AnnotatedPose3d[] {
   switch (logType) {
     case "NumberArray":
-      if (numberArrayFormat !== undefined && numberArrayUnits !== undefined) {
-        return grabNumberArray(log, key, timestamp, numberArrayFormat, numberArrayUnits);
+      if (numberArrayFormat !== undefined) {
+        return grabNumberArray(log, key, timestamp, numberArrayFormat, numberArrayUnits, uuid);
       } else {
         return [];
       }
     case "Translation2d":
-      return grabTranslation2d(log, key, timestamp);
+      return grabTranslation2d(log, key, timestamp, uuid);
     case "Translation3d":
-      return grabTranslation3d(log, key, timestamp);
+      return grabTranslation3d(log, key, timestamp, uuid);
     case "Translation2d[]":
-      return grabTranslation2dArray(log, key, timestamp);
+      return grabTranslation2dArray(log, key, timestamp, uuid);
     case "Translation3d[]":
-      return grabTranslation3dArray(log, key, timestamp);
+      return grabTranslation3dArray(log, key, timestamp, uuid);
     case "Pose2d":
     case "Transform2d":
-      return grabPose2d(log, key, timestamp);
+      return grabPose2d(log, key, timestamp, uuid);
     case "Pose3d":
     case "Transform3d":
-      return grabPose3d(log, key, timestamp);
+      return grabPose3d(log, key, timestamp, uuid);
     case "Pose2d[]":
     case "Transform2d[]":
-      return grabPose2dArray(log, key, timestamp);
+      return grabPose2dArray(log, key, timestamp, uuid);
     case "Pose3d[]":
     case "Transform3d[]":
-      return grabPose3dArray(log, key, timestamp);
+      return grabPose3dArray(log, key, timestamp, uuid);
     case "Trajectory":
-      return grabTrajectory(log, key, timestamp);
+      return grabTrajectory(log, key, timestamp, uuid);
     case "ZebraTranslation":
       if (zebraOrigin !== undefined && zebraFieldWidth !== undefined && zebraFieldHeight !== undefined) {
-        return grabZebraTranslation(log, key, timestamp, zebraOrigin, zebraFieldWidth, zebraFieldHeight);
+        return grabZebraTranslation(log, key, timestamp, zebraOrigin, zebraFieldWidth, zebraFieldHeight, uuid);
       } else {
         return [];
       }
@@ -162,11 +163,12 @@ export function grabNumberArray(
   key: string,
   timestamp: number,
   format: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  unit?: "radians" | "degrees"
+  unit?: "radians" | "degrees",
+  uuid?: string
 ): AnnotatedPose3d[] {
-  let value = getOrDefault(log, key, LoggableType.NumberArray, timestamp, []);
+  let value = getOrDefault(log, key, LoggableType.NumberArray, timestamp, [], uuid);
   let poses: AnnotatedPose3d[] = [];
-  let finalUnit: "radians" | "degrees" = unit === "radians" ? "radians" : "degrees";
+  let finalUnit: "radians" | "degrees" = unit === "degrees" ? "degrees" : "radians";
   switch (format) {
     case "Translation2d":
       for (let i = 0; i < value.length; i += 2) {
@@ -216,13 +218,13 @@ export function grabNumberArray(
   return poses;
 }
 
-export function grabTranslation2d(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
+export function grabTranslation2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
       pose: {
         translation: translation2dTo3d([
-          getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0, uuid)
         ]),
         rotation: Rotation3dZero
       },
@@ -231,14 +233,14 @@ export function grabTranslation2d(log: Log, key: string, timestamp: number): Ann
   ];
 }
 
-export function grabTranslation3d(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
+export function grabTranslation3d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
       pose: {
         translation: [
-          getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/z", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/z", LoggableType.Number, timestamp, 0, uuid)
         ],
         rotation: Rotation3dZero
       },
@@ -247,49 +249,49 @@ export function grabTranslation3d(log: Log, key: string, timestamp: number): Ann
   ];
 }
 
-export function grabTranslation2dArray(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0)).reduce(
+export function grabTranslation2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabTranslation2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
-export function grabTranslation3dArray(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0)).reduce(
+export function grabTranslation3dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabTranslation3d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
-export function grabPose2d(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
+export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
       pose: pose2dTo3d({
         translation: [
-          getOrDefault(log, key + "/translation/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/translation/y", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/translation/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/translation/y", LoggableType.Number, timestamp, 0, uuid)
         ],
-        rotation: getOrDefault(log, key + "/rotation/value", LoggableType.Number, timestamp, 0)
+        rotation: getOrDefault(log, key + "/rotation/value", LoggableType.Number, timestamp, 0, uuid)
       }),
       annotation: {}
     }
   ];
 }
 
-export function grabPose3d(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
+export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
       pose: {
         translation: [
-          getOrDefault(log, key + "/translation/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/translation/y", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/translation/z", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/translation/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/translation/y", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/translation/z", LoggableType.Number, timestamp, 0, uuid)
         ],
         rotation: [
-          getOrDefault(log, key + "/rotation/q/w", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/rotation/q/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/rotation/q/y", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/rotation/q/z", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/rotation/q/w", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/rotation/q/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/rotation/q/y", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/rotation/q/z", LoggableType.Number, timestamp, 0, uuid)
         ]
       },
       annotation: {}
@@ -297,52 +299,52 @@ export function grabPose3d(log: Log, key: string, timestamp: number): AnnotatedP
   ];
 }
 
-export function grabPose2dArray(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0)).reduce(
+export function grabPose2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabPose2d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
-export function grabPose3dArray(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0)).reduce(
+export function grabPose3dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabPose3d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
-export function grabTrajectory(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/states/length", LoggableType.Number, timestamp, 0)).reduce(
+export function grabTrajectory(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/states/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabPose3d(log, key + "/states/" + index.toString() + "/pose", timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
 
-export function grabAprilTag(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
+export function grabAprilTag(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
       pose: {
         translation: [
-          getOrDefault(log, key + "/pose/translation/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/pose/translation/y", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/pose/translation/z", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/pose/translation/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/translation/y", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/translation/z", LoggableType.Number, timestamp, 0, uuid)
         ],
         rotation: [
-          getOrDefault(log, key + "/pose/rotation/q/w", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/pose/rotation/q/x", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/pose/rotation/q/y", LoggableType.Number, timestamp, 0),
-          getOrDefault(log, key + "/pose/rotation/q/z", LoggableType.Number, timestamp, 0)
+          getOrDefault(log, key + "/pose/rotation/q/w", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/rotation/q/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/rotation/q/y", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/rotation/q/z", LoggableType.Number, timestamp, 0, uuid)
         ]
       },
       annotation: {
-        aprilTagId: getOrDefault(log, key + "/ID", LoggableType.Number, timestamp, undefined)
+        aprilTagId: getOrDefault(log, key + "/ID", LoggableType.Number, timestamp, undefined, uuid)
       }
     }
   ];
 }
 
-export function grabAprilTagArray(log: Log, key: string, timestamp: number): AnnotatedPose3d[] {
-  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0)).reduce(
+export function grabAprilTagArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabAprilTag(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
@@ -354,12 +356,13 @@ export function grabZebraTranslation(
   timestamp: number,
   origin: "blue" | "red",
   fieldWidth: number,
-  fieldHeight: number
+  fieldHeight: number,
+  uuid?: string
 ): AnnotatedPose3d[] {
-  let x = convert(getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0), "feet", "meters");
-  let y = convert(getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0), "feet", "meters");
+  let x = convert(getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0, uuid), "feet", "meters");
+  let y = convert(getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0, uuid), "feet", "meters");
   let alliance: "blue" | "red" =
-    getOrDefault(log, key + "/alliance", LoggableType.String, timestamp, 0) === "red" ? "red" : "blue";
+    getOrDefault(log, key + "/alliance", LoggableType.String, timestamp, 0, uuid) === "red" ? "red" : "blue";
   let splitKey = key.split("FRC");
   let teamNumber = splitKey.length > 1 ? Number(splitKey[splitKey.length - 1]) : undefined;
 

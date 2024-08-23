@@ -2,6 +2,7 @@ import { TabsState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
+import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
@@ -275,7 +276,7 @@ export default class Tabs {
         break;
       case TabType.Odometry:
         controller = new OdometryController(controlsElement);
-        renderer = new NoopRenderer();
+        renderer = new OdometryRenderer(rendererElement);
         break;
       default:
         controller = new NoopController();
