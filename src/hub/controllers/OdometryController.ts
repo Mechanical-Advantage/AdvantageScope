@@ -8,7 +8,7 @@ import {
   grabPosesAuto,
   translation3dTo2d
 } from "../../shared/geometry";
-import { getEnabledData, getIsRedAlliance, getOrDefault } from "../../shared/log/LogUtil";
+import { getIsRedAlliance, getOrDefault, getRobotStateRanges } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import {
   OdometryRendererCommand,
@@ -259,7 +259,6 @@ export default class OdometryController implements TabController {
 
     let objects: OdometryRendererCommand_AllObjs[] = [];
     let sources = this.sourceList.getState(true);
-    let availableKeys = window.log.getFieldKeys();
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
       let typeConfig = SourcesConfig.types.find((typeConfig) => typeConfig.key === source.type);
@@ -307,14 +306,24 @@ export default class OdometryController implements TabController {
           fieldHeight
         );
       } else {
-        let isEnabledOnly = source.options.samples === "enabled";
-        let enabledData = isEnabledOnly ? getEnabledData(window.log) : null;
+        let isFullLog = source.options.filter === "full";
+        let stateRanges = isFullLog ? null : getRobotStateRanges(window.log);
         let isValid = (timestamp: number) => {
-          if (!isEnabledOnly) return true;
-          if (enabledData === null) return false;
-          let enabledDataIndex = enabledData.timestamps.findLastIndex((x) => x <= timestamp);
-          if (enabledDataIndex === -1) return false;
-          return enabledData.values[enabledDataIndex];
+          if (isFullLog) return true;
+          if (stateRanges === null) return false;
+          let currentRange = stateRanges.findLast((range) => range.start <= timestamp);
+          switch (source.options.filter) {
+            case "enabled":
+              return currentRange?.mode !== "disabled";
+            case "auto":
+              return currentRange?.mode === "auto";
+            case "teleop":
+              return currentRange?.mode === "teleop";
+            case "teleop-no-endgame":
+              return (
+                currentRange?.mode === "teleop" && currentRange?.end !== undefined && currentRange?.end - timestamp > 30
+              );
+          }
         };
         for (
           let sampleTime = window.log.getTimestampRange()[0];
@@ -768,16 +777,19 @@ const SourcesConfig: SourceListConfig = {
       ],
       options: [
         {
-          key: "samples",
-          display: "Samples",
+          key: "filter",
+          display: "Filter",
           showInTypeName: false,
           values: [
-            { key: "enabled", display: "Enabled Only" },
-            { key: "full", display: "Full Log" }
+            { key: "enabled", display: "Enabled" },
+            { key: "auto", display: "Auto" },
+            { key: "teleop", display: "Teleop" },
+            { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
+            { key: "full", display: "No Filter" }
           ]
         }
       ],
-      initialSelectionOption: "samples"
+      initialSelectionOption: "filter"
     },
     {
       key: "heatmapLegacy",
@@ -788,11 +800,14 @@ const SourcesConfig: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [
         {
-          key: "samples",
-          display: "Samples",
+          key: "filter",
+          display: "Filter",
           showInTypeName: false,
           values: [
-            { key: "enabled", display: "Enabled Only" },
+            { key: "enabled", display: "Enabled" },
+            { key: "auto", display: "Auto" },
+            { key: "teleop", display: "Teleop" },
+            { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
             { key: "full", display: "Full Log" }
           ]
         },
@@ -808,7 +823,7 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "samples",
+      initialSelectionOption: "filter",
       numberArrayDeprecated: true
     },
     {
