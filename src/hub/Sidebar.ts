@@ -86,6 +86,21 @@ export default class Sidebar {
         this.updateWidth();
       }
     });
+    let lastClick = 0;
+    this.SIDEBAR_HANDLE.addEventListener("click", () => {
+      let now = new Date().getTime();
+      if (now - lastClick < 400) {
+        if (this.sidebarWidth !== 0) {
+          this.sidebarWidth = 0;
+        } else {
+          this.sidebarWidth = 300;
+        }
+        this.updateWidth();
+        lastClick = 0;
+      } else {
+        lastClick = now;
+      }
+    });
     this.updateWidth();
 
     // Set up shadow when scrolling

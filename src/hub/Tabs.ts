@@ -132,6 +132,21 @@ export default class Tabs {
         this.updateControlsHeight();
       }
     });
+    let lastClick = 0;
+    this.CONTROLS_HANDLE.addEventListener("click", () => {
+      let now = new Date().getTime();
+      if (now - lastClick < 400) {
+        if (this.controlHeight !== 0) {
+          this.controlHeight = 0;
+        } else {
+          this.controlHeight = 200;
+        }
+        this.updateControlsHeight();
+        lastClick = 0;
+      } else {
+        lastClick = now;
+      }
+    });
     this.updateControlsHeight();
 
     // Control buttons
