@@ -27,6 +27,9 @@ export default class SourceList {
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
   private supplementalStateSuppliers: (() => SourceListState)[];
 
+  private refreshLastFields: Set<string> = new Set();
+  private refreshLastStructTypes: { [key: string]: string | null } = {};
+
   /**
    * Creates a new source list controller
    *
@@ -101,8 +104,24 @@ export default class SourceList {
     this.TITLE.innerText = title;
   }
 
-  getState(): SourceListState {
-    return this.state;
+  /**
+   * Returns the set of item states displayed by the source list.
+   * @param onlyDisplayedFields Whether to only include fields that should be rendered
+   */
+  getState(onlyDisplayedFields = false): SourceListState {
+    if (onlyDisplayedFields) {
+      return this.state.filter((item) => {
+        let fieldType = window.log.getType(item.logKey);
+        let fieldStructuredType = window.log.getStructuredType(item.logKey);
+        return (
+          item.visible &&
+          fieldType !== null &&
+          (LoggableType[fieldType] === item.logType || fieldStructuredType === item.logType)
+        );
+      });
+    } else {
+      return this.state;
+    }
   }
 
   setState(state: SourceListState) {
@@ -127,6 +146,48 @@ export default class SourceList {
       this.LIST.removeChild(this.LIST.firstChild);
     }
     this.updateHandIcon();
+  }
+
+  /** Call when a new set of log fields may be available. */
+  refresh() {
+    let displayedFields = this.state.map((item) => item.logKey);
+    let currentFields = new Set(window.log.getFieldKeys().filter((field) => displayedFields.includes(field)));
+    let structTypes: { [key: string]: string | null } = {};
+    currentFields.forEach((field) => {
+      structTypes[field] = window.log.getStructuredType(field);
+    });
+
+    let shouldUpdate = false;
+    currentFields.forEach((field) => {
+      if (!this.refreshLastFields.has(field)) {
+        // New field was added
+        shouldUpdate = true;
+      }
+    });
+
+    if (!shouldUpdate) {
+      this.refreshLastFields.forEach((field) => {
+        if (!currentFields.has(field)) {
+          // Existing field was removed
+          shouldUpdate = true;
+        }
+      });
+
+      if (!shouldUpdate) {
+        Object.entries(structTypes).forEach(([key, type]) => {
+          if (this.refreshLastStructTypes[key] !== type) {
+            // Struct type changed
+            shouldUpdate = true;
+          }
+        });
+      }
+    }
+
+    this.refreshLastFields = currentFields;
+    this.refreshLastStructTypes = structTypes;
+    if (shouldUpdate) {
+      this.updateAllItems();
+    }
   }
 
   private updateHandIcon() {
@@ -506,7 +567,7 @@ export default class SourceList {
     color = ensureThemeContrast(color);
     let dataPath = "symbols/sourceList/" + typeConfig.symbol + ".svg";
     if (dataPath !== typeIconVisible.getAttribute("data")) {
-      // Load new icon on hidden icon
+      // Load new image on hidden icon
       typeIconHidden.data = dataPath;
       typeIconHidden.addEventListener("load", () => {
         if (typeIconHidden.contentDocument) {
@@ -543,6 +604,11 @@ export default class SourceList {
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
+    let fieldType = window.log.getType(state.logKey);
+    let fieldStructuredType = window.log.getStructuredType(state.logKey);
+    let fieldAvailable =
+      fieldType !== null && (LoggableType[fieldType] === state.logType || fieldStructuredType === state.logType);
+    keySpan.style.textDecoration = fieldAvailable ? "" : "line-through";
 
     // Update type width, cloning to a new node in case the controls aren't visible
     let mockTypeName = typeNameElement.cloneNode(true) as HTMLElement;

@@ -217,7 +217,9 @@ export default class OdometryController implements TabController {
     this.updateSwitchers();
   }
 
-  refresh(): void {}
+  refresh(): void {
+    this.sourceList.refresh();
+  }
 
   newAssets(): void {
     this.updateGameOptions();
@@ -256,11 +258,12 @@ export default class OdometryController implements TabController {
       (this.originSetting === "auto" && autoRedAlliance) || this.originSetting === "red" ? "red" : "blue";
 
     let objects: OdometryRendererCommand_AllObjs[] = [];
-    let sources = this.sourceList.getState();
+    let sources = this.sourceList.getState(true);
     let availableKeys = window.log.getFieldKeys();
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
-      if (!source.visible || !availableKeys.includes(source.logKey)) continue;
+      let typeConfig = SourcesConfig.types.find((typeConfig) => typeConfig.key === source.type);
+      if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
       // Find children
       let children: SourceListItemState[] = [];

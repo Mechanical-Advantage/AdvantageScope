@@ -210,7 +210,11 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  refresh(): void {}
+  refresh(): void {
+    this.leftSourceList.refresh();
+    this.discreteSourceList.refresh();
+    this.rightSourceList.refresh();
+  }
 
   newAssets(): void {}
 
