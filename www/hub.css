@@ -147,8 +147,8 @@ div.side-bar-handle {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: calc(var(--side-bar-width) - 2px);
-  width: calc(20px - (var(--show-side-bar) * 16px));
+  left: calc(var(--side-bar-width) - 5px);
+  width: calc(20px - (var(--show-side-bar) * 10px));
 
   z-index: 8;
   cursor: col-resize;
@@ -782,8 +782,8 @@ div.controls-handle {
   position: absolute;
   left: 0%;
   width: 100%;
-  bottom: calc(var(--tab-controls-height) - 2px);
-  height: calc(20px - (var(--show-tab-controls) * 16px));
+  bottom: calc(var(--tab-controls-height) - 5px);
+  height: calc(20px - (var(--show-tab-controls) * 10px));
 
   z-index: 9;
   cursor: row-resize;
