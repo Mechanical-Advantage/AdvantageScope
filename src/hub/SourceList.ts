@@ -344,6 +344,7 @@ export default class SourceList {
 
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
+    let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     let promptType = (coordinates: [number, number]) => {
       const uuid = createUUID();
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -422,15 +423,17 @@ export default class SourceList {
       toggleHidden();
     });
     let lastClick = 0;
-    item.addEventListener("click", () => {
-      let now = new Date().getTime();
-      if (now - lastClick < 400) {
-        toggleHidden();
-        lastClick = 0;
-      } else {
-        lastClick = now;
-      }
-    });
+    [typeNameElement, keyContainer].forEach((element) =>
+      element.addEventListener("click", () => {
+        let now = new Date().getTime();
+        if (now - lastClick < 400) {
+          toggleHidden();
+          lastClick = 0;
+        } else {
+          lastClick = now;
+        }
+      })
+    );
 
     // Child formatting
     if (isChild) {
