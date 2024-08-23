@@ -2,7 +2,7 @@ import Log from "./log/Log";
 import { getOrDefault } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
 import { convert } from "./units";
-import { indexArray } from "./util";
+import { indexArray, scaleValue } from "./util";
 
 export type Translation2d = [number, number]; // meters (x, y)
 export type Rotation2d = number; // radians
@@ -359,8 +359,32 @@ export function grabZebraTranslation(
   fieldHeight: number,
   uuid?: string
 ): AnnotatedPose3d[] {
-  let x = convert(getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0, uuid), "feet", "meters");
-  let y = convert(getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0, uuid), "feet", "meters");
+  let x: number | null = null;
+  let y: number | null = null;
+  {
+    let xData = window.log.getNumber(key + "/x", timestamp, timestamp);
+    if (xData !== undefined && xData.values.length > 0) {
+      if (xData.values.length === 1) {
+        x = xData.values[0];
+      } else {
+        x = scaleValue(timestamp, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
+      }
+    }
+  }
+  {
+    let yData = window.log.getNumber(key + "/y", timestamp, timestamp);
+    if (yData !== undefined && yData.values.length > 0) {
+      if (yData.values.length === 1) {
+        y = yData.values[0];
+      } else {
+        y = scaleValue(timestamp, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
+      }
+    }
+  }
+  if (x === null || y === null) return [];
+  x = convert(x, "feet", "meters");
+  y = convert(y, "feet", "meters");
+
   let alliance: "blue" | "red" =
     getOrDefault(log, key + "/alliance", LoggableType.String, timestamp, 0, uuid) === "red" ? "red" : "blue";
   let splitKey = key.split("FRC");
