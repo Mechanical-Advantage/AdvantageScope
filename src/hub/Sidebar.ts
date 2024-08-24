@@ -538,8 +538,16 @@ export default class Sidebar {
       {
         let dragEvent = (x: number, y: number, offsetX: number, offsetY: number) => {
           let isGroup = this.selectGroup.includes(field.fullKey !== null ? field.fullKey : "");
-          this.DRAG_ITEM.innerText = title + (isGroup ? "..." : "");
-          this.DRAG_ITEM.style.fontWeight = isGroup ? "bolder" : "initial";
+          while (this.DRAG_ITEM.firstChild) {
+            this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
+          }
+
+          let text = document.createElement("span");
+          text.classList.add("field-text");
+          this.DRAG_ITEM.appendChild(text);
+          text.innerText = title + (isGroup ? "\u2026" : "");
+          text.style.fontWeight = isGroup ? "bolder" : "initial";
+
           window.startDrag(x, y, offsetX, offsetY, {
             fields: isGroup ? this.selectGroup : [field.fullKey],
             children: isGroup

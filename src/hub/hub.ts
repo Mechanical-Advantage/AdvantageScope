@@ -605,12 +605,16 @@ function handleMainMessage(message: NamedMessage) {
     case "source-list-type-response": {
       let uuid: string = message.data.uuid;
       let state: SourceListItemState = message.data.state;
-      SourceList.typePromptCallbacks[uuid](state);
+      if (uuid in SourceList.typePromptCallbacks) {
+        SourceList.typePromptCallbacks[uuid](state);
+      }
     }
 
     case "source-list-edit-response": {
       let uuid: string = message.data.uuid;
-      SourceList.editPromptCallbacks[uuid]();
+      if (uuid in SourceList.editPromptCallbacks) {
+        SourceList.editPromptCallbacks[uuid]();
+      }
     }
 
     case "add-discrete-enabled":

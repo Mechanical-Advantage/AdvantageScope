@@ -13,18 +13,20 @@ import OdometryController from "./controllers/OdometryController";
 import TabController from "./controllers/TabController";
 
 export default class Tabs {
+  private TAB_DRAG_THRESHOLD_PX = 5;
+
   private TIMELINE_CONTAINER = document.getElementsByClassName("timeline")[0] as HTMLElement;
   private TAB_BAR = document.getElementsByClassName("tab-bar")[0];
   private SHADOW_LEFT = document.getElementsByClassName("tab-bar-shadow-left")[0] as HTMLElement;
   private SHADOW_RIGHT = document.getElementsByClassName("tab-bar-shadow-right")[0] as HTMLElement;
   private SCROLL_OVERLAY = document.getElementsByClassName("tab-bar-scroll")[0] as HTMLElement;
+  private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
+  private DRAG_HIGHLIGHT = document.getElementsByClassName("tab-bar-drag-highlight")[0] as HTMLElement;
 
   private RENDERER_CONTENT = document.getElementsByClassName("renderer-content")[0] as HTMLElement;
   private CONTROLS_CONTENT = document.getElementsByClassName("controls-content")[0] as HTMLElement;
   private CONTROLS_HANDLE = document.getElementsByClassName("controls-handle")[0] as HTMLElement;
 
-  private LEFT_BUTTON = document.getElementsByClassName("move-left")[0] as HTMLElement;
-  private RIGHT_BUTTON = document.getElementsByClassName("move-right")[0] as HTMLElement;
   private CLOSE_BUTTON = document.getElementsByClassName("close")[0] as HTMLElement;
   private ADD_BUTTON = document.getElementsByClassName("add-tab")[0] as HTMLElement;
 
@@ -63,8 +65,33 @@ export default class Tabs {
     this.TAB_CONFIGS.set(TabType.Metadata, { showTimeline: false, showControls: false });
 
     // Hover and click handling
-    this.SCROLL_OVERLAY.addEventListener("click", (event) => {
-      this.tabList.forEach((tab, index) => {
+    let mouseDownInfo: [number, number] | null = null;
+    this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
+      mouseDownInfo = [event.clientX, event.clientY];
+    });
+    this.SCROLL_OVERLAY.addEventListener("mouseup", (event) => {
+      if (mouseDownInfo === null) return;
+      if (
+        Math.abs(event.clientX - mouseDownInfo[0]) < this.TAB_DRAG_THRESHOLD_PX &&
+        Math.abs(event.clientY - mouseDownInfo[1]) < this.TAB_DRAG_THRESHOLD_PX
+      ) {
+        this.tabList.forEach((tab, index) => {
+          let rect = tab.titleElement.getBoundingClientRect();
+          if (
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom
+          ) {
+            this.setSelected(index);
+          }
+        });
+      }
+      mouseDownInfo = null;
+    });
+    this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
+      // Update hover
+      this.tabList.forEach((tab) => {
         let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
@@ -72,8 +99,54 @@ export default class Tabs {
           event.clientY >= rect.top &&
           event.clientY <= rect.bottom
         ) {
-          this.setSelected(index);
+          tab.titleElement.classList.add("tab-hovered");
+        } else {
+          tab.titleElement.classList.remove("tab-hovered");
         }
+      });
+
+      // Start drag
+      if (
+        mouseDownInfo !== null &&
+        (Math.abs(event.clientX - mouseDownInfo[0]) >= this.TAB_DRAG_THRESHOLD_PX ||
+          Math.abs(event.clientY - mouseDownInfo[1]) >= this.TAB_DRAG_THRESHOLD_PX)
+      ) {
+        // Find tab
+        let tabIndex = 0;
+        this.tabList.forEach((tab, index) => {
+          let rect = tab.titleElement.getBoundingClientRect();
+          if (
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom
+          ) {
+            tabIndex = index;
+          }
+        });
+        if (tabIndex === 0) return;
+
+        // Trigger drag event
+        while (this.DRAG_ITEM.firstChild) {
+          this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
+        }
+        let tab = document.createElement("div");
+        tab.classList.add("tab");
+        if (tabIndex === this.selectedTab) {
+          tab.classList.add("tab-selected");
+        }
+        tab.innerText = this.tabList[tabIndex].titleElement.innerText;
+        this.DRAG_ITEM.appendChild(tab);
+        let tabRect = this.tabList[tabIndex].titleElement.getBoundingClientRect();
+        window.startDrag(event.clientX, event.clientY, event.clientX - tabRect.left, event.clientY - tabRect.top, {
+          tabIndex: tabIndex
+        });
+        mouseDownInfo = null;
+      }
+    });
+    this.SCROLL_OVERLAY.addEventListener("mouseout", () => {
+      this.tabList.forEach((tab) => {
+        tab.titleElement.classList.remove("tab-hovered");
       });
     });
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
@@ -91,26 +164,6 @@ export default class Tabs {
             name: this.tabList[index].title
           });
         }
-      });
-    });
-    this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
-      this.tabList.forEach((tab) => {
-        let rect = tab.titleElement.getBoundingClientRect();
-        if (
-          event.clientX >= rect.left &&
-          event.clientX <= rect.right &&
-          event.clientY >= rect.top &&
-          event.clientY <= rect.bottom
-        ) {
-          tab.titleElement.classList.add("tab-hovered");
-        } else {
-          tab.titleElement.classList.remove("tab-hovered");
-        }
-      });
-    });
-    this.SCROLL_OVERLAY.addEventListener("mouseout", () => {
-      this.tabList.forEach((tab) => {
-        tab.titleElement.classList.remove("tab-hovered");
       });
     });
 
@@ -150,11 +203,51 @@ export default class Tabs {
     this.updateControlsHeight();
 
     // Control buttons
-    this.LEFT_BUTTON.addEventListener("click", () => this.shift(this.selectedTab, -1));
-    this.RIGHT_BUTTON.addEventListener("click", () => this.shift(this.selectedTab, 1));
     this.CLOSE_BUTTON.addEventListener("click", () => this.close(this.selectedTab));
     this.ADD_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("ask-new-tab");
+    });
+
+    // Drag handling
+    window.addEventListener("drag-update", (event) => {
+      let dragData = (event as CustomEvent).detail;
+      if (!("tabIndex" in dragData.data)) return;
+      let end = dragData.end;
+      let x = dragData.x;
+      let y = dragData.y;
+      let tabIndex = dragData.data.tabIndex;
+
+      let tabBarRect = this.SCROLL_OVERLAY.getBoundingClientRect();
+      if (y > tabBarRect.bottom + 100) {
+        this.DRAG_HIGHLIGHT.hidden = true;
+        return;
+      }
+
+      let closestDist = Infinity;
+      let closestIndex = 0;
+      this.tabList.slice(0, -1).forEach((tab, index) => {
+        let dist = Math.abs(x - tab.titleElement.getBoundingClientRect().right);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIndex = index;
+        }
+      });
+
+      if (end) {
+        this.DRAG_HIGHLIGHT.hidden = true;
+        if (closestIndex >= tabIndex) {
+          this.shift(tabIndex, closestIndex - tabIndex);
+        } else {
+          this.shift(tabIndex, closestIndex - tabIndex + 1);
+        }
+      } else {
+        this.DRAG_HIGHLIGHT.hidden = false;
+        let highlightX =
+          this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
+          this.SCROLL_OVERLAY.getBoundingClientRect().left +
+          10;
+        this.DRAG_HIGHLIGHT.style.left = highlightX.toString() + "px";
+      }
     });
 
     // Add default tabs
@@ -162,9 +255,13 @@ export default class Tabs {
     this.addTab(TabType.LineGraph);
 
     // Scroll management
-    this.tabsScrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
-      this.TAB_BAR.scrollLeft += dx + dy;
-    });
+    this.tabsScrollSensor = new ScrollSensor(
+      this.SCROLL_OVERLAY,
+      (dx: number, dy: number) => {
+        this.TAB_BAR.scrollLeft += dx + dy;
+      },
+      false
+    );
 
     // Add timeline
     this.timeline = new Timeline(this.TIMELINE_CONTAINER);

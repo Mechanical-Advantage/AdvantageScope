@@ -490,10 +490,18 @@ div.search-results-item.hovered {
 #dragItem {
   position: absolute;
   z-index: 999;
+  cursor: grabbing;
+}
+
+#dragItem span.field-text {
   white-space: nowrap;
   font-size: 15px;
   font-style: italic;
-  cursor: grabbing;
+}
+
+#dragItem div.tab {
+  margin-top: 0;
+  opacity: 0.5;
 }
 
 /* Tab bar */
@@ -501,7 +509,7 @@ div.search-results-item.hovered {
 div.tab-bar {
   position: absolute;
   left: 10px;
-  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
   top: 0px;
   height: 50px;
 
@@ -533,7 +541,7 @@ div.tab-bar-shadow-left {
 }
 
 div.tab-bar-shadow-right {
-  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
@@ -549,6 +557,19 @@ body.fancy-title-bar div.tab-bar-shadow-right {
   div.tab-bar-shadow-right {
     background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
   }
+}
+
+div.tab-bar-drag-highlight {
+  position: absolute;
+  top: 10px;
+  height: 32px;
+  width: 15px;
+  transform: translateX(-50%);
+
+  background-color: lightgreen;
+  opacity: 75%;
+  user-select: none;
+  pointer-events: none;
 }
 
 div.tab-bar-scroll {
@@ -643,7 +664,7 @@ body.fancy-title-bar button.tab-control {
 }
 
 button.update {
-  right: calc(182px + var(--show-lock-buttons) * 28px);
+  right: calc(154px + var(--show-lock-buttons) * 28px);
 }
 
 button.update > img {
@@ -658,12 +679,12 @@ button.update.blurred > img {
 
 button.play,
 button.pause {
-  right: calc(144px + var(--show-lock-buttons) * 28px);
+  right: calc(116px + var(--show-lock-buttons) * 28px);
 }
 
 button.lock,
 button.unlock {
-  right: 144px;
+  right: 116px;
 }
 
 button.unlock > img {
@@ -688,16 +709,16 @@ button.unlock.blurred > img {
   }
 }
 
-button.move-left {
-  right: 106px;
-}
-
-button.close {
+button.popup {
   right: 78px;
 }
 
-button.move-right {
-  right: 50px;
+button.close {
+  right: 45px;
+}
+
+button.close img {
+  transform: translate(-50%, -50%) scale(90%);
 }
 
 button.add-tab {

@@ -348,6 +348,7 @@ export default class SourceList {
 
   /** Processes a drag event, including adding a field if necessary. */
   private handleDrag(dragData: any) {
+    if (!("fields" in dragData.data)) return;
     let end = dragData.end;
     let x = dragData.x;
     let y = dragData.y;
