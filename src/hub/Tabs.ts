@@ -11,6 +11,7 @@ import LineGraphController from "./controllers/LineGraphController";
 import NoopController from "./controllers/NoopController";
 import OdometryController from "./controllers/OdometryController";
 import TabController from "./controllers/TabController";
+import ThreeDimensionController from "./controllers/ThreeDimensionController";
 
 export default class Tabs {
   private TAB_DRAG_THRESHOLD_PX = 5;
@@ -389,6 +390,10 @@ export default class Tabs {
       case TabType.Odometry:
         controller = new OdometryController(controlsElement);
         renderer = new OdometryRenderer(rendererElement);
+        break;
+      case TabType.ThreeDimension:
+        controller = new ThreeDimensionController(controlsElement);
+        renderer = new NoopRenderer();
         break;
       default:
         controller = new NoopController();

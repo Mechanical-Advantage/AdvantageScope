@@ -709,11 +709,11 @@ button.unlock.blurred > img {
   }
 }
 
-button.popup {
+button.close {
   right: 78px;
 }
 
-button.close {
+button.popup {
   right: 45px;
 }
 
@@ -873,6 +873,8 @@ div.source-list div.item:last-child {
 
 div.source-list div.item.child {
   border-top: none;
+  left: 25px;
+  width: calc(100% - 25px);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1032,6 +1034,202 @@ div.source-list img.hand-icon {
   }
 }
 
+/* Setting blocks */
+
+div.setting-blocks div {
+  display: block;
+}
+
+div.setting-blocks div.title {
+  height: 20px;
+  width: 100%;
+  text-align: left;
+  font-size: 0px;
+  line-height: 20px;
+  font-weight: bold;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.setting-blocks div.input {
+  width: 100%;
+  min-height: 40px;
+  text-align: center;
+  font-size: 0px;
+}
+
+div.setting-blocks div.input:nth-child(2) {
+  height: 40px;
+}
+
+div.setting-blocks div.input:nth-child(4),
+div.setting-blocks div.input:nth-child(6) {
+  height: calc((100% - 105px) / 2);
+  max-height: 120px;
+}
+
+div.setting-blocks div.input.tall {
+  height: calc(100% - 85px);
+  max-height: 100px;
+}
+
+div.setting-blocks div.full,
+div.setting-blocks div.half,
+div.setting-blocks div.percent-70,
+div.setting-blocks div.percent-30 {
+  display: inline-block;
+  height: 100%;
+  font-size: 16px;
+  text-align: center;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.setting-blocks div.full {
+  width: 100%;
+}
+
+div.setting-blocks div.half {
+  width: 50%;
+}
+
+div.setting-blocks div.percent-70 {
+  width: 70%;
+}
+
+div.setting-blocks div.percent-30 {
+  width: 30%;
+}
+
+div.setting-blocks div.split {
+  position: relative;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 65%;
+  width: 80%;
+  font-size: 0px;
+}
+
+div.setting-blocks div.split div {
+  position: relative;
+  display: inline-block;
+  height: 100%;
+  box-sizing: border-box;
+  vertical-align: top;
+
+  transition:
+    background-color 0.2s ease-in-out,
+    border 0.2s ease-in-out;
+  background-color: #eee;
+  border: 1px solid #aaa;
+}
+
+div.setting-blocks div.split-3 div {
+  width: calc(100% / 3);
+}
+
+div.setting-blocks div.split-2 div {
+  width: calc(100% / 2);
+}
+
+div.setting-blocks div.split-1 div {
+  width: 100%;
+}
+
+div.setting-blocks div.split div img {
+  position: relative;
+  top: 50%;
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  transform: translateY(-50%);
+}
+
+div.setting-blocks div.split div:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+div.setting-blocks div.split div:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+div.setting-blocks div.split div:hover {
+  background-color: #ddd;
+}
+
+div.setting-blocks div.split div.selected {
+  background-color: #aaa;
+  border: 1px solid #222;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.setting-blocks div.split div {
+    background-color: #444;
+    border: 1px solid #666;
+  }
+
+  div.setting-blocks div.split div:hover {
+    background-color: #555;
+  }
+
+  div.setting-blocks div.split div.selected {
+    background-color: #888;
+    border: 1px solid #eee;
+  }
+
+  div.setting-blocks div.split div img.invertable {
+    filter: invert(100%);
+  }
+}
+
+div.setting-blocks div.game-title {
+  margin-top: 5px;
+}
+
+div.setting-blocks div.game > div {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+div.setting-blocks select.game-select {
+  height: 25px;
+}
+
+div.setting-blocks a.game-source {
+  padding: 5px;
+  font-size: 14px;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.setting-blocks div.split div img.lighten {
+    /* Lighten blue tone  */
+    filter: hue-rotate(-45deg) brightness(450%);
+  }
+}
+
+div.odometry-canvas-container {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+canvas.odometry-canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
 /* Line graph */
 
 div.line-graph-axis {
@@ -1120,177 +1318,32 @@ div.odometry-settings {
   }
 }
 
-div.odometry-settings div {
-  display: block;
-}
+/* 3D Field */
 
-div.odometry-settings div.title {
-  height: 20px;
-  width: 100%;
-  text-align: left;
-  font-size: 0px;
-  line-height: 20px;
-  font-weight: bold;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-div.odometry-settings div.input {
-  width: 100%;
-  min-height: 40px;
-  text-align: center;
-  font-size: 0px;
-}
-
-div.odometry-settings div.input:nth-child(2) {
-  height: 40px;
-}
-
-div.odometry-settings div.input:nth-child(4),
-div.odometry-settings div.input:nth-child(6) {
-  height: calc((100% - 105px) / 2);
-  max-height: 120px;
-}
-
-div.odometry-settings div.full {
-  display: inline-block;
-  height: 100%;
-  width: 100%;
-  font-size: 16px;
-  text-align: center;
-}
-
-div.odometry-settings div.half {
-  display: inline-block;
-  height: 100%;
-  width: 50%;
-  font-size: 16px;
-  text-align: center;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-div.odometry-settings div.split {
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  height: 65%;
-  width: 80%;
-  font-size: 0px;
-}
-
-div.odometry-settings div.split div {
-  position: relative;
-  display: inline-block;
-  height: 100%;
-  box-sizing: border-box;
-  vertical-align: top;
-
-  transition:
-    background-color 0.2s ease-in-out,
-    border 0.2s ease-in-out;
-  background-color: #eee;
-  border: 1px solid #aaa;
-}
-
-div.odometry-settings div.split-3 div {
-  width: calc(100% / 3);
-}
-
-div.odometry-settings div.split-2 div {
-  width: calc(100% / 2);
-}
-
-div.odometry-settings div.split div img {
-  position: relative;
-  top: 50%;
-  width: 60%;
-  height: 60%;
-  object-fit: contain;
-  transform: translateY(-50%);
-}
-
-div.odometry-settings div.split div:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-}
-
-div.odometry-settings div.split div:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-}
-
-div.odometry-settings div.split div:hover {
-  background-color: #ddd;
-}
-
-div.odometry-settings div.split div.selected {
-  background-color: #aaa;
-  border: 1px solid #222;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.odometry-settings div.split div {
-    background-color: #444;
-    border: 1px solid #666;
-  }
-
-  div.odometry-settings div.split div:hover {
-    background-color: #555;
-  }
-
-  div.odometry-settings div.split div.selected {
-    background-color: #888;
-    border: 1px solid #eee;
-  }
-
-  div.odometry-settings div.split div img.invertable {
-    filter: invert(100%);
-  }
-}
-
-div.odometry-settings div.game-title {
-  margin-top: 5px;
-}
-
-div.odometry-settings div.game > div {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-div.odometry-settings select.game-select {
-  height: 25px;
-}
-
-div.odometry-settings a.game-source {
-  padding: 5px;
-  font-size: 14px;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.odometry-settings div.split div img.lighten {
-    /* Lighten blue tone  */
-    filter: hue-rotate(-45deg) brightness(450%);
-  }
-}
-
-div.odometry-canvas-container {
+div.three-dimension-sources {
   position: absolute;
   top: 0%;
-  left: 0%;
-  width: 100%;
   height: 100%;
+  left: 0%;
+  width: 60%;
+  min-width: calc(100% - 200px);
 }
 
-canvas.odometry-canvas {
+div.three-dimension-settings {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  top: 0%;
+  height: 100%;
+  right: 0%;
+  width: 40%;
+  max-width: 200px;
+  border-left: 1px solid #ddd;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.three-dimension-settings {
+    border-left: 1px solid black;
+  }
 }

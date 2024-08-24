@@ -47,12 +47,12 @@ export default class OdometryController implements TabController {
       []
     );
     let settings = root.getElementsByClassName("odometry-settings")[0] as HTMLElement;
-    this.GAME_SELECT = root.getElementsByClassName("game-select")[0] as HTMLSelectElement;
-    this.GAME_SOURCE = root.getElementsByClassName("game-source")[0] as HTMLElement;
     this.BUMPER_SWITCHER = settings.getElementsByClassName("bumper-switcher")[0] as HTMLElement;
     this.ORIGIN_SWITCHER = settings.getElementsByClassName("origin-switcher")[0] as HTMLElement;
     this.ORIENTATION_SWITCHER = settings.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
     this.SIZE_SWITCHER = settings.getElementsByClassName("size-switcher")[0] as HTMLElement;
+    this.GAME_SELECT = settings.getElementsByClassName("game-select")[0] as HTMLSelectElement;
+    this.GAME_SOURCE = settings.getElementsByClassName("game-source")[0] as HTMLElement;
 
     // Set up game select
     this.GAME_SELECT.addEventListener("change", () => this.updateGameDependentControls());
