@@ -114,7 +114,22 @@ export default class SourceList {
    */
   getState(onlyDisplayedFields = false): SourceListState {
     if (onlyDisplayedFields) {
-      return this.state.filter((item) => item.visible && this.isFieldAvailable(item));
+      let availableFields: boolean[] = [];
+      let parentAvailable = false;
+      this.state.forEach((item) => {
+        let available = this.isFieldAvailable(item);
+        let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === item.type);
+
+        if (typeConfig?.parentKey !== undefined) {
+          parentAvailable = available;
+        }
+        if (typeConfig?.childOf !== undefined && parentAvailable !== null) {
+          availableFields.push(available && parentAvailable);
+        } else {
+          availableFields.push(available);
+        }
+      });
+      return this.state.filter((item, index) => item.visible && availableFields[index]);
     } else {
       return this.state;
     }
