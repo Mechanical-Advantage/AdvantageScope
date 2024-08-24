@@ -7,12 +7,16 @@ import {
   SourceListTypeConfig,
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
+import { grabPosesAuto, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
+import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
+import { convert } from "../shared/units";
 import { createUUID } from "../shared/util";
 
 export default class SourceList {
   static promptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
 
+  private UUID = createUUID();
   private ITEM_TEMPLATE = document.getElementById("sourceListItemTemplate")?.firstElementChild as HTMLElement;
   private ROOT: HTMLElement;
   private TITLE: HTMLElement;
@@ -110,15 +114,7 @@ export default class SourceList {
    */
   getState(onlyDisplayedFields = false): SourceListState {
     if (onlyDisplayedFields) {
-      return this.state.filter((item) => {
-        let fieldType = window.log.getType(item.logKey);
-        let fieldStructuredType = window.log.getStructuredType(item.logKey);
-        return (
-          item.visible &&
-          fieldType !== null &&
-          (LoggableType[fieldType] === item.logType || fieldStructuredType === item.logType)
-        );
-      });
+      return this.state.filter((item) => item.visible && this.isFieldAvailable(item));
     } else {
       return this.state;
     }
@@ -604,11 +600,7 @@ export default class SourceList {
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
-    let fieldType = window.log.getType(state.logKey);
-    let fieldStructuredType = window.log.getStructuredType(state.logKey);
-    let fieldAvailable =
-      fieldType !== null && (LoggableType[fieldType] === state.logType || fieldStructuredType === state.logType);
-    keySpan.style.textDecoration = fieldAvailable ? "" : "line-through";
+    keySpan.style.textDecoration = this.isFieldAvailable(state) ? "" : "line-through";
 
     // Update type width, cloning to a new node in case the controls aren't visible
     let mockTypeName = typeNameElement.cloneNode(true) as HTMLElement;
@@ -645,6 +637,12 @@ export default class SourceList {
     return typeConfig !== undefined && typeConfig.childOf !== undefined;
   }
 
+  private isFieldAvailable(item: SourceListItemState): boolean {
+    let fieldType = window.log.getType(item.logKey);
+    let fieldStructuredType = window.log.getStructuredType(item.logKey);
+    return (fieldType !== null && LoggableType[fieldType] === item.logType) || fieldStructuredType === item.logType;
+  }
+
   /**
    * Updates the preview value of an item.
    *
@@ -652,10 +650,155 @@ export default class SourceList {
    * @param state The associated item state
    */
   private updatePreview(item: HTMLElement, state: SourceListItemState) {
+    let time = window.selection.getRenderTime();
     let valueSymbol = item.getElementsByClassName("value-symbol")[0] as HTMLElement;
     let valueText = item.getElementsByClassName("value")[0] as HTMLElement;
-    valueSymbol.hidden = true;
-    valueText.hidden = true;
+    let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === state.type);
+
+    // Get text
+    let text: string | null = null;
+    if (this.isFieldAvailable(state) && time !== null) {
+      let logType = window.log.getType(state.logKey);
+      if (logType !== null) {
+        let value = getOrDefault(window.log, state.logKey, logType, time, null);
+        if (typeConfig?.geometryPreviewType !== undefined) {
+          if (typeConfig?.geometryPreviewType !== null) {
+            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
+            let numberArrayUnits: "radians" | "degrees" | undefined = undefined;
+            if ("format" in state.options) {
+              let formatRaw = state.options.format;
+              numberArrayFormat =
+                formatRaw === "Pose2d" ||
+                formatRaw === "Pose3d" ||
+                formatRaw === "Translation2d" ||
+                formatRaw === "Translation3d"
+                  ? formatRaw
+                  : "Pose2d";
+            }
+            if ("units" in state.options) {
+              numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
+            }
+            let poses = grabPosesAuto(
+              window.log,
+              state.logKey,
+              state.logType,
+              time,
+              this.UUID,
+              numberArrayFormat,
+              numberArrayUnits,
+              "red", // Display in native coordinate system
+              0,
+              0
+            );
+            let poseStrings = poses.map((annotatedPose) => {
+              switch (typeConfig?.geometryPreviewType) {
+                case "Rotation2d": {
+                  return (
+                    convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
+                  );
+                }
+                case "Translation2d": {
+                  return (
+                    "X: " +
+                    annotatedPose.pose.translation[0].toFixed(2) +
+                    "m, Y: " +
+                    annotatedPose.pose.translation[1].toFixed(2) +
+                    "m"
+                  );
+                }
+                case "Pose2d":
+                case "Transform2d": {
+                  return (
+                    "X: " +
+                    annotatedPose.pose.translation[0].toFixed(2) +
+                    "m, Y: " +
+                    annotatedPose.pose.translation[1].toFixed(2) +
+                    "m, \u03b8: " +
+                    convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                    "\u00b0"
+                  );
+                }
+                case "Rotation3d": {
+                  let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
+                  return (
+                    "Roll: " +
+                    convert(rpy[0], "radians", "degrees").toFixed(2) +
+                    "\u00b0, Pitch: " +
+                    convert(rpy[1], "radians", "degrees").toFixed(2) +
+                    "\u00b0, Yaw: " +
+                    convert(rpy[2], "radians", "degrees").toFixed(2)
+                  );
+                }
+                case "Translation3d": {
+                  return (
+                    "X: " +
+                    annotatedPose.pose.translation[0].toFixed(2) +
+                    "m, Y: " +
+                    annotatedPose.pose.translation[1].toFixed(2) +
+                    "m, Z: " +
+                    annotatedPose.pose.translation[2].toFixed(2) +
+                    "m"
+                  );
+                }
+                case "Pose3d": {
+                  let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
+                  return (
+                    "X: " +
+                    annotatedPose.pose.translation[0].toFixed(2) +
+                    "m, Y: " +
+                    annotatedPose.pose.translation[1].toFixed(2) +
+                    "m, Z: " +
+                    annotatedPose.pose.translation[2].toFixed(2) +
+                    "m, Roll: " +
+                    convert(rpy[0], "radians", "degrees").toFixed(2) +
+                    "\u00b0, Pitch: " +
+                    convert(rpy[1], "radians", "degrees").toFixed(2) +
+                    "\u00b0, Yaw: " +
+                    convert(rpy[2], "radians", "degrees").toFixed(2)
+                  );
+                }
+                default: {
+                  return "";
+                }
+              }
+            });
+            if (poseStrings.length === 1) {
+              text = poseStrings[0];
+            } else if (poseStrings.length === 0) {
+              text = "No values";
+            } else {
+              text = text =
+                poseStrings.length.toString() +
+                " value" +
+                (poseStrings.length === 1 ? "" : "s") +
+                " \u2014 [" +
+                poseStrings.map((str) => "(" + str + ")").join(", ") +
+                "]";
+            }
+          }
+        } else if (
+          logType === LoggableType.BooleanArray ||
+          logType === LoggableType.NumberArray ||
+          logType === LoggableType.StringArray
+        ) {
+          text =
+            value.length.toString() +
+            " value" +
+            (value.length === 1 ? "" : "s") +
+            " \u2014 " +
+            getLogValueText(value, logType);
+        } else {
+          text = getLogValueText(value, logType);
+        }
+      }
+    }
+
+    // Update state
+    valueSymbol.hidden = text === null;
+    valueText.hidden = text === null;
     item.style.height = valueSymbol.hidden ? "30px" : "50px";
+    if (text !== null && text !== valueText.innerText) {
+      valueText.innerText = text;
+    }
   }
 }

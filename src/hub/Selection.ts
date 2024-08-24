@@ -260,6 +260,20 @@ export default class Selection {
     }
   }
 
+  /** Returns the time that should be displayed, for views that can only display a single sample. */
+  getRenderTime(): number | null {
+    let selectedTime = this.getSelectedTime();
+    if (this.mode === SelectionMode.Playback || this.mode === SelectionMode.Locked) {
+      return selectedTime as number;
+    } else if (this.hoveredTime !== null) {
+      return this.hoveredTime;
+    } else if (selectedTime !== null) {
+      return selectedTime;
+    } else {
+      return null;
+    }
+  }
+
   /** Updates the playback speed. */
   setPlaybackSpeed(speed: number) {
     if (this.mode === SelectionMode.Playback) {

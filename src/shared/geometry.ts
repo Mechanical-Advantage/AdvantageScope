@@ -70,6 +70,46 @@ export function rotation3dTo2d(input: Rotation3d): Rotation2d {
   );
 }
 
+export function rotation3dToRPY(input: Rotation3d): [number, number, number] {
+  let w = input[0];
+  let x = input[1];
+  let y = input[2];
+  let z = input[3];
+
+  let roll = 0;
+  let pitch = 0;
+  let yaw = 0;
+
+  // wpimath/algorithms.md
+  {
+    let cxcy = 1.0 - 2.0 * (x * x + y * y);
+    let sxcy = 2.0 * (w * x + y * z);
+    let cy_sq = cxcy * cxcy + sxcy * sxcy;
+    if (cy_sq > 1e-20) {
+      roll = Math.atan2(sxcy, cxcy);
+    }
+  }
+  {
+    let ratio = 2.0 * (w * y - z * x);
+    if (Math.abs(ratio) >= 1.0) {
+      pitch = (Math.PI / 2.0) * Math.sign(ratio);
+    } else {
+      pitch = Math.asin(ratio);
+    }
+  }
+  {
+    let cycz = 1.0 - 2.0 * (y * y + z * z);
+    let cysz = 2.0 * (w * z + x * y);
+    let cy_sq = cycz * cycz + cysz * cysz;
+    if (cy_sq > 1e-20) {
+      yaw = Math.atan2(cysz, cycz);
+    } else {
+      yaw = Math.atan2(2.0 * w * z, w * w - z * z);
+    }
+  }
+  return [roll, pitch, yaw];
+}
+
 export function pose2dTo3d(input: Pose2d): Pose3d {
   return {
     translation: translation2dTo3d(input.translation),
@@ -119,12 +159,18 @@ export function grabPosesAuto(
   zebraFieldHeight?: number
 ): AnnotatedPose3d[] {
   switch (logType) {
+    case "Number":
+      return grabNumberRotation(log, key, timestamp, numberArrayUnits, uuid);
     case "NumberArray":
       if (numberArrayFormat !== undefined) {
         return grabNumberArray(log, key, timestamp, numberArrayFormat, numberArrayUnits, uuid);
       } else {
         return [];
       }
+    case "Rotation2d":
+      return grabRotation2d(log, key, timestamp, uuid);
+    case "Rotation3d":
+      return grabRotation3d(log, key, timestamp, uuid);
     case "Translation2d":
       return grabTranslation2d(log, key, timestamp, uuid);
     case "Translation3d":
@@ -158,6 +204,28 @@ export function grabPosesAuto(
   }
 }
 
+export function grabNumberRotation(
+  log: Log,
+  key: string,
+  timestamp: number,
+  unit?: "radians" | "degrees",
+  uuid?: string
+): AnnotatedPose3d[] {
+  let value = getOrDefault(log, key, LoggableType.Number, timestamp, 0, uuid);
+  if (unit === "degrees") {
+    value = convert(value, "degrees", "radians");
+  }
+  return [
+    {
+      pose: {
+        translation: Translation3dZero,
+        rotation: rotation2dTo3d(value)
+      },
+      annotation: {}
+    }
+  ];
+}
+
 export function grabNumberArray(
   log: Log,
   key: string,
@@ -171,7 +239,7 @@ export function grabNumberArray(
   let finalUnit: "radians" | "degrees" = unit === "degrees" ? "degrees" : "radians";
   switch (format) {
     case "Translation2d":
-      for (let i = 0; i < value.length; i += 2) {
+      for (let i = 0; i < value.length - 1; i += 2) {
         poses.push({
           pose: {
             translation: translation2dTo3d([value[i], value[i + 1]]),
@@ -182,7 +250,7 @@ export function grabNumberArray(
       }
       break;
     case "Translation3d":
-      for (let i = 0; i < value.length; i += 3) {
+      for (let i = 0; i < value.length - 2; i += 3) {
         poses.push({
           pose: {
             translation: [value[i], value[i + 1], value[i + 2]],
@@ -193,7 +261,7 @@ export function grabNumberArray(
       }
       break;
     case "Pose2d":
-      for (let i = 0; i < value.length; i += 3) {
+      for (let i = 0; i < value.length - 2; i += 3) {
         poses.push({
           pose: pose2dTo3d({
             translation: [value[i], value[i + 1]],
@@ -204,7 +272,7 @@ export function grabNumberArray(
       }
       break;
     case "Pose3d":
-      for (let i = 0; i < value.length; i += 7) {
+      for (let i = 0; i < value.length - 6; i += 7) {
         poses.push({
           pose: {
             translation: [value[i], value[i + 1], value[i + 2]],
@@ -216,6 +284,35 @@ export function grabNumberArray(
       break;
   }
   return poses;
+}
+
+export function grabRotation2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return [
+    {
+      pose: {
+        translation: Translation3dZero,
+        rotation: rotation2dTo3d(getOrDefault(log, key + "/value", LoggableType.Number, timestamp, 0, uuid))
+      },
+      annotation: {}
+    }
+  ];
+}
+
+export function grabRotation3d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return [
+    {
+      pose: {
+        translation: Translation3dZero,
+        rotation: [
+          getOrDefault(log, key + "/q/w", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/q/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/q/y", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/q/z", LoggableType.Number, timestamp, 0, uuid)
+        ]
+      },
+      annotation: {}
+    }
+  ];
 }
 
 export function grabTranslation2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {

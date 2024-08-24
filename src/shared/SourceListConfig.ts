@@ -17,6 +17,16 @@ export type SourceListTypeConfig = {
   numberArrayDeprecated?: boolean; // Enable deprecation warning
   parentKey?: string; // Identifies parents with shared children types
   childOf?: string; // Parent key this child is attached to
+  geometryPreviewType?:
+    | "Rotation2d"
+    | "Translation2d"
+    | "Pose2d"
+    | "Transform2d"
+    | "Rotation3d"
+    | "Translation3d"
+    | "Pose3d"
+    | "Transform3d"
+    | null; // Hide preview
 
   // If only one option, show without submenu
   options: SourceListOptionConfig[];

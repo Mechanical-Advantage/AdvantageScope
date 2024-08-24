@@ -17,7 +17,6 @@ import {
 } from "../../shared/renderers/OdometryRenderer";
 import { convert } from "../../shared/units";
 import { createUUID } from "../../shared/util";
-import { SelectionMode } from "../Selection";
 import SourceList from "../SourceList";
 import TabController from "./TabController";
 
@@ -231,19 +230,7 @@ export default class OdometryController implements TabController {
 
   getCommand(): OdometryRendererCommand {
     // Get timestamp
-    let time: number;
-    let selectionMode = window.selection.getMode();
-    let hoveredTime = window.selection.getHoveredTime();
-    let selectedTime = window.selection.getSelectedTime();
-    if (selectionMode === SelectionMode.Playback || selectionMode === SelectionMode.Locked) {
-      time = selectedTime as number;
-    } else if (hoveredTime !== null) {
-      time = hoveredTime;
-    } else if (selectedTime !== null) {
-      time = selectedTime;
-    } else {
-      time = window.log.getTimestampRange()[0];
-    }
+    let time = window.selection.getRenderTime();
 
     // Get game data
     let gameData = window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value);
@@ -251,7 +238,7 @@ export default class OdometryController implements TabController {
     let fieldHeight = gameData === undefined ? 0 : convert(gameData.heightInches, "inches", "meters");
 
     // Get alliance
-    let autoRedAlliance = getIsRedAlliance(window.log, time);
+    let autoRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
     let bumpers: "blue" | "red" =
       (this.bumperSetting === "auto" && autoRedAlliance) || this.bumperSetting === "red" ? "red" : "blue";
     let origin: "blue" | "red" =
@@ -259,80 +246,116 @@ export default class OdometryController implements TabController {
 
     let objects: OdometryRendererCommand_AllObjs[] = [];
     let sources = this.sourceList.getState(true);
-    for (let i = 0; i < sources.length; i++) {
-      let source = sources[i];
-      let typeConfig = SourcesConfig.types.find((typeConfig) => typeConfig.key === source.type);
-      if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
+    if (time !== null) {
+      for (let i = 0; i < sources.length; i++) {
+        let source = sources[i];
+        let typeConfig = SourcesConfig.types.find((typeConfig) => typeConfig.key === source.type);
+        if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
-      // Find children
-      let children: SourceListItemState[] = [];
-      while (
-        sources.length > i + 1 &&
-        SourcesConfig.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !== undefined
-      ) {
-        i++;
-        children.push(sources[i]);
-      }
-
-      // Get pose data
-      let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
-      let numberArrayUnits: "radians" | "degrees" | undefined = undefined;
-      if ("format" in source.options) {
-        let formatRaw = source.options.format;
-        numberArrayFormat =
-          formatRaw === "Pose2d" ||
-          formatRaw === "Pose3d" ||
-          formatRaw === "Translation2d" ||
-          formatRaw === "Translation3d"
-            ? formatRaw
-            : "Pose2d";
-      }
-      if ("units" in source.options) {
-        numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
-      }
-      let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
-      let pose3ds: AnnotatedPose3d[] = [];
-      if (!isHeatmap) {
-        pose3ds = grabPosesAuto(
-          window.log,
-          source.logKey,
-          source.logType,
-          time,
-          this.UUID,
-          numberArrayFormat,
-          numberArrayUnits,
-          origin,
-          fieldWidth,
-          fieldHeight
-        );
-      } else {
-        let isFullLog = source.options.filter === "full";
-        let stateRanges = isFullLog ? null : getRobotStateRanges(window.log);
-        let isValid = (timestamp: number) => {
-          if (isFullLog) return true;
-          if (stateRanges === null) return false;
-          let currentRange = stateRanges.findLast((range) => range.start <= timestamp);
-          switch (source.options.filter) {
-            case "enabled":
-              return currentRange?.mode !== "disabled";
-            case "auto":
-              return currentRange?.mode === "auto";
-            case "teleop":
-              return currentRange?.mode === "teleop";
-            case "teleop-no-endgame":
-              return (
-                currentRange?.mode === "teleop" && currentRange?.end !== undefined && currentRange?.end - timestamp > 30
-              );
-          }
-        };
-        for (
-          let sampleTime = window.log.getTimestampRange()[0];
-          sampleTime < window.log.getTimestampRange()[1];
-          sampleTime += OdometryController.HEATMAP_DT
+        // Find children
+        let children: SourceListItemState[] = [];
+        while (
+          sources.length > i + 1 &&
+          SourcesConfig.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !== undefined
         ) {
-          if (!isValid(sampleTime)) continue;
-          pose3ds = pose3ds.concat(
-            grabPosesAuto(
+          i++;
+          children.push(sources[i]);
+        }
+
+        // Get pose data
+        let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
+        let numberArrayUnits: "radians" | "degrees" | undefined = undefined;
+        if ("format" in source.options) {
+          let formatRaw = source.options.format;
+          numberArrayFormat =
+            formatRaw === "Pose2d" ||
+            formatRaw === "Pose3d" ||
+            formatRaw === "Translation2d" ||
+            formatRaw === "Translation3d"
+              ? formatRaw
+              : "Pose2d";
+        }
+        if ("units" in source.options) {
+          numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
+        }
+        let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
+        let pose3ds: AnnotatedPose3d[] = [];
+        if (!isHeatmap) {
+          pose3ds = grabPosesAuto(
+            window.log,
+            source.logKey,
+            source.logType,
+            time,
+            this.UUID,
+            numberArrayFormat,
+            numberArrayUnits,
+            origin,
+            fieldWidth,
+            fieldHeight
+          );
+        } else {
+          let isFullLog = source.options.filter === "full";
+          let stateRanges = isFullLog ? null : getRobotStateRanges(window.log);
+          let isValid = (timestamp: number) => {
+            if (isFullLog) return true;
+            if (stateRanges === null) return false;
+            let currentRange = stateRanges.findLast((range) => range.start <= timestamp);
+            switch (source.options.filter) {
+              case "enabled":
+                return currentRange?.mode !== "disabled";
+              case "auto":
+                return currentRange?.mode === "auto";
+              case "teleop":
+                return currentRange?.mode === "teleop";
+              case "teleop-no-endgame":
+                return (
+                  currentRange?.mode === "teleop" &&
+                  currentRange?.end !== undefined &&
+                  currentRange?.end - timestamp > 30
+                );
+            }
+          };
+          for (
+            let sampleTime = window.log.getTimestampRange()[0];
+            sampleTime < window.log.getTimestampRange()[1];
+            sampleTime += OdometryController.HEATMAP_DT
+          ) {
+            if (!isValid(sampleTime)) continue;
+            pose3ds = pose3ds.concat(
+              grabPosesAuto(
+                window.log,
+                source.logKey,
+                source.logType,
+                sampleTime,
+                this.UUID,
+                numberArrayFormat,
+                numberArrayUnits,
+                origin,
+                fieldWidth,
+                fieldHeight
+              )
+            );
+          }
+        }
+        let poses = pose3ds.map(annotatedPose3dTo2d);
+
+        // Get trail data for robot
+        let trails: Translation2d[][] = Array(poses.length).fill([]);
+        if (source.type === "robot" || source.type === "robotLegacy") {
+          let startTime = Math.max(window.log.getTimestampRange()[0], time - OdometryController.TRAIL_LENGTH_SECS);
+          let endTime = Math.min(window.log.getTimestampRange()[1], time + OdometryController.TRAIL_LENGTH_SECS);
+
+          let timestamps = [startTime];
+          for (
+            let sampleTime = Math.ceil(startTime / OdometryController.TRAIL_DT) * OdometryController.TRAIL_DT;
+            sampleTime < endTime;
+            sampleTime += OdometryController.TRAIL_DT
+          ) {
+            timestamps.push(sampleTime);
+          }
+          timestamps.push(endTime);
+          timestamps.forEach((sampleTime) => {
+            let pose3ds = grabPosesAuto(
               window.log,
               source.logKey,
               source.logType,
@@ -343,143 +366,111 @@ export default class OdometryController implements TabController {
               origin,
               fieldWidth,
               fieldHeight
-            )
-          );
-        }
-      }
-      let poses = pose3ds.map(annotatedPose3dTo2d);
-
-      // Get trail data for robot
-      let trails: Translation2d[][] = Array(poses.length).fill([]);
-      if (source.type === "robot" || source.type === "robotLegacy") {
-        let startTime = Math.max(window.log.getTimestampRange()[0], time - OdometryController.TRAIL_LENGTH_SECS);
-        let endTime = Math.min(window.log.getTimestampRange()[1], time + OdometryController.TRAIL_LENGTH_SECS);
-
-        let timestamps = [startTime];
-        for (
-          let sampleTime = Math.ceil(startTime / OdometryController.TRAIL_DT) * OdometryController.TRAIL_DT;
-          sampleTime < endTime;
-          sampleTime += OdometryController.TRAIL_DT
-        ) {
-          timestamps.push(sampleTime);
-        }
-        timestamps.push(endTime);
-        timestamps.forEach((sampleTime) => {
-          let pose3ds = grabPosesAuto(
-            window.log,
-            source.logKey,
-            source.logType,
-            sampleTime,
-            this.UUID,
-            numberArrayFormat,
-            numberArrayUnits,
-            origin,
-            fieldWidth,
-            fieldHeight
-          );
-          if (pose3ds.length !== trails.length) return;
-          pose3ds.forEach((pose, index) => {
-            trails[index].push(translation3dTo2d(pose.pose.translation));
+            );
+            if (pose3ds.length !== trails.length) return;
+            pose3ds.forEach((pose, index) => {
+              trails[index].push(translation3dTo2d(pose.pose.translation));
+            });
           });
-        });
-      }
+        }
 
-      // Add data from children
-      let visionTargets: AnnotatedPose2d[] = [];
-      children.forEach((child) => {
-        switch (child.type) {
-          case "rotationOverride":
-          case "rotationOverrideLegacy":
-            let isRotation2d = child.logType === "Rotation2d";
-            let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
-            let rotation = getOrDefault(window.log, rotationKey, LoggableType.Number, time, 0, this.UUID);
-            if (!isRotation2d) {
-              rotation = convert(rotation, child.options.units, "radians");
-            }
-            poses.forEach((value) => {
-              value.pose.rotation = rotation;
+        // Add data from children
+        let visionTargets: AnnotatedPose2d[] = [];
+        children.forEach((child) => {
+          switch (child.type) {
+            case "rotationOverride":
+            case "rotationOverrideLegacy":
+              let isRotation2d = child.logType === "Rotation2d";
+              let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
+              let rotation = getOrDefault(window.log, rotationKey, LoggableType.Number, time!, 0, this.UUID);
+              if (!isRotation2d) {
+                rotation = convert(rotation, child.options.units, "radians");
+              }
+              poses.forEach((value) => {
+                value.pose.rotation = rotation;
+              });
+              break;
+
+            case "vision":
+            case "visionLegacy":
+              let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
+              if ("format" in child.options) {
+                let formatRaw = child.options.format;
+                numberArrayFormat =
+                  formatRaw === "Pose2d" ||
+                  formatRaw === "Pose3d" ||
+                  formatRaw === "Translation2d" ||
+                  formatRaw === "Translation3d"
+                    ? formatRaw
+                    : "Pose2d";
+              }
+              let visionPose3ds = grabPosesAuto(
+                window.log,
+                child.logKey,
+                child.logType,
+                time!,
+                this.UUID,
+                numberArrayFormat,
+                "radians"
+              );
+              visionTargets = visionPose3ds.map(annotatedPose3dTo2d);
+              break;
+          }
+        });
+
+        // Add object
+        switch (source.type) {
+          case "robot":
+          case "robotLegacy":
+            objects.push({
+              type: "robot",
+              poses: poses,
+              trails: trails,
+              visionTargets: visionTargets
             });
             break;
-
-          case "vision":
-          case "visionLegacy":
-            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
-            if ("format" in child.options) {
-              let formatRaw = child.options.format;
-              numberArrayFormat =
-                formatRaw === "Pose2d" ||
-                formatRaw === "Pose3d" ||
-                formatRaw === "Translation2d" ||
-                formatRaw === "Translation3d"
-                  ? formatRaw
-                  : "Pose2d";
-            }
-            let visionPose3ds = grabPosesAuto(
-              window.log,
-              child.logKey,
-              child.logType,
-              time,
-              this.UUID,
-              numberArrayFormat,
-              "radians"
-            );
-            visionTargets = visionPose3ds.map(annotatedPose3dTo2d);
+          case "ghost":
+          case "ghostLegacy":
+          case "ghostZebra":
+            objects.push({
+              type: "ghost",
+              poses: poses,
+              color: source.options.color,
+              visionTargets: visionTargets
+            });
+            break;
+          case "trajectory":
+          case "trajectoryLegacy":
+            objects.push({
+              type: "trajectory",
+              poses: poses
+            });
+            break;
+          case "heatmap":
+          case "heatmapLegacy":
+            objects.push({
+              type: "heatmap",
+              poses: poses
+            });
+            break;
+          case "arrow":
+          case "arrowLegacy":
+            let positionRaw = source.options.position;
+            let position: "center" | "back" | "front" =
+              positionRaw === "center" || positionRaw === "back" || positionRaw === "front" ? positionRaw : "center";
+            objects.push({
+              type: "arrow",
+              poses: poses,
+              position: position
+            });
+            break;
+          case "zebra":
+            objects.push({
+              type: "zebra",
+              poses: poses
+            });
             break;
         }
-      });
-
-      // Add object
-      switch (source.type) {
-        case "robot":
-        case "robotLegacy":
-          objects.push({
-            type: "robot",
-            poses: poses,
-            trails: trails,
-            visionTargets: visionTargets
-          });
-          break;
-        case "ghost":
-        case "ghostLegacy":
-        case "ghostZebra":
-          objects.push({
-            type: "ghost",
-            poses: poses,
-            color: source.options.color,
-            visionTargets: visionTargets
-          });
-          break;
-        case "trajectory":
-        case "trajectoryLegacy":
-          objects.push({
-            type: "trajectory",
-            poses: poses
-          });
-          break;
-        case "heatmap":
-        case "heatmapLegacy":
-          objects.push({
-            type: "heatmap",
-            poses: poses
-          });
-          break;
-        case "arrow":
-        case "arrowLegacy":
-          let positionRaw = source.options.position;
-          let position: "center" | "back" | "front" =
-            positionRaw === "center" || positionRaw === "back" || positionRaw === "front" ? positionRaw : "center";
-          objects.push({
-            type: "arrow",
-            poses: poses,
-            position: position
-          });
-          break;
-        case "zebra":
-          objects.push({
-            type: "zebra",
-            poses: poses
-          });
-          break;
       }
     }
 
@@ -518,7 +509,8 @@ const SourcesConfig: SourceListConfig = {
         "Transform3d[]"
       ],
       options: [],
-      parentKey: "robot"
+      parentKey: "robot",
+      geometryPreviewType: "Pose2d"
     },
     {
       key: "robotLegacy",
@@ -551,7 +543,8 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       numberArrayDeprecated: true,
-      parentKey: "robot"
+      parentKey: "robot",
+      geometryPreviewType: "Pose2d"
     },
     {
       key: "ghost",
@@ -578,7 +571,8 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
-      parentKey: "robot"
+      parentKey: "robot",
+      geometryPreviewType: "Pose2d"
     },
     {
       key: "ghostLegacy",
@@ -617,7 +611,8 @@ const SourcesConfig: SourceListConfig = {
       ],
       initialSelectionOption: "color",
       parentKey: "robot",
-      numberArrayDeprecated: true
+      numberArrayDeprecated: true,
+      geometryPreviewType: "Pose2d"
     },
     {
       key: "ghostZebra",
@@ -635,7 +630,8 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
-      parentKey: "robot"
+      parentKey: "robot",
+      geometryPreviewType: "Translation2d"
     },
     {
       key: "rotationOverride",
@@ -646,7 +642,8 @@ const SourcesConfig: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["Rotation2d"],
       options: [],
-      childOf: "robot"
+      childOf: "robot",
+      geometryPreviewType: "Rotation2d"
     },
     {
       key: "rotationOverrideLegacy",
@@ -667,7 +664,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      childOf: "robot"
+      childOf: "robot",
+      geometryPreviewType: "Rotation2d"
     },
     {
       key: "vision",
@@ -690,7 +688,8 @@ const SourcesConfig: SourceListConfig = {
         "Translation3d[]"
       ],
       options: [],
-      childOf: "robot"
+      childOf: "robot",
+      geometryPreviewType: "Translation2d"
     },
     {
       key: "visionLegacy",
@@ -713,7 +712,8 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       numberArrayDeprecated: true,
-      childOf: "robot"
+      childOf: "robot",
+      geometryPreviewType: "Translation2d"
     },
     {
       key: "trajectory",
@@ -730,7 +730,8 @@ const SourcesConfig: SourceListConfig = {
         "Translation3d[]",
         "Trajectory"
       ],
-      options: []
+      options: [],
+      geometryPreviewType: "Translation2d"
     },
     {
       key: "trajectoryLegacy",
@@ -752,7 +753,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      numberArrayDeprecated: true
+      numberArrayDeprecated: true,
+      geometryPreviewType: "Translation2d"
     },
     {
       key: "heatmap",
@@ -789,7 +791,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "filter"
+      initialSelectionOption: "filter",
+      geometryPreviewType: null
     },
     {
       key: "heatmapLegacy",
@@ -824,7 +827,8 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       initialSelectionOption: "filter",
-      numberArrayDeprecated: true
+      numberArrayDeprecated: true,
+      geometryPreviewType: null
     },
     {
       key: "arrow",
@@ -856,7 +860,8 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "position"
+      initialSelectionOption: "position",
+      geometryPreviewType: "Pose2d"
     },
     {
       key: "arrowLegacy",
@@ -899,7 +904,8 @@ const SourcesConfig: SourceListConfig = {
         }
       ],
       initialSelectionOption: "position",
-      numberArrayDeprecated: true
+      numberArrayDeprecated: true,
+      geometryPreviewType: "Pose2d"
     },
     {
       key: "zebra",
@@ -909,7 +915,8 @@ const SourcesConfig: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["ZebraTranslation"],
-      options: []
+      options: [],
+      geometryPreviewType: "Translation2d"
     }
   ]
 };
