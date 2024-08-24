@@ -225,7 +225,7 @@ export default class Tabs {
 
       let closestDist = Infinity;
       let closestIndex = 0;
-      this.tabList.slice(0, -1).forEach((tab, index) => {
+      this.tabList.forEach((tab, index) => {
         let dist = Math.abs(x - tab.titleElement.getBoundingClientRect().right);
         if (dist < closestDist) {
           closestDist = dist;
@@ -448,7 +448,13 @@ export default class Tabs {
     if (index === 0) return;
     if (index + shift < 1) shift = 1 - index;
     if (index + shift > this.tabList.length - 1) shift = this.tabList.length - 1 - index;
-    if (this.selectedTab === index) this.selectedTab += shift;
+    if (this.selectedTab === index) {
+      this.selectedTab += shift;
+    } else if (index > this.selectedTab && shift <= this.selectedTab - index) {
+      this.selectedTab++;
+    } else if (index < this.selectedTab && shift >= this.selectedTab - index) {
+      this.selectedTab--;
+    }
 
     let tab = this.tabList.splice(index, 1)[0];
     this.tabList.splice(index + shift, 0, tab);
