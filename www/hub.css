@@ -872,7 +872,9 @@ div.source-list button.type object.hidden {
 
 div.source-list div.hidden button.type,
 div.source-list div.hidden div.type-name,
-div.source-list div.hidden div.key-container {
+div.source-list div.hidden div.key-container,
+div.source-list div.hidden img.value-symbol,
+div.source-list div.hidden div.value {
   opacity: 0.4;
 }
 
