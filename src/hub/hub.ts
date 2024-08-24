@@ -602,11 +602,16 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.renameTab(message.data.index, message.data.name);
       break;
 
-    case "source-list-type-response":
+    case "source-list-type-response": {
       let uuid: string = message.data.uuid;
       let state: SourceListItemState = message.data.state;
-      SourceList.promptCallbacks[uuid](state);
-      break;
+      SourceList.typePromptCallbacks[uuid](state);
+    }
+
+    case "source-list-edit-response": {
+      let uuid: string = message.data.uuid;
+      SourceList.editPromptCallbacks[uuid]();
+    }
 
     case "add-discrete-enabled":
       window.tabs.addDiscreteEnabled();

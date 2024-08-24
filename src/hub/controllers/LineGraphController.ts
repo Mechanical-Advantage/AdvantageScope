@@ -37,57 +37,47 @@ export default class LineGraphController implements TabController {
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
       NumericAxisConfig,
-      [() => this.rightSourceList.getState(), () => this.discreteSourceList.getState()]
+      [() => this.rightSourceList.getState(), () => this.discreteSourceList.getState()],
+      (coordinates) => {
+        window.sendMainMessage("ask-edit-axis", {
+          x: coordinates[0],
+          y: coordinates[1],
+          legend: "left",
+          lockedRange: this.leftLockedRange,
+          unitConversion: this.leftUnitConversion
+        });
+      }
     );
     this.leftSourceList.setTitle("Left Axis");
 
     this.rightSourceList = new SourceList(
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
       NumericAxisConfig,
-      [() => this.leftSourceList.getState(), () => this.discreteSourceList.getState()]
+      [() => this.leftSourceList.getState(), () => this.discreteSourceList.getState()],
+      (coordinates) => {
+        window.sendMainMessage("ask-edit-axis", {
+          x: coordinates[0],
+          y: coordinates[1],
+          legend: "right",
+          lockedRange: this.rightLockedRange,
+          unitConversion: this.rightUnitConversion
+        });
+      }
     );
     this.rightSourceList.setTitle("Right Axis");
 
     this.discreteSourceList = new SourceList(
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
       DiscreteFieldsConfig,
-      [() => this.leftSourceList.getState(), () => this.rightSourceList.getState()]
+      [() => this.leftSourceList.getState(), () => this.rightSourceList.getState()],
+      (coordinates) => {
+        window.sendMainMessage("ask-edit-axis", {
+          x: coordinates[0],
+          y: coordinates[1],
+          legend: "discrete"
+        });
+      }
     );
-
-    // Edit axis handling
-    let leftExitAxisButton = root.getElementsByClassName("line-graph-edit-left")[0];
-    leftExitAxisButton.addEventListener("click", () => {
-      let rect = leftExitAxisButton.getBoundingClientRect();
-      window.sendMainMessage("ask-edit-axis", {
-        x: Math.round(rect.right),
-        y: Math.round(rect.top),
-        legend: "left",
-        lockedRange: this.leftLockedRange,
-        unitConversion: this.leftUnitConversion
-      });
-    });
-
-    let rightExitAxisButton = root.getElementsByClassName("line-graph-edit-right")[0];
-    rightExitAxisButton.addEventListener("click", () => {
-      let rect = rightExitAxisButton.getBoundingClientRect();
-      window.sendMainMessage("ask-edit-axis", {
-        x: Math.round(rect.right),
-        y: Math.round(rect.top),
-        legend: "right",
-        lockedRange: this.rightLockedRange,
-        unitConversion: this.rightUnitConversion
-      });
-    });
-
-    let discreteEditAxisButton = root.getElementsByClassName("line-graph-edit-discrete")[0];
-    discreteEditAxisButton.addEventListener("click", () => {
-      let rect = discreteEditAxisButton.getBoundingClientRect();
-      window.sendMainMessage("ask-edit-axis", {
-        x: Math.round(rect.right),
-        y: Math.round(rect.top),
-        legend: "discrete"
-      });
-    });
   }
 
   saveState(): unknown {

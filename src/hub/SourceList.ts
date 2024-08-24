@@ -14,12 +14,14 @@ import { convert } from "../shared/units";
 import { createUUID } from "../shared/util";
 
 export default class SourceList {
-  static promptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
+  static typePromptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
+  static editPromptCallbacks: { [key: string]: () => void } = {};
 
   private UUID = createUUID();
   private ITEM_TEMPLATE = document.getElementById("sourceListItemTemplate")?.firstElementChild as HTMLElement;
   private ROOT: HTMLElement;
   private TITLE: HTMLElement;
+  private EDIT_BUTTON: HTMLButtonElement;
   private LIST: HTMLElement;
   private HAND_ICON: HTMLImageElement;
   private DRAG_HIGHLIGHT: HTMLElement;
@@ -41,7 +43,12 @@ export default class SourceList {
    * @param config The configuration used for controlling the source list
    * @param supplementalStateSuppliers Suppliers of additional states from other source lists, used when running auto advance logic
    */
-  constructor(root: HTMLElement, config: SourceListConfig, supplementalStateSuppliers: (() => SourceListState)[]) {
+  constructor(
+    root: HTMLElement,
+    config: SourceListConfig,
+    supplementalStateSuppliers: (() => SourceListState)[],
+    editButtonCallback?: (coordinates: [number, number]) => void
+  ) {
     this.config = config;
     this.supplementalStateSuppliers = supplementalStateSuppliers;
     this.ROOT = root;
@@ -51,6 +58,13 @@ export default class SourceList {
     this.ROOT.appendChild(this.TITLE);
     this.TITLE.classList.add("title");
     this.TITLE.innerText = config.title;
+
+    this.EDIT_BUTTON = document.createElement("button");
+    this.ROOT.appendChild(this.EDIT_BUTTON);
+    this.EDIT_BUTTON.classList.add("edit");
+    let editIcon = document.createElement("img");
+    this.EDIT_BUTTON.appendChild(editIcon);
+    editIcon.src = "symbols/ellipsis.svg";
 
     this.LIST = document.createElement("div");
     this.ROOT.appendChild(this.LIST);
@@ -76,6 +90,24 @@ export default class SourceList {
       }
       if (typeConfig.parentKey !== undefined) {
         this.parentKeys.set(typeConfig.key, typeConfig.parentKey);
+      }
+    });
+
+    // Edit button
+    this.EDIT_BUTTON.addEventListener("click", () => {
+      let rect = this.EDIT_BUTTON.getBoundingClientRect();
+      let coordinates: [number, number] = [Math.round(rect.right), Math.round(rect.top)];
+      if (editButtonCallback !== undefined) {
+        editButtonCallback(coordinates);
+      } else {
+        window.sendMainMessage("source-list-edit-prompt", {
+          uuid: this.UUID,
+          coordinates: [Math.round(rect.right), Math.round(rect.top)]
+        });
+        SourceList.editPromptCallbacks[this.UUID] = () => {
+          delete SourceList.editPromptCallbacks[this.UUID];
+          this.clear();
+        };
       }
     });
 
@@ -433,17 +465,16 @@ export default class SourceList {
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     let promptType = (coordinates: [number, number]) => {
-      const uuid = createUUID();
       let index = Array.from(this.LIST.children).indexOf(item);
       window.sendMainMessage("source-list-type-prompt", {
-        uuid: uuid,
+        uuid: this.UUID,
         config: this.config,
         state: this.state[index],
         coordinates: coordinates
       });
       let originalType = this.state[index].type;
-      SourceList.promptCallbacks[uuid] = (newState) => {
-        delete SourceList.promptCallbacks[uuid];
+      SourceList.typePromptCallbacks[this.UUID] = (newState) => {
+        delete SourceList.typePromptCallbacks[this.UUID];
         let index = Array.from(this.LIST.children).indexOf(item);
         this.state[index] = newState;
         this.updateItem(item, newState);

@@ -803,8 +803,8 @@ div.source-list div.title {
   position: absolute;
   top: 0px;
   height: 30px;
-  left: 35px;
-  right: 35px;
+  left: 30px;
+  right: 30px;
 
   text-align: center;
   font-size: 16px;
@@ -813,6 +813,16 @@ div.source-list div.title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+div.source-list button.edit {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  transform: translate(50%, -50%);
+
+  width: 25px;
+  height: 25px;
 }
 
 div.source-list div.list {
@@ -1030,27 +1040,6 @@ div.line-graph-discrete {
     border-left: 1px solid black;
     border-right: 1px solid black;
   }
-}
-
-button.line-graph-edit {
-  position: absolute;
-  top: 15px;
-  transform: translate(-50%, -50%);
-
-  width: 25px;
-  height: 25px;
-}
-
-button.line-graph-edit-left {
-  left: calc(100% / 3 - 15px);
-}
-
-button.line-graph-edit-right {
-  left: calc(100% - 15px);
-}
-
-button.line-graph-edit-discrete {
-  left: calc(100% / 3 * 2 - 15px);
 }
 
 canvas.line-graph-canvas {

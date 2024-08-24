@@ -649,6 +649,25 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       break;
 
+    case "source-list-edit-prompt":
+      const editMenu = new Menu();
+      editMenu.append(
+        new MenuItem({
+          label: "Clear All",
+          click() {
+            sendMessage(window, "source-list-edit-response", {
+              uuid: message.data.uuid
+            });
+          }
+        })
+      );
+      editMenu.popup({
+        window: window,
+        x: message.data.coordinates[0],
+        y: message.data.coordinates[1]
+      });
+      break;
+
     case "ask-edit-axis":
       let legend: string = message.data.legend;
       const editAxisMenu = new Menu();
