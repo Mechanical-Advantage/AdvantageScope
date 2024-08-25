@@ -1,5 +1,5 @@
 import { NeonColors } from "../../shared/Colors";
-import { SourceListConfig, SourceListState } from "../../shared/SourceListConfig";
+import { SourceListConfig, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import TabController from "./TabController";
@@ -40,6 +40,7 @@ export default class ThreeDimensionController implements TabController {
       );
     });
     this.updateGameOptions();
+    this.updateRobotOptions();
 
     // Set up switchers
     (["auto", "blue", "red"] as const).forEach((value, index) => {
@@ -59,7 +60,7 @@ export default class ThreeDimensionController implements TabController {
     }
     let options: string[] = [];
     if (window.assets !== null) {
-      options = window.assets.field3ds.map((game) => game.name);
+      options = [...window.assets.field3ds.map((game) => game.name), "Evergreen", "Axes"];
       options.forEach((title) => {
         let option = document.createElement("option");
         option.innerText = title;
@@ -74,15 +75,47 @@ export default class ThreeDimensionController implements TabController {
     this.updateGameDependentControls(this.GAME_SELECT.value === value); // Skip origin reset if game is unchanged
   }
 
-  /** Updates the alliance and source buttons based on the selected value. */
+  /** Updates source list with the latest robot models. */
+  private updateRobotOptions() {
+    let robotList: string[] = [];
+    if (window.assets !== null) {
+      robotList = window.assets.robots.map((robot) => robot.name);
+    }
+    if (robotList.length === 0) {
+      robotList.push("KitBot");
+    }
+    let sourceListValues: SourceListOptionValueConfig[] = robotList.map((name) => {
+      return { key: name, display: name };
+    });
+    this.sourceList.setOptionValues("robot", "model", sourceListValues);
+    this.sourceList.setOptionValues("robotLegacy", "model", sourceListValues);
+    this.sourceList.setOptionValues("ghost", "model", sourceListValues);
+    this.sourceList.setOptionValues("ghostLegacy", "model", sourceListValues);
+    this.sourceList.setOptionValues("ghostZebra", "model", sourceListValues);
+  }
+
+  /** Updates the alliance select, source button, and game pieces based on the selected value. */
   private updateGameDependentControls(skipOriginReset = false) {
-    let fieldConfig = window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value);
+    let fieldConfig = window.assets?.field3ds.find((game) => game.name === this.GAME_SELECT.value);
     this.GAME_SOURCE.hidden = fieldConfig !== undefined && fieldConfig.sourceUrl === undefined;
 
     if (fieldConfig !== undefined && !skipOriginReset) {
       this.originSetting = fieldConfig.defaultOrigin;
       this.updateOriginSwitcher();
     }
+
+    let gamePieces: string[] = [];
+    if (fieldConfig !== undefined) {
+      gamePieces = fieldConfig.gamePieces.map((x) => x.name);
+    }
+    if (gamePieces.length === 0) {
+      gamePieces.push("None");
+    }
+    let sourceListValues: SourceListOptionValueConfig[] = gamePieces.map((name) => {
+      return { key: name, display: name };
+    });
+    this.sourceList.setOptionValues("gamePiece", "variant", sourceListValues);
+    this.sourceList.setOptionValues("gamePieceLegacy", "variant", sourceListValues);
   }
 
   /** Updates the switcher elements to match the internal state. */
@@ -132,6 +165,7 @@ export default class ThreeDimensionController implements TabController {
 
   newAssets(): void {
     this.updateGameOptions();
+    this.updateRobotOptions();
   }
 
   getActiveFields(): string[] {
@@ -171,10 +205,7 @@ const SourcesConfig: SourceListConfig = {
           key: "model",
           display: "Model",
           showInTypeName: true,
-          values: [
-            { key: "Presto", display: "Presto" },
-            { key: "KitBot", display: "KitBot" }
-          ]
+          values: []
         }
       ],
       initialSelectionOption: "model",
@@ -194,10 +225,7 @@ const SourcesConfig: SourceListConfig = {
           key: "model",
           display: "Model",
           showInTypeName: true,
-          values: [
-            { key: "Presto", display: "Presto" },
-            { key: "KitBot", display: "KitBot" }
-          ]
+          values: []
         },
         {
           key: "format",
@@ -246,10 +274,7 @@ const SourcesConfig: SourceListConfig = {
           key: "model",
           display: "Model",
           showInTypeName: true,
-          values: [
-            { key: "Presto", display: "Presto" },
-            { key: "KitBot", display: "KitBot" }
-          ]
+          values: []
         },
         {
           key: "color",
@@ -258,7 +283,7 @@ const SourcesConfig: SourceListConfig = {
           values: NeonColors
         }
       ],
-      initialSelectionOption: "model",
+      initialSelectionOption: "color",
       parentKey: "robot",
       geometryPreviewType: "Pose3d"
     },
@@ -274,10 +299,7 @@ const SourcesConfig: SourceListConfig = {
           key: "model",
           display: "Model",
           showInTypeName: true,
-          values: [
-            { key: "Presto", display: "Presto" },
-            { key: "KitBot", display: "KitBot" }
-          ]
+          values: []
         },
         {
           key: "color",
@@ -306,7 +328,7 @@ const SourcesConfig: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "model",
+      initialSelectionOption: "color",
       parentKey: "robot",
       numberArrayDeprecated: true,
       geometryPreviewType: "Pose3d"
@@ -323,10 +345,7 @@ const SourcesConfig: SourceListConfig = {
           key: "model",
           display: "Model",
           showInTypeName: true,
-          values: [
-            { key: "Presto", display: "Presto" },
-            { key: "KitBot", display: "KitBot" }
-          ]
+          values: []
         },
         {
           key: "color",
@@ -335,9 +354,20 @@ const SourcesConfig: SourceListConfig = {
           values: NeonColors
         }
       ],
-      initialSelectionOption: "model",
+      initialSelectionOption: "color",
       parentKey: "robot",
       geometryPreviewType: "Translation2d"
+    },
+    {
+      key: "mechanism",
+      display: "Mechanism",
+      symbol: "gearshape.fill",
+      showInTypeName: true,
+      color: "#888888",
+      sourceTypes: ["Mechanism2d"],
+      options: [],
+      childOf: "robot",
+      geometryPreviewType: null
     },
     {
       key: "component",

@@ -1,8 +1,11 @@
 export type SourceListConfig = {
   title: string;
-  autoAdvance: boolean | string; // True advances type, string advances option
-  allowChildrenFromDrag: boolean; // Should be false if parent types (arrays/structs) are supported directly
-  typeMemoryId?: string; // If provided, remember types and options for fields
+  /** True advances type, string advances option */
+  autoAdvance: boolean | string;
+  /** Should be false if parent types (arrays/structs) are supported directly */
+  allowChildrenFromDrag: boolean;
+  /** If provided, remember types and options for fields */
+  typeMemoryId?: string;
   types: SourceListTypeConfig[];
 };
 
@@ -11,12 +14,16 @@ export type SourceListTypeConfig = {
   display: string;
   symbol: string;
   showInTypeName: boolean;
-  color: string; // Option key or hex (starting with #)
+  /** Option key or hex (starting with #) */
+  color: string;
   darkColor?: string;
   sourceTypes: string[];
-  numberArrayDeprecated?: boolean; // Enable deprecation warning
-  parentKey?: string; // Identifies parents with shared children types
-  childOf?: string; // Parent key this child is attached to
+  /** Enable deprecation warning */
+  numberArrayDeprecated?: boolean;
+  /** Identifies parents with shared children types */
+  parentKey?: string;
+  /** Parent key this child is attached to */
+  childOf?: string;
   geometryPreviewType?:
     | "Rotation2d"
     | "Translation2d"
@@ -26,9 +33,7 @@ export type SourceListTypeConfig = {
     | "Translation3d"
     | "Pose3d"
     | "Transform3d"
-    | null; // Hide preview
-
-  // If only one option, show without submenu
+    | null;
   options: SourceListOptionConfig[];
   initialSelectionOption?: string;
 };

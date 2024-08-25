@@ -11,7 +11,7 @@ import { grabPosesAuto, rotation3dTo2d, rotation3dToRPY } from "../shared/geomet
 import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { convert } from "../shared/units";
-import { createUUID } from "../shared/util";
+import { createUUID, jsonCopy } from "../shared/util";
 
 export default class SourceList {
   static typePromptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
@@ -49,7 +49,7 @@ export default class SourceList {
     supplementalStateSuppliers: (() => SourceListState)[],
     editButtonCallback?: (coordinates: [number, number]) => void
   ) {
-    this.config = config;
+    this.config = jsonCopy(config);
     this.supplementalStateSuppliers = supplementalStateSuppliers;
     this.ROOT = root;
     this.ROOT.classList.add("source-list");
@@ -229,6 +229,30 @@ export default class SourceList {
     this.refreshLastFields = currentFields;
     this.refreshLastStructTypes = structTypes;
     if (shouldUpdate) {
+      this.updateAllItems();
+    }
+  }
+
+  /**
+   * Updates a set of option values and validates that all items are valid.
+   */
+  setOptionValues(type: string, option: string, values: SourceListOptionValueConfig[]) {
+    let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === type);
+    if (typeConfig === undefined) return;
+    let optionConfig = typeConfig!.options.find((optionConfig) => optionConfig.key === option);
+    if (optionConfig === undefined) return;
+    optionConfig.values = values;
+
+    // Verify that all items have a valid selection
+    let possibleValues = values.map((x) => x.key);
+    let valuesChanged = false;
+    this.state.forEach((item) => {
+      if (!possibleValues.includes(item.options[option])) {
+        item.options[option] = values[0].key;
+        valuesChanged = true;
+      }
+    });
+    if (valuesChanged) {
       this.updateAllItems();
     }
   }
@@ -710,8 +734,8 @@ export default class SourceList {
         let value = getOrDefault(window.log, state.logKey, logType, time, null);
         if (typeConfig?.geometryPreviewType !== undefined) {
           if (typeConfig?.geometryPreviewType !== null) {
-            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
-            let numberArrayUnits: "radians" | "degrees" | undefined = undefined;
+            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
+            let numberArrayUnits: "radians" | "degrees" = "radians";
             if ("format" in state.options) {
               let formatRaw = state.options.format;
               numberArrayFormat =
@@ -720,7 +744,7 @@ export default class SourceList {
                 formatRaw === "Translation2d" ||
                 formatRaw === "Translation3d"
                   ? formatRaw
-                  : "Pose2d";
+                  : "Pose3d";
             }
             if ("units" in state.options) {
               numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
