@@ -1,5 +1,5 @@
 import Log from "./log/Log";
-import { getOrDefault } from "./log/LogUtil";
+import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
 import { convert } from "./units";
 import { indexArray, scaleValue } from "./util";
@@ -46,6 +46,7 @@ export type PoseAnnotations = {
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
+export const HEATMAP_DT = 0.25;
 
 // FORMAT CONVERSION UTILITIES
 
@@ -504,4 +505,54 @@ export function grabZebraTranslation(
       }
     }
   ];
+}
+
+export function grabHeatmapData(
+  log: Log,
+  key: string,
+  logType: string,
+  filter: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full",
+  uuid?: string,
+  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
+  numberArrayUnits?: "radians" | "degrees",
+  zebraOrigin?: "blue" | "red",
+  zebraFieldWidth?: number,
+  zebraFieldHeight?: number
+): AnnotatedPose3d[] {
+  let poses: AnnotatedPose3d[] = [];
+  let isFullLog = filter === "full";
+  let stateRanges = isFullLog ? null : getRobotStateRanges(log);
+  let isValid = (timestamp: number) => {
+    if (isFullLog) return true;
+    if (stateRanges === null) return false;
+    let currentRange = stateRanges.findLast((range) => range.start <= timestamp);
+    switch (filter) {
+      case "enabled":
+        return currentRange?.mode !== "disabled";
+      case "auto":
+        return currentRange?.mode === "auto";
+      case "teleop":
+        return currentRange?.mode === "teleop";
+      case "teleop-no-endgame":
+        return currentRange?.mode === "teleop" && currentRange?.end !== undefined && currentRange?.end - timestamp > 30;
+    }
+  };
+  for (let sampleTime = log.getTimestampRange()[0]; sampleTime < log.getTimestampRange()[1]; sampleTime += HEATMAP_DT) {
+    if (!isValid(sampleTime)) continue;
+    poses = poses.concat(
+      grabPosesAuto(
+        log,
+        key,
+        logType,
+        sampleTime,
+        uuid,
+        numberArrayFormat,
+        numberArrayUnits,
+        zebraOrigin,
+        zebraFieldWidth,
+        zebraFieldHeight
+      )
+    );
+  }
+  return poses;
 }

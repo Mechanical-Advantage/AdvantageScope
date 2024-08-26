@@ -445,10 +445,10 @@ export type OdometryRendererCommand = {
   origin: "blue" | "red";
   orientation: Orientation;
   size: 30 | 27 | 24;
-  objects: OdometryRendererCommand_AllObjs[];
+  objects: OdometryRendererCommand_AnyObj[];
 };
 
-export type OdometryRendererCommand_AllObjs =
+export type OdometryRendererCommand_AnyObj =
   | OdometryRendererCommand_RobotObj
   | OdometryRendererCommand_GhostObj
   | OdometryRendererCommand_TrajectoryObj

@@ -1,5 +1,5 @@
-import { GraphColors, ensureThemeContrast } from "../../shared/Colors";
-import { SourceListConfig, SourceListState } from "../../shared/SourceListConfig";
+import { ensureThemeContrast } from "../../shared/Colors";
+import { SourceListState } from "../../shared/SourceListConfig";
 import { getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
 import {
   LineGraphRendererCommand,
@@ -9,6 +9,7 @@ import {
 import { UnitConversionPreset, convertWithPreset } from "../../shared/units";
 import { clampValue, scaleValue } from "../../shared/util";
 import SourceList from "../SourceList";
+import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
 
 export default class LineGraphController implements TabController {
@@ -36,7 +37,7 @@ export default class LineGraphController implements TabController {
     // Make source lists
     this.leftSourceList = new SourceList(
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
-      NumericAxisConfig,
+      LineGraphController_NumericConfig,
       [() => this.rightSourceList.getState(), () => this.discreteSourceList.getState()],
       (coordinates) => {
         window.sendMainMessage("ask-edit-axis", {
@@ -52,7 +53,7 @@ export default class LineGraphController implements TabController {
 
     this.rightSourceList = new SourceList(
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
-      NumericAxisConfig,
+      LineGraphController_NumericConfig,
       [() => this.leftSourceList.getState(), () => this.discreteSourceList.getState()],
       (coordinates) => {
         window.sendMainMessage("ask-edit-axis", {
@@ -68,7 +69,7 @@ export default class LineGraphController implements TabController {
 
     this.discreteSourceList = new SourceList(
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
-      DiscreteFieldsConfig,
+      LineGraphController_DiscreteConfig,
       [() => this.leftSourceList.getState(), () => this.rightSourceList.getState()],
       (coordinates) => {
         window.sendMainMessage("ask-edit-axis", {
@@ -425,128 +426,3 @@ export default class LineGraphController implements TabController {
     return adjustedRange;
   }
 }
-
-const NumericAxisConfig: SourceListConfig = {
-  title: "",
-  autoAdvance: "color",
-  allowChildrenFromDrag: true,
-  types: [
-    {
-      key: "stepped",
-      display: "Stepped",
-      symbol: "stairs",
-      showInTypeName: false,
-      color: "color",
-      sourceTypes: ["Number"],
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: GraphColors
-        },
-        {
-          key: "size",
-          display: "Thickness",
-          showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" },
-            { key: "verybold", display: "Very Bold" }
-          ]
-        }
-      ]
-    },
-    {
-      key: "smooth",
-      display: "Smooth",
-      symbol: "scribble.variable",
-      showInTypeName: false,
-      color: "color",
-      sourceTypes: ["Number"],
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: GraphColors
-        },
-        {
-          key: "size",
-          display: "Thickness",
-          showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" },
-            { key: "verybold", display: "Very Bold" }
-          ]
-        }
-      ]
-    },
-    {
-      key: "points",
-      display: "Points",
-      symbol: "smallcircle.filled.circle",
-      showInTypeName: false,
-      color: "color",
-      sourceTypes: ["Number"],
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: GraphColors
-        },
-        {
-          key: "size",
-          display: "Size",
-          showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Large" }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-const DiscreteFieldsConfig: SourceListConfig = {
-  title: "Discrete Fields",
-  autoAdvance: "color",
-  allowChildrenFromDrag: false,
-  types: [
-    {
-      key: "stripes",
-      display: "Stripes",
-      symbol: "square.stack.3d.forward.dottedline.fill",
-      showInTypeName: false,
-      color: "color",
-      sourceTypes: ["Raw", "Boolean", "Number", "String", "BooleanArray", "NumberArray", "StringArray"],
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: GraphColors
-        }
-      ]
-    },
-    {
-      key: "graph",
-      display: "Graph",
-      symbol: "chart.xyaxis.line",
-      showInTypeName: false,
-      color: "color",
-      sourceTypes: ["Raw", "Boolean", "Number", "String", "BooleanArray", "NumberArray", "StringArray"],
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: GraphColors
-        }
-      ]
-    }
-  ]
-};

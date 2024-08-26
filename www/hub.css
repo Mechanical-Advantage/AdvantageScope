@@ -733,6 +733,7 @@ div.timeline {
   height: calc(32px * var(--show-timeline));
   left: 10px;
   right: 10px;
+  z-index: 5;
 }
 
 canvas.timeline-canvas {
@@ -1345,5 +1346,67 @@ div.three-dimension-settings {
 @media (prefers-color-scheme: dark) {
   div.three-dimension-settings {
     border-left: 1px solid black;
+  }
+}
+
+div.three-dimension-canvas-container {
+  position: absolute;
+  bottom: 0%;
+  left: 0%;
+  width: 100%;
+  height: calc(100% + 26px);
+}
+
+div.three-dimension-annotations {
+  pointer-events: none;
+}
+
+div.three-dimension-annotations > div {
+  text-align: center;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0px 0px 10px black;
+}
+
+canvas.three-dimension-canvas:not(.fixed),
+div.three-dimension-annotations:not(.fixed) {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+canvas.three-dimension-canvas.fixed,
+div.three-dimension-annotations.fixed {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+canvas.three-dimension-canvas.fixed {
+  border: 1px solid #555;
+}
+
+div.three-dimension-alert {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  text-align: center;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  canvas.three-dimension-canvas.fixed {
+    border: 1px solid #999;
+  }
+
+  div.three-dimension-alert {
+    background-color: #222;
+    border: 1px solid #999;
   }
 }

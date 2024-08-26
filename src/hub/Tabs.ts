@@ -4,6 +4,7 @@ import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
+import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
@@ -393,7 +394,7 @@ export default class Tabs {
         break;
       case TabType.ThreeDimension:
         controller = new ThreeDimensionController(controlsElement);
-        renderer = new NoopRenderer();
+        renderer = new ThreeDimensionRenderer(rendererElement);
         break;
       default:
         controller = new NoopController();
@@ -497,14 +498,14 @@ export default class Tabs {
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
-      // (this.tabList[this.selectedTab].controller as ThreeDimensionController).set3DCamera(index);
+      (this.tabList[this.selectedTab].renderer as ThreeDimensionRenderer).set3DCamera(index);
     }
   }
 
   /** Switches the orbit FOV for the selected 3D field. */
   setFov(fov: number) {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
-      // (this.tabList[this.selectedTab].controller as ThreeDimensionController).setFov(fov);
+      (this.tabList[this.selectedTab].renderer as ThreeDimensionRenderer).setFov(fov);
     }
   }
 
