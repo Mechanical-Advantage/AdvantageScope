@@ -11,10 +11,24 @@ import {
 } from "../AdvantageScopeAssets";
 import { Rotation3d } from "../geometry";
 import { convert } from "../units";
+import { checkArrayType, clampValue } from "../util";
 import TabRenderer from "./TabRenderer";
-import { ThreeDimensionRendererCommand } from "./ThreeDimensionRenderer";
+import {
+  ThreeDimensionRendererCommand,
+  ThreeDimensionRendererCommand_AnyObj,
+  ThreeDimensionRendererCommand_RobotObj
+} from "./ThreeDimensionRenderer";
+import AprilTagManager from "./threeDimension/AprilTagManager";
 import makeAxesField from "./threeDimension/AxesField";
+import AxesManager from "./threeDimension/AxesManager";
+import ConeManager from "./threeDimension/ConeManager";
 import makeEvergreenField from "./threeDimension/EvergreenField";
+import GamePieceManager from "./threeDimension/GamePieceManager";
+import HeatmapManager from "./threeDimension/HeatmapManager";
+import ObjectManager from "./threeDimension/ObjectManager";
+import RobotManager from "./threeDimension/RobotManager";
+import TrajectoryManager from "./threeDimension/TrajectoryManager";
+import ZebraManager from "./threeDimension/ZebraManager";
 
 export default class ThreeDimensionRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
@@ -55,7 +69,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
   ]);
 
-  private firstRender = true;
+  private shouldResetCamera = true;
   private stopped = false;
   private mode: "cinematic" | "standard" | "low-power";
   private canvas: HTMLCanvasElement;
@@ -70,8 +84,17 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
+  private primaryRobotGroup: THREE.Group;
+  private fixedCameraObj: THREE.Object3D;
+  private fixedCameraOverrideObj: THREE.Object3D;
   private dsCameraGroup: THREE.Group;
   private dsCameraObj: THREE.Object3D;
+
+  private objectManagers: {
+    type: ThreeDimensionRendererCommand_AnyObj["type"];
+    manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    active: boolean;
+  }[] = [];
 
   private shouldRender = false;
   private cameraIndex: CameraIndex = CameraIndexEnum.OrbitField;
@@ -85,6 +108,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private lastDevicePixelRatio: number | null = null;
   private lastIsDark: boolean | null = null;
   private lastAspectRatio: number | null = null;
+  private lastCommandString: string = "";
   private lastAssetsString: string = "";
   private lastFieldTitle: string = "";
   private lastRobotTitle: string = "";
@@ -121,10 +145,10 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     canvas.addEventListener("mouseup", (event) => {
       if (startPx && event.x === startPx[0] && event.y === startPx[1]) {
         let robotConfig = window.assets?.robots.find((robotData) => robotData.name === this.primaryRobotModel);
-        if (robotConfig === undefined) return;
+        let cameraList = robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => camera.name);
         window.sendMainMessage("ask-3d-camera", {
-          options: robotConfig.cameras.map((camera) => camera.name),
-          selectedIndex: this.cameraIndex >= robotConfig.cameras.length ? -1 : this.cameraIndex,
+          options: cameraList,
+          selectedIndex: this.cameraIndex >= cameraList.length ? CameraIndexEnum.OrbitField : this.cameraIndex,
           fov: this.orbitFov
         });
       }
@@ -190,6 +214,16 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       }
     }
 
+    // Create fixed camera objects
+    {
+      this.fixedCameraObj = new THREE.Object3D();
+      this.primaryRobotGroup = new THREE.Group().add(this.fixedCameraObj);
+      this.primaryRobotGroup.visible = false;
+      this.fixedCameraOverrideObj = new THREE.Object3D();
+      this.fixedCameraOverrideObj.visible = false;
+      this.wpilibFieldCoordinateGroup.add(this.primaryRobotGroup, this.fixedCameraOverrideObj);
+    }
+
     // Create DS camera object
     {
       this.dsCameraObj = new THREE.Object3D();
@@ -203,16 +237,54 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   }
 
   saveState(): unknown {
-    return null;
+    return {
+      cameraIndex: this.cameraIndex,
+      orbitFov: this.orbitFov,
+      cameraPosition: [this.camera.position.x, this.camera.position.y, this.camera.position.z],
+      cameraTarget: [this.controls.target.x, this.controls.target.y, this.controls.target.z]
+    };
   }
 
-  restoreState(state: unknown): void {}
+  restoreState(state: unknown) {
+    if (typeof state !== "object" || state === null) return;
+    console.log(state);
+    if ("cameraIndex" in state && typeof state.cameraIndex === "number") {
+      this.cameraIndex = state.cameraIndex;
+    }
+    if ("orbitFov" in state && typeof state.orbitFov === "number") {
+      this.orbitFov = state.orbitFov;
+    }
+    if (
+      "cameraPosition" in state &&
+      checkArrayType(state.cameraPosition, "number") &&
+      (state.cameraPosition as number[]).length === 3
+    ) {
+      this.camera.position.set(...(state.cameraPosition as [number, number, number]));
+    }
+    if (
+      "cameraTarget" in state &&
+      checkArrayType(state.cameraTarget, "number") &&
+      (state.cameraTarget as number[]).length === 3
+    ) {
+      this.controls.target.set(...(state.cameraTarget as [number, number, number]));
+    }
+    this.controls.update();
+    this.lastCameraIndex = this.cameraIndex; // Don't reset camera position
+    this.shouldResetCamera = false;
+    this.shouldRender = true;
+  }
 
   /** Switches the selected camera. */
-  set3DCamera(index: number) {}
+  set3DCamera(index: number) {
+    this.cameraIndex = index;
+    this.shouldRender = true;
+  }
 
   /** Updates the orbit FOV. */
-  setFov(fov: number) {}
+  setFov(fov: number) {
+    this.orbitFov = clampValue(fov, this.MIN_ORBIT_FOV, this.MAX_ORBIT_FOV);
+    this.shouldRender = true;
+  }
 
   stop() {}
 
@@ -286,25 +358,26 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   }
 
   render(command: ThreeDimensionRendererCommand): void {
-    // Check for new assets
-    let assetsString = JSON.stringify(window.assets);
-    let newAssets = assetsString !== this.lastAssetsString;
-    if (newAssets) this.lastAssetsString = assetsString;
-
     // Check for new parameters
+    let commandString = JSON.stringify(command);
+    let assetsString = JSON.stringify(window.assets);
     let isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let newAssets = assetsString !== this.lastAssetsString;
     if (
       this.renderer.domElement.clientWidth !== this.lastWidth ||
       this.renderer.domElement.clientHeight !== this.lastHeight ||
       window.devicePixelRatio !== this.lastDevicePixelRatio ||
       isDark !== this.lastIsDark ||
       command.game !== this.lastFieldTitle ||
+      commandString !== this.lastCommandString ||
       newAssets
     ) {
       this.lastWidth = this.renderer.domElement.clientWidth;
       this.lastHeight = this.renderer.domElement.clientHeight;
       this.lastDevicePixelRatio = window.devicePixelRatio;
       this.lastIsDark = isDark;
+      this.lastCommandString = commandString;
+      this.lastAssetsString = assetsString;
       this.shouldRender = true;
     }
 
@@ -333,9 +406,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     let fieldConfig = fieldConfigTmp;
 
     // Reset camera on first render
-    if (this.firstRender) {
+    if (this.shouldResetCamera) {
       this.resetCamera(command);
-      this.firstRender = false;
+      this.shouldResetCamera = false;
     }
 
     // Update field coordinates
@@ -436,6 +509,170 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       }
     }
 
+    // Update primary robot
+    let robotObjects = command.objects.filter(
+      (object) => object.type === "robot"
+    ) as ThreeDimensionRendererCommand_RobotObj[];
+    this.primaryRobotGroup.visible = false;
+    if (robotObjects.length > 0) {
+      this.primaryRobotModel = robotObjects[0].model;
+      if (robotObjects[0].poses.length > 0) {
+        let pose = robotObjects[0].poses[0].pose;
+        this.primaryRobotGroup.position.set(...pose.translation);
+        this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
+        this.primaryRobotGroup.visible = true;
+      }
+    }
+
+    // Update camera override
+    this.fixedCameraOverrideObj.visible = command.cameraOverride !== null;
+    if (command.cameraOverride !== null) {
+      let pose = command.cameraOverride.pose;
+      this.primaryRobotGroup.position.set(...pose.translation);
+      this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
+    }
+
+    // Update object managers
+    this.objectManagers.forEach((entry) => (entry.active = false));
+    command.objects.forEach((object) => {
+      let entry = this.objectManagers.find((entry) => !entry.active && entry.type === object.type);
+      if (entry === undefined) {
+        entry = {
+          type: object.type,
+          manager: makeObjectManager(object.type, this.wpilibFieldCoordinateGroup),
+          active: true
+        };
+      } else {
+        entry.active = true;
+      }
+      entry.manager.setObjectData(object);
+    });
+    this.objectManagers
+      .filter((entry) => !entry.active)
+      .forEach((entry) => {
+        entry.manager.dispose();
+      });
+    this.objectManagers = this.objectManagers.filter((entry) => entry.active);
+
+    // Set camera for fixed views
+    {
+      // Reset camera index if invalid
+      let robotConfig = window.assets?.robots.find((robotData) => robotData.name === this.primaryRobotModel);
+      if (robotConfig !== undefined && this.cameraIndex >= robotConfig.cameras.length)
+        this.cameraIndex = CameraIndexEnum.OrbitField;
+
+      // Update camera controls
+      let orbitalCamera =
+        this.cameraIndex === CameraIndexEnum.OrbitField || this.cameraIndex === CameraIndexEnum.OrbitRobot;
+      let dsCamera = this.cameraIndex < CameraIndexEnum.OrbitRobot;
+      if (orbitalCamera !== this.controls.enabled) {
+        this.controls.enabled = orbitalCamera;
+        this.controls.update();
+      }
+
+      // Update container and camera based on mode
+      let fov = this.orbitFov;
+      this.lastAspectRatio = null;
+      if (orbitalCamera || dsCamera) {
+        this.canvas.classList.remove("fixed");
+        this.annotationsDiv.classList.remove("fixed");
+        this.canvas.style.width = "";
+        this.canvas.style.height = "";
+        this.annotationsDiv.style.width = "";
+        this.annotationsDiv.style.height = "";
+        if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
+          // Reset to default origin
+          this.wpilibCoordinateGroup.position.set(0, 0, 0);
+          this.wpilibCoordinateGroup.rotation.setFromQuaternion(this.WPILIB_ROTATION);
+        } else if (this.primaryRobotGroup.visible) {
+          // Shift based on robot location
+          this.wpilibCoordinateGroup.position.set(0, 0, 0);
+          this.wpilibCoordinateGroup.rotation.setFromQuaternion(new THREE.Quaternion());
+          let position = this.primaryRobotGroup.getWorldPosition(new THREE.Vector3());
+          let rotation = this.primaryRobotGroup
+            .getWorldQuaternion(new THREE.Quaternion())
+            .multiply(this.WPILIB_ROTATION);
+          position.negate();
+          rotation.invert();
+          this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
+          this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
+        }
+        if (
+          this.cameraIndex !== this.lastCameraIndex ||
+          (this.cameraIndex === CameraIndexEnum.DSAuto && this.lastAutoDriverStation !== command.autoDriverStation)
+        ) {
+          this.resetCamera(command);
+        }
+      } else {
+        this.canvas.classList.add("fixed");
+        this.annotationsDiv.classList.add("fixed");
+        let aspectRatio = 16 / 9;
+        if (robotConfig) {
+          // Get fixed aspect ratio and FOV
+          let cameraConfig = robotConfig.cameras[this.cameraIndex];
+          aspectRatio = cameraConfig.resolution[0] / cameraConfig.resolution[1];
+          this.lastAspectRatio = aspectRatio;
+          fov = cameraConfig.fov / aspectRatio;
+          let parentAspectRatio = this.canvas.parentElement
+            ? this.canvas.parentElement.clientWidth / this.canvas.parentElement.clientHeight
+            : aspectRatio;
+          if (aspectRatio > parentAspectRatio) {
+            this.canvas.style.width = "100%";
+            this.canvas.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
+            this.annotationsDiv.style.width = "100%";
+            this.annotationsDiv.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
+          } else {
+            this.canvas.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
+            this.canvas.style.height = "100%";
+            this.annotationsDiv.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
+            this.annotationsDiv.style.height = "100%";
+          }
+
+          // Update camera position
+          let referenceObj: THREE.Object3D | null = null;
+          if (this.fixedCameraOverrideObj.visible) {
+            referenceObj = this.fixedCameraOverrideObj;
+          } else if (this.primaryRobotGroup.visible) {
+            this.fixedCameraObj.position.set(...cameraConfig.position);
+            this.fixedCameraObj.rotation.setFromQuaternion(
+              getQuaternionFromRotSeq(cameraConfig.rotations).multiply(this.CAMERA_ROTATION)
+            );
+            referenceObj = this.fixedCameraObj;
+          }
+          if (referenceObj) {
+            this.camera.position.copy(referenceObj.getWorldPosition(new THREE.Vector3()));
+            this.camera.rotation.setFromQuaternion(referenceObj.getWorldQuaternion(new THREE.Quaternion()));
+          }
+        }
+      }
+
+      // Update camera alert
+      if (this.cameraIndex === CameraIndexEnum.OrbitRobot) {
+        this.alert.hidden = this.primaryRobotGroup.visible;
+        this.alert.innerHTML = 'Robot pose not available</br>for camera "Orbit Robot".';
+      } else if (this.cameraIndex === CameraIndexEnum.DSAuto) {
+        this.alert.hidden = command.autoDriverStation >= 0;
+        this.alert.innerHTML = "Driver Station position</br>not available.";
+      } else if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
+        this.alert.hidden = true;
+      } else {
+        this.alert.hidden = this.primaryRobotGroup.visible || this.fixedCameraOverrideObj.visible;
+        this.alert.innerHTML =
+          'Robot pose not available</br>for camera "' +
+          (robotConfig ? robotConfig.cameras[this.cameraIndex].name : "???") +
+          '".';
+      }
+
+      // Update camera FOV
+      if (fov !== this.camera.fov) {
+        this.camera.fov = fov;
+        this.camera.updateProjectionMatrix();
+      }
+
+      this.lastCameraIndex = this.cameraIndex;
+      this.lastAutoDriverStation = command.autoDriverStation;
+    }
+
     // Render new frame
     const devicePixelRatio = window.devicePixelRatio * (this.mode === "low-power" ? 0.5 : 1);
     const canvas = this.renderer.domElement;
@@ -504,4 +741,30 @@ export function rotation3dToQuaternion(input: Rotation3d): THREE.Quaternion {
 
 export function quaternionToRotation3d(input: THREE.Quaternion): Rotation3d {
   return [input.w, input.x, input.y, input.z];
+}
+
+/** Make a new object manager for the provided type. */
+function makeObjectManager(
+  type: ThreeDimensionRendererCommand_AnyObj["type"],
+  root: THREE.Object3D
+): ObjectManager<ThreeDimensionRendererCommand_AnyObj> {
+  switch (type) {
+    case "robot":
+    case "ghost":
+      return new RobotManager(root);
+    case "gamePiece":
+      return new GamePieceManager(root);
+    case "trajectory":
+      return new TrajectoryManager(root);
+    case "heatmap":
+      return new HeatmapManager(root);
+    case "aprilTag":
+      return new AprilTagManager(root);
+    case "axes":
+      return new AxesManager(root);
+    case "cone":
+      return new ConeManager(root);
+    case "zebra":
+      return new ZebraManager(root);
+  }
 }
