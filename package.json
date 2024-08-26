@@ -37,7 +37,6 @@
     "@types/jsonfile": "^6.1.2",
     "@types/pngjs": "^6.0.5",
     "@types/remarkable": "^2.0.3",
-    "@types/skia-canvas": "^0.9.28",
     "@types/ssh2": "^1.11.13",
     "@types/three": "^0.156.0",
     "chart.js": "^4.4.0",
