@@ -18,17 +18,18 @@ import {
   ThreeDimensionRendererCommand_AnyObj,
   ThreeDimensionRendererCommand_RobotObj
 } from "./ThreeDimensionRenderer";
-import AprilTagManager from "./threeDimension/AprilTagManager";
 import makeAxesField from "./threeDimension/AxesField";
-import AxesManager from "./threeDimension/AxesManager";
-import ConeManager from "./threeDimension/ConeManager";
 import makeEvergreenField from "./threeDimension/EvergreenField";
-import GamePieceManager from "./threeDimension/GamePieceManager";
-import HeatmapManager from "./threeDimension/HeatmapManager";
 import ObjectManager from "./threeDimension/ObjectManager";
-import RobotManager from "./threeDimension/RobotManager";
-import TrajectoryManager from "./threeDimension/TrajectoryManager";
-import ZebraManager from "./threeDimension/ZebraManager";
+import optimizeGeometries from "./threeDimension/OptimizeGeometries";
+import AprilTagManager from "./threeDimension/objectManagers/AprilTagManager";
+import AxesManager from "./threeDimension/objectManagers/AxesManager";
+import ConeManager from "./threeDimension/objectManagers/ConeManager";
+import GamePieceManager from "./threeDimension/objectManagers/GamePieceManager";
+import HeatmapManager from "./threeDimension/objectManagers/HeatmapManager";
+import RobotManager from "./threeDimension/objectManagers/RobotManager";
+import TrajectoryManager from "./threeDimension/objectManagers/TrajectoryManager";
+import ZebraManager from "./threeDimension/objectManagers/ZebraManager";
 
 export default class ThreeDimensionRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
@@ -247,7 +248,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
   restoreState(state: unknown) {
     if (typeof state !== "object" || state === null) return;
-    console.log(state);
     if ("cameraIndex" in state && typeof state.cameraIndex === "number") {
       this.cameraIndex = state.cameraIndex;
     }
@@ -431,6 +431,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           disposeObject(oldField);
         }
         if (this.field) {
+          if (fieldTitle !== "Evergreen" && fieldTitle !== "Axes") {
+            this.field = optimizeGeometries(this.field, this.mode, this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+          }
           this.wpilibCoordinateGroup.add(this.field);
         }
         this.shouldRender = true;
@@ -674,7 +677,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
 
     // Render new frame
-    const devicePixelRatio = window.devicePixelRatio * (this.mode === "low-power" ? 0.5 : 1);
+    const devicePixelRatio = window.devicePixelRatio * (this.mode === "low-power" ? 0.75 : 1);
     const canvas = this.renderer.domElement;
     const clientWidth = canvas.clientWidth;
     const clientHeight = canvas.clientHeight;
