@@ -1360,7 +1360,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         return {
           translation: [x.translation[0], x.translation[1], 0],
           rotation: [0, 0, 0, 0]
-        } as Pose3d; 
+        } as Pose3d;
       });
     this.zebraMarkerBlueSet.setPoses(bluePoses);
     this.zebraMarkerRedSet.setPoses(redPoses);
