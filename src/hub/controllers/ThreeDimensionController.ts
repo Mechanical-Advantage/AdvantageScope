@@ -31,7 +31,6 @@ export default class ThreeDimensionController implements TabController {
   private ORIGIN_SWITCHER: HTMLElement;
   private XR_BUTTON: HTMLButtonElement;
   private GAME_SELECT: HTMLSelectElement;
-  private GAME_SOURCE: HTMLElement;
 
   private sourceList: SourceList;
   private originSetting: "auto" | "blue" | "red" = "auto";
@@ -46,7 +45,6 @@ export default class ThreeDimensionController implements TabController {
     this.ORIGIN_SWITCHER = settings.getElementsByClassName("origin-switcher")[0] as HTMLElement;
     this.XR_BUTTON = settings.getElementsByClassName("xr-button")[0] as HTMLButtonElement;
     this.GAME_SELECT = settings.getElementsByClassName("game-select")[0] as HTMLSelectElement;
-    this.GAME_SOURCE = settings.getElementsByClassName("game-source")[0] as HTMLElement;
 
     // Set up XR button
     this.XR_BUTTON.addEventListener("click", () => {
@@ -55,12 +53,6 @@ export default class ThreeDimensionController implements TabController {
 
     // Set up game select
     this.GAME_SELECT.addEventListener("change", () => this.updateGameDependentControls());
-    this.GAME_SOURCE.addEventListener("click", () => {
-      window.sendMainMessage(
-        "open-link",
-        window.assets?.field3ds.find((game) => game.name === this.GAME_SELECT.value)?.sourceUrl
-      );
-    });
     this.updateGameOptions();
     this.updateRobotOptions();
 
@@ -119,7 +111,6 @@ export default class ThreeDimensionController implements TabController {
   /** Updates the alliance select, source button, and game pieces based on the selected value. */
   private updateGameDependentControls(skipOriginReset = false) {
     let fieldConfig = window.assets?.field3ds.find((game) => game.name === this.GAME_SELECT.value);
-    this.GAME_SOURCE.hidden = fieldConfig !== undefined && fieldConfig.sourceUrl === undefined;
 
     if (fieldConfig !== undefined && !skipOriginReset) {
       this.originSetting = fieldConfig.defaultOrigin;

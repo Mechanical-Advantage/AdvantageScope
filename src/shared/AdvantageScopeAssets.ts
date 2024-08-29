@@ -36,7 +36,7 @@ export interface Config3dField {
   name: string;
   path: string;
 
-  sourceUrl?: string;
+  sourceUrl?: string; // Unused starting in 2025
   rotations: Config3d_Rotation[];
   widthInches: number;
   heightInches: number;
