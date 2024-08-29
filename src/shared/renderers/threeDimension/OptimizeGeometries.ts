@@ -12,7 +12,7 @@ export default async function optimizeGeometries(
   transparent: THREE.Mesh | null;
   carpet: THREE.Mesh | null;
 }> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     let geometries = await getGeometries(object, mode, enableSimplification);
 
     let normalMesh: THREE.Mesh | null = null;
@@ -130,7 +130,7 @@ async function getGeometries(
           }
 
           let include = true;
-          if (enableSimplification) {
+          if (enableSimplification && !mesh.name.includes("NOSIMPLIFY")) {
             let vertices: THREE.Vector3[] = [];
             let center = new THREE.Vector3();
             for (let i = 0; i < geometry.attributes.position.count; i++) {
