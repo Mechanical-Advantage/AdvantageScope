@@ -602,20 +602,24 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.renameTab(message.data.index, message.data.name);
       break;
 
-    case "source-list-type-response": {
-      let uuid: string = message.data.uuid;
-      let state: SourceListItemState = message.data.state;
-      if (uuid in SourceList.typePromptCallbacks) {
-        SourceList.typePromptCallbacks[uuid](state);
+    case "source-list-type-response":
+      {
+        let uuid: string = message.data.uuid;
+        let state: SourceListItemState = message.data.state;
+        if (uuid in SourceList.typePromptCallbacks) {
+          SourceList.typePromptCallbacks[uuid](state);
+        }
       }
-    }
+      break;
 
-    case "source-list-edit-response": {
-      let uuid: string = message.data.uuid;
-      if (uuid in SourceList.editPromptCallbacks) {
-        SourceList.editPromptCallbacks[uuid]();
+    case "source-list-edit-response":
+      {
+        let uuid: string = message.data.uuid;
+        if (uuid in SourceList.editPromptCallbacks) {
+          SourceList.editPromptCallbacks[uuid]();
+        }
       }
-    }
+      break;
 
     case "add-discrete-enabled":
       window.tabs.addDiscreteEnabled();
