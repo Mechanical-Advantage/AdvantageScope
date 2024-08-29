@@ -310,7 +310,7 @@ async function mergeGeometries(geometries: THREE.BufferGeometry[], useGroups = f
 
       let deadline: IdleDeadline | null = null;
       for (let i = 0; i < geometries.length; ++i) {
-        if (deadline === null || deadline.timeRemaining() < 3) {
+        if (deadline === null || deadline.timeRemaining() < 0.5) {
           deadline = await new Promise<IdleDeadline>((resolve) => window.requestIdleCallback(resolve));
         }
 
@@ -330,7 +330,7 @@ async function mergeGeometries(geometries: THREE.BufferGeometry[], useGroups = f
 
     let deadline: IdleDeadline | null = null;
     for (const name in attributes) {
-      if (deadline === null || deadline.timeRemaining() < 3) {
+      if (deadline === null || deadline.timeRemaining() < 0.5) {
         deadline = await new Promise<IdleDeadline>((resolve) => window.requestIdleCallback(resolve));
       }
 
