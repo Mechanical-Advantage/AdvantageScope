@@ -501,7 +501,10 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       };
 
       // Reset camera if switching between axis and non-axis or if using DS camera
-      if ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes") || this.cameraIndex < -2) {
+      if (
+        ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes") && this.lastFieldTitle !== "") ||
+        this.cameraIndex < -2
+      ) {
         this.resetCamera(command);
       }
       this.lastFieldTitle = fieldTitle;
