@@ -316,7 +316,10 @@ export default class OdometryController implements TabController {
           filter,
           this.UUID,
           numberArrayFormat,
-          numberArrayUnits
+          numberArrayUnits,
+          origin,
+          fieldWidth,
+          fieldHeight
         );
       }
       let poses = pose3ds.map(annotatedPose3dTo2d);

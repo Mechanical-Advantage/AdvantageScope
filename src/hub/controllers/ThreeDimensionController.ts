@@ -281,7 +281,10 @@ export default class ThreeDimensionController implements TabController {
           filter,
           this.UUID,
           numberArrayFormat,
-          numberArrayUnits
+          numberArrayUnits,
+          origin,
+          fieldWidth,
+          fieldHeight
         );
       }
 
