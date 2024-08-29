@@ -95,18 +95,20 @@ export default class RobotManager extends ObjectManager<
                 this.loader.load(robotConfig!.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
               })
           )
-        ]).then((gltfs) => {
+        ]).then(async (gltfs) => {
           let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
-          this.meshes = gltfScenes.map((scene, index) => {
+          this.meshes = [];
+          for (let index = 0; index < gltfScenes.length; index++) {
+            let scene = gltfScenes[index];
             if (index === 0) {
               scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig!.rotations));
               scene.position.set(...robotConfig!.position);
             }
 
-            let optimized = optimizeGeometries(scene, this.mode, this.materialSpecular, this.materialShininess);
+            let optimized = await optimizeGeometries(scene, this.mode, this.materialSpecular, this.materialShininess);
             let meshes: THREE.Mesh[] = [];
-            if (optimized.normalMesh !== null) meshes.push(optimized.normalMesh);
-            if (optimized.transparentMesh !== null) meshes.push(optimized.transparentMesh);
+            if (optimized.normal !== null) meshes.push(optimized.normal);
+            if (optimized.transparent !== null) meshes.push(optimized.transparent);
             if (object.type === "ghost") {
               meshes.forEach((mesh) => {
                 if (!Array.isArray(mesh.material)) {
@@ -115,10 +117,9 @@ export default class RobotManager extends ObjectManager<
                 mesh.material = this.ghostMaterial;
               });
             }
-            return new ResizableInstancedMesh(this.root, meshes);
-          });
-
-          this.requestRender();
+            this.meshes.push(new ResizableInstancedMesh(this.root, meshes));
+            this.requestRender();
+          }
         });
       }
     }

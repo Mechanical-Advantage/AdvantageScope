@@ -530,10 +530,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
                 loader.load(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
               })
           )
-        ]).then((gltfs) => {
+        ]).then(async (gltfs) => {
           let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
           if (fieldConfig === undefined) return;
-          gltfScenes.forEach((scene, index) => {
+          let loadCount = 0;
+          gltfScenes.forEach(async (scene, index) => {
             // Add to scene
             if (index === 0) {
               let stagedPieces = new THREE.Group();
@@ -551,34 +552,47 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
                 });
               });
 
-              this.fieldStagedPieces = optimizeGeometries(
+              let fieldStagedPiecesMeshes = await optimizeGeometries(
                 stagedPieces,
                 this.mode,
                 this.MATERIAL_SPECULAR,
                 this.MATERIAL_SHININESS,
                 false
-              ).group;
+              );
+              this.fieldStagedPieces = new THREE.Group();
+              if (fieldStagedPiecesMeshes.normal !== null) this.fieldStagedPieces.add(fieldStagedPiecesMeshes.normal);
+              if (fieldStagedPiecesMeshes.transparent !== null)
+                this.fieldStagedPieces.add(fieldStagedPiecesMeshes.transparent);
+              if (fieldStagedPiecesMeshes.carpet !== null) this.fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet);
               this.fieldStagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
 
-              this.field = optimizeGeometries(scene, this.mode, this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS).group;
+              let fieldMeshes = await optimizeGeometries(
+                scene,
+                this.mode,
+                this.MATERIAL_SPECULAR,
+                this.MATERIAL_SHININESS
+              );
+              this.field = new THREE.Group();
+              if (fieldMeshes.normal !== null) this.field.add(fieldMeshes.normal);
+              if (fieldMeshes.transparent !== null) this.field.add(fieldMeshes.transparent);
+              if (fieldMeshes.carpet !== null) this.field.add(fieldMeshes.carpet);
               this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
             } else {
               let gamePieceConfig = fieldConfig.gamePieces[index - 1];
               scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
               scene.position.set(...gamePieceConfig.position);
-              let mesh = optimizeGeometries(
-                scene,
-                this.mode,
-                this.MATERIAL_SPECULAR,
-                this.MATERIAL_SHININESS,
-                false
-              ).normalMesh;
+              let mesh = (
+                await optimizeGeometries(scene, this.mode, this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, false)
+              ).normal;
               if (mesh !== null) {
                 newFieldPieces[gamePieceConfig.name] = mesh;
               }
             }
+
+            if (++loadCount === gltfScenes.length) {
+              newFieldReady();
+            }
           });
-          newFieldReady();
         });
       }
     }
