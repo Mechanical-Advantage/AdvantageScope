@@ -1,17 +1,17 @@
+// import JoysticksVisualizer from "../old/visualizers/JoysticksVisualizer";
+// import MechanismVisualizer from "../old/visualizers/MechanismVisualizer";
+// import OdometryVisualizer from "../old/visualizers/OdometryVisualizer";
+// import PointsVisualizer from "../old/visualizers/PointsVisualizer";
+// import SwerveVisualizer from "../old/visualizers/SwerveVisualizer";
+// import ThreeDimensionVisualizer from "../old/visualizers/ThreeDimensionVisualizer";
+// import ThreeDimensionVisualizerSwitching from "../old/visualizers/ThreeDimensionVisualizerSwitching";
+// import VideoVisualizer from "../old/visualizers/VideoVisualizer";
+// import Visualizer from "../old/visualizers/Visualizer";
 import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import TabType, { getTabIcon } from "./shared/TabType";
 import { htmlEncode } from "./shared/util";
-import JoysticksVisualizer from "./shared/visualizers/JoysticksVisualizer";
-import MechanismVisualizer from "./shared/visualizers/MechanismVisualizer";
-import OdometryVisualizer from "./shared/visualizers/OdometryVisualizer";
-import PointsVisualizer from "./shared/visualizers/PointsVisualizer";
-import SwerveVisualizer from "./shared/visualizers/SwerveVisualizer";
-import ThreeDimensionVisualizer from "./shared/visualizers/ThreeDimensionVisualizer";
-import ThreeDimensionVisualizerSwitching from "./shared/visualizers/ThreeDimensionVisualizerSwitching";
-import VideoVisualizer from "./shared/visualizers/VideoVisualizer";
-import Visualizer from "./shared/visualizers/Visualizer";
 
 const MAX_ASPECT_RATIO = 5;
 const SAVE_PERIOD_MS = 250;
@@ -27,7 +27,7 @@ declare global {
 
 window.isBattery = false;
 
-let visualizer: Visualizer | null = null;
+// let visualizer: Visualizer | null = null;
 let type: TabType | null = null;
 let title: string | null = null;
 let messagePort: MessagePort | null = null;
@@ -48,6 +48,7 @@ function updateVisualizer() {
   (document.getElementById("points") as HTMLElement).hidden = type !== TabType.Points;
 
   // Create visualizer
+  /*
   switch (type) {
     case TabType.Odometry:
       visualizer = new OdometryVisualizer(
@@ -83,6 +84,7 @@ function updateVisualizer() {
       );
       break;
   }
+  */
 }
 
 window.sendMainMessage = (name: string, data?: any) => {
@@ -118,7 +120,7 @@ window.addEventListener("message", (event) => {
         case "restore-state":
           type = message.data.type;
           updateVisualizer();
-          visualizer?.restoreState(message.data.visualizer);
+          // visualizer?.restoreState(message.data.visualizer);
           break;
 
         case "render":
@@ -133,21 +135,21 @@ window.addEventListener("message", (event) => {
 
           // Render frame
           lastCommand = message.data.command;
-          if (visualizer) {
-            let aspectRatio = visualizer.render(message.data.command);
-            processAspectRatio(aspectRatio);
-          }
+          // if (visualizer) {
+          //   let aspectRatio = visualizer.render(message.data.command);
+          //   processAspectRatio(aspectRatio);
+          // }
           break;
 
         case "set-3d-camera":
           if (type === TabType.ThreeDimension) {
-            (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
+            // (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
           }
           break;
 
         case "edit-fov":
           if (type === TabType.ThreeDimension) {
-            (visualizer as ThreeDimensionVisualizer).setFov(message.data);
+            // (visualizer as ThreeDimensionVisualizer).setFov(message.data);
           }
           break;
 
@@ -160,11 +162,11 @@ window.addEventListener("message", (event) => {
 });
 
 window.addEventListener("resize", () => {
-  if (visualizer === null || lastCommand === null) {
-    return;
-  }
-  let aspectRatio = visualizer.render(lastCommand);
-  if (aspectRatio) processAspectRatio(aspectRatio);
+  // if (visualizer === null || lastCommand === null) {
+  //   return;
+  // }
+  // let aspectRatio = visualizer.render(lastCommand);
+  // if (aspectRatio) processAspectRatio(aspectRatio);
 });
 
 function processAspectRatio(aspectRatio: number | null) {
@@ -179,5 +181,5 @@ function processAspectRatio(aspectRatio: number | null) {
 }
 
 setInterval(() => {
-  window.sendMainMessage("save-state", { type: type, visualizer: visualizer?.saveState() });
+  // window.sendMainMessage("save-state", { type: type, visualizer: visualizer?.saveState() });
 }, SAVE_PERIOD_MS);

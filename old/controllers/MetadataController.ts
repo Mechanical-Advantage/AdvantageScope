@@ -1,5 +1,5 @@
-import { MERGE_PREFIX, METADATA_KEYS } from "../../../shared/log/LogUtil";
-import TabType from "../../../shared/TabType";
+import { MERGE_PREFIX, METADATA_KEYS } from "../../src/shared/log/LogUtil";
+import TabType from "../../src/shared/TabType";
 
 export default class MetadataController {
   private NO_DATA_ALERT: HTMLElement;

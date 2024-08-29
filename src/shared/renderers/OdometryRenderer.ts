@@ -1,7 +1,7 @@
-import h337 from "heatmap.js";
 import { AnnotatedPose2d, Pose2d, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { scaleValue, transformPx } from "../util";
+import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
 
 export default class OdometryRenderer implements TabRenderer {
@@ -13,7 +13,7 @@ export default class OdometryRenderer implements TabRenderer {
   private IMAGE: HTMLImageElement;
   private HEATMAP_CONTAINER: HTMLElement;
 
-  private heatmap: h337.Heatmap<"value", "x", "y"> | null = null;
+  private heatmap: Heatmap;
   private lastWidth = 0;
   private lastHeight = 0;
   private lastObjectsFlipped: boolean | null = null;
@@ -25,6 +25,7 @@ export default class OdometryRenderer implements TabRenderer {
     this.CANVAS = root.getElementsByClassName("odometry-canvas")[0] as HTMLCanvasElement;
     this.IMAGE = document.createElement("img");
     this.HEATMAP_CONTAINER = root.getElementsByClassName("odometry-heatmap-container")[0] as HTMLElement;
+    this.heatmap = new Heatmap(this.HEATMAP_CONTAINER);
   }
 
   saveState(): unknown {
@@ -182,30 +183,6 @@ export default class OdometryRenderer implements TabRenderer {
       context.stroke();
     };
 
-    // Recreate heatmap canvas
-    let newHeatmapInstance = false;
-    if (
-      width !== this.lastWidth ||
-      height !== this.lastHeight ||
-      objectsFlipped !== this.lastObjectsFlipped ||
-      !this.heatmap
-    ) {
-      newHeatmapInstance = true;
-      this.lastWidth = width;
-      this.lastHeight = height;
-      this.lastObjectsFlipped = objectsFlipped;
-      while (this.HEATMAP_CONTAINER.firstChild) {
-        this.HEATMAP_CONTAINER.removeChild(this.HEATMAP_CONTAINER.firstChild);
-      }
-      this.HEATMAP_CONTAINER.style.width = width.toString() + "px";
-      this.HEATMAP_CONTAINER.style.height = height.toString() + "px";
-      this.heatmap = h337.create({
-        container: this.HEATMAP_CONTAINER,
-        radius: this.IMAGE.height * imageScalar * OdometryRenderer.HEATMAP_RADIUS,
-        maxOpacity: 0.75
-      });
-    }
-
     // Update heatmap data
     let heatmapTranslations: Translation2d[] = [];
     command.objects
@@ -213,66 +190,16 @@ export default class OdometryRenderer implements TabRenderer {
       .forEach((object) => {
         heatmapTranslations = heatmapTranslations.concat(object.poses.map((pose) => pose.pose.translation));
       });
-    let heatmapDataString = JSON.stringify(heatmapTranslations);
-    if (heatmapDataString !== this.lastHeatmapData || newHeatmapInstance) {
-      this.lastHeatmapData = heatmapDataString;
-      let grid: number[][] = [];
-      let fieldWidthMeters = convert(gameData.widthInches, "inches", "meters");
-      let fieldHeightMeters = convert(gameData.heightInches, "inches", "meters");
-      for (
-        let x = 0;
-        x < fieldWidthMeters + OdometryRenderer.HEATMAP_GRID_SIZE;
-        x += OdometryRenderer.HEATMAP_GRID_SIZE
-      ) {
-        let column: number[] = [];
-        grid.push(column);
-        for (
-          let y = 0;
-          y < fieldHeightMeters + OdometryRenderer.HEATMAP_GRID_SIZE;
-          y += OdometryRenderer.HEATMAP_GRID_SIZE
-        ) {
-          column.push(0);
-        }
-      }
-
-      heatmapTranslations.forEach((translation) => {
-        let gridX = Math.floor(translation[0] / OdometryRenderer.HEATMAP_GRID_SIZE);
-        let gridY = Math.floor(translation[1] / OdometryRenderer.HEATMAP_GRID_SIZE);
-        if (gridX >= 0 && gridY >= 0 && gridX < grid.length && gridY < grid[0].length) {
-          grid[gridX][gridY] += 1;
-        }
-      });
-
-      let heatmapData: { x: number; y: number; value: number }[] = [];
-      let x = OdometryRenderer.HEATMAP_GRID_SIZE / 2;
-      let y: number;
-      let maxValue = 0;
-      grid.forEach((column) => {
-        x += OdometryRenderer.HEATMAP_GRID_SIZE;
-        y = OdometryRenderer.HEATMAP_GRID_SIZE / 2;
-        column.forEach((gridValue) => {
-          y += OdometryRenderer.HEATMAP_GRID_SIZE;
-          let coordinates = calcCoordinates([x, y]);
-          coordinates = [Math.round(coordinates[0]), Math.round(coordinates[1])];
-          maxValue = Math.max(maxValue, gridValue);
-          if (gridValue > 0) {
-            heatmapData.push({
-              x: coordinates[0],
-              y: coordinates[1],
-              value: gridValue
-            });
-          }
-        });
-      });
-      this.heatmap.setData({
-        min: 0,
-        max: maxValue,
-        data: heatmapData
-      });
+    this.heatmap.update(
+      heatmapTranslations,
+      [canvasFieldWidth, canvasFieldHeight],
+      [convert(gameData.widthInches, "inches", "meters"), convert(gameData.heightInches, "inches", "meters")],
+      objectsFlipped
+    );
+    let heatmapCanvas = this.heatmap.getCanvas();
+    if (heatmapCanvas !== null) {
+      context.drawImage(heatmapCanvas, canvasFieldLeft, canvasFieldTop);
     }
-
-    // Copy heatmap to main canvas
-    context.drawImage(this.HEATMAP_CONTAINER.firstElementChild as HTMLCanvasElement, 0, 0);
 
     // Draw objects
     const renderingOrder = ["trajectory", "robot", "ghost", "arrow", "zebra"];

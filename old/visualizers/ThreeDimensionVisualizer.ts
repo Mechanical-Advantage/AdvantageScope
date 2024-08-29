@@ -14,11 +14,18 @@ import {
   DEFAULT_DRIVER_STATIONS,
   STANDARD_FIELD_LENGTH,
   STANDARD_FIELD_WIDTH
-} from "../AdvantageScopeAssets";
-import { APRIL_TAG_16H5_COUNT, APRIL_TAG_36H11_COUNT, AprilTag, Pose3d, Rotation3d, Translation2d } from "../geometry";
-import { MechanismState } from "../log/LogUtil";
-import { convert } from "../units";
-import { clampValue, zfill } from "../util";
+} from "../../src/shared/AdvantageScopeAssets";
+import {
+  APRIL_TAG_16H5_COUNT,
+  APRIL_TAG_36H11_COUNT,
+  AprilTag,
+  Pose3d,
+  Rotation3d,
+  Translation2d
+} from "../../src/shared/geometry";
+import { MechanismState } from "../../src/shared/log/LogUtil";
+import { convert } from "../../src/shared/units";
+import { clampValue, zfill } from "../../src/shared/util";
 import Visualizer from "./Visualizer";
 
 export default class ThreeDimensionVisualizer implements Visualizer {
@@ -1353,7 +1360,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
         return {
           translation: [x.translation[0], x.translation[1], 0],
           rotation: [0, 0, 0, 0]
-        } as Pose3d;
+        } as Pose3d; 
       });
     this.zebraMarkerBlueSet.setPoses(bluePoses);
     this.zebraMarkerRedSet.setPoses(redPoses);

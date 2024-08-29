@@ -22,7 +22,8 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]"
+        "Transform3d[]",
+        "ZebraTranslation"
       ],
       options: [
         {
@@ -91,7 +92,8 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]"
+        "Transform3d[]",
+        "ZebraTranslation"
       ],
       options: [
         {
@@ -156,31 +158,6 @@ const ThreeDimensionController_Config: SourceListConfig = {
       parentKey: "robot",
       numberArrayDeprecated: true,
       geometryPreviewType: "Pose3d"
-    },
-    {
-      key: "ghostZebra",
-      display: "Ghost",
-      symbol: "location.fill.viewfinder",
-      showInTypeName: true,
-      color: "color",
-      sourceTypes: ["ZebraTranslation"],
-      options: [
-        {
-          key: "model",
-          display: "Model",
-          showInTypeName: true,
-          values: []
-        },
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: NeonColors
-        }
-      ],
-      initialSelectionOption: "color",
-      parentKey: "robot",
-      geometryPreviewType: "Translation2d"
     },
     {
       key: "component",

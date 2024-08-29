@@ -71,7 +71,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   ]);
 
   private shouldResetCamera = true;
-  private stopped = false;
   private mode: "cinematic" | "standard" | "low-power";
   private canvas: HTMLCanvasElement;
   private annotationsDiv: HTMLElement;
@@ -85,6 +84,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
+  private fieldStagedPieces: THREE.Object3D | null = null;
+  private fieldPieces: { [key: string]: THREE.Mesh } = {};
   private primaryRobotGroup: THREE.Group;
   private fixedCameraObj: THREE.Object3D;
   private fixedCameraOverrideObj: THREE.Object3D;
@@ -101,6 +102,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private cameraIndex: CameraIndex = CameraIndexEnum.OrbitField;
   private orbitFov = 50;
   private primaryRobotModel = "";
+  private resolutionVector = new THREE.Vector2();
+  private fieldConfigCache: Config3dField | null = null;
   private lastCameraIndex = -1;
   private lastAutoDriverStation = -1;
   private lastFrameTime = 0;
@@ -108,11 +111,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private lastHeight: number | null = 0;
   private lastDevicePixelRatio: number | null = null;
   private lastIsDark: boolean | null = null;
-  private lastAspectRatio: number | null = null;
   private lastCommandString: string = "";
   private lastAssetsString: string = "";
   private lastFieldTitle: string = "";
-  private lastRobotTitle: string = "";
 
   constructor(
     mode: "cinematic" | "standard" | "low-power",
@@ -357,6 +358,49 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
   }
 
+  /** Make a new object manager for the provided type. */
+  private makeObjectManager(
+    type: ThreeDimensionRendererCommand_AnyObj["type"]
+  ): ObjectManager<ThreeDimensionRendererCommand_AnyObj> {
+    let args = [
+      this.wpilibFieldCoordinateGroup,
+      this.MATERIAL_SPECULAR,
+      this.MATERIAL_SHININESS,
+      this.mode,
+      () => (this.shouldRender = true)
+    ] as const;
+    let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    switch (type) {
+      case "robot":
+      case "ghost":
+        manager = new RobotManager(...args);
+        break;
+      case "gamePiece":
+        manager = new GamePieceManager(...args, this.fieldPieces);
+        break;
+      case "trajectory":
+        manager = new TrajectoryManager(...args);
+        break;
+      case "heatmap":
+        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
+        break;
+      case "aprilTag":
+        manager = new AprilTagManager(...args);
+        break;
+      case "axes":
+        manager = new AxesManager(...args);
+        break;
+      case "cone":
+        manager = new ConeManager(...args);
+        break;
+      case "zebra":
+        manager = new ZebraManager(...args);
+        break;
+    }
+    manager.setResolution(this.resolutionVector);
+    return manager;
+  }
+
   render(command: ThreeDimensionRendererCommand): void {
     // Check for new parameters
     let commandString = JSON.stringify(command);
@@ -402,6 +446,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     // Get field config
     let fieldTitle = command.game;
     let fieldConfigTmp = this.getFieldConfig(command);
+    this.fieldConfigCache = fieldConfigTmp;
     if (fieldConfigTmp === null) return;
     let fieldConfig = fieldConfigTmp;
 
@@ -425,17 +470,33 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     // Update field
     if (fieldTitle !== this.lastFieldTitle || newAssets) {
       let oldField = this.field;
+      let oldFieldStagedPieces = this.fieldStagedPieces;
+      let newFieldPieces: typeof this.fieldPieces = {};
       let newFieldReady = () => {
+        // Remove old field
         if (oldField) {
           this.wpilibCoordinateGroup.remove(oldField);
           disposeObject(oldField);
         }
-        if (this.field) {
-          if (fieldTitle !== "Evergreen" && fieldTitle !== "Axes") {
-            this.field = optimizeGeometries(this.field, this.mode, this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
-          }
-          this.wpilibCoordinateGroup.add(this.field);
+        if (oldFieldStagedPieces) {
+          this.wpilibCoordinateGroup.remove(oldFieldStagedPieces);
+          disposeObject(oldFieldStagedPieces);
         }
+
+        // Add new field
+        if (this.field) {
+          this.wpilibCoordinateGroup.add(this.field);
+          if (this.fieldStagedPieces !== null) this.wpilibCoordinateGroup.add(this.fieldStagedPieces);
+        }
+
+        // Reset game piece objects
+        this.objectManagers.filter((entry) => entry.type === "gamePiece").forEach((entry) => entry.manager.dispose());
+        this.objectManagers = this.objectManagers.filter((entry) => entry.type !== "gamePiece");
+        Object.values(this.fieldPieces).forEach((mesh) => {
+          disposeObject(mesh);
+        });
+        this.fieldPieces = newFieldPieces;
+
         this.shouldRender = true;
       };
 
@@ -448,9 +509,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       // Load new field
       if (fieldTitle === "Evergreen") {
         this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else if (fieldTitle === "Axes") {
         this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else {
         const loader = new GLTFLoader();
@@ -468,43 +531,48 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
           if (fieldConfig === undefined) return;
           gltfScenes.forEach((scene, index) => {
-            // Apply adjustments
-            scene.traverse((node: any) => {
-              let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
-              if (mesh.isMesh && mesh.material instanceof THREE.MeshStandardMaterial) {
-                if (this.mode === "cinematic") {
-                  // Cinematic, replace with MeshPhongMaterial
-                  let newMaterial = new THREE.MeshPhongMaterial({
-                    color: mesh.material.color,
-                    transparent: mesh.material.transparent,
-                    opacity: mesh.material.opacity,
-                    specular: this.MATERIAL_SPECULAR,
-                    shininess: this.MATERIAL_SHININESS
-                  });
-                  if (mesh.name.toLowerCase().includes("carpet")) {
-                    newMaterial.shininess = 0;
-                    mesh.castShadow = false;
-                    mesh.receiveShadow = true;
-                  } else {
-                    mesh.castShadow = !mesh.material.transparent;
-                    mesh.receiveShadow = !mesh.material.transparent;
-                  }
-                  mesh.material.dispose();
-                  mesh.material = newMaterial;
-                } else {
-                  // Not cinematic, disable metalness and roughness
-                  mesh.material.metalness = 0;
-                  mesh.material.roughness = 1;
-                }
-              }
-            });
-
             // Add to scene
             if (index === 0) {
-              this.field = scene;
+              let stagedPieces = new THREE.Group();
+              fieldConfig.gamePieces.forEach((gamePieceConfig) => {
+                gamePieceConfig.stagedObjects.forEach((stagedName) => {
+                  let stagedObject = scene.getObjectByName(stagedName);
+                  if (stagedObject !== undefined) {
+                    let rotation = stagedObject.getWorldQuaternion(new THREE.Quaternion());
+                    let position = stagedObject.getWorldPosition(new THREE.Vector3());
+                    stagedObject.removeFromParent();
+                    stagedObject.rotation.setFromQuaternion(rotation);
+                    stagedObject.position.copy(position);
+                    stagedPieces.add(stagedObject);
+                  }
+                });
+              });
+
+              this.fieldStagedPieces = optimizeGeometries(
+                stagedPieces,
+                this.mode,
+                this.MATERIAL_SPECULAR,
+                this.MATERIAL_SHININESS,
+                false
+              ).group;
+              this.fieldStagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+
+              this.field = optimizeGeometries(scene, this.mode, this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS).group;
               this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
             } else {
-              // TODO (Set up game pieces)
+              let gamePieceConfig = fieldConfig.gamePieces[index - 1];
+              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
+              scene.position.set(...gamePieceConfig.position);
+              let mesh = optimizeGeometries(
+                scene,
+                this.mode,
+                this.MATERIAL_SPECULAR,
+                this.MATERIAL_SHININESS,
+                false
+              ).normalMesh;
+              if (mesh !== null) {
+                newFieldPieces[gamePieceConfig.name] = mesh;
+              }
             }
           });
           newFieldReady();
@@ -535,6 +603,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
     }
 
+    // Update staged game pieces
+    if (this.fieldStagedPieces !== null) {
+      this.fieldStagedPieces.visible = command.objects.every((object) => object.type !== "gamePiece");
+    }
+
     // Update object managers
     this.objectManagers.forEach((entry) => (entry.active = false));
     command.objects.forEach((object) => {
@@ -542,9 +615,10 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       if (entry === undefined) {
         entry = {
           type: object.type,
-          manager: makeObjectManager(object.type, this.wpilibFieldCoordinateGroup),
+          manager: this.makeObjectManager(object.type),
           active: true
         };
+        this.objectManagers.push(entry);
       } else {
         entry.active = true;
       }
@@ -575,7 +649,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
       // Update container and camera based on mode
       let fov = this.orbitFov;
-      this.lastAspectRatio = null;
       if (orbitalCamera || dsCamera) {
         this.canvas.classList.remove("fixed");
         this.annotationsDiv.classList.remove("fixed");
@@ -614,7 +687,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           // Get fixed aspect ratio and FOV
           let cameraConfig = robotConfig.cameras[this.cameraIndex];
           aspectRatio = cameraConfig.resolution[0] / cameraConfig.resolution[1];
-          this.lastAspectRatio = aspectRatio;
           fov = cameraConfig.fov / aspectRatio;
           let parentAspectRatio = this.canvas.parentElement
             ? this.canvas.parentElement.clientWidth / this.canvas.parentElement.clientHeight
@@ -686,7 +758,10 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.cssRenderer.setSize(clientWidth, clientHeight);
       this.camera.aspect = clientWidth / clientHeight;
       this.camera.updateProjectionMatrix();
-      // TODO: Update resolution of trajectory lines
+      this.resolutionVector.set(clientWidth, clientHeight);
+      this.objectManagers.forEach((entry) => {
+        entry.manager.setResolution(this.resolutionVector);
+      });
     }
     this.scene.background = isDark ? new THREE.Color("#222222") : new THREE.Color("#ffffff");
     this.renderer.setPixelRatio(devicePixelRatio);
@@ -744,30 +819,4 @@ export function rotation3dToQuaternion(input: Rotation3d): THREE.Quaternion {
 
 export function quaternionToRotation3d(input: THREE.Quaternion): Rotation3d {
   return [input.w, input.x, input.y, input.z];
-}
-
-/** Make a new object manager for the provided type. */
-function makeObjectManager(
-  type: ThreeDimensionRendererCommand_AnyObj["type"],
-  root: THREE.Object3D
-): ObjectManager<ThreeDimensionRendererCommand_AnyObj> {
-  switch (type) {
-    case "robot":
-    case "ghost":
-      return new RobotManager(root);
-    case "gamePiece":
-      return new GamePieceManager(root);
-    case "trajectory":
-      return new TrajectoryManager(root);
-    case "heatmap":
-      return new HeatmapManager(root);
-    case "aprilTag":
-      return new AprilTagManager(root);
-    case "axes":
-      return new AxesManager(root);
-    case "cone":
-      return new ConeManager(root);
-    case "zebra":
-      return new ZebraManager(root);
-  }
 }

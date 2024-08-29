@@ -39,6 +39,7 @@ export type AnnotatedPose3d = {
   annotation: PoseAnnotations;
 };
 export type PoseAnnotations = {
+  is2DSource: boolean;
   zebraTeam?: number;
   zebraAlliance?: "blue" | "red";
   aprilTagId?: number;
@@ -46,6 +47,8 @@ export type PoseAnnotations = {
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
+export const APRIL_TAG_36H11_SIZE = convert(8.125, "inches", "meters");
+export const APRIL_TAG_16H5_SIZE = convert(8, "inches", "meters");
 export const HEATMAP_DT = 0.25;
 
 // FORMAT CONVERSION UTILITIES
@@ -222,7 +225,9 @@ export function grabNumberRotation(
         translation: Translation3dZero,
         rotation: rotation2dTo3d(value)
       },
-      annotation: {}
+      annotation: {
+        is2DSource: true
+      }
     }
   ];
 }
@@ -246,7 +251,9 @@ export function grabNumberArray(
             translation: translation2dTo3d([value[i], value[i + 1]]),
             rotation: Rotation3dZero
           },
-          annotation: {}
+          annotation: {
+            is2DSource: true
+          }
         });
       }
       break;
@@ -257,7 +264,9 @@ export function grabNumberArray(
             translation: [value[i], value[i + 1], value[i + 2]],
             rotation: Rotation3dZero
           },
-          annotation: {}
+          annotation: {
+            is2DSource: false
+          }
         });
       }
       break;
@@ -268,7 +277,9 @@ export function grabNumberArray(
             translation: [value[i], value[i + 1]],
             rotation: convert(value[i + 2], finalUnit, "radians")
           }),
-          annotation: {}
+          annotation: {
+            is2DSource: true
+          }
         });
       }
       break;
@@ -279,7 +290,9 @@ export function grabNumberArray(
             translation: [value[i], value[i + 1], value[i + 2]],
             rotation: [value[i + 3], value[i + 4], value[i + 5], value[i + 6]]
           },
-          annotation: {}
+          annotation: {
+            is2DSource: false
+          }
         });
       }
       break;
@@ -294,7 +307,9 @@ export function grabRotation2d(log: Log, key: string, timestamp: number, uuid?: 
         translation: Translation3dZero,
         rotation: rotation2dTo3d(getOrDefault(log, key + "/value", LoggableType.Number, timestamp, 0, uuid))
       },
-      annotation: {}
+      annotation: {
+        is2DSource: true
+      }
     }
   ];
 }
@@ -311,7 +326,7 @@ export function grabRotation3d(log: Log, key: string, timestamp: number, uuid?: 
           getOrDefault(log, key + "/q/z", LoggableType.Number, timestamp, 0, uuid)
         ]
       },
-      annotation: {}
+      annotation: { is2DSource: false }
     }
   ];
 }
@@ -326,7 +341,7 @@ export function grabTranslation2d(log: Log, key: string, timestamp: number, uuid
         ]),
         rotation: Rotation3dZero
       },
-      annotation: {}
+      annotation: { is2DSource: true }
     }
   ];
 }
@@ -342,7 +357,7 @@ export function grabTranslation3d(log: Log, key: string, timestamp: number, uuid
         ],
         rotation: Rotation3dZero
       },
-      annotation: {}
+      annotation: { is2DSource: false }
     }
   ];
 }
@@ -371,7 +386,7 @@ export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: stri
         ],
         rotation: getOrDefault(log, key + "/rotation/value", LoggableType.Number, timestamp, 0, uuid)
       }),
-      annotation: {}
+      annotation: { is2DSource: true }
     }
   ];
 }
@@ -392,7 +407,7 @@ export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: stri
           getOrDefault(log, key + "/rotation/q/z", LoggableType.Number, timestamp, 0, uuid)
         ]
       },
-      annotation: {}
+      annotation: { is2DSource: false }
     }
   ];
 }
@@ -435,7 +450,8 @@ export function grabAprilTag(log: Log, key: string, timestamp: number, uuid?: st
         ]
       },
       annotation: {
-        aprilTagId: getOrDefault(log, key + "/ID", LoggableType.Number, timestamp, undefined, uuid)
+        aprilTagId: getOrDefault(log, key + "/ID", LoggableType.Number, timestamp, undefined, uuid),
+        is2DSource: false
       }
     }
   ];
@@ -484,7 +500,7 @@ export function grabZebraTranslation(
   y = convert(y, "feet", "meters");
 
   let alliance: "blue" | "red" =
-    getOrDefault(log, key + "/alliance", LoggableType.String, timestamp, 0, uuid) === "red" ? "red" : "blue";
+    getOrDefault(log, key + "/alliance", LoggableType.String, Infinity, 0, uuid) === "red" ? "red" : "blue"; // Read alliance from end of log
   let splitKey = key.split("FRC");
   let teamNumber = splitKey.length > 1 ? Number(splitKey[splitKey.length - 1]) : undefined;
 
@@ -501,7 +517,8 @@ export function grabZebraTranslation(
       }),
       annotation: {
         zebraAlliance: alliance,
-        zebraTeam: teamNumber
+        zebraTeam: teamNumber,
+        is2DSource: true
       }
     }
   ];

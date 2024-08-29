@@ -1,10 +1,10 @@
 import { Chart, ChartDataset, LegendOptions, LinearScaleOptions, registerables, TooltipCallbacks } from "chart.js";
 import * as stats from "simple-statistics";
-import { SimpleColors } from "../../../shared/Colors";
-import LoggableType from "../../../shared/log/LoggableType";
-import { getEnabledData } from "../../../shared/log/LogUtil";
-import TabType from "../../../shared/TabType";
-import { cleanFloat, createUUID } from "../../../shared/util";
+import { SimpleColors } from "../../src/shared/Colors";
+import LoggableType from "../../src/shared/log/LoggableType";
+import { getEnabledData } from "../../src/shared/log/LogUtil";
+import TabType from "../../src/shared/TabType";
+import { cleanFloat, createUUID } from "../../src/shared/util";
 
 export default class StatisticsController {
   private UPDATE_PERIOD_MS = 100;

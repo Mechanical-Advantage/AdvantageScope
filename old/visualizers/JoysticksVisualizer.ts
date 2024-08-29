@@ -1,5 +1,5 @@
-import { JoystickState } from "../log/LogUtil";
-import { scaleValue } from "../util";
+import { JoystickState } from "../../src/shared/log/LogUtil";
+import { scaleValue } from "../../src/shared/util";
 import Visualizer from "./Visualizer";
 
 export default class JoysticksVisualizer implements Visualizer {

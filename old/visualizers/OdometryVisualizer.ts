@@ -1,7 +1,7 @@
 import h337 from "heatmap.js";
-import { Pose2d, Translation2d } from "../geometry";
-import { convert } from "../units";
-import { transformPx } from "../util";
+import { Pose2d, Translation2d } from "../../src/shared/geometry";
+import { convert } from "../../src/shared/units";
+import { transformPx } from "../../src/shared/util";
 import Visualizer from "./Visualizer";
 
 export default class OdometryVisualizer implements Visualizer {

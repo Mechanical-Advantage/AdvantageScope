@@ -143,6 +143,7 @@ export type ThreeDimensionRendererCommand_HeatmapObj = {
 export type ThreeDimensionRendererCommand_AprilTagObj = {
   type: "aprilTag";
   poses: AnnotatedPose3d[];
+  family: "36h11" | "16h5";
 };
 
 export type ThreeDimensionRendererCommand_AxesObj = {

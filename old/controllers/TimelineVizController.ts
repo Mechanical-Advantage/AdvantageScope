@@ -1,9 +1,9 @@
-import LoggableType from "../../../shared/log/LoggableType";
-import { getEnabledData } from "../../../shared/log/LogUtil";
-import TabType from "../../../shared/TabType";
-import { arraysEqual, clampValue, createUUID, scaleValue } from "../../../shared/util";
-import Visualizer from "../../../shared/visualizers/Visualizer";
-import { SelectionMode } from "../../Selection";
+import { SelectionMode } from "../../src/hub/Selection";
+import TabType from "../../src/shared/TabType";
+import { getEnabledData } from "../../src/shared/log/LogUtil";
+import LoggableType from "../../src/shared/log/LoggableType";
+import { arraysEqual, clampValue, createUUID, scaleValue } from "../../src/shared/util";
+import Visualizer from "../visualizers/Visualizer";
 
 export default abstract class TimelineVizController {
   private HANDLE_WIDTH = 4;

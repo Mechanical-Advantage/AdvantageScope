@@ -80,7 +80,6 @@ const mainBundles = [
     "download",
     "ytdl-core",
     "tesseract.js"
-    // "pngjs"
   ]),
   bundle("preload.ts", "preload.js", true, ["electron"])
 ];

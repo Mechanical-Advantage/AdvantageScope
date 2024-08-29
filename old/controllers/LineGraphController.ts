@@ -1,12 +1,12 @@
-import { AllColors } from "../../../shared/Colors";
-import TabType from "../../../shared/TabType";
-import { getEnabledKey, getLogValueText } from "../../../shared/log/LogUtil";
-import { LogValueSetAny, LogValueSetNumber } from "../../../shared/log/LogValueSets";
-import LoggableType from "../../../shared/log/LoggableType";
-import { UnitConversionPreset, convertWithPreset } from "../../../shared/units";
-import { ValueScaler, clampValue, cleanFloat, scaleValue, shiftColor } from "../../../shared/util";
-import ScrollSensor from "../../ScrollSensor";
-import { SelectionMode } from "../../Selection";
+import ScrollSensor from "../../src/hub/ScrollSensor";
+import { SelectionMode } from "../../src/hub/Selection";
+import { AllColors } from "../../src/shared/Colors";
+import TabType from "../../src/shared/TabType";
+import { getEnabledKey, getLogValueText } from "../../src/shared/log/LogUtil";
+import { LogValueSetAny, LogValueSetNumber } from "../../src/shared/log/LogValueSets";
+import LoggableType from "../../src/shared/log/LoggableType";
+import { UnitConversionPreset, convertWithPreset } from "../../src/shared/units";
+import { ValueScaler, clampValue, cleanFloat, scaleValue, shiftColor } from "../../src/shared/util";
 
 export default class LineGraphController {
   private MIN_ZOOM_TIME = 0.05;

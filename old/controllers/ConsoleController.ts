@@ -1,8 +1,8 @@
-import LoggableType from "../../../shared/log/LoggableType";
-import { LogValueSetString } from "../../../shared/log/LogValueSets";
-import TabType from "../../../shared/TabType";
-import { formatTimeWithMS, htmlEncode } from "../../../shared/util";
-import { SelectionMode } from "../../Selection";
+import { SelectionMode } from "../../src/hub/Selection";
+import TabType from "../../src/shared/TabType";
+import { LogValueSetString } from "../../src/shared/log/LogValueSets";
+import LoggableType from "../../src/shared/log/LoggableType";
+import { formatTimeWithMS, htmlEncode } from "../../src/shared/util";
 
 export default class ConsoleController {
   private CONTENT: HTMLElement;

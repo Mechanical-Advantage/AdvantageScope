@@ -1,4 +1,4 @@
-import { AllColors } from "../Colors";
+import { AllColors } from "../../src/shared/Colors";
 import Visualizer from "./Visualizer";
 
 export default class PointsVisualizer implements Visualizer {

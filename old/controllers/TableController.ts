@@ -1,9 +1,9 @@
-import LoggableType from "../../../shared/log/LoggableType";
-import { getLogValueText } from "../../../shared/log/LogUtil";
-import { LogValueSetAny } from "../../../shared/log/LogValueSets";
-import TabType from "../../../shared/TabType";
-import { arraysEqual, createUUID, formatTimeWithMS } from "../../../shared/util";
-import { SelectionMode } from "../../Selection";
+import { SelectionMode } from "../../src/hub/Selection";
+import TabType from "../../src/shared/TabType";
+import { getLogValueText } from "../../src/shared/log/LogUtil";
+import { LogValueSetAny } from "../../src/shared/log/LogValueSets";
+import LoggableType from "../../src/shared/log/LoggableType";
+import { arraysEqual, createUUID, formatTimeWithMS } from "../../src/shared/util";
 
 export default class TableController {
   private CONTENT: HTMLElement;

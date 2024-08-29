@@ -2,7 +2,7 @@ import hljs from "highlight.js/lib/core";
 import cpp from "highlight.js/lib/languages/cpp";
 import java from "highlight.js/lib/languages/java";
 import { Remarkable } from "remarkable";
-import TabType from "../../../shared/TabType";
+import TabType from "../../src/shared/TabType";
 
 export default class DocumentationController {
   private CONTAINER: HTMLElement;

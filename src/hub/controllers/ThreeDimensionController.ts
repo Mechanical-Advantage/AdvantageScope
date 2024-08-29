@@ -4,14 +4,16 @@ import {
   APRIL_TAG_36H11_COUNT,
   AnnotatedPose3d,
   grabHeatmapData,
-  grabPosesAuto
+  grabPosesAuto,
+  rotation2dTo3d
 } from "../../shared/geometry";
 import {
   MechanismState,
   getDriverStation,
   getIsRedAlliance,
   getMechanismState,
-  getOrDefault
+  getOrDefault,
+  mergeMechanismStates
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import {
@@ -209,42 +211,43 @@ export default class ThreeDimensionController implements TabController {
     let objects: ThreeDimensionRendererCommand_AnyObj[] = [];
     let cameraOverride: AnnotatedPose3d | null = null;
     let sources = this.sourceList.getState(true);
-    if (time !== null) {
-      for (let i = 0; i < sources.length; i++) {
-        let source = sources[i];
-        let typeConfig = ThreeDimensionController_Config.types.find((typeConfig) => typeConfig.key === source.type);
-        if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
+    for (let i = 0; i < sources.length; i++) {
+      let source = sources[i];
+      let typeConfig = ThreeDimensionController_Config.types.find((typeConfig) => typeConfig.key === source.type);
+      if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
-        // Find children
-        let children: SourceListItemState[] = [];
-        while (
-          sources.length > i + 1 &&
-          ThreeDimensionController_Config.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)
-            ?.childOf !== undefined
-        ) {
-          i++;
-          children.push(sources[i]);
-        }
+      // Find children
+      let children: SourceListItemState[] = [];
+      while (
+        sources.length > i + 1 &&
+        ThreeDimensionController_Config.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !==
+          undefined
+      ) {
+        i++;
+        children.push(sources[i]);
+      }
 
-        // Get pose data
-        let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
-        let numberArrayUnits: "radians" | "degrees" = "radians";
-        if ("format" in source.options) {
-          let formatRaw = source.options.format;
-          numberArrayFormat =
-            formatRaw === "Pose2d" ||
-            formatRaw === "Pose3d" ||
-            formatRaw === "Translation2d" ||
-            formatRaw === "Translation3d"
-              ? formatRaw
-              : "Pose3d";
-        }
-        if ("units" in source.options) {
-          numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
-        }
-        let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
-        let poses: AnnotatedPose3d[] = [];
-        if (!isHeatmap) {
+      // Get pose data
+      let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
+      let numberArrayUnits: "radians" | "degrees" = "radians";
+      if ("format" in source.options) {
+        let formatRaw = source.options.format;
+        numberArrayFormat =
+          formatRaw === "Pose2d" ||
+          formatRaw === "Pose3d" ||
+          formatRaw === "Translation2d" ||
+          formatRaw === "Translation3d"
+            ? formatRaw
+            : "Pose3d";
+      }
+      if ("units" in source.options) {
+        numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
+      }
+      let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
+      let poses: AnnotatedPose3d[] = [];
+
+      if (!isHeatmap) {
+        if (time !== null) {
           poses = grabPosesAuto(
             window.log,
             source.logKey,
@@ -257,48 +260,63 @@ export default class ThreeDimensionController implements TabController {
             fieldWidth,
             fieldHeight
           );
-        } else {
-          let filter: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" = "enabled";
-          if ("filter" in source.options) {
-            let filterRaw = source.options.format;
-            filter =
-              filterRaw === "enabled" ||
-              filterRaw === "auto" ||
-              filterRaw === "teleop" ||
-              filterRaw === "teleop-no-endgame" ||
-              filterRaw === "full"
-                ? filterRaw
-                : "enabled";
-          }
-          poses = grabHeatmapData(window.log, source.logKey, source.logType, filter, this.UUID);
         }
+      } else {
+        let filter: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" = "enabled";
+        if ("filter" in source.options) {
+          let filterRaw = source.options.filter;
+          filter =
+            filterRaw === "enabled" ||
+            filterRaw === "auto" ||
+            filterRaw === "teleop" ||
+            filterRaw === "teleop-no-endgame" ||
+            filterRaw === "full"
+              ? filterRaw
+              : "enabled";
+        }
+        poses = grabHeatmapData(
+          window.log,
+          source.logKey,
+          source.logType,
+          filter,
+          this.UUID,
+          numberArrayFormat,
+          numberArrayUnits
+        );
+      }
 
-        // Add data from children
-        let components: AnnotatedPose3d[] = [];
-        let mechanism: MechanismState | null = null;
-        let visionTargets: AnnotatedPose3d[] = [];
+      // Add data from children
+      let components: AnnotatedPose3d[] = [];
+      let mechanisms: MechanismState[] = [];
+      let visionTargets: AnnotatedPose3d[] = [];
+      if (time !== null) {
         children.forEach((child) => {
           switch (child.type) {
             case "component":
             case "componentLegacy":
               // Components are always 3D poses so assume number array format
-              components = grabPosesAuto(window.log, child.logKey, child.logType, time!, this.UUID, "Pose3d");
+              components = components.concat(
+                grabPosesAuto(window.log, child.logKey, child.logType, time!, this.UUID, "Pose3d")
+              );
               break;
 
             case "mechanism":
-              mechanism = getMechanismState(window.log, child.logKey, time!);
+              let state = getMechanismState(window.log, child.logKey, time!);
+              if (state !== null) {
+                mechanisms.push(state);
+              }
               break;
 
             case "rotationOverride":
             case "rotationOverrideLegacy":
               let isRotation2d = child.logType === "Rotation2d";
               let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
-              let rotation = getOrDefault(window.log, rotationKey, LoggableType.Number, time!, 0, this.UUID);
+              let rotation: number = getOrDefault(window.log, rotationKey, LoggableType.Number, time!, 0, this.UUID);
               if (!isRotation2d) {
                 rotation = convert(rotation, child.options.units, "radians");
               }
               poses.forEach((value) => {
-                value.pose.rotation = rotation;
+                value.pose.rotation = rotation2dTo3d(rotation);
               });
               break;
 
@@ -315,14 +333,8 @@ export default class ThreeDimensionController implements TabController {
                     ? formatRaw
                     : "Pose2d";
               }
-              visionTargets = grabPosesAuto(
-                window.log,
-                child.logKey,
-                child.logType,
-                time!,
-                this.UUID,
-                numberArrayFormat,
-                "radians"
+              visionTargets = visionTargets.concat(
+                grabPosesAuto(window.log, child.logKey, child.logType, time!, this.UUID, numberArrayFormat, "radians")
               );
               break;
 
@@ -346,94 +358,98 @@ export default class ThreeDimensionController implements TabController {
               break;
           }
         });
+      }
+      let mechanism = mechanisms.length === 0 ? null : mergeMechanismStates(mechanisms);
 
-        // Add object
-        switch (source.type) {
-          case "robot":
-          case "robotLegacy":
-            objects.push({
-              type: "robot",
-              model: source.options.model,
-              poses: poses,
-              components: components,
-              mechanism: mechanism,
-              visionTargets: visionTargets
-            });
-            break;
-          case "ghost":
-          case "ghostLegacy":
-          case "ghostZebra":
-            objects.push({
-              type: "ghost",
-              color: source.options.color,
-              model: source.options.model,
-              poses: poses,
-              components: components,
-              mechanism: mechanism,
-              visionTargets: visionTargets
-            });
-            break;
-          case "gamePiece":
-          case "gamePieceLegacy":
-            objects.push({
-              type: "gamePiece",
-              variant: source.options.variant,
-              poses: poses
-            });
-            break;
-          case "trajectory":
-          case "trajectoryLegacy":
-            objects.push({
-              type: "trajectory",
-              poses: poses
-            });
-            break;
-          case "heatmap":
-          case "heatmapLegacy":
-            objects.push({
-              type: "heatmap",
-              poses: poses
-            });
-            break;
-          case "aprilTag":
-          case "aprilTagLegacy":
-            objects.push({
-              type: "aprilTag",
-              poses: poses
-            });
-            break;
-          case "axes":
-          case "axesLegacy":
-            objects.push({
-              type: "axes",
-              poses: poses
-            });
-            break;
-          case "cone":
-          case "coneLegacy":
-            let positionRaw = source.options.position;
-            let position: "center" | "back" | "front" =
-              positionRaw === "center" || positionRaw === "back" || positionRaw === "front" ? positionRaw : "center";
-            objects.push({
-              type: "cone",
-              color: source.options.color,
-              position: position,
-              poses: poses
-            });
-            break;
-          case "cameraOverride":
-          case "cameraOverrideLegacy":
-            if (cameraOverride === null) {
-              cameraOverride = poses[0];
-            }
-            break;
-          case "zebra":
-            objects.push({
-              type: "zebra",
-              poses: poses
-            });
-            break;
-        }
+      // Add object
+      switch (source.type) {
+        case "robot":
+        case "robotLegacy":
+          objects.push({
+            type: "robot",
+            model: source.options.model,
+            poses: poses,
+            components: components,
+            mechanism: mechanism,
+            visionTargets: visionTargets
+          });
+          break;
+        case "ghost":
+        case "ghostLegacy":
+        case "ghostZebra":
+          objects.push({
+            type: "ghost",
+            color: source.options.color,
+            model: source.options.model,
+            poses: poses,
+            components: components,
+            mechanism: mechanism,
+            visionTargets: visionTargets
+          });
+          break;
+        case "gamePiece":
+        case "gamePieceLegacy":
+          objects.push({
+            type: "gamePiece",
+            variant: source.options.variant,
+            poses: poses
+          });
+          break;
+        case "trajectory":
+        case "trajectoryLegacy":
+          objects.push({
+            type: "trajectory",
+            poses: poses
+          });
+          break;
+        case "heatmap":
+        case "heatmapLegacy":
+          objects.push({
+            type: "heatmap",
+            poses: poses
+          });
+          break;
+        case "aprilTag":
+        case "aprilTagLegacy":
+          let familyRaw = source.options.family;
+          let family: "36h11" | "16h5" = familyRaw === "36h11" || familyRaw === "16h5" ? familyRaw : "36h11";
+          objects.push({
+            type: "aprilTag",
+            poses: poses,
+            family: family
+          });
+          break;
+        case "axes":
+        case "axesLegacy":
+          objects.push({
+            type: "axes",
+            poses: poses
+          });
+          break;
+        case "cone":
+        case "coneLegacy":
+          let positionRaw = source.options.position;
+          let position: "center" | "back" | "front" =
+            positionRaw === "center" || positionRaw === "back" || positionRaw === "front" ? positionRaw : "center";
+          objects.push({
+            type: "cone",
+            color: source.options.color,
+            position: position,
+            poses: poses
+          });
+          break;
+        case "cameraOverride":
+        case "cameraOverrideLegacy":
+          if (cameraOverride === null) {
+            cameraOverride = poses[0];
+          }
+          break;
+        case "zebra":
+          objects.push({
+            type: "zebra",
+            poses: poses
+          });
+          break;
       }
     }
 

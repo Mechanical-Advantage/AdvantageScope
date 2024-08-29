@@ -1,12 +1,19 @@
 import * as THREE from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { disposeObject } from "../ThreeDimensionRendererImpl";
 
 export default function optimizeGeometries(
   object: THREE.Object3D,
   mode: "low-power" | "standard" | "cinematic",
   materialSpecular: THREE.Color,
-  materialShininess: number
-) {
+  materialShininess: number,
+  enableSimplification = true
+): {
+  group: THREE.Group;
+  normalMesh: THREE.Mesh | null;
+  transparentMesh: THREE.Mesh | null;
+  carpetMesh: THREE.Mesh | null;
+} {
   let normalGeometries: THREE.BufferGeometry[] = [];
   let transparentGeometries: THREE.BufferGeometry[] = [];
   let carpetGeometries: THREE.BufferGeometry[] = [];
@@ -37,32 +44,34 @@ export default function optimizeGeometries(
         }
       }
 
-      let vertices: THREE.Vector3[] = [];
-      let center = new THREE.Vector3();
-      for (let i = 0; i < geometry.attributes.position.count; i++) {
-        let vertex = new THREE.Vector3(
-          geometry.attributes.position.getX(i),
-          geometry.attributes.position.getY(i),
-          geometry.attributes.position.getZ(i)
-        );
-        vertices.push(vertex);
-        center.add(vertex);
-      }
-      center.divideScalar(vertices.length);
-      let maxDistance = vertices.reduce((prev, vertex) => {
-        let dist = vertex.distanceTo(center);
-        return dist > prev ? dist : prev;
-      }, 0);
-      switch (mode) {
-        case "low-power":
-          if (maxDistance < 0.08) return;
-          break;
-        case "standard":
-          if (maxDistance < 0.04) return;
-          break;
-        case "cinematic":
-          if (maxDistance < 0.02) return;
-          break;
+      if (enableSimplification) {
+        let vertices: THREE.Vector3[] = [];
+        let center = new THREE.Vector3();
+        for (let i = 0; i < geometry.attributes.position.count; i++) {
+          let vertex = new THREE.Vector3(
+            geometry.attributes.position.getX(i),
+            geometry.attributes.position.getY(i),
+            geometry.attributes.position.getZ(i)
+          );
+          vertices.push(vertex);
+          center.add(vertex);
+        }
+        center.divideScalar(vertices.length);
+        let maxDistance = vertices.reduce((prev, vertex) => {
+          let dist = vertex.distanceTo(center);
+          return dist > prev ? dist : prev;
+        }, 0);
+        switch (mode) {
+          case "low-power":
+            if (maxDistance < 0.08) return;
+            break;
+          case "standard":
+            if (maxDistance < 0.04) return;
+            break;
+          case "cinematic":
+            if (maxDistance < 0.02) return;
+            break;
+        }
       }
 
       if (mesh.name.toLowerCase().includes("carpet")) {
@@ -76,8 +85,11 @@ export default function optimizeGeometries(
   });
 
   let group = new THREE.Group();
+  let normalMesh: THREE.Mesh | null = null;
+  let transparentMesh: THREE.Mesh | null = null;
+  let carpetMesh: THREE.Mesh | null = null;
   if (normalGeometries.length > 0) {
-    let normalMesh = new THREE.Mesh(
+    normalMesh = new THREE.Mesh(
       BufferGeometryUtils.mergeGeometries(normalGeometries, false),
       new THREE.MeshPhongMaterial({
         vertexColors: true,
@@ -90,10 +102,11 @@ export default function optimizeGeometries(
       normalMesh.castShadow = true;
       normalMesh.receiveShadow = false;
     }
+    normalMesh.name = "normal";
     group.add(normalMesh);
   }
   if (transparentGeometries.length > 0) {
-    let transparentMesh = new THREE.Mesh(
+    transparentMesh = new THREE.Mesh(
       BufferGeometryUtils.mergeGeometries(transparentGeometries, false),
       new THREE.MeshPhongMaterial({
         vertexColors: true,
@@ -108,10 +121,11 @@ export default function optimizeGeometries(
       transparentMesh.castShadow = true;
       transparentMesh.receiveShadow = false;
     }
+    transparentMesh.name = "transparent";
     group.add(transparentMesh);
   }
   if (carpetGeometries.length > 0) {
-    let carpetMesh = new THREE.Mesh(
+    carpetMesh = new THREE.Mesh(
       BufferGeometryUtils.mergeGeometries(carpetGeometries, false),
       new THREE.MeshPhongMaterial({
         vertexColors: true,
@@ -124,7 +138,15 @@ export default function optimizeGeometries(
       carpetMesh.castShadow = false;
       carpetMesh.receiveShadow = true;
     }
+    carpetMesh.name = "carpet";
     group.add(carpetMesh);
   }
-  return group;
+
+  disposeObject(object);
+  return {
+    group: group,
+    normalMesh: normalMesh,
+    transparentMesh: transparentMesh,
+    carpetMesh: carpetMesh
+  };
 }

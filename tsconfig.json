@@ -8,5 +8,6 @@
     "strict": true,
     "removeComments": true,
     "resolveJsonModule": true
-  }
+  },
+  "include": ["src/**/*"]
 }
