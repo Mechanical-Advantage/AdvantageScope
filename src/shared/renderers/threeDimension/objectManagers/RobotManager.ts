@@ -39,6 +39,7 @@ export default class RobotManager extends ObjectManager<
   private dummyConfigPose = new THREE.Object3D();
   private dummyUserPose = new THREE.Group().add(this.dummyConfigPose);
   private dummyRobotPose = new THREE.Group().add(this.dummyUserPose);
+  private hasNewAssets = false;
   private lastModel = "";
   private lastColor = "";
 
@@ -72,12 +73,17 @@ export default class RobotManager extends ObjectManager<
     this.visionLines.forEach((line) => (line.material.resolution = resolution));
   }
 
+  newAssets() {
+    this.hasNewAssets = true;
+  }
+
   setObjectData(object: ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj): void {
     let robotConfig = window.assets?.robots.find((robotData) => robotData.name === object.model);
 
     // Load new robot model
-    if (object.model !== this.lastModel) {
+    if (object.model !== this.lastModel || this.hasNewAssets) {
       this.lastModel = object.model;
+      this.hasNewAssets = false;
 
       this.meshes.forEach((mesh) => {
         mesh.dispose();

@@ -639,6 +639,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       } else {
         entry.active = true;
       }
+      if (newAssets && (entry.type === "robot" || entry.type === "ghost")) {
+        (entry.manager as RobotManager).newAssets();
+      }
       entry.manager.setObjectData(object);
     });
     this.objectManagers
