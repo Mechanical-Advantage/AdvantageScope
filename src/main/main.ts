@@ -33,7 +33,7 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
-import { UnitConversionPreset } from "../shared/units";
+import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
 import {
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
@@ -51,6 +51,7 @@ import {
   PATHPLANNER_PING_TEXT,
   PATHPLANNER_PORT,
   PREFS_FILENAME,
+  RECENT_UNITS_FILENAME,
   REPOSITORY,
   RLOG_CONNECT_TIMEOUT_MS,
   RLOG_DATA_TIMEOUT_MS,
@@ -722,9 +723,23 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             type: "separator"
           })
         );
+        let updateRecents = (newUnitConversion: UnitConversionPreset) => {
+          let newUnitConversionStr = JSON.stringify(newUnitConversion);
+          if (newUnitConversionStr !== JSON.stringify(NoopUnitConversion)) {
+            let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
+              ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
+              : [];
+            recentUnits = recentUnits.filter((x) => JSON.stringify(x) !== newUnitConversionStr);
+            recentUnits.splice(0, 0, newUnitConversion);
+            while (recentUnits.length > MAX_RECENT_UNITS) {
+              recentUnits.pop();
+            }
+            jsonfile.writeFileSync(RECENT_UNITS_FILENAME, recentUnits);
+          }
+        };
         editAxisMenu.append(
           new MenuItem({
-            label: "Unit Conversion...",
+            label: "Edit Units...",
             click() {
               createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
                 sendMessage(window, "edit-axis", {
@@ -732,8 +747,54 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   lockedRange: lockedRange,
                   unitConversion: newUnitConversion
                 });
+                updateRecents(newUnitConversion);
               });
             }
+          })
+        );
+        let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
+          ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
+          : [];
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Recent Presets",
+            type: "submenu",
+            enabled: recentUnits.length > 0,
+            submenu: recentUnits.map((preset) => {
+              return {
+                label:
+                  preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                  " \u2192 " +
+                  preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                  (preset.factor === 1 ? "" : " (x" + preset.factor.toString() + ")"),
+                click() {
+                  sendMessage(window, "edit-axis", {
+                    legend: legend,
+                    lockedRange: lockedRange,
+                    unitConversion: preset
+                  });
+                  updateRecents(preset);
+                }
+              };
+            })
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Reset Units",
+            enabled: JSON.stringify(unitConversion) !== JSON.stringify(NoopUnitConversion),
+            click() {
+              sendMessage(window, "edit-axis", {
+                legend: legend,
+                lockedRange: lockedRange,
+                unitConversion: NoopUnitConversion
+              });
+            }
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            type: "separator"
           })
         );
       }

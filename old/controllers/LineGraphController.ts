@@ -5,7 +5,7 @@ import TabType from "../../src/shared/TabType";
 import { getEnabledKey, getLogValueText } from "../../src/shared/log/LogUtil";
 import { LogValueSetAny, LogValueSetNumber } from "../../src/shared/log/LogValueSets";
 import LoggableType from "../../src/shared/log/LoggableType";
-import { UnitConversionPreset, convertWithPreset } from "../../src/shared/units";
+import { NoopUnitConversion, UnitConversionPreset, convertWithPreset } from "../../src/shared/units";
 import { ValueScaler, clampValue, cleanFloat, scaleValue, shiftColor } from "../../src/shared/util";
 
 export default class LineGraphController {
@@ -51,14 +51,8 @@ export default class LineGraphController {
   private rightLockedRange: [number, number] | null = null;
   private leftRenderedRange: [number, number] = [-1, 1];
   private rightRenderedRange: [number, number] = [-1, 1];
-  private leftUnitConversion: UnitConversionPreset = {
-    type: null,
-    factor: 1
-  };
-  private rightUnitConversion: UnitConversionPreset = {
-    type: null,
-    factor: 1
-  };
+  private leftUnitConversion = NoopUnitConversion;
+  private rightUnitConversion = NoopUnitConversion;
 
   private legendHandleActive = false;
   private legendHeightPercent = 0.3;

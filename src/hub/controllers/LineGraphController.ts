@@ -6,7 +6,7 @@ import {
   LineGraphRendererCommand_DiscreteField,
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
-import { UnitConversionPreset, convertWithPreset } from "../../shared/units";
+import { NoopUnitConversion, UnitConversionPreset, convertWithPreset } from "../../shared/units";
 import { clampValue, scaleValue } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
@@ -24,14 +24,8 @@ export default class LineGraphController implements TabController {
 
   private leftLockedRange: [number, number] | null = null;
   private rightLockedRange: [number, number] | null = null;
-  private leftUnitConversion: UnitConversionPreset = {
-    type: null,
-    factor: 1
-  };
-  private rightUnitConversion: UnitConversionPreset = {
-    type: null,
-    factor: 1
-  };
+  private leftUnitConversion = NoopUnitConversion;
+  private rightUnitConversion = NoopUnitConversion;
 
   constructor(root: HTMLElement) {
     // Make source lists
