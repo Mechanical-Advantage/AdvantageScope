@@ -1629,6 +1629,9 @@ div.video-timeline-container {
   left: 40px;
   top: 5px;
   height: calc(100% - 10px);
+
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 input.video-timeline-slider {
