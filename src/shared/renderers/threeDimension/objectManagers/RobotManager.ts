@@ -195,7 +195,6 @@ export default class RobotManager extends ObjectManager<
         let line = new Line2(
           new LineGeometry(),
           new LineMaterial({
-            color: 0x00ff00,
             linewidth: 1,
             resolution: this.resolution
           })
@@ -219,6 +218,10 @@ export default class RobotManager extends ObjectManager<
           translation[2]
         ]);
         this.visionLines[i].geometry.attributes.position.needsUpdate = true;
+        let color = object.visionTargets[i].annotation.visionColor;
+        if (color !== undefined) {
+          this.visionLines[i].material.color = new THREE.Color(color);
+        }
       }
     }
 

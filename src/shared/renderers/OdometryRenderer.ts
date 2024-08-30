@@ -257,7 +257,8 @@ export default class OdometryRenderer implements TabRenderer {
               // Draw vision targets
               let robotPos = calcCoordinates(pose.pose.translation);
               object.visionTargets.forEach((target: AnnotatedPose2d) => {
-                context.strokeStyle = "lightgreen";
+                context.strokeStyle =
+                  target.annotation.visionColor === undefined ? "#00ff00" : target.annotation.visionColor;
                 context.lineWidth = 1 * pixelsPerInch; // 1 inch
                 context.beginPath();
                 context.moveTo(robotPos[0], robotPos[1]);
@@ -274,7 +275,8 @@ export default class OdometryRenderer implements TabRenderer {
               // Draw vision targets
               let robotPos = calcCoordinates(pose.pose.translation);
               object.visionTargets.forEach((target: AnnotatedPose2d) => {
-                context.strokeStyle = "lightgreen";
+                context.strokeStyle =
+                  target.annotation.visionColor === undefined ? "#00ff00" : target.annotation.visionColor;
                 context.lineWidth = 1 * pixelsPerInch; // 1 inch
                 context.beginPath();
                 context.moveTo(robotPos[0], robotPos[1]);

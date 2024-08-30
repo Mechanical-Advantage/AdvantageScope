@@ -1,4 +1,4 @@
-import { NeonColors } from "../../shared/Colors";
+import { NeonColors, NeonColors_GreenFirst } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const ThreeDimensionController_Config: SourceListConfig = {
@@ -109,7 +109,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
           values: NeonColors
         }
       ],
-      initialSelectionOption: "color",
+      initialSelectionOption: "model",
       parentKey: "robot",
       geometryPreviewType: "Pose3d"
     },
@@ -154,7 +154,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "color",
+      initialSelectionOption: "model",
       parentKey: "robot",
       numberArrayDeprecated: true,
       geometryPreviewType: "Pose3d"
@@ -232,7 +232,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       display: "Vision Target",
       symbol: "scope",
       showInTypeName: true,
-      color: "#00bb00",
+      color: "color",
       sourceTypes: [
         "Pose2d",
         "Pose3d",
@@ -247,7 +247,14 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Translation2d[]",
         "Translation3d[]"
       ],
-      options: [],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_GreenFirst
+        }
+      ],
       childOf: "robot",
       geometryPreviewType: "Translation3d"
     },
@@ -256,9 +263,15 @@ const ThreeDimensionController_Config: SourceListConfig = {
       display: "Vision Target",
       symbol: "scope",
       showInTypeName: true,
-      color: "#00bb00",
+      color: "color",
       sourceTypes: ["NumberArray"],
       options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_GreenFirst
+        },
         {
           key: "format",
           display: "Format",

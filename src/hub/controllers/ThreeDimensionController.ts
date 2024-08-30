@@ -327,9 +327,19 @@ export default class ThreeDimensionController implements TabController {
                     ? formatRaw
                     : "Pose2d";
               }
-              visionTargets = visionTargets.concat(
-                grabPosesAuto(window.log, child.logKey, child.logType, time!, this.UUID, numberArrayFormat, "radians")
+              let newVisionTargets = grabPosesAuto(
+                window.log,
+                child.logKey,
+                child.logType,
+                time!,
+                this.UUID,
+                numberArrayFormat,
+                "radians"
               );
+              newVisionTargets.forEach((annotatedPose) => {
+                annotatedPose.annotation.visionColor = child.options.color;
+              });
+              visionTargets = visionTargets.concat(newVisionTargets);
               break;
 
             case "aprilTagIDs":

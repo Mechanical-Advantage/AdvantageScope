@@ -400,6 +400,9 @@ export default class OdometryController implements TabController {
               numberArrayFormat,
               "radians"
             );
+            visionPose3ds.forEach((annotatedPose) => {
+              annotatedPose.annotation.visionColor = child.options.color;
+            });
             visionTargets = visionTargets.concat(visionPose3ds.map(annotatedPose3dTo2d));
             break;
         }

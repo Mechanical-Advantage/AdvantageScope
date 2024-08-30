@@ -1,4 +1,4 @@
-import { NeonColors } from "../../shared/Colors";
+import { NeonColors, NeonColors_GreenFirst } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const OdometryController_Config: SourceListConfig = {
@@ -188,7 +188,7 @@ const OdometryController_Config: SourceListConfig = {
       display: "Vision Target",
       symbol: "scope",
       showInTypeName: true,
-      color: "#00bb00",
+      color: "color",
       sourceTypes: [
         "Pose2d",
         "Pose3d",
@@ -203,7 +203,14 @@ const OdometryController_Config: SourceListConfig = {
         "Translation2d[]",
         "Translation3d[]"
       ],
-      options: [],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_GreenFirst
+        }
+      ],
       childOf: "robot",
       geometryPreviewType: "Translation2d"
     },
@@ -212,9 +219,15 @@ const OdometryController_Config: SourceListConfig = {
       display: "Vision Target",
       symbol: "scope",
       showInTypeName: true,
-      color: "#00bb00",
+      color: "color",
       sourceTypes: ["NumberArray"],
       options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_GreenFirst
+        },
         {
           key: "format",
           display: "Format",

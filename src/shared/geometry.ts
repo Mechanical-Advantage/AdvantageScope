@@ -43,6 +43,7 @@ export type PoseAnnotations = {
   zebraTeam?: number;
   zebraAlliance?: "blue" | "red";
   aprilTagId?: number;
+  visionColor?: string;
 };
 
 export const APRIL_TAG_36H11_COUNT = 587;
