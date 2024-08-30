@@ -10,7 +10,7 @@ import {
 import { grabPosesAuto, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
 import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
-import { convert } from "../shared/units";
+import { NoopUnitConversion, UnitConversionPreset, convert, convertWithPreset } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 
 export default class SourceList {
@@ -32,6 +32,7 @@ export default class SourceList {
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
   private supplementalStateSuppliers: (() => SourceListState)[];
+  private getUnitConversionPreset: () => UnitConversionPreset;
 
   private refreshLastFields: Set<string> = new Set();
   private refreshLastStructTypes: { [key: string]: string | null } = {};
@@ -47,10 +48,12 @@ export default class SourceList {
     root: HTMLElement,
     config: SourceListConfig,
     supplementalStateSuppliers: (() => SourceListState)[],
-    editButtonCallback?: (coordinates: [number, number]) => void
+    editButtonCallback?: (coordinates: [number, number]) => void,
+    getUnitConversionPreset: () => UnitConversionPreset = () => NoopUnitConversion
   ) {
     this.config = jsonCopy(config);
     this.supplementalStateSuppliers = supplementalStateSuppliers;
+    this.getUnitConversionPreset = getUnitConversionPreset;
     this.ROOT = root;
     this.ROOT.classList.add("source-list");
 
@@ -732,6 +735,9 @@ export default class SourceList {
       let logType = window.log.getType(state.logKey);
       if (logType !== null) {
         let value = getOrDefault(window.log, state.logKey, logType, time, null);
+        if (logType === LoggableType.Number) {
+          value = convertWithPreset(value, this.getUnitConversionPreset());
+        }
         if (typeConfig?.geometryPreviewType !== undefined) {
           if (typeConfig?.geometryPreviewType !== null) {
             let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";

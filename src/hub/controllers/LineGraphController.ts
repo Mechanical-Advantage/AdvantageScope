@@ -41,7 +41,8 @@ export default class LineGraphController implements TabController {
           lockedRange: this.leftLockedRange,
           unitConversion: this.leftUnitConversion
         });
-      }
+      },
+      () => this.leftUnitConversion
     );
     this.leftSourceList.setTitle("Left Axis");
 
@@ -57,7 +58,8 @@ export default class LineGraphController implements TabController {
           lockedRange: this.rightLockedRange,
           unitConversion: this.rightUnitConversion
         });
-      }
+      },
+      () => this.rightUnitConversion
     );
     this.rightSourceList.setTitle("Right Axis");
 
