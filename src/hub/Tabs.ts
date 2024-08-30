@@ -1,5 +1,6 @@
 import { TabsState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
@@ -381,6 +382,10 @@ export default class Tabs {
     let controller: TabController;
     let renderer: TabRenderer;
     switch (type) {
+      case TabType.Documentation:
+        controller = new NoopController();
+        renderer = new DocumentationRenderer(rendererElement);
+        break;
       case TabType.LineGraph:
         controller = new LineGraphController(controlsElement);
         renderer = new LineGraphRenderer(rendererElement);
