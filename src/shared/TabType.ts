@@ -1,11 +1,11 @@
 enum TabType {
   Documentation,
   LineGraph,
+  Odometry,
+  ThreeDimension,
   Table,
   Console,
   Statistics,
-  Odometry,
-  ThreeDimension,
   Video,
   Joysticks,
   Swerve,
@@ -26,16 +26,16 @@ export function getDefaultTabTitle(type: TabType): string {
       return "";
     case TabType.LineGraph:
       return "Line Graph";
+    case TabType.Odometry:
+      return "Odometry";
+    case TabType.ThreeDimension:
+      return "3D Field";
     case TabType.Table:
       return "Table";
     case TabType.Console:
       return "Console";
     case TabType.Statistics:
       return "Statistics";
-    case TabType.Odometry:
-      return "Odometry";
-    case TabType.ThreeDimension:
-      return "3D Field";
     case TabType.Video:
       return "Video";
     case TabType.Joysticks:
@@ -59,16 +59,16 @@ export function getTabIcon(type: TabType): string {
       return "📖";
     case TabType.LineGraph:
       return "📉";
+    case TabType.Odometry:
+      return "🗺";
+    case TabType.ThreeDimension:
+      return "👀";
     case TabType.Table:
       return "🔢";
     case TabType.Console:
       return "💬";
     case TabType.Statistics:
       return "📊";
-    case TabType.Odometry:
-      return "🗺";
-    case TabType.ThreeDimension:
-      return "👀";
     case TabType.Video:
       return "🎬";
     case TabType.Joysticks:

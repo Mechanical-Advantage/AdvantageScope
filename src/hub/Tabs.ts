@@ -252,6 +252,9 @@ export default class Tabs {
     // Add default tabs
     this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
+    this.addTab(TabType.Odometry);
+    this.addTab(TabType.ThreeDimension);
+    this.setSelected(1);
 
     // Scroll management
     this.tabsScrollSensor = new ScrollSensor(
