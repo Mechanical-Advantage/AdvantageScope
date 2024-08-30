@@ -2,6 +2,7 @@ import { TabsState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
+import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
@@ -11,6 +12,7 @@ import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import LineGraphController from "./controllers/LineGraphController";
+import MetadataController from "./controllers/MetadataController";
 import NoopController from "./controllers/NoopController";
 import OdometryController from "./controllers/OdometryController";
 import TabController from "./controllers/TabController";
@@ -419,6 +421,10 @@ export default class Tabs {
       case TabType.Video:
         controller = new VideoController(controlsElement);
         renderer = new VideoRenderer(rendererElement);
+        break;
+      case TabType.Metadata:
+        controller = new MetadataController();
+        renderer = new MetadataRenderer(rendererElement);
         break;
       default:
         controller = new NoopController();

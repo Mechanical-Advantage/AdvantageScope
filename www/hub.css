@@ -1231,6 +1231,16 @@ canvas.odometry-canvas {
   transform: translate(-50%, -50%);
 }
 
+div.tab-centered {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  text-align: center;
+  font-style: italic;
+}
+
 /* Documentation */
 
 div.documentation-container {
@@ -1687,4 +1697,62 @@ div.video-timeline-controls button {
   height: 30px;
   width: 30px;
   transform: translateY(-50%);
+}
+
+/* Metadata */
+
+div.metadata-table-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+}
+
+table.metadata-table {
+  width: 100%;
+  table-layout: fixed;
+  text-align: left;
+  word-wrap: break-word;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+table.metadata-table th:first-child {
+  width: 150px;
+}
+
+table.metadata-table th {
+  padding: 6px;
+  position: sticky;
+  top: 0px;
+  border-bottom: 1px solid #222;
+  background-color: #fff;
+}
+
+table.metadata-table td:first-child {
+  padding: 6px;
+  text-align: right;
+  font-weight: bold;
+  border-right: 1px solid #222;
+}
+
+table.metadata-table td:not(:first-child) {
+  padding: 6px;
+  font-family: monospace;
+  font-size: 14px;
+  user-select: text;
+}
+
+table.metadata-table td.no-data {
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  table.metadata-table th {
+    border-bottom: 1px solid #eee;
+    background-color: #222;
+  }
+
+  table.metadata-table td:first-child {
+    border-right: 1px solid #eee;
+  }
 }
