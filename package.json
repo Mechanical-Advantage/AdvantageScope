@@ -38,7 +38,7 @@
     "@types/pngjs": "^6.0.5",
     "@types/remarkable": "^2.0.3",
     "@types/ssh2": "^1.11.13",
-    "@types/three": "^0.156.0",
+    "@types/three": "^0.168.0",
     "chart.js": "^4.4.0",
     "color-convert": "^2.0.1",
     "electron": "^26.2.1",
