@@ -12,7 +12,6 @@ export interface SidebarState {
 
 export interface TabsState {
   selected: number;
-  controlsHeight: number;
   tabs: TabState[];
 }
 
@@ -21,4 +20,5 @@ export interface TabState {
   title: string;
   controller: unknown;
   renderer: unknown;
+  controlsHeight: number;
 }
