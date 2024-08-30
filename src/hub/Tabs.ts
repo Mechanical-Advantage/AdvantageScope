@@ -6,6 +6,7 @@ import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
 import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
+import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
@@ -14,6 +15,7 @@ import NoopController from "./controllers/NoopController";
 import OdometryController from "./controllers/OdometryController";
 import TabController from "./controllers/TabController";
 import ThreeDimensionController from "./controllers/ThreeDimensionController";
+import VideoController from "./controllers/VideoController";
 
 export default class Tabs {
   private TAB_DRAG_THRESHOLD_PX = 5;
@@ -414,6 +416,10 @@ export default class Tabs {
         controller = new ThreeDimensionController(controlsElement);
         renderer = new ThreeDimensionRenderer(rendererElement);
         break;
+      case TabType.Video:
+        controller = new VideoController(controlsElement);
+        renderer = new VideoRenderer(rendererElement);
+        break;
       default:
         controller = new NoopController();
         renderer = new NoopRenderer();
@@ -534,7 +540,7 @@ export default class Tabs {
    * and right arrow keys) */
   isUnlockedVideoSelected(): boolean {
     if (this.tabList[this.selectedTab].type === TabType.Video) {
-      // return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
+      return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
       return false;
     } else {
       return false;
@@ -545,7 +551,7 @@ export default class Tabs {
   processVideoData(data: any) {
     this.tabList.forEach((tab) => {
       if (tab.type === TabType.Video) {
-        // (tab.controller as VideoController).processVideoData(data);
+        (tab.controller as VideoController).processVideoData(data);
       }
     });
   }

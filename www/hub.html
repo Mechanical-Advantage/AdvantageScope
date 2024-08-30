@@ -258,7 +258,64 @@
 
         <!-- Video -->
         <div id="controller7">
-          <!-- Video controller -->
+          <div class="video-source">
+            <button tabindex="-1">
+              <img src="symbols/doc.fill.svg" />
+            </button>
+            <button tabindex="-1">
+              <img src="symbols/list.clipboard.fill.svg" />
+              <svg><path /></svg>
+            </button>
+            <button tabindex="-1">
+              <img src="symbols/tba_lamp.svg" />
+              <svg><path /></svg>
+            </button>
+          </div>
+          <div class="video-synchronization">
+            <div class="video-timeline-section">
+              <button tabindex="-1">
+                <img src="symbols/lock.open.svg" />
+              </button>
+              <button tabindex="-1" hidden>
+                <img src="symbols/lock.svg" />
+              </button>
+              <div class="video-timeline-container">
+                <input
+                  class="video-timeline-slider"
+                  id="timeline"
+                  type="range"
+                  value="0"
+                  min="1"
+                  max="1"
+                  step="1"
+                  tabindex="-1"
+                />
+                <div class="video-timeline-marker-container">
+                  <div></div>
+                </div>
+              </div>
+            </div>
+            <div class="video-timeline-controls">
+              <button tabindex="-1">
+                <img src="symbols/gobackward.5.svg" />
+              </button>
+              <button tabindex="-1">
+                <img src="symbols/backward.frame.svg" />
+              </button>
+              <button tabindex="-1">
+                <img src="symbols/play.fill.svg" />
+              </button>
+              <button tabindex="-1" hidden>
+                <img src="symbols/pause.svg" />
+              </button>
+              <button tabindex="-1">
+                <img src="symbols/forward.frame.svg" />
+              </button>
+              <button tabindex="-1">
+                <img src="symbols/goforward.5.svg" />
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Joysticks -->
@@ -337,7 +394,9 @@
 
         <!-- Video -->
         <div id="renderer7">
-          <!-- Video renderer -->
+          <div class="video-container">
+            <img />
+          </div>
         </div>
 
         <!-- Joysticks -->
