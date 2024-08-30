@@ -61,7 +61,7 @@ export default class Tabs {
     this.TAB_CONFIGS.set(TabType.Statistics, { showTimeline: false, fixedControlsHeight: 0 });
     this.TAB_CONFIGS.set(TabType.Odometry, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.ThreeDimension, { showTimeline: true });
-    this.TAB_CONFIGS.set(TabType.Video, { showTimeline: true });
+    this.TAB_CONFIGS.set(TabType.Video, { showTimeline: true, fixedControlsHeight: 85 });
     this.TAB_CONFIGS.set(TabType.Joysticks, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.Swerve, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.Mechanism, { showTimeline: true });
@@ -181,10 +181,20 @@ export default class Tabs {
       document.body.style.cursor = "initial";
     });
     window.addEventListener("mousemove", (event) => {
+      let fixedHeight = this.TAB_CONFIGS.get(this.tabList[this.selectedTab].type)?.fixedControlsHeight;
       if (this.controlsHandleActive) {
         let height = window.innerHeight - event.clientY;
         if (height >= 30 && height < 100) height = 100;
-        if (height < 30) height = 0;
+        if (height < 30) {
+          if (this.tabList[this.selectedTab].controlsHeight > 0) {
+            height = 0;
+          } else {
+            height = this.tabList[this.selectedTab].controlsHeight;
+          }
+        }
+        if (fixedHeight !== undefined && height !== 0) {
+          height = fixedHeight;
+        }
         this.tabList[this.selectedTab].controlsHeight = height;
         this.updateControlsHeight();
       }
@@ -193,7 +203,13 @@ export default class Tabs {
     this.CONTROLS_HANDLE.addEventListener("click", () => {
       let now = new Date().getTime();
       if (now - lastClick < 400) {
-        this.tabList[this.selectedTab].controlsHeight *= -1;
+        let fixedHeight = this.TAB_CONFIGS.get(this.tabList[this.selectedTab].type)?.fixedControlsHeight;
+        if (this.tabList[this.selectedTab].controlsHeight === 0) {
+          this.tabList[this.selectedTab].controlsHeight =
+            fixedHeight === undefined ? this.DEFAULT_CONTROLS_HEIGHT : fixedHeight;
+        } else {
+          this.tabList[this.selectedTab].controlsHeight *= -1;
+        }
         this.updateControlsHeight();
         lastClick = 0;
       } else {
@@ -292,7 +308,7 @@ export default class Tabs {
     selectedTab.controlsHeight = Math.min(selectedTab.controlsHeight, availableHeight);
 
     let appliedHeight = Math.max(selectedTab.controlsHeight, 0);
-    this.CONTROLS_HANDLE.hidden = tabConfig?.fixedControlsHeight !== undefined;
+    this.CONTROLS_HANDLE.hidden = tabConfig?.fixedControlsHeight === 0;
     this.CONTROLS_CONTENT.hidden = appliedHeight === 0;
     document.documentElement.style.setProperty("--tab-controls-height", appliedHeight.toString() + "px");
     document.documentElement.style.setProperty("--show-tab-controls", appliedHeight === 0 ? "0" : "1");
@@ -329,7 +345,7 @@ export default class Tabs {
       this.tabList[index].renderer.restoreState(tabState.renderer);
 
       let tabConfig = this.TAB_CONFIGS.get(tabState.type);
-      if (tabConfig?.fixedControlsHeight === undefined) {
+      if (tabState.controlsHeight === 0 || tabConfig?.fixedControlsHeight === undefined) {
         this.tabList[index].controlsHeight = tabState.controlsHeight;
       }
     });
