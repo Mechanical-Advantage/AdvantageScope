@@ -156,7 +156,7 @@ const OdometryController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
-      sourceTypes: ["Rotation2d"],
+      sourceTypes: ["Rotation2d", "Rotation3d"],
       options: [],
       childOf: "robot",
       geometryPreviewType: "Rotation2d"

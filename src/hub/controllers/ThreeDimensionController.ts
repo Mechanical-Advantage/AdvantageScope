@@ -4,8 +4,7 @@ import {
   APRIL_TAG_36H11_COUNT,
   AnnotatedPose3d,
   grabHeatmapData,
-  grabPosesAuto,
-  rotation2dTo3d
+  grabPosesAuto
 } from "../../shared/geometry";
 import {
   MechanismState,
@@ -303,15 +302,24 @@ export default class ThreeDimensionController implements TabController {
 
             case "rotationOverride":
             case "rotationOverrideLegacy":
-              let isRotation2d = child.logType === "Rotation2d";
-              let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
-              let rotation: number = getOrDefault(window.log, rotationKey, LoggableType.Number, time!, 0, this.UUID);
-              if (!isRotation2d) {
-                rotation = convert(rotation, child.options.units, "radians");
+              let numberArrayUnits: "radians" | "degrees" = "radians";
+              if ("units" in child.options) {
+                numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
               }
-              poses.forEach((value) => {
-                value.pose.rotation = rotation2dTo3d(rotation);
-              });
+              let rotations = grabPosesAuto(
+                window.log,
+                child.logKey,
+                child.logType,
+                time!,
+                this.UUID,
+                undefined,
+                numberArrayUnits
+              );
+              if (rotations.length > 0) {
+                poses.forEach((value) => {
+                  value.pose.rotation = rotations[0].pose.rotation;
+                });
+              }
               break;
 
             case "vision":

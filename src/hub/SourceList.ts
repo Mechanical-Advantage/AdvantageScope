@@ -806,7 +806,8 @@ export default class SourceList {
                     "\u00b0, Pitch: " +
                     convert(rpy[1], "radians", "degrees").toFixed(2) +
                     "\u00b0, Yaw: " +
-                    convert(rpy[2], "radians", "degrees").toFixed(2)
+                    convert(rpy[2], "radians", "degrees").toFixed(2) +
+                    "\u00b0"
                   );
                 }
                 case "Translation3d": {
@@ -834,7 +835,8 @@ export default class SourceList {
                     "\u00b0, Pitch: " +
                     convert(rpy[1], "radians", "degrees").toFixed(2) +
                     "\u00b0, Yaw: " +
-                    convert(rpy[2], "radians", "degrees").toFixed(2)
+                    convert(rpy[2], "radians", "degrees").toFixed(2) +
+                    "\u00b0"
                   );
                 }
                 default: {

@@ -176,6 +176,10 @@ export function grabPosesAuto(
       return grabRotation2d(log, key, timestamp, uuid);
     case "Rotation3d":
       return grabRotation3d(log, key, timestamp, uuid);
+    case "Rotation2d[]":
+      return grabRotation2dArray(log, key, timestamp, uuid);
+    case "Rotation3d[]":
+      return grabRotation3dArray(log, key, timestamp, uuid);
     case "Translation2d":
       return grabTranslation2d(log, key, timestamp, uuid);
     case "Translation3d":
@@ -330,6 +334,20 @@ export function grabRotation3d(log: Log, key: string, timestamp: number, uuid?: 
       annotation: { is2DSource: false }
     }
   ];
+}
+
+export function grabRotation2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+    (array, index) => array.concat(grabRotation2d(log, key + "/" + index.toString(), timestamp)),
+    [] as AnnotatedPose3d[]
+  );
+}
+
+export function grabRotation3dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+    (array, index) => array.concat(grabRotation3d(log, key + "/" + index.toString(), timestamp)),
+    [] as AnnotatedPose3d[]
+  );
 }
 
 export function grabTranslation2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {

@@ -199,7 +199,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
-      sourceTypes: ["Rotation2d"],
+      sourceTypes: ["Rotation2d", "Rotation3d"],
       options: [],
       childOf: "robot",
       geometryPreviewType: "Rotation3d"
@@ -224,7 +224,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       childOf: "robot",
-      geometryPreviewType: "Rotation2d"
+      geometryPreviewType: "Rotation3d"
     },
     {
       key: "vision",

@@ -6,10 +6,10 @@ import {
   annotatedPose3dTo2d,
   grabHeatmapData,
   grabPosesAuto,
+  rotation3dTo2d,
   translation3dTo2d
 } from "../../shared/geometry";
-import { getIsRedAlliance, getOrDefault } from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
+import { getIsRedAlliance } from "../../shared/log/LogUtil";
 import {
   OdometryRendererCommand,
   OdometryRendererCommand_AnyObj,
@@ -367,15 +367,24 @@ export default class OdometryController implements TabController {
         switch (child.type) {
           case "rotationOverride":
           case "rotationOverrideLegacy":
-            let isRotation2d = child.logType === "Rotation2d";
-            let rotationKey = isRotation2d ? child.logKey + "/value" : child.logKey;
-            let rotation: number = getOrDefault(window.log, rotationKey, LoggableType.Number, time!, 0, this.UUID);
-            if (!isRotation2d) {
-              rotation = convert(rotation, child.options.units, "radians");
+            let numberArrayUnits: "radians" | "degrees" = "radians";
+            if ("units" in child.options) {
+              numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
             }
-            poses.forEach((value) => {
-              value.pose.rotation = rotation;
-            });
+            let rotations = grabPosesAuto(
+              window.log,
+              child.logKey,
+              child.logType,
+              time!,
+              this.UUID,
+              undefined,
+              numberArrayUnits
+            );
+            if (rotations.length > 0) {
+              poses.forEach((value) => {
+                value.pose.rotation = rotation3dTo2d(rotations[0].pose.rotation);
+              });
+            }
             break;
 
           case "vision":
