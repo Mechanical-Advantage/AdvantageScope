@@ -3,6 +3,7 @@ import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
+import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
@@ -14,6 +15,7 @@ import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
+import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
 import NoopController from "./controllers/NoopController";
 import OdometryController from "./controllers/OdometryController";
@@ -427,6 +429,10 @@ export default class Tabs {
       case TabType.Joysticks:
         controller = new JoysticksController(controlsElement);
         renderer = new JoysticksRenderer(rendererElement);
+        break;
+      case TabType.Mechanism:
+        controller = new MechanismController(controlsElement);
+        renderer = new MechanismRenderer(rendererElement);
         break;
       case TabType.Metadata:
         controller = new MetadataController();

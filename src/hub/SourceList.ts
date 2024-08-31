@@ -8,7 +8,7 @@ import {
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
 import { grabPosesAuto, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
-import { getLogValueText, getOrDefault } from "../shared/log/LogUtil";
+import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { NoopUnitConversion, UnitConversionPreset, convert, convertWithPreset } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
@@ -535,6 +535,7 @@ export default class SourceList {
     item.addEventListener("contextmenu", (event) => {
       promptType([event.clientX, event.clientY]);
     });
+    typeButton.disabled = this.config.types.length === 1;
 
     // Warning button
     let warningButton = item.getElementsByClassName("warning")[0] as HTMLButtonElement;
@@ -683,6 +684,7 @@ export default class SourceList {
     mockSourceContainer.appendChild(mockTypeName);
     document.body.appendChild(mockSourceContainer);
     let typeNameWidth = mockTypeName.clientWidth;
+    if (typeNameWidth > 0) typeNameWidth += 3; //Add extra margin after colon
     document.body.removeChild(mockSourceContainer);
     keyContainer.style.setProperty("--type-width", typeNameWidth.toString() + "px");
 
@@ -733,6 +735,7 @@ export default class SourceList {
     let text: string | null = null;
     if (this.isFieldAvailable(state) && time !== null) {
       let logType = window.log.getType(state.logKey);
+      let structuredType = window.log.getStructuredType(state.logKey);
       if (logType !== null) {
         let value = getOrDefault(window.log, state.logKey, logType, time, null);
         if (logType === LoggableType.Number) {
@@ -852,6 +855,12 @@ export default class SourceList {
                 poseStrings.map((str) => "(" + str + ")").join(", ") +
                 "]";
             }
+          }
+        } else if (structuredType === "Mechanism2d") {
+          let mechanismState = getMechanismState(window.log, state.logKey, time);
+          if (mechanismState !== null) {
+            let count = mechanismState.lines.length;
+            text = count.toString() + " segment" + (count === 1 ? "" : "s");
           }
         } else if (
           logType === LoggableType.BooleanArray ||

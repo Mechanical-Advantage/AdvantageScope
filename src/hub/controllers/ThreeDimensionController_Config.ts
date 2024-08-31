@@ -190,8 +190,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#888888",
       sourceTypes: ["Mechanism2d"],
       options: [],
-      childOf: "robot",
-      geometryPreviewType: null
+      childOf: "robot"
     },
     {
       key: "rotationOverride",

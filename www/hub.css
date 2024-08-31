@@ -931,7 +931,7 @@ div.source-list div.key-container {
   position: absolute;
   top: 0px;
   height: 30px;
-  left: calc(33px + var(--type-width));
+  left: calc(30px + var(--type-width));
   max-width: calc(100% - 31px - var(--type-width) - 55px - (var(--has-warning) * 25px));
 
   text-align: right;
@@ -1724,6 +1724,31 @@ table.joystick-selector td {
 
 table.joystick-selector select {
   width: calc(100% - 30px);
+}
+
+/* Mechanism */
+
+div.mechanism-svg-container {
+  position: absolute;
+  left: 0%;
+  bottom: 0%;
+  width: 100%;
+  height: calc(100% + 10px);
+}
+
+svg.mechanism-svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+div.mechanism-sources {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
 }
 
 /* Metadata */
