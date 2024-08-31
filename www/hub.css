@@ -1449,6 +1449,11 @@ div.three-dimension-canvas-container {
   left: 0%;
   width: 100%;
   height: calc(100% + 26px);
+  overflow: hidden;
+}
+
+div.three-dimension-canvas-container.fixed {
+  height: calc(100% + 10px);
 }
 
 div.three-dimension-annotations {
@@ -1480,7 +1485,9 @@ div.three-dimension-annotations.fixed {
 }
 
 canvas.three-dimension-canvas.fixed {
-  border: 1px solid #555;
+  border-left: 1px solid #555;
+  border-right: 1px solid #555;
+  box-sizing: border-box;
 }
 
 div.three-dimension-alert {
@@ -1496,7 +1503,8 @@ div.three-dimension-alert {
 
 @media (prefers-color-scheme: dark) {
   canvas.three-dimension-canvas.fixed {
-    border: 1px solid #999;
+    border-left: 1px solid #999;
+    border-right: 1px solid #999;
   }
 
   div.three-dimension-alert {

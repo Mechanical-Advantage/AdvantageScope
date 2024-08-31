@@ -71,6 +71,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
   private stopped = false;
   private mode: "cinematic" | "standard" | "low-power";
   private content: HTMLElement;
+  private canvasContainer: HTMLElement;
   private canvas: HTMLCanvasElement;
   private annotationsDiv: HTMLElement;
   private alert: HTMLElement;
@@ -1400,6 +1401,7 @@ export default class ThreeDimensionVisualizer implements Visualizer {
       let fov = this.orbitFov;
       this.lastAspectRatio = null;
       if (orbitalCamera || dsCamera) {
+        this.container.classList.remove("fixed");
         this.canvas.classList.remove("fixed");
         this.annotationsDiv.classList.remove("fixed");
         this.canvas.style.width = "";

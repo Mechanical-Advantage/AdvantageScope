@@ -73,6 +73,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private shouldResetCamera = true;
   private mode: "cinematic" | "standard" | "low-power";
   private canvas: HTMLCanvasElement;
+  private canvasContainer: HTMLElement;
   private annotationsDiv: HTMLElement;
   private alert: HTMLElement;
 
@@ -118,11 +119,13 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   constructor(
     mode: "cinematic" | "standard" | "low-power",
     canvas: HTMLCanvasElement,
+    canvasContainer: HTMLElement,
     annotationsDiv: HTMLElement,
     alert: HTMLElement
   ) {
     this.mode = mode;
     this.canvas = canvas;
+    this.canvasContainer = canvasContainer;
     this.annotationsDiv = annotationsDiv;
     this.alert = alert;
     this.renderer = new THREE.WebGLRenderer({
@@ -671,6 +674,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       let fov = this.orbitFov;
       if (orbitalCamera || dsCamera) {
         this.canvas.classList.remove("fixed");
+        this.canvasContainer.classList.remove("fixed");
         this.annotationsDiv.classList.remove("fixed");
         this.canvas.style.width = "";
         this.canvas.style.height = "";
@@ -701,43 +705,42 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         }
       } else {
         this.canvas.classList.add("fixed");
+        this.canvasContainer.classList.add("fixed");
         this.annotationsDiv.classList.add("fixed");
-        let aspectRatio = 16 / 9;
-        if (robotConfig) {
-          // Get fixed aspect ratio and FOV
-          let cameraConfig = robotConfig.cameras[this.cameraIndex];
-          aspectRatio = cameraConfig.resolution[0] / cameraConfig.resolution[1];
-          fov = cameraConfig.fov / aspectRatio;
-          let parentAspectRatio = this.canvas.parentElement
-            ? this.canvas.parentElement.clientWidth / this.canvas.parentElement.clientHeight
-            : aspectRatio;
-          if (aspectRatio > parentAspectRatio) {
-            this.canvas.style.width = "100%";
-            this.canvas.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
-            this.annotationsDiv.style.width = "100%";
-            this.annotationsDiv.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
-          } else {
-            this.canvas.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
-            this.canvas.style.height = "100%";
-            this.annotationsDiv.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
-            this.annotationsDiv.style.height = "100%";
-          }
 
-          // Update camera position
-          let referenceObj: THREE.Object3D | null = null;
-          if (this.fixedCameraOverrideObj.visible) {
-            referenceObj = this.fixedCameraOverrideObj;
-          } else if (this.primaryRobotGroup.visible) {
-            this.fixedCameraObj.position.set(...cameraConfig.position);
-            this.fixedCameraObj.rotation.setFromQuaternion(
-              getQuaternionFromRotSeq(cameraConfig.rotations).multiply(this.CAMERA_ROTATION)
-            );
-            referenceObj = this.fixedCameraObj;
-          }
-          if (referenceObj) {
-            this.camera.position.copy(referenceObj.getWorldPosition(new THREE.Vector3()));
-            this.camera.rotation.setFromQuaternion(referenceObj.getWorldQuaternion(new THREE.Quaternion()));
-          }
+        // Get fixed aspect ratio and FOV
+        let cameraConfig = robotConfig === undefined ? undefined : robotConfig.cameras[this.cameraIndex];
+        let aspectRatio = cameraConfig === undefined ? 4 / 3 : cameraConfig.resolution[0] / cameraConfig.resolution[1];
+        if (cameraConfig !== undefined) fov = cameraConfig.fov / aspectRatio;
+        let parentAspectRatio = this.canvas.parentElement
+          ? this.canvas.parentElement.clientWidth / this.canvas.parentElement.clientHeight
+          : aspectRatio;
+        if (aspectRatio > parentAspectRatio) {
+          this.canvas.style.width = "100%";
+          this.canvas.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
+          this.annotationsDiv.style.width = "100%";
+          this.annotationsDiv.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
+        } else {
+          this.canvas.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
+          this.canvas.style.height = "100%";
+          this.annotationsDiv.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
+          this.annotationsDiv.style.height = "100%";
+        }
+
+        // Update camera position
+        let referenceObj: THREE.Object3D | null = null;
+        if (this.fixedCameraOverrideObj.visible) {
+          referenceObj = this.fixedCameraOverrideObj;
+        } else if (this.primaryRobotGroup.visible && cameraConfig !== undefined) {
+          this.fixedCameraObj.position.set(...cameraConfig.position);
+          this.fixedCameraObj.rotation.setFromQuaternion(
+            getQuaternionFromRotSeq(cameraConfig.rotations).multiply(this.CAMERA_ROTATION)
+          );
+          referenceObj = this.fixedCameraObj;
+        }
+        if (referenceObj) {
+          this.camera.position.copy(referenceObj.getWorldPosition(new THREE.Vector3()));
+          this.camera.rotation.setFromQuaternion(referenceObj.getWorldQuaternion(new THREE.Quaternion()));
         }
       }
 
@@ -770,10 +773,13 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
     // Render new frame
     const devicePixelRatio = window.devicePixelRatio * (this.mode === "low-power" ? 0.75 : 1);
-    const canvas = this.renderer.domElement;
-    const clientWidth = canvas.clientWidth;
-    const clientHeight = canvas.clientHeight;
-    if (canvas.width / devicePixelRatio !== clientWidth || canvas.height / devicePixelRatio !== clientHeight) {
+    const clientWidth = this.canvas.clientWidth;
+    const clientHeight = this.canvas.clientHeight;
+    console.log(clientWidth, clientHeight);
+    if (
+      this.canvas.width / devicePixelRatio !== clientWidth ||
+      this.canvas.height / devicePixelRatio !== clientHeight
+    ) {
       this.renderer.setSize(clientWidth, clientHeight, false);
       this.cssRenderer.setSize(clientWidth, clientHeight);
       this.camera.aspect = clientWidth / clientHeight;

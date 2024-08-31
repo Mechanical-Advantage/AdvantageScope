@@ -5,6 +5,7 @@ import ThreeDimensionRendererImpl from "./ThreeDimensionRendererImpl";
 
 export default class ThreeDimensionRenderer implements TabRenderer {
   private CANVAS: HTMLCanvasElement;
+  private CANVAS_CONTAINER: HTMLElement;
   private ANNOTATIONS_DIV: HTMLElement;
   private ALERT: HTMLElement;
 
@@ -13,6 +14,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 
   constructor(root: HTMLElement) {
     this.CANVAS = root.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement;
+    this.CANVAS_CONTAINER = root.getElementsByClassName("three-dimension-canvas-container")[0] as HTMLElement;
     this.ANNOTATIONS_DIV = root.getElementsByClassName("three-dimension-annotations")[0] as HTMLElement;
     this.ALERT = root.getElementsByClassName("three-dimension-alert")[0] as HTMLElement;
     this.updateImplementation();
@@ -75,7 +77,13 @@ export default class ThreeDimensionRenderer implements TabRenderer {
         this.ANNOTATIONS_DIV.replaceWith(newDiv);
         this.ANNOTATIONS_DIV = newDiv;
       }
-      this.implementation = new ThreeDimensionRendererImpl(mode, this.CANVAS, this.ANNOTATIONS_DIV, this.ALERT);
+      this.implementation = new ThreeDimensionRendererImpl(
+        mode,
+        this.CANVAS,
+        this.CANVAS_CONTAINER,
+        this.ANNOTATIONS_DIV,
+        this.ALERT
+      );
       if (state !== null) {
         this.implementation.restoreState(state);
       }
