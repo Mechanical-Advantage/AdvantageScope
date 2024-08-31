@@ -775,7 +775,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     const devicePixelRatio = window.devicePixelRatio * (this.mode === "low-power" ? 0.75 : 1);
     const clientWidth = this.canvas.clientWidth;
     const clientHeight = this.canvas.clientHeight;
-    console.log(clientWidth, clientHeight);
     if (
       this.canvas.width / devicePixelRatio !== clientWidth ||
       this.canvas.height / devicePixelRatio !== clientHeight
