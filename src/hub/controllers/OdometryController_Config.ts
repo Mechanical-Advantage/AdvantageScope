@@ -308,19 +308,19 @@ const OdometryController_Config: SourceListConfig = {
       ],
       options: [
         {
-          key: "filter",
-          display: "Filter",
+          key: "timeRange",
+          display: "Time Range",
           showInTypeName: false,
           values: [
             { key: "enabled", display: "Enabled" },
             { key: "auto", display: "Auto" },
             { key: "teleop", display: "Teleop" },
             { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
-            { key: "full", display: "No Filter" }
+            { key: "full", display: "Full Log" }
           ]
         }
       ],
-      initialSelectionOption: "filter",
+      initialSelectionOption: "timeRange",
       geometryPreviewType: null
     },
     {
@@ -332,8 +332,8 @@ const OdometryController_Config: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [
         {
-          key: "filter",
-          display: "Filter",
+          key: "timeRange",
+          display: "Time Range",
           showInTypeName: false,
           values: [
             { key: "enabled", display: "Enabled" },
@@ -355,7 +355,7 @@ const OdometryController_Config: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "filter",
+      initialSelectionOption: "timeRange",
       numberArrayDeprecated: true,
       geometryPreviewType: null
     },

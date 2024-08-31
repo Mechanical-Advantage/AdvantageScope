@@ -7,7 +7,7 @@ import {
   SourceListTypeConfig,
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
-import { grabPosesAuto, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
+import { grabPosesAuto, grabSwerveStates, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
 import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { NoopUnitConversion, UnitConversionPreset, convert, convertWithPreset } from "../shared/units";
@@ -535,7 +535,6 @@ export default class SourceList {
     item.addEventListener("contextmenu", (event) => {
       promptType([event.clientX, event.clientY]);
     });
-    typeButton.disabled = this.config.types.length === 1;
 
     // Warning button
     let warningButton = item.getElementsByClassName("warning")[0] as HTMLButtonElement;
@@ -758,92 +757,113 @@ export default class SourceList {
             if ("units" in state.options) {
               numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
             }
-            let poses = grabPosesAuto(
-              window.log,
-              state.logKey,
-              state.logType,
-              time,
-              this.UUID,
-              numberArrayFormat,
-              numberArrayUnits,
-              "red", // Display in native coordinate system
-              0,
-              0
-            );
-            let poseStrings = poses.map((annotatedPose) => {
-              switch (typeConfig?.geometryPreviewType) {
-                case "Rotation2d": {
-                  return (
-                    convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
-                  );
-                }
-                case "Translation2d": {
-                  return (
-                    "X: " +
-                    annotatedPose.pose.translation[0].toFixed(2) +
-                    "m, Y: " +
-                    annotatedPose.pose.translation[1].toFixed(2) +
-                    "m"
-                  );
-                }
-                case "Pose2d":
-                case "Transform2d": {
-                  return (
-                    "X: " +
-                    annotatedPose.pose.translation[0].toFixed(2) +
-                    "m, Y: " +
-                    annotatedPose.pose.translation[1].toFixed(2) +
-                    "m, \u03b8: " +
-                    convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+            let poseStrings: string[] = [];
+            if (typeConfig?.geometryPreviewType === "SwerveModuleState[]") {
+              let swerveStates = grabSwerveStates(
+                window.log,
+                state.logKey,
+                state.logType,
+                time,
+                numberArrayUnits,
+                this.UUID
+              );
+              swerveStates.forEach((state) => {
+                poseStrings.push(
+                  "v: " +
+                    state.speed.toFixed(2) +
+                    "m/s, \u03b8: " +
+                    convert(state.angle, "radians", "degrees").toFixed(2) +
                     "\u00b0"
-                  );
+                );
+              });
+            } else {
+              let poses = grabPosesAuto(
+                window.log,
+                state.logKey,
+                state.logType,
+                time,
+                this.UUID,
+                numberArrayFormat,
+                numberArrayUnits,
+                "red", // Display in native coordinate system
+                0,
+                0
+              );
+              poseStrings = poses.map((annotatedPose) => {
+                switch (typeConfig?.geometryPreviewType) {
+                  case "Rotation2d": {
+                    return (
+                      convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
+                    );
+                  }
+                  case "Translation2d": {
+                    return (
+                      "X: " +
+                      annotatedPose.pose.translation[0].toFixed(2) +
+                      "m, Y: " +
+                      annotatedPose.pose.translation[1].toFixed(2) +
+                      "m"
+                    );
+                  }
+                  case "Pose2d":
+                  case "Transform2d": {
+                    return (
+                      "X: " +
+                      annotatedPose.pose.translation[0].toFixed(2) +
+                      "m, Y: " +
+                      annotatedPose.pose.translation[1].toFixed(2) +
+                      "m, \u03b8: " +
+                      convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                      "\u00b0"
+                    );
+                  }
+                  case "Rotation3d": {
+                    let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
+                    return (
+                      "Roll: " +
+                      convert(rpy[0], "radians", "degrees").toFixed(2) +
+                      "\u00b0, Pitch: " +
+                      convert(rpy[1], "radians", "degrees").toFixed(2) +
+                      "\u00b0, Yaw: " +
+                      convert(rpy[2], "radians", "degrees").toFixed(2) +
+                      "\u00b0"
+                    );
+                  }
+                  case "Translation3d": {
+                    return (
+                      "X: " +
+                      annotatedPose.pose.translation[0].toFixed(2) +
+                      "m, Y: " +
+                      annotatedPose.pose.translation[1].toFixed(2) +
+                      "m, Z: " +
+                      annotatedPose.pose.translation[2].toFixed(2) +
+                      "m"
+                    );
+                  }
+                  case "Pose3d": {
+                    let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
+                    return (
+                      "X: " +
+                      annotatedPose.pose.translation[0].toFixed(2) +
+                      "m, Y: " +
+                      annotatedPose.pose.translation[1].toFixed(2) +
+                      "m, Z: " +
+                      annotatedPose.pose.translation[2].toFixed(2) +
+                      "m, Roll: " +
+                      convert(rpy[0], "radians", "degrees").toFixed(2) +
+                      "\u00b0, Pitch: " +
+                      convert(rpy[1], "radians", "degrees").toFixed(2) +
+                      "\u00b0, Yaw: " +
+                      convert(rpy[2], "radians", "degrees").toFixed(2) +
+                      "\u00b0"
+                    );
+                  }
+                  default: {
+                    return "";
+                  }
                 }
-                case "Rotation3d": {
-                  let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                  return (
-                    "Roll: " +
-                    convert(rpy[0], "radians", "degrees").toFixed(2) +
-                    "\u00b0, Pitch: " +
-                    convert(rpy[1], "radians", "degrees").toFixed(2) +
-                    "\u00b0, Yaw: " +
-                    convert(rpy[2], "radians", "degrees").toFixed(2) +
-                    "\u00b0"
-                  );
-                }
-                case "Translation3d": {
-                  return (
-                    "X: " +
-                    annotatedPose.pose.translation[0].toFixed(2) +
-                    "m, Y: " +
-                    annotatedPose.pose.translation[1].toFixed(2) +
-                    "m, Z: " +
-                    annotatedPose.pose.translation[2].toFixed(2) +
-                    "m"
-                  );
-                }
-                case "Pose3d": {
-                  let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                  return (
-                    "X: " +
-                    annotatedPose.pose.translation[0].toFixed(2) +
-                    "m, Y: " +
-                    annotatedPose.pose.translation[1].toFixed(2) +
-                    "m, Z: " +
-                    annotatedPose.pose.translation[2].toFixed(2) +
-                    "m, Roll: " +
-                    convert(rpy[0], "radians", "degrees").toFixed(2) +
-                    "\u00b0, Pitch: " +
-                    convert(rpy[1], "radians", "degrees").toFixed(2) +
-                    "\u00b0, Yaw: " +
-                    convert(rpy[2], "radians", "degrees").toFixed(2) +
-                    "\u00b0"
-                  );
-                }
-                default: {
-                  return "";
-                }
-              }
-            });
+              });
+            }
             if (poseStrings.length === 1) {
               text = poseStrings[0];
             } else if (poseStrings.length === 0) {

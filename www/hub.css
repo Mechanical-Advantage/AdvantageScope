@@ -1061,19 +1061,35 @@ div.setting-blocks div.input {
   font-size: 0px;
 }
 
-div.setting-blocks div.input:nth-child(2) {
+div.setting-blocks.fix-first div.input:nth-child(2) {
   height: 40px;
 }
 
-div.setting-blocks div.input:nth-child(4),
-div.setting-blocks div.input:nth-child(6) {
+div.setting-blocks.fix-first div.input:nth-child(4),
+div.setting-blocks.fix-first div.input:nth-child(6) {
   height: calc((100% - 105px) / 2);
   max-height: 120px;
 }
 
-div.setting-blocks div.input.tall {
+div.setting-blocks.fix-first div.input.tall {
   height: calc(100% - 85px);
   max-height: 100px;
+}
+
+div.setting-block.fix-second div.input:nth-child(2),
+div.setting-blocks.fix-second div.input:nth-child(4) {
+  height: 40px;
+}
+
+div.setting-blocks.fix-second div.input:nth-child(6) {
+  height: calc(100% - 145px);
+  max-height: 120px;
+}
+
+div.setting-block.fix-third div.input:nth-child(2),
+div.setting-blocks.fix-third div.input:nth-child(4),
+div.setting-blocks.fix-third div.input:nth-child(6) {
+  height: 40px;
 }
 
 div.setting-blocks div.full,
@@ -1190,7 +1206,7 @@ div.setting-blocks div.split div.selected {
   }
 }
 
-div.setting-blocks div.game-title {
+div.setting-blocks > div:first-child {
   margin-top: 5px;
 }
 
@@ -1207,6 +1223,24 @@ div.setting-blocks select.game-select {
 div.setting-blocks a.game-source {
   padding: 5px;
   font-size: 14px;
+}
+
+div.setting-blocks input {
+  margin: 5px;
+  width: 70%;
+  text-align: center;
+}
+
+div.setting-blocks select:not(.game-select) {
+  margin: 5px;
+  width: 70%;
+  height: 25px;
+}
+
+div.setting-blocks input[type="number"]::-webkit-outer-spin-button,
+div.setting-blocks input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1485,9 +1519,7 @@ div.three-dimension-annotations.fixed {
 }
 
 canvas.three-dimension-canvas.fixed {
-  border-left: 1px solid #555;
-  border-right: 1px solid #555;
-  box-sizing: border-box;
+  border: 1px solid #555;
 }
 
 div.three-dimension-alert {
@@ -1503,13 +1535,42 @@ div.three-dimension-alert {
 
 @media (prefers-color-scheme: dark) {
   canvas.three-dimension-canvas.fixed {
-    border-left: 1px solid #999;
-    border-right: 1px solid #999;
+    border: 1px solid #999;
   }
 
   div.three-dimension-alert {
     background-color: #222;
     border: 1px solid #999;
+  }
+}
+
+/* Statistics */
+
+div.stats-sources {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  left: 0%;
+  width: 60%;
+  min-width: calc(100% - 200px);
+}
+
+div.stats-settings {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  right: 0%;
+  width: 40%;
+  max-width: 200px;
+  border-left: 1px solid #ddd;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.stats-settings {
+    border-left: 1px solid black;
   }
 }
 
@@ -1734,6 +1795,62 @@ table.joystick-selector select {
   width: calc(100% - 30px);
 }
 
+/* Swerve */
+
+div.swerve-canvas-container {
+  position: absolute;
+  bottom: 0%;
+  height: calc(100% + 10px);
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+canvas.swerve-canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+}
+
+@media (prefers-color-scheme: dark) {
+  canvas.swerve-canvas {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}
+
+div.swerve-sources {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  left: 0%;
+  width: 60%;
+  min-width: calc(100% - 200px);
+}
+
+div.swerve-settings {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  right: 0%;
+  width: 40%;
+  max-width: 200px;
+  border-left: 1px solid #ddd;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.swerve-settings {
+    border-left: 1px solid black;
+  }
+}
+
 /* Mechanism */
 
 div.mechanism-svg-container {
@@ -1814,5 +1931,35 @@ table.metadata-table td.no-data {
 
   table.metadata-table td:first-child {
     border-right: 1px solid #eee;
+  }
+}
+
+/* Points */
+
+div.points-sources {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  left: 0%;
+  width: 60%;
+  min-width: calc(100% - 200px);
+}
+
+div.points-settings {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  right: 0%;
+  width: 40%;
+  max-width: 200px;
+  border-left: 1px solid #ddd;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.points-settings {
+    border-left: 1px solid black;
   }
 }

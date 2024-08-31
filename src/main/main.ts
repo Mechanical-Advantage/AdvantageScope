@@ -572,15 +572,19 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
 
       // Add type options
-      if (menu.items.length > 0) {
-        menu.append(
-          new MenuItem({
-            type: "separator"
-          })
-        );
-      }
-      config.types.forEach((typeConfig) => {
-        if (typeConfig.sourceTypes.includes(state.logType) && typeConfig.childOf === currentTypeConfig.childOf) {
+      let validTypes = config.types.filter(
+        (typeConfig) =>
+          typeConfig.sourceTypes.includes(state.logType) && typeConfig.childOf === currentTypeConfig.childOf
+      );
+      if (validTypes.length > 1) {
+        if (menu.items.length > 0) {
+          menu.append(
+            new MenuItem({
+              type: "separator"
+            })
+          );
+        }
+        validTypes.forEach((typeConfig) => {
           let current = state.type === typeConfig.key;
           let optionConfig = current
             ? undefined
@@ -641,9 +645,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                     }
             })
           );
-        }
-      });
+        });
+      }
 
+      if (menu.items.length === 0) {
+        menu.append(
+          new MenuItem({
+            label: "No Options",
+            enabled: false
+          })
+        );
+      }
       menu.popup({
         window: window,
         x: coordinates[0],

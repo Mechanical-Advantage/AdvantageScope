@@ -33,6 +33,7 @@ export type SourceListTypeConfig = {
     | "Translation3d"
     | "Pose3d"
     | "Transform3d"
+    | "SwerveModuleState[]"
     | null;
   options: SourceListOptionConfig[];
   initialSelectionOption?: string;

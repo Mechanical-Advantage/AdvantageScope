@@ -403,8 +403,8 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       options: [
         {
-          key: "filter",
-          display: "Filter",
+          key: "timeRange",
+          display: "Time Range",
           showInTypeName: false,
           values: [
             { key: "enabled", display: "Enabled" },
@@ -415,7 +415,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "filter",
+      initialSelectionOption: "timeRange",
       geometryPreviewType: null
     },
     {
@@ -427,8 +427,8 @@ const ThreeDimensionController_Config: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [
         {
-          key: "filter",
-          display: "Filter",
+          key: "timeRange",
+          display: "Time Range",
           showInTypeName: false,
           values: [
             { key: "enabled", display: "Enabled" },
@@ -450,7 +450,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
           ]
         }
       ],
-      initialSelectionOption: "filter",
+      initialSelectionOption: "timeRange",
       numberArrayDeprecated: true,
       geometryPreviewType: null
     },

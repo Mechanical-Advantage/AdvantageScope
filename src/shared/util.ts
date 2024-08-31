@@ -25,7 +25,7 @@ export function checkArrayType(value: unknown, type: string): boolean {
 }
 
 /** Creates a deep copy of an object by converting to and from JSON. */
-export function jsonCopy(value: any): any {
+export function jsonCopy<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 

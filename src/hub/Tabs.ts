@@ -7,6 +7,7 @@ import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
+import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
 import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
@@ -19,6 +20,9 @@ import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
 import NoopController from "./controllers/NoopController";
 import OdometryController from "./controllers/OdometryController";
+import PointsController from "./controllers/PointsController";
+import StatisticsController from "./controllers/StatisticsController";
+import SwerveController from "./controllers/SwerveController";
 import TabController from "./controllers/TabController";
 import ThreeDimensionController from "./controllers/ThreeDimensionController";
 import VideoController from "./controllers/VideoController";
@@ -66,7 +70,7 @@ export default class Tabs {
     this.TAB_CONFIGS.set(TabType.LineGraph, { showTimeline: false });
     this.TAB_CONFIGS.set(TabType.Table, { showTimeline: false, fixedControlsHeight: 0 });
     this.TAB_CONFIGS.set(TabType.Console, { showTimeline: false, fixedControlsHeight: 0 });
-    this.TAB_CONFIGS.set(TabType.Statistics, { showTimeline: false, fixedControlsHeight: 0 });
+    this.TAB_CONFIGS.set(TabType.Statistics, { showTimeline: false });
     this.TAB_CONFIGS.set(TabType.Odometry, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.ThreeDimension, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.Video, { showTimeline: true, fixedControlsHeight: 85 });
@@ -422,6 +426,10 @@ export default class Tabs {
         controller = new ThreeDimensionController(controlsElement);
         renderer = new ThreeDimensionRenderer(rendererElement);
         break;
+      case TabType.Statistics:
+        controller = new StatisticsController(controlsElement);
+        renderer = new NoopRenderer();
+        break;
       case TabType.Video:
         controller = new VideoController(controlsElement);
         renderer = new VideoRenderer(rendererElement);
@@ -430,9 +438,17 @@ export default class Tabs {
         controller = new JoysticksController(controlsElement);
         renderer = new JoysticksRenderer(rendererElement);
         break;
+      case TabType.Swerve:
+        controller = new SwerveController(controlsElement);
+        renderer = new SwerveRenderer(rendererElement);
+        break;
       case TabType.Mechanism:
         controller = new MechanismController(controlsElement);
         renderer = new MechanismRenderer(rendererElement);
+        break;
+      case TabType.Points:
+        controller = new PointsController(controlsElement);
+        renderer = new NoopRenderer();
         break;
       case TabType.Metadata:
         controller = new MetadataController();

@@ -46,6 +46,8 @@ export type PoseAnnotations = {
   visionColor?: string;
 };
 
+export type SwerveState = { speed: number; angle: Rotation2d };
+
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
 export const APRIL_TAG_36H11_SIZE = convert(8.125, "inches", "meters");
@@ -547,7 +549,7 @@ export function grabHeatmapData(
   log: Log,
   key: string,
   logType: string,
-  filter: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full",
+  timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full",
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
@@ -556,13 +558,13 @@ export function grabHeatmapData(
   zebraFieldHeight?: number
 ): AnnotatedPose3d[] {
   let poses: AnnotatedPose3d[] = [];
-  let isFullLog = filter === "full";
+  let isFullLog = timeRange === "full";
   let stateRanges = isFullLog ? null : getRobotStateRanges(log);
   let isValid = (timestamp: number) => {
     if (isFullLog) return true;
     if (stateRanges === null) return false;
     let currentRange = stateRanges.findLast((range) => range.start <= timestamp);
-    switch (filter) {
+    switch (timeRange) {
       case "enabled":
         return currentRange?.mode !== "disabled";
       case "auto":
@@ -591,4 +593,42 @@ export function grabHeatmapData(
     );
   }
   return poses;
+}
+
+export function grabSwerveStates(
+  log: Log,
+  key: string,
+  logType: string,
+  timestamp: number,
+  rotationUnits: "radians" | "degrees" = "radians",
+  uuid?: string
+): SwerveState[] {
+  switch (logType) {
+    case "NumberArray": {
+      let value: number[] = getOrDefault(log, key, LoggableType.NumberArray, timestamp, [], uuid);
+      let states: SwerveState[] = [];
+      for (let i = 0; i < value.length - 1; i += 2) {
+        states.push({
+          speed: value[1],
+          angle: convert(value[0], rotationUnits, "radians")
+        });
+      }
+      return states;
+    }
+
+    case "SwerveModuleState[]": {
+      let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
+      let states: SwerveState[] = [];
+      for (let i = 0; i < length; i++) {
+        states.push({
+          speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
+          angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
+        });
+      }
+      return states;
+    }
+
+    default:
+      return [];
+  }
 }

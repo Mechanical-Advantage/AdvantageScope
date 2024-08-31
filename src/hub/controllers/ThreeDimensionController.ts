@@ -252,23 +252,23 @@ export default class ThreeDimensionController implements TabController {
           );
         }
       } else {
-        let filter: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" = "enabled";
-        if ("filter" in source.options) {
-          let filterRaw = source.options.filter;
-          filter =
-            filterRaw === "enabled" ||
-            filterRaw === "auto" ||
-            filterRaw === "teleop" ||
-            filterRaw === "teleop-no-endgame" ||
-            filterRaw === "full"
-              ? filterRaw
+        let timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" = "enabled";
+        if ("timeRange" in source.options) {
+          let timeRangeRaw = source.options.timeRange;
+          timeRange =
+            timeRangeRaw === "enabled" ||
+            timeRangeRaw === "auto" ||
+            timeRangeRaw === "teleop" ||
+            timeRangeRaw === "teleop-no-endgame" ||
+            timeRangeRaw === "full"
+              ? timeRangeRaw
               : "enabled";
         }
         poses = grabHeatmapData(
           window.log,
           source.logKey,
           source.logType,
-          filter,
+          timeRange,
           this.UUID,
           numberArrayFormat,
           numberArrayUnits,

@@ -123,8 +123,8 @@
         <!-- Odometry -->
         <div id="controller2">
           <div class="odometry-sources"></div>
-          <div class="odometry-settings setting-blocks">
-            <div class="game-title title">
+          <div class="odometry-settings setting-blocks fix-first">
+            <div class="title">
               <div class="full">Game</div>
             </div>
             <div class="game input">
@@ -202,8 +202,8 @@
         <!-- 3D Field -->
         <div id="controller3">
           <div class="three-dimension-sources"></div>
-          <div class="three-dimension-settings setting-blocks">
-            <div class="game-title title">
+          <div class="three-dimension-settings setting-blocks fix-first">
+            <div class="title">
               <div class="full">Game</div>
             </div>
             <div class="game input">
@@ -253,7 +253,45 @@
 
         <!-- Statistics -->
         <div id="controller6">
-          <!-- Statistics controller -->
+          <div class="stats-sources"></div>
+          <div class="stats-settings setting-blocks fix-second">
+            <div class="title">
+              <div class="full">Time Range</div>
+            </div>
+            <div class="input">
+              <div>
+                <select>
+                  <option value="full">Full Log</option>
+                  <option value="enabled">Enabled</option>
+                  <option value="auto">Auto</option>
+                  <option value="teleop">Teleop</option>
+                  <option value="live-30">Live: 30 Seconds</option>
+                  <option value="live-10">Live: 10 Seconds</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="title">
+              <div class="full">Data Range</div>
+            </div>
+            <div class="input">
+              <div class="half">
+                <input type="number" value="0" tabindex="-1" />
+              </div>
+              <div class="half">
+                <input type="number" value="10" tabindex="-1" />
+              </div>
+            </div>
+
+            <div class="title">
+              <div class="full">Step Size</div>
+            </div>
+            <div class="input">
+              <div>
+                <input type="number" value="1" tabindex="-1" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Video -->
@@ -356,7 +394,43 @@
 
         <!-- Swerve -->
         <div id="controller9">
-          <!-- Swerve controller -->
+          <div class="swerve-sources"></div>
+          <div class="swerve-settings setting-blocks fix-second">
+            <div class="title">
+              <div class="full">Max Speed (m/s)</div>
+            </div>
+            <div class="input">
+              <div>
+                <input class="max-speed" type="number" value="5" tabindex="-1" />
+              </div>
+            </div>
+
+            <div class="title">
+              <div class="full">Frame Size (m)</div>
+            </div>
+            <div class="input">
+              <div class="half">
+                <input class="size-x" type="number" value="0.65" step="0.01" tabindex="-1" />
+              </div>
+              <div class="half">
+                <input class="size-y" type="number" value="0.65" step="0.01" tabindex="-1" />
+              </div>
+            </div>
+
+            <div class="title">
+              <div class="full">Orientation</div>
+            </div>
+            <div class="input">
+              <div class="orientation-switcher split split-2">
+                <div>
+                  <img class="invertable" src="symbols/rotate.right.svg" />
+                </div>
+                <div>
+                  <img class="invertable" src="symbols/rotate.left.svg" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Mechanism -->
@@ -366,7 +440,48 @@
 
         <!-- Points -->
         <div id="controller11">
-          <!-- Points controller -->
+          <div class="points-sources"></div>
+          <div class="points-settings setting-blocks fix-second">
+            <div class="title">
+              <div class="full">Dimensions</div>
+            </div>
+            <div class="input">
+              <div class="half">
+                <input type="number" value="960" step="1" tabindex="-1" />
+              </div>
+              <div class="half">
+                <input type="number" value="720" step="1" tabindex="-1" />
+              </div>
+            </div>
+
+            <div class="title">
+              <div class="full">Orientation</div>
+            </div>
+            <div class="input">
+              <div>
+                <select>
+                  <option value="xr,yd">+X right, +Y down</option>
+                  <option value="xr,yu">+X right, +Y up</option>
+                  <option value="xu,yl">+X up, +Y left</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="title">
+              <div class="full">Origin</div>
+            </div>
+            <div class="input">
+              <div>
+                <select>
+                  <option value="ul">upper left</option>
+                  <option value="ur">upper right</option>
+                  <option value="ll">lower left</option>
+                  <option value="lr">lower right</option>
+                  <option value="c">center</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Metadata -->
@@ -435,7 +550,9 @@
 
         <!-- Swerve -->
         <div id="renderer9">
-          <!-- Swerve renderer -->
+          <div class="swerve-canvas-container">
+            <canvas class="swerve-canvas" width="100" height="100"></canvas>
+          </div>
         </div>
 
         <!-- Mechanism -->
