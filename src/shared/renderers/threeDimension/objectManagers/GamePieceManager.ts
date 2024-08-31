@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { ThreeDimensionRendererCommand_GamePieceObj } from "../../ThreeDimensionRenderer";
 import ObjectManager from "../ObjectManager";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
