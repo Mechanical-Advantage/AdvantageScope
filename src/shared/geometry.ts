@@ -609,8 +609,8 @@ export function grabSwerveStates(
       let states: SwerveState[] = [];
       for (let i = 0; i < value.length - 1; i += 2) {
         states.push({
-          speed: value[1],
-          angle: convert(value[0], rotationUnits, "radians")
+          speed: value[i + 1],
+          angle: convert(value[i], rotationUnits, "radians")
         });
       }
       return states;
