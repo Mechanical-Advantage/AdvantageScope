@@ -78,7 +78,7 @@ export function getTabIcon(type: TabType): string {
     case TabType.Mechanism:
       return "⚙️";
     case TabType.Points:
-      return "🔵";
+      return "📍";
     case TabType.Metadata:
       return "🔍";
     default:

@@ -26,7 +26,7 @@ AdvantageScope supports many ways to view and analyze data, organized into tabs.
 - 🎮 [Joysticks](/docs/tabs/JOYSTICKS.md)
 - 🦀 [Swerve](/docs/tabs/SWERVE.md)
 - ⚙️ [Mechanism](/docs/tabs/MECHANISM.md)
-- 🔵 [Points](/docs/tabs/POINTS.md)
+- 📍 [Points](/docs/tabs/POINTS.md)
 - 🔍 [Metadata](/docs/tabs/METADATA.md)
 
 ## More Features
