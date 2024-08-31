@@ -1,6 +1,7 @@
 import { TabsState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
+import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
@@ -11,6 +12,7 @@ import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
+import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
 import MetadataController from "./controllers/MetadataController";
 import NoopController from "./controllers/NoopController";
@@ -66,7 +68,7 @@ export default class Tabs {
     this.TAB_CONFIGS.set(TabType.Odometry, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.ThreeDimension, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.Video, { showTimeline: true, fixedControlsHeight: 85 });
-    this.TAB_CONFIGS.set(TabType.Joysticks, { showTimeline: true });
+    this.TAB_CONFIGS.set(TabType.Joysticks, { showTimeline: true, fixedControlsHeight: 85 });
     this.TAB_CONFIGS.set(TabType.Swerve, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.Mechanism, { showTimeline: true });
     this.TAB_CONFIGS.set(TabType.Points, { showTimeline: true });
@@ -421,6 +423,10 @@ export default class Tabs {
       case TabType.Video:
         controller = new VideoController(controlsElement);
         renderer = new VideoRenderer(rendererElement);
+        break;
+      case TabType.Joysticks:
+        controller = new JoysticksController(controlsElement);
+        renderer = new JoysticksRenderer(rendererElement);
         break;
       case TabType.Metadata:
         controller = new MetadataController();

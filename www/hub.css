@@ -1699,6 +1699,33 @@ div.video-timeline-controls button {
   transform: translateY(-50%);
 }
 
+/* Joysticks */
+
+canvas.joysticks-canvas {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+table.joystick-selector {
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  width: 100%;
+  height: 100%;
+}
+
+table.joystick-selector td {
+  text-align: center;
+  font-weight: bold;
+}
+
+table.joystick-selector select {
+  width: calc(100% - 30px);
+}
+
 /* Metadata */
 
 div.metadata-table-container {

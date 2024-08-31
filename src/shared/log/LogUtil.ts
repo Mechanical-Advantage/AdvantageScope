@@ -2,7 +2,7 @@ import Fuse from "fuse.js";
 import MatchInfo, { MatchType } from "../MatchInfo";
 import { Rotation2d, Translation2d } from "../geometry";
 import { convert } from "../units";
-import { arraysEqual } from "../util";
+import { arraysEqual, jsonCopy } from "../util";
 import Log from "./Log";
 import LogFieldTree from "./LogFieldTree";
 import { LogValueSetBoolean } from "./LogValueSets";
@@ -352,12 +352,14 @@ export interface JoystickState {
   povs: number[];
 }
 
+export const BlankJoystickState: JoystickState = {
+  buttons: [],
+  axes: [],
+  povs: []
+};
+
 export function getJoystickState(log: Log, joystickId: number, time: number): JoystickState {
-  let state: JoystickState = {
-    buttons: [],
-    axes: [],
-    povs: []
-  };
+  let state = jsonCopy(BlankJoystickState);
   if (joystickId < 0 || joystickId > 5 || joystickId % 1 !== 0) return state;
 
   // Find joystick table
