@@ -38,7 +38,7 @@ const SwerveController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
-      geometryPreviewType: "SwerveModuleState[]"
+      previewType: "SwerveModuleState[]"
     },
     {
       key: "statesLegacy",
@@ -72,7 +72,7 @@ const SwerveController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "color",
       numberArrayDeprecated: true,
-      geometryPreviewType: "SwerveModuleState[]"
+      previewType: "SwerveModuleState[]"
     },
     {
       key: "rotation",
@@ -83,7 +83,7 @@ const SwerveController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["Rotation2d", "Rotation3d"],
       options: [],
-      geometryPreviewType: "Rotation2d"
+      previewType: "Rotation2d"
     },
     {
       key: "rotationLegacy",
@@ -104,7 +104,7 @@ const SwerveController_Config: SourceListConfig = {
           ]
         }
       ],
-      geometryPreviewType: "Rotation2d"
+      previewType: "Rotation2d"
     }
   ]
 };

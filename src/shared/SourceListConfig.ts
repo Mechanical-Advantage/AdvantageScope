@@ -24,7 +24,7 @@ export type SourceListTypeConfig = {
   parentKey?: string;
   /** Parent key this child is attached to */
   childOf?: string;
-  geometryPreviewType?:
+  previewType?:
     | "Rotation2d"
     | "Translation2d"
     | "Pose2d"
@@ -34,7 +34,7 @@ export type SourceListTypeConfig = {
     | "Pose3d"
     | "Transform3d"
     | "SwerveModuleState[]"
-    | null;
+    | null; // Don't use preview
   options: SourceListOptionConfig[];
   initialSelectionOption?: string;
 };

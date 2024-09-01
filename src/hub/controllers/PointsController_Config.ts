@@ -12,7 +12,8 @@ const PointsController_Config: SourceListConfig = {
       display: "Plus",
       symbol: "plus",
       showInTypeName: true,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray"],
       options: [
         {
@@ -37,14 +38,15 @@ const PointsController_Config: SourceListConfig = {
           })
         }
       ],
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "cross",
       display: "Cross",
       symbol: "xmark",
       showInTypeName: true,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray"],
       options: [
         {
@@ -69,14 +71,15 @@ const PointsController_Config: SourceListConfig = {
           })
         }
       ],
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "circle",
       display: "Circle",
       symbol: "circle.fill",
       showInTypeName: true,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray"],
       options: [
         {
@@ -101,14 +104,15 @@ const PointsController_Config: SourceListConfig = {
           })
         }
       ],
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "plusSplit",
       display: "Plus/Split",
       symbol: "plus",
       showInTypeName: true,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       parentKey: "split",
       options: [
@@ -144,14 +148,15 @@ const PointsController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "component",
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "crossSplit",
       display: "Cross/Split",
       symbol: "xmark",
       showInTypeName: true,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       parentKey: "split",
       options: [
@@ -187,14 +192,15 @@ const PointsController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "component",
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "circleSplit",
       display: "Circle/Split",
       symbol: "circle.fill",
       showInTypeName: true,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       parentKey: "split",
       options: [
@@ -230,14 +236,15 @@ const PointsController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "component",
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "component",
       display: "Component",
       symbol: "number",
       showInTypeName: false,
-      color: "#888888",
+      color: "#000000",
+      darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       childOf: "split",
       options: [
@@ -251,7 +258,7 @@ const PointsController_Config: SourceListConfig = {
           ]
         }
       ],
-      geometryPreviewType: null
+      previewType: null
     }
   ]
 };

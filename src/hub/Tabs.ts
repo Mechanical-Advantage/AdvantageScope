@@ -8,6 +8,7 @@ import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
+import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
 import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
@@ -429,7 +430,7 @@ export default class Tabs {
         break;
       case TabType.Statistics:
         controller = new StatisticsController(controlsElement);
-        renderer = new NoopRenderer();
+        renderer = new StatisticsRenderer(rendererElement);
         break;
       case TabType.Video:
         controller = new VideoController(controlsElement);

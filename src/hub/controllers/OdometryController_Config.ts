@@ -26,7 +26,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       options: [],
       parentKey: "robot",
-      geometryPreviewType: "Pose2d"
+      previewType: "Pose2d"
     },
     {
       key: "robotLegacy",
@@ -60,7 +60,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       numberArrayDeprecated: true,
       parentKey: "robot",
-      geometryPreviewType: "Pose2d"
+      previewType: "Pose2d"
     },
     {
       key: "ghost",
@@ -88,7 +88,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "color",
       parentKey: "robot",
-      geometryPreviewType: "Pose2d"
+      previewType: "Pose2d"
     },
     {
       key: "ghostLegacy",
@@ -128,7 +128,7 @@ const OdometryController_Config: SourceListConfig = {
       initialSelectionOption: "color",
       parentKey: "robot",
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose2d"
+      previewType: "Pose2d"
     },
     {
       key: "ghostZebra",
@@ -147,7 +147,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "color",
       parentKey: "robot",
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     },
     {
       key: "rotationOverride",
@@ -159,7 +159,7 @@ const OdometryController_Config: SourceListConfig = {
       sourceTypes: ["Rotation2d", "Rotation3d"],
       options: [],
       childOf: "robot",
-      geometryPreviewType: "Rotation2d"
+      previewType: "Rotation2d"
     },
     {
       key: "rotationOverrideLegacy",
@@ -181,7 +181,7 @@ const OdometryController_Config: SourceListConfig = {
         }
       ],
       childOf: "robot",
-      geometryPreviewType: "Rotation2d"
+      previewType: "Rotation2d"
     },
     {
       key: "vision",
@@ -212,7 +212,7 @@ const OdometryController_Config: SourceListConfig = {
         }
       ],
       childOf: "robot",
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     },
     {
       key: "visionLegacy",
@@ -242,7 +242,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       numberArrayDeprecated: true,
       childOf: "robot",
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     },
     {
       key: "trajectory",
@@ -260,7 +260,7 @@ const OdometryController_Config: SourceListConfig = {
         "Trajectory"
       ],
       options: [],
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     },
     {
       key: "trajectoryLegacy",
@@ -283,7 +283,7 @@ const OdometryController_Config: SourceListConfig = {
         }
       ],
       numberArrayDeprecated: true,
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     },
     {
       key: "heatmap",
@@ -321,7 +321,7 @@ const OdometryController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "timeRange",
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "heatmapLegacy",
@@ -357,7 +357,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "timeRange",
       numberArrayDeprecated: true,
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "arrow",
@@ -390,7 +390,7 @@ const OdometryController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "position",
-      geometryPreviewType: "Pose2d"
+      previewType: "Pose2d"
     },
     {
       key: "arrowLegacy",
@@ -434,7 +434,7 @@ const OdometryController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "position",
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose2d"
+      previewType: "Pose2d"
     },
     {
       key: "zebra",
@@ -445,7 +445,7 @@ const OdometryController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["ZebraTranslation"],
       options: [],
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     }
   ]
 };

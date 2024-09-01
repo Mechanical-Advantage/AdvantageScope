@@ -35,7 +35,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "model",
       parentKey: "robot",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "robotLegacy",
@@ -76,7 +76,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       initialSelectionOption: "model",
       numberArrayDeprecated: true,
       parentKey: "robot",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "ghost",
@@ -111,7 +111,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "model",
       parentKey: "robot",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "ghostLegacy",
@@ -157,7 +157,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       initialSelectionOption: "model",
       parentKey: "robot",
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "component",
@@ -168,7 +168,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]"],
       options: [],
       childOf: "robot",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "componentLegacy",
@@ -180,7 +180,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       options: [],
       childOf: "robot",
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "mechanism",
@@ -202,7 +202,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       sourceTypes: ["Rotation2d", "Rotation3d"],
       options: [],
       childOf: "robot",
-      geometryPreviewType: "Rotation3d"
+      previewType: "Rotation3d"
     },
     {
       key: "rotationOverrideLegacy",
@@ -224,7 +224,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       childOf: "robot",
-      geometryPreviewType: "Rotation3d"
+      previewType: "Rotation3d"
     },
     {
       key: "vision",
@@ -255,7 +255,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       childOf: "robot",
-      geometryPreviewType: "Translation3d"
+      previewType: "Translation3d"
     },
     {
       key: "visionLegacy",
@@ -285,7 +285,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       numberArrayDeprecated: true,
       childOf: "robot",
-      geometryPreviewType: "Translation3d"
+      previewType: "Translation3d"
     },
     {
       key: "gamePiece",
@@ -306,7 +306,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "variant",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "gamePieceLegacy",
@@ -337,7 +337,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "variant",
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "trajectory",
@@ -355,7 +355,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Trajectory"
       ],
       options: [],
-      geometryPreviewType: "Translation3d"
+      previewType: "Translation3d"
     },
     {
       key: "trajectoryLegacy",
@@ -378,7 +378,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       numberArrayDeprecated: true,
-      geometryPreviewType: "Translation3d"
+      previewType: "Translation3d"
     },
     {
       key: "heatmap",
@@ -416,7 +416,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "timeRange",
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "heatmapLegacy",
@@ -452,7 +452,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "timeRange",
       numberArrayDeprecated: true,
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "aprilTag",
@@ -475,7 +475,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       parentKey: "aprilTag",
       initialSelectionOption: "family",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "aprilTagLegacy",
@@ -499,7 +499,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       numberArrayDeprecated: true,
       parentKey: "aprilTag",
       initialSelectionOption: "family",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "aprilTagIDs",
@@ -511,7 +511,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [],
       childOf: "aprilTag",
-      geometryPreviewType: null
+      previewType: null
     },
     {
       key: "axes",
@@ -522,7 +522,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]", "Trajectory"],
       options: [],
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "axesLegacy",
@@ -534,7 +534,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [],
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "cone",
@@ -572,7 +572,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "coneLegacy",
@@ -621,7 +621,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "color",
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "cameraOverride",
@@ -631,7 +631,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#888888",
       sourceTypes: ["Pose3d", "Transform3d"],
       options: [],
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "cameraOverrideLegacy",
@@ -642,7 +642,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       options: [],
       numberArrayDeprecated: true,
-      geometryPreviewType: "Pose3d"
+      previewType: "Pose3d"
     },
     {
       key: "zebra",
@@ -653,7 +653,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["ZebraTranslation"],
       options: [],
-      geometryPreviewType: "Translation2d"
+      previewType: "Translation2d"
     }
   ]
 };

@@ -740,8 +740,8 @@ export default class SourceList {
         if (logType === LoggableType.Number) {
           value = convertWithPreset(value, this.getUnitConversionPreset());
         }
-        if (typeConfig?.geometryPreviewType !== undefined) {
-          if (typeConfig?.geometryPreviewType !== null) {
+        if (typeConfig?.previewType !== undefined) {
+          if (typeConfig?.previewType !== null) {
             let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
             let numberArrayUnits: "radians" | "degrees" = "radians";
             if ("format" in state.options) {
@@ -758,7 +758,7 @@ export default class SourceList {
               numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
             }
             let poseStrings: string[] = [];
-            if (typeConfig?.geometryPreviewType === "SwerveModuleState[]") {
+            if (typeConfig?.previewType === "SwerveModuleState[]") {
               let swerveStates = grabSwerveStates(
                 window.log,
                 state.logKey,
@@ -790,7 +790,7 @@ export default class SourceList {
                 0
               );
               poseStrings = poses.map((annotatedPose) => {
-                switch (typeConfig?.geometryPreviewType) {
+                switch (typeConfig?.previewType) {
                   case "Rotation2d": {
                     return (
                       convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
