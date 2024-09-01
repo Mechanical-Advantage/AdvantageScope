@@ -8,6 +8,8 @@ import CustomSchemas from "./dataSources/schema/CustomSchemas";
 import { SelectionMode } from "./Selection";
 
 export default class Sidebar {
+  private DEFAULT_SIDEBAR_WIDTH = 300;
+
   private SIDEBAR = document.getElementsByClassName("side-bar")[0] as HTMLElement;
   private SIDEBAR_HANDLE = document.getElementsByClassName("side-bar-handle")[0] as HTMLElement;
   private SIDEBAR_SHADOW = document.getElementsByClassName("side-bar-shadow")[0] as HTMLElement;
@@ -46,7 +48,7 @@ export default class Sidebar {
   private VALUE_WIDTH_MARGIN_PX = 12;
 
   private sidebarHandleActive = false;
-  private sidebarWidth = 300;
+  private sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
   private fieldCount = 0;
   private isTuningMode = false;
   private lastFieldKeys: string[] = [];
@@ -81,7 +83,13 @@ export default class Sidebar {
         let width = event.clientX;
         if (width > 500) width = 500;
         if (width >= 80 && width < 160) width = 160;
-        if (width < 80) width = 0;
+        if (width < 80) {
+          if (this.sidebarWidth > 0) {
+            width = 0;
+          } else {
+            width = this.sidebarWidth;
+          }
+        }
         this.sidebarWidth = width;
         this.updateWidth();
       }
@@ -90,10 +98,10 @@ export default class Sidebar {
     this.SIDEBAR_HANDLE.addEventListener("click", () => {
       let now = new Date().getTime();
       if (now - lastClick < 400) {
-        if (this.sidebarWidth !== 0) {
-          this.sidebarWidth = 0;
+        if (this.sidebarWidth === 0) {
+          this.sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
         } else {
-          this.sidebarWidth = 300;
+          this.sidebarWidth *= -1;
         }
         this.updateWidth();
         lastClick = 0;
@@ -263,8 +271,9 @@ export default class Sidebar {
 
   /** Updates the displayed width based on the current state. */
   private updateWidth() {
-    document.documentElement.style.setProperty("--side-bar-width", this.sidebarWidth.toString() + "px");
-    document.documentElement.style.setProperty("--show-side-bar", this.sidebarWidth > 0 ? "1" : "0");
+    let appliedWidth = Math.max(this.sidebarWidth, 0);
+    document.documentElement.style.setProperty("--side-bar-width", appliedWidth.toString() + "px");
+    document.documentElement.style.setProperty("--show-side-bar", appliedWidth === 0 ? "0" : "1");
   }
 
   /** Updates the title with the duration and field count. */
