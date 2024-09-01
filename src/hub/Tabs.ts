@@ -217,14 +217,7 @@ export default class Tabs {
     this.CONTROLS_HANDLE.addEventListener("click", () => {
       let now = new Date().getTime();
       if (now - lastClick < 400) {
-        let fixedHeight = this.TAB_CONFIGS.get(this.tabList[this.selectedTab].type)?.fixedControlsHeight;
-        if (this.tabList[this.selectedTab].controlsHeight === 0) {
-          this.tabList[this.selectedTab].controlsHeight =
-            fixedHeight === undefined ? this.DEFAULT_CONTROLS_HEIGHT : fixedHeight;
-        } else {
-          this.tabList[this.selectedTab].controlsHeight *= -1;
-        }
-        this.updateControlsHeight();
+        this.toggleControlsVisible();
         lastClick = 0;
       } else {
         lastClick = now;
@@ -391,6 +384,18 @@ export default class Tabs {
       });
     });
     return activeFields;
+  }
+
+  /** Toggles the visibility of the tab controls. */
+  toggleControlsVisible() {
+    let fixedHeight = this.TAB_CONFIGS.get(this.tabList[this.selectedTab].type)?.fixedControlsHeight;
+    if (this.tabList[this.selectedTab].controlsHeight === 0) {
+      this.tabList[this.selectedTab].controlsHeight =
+        fixedHeight === undefined ? this.DEFAULT_CONTROLS_HEIGHT : fixedHeight;
+    } else {
+      this.tabList[this.selectedTab].controlsHeight *= -1;
+    }
+    this.updateControlsHeight();
   }
 
   /** Creates a new tab. */

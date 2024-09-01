@@ -1643,7 +1643,35 @@ function setupMenu() {
       ]
     },
     { role: "editMenu" },
-    { role: "viewMenu" },
+    {
+      role: "viewMenu",
+      submenu: [
+        { role: "reload" },
+        { role: "toggleDevTools" },
+        { type: "separator" },
+        { role: "resetZoom" },
+        { role: "zoomIn" },
+        { role: "zoomOut" },
+        { type: "separator" },
+        {
+          label: "Toggle Sidebar",
+          accelerator: "CmdOrCtrl+.",
+          click(_, window) {
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "toggle-sidebar");
+          }
+        },
+        {
+          label: "Toggle Controls",
+          accelerator: "CmdOrCtrl+/",
+          click(_, window) {
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "toggle-controls");
+          }
+        },
+        { role: "togglefullscreen" }
+      ]
+    },
     {
       label: "Tabs",
       submenu: [

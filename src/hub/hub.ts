@@ -582,6 +582,14 @@ function handleMainMessage(message: NamedMessage) {
       window.selection.setPlaybackSpeed(message.data);
       break;
 
+    case "toggle-sidebar":
+      window.sidebar.toggleVisible();
+      break;
+
+    case "toggle-controls":
+      window.tabs.toggleControlsVisible();
+      break;
+
     case "new-tab":
       window.tabs.addTab(message.data);
       break;

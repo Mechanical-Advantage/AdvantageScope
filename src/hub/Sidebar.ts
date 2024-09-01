@@ -98,12 +98,7 @@ export default class Sidebar {
     this.SIDEBAR_HANDLE.addEventListener("click", () => {
       let now = new Date().getTime();
       if (now - lastClick < 400) {
-        if (this.sidebarWidth === 0) {
-          this.sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
-        } else {
-          this.sidebarWidth *= -1;
-        }
-        this.updateWidth();
+        this.toggleVisible();
         lastClick = 0;
       } else {
         lastClick = now;
@@ -208,6 +203,16 @@ export default class Sidebar {
     this.expandedFields = expandedSet;
     if (!widthEqual) this.updateWidth();
     if (!expandedEqual) this.refresh(true);
+  }
+
+  /** Toggles the visibility of the sidebar. */
+  toggleVisible() {
+    if (this.sidebarWidth === 0) {
+      this.sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
+    } else {
+      this.sidebarWidth *= -1;
+    }
+    this.updateWidth();
   }
 
   /** Updates the hovering effect on the search results. */
