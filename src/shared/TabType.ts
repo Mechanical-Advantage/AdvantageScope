@@ -85,3 +85,40 @@ export function getTabIcon(type: TabType): string {
       return "";
   }
 }
+
+export function getTabAccelerator(type: TabType): string {
+  if (type === TabType.Documentation) return "";
+  return (
+    "Option+Shift+" +
+    (() => {
+      switch (type) {
+        case TabType.LineGraph:
+          return "L";
+        case TabType.Odometry:
+          return "O";
+        case TabType.ThreeDimension:
+          return "3";
+        case TabType.Table:
+          return "T";
+        case TabType.Console:
+          return "C";
+        case TabType.Statistics:
+          return "S";
+        case TabType.Video:
+          return "V";
+        case TabType.Joysticks:
+          return "J";
+        case TabType.Swerve:
+          return "D";
+        case TabType.Mechanism:
+          return "M";
+        case TabType.Points:
+          return "P";
+        case TabType.Metadata:
+          return "I";
+        default:
+          return "";
+      }
+    })()
+  );
+}

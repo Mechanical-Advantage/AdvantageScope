@@ -30,7 +30,7 @@ import ExportOptions from "../shared/ExportOptions";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
-import TabType, { getAllTabTypes, getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
@@ -955,11 +955,11 @@ function newTabPopup(window: BrowserWindow) {
   const newTabMenu = new Menu();
   getAllTabTypes()
     .slice(1)
-    .forEach((tabType, index) => {
+    .forEach((tabType) => {
       newTabMenu.append(
         new MenuItem({
           label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
-          accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
+          accelerator: getTabAccelerator(tabType),
           click() {
             sendMessage(window, "new-tab", tabType);
           }
@@ -1679,10 +1679,10 @@ function setupMenu() {
           label: "New Tab",
           submenu: getAllTabTypes()
             .slice(1)
-            .map((tabType, index) => {
+            .map((tabType) => {
               return {
                 label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
-                accelerator: index < 9 ? "CmdOrCtrl+" + (index + 1).toString() : "",
+                accelerator: getTabAccelerator(tabType),
                 click(_, window) {
                   if (window === undefined || !hubWindows.includes(window)) return;
                   sendMessage(window, "new-tab", tabType);
