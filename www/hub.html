@@ -447,10 +447,10 @@
             </div>
             <div class="input">
               <div class="half">
-                <input type="number" value="960" step="1" tabindex="-1" />
+                <input class="dimensions-width" type="number" value="960" step="1" />
               </div>
               <div class="half">
-                <input type="number" value="720" step="1" tabindex="-1" />
+                <input class="dimensions-height" type="number" value="720" step="1" />
               </div>
             </div>
 
@@ -459,7 +459,7 @@
             </div>
             <div class="input">
               <div>
-                <select>
+                <select class="orientation">
                   <option value="xr,yd">+X right, +Y down</option>
                   <option value="xr,yu">+X right, +Y up</option>
                   <option value="xu,yl">+X up, +Y left</option>
@@ -472,7 +472,7 @@
             </div>
             <div class="input">
               <div>
-                <select>
+                <select class="origin">
                   <option value="ul">upper left</option>
                   <option value="ur">upper right</option>
                   <option value="ll">lower left</option>
@@ -564,7 +564,22 @@
 
         <!-- Points -->
         <div id="renderer11">
-          <!-- Points renderer -->
+          <div class="points-background-container">
+            <div class="points-background"></div>
+            <span hidden>
+              <svg height="20" width="20">
+                <line x1="10" y1="0" x2="10" y2="20"></line>
+                <line x1="0" y1="10" x2="20" y2="10"></line>
+              </svg>
+              <svg height="20" width="20">
+                <line x1="2" y1="2" x2="18" y2="18"></line>
+                <line x1="18" y1="2" x2="2" y2="18"></line>
+              </svg>
+              <svg height="20" width="20">
+                <circle cx="10" cy="10" r="7"></circle>
+              </svg>
+            </span>
+          </div>
         </div>
 
         <!-- Metadata -->

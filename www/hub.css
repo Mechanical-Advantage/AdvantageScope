@@ -1814,6 +1814,7 @@ canvas.swerve-canvas {
 
   background-color: #f4f4f4;
   border: 1px solid #555;
+  box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1876,6 +1877,68 @@ div.mechanism-sources {
   height: 100%;
 }
 
+/* Points */
+
+div.points-background-container {
+  position: absolute;
+  bottom: 0%;
+  height: calc(100% + 10px);
+  left: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+
+div.points-background {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #f4f4f4;
+  border: 1px solid #555;
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.points-background {
+    background-color: #292929;
+    border: 1px solid #999;
+  }
+}
+
+div.points-background svg {
+  position: absolute;
+  stroke-width: 5px;
+}
+
+div.points-sources {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  left: 0%;
+  width: 60%;
+  min-width: calc(100% - 200px);
+}
+
+div.points-settings {
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  right: 0%;
+  width: 40%;
+  max-width: 200px;
+  border-left: 1px solid #ddd;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.points-settings {
+    border-left: 1px solid black;
+  }
+}
+
 /* Metadata */
 
 div.metadata-table-container {
@@ -1931,35 +1994,5 @@ table.metadata-table td.no-data {
 
   table.metadata-table td:first-child {
     border-right: 1px solid #eee;
-  }
-}
-
-/* Points */
-
-div.points-sources {
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  left: 0%;
-  width: 60%;
-  min-width: calc(100% - 200px);
-}
-
-div.points-settings {
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  right: 0%;
-  width: 40%;
-  max-width: 200px;
-  border-left: 1px solid #ddd;
-
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.points-settings {
-    border-left: 1px solid black;
   }
 }

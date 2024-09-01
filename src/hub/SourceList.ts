@@ -769,7 +769,7 @@ export default class SourceList {
               );
               swerveStates.forEach((state) => {
                 poseStrings.push(
-                  "v: " +
+                  "\u03bd: " +
                     state.speed.toFixed(2) +
                     "m/s, \u03b8: " +
                     convert(state.angle, "radians", "degrees").toFixed(2) +

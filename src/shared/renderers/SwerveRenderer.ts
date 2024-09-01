@@ -8,8 +8,6 @@ export default class SwerveRenderer implements TabRenderer {
 
   private BLACK_COLOR = "#222222";
   private WHITE_COLOR = "#eeeeee";
-  private BLACK_BACKGROUND_COLOR = "#000000";
-  private WHITE_BACKGROUND_COLOR = "#ffffff";
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.firstElementChild as HTMLElement;

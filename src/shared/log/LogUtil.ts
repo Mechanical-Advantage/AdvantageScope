@@ -99,6 +99,8 @@ export function getLogValueText(value: any, type: LoggableType): string {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
     });
     return textArray.join("-");
+  } else if (Array.isArray(value)) {
+    return "[" + value.map((x) => JSON.stringify(x)).join(", ") + "]";
   } else {
     return JSON.stringify(value);
   }

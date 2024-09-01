@@ -7,6 +7,7 @@ import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
+import PointsRenderer from "../shared/renderers/PointsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
 import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
@@ -448,7 +449,7 @@ export default class Tabs {
         break;
       case TabType.Points:
         controller = new PointsController(controlsElement);
-        renderer = new NoopRenderer();
+        renderer = new PointsRenderer(rendererElement);
         break;
       case TabType.Metadata:
         controller = new MetadataController();
