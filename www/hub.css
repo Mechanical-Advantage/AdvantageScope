@@ -1552,21 +1552,25 @@ div.spinner-cubes-container {
   position: absolute;
   left: 50%;
   bottom: 10px;
-  transform: translateX(-50%) scale(50%);
+  transform: translateX(-50%) scale(30%);
   user-select: none;
   transition: all 0.1s ease-in-out;
+  opacity: 0;
 }
 
-div.spinner-cubes-container.hidden {
-  transform: translateX(-50%) scale(30%);
-  opacity: 0;
+div.spinner-cubes-container.visible {
+  transform: translateX(-50%) scale(50%);
+  opacity: 1;
 }
 
 div.spinner-cubes {
   width: 44px;
   height: 44px;
-  animation: spinner-cubes 6s infinite ease-in-out;
   transform-style: preserve-3d;
+}
+
+div.spinner-cubes-container.animating div.spinner-cubes {
+  animation: spinner-cubes 6s infinite ease-in-out;
 }
 
 div.spinner-cubes > div {

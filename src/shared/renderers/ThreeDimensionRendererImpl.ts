@@ -783,9 +783,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
     // Update spinner
     if (this.loadingCount > 0) {
-      this.spinner.classList.remove("hidden");
-    } else {
-      this.spinner.classList.add("hidden");
+      this.spinner.classList.add("visible");
+      this.spinner.classList.add("animating");
+    } else if (this.spinner.classList.contains("visible")) {
+      this.spinner.classList.remove("visible");
+      window.setTimeout(() => this.spinner.classList.remove("animating"), 250);
     }
 
     // Render new frame
