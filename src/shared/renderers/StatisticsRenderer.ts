@@ -133,6 +133,11 @@ export default class StatisticsRenderer implements TabRenderer {
           }
           valueCell.style.color = color;
         });
+        if (command.fields.length === 0) {
+          let valueCell = document.createElement("td");
+          row.appendChild(valueCell);
+          valueCell.innerText = "-";
+        }
       };
 
       // Add all rows
