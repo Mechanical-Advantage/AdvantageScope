@@ -76,6 +76,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private canvasContainer: HTMLElement;
   private annotationsDiv: HTMLElement;
   private alert: HTMLElement;
+  private spinner: HTMLElement;
 
   private renderer: THREE.WebGLRenderer;
   private cssRenderer: CSS2DRenderer;
@@ -105,6 +106,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private primaryRobotModel = "";
   private resolutionVector = new THREE.Vector2();
   private fieldConfigCache: Config3dField | null = null;
+  private loadingCount = 0;
   private lastCameraIndex = -1;
   private lastAutoDriverStation = -1;
   private lastFrameTime = 0;
@@ -121,13 +123,15 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     canvas: HTMLCanvasElement,
     canvasContainer: HTMLElement,
     annotationsDiv: HTMLElement,
-    alert: HTMLElement
+    alert: HTMLElement,
+    spinner: HTMLElement
   ) {
     this.mode = mode;
     this.canvas = canvas;
     this.canvasContainer = canvasContainer;
     this.annotationsDiv = annotationsDiv;
     this.alert = alert;
+    this.spinner = spinner;
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
       powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default"
@@ -376,7 +380,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     switch (type) {
       case "robot":
       case "ghost":
-        manager = new RobotManager(...args);
+        manager = new RobotManager(
+          ...args,
+          () => this.loadingCount++,
+          () => this.loadingCount--
+        );
         break;
       case "gamePiece":
         manager = new GamePieceManager(...args, this.fieldPieces);
@@ -522,6 +530,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else {
+        this.loadingCount++;
         const loader = new GLTFLoader();
         Promise.all([
           new Promise((resolve) => {
@@ -593,6 +602,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
             }
 
             if (++loadCount === gltfScenes.length) {
+              this.loadingCount--;
               newFieldReady();
             }
           });
@@ -769,6 +779,13 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
       this.lastCameraIndex = this.cameraIndex;
       this.lastAutoDriverStation = command.autoDriverStation;
+    }
+
+    // Update spinner
+    if (this.loadingCount > 0) {
+      this.spinner.classList.remove("hidden");
+    } else {
+      this.spinner.classList.add("hidden");
     }
 
     // Render new frame

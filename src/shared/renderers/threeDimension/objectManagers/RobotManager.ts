@@ -19,6 +19,9 @@ import ResizableInstancedMesh from "../ResizableInstancedMesh";
 export default class RobotManager extends ObjectManager<
   ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj
 > {
+  private loadingStart: () => void;
+  private loadingEnd: () => void;
+
   private meshes: ResizableInstancedMesh[] = [];
   private ghostMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
@@ -48,9 +51,13 @@ export default class RobotManager extends ObjectManager<
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
-    requestRender: () => void
+    requestRender: () => void,
+    loadingStart: () => void,
+    loadingEnd: () => void
   ) {
     super(root, materialSpecular, materialShininess, mode, requestRender);
+    this.loadingStart = loadingStart;
+    this.loadingEnd = loadingEnd;
   }
 
   dispose(): void {
@@ -91,6 +98,7 @@ export default class RobotManager extends ObjectManager<
       this.meshes = [];
 
       if (robotConfig !== undefined) {
+        this.loadingStart();
         Promise.all([
           new Promise((resolve) => {
             this.loader.load(robotConfig!.path, resolve);
@@ -126,6 +134,7 @@ export default class RobotManager extends ObjectManager<
             this.meshes.push(new ResizableInstancedMesh(this.root, meshes));
             this.requestRender();
           }
+          this.loadingEnd();
         });
       }
     }

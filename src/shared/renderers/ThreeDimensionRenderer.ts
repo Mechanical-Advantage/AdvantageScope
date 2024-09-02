@@ -8,6 +8,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   private CANVAS_CONTAINER: HTMLElement;
   private ANNOTATIONS_DIV: HTMLElement;
   private ALERT: HTMLElement;
+  private SPINNER: HTMLElement;
 
   private implementation: ThreeDimensionRendererImpl | null = null;
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
@@ -17,6 +18,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
     this.CANVAS_CONTAINER = root.getElementsByClassName("three-dimension-canvas-container")[0] as HTMLElement;
     this.ANNOTATIONS_DIV = root.getElementsByClassName("three-dimension-annotations")[0] as HTMLElement;
     this.ALERT = root.getElementsByClassName("three-dimension-alert")[0] as HTMLElement;
+    this.SPINNER = root.getElementsByClassName("spinner-cubes-container")[0] as HTMLElement;
     this.updateImplementation();
   }
 
@@ -82,7 +84,8 @@ export default class ThreeDimensionRenderer implements TabRenderer {
         this.CANVAS,
         this.CANVAS_CONTAINER,
         this.ANNOTATIONS_DIV,
-        this.ALERT
+        this.ALERT,
+        this.SPINNER
       );
       if (state !== null) {
         this.implementation.restoreState(state);
