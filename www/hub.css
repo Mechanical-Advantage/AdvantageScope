@@ -876,8 +876,6 @@ div.source-list div.item:last-child {
 
 div.source-list div.item.child {
   border-top: none;
-  left: 25px;
-  width: calc(100% - 25px);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -900,6 +898,10 @@ div.source-list button.type {
   top: 15px;
   left: 15px;
   transform: translate(-50%, -50%);
+}
+
+div.source-list div.item.child button.type {
+  left: 40px;
 }
 
 div.source-list button.type object.hidden {
@@ -929,6 +931,10 @@ div.source-list div.type-name {
   text-overflow: ellipsis;
 }
 
+div.source-list div.item.child div.type-name {
+  left: 55px;
+}
+
 div.source-list div.key-container {
   position: absolute;
   top: 0px;
@@ -944,6 +950,11 @@ div.source-list div.key-container {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+div.source-list div.item.child div.key-container {
+  left: calc(55px + var(--type-width));
+  max-width: calc(100% - 31px - 25px - var(--type-width) - 55px - (var(--has-warning) * 25px));
 }
 
 div.source-list div.key-container span {
