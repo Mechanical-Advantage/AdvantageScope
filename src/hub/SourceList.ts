@@ -416,17 +416,28 @@ export default class SourceList {
         );
       });
     };
-    let typeValidAsRoot = isTypeValid(this.independentAllowedTypes);
-    let typeValidAsChild = false;
-    if (parentIndex !== null) {
-      let parentKey = this.parentKeys.get(this.state[parentIndex!].type);
+    let isTypeValidAsChild = (parentType: string): boolean => {
+      let parentKey = this.parentKeys.get(parentType);
+      if (parentKey === undefined) return false;
       let childAllowedTypes: Set<string> = new Set();
       this.config.types.forEach((typeConfig) => {
         if (typeConfig.childOf === parentKey) {
           typeConfig.sourceTypes.forEach((type) => childAllowedTypes.add(type));
         }
       });
-      typeValidAsChild = isTypeValid(childAllowedTypes);
+      return isTypeValid(childAllowedTypes);
+    };
+    let typeValidAsRoot = isTypeValid(this.independentAllowedTypes);
+    let typeValidAsChild = false;
+    if (parentIndex !== null) {
+      typeValidAsChild = isTypeValidAsChild(this.state[parentIndex!].type);
+    }
+
+    // Apply parent highlights
+    for (let i = 0; i < this.state.length; i++) {
+      if (isTypeValidAsChild(this.state[i].type)) {
+        this.LIST.children[i].classList.add("parent-highlight");
+      }
     }
 
     // Add fields and update highlight
@@ -438,6 +449,9 @@ export default class SourceList {
           this.addField(field, parentIndex === null ? undefined : parentIndex);
         });
       }
+      Array.from(this.LIST.children).forEach((element) => {
+        element.classList.remove("parent-highlight");
+      });
     } else if (typeValidAsChild && parentIndex !== null) {
       this.DRAG_HIGHLIGHT.style.left = "0%";
       this.DRAG_HIGHLIGHT.style.top =

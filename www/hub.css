@@ -864,6 +864,7 @@ div.source-list div.item {
   width: 100%;
   height: 30px;
   border-top: 1px solid #eee;
+  box-sizing: border-box;
 }
 
 div.source-list div.item:first-child {
@@ -876,6 +877,10 @@ div.source-list div.item:last-child {
 
 div.source-list div.item.child {
   border-top: none;
+}
+
+div.source-list div.item.parent-highlight {
+  box-shadow: -0.5px 0px 3px 2px #00ff00bb inset;
 }
 
 @media (prefers-color-scheme: dark) {
