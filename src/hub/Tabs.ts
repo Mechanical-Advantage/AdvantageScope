@@ -1,5 +1,6 @@
 import { TabsState } from "../shared/HubState";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
@@ -17,6 +18,7 @@ import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
+import ConsoleController from "./controllers/ConsoleController";
 import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
 import MechanismController from "./controllers/MechanismController";
@@ -438,6 +440,10 @@ export default class Tabs {
       case TabType.Table:
         controller = new TableController(rendererElement);
         renderer = new TableRenderer(rendererElement, true);
+        break;
+      case TabType.Console:
+        controller = new ConsoleController(rendererElement);
+        renderer = new ConsoleRenderer(rendererElement, true);
         break;
       case TabType.Statistics:
         controller = new StatisticsController(controlsElement);

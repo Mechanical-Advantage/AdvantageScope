@@ -529,7 +529,7 @@
 
         <!-- Table -->
         <div id="renderer4">
-          <img class="data-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+          <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
 
           <span class="data-table-header-template" hidden>
             <div class="data-table-key-container">
@@ -559,7 +559,32 @@
 
         <!-- Console -->
         <div id="renderer5">
-          <!-- Console renderer -->
+          <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+
+          <div class="console-table-drag-highlight" hidden></div>
+          <div class="console-table-container">
+            <table class="console-table">
+              <tbody>
+                <tr>
+                  <th>
+                    <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                    <button class="console-table-jump-button" tabindex="-1">
+                      <img src="symbols/arrow.down.to.line.svg" />
+                    </button>
+                  </th>
+                  <th>
+                    <div>
+                      <span>Hello</span>
+                      <button class="console-table-key-delete" tabindex="-1">
+                        <img src="symbols/xmark.svg" />
+                      </button>
+                    </div>
+                    <input type="search" placeholder="Filter" />
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
         <!-- Statistics -->

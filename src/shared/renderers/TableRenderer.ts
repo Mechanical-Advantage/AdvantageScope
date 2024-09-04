@@ -40,7 +40,7 @@ export default class TableRenderer implements TabRenderer {
     this.TABLE_CONTAINER = root.getElementsByClassName("data-table-container")[0] as HTMLElement;
     this.TABLE_BODY = root.getElementsByClassName("data-table")[0].firstElementChild as HTMLElement;
     this.INPUT_FIELD = root.getElementsByClassName("data-table-jump-input")[0] as HTMLInputElement;
-    this.HAND_ICON = root.getElementsByClassName("data-table-hand-icon")[0] as HTMLElement;
+    this.HAND_ICON = root.getElementsByClassName("large-table-hand-icon")[0] as HTMLElement;
 
     // Create filler elements
     {
