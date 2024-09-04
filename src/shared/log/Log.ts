@@ -103,6 +103,15 @@ export default class Log {
     return Object.keys(this.fields).filter((field) => !this.isGenerated(field)).length;
   }
 
+  /** Returns the internal field object for a key. Prefer other methods when possible. */
+  getField(key: string): LogField | null {
+    if (key in this.fields) {
+      return this.fields[key];
+    } else {
+      return null;
+    }
+  }
+
   /** Returns the constant field type. */
   getType(key: string): LoggableType | null {
     if (key in this.fields) {

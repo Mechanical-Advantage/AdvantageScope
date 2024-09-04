@@ -242,14 +242,10 @@
         </div>
 
         <!-- Table -->
-        <div id="controller4">
-          <!-- Table controller -->
-        </div>
+        <div id="controller4"></div>
 
         <!-- Console -->
-        <div id="controller5">
-          <!-- Console controller -->
-        </div>
+        <div id="controller5"></div>
 
         <!-- Statistics -->
         <div id="controller6">
@@ -533,7 +529,32 @@
 
         <!-- Table -->
         <div id="renderer4">
-          <!-- Table renderer -->
+          <img class="data-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+
+          <span class="data-table-header-template" hidden>
+            <div class="data-table-key-container">
+              <span></span>
+            </div>
+            <button class="data-table-key-delete" tabindex="-1">
+              <img src="symbols/xmark.svg" />
+            </button>
+          </span>
+
+          <div class="data-table-container">
+            <table class="data-table">
+              <tbody>
+                <tr>
+                  <th>
+                    <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                    <button class="data-table-jump-button" tabindex="-1">
+                      <img src="symbols/arrow.down.to.line.svg" />
+                    </button>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="data-table-drag-highlight" hidden></div>
         </div>
 
         <!-- Console -->

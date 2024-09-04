@@ -11,6 +11,7 @@ import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer from "../shared/renderers/TabRenderer";
+import TableRenderer from "../shared/renderers/TableRenderer";
 import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { UnitConversionPreset } from "../shared/units";
@@ -26,6 +27,7 @@ import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
 import SwerveController from "./controllers/SwerveController";
 import TabController from "./controllers/TabController";
+import TableController from "./controllers/TableController";
 import ThreeDimensionController from "./controllers/ThreeDimensionController";
 import VideoController from "./controllers/VideoController";
 
@@ -432,6 +434,10 @@ export default class Tabs {
       case TabType.ThreeDimension:
         controller = new ThreeDimensionController(controlsElement);
         renderer = new ThreeDimensionRenderer(rendererElement);
+        break;
+      case TabType.Table:
+        controller = new TableController(rendererElement);
+        renderer = new TableRenderer(rendererElement, true);
         break;
       case TabType.Statistics:
         controller = new StatisticsController(controlsElement);
