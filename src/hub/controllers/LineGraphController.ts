@@ -276,16 +276,22 @@ export default class LineGraphController implements TabController {
               break;
             case "smooth":
               // Interpolate to displayed value
-              if (data.timestamps.length >= 2) {
-                data.values[data.values.length - 1] = scaleValue(
-                  timeRange[1],
-                  [data.timestamps[data.timestamps.length - 2], data.timestamps[data.timestamps.length - 1]],
-                  [data.values[data.values.length - 2], data.values[data.values.length - 1]]
-                );
-                data.timestamps[data.timestamps.length - 1] = timeRange[1];
-              }
+              data.values[data.values.length - 1] = scaleValue(
+                timeRange[1],
+                [data.timestamps[data.timestamps.length - 2], data.timestamps[data.timestamps.length - 1]],
+                [data.values[data.values.length - 2], data.values[data.values.length - 1]]
+              );
+              data.timestamps[data.timestamps.length - 1] = timeRange[1];
               break;
           }
+        } else if (
+          fieldItem.type === "smooth" &&
+          data.timestamps.length >= 1 &&
+          data.timestamps[data.timestamps.length - 1] < timeRange[1]
+        ) {
+          // Assume constant until end of range
+          data.timestamps.push(timeRange[1]);
+          data.values.push(data.values[data.values.length - 1]);
         }
 
         // Update data range
