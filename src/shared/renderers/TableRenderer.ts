@@ -70,6 +70,7 @@ export default class TableRenderer implements TabRenderer {
       } else {
         window.selection.setSelectedTime(targetTime);
       }
+      this.selectedTime = targetTime;
       this.scrollToSelected();
     };
     this.INPUT_FIELD.addEventListener("keydown", (event) => {
