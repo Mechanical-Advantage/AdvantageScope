@@ -139,8 +139,16 @@ div.three-dimension-canvas-container {
   overflow: hidden;
 }
 
+body.satellite div.three-dimension-canvas-container {
+  height: 100%;
+}
+
 div.three-dimension-canvas-container.fixed {
   height: calc(100% + 10px);
+}
+
+body.satellite div.three-dimension-canvas-container.fixed {
+  height: 100%;
 }
 
 div.three-dimension-annotations {
@@ -731,6 +739,10 @@ div.swerve-canvas-container {
   width: 100%;
 }
 
+body.satellite div.swerve-canvas-container {
+  height: 100%;
+}
+
 canvas.swerve-canvas {
   position: absolute;
   left: 50%;
@@ -758,6 +770,10 @@ div.mechanism-svg-container {
   height: calc(100% + 10px);
 }
 
+body.satellite div.mechanism-svg-container {
+  height: 100%;
+}
+
 svg.mechanism-svg {
   position: absolute;
   left: 50%;
@@ -773,6 +789,10 @@ div.points-background-container {
   height: calc(100% + 10px);
   left: 0px;
   width: 100%;
+}
+
+body.satellite div.points-background-container {
+  height: 100%;
 }
 
 div.points-background {
