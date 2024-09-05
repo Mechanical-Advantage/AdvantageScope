@@ -26,7 +26,8 @@ import TabController from "./TabController";
 import ThreeDimensionController_Config from "./ThreeDimensionController_Config";
 
 export default class ThreeDimensionController implements TabController {
-  private UUID = createUUID();
+  readonly UUID = createUUID();
+
   private ORIGIN_SWITCHER: HTMLElement;
   private XR_BUTTON: HTMLButtonElement;
   private GAME_SELECT: HTMLSelectElement;

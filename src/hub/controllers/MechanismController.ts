@@ -1,11 +1,14 @@
 import { SourceListState } from "../../shared/SourceListConfig";
 import { MechanismState, getMechanismState, mergeMechanismStates } from "../../shared/log/LogUtil";
 import { MechanismRendererCommand } from "../../shared/renderers/MechanismRenderer";
+import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import MechanismController_Config from "./MechanismController_Config";
 import TabController from "./TabController";
 
 export default class MechanismController implements TabController {
+  readonly UUID = createUUID();
+
   private sourceList: SourceList;
 
   constructor(root: HTMLElement) {

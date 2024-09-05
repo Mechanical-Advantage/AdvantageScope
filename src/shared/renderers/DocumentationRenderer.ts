@@ -32,6 +32,10 @@ export default class DocumentationRenderer implements TabRenderer {
     }
   }
 
+  getAspectRatio(): number | null {
+    return null;
+  }
+
   render(command: unknown): void {
     // Update screenshot on index page
     if (this.isIndex) {

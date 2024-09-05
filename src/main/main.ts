@@ -164,6 +164,19 @@ function sendAssets() {
   });
 }
 
+/** Sends the list of active satellites to all hub windows. */
+function sendActiveSatellites() {
+  let activeSatellites: string[] = [];
+  Object.entries(satelliteWindows).forEach(([uuid, windows]) => {
+    if (windows.length > 0) {
+      activeSatellites.push(uuid);
+    }
+  });
+  hubWindows.forEach((window) => {
+    sendMessage(window, "set-active-satellites", activeSatellites);
+  });
+}
+
 /**
  * Process a message from a hub window.
  * @param window The source hub window
@@ -2483,6 +2496,17 @@ function createSatellite(
         case "save-state":
           stateTracker.saveRendererState(satellite, message.data);
           break;
+
+        case "call-selection-setter":
+          message.data.uuid = configData !== undefined ? configData.uuid : state!.uuid;
+          hubWindows.forEach((window) => {
+            sendMessage(window, "call-selection-setter", message.data);
+          });
+          break;
+
+        case "open-link":
+          shell.openExternal(message.data);
+          break;
       }
     });
     port2.start();
@@ -2512,9 +2536,11 @@ function createSatellite(
   }
   satelliteWindows[uuid].push(satellite);
   stateTracker.saveSatelliteIds(satelliteWindows);
+  sendActiveSatellites();
   satellite.once("closed", () => {
     satelliteWindows[uuid!].splice(satelliteWindows[uuid!].indexOf(satellite), 1);
     stateTracker.saveSatelliteIds(satelliteWindows);
+    sendActiveSatellites();
   });
 }
 

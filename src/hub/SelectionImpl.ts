@@ -1,6 +1,7 @@
+import Selection, { SelectionMode } from "../shared/Selection";
 import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 
-export default class Selection {
+export default class SelectionImpl implements Selection {
   private STEP_SIZE = 0.02; // When using left-right arrows keys on non-AdvantageKit logs
   private TIMELINE_MIN_ZOOM_TIME = 0.05;
   private TIMELINE_ZOOM_BASE = 1.001;
@@ -104,12 +105,12 @@ export default class Selection {
     this.UNLOCK_BUTTON.hidden = !this.liveConnected || this.mode !== SelectionMode.Locked;
   }
 
-  /** Updates the hovered time. */
+  /** Gets the current the hovered time. */
   getHoveredTime(): number | null {
     return this.hoveredTime;
   }
 
-  /** Returns the hovered time. */
+  /** Updates the hovered time. */
   setHoveredTime(value: number | null) {
     this.hoveredTime = value;
   }
@@ -252,6 +253,7 @@ export default class Selection {
     this.setMode(this.mode); // Just update buttons
   }
 
+  /** Returns the latest live timestamp if available. */
   getCurrentLiveTime(): number | null {
     if (this.liveTimeSupplier === null) {
       return null;
@@ -355,18 +357,4 @@ export default class Selection {
       if (dx > 0) this.lock(); // Lock if action is intentional
     }
   }
-}
-
-export enum SelectionMode {
-  /** Nothing is selected and playback is inactive. */
-  Idle,
-
-  /** A time is selected but playback is inactive. */
-  Static,
-
-  /** Historical playback is active. */
-  Playback,
-
-  /** Playback is locked to the live data. */
-  Locked
 }

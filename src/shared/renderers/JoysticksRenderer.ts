@@ -24,6 +24,10 @@ export default class JoysticksRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {}
 
+  getAspectRatio(): number | null {
+    return null;
+  }
+
   render(command: JoysticksRendererCommand): void {
     // Set up canvas
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;

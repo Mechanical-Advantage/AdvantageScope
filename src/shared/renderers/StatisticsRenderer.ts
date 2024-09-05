@@ -10,6 +10,7 @@ export default class StatisticsRenderer implements TabRenderer {
   private VALUES_TABLE_BODY: HTMLElement;
   private HISTOGRAM_CONTAINER: HTMLElement;
 
+  private changeCounter = -1;
   private firstRender = true;
   private lastIsLight: boolean | null = null;
   private histogram: Chart;
@@ -73,6 +74,10 @@ export default class StatisticsRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {}
 
+  getAspectRatio(): number | null {
+    return null;
+  }
+
   render(command: StatisticsRendererCommand): void {
     // Update histogram layout
     this.HISTOGRAM_CONTAINER.style.left = (this.VALUES_TABLE_CONTAINER.clientWidth + 10).toString() + "px";
@@ -94,8 +99,9 @@ export default class StatisticsRenderer implements TabRenderer {
     }
 
     // Update data
-    if (command.isChanged || this.firstRender) {
+    if (command.changeCounter !== this.changeCounter || this.firstRender) {
       this.firstRender = false;
+      this.changeCounter = command.changeCounter;
 
       // Clear values
       while (this.VALUES_TABLE_BODY.firstChild) {
@@ -197,7 +203,7 @@ export default class StatisticsRenderer implements TabRenderer {
 }
 
 export type StatisticsRendererCommand = {
-  isChanged: boolean;
+  changeCounter: number;
   bins: number[];
   stepSize: number;
   fields: {

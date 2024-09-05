@@ -5,7 +5,7 @@ import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class VideoController implements TabController {
-  private UUID = createUUID();
+  readonly UUID = createUUID();
 
   private BUTTON_BORDER_RADIUS = 6;
   private LOCAL_SOURCE: HTMLButtonElement;

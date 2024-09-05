@@ -6,6 +6,8 @@ export default class MechanismRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
   private SVG: HTMLElement;
 
+  private aspectRatio = 1;
+
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("mechanism-svg-container")[0] as HTMLElement;
     this.SVG = root.getElementsByClassName("mechanism-svg")[0] as HTMLElement;
@@ -16,6 +18,10 @@ export default class MechanismRenderer implements TabRenderer {
   }
 
   restoreState(state: unknown): void {}
+
+  getAspectRatio(): number | null {
+    return this.aspectRatio;
+  }
 
   render(command: MechanismRendererCommand): void {
     this.SVG.style.display = command === null ? "none" : "initial";
@@ -34,6 +40,7 @@ export default class MechanismRenderer implements TabRenderer {
     this.SVG.setAttribute("width", renderWidth.toString());
     this.SVG.setAttribute("height", renderHeight.toString());
     this.SVG.style.backgroundColor = command.backgroundColor;
+    this.aspectRatio = command.dimensions[0] / command.dimensions[1];
 
     // Remove old elements
     while (this.SVG.firstChild) {

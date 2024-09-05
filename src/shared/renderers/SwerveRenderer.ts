@@ -20,6 +20,10 @@ export default class SwerveRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {}
 
+  getAspectRatio(): number | null {
+    return 1;
+  }
+
   render(command: SwerveRendererCommand): void {
     // Update canvas size
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;

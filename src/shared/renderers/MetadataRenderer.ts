@@ -14,6 +14,10 @@ export default class MetadataRenderer implements TabRenderer {
     this.TABLE_BODY = root.getElementsByClassName("metadata-table")[0].firstElementChild as HTMLElement;
   }
 
+  getAspectRatio(): number | null {
+    return null;
+  }
+
   render(command: MetadataRendererCommand): void {
     // Exit if nothing has changed
     let dataString = JSON.stringify(command);

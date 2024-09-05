@@ -107,6 +107,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private resolutionVector = new THREE.Vector2();
   private fieldConfigCache: Config3dField | null = null;
   private loadingCount = 0;
+  private aspectRatio: number | null = null;
   private lastCameraIndex = -1;
   private lastAutoDriverStation = -1;
   private lastFrameTime = 0;
@@ -412,6 +413,10 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     return manager;
   }
 
+  getAspectRatio(): number | null {
+    return this.aspectRatio;
+  }
+
   render(command: ThreeDimensionRendererCommand): void {
     // Check for new parameters
     let commandString = JSON.stringify(command);
@@ -682,6 +687,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
       // Update container and camera based on mode
       let fov = this.orbitFov;
+      this.aspectRatio = null;
       if (orbitalCamera || dsCamera) {
         this.canvas.classList.remove("fixed");
         this.canvasContainer.classList.remove("fixed");
@@ -722,6 +728,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         let cameraConfig = robotConfig === undefined ? undefined : robotConfig.cameras[this.cameraIndex];
         let aspectRatio = cameraConfig === undefined ? 4 / 3 : cameraConfig.resolution[0] / cameraConfig.resolution[1];
         if (cameraConfig !== undefined) fov = cameraConfig.fov / aspectRatio;
+        this.aspectRatio = aspectRatio;
         let parentAspectRatio = this.canvas.parentElement
           ? this.canvas.parentElement.clientWidth / this.canvas.parentElement.clientHeight
           : aspectRatio;

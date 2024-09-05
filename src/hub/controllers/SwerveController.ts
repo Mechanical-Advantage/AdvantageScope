@@ -8,7 +8,7 @@ import SwerveController_Config from "./SwerveController_Config";
 import TabController from "./TabController";
 
 export default class SwerveController implements TabController {
-  private UUID = createUUID();
+  readonly UUID = createUUID();
 
   private MAX_SPEED: HTMLInputElement;
   private SIZE_X: HTMLInputElement;

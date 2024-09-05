@@ -1,4 +1,4 @@
-import { SelectionMode } from "../../hub/Selection";
+import { SelectionMode } from "../Selection";
 import LogField from "../log/LogField";
 import { getLogValueText } from "../log/LogUtil";
 import { LogValueSetAny } from "../log/LogValueSets";
@@ -28,6 +28,7 @@ export default class TableRenderer implements TabRenderer {
   private lastFieldsAvailable: boolean[] = [];
   private lastScrollPosition: number | null = null;
   private hoverCursorY: number | null = null;
+  private didClearHoveredTime = false;
 
   private selectionMode: SelectionMode = SelectionMode.Idle;
   private selectedTime: number | null = null;
@@ -113,7 +114,7 @@ export default class TableRenderer implements TabRenderer {
   /** Updates the table based on the current field list */
   private updateFields(fields: TableRendererCommand["fields"]) {
     // Update hand icon
-    let showHand = fields.length === 0 || fields.every((field) => !field.isAvailable);
+    let showHand = this.hasController && (fields.length === 0 || fields.every((field) => !field.isAvailable));
     this.HAND_ICON.style.transition = showHand ? "opacity 1s ease-in 1s" : "";
     this.HAND_ICON.style.opacity = showHand ? "0.15" : "0";
 
@@ -184,6 +185,10 @@ export default class TableRenderer implements TabRenderer {
         highlight(this.hoveredTime, "hovered");
         break;
     }
+  }
+
+  getAspectRatio(): number | null {
+    return null;
   }
 
   render(command: TableRendererCommand): void {
@@ -281,7 +286,6 @@ export default class TableRenderer implements TabRenderer {
       this.dataRowTimestamps.push(this.timestamps[i]);
       cellText.push([formatTimeWithMS(this.timestamps[i])]);
     }
-    let availableFields = window.log.getFieldKeys();
     command.fields.forEach((field) => {
       if (!field.isAvailable) {
         for (let i = dataRowStart; i < dataRowEnd; i++) {
@@ -349,10 +353,12 @@ export default class TableRenderer implements TabRenderer {
         let rect = row.getBoundingClientRect();
         if (this.hoverCursorY! >= rect.top && this.hoverCursorY! < rect.bottom) {
           window.selection.setHoveredTime(this.dataRowTimestamps[index]);
+          this.didClearHoveredTime = false;
         }
       });
-    } else {
+    } else if (!this.didClearHoveredTime) {
       window.selection.setHoveredTime(null);
+      this.didClearHoveredTime = true;
     }
     this.updateHighlights();
     let placeholder = this.selectedTime === null ? 0 : this.selectedTime;

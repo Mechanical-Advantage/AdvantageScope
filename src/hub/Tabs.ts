@@ -6,12 +6,11 @@ import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
-import NoopRenderer from "../shared/renderers/NoopRenderer";
 import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
-import TabRenderer from "../shared/renderers/TabRenderer";
+import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
 import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
@@ -23,12 +22,11 @@ import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
 import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
-import NoopController from "./controllers/NoopController";
 import OdometryController from "./controllers/OdometryController";
 import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
 import SwerveController from "./controllers/SwerveController";
-import TabController from "./controllers/TabController";
+import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
 import ThreeDimensionController from "./controllers/ThreeDimensionController";
 import VideoController from "./controllers/VideoController";
@@ -50,6 +48,7 @@ export default class Tabs {
   private CONTROLS_HANDLE = document.getElementsByClassName("controls-handle")[0] as HTMLElement;
 
   private CLOSE_BUTTON = document.getElementsByClassName("close")[0] as HTMLElement;
+  private POPUP_BUTTON = document.getElementsByClassName("popup")[0] as HTMLElement;
   private ADD_BUTTON = document.getElementsByClassName("add-tab")[0] as HTMLElement;
 
   private TAB_CONFIGS: Map<TabType, { showTimeline: boolean; fixedControlsHeight?: number }> = new Map();
@@ -68,6 +67,7 @@ export default class Tabs {
     controlsHeight: number;
   }[] = [];
   private selectedTab = 0;
+  private activeSatellites: string[] = [];
   private controlsHandleActive = false;
 
   constructor() {
@@ -231,6 +231,14 @@ export default class Tabs {
 
     // Control buttons
     this.CLOSE_BUTTON.addEventListener("click", () => this.close(this.selectedTab));
+    this.POPUP_BUTTON.addEventListener("click", () => {
+      if (this.selectedTab >= 0) {
+        window.sendMainMessage("create-satellite", {
+          uuid: this.tabList[this.selectedTab].controller.UUID,
+          type: this.tabList[this.selectedTab].type
+        });
+      }
+    });
     this.ADD_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("ask-new-tab");
     });
@@ -298,13 +306,37 @@ export default class Tabs {
 
     // Periodic function
     let periodic = () => {
+      // Update tab bar
       this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
       this.SHADOW_RIGHT.style.opacity =
         Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
       this.tabsScrollSensor.periodic();
+
+      // Update timeline and controls
       this.timeline.periodic();
       this.updateControlsHeight();
+
+      // Render new frame
       this.tabList[this.selectedTab].renderer.render(this.tabList[this.selectedTab].controller.getCommand());
+      this.tabList.forEach((tab, index) => {
+        let activeLocal = index === this.selectedTab;
+        let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
+        if (activeLocal || activeSatellite) {
+          let command = tab.controller.getCommand();
+          if (activeLocal) {
+            tab.renderer.render(command);
+          }
+          if (activeSatellite) {
+            let title = tab.type === TabType.Documentation ? "Documentation" : tab.title;
+            window.sendMainMessage("update-satellite", {
+              uuid: tab.controller.UUID,
+              command: command,
+              title: title
+            });
+          }
+        }
+      });
+
       window.requestAnimationFrame(periodic);
     };
     window.requestAnimationFrame(periodic);
@@ -427,7 +459,7 @@ export default class Tabs {
         break;
       case TabType.LineGraph:
         controller = new LineGraphController(controlsElement);
-        renderer = new LineGraphRenderer(rendererElement);
+        renderer = new LineGraphRenderer(rendererElement, true);
         break;
       case TabType.Odometry:
         controller = new OdometryController(controlsElement);
@@ -544,6 +576,21 @@ export default class Tabs {
     let tab = this.tabList.splice(index, 1)[0];
     this.tabList.splice(index + shift, 0, tab);
     this.updateElements();
+  }
+
+  /** Updates the list of active satellites for data publishing. */
+  setActiveSatellites(activeSatellites: string[]) {
+    this.activeSatellites = activeSatellites;
+  }
+
+  /** Check whether the UUID is associated with a tab. */
+  isValidUUID(uuid: string) {
+    for (let i = 0; i < this.tabList.length; i++) {
+      if (uuid === this.tabList[i].controller.UUID) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /** Renames a single tab. */

@@ -22,10 +22,11 @@ import OdometryController_Config from "./OdometryController_Config";
 import TabController from "./TabController";
 
 export default class OdometryController implements TabController {
+  readonly UUID = createUUID();
+
   private static TRAIL_LENGTH_SECS = 3;
   private static TRAIL_DT = 0.1;
 
-  private UUID = createUUID();
   private BUMPER_SWITCHER: HTMLElement;
   private ORIGIN_SWITCHER: HTMLElement;
   private ORIENTATION_SWITCHER: HTMLElement;

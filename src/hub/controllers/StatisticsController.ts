@@ -2,12 +2,14 @@ import * as stats from "simple-statistics";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/LogUtil";
 import { StatisticsRendererCommand, StatisticsRendererCommand_Stats } from "../../shared/renderers/StatisticsRenderer";
-import { cleanFloat } from "../../shared/util";
+import { cleanFloat, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import StatisticsController_Config from "./StatisticsController_Config";
 import TabController from "./TabController";
 
 export default class StatisticsController implements TabController {
+  readonly UUID = createUUID();
+
   private UPDATE_PERIOD_MS = 100;
   private DEFAULT_DT = 0.02;
 
@@ -18,7 +20,7 @@ export default class StatisticsController implements TabController {
 
   private sourceList: SourceList;
   private command: StatisticsRendererCommand = {
-    isChanged: false,
+    changeCounter: 0,
     bins: [],
     stepSize: 1,
     fields: []
@@ -299,13 +301,11 @@ export default class StatisticsController implements TabController {
 
       // Update command
       this.command = {
-        isChanged: true,
+        changeCounter: this.command.changeCounter + 1,
         bins: bins,
         stepSize: step,
         fields: fields
       };
-    } else {
-      this.command.isChanged = false;
     }
 
     return this.command;

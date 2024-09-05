@@ -6,6 +6,8 @@ export default class PointsRenderer implements TabRenderer {
   private BACKGROUND: HTMLElement;
   private TEMPLATES: HTMLElement;
 
+  private aspectRatio = 1;
+
   constructor(root: HTMLElement) {
     this.CONTAINER = root.firstElementChild as HTMLElement;
     this.BACKGROUND = this.CONTAINER.children[0] as HTMLElement;
@@ -18,6 +20,10 @@ export default class PointsRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {}
 
+  getAspectRatio(): number | null {
+    return this.aspectRatio;
+  }
+
   render(command: PointsRendererCommand): void {
     // Update background size
     let containerWidth = this.CONTAINER.getBoundingClientRect().width;
@@ -26,6 +32,7 @@ export default class PointsRenderer implements TabRenderer {
     let targetHeight = command.dimensions[1];
     if (targetWidth < 1) targetWidth = 1;
     if (targetHeight < 1) targetHeight = 1;
+    this.aspectRatio = targetWidth / targetHeight;
 
     let finalWidth: number;
     let finalHeight: number;

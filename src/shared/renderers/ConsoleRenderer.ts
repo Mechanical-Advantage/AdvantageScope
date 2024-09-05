@@ -1,4 +1,4 @@
-import { SelectionMode } from "../../hub/Selection";
+import { SelectionMode } from "../Selection";
 import LogField from "../log/LogField";
 import { arraysEqual, formatTimeWithMS, htmlEncode } from "../util";
 import TabRenderer from "./TabRenderer";
@@ -84,6 +84,10 @@ export default class ConsoleRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {}
 
+  getAspectRatio(): number | null {
+    return null;
+  }
+
   render(command: ConsoleRendererCommand): void {
     // Update selection state
     this.selectionMode = command.selectionMode;
@@ -147,7 +151,7 @@ export default class ConsoleRenderer implements TabRenderer {
     }
 
     // Update hand icon
-    let showHand = !this.keyAvailable;
+    let showHand = this.hasController && !this.keyAvailable;
     this.HAND_ICON.style.transition = showHand ? "opacity 1s ease-in 1s" : "";
     this.HAND_ICON.style.opacity = showHand ? "0.15" : "0";
 

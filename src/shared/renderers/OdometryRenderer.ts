@@ -5,20 +5,14 @@ import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
 
 export default class OdometryRenderer implements TabRenderer {
-  private static HEATMAP_GRID_SIZE = 0.1;
-  private static HEATMAP_RADIUS = 0.1; // Fraction of field height
-
   private CONTAINER: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;
   private HEATMAP_CONTAINER: HTMLElement;
 
   private heatmap: Heatmap;
-  private lastWidth = 0;
-  private lastHeight = 0;
-  private lastObjectsFlipped: boolean | null = null;
-  private lastHeatmapData = "";
   private lastImageSource = "";
+  private aspectRatio = 1;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement;
@@ -33,6 +27,10 @@ export default class OdometryRenderer implements TabRenderer {
   }
 
   restoreState(state: unknown): void {}
+
+  getAspectRatio(): number | null {
+    return this.aspectRatio;
+  }
 
   render(command: OdometryRendererCommand): void {
     // Set up canvas
@@ -107,6 +105,7 @@ export default class OdometryRenderer implements TabRenderer {
       this.IMAGE.height * imageScalar // Height
     ];
     context.drawImage(this.IMAGE, renderValues[0], renderValues[1], renderValues[4], renderValues[5]);
+    this.aspectRatio = isVertical ? fieldHeight / fieldWidth : fieldWidth / fieldHeight;
 
     // Calculate field edges
     let canvasFieldLeft = renderValues[0] + gameData.topLeft[0] * imageScalar;

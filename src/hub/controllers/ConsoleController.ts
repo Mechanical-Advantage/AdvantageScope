@@ -1,8 +1,11 @@
 import LoggableType from "../../shared/log/LoggableType";
 import { ConsoleRendererCommand } from "../../shared/renderers/ConsoleRenderer";
+import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class ConsoleController implements TabController {
+  readonly UUID = createUUID();
+
   private ROOT: HTMLElement;
   private TABLE_CONTAINER: HTMLElement;
   private DRAG_HIGHLIGHT: HTMLElement;

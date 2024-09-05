@@ -1,5 +1,5 @@
 import ScrollSensor from "../../hub/ScrollSensor";
-import { SelectionMode } from "../../hub/Selection";
+import { SelectionMode } from "../Selection";
 import { ValueScaler, calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor } from "../util";
 import TabRenderer from "./TabRenderer";
 
@@ -12,11 +12,15 @@ export default class LineGraphRenderer implements TabRenderer {
   private CANVAS: HTMLCanvasElement;
   private SCROLL_OVERLAY: HTMLElement;
 
+  private hasController: boolean;
   private scrollSensor: ScrollSensor;
   private mouseDownX = 0;
   private lastCursorX: number | null = null;
+  private lastHoveredTime: number | null = null;
+  private didClearHoveredTime = false;
 
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, hasController: boolean) {
+    this.hasController = hasController;
     this.ROOT = root;
     this.CANVAS = root.getElementsByClassName("line-graph-canvas")[0] as HTMLCanvasElement;
     this.SCROLL_OVERLAY = root.getElementsByClassName("line-graph-scroll")[0] as HTMLCanvasElement;
@@ -36,9 +40,10 @@ export default class LineGraphRenderer implements TabRenderer {
     });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
-        let hoveredTime = window.selection.getHoveredTime();
+        let hoveredTime = this.lastHoveredTime;
         if (hoveredTime) {
           window.selection.setSelectedTime(hoveredTime);
+          console.log(hoveredTime);
         }
       }
     });
@@ -51,6 +56,10 @@ export default class LineGraphRenderer implements TabRenderer {
       if (root.hidden) return;
       window.selection.applyTimelineScroll(dx, dy, this.SCROLL_OVERLAY.clientWidth);
     });
+  }
+
+  getAspectRatio(): number | null {
+    return null;
   }
 
   render(command: LineGraphRendererCommand): void {
@@ -70,8 +79,8 @@ export default class LineGraphRenderer implements TabRenderer {
     context.font = "12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate vertical layout (based on discrete fields)
-    let graphTop = 8;
-    let graphHeight = height - graphTop - 50;
+    let graphTop = this.hasController ? 8 : 20;
+    let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
     let graphHeightOpen =
       graphHeight - command.discreteFields.length * 20 - (command.discreteFields.length > 0 ? 5 : 0);
@@ -101,10 +110,14 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Update hovered time based on graph layout
     if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
-      window.selection.setHoveredTime(null);
+      if (!this.didClearHoveredTime) {
+        window.selection.setHoveredTime(null);
+        this.didClearHoveredTime = true;
+      }
     } else {
       let hoveredTime = scaleValue(this.lastCursorX, [graphLeft, graphLeft + graphWidth], command.timeRange);
       window.selection.setHoveredTime(hoveredTime);
+      this.didClearHoveredTime = false;
       command.hoveredTime = hoveredTime;
     }
 
@@ -395,6 +408,7 @@ export default class LineGraphRenderer implements TabRenderer {
       // No valid selected time, only write hovered time
       writeCenteredTime(hoveredText!, hoveredX!, 0.35, true);
     }
+    this.lastHoveredTime = command.hoveredTime;
 
     // Clear overflow & draw graph outline
     context.lineWidth = 1;

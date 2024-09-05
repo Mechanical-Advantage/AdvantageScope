@@ -93,6 +93,10 @@ export default class ThreeDimensionRenderer implements TabRenderer {
     }
   }
 
+  getAspectRatio(): number | null {
+    return this.implementation === null ? null : this.implementation.getAspectRatio();
+  }
+
   render(command: ThreeDimensionRendererCommand): void {
     this.updateImplementation();
     this.implementation?.render(command);

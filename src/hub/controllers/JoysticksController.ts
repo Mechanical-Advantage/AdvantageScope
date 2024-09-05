@@ -1,9 +1,11 @@
 import { BlankJoystickState, JOYSTICK_KEYS, getJoystickState } from "../../shared/log/LogUtil";
 import { JoysticksRendererCommand } from "../../shared/renderers/JoysticksRenderer";
-import { checkArrayType } from "../../shared/util";
+import { checkArrayType, createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class JoysticksController implements TabController {
+  readonly UUID = createUUID();
+
   private SELECTS: HTMLSelectElement[];
 
   constructor(root: HTMLElement) {

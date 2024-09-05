@@ -1,5 +1,9 @@
+import { createUUID } from "../../shared/util";
+
 /** A controller for a single tab. Updates user controls and produces commands to be used by renderers. */
 export default interface TabController {
+  readonly UUID: string;
+
   /** Returns the current state. */
   saveState(): unknown;
 
@@ -21,4 +25,26 @@ export default interface TabController {
 
   /** Returns data required by renderers. */
   getCommand(): unknown;
+}
+
+export class NoopController implements TabController {
+  readonly UUID = createUUID();
+
+  saveState(): unknown {
+    return null;
+  }
+
+  restoreState(): void {}
+
+  refresh(): void {}
+
+  newAssets(): void {}
+
+  getActiveFields(): string[] {
+    return [];
+  }
+
+  getCommand(): unknown {
+    return null;
+  }
 }

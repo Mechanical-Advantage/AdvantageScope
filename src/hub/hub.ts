@@ -1,26 +1,27 @@
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
-import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
+import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
+import Log from "../shared/log/Log";
+import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
-import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
-import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
-import LiveDataTuner from "./dataSources/LiveDataTuner";
-import loadZebra from "./dataSources/LoadZebra";
-import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
-import NT4Source from "./dataSources/nt4/NT4Source";
-import PathPlannerSource from "./dataSources/PathPlannerSource";
-import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
-import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
-import Selection from "./Selection";
+import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
 import Tabs from "./Tabs";
 import WorkerManager from "./WorkerManager";
+import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
+import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
+import LiveDataTuner from "./dataSources/LiveDataTuner";
+import loadZebra from "./dataSources/LoadZebra";
+import PathPlannerSource from "./dataSources/PathPlannerSource";
+import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
+import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
+import NT4Source from "./dataSources/nt4/NT4Source";
+import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 
 // Constants
 const STATE_SAVE_PERIOD_MS = 250;
@@ -63,7 +64,7 @@ window.isFocused = true;
 window.isBattery = false;
 window.fps = false;
 
-window.selection = new Selection();
+window.selection = new SelectionImpl();
 window.sidebar = new Sidebar();
 window.tabs = new Tabs();
 window.tuner = null;
@@ -483,6 +484,44 @@ function handleMainMessage(message: NamedMessage) {
         }
         if (!newHasFailed && oldHadFailed) {
           console.log("All assets loaded successfully");
+        }
+      }
+      break;
+
+    case "set-active-satellites":
+      window.tabs.setActiveSatellites(message.data);
+      break;
+
+    case "call-selection-setter":
+      let uuid: string = message.data.uuid;
+      let name: string = message.data.name;
+      let args: any[] = message.data.args;
+      if (window.tabs.isValidUUID(uuid)) {
+        switch (name) {
+          case "setHoveredTime":
+            window.selection.setHoveredTime(args[0]);
+            break;
+          case "setSelectedTime":
+            window.selection.setSelectedTime(args[0]);
+            break;
+          case "goIdle":
+            window.selection.goIdle();
+            break;
+          case "play":
+            window.selection.play();
+            break;
+          case "pause":
+            window.selection.pause();
+            break;
+          case "lock":
+            window.selection.lock();
+            break;
+          case "unlock":
+            window.selection.unlock();
+            break;
+          case "applyTimelineScroll":
+            window.selection.applyTimelineScroll(args[0], args[1], args[2]);
+            break;
         }
       }
       break;

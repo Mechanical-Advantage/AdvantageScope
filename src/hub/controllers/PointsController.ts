@@ -9,7 +9,7 @@ import PointsController_Config from "./PointsController_Config";
 import TabController from "./TabController";
 
 export default class PointsController implements TabController {
-  private UUID = createUUID();
+  readonly UUID = createUUID();
 
   private WIDTH: HTMLInputElement;
   private HEIGHT: HTMLInputElement;

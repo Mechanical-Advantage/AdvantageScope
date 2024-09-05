@@ -1,8 +1,11 @@
 import { MERGE_PREFIX, METADATA_KEYS } from "../../shared/log/LogUtil";
 import { MetadataRendererCommand } from "../../shared/renderers/MetadataRenderer";
+import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class MetadataController implements TabController {
+  readonly UUID = createUUID();
+
   private command: MetadataRendererCommand = {};
 
   constructor() {

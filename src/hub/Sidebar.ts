@@ -2,10 +2,10 @@ import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
+import { SelectionMode } from "../shared/Selection";
 import { arraysEqual, setsEqual } from "../shared/util";
 import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
-import { SelectionMode } from "./Selection";
 
 export default class Sidebar {
   private DEFAULT_SIDEBAR_WIDTH = 300;

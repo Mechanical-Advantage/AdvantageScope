@@ -1,16 +1,22 @@
-// import JoysticksVisualizer from "../old/visualizers/JoysticksVisualizer";
-// import MechanismVisualizer from "../old/visualizers/MechanismVisualizer";
-// import OdometryVisualizer from "../old/visualizers/OdometryVisualizer";
-// import PointsVisualizer from "../old/visualizers/PointsVisualizer";
-// import SwerveVisualizer from "../old/visualizers/SwerveVisualizer";
-// import ThreeDimensionVisualizer from "../old/visualizers/ThreeDimensionVisualizer";
-// import ThreeDimensionVisualizerSwitching from "../old/visualizers/ThreeDimensionVisualizerSwitching";
-// import VideoVisualizer from "../old/visualizers/VideoVisualizer";
-// import Visualizer from "../old/visualizers/Visualizer";
 import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
+import Selection, { SelectionMode } from "./shared/Selection";
 import TabType, { getTabIcon } from "./shared/TabType";
+import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
+import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
+import JoysticksRenderer from "./shared/renderers/JoysticksRenderer";
+import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
+import MechanismRenderer from "./shared/renderers/MechanismRenderer";
+import MetadataRenderer from "./shared/renderers/MetadataRenderer";
+import OdometryRenderer from "./shared/renderers/OdometryRenderer";
+import PointsRenderer from "./shared/renderers/PointsRenderer";
+import StatisticsRenderer from "./shared/renderers/StatisticsRenderer";
+import SwerveRenderer from "./shared/renderers/SwerveRenderer";
+import TabRenderer from "./shared/renderers/TabRenderer";
+import TableRenderer from "./shared/renderers/TableRenderer";
+import ThreeDimensionRenderer from "./shared/renderers/ThreeDimensionRenderer";
+import VideoRenderer from "./shared/renderers/VideoRenderer";
 import { htmlEncode } from "./shared/util";
 
 const MAX_ASPECT_RATIO = 5;
@@ -21,13 +27,14 @@ declare global {
     assets: AdvantageScopeAssets | null;
     preferences: Preferences | null;
     isBattery: boolean;
+    selection: Selection;
     sendMainMessage: (name: string, data?: any) => void;
   }
 }
 
 window.isBattery = false;
 
-// let visualizer: Visualizer | null = null;
+let renderer: TabRenderer | null = null;
 let type: TabType | null = null;
 let title: string | null = null;
 let messagePort: MessagePort | null = null;
@@ -39,52 +46,56 @@ function updateVisualizer() {
   if (type === null) return;
 
   // Update visible elements
-  (document.getElementById("odometry") as HTMLElement).hidden = type !== TabType.Odometry;
-  (document.getElementById("threeDimension") as HTMLElement).hidden = type !== TabType.ThreeDimension;
-  (document.getElementById("video") as HTMLElement).hidden = type !== TabType.Video;
-  (document.getElementById("joysticks") as HTMLElement).hidden = type !== TabType.Joysticks;
-  (document.getElementById("swerve") as HTMLElement).hidden = type !== TabType.Swerve;
-  (document.getElementById("mechanism") as HTMLElement).hidden = type !== TabType.Mechanism;
-  (document.getElementById("points") as HTMLElement).hidden = type !== TabType.Points;
+  for (let i = 0; i < document.body.childElementCount; i++) {
+    let element = document.getElementById("renderer" + i.toString());
+    if (element !== null) {
+      element.hidden = type !== i;
+    }
+  }
 
-  // Create visualizer
-  /*
+  // Create renderer
+  let root = document.getElementById("renderer" + type.toString()) as HTMLElement;
   switch (type) {
+    case TabType.Documentation:
+      renderer = new DocumentationRenderer(root);
+      break;
+    case TabType.LineGraph:
+      renderer = new LineGraphRenderer(root, false);
+      break;
     case TabType.Odometry:
-      visualizer = new OdometryVisualizer(
-        document.getElementById("odometryCanvasContainer") as HTMLElement,
-        document.getElementById("odometryHeatmapContainer") as HTMLElement
-      );
+      renderer = new OdometryRenderer(root);
       break;
     case TabType.ThreeDimension:
-      visualizer = new ThreeDimensionVisualizerSwitching(
-        document.body,
-        document.getElementById("threeDimensionCanvas") as HTMLCanvasElement,
-        document.getElementById("threeDimensionAnnotations") as HTMLElement,
-        document.getElementById("threeDimensionAlert") as HTMLElement
-      );
+      renderer = new ThreeDimensionRenderer(root);
+      break;
+    case TabType.Table:
+      renderer = new TableRenderer(root, false);
+      break;
+    case TabType.Console:
+      renderer = new ConsoleRenderer(root, false);
+      break;
+    case TabType.Statistics:
+      renderer = new StatisticsRenderer(root);
       break;
     case TabType.Video:
-      visualizer = new VideoVisualizer(document.getElementsByClassName("video-image")[0] as HTMLImageElement);
+      renderer = new VideoRenderer(root);
       break;
     case TabType.Joysticks:
-      visualizer = new JoysticksVisualizer(document.getElementById("joysticksCanvas") as HTMLCanvasElement);
+      renderer = new JoysticksRenderer(root);
       break;
     case TabType.Swerve:
-      visualizer = new SwerveVisualizer(document.getElementsByClassName("swerve-canvas-container")[0] as HTMLElement);
+      renderer = new SwerveRenderer(root);
       break;
     case TabType.Mechanism:
-      visualizer = new MechanismVisualizer(
-        document.getElementsByClassName("mechanism-svg-container")[0] as HTMLElement
-      );
+      renderer = new MechanismRenderer(root);
       break;
     case TabType.Points:
-      visualizer = new PointsVisualizer(
-        document.getElementsByClassName("points-background-container")[0] as HTMLElement
-      );
+      renderer = new PointsRenderer(root);
+      break;
+    case TabType.Metadata:
+      renderer = new MetadataRenderer(root);
       break;
   }
-  */
 }
 
 window.sendMainMessage = (name: string, data?: any) => {
@@ -120,7 +131,7 @@ window.addEventListener("message", (event) => {
         case "restore-state":
           type = message.data.type;
           updateVisualizer();
-          // visualizer?.restoreState(message.data.visualizer);
+          renderer?.restoreState(message.data.visualizer);
           break;
 
         case "render":
@@ -129,27 +140,28 @@ window.addEventListener("message", (event) => {
           let newTitle = message.data.title;
           if (newTitle !== title) {
             titleElement.innerHTML =
-              (type ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; AdvantageScope";
+              (type !== null ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; AdvantageScope";
             title = newTitle;
           }
 
           // Render frame
           lastCommand = message.data.command;
-          // if (visualizer) {
-          //   let aspectRatio = visualizer.render(message.data.command);
-          //   processAspectRatio(aspectRatio);
-          // }
+          if (renderer) {
+            renderer.render(message.data.command);
+            let aspectRatio = renderer.getAspectRatio();
+            processAspectRatio(aspectRatio);
+          }
           break;
 
         case "set-3d-camera":
           if (type === TabType.ThreeDimension) {
-            // (visualizer as ThreeDimensionVisualizer).set3DCamera(message.data);
+            (renderer as ThreeDimensionRenderer).set3DCamera(message.data);
           }
           break;
 
         case "edit-fov":
           if (type === TabType.ThreeDimension) {
-            // (visualizer as ThreeDimensionVisualizer).setFov(message.data);
+            (renderer as ThreeDimensionRenderer).setFov(message.data);
           }
           break;
 
@@ -162,11 +174,12 @@ window.addEventListener("message", (event) => {
 });
 
 window.addEventListener("resize", () => {
-  // if (visualizer === null || lastCommand === null) {
-  //   return;
-  // }
-  // let aspectRatio = visualizer.render(lastCommand);
-  // if (aspectRatio) processAspectRatio(aspectRatio);
+  if (renderer === null || lastCommand === null) {
+    return;
+  }
+  renderer.render(lastCommand);
+  let aspectRatio = renderer.getAspectRatio();
+  if (aspectRatio) processAspectRatio(aspectRatio);
 });
 
 function processAspectRatio(aspectRatio: number | null) {
@@ -181,5 +194,79 @@ function processAspectRatio(aspectRatio: number | null) {
 }
 
 setInterval(() => {
-  // window.sendMainMessage("save-state", { type: type, visualizer: visualizer?.saveState() });
+  window.sendMainMessage("save-state", { type: type, visualizer: renderer?.saveState() });
 }, SAVE_PERIOD_MS);
+
+// Mock selection, send setter calls back to hub
+
+class MockSelection implements Selection {
+  getMode(): SelectionMode {
+    throw new Error("Method not implemented.");
+  }
+
+  getHoveredTime(): number | null {
+    throw new Error("Method not implemented.");
+  }
+
+  setHoveredTime(value: number | null): void {
+    window.sendMainMessage("call-selection-setter", { name: "setHoveredTime", args: [value] });
+  }
+
+  getSelectedTime(): number | null {
+    throw new Error("Method not implemented.");
+  }
+
+  setSelectedTime(time: number): void {
+    window.sendMainMessage("call-selection-setter", { name: "setSelectedTime", args: [time] });
+  }
+
+  goIdle(): void {
+    window.sendMainMessage("call-selection-setter", { name: "goIdle", args: [] });
+  }
+
+  play(): void {
+    window.sendMainMessage("call-selection-setter", { name: "play", args: [] });
+  }
+
+  pause(): void {
+    window.sendMainMessage("call-selection-setter", { name: "pause", args: [] });
+  }
+
+  lock(): void {
+    window.sendMainMessage("call-selection-setter", { name: "lock", args: [] });
+  }
+
+  unlock(): void {
+    window.sendMainMessage("call-selection-setter", { name: "unlock", args: [] });
+  }
+
+  setLiveConnected(timeSupplier: () => number): void {
+    throw new Error("Method not implemented.");
+  }
+
+  setLiveDisconnected(): void {
+    throw new Error("Method not implemented.");
+  }
+
+  getCurrentLiveTime(): number | null {
+    throw new Error("Method not implemented.");
+  }
+
+  getRenderTime(): number | null {
+    throw new Error("Method not implemented.");
+  }
+
+  setPlaybackSpeed(speed: number): void {
+    throw new Error("Method not implemented.");
+  }
+
+  getTimelineRange(): [number, number] {
+    throw new Error("Method not implemented.");
+  }
+
+  applyTimelineScroll(dx: number, dy: number, widthPixels: number): void {
+    window.sendMainMessage("call-selection-setter", { name: "applyTimelineScroll", args: [dx, dy, widthPixels] });
+  }
+}
+
+window.selection = new MockSelection();

@@ -7,12 +7,14 @@ import {
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
 import { NoopUnitConversion, UnitConversionPreset, convertWithPreset } from "../../shared/units";
-import { clampValue, scaleValue } from "../../shared/util";
+import { clampValue, createUUID, scaleValue } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
 
 export default class LineGraphController implements TabController {
+  readonly UUID = createUUID();
+
   private RANGE_MARGIN = 0.05;
   private MIN_AXIS_RANGE = 1e-5;
   private MAX_AXIS_RANGE = 1e20;
