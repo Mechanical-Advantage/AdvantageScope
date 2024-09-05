@@ -4,7 +4,7 @@ import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class ConsoleController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private ROOT: HTMLElement;
   private TABLE_CONTAINER: HTMLElement;

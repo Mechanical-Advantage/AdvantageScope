@@ -2115,6 +2115,7 @@ function createHubWindow(state?: WindowState) {
     });
     sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
     sendAllPreferences();
+    sendActiveSatellites();
     if (fs.existsSync(TYPE_MEMORY_FILENAME)) {
       sendMessage(window, "restore-type-memory", jsonfile.readFileSync(TYPE_MEMORY_FILENAME));
     }

@@ -4,7 +4,7 @@ import { checkArrayType, createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class TableController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private ROOT: HTMLElement;
   private TABLE_CONTAINER: HTMLElement;

@@ -7,7 +7,7 @@ import MechanismController_Config from "./MechanismController_Config";
 import TabController from "./TabController";
 
 export default class MechanismController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private sourceList: SourceList;
 

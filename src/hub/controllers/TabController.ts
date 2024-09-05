@@ -2,7 +2,7 @@ import { createUUID } from "../../shared/util";
 
 /** A controller for a single tab. Updates user controls and produces commands to be used by renderers. */
 export default interface TabController {
-  readonly UUID: string;
+  UUID: string;
 
   /** Returns the current state. */
   saveState(): unknown;
@@ -28,7 +28,7 @@ export default interface TabController {
 }
 
 export class NoopController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   saveState(): unknown {
     return null;

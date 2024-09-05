@@ -366,6 +366,7 @@ export default class Tabs {
           type: tab.type,
           title: tab.title,
           controller: tab.controller.saveState(),
+          controllerUUID: tab.controller.UUID,
           renderer: tab.renderer.saveState(),
           controlsHeight: tab.controlsHeight
         };
@@ -384,6 +385,7 @@ export default class Tabs {
     state.tabs.forEach((tabState, index) => {
       this.addTab(tabState.type);
       if (tabState.title) this.renameTab(index, tabState.title);
+      this.tabList[index].controller.UUID = tabState.controllerUUID;
       this.tabList[index].controller.restoreState(tabState.controller);
       this.tabList[index].renderer.restoreState(tabState.renderer);
 

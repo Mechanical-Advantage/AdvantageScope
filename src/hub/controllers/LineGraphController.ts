@@ -13,7 +13,7 @@ import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig }
 import TabController from "./TabController";
 
 export default class LineGraphController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private RANGE_MARGIN = 0.05;
   private MIN_AXIS_RANGE = 1e-5;

@@ -4,7 +4,7 @@ import { checkArrayType, createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class JoysticksController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private SELECTS: HTMLSelectElement[];
 

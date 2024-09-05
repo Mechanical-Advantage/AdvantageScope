@@ -19,6 +19,7 @@ export interface TabState {
   type: TabType;
   title: string;
   controller: unknown;
+  controllerUUID: string;
   renderer: unknown;
   controlsHeight: number;
 }

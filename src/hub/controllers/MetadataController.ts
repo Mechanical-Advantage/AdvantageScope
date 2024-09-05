@@ -4,7 +4,7 @@ import { createUUID } from "../../shared/util";
 import TabController from "./TabController";
 
 export default class MetadataController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private command: MetadataRendererCommand = {};
 

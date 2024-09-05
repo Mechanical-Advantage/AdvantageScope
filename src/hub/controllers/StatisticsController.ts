@@ -8,7 +8,7 @@ import StatisticsController_Config from "./StatisticsController_Config";
 import TabController from "./TabController";
 
 export default class StatisticsController implements TabController {
-  readonly UUID = createUUID();
+  UUID = createUUID();
 
   private UPDATE_PERIOD_MS = 100;
   private DEFAULT_DT = 0.02;
