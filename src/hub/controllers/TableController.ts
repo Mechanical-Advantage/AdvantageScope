@@ -45,7 +45,7 @@ export default class TableController implements TabController {
 
   /** Processes a drag event, including adding a field if necessary. */
   private handleDrag(dragData: any) {
-    if (this.ROOT.hidden) return;
+    if (this.ROOT.hidden || !("fields" in dragData.data)) return;
 
     // Remove empty fields
     let dragFields = dragData.data.fields as string[];

@@ -21,6 +21,7 @@ export default class ConsoleController implements TabController {
     window.addEventListener("drag-update", (event) => {
       if (this.ROOT.hidden) return;
       let dragData = (event as CustomEvent).detail;
+      if (!("fields" in dragData.data)) return;
       let rect = this.TABLE_CONTAINER.getBoundingClientRect();
       let active =
         dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
