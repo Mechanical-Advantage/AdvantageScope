@@ -193,6 +193,27 @@ function processAspectRatio(aspectRatio: number | null) {
   }
 }
 
+window.addEventListener("keydown", (event) => {
+  if (event.target !== document.body) return;
+  switch (event.code) {
+    case "Space":
+      event.preventDefault();
+      window.selection.togglePlayback();
+      break;
+
+    case "KeyL":
+      event.preventDefault();
+      window.selection.toggleLock();
+      break;
+
+    case "ArrowLeft":
+    case "ArrowRight":
+      event.preventDefault();
+      window.selection.stepCycle(event.code === "ArrowRight");
+      break;
+  }
+});
+
 setInterval(() => {
   window.sendMainMessage("save-state", { type: type, visualizer: renderer?.saveState() });
 }, SAVE_PERIOD_MS);
@@ -232,12 +253,24 @@ class MockSelection implements Selection {
     window.sendMainMessage("call-selection-setter", { name: "pause", args: [] });
   }
 
+  togglePlayback(): void {
+    window.sendMainMessage("call-selection-setter", { name: "togglePlayback", args: [] });
+  }
+
   lock(): void {
     window.sendMainMessage("call-selection-setter", { name: "lock", args: [] });
   }
 
   unlock(): void {
     window.sendMainMessage("call-selection-setter", { name: "unlock", args: [] });
+  }
+
+  toggleLock(): void {
+    window.sendMainMessage("call-selection-setter", { name: "toggleLock", args: [] });
+  }
+
+  stepCycle(isForward: boolean): void {
+    window.sendMainMessage("call-selection-setter", { name: "stepCycle", args: [isForward] });
   }
 
   setLiveConnected(timeSupplier: () => number): void {

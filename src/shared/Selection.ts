@@ -23,11 +23,20 @@ export default interface Selection {
   /** Exits playback and locked modes. */
   pause(): void;
 
+  /** Switches between pausing and playback. */
+  togglePlayback(): void;
+
   /** Switches to locked mode if possible. */
   lock(): void;
 
   /** Exits locked mode. */
   unlock(): void;
+
+  /** Switches beteween locked and unlocked modes. */
+  toggleLock(): void;
+
+  /** Steps forward or backward by one cycle. */
+  stepCycle(isForward: boolean): void;
 
   /** Records that the live connection has started. */
   setLiveConnected(timeSupplier: () => number): void;

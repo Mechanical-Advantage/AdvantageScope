@@ -513,11 +513,20 @@ function handleMainMessage(message: NamedMessage) {
           case "pause":
             window.selection.pause();
             break;
+          case "togglePlayback":
+            window.selection.togglePlayback();
+            break;
           case "lock":
             window.selection.lock();
             break;
           case "unlock":
             window.selection.unlock();
+            break;
+          case "toggleLock":
+            window.selection.toggleLock();
+            break;
+          case "stepCycle":
+            window.selection.stepCycle(args[0]);
             break;
           case "applyTimelineScroll":
             window.selection.applyTimelineScroll(args[0], args[1], args[2]);

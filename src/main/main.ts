@@ -328,9 +328,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         .showMessageBox(window, {
           type: "info",
           title: "Alert",
-          message: "About Non-Pro Signals",
+          message: "Limited Signals Available",
           detail:
-            "This log includes CTRE devices that are not Phoenix Pro licensed. Not all signals are available for these devices (check the Phoenix 6 documentation for details).",
+            "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
           checkboxLabel: "Don't Show Again",
           icon: WINDOW_ICON
         })

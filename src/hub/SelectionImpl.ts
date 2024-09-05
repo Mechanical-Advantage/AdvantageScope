@@ -47,20 +47,12 @@ export default class SelectionImpl implements Selection {
       switch (event.code) {
         case "Space":
           event.preventDefault();
-          if (this.mode === SelectionMode.Playback || this.mode === SelectionMode.Locked) {
-            this.pause();
-          } else {
-            this.play();
-          }
+          this.togglePlayback();
           break;
 
         case "KeyL":
           event.preventDefault();
-          if (this.mode === SelectionMode.Locked) {
-            this.unlock();
-          } else {
-            this.lock();
-          }
+          this.toggleLock();
           break;
 
         case "ArrowLeft":
@@ -70,21 +62,8 @@ export default class SelectionImpl implements Selection {
             return;
           }
 
-          const akitTimestampKey = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
-          const isForward = event.code === "ArrowRight";
-          if (akitTimestampKey !== undefined) {
-            const timestampData = window.log.getNumber(akitTimestampKey, -Infinity, Infinity);
-            if (timestampData === undefined) return;
-            if (isForward) {
-              let next = timestampData.timestamps.find((value) => value > this.staticTime);
-              if (next !== undefined) this.staticTime = next;
-            } else {
-              let prev = timestampData.timestamps.findLast((value) => value < this.staticTime);
-              if (prev !== undefined) this.staticTime = prev;
-            }
-          } else {
-            this.staticTime += isForward ? this.STEP_SIZE : -this.STEP_SIZE;
-          }
+          event.preventDefault();
+          this.stepCycle(event.code === "ArrowRight");
           break;
       }
     });
@@ -217,6 +196,15 @@ export default class SelectionImpl implements Selection {
     }
   }
 
+  /** Switches between pausing and playback. */
+  togglePlayback() {
+    if (this.mode === SelectionMode.Playback || this.mode === SelectionMode.Locked) {
+      this.pause();
+    } else {
+      this.play();
+    }
+  }
+
   /** Switches to locked mode if possible. */
   lock() {
     if (this.liveConnected) {
@@ -230,6 +218,33 @@ export default class SelectionImpl implements Selection {
       let selectedTime = this.getSelectedTime();
       this.setMode(SelectionMode.Static);
       this.staticTime = selectedTime !== null ? selectedTime : 0;
+    }
+  }
+
+  /** Switches beteween locked and unlocked modes. */
+  toggleLock() {
+    if (this.mode === SelectionMode.Locked) {
+      this.unlock();
+    } else {
+      this.lock();
+    }
+  }
+
+  /** Steps forward or backward by one cycle. */
+  stepCycle(isForward: boolean) {
+    const akitTimestampKey = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+    if (akitTimestampKey !== undefined) {
+      const timestampData = window.log.getNumber(akitTimestampKey, -Infinity, Infinity);
+      if (timestampData === undefined) return;
+      if (isForward) {
+        let next = timestampData.timestamps.find((value) => value > this.staticTime);
+        if (next !== undefined) this.staticTime = next;
+      } else {
+        let prev = timestampData.timestamps.findLast((value) => value < this.staticTime);
+        if (prev !== undefined) this.staticTime = prev;
+      }
+    } else {
+      this.staticTime += isForward ? this.STEP_SIZE : -this.STEP_SIZE;
     }
   }
 
