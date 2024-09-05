@@ -172,6 +172,7 @@ export default class Tabs {
       });
     });
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
+      mouseDownInfo = null;
       this.tabList.forEach((tab, index) => {
         if (index === 0) return;
         let rect = tab.titleElement.getBoundingClientRect();
