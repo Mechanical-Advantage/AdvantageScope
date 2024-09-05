@@ -44,7 +44,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 
   private updateImplementation() {
     // Get current mode
-    let mode: "cinematic" | "standard" | "low-power" = "standard";
+    let mode: "cinematic" | "standard" | "low-power" | null = null;
     if (window.preferences) {
       if (window.isBattery && window.preferences.threeDimensionModeBattery !== "") {
         mode = window.preferences.threeDimensionModeBattery;
@@ -54,7 +54,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
     }
 
     // Recreate visualizer if necessary
-    if (mode !== this.lastMode) {
+    if (mode !== this.lastMode && mode !== null) {
       this.lastMode = mode;
       let state: any = null;
       if (this.implementation !== null) {
