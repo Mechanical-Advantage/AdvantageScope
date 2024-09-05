@@ -786,12 +786,16 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             type: "submenu",
             enabled: recentUnits.length > 0,
             submenu: recentUnits.map((preset) => {
+              let fromToText =
+                preset.from === undefined || preset.to === undefined
+                  ? ""
+                  : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                    " \u2192 " +
+                    preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
+              let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
+              let bothPresent = fromToText.length > 0 && factorText.length > 0;
               return {
-                label:
-                  preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                  " \u2192 " +
-                  preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                  (preset.factor === 1 ? "" : " (x" + preset.factor.toString() + ")"),
+                label: fromToText + (bothPresent ? ", " : "") + factorText,
                 click() {
                   sendMessage(window, "edit-axis", {
                     legend: legend,
