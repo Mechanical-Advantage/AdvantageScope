@@ -89,15 +89,15 @@ export function getTabIcon(type: TabType): string {
 export function getTabAccelerator(type: TabType): string {
   if (type === TabType.Documentation) return "";
   return (
-    "CmdOrCtrl+Shift+" +
+    "Alt+" +
     (() => {
       switch (type) {
         case TabType.LineGraph:
-          return "L";
+          return "G";
         case TabType.Odometry:
           return "O";
         case TabType.ThreeDimension:
-          return "F";
+          return "3";
         case TabType.Table:
           return "T";
         case TabType.Console:
