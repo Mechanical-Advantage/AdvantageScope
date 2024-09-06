@@ -875,6 +875,10 @@ div.source-list div.item:last-child {
   border-bottom: 1px solid #eee;
 }
 
+#dragItem div.source-list div.item {
+  border: none;
+}
+
 div.source-list div.item.child {
   border-top: none;
 }
@@ -1012,6 +1016,10 @@ div.source-list img.value-symbol {
   filter: invert(43%) sepia(0%) saturate(2564%) hue-rotate(1deg) brightness(110%) contrast(107%);
 }
 
+div.source-list div.item.child img.value-symbol {
+  left: 57px;
+}
+
 div.source-list div.value {
   position: absolute;
   top: 30px;
@@ -1030,6 +1038,10 @@ div.source-list div.value {
   text-overflow: ellipsis;
 }
 
+div.source-list div.item.child div.value {
+  left: 70px;
+}
+
 div.source-list div.drag-highlight {
   position: absolute;
   z-index: 11;
@@ -1045,6 +1057,7 @@ div.source-list img.hand-icon {
   top: calc(50% + 15px);
   transform: translate(-50%, -50%);
   width: 60px;
+  pointer-events: none;
 }
 
 @media (prefers-color-scheme: dark) {

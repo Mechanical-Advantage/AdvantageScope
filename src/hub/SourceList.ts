@@ -14,6 +14,8 @@ import { NoopUnitConversion, UnitConversionPreset, convert, convertWithPreset } 
 import { createUUID, jsonCopy } from "../shared/util";
 
 export default class SourceList {
+  private DRAG_THRESHOLD_PX = 5;
+
   static typePromptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
   static editPromptCallbacks: { [key: string]: () => void } = {};
 
@@ -25,6 +27,7 @@ export default class SourceList {
   private LIST: HTMLElement;
   private HAND_ICON: HTMLImageElement;
   private DRAG_HIGHLIGHT: HTMLElement;
+  private DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 
   private stopped = false;
   private config: SourceListConfig;
@@ -114,9 +117,88 @@ export default class SourceList {
       }
     });
 
-    // Drag handling
+    // Incoming drag handling
     window.addEventListener("drag-update", (event) => {
-      this.handleDrag((event as CustomEvent).detail);
+      let dragData = (event as CustomEvent).detail;
+      if ("sourceListUUID" in dragData.data) {
+        this.handleItemDrag(dragData);
+      } else if ("fields" in dragData.data) {
+        this.handleFieldDrag(dragData);
+      }
+    });
+
+    // Entry dragging support
+    let mouseDownInfo: [number, number] | null = null;
+    this.LIST.addEventListener("mousedown", (event) => {
+      mouseDownInfo = [event.clientX, event.clientY];
+    });
+    this.LIST.addEventListener("mouseup", () => {
+      mouseDownInfo = null;
+    });
+    this.LIST.addEventListener("mousemove", (event) => {
+      // Start drag
+      if (
+        mouseDownInfo !== null &&
+        (Math.abs(event.clientX - mouseDownInfo[0]) >= this.DRAG_THRESHOLD_PX ||
+          Math.abs(event.clientY - mouseDownInfo[1]) >= this.DRAG_THRESHOLD_PX)
+      ) {
+        // Find item
+        let index = -1;
+        Array.from(this.LIST.children).forEach((element, i) => {
+          let rect = element.getBoundingClientRect();
+          if (
+            mouseDownInfo![0] >= rect.left &&
+            mouseDownInfo![0] <= rect.right &&
+            mouseDownInfo![1] >= rect.top &&
+            mouseDownInfo![1] <= rect.bottom
+          ) {
+            index = i;
+          }
+        });
+        mouseDownInfo = null;
+        if (index === -1) return;
+
+        // Update drag item
+        let element = this.LIST.children[index];
+        while (this.DRAG_ITEM.firstChild) {
+          this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
+        }
+        let dragContainer = document.createElement("div");
+        dragContainer.style.position = "absolute";
+        dragContainer.style.width = element.clientWidth.toString() + "px";
+        dragContainer.style.height = "30px";
+        dragContainer.style.left = "0px";
+        dragContainer.style.top = "0px";
+        dragContainer.style.pointerEvents = "none";
+        dragContainer.style.margin = "none";
+        dragContainer.style.padding = "none";
+        dragContainer.classList.add("source-list");
+        let elementClone = element.cloneNode(true) as HTMLElement;
+        {
+          // Apply icon color
+          Array.from(elementClone.getElementsByTagName("object")).forEach((objElement) => {
+            const color = objElement.getAttribute("type-color");
+            objElement.addEventListener("load", () => {
+              if (color !== null && objElement.contentDocument !== null) {
+                let svgs = objElement.contentDocument.getElementsByTagName("svg");
+                if (svgs.length > 0) {
+                  svgs[0].style.color = color;
+                }
+              }
+            });
+          });
+        }
+
+        dragContainer.appendChild(elementClone);
+        this.DRAG_ITEM.appendChild(dragContainer);
+
+        // Start drag
+        let itemRect = element.getBoundingClientRect();
+        window.startDrag(event.clientX, event.clientY, event.clientX - itemRect.left, event.clientY - itemRect.top, {
+          sourceListUUID: this.UUID,
+          sourceListIndex: index
+        });
+      }
     });
 
     // Periodic method
@@ -373,9 +455,120 @@ export default class SourceList {
     }
   }
 
-  /** Processes a drag event, including adding a field if necessary. */
-  private handleDrag(dragData: any) {
-    if (!("fields" in dragData.data)) return;
+  /** Processes a item drag event, including rearranging fields if necessary. */
+  private handleItemDrag(dragData: any) {
+    let targetUUID = dragData.data.sourceListUUID;
+    let startIndex = dragData.data.sourceListIndex;
+    let end = dragData.end;
+    let x = dragData.x;
+    let y = dragData.y;
+    if (targetUUID !== this.UUID) return;
+    let childSource = this.isChild(startIndex);
+
+    let rootRect = this.ROOT.getBoundingClientRect();
+    if (x < rootRect.left || x > rootRect.right || y < rootRect.top || y > rootRect.bottom) {
+      this.DRAG_HIGHLIGHT.hidden = true;
+      return;
+    }
+
+    let isValidTarget = (targetIndex: number) => {
+      if (childSource) {
+        let sourceParent = startIndex - 1;
+        while (sourceParent >= 0 && this.isChild(sourceParent)) {
+          sourceParent--;
+        }
+
+        let targetParent = targetIndex - 1;
+        while (targetParent >= 0 && this.isChild(targetParent)) {
+          targetParent--;
+        }
+
+        if (sourceParent !== targetParent) {
+          return false;
+        }
+      } else {
+        if (targetIndex < this.LIST.childElementCount && this.isChild(targetIndex)) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    let closestDist = Infinity;
+    let closestIndex = 0;
+    Array.from(this.LIST.children).forEach((element, index) => {
+      if (!isValidTarget(index)) return;
+      let dist = Math.abs(y - element.getBoundingClientRect().top);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIndex = index;
+      }
+    });
+    let lastElement = this.LIST.lastElementChild;
+    if (lastElement !== null && isValidTarget(this.LIST.childElementCount)) {
+      let dist = Math.abs(y - lastElement.getBoundingClientRect().bottom);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIndex = this.LIST.childElementCount;
+      }
+    }
+
+    if (!isFinite(closestDist)) {
+      this.DRAG_HIGHLIGHT.hidden = true;
+      return;
+    }
+
+    if (end) {
+      this.DRAG_HIGHLIGHT.hidden = true;
+      let endIndex = closestIndex;
+      let itemCount = 0;
+      let i = startIndex;
+      if (childSource) {
+        itemCount = 1;
+      } else {
+        while (true) {
+          itemCount++;
+          if (i + itemCount >= this.state.length || !this.isChild(i + itemCount)) break;
+        }
+      }
+
+      // Rearrange items
+      for (let i = 0; i < itemCount; i++) {
+        if (endIndex < startIndex) {
+          let element = this.LIST.children[startIndex];
+          this.LIST.insertBefore(element, this.LIST.children[endIndex]);
+          let item = this.state[startIndex];
+          this.state.splice(endIndex, 0, item);
+          this.state.splice(startIndex + 1, 1);
+          startIndex++;
+          endIndex++;
+        } else if (endIndex > startIndex) {
+          let element = this.LIST.children[startIndex];
+          this.LIST.insertBefore(element, this.LIST.children[endIndex]);
+          let item = this.state[startIndex];
+          this.state.splice(endIndex, 0, item);
+          this.state.splice(startIndex, 1);
+        }
+      }
+    } else {
+      this.DRAG_HIGHLIGHT.hidden = false;
+      let highlightY = 0;
+      if (closestIndex < this.LIST.childElementCount) {
+        highlightY = this.LIST.children[closestIndex].getBoundingClientRect().top;
+      } else {
+        highlightY = this.LIST.children[this.LIST.childElementCount - 1].getBoundingClientRect().bottom;
+      }
+      highlightY -= this.ROOT.getBoundingClientRect().top;
+      highlightY -= 6;
+      this.DRAG_HIGHLIGHT.style.left = "0%";
+      this.DRAG_HIGHLIGHT.style.top = highlightY.toString() + "px";
+      this.DRAG_HIGHLIGHT.style.width = "100%";
+      this.DRAG_HIGHLIGHT.style.height = "12px";
+    }
+  }
+
+  /** Processes a field drag event, including adding a field if necessary. */
+  private handleFieldDrag(dragData: any) {
     let end = dragData.end;
     let x = dragData.x;
     let y = dragData.y;
@@ -656,6 +849,8 @@ export default class SourceList {
       typeIconHidden.addEventListener("load", () => {
         if (typeIconHidden.contentDocument) {
           typeIconHidden.contentDocument.getElementsByTagName("svg")[0].style.color = color;
+          typeIconHidden.setAttribute("type-color", color);
+
           typeIconHidden.classList.remove("hidden");
           typeIconVisible.classList.add("hidden");
         }
@@ -666,6 +861,7 @@ export default class SourceList {
       if (svgs.length > 0) {
         svgs[0].style.color = color;
       }
+      typeIconVisible.setAttribute("type-color", color);
     }
 
     // Update type name

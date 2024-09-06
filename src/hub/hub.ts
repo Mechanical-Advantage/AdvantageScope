@@ -165,6 +165,7 @@ window.startDrag = (x, y, offsetX, offsetY, data) => {
   DRAG_ITEM.hidden = false;
   DRAG_ITEM.style.left = (x - offsetX).toString() + "px";
   DRAG_ITEM.style.top = (y - offsetY).toString() + "px";
+  document.body.style.cursor = "grabbing";
 };
 
 function dragMove(x: number, y: number) {
@@ -191,6 +192,7 @@ function dragEnd() {
   if (dragActive) {
     dragActive = false;
     DRAG_ITEM.hidden = true;
+    document.body.style.cursor = "";
     window.dispatchEvent(
       new CustomEvent("drag-update", {
         detail: { end: true, x: dragLastX, y: dragLastY, data: dragData }
