@@ -31,6 +31,7 @@ export default class SourceList {
 
   private stopped = false;
   private config: SourceListConfig;
+  private configStr: string;
   private state: SourceListState = [];
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
@@ -55,6 +56,7 @@ export default class SourceList {
     getUnitConversionPreset: () => UnitConversionPreset = () => NoopUnitConversion
   ) {
     this.config = jsonCopy(config);
+    this.configStr = JSON.stringify(config);
     this.supplementalStateSuppliers = supplementalStateSuppliers;
     this.getUnitConversionPreset = getUnitConversionPreset;
     this.ROOT = root;
@@ -196,7 +198,11 @@ export default class SourceList {
         let itemRect = element.getBoundingClientRect();
         window.startDrag(event.clientX, event.clientY, event.clientX - itemRect.left, event.clientY - itemRect.top, {
           sourceListUUID: this.UUID,
-          sourceListIndex: index
+          sourceListConfigStr: this.configStr,
+          sourceListIndex: index,
+          sourceListIsChild: this.isChild(index),
+          sourceListElement: this.LIST,
+          sourceListState: this.state
         });
       }
     });
@@ -457,13 +463,16 @@ export default class SourceList {
 
   /** Processes a item drag event, including rearranging fields if necessary. */
   private handleItemDrag(dragData: any) {
-    let targetUUID = dragData.data.sourceListUUID;
-    let startIndex = dragData.data.sourceListIndex;
-    let end = dragData.end;
-    let x = dragData.x;
-    let y = dragData.y;
-    if (targetUUID !== this.UUID) return;
-    let childSource = this.isChild(startIndex);
+    let uuid: string = dragData.data.sourceListUUID;
+    let configStr: string = dragData.data.sourceListConfigStr;
+    if (configStr !== this.configStr) return;
+    let startIndex: number = dragData.data.sourceListIndex;
+    let childSource: boolean = dragData.data.sourceListIsChild;
+    let sourceElement: HTMLElement = dragData.data.sourceListElement;
+    let sourceState: SourceListState = dragData.data.sourceListState;
+    let end: boolean = dragData.end;
+    let x: number = dragData.x;
+    let y: number = dragData.y;
 
     let rootRect = this.ROOT.getBoundingClientRect();
     if (x < rootRect.left || x > rootRect.right || y < rootRect.top || y > rootRect.bottom) {
@@ -473,6 +482,8 @@ export default class SourceList {
 
     let isValidTarget = (targetIndex: number) => {
       if (childSource) {
+        if (uuid !== this.UUID) return false;
+
         let sourceParent = startIndex - 1;
         while (sourceParent >= 0 && this.isChild(sourceParent)) {
           sourceParent--;
@@ -483,13 +494,9 @@ export default class SourceList {
           targetParent--;
         }
 
-        if (sourceParent !== targetParent) {
-          return false;
-        }
+        if (sourceParent !== targetParent) return false;
       } else {
-        if (targetIndex < this.LIST.childElementCount && this.isChild(targetIndex)) {
-          return false;
-        }
+        if (targetIndex < this.LIST.childElementCount && this.isChild(targetIndex)) return false;
       }
       return true;
     };
@@ -513,11 +520,6 @@ export default class SourceList {
       }
     }
 
-    if (!isFinite(closestDist)) {
-      this.DRAG_HIGHLIGHT.hidden = true;
-      return;
-    }
-
     if (end) {
       this.DRAG_HIGHLIGHT.hidden = true;
       let endIndex = closestIndex;
@@ -534,7 +536,20 @@ export default class SourceList {
 
       // Rearrange items
       for (let i = 0; i < itemCount; i++) {
-        if (endIndex < startIndex) {
+        if (uuid !== this.UUID) {
+          // let element = sourceElement.children[startIndex];
+          // this.LIST.insertBefore(element, this.LIST.children[endIndex]);
+          // let item = sourceState[startIndex];
+          // this.state.splice(endIndex, 0, item);
+          // sourceState.splice(startIndex, 1);
+
+          sourceElement.removeChild(sourceElement.children[startIndex]);
+          let state = sourceState[startIndex];
+          sourceState.splice(startIndex, 1);
+          this.addListItem(state, endIndex);
+
+          endIndex++;
+        } else if (endIndex < startIndex) {
           let element = this.LIST.children[startIndex];
           this.LIST.insertBefore(element, this.LIST.children[endIndex]);
           let item = this.state[startIndex];
@@ -553,7 +568,9 @@ export default class SourceList {
     } else {
       this.DRAG_HIGHLIGHT.hidden = false;
       let highlightY = 0;
-      if (closestIndex < this.LIST.childElementCount) {
+      if (this.LIST.childElementCount === 0) {
+        highlightY = this.LIST.getBoundingClientRect().top;
+      } else if (closestIndex < this.LIST.childElementCount) {
         highlightY = this.LIST.children[closestIndex].getBoundingClientRect().top;
       } else {
         highlightY = this.LIST.children[this.LIST.childElementCount - 1].getBoundingClientRect().bottom;
