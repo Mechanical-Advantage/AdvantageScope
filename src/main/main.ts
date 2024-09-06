@@ -688,6 +688,14 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
+      editMenu.append(
+        new MenuItem({
+          label: "Help",
+          click() {
+            openSourceListHelp(window, message.data.config);
+          }
+        })
+      );
       editMenu.popup({
         window: window,
         x: message.data.coordinates[0],
@@ -834,6 +842,14 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           label: "Clear All",
           click() {
             sendMessage(window, "clear-axis", legend);
+          }
+        })
+      );
+      editAxisMenu.append(
+        new MenuItem({
+          label: "Help",
+          click() {
+            openSourceListHelp(window, message.data.config);
           }
         })
       );
@@ -2721,6 +2737,50 @@ function openXR(parentWindow: Electron.BrowserWindow) {
   xrWindow.once("ready-to-show", xrWindow.show);
   xrWindow.once("close", downloadStop);
   xrWindow.loadFile(path.join(__dirname, "../www/xr.html"));
+}
+
+/**
+ * Creates a new source list help window.
+ * @param parentWindow The parent window to use for alignment
+ */
+function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: SourceListConfig) {
+  const width = 350;
+  const height = 500;
+  let helpWindow = new BrowserWindow({
+    width: width,
+    height: height,
+    minWidth: width,
+    maxWidth: width,
+    x: Math.floor(parentWindow.getBounds().x + 30),
+    y: Math.floor(parentWindow.getBounds().y + 30),
+    resizable: true,
+    icon: WINDOW_ICON,
+    show: false,
+    fullscreenable: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+
+  // Finish setup
+  helpWindow.setMenu(null);
+  helpWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
+  helpWindow.once("ready-to-show", helpWindow.show);
+  helpWindow.once("close", downloadStop);
+  helpWindow.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    if (helpWindow === null) return;
+    const { port1, port2 } = new MessageChannelMain();
+    helpWindow.webContents.postMessage("port", null, [port1]);
+    windowPorts[helpWindow.id] = port2;
+    port2.start();
+
+    // Init messages
+    sendMessage(helpWindow, "set-config", config);
+    sendAllPreferences();
+  });
+  helpWindow.loadFile(path.join(__dirname, "../www/sourceListHelp.html"));
 }
 
 // APPLICATION EVENTS

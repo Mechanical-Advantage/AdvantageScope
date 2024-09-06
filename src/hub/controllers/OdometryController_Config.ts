@@ -24,6 +24,7 @@ const OdometryController_Config: SourceListConfig = {
         "Transform2d[]",
         "Transform3d[]"
       ],
+      showDocs: true,
       options: [],
       parentKey: "robot",
       previewType: "Pose2d"
@@ -36,6 +37,7 @@ const OdometryController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "format",
@@ -78,6 +80,7 @@ const OdometryController_Config: SourceListConfig = {
         "Transform2d[]",
         "Transform3d[]"
       ],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -97,6 +100,7 @@ const OdometryController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "color",
@@ -137,6 +141,7 @@ const OdometryController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["ZebraTranslation"],
+      showDocs: false,
       options: [
         {
           key: "color",
@@ -157,6 +162,7 @@ const OdometryController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Rotation2d", "Rotation3d"],
+      showDocs: true,
       options: [],
       childOf: "robot",
       previewType: "Rotation2d"
@@ -169,6 +175,7 @@ const OdometryController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Number"],
+      showDocs: false,
       options: [
         {
           key: "units",
@@ -203,6 +210,7 @@ const OdometryController_Config: SourceListConfig = {
         "Translation2d[]",
         "Translation3d[]"
       ],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -221,6 +229,7 @@ const OdometryController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "color",
@@ -259,6 +268,7 @@ const OdometryController_Config: SourceListConfig = {
         "Translation3d[]",
         "Trajectory"
       ],
+      showDocs: true,
       options: [],
       previewType: "Translation2d"
     },
@@ -269,6 +279,7 @@ const OdometryController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#ff8800",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "format",
@@ -306,6 +317,7 @@ const OdometryController_Config: SourceListConfig = {
         "Translation3d[]",
         "ZebraTranslation"
       ],
+      showDocs: true,
       options: [
         {
           key: "timeRange",
@@ -330,6 +342,7 @@ const OdometryController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#ff0000",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "timeRange",
@@ -377,6 +390,7 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d[]",
         "Trajectory"
       ],
+      showDocs: true,
       options: [
         {
           key: "position",
@@ -400,6 +414,7 @@ const OdometryController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "position",
@@ -444,6 +459,7 @@ const OdometryController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["ZebraTranslation"],
+      showDocs: true,
       options: [],
       previewType: "Translation2d"
     }

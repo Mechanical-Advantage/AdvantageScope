@@ -41,7 +41,8 @@ export default class LineGraphController implements TabController {
           y: coordinates[1],
           legend: "left",
           lockedRange: this.leftLockedRange,
-          unitConversion: this.leftUnitConversion
+          unitConversion: this.leftUnitConversion,
+          config: LineGraphController_NumericConfig
         });
       },
       () => this.leftUnitConversion
@@ -58,7 +59,8 @@ export default class LineGraphController implements TabController {
           y: coordinates[1],
           legend: "right",
           lockedRange: this.rightLockedRange,
-          unitConversion: this.rightUnitConversion
+          unitConversion: this.rightUnitConversion,
+          config: LineGraphController_NumericConfig
         });
       },
       () => this.rightUnitConversion
@@ -73,7 +75,8 @@ export default class LineGraphController implements TabController {
         window.sendMainMessage("ask-edit-axis", {
           x: coordinates[0],
           y: coordinates[1],
-          legend: "discrete"
+          legend: "discrete",
+          config: LineGraphController_DiscreteConfig
         });
       }
     );

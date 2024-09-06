@@ -25,6 +25,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform3d[]",
         "ZebraTranslation"
       ],
+      showDocs: true,
       options: [
         {
           key: "model",
@@ -45,6 +46,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "model",
@@ -95,6 +97,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform3d[]",
         "ZebraTranslation"
       ],
+      showDocs: true,
       options: [
         {
           key: "model",
@@ -120,6 +123,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "model",
@@ -166,6 +170,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#9370db",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]"],
+      showDocs: true,
       options: [],
       childOf: "robot",
       previewType: "Pose3d"
@@ -177,6 +182,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#9370db",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [],
       childOf: "robot",
       numberArrayDeprecated: true,
@@ -189,6 +195,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#888888",
       sourceTypes: ["Mechanism2d"],
+      showDocs: true,
       options: [],
       childOf: "robot"
     },
@@ -200,6 +207,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Rotation2d", "Rotation3d"],
+      showDocs: true,
       options: [],
       childOf: "robot",
       previewType: "Rotation3d"
@@ -212,6 +220,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Number"],
+      showDocs: false,
       options: [
         {
           key: "units",
@@ -246,6 +255,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Translation2d[]",
         "Translation3d[]"
       ],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -264,6 +274,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "color",
@@ -294,6 +305,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: false,
       color: "#ffd700",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]", "Translation3d", "Translation3d[]"],
+      showDocs: true,
       options: [
         {
           key: "variant",
@@ -315,6 +327,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: false,
       color: "#ffd700",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "variant",
@@ -354,6 +367,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Translation3d[]",
         "Trajectory"
       ],
+      showDocs: true,
       options: [],
       previewType: "Translation3d"
     },
@@ -364,6 +378,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#ff8800",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "format",
@@ -401,6 +416,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Translation3d[]",
         "ZebraTranslation"
       ],
+      showDocs: true,
       options: [
         {
           key: "timeRange",
@@ -425,6 +441,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#ff0000",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "timeRange",
@@ -462,6 +479,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]", "Trajectory"],
+      showDocs: true,
       options: [
         {
           key: "family",
@@ -485,6 +503,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "family",
@@ -509,6 +528,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
+      showDocs: true,
       options: [],
       childOf: "aprilTag",
       previewType: null
@@ -521,6 +541,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Pose3d", "Pose3d[]", "Transform3d", "Transform3d[]", "Trajectory"],
+      showDocs: true,
       options: [],
       previewType: "Pose3d"
     },
@@ -532,6 +553,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [],
       numberArrayDeprecated: true,
       previewType: "Pose3d"
@@ -553,6 +575,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform3d[]",
         "Trajectory"
       ],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -581,6 +604,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "color",
@@ -630,6 +654,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#888888",
       sourceTypes: ["Pose3d", "Transform3d"],
+      showDocs: true,
       options: [],
       previewType: "Pose3d"
     },
@@ -640,6 +665,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#888888",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [],
       numberArrayDeprecated: true,
       previewType: "Pose3d"
@@ -652,6 +678,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["ZebraTranslation"],
+      showDocs: true,
       options: [],
       previewType: "Translation2d"
     }

@@ -23,6 +23,7 @@ const SwerveController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["SwerveModuleState[]"],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -47,6 +48,7 @@ const SwerveController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["NumberArray"],
+      showDocs: false,
       options: [
         {
           key: "color",
@@ -82,6 +84,7 @@ const SwerveController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Rotation2d", "Rotation3d"],
+      showDocs: true,
       options: [],
       previewType: "Rotation2d"
     },
@@ -93,6 +96,7 @@ const SwerveController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Number"],
+      showDocs: false,
       options: [
         {
           key: "units",

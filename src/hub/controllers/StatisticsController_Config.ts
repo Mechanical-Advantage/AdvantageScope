@@ -14,6 +14,7 @@ const StatisticsController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "color",
       sourceTypes: ["Number"],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -33,6 +34,7 @@ const StatisticsController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["Number"],
       parentKey: "reference",
+      showDocs: true,
       options: [],
       previewType: null
     },
@@ -44,6 +46,7 @@ const StatisticsController_Config: SourceListConfig = {
       color: "color",
       sourceTypes: ["Number"],
       childOf: "reference",
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -62,6 +65,7 @@ const StatisticsController_Config: SourceListConfig = {
       color: "color",
       sourceTypes: ["Number"],
       childOf: "reference",
+      showDocs: true,
       options: [
         {
           key: "color",

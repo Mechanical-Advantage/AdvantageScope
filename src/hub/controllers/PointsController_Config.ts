@@ -15,6 +15,7 @@ const PointsController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray"],
+      showDocs: true,
       options: [
         {
           key: "size",
@@ -48,6 +49,7 @@ const PointsController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray"],
+      showDocs: true,
       options: [
         {
           key: "size",
@@ -81,6 +83,7 @@ const PointsController_Config: SourceListConfig = {
       color: "#000000",
       darkColor: "#ffffff",
       sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray"],
+      showDocs: true,
       options: [
         {
           key: "size",
@@ -115,6 +118,7 @@ const PointsController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       parentKey: "split",
+      showDocs: true,
       options: [
         {
           key: "component",
@@ -159,6 +163,7 @@ const PointsController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       parentKey: "split",
+      showDocs: true,
       options: [
         {
           key: "component",
@@ -203,6 +208,7 @@ const PointsController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       parentKey: "split",
+      showDocs: true,
       options: [
         {
           key: "component",
@@ -247,6 +253,7 @@ const PointsController_Config: SourceListConfig = {
       darkColor: "#ffffff",
       sourceTypes: ["NumberArray"],
       childOf: "split",
+      showDocs: true,
       options: [
         {
           key: "component",

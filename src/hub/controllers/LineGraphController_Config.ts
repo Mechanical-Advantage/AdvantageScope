@@ -2,7 +2,7 @@ import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 export const LineGraphController_NumericConfig: SourceListConfig = {
-  title: "",
+  title: "Numeric Axis",
   autoAdvance: "color",
   allowChildrenFromDrag: true,
   types: [
@@ -13,6 +13,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Number"],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -39,6 +40,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Number"],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -65,6 +67,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Number"],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -98,6 +101,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Raw", "Boolean", "Number", "String", "BooleanArray", "NumberArray", "StringArray"],
+      showDocs: true,
       options: [
         {
           key: "color",
@@ -114,6 +118,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
       showInTypeName: false,
       color: "color",
       sourceTypes: ["Raw", "Boolean", "Number", "String", "BooleanArray", "NumberArray", "StringArray"],
+      showDocs: true,
       options: [
         {
           key: "color",

@@ -35,8 +35,9 @@ export type SourceListTypeConfig = {
     | "Transform3d"
     | "SwerveModuleState[]"
     | null; // Don't use preview
-  options: SourceListOptionConfig[];
   initialSelectionOption?: string;
+  showDocs: boolean;
+  options: SourceListOptionConfig[];
 };
 
 export type SourceListOptionConfig = {

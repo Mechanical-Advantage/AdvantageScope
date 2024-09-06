@@ -12,6 +12,7 @@ const MechanismController_Config: SourceListConfig = {
       showInTypeName: false,
       color: "#888888",
       sourceTypes: ["Mechanism2d"],
+      showDocs: true,
       options: []
     }
   ]

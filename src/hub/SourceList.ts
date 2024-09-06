@@ -110,7 +110,8 @@ export default class SourceList {
       } else {
         window.sendMainMessage("source-list-edit-prompt", {
           uuid: this.UUID,
-          coordinates: [Math.round(rect.right), Math.round(rect.top)]
+          coordinates: [Math.round(rect.right), Math.round(rect.top)],
+          config: this.config
         });
         SourceList.editPromptCallbacks[this.UUID] = () => {
           delete SourceList.editPromptCallbacks[this.UUID];
