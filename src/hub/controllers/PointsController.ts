@@ -203,6 +203,7 @@ export default class PointsController implements TabController {
       });
     });
 
+    sets.reverse();
     return {
       dimensions: dimensions,
       sets: sets

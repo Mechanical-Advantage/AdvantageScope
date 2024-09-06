@@ -42,6 +42,7 @@ export default class MechanismController implements TabController {
       let state = getMechanismState(window.log, item.logKey, time!);
       if (state !== null) states.push(state);
     });
+    states.reverse();
 
     if (states.length === 0) {
       return null;

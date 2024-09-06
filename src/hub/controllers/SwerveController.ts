@@ -138,6 +138,7 @@ export default class SwerveController implements TabController {
     }
     rotation += this.orientation * (Math.PI / 2);
 
+    sets.reverse();
     return {
       rotation: rotation,
       frameAspectRatio: Number(this.SIZE_Y.value) / Number(this.SIZE_X.value),
