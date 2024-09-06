@@ -634,8 +634,10 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     this.fixedCameraOverrideObj.visible = command.cameraOverride !== null;
     if (command.cameraOverride !== null) {
       let pose = command.cameraOverride.pose;
-      this.primaryRobotGroup.position.set(...pose.translation);
-      this.primaryRobotGroup.rotation.setFromQuaternion(rotation3dToQuaternion(pose.rotation));
+      this.fixedCameraOverrideObj.position.set(...pose.translation);
+      this.fixedCameraOverrideObj.rotation.setFromQuaternion(
+        rotation3dToQuaternion(pose.rotation).multiply(this.CAMERA_ROTATION)
+      );
     }
 
     // Update staged game pieces
