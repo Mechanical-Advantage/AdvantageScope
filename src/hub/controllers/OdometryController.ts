@@ -473,6 +473,7 @@ export default class OdometryController implements TabController {
       }
     }
 
+    objects.reverse();
     return {
       game: this.GAME_SELECT.value,
       bumpers: bumpers,
