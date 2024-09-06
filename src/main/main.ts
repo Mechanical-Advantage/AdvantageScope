@@ -1480,7 +1480,7 @@ function setupMenu() {
         },
         {
           label: "Load Zebra MotionWorks™",
-          accelerator: "Option+Z",
+          accelerator: "Alt+Z",
           click(_, window) {
             if (window === undefined) return;
             sendMessage(window, "load-zebra");
@@ -1526,7 +1526,7 @@ function setupMenu() {
             },
             {
               label: "Stop Publishing",
-              accelerator: "Option+P",
+              accelerator: "CmdOrCtrl+Alt+P",
               click(_, window) {
                 if (window === undefined || !hubWindows.includes(window)) return;
                 sendMessage(window, "stop-publish");
