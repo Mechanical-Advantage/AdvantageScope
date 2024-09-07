@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import WorkerManager from "../../../../hub/WorkerManager";
 import {
   ThreeDimensionRendererCommand_GhostObj,
   ThreeDimensionRendererCommand_RobotObj
@@ -13,7 +14,6 @@ import {
   rotation3dToQuaternion
 } from "../../ThreeDimensionRendererImpl";
 import ObjectManager from "../ObjectManager";
-import optimizeGeometries from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
 export default class RobotManager extends ObjectManager<
@@ -99,43 +99,75 @@ export default class RobotManager extends ObjectManager<
 
       if (robotConfig !== undefined) {
         this.loadingStart();
-        Promise.all([
-          new Promise((resolve) => {
-            this.loader.load(robotConfig!.path, resolve);
-          }),
-          ...robotConfig.components.map(
-            (_, index) =>
-              new Promise((resolve) => {
-                this.loader.load(robotConfig!.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
-              })
-          )
-        ]).then(async (gltfs) => {
-          let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
+        WorkerManager.request("../bundles/shared$loadRobot.js", {
+          robotConfig: robotConfig!,
+          mode: this.mode,
+          materialSpecular: this.materialSpecular.toArray(),
+          materialShininess: this.materialShininess
+        }).then((result: THREE.MeshJSON[][]) => {
+          const loader = new THREE.ObjectLoader();
           this.meshes = [];
-          for (let index = 0; index < gltfScenes.length; index++) {
-            let scene = gltfScenes[index];
-            if (index === 0) {
-              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig!.rotations));
-              scene.position.set(...robotConfig!.position);
-            }
 
-            let optimized = await optimizeGeometries(scene, this.mode, this.materialSpecular, this.materialShininess);
-            let meshes: THREE.Mesh[] = [];
-            if (optimized.normal !== null) meshes.push(optimized.normal);
-            if (optimized.transparent !== null) meshes.push(optimized.transparent);
+          result.forEach((sceneMeshJSONs) => {
+            let sceneMeshes: THREE.Mesh[] = sceneMeshJSONs.map((json) => loader.parse(json) as THREE.Mesh);
             if (object.type === "ghost") {
-              meshes.forEach((mesh) => {
+              sceneMeshes.forEach((mesh) => {
                 if (!Array.isArray(mesh.material)) {
                   mesh.material.dispose();
                 }
                 mesh.material = this.ghostMaterial;
               });
             }
-            this.meshes.push(new ResizableInstancedMesh(this.root, meshes));
-            this.requestRender();
-          }
+            this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes));
+          });
+
+          // const loader = new THREE.ObjectLoader();
+          // this.field = loader.parse(result.field);
+          // this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
+          // Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
+          //   newFieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
+          // });
+          // newFieldReady();
+          this.requestRender();
           this.loadingEnd();
         });
+
+        // Promise.all([
+        //   new Promise((resolve) => {
+        //     this.loader.load(robotConfig!.path, resolve);
+        //   }),
+        //   ...robotConfig.components.map(
+        //     (_, index) =>
+        //       new Promise((resolve) => {
+        //         this.loader.load(robotConfig!.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
+        //       })
+        //   )
+        // ]).then(async (gltfs) => {
+        //   let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
+        //   this.meshes = [];
+        //   for (let index = 0; index < gltfScenes.length; index++) {
+        //     let scene = gltfScenes[index];
+        //     if (index === 0) {
+        //       scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig!.rotations));
+        //       scene.position.set(...robotConfig!.position);
+        //     }
+        //     let optimized = await optimizeGeometries(scene, this.mode, this.materialSpecular, this.materialShininess);
+        //     let meshes: THREE.Mesh[] = [];
+        //     if (optimized.normal !== null) meshes.push(optimized.normal);
+        //     if (optimized.transparent !== null) meshes.push(optimized.transparent);
+        //     if (object.type === "ghost") {
+        //       meshes.forEach((mesh) => {
+        //         if (!Array.isArray(mesh.material)) {
+        //           mesh.material.dispose();
+        //         }
+        //         mesh.material = this.ghostMaterial;
+        //       });
+        //     }
+        //     this.meshes.push(new ResizableInstancedMesh(this.root, meshes));
+        //   }
+        //   this.requestRender();
+        //   this.loadingEnd();
+        // });
       }
     }
 
