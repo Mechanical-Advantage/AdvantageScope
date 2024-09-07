@@ -544,9 +544,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           const loader = new THREE.ObjectLoader();
           this.field = loader.parse(result.field);
           this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
-          this.fieldPieces = {};
           Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
-            this.fieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
+            newFieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
           });
           newFieldReady();
           this.loadingCount--;
