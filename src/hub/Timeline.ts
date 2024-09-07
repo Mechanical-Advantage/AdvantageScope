@@ -38,7 +38,7 @@ export default class Timeline {
         this.grabZoomStartTime = hoveredTime;
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
+    this.SCROLL_OVERLAY.addEventListener("mousemove", () => {
       let hoveredTime = window.selection.getHoveredTime();
       if (this.grabZoomActive && hoveredTime !== null) {
         window.selection.setGrabZoomRange([this.grabZoomStartTime, hoveredTime]);

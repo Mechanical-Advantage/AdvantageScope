@@ -16,6 +16,7 @@ export default class LineGraphRenderer implements TabRenderer {
   private scrollSensor: ScrollSensor;
   private mouseDownX = 0;
   private grabZoomActive = false;
+  private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
   private lastGraphWidth: number = 1;
@@ -40,15 +41,16 @@ export default class LineGraphRenderer implements TabRenderer {
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
-      if (event.shiftKey) this.grabZoomActive = true;
+      let hoveredTime = window.selection.getHoveredTime();
+      if (event.shiftKey && hoveredTime !== null) {
+        this.grabZoomActive = true;
+        this.grabZoomStartTime = hoveredTime;
+      }
     });
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
-      if (this.grabZoomActive) {
-        let endX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
-        window.selection.setGrabZoomRange([
-          scaleValue(this.mouseDownX, [0, this.lastGraphWidth], this.lastGraphTimeRange),
-          scaleValue(endX, [0, this.lastGraphWidth], this.lastGraphTimeRange)
-        ]);
+      let hoveredTime = window.selection.getHoveredTime();
+      if (this.grabZoomActive && hoveredTime !== null) {
+        window.selection.setGrabZoomRange([this.grabZoomStartTime, hoveredTime]);
       }
     });
     this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
