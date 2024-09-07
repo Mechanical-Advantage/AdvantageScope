@@ -80,7 +80,7 @@ export default class StatisticsRenderer implements TabRenderer {
 
   render(command: StatisticsRendererCommand): void {
     // Update histogram layout
-    this.HISTOGRAM_CONTAINER.style.left = (this.VALUES_TABLE_CONTAINER.clientWidth + 10).toString() + "px";
+    this.HISTOGRAM_CONTAINER.style.left = (this.VALUES_TABLE_CONTAINER.offsetWidth + 10).toString() + "px";
 
     // Update histogram colors
     const isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
