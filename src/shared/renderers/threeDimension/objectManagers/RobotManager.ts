@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import {
   ThreeDimensionRendererCommand_GhostObj,
@@ -38,7 +37,8 @@ export default class RobotManager extends ObjectManager<
     material: THREE.MeshPhongMaterial;
   }[] = [];
 
-  private loader = new GLTFLoader();
+  private loadingCounter = 0;
+  private isLoading = false;
   private dummyConfigPose = new THREE.Object3D();
   private dummyUserPose = new THREE.Group().add(this.dummyConfigPose);
   private dummyRobotPose = new THREE.Group().add(this.dummyUserPose);
@@ -98,13 +98,22 @@ export default class RobotManager extends ObjectManager<
       this.meshes = [];
 
       if (robotConfig !== undefined) {
+        this.loadingCounter++;
+        let loadingCounter = this.loadingCounter;
         this.loadingStart();
+        if (this.isLoading) this.loadingEnd();
+        this.isLoading = true;
         WorkerManager.request("../bundles/shared$loadRobot.js", {
           robotConfig: robotConfig!,
           mode: this.mode,
           materialSpecular: this.materialSpecular.toArray(),
           materialShininess: this.materialShininess
         }).then((result: THREE.MeshJSON[][]) => {
+          if (loadingCounter !== this.loadingCounter) {
+            // Model was switched, throw away the data :(
+            return;
+          }
+
           const loader = new THREE.ObjectLoader();
           this.meshes = [];
 
@@ -123,6 +132,7 @@ export default class RobotManager extends ObjectManager<
 
           this.requestRender();
           this.loadingEnd();
+          this.isLoading = false;
         });
       }
     }

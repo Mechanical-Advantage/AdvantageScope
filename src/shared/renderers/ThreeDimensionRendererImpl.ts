@@ -105,7 +105,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private primaryRobotModel = "";
   private resolutionVector = new THREE.Vector2();
   private fieldConfigCache: Config3dField | null = null;
-  private loadingCount = 0;
+  private robotLoadingCount = 0;
+  private isFieldLoading = false;
+  private fieldLoadingCounter = 0;
   private aspectRatio: number | null = null;
   private lastCameraIndex = -1;
   private lastAutoDriverStation = -1;
@@ -382,8 +384,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       case "ghost":
         manager = new RobotManager(
           ...args,
-          () => this.loadingCount++,
-          () => this.loadingCount--
+          () => this.robotLoadingCount++,
+          () => this.robotLoadingCount--
         );
         break;
       case "gamePiece":
@@ -525,22 +527,30 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.lastFieldTitle = fieldTitle;
 
       // Load new field
+      this.fieldLoadingCounter++;
       if (fieldTitle === "Evergreen") {
+        this.isFieldLoading = false;
         this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else if (fieldTitle === "Axes") {
+        this.isFieldLoading = false;
         this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else {
-        this.loadingCount++;
+        this.isFieldLoading = true;
+        let fieldLoadingCounter = this.fieldLoadingCounter;
         WorkerManager.request("../bundles/shared$loadField.js", {
           fieldConfig: fieldConfig,
           mode: this.mode,
           materialSpecular: this.MATERIAL_SPECULAR.toArray(),
           materialShininess: this.MATERIAL_SHININESS
         }).then((result) => {
+          if (fieldLoadingCounter !== this.fieldLoadingCounter) {
+            // Field was switched, throw away the data :(
+            return;
+          }
           const loader = new THREE.ObjectLoader();
           this.field = loader.parse(result.field);
           this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
@@ -548,7 +558,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
             newFieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
           });
           newFieldReady();
-          this.loadingCount--;
+          this.isFieldLoading = false;
         });
       }
     }
@@ -729,7 +739,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
 
     // Update spinner
-    if (this.loadingCount > 0) {
+    if (this.robotLoadingCount > 0 || this.isFieldLoading) {
       this.spinner.classList.add("visible");
       this.spinner.classList.add("animating");
     } else if (this.spinner.classList.contains("visible")) {
