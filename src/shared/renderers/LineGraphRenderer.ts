@@ -126,26 +126,12 @@ export default class LineGraphRenderer implements TabRenderer {
     // Calculate X step size
     let timeStepSize = calcAxisStepSize(command.timeRange, graphWidth, this.X_STEP_TARGET_PX);
 
-    // Update hovered time based on graph layout
-    if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
-      if (!this.didClearHoveredTime) {
-        window.selection.setHoveredTime(null);
-        this.didClearHoveredTime = true;
-      }
-    } else {
-      let hoveredTime = scaleValue(this.lastCursorX, [graphLeft, graphLeft + graphWidth], command.timeRange);
-      window.selection.setHoveredTime(hoveredTime);
-      this.didClearHoveredTime = false;
-      command.hoveredTime = hoveredTime;
-    }
-    this.lastGraphWidth = graphWidth;
-    this.lastGraphTimeRange = command.timeRange;
-
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
     this.SCROLL_OVERLAY.style.right = graphRight.toString() + "px";
 
     // Render discrete data
+    let discreteBorders: number[] = [];
     context.globalAlpha = 1;
     context.textAlign = "left";
     context.textBaseline = "middle";
@@ -155,6 +141,7 @@ export default class LineGraphRenderer implements TabRenderer {
       context.beginPath();
       let toggle = field.toggleReference;
       let skippedSamples = 0;
+      discreteBorders = discreteBorders.concat(field.timestamps);
       for (let i = 0; i < field.timestamps.length; i++) {
         i += skippedSamples;
         if (i >= field.timestamps.length) break;
@@ -304,6 +291,37 @@ export default class LineGraphRenderer implements TabRenderer {
       drawNumericFields(command.leftFields, command.leftRange);
       drawNumericFields(command.rightFields, command.rightRange);
     }
+
+    // Update hovered time based on graph layout
+    if (this.lastCursorX === null || this.lastCursorX < graphLeft || this.lastCursorX > graphLeft + graphWidth) {
+      if (!this.didClearHoveredTime) {
+        window.selection.setHoveredTime(null);
+        this.didClearHoveredTime = true;
+      }
+    } else {
+      let hoveredTime = scaleValue(this.lastCursorX, [graphLeft, graphLeft + graphWidth], command.timeRange);
+      let nearestDiscreteBorder = discreteBorders.reduce((prev, border) => {
+        if (Math.abs(hoveredTime - border) < Math.abs(hoveredTime - prev)) {
+          return border;
+        } else {
+          return prev;
+        }
+      }, Infinity);
+      if (isFinite(nearestDiscreteBorder)) {
+        let nearestDiscreteBorderX = scaleValue(nearestDiscreteBorder, command.timeRange, [
+          graphLeft,
+          graphLeft + graphWidth
+        ]);
+        if (Math.abs(nearestDiscreteBorderX - this.lastCursorX) < 5) {
+          hoveredTime = nearestDiscreteBorder;
+        }
+      }
+      window.selection.setHoveredTime(hoveredTime);
+      this.didClearHoveredTime = false;
+      command.hoveredTime = hoveredTime;
+    }
+    this.lastGraphWidth = graphWidth;
+    this.lastGraphTimeRange = command.timeRange;
 
     // Draw grab zoom range
     if (command.grabZoomRange !== null) {
