@@ -10,6 +10,7 @@ import { WPILOGEncoder, WPILOGEncoderRecord } from "./dataSources/wpilog/WPILOGE
 
 self.onmessage = async (event) => {
   // WORKER SETUP
+  self.onmessage = null;
   let { id, payload } = event.data;
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });

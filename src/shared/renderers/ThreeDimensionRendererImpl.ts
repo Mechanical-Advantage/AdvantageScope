@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
+import WorkerManager from "../../hub/WorkerManager";
 import {
   Config3dField,
   Config3d_Rotation,
@@ -21,7 +21,6 @@ import {
 import makeAxesField from "./threeDimension/AxesField";
 import makeEvergreenField from "./threeDimension/EvergreenField";
 import ObjectManager from "./threeDimension/ObjectManager";
-import optimizeGeometries from "./threeDimension/OptimizeGeometries";
 import AprilTagManager from "./threeDimension/objectManagers/AprilTagManager";
 import AxesManager from "./threeDimension/objectManagers/AxesManager";
 import ConeManager from "./threeDimension/objectManagers/ConeManager";
@@ -536,81 +535,24 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         newFieldReady();
       } else {
         this.loadingCount++;
-        const loader = new GLTFLoader();
-        Promise.all([
-          new Promise((resolve) => {
-            loader.load(fieldConfig.path, resolve);
-          }),
-          ...fieldConfig.gamePieces.map(
-            (_, index) =>
-              new Promise((resolve) => {
-                loader.load(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
-              })
-          )
-        ]).then(async (gltfs) => {
-          let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
-          if (fieldConfig === undefined) return;
-          let loadCount = 0;
-          gltfScenes.forEach(async (scene, index) => {
-            // Add to scene
-            if (index === 0) {
-              let stagedPieces = new THREE.Group();
-              fieldConfig.gamePieces.forEach((gamePieceConfig) => {
-                gamePieceConfig.stagedObjects.forEach((stagedName) => {
-                  let stagedObject = scene.getObjectByName(stagedName);
-                  if (stagedObject !== undefined) {
-                    let rotation = stagedObject.getWorldQuaternion(new THREE.Quaternion());
-                    let position = stagedObject.getWorldPosition(new THREE.Vector3());
-                    stagedObject.removeFromParent();
-                    stagedObject.rotation.setFromQuaternion(rotation);
-                    stagedObject.position.copy(position);
-                    stagedPieces.add(stagedObject);
-                  }
-                });
-              });
-
-              let fieldStagedPiecesMeshes = await optimizeGeometries(
-                stagedPieces,
-                this.mode,
-                this.MATERIAL_SPECULAR,
-                this.MATERIAL_SHININESS,
-                false
-              );
-              this.fieldStagedPieces = new THREE.Group();
-              if (fieldStagedPiecesMeshes.normal !== null) this.fieldStagedPieces.add(fieldStagedPiecesMeshes.normal);
-              if (fieldStagedPiecesMeshes.transparent !== null)
-                this.fieldStagedPieces.add(fieldStagedPiecesMeshes.transparent);
-              if (fieldStagedPiecesMeshes.carpet !== null) this.fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet);
-              this.fieldStagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-
-              let fieldMeshes = await optimizeGeometries(
-                scene,
-                this.mode,
-                this.MATERIAL_SPECULAR,
-                this.MATERIAL_SHININESS
-              );
-              this.field = new THREE.Group();
-              if (fieldMeshes.normal !== null) this.field.add(fieldMeshes.normal);
-              if (fieldMeshes.transparent !== null) this.field.add(fieldMeshes.transparent);
-              if (fieldMeshes.carpet !== null) this.field.add(fieldMeshes.carpet);
-              this.field.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-            } else {
-              let gamePieceConfig = fieldConfig.gamePieces[index - 1];
-              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
-              scene.position.set(...gamePieceConfig.position);
-              let mesh = (
-                await optimizeGeometries(scene, this.mode, this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, false)
-              ).normal;
-              if (mesh !== null) {
-                newFieldPieces[gamePieceConfig.name] = mesh;
-              }
-            }
-
-            if (++loadCount === gltfScenes.length) {
-              this.loadingCount--;
-              newFieldReady();
-            }
+        WorkerManager.request("../bundles/shared$loadField.js", {
+          fieldConfig: fieldConfig,
+          mode: this.mode,
+          materialSpecular: this.MATERIAL_SPECULAR.toArray(),
+          materialShininess: this.MATERIAL_SHININESS
+        }).then((result) => {
+          const loader = new THREE.ObjectLoader();
+          let st = window.performance.now();
+          this.field = loader.parse(result.field);
+          this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
+          this.fieldPieces = {};
+          Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
+            this.fieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
           });
+          let et = window.performance.now();
+          console.log(et - st);
+          newFieldReady();
+          this.loadingCount--;
         });
       }
     }
