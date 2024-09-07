@@ -17,13 +17,15 @@ export default class SourceList {
   private DRAG_THRESHOLD_PX = 5;
 
   static typePromptCallbacks: { [key: string]: (state: SourceListItemState) => void } = {};
-  static editPromptCallbacks: { [key: string]: () => void } = {};
+  static clearPromptCallbacks: { [key: string]: () => void } = {};
 
   private UUID = createUUID();
   private ITEM_TEMPLATE = document.getElementById("sourceListItemTemplate")?.firstElementChild as HTMLElement;
   private ROOT: HTMLElement;
   private TITLE: HTMLElement;
   private EDIT_BUTTON: HTMLButtonElement;
+  private CLEAR_BUTTON: HTMLButtonElement;
+  private HELP_BUTTON: HTMLButtonElement;
   private LIST: HTMLElement;
   private HAND_ICON: HTMLImageElement;
   private DRAG_HIGHLIGHT: HTMLElement;
@@ -66,6 +68,8 @@ export default class SourceList {
     this.ROOT.appendChild(this.TITLE);
     this.TITLE.classList.add("title");
     this.TITLE.innerText = config.title;
+    this.TITLE.style.left = editButtonCallback === undefined ? "55px" : "30px";
+    this.TITLE.style.right = editButtonCallback === undefined ? "55px" : "30px";
 
     this.EDIT_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.EDIT_BUTTON);
@@ -73,6 +77,23 @@ export default class SourceList {
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
     editIcon.src = "symbols/ellipsis.svg";
+    this.EDIT_BUTTON.hidden = editButtonCallback === undefined;
+
+    this.CLEAR_BUTTON = document.createElement("button");
+    this.ROOT.appendChild(this.CLEAR_BUTTON);
+    this.CLEAR_BUTTON.classList.add("clear");
+    let clearButton = document.createElement("img");
+    this.CLEAR_BUTTON.appendChild(clearButton);
+    clearButton.src = "symbols/trash.fill.svg";
+    this.CLEAR_BUTTON.hidden = editButtonCallback !== undefined;
+
+    this.HELP_BUTTON = document.createElement("button");
+    this.ROOT.appendChild(this.HELP_BUTTON);
+    this.HELP_BUTTON.classList.add("help");
+    let helpIcon = document.createElement("img");
+    this.HELP_BUTTON.appendChild(helpIcon);
+    helpIcon.src = "symbols/questionmark.circle.svg";
+    this.HELP_BUTTON.hidden = editButtonCallback !== undefined;
 
     this.LIST = document.createElement("div");
     this.ROOT.appendChild(this.LIST);
@@ -107,17 +128,21 @@ export default class SourceList {
       let coordinates: [number, number] = [Math.round(rect.right), Math.round(rect.top)];
       if (editButtonCallback !== undefined) {
         editButtonCallback(coordinates);
-      } else {
-        window.sendMainMessage("source-list-edit-prompt", {
-          uuid: this.UUID,
-          coordinates: [Math.round(rect.right), Math.round(rect.top)],
-          config: this.config
-        });
-        SourceList.editPromptCallbacks[this.UUID] = () => {
-          delete SourceList.editPromptCallbacks[this.UUID];
-          this.clear();
-        };
       }
+    });
+    this.CLEAR_BUTTON.addEventListener("click", () => {
+      let rect = this.CLEAR_BUTTON.getBoundingClientRect();
+      window.sendMainMessage("source-list-clear-prompt", {
+        uuid: this.UUID,
+        coordinates: [Math.round(rect.right), Math.round(rect.top)]
+      });
+      SourceList.clearPromptCallbacks[this.UUID] = () => {
+        delete SourceList.clearPromptCallbacks[this.UUID];
+        this.clear();
+      };
+    });
+    this.HELP_BUTTON.addEventListener("click", () => {
+      window.sendMainMessage("source-list-help", this.config);
     });
 
     // Incoming drag handling

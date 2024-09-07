@@ -670,11 +670,11 @@ function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "source-list-edit-response":
+    case "source-list-clear-response":
       {
         let uuid: string = message.data.uuid;
-        if (uuid in SourceList.editPromptCallbacks) {
-          SourceList.editPromptCallbacks[uuid]();
+        if (uuid in SourceList.clearPromptCallbacks) {
+          SourceList.clearPromptCallbacks[uuid]();
         }
       }
       break;

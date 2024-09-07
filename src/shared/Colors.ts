@@ -15,18 +15,23 @@ export const GraphColors: SourceListOptionValueConfig[] = [
 ];
 
 export const NeonColors: SourceListOptionValueConfig[] = [
-  { key: "#ff0000", display: "Red" },
-  { key: "#ff8c00", display: "Orange" },
-  { key: "#ffff00", display: "Yellow" },
   { key: "#00ff00", display: "Green" },
+  { key: "#ff0000", display: "Red" },
   { key: "#0000ff", display: "Blue" },
+  { key: "#ff8c00", display: "Orange" },
   { key: "#00ffff", display: "Cyan" },
+  { key: "#ffff00", display: "Yellow" },
   { key: "#ff00ff", display: "Magenta" }
 ];
 
-export const NeonColors_GreenFirst: SourceListOptionValueConfig[] = [
-  ...NeonColors.filter((option) => option.display === "Green"),
-  ...NeonColors.filter((option) => option.display !== "Green")
+export const NeonColors_RedStart: SourceListOptionValueConfig[] = [
+  { key: "#ff0000", display: "Red" },
+  { key: "#0000ff", display: "Blue" },
+  { key: "#00ff00", display: "Green" },
+  { key: "#ff8c00", display: "Orange" },
+  { key: "#00ffff", display: "Cyan" },
+  { key: "#ffff00", display: "Yellow" },
+  { key: "#ff00ff", display: "Magenta" }
 ];
 
 const DARK_MIN_LIGHTNESS = 65;

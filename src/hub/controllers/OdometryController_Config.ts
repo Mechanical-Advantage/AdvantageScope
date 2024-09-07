@@ -1,4 +1,4 @@
-import { NeonColors, NeonColors_GreenFirst } from "../../shared/Colors";
+import { NeonColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const OdometryController_Config: SourceListConfig = {
@@ -154,6 +154,70 @@ const OdometryController_Config: SourceListConfig = {
       parentKey: "robot",
       previewType: "Translation2d"
     },
+
+    {
+      key: "vision",
+      display: "Vision Target",
+      symbol: "scope",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: [
+        "Pose2d",
+        "Pose3d",
+        "Pose2d[]",
+        "Pose3d[]",
+        "Transform2d",
+        "Transform3d",
+        "Transform2d[]",
+        "Transform3d[]",
+        "Translation2d",
+        "Translation3d",
+        "Translation2d[]",
+        "Translation3d[]"
+      ],
+      showDocs: true,
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        }
+      ],
+      childOf: "robot",
+      previewType: "Translation2d"
+    },
+    {
+      key: "visionLegacy",
+      display: "Vision Target",
+      symbol: "scope",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: ["NumberArray"],
+      showDocs: false,
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        },
+        {
+          key: "format",
+          display: "Format",
+          showInTypeName: false,
+          values: [
+            { key: "Pose2d", display: "2D Pose(s)" },
+            { key: "Pose3d", display: "3D Pose(s)" },
+            { key: "Translation2d", display: "2D Translation(s)" },
+            { key: "Translation3d", display: "3D Translation(s)" }
+          ]
+        }
+      ],
+      numberArrayDeprecated: true,
+      childOf: "robot",
+      previewType: "Translation2d"
+    },
     {
       key: "rotationOverride",
       display: "Rotation Override",
@@ -189,69 +253,6 @@ const OdometryController_Config: SourceListConfig = {
       ],
       childOf: "robot",
       previewType: "Rotation2d"
-    },
-    {
-      key: "vision",
-      display: "Vision Target",
-      symbol: "scope",
-      showInTypeName: true,
-      color: "color",
-      sourceTypes: [
-        "Pose2d",
-        "Pose3d",
-        "Pose2d[]",
-        "Pose3d[]",
-        "Transform2d",
-        "Transform3d",
-        "Transform2d[]",
-        "Transform3d[]",
-        "Translation2d",
-        "Translation3d",
-        "Translation2d[]",
-        "Translation3d[]"
-      ],
-      showDocs: true,
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: NeonColors_GreenFirst
-        }
-      ],
-      childOf: "robot",
-      previewType: "Translation2d"
-    },
-    {
-      key: "visionLegacy",
-      display: "Vision Target",
-      symbol: "scope",
-      showInTypeName: true,
-      color: "color",
-      sourceTypes: ["NumberArray"],
-      showDocs: false,
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: NeonColors_GreenFirst
-        },
-        {
-          key: "format",
-          display: "Format",
-          showInTypeName: false,
-          values: [
-            { key: "Pose2d", display: "2D Pose(s)" },
-            { key: "Pose3d", display: "3D Pose(s)" },
-            { key: "Translation2d", display: "2D Translation(s)" },
-            { key: "Translation3d", display: "3D Translation(s)" }
-          ]
-        }
-      ],
-      numberArrayDeprecated: true,
-      childOf: "robot",
-      previewType: "Translation2d"
     },
     {
       key: "trajectory",

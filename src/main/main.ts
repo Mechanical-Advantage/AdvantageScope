@@ -676,31 +676,27 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       break;
 
-    case "source-list-edit-prompt":
-      const editMenu = new Menu();
-      editMenu.append(
+    case "source-list-clear-prompt":
+      const clearMenu = new Menu();
+      clearMenu.append(
         new MenuItem({
           label: "Clear All",
           click() {
-            sendMessage(window, "source-list-edit-response", {
+            sendMessage(window, "source-list-clear-response", {
               uuid: message.data.uuid
             });
           }
         })
       );
-      editMenu.append(
-        new MenuItem({
-          label: "Help",
-          click() {
-            openSourceListHelp(window, message.data.config);
-          }
-        })
-      );
-      editMenu.popup({
+      clearMenu.popup({
         window: window,
         x: message.data.coordinates[0],
         y: message.data.coordinates[1]
       });
+      break;
+
+    case "source-list-help":
+      openSourceListHelp(window, message.data);
       break;
 
     case "ask-edit-axis":
@@ -836,20 +832,20 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         );
       }
 
-      // Always include clear button
-      editAxisMenu.append(
-        new MenuItem({
-          label: "Clear All",
-          click() {
-            sendMessage(window, "clear-axis", legend);
-          }
-        })
-      );
+      // Always include help and clear buttons
       editAxisMenu.append(
         new MenuItem({
           label: "Help",
           click() {
             openSourceListHelp(window, message.data.config);
+          }
+        })
+      );
+      editAxisMenu.append(
+        new MenuItem({
+          label: "Clear All",
+          click() {
+            sendMessage(window, "clear-axis", legend);
           }
         })
       );
@@ -2749,10 +2745,11 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
   let helpWindow = new BrowserWindow({
     width: width,
     height: height,
-    minWidth: width,
-    maxWidth: width,
+    minWidth: width - 75,
+    maxWidth: width + 250,
+    minHeight: 200,
     x: Math.floor(parentWindow.getBounds().x + 30),
-    y: Math.floor(parentWindow.getBounds().y + 30),
+    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
     resizable: true,
     icon: WINDOW_ICON,
     show: false,

@@ -827,8 +827,8 @@ div.source-list div.title {
   position: absolute;
   top: 0px;
   height: 30px;
-  left: 30px;
-  right: 30px;
+  left: 0px;
+  right: 0px;
 
   text-align: center;
   font-size: 16px;
@@ -839,7 +839,9 @@ div.source-list div.title {
   text-overflow: ellipsis;
 }
 
-div.source-list button.edit {
+div.source-list button.edit,
+div.source-list button.clear,
+div.source-list button.help {
   position: absolute;
   top: 15px;
   right: 15px;
@@ -847,6 +849,10 @@ div.source-list button.edit {
 
   width: 25px;
   height: 25px;
+}
+
+div.source-list button.help {
+  right: 40px;
 }
 
 div.source-list div.list {
