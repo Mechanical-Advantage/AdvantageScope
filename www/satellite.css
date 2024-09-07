@@ -4,6 +4,10 @@
   }
 }
 
+body {
+  overflow: hidden;
+}
+
 body,
 body > div {
   padding: 0;
