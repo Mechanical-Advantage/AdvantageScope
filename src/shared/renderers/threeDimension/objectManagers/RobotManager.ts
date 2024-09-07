@@ -121,53 +121,9 @@ export default class RobotManager extends ObjectManager<
             this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes));
           });
 
-          // const loader = new THREE.ObjectLoader();
-          // this.field = loader.parse(result.field);
-          // this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
-          // Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
-          //   newFieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
-          // });
-          // newFieldReady();
           this.requestRender();
           this.loadingEnd();
         });
-
-        // Promise.all([
-        //   new Promise((resolve) => {
-        //     this.loader.load(robotConfig!.path, resolve);
-        //   }),
-        //   ...robotConfig.components.map(
-        //     (_, index) =>
-        //       new Promise((resolve) => {
-        //         this.loader.load(robotConfig!.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
-        //       })
-        //   )
-        // ]).then(async (gltfs) => {
-        //   let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
-        //   this.meshes = [];
-        //   for (let index = 0; index < gltfScenes.length; index++) {
-        //     let scene = gltfScenes[index];
-        //     if (index === 0) {
-        //       scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig!.rotations));
-        //       scene.position.set(...robotConfig!.position);
-        //     }
-        //     let optimized = await optimizeGeometries(scene, this.mode, this.materialSpecular, this.materialShininess);
-        //     let meshes: THREE.Mesh[] = [];
-        //     if (optimized.normal !== null) meshes.push(optimized.normal);
-        //     if (optimized.transparent !== null) meshes.push(optimized.transparent);
-        //     if (object.type === "ghost") {
-        //       meshes.forEach((mesh) => {
-        //         if (!Array.isArray(mesh.material)) {
-        //           mesh.material.dispose();
-        //         }
-        //         mesh.material = this.ghostMaterial;
-        //       });
-        //     }
-        //     this.meshes.push(new ResizableInstancedMesh(this.root, meshes));
-        //   }
-        //   this.requestRender();
-        //   this.loadingEnd();
-        // });
       }
     }
 
