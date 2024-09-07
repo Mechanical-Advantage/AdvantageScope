@@ -542,15 +542,12 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           materialShininess: this.MATERIAL_SHININESS
         }).then((result) => {
           const loader = new THREE.ObjectLoader();
-          let st = window.performance.now();
           this.field = loader.parse(result.field);
           this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
           this.fieldPieces = {};
           Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
             this.fieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
           });
-          let et = window.performance.now();
-          console.log(et - st);
           newFieldReady();
           this.loadingCount--;
         });
