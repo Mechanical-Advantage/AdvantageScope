@@ -16,6 +16,7 @@ export default class SelectionImpl implements Selection {
   private staticTime: number = 0;
   private timelineRange: [number, number] = [0, 10];
   private timelineMaxZoom = true; // When at maximum zoom, maintain it as the available range increases
+  private grabZoomRange: [number, number] | null = null;
   private playbackStartLog: number = 0;
   private playbackStartReal: number = 0;
   private playbackSpeed: number = 1;
@@ -299,6 +300,33 @@ export default class SelectionImpl implements Selection {
       this.playbackStartReal = this.now();
     }
     this.playbackSpeed = speed;
+  }
+
+  /** Sets a new time range for an in-progress grab zoom. */
+  setGrabZoomRange(range: [number, number] | null) {
+    if (range !== null) {
+      if (range[1] < range[0]) {
+        range.reverse();
+      }
+    }
+    this.grabZoomRange = range;
+  }
+
+  /** Gets the time range to display for an in-progress grab zoom. */
+  getGrabZoomRange(): [number, number] | null {
+    return this.grabZoomRange;
+  }
+
+  /** Ends an in-progress grab zoom, optionally applying the resulting zoom. */
+  finishGrabZoom() {
+    if (this.grabZoomRange !== null) {
+      this.timelineMaxZoom = false;
+      this.timelineRange = [this.grabZoomRange[0], this.grabZoomRange[1]];
+      if (this.timelineRange[1] - this.timelineRange[0] < this.TIMELINE_MIN_ZOOM_TIME) {
+        this.timelineRange[1] = this.timelineRange[0] + this.TIMELINE_MIN_ZOOM_TIME;
+      }
+    }
+    this.grabZoomRange = null;
   }
 
   /** Returns the visible range for the timeline. */

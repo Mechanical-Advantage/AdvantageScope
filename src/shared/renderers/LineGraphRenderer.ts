@@ -15,8 +15,11 @@ export default class LineGraphRenderer implements TabRenderer {
   private hasController: boolean;
   private scrollSensor: ScrollSensor;
   private mouseDownX = 0;
+  private grabZoomActive = false;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
+  private lastGraphWidth: number = 1;
+  private lastGraphTimeRange: [number, number] = [0, 10];
   private didClearHoveredTime = false;
 
   constructor(root: HTMLElement, hasController: boolean) {
@@ -37,13 +40,28 @@ export default class LineGraphRenderer implements TabRenderer {
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
+      if (event.shiftKey) this.grabZoomActive = true;
+    });
+    this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
+      if (this.grabZoomActive) {
+        let endX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
+        window.selection.setGrabZoomRange([
+          scaleValue(this.mouseDownX, [0, this.lastGraphWidth], this.lastGraphTimeRange),
+          scaleValue(endX, [0, this.lastGraphWidth], this.lastGraphTimeRange)
+        ]);
+      }
+    });
+    this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
+      if (this.grabZoomActive) {
+        window.selection.finishGrabZoom();
+        this.grabZoomActive = false;
+      }
     });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
         let hoveredTime = this.lastHoveredTime;
         if (hoveredTime) {
           window.selection.setSelectedTime(hoveredTime);
-          console.log(hoveredTime);
         }
       }
     });
@@ -120,6 +138,8 @@ export default class LineGraphRenderer implements TabRenderer {
       this.didClearHoveredTime = false;
       command.hoveredTime = hoveredTime;
     }
+    this.lastGraphWidth = graphWidth;
+    this.lastGraphTimeRange = command.timeRange;
 
     // Update scroll layout
     this.SCROLL_OVERLAY.style.left = graphLeft.toString() + "px";
@@ -283,6 +303,17 @@ export default class LineGraphRenderer implements TabRenderer {
     } else {
       drawNumericFields(command.leftFields, command.leftRange);
       drawNumericFields(command.rightFields, command.rightRange);
+    }
+
+    // Draw grab zoom range
+    if (command.grabZoomRange !== null) {
+      let startX = scaleValue(command.grabZoomRange[0], command.timeRange, [graphLeft, graphLeft + graphWidth]);
+      let endX = scaleValue(command.grabZoomRange[1], command.timeRange, [graphLeft, graphLeft + graphWidth]);
+
+      context.globalAlpha = 0.25;
+      context.fillStyle = "yellow";
+      context.fillRect(startX, graphTop, endX - startX, graphHeight);
+      context.globalAlpha = 1;
     }
 
     // Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
@@ -527,6 +558,7 @@ export type LineGraphRendererCommand = {
   selectionMode: SelectionMode;
   selectedTime: number | null;
   hoveredTime: number | null;
+  grabZoomRange: [number, number] | null;
 
   leftRange: [number, number];
   rightRange: [number, number];

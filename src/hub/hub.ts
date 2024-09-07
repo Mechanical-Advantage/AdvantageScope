@@ -530,6 +530,12 @@ function handleMainMessage(message: NamedMessage) {
           case "stepCycle":
             window.selection.stepCycle(args[0]);
             break;
+          case "setGrabZoomRange":
+            window.selection.setGrabZoomRange(args[0]);
+            break;
+          case "finishGrabZoom":
+            window.selection.finishGrabZoom();
+            break;
           case "applyTimelineScroll":
             window.selection.applyTimelineScroll(args[0], args[1], args[2]);
             break;

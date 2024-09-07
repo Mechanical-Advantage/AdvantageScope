@@ -53,9 +53,19 @@ export default interface Selection {
   /** Updates the playback speed. */
   setPlaybackSpeed(speed: number): void;
 
+  /** Sets a new time range for an in-progress grab zoom. */
+  setGrabZoomRange(range: [number, number]): void;
+
+  /** Gets the time range to display for an in-progress grab zoom. */
+  getGrabZoomRange(): [number, number] | null;
+
+  /** Ends an in-progress grab zoom, applying the resulting zoom. */
+  finishGrabZoom(): void;
+
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number];
 
+  /** Updates the timeline range based on a scroll event. */
   applyTimelineScroll(dx: number, dy: number, widthPixels: number): void;
 }
 

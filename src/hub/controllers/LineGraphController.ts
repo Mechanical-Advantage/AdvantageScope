@@ -383,6 +383,7 @@ export default class LineGraphController implements TabController {
       selectionMode: window.selection.getMode(),
       selectedTime: window.selection.getSelectedTime(),
       hoveredTime: window.selection.getHoveredTime(),
+      grabZoomRange: window.selection.getGrabZoomRange(),
 
       leftRange: leftRange,
       rightRange: rightRange,

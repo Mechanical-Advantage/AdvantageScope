@@ -31,6 +31,7 @@ export default class ScrollSensor {
     // Mouse controls
     if (enableMouseControls) {
       container.addEventListener("mousedown", (event) => {
+        if (event.shiftKey) return;
         this.panActive = true;
         let x = event.clientX - container.getBoundingClientRect().x;
         this.panLastCursorX = x;

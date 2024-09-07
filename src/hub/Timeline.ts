@@ -11,6 +11,8 @@ export default class Timeline {
 
   private scrollSensor: ScrollSensor;
   private mouseDownX = 0;
+  private grabZoomActive = false;
+  private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
 
   constructor(container: HTMLElement) {
@@ -30,6 +32,23 @@ export default class Timeline {
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
+      let hoveredTime = window.selection.getHoveredTime();
+      if (event.shiftKey && hoveredTime !== null) {
+        this.grabZoomActive = true;
+        this.grabZoomStartTime = hoveredTime;
+      }
+    });
+    this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
+      let hoveredTime = window.selection.getHoveredTime();
+      if (this.grabZoomActive && hoveredTime !== null) {
+        window.selection.setGrabZoomRange([this.grabZoomStartTime, hoveredTime]);
+      }
+    });
+    this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
+      if (this.grabZoomActive) {
+        window.selection.finishGrabZoom();
+        this.grabZoomActive = false;
+      }
     });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
@@ -99,6 +118,18 @@ export default class Timeline {
         rangeBorders.push(range.end);
       }
     });
+
+    // Draw grab zoom range
+    let grabZoomRange = window.selection.getGrabZoomRange();
+    if (grabZoomRange !== null) {
+      let startX = scaleValue(grabZoomRange[0], timeRange, [0, width]);
+      let endX = scaleValue(grabZoomRange[1], timeRange, [0, width]);
+
+      context.globalAlpha = 0.6;
+      context.fillStyle = "yellow";
+      context.fillRect(startX, 0, endX - startX, height);
+      context.globalAlpha = 1;
+    }
 
     // Update hovered time
     if (this.lastCursorX !== null && this.lastCursorX > 0 && this.lastCursorX < width) {

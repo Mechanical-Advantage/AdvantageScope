@@ -293,6 +293,18 @@ class MockSelection implements Selection {
     throw new Error("Method not implemented.");
   }
 
+  setGrabZoomRange(range: [number, number]) {
+    window.sendMainMessage("call-selection-setter", { name: "setGrabZoomRange", args: [range] });
+  }
+
+  getGrabZoomRange(): [number, number] | null {
+    throw new Error("Method not implemented.");
+  }
+
+  finishGrabZoom() {
+    window.sendMainMessage("call-selection-setter", { name: "finishGrabZoom" });
+  }
+
   getTimelineRange(): [number, number] {
     throw new Error("Method not implemented.");
   }
