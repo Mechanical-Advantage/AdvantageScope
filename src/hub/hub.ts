@@ -107,7 +107,10 @@ function setLoading(progress: number | null) {
 
 function updateFancyWindow() {
   // Using fancy title bar?
-  if (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
+  if (
+    (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) ||
+    window.platform === "win32"
+  ) {
     document.body.classList.add("fancy-title-bar");
   } else {
     document.body.classList.remove("fancy-title-bar");
