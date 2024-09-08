@@ -1,4 +1,5 @@
 import { ensureThemeContrast } from "../../shared/Colors";
+import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
 import {
@@ -28,6 +29,10 @@ export default class LineGraphController implements TabController {
   private rightLockedRange: [number, number] | null = null;
   private leftUnitConversion = NoopUnitConversion;
   private rightUnitConversion = NoopUnitConversion;
+  private leftFilter = LineGraphFilter.None;
+  private rightFilter = LineGraphFilter.None;
+
+  private numericCommandCache: { [key: string]: LineGraphRendererCommand_NumericField } = {};
 
   constructor(root: HTMLElement) {
     // Make source lists
@@ -42,10 +47,11 @@ export default class LineGraphController implements TabController {
           legend: "left",
           lockedRange: this.leftLockedRange,
           unitConversion: this.leftUnitConversion,
+          filter: this.leftFilter,
           config: LineGraphController_NumericConfig
         });
       },
-      () => this.leftUnitConversion
+      (key: string, time: number) => this.getPreview(key, time)
     );
     this.leftSourceList.setTitle("Left Axis");
 
@@ -60,10 +66,11 @@ export default class LineGraphController implements TabController {
           legend: "right",
           lockedRange: this.rightLockedRange,
           unitConversion: this.rightUnitConversion,
+          filter: this.rightFilter,
           config: LineGraphController_NumericConfig
         });
       },
-      () => this.rightUnitConversion
+      (key: string, time: number) => this.getPreview(key, time)
     );
     this.rightSourceList.setTitle("Right Axis");
 
@@ -92,7 +99,10 @@ export default class LineGraphController implements TabController {
       rightLockedRange: this.rightLockedRange,
 
       leftUnitConversion: this.leftUnitConversion,
-      rightUnitConversion: this.rightUnitConversion
+      rightUnitConversion: this.rightUnitConversion,
+
+      leftFilter: this.leftFilter,
+      rightFilter: this.rightFilter
     };
   }
 
@@ -111,6 +121,12 @@ export default class LineGraphController implements TabController {
     if ("rightUnitConversion" in state) {
       this.rightUnitConversion = state.rightUnitConversion as UnitConversionPreset;
     }
+    if ("leftFilter" in state) {
+      this.leftFilter = state.leftFilter as LineGraphFilter;
+    }
+    if ("rightFilter" in state) {
+      this.rightFilter = state.rightFilter as LineGraphFilter;
+    }
     this.updateAxisLabels();
 
     if ("leftSources" in state) {
@@ -126,33 +142,56 @@ export default class LineGraphController implements TabController {
 
   /** Updates the axis labels based on the locked and unit conversion status. */
   private updateAxisLabels() {
-    let leftLocked = this.leftLockedRange !== null;
-    let leftConverted = this.leftUnitConversion.type !== null || this.leftUnitConversion.factor !== 1;
-    if (leftLocked && leftConverted) {
-      this.leftSourceList.setTitle("Left Axis [Locked, Converted]");
-    } else if (leftLocked) {
-      this.leftSourceList.setTitle("Left Axis [Locked]");
-    } else if (leftConverted) {
-      this.leftSourceList.setTitle("Left Axis [Converted]");
+    let leftLabels: string[] = [];
+    if (this.leftLockedRange !== null) {
+      leftLabels.push("Locked");
+    }
+    if (this.leftUnitConversion.type !== null || this.leftUnitConversion.factor !== 1) {
+      leftLabels.push("Converted");
+    }
+    switch (this.leftFilter) {
+      case LineGraphFilter.Differentiate:
+        leftLabels.push("Differentiated");
+        break;
+      case LineGraphFilter.Integrate:
+        leftLabels.push("Integrated");
+        break;
+    }
+    if (leftLabels.length > 0) {
+      this.leftSourceList.setTitle("Left Axis [" + leftLabels.join(", ") + "]");
     } else {
       this.leftSourceList.setTitle("Left Axis");
     }
 
-    let rightLocked = this.rightLockedRange !== null;
-    let rightConverted = this.rightUnitConversion.type !== null || this.rightUnitConversion.factor !== 1;
-    if (rightLocked && rightConverted) {
-      this.rightSourceList.setTitle("Right Axis [Locked, Converted]");
-    } else if (rightLocked) {
-      this.rightSourceList.setTitle("Right Axis [Locked]");
-    } else if (rightConverted) {
-      this.rightSourceList.setTitle("Right Axis [Converted]");
+    let rightLabels: string[] = [];
+    if (this.rightLockedRange !== null) {
+      rightLabels.push("Locked");
+    }
+    if (this.rightUnitConversion.type !== null || this.rightUnitConversion.factor !== 1) {
+      rightLabels.push("Converted");
+    }
+    switch (this.rightFilter) {
+      case LineGraphFilter.Differentiate:
+        rightLabels.push("Differentiated");
+        break;
+      case LineGraphFilter.Integrate:
+        rightLabels.push("Integrated");
+        break;
+    }
+    if (rightLabels.length > 0) {
+      this.rightSourceList.setTitle("Right Axis [" + rightLabels.join(", ") + "]");
     } else {
       this.rightSourceList.setTitle("Right Axis");
     }
   }
 
   /** Adjusts the locked range and unit conversion for an axis. */
-  editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
+  editAxis(
+    legend: string,
+    lockedRange: [number, number] | null,
+    unitConversion: UnitConversionPreset,
+    filter: LineGraphFilter
+  ) {
     switch (legend) {
       case "left":
         if (lockedRange === null) {
@@ -163,6 +202,7 @@ export default class LineGraphController implements TabController {
           this.leftLockedRange = lockedRange;
         }
         this.leftUnitConversion = unitConversion;
+        this.leftFilter = filter;
         break;
 
       case "right":
@@ -174,6 +214,7 @@ export default class LineGraphController implements TabController {
           this.rightLockedRange = lockedRange;
         }
         this.rightUnitConversion = unitConversion;
+        this.rightFilter = filter;
         break;
     }
     this.updateAxisLabels();
@@ -222,6 +263,14 @@ export default class LineGraphController implements TabController {
     return false;
   }
 
+  private getPreview(key: string, time: number): number | null {
+    if (!(key in this.numericCommandCache)) return null;
+    let command = this.numericCommandCache[key];
+    let index = command.timestamps.findLastIndex((sample) => sample <= time);
+    if (index === -1) return null;
+    return command.values[index];
+  }
+
   getCommand(): LineGraphRendererCommand {
     let leftDataRange: [number, number] = [Infinity, -Infinity];
     let rightDataRange: [number, number] = [Infinity, -Infinity];
@@ -231,17 +280,61 @@ export default class LineGraphController implements TabController {
     const timeRange = window.selection.getTimelineRange();
 
     // Add numeric fields
+    this.numericCommandCache = {};
     let addNumeric = (
       source: SourceListState,
       dataRange: [number, number],
       command: LineGraphRendererCommand_NumericField[],
-      unitConversion: UnitConversionPreset
+      unitConversion: UnitConversionPreset,
+      filter: LineGraphFilter
     ) => {
       source.forEach((fieldItem) => {
-        if (!fieldItem.visible) return;
-
-        let data = window.log.getNumber(fieldItem.logKey, timeRange[0], timeRange[1]);
+        let data = window.log.getNumber(
+          fieldItem.logKey,
+          filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],
+          timeRange[1]
+        );
         if (data === undefined) return;
+
+        // Apply filter
+        switch (filter) {
+          case LineGraphFilter.Differentiate:
+            {
+              let newValues: number[] = [];
+              for (let i = 0; i < data.values.length; i++) {
+                let prevIndex = Math.max(0, i - 1);
+                let nextIndex = Math.min(data.values.length - 1, i + 1);
+                newValues.push(
+                  (data.values[nextIndex] - data.values[prevIndex]) /
+                    (data.timestamps[nextIndex] - data.timestamps[prevIndex])
+                );
+              }
+              data.values = newValues;
+            }
+            break;
+          case LineGraphFilter.Integrate:
+            {
+              let newValues: number[] = [];
+              let startIndex: number | undefined = undefined;
+              let integral = 0;
+              for (let i = 0; i < data.values.length; i++) {
+                let prevIndex = Math.max(0, i - 1);
+                if (data.timestamps[i] > timeRange[0] && startIndex === undefined) {
+                  startIndex = Math.max(0, i - 1);
+                }
+
+                // Trapezoidal integration
+                integral +=
+                  (data.timestamps[i] - data.timestamps[prevIndex]) * (data.values[i] + data.values[prevIndex]) * 0.5;
+                newValues.push(integral);
+              }
+              data.values = newValues.slice(startIndex);
+              data.timestamps = data.timestamps.slice(startIndex);
+            }
+            break;
+        }
+
+        // Clamp values
         data.values = data.values.map((value) =>
           clampValue(convertWithPreset(value, unitConversion), -this.MAX_VALUE, this.MAX_VALUE)
         );
@@ -302,23 +395,39 @@ export default class LineGraphController implements TabController {
         }
 
         // Update data range
-        data.values.forEach((value) => {
-          if (value < dataRange[0]) dataRange[0] = value;
-          if (value > dataRange[1]) dataRange[1] = value;
-        });
+        if (fieldItem.visible) {
+          data.values.forEach((value) => {
+            if (value < dataRange[0]) dataRange[0] = value;
+            if (value > dataRange[1]) dataRange[1] = value;
+          });
+        }
 
         // Add field command
-        command.push({
+        let itemCommand: LineGraphRendererCommand_NumericField = {
           timestamps: data.timestamps,
           values: data.values,
           color: ensureThemeContrast(fieldItem.options.color),
           type: fieldItem.type as "smooth" | "stepped" | "points",
           size: fieldItem.options.size as "normal" | "bold" | "verybold"
-        });
+        };
+        if (fieldItem.visible) command.push(itemCommand);
+        this.numericCommandCache[fieldItem.logKey] = itemCommand;
       });
     };
-    addNumeric(this.leftSourceList.getState(), leftDataRange, leftFieldsCommand, this.leftUnitConversion);
-    addNumeric(this.rightSourceList.getState(), rightDataRange, rightFieldsCommand, this.rightUnitConversion);
+    addNumeric(
+      this.leftSourceList.getState(),
+      leftDataRange,
+      leftFieldsCommand,
+      this.leftUnitConversion,
+      this.leftFilter
+    );
+    addNumeric(
+      this.rightSourceList.getState(),
+      rightDataRange,
+      rightFieldsCommand,
+      this.rightUnitConversion,
+      this.rightFilter
+    );
 
     // Add discrete fields
     this.discreteSourceList.getState().forEach((fieldItem) => {
@@ -393,7 +502,11 @@ export default class LineGraphController implements TabController {
       rightRange: rightRange,
       showLeftAxis: showLeftAxis,
       showRightAxis: showRightAxis,
-      priorityAxis: this.leftLockedRange === null && this.rightLockedRange !== null ? "right" : "left",
+      priorityAxis:
+        (this.leftLockedRange === null && this.rightLockedRange !== null) ||
+        (leftFieldsCommand.length === 0 && rightFieldsCommand.length > 0)
+          ? "right"
+          : "left",
       leftFields: leftFieldsCommand,
       rightFields: rightFieldsCommand,
       discreteFields: discreteFieldsCommand

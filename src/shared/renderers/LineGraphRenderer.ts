@@ -19,8 +19,6 @@ export default class LineGraphRenderer implements TabRenderer {
   private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
-  private lastGraphWidth: number = 1;
-  private lastGraphTimeRange: [number, number] = [0, 10];
   private didClearHoveredTime = false;
 
   constructor(root: HTMLElement, hasController: boolean) {
@@ -322,8 +320,6 @@ export default class LineGraphRenderer implements TabRenderer {
       this.didClearHoveredTime = false;
       command.hoveredTime = hoveredTime;
     }
-    this.lastGraphWidth = graphWidth;
-    this.lastGraphTimeRange = command.timeRange;
 
     // Draw grab zoom range
     if (command.grabZoomRange !== null) {

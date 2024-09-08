@@ -690,7 +690,12 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "edit-axis":
-      window.tabs.editAxis(message.data.legend, message.data.lockedRange, message.data.unitConversion);
+      window.tabs.editAxis(
+        message.data.legend,
+        message.data.lockedRange,
+        message.data.unitConversion,
+        message.data.filter
+      );
       break;
 
     case "clear-axis":

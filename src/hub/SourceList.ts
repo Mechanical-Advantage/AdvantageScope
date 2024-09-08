@@ -10,7 +10,7 @@ import {
 import { grabPosesAuto, grabSwerveStates, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
 import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
-import { NoopUnitConversion, UnitConversionPreset, convert, convertWithPreset } from "../shared/units";
+import { convert } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 
 export default class SourceList {
@@ -38,7 +38,7 @@ export default class SourceList {
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
   private supplementalStateSuppliers: (() => SourceListState)[];
-  private getUnitConversionPreset: () => UnitConversionPreset;
+  private getNumberPreview: ((key: string, time: number) => number | null) | undefined;
 
   private refreshLastFields: Set<string> = new Set();
   private refreshLastStructTypes: { [key: string]: string | null } = {};
@@ -55,12 +55,12 @@ export default class SourceList {
     config: SourceListConfig,
     supplementalStateSuppliers: (() => SourceListState)[],
     editButtonCallback?: (coordinates: [number, number]) => void,
-    getUnitConversionPreset: () => UnitConversionPreset = () => NoopUnitConversion
+    getNumberPreview?: (key: string, time: number) => number | null
   ) {
     this.config = jsonCopy(config);
     this.configStr = JSON.stringify(config);
     this.supplementalStateSuppliers = supplementalStateSuppliers;
-    this.getUnitConversionPreset = getUnitConversionPreset;
+    this.getNumberPreview = getNumberPreview;
     this.ROOT = root;
     this.ROOT.classList.add("source-list");
 
@@ -985,167 +985,171 @@ export default class SourceList {
       let logType = window.log.getType(state.logKey);
       let structuredType = window.log.getStructuredType(state.logKey);
       if (logType !== null) {
-        let value = getOrDefault(window.log, state.logKey, logType, time, null);
-        if (logType === LoggableType.Number) {
-          value = convertWithPreset(value, this.getUnitConversionPreset());
-        }
-        if (typeConfig?.previewType !== undefined) {
-          if (typeConfig?.previewType !== null) {
-            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
-            let numberArrayUnits: "radians" | "degrees" = "radians";
-            if ("format" in state.options) {
-              let formatRaw = state.options.format;
-              numberArrayFormat =
-                formatRaw === "Pose2d" ||
-                formatRaw === "Pose3d" ||
-                formatRaw === "Translation2d" ||
-                formatRaw === "Translation3d"
-                  ? formatRaw
-                  : "Pose3d";
-            }
-            if ("units" in state.options) {
-              numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
-            }
-            let poseStrings: string[] = [];
-            if (typeConfig?.previewType === "SwerveModuleState[]") {
-              let swerveStates = grabSwerveStates(
-                window.log,
-                state.logKey,
-                state.logType,
-                time,
-                numberArrayUnits,
-                this.UUID
-              );
-              swerveStates.forEach((state) => {
-                poseStrings.push(
-                  "\u03bd: " +
-                    state.speed.toFixed(2) +
-                    "m/s, \u03b8: " +
-                    convert(state.angle, "radians", "degrees").toFixed(2) +
-                    "\u00b0"
-                );
-              });
-            } else {
-              let poses = grabPosesAuto(
-                window.log,
-                state.logKey,
-                state.logType,
-                time,
-                this.UUID,
-                numberArrayFormat,
-                numberArrayUnits,
-                "red", // Display in native coordinate system
-                0,
-                0
-              );
-              poseStrings = poses.map((annotatedPose) => {
-                switch (typeConfig?.previewType) {
-                  case "Rotation2d": {
-                    return (
-                      convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
-                    );
-                  }
-                  case "Translation2d": {
-                    return (
-                      "X: " +
-                      annotatedPose.pose.translation[0].toFixed(2) +
-                      "m, Y: " +
-                      annotatedPose.pose.translation[1].toFixed(2) +
-                      "m"
-                    );
-                  }
-                  case "Pose2d":
-                  case "Transform2d": {
-                    return (
-                      "X: " +
-                      annotatedPose.pose.translation[0].toFixed(2) +
-                      "m, Y: " +
-                      annotatedPose.pose.translation[1].toFixed(2) +
-                      "m, \u03b8: " +
-                      convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
-                      "\u00b0"
-                    );
-                  }
-                  case "Rotation3d": {
-                    let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                    return (
-                      "Roll: " +
-                      convert(rpy[0], "radians", "degrees").toFixed(2) +
-                      "\u00b0, Pitch: " +
-                      convert(rpy[1], "radians", "degrees").toFixed(2) +
-                      "\u00b0, Yaw: " +
-                      convert(rpy[2], "radians", "degrees").toFixed(2) +
-                      "\u00b0"
-                    );
-                  }
-                  case "Translation3d": {
-                    return (
-                      "X: " +
-                      annotatedPose.pose.translation[0].toFixed(2) +
-                      "m, Y: " +
-                      annotatedPose.pose.translation[1].toFixed(2) +
-                      "m, Z: " +
-                      annotatedPose.pose.translation[2].toFixed(2) +
-                      "m"
-                    );
-                  }
-                  case "Pose3d": {
-                    let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                    return (
-                      "X: " +
-                      annotatedPose.pose.translation[0].toFixed(2) +
-                      "m, Y: " +
-                      annotatedPose.pose.translation[1].toFixed(2) +
-                      "m, Z: " +
-                      annotatedPose.pose.translation[2].toFixed(2) +
-                      "m, Roll: " +
-                      convert(rpy[0], "radians", "degrees").toFixed(2) +
-                      "\u00b0, Pitch: " +
-                      convert(rpy[1], "radians", "degrees").toFixed(2) +
-                      "\u00b0, Yaw: " +
-                      convert(rpy[2], "radians", "degrees").toFixed(2) +
-                      "\u00b0"
-                    );
-                  }
-                  default: {
-                    return "";
-                  }
-                }
-              });
-            }
-            if (poseStrings.length === 1) {
-              text = poseStrings[0];
-            } else if (poseStrings.length === 0) {
-              text = "No values";
-            } else {
-              text = text =
-                poseStrings.length.toString() +
-                " value" +
-                (poseStrings.length === 1 ? "" : "s") +
-                " \u2014 [" +
-                poseStrings.map((str) => "(" + str + ")").join(", ") +
-                "]";
-            }
-          }
-        } else if (structuredType === "Mechanism2d") {
-          let mechanismState = getMechanismState(window.log, state.logKey, time);
-          if (mechanismState !== null) {
-            let count = mechanismState.lines.length;
-            text = count.toString() + " segment" + (count === 1 ? "" : "s");
-          }
-        } else if (
-          logType === LoggableType.BooleanArray ||
-          logType === LoggableType.NumberArray ||
-          logType === LoggableType.StringArray
-        ) {
-          text =
-            value.length.toString() +
-            " value" +
-            (value.length === 1 ? "" : "s") +
-            " \u2014 " +
-            getLogValueText(value, logType);
+        let value: any;
+        if (logType === LoggableType.Number && this.getNumberPreview !== undefined) {
+          value = this.getNumberPreview(state.logKey, time);
         } else {
-          text = getLogValueText(value, logType);
+          value = getOrDefault(window.log, state.logKey, logType, time, null);
+        }
+        if (value !== null) {
+          if (typeConfig?.previewType !== undefined) {
+            if (typeConfig?.previewType !== null) {
+              let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
+              let numberArrayUnits: "radians" | "degrees" = "radians";
+              if ("format" in state.options) {
+                let formatRaw = state.options.format;
+                numberArrayFormat =
+                  formatRaw === "Pose2d" ||
+                  formatRaw === "Pose3d" ||
+                  formatRaw === "Translation2d" ||
+                  formatRaw === "Translation3d"
+                    ? formatRaw
+                    : "Pose3d";
+              }
+              if ("units" in state.options) {
+                numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
+              }
+              let poseStrings: string[] = [];
+              if (typeConfig?.previewType === "SwerveModuleState[]") {
+                let swerveStates = grabSwerveStates(
+                  window.log,
+                  state.logKey,
+                  state.logType,
+                  time,
+                  numberArrayUnits,
+                  this.UUID
+                );
+                swerveStates.forEach((state) => {
+                  poseStrings.push(
+                    "\u03bd: " +
+                      state.speed.toFixed(2) +
+                      "m/s, \u03b8: " +
+                      convert(state.angle, "radians", "degrees").toFixed(2) +
+                      "\u00b0"
+                  );
+                });
+              } else {
+                let poses = grabPosesAuto(
+                  window.log,
+                  state.logKey,
+                  state.logType,
+                  time,
+                  this.UUID,
+                  numberArrayFormat,
+                  numberArrayUnits,
+                  "red", // Display in native coordinate system
+                  0,
+                  0
+                );
+                poseStrings = poses.map((annotatedPose) => {
+                  switch (typeConfig?.previewType) {
+                    case "Rotation2d": {
+                      return (
+                        convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
+                      );
+                    }
+                    case "Translation2d": {
+                      return (
+                        "X: " +
+                        annotatedPose.pose.translation[0].toFixed(2) +
+                        "m, Y: " +
+                        annotatedPose.pose.translation[1].toFixed(2) +
+                        "m"
+                      );
+                    }
+                    case "Pose2d":
+                    case "Transform2d": {
+                      return (
+                        "X: " +
+                        annotatedPose.pose.translation[0].toFixed(2) +
+                        "m, Y: " +
+                        annotatedPose.pose.translation[1].toFixed(2) +
+                        "m, \u03b8: " +
+                        convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                        "\u00b0"
+                      );
+                    }
+                    case "Rotation3d": {
+                      let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
+                      return (
+                        "Roll: " +
+                        convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        "\u00b0, Pitch: " +
+                        convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        "\u00b0, Yaw: " +
+                        convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        "\u00b0"
+                      );
+                    }
+                    case "Translation3d": {
+                      return (
+                        "X: " +
+                        annotatedPose.pose.translation[0].toFixed(2) +
+                        "m, Y: " +
+                        annotatedPose.pose.translation[1].toFixed(2) +
+                        "m, Z: " +
+                        annotatedPose.pose.translation[2].toFixed(2) +
+                        "m"
+                      );
+                    }
+                    case "Pose3d": {
+                      let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
+                      return (
+                        "X: " +
+                        annotatedPose.pose.translation[0].toFixed(2) +
+                        "m, Y: " +
+                        annotatedPose.pose.translation[1].toFixed(2) +
+                        "m, Z: " +
+                        annotatedPose.pose.translation[2].toFixed(2) +
+                        "m, Roll: " +
+                        convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        "\u00b0, Pitch: " +
+                        convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        "\u00b0, Yaw: " +
+                        convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        "\u00b0"
+                      );
+                    }
+                    default: {
+                      return "";
+                    }
+                  }
+                });
+              }
+              if (poseStrings.length === 1) {
+                text = poseStrings[0];
+              } else if (poseStrings.length === 0) {
+                text = "No values";
+              } else {
+                text = text =
+                  poseStrings.length.toString() +
+                  " value" +
+                  (poseStrings.length === 1 ? "" : "s") +
+                  " \u2014 [" +
+                  poseStrings.map((str) => "(" + str + ")").join(", ") +
+                  "]";
+              }
+            }
+          } else if (structuredType === "Mechanism2d") {
+            let mechanismState = getMechanismState(window.log, state.logKey, time);
+            if (mechanismState !== null) {
+              let count = mechanismState.lines.length;
+              text = count.toString() + " segment" + (count === 1 ? "" : "s");
+            }
+          } else if (
+            logType === LoggableType.BooleanArray ||
+            logType === LoggableType.NumberArray ||
+            logType === LoggableType.StringArray
+          ) {
+            text =
+              value.length.toString() +
+              " value" +
+              (value.length === 1 ? "" : "s") +
+              " \u2014 " +
+              getLogValueText(value, logType);
+          } else {
+            text = getLogValueText(value, logType);
+          }
         }
       }
     }

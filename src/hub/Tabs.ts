@@ -1,4 +1,5 @@
 import { TabsState } from "../shared/HubState";
+import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
@@ -605,9 +606,19 @@ export default class Tabs {
   }
 
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
-  editAxis(legend: string, lockedRange: [number, number] | null, unitConversion: UnitConversionPreset) {
+  editAxis(
+    legend: string,
+    lockedRange: [number, number] | null,
+    unitConversion: UnitConversionPreset,
+    filter: LineGraphFilter
+  ) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(legend, lockedRange, unitConversion);
+      (this.tabList[this.selectedTab].controller as LineGraphController).editAxis(
+        legend,
+        lockedRange,
+        unitConversion,
+        filter
+      );
     }
   }
 

@@ -27,6 +27,7 @@ import { Client } from "ssh2";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { ensureThemeContrast } from "../shared/Colors";
 import ExportOptions from "../shared/ExportOptions";
+import LineGraphFilter from "../shared/LineGraphFilter";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
@@ -717,6 +718,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         // Left and right controls
         let lockedRange: [number, number] | null = message.data.lockedRange;
         let unitConversion: UnitConversionPreset = message.data.unitConversion;
+        let filter: LineGraphFilter = message.data.filter;
 
         editAxisMenu.append(
           new MenuItem({
@@ -727,7 +729,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               sendMessage(window, "edit-axis", {
                 legend: legend,
                 lockedRange: lockedRange === null ? [null, null] : null,
-                unitConversion: unitConversion
+                unitConversion: unitConversion,
+                filter: filter
               });
             }
           })
@@ -741,7 +744,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 sendMessage(window, "edit-axis", {
                   legend: legend,
                   lockedRange: newLockedRange,
-                  unitConversion: unitConversion
+                  unitConversion: unitConversion,
+                  filter: filter
                 });
               });
             }
@@ -774,7 +778,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 sendMessage(window, "edit-axis", {
                   legend: legend,
                   lockedRange: lockedRange,
-                  unitConversion: newUnitConversion
+                  unitConversion: newUnitConversion,
+                  filter: filter
                 });
                 updateRecents(newUnitConversion);
               });
@@ -804,7 +809,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   sendMessage(window, "edit-axis", {
                     legend: legend,
                     lockedRange: lockedRange,
-                    unitConversion: preset
+                    unitConversion: preset,
+                    filter: filter
                   });
                   updateRecents(preset);
                 }
@@ -820,11 +826,94 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               sendMessage(window, "edit-axis", {
                 legend: legend,
                 lockedRange: lockedRange,
-                unitConversion: NoopUnitConversion
+                unitConversion: NoopUnitConversion,
+                filter: filter
               });
             }
           })
         );
+        editAxisMenu.append(
+          new MenuItem({
+            type: "separator"
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Differentiate",
+            type: "checkbox",
+            checked: filter === LineGraphFilter.Differentiate,
+            click() {
+              sendMessage(window, "edit-axis", {
+                legend: legend,
+                lockedRange: lockedRange,
+                unitConversion: unitConversion,
+                filter: filter === LineGraphFilter.Differentiate ? LineGraphFilter.None : LineGraphFilter.Differentiate
+              });
+            }
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Integrate",
+            type: "checkbox",
+            checked: filter === LineGraphFilter.Integrate,
+            click() {
+              sendMessage(window, "edit-axis", {
+                legend: legend,
+                lockedRange: lockedRange,
+                unitConversion: unitConversion,
+                filter: filter === LineGraphFilter.Integrate ? LineGraphFilter.None : LineGraphFilter.Integrate
+              });
+            }
+          })
+        );
+        // editAxisMenu.append(
+        //   new MenuItem({
+        //     label: "Filter",
+        //     type: "submenu",
+        //     submenu: [
+        //       {
+        //         label: "None",
+        //         type: "checkbox",
+        //         checked: filter === LineGraphFilter.None,
+        //         click() {
+        //           sendMessage(window, "edit-axis", {
+        //             legend: legend,
+        //             lockedRange: lockedRange,
+        //             unitConversion: unitConversion,
+        //             filter: LineGraphFilter.None
+        //           });
+        //         }
+        //       },
+        //       {
+        //         label: "Differentiate",
+        //         type: "checkbox",
+        //         checked: filter === LineGraphFilter.Differentiate,
+        //         click() {
+        //           sendMessage(window, "edit-axis", {
+        //             legend: legend,
+        //             lockedRange: lockedRange,
+        //             unitConversion: unitConversion,
+        //             filter: LineGraphFilter.Differentiate
+        //           });
+        //         }
+        //       },
+        //       {
+        //         label: "Integrate",
+        //         type: "checkbox",
+        //         checked: filter === LineGraphFilter.Integrate,
+        //         click() {
+        //           sendMessage(window, "edit-axis", {
+        //             legend: legend,
+        //             lockedRange: lockedRange,
+        //             unitConversion: unitConversion,
+        //             filter: LineGraphFilter.Integrate
+        //           });
+        //         }
+        //       }
+        //     ]
+        //   })
+        // );
         editAxisMenu.append(
           new MenuItem({
             type: "separator"
