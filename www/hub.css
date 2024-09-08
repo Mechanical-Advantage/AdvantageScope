@@ -30,7 +30,8 @@ body {
   overflow: hidden;
 }
 
-body.fancy-title-bar div.title-bar {
+body.fancy-title-bar-mac div.title-bar,
+body.fancy-title-bar-win div.title-bar {
   display: initial;
 }
 
@@ -38,8 +39,6 @@ div.title-bar-text {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
-  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
 
   text-align: left;
   line-height: 38px;
@@ -47,6 +46,16 @@ div.title-bar-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+body.fancy-title-bar-mac div.title-bar-text {
+  left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
+  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+}
+
+body.fancy-title-bar-win div.title-bar-text {
+  left: calc(var(--side-bar-width) + 20px);
+  right: 20px;
 }
 
 div.main-view {
@@ -58,7 +67,8 @@ div.main-view {
   bottom: 0px;
 }
 
-body.fancy-title-bar div.main-view {
+body.fancy-title-bar-mac div.main-view,
+body.fancy-title-bar-win div.main-view {
   top: 38px;
 }
 
@@ -87,6 +97,7 @@ div.loading-glow {
     opacity: 100%;
   }
 }
+
 /* Side bar layout */
 
 div.side-bar-background {
@@ -124,7 +135,8 @@ div.side-bar-shadow {
   opacity: 0%;
 }
 
-body.fancy-title-bar div.side-bar-shadow {
+body.fancy-title-bar-max div.side-bar-shadow,
+body.fancy-title-bar-win div.side-bar-shadow {
   display: initial;
 }
 
@@ -517,7 +529,7 @@ div.tab-bar {
   white-space: nowrap;
 }
 
-body.fancy-title-bar div.tab-bar {
+body.fancy-title-bar-mac div.tab-bar {
   right: 10px;
 }
 
@@ -545,7 +557,7 @@ div.tab-bar-shadow-right {
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
-body.fancy-title-bar div.tab-bar-shadow-right {
+body.fancy-title-bar-mac div.tab-bar-shadow-right {
   right: 10px;
 }
 
@@ -581,7 +593,7 @@ div.tab-bar-scroll {
   overflow: scroll;
 }
 
-body.fancy-title-bar div.tab-bar-scroll {
+body.fancy-title-bar-mac div.tab-bar-scroll {
   right: 10px;
 }
 
@@ -659,8 +671,12 @@ button.tab-control {
   -webkit-app-region: no-drag;
 }
 
-body.fancy-title-bar button.tab-control {
+body.fancy-title-bar-mac button.tab-control {
   top: 8px;
+}
+
+body.fancy-title-bar-win button.tab-control {
+  top: 49px;
 }
 
 button.update {

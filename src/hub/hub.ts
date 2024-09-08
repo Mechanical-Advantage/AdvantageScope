@@ -106,14 +106,19 @@ function setLoading(progress: number | null) {
 }
 
 function updateFancyWindow() {
+  let original = window.platform;
+  window.platform = "win32"; // TODO: Remove
+
   // Using fancy title bar?
-  if (
-    (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) ||
-    window.platform === "win32"
-  ) {
-    document.body.classList.add("fancy-title-bar");
+  if (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
+    document.body.classList.add("fancy-title-bar-mac");
   } else {
-    document.body.classList.remove("fancy-title-bar");
+    document.body.classList.remove("fancy-title-bar-mac");
+  }
+  if (window.platform === "win32") {
+    document.body.classList.add("fancy-title-bar-win");
+  } else {
+    document.body.classList.remove("fancy-title-bar-win");
   }
 
   // Using fancy sidebar?
@@ -122,6 +127,8 @@ function updateFancyWindow() {
   } else {
     document.body.classList.remove("fancy-side-bar");
   }
+
+  window.platform = original; // TODO: Remove
 }
 
 function setExporting(exporting: boolean) {
