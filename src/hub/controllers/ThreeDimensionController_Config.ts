@@ -199,7 +199,6 @@ const ThreeDimensionController_Config: SourceListConfig = {
       options: [],
       childOf: "robot"
     },
-
     {
       key: "vision",
       display: "Vision Target",
