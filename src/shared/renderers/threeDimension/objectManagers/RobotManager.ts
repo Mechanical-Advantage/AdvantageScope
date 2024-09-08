@@ -38,6 +38,7 @@ export default class RobotManager extends ObjectManager<
   }[] = [];
 
   private loadingCounter = 0;
+  private shouldLoadNewModel = false;
   private isLoading = false;
   private dummyConfigPose = new THREE.Object3D();
   private dummyUserPose = new THREE.Group().add(this.dummyConfigPose);
@@ -89,9 +90,12 @@ export default class RobotManager extends ObjectManager<
 
     // Load new robot model
     if (object.model !== this.lastModel || this.hasNewAssets) {
+      this.shouldLoadNewModel = true;
       this.lastModel = object.model;
       this.hasNewAssets = false;
-
+    }
+    if (this.shouldLoadNewModel && !this.isLoading) {
+      this.shouldLoadNewModel = false;
       this.meshes.forEach((mesh) => {
         mesh.dispose();
       });

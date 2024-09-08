@@ -106,8 +106,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private resolutionVector = new THREE.Vector2();
   private fieldConfigCache: Config3dField | null = null;
   private robotLoadingCount = 0;
+  private shouldLoadNewField = false;
   private isFieldLoading = false;
-  private fieldLoadingCounter = 0;
   private aspectRatio: number | null = null;
   private lastCameraIndex = -1;
   private lastAutoDriverStation = -1;
@@ -486,20 +486,33 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
     // Update field
     if (fieldTitle !== this.lastFieldTitle || newAssets) {
-      let oldField = this.field;
-      let oldFieldStagedPieces = this.fieldStagedPieces;
+      this.shouldLoadNewField = true;
+
+      // Reset camera if switching between axis and non-axis or if using DS camera
+      if (
+        ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes") && this.lastFieldTitle !== "") ||
+        this.cameraIndex < -2
+      ) {
+        this.resetCamera(command);
+      }
+      this.lastFieldTitle = fieldTitle;
+    }
+    if (this.shouldLoadNewField && !this.isFieldLoading) {
+      this.shouldLoadNewField = false;
+
+      // Remove old field
+      if (this.field) {
+        this.wpilibCoordinateGroup.remove(this.field);
+        disposeObject(this.field);
+      }
+      if (this.fieldStagedPieces) {
+        this.wpilibCoordinateGroup.remove(this.fieldStagedPieces);
+        disposeObject(this.fieldStagedPieces);
+      }
+
+      // Insert new field
       let newFieldPieces: typeof this.fieldPieces = {};
       let newFieldReady = () => {
-        // Remove old field
-        if (oldField) {
-          this.wpilibCoordinateGroup.remove(oldField);
-          disposeObject(oldField);
-        }
-        if (oldFieldStagedPieces) {
-          this.wpilibCoordinateGroup.remove(oldFieldStagedPieces);
-          disposeObject(oldFieldStagedPieces);
-        }
-
         // Add new field
         if (this.field) {
           this.wpilibCoordinateGroup.add(this.field);
@@ -514,20 +527,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         });
         this.fieldPieces = newFieldPieces;
 
+        // Render new frame
         this.shouldRender = true;
       };
 
-      // Reset camera if switching between axis and non-axis or if using DS camera
-      if (
-        ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes") && this.lastFieldTitle !== "") ||
-        this.cameraIndex < -2
-      ) {
-        this.resetCamera(command);
-      }
-      this.lastFieldTitle = fieldTitle;
-
       // Load new field
-      this.fieldLoadingCounter++;
       if (fieldTitle === "Evergreen") {
         this.isFieldLoading = false;
         this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
@@ -540,17 +544,12 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         newFieldReady();
       } else {
         this.isFieldLoading = true;
-        let fieldLoadingCounter = this.fieldLoadingCounter;
         WorkerManager.request("../bundles/shared$loadField.js", {
           fieldConfig: fieldConfig,
           mode: this.mode,
           materialSpecular: this.MATERIAL_SPECULAR.toArray(),
           materialShininess: this.MATERIAL_SHININESS
         }).then((result) => {
-          if (fieldLoadingCounter !== this.fieldLoadingCounter) {
-            // Field was switched, throw away the data :(
-            return;
-          }
           const loader = new THREE.ObjectLoader();
           this.field = loader.parse(result.field);
           this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
