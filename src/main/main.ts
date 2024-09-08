@@ -2092,13 +2092,14 @@ function createHubWindow(state?: WindowState) {
       prefs.titleBarStyle = "hidden";
       let overlayOptions: TitleBarOverlay = {
         color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
+        symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
         height: 38
       };
       prefs.titleBarOverlay = overlayOptions;
       nativeTheme.addListener("updated", () => {
-        console.log(window);
         if (window) {
           overlayOptions.color = nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff";
+          overlayOptions.symbolColor = nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000";
           window.setTitleBarOverlay(overlayOptions);
         }
       });
