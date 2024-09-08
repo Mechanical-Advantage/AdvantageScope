@@ -7,7 +7,13 @@ import {
   SourceListTypeConfig,
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
-import { grabPosesAuto, grabSwerveStates, rotation3dTo2d, rotation3dToRPY } from "../shared/geometry";
+import {
+  grabChassiSpeeds as grabChassisSpeeds,
+  grabPosesAuto,
+  grabSwerveStates,
+  rotation3dTo2d,
+  rotation3dToRPY
+} from "../shared/geometry";
 import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { convert } from "../shared/units";
@@ -1028,6 +1034,17 @@ export default class SourceList {
                       "\u00b0"
                   );
                 });
+              } else if (typeConfig?.previewType === "ChassisSpeeds") {
+                let chassisSpeeds = grabChassisSpeeds(window.log, state.logKey, time, this.UUID);
+                poseStrings.push(
+                  "\u03bdx: " +
+                    chassisSpeeds.vx.toFixed(2) +
+                    "m/s, \u03bdy: " +
+                    chassisSpeeds.vy.toFixed(2) +
+                    "m/s, \u03a9: " +
+                    convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
+                    "\u00b0/s"
+                );
               } else {
                 let poses = grabPosesAuto(
                   window.log,

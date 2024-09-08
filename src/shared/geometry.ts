@@ -47,6 +47,7 @@ export type PoseAnnotations = {
 };
 
 export type SwerveState = { speed: number; angle: Rotation2d };
+export type ChassisSpeeds = { vx: number; vy: number; omega: number };
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
@@ -631,4 +632,12 @@ export function grabSwerveStates(
     default:
       return [];
   }
+}
+
+export function grabChassiSpeeds(log: Log, key: string, timestamp: number, uuid?: string): ChassisSpeeds {
+  return {
+    vx: getOrDefault(log, key + "/vx", LoggableType.Number, timestamp, 0, uuid),
+    vy: getOrDefault(log, key + "/vy", LoggableType.Number, timestamp, 0, uuid),
+    omega: getOrDefault(log, key + "/omega", LoggableType.Number, timestamp, 0, uuid)
+  };
 }

@@ -1,4 +1,4 @@
-import { Rotation2d, SwerveState } from "../geometry";
+import { ChassisSpeeds, Rotation2d, SwerveState } from "../geometry";
 import { transformPx, wrapRadians } from "../util";
 import TabRenderer from "./TabRenderer";
 
@@ -73,10 +73,27 @@ export default class SwerveRenderer implements TabRenderer {
     // Draw arrow on robot
     context.strokeStyle = strokeColor;
     context.lineWidth = 4;
-    let arrowBack = transformPx(centerPx, command.rotation, [frameHeightPx * -0.3, 0]);
-    let arrowFront = transformPx(centerPx, command.rotation, [frameHeightPx * 0.3, 0]);
-    let arrowLeft = transformPx(centerPx, command.rotation, [frameHeightPx * 0.15, frameWidthPx * 0.15]);
-    let arrowRight = transformPx(centerPx, command.rotation, [frameHeightPx * 0.15, frameWidthPx * -0.15]);
+    const hasSpeeds = command.speeds.length > 0;
+    let arrowBack = transformPx(
+      centerPx,
+      command.rotation,
+      hasSpeeds ? [frameHeightPx * 0.5, 0] : [frameHeightPx * -0.3, 0]
+    );
+    let arrowFront = transformPx(
+      centerPx,
+      command.rotation,
+      hasSpeeds ? [frameHeightPx * 0.8, 0] : [frameHeightPx * 0.3, 0]
+    );
+    let arrowLeft = transformPx(
+      centerPx,
+      command.rotation,
+      hasSpeeds ? [frameHeightPx * 0.65, frameWidthPx * 0.15] : [frameHeightPx * 0.15, frameWidthPx * 0.15]
+    );
+    let arrowRight = transformPx(
+      centerPx,
+      command.rotation,
+      hasSpeeds ? [frameHeightPx * 0.65, frameWidthPx * -0.15] : [frameHeightPx * 0.15, frameWidthPx * -0.15]
+    );
     context.beginPath();
     context.moveTo(...arrowBack);
     context.lineTo(...arrowFront);
@@ -85,7 +102,7 @@ export default class SwerveRenderer implements TabRenderer {
     context.lineTo(...arrowRight);
     context.stroke();
 
-    // Draw each corner
+    // Draw modules
     [
       [1, 1],
       [1, -1],
@@ -106,7 +123,7 @@ export default class SwerveRenderer implements TabRenderer {
 
         // Draw rotation
         context.beginPath();
-        if (command.sets.length >= 2) {
+        if (command.states.length >= 2) {
           context.moveTo(...moduleCenterPx);
         } else {
           context.moveTo(...transformPx(moduleCenterPx, fullRotation, [moduleRadiusPx, 0]));
@@ -128,6 +145,7 @@ export default class SwerveRenderer implements TabRenderer {
           vectorSpeed *= -1;
           vectorRotation += Math.PI;
         }
+        if (vectorSpeed < 0.05) return;
         let vectorLength = fullVectorPx * vectorSpeed;
         let arrowBack = transformPx(moduleCenterPx, vectorRotation, [moduleRadiusPx, 0]);
         let arrowFront = transformPx(moduleCenterPx, vectorRotation, [moduleRadiusPx + vectorLength, 0]);
@@ -147,9 +165,9 @@ export default class SwerveRenderer implements TabRenderer {
         context.lineTo(...arrowRight);
         context.stroke();
       };
-      command.sets.forEach((set) => {
-        if (index < set.states.length) {
-          drawModuleData(set.states[index], set.color);
+      command.states.forEach((set) => {
+        if (index < set.values.length) {
+          drawModuleData(set.values[index], set.color);
         }
       });
 
@@ -160,14 +178,77 @@ export default class SwerveRenderer implements TabRenderer {
       context.arc(...moduleCenterPx, moduleRadiusPx, 0, Math.PI * 2);
       context.stroke();
     });
+
+    // Draw chassis speeds
+    command.speeds.forEach((speed) => {
+      context.strokeStyle = speed.color;
+      context.lineWidth = 4;
+
+      // Linear speed
+      let angle = Math.atan2(speed.value.vy, speed.value.vx);
+      let length = Math.hypot(speed.value.vx, speed.value.vy);
+      if (length < 0.05) return;
+      length *= fullVectorPx;
+
+      let arrowBack = transformPx(centerPx, command.rotation + angle, [0, 0]);
+      let arrowFront = transformPx(centerPx, command.rotation + angle, [length, 0]);
+      let arrowLeft = transformPx(centerPx, command.rotation + angle, [
+        length - moduleRadiusPx * 0.4,
+        moduleRadiusPx * 0.4
+      ]);
+      let arrowRight = transformPx(centerPx, command.rotation + angle, [
+        length - moduleRadiusPx * 0.4,
+        moduleRadiusPx * -0.4
+      ]);
+      context.beginPath();
+      context.moveTo(...arrowBack);
+      context.lineTo(...arrowFront);
+      context.moveTo(...arrowLeft);
+      context.lineTo(...arrowFront);
+      context.lineTo(...arrowRight);
+      context.stroke();
+
+      // Angular speed
+      if (Math.abs(speed.value.omega) > 0.1) {
+        context.beginPath();
+        context.arc(
+          centerPx[0],
+          centerPx[1],
+          frameWidthPx * 0.25,
+          -command.rotation,
+          -(command.rotation + speed.value.omega),
+          speed.value.omega > 0
+        );
+        let arrowFront = transformPx(centerPx, command.rotation + speed.value.omega, [frameWidthPx * 0.25, 0]);
+        let arrowLeft = transformPx(
+          centerPx,
+          command.rotation + speed.value.omega - 0.3 * Math.sign(speed.value.omega),
+          [frameWidthPx * 0.25 - moduleRadiusPx * 0.4, 0]
+        );
+        let arrowRight = transformPx(
+          centerPx,
+          command.rotation + speed.value.omega - 0.3 * Math.sign(speed.value.omega),
+          [frameWidthPx * 0.25 + moduleRadiusPx * 0.4, 0]
+        );
+        context.lineTo(...arrowFront);
+        context.moveTo(...arrowLeft);
+        context.lineTo(...arrowFront);
+        context.lineTo(...arrowRight);
+        context.stroke();
+      }
+    });
   }
 }
 
 export type SwerveRendererCommand = {
   rotation: Rotation2d;
   frameAspectRatio: number;
-  sets: {
-    states: SwerveState[];
+  states: {
+    values: SwerveState[];
+    color: string;
+  }[];
+  speeds: {
+    value: ChassisSpeeds;
     color: string;
   }[];
 };

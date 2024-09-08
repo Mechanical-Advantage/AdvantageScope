@@ -18,7 +18,7 @@ const SwerveController_Config: SourceListConfig = {
   types: [
     {
       key: "states",
-      display: "States",
+      display: "Module States",
       symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
       showInTypeName: true,
       color: "color",
@@ -43,7 +43,7 @@ const SwerveController_Config: SourceListConfig = {
     },
     {
       key: "statesLegacy",
-      display: "States",
+      display: "Module States",
       symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
       showInTypeName: true,
       color: "color",
@@ -75,6 +75,25 @@ const SwerveController_Config: SourceListConfig = {
       initialSelectionOption: "color",
       numberArrayDeprecated: true,
       previewType: "SwerveModuleState[]"
+    },
+    {
+      key: "chassisSpeeds",
+      display: "Chassis Speeds",
+      symbol: "arrow.up.and.down.square.fill",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: ["ChassisSpeeds"],
+      showDocs: true,
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_RedStart
+        }
+      ],
+      initialSelectionOption: "color",
+      previewType: "ChassisSpeeds"
     },
     {
       key: "rotation",

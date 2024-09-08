@@ -34,6 +34,7 @@ export type SourceListTypeConfig = {
     | "Pose3d"
     | "Transform3d"
     | "SwerveModuleState[]"
+    | "ChassisSpeeds"
     | null; // Don't use preview
   initialSelectionOption?: string;
   showDocs: boolean;

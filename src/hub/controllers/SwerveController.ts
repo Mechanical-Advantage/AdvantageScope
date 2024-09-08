@@ -1,5 +1,5 @@
 import { SourceListState } from "../../shared/SourceListConfig";
-import { Rotation2d, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
+import { Rotation2d, grabChassiSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
 import { Orientation } from "../../shared/renderers/OdometryRenderer";
 import { SwerveRendererCommand } from "../../shared/renderers/SwerveRenderer";
 import { clampValue, createUUID, jsonCopy } from "../../shared/util";
@@ -103,7 +103,8 @@ export default class SwerveController implements TabController {
     if (time === null) time = window.log.getTimestampRange()[1];
 
     let rotation: Rotation2d = 0;
-    let sets: SwerveRendererCommand["sets"] = [];
+    let commandStates: SwerveRendererCommand["states"] = [];
+    let commandSpeeds: SwerveRendererCommand["speeds"] = [];
     let sources = this.sourceList.getState(true);
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
@@ -129,8 +130,19 @@ export default class SwerveController implements TabController {
           // Normalize
           state.speed = clampValue(state.speed / Number(this.MAX_SPEED.value), -1, 1);
         });
-        sets.push({
-          states: states,
+        commandStates.push({
+          values: states,
+          color: source.options.color
+        });
+      } else if (source.type === "chassisSpeeds") {
+        let speeds = grabChassiSpeeds(window.log, source.logKey, time, this.UUID);
+        let angle = Math.atan2(speeds.vy, speeds.vx);
+        let length = Math.hypot(speeds.vx, speeds.vy);
+        length = clampValue(length / Number(this.MAX_SPEED.value), -1, 1);
+        speeds.vx = Math.cos(angle) * length;
+        speeds.vy = Math.sin(angle) * length;
+        commandSpeeds.push({
+          value: speeds,
           color: source.options.color
         });
       } else {
@@ -142,11 +154,13 @@ export default class SwerveController implements TabController {
     }
     rotation += this.orientation * (Math.PI / 2);
 
-    sets.reverse();
+    commandStates.reverse();
+    commandSpeeds.reverse();
     return {
       rotation: rotation,
       frameAspectRatio: Number(this.SIZE_Y.value) / Number(this.SIZE_X.value),
-      sets: sets
+      states: commandStates,
+      speeds: commandSpeeds
     };
   }
 }
