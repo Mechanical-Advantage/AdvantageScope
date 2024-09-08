@@ -2107,10 +2107,12 @@ function createHubWindow(state?: WindowState) {
   switch (process.platform) {
     case "darwin":
       prefs.vibrancy = "sidebar";
-      if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset";
+      if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
       break;
     case "win32":
       prefs.titleBarStyle = "hidden";
+      let releaseSplit = os.release().split(".");
+      if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) prefs.backgroundMaterial = "acrylic"; // Windows 11 22H2
       let overlayOptions: TitleBarOverlay = {
         color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
         symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
