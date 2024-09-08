@@ -58,6 +58,70 @@ body.fancy-title-bar-win div.title-bar-text {
   right: 140px;
 }
 
+div.title-bar-menu {
+  position: absolute;
+  left: calc(var(--side-bar-width) * 0.5);
+  width: calc(var(--side-bar-width) - 20px);
+  max-width: 250px;
+  top: 19px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+
+  display: none;
+  -webkit-app-region: no-drag;
+  overflow-x: auto;
+}
+
+div.title-bar-menu::-webkit-scrollbar {
+  display: none;
+}
+
+body.fancy-title-bar-win div.title-bar-menu {
+  display: initial;
+}
+
+div.title-bar-menu table {
+  height: 100%;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+div.title-bar-menu td {
+  padding: 0;
+  margin: 0;
+}
+
+div.title-bar-menu button {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  padding-left: 3px;
+  padding-right: 3px;
+  opacity: 50%;
+}
+
+div.title-bar-menu button:hover {
+  background-color: #d9d9d9;
+}
+
+div.title-bar-menu button:active {
+  background-color: #c9c9c9;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.title-bar-menu button {
+    color: #eee;
+  }
+
+  div.title-bar-menu button:hover {
+    background-color: #393939;
+  }
+
+  div.title-bar-menu button:active {
+    background-color: #494949;
+  }
+}
+
 div.main-view {
   position: absolute;
   z-index: 4;

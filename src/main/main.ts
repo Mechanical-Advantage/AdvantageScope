@@ -484,6 +484,23 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       shell.openExternal(message.data);
       break;
 
+    case "open-app-menu":
+      {
+        let index: number = message.data.index;
+        let coordinates: [number, number] = message.data.coordinates;
+
+        let appMenu = Menu.getApplicationMenu();
+        if (appMenu === null || index >= appMenu.items.length) return;
+        let submenu = appMenu.items[index].submenu;
+        if (submenu === undefined) return;
+        submenu.popup({
+          window: window,
+          x: coordinates[0],
+          y: coordinates[1]
+        });
+      }
+      break;
+
     case "ask-playback-speed":
       const playbackSpeedMenu = new Menu();
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
@@ -1038,10 +1055,11 @@ function newTabPopup(window: BrowserWindow) {
         })
       );
     });
+
   newTabMenu.popup({
     window: window,
     x: window.getBounds().width - 12,
-    y: 10
+    y: process.platform === "win32" ? 48 : 10
   });
 }
 
