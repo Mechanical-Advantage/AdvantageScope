@@ -7,6 +7,7 @@ import {
   MenuItem,
   MessageChannelMain,
   MessagePortMain,
+  TitleBarOverlay,
   TouchBar,
   TouchBarSlider,
   app,
@@ -2051,6 +2052,7 @@ function createAboutWindow() {
 
 /** Creates a new hub window. */
 function createHubWindow(state?: WindowState) {
+  let window: BrowserWindow;
   let prefs: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 400,
@@ -2081,13 +2083,30 @@ function createHubWindow(state?: WindowState) {
   }
 
   // Set fancy window effects
-  if (process.platform === "darwin") {
-    prefs.vibrancy = "sidebar";
-    if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset";
+  switch (process.platform) {
+    case "darwin":
+      prefs.vibrancy = "sidebar";
+      if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset";
+      break;
+    case "win32":
+      prefs.titleBarStyle = "hidden";
+      let overlayOptions: TitleBarOverlay = {
+        color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
+        height: 38
+      };
+      prefs.titleBarOverlay = overlayOptions;
+      nativeTheme.addListener("updated", () => {
+        console.log(window);
+        if (window) {
+          overlayOptions.color = nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff";
+          window.setTitleBarOverlay(overlayOptions);
+        }
+      });
+      break;
   }
 
   // Create window
-  let window = new BrowserWindow(prefs);
+  window = new BrowserWindow(prefs);
   hubWindows.push(window);
 
   // Add touch bar menu
