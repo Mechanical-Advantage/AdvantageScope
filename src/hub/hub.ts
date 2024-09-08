@@ -106,9 +106,6 @@ function setLoading(progress: number | null) {
 }
 
 function updateFancyWindow() {
-  let original = window.platform;
-  window.platform = "win32"; // TODO: Remove
-
   // Using fancy title bar?
   if (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
     document.body.classList.add("fancy-title-bar-mac");
@@ -127,8 +124,6 @@ function updateFancyWindow() {
   } else {
     document.body.classList.remove("fancy-side-bar");
   }
-
-  window.platform = original; // TODO: Remove
 }
 
 function setExporting(exporting: boolean) {

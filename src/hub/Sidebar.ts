@@ -114,12 +114,24 @@ export default class Sidebar {
     // Menu bar
     let menuBar = document.getElementsByClassName("title-bar-menu")[0] as HTMLElement;
     Array.from(menuBar.getElementsByTagName("button")).forEach((button, index) => {
+      let active = false;
       button.addEventListener("click", () => {
-        let rect = button.getBoundingClientRect();
-        window.sendMainMessage("open-app-menu", {
-          index: index,
-          coordinates: [Math.round(rect.left), Math.round(rect.bottom)]
-        });
+        if (active) {
+          active = false;
+          window.sendMainMessage("close-app-menu", {
+            index: index
+          });
+        } else {
+          active = true;
+          let rect = button.getBoundingClientRect();
+          window.sendMainMessage("open-app-menu", {
+            index: index,
+            coordinates: [Math.round(rect.left), Math.round(rect.bottom)]
+          });
+        }
+      });
+      button.addEventListener("mouseleave", () => {
+        active = false;
       });
     });
 

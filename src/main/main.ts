@@ -485,19 +485,22 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "open-app-menu":
+    case "close-app-menu":
       {
         let index: number = message.data.index;
-        let coordinates: [number, number] = message.data.coordinates;
-
         let appMenu = Menu.getApplicationMenu();
         if (appMenu === null || index >= appMenu.items.length) return;
         let submenu = appMenu.items[index].submenu;
         if (submenu === undefined) return;
-        submenu.popup({
-          window: window,
-          x: coordinates[0],
-          y: coordinates[1]
-        });
+        if (message.name === "open-app-menu") {
+          submenu.popup({
+            window: window,
+            x: message.data.coordinates[0],
+            y: message.data.coordinates[1]
+          });
+        } else {
+          submenu.closePopup(window);
+        }
       }
       break;
 
