@@ -5,7 +5,7 @@
   "description": "Robot telemetry application for FRC",
   "author": {
     "name": "FRC 6328",
-    "email": "info@littletonrobotics.org",
+    "email": "software@littletonrobotics.org",
     "url": "https://littletonrobotics.org"
   },
   "license": "MIT",
