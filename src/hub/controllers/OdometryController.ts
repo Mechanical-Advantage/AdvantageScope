@@ -380,7 +380,7 @@ export default class OdometryController implements TabController {
           case "rotationOverrideLegacy": {
             let numberArrayUnits: "radians" | "degrees" = "radians";
             if ("units" in child.options) {
-              numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
+              numberArrayUnits = child.options.units === "degrees" ? "degrees" : "radians";
             }
             let rotations = grabPosesAuto(
               window.log,
@@ -432,7 +432,7 @@ export default class OdometryController implements TabController {
           case "swerveStatesLegacy": {
             let numberArrayUnits: "radians" | "degrees" = "radians";
             if ("units" in child.options) {
-              numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
+              numberArrayUnits = child.options.units === "degrees" ? "degrees" : "radians";
             }
             let states = grabSwerveStates(
               window.log,
