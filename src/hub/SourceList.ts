@@ -362,16 +362,12 @@ export default class SourceList {
 
     // Verify that all items have a valid selection
     let possibleValues = values.map((x) => x.key);
-    let valuesChanged = false;
-    this.state.forEach((item) => {
-      if (!possibleValues.includes(item.options[option])) {
+    this.state.forEach((item, index) => {
+      if (item.type === type && !possibleValues.includes(item.options[option])) {
         item.options[option] = values[0].key;
-        valuesChanged = true;
+        this.updateItem(this.LIST.children[index] as HTMLElement, item);
       }
     });
-    if (valuesChanged) {
-      this.updateAllItems();
-    }
   }
 
   private updateHandIcon() {
