@@ -867,53 +867,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             }
           })
         );
-        // editAxisMenu.append(
-        //   new MenuItem({
-        //     label: "Filter",
-        //     type: "submenu",
-        //     submenu: [
-        //       {
-        //         label: "None",
-        //         type: "checkbox",
-        //         checked: filter === LineGraphFilter.None,
-        //         click() {
-        //           sendMessage(window, "edit-axis", {
-        //             legend: legend,
-        //             lockedRange: lockedRange,
-        //             unitConversion: unitConversion,
-        //             filter: LineGraphFilter.None
-        //           });
-        //         }
-        //       },
-        //       {
-        //         label: "Differentiate",
-        //         type: "checkbox",
-        //         checked: filter === LineGraphFilter.Differentiate,
-        //         click() {
-        //           sendMessage(window, "edit-axis", {
-        //             legend: legend,
-        //             lockedRange: lockedRange,
-        //             unitConversion: unitConversion,
-        //             filter: LineGraphFilter.Differentiate
-        //           });
-        //         }
-        //       },
-        //       {
-        //         label: "Integrate",
-        //         type: "checkbox",
-        //         checked: filter === LineGraphFilter.Integrate,
-        //         click() {
-        //           sendMessage(window, "edit-axis", {
-        //             legend: legend,
-        //             lockedRange: lockedRange,
-        //             unitConversion: unitConversion,
-        //             filter: LineGraphFilter.Integrate
-        //           });
-        //         }
-        //       }
-        //     ]
-        //   })
-        // );
         editAxisMenu.append(
           new MenuItem({
             type: "separator"
