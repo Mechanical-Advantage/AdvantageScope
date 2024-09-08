@@ -55,7 +55,7 @@ body.fancy-title-bar-mac div.title-bar-text {
 
 body.fancy-title-bar-win div.title-bar-text {
   left: calc(var(--side-bar-width) + 20px);
-  right: calc(20px + env(titlebar-area-width, 0));
+  right: 140px;
 }
 
 div.main-view {
