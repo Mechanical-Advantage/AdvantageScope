@@ -2,7 +2,7 @@ import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
 import { convert } from "./units";
-import { indexArray, scaleValue } from "./util";
+import { indexArray, jsonCopy, scaleValue } from "./util";
 
 export type Translation2d = [number, number]; // meters (x, y)
 export type Rotation2d = number; // radians
@@ -601,37 +601,49 @@ export function grabSwerveStates(
   key: string,
   logType: string,
   timestamp: number,
+  arrangement?: string,
   rotationUnits: "radians" | "degrees" = "radians",
   uuid?: string
 ): SwerveState[] {
+  let states: SwerveState[] = [];
   switch (logType) {
-    case "NumberArray": {
-      let value: number[] = getOrDefault(log, key, LoggableType.NumberArray, timestamp, [], uuid);
-      let states: SwerveState[] = [];
-      for (let i = 0; i < value.length - 1; i += 2) {
-        states.push({
-          speed: value[i + 1],
-          angle: convert(value[i], rotationUnits, "radians")
-        });
+    case "NumberArray":
+      {
+        let value: number[] = getOrDefault(log, key, LoggableType.NumberArray, timestamp, [], uuid);
+        for (let i = 0; i < value.length - 1; i += 2) {
+          states.push({
+            speed: value[i + 1],
+            angle: convert(value[i], rotationUnits, "radians")
+          });
+        }
       }
-      return states;
-    }
+      break;
 
-    case "SwerveModuleState[]": {
-      let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
-      let states: SwerveState[] = [];
-      for (let i = 0; i < length; i++) {
-        states.push({
-          speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
-          angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
-        });
+    case "SwerveModuleState[]":
+      {
+        let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
+        for (let i = 0; i < length; i++) {
+          states.push({
+            speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
+            angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
+          });
+        }
       }
-      return states;
-    }
-
-    default:
-      return [];
+      break;
   }
+
+  // Apply arrangement
+  if (states.length === 4 && arrangement !== undefined) {
+    let originalStates = jsonCopy(states);
+    arrangement
+      .split(",")
+      .map((x) => Number(x))
+      .forEach((sourceIndex, targetIndex) => {
+        states[targetIndex] = originalStates[sourceIndex];
+      });
+  }
+
+  return states;
 }
 
 export function grabChassiSpeeds(log: Log, key: string, timestamp: number, uuid?: string): ChassisSpeeds {

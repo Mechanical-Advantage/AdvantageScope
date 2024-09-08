@@ -1022,6 +1022,7 @@ export default class SourceList {
                   state.logKey,
                   state.logType,
                   time,
+                  undefined,
                   numberArrayUnits,
                   this.UUID
                 );

@@ -1,7 +1,7 @@
 import { NeonColors_RedStart } from "../../shared/Colors";
 import { SourceListConfig, SourceListOptionValueConfig } from "../../shared/SourceListConfig";
 
-const ArrangementValues: SourceListOptionValueConfig[] = [
+export const SwerveArrangementValues: SourceListOptionValueConfig[] = [
   { display: "FL/FR/BL/BR", key: "0,1,2,3" },
   { display: "FR/FL/BR/BL", key: "1,0,3,2" },
   { display: "FL/FR/BR/BL", key: "0,1,3,2" },
@@ -35,7 +35,7 @@ const SwerveController_Config: SourceListConfig = {
           key: "arrangement",
           display: "Arrangement",
           showInTypeName: false,
-          values: ArrangementValues
+          values: SwerveArrangementValues
         }
       ],
       initialSelectionOption: "color",
@@ -60,7 +60,7 @@ const SwerveController_Config: SourceListConfig = {
           key: "arrangement",
           display: "Arrangement",
           showInTypeName: false,
-          values: ArrangementValues
+          values: SwerveArrangementValues
         },
         {
           key: "units",

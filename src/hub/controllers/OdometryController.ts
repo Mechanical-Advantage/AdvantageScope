@@ -2,10 +2,12 @@ import { SourceListItemState, SourceListState } from "../../shared/SourceListCon
 import {
   AnnotatedPose2d,
   AnnotatedPose3d,
+  SwerveState,
   Translation2d,
   annotatedPose3dTo2d,
   grabHeatmapData,
   grabPosesAuto,
+  grabSwerveStates,
   rotation3dTo2d,
   translation3dTo2d
 } from "../../shared/geometry";
@@ -368,10 +370,14 @@ export default class OdometryController implements TabController {
 
       // Add data from children
       let visionTargets: AnnotatedPose2d[] = [];
+      let swerveStates: {
+        values: SwerveState[];
+        color: string;
+      }[] = [];
       children.forEach((child) => {
         switch (child.type) {
           case "rotationOverride":
-          case "rotationOverrideLegacy":
+          case "rotationOverrideLegacy": {
             let numberArrayUnits: "radians" | "degrees" = "radians";
             if ("units" in child.options) {
               numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
@@ -391,9 +397,10 @@ export default class OdometryController implements TabController {
               });
             }
             break;
+          }
 
           case "vision":
-          case "visionLegacy":
+          case "visionLegacy": {
             let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
             if ("format" in child.options) {
               let formatRaw = child.options.format;
@@ -419,8 +426,32 @@ export default class OdometryController implements TabController {
             });
             visionTargets = visionTargets.concat(visionPose3ds.map(annotatedPose3dTo2d));
             break;
+          }
+
+          case "swerveStates":
+          case "swerveStatesLegacy": {
+            let numberArrayUnits: "radians" | "degrees" = "radians";
+            if ("units" in child.options) {
+              numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
+            }
+            let states = grabSwerveStates(
+              window.log,
+              child.logKey,
+              child.logType,
+              time!,
+              child.options.arrangement,
+              numberArrayUnits,
+              this.UUID
+            );
+            swerveStates.push({
+              values: states,
+              color: child.options.color
+            });
+            break;
+          }
         }
       });
+      swerveStates.reverse();
 
       // Add object
       switch (source.type) {
@@ -430,7 +461,8 @@ export default class OdometryController implements TabController {
             type: "robot",
             poses: poses,
             trails: trails,
-            visionTargets: visionTargets
+            visionTargets: visionTargets,
+            swerveStates: swerveStates
           });
           break;
         case "ghost":
@@ -440,7 +472,8 @@ export default class OdometryController implements TabController {
             type: "ghost",
             poses: poses,
             color: source.options.color,
-            visionTargets: visionTargets
+            visionTargets: visionTargets,
+            swerveStates: swerveStates
           });
           break;
         case "trajectory":

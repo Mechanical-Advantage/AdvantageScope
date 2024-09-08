@@ -1,10 +1,12 @@
-import { AnnotatedPose2d, Pose2d, Translation2d } from "../geometry";
+import { AnnotatedPose2d, Pose2d, SwerveState, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { scaleValue, transformPx } from "../util";
 import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
 
 export default class OdometryRenderer implements TabRenderer {
+  private SWERVE_MAX_SPEED = 5;
+
   private CONTAINER: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;
@@ -137,7 +139,14 @@ export default class OdometryRenderer implements TabRenderer {
     };
 
     // Function to draw robot
-    let drawRobot = (pose: Pose2d, ghostColor?: string) => {
+    let drawRobot = (
+      pose: Pose2d,
+      swerveStates: {
+        values: SwerveState[];
+        color: string;
+      }[],
+      ghostColor?: string
+    ) => {
       let centerPos = calcCoordinates(pose.translation);
       let rotation = pose.rotation;
       if (objectsFlipped) rotation += Math.PI;
@@ -180,6 +189,58 @@ export default class OdometryRenderer implements TabRenderer {
       context.moveTo(arrowFront[0], arrowFront[1]);
       context.lineTo(arrowRight[0], arrowRight[1]);
       context.stroke();
+
+      // Render swerve states
+      [
+        [1, 1],
+        [1, -1],
+        [-1, 1],
+        [-1, -1]
+      ].forEach((corner, index) => {
+        let moduleCenterPx = transformPx(centerPos, rotation, [
+          (robotLengthPixels / 2) * corner[0],
+          (robotLengthPixels / 2) * corner[1]
+        ]);
+
+        // Draw module data
+        let drawModuleData = (state: SwerveState, color: string) => {
+          let fullRotation = rotation + state.angle;
+          context.strokeStyle = color;
+
+          // Draw speed
+          if (Math.abs(state.speed) <= 0.001) return;
+          let vectorSpeed = state.speed / 5;
+          let vectorRotation = fullRotation;
+          if (state.speed < 0) {
+            vectorSpeed *= -1;
+            vectorRotation += Math.PI;
+          }
+          if (vectorSpeed < 0.05) return;
+          let vectorLength = pixelsPerInch * 36 * vectorSpeed;
+          let arrowBack = transformPx(moduleCenterPx, vectorRotation, [0, 0]);
+          let arrowFront = transformPx(moduleCenterPx, vectorRotation, [vectorLength, 0]);
+          let arrowLeft = transformPx(moduleCenterPx, vectorRotation, [
+            vectorLength - pixelsPerInch * 4,
+            pixelsPerInch * 4
+          ]);
+          let arrowRight = transformPx(moduleCenterPx, vectorRotation, [
+            vectorLength - pixelsPerInch * 4,
+            pixelsPerInch * -4
+          ]);
+          context.beginPath();
+          context.moveTo(...arrowBack);
+          context.lineTo(...arrowFront);
+          context.moveTo(...arrowLeft);
+          context.lineTo(...arrowFront);
+          context.lineTo(...arrowRight);
+          context.stroke();
+        };
+        swerveStates.forEach((set) => {
+          if (index < set.values.length) {
+            drawModuleData(set.values[index], set.color);
+          }
+        });
+      });
     };
 
     // Update heatmap data
@@ -266,7 +327,7 @@ export default class OdometryRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose);
+              drawRobot(pose.pose, object.swerveStates);
             });
             break;
           case "ghost":
@@ -284,7 +345,7 @@ export default class OdometryRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.color);
+              drawRobot(pose.pose, object.swerveStates, object.color);
             });
             break;
           case "arrow":
@@ -389,6 +450,10 @@ export type OdometryRendererCommand_RobotObj = {
   poses: AnnotatedPose2d[];
   trails: Translation2d[][];
   visionTargets: AnnotatedPose2d[];
+  swerveStates: {
+    values: SwerveState[];
+    color: string;
+  }[];
 };
 
 export type OdometryRendererCommand_GhostObj = {
@@ -396,6 +461,10 @@ export type OdometryRendererCommand_GhostObj = {
   poses: AnnotatedPose2d[];
   color: string;
   visionTargets: AnnotatedPose2d[];
+  swerveStates: {
+    values: SwerveState[];
+    color: string;
+  }[];
 };
 
 export type OdometryRendererCommand_TrajectoryObj = {

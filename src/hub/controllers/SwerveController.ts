@@ -2,7 +2,7 @@ import { SourceListState } from "../../shared/SourceListConfig";
 import { Rotation2d, grabChassiSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
 import { Orientation } from "../../shared/renderers/OdometryRenderer";
 import { SwerveRendererCommand } from "../../shared/renderers/SwerveRenderer";
-import { clampValue, createUUID, jsonCopy } from "../../shared/util";
+import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import SwerveController_Config from "./SwerveController_Config";
 import TabController from "./TabController";
@@ -114,18 +114,15 @@ export default class SwerveController implements TabController {
       }
 
       if (source.type === "states" || source.type === "statesLegacy") {
-        let states = grabSwerveStates(window.log, source.logKey, source.logType, time, units, this.UUID);
-        if (states.length === 4) {
-          // Apply arrangement
-          let arrangement = source.options.arrangement;
-          let originalStates = jsonCopy(states);
-          arrangement
-            .split(",")
-            .map((x) => Number(x))
-            .forEach((sourceIndex, targetIndex) => {
-              states[targetIndex] = originalStates[sourceIndex];
-            });
-        }
+        let states = grabSwerveStates(
+          window.log,
+          source.logKey,
+          source.logType,
+          time,
+          source.options.arrangement,
+          units,
+          this.UUID
+        );
         states.forEach((state) => {
           // Normalize
           state.speed = clampValue(state.speed / Number(this.MAX_SPEED.value), -1, 1);
