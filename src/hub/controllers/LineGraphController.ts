@@ -218,6 +218,10 @@ export default class LineGraphController implements TabController {
     ];
   }
 
+  showTimeline(): boolean {
+    return false;
+  }
+
   getCommand(): LineGraphRendererCommand {
     let leftDataRange: [number, number] = [Infinity, -Infinity];
     let rightDataRange: [number, number] = [Infinity, -Infinity];

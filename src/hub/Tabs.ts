@@ -51,7 +51,7 @@ export default class Tabs {
   private POPUP_BUTTON = document.getElementsByClassName("popup")[0] as HTMLElement;
   private ADD_BUTTON = document.getElementsByClassName("add-tab")[0] as HTMLElement;
 
-  private TAB_CONFIGS: Map<TabType, { showTimeline: boolean; fixedControlsHeight?: number }> = new Map();
+  private FIXED_CONTROL_HEIGHTS: Map<TabType, number | undefined> = new Map();
 
   private tabsScrollSensor: ScrollSensor;
   private timeline: Timeline;
@@ -72,19 +72,19 @@ export default class Tabs {
 
   constructor() {
     // Set up tab configs
-    this.TAB_CONFIGS.set(TabType.Documentation, { showTimeline: false, fixedControlsHeight: 0 });
-    this.TAB_CONFIGS.set(TabType.LineGraph, { showTimeline: false });
-    this.TAB_CONFIGS.set(TabType.Table, { showTimeline: false, fixedControlsHeight: 0 });
-    this.TAB_CONFIGS.set(TabType.Console, { showTimeline: false, fixedControlsHeight: 0 });
-    this.TAB_CONFIGS.set(TabType.Statistics, { showTimeline: false });
-    this.TAB_CONFIGS.set(TabType.Odometry, { showTimeline: true });
-    this.TAB_CONFIGS.set(TabType.ThreeDimension, { showTimeline: true });
-    this.TAB_CONFIGS.set(TabType.Video, { showTimeline: true, fixedControlsHeight: 85 });
-    this.TAB_CONFIGS.set(TabType.Joysticks, { showTimeline: true, fixedControlsHeight: 85 });
-    this.TAB_CONFIGS.set(TabType.Swerve, { showTimeline: true });
-    this.TAB_CONFIGS.set(TabType.Mechanism, { showTimeline: true });
-    this.TAB_CONFIGS.set(TabType.Points, { showTimeline: true });
-    this.TAB_CONFIGS.set(TabType.Metadata, { showTimeline: false, fixedControlsHeight: 0 });
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Documentation, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.LineGraph, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Table, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Console, 0);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Statistics, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Odometry, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.ThreeDimension, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Joysticks, 85);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Swerve, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Mechanism, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
 
     // Hover and click handling
     let mouseDownInfo: [number, number] | null = null;
@@ -200,7 +200,7 @@ export default class Tabs {
       document.body.style.cursor = "initial";
     });
     window.addEventListener("mousemove", (event) => {
-      let fixedHeight = this.TAB_CONFIGS.get(this.tabList[this.selectedTab].type)?.fixedControlsHeight;
+      let fixedHeight = this.FIXED_CONTROL_HEIGHTS.get(this.tabList[this.selectedTab].type);
       if (this.controlsHandleActive) {
         let height = window.innerHeight - event.clientY;
         if (height >= 30 && height < 100) height = 100;
@@ -316,6 +316,7 @@ export default class Tabs {
       // Update timeline and controls
       this.timeline.periodic();
       this.updateControlsHeight();
+      this.updateTimelineVisibility();
 
       // Render new frame
       this.tabList[this.selectedTab].renderer.render(this.tabList[this.selectedTab].controller.getCommand());
@@ -348,11 +349,11 @@ export default class Tabs {
     availableHeight -= 150;
     if (this.selectedTab < 0 || this.selectedTab >= this.tabList.length) return;
     let selectedTab = this.tabList[this.selectedTab];
-    let tabConfig = this.TAB_CONFIGS.get(selectedTab.type);
+    let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(selectedTab.type);
     selectedTab.controlsHeight = Math.min(selectedTab.controlsHeight, availableHeight);
 
     let appliedHeight = Math.max(selectedTab.controlsHeight, 0);
-    this.CONTROLS_HANDLE.hidden = tabConfig?.fixedControlsHeight === 0;
+    this.CONTROLS_HANDLE.hidden = tabConfig === 0;
     this.CONTROLS_CONTENT.hidden = appliedHeight === 0;
     document.documentElement.style.setProperty("--tab-controls-height", appliedHeight.toString() + "px");
     document.documentElement.style.setProperty("--show-tab-controls", appliedHeight === 0 ? "0" : "1");
@@ -390,8 +391,8 @@ export default class Tabs {
       this.tabList[index].controller.restoreState(tabState.controller);
       this.tabList[index].renderer.restoreState(tabState.renderer);
 
-      let tabConfig = this.TAB_CONFIGS.get(tabState.type);
-      if (tabState.controlsHeight === 0 || tabConfig?.fixedControlsHeight === undefined) {
+      let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(tabState.type);
+      if (tabState.controlsHeight === 0 || tabConfig === undefined) {
         this.tabList[index].controlsHeight = tabState.controlsHeight;
       }
     });
@@ -427,7 +428,7 @@ export default class Tabs {
 
   /** Toggles the visibility of the tab controls. */
   toggleControlsVisible() {
-    let fixedHeight = this.TAB_CONFIGS.get(this.tabList[this.selectedTab].type)?.fixedControlsHeight;
+    let fixedHeight = this.FIXED_CONTROL_HEIGHTS.get(this.tabList[this.selectedTab].type);
     if (this.tabList[this.selectedTab].controlsHeight === 0) {
       this.tabList[this.selectedTab].controlsHeight =
         fixedHeight === undefined ? this.DEFAULT_CONTROLS_HEIGHT : fixedHeight;
@@ -523,7 +524,7 @@ export default class Tabs {
     if (this.tabList.length === 0) {
       this.selectedTab = -1;
     }
-    let controlsHeightConfig = this.TAB_CONFIGS.get(type)?.fixedControlsHeight;
+    let controlsHeightConfig = this.FIXED_CONTROL_HEIGHTS.get(type);
     this.tabList.splice(this.selectedTab + 1, 0, {
       type: type,
       title: getDefaultTabTitle(type),
@@ -673,16 +674,21 @@ export default class Tabs {
         item.titleElement.classList.add("tab-selected");
         item.rendererElement.hidden = false;
         item.controlsElement.hidden = false;
-        let tabConfig = this.TAB_CONFIGS.get(item.type);
-        if (tabConfig) {
-          document.documentElement.style.setProperty("--show-timeline", tabConfig.showTimeline ? "1" : "0");
-          this.TIMELINE_CONTAINER.hidden = !tabConfig.showTimeline;
-        }
       } else {
         item.titleElement.classList.remove("tab-selected");
         item.rendererElement.hidden = true;
         item.controlsElement.hidden = true;
       }
     });
+
+    // Update timeline
+    this.updateTimelineVisibility();
+  }
+
+  /** Hides or shows the timeline based on the controller request. */
+  private updateTimelineVisibility() {
+    let show = this.tabList[this.selectedTab].controller.showTimeline();
+    document.documentElement.style.setProperty("--show-timeline", show ? "1" : "0");
+    this.TIMELINE_CONTAINER.hidden = !show;
   }
 }

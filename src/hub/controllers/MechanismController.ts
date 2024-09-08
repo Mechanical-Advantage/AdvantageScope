@@ -33,6 +33,10 @@ export default class MechanismController implements TabController {
     return this.sourceList.getActiveFields();
   }
 
+  showTimeline(): boolean {
+    return true;
+  }
+
   getCommand(): MechanismRendererCommand {
     let time = window.selection.getRenderTime();
     if (time === null) time = window.log.getTimestampRange()[1];

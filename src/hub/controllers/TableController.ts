@@ -100,6 +100,10 @@ export default class TableController implements TabController {
     return this.fields;
   }
 
+  showTimeline(): boolean {
+    return false;
+  }
+
   getCommand(): TableRendererCommand {
     const availableKeys = window.log.getFieldKeys();
     return {

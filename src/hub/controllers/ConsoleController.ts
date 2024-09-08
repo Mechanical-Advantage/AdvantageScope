@@ -65,6 +65,10 @@ export default class ConsoleController implements TabController {
     }
   }
 
+  showTimeline(): boolean {
+    return false;
+  }
+
   getCommand(): ConsoleRendererCommand {
     const isAvailable = this.field !== null && window.log.getFieldKeys().includes(this.field);
     return {

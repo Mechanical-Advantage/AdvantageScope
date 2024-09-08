@@ -43,6 +43,10 @@ export default class MetadataController implements TabController {
     });
   }
 
+  showTimeline(): boolean {
+    return false;
+  }
+
   getCommand(): MetadataRendererCommand {
     return this.command;
   }

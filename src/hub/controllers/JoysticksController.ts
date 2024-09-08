@@ -70,6 +70,10 @@ export default class JoysticksController implements TabController {
     return activeFields;
   }
 
+  showTimeline(): boolean {
+    return true;
+  }
+
   getCommand(): JoysticksRendererCommand {
     let command: JoysticksRendererCommand = [];
     let time = window.selection.getRenderTime();

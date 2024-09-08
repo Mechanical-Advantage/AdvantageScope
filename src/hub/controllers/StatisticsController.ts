@@ -2,7 +2,7 @@ import * as stats from "simple-statistics";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import { AKIT_TIMESTAMP_KEYS, getRobotStateRanges } from "../../shared/log/LogUtil";
 import { StatisticsRendererCommand, StatisticsRendererCommand_Stats } from "../../shared/renderers/StatisticsRenderer";
-import { cleanFloat, createUUID } from "../../shared/util";
+import { arraysEqual, cleanFloat, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import StatisticsController_Config from "./StatisticsController_Config";
 import TabController from "./TabController";
@@ -27,6 +27,7 @@ export default class StatisticsController implements TabController {
   };
   private shouldUpdate = true;
   private lastSourceStr = "";
+  private lastTimelineRange: [number, number] = [0, 0];
   private lastUpdateTime = 0;
 
   constructor(root: HTMLElement) {
@@ -106,6 +107,10 @@ export default class StatisticsController implements TabController {
     return this.sourceList.getActiveFields();
   }
 
+  showTimeline(): boolean {
+    return this.TIME_RANGE.value === "visible";
+  }
+
   getCommand(): StatisticsRendererCommand {
     // Update time range options
     let isLive = window.selection.getCurrentLiveTime() !== null;
@@ -119,12 +124,15 @@ export default class StatisticsController implements TabController {
     let sourcesStr = JSON.stringify(this.sourceList.getState());
     let currentTime = new Date().getTime();
     let isLiveMode = window.selection.getCurrentLiveTime() !== null && this.TIME_RANGE.value.startsWith("live");
+    let visibleChanged =
+      this.TIME_RANGE.value === "visible" && !arraysEqual(window.selection.getTimelineRange(), this.lastTimelineRange);
     if (
-      (this.shouldUpdate || sourcesStr !== this.lastSourceStr || isLiveMode) &&
+      (this.shouldUpdate || sourcesStr !== this.lastSourceStr || isLiveMode || visibleChanged) &&
       currentTime - this.lastUpdateTime > this.UPDATE_PERIOD_MS
     ) {
       this.shouldUpdate = false;
       this.lastSourceStr = sourcesStr;
+      this.lastTimelineRange = [...window.selection.getTimelineRange()];
       this.lastUpdateTime = currentTime;
 
       // Get bins
@@ -142,9 +150,12 @@ export default class StatisticsController implements TabController {
       let isValid = (timestamp: number): boolean => {
         let liveTime = window.selection.getCurrentLiveTime();
         if (liveTime === null) liveTime = window.log.getTimestampRange()[1];
+        let timelineRange = window.selection.getTimelineRange();
         switch (this.TIME_RANGE.value) {
           case "full":
             return true;
+          case "visible":
+            return timestamp >= timelineRange[0] && timestamp <= timelineRange[1];
           case "live-30":
             return timestamp >= liveTime - 30;
           case "live-10":

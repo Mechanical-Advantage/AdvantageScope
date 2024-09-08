@@ -229,6 +229,10 @@ export default class OdometryController implements TabController {
     return this.sourceList.getActiveFields();
   }
 
+  showTimeline(): boolean {
+    return true;
+  }
+
   getCommand(): OdometryRendererCommand {
     // Get timestamp
     let time = window.selection.getRenderTime();

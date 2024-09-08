@@ -185,6 +185,10 @@ export default class ThreeDimensionController implements TabController {
     return this.sourceList.getActiveFields();
   }
 
+  showTimeline(): boolean {
+    return true;
+  }
+
   getCommand(): ThreeDimensionRendererCommand {
     // Get timestamp
     let time = window.selection.getRenderTime();

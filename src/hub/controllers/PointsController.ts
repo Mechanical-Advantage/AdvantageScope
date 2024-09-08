@@ -79,6 +79,10 @@ export default class PointsController implements TabController {
     return this.sourceList.getActiveFields();
   }
 
+  showTimeline(): boolean {
+    return true;
+  }
+
   getCommand(): PointsRendererCommand {
     let time = window.selection.getRenderTime();
     if (time === null) time = window.log.getTimestampRange()[1];

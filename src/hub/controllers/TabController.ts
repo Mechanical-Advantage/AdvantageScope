@@ -23,6 +23,9 @@ export default interface TabController {
    **/
   getActiveFields(): string[];
 
+  /** Returns whether to display the timeline. */
+  showTimeline(): boolean;
+
   /** Returns data required by renderers. */
   getCommand(): unknown;
 }
@@ -42,6 +45,10 @@ export class NoopController implements TabController {
 
   getActiveFields(): string[] {
     return [];
+  }
+
+  showTimeline(): boolean {
+    return false;
   }
 
   getCommand(): unknown {

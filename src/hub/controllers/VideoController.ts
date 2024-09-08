@@ -381,4 +381,8 @@ export default class VideoController implements TabController {
   getActiveFields(): string[] {
     return [];
   }
+
+  showTimeline(): boolean {
+    return true;
+  }
 }
