@@ -3,7 +3,7 @@ import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron"
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
-import Tesseract, { createWorker } from "tesseract.js";
+import Tesseract from "tesseract.js";
 import ytdl from "ytdl-core";
 import MatchInfo from "../shared/MatchInfo";
 import Preferences from "../shared/Preferences";
@@ -75,13 +75,13 @@ export class VideoProcessor {
       langPath = path.join(__dirname, "..");
     }
     for (let i = 0; i < this.NUM_TESSERACT_WORKERS; i++) {
-      createWorker("eng", undefined, {
-        langPath: langPath,
-        cacheMethod: "readOnly",
-        gzip: true
-      }).then((worker) => {
-        this.tesseractScheduler.addWorker(worker);
-      });
+      // createWorker("eng", undefined, {
+      //   langPath: langPath,
+      //   cacheMethod: "readOnly",
+      //   gzip: true
+      // }).then((worker) => {
+      //   this.tesseractScheduler.addWorker(worker);
+      // });
     }
   }
 

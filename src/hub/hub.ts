@@ -124,13 +124,16 @@ function updateFancyWindow() {
   }
 
   // Using fancy sidebar?
-  if (
-    window.platform === "darwin" ||
-    (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) // Windows 11 22H2
-  ) {
-    document.body.classList.add("fancy-side-bar");
+  if (window.platform === "darwin") {
+    document.body.classList.add("fancy-side-bar-mac");
   } else {
-    document.body.classList.remove("fancy-side-bar");
+    document.body.classList.remove("fancy-side-bar-mac");
+  }
+  if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+    // Windows 11 22H2
+    document.body.classList.add("fancy-side-bar-win");
+  } else {
+    document.body.classList.remove("fancy-side-bar-win");
   }
 }
 

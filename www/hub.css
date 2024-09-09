@@ -101,11 +101,11 @@ div.title-bar-menu button {
 }
 
 div.title-bar-menu button:hover {
-  background-color: #d9d9d9;
+  background-color: #cccccc88;
 }
 
 div.title-bar-menu button:active {
-  background-color: #c9c9c9;
+  background-color: #cccccc;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -114,11 +114,11 @@ div.title-bar-menu button:active {
   }
 
   div.title-bar-menu button:hover {
-    background-color: #393939;
+    background-color: #44444488;
   }
 
   div.title-bar-menu button:active {
-    background-color: #494949;
+    background-color: #444444;
   }
 }
 
@@ -175,8 +175,12 @@ div.side-bar-background {
   background-color: #e9e9e9;
 }
 
-body.fancy-side-bar div.side-bar-background {
+body.fancy-side-bar-mac div.side-bar-background {
   display: none;
+}
+
+body.fancy-side-bar-win div.side-bar-background {
+  opacity: 0.5;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -199,7 +203,7 @@ div.side-bar-shadow {
   opacity: 0%;
 }
 
-body.fancy-title-bar-max div.side-bar-shadow,
+body.fancy-title-bar-mac div.side-bar-shadow,
 body.fancy-title-bar-win div.side-bar-shadow {
   display: initial;
 }
@@ -217,6 +221,10 @@ div.side-bar {
   top: 0px;
   bottom: 0px;
   overflow: auto;
+}
+
+body.fancy-title-bar-win div.side-bar::-webkit-scrollbar {
+  display: none;
 }
 
 div.side-bar-handle {
@@ -256,7 +264,7 @@ div.viewer-background {
   top: 0px;
   bottom: 0px;
 
-  box-shadow: 0px 0px 3px 2px #ddd;
+  box-shadow: 0px 0px 3px 0px #00000022;
   background-color: #fff;
 }
 

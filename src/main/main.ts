@@ -2060,7 +2060,7 @@ function createAboutWindow() {
       title: "About",
       message: "AdvantageScope",
       detail: COPYRIGHT + "\n\n" + detail,
-      buttons: ["Close", "Copy & Close"],
+      buttons: ["Close", process.platform === "darwin" ? "Copy & Close" : "Copy and Close"],
       defaultId: 0,
       icon: WINDOW_ICON
     })
@@ -2112,7 +2112,10 @@ function createHubWindow(state?: WindowState) {
     case "win32":
       prefs.titleBarStyle = "hidden";
       let releaseSplit = os.release().split(".");
-      if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) prefs.backgroundMaterial = "acrylic"; // Windows 11 22H2
+      if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+        // Windows 11 22H2
+        prefs.backgroundMaterial = "acrylic";
+      }
       let overlayOptions: TitleBarOverlay = {
         color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
         symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
@@ -2271,7 +2274,7 @@ function createEditRangeWindow(
 ) {
   const editWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 125 : 108, // "useContentSize" is broken on Windows when not resizable
+    height: 108,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2315,7 +2318,7 @@ function createUnitConversionWindow(
 ) {
   const unitConversionWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    height: 162,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2359,7 +2362,7 @@ function createRenameTabWindow(
 ) {
   const renameTabWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    height: 81,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2399,7 +2402,7 @@ function createRenameTabWindow(
 function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, callback: (newFov: number) => void) {
   const editFovWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    height: 81,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2443,7 +2446,7 @@ function createExportWindow(
 ) {
   const exportWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 206 : 189, // "useContentSize" is broken on Windows when not resizable
+    height: 189,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2658,7 +2661,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 
   const width = 400;
   const rows = 10;
-  const height = process.platform === "win32" ? rows * 27 + 114 : rows * 27 + 54; // "useContentSize" is broken on Windows when not resizable
+  const height = rows * 27 + 54;
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
