@@ -44,6 +44,7 @@
     "electron": "^29.4.6",
     "electron-builder": "^24.6.4",
     "fuse.js": "^7.0.0",
+    "gunzip-file": "^0.1.1",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
     "highlight.js": "^11.9.0",
     "mathjs": "11.3.0",
@@ -101,7 +102,7 @@
       },
       "LICENSE",
       "ThirdPartyLicenses.txt",
-      "eng.traineddata.gz"
+      "eng.traineddata"
     ],
     "fileAssociations": [
       {
