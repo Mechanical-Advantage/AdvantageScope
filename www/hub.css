@@ -149,6 +149,12 @@ div.loading-glow {
   background-color: #303dc9;
 }
 
+body.fancy-title-bar-win div.loading-glow {
+  /* Apparently Windows cuts off a few pixels on the top with a hidden title bar? */
+  height: 5px;
+  transform: translateY(calc(-5px + 5px * var(--show-loading-glow)));
+}
+
 @keyframes publishingGlowPulsing {
   0% {
     opacity: 100%;
