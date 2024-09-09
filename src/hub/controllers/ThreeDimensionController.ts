@@ -3,8 +3,10 @@ import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
   AnnotatedPose3d,
+  SwerveState,
   grabHeatmapData,
-  grabPosesAuto
+  grabPosesAuto,
+  grabSwerveStates
 } from "../../shared/geometry";
 import {
   MechanismState,
@@ -287,26 +289,32 @@ export default class ThreeDimensionController implements TabController {
       let components: AnnotatedPose3d[] = [];
       let mechanisms: MechanismState[] = [];
       let visionTargets: AnnotatedPose3d[] = [];
+      let swerveStates: {
+        values: SwerveState[];
+        color: string;
+      }[] = [];
       if (time !== null) {
         children.forEach((child) => {
           switch (child.type) {
             case "component":
-            case "componentLegacy":
+            case "componentLegacy": {
               // Components are always 3D poses so assume number array format
               components = components.concat(
                 grabPosesAuto(window.log, child.logKey, child.logType, time!, this.UUID, "Pose3d")
               );
               break;
+            }
 
-            case "mechanism":
+            case "mechanism": {
               let state = getMechanismState(window.log, child.logKey, time!);
               if (state !== null) {
                 mechanisms.push(state);
               }
               break;
+            }
 
             case "rotationOverride":
-            case "rotationOverrideLegacy":
+            case "rotationOverrideLegacy": {
               let numberArrayUnits: "radians" | "degrees" = "radians";
               if ("units" in child.options) {
                 numberArrayUnits = child.options.units === "degrees" ? "degrees" : "radians";
@@ -326,9 +334,10 @@ export default class ThreeDimensionController implements TabController {
                 });
               }
               break;
+            }
 
             case "vision":
-            case "visionLegacy":
+            case "visionLegacy": {
               let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
               if ("format" in child.options) {
                 let formatRaw = child.options.format;
@@ -354,8 +363,31 @@ export default class ThreeDimensionController implements TabController {
               });
               visionTargets = visionTargets.concat(newVisionTargets);
               break;
+            }
 
-            case "aprilTagIDs":
+            case "swerveStates":
+            case "swerveStatesLegacy": {
+              let numberArrayUnits: "radians" | "degrees" = "radians";
+              if ("units" in child.options) {
+                numberArrayUnits = child.options.units === "degrees" ? "degrees" : "radians";
+              }
+              let states = grabSwerveStates(
+                window.log,
+                child.logKey,
+                child.logType,
+                time!,
+                child.options.arrangement,
+                numberArrayUnits,
+                this.UUID
+              );
+              swerveStates.push({
+                values: states,
+                color: child.options.color
+              });
+              break;
+            }
+
+            case "aprilTagIDs": {
               let values: number[] = getOrDefault(
                 window.log,
                 child.logKey,
@@ -373,10 +405,12 @@ export default class ThreeDimensionController implements TabController {
                 }
               });
               break;
+            }
           }
         });
       }
       let mechanism = mechanisms.length === 0 ? null : mergeMechanismStates(mechanisms);
+      swerveStates.reverse();
 
       // Add object
       switch (source.type) {
@@ -388,7 +422,8 @@ export default class ThreeDimensionController implements TabController {
             poses: poses,
             components: components,
             mechanism: mechanism,
-            visionTargets: visionTargets
+            visionTargets: visionTargets,
+            swerveStates: swerveStates
           });
           break;
         case "ghost":
@@ -401,7 +436,8 @@ export default class ThreeDimensionController implements TabController {
             poses: poses,
             components: components,
             mechanism: mechanism,
-            visionTargets: visionTargets
+            visionTargets: visionTargets,
+            swerveStates: swerveStates
           });
           break;
         case "gamePiece":

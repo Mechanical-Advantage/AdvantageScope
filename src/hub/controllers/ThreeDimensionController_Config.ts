@@ -1,5 +1,6 @@
-import { NeonColors } from "../../shared/Colors";
+import { NeonColors, NeonColors_RedStart } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
+import { SwerveArrangementValues } from "./SwerveController_Config";
 
 const ThreeDimensionController_Config: SourceListConfig = {
   title: "Poses",
@@ -261,6 +262,68 @@ const ThreeDimensionController_Config: SourceListConfig = {
       numberArrayDeprecated: true,
       childOf: "robot",
       previewType: "Translation3d"
+    },
+    {
+      key: "swerveStates",
+      display: "Swerve States",
+      symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: ["SwerveModuleState[]"],
+      showDocs: true,
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_RedStart
+        },
+        {
+          key: "arrangement",
+          display: "Arrangement",
+          showInTypeName: false,
+          values: SwerveArrangementValues
+        }
+      ],
+      initialSelectionOption: "color",
+      childOf: "robot",
+      previewType: "SwerveModuleState[]"
+    },
+    {
+      key: "swerveStatesLegacy",
+      display: "Swerve States",
+      symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
+      showInTypeName: true,
+      color: "color",
+      sourceTypes: ["NumberArray"],
+      showDocs: false,
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors_RedStart
+        },
+        {
+          key: "arrangement",
+          display: "Arrangement",
+          showInTypeName: false,
+          values: SwerveArrangementValues
+        },
+        {
+          key: "units",
+          display: "Rotation Units",
+          showInTypeName: false,
+          values: [
+            { key: "radians", display: "Radians" },
+            { key: "degrees", display: "Degrees" }
+          ]
+        }
+      ],
+      initialSelectionOption: "color",
+      numberArrayDeprecated: true,
+      childOf: "robot",
+      previewType: "SwerveModuleState[]"
     },
     {
       key: "rotationOverride",

@@ -5,6 +5,7 @@ import { rotation3dToQuaternion } from "../ThreeDimensionRendererImpl";
 export default class ResizableInstancedMesh {
   private parent: THREE.Object3D;
   private sources: { geometry: THREE.BufferGeometry; material: THREE.Material | THREE.Material[] }[] = [];
+  private castShadow: boolean[];
 
   private count = 0;
   private dummy = new THREE.Object3D();
@@ -12,12 +13,19 @@ export default class ResizableInstancedMesh {
 
   constructor(
     parent: THREE.Object3D,
-    sources: (THREE.Mesh | { geometry: THREE.BufferGeometry; material: THREE.Material | THREE.Material[] })[]
+    sources: (THREE.Mesh | { geometry: THREE.BufferGeometry; material: THREE.Material | THREE.Material[] })[],
+    castShadow?: boolean[]
   ) {
     this.parent = parent;
-    sources.forEach((source) => {
+    this.castShadow = [];
+    sources.forEach((source, index) => {
       this.sources.push({ geometry: source.geometry, material: source.material });
       this.meshes.push(null);
+      if (castShadow !== undefined && index < castShadow.length) {
+        this.castShadow.push(castShadow[index]);
+      } else {
+        this.castShadow.push(true);
+      }
     });
   }
 
@@ -58,7 +66,7 @@ export default class ResizableInstancedMesh {
         }
 
         this.meshes[i] = new THREE.InstancedMesh(this.sources[i].geometry, this.sources[i].material, this.count);
-        this.meshes[i]!.castShadow = true;
+        this.meshes[i]!.castShadow = this.castShadow[i];
         this.meshes[i]!.frustumCulled = false;
         this.parent.add(this.meshes[i]!);
       });

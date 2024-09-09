@@ -5,8 +5,6 @@ import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
 
 export default class OdometryRenderer implements TabRenderer {
-  private SWERVE_MAX_SPEED = 5;
-
   private CONTAINER: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;

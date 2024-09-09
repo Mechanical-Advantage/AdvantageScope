@@ -3,6 +3,9 @@ import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import WorkerManager from "../../../../hub/WorkerManager";
+import { SwerveState } from "../../../geometry";
+import { convert } from "../../../units";
+import { transformPx } from "../../../util";
 import {
   ThreeDimensionRendererCommand_GhostObj,
   ThreeDimensionRendererCommand_RobotObj
@@ -18,10 +21,15 @@ import ResizableInstancedMesh from "../ResizableInstancedMesh";
 export default class RobotManager extends ObjectManager<
   ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj
 > {
+  private SWERVE_CANVAS_PX = 2000;
+  private SWERVE_CANVAS_METERS = 4;
+  private SWERVE_BUMPER_OFFSET = 0.15;
+
   private loadingStart: () => void;
   private loadingEnd: () => void;
 
   private meshes: ResizableInstancedMesh[] = [];
+  private dimensions: [number, number, number, number] = [0, 0, 0, 0]; // Distance to each side
   private ghostMaterial = new THREE.MeshPhongMaterial({
     transparent: true,
     opacity: 0.35,
@@ -36,6 +44,10 @@ export default class RobotManager extends ObjectManager<
     translation: THREE.Vector3;
     material: THREE.MeshPhongMaterial;
   }[] = [];
+
+  private swerveContainer = document.createElement("div");
+  private swerveCanvas = document.createElement("canvas");
+  private swerveTexture = new THREE.CanvasTexture(this.swerveCanvas);
 
   private loadingCounter = 0;
   private shouldLoadNewModel = false;
@@ -59,6 +71,14 @@ export default class RobotManager extends ObjectManager<
     super(root, materialSpecular, materialShininess, mode, requestRender);
     this.loadingStart = loadingStart;
     this.loadingEnd = loadingEnd;
+
+    this.swerveContainer.hidden = true;
+    this.swerveContainer.appendChild(this.swerveCanvas);
+    this.swerveContainer.style.width = this.SWERVE_CANVAS_PX.toString() + "px";
+    this.swerveContainer.style.height = this.SWERVE_CANVAS_PX.toString() + "px";
+    this.swerveCanvas.width = this.SWERVE_CANVAS_PX;
+    this.swerveCanvas.height = this.SWERVE_CANVAS_PX;
+    document.body.appendChild(this.swerveContainer);
   }
 
   dispose(): void {
@@ -74,6 +94,7 @@ export default class RobotManager extends ObjectManager<
       this.root.remove(this.visionLines[0]);
       this.visionLines.shift();
     }
+    this.swerveTexture.dispose();
   }
 
   setResolution(resolution: THREE.Vector2) {
@@ -120,18 +141,50 @@ export default class RobotManager extends ObjectManager<
 
           const loader = new THREE.ObjectLoader();
           this.meshes = [];
+          this.dimensions = [0, 0, 0, 0];
 
-          result.forEach((sceneMeshJSONs) => {
+          result.forEach((sceneMeshJSONs, index) => {
+            // Load meshes
             let sceneMeshes: THREE.Mesh[] = sceneMeshJSONs.map((json) => loader.parse(json) as THREE.Mesh);
-            if (object.type === "ghost") {
-              sceneMeshes.forEach((mesh) => {
+            sceneMeshes.forEach((mesh) => {
+              if (index === 0) {
+                mesh.geometry.computeBoundingBox();
+                let box = mesh.geometry.boundingBox;
+                if (box !== null) {
+                  this.dimensions[0] = Math.max(this.dimensions[0], box.max.x);
+                  this.dimensions[1] = Math.max(this.dimensions[1], box.max.y);
+                  this.dimensions[2] = Math.max(this.dimensions[2], -box.min.x);
+                  this.dimensions[3] = Math.max(this.dimensions[3], -box.min.y);
+                }
+              }
+
+              if (object.type === "ghost") {
                 if (!Array.isArray(mesh.material)) {
                   mesh.material.dispose();
                 }
                 mesh.material = this.ghostMaterial;
-              });
+              }
+            });
+
+            // Add swerve mesh
+            if (index === 0) {
+              let swerveMesh = new THREE.Mesh(
+                new THREE.PlaneGeometry(this.SWERVE_CANVAS_METERS, this.SWERVE_CANVAS_METERS).translate(0, 0, 0.1),
+                new THREE.MeshPhongMaterial({
+                  map: this.swerveTexture,
+                  transparent: true,
+                  side: THREE.DoubleSide
+                })
+              );
+              swerveMesh.renderOrder = 999;
+              swerveMesh.material.depthTest = false;
+              swerveMesh.material.transparent = true;
+              sceneMeshes.push(swerveMesh);
             }
-            this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes));
+
+            let castShadow = new Array(sceneMeshes.length).fill(true);
+            castShadow[castShadow.length - 1] = false;
+            this.meshes.push(new ResizableInstancedMesh(this.root, sceneMeshes, castShadow));
           });
 
           this.requestRender();
@@ -310,5 +363,68 @@ export default class RobotManager extends ObjectManager<
         );
       }
     }
+
+    // Update swerve canvas
+    let context = this.swerveCanvas.getContext("2d")!;
+    context.clearRect(0, 0, this.SWERVE_CANVAS_PX, this.SWERVE_CANVAS_PX);
+    const pxPerMeter = this.SWERVE_CANVAS_PX / this.SWERVE_CANVAS_METERS;
+    const moduleX = (Math.min(this.dimensions[0], this.dimensions[2]) - this.SWERVE_BUMPER_OFFSET) * pxPerMeter;
+    const moduleY = (Math.min(this.dimensions[1], this.dimensions[3]) - this.SWERVE_BUMPER_OFFSET) * pxPerMeter;
+    const centerPx = [this.SWERVE_CANVAS_PX / 2, this.SWERVE_CANVAS_PX / 2];
+    (
+      [
+        [1, 1],
+        [1, -1],
+        [-1, 1],
+        [-1, -1]
+      ] as const
+    ).forEach((cornerMultipliers, index) => {
+      let moduleCenterPx = [
+        centerPx[0] + moduleX * cornerMultipliers[0],
+        centerPx[1] - moduleY * cornerMultipliers[1]
+      ] as [number, number];
+
+      // Draw module data
+      let drawModuleData = (state: SwerveState, color: string) => {
+        context.lineWidth = 0.03 * pxPerMeter;
+        context.strokeStyle = color;
+        context.lineCap = "round";
+        context.lineJoin = "round";
+
+        // Draw speed
+        if (Math.abs(state.speed) <= 0.001) return;
+        let vectorSpeed = state.speed / 5;
+        let vectorRotation = state.angle;
+        if (state.speed < 0) {
+          vectorSpeed *= -1;
+          vectorRotation += Math.PI;
+        }
+        if (vectorSpeed < 0.05) return;
+        let vectorLength = pxPerMeter * convert(36, "inches", "meters") * vectorSpeed;
+        let arrowBack = transformPx(moduleCenterPx, vectorRotation, [0, 0]);
+        let arrowFront = transformPx(moduleCenterPx, vectorRotation, [vectorLength, 0]);
+        let arrowLeft = transformPx(moduleCenterPx, vectorRotation, [
+          vectorLength - pxPerMeter * 0.1,
+          pxPerMeter * 0.1
+        ]);
+        let arrowRight = transformPx(moduleCenterPx, vectorRotation, [
+          vectorLength - pxPerMeter * 0.1,
+          pxPerMeter * -0.1
+        ]);
+        context.beginPath();
+        context.moveTo(...arrowBack);
+        context.lineTo(...arrowFront);
+        context.moveTo(...arrowLeft);
+        context.lineTo(...arrowFront);
+        context.lineTo(...arrowRight);
+        context.stroke();
+      };
+      object.swerveStates.forEach((set) => {
+        if (index < set.values.length) {
+          drawModuleData(set.values[index], set.color);
+        }
+      });
+    });
+    this.swerveTexture.needsUpdate = true;
   }
 }

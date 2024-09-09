@@ -1,4 +1,4 @@
-import { AnnotatedPose3d } from "../geometry";
+import { AnnotatedPose3d, SwerveState } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import TabRenderer from "./TabRenderer";
 import ThreeDimensionRendererImpl from "./ThreeDimensionRendererImpl";
@@ -128,6 +128,10 @@ export type ThreeDimensionRendererCommand_GenericRobotObj = {
   components: AnnotatedPose3d[];
   mechanism: MechanismState | null;
   visionTargets: AnnotatedPose3d[];
+  swerveStates: {
+    values: SwerveState[];
+    color: string;
+  }[];
 };
 
 export type ThreeDimensionRendererCommand_RobotObj = ThreeDimensionRendererCommand_GenericRobotObj & {
