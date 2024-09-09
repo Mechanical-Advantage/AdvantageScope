@@ -63,6 +63,8 @@ import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
 
+app.commandLine.appendSwitch('--no-sandbox')
+
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
 let downloadWindow: BrowserWindow | null = null;
