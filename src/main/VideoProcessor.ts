@@ -77,7 +77,8 @@ export class VideoProcessor {
     for (let i = 0; i < this.NUM_TESSERACT_WORKERS; i++) {
       createWorker("eng", undefined, {
         langPath: langPath,
-        cacheMethod: "readOnly"
+        cacheMethod: "readOnly",
+        gzip: true
       }).then((worker) => {
         this.tesseractScheduler.addWorker(worker);
       });

@@ -4,7 +4,7 @@
 /ffmpeg
 /src/licenses.json
 /ThirdPartyLicenses.txt
-/eng.traineddata
+/eng.traineddata.gz
 
 ### Linux ###
 *~
