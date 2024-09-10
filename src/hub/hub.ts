@@ -51,8 +51,14 @@ declare global {
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
+
+    // Provided by preload script
+    electron: {
+      getFilePath(file: File): string;
+    };
   }
 }
+
 window.log = new Log();
 window.preferences = null;
 window.assets = null;
@@ -395,7 +401,7 @@ document.addEventListener("drop", (event) => {
   if (event.dataTransfer) {
     let files: string[] = [];
     for (const file of event.dataTransfer.files) {
-      files.push(file.path);
+      files.push(window.electron.getFilePath(file));
     }
     if (files.length > 0) {
       startHistorical(files);
