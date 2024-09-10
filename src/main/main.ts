@@ -2925,6 +2925,9 @@ function getDefaultLogPath(): string | undefined {
 // "unsafe-eval" is required in the hub for protobufjs
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
+// Silence unhandled promise rejections
+process.on("unhandledRejection", () => {});
+
 app.whenReady().then(() => {
   // Check preferences and set theme
   if (!fs.existsSync(PREFS_FILENAME)) {
