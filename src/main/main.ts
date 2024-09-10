@@ -2157,6 +2157,9 @@ function createHubWindow(state?: WindowState) {
   // Create window
   let window = new BrowserWindow(prefs);
   hubWindows.push(window);
+  if (process.platform === "linux") {
+    window.setMenuBarVisibility(false);
+  }
 
   // Add touch bar menu
   let resetTouchBar = () => {

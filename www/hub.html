@@ -22,16 +22,16 @@
   <body>
     <div class="title-bar" hidden>
       <div class="title-bar-text">AdvantageScope</div>
-      <div class="title-bar-menu">
-        <table>
-          <td><button>File</button></td>
-          <td><button>Edit</button></td>
-          <td><button>View</button></td>
-          <td><button>Tabs</button></td>
-          <td><button>Window</button></td>
-          <td><button>Help</button></td>
-        </table>
-      </div>
+    </div>
+    <div class="title-bar-menu">
+      <table>
+        <td><button>File</button></td>
+        <td><button>Edit</button></td>
+        <td><button>View</button></td>
+        <td><button>Tabs</button></td>
+        <td><button>Window</button></td>
+        <td><button>Help</button></td>
+      </table>
     </div>
 
     <button class="tab-control update" tabindex="-1" hidden>
@@ -70,365 +70,119 @@
 
     <div class="search-results" hidden></div>
 
-    <div class="main-view">
-      <div class="side-bar">
-        <div class="side-bar-title">No data available</div>
+    <div class="side-bar">
+      <div class="side-bar-title">No data available</div>
 
-        <div class="side-bar-search-container">
-          <input class="side-bar-search" type="search" placeholder="Search" />
-          <img class="side-bar-search-icon" src="symbols/magnifyingglass.svg" />
-          <button class="side-bar-tuning-button" tabindex="-1" hidden>
-            <img src="symbols/slider.horizontal.3.svg" />
-          </button>
-        </div>
-
-        <span id="fieldItemIconTemplates" hidden>
-          <svg class="field-item-icon" height="12" width="12">
-            <polygon points="1,0 1,12 11,6"></polygon>
-          </svg>
-          <svg class="field-item-icon" height="12" width="12">
-            <polygon points="12,1 0,1 6,11"></polygon>
-          </svg>
-          <svg class="field-item-icon" height="12" width="12">
-            <rect x="1" y="5" width="10" height="2"></rect>
-          </svg>
-        </span>
-
-        <span id="fieldList"></span>
+      <div class="side-bar-search-container">
+        <input class="side-bar-search" type="search" placeholder="Search" />
+        <img class="side-bar-search-icon" src="symbols/magnifyingglass.svg" />
+        <button class="side-bar-tuning-button" tabindex="-1" hidden>
+          <img src="symbols/slider.horizontal.3.svg" />
+        </button>
       </div>
 
-      <div class="viewer">
-        <div class="tab-bar"></div>
-        <div class="tab-bar-shadow-left"></div>
-        <div class="tab-bar-shadow-right"></div>
-        <div class="tab-bar-drag-highlight" hidden></div>
-        <div class="tab-bar-scroll">
-          <div class="tab-bar-scroll-content"></div>
-        </div>
+      <span id="fieldItemIconTemplates" hidden>
+        <svg class="field-item-icon" height="12" width="12">
+          <polygon points="1,0 1,12 11,6"></polygon>
+        </svg>
+        <svg class="field-item-icon" height="12" width="12">
+          <polygon points="12,1 0,1 6,11"></polygon>
+        </svg>
+        <svg class="field-item-icon" height="12" width="12">
+          <rect x="1" y="5" width="10" height="2"></rect>
+        </svg>
+      </span>
 
-        <div class="timeline">
-          <canvas class="timeline-canvas"></canvas>
-          <div class="timeline-scroll">
-            <div class="timeline-scroll-content"></div>
-          </div>
-        </div>
+      <span id="fieldList"></span>
+    </div>
 
-        <div class="renderer-content"></div>
-        <div class="controls-content"></div>
-        <div class="controls-handle"></div>
+    <div class="viewer">
+      <div class="tab-bar"></div>
+      <div class="tab-bar-shadow-left"></div>
+      <div class="tab-bar-shadow-right"></div>
+      <div class="tab-bar-drag-highlight" hidden></div>
+      <div class="tab-bar-scroll">
+        <div class="tab-bar-scroll-content"></div>
       </div>
 
-      <div class="fps"></div>
-
-      <span id="controllerTemplates" hidden>
-        <!-- Documentation -->
-        <div id="controller0"></div>
-
-        <!-- Line Graph -->
-        <div id="controller1">
-          <div class="line-graph-axis line-graph-left"></div>
-          <div class="line-graph-axis line-graph-right"></div>
-          <div class="line-graph-axis line-graph-discrete"></div>
+      <div class="timeline">
+        <canvas class="timeline-canvas"></canvas>
+        <div class="timeline-scroll">
+          <div class="timeline-scroll-content"></div>
         </div>
+      </div>
 
-        <!-- Odometry -->
-        <div id="controller2">
-          <div class="odometry-sources"></div>
-          <div class="odometry-settings setting-blocks fix-first">
-            <div class="title">
-              <div class="full">Game</div>
-            </div>
-            <div class="game input">
-              <div>
-                <select class="game-select" tabindex="-1"></select>
-                <a class="game-source" href="#" tabindex="-1">Source</a>
-              </div>
-            </div>
+      <div class="renderer-content"></div>
+      <div class="controls-content"></div>
+      <div class="controls-handle"></div>
+    </div>
 
-            <div class="title">
-              <div class="half">Bumpers</div>
-              <div class="half">Origin</div>
+    <div class="fps"></div>
+
+    <span id="controllerTemplates" hidden>
+      <!-- Documentation -->
+      <div id="controller0"></div>
+
+      <!-- Line Graph -->
+      <div id="controller1">
+        <div class="line-graph-axis line-graph-left"></div>
+        <div class="line-graph-axis line-graph-right"></div>
+        <div class="line-graph-axis line-graph-discrete"></div>
+      </div>
+
+      <!-- Odometry -->
+      <div id="controller2">
+        <div class="odometry-sources"></div>
+        <div class="odometry-settings setting-blocks fix-first">
+          <div class="title">
+            <div class="full">Game</div>
+          </div>
+          <div class="game input">
+            <div>
+              <select class="game-select" tabindex="-1"></select>
+              <a class="game-source" href="#" tabindex="-1">Source</a>
             </div>
-            <div class="alliance input">
-              <div class="half">
-                <div class="bumper-switcher split split-3">
-                  <div title="Auto">
-                    <img class="invertable" src="symbols/switch.2.svg" />
-                  </div>
-                  <div title="Blue">
-                    <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
-                  </div>
-                  <div title="Red">
-                    <img src="symbols/r.circle.fill.red.svg" />
-                  </div>
+          </div>
+
+          <div class="title">
+            <div class="half">Bumpers</div>
+            <div class="half">Origin</div>
+          </div>
+          <div class="alliance input">
+            <div class="half">
+              <div class="bumper-switcher split split-3">
+                <div title="Auto">
+                  <img class="invertable" src="symbols/switch.2.svg" />
+                </div>
+                <div title="Blue">
+                  <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
+                </div>
+                <div title="Red">
+                  <img src="symbols/r.circle.fill.red.svg" />
                 </div>
               </div>
-              <div class="half">
-                <div class="origin-switcher split split-3">
-                  <div title="Auto">
-                    <img class="invertable" src="symbols/switch.2.svg" />
-                  </div>
-                  <div title="Blue">
-                    <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
-                  </div>
-                  <div title="Red">
-                    <img src="symbols/r.circle.fill.red.svg" />
-                  </div>
-                </div>
-              </div>
             </div>
-
-            <div class="title">
-              <div class="half">Orientation</div>
-              <div class="half">Size</div>
-            </div>
-            <div class="orientation input">
-              <div class="half">
-                <div class="orientation-switcher split split-2">
-                  <div>
-                    <img class="invertable" src="symbols/rotate.right.svg" />
-                  </div>
-                  <div>
-                    <img class="invertable" src="symbols/rotate.left.svg" />
-                  </div>
+            <div class="half">
+              <div class="origin-switcher split split-3">
+                <div title="Auto">
+                  <img class="invertable" src="symbols/switch.2.svg" />
                 </div>
-              </div>
-              <div class="half">
-                <div class="size-switcher split split-3">
-                  <div>
-                    <img class="invertable" src="symbols/30.square.fill.svg" />
-                  </div>
-                  <div>
-                    <img class="invertable" src="symbols/27.square.fill.svg" />
-                  </div>
-                  <div>
-                    <img class="invertable" src="symbols/24.square.fill.svg" />
-                  </div>
+                <div title="Blue">
+                  <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
+                </div>
+                <div title="Red">
+                  <img src="symbols/r.circle.fill.red.svg" />
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- 3D Field -->
-        <div id="controller3">
-          <div class="three-dimension-sources"></div>
-          <div class="three-dimension-settings setting-blocks fix-first">
-            <div class="title">
-              <div class="full">Game</div>
-            </div>
-            <div class="game input">
-              <div>
-                <select class="game-select" tabindex="-1"></select>
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="percent-70">Origin</div>
-              <div class="percent-30">XR</div>
-            </div>
-            <div class="alliance input tall">
-              <div class="percent-70">
-                <div class="origin-switcher split split-3">
-                  <div title="Auto">
-                    <img class="invertable" src="symbols/switch.2.svg" />
-                  </div>
-                  <div title="Blue">
-                    <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
-                  </div>
-                  <div title="Red">
-                    <img src="symbols/r.circle.fill.red.svg" />
-                  </div>
-                </div>
-              </div>
-              <div class="percent-30">
-                <div class="bumper-switcher split split-1">
-                  <div class="xr-button">
-                    <img src="symbols/sparkles.square.filled.on.square.purple.svg" />
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div class="title">
+            <div class="half">Orientation</div>
+            <div class="half">Size</div>
           </div>
-        </div>
-
-        <!-- Table -->
-        <div id="controller4"></div>
-
-        <!-- Console -->
-        <div id="controller5"></div>
-
-        <!-- Statistics -->
-        <div id="controller6">
-          <div class="stats-sources"></div>
-          <div class="stats-settings setting-blocks fix-second">
-            <div class="title">
-              <div class="full">Time Range</div>
-            </div>
-            <div class="input">
-              <div>
-                <select class="time-range">
-                  <option value="visible">Visible Range</option>
-                  <option value="full">Full Log</option>
-                  <option value="enabled">Enabled</option>
-                  <option value="auto">Auto</option>
-                  <option value="teleop">Teleop</option>
-                  <option class="live-only" value="live-30">Live: 30 Seconds</option>
-                  <option class="live-only" value="live-10">Live: 10 Seconds</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="full">Data Range</div>
-            </div>
-            <div class="input">
-              <div class="half">
-                <input class="range-min" type="number" />
-              </div>
-              <div class="half">
-                <input class="range-max" type="number" />
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="full">Step Size</div>
-            </div>
-            <div class="input">
-              <div>
-                <input class="step-size" type="number" />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Video -->
-        <div id="controller7">
-          <div class="video-source">
-            <button tabindex="-1">
-              <img src="symbols/doc.fill.svg" />
-            </button>
-            <button tabindex="-1">
-              <img src="symbols/list.clipboard.fill.svg" />
-              <svg><path /></svg>
-            </button>
-            <button tabindex="-1">
-              <img src="symbols/tba_lamp.svg" />
-              <svg><path /></svg>
-            </button>
-          </div>
-          <div class="video-synchronization">
-            <div class="video-timeline-section">
-              <button tabindex="-1">
-                <img src="symbols/lock.open.svg" />
-              </button>
-              <button tabindex="-1" hidden>
-                <img src="symbols/lock.svg" />
-              </button>
-              <div class="video-timeline-container">
-                <input
-                  class="video-timeline-slider"
-                  id="timeline"
-                  type="range"
-                  value="0"
-                  min="1"
-                  max="1"
-                  step="1"
-                  tabindex="-1"
-                />
-                <div class="video-timeline-marker-container">
-                  <div></div>
-                </div>
-              </div>
-            </div>
-            <div class="video-timeline-controls">
-              <button tabindex="-1">
-                <img src="symbols/gobackward.5.svg" />
-              </button>
-              <button tabindex="-1">
-                <img src="symbols/backward.frame.svg" />
-              </button>
-              <button tabindex="-1">
-                <img src="symbols/play.fill.svg" />
-              </button>
-              <button tabindex="-1" hidden>
-                <img src="symbols/pause.svg" />
-              </button>
-              <button tabindex="-1">
-                <img src="symbols/forward.frame.svg" />
-              </button>
-              <button tabindex="-1">
-                <img src="symbols/goforward.5.svg" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Joysticks -->
-        <div id="controller8">
-          <table class="joystick-selector">
-            <tbody>
-              <tr>
-                <td>
-                  0:
-                  <select tabindex="-1"></select>
-                </td>
-                <td>
-                  1:
-                  <select tabindex="-1"></select>
-                </td>
-                <td>
-                  2:
-                  <select tabindex="-1"></select>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  3:
-                  <select tabindex="-1"></select>
-                </td>
-                <td>
-                  4:
-                  <select tabindex="-1"></select>
-                </td>
-                <td>
-                  5:
-                  <select tabindex="-1"></select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Swerve -->
-        <div id="controller9">
-          <div class="swerve-sources"></div>
-          <div class="swerve-settings setting-blocks fix-second">
-            <div class="title">
-              <div class="full">Max Speed (m/s)</div>
-            </div>
-            <div class="input">
-              <div>
-                <input class="max-speed" type="number" value="5" />
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="full">Frame Size (m)</div>
-            </div>
-            <div class="input">
-              <div class="half">
-                <input class="size-x" type="number" value="0.65" step="0.01" />
-              </div>
-              <div class="half">
-                <input class="size-y" type="number" value="0.65" step="0.01" />
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="full">Orientation</div>
-            </div>
-            <div class="input">
+          <div class="orientation input">
+            <div class="half">
               <div class="orientation-switcher split split-2">
                 <div>
                   <img class="invertable" src="symbols/rotate.right.svg" />
@@ -438,264 +192,508 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        <!-- Mechanism -->
-        <div id="controller10">
-          <div class="mechanism-sources"></div>
-        </div>
-
-        <!-- Points -->
-        <div id="controller11">
-          <div class="points-sources"></div>
-          <div class="points-settings setting-blocks fix-second">
-            <div class="title">
-              <div class="full">Dimensions</div>
-            </div>
-            <div class="input">
-              <div class="half">
-                <input class="dimensions-width" type="number" value="960" step="1" />
-              </div>
-              <div class="half">
-                <input class="dimensions-height" type="number" value="720" step="1" />
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="full">Orientation</div>
-            </div>
-            <div class="input">
-              <div>
-                <select class="orientation">
-                  <option value="xr,yd">+X right, +Y down</option>
-                  <option value="xr,yu">+X right, +Y up</option>
-                  <option value="xu,yl">+X up, +Y left</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="title">
-              <div class="full">Origin</div>
-            </div>
-            <div class="input">
-              <div>
-                <select class="origin">
-                  <option value="ul">upper left</option>
-                  <option value="ur">upper right</option>
-                  <option value="ll">lower left</option>
-                  <option value="lr">lower right</option>
-                  <option value="c">center</option>
-                </select>
+            <div class="half">
+              <div class="size-switcher split split-3">
+                <div>
+                  <img class="invertable" src="symbols/30.square.fill.svg" />
+                </div>
+                <div>
+                  <img class="invertable" src="symbols/27.square.fill.svg" />
+                </div>
+                <div>
+                  <img class="invertable" src="symbols/24.square.fill.svg" />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Metadata -->
-        <div id="controller12"></div>
-      </span>
-
-      <span id="rendererTemplates" hidden>
-        <!-- Documentation -->
-        <div id="renderer0">
-          <div class="documentation-container">
-            <div class="documentation-text"></div>
+      <!-- 3D Field -->
+      <div id="controller3">
+        <div class="three-dimension-sources"></div>
+        <div class="three-dimension-settings setting-blocks fix-first">
+          <div class="title">
+            <div class="full">Game</div>
           </div>
-        </div>
-
-        <!-- Line Graph -->
-        <div id="renderer1">
-          <canvas class="line-graph-canvas"></canvas>
-          <div class="line-graph-scroll">
-            <div class="line-graph-scroll-content"></div>
+          <div class="game input">
+            <div>
+              <select class="game-select" tabindex="-1"></select>
+            </div>
           </div>
-        </div>
 
-        <!-- Odometry -->
-        <div id="renderer2">
-          <div class="odometry-canvas-container">
-            <canvas class="odometry-canvas"></canvas>
+          <div class="title">
+            <div class="percent-70">Origin</div>
+            <div class="percent-30">XR</div>
           </div>
-          <div class="odometry-heatmap-container" hidden></div>
-        </div>
-
-        <!-- 3D Field -->
-        <div id="renderer3">
-          <div class="three-dimension-canvas-container">
-            <canvas class="three-dimension-canvas"></canvas>
-            <div class="three-dimension-annotations"></div>
-            <div class="three-dimension-alert" hidden></div>
-          </div>
-          <div class="spinner-cubes-container hidden">
-            <div class="spinner-cubes">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+          <div class="alliance input tall">
+            <div class="percent-70">
+              <div class="origin-switcher split split-3">
+                <div title="Auto">
+                  <img class="invertable" src="symbols/switch.2.svg" />
+                </div>
+                <div title="Blue">
+                  <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
+                </div>
+                <div title="Red">
+                  <img src="symbols/r.circle.fill.red.svg" />
+                </div>
+              </div>
+            </div>
+            <div class="percent-30">
+              <div class="bumper-switcher split split-1">
+                <div class="xr-button">
+                  <img src="symbols/sparkles.square.filled.on.square.purple.svg" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Table -->
-        <div id="renderer4">
-          <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+      <!-- Table -->
+      <div id="controller4"></div>
 
-          <span class="data-table-header-template" hidden>
-            <div class="data-table-key-container">
-              <span></span>
+      <!-- Console -->
+      <div id="controller5"></div>
+
+      <!-- Statistics -->
+      <div id="controller6">
+        <div class="stats-sources"></div>
+        <div class="stats-settings setting-blocks fix-second">
+          <div class="title">
+            <div class="full">Time Range</div>
+          </div>
+          <div class="input">
+            <div>
+              <select class="time-range">
+                <option value="visible">Visible Range</option>
+                <option value="full">Full Log</option>
+                <option value="enabled">Enabled</option>
+                <option value="auto">Auto</option>
+                <option value="teleop">Teleop</option>
+                <option class="live-only" value="live-30">Live: 30 Seconds</option>
+                <option class="live-only" value="live-10">Live: 10 Seconds</option>
+              </select>
             </div>
-            <button class="data-table-key-delete" tabindex="-1">
-              <img src="symbols/xmark.svg" />
-            </button>
-          </span>
-
-          <div class="data-table-container">
-            <table class="data-table">
-              <tbody>
-                <tr>
-                  <th>
-                    <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                    <button class="data-table-jump-button" tabindex="-1">
-                      <img src="symbols/arrow.down.to.line.svg" />
-                    </button>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="data-table-drag-highlight" hidden></div>
-        </div>
-
-        <!-- Console -->
-        <div id="renderer5">
-          <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
-
-          <div class="console-table-drag-highlight" hidden></div>
-          <div class="console-table-container">
-            <table class="console-table">
-              <tbody>
-                <tr>
-                  <th>
-                    <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                    <button class="console-table-jump-button" tabindex="-1">
-                      <img src="symbols/arrow.down.to.line.svg" />
-                    </button>
-                  </th>
-                  <th>
-                    <div>
-                      <span>Hello</span>
-                      <button class="console-table-key-delete" tabindex="-1">
-                        <img src="symbols/xmark.svg" />
-                      </button>
-                    </div>
-                    <input type="search" placeholder="Filter" />
-                  </th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Statistics -->
-        <div id="renderer6">
-          <div class="stats-values-container">
-            <table class="stats-values">
-              <tbody></tbody>
-            </table>
           </div>
 
-          <div class="stats-histogram-container">
-            <canvas width="100" height="100"></canvas>
+          <div class="title">
+            <div class="full">Data Range</div>
+          </div>
+          <div class="input">
+            <div class="half">
+              <input class="range-min" type="number" />
+            </div>
+            <div class="half">
+              <input class="range-max" type="number" />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Step Size</div>
+          </div>
+          <div class="input">
+            <div>
+              <input class="step-size" type="number" />
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Video -->
-        <div id="renderer7">
-          <div class="video-container">
-            <img />
-          </div>
-        </div>
-
-        <!-- Joysticks -->
-        <div id="renderer8">
-          <canvas class="joysticks-canvas"></canvas>
-        </div>
-
-        <!-- Swerve -->
-        <div id="renderer9">
-          <div class="swerve-canvas-container">
-            <canvas class="swerve-canvas" width="100" height="100"></canvas>
-          </div>
-        </div>
-
-        <!-- Mechanism -->
-        <div id="renderer10">
-          <div class="mechanism-svg-container">
-            <svg class="mechanism-svg"></svg>
-          </div>
-        </div>
-
-        <!-- Points -->
-        <div id="renderer11">
-          <div class="points-background-container">
-            <div class="points-background"></div>
-            <span hidden>
-              <svg height="20" width="20">
-                <line x1="10" y1="0" x2="10" y2="20"></line>
-                <line x1="0" y1="10" x2="20" y2="10"></line>
-              </svg>
-              <svg height="20" width="20">
-                <line x1="2" y1="2" x2="18" y2="18"></line>
-                <line x1="18" y1="2" x2="2" y2="18"></line>
-              </svg>
-              <svg height="20" width="20">
-                <circle cx="10" cy="10" r="7"></circle>
-              </svg>
-            </span>
-          </div>
-        </div>
-
-        <!-- Metadata -->
-        <div id="renderer12">
-          <div class="tab-centered">No metadata found. Check the documentation for details on metadata publishing.</div>
-          <div class="metadata-table-container" hidden>
-            <table class="metadata-table">
-              <tbody>
-                <tr>
-                  <th></th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </span>
-
-      <span id="sourceListItemTemplate" hidden>
-        <div class="item">
-          <button class="type" tabindex="-1">
-            <object data="" type="image/svg+xml"></object>
-            <object data="" type="image/svg+xml" class="hidden"></object>
+      <!-- Video -->
+      <div id="controller7">
+        <div class="video-source">
+          <button tabindex="-1">
+            <img src="symbols/doc.fill.svg" />
           </button>
-          <div class="type-name"></div>
-          <div class="key-container">
+          <button tabindex="-1">
+            <img src="symbols/list.clipboard.fill.svg" />
+            <svg><path /></svg>
+          </button>
+          <button tabindex="-1">
+            <img src="symbols/tba_lamp.svg" />
+            <svg><path /></svg>
+          </button>
+        </div>
+        <div class="video-synchronization">
+          <div class="video-timeline-section">
+            <button tabindex="-1">
+              <img src="symbols/lock.open.svg" />
+            </button>
+            <button tabindex="-1" hidden>
+              <img src="symbols/lock.svg" />
+            </button>
+            <div class="video-timeline-container">
+              <input
+                class="video-timeline-slider"
+                id="timeline"
+                type="range"
+                value="0"
+                min="1"
+                max="1"
+                step="1"
+                tabindex="-1"
+              />
+              <div class="video-timeline-marker-container">
+                <div></div>
+              </div>
+            </div>
+          </div>
+          <div class="video-timeline-controls">
+            <button tabindex="-1">
+              <img src="symbols/gobackward.5.svg" />
+            </button>
+            <button tabindex="-1">
+              <img src="symbols/backward.frame.svg" />
+            </button>
+            <button tabindex="-1">
+              <img src="symbols/play.fill.svg" />
+            </button>
+            <button tabindex="-1" hidden>
+              <img src="symbols/pause.svg" />
+            </button>
+            <button tabindex="-1">
+              <img src="symbols/forward.frame.svg" />
+            </button>
+            <button tabindex="-1">
+              <img src="symbols/goforward.5.svg" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Joysticks -->
+      <div id="controller8">
+        <table class="joystick-selector">
+          <tbody>
+            <tr>
+              <td>
+                0:
+                <select tabindex="-1"></select>
+              </td>
+              <td>
+                1:
+                <select tabindex="-1"></select>
+              </td>
+              <td>
+                2:
+                <select tabindex="-1"></select>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                3:
+                <select tabindex="-1"></select>
+              </td>
+              <td>
+                4:
+                <select tabindex="-1"></select>
+              </td>
+              <td>
+                5:
+                <select tabindex="-1"></select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Swerve -->
+      <div id="controller9">
+        <div class="swerve-sources"></div>
+        <div class="swerve-settings setting-blocks fix-second">
+          <div class="title">
+            <div class="full">Max Speed (m/s)</div>
+          </div>
+          <div class="input">
+            <div>
+              <input class="max-speed" type="number" value="5" />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Frame Size (m)</div>
+          </div>
+          <div class="input">
+            <div class="half">
+              <input class="size-x" type="number" value="0.65" step="0.01" />
+            </div>
+            <div class="half">
+              <input class="size-y" type="number" value="0.65" step="0.01" />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Orientation</div>
+          </div>
+          <div class="input">
+            <div class="orientation-switcher split split-2">
+              <div>
+                <img class="invertable" src="symbols/rotate.right.svg" />
+              </div>
+              <div>
+                <img class="invertable" src="symbols/rotate.left.svg" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mechanism -->
+      <div id="controller10">
+        <div class="mechanism-sources"></div>
+      </div>
+
+      <!-- Points -->
+      <div id="controller11">
+        <div class="points-sources"></div>
+        <div class="points-settings setting-blocks fix-second">
+          <div class="title">
+            <div class="full">Dimensions</div>
+          </div>
+          <div class="input">
+            <div class="half">
+              <input class="dimensions-width" type="number" value="960" step="1" />
+            </div>
+            <div class="half">
+              <input class="dimensions-height" type="number" value="720" step="1" />
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Orientation</div>
+          </div>
+          <div class="input">
+            <div>
+              <select class="orientation">
+                <option value="xr,yd">+X right, +Y down</option>
+                <option value="xr,yu">+X right, +Y up</option>
+                <option value="xu,yl">+X up, +Y left</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="title">
+            <div class="full">Origin</div>
+          </div>
+          <div class="input">
+            <div>
+              <select class="origin">
+                <option value="ul">upper left</option>
+                <option value="ur">upper right</option>
+                <option value="ll">lower left</option>
+                <option value="lr">lower right</option>
+                <option value="c">center</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      <div id="controller12"></div>
+    </span>
+
+    <span id="rendererTemplates" hidden>
+      <!-- Documentation -->
+      <div id="renderer0">
+        <div class="documentation-container">
+          <div class="documentation-text"></div>
+        </div>
+      </div>
+
+      <!-- Line Graph -->
+      <div id="renderer1">
+        <canvas class="line-graph-canvas"></canvas>
+        <div class="line-graph-scroll">
+          <div class="line-graph-scroll-content"></div>
+        </div>
+      </div>
+
+      <!-- Odometry -->
+      <div id="renderer2">
+        <div class="odometry-canvas-container">
+          <canvas class="odometry-canvas"></canvas>
+        </div>
+        <div class="odometry-heatmap-container" hidden></div>
+      </div>
+
+      <!-- 3D Field -->
+      <div id="renderer3">
+        <div class="three-dimension-canvas-container">
+          <canvas class="three-dimension-canvas"></canvas>
+          <div class="three-dimension-annotations"></div>
+          <div class="three-dimension-alert" hidden></div>
+        </div>
+        <div class="spinner-cubes-container hidden">
+          <div class="spinner-cubes">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div id="renderer4">
+        <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+
+        <span class="data-table-header-template" hidden>
+          <div class="data-table-key-container">
             <span></span>
           </div>
-          <button class="warning" tabindex="-1" hidden>
-            <img src="symbols/exclamationmark.triangle.fill.svg" />
-          </button>
-          <button class="hide" tabindex="-1">
-            <img src="symbols/eye.slash.svg" />
-          </button>
-          <button class="remove" tabindex="-1">
+          <button class="data-table-key-delete" tabindex="-1">
             <img src="symbols/xmark.svg" />
           </button>
-          <img class="value-symbol" src="symbols/arrow.turn.down.right.svg" hidden />
-          <div class="value" hidden></div>
+        </span>
+
+        <div class="data-table-container">
+          <table class="data-table">
+            <tbody>
+              <tr>
+                <th>
+                  <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                  <button class="data-table-jump-button" tabindex="-1">
+                    <img src="symbols/arrow.down.to.line.svg" />
+                  </button>
+                </th>
+              </tr>
+            </tbody>
+          </table>
         </div>
-      </span>
-    </div>
+        <div class="data-table-drag-highlight" hidden></div>
+      </div>
+
+      <!-- Console -->
+      <div id="renderer5">
+        <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+
+        <div class="console-table-drag-highlight" hidden></div>
+        <div class="console-table-container">
+          <table class="console-table">
+            <tbody>
+              <tr>
+                <th>
+                  <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                  <button class="console-table-jump-button" tabindex="-1">
+                    <img src="symbols/arrow.down.to.line.svg" />
+                  </button>
+                </th>
+                <th>
+                  <div>
+                    <span>Hello</span>
+                    <button class="console-table-key-delete" tabindex="-1">
+                      <img src="symbols/xmark.svg" />
+                    </button>
+                  </div>
+                  <input type="search" placeholder="Filter" />
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Statistics -->
+      <div id="renderer6">
+        <div class="stats-values-container">
+          <table class="stats-values">
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <div class="stats-histogram-container">
+          <canvas width="100" height="100"></canvas>
+        </div>
+      </div>
+
+      <!-- Video -->
+      <div id="renderer7">
+        <div class="video-container">
+          <img />
+        </div>
+      </div>
+
+      <!-- Joysticks -->
+      <div id="renderer8">
+        <canvas class="joysticks-canvas"></canvas>
+      </div>
+
+      <!-- Swerve -->
+      <div id="renderer9">
+        <div class="swerve-canvas-container">
+          <canvas class="swerve-canvas" width="100" height="100"></canvas>
+        </div>
+      </div>
+
+      <!-- Mechanism -->
+      <div id="renderer10">
+        <div class="mechanism-svg-container">
+          <svg class="mechanism-svg"></svg>
+        </div>
+      </div>
+
+      <!-- Points -->
+      <div id="renderer11">
+        <div class="points-background-container">
+          <div class="points-background"></div>
+          <span hidden>
+            <svg height="20" width="20">
+              <line x1="10" y1="0" x2="10" y2="20"></line>
+              <line x1="0" y1="10" x2="20" y2="10"></line>
+            </svg>
+            <svg height="20" width="20">
+              <line x1="2" y1="2" x2="18" y2="18"></line>
+              <line x1="18" y1="2" x2="2" y2="18"></line>
+            </svg>
+            <svg height="20" width="20">
+              <circle cx="10" cy="10" r="7"></circle>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Metadata -->
+      <div id="renderer12">
+        <div class="tab-centered">No metadata found. Check the documentation for details on metadata publishing.</div>
+        <div class="metadata-table-container" hidden>
+          <table class="metadata-table">
+            <tbody>
+              <tr>
+                <th></th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </span>
+
+    <span id="sourceListItemTemplate" hidden>
+      <div class="item">
+        <button class="type" tabindex="-1">
+          <object data="" type="image/svg+xml"></object>
+          <object data="" type="image/svg+xml" class="hidden"></object>
+        </button>
+        <div class="type-name"></div>
+        <div class="key-container">
+          <span></span>
+        </div>
+        <button class="warning" tabindex="-1" hidden>
+          <img src="symbols/exclamationmark.triangle.fill.svg" />
+        </button>
+        <button class="hide" tabindex="-1">
+          <img src="symbols/eye.slash.svg" />
+        </button>
+        <button class="remove" tabindex="-1">
+          <img src="symbols/xmark.svg" />
+        </button>
+        <img class="value-symbol" src="symbols/arrow.turn.down.right.svg" hidden />
+        <div class="value" hidden></div>
+      </div>
+    </span>
   </body>
 </html>

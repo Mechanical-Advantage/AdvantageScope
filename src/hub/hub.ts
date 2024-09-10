@@ -122,6 +122,11 @@ function updateFancyWindow() {
   } else {
     document.body.classList.remove("fancy-title-bar-win");
   }
+  if (window.platform === "linux") {
+    document.body.classList.add("fancy-title-bar-linux");
+  } else {
+    document.body.classList.remove("fancy-title-bar-linux");
+  }
 
   // Using fancy sidebar?
   if (window.platform === "darwin") {

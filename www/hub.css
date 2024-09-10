@@ -67,6 +67,7 @@ div.title-bar-menu {
   height: 28px;
   transform: translate(-50%, -50%);
 
+  z-index: 6;
   display: none;
   -webkit-app-region: no-drag;
   overflow-x: auto;
@@ -76,7 +77,8 @@ div.title-bar-menu::-webkit-scrollbar {
   display: none;
 }
 
-body.fancy-title-bar-win div.title-bar-menu {
+body.fancy-title-bar-win div.title-bar-menu,
+body.fancy-title-bar-linux div.title-bar-menu {
   display: initial;
 }
 
@@ -119,20 +121,6 @@ div.title-bar-menu button:active {
   div.title-bar-menu button:active {
     background-color: #444444;
   }
-}
-
-div.main-view {
-  position: absolute;
-  z-index: 4;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-}
-
-body.fancy-title-bar-mac div.main-view,
-body.fancy-title-bar-win div.main-view {
-  top: 38px;
 }
 
 /* Loading glow */
@@ -225,7 +213,14 @@ div.side-bar {
   width: var(--side-bar-width);
   top: 0px;
   bottom: 0px;
+  z-index: 4;
   overflow: auto;
+}
+
+body.fancy-title-bar-mac div.side-bar,
+body.fancy-title-bar-win div.side-bar,
+body.fancy-title-bar-linux div.side-bar {
+  top: 38px;
 }
 
 body.fancy-title-bar-win div.side-bar::-webkit-scrollbar {
@@ -286,7 +281,13 @@ div.viewer {
   right: 0px;
   top: 0px;
   bottom: 0px;
+  z-index: 4;
   overflow: hidden;
+}
+
+body.fancy-title-bar-mac div.viewer,
+body.fancy-title-bar-win div.viewer {
+  top: 38px;
 }
 
 /* Field selector */
