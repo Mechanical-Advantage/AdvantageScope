@@ -2073,7 +2073,6 @@ function createAboutWindow() {
 
 /** Creates a new hub window. */
 function createHubWindow(state?: WindowState) {
-  let window: BrowserWindow;
   let prefs: BrowserWindowConstructorOptions = {
     minWidth: 800,
     minHeight: 400,
@@ -2133,7 +2132,7 @@ function createHubWindow(state?: WindowState) {
   }
 
   // Create window
-  window = new BrowserWindow(prefs);
+  let window = new BrowserWindow(prefs);
   hubWindows.push(window);
 
   // Add touch bar menu
