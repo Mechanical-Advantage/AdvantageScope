@@ -1495,7 +1495,8 @@ function setupMenu() {
         {
           label: "Open...",
           accelerator: "CmdOrCtrl+O",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
@@ -1506,7 +1507,7 @@ function setupMenu() {
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
-                  sendMessage(window, "open-files", [files.filePaths[0]]);
+                  sendMessage(window!, "open-files", [files.filePaths[0]]);
                 }
               });
           }
@@ -1514,7 +1515,8 @@ function setupMenu() {
         {
           label: "Open Multiple...",
           accelerator: "CmdOrCtrl+Shift+O",
-          async click(_, window) {
+          async click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             let filesResponse = await dialog.showOpenDialog(window, {
               title: "Select up to " + MERGE_MAX_FILES.toString() + " robot log files to open",
@@ -1533,7 +1535,8 @@ function setupMenu() {
         {
           label: "Connect to Robot",
           accelerator: "CmdOrCtrl+K",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "start-live", false);
           }
@@ -1541,7 +1544,8 @@ function setupMenu() {
         {
           label: "Connect to Simulator",
           accelerator: "CmdOrCtrl+Shift+K",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "start-live", true);
           }
@@ -1549,7 +1553,8 @@ function setupMenu() {
         {
           label: "Download Logs...",
           accelerator: "CmdOrCtrl+D",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             openDownload(window);
           }
@@ -1557,7 +1562,8 @@ function setupMenu() {
         {
           label: "Load Zebra MotionWorks™",
           accelerator: "Alt+Z",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             sendMessage(window, "load-zebra");
           }
@@ -1576,7 +1582,8 @@ function setupMenu() {
         {
           label: "Export Data...",
           accelerator: "CmdOrCtrl+E",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "start-export");
           }
@@ -1587,7 +1594,8 @@ function setupMenu() {
             {
               label: "Connect to Robot",
               accelerator: "CmdOrCtrl+P",
-              click(_, window) {
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
                 sendMessage(window, "start-publish", false);
               }
@@ -1595,7 +1603,8 @@ function setupMenu() {
             {
               label: "Connect to Simulator",
               accelerator: "CmdOrCtrl+Shift+P",
-              click(_, window) {
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
                 sendMessage(window, "start-publish", true);
               }
@@ -1603,7 +1612,8 @@ function setupMenu() {
             {
               label: "Stop Publishing",
               accelerator: "CmdOrCtrl+Alt+P",
-              click(_, window) {
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
                 sendMessage(window, "stop-publish");
               }
@@ -1749,7 +1759,8 @@ function setupMenu() {
         {
           label: "Toggle Sidebar",
           accelerator: "CmdOrCtrl+.",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "toggle-sidebar");
           }
@@ -1757,7 +1768,8 @@ function setupMenu() {
         {
           label: "Toggle Controls",
           accelerator: "CmdOrCtrl+/",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "toggle-controls");
           }
@@ -1776,7 +1788,8 @@ function setupMenu() {
               return {
                 label: getTabIcon(tabType) + " " + getDefaultTabTitle(tabType),
                 accelerator: getTabAccelerator(tabType),
-                click(_, window) {
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
                   if (window === undefined || !hubWindows.includes(window)) return;
                   sendMessage(window, "new-tab", tabType);
                 }
@@ -1787,7 +1800,8 @@ function setupMenu() {
           label: "New Tab (Popup)", // Hidden item to add keyboard shortcut
           visible: false,
           accelerator: "CmdOrCtrl+T",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window) newTabPopup(window);
           }
         },
@@ -1795,7 +1809,8 @@ function setupMenu() {
         {
           label: "Previous Tab",
           accelerator: "CmdOrCtrl+Left",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "move-tab", -1);
           }
@@ -1803,7 +1818,8 @@ function setupMenu() {
         {
           label: "Next Tab",
           accelerator: "CmdOrCtrl+Right",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "move-tab", 1);
           }
@@ -1812,7 +1828,8 @@ function setupMenu() {
         {
           label: "Shift Left",
           accelerator: "CmdOrCtrl+[",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "shift-tab", -1);
           }
@@ -1820,7 +1837,8 @@ function setupMenu() {
         {
           label: "Shift Right",
           accelerator: "CmdOrCtrl+]",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             sendMessage(window, "shift-tab", 1);
           }
@@ -1829,7 +1847,8 @@ function setupMenu() {
         {
           label: "Close Tab",
           accelerator: "CmdOrCtrl+W",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             if (hubWindows.includes(window)) {
               sendMessage(window, "close-tab");
@@ -1968,7 +1987,8 @@ function setupMenu() {
         {
           label: "Settings...",
           accelerator: "Cmd+,",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             openPreferences(window);
           }
@@ -1985,7 +2005,8 @@ function setupMenu() {
           : []),
         {
           label: "Show Licenses...",
-          click(_, window) {
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             openLicenses(window);
           }
@@ -2013,7 +2034,8 @@ function setupMenu() {
       {
         label: "Show Preferences...",
         accelerator: "Ctrl+,",
-        click(_, window) {
+        click(_, baseWindow) {
+          const window = baseWindow as BrowserWindow | undefined;
           if (window === undefined) return;
           openPreferences(window);
         }
@@ -2030,7 +2052,8 @@ function setupMenu() {
         : []),
       {
         label: "Show Licenses...",
-        click(_, window) {
+        click(_, baseWindow) {
+          const window = baseWindow as BrowserWindow | undefined;
           if (window === undefined) return;
           openLicenses(window);
         }

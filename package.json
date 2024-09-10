@@ -41,7 +41,7 @@
     "@types/three": "^0.168.0",
     "chart.js": "^4.4.0",
     "color-convert": "^2.0.1",
-    "electron": "^29.4.6",
+    "electron": "^32.0.2",
     "electron-builder": "^24.6.4",
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
