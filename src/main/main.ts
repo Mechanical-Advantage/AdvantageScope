@@ -2083,7 +2083,7 @@ function createAboutWindow() {
       title: "About",
       message: "AdvantageScope",
       detail: COPYRIGHT + "\n\n" + detail,
-      buttons: ["Close", process.platform === "darwin" ? "Copy & Close" : "Copy and Close"],
+      buttons: ["Close", process.platform === "win32" ? "Copy and Close" : "Copy & Close"],
       defaultId: 0,
       icon: WINDOW_ICON
     })
