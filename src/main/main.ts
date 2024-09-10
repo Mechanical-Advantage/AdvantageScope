@@ -2895,14 +2895,6 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
 
 // APPLICATION EVENTS
 
-// Workaround to set menu bar color on some Linux environments
-if (process.platform === "linux" && fs.existsSync(PREFS_FILENAME)) {
-  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  if (prefs.theme === "dark") {
-    process.env["GTK_THEME"] = "Adwaita:dark";
-  }
-}
-
 function checkForUpdate(alwaysPrompt: boolean) {
   updateChecker.check().then(() => {
     hubWindows.forEach((window) => {
