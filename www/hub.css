@@ -197,7 +197,8 @@ div.side-bar-shadow {
 }
 
 body.fancy-title-bar-mac div.side-bar-shadow,
-body.fancy-title-bar-win div.side-bar-shadow {
+body.fancy-title-bar-win div.side-bar-shadow,
+body.fancy-title-bar-linux div.side-bar-shadow {
   display: initial;
 }
 
@@ -223,7 +224,8 @@ body.fancy-title-bar-linux div.side-bar {
   top: 38px;
 }
 
-body.fancy-title-bar-win div.side-bar::-webkit-scrollbar {
+body.fancy-title-bar-win div.side-bar::-webkit-scrollbar,
+body.fancy-title-bar-linux div.side-bar::-webkit-scrollbar {
   display: none;
 }
 
