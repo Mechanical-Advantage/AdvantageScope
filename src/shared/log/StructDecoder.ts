@@ -1,6 +1,6 @@
 /** Class to manage decoding WPILib structs.
  *
- * Specification: https://github.com/PeterJohnson/allwpilib/blob/protobuf/wpiutil/doc/struct.adoc
+ * Specification: https://github.com/wpilibsuite/allwpilib/blob/main/wpiutil/doc/struct.adoc
  */
 export default class StructDecoder {
   private schemaStrings: { [key: string]: string } = {};
