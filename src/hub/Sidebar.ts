@@ -111,6 +111,30 @@ export default class Sidebar {
       this.SIDEBAR_SHADOW.style.opacity = this.SIDEBAR.scrollTop === 0 ? "0" : "1";
     });
 
+    // Menu bar
+    let menuBar = document.getElementsByClassName("title-bar-menu")[0] as HTMLElement;
+    Array.from(menuBar.getElementsByTagName("button")).forEach((button, index) => {
+      let active = false;
+      button.addEventListener("click", () => {
+        if (active) {
+          active = false;
+          window.sendMainMessage("close-app-menu", {
+            index: index
+          });
+        } else {
+          active = true;
+          let rect = button.getBoundingClientRect();
+          window.sendMainMessage("open-app-menu", {
+            index: index,
+            coordinates: [Math.round(rect.left), Math.round(rect.bottom)]
+          });
+        }
+      });
+      button.addEventListener("mouseleave", () => {
+        active = false;
+      });
+    });
+
     // Search controls
     let searchInputFocused = false;
     this.SEARCH_INPUT.addEventListener("focus", () => (searchInputFocused = true));

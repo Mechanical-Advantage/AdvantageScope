@@ -107,17 +107,33 @@ function setLoading(progress: number | null) {
 
 function updateFancyWindow() {
   // Using fancy title bar?
-  if (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
-    document.body.classList.add("fancy-title-bar");
+  let releaseSplit = window.platformRelease.split(".");
+  if (
+    window.platform === "darwin" &&
+    Number(releaseSplit[0]) >= 20 && // macOS Big Sur
+    !window.isFullscreen
+  ) {
+    document.body.classList.add("fancy-title-bar-mac");
   } else {
-    document.body.classList.remove("fancy-title-bar");
+    document.body.classList.remove("fancy-title-bar-mac");
+  }
+  if (window.platform === "win32") {
+    document.body.classList.add("fancy-title-bar-win");
+  } else {
+    document.body.classList.remove("fancy-title-bar-win");
   }
 
   // Using fancy sidebar?
   if (window.platform === "darwin") {
-    document.body.classList.add("fancy-side-bar");
+    document.body.classList.add("fancy-side-bar-mac");
   } else {
-    document.body.classList.remove("fancy-side-bar");
+    document.body.classList.remove("fancy-side-bar-mac");
+  }
+  if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+    // Windows 11 22H2
+    document.body.classList.add("fancy-side-bar-win");
+  } else {
+    document.body.classList.remove("fancy-side-bar-win");
   }
 }
 

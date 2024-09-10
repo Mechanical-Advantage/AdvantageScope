@@ -7,6 +7,7 @@ import {
   MenuItem,
   MessageChannelMain,
   MessagePortMain,
+  TitleBarOverlay,
   TouchBar,
   TouchBarSlider,
   app,
@@ -481,6 +482,26 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "open-link":
       shell.openExternal(message.data);
+      break;
+
+    case "open-app-menu":
+    case "close-app-menu":
+      {
+        let index: number = message.data.index;
+        let appMenu = Menu.getApplicationMenu();
+        if (appMenu === null || index >= appMenu.items.length) return;
+        let submenu = appMenu.items[index].submenu;
+        if (submenu === undefined) return;
+        if (message.name === "open-app-menu") {
+          submenu.popup({
+            window: window,
+            x: message.data.coordinates[0],
+            y: message.data.coordinates[1]
+          });
+        } else {
+          submenu.closePopup(window);
+        }
+      }
       break;
 
     case "ask-playback-speed":
@@ -1037,10 +1058,11 @@ function newTabPopup(window: BrowserWindow) {
         })
       );
     });
+
   newTabMenu.popup({
     window: window,
     x: window.getBounds().width - 12,
-    y: 10
+    y: process.platform === "win32" ? 48 : 10
   });
 }
 
@@ -2038,7 +2060,7 @@ function createAboutWindow() {
       title: "About",
       message: "AdvantageScope",
       detail: COPYRIGHT + "\n\n" + detail,
-      buttons: ["Close", "Copy & Close"],
+      buttons: ["Close", process.platform === "darwin" ? "Copy & Close" : "Copy and Close"],
       defaultId: 0,
       icon: WINDOW_ICON
     })
@@ -2081,9 +2103,32 @@ function createHubWindow(state?: WindowState) {
   }
 
   // Set fancy window effects
-  if (process.platform === "darwin") {
-    prefs.vibrancy = "sidebar";
-    if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset";
+  switch (process.platform) {
+    case "darwin":
+      prefs.vibrancy = "sidebar";
+      if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
+      break;
+    case "win32":
+      prefs.titleBarStyle = "hidden";
+      let releaseSplit = os.release().split(".");
+      if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+        // Windows 11 22H2
+        prefs.backgroundMaterial = "acrylic";
+      }
+      let overlayOptions: TitleBarOverlay = {
+        color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
+        symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
+        height: 38
+      };
+      prefs.titleBarOverlay = overlayOptions;
+      nativeTheme.addListener("updated", () => {
+        if (window) {
+          overlayOptions.color = nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff";
+          overlayOptions.symbolColor = nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000";
+          window.setTitleBarOverlay(overlayOptions);
+        }
+      });
+      break;
   }
 
   // Create window
@@ -2228,7 +2273,7 @@ function createEditRangeWindow(
 ) {
   const editWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 125 : 108, // "useContentSize" is broken on Windows when not resizable
+    height: 108,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2272,7 +2317,7 @@ function createUnitConversionWindow(
 ) {
   const unitConversionWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 179 : 162, // "useContentSize" is broken on Windows when not resizable
+    height: 162,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2316,7 +2361,7 @@ function createRenameTabWindow(
 ) {
   const renameTabWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    height: 81,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2356,7 +2401,7 @@ function createRenameTabWindow(
 function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, callback: (newFov: number) => void) {
   const editFovWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 98 : 81, // "useContentSize" is broken on Windows when not resizable
+    height: 81,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2400,7 +2445,7 @@ function createExportWindow(
 ) {
   const exportWindow = new BrowserWindow({
     width: 300,
-    height: process.platform === "win32" ? 206 : 189, // "useContentSize" is broken on Windows when not resizable
+    height: 189,
     useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
@@ -2615,7 +2660,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 
   const width = 400;
   const rows = 10;
-  const height = process.platform === "win32" ? rows * 27 + 114 : rows * 27 + 54; // "useContentSize" is broken on Windows when not resizable
+  const height = rows * 27 + 54;
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,

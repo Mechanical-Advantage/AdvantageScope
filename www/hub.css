@@ -30,7 +30,8 @@ body {
   overflow: hidden;
 }
 
-body.fancy-title-bar div.title-bar {
+body.fancy-title-bar-mac div.title-bar,
+body.fancy-title-bar-win div.title-bar {
   display: initial;
 }
 
@@ -38,8 +39,6 @@ div.title-bar-text {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
-  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
 
   text-align: left;
   line-height: 38px;
@@ -47,6 +46,79 @@ div.title-bar-text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+body.fancy-title-bar-mac div.title-bar-text {
+  left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
+  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+}
+
+body.fancy-title-bar-win div.title-bar-text {
+  left: calc(var(--side-bar-width) + 20px);
+  right: 140px;
+}
+
+div.title-bar-menu {
+  position: absolute;
+  left: calc(var(--side-bar-width) * 0.5);
+  width: calc(var(--side-bar-width) - 20px);
+  max-width: 250px;
+  top: 19px;
+  height: 28px;
+  transform: translate(-50%, -50%);
+
+  display: none;
+  -webkit-app-region: no-drag;
+  overflow-x: auto;
+}
+
+div.title-bar-menu::-webkit-scrollbar {
+  display: none;
+}
+
+body.fancy-title-bar-win div.title-bar-menu {
+  display: initial;
+}
+
+div.title-bar-menu table {
+  height: 100%;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+div.title-bar-menu td {
+  padding: 0;
+  margin: 0;
+}
+
+div.title-bar-menu button {
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+div.title-bar-menu button:hover {
+  background-color: #cccccc88;
+}
+
+div.title-bar-menu button:active {
+  background-color: #cccccc;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.title-bar-menu button {
+    color: #eee;
+  }
+
+  div.title-bar-menu button:hover {
+    background-color: #44444488;
+  }
+
+  div.title-bar-menu button:active {
+    background-color: #444444;
+  }
 }
 
 div.main-view {
@@ -58,7 +130,8 @@ div.main-view {
   bottom: 0px;
 }
 
-body.fancy-title-bar div.main-view {
+body.fancy-title-bar-mac div.main-view,
+body.fancy-title-bar-win div.main-view {
   top: 38px;
 }
 
@@ -76,6 +149,12 @@ div.loading-glow {
   background-color: #303dc9;
 }
 
+body.fancy-title-bar-win div.loading-glow {
+  /* Apparently Windows cuts off a few pixels on the top with a hidden title bar? */
+  height: 5px;
+  transform: translateY(calc(-5px + 5px * var(--show-loading-glow)));
+}
+
 @keyframes publishingGlowPulsing {
   0% {
     opacity: 100%;
@@ -87,6 +166,7 @@ div.loading-glow {
     opacity: 100%;
   }
 }
+
 /* Side bar layout */
 
 div.side-bar-background {
@@ -100,8 +180,12 @@ div.side-bar-background {
   background-color: #e9e9e9;
 }
 
-body.fancy-side-bar div.side-bar-background {
+body.fancy-side-bar-mac div.side-bar-background {
   display: none;
+}
+
+body.fancy-side-bar-win div.side-bar-background {
+  opacity: 0.5;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -124,7 +208,8 @@ div.side-bar-shadow {
   opacity: 0%;
 }
 
-body.fancy-title-bar div.side-bar-shadow {
+body.fancy-title-bar-mac div.side-bar-shadow,
+body.fancy-title-bar-win div.side-bar-shadow {
   display: initial;
 }
 
@@ -141,6 +226,10 @@ div.side-bar {
   top: 0px;
   bottom: 0px;
   overflow: auto;
+}
+
+body.fancy-title-bar-win div.side-bar::-webkit-scrollbar {
+  display: none;
 }
 
 div.side-bar-handle {
@@ -180,7 +269,7 @@ div.viewer-background {
   top: 0px;
   bottom: 0px;
 
-  box-shadow: 0px 0px 3px 2px #ddd;
+  box-shadow: 0px 0px 3px 0px #00000022;
   background-color: #fff;
 }
 
@@ -517,7 +606,7 @@ div.tab-bar {
   white-space: nowrap;
 }
 
-body.fancy-title-bar div.tab-bar {
+body.fancy-title-bar-mac div.tab-bar {
   right: 10px;
 }
 
@@ -545,7 +634,7 @@ div.tab-bar-shadow-right {
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
-body.fancy-title-bar div.tab-bar-shadow-right {
+body.fancy-title-bar-mac div.tab-bar-shadow-right {
   right: 10px;
 }
 
@@ -581,7 +670,7 @@ div.tab-bar-scroll {
   overflow: scroll;
 }
 
-body.fancy-title-bar div.tab-bar-scroll {
+body.fancy-title-bar-mac div.tab-bar-scroll {
   right: 10px;
 }
 
@@ -659,8 +748,12 @@ button.tab-control {
   -webkit-app-region: no-drag;
 }
 
-body.fancy-title-bar button.tab-control {
+body.fancy-title-bar-mac button.tab-control {
   top: 8px;
+}
+
+body.fancy-title-bar-win button.tab-control {
+  top: 49px;
 }
 
 button.update {
