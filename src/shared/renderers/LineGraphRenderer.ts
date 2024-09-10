@@ -39,16 +39,14 @@ export default class LineGraphRenderer implements TabRenderer {
     // Selection handling
     this.SCROLL_OVERLAY.addEventListener("mousedown", (event) => {
       this.mouseDownX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
-      let hoveredTime = window.selection.getHoveredTime();
-      if (event.shiftKey && hoveredTime !== null) {
+      if (event.shiftKey && this.lastHoveredTime !== null) {
         this.grabZoomActive = true;
-        this.grabZoomStartTime = hoveredTime;
+        this.grabZoomStartTime = this.lastHoveredTime;
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
-      let hoveredTime = window.selection.getHoveredTime();
-      if (this.grabZoomActive && hoveredTime !== null) {
-        window.selection.setGrabZoomRange([this.grabZoomStartTime, hoveredTime]);
+    this.SCROLL_OVERLAY.addEventListener("mousemove", () => {
+      if (this.grabZoomActive && this.lastHoveredTime !== null) {
+        window.selection.setGrabZoomRange([this.grabZoomStartTime, this.lastHoveredTime]);
       }
     });
     this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
