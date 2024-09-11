@@ -243,10 +243,10 @@ export default class StatisticsController implements TabController {
           if (refSamples !== undefined) {
             switch (source.type) {
               case "relativeError":
-                samples = samples.map((x, index) => Math.abs(x - refSamples![index]));
+                samples = samples.map((x, index) => x - refSamples![index]);
                 break;
               case "absoluteError":
-                samples = samples.map((x, index) => x - refSamples![index]);
+                samples = samples.map((x, index) => Math.abs(x - refSamples![index]));
                 break;
             }
           }
