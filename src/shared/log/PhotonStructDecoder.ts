@@ -103,7 +103,6 @@ export default class PhotonStructDecoder {
     value: Uint8Array | DataView
   ): { data: unknown; schemaTypes: { [key: string]: string }; } {
     const ret = this.decodeImpl(name, value);
-    console.log(ret.schemaTypes);
     return {
       data: ret.data,
       schemaTypes: ret.schemaTypes
@@ -115,7 +114,6 @@ export default class PhotonStructDecoder {
     name: string,
     value: Uint8Array | DataView
   ): DecodeResult {
-    // console.log("Decoding " + name + " at offset " + value.byteOffset)
     if (!(name in this.schemas)) {
       throw new Error("Schema not defined");
     }
@@ -155,6 +153,8 @@ export default class PhotonStructDecoder {
         let type = valueSchema.type as ValueType;
 
         if (vlaLength !== null) {
+          outputSchemaTypes[valueSchema.name] = type + '[]';
+
           let inner: unknown[] = [];
           for (let i = 0; i < vlaLength; i++) {
             // console.log("Decoding member " + valueSchema.name + " of type " + valueSchema.type + " at offset " + (value.byteOffset + offset));
@@ -162,8 +162,10 @@ export default class PhotonStructDecoder {
             offset += VALUE_TYPE_MAX_BITS.get(type)! / 8;
           }
           outputData[valueSchema.name] = inner;
+          outputData[valueSchema.name + "/length"] = vlaLength;
         } else {
           // console.log("Decoding member " + valueSchema.name + " of type " + valueSchema.type + " at offset " + (value.byteOffset + offset));
+          outputSchemaTypes[valueSchema.name] = type;
           outputData[valueSchema.name] = PhotonStructDecoder.decodeValue(dataView, offset, type);
           offset += VALUE_TYPE_MAX_BITS.get(type)! / 8;
         }
@@ -186,6 +188,7 @@ export default class PhotonStructDecoder {
             });
           }
           outputData[valueSchema.name] = inner;
+          outputData[valueSchema.name + "/length"] = vlaLength;
         } else {
           outputSchemaTypes[valueSchema.name] = valueSchema.type;
           let child = this.decodeImpl(
@@ -203,6 +206,8 @@ export default class PhotonStructDecoder {
         }
       }
     }
+    
+    console.log(outputSchemaTypes)
     return {
       data: outputData,
       schemaTypes: outputSchemaTypes,
