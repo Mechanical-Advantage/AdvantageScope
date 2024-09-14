@@ -10,7 +10,10 @@ import {
   LogValueSetString,
   LogValueSetStringArray
 } from "./LogValueSets";
-
+type LogRecord = {
+  timestamp: number;
+  value: any;
+};
 /** A full log field that contains data. */
 export default class LogField {
   private type: LoggableType;
@@ -19,12 +22,13 @@ export default class LogField {
   public wpilibType: string | null = null; // Original type from WPILOG & NT4
   public metadataString = "";
   public typeWarning = false; // Flag that there was an attempt to write a conflicting type
-
+  private enableLiveSorting: boolean;
   // Toggles when first value is removed, useful for creating striping effects that persist as data is updated
   private stripingReference = false;
-
-  constructor(type: LoggableType) {
+  private rawData: LogRecord[] = [];
+  constructor(type: LoggableType, enableLiveSorting = true) {
     this.type = type;
+    this.enableLiveSorting = enableLiveSorting;
   }
 
   /** Returns the constant field type. */
@@ -115,41 +119,45 @@ export default class LogField {
 
   /** Inserts a new value at the correct index. */
   private putData(timestamp: number, value: any) {
-    if (value === null) return;
+    if (this.enableLiveSorting) {
+      if (value === null) return;
 
-    // Find position to insert based on timestamp
-    let insertIndex: number;
-    if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
-      // There's a good chance this data is at the end of the log, so check that first
-      insertIndex = this.data.timestamps.length;
-    } else {
-      // Adding in the middle, find where to insert it
-      let alreadyExists = false;
-      insertIndex =
-        this.data.timestamps.findLastIndex((x) => {
-          if (alreadyExists) return;
-          if (x === timestamp) alreadyExists = true;
-          return x < timestamp;
-        }) + 1;
-      if (alreadyExists) {
-        this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
-        return;
+      // Find position to insert based on timestamp
+      let insertIndex: number;
+      if (this.data.timestamps.length > 0 && timestamp > this.data.timestamps[this.data.timestamps.length - 1]) {
+        // There's a good chance this data is at the end of the log, so check that first
+        insertIndex = this.data.timestamps.length;
+      } else {
+        // Adding in the middle, find where to insert it
+        let alreadyExists = false;
+        insertIndex =
+          this.data.timestamps.findLastIndex((x) => {
+            if (alreadyExists) return;
+            if (x === timestamp) alreadyExists = true;
+            return x < timestamp;
+          }) + 1;
+        if (alreadyExists) {
+          this.data.values[this.data.timestamps.indexOf(timestamp)] = value;
+          return;
+        }
       }
-    }
 
-    // Compare to adjacent values
-    if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
-      // Same as the previous value
-    } else if (
-      insertIndex < this.data.values.length &&
-      logValuesEqual(this.type, value, this.data.values[insertIndex])
-    ) {
-      // Same as the next value
-      this.data.timestamps[insertIndex] = timestamp;
+      // Compare to adjacent values
+      if (insertIndex > 0 && logValuesEqual(this.type, value, this.data.values[insertIndex - 1])) {
+        // Same as the previous value
+      } else if (
+        insertIndex < this.data.values.length &&
+        logValuesEqual(this.type, value, this.data.values[insertIndex])
+      ) {
+        // Same as the next value
+        this.data.timestamps[insertIndex] = timestamp;
+      } else {
+        // New value
+        this.data.timestamps.splice(insertIndex, 0, timestamp);
+        this.data.values.splice(insertIndex, 0, value);
+      }
     } else {
-      // New value
-      this.data.timestamps.splice(insertIndex, 0, timestamp);
-      this.data.values.splice(insertIndex, 0, value);
+      this.rawData.push({ timestamp: timestamp, value: value });
     }
   }
 
@@ -204,6 +212,10 @@ export default class LogField {
 
   /** Returns a serialized version of the data from this field. */
   toSerialized(): any {
+    if (!this.enableLiveSorting) {
+      this.sortAndProcess();
+      this.enableLiveSorting = true; // After first serilization enable live sorting
+    }
     return {
       type: this.type,
       timestamps: this.data.timestamps,
@@ -229,5 +241,35 @@ export default class LogField {
     field.stripingReference = serializedData.stripingReference;
     field.typeWarning = serializedData.typeWarning;
     return field;
+  }
+  /** Sorts and processes data all at once */
+  sortAndProcess() {
+    if (!this.enableLiveSorting) {
+      this.rawData.sort((a: LogRecord, b: LogRecord) => {
+        return a.timestamp - b.timestamp;
+      });
+      if (this.rawData.length > 0) {
+        // Bootstrap first value
+        this.data.timestamps.push(this.rawData[0].timestamp);
+        this.data.values.push(this.rawData[0].value);
+      }
+      for (let i = 1; i < this.rawData.length; i++) {
+        // Check if the timestamp is the same as the last one
+        if (this.rawData[i].timestamp == this.data.timestamps[this.data.values.length - 1]) {
+          // Overwrite the last value
+          this.data.values[this.data.values.length - 1] = this.rawData[i].value;
+          // If the values are equal do not add the value
+        } else if (
+          logValuesEqual(this.type, this.rawData[i].value, this.data.values[this.data.values.length - 1]) &&
+          i < this.rawData.length
+        ) {
+        } else {
+          // add the value
+          this.data.timestamps.push(this.rawData[i].timestamp);
+          this.data.values.push(this.rawData[i].value);
+        }
+      }
+      this.rawData = [];
+    }
   }
 }
