@@ -2139,14 +2139,13 @@ function createHubWindow(state?: WindowState) {
         prefs.backgroundMaterial = "acrylic";
       }
       let overlayOptions: TitleBarOverlay = {
-        color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
+        color: "#00000000",
         symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
         height: 38
       };
       prefs.titleBarOverlay = overlayOptions;
       nativeTheme.addListener("updated", () => {
         if (window) {
-          overlayOptions.color = nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff";
           overlayOptions.symbolColor = nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000";
           window.setTitleBarOverlay(overlayOptions);
         }
