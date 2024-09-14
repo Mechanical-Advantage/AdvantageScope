@@ -325,6 +325,12 @@ export default class Tabs {
         let activeLocal = index === this.selectedTab;
         let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
         if (activeLocal || activeSatellite) {
+          if (tab.type === TabType.Table) {
+            // Update range from renderer
+            let renderer = tab.renderer as TableRenderer;
+            let controller = tab.controller as TableController;
+            controller.addRendererRange(renderer.UUID, activeLocal ? renderer.getTimestampRange() : null);
+          }
           let command = tab.controller.getCommand();
           if (activeLocal) {
             tab.renderer.render(command);
@@ -648,6 +654,15 @@ export default class Tabs {
     if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
       (this.tabList[this.selectedTab].renderer as ThreeDimensionRenderer).setFov(fov);
     }
+  }
+
+  /** Switches the selected camera for the selected 3D field. */
+  addTableRange(controllerUUID: string, rendererUUID: string, range: [number, number] | null) {
+    this.tabList.forEach((tab) => {
+      if (tab.type === TabType.Table && tab.controller.UUID === controllerUUID) {
+        (this.tabList[this.selectedTab].controller as TableController).addRendererRange(rendererUUID, range);
+      }
+    });
   }
 
   /** Returns whether the selected tab is a video which

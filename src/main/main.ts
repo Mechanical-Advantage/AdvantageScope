@@ -2568,6 +2568,7 @@ function createSatellite(
       })
     : undefined;
   const state = "state" in config ? config.state : undefined;
+  const uuid = configData !== undefined ? configData.uuid : state!.uuid;
 
   const width = state === undefined ? SATELLITE_DEFAULT_WIDTH : state.width;
   const height = state === undefined ? SATELLITE_DEFAULT_HEIGHT : state.height;
@@ -2623,6 +2624,16 @@ function createSatellite(
           select3DCameraPopup(satellite, message.data.options, message.data.selectedIndex, message.data.fov);
           break;
 
+        case "add-table-range":
+          hubWindows.forEach((window) => {
+            sendMessage(window, "add-table-range", {
+              controllerUUID: uuid,
+              rendererUUID: message.data.uuid,
+              range: message.data.range
+            });
+          });
+          break;
+
         case "save-state":
           stateTracker.saveRendererState(satellite, message.data);
           break;
@@ -2636,6 +2647,10 @@ function createSatellite(
 
         case "open-link":
           shell.openExternal(message.data);
+          break;
+
+        default:
+          console.warn("Unknown message from satellite renderer process", message);
           break;
       }
     });
@@ -2660,7 +2675,6 @@ function createSatellite(
   powerMonitor.on("on-ac", () => sendMessage(satellite, "set-battery", false));
   powerMonitor.on("on-battery", () => sendMessage(satellite, "set-battery", true));
 
-  const uuid = configData !== undefined ? configData.uuid : state!.uuid;
   if (!(uuid in satelliteWindows)) {
     satelliteWindows[uuid] = [];
   }

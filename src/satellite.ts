@@ -150,6 +150,15 @@ window.addEventListener("message", (event) => {
             renderer.render(message.data.command);
             let aspectRatio = renderer.getAspectRatio();
             processAspectRatio(aspectRatio);
+
+            // Update table range
+            if (type === TabType.Table) {
+              let tableRenderer = renderer as TableRenderer;
+              window.sendMainMessage("add-table-range", {
+                uuid: tableRenderer.UUID,
+                range: tableRenderer.getTimestampRange()
+              });
+            }
           }
           break;
 
@@ -192,6 +201,16 @@ function processAspectRatio(aspectRatio: number | null) {
     window.sendMainMessage("set-aspect-ratio", aspectRatio);
   }
 }
+
+window.addEventListener("beforeunload", () => {
+  if (type === TabType.Table) {
+    let tableRenderer = renderer as TableRenderer;
+    window.sendMainMessage("add-table-range", {
+      uuid: tableRenderer.UUID,
+      range: null
+    });
+  }
+});
 
 window.addEventListener("keydown", (event) => {
   if (event.target !== document.body) return;

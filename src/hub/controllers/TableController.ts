@@ -1,3 +1,4 @@
+import { LogValueSetAny } from "../../shared/log/LogValueSets";
 import LoggableType from "../../shared/log/LoggableType";
 import { TableRendererCommand } from "../../shared/renderers/TableRenderer";
 import { checkArrayType, createUUID } from "../../shared/util";
@@ -12,6 +13,7 @@ export default class TableController implements TabController {
   private DRAG_HIGHLIGHT: HTMLElement;
 
   private fields: string[] = [];
+  private ranges: { [key: string]: [number, number] } = {};
 
   constructor(root: HTMLElement) {
     this.ROOT = root;
@@ -104,18 +106,58 @@ export default class TableController implements TabController {
     return false;
   }
 
+  addRendererRange(uuid: string, range: [number, number] | null) {
+    if (range === null) {
+      if (uuid in this.ranges) delete this.ranges[uuid];
+    } else {
+      this.ranges[uuid] = range;
+    }
+  }
+
   getCommand(): TableRendererCommand {
     const availableKeys = window.log.getFieldKeys();
-    return {
-      timestamps: window.log.getTimestamps(this.fields, this.UUID),
-      fields: this.fields.map((key) => {
-        const isAvailable = availableKeys.includes(key);
+
+    let ranges = Object.values(this.ranges);
+    ranges.sort((a, b) => a[0] - b[0]);
+    const mergedRanges: [number, number][] = [];
+    for (const range of ranges) {
+      if (mergedRanges.length === 0 || range[0] > mergedRanges[mergedRanges.length - 1][1]) {
+        mergedRanges.push(range);
+      } else {
+        mergedRanges[mergedRanges.length - 1][1] = Math.max(mergedRanges[mergedRanges.length - 1][1], range[1]);
+      }
+    }
+
+    let fieldData: TableRendererCommand["fields"] = this.fields.map((key) => {
+      const isAvailable = availableKeys.includes(key);
+      if (!isAvailable) {
         return {
           key: key,
-          isAvailable: isAvailable,
-          serialized: isAvailable ? window.log.getField(key)?.toSerialized() : null
+          isAvailable: false,
+          data: null,
+          type: null
         };
-      }),
+      } else {
+        let data: LogValueSetAny = { timestamps: [], values: [] };
+        mergedRanges.forEach((range) => {
+          let newData = window.log.getRange(key, range[0], range[1], this.UUID);
+          if (newData !== undefined) {
+            data.timestamps = data.timestamps.concat(newData.timestamps);
+            data.values = data.values.concat(newData.values);
+          }
+        });
+        return {
+          key: key,
+          isAvailable: true,
+          data: data,
+          type: window.log.getType(key)
+        };
+      }
+    });
+
+    return {
+      timestamps: window.log.getTimestamps(this.fields, this.UUID),
+      fields: fieldData,
       selectionMode: window.selection.getMode(),
       selectedTime: window.selection.getSelectedTime(),
       hoveredTime: window.selection.getHoveredTime()
