@@ -11,6 +11,7 @@ import LoggableType from "./LoggableType";
 export const TYPE_KEY = ".type";
 export const STRUCT_PREFIX = "struct:";
 export const PROTO_PREFIX = "proto:";
+export const PHOTON_PREFIX = "photonstruct:";
 export const MAX_SEARCH_RESULTS = 128;
 export const MERGE_PREFIX = "Log";
 export const MERGE_MAX_FILES = 10;

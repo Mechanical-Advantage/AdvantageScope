@@ -1,5 +1,5 @@
 import Log from "../../../shared/log/Log";
-import { PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey } from "../../../shared/log/LogUtil";
+import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
@@ -185,6 +185,8 @@ export default class NT4Source extends LiveDataSource {
             }
           } else if (topic.type.startsWith(PROTO_PREFIX)) {
             structuredType = ProtoDecoder.getFriendlySchemaType(topic.type.split(PROTO_PREFIX)[1]);
+          } else if (topic.type.startsWith(PHOTON_PREFIX)) {
+            structuredType = topic.type.split(PHOTON_PREFIX)[1];
           } else if (topic.type === "msgpack") {
             structuredType = "MessagePack";
           } else if (topic.type === "json") {
@@ -284,6 +286,9 @@ export default class NT4Source extends LiveDataSource {
                   } else {
                     this.log?.putStruct(key, timestamp, value, schemaType, false);
                   }
+                } else if (topic.type.startsWith(PHOTON_PREFIX)) {
+                  let schemaType = topic.type.split(PHOTON_PREFIX)[1];
+                  this.log?.putPhotonStruct(key, timestamp, value, schemaType);
                 } else if (topic.type.startsWith(PROTO_PREFIX)) {
                   let schemaType = topic.type.split(PROTO_PREFIX)[1];
                   this.log?.putProto(key, timestamp, value, schemaType);
