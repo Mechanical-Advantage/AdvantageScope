@@ -25,7 +25,7 @@ export function checkArrayType(value: unknown, type: string): boolean {
 }
 
 /** Creates a deep copy of an object by converting to and from JSON. */
-export function jsonCopy(value: any): any {
+export function jsonCopy<T>(value: T): T {
   return JSON.parse(JSON.stringify(value));
 }
 
@@ -34,6 +34,11 @@ export function htmlEncode(text: string): string {
   return text.replace(/[\u00A0-\u9999<>\&]/g, (i) => {
     return "&#" + i.charCodeAt(0) + ";";
   });
+}
+
+/** Returns an array of ascending integers with the specified length. */
+export function indexArray(length: number): number[] {
+  return Array.from({ length: length }, (_, i) => i);
 }
 
 /** Adjust the brightness of a HEX color.*/
@@ -78,7 +83,7 @@ export function scaleValue(value: number, oldRange: [number, number], newRange: 
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];
 }
 
-/** Converts a value between two ranges, with caching for better performance.. */
+/** Converts a value between two ranges, with caching for better performance. */
 export class ValueScaler {
   private a: number;
   private b: number;
@@ -150,4 +155,12 @@ export function concatBuffers(arrays: Uint8Array[]): Uint8Array {
     position += array.byteLength;
   });
   return result;
+}
+
+export function calcAxisStepSize(dataRange: [number, number], pixelRange: number, stepSizeTarget: number): number {
+  let stepCount = pixelRange / stepSizeTarget;
+  let stepValueApprox = (dataRange[1] - dataRange[0]) / stepCount;
+  let roundBase = 10 ** Math.floor(Math.log10(stepValueApprox));
+  let multiplierLookup = [0, 1, 2, 2, 5, 5, 5, 5, 5, 10, 10]; // Use friendly numbers if possible
+  return roundBase * multiplierLookup[Math.round(stepValueApprox / roundBase)];
 }

@@ -85,3 +85,10 @@ export interface UnitConversionPreset {
   to?: string;
   factor: number;
 }
+
+export const NoopUnitConversion: UnitConversionPreset = {
+  type: null,
+  factor: 1
+};
+
+export const MAX_RECENT_UNITS = 5;

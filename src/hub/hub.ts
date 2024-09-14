@@ -1,27 +1,31 @@
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
-import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
+import Selection from "../shared/Selection";
+import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
+import Log from "../shared/log/Log";
+import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
+import SelectionImpl from "./SelectionImpl";
+import Sidebar from "./Sidebar";
+import SourceList from "./SourceList";
+import Tabs from "./Tabs";
+import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
 import loadZebra from "./dataSources/LoadZebra";
-import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
-import NT4Source from "./dataSources/nt4/NT4Source";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
+import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
+import NT4Source from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
-import Selection from "./Selection";
-import Sidebar from "./Sidebar";
-import Tabs from "./Tabs";
-import WorkerManager from "./WorkerManager";
 
 // Constants
-const SAVE_PERIOD_MS = 250;
+const STATE_SAVE_PERIOD_MS = 250;
+const TYPE_MEMORY_SAVE_PERIOD_MS = 1000;
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 const UPDATE_BUTTON = document.getElementsByClassName("update")[0] as HTMLElement;
 
@@ -31,6 +35,7 @@ declare global {
     log: Log;
     preferences: Preferences | null;
     assets: AdvantageScopeAssets | null;
+    typeMemory: SourceListTypeMemory;
     platform: string;
     platformRelease: string;
     appVersion: string;
@@ -46,11 +51,18 @@ declare global {
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
+
+    // Provided by preload script
+    electron: {
+      getFilePath(file: File): string;
+    };
   }
 }
+
 window.log = new Log();
 window.preferences = null;
 window.assets = null;
+window.typeMemory = {};
 window.platform = "";
 window.platformRelease = "";
 window.isFullscreen = false;
@@ -58,7 +70,7 @@ window.isFocused = true;
 window.isBattery = false;
 window.fps = false;
 
-window.selection = new Selection();
+window.selection = new SelectionImpl();
 window.sidebar = new Sidebar();
 window.tabs = new Tabs();
 window.tuner = null;
@@ -101,17 +113,38 @@ function setLoading(progress: number | null) {
 
 function updateFancyWindow() {
   // Using fancy title bar?
-  if (window.platform === "darwin" && Number(window.platformRelease.split(".")[0]) >= 20 && !window.isFullscreen) {
-    document.body.classList.add("fancy-title-bar");
+  let releaseSplit = window.platformRelease.split(".");
+  if (
+    window.platform === "darwin" &&
+    Number(releaseSplit[0]) >= 20 && // macOS Big Sur
+    !window.isFullscreen
+  ) {
+    document.body.classList.add("fancy-title-bar-mac");
   } else {
-    document.body.classList.remove("fancy-title-bar");
+    document.body.classList.remove("fancy-title-bar-mac");
+  }
+  if (window.platform === "win32") {
+    document.body.classList.add("fancy-title-bar-win");
+  } else {
+    document.body.classList.remove("fancy-title-bar-win");
+  }
+  if (window.platform === "linux") {
+    document.body.classList.add("fancy-title-bar-linux");
+  } else {
+    document.body.classList.remove("fancy-title-bar-linux");
   }
 
   // Using fancy sidebar?
   if (window.platform === "darwin") {
-    document.body.classList.add("fancy-side-bar");
+    document.body.classList.add("fancy-side-bar-mac");
   } else {
-    document.body.classList.remove("fancy-side-bar");
+    document.body.classList.remove("fancy-side-bar-mac");
+  }
+  if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+    // Windows 11 22H2
+    document.body.classList.add("fancy-side-bar-win");
+  } else {
+    document.body.classList.remove("fancy-side-bar-win");
   }
 }
 
@@ -140,7 +173,11 @@ function restoreState(state: HubState) {
 
 setInterval(() => {
   window.sendMainMessage("save-state", saveState());
-}, SAVE_PERIOD_MS);
+}, STATE_SAVE_PERIOD_MS);
+
+setInterval(() => {
+  window.sendMainMessage("save-type-memory", window.typeMemory);
+}, TYPE_MEMORY_SAVE_PERIOD_MS);
 
 // MANAGE DRAGGING
 
@@ -155,6 +192,7 @@ window.startDrag = (x, y, offsetX, offsetY, data) => {
   DRAG_ITEM.hidden = false;
   DRAG_ITEM.style.left = (x - offsetX).toString() + "px";
   DRAG_ITEM.style.top = (y - offsetY).toString() + "px";
+  document.body.style.cursor = "grabbing";
 };
 
 function dragMove(x: number, y: number) {
@@ -181,6 +219,7 @@ function dragEnd() {
   if (dragActive) {
     dragActive = false;
     DRAG_ITEM.hidden = true;
+    document.body.style.cursor = "";
     window.dispatchEvent(
       new CustomEvent("drag-update", {
         detail: { end: true, x: dragLastX, y: dragLastY, data: dragData }
@@ -362,7 +401,7 @@ document.addEventListener("drop", (event) => {
   if (event.dataTransfer) {
     let files: string[] = [];
     for (const file of event.dataTransfer.files) {
-      files.push(file.path);
+      files.push(window.electron.getFilePath(file));
     }
     if (files.length > 0) {
       startHistorical(files);
@@ -414,6 +453,10 @@ function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "restore-state":
       restoreState(message.data);
+      break;
+
+    case "restore-type-memory":
+      window.typeMemory = message.data;
       break;
 
     case "set-fullscreen":
@@ -470,6 +513,59 @@ function handleMainMessage(message: NamedMessage) {
         }
         if (!newHasFailed && oldHadFailed) {
           console.log("All assets loaded successfully");
+        }
+      }
+      break;
+
+    case "set-active-satellites":
+      window.tabs.setActiveSatellites(message.data);
+      break;
+
+    case "call-selection-setter":
+      let uuid: string = message.data.uuid;
+      let name: string = message.data.name;
+      let args: any[] = message.data.args;
+      if (window.tabs.isValidUUID(uuid)) {
+        switch (name) {
+          case "setHoveredTime":
+            window.selection.setHoveredTime(args[0]);
+            break;
+          case "setSelectedTime":
+            window.selection.setSelectedTime(args[0]);
+            break;
+          case "goIdle":
+            window.selection.goIdle();
+            break;
+          case "play":
+            window.selection.play();
+            break;
+          case "pause":
+            window.selection.pause();
+            break;
+          case "togglePlayback":
+            window.selection.togglePlayback();
+            break;
+          case "lock":
+            window.selection.lock();
+            break;
+          case "unlock":
+            window.selection.unlock();
+            break;
+          case "toggleLock":
+            window.selection.toggleLock();
+            break;
+          case "stepCycle":
+            window.selection.stepCycle(args[0]);
+            break;
+          case "setGrabZoomRange":
+            window.selection.setGrabZoomRange(args[0]);
+            break;
+          case "finishGrabZoom":
+            window.selection.finishGrabZoom();
+            break;
+          case "applyTimelineScroll":
+            window.selection.applyTimelineScroll(args[0], args[1], args[2]);
+            break;
         }
       }
       break;
@@ -569,6 +665,14 @@ function handleMainMessage(message: NamedMessage) {
       window.selection.setPlaybackSpeed(message.data);
       break;
 
+    case "toggle-sidebar":
+      window.sidebar.toggleVisible();
+      break;
+
+    case "toggle-controls":
+      window.tabs.toggleControlsVisible();
+      break;
+
     case "new-tab":
       window.tabs.addTab(message.data);
       break;
@@ -589,12 +693,36 @@ function handleMainMessage(message: NamedMessage) {
       window.tabs.renameTab(message.data.index, message.data.name);
       break;
 
+    case "source-list-type-response":
+      {
+        let uuid: string = message.data.uuid;
+        let state: SourceListItemState = message.data.state;
+        if (uuid in SourceList.typePromptCallbacks) {
+          SourceList.typePromptCallbacks[uuid](state);
+        }
+      }
+      break;
+
+    case "source-list-clear-response":
+      {
+        let uuid: string = message.data.uuid;
+        if (uuid in SourceList.clearPromptCallbacks) {
+          SourceList.clearPromptCallbacks[uuid]();
+        }
+      }
+      break;
+
     case "add-discrete-enabled":
       window.tabs.addDiscreteEnabled();
       break;
 
     case "edit-axis":
-      window.tabs.editAxis(message.data.legend, message.data.lockedRange, message.data.unitConversion);
+      window.tabs.editAxis(
+        message.data.legend,
+        message.data.lockedRange,
+        message.data.unitConversion,
+        message.data.filter
+      );
       break;
 
     case "clear-axis":
@@ -607,6 +735,10 @@ function handleMainMessage(message: NamedMessage) {
 
     case "edit-fov":
       window.tabs.setFov(message.data);
+      break;
+
+    case "add-table-range":
+      window.tabs.addTableRange(message.data.controllerUUID, message.data.rendererUUID, message.data.range);
       break;
 
     case "video-data":

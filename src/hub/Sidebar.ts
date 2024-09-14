@@ -2,12 +2,14 @@ import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
+import { SelectionMode } from "../shared/Selection";
 import { arraysEqual, setsEqual } from "../shared/util";
 import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
-import { SelectionMode } from "./Selection";
 
 export default class Sidebar {
+  private DEFAULT_SIDEBAR_WIDTH = 300;
+
   private SIDEBAR = document.getElementsByClassName("side-bar")[0] as HTMLElement;
   private SIDEBAR_HANDLE = document.getElementsByClassName("side-bar-handle")[0] as HTMLElement;
   private SIDEBAR_SHADOW = document.getElementsByClassName("side-bar-shadow")[0] as HTMLElement;
@@ -46,7 +48,7 @@ export default class Sidebar {
   private VALUE_WIDTH_MARGIN_PX = 12;
 
   private sidebarHandleActive = false;
-  private sidebarWidth = 300;
+  private sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
   private fieldCount = 0;
   private isTuningMode = false;
   private lastFieldKeys: string[] = [];
@@ -81,9 +83,25 @@ export default class Sidebar {
         let width = event.clientX;
         if (width > 500) width = 500;
         if (width >= 80 && width < 160) width = 160;
-        if (width < 80) width = 0;
+        if (width < 80) {
+          if (this.sidebarWidth > 0) {
+            width = 0;
+          } else {
+            width = this.sidebarWidth;
+          }
+        }
         this.sidebarWidth = width;
         this.updateWidth();
+      }
+    });
+    let lastClick = 0;
+    this.SIDEBAR_HANDLE.addEventListener("click", () => {
+      let now = new Date().getTime();
+      if (now - lastClick < 400) {
+        this.toggleVisible();
+        lastClick = 0;
+      } else {
+        lastClick = now;
       }
     });
     this.updateWidth();
@@ -91,6 +109,30 @@ export default class Sidebar {
     // Set up shadow when scrolling
     this.SIDEBAR.addEventListener("scroll", () => {
       this.SIDEBAR_SHADOW.style.opacity = this.SIDEBAR.scrollTop === 0 ? "0" : "1";
+    });
+
+    // Menu bar
+    let menuBar = document.getElementsByClassName("title-bar-menu")[0] as HTMLElement;
+    Array.from(menuBar.getElementsByTagName("button")).forEach((button, index) => {
+      let active = false;
+      button.addEventListener("click", () => {
+        if (active) {
+          active = false;
+          window.sendMainMessage("close-app-menu", {
+            index: index
+          });
+        } else {
+          active = true;
+          let rect = button.getBoundingClientRect();
+          window.sendMainMessage("open-app-menu", {
+            index: index,
+            coordinates: [Math.round(rect.left), Math.round(rect.bottom)]
+          });
+        }
+      });
+      button.addEventListener("mouseleave", () => {
+        active = false;
+      });
     });
 
     // Search controls
@@ -187,6 +229,16 @@ export default class Sidebar {
     if (!expandedEqual) this.refresh(true);
   }
 
+  /** Toggles the visibility of the sidebar. */
+  toggleVisible() {
+    if (this.sidebarWidth === 0) {
+      this.sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
+    } else {
+      this.sidebarWidth *= -1;
+    }
+    this.updateWidth();
+  }
+
   /** Updates the hovering effect on the search results. */
   private updateSearchHovered(scroll: boolean) {
     Array.from(this.SEARCH_RESULTS.children).forEach((element, index) => {
@@ -248,8 +300,9 @@ export default class Sidebar {
 
   /** Updates the displayed width based on the current state. */
   private updateWidth() {
-    document.documentElement.style.setProperty("--side-bar-width", this.sidebarWidth.toString() + "px");
-    document.documentElement.style.setProperty("--show-side-bar", this.sidebarWidth > 0 ? "1" : "0");
+    let appliedWidth = Math.max(this.sidebarWidth, 0);
+    document.documentElement.style.setProperty("--side-bar-width", appliedWidth.toString() + "px");
+    document.documentElement.style.setProperty("--show-side-bar", appliedWidth === 0 ? "0" : "1");
   }
 
   /** Updates the title with the duration and field count. */
@@ -523,8 +576,16 @@ export default class Sidebar {
       {
         let dragEvent = (x: number, y: number, offsetX: number, offsetY: number) => {
           let isGroup = this.selectGroup.includes(field.fullKey !== null ? field.fullKey : "");
-          this.DRAG_ITEM.innerText = title + (isGroup ? "..." : "");
-          this.DRAG_ITEM.style.fontWeight = isGroup ? "bolder" : "initial";
+          while (this.DRAG_ITEM.firstChild) {
+            this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
+          }
+
+          let text = document.createElement("span");
+          text.classList.add("field-text");
+          this.DRAG_ITEM.appendChild(text);
+          text.innerText = title + (isGroup ? "\u2026" : "");
+          text.style.fontWeight = isGroup ? "bolder" : "initial";
+
           window.startDrag(x, y, offsetX, offsetY, {
             fields: isGroup ? this.selectGroup : [field.fullKey],
             children: isGroup

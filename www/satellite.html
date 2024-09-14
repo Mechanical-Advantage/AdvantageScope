@@ -13,47 +13,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="satellite.css" />
+    <link rel="stylesheet" href="renderers.css" />
+    <link rel="stylesheet" href="code.css" />
     <script type="module" src="../bundles/satellite.js"></script>
     <title>AdvantageScope</title>
   </head>
 
-  <body>
-    <span id="odometry" hidden>
-      <div id="odometryCanvasContainer">
-        <canvas></canvas>
+  <body class="satellite">
+    <!-- Documentation -->
+    <div id="renderer0" hidden>
+      <div class="documentation-container">
+        <div class="documentation-text"></div>
       </div>
-      <div id="odometryHeatmapContainer" hidden></div>
-    </span>
+    </div>
 
-    <span id="threeDimension" hidden>
-      <div id="threeDimensionCanvasContainer">
-        <canvas id="threeDimensionCanvas"></canvas>
-        <div id="threeDimensionAnnotations"></div>
-        <div id="threeDimensionAlert" hidden></div>
+    <!-- Line Graph -->
+    <div id="renderer1" hidden>
+      <canvas class="line-graph-canvas"></canvas>
+      <div class="line-graph-scroll">
+        <div class="line-graph-scroll-content"></div>
       </div>
-    </span>
+    </div>
 
-    <span id="video" hidden>
-      <img class="video-image" />
-    </span>
+    <!-- Odometry -->
+    <div id="renderer2" hidden>
+      <div class="odometry-canvas-container">
+        <canvas class="odometry-canvas"></canvas>
+      </div>
+      <div class="odometry-heatmap-container" hidden></div>
+    </div>
 
-    <span id="joysticks" hidden>
-      <canvas id="joysticksCanvas"></canvas>
-    </span>
+    <!-- 3D Field -->
+    <div id="renderer3" hidden>
+      <div class="three-dimension-canvas-container">
+        <canvas class="three-dimension-canvas"></canvas>
+        <div class="three-dimension-annotations"></div>
+        <div class="three-dimension-alert" hidden></div>
+      </div>
+      <div class="spinner-cubes-container hidden">
+        <div class="spinner-cubes">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
 
-    <span id="swerve" hidden>
+    <!-- Table -->
+    <div id="renderer4" hidden>
+      <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+
+      <span class="data-table-header-template" hidden>
+        <div class="data-table-key-container">
+          <span></span>
+        </div>
+        <button class="data-table-key-delete" tabindex="-1">
+          <img src="symbols/xmark.svg" />
+        </button>
+      </span>
+
+      <div class="data-table-container">
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <th>
+                <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                <button class="data-table-jump-button" tabindex="-1">
+                  <img src="symbols/arrow.down.to.line.svg" />
+                </button>
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="data-table-drag-highlight" hidden></div>
+    </div>
+
+    <!-- Console -->
+    <div id="renderer5" hidden>
+      <img class="large-table-hand-icon" src="symbols/rectangle.and.hand.point.up.left.filled.svg" />
+
+      <div class="console-table-drag-highlight" hidden></div>
+      <div class="console-table-container">
+        <table class="console-table">
+          <tbody>
+            <tr>
+              <th>
+                <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
+                <button class="console-table-jump-button" tabindex="-1">
+                  <img src="symbols/arrow.down.to.line.svg" />
+                </button>
+              </th>
+              <th>
+                <div>
+                  <span>Hello</span>
+                  <button class="console-table-key-delete" tabindex="-1">
+                    <img src="symbols/xmark.svg" />
+                  </button>
+                </div>
+                <input type="search" placeholder="Filter" />
+              </th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div id="renderer6" hidden>
+      <div class="stats-values-container">
+        <table class="stats-values">
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="stats-histogram-container">
+        <canvas width="100" height="100"></canvas>
+      </div>
+    </div>
+
+    <!-- Video -->
+    <div id="renderer7" hidden>
+      <div class="video-container">
+        <img />
+      </div>
+    </div>
+
+    <!-- Joysticks -->
+    <div id="renderer8" hidden>
+      <canvas class="joysticks-canvas"></canvas>
+    </div>
+
+    <!-- Swerve -->
+    <div id="renderer9" hidden>
       <div class="swerve-canvas-container">
         <canvas class="swerve-canvas" width="100" height="100"></canvas>
       </div>
-    </span>
+    </div>
 
-    <span id="mechanism" hidden>
+    <!-- Mechanism -->
+    <div id="renderer10" hidden>
       <div class="mechanism-svg-container">
         <svg class="mechanism-svg"></svg>
       </div>
-    </span>
+    </div>
 
-    <span id="points" hidden>
+    <!-- Points -->
+    <div id="renderer11" hidden>
       <div class="points-background-container">
         <div class="points-background"></div>
         <span hidden>
@@ -70,6 +179,20 @@
           </svg>
         </span>
       </div>
-    </span>
+    </div>
+
+    <!-- Metadata -->
+    <div id="renderer12" hidden>
+      <div class="tab-centered">No metadata found. Check the documentation for details on metadata publishing.</div>
+      <div class="metadata-table-container" hidden>
+        <table class="metadata-table">
+          <tbody>
+            <tr>
+              <th></th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </body>
 </html>

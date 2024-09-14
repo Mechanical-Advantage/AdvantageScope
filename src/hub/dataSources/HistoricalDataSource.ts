@@ -1,6 +1,4 @@
 import Log from "../../shared/log/Log";
-import { getOrDefault } from "../../shared/log/LogUtil";
-import LoggableType from "../../shared/log/LoggableType";
 import WorkerManager from "../WorkerManager";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */

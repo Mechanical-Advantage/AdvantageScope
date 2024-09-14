@@ -103,6 +103,15 @@ export default class Log {
     return Object.keys(this.fields).filter((field) => !this.isGenerated(field)).length;
   }
 
+  /** Returns the internal field object for a key. Prefer other methods when possible. */
+  getField(key: string): LogField | null {
+    if (key in this.fields) {
+      return this.fields[key];
+    } else {
+      return null;
+    }
+  }
+
   /** Returns the constant field type. */
   getType(key: string): LoggableType | null {
     if (key in this.fields) {
@@ -285,43 +294,43 @@ export default class Log {
   }
 
   /** Reads a set of generic values from the field. */
-  getRange(key: string, start: number, end: number): LogValueSetAny | undefined {
-    if (key in this.fields) return this.fields[key].getRange(start, end);
+  getRange(key: string, start: number, end: number, uuid?: string): LogValueSetAny | undefined {
+    if (key in this.fields) return this.fields[key].getRange(start, end, uuid);
   }
 
   /** Reads a set of Raw values from the field. */
-  getRaw(key: string, start: number, end: number): LogValueSetRaw | undefined {
-    if (key in this.fields) return this.fields[key].getRaw(start, end);
+  getRaw(key: string, start: number, end: number, uuid?: string): LogValueSetRaw | undefined {
+    if (key in this.fields) return this.fields[key].getRaw(start, end, uuid);
   }
 
   /** Reads a set of Boolean values from the field. */
-  getBoolean(key: string, start: number, end: number): LogValueSetBoolean | undefined {
-    if (key in this.fields) return this.fields[key].getBoolean(start, end);
+  getBoolean(key: string, start: number, end: number, uuid?: string): LogValueSetBoolean | undefined {
+    if (key in this.fields) return this.fields[key].getBoolean(start, end, uuid);
   }
 
   /** Reads a set of Number values from the field. */
-  getNumber(key: string, start: number, end: number): LogValueSetNumber | undefined {
-    if (key in this.fields) return this.fields[key].getNumber(start, end);
+  getNumber(key: string, start: number, end: number, uuid?: string): LogValueSetNumber | undefined {
+    if (key in this.fields) return this.fields[key].getNumber(start, end, uuid);
   }
 
   /** Reads a set of String values from the field. */
-  getString(key: string, start: number, end: number): LogValueSetString | undefined {
-    if (key in this.fields) return this.fields[key].getString(start, end);
+  getString(key: string, start: number, end: number, uuid?: string): LogValueSetString | undefined {
+    if (key in this.fields) return this.fields[key].getString(start, end, uuid);
   }
 
   /** Reads a set of BooleanArray values from the field. */
-  getBooleanArray(key: string, start: number, end: number): LogValueSetBooleanArray | undefined {
-    if (key in this.fields) return this.fields[key].getBooleanArray(start, end);
+  getBooleanArray(key: string, start: number, end: number, uuid?: string): LogValueSetBooleanArray | undefined {
+    if (key in this.fields) return this.fields[key].getBooleanArray(start, end, uuid);
   }
 
   /** Reads a set of NumberArray values from the field. */
-  getNumberArray(key: string, start: number, end: number): LogValueSetNumberArray | undefined {
-    if (key in this.fields) return this.fields[key].getNumberArray(start, end);
+  getNumberArray(key: string, start: number, end: number, uuid?: string): LogValueSetNumberArray | undefined {
+    if (key in this.fields) return this.fields[key].getNumberArray(start, end, uuid);
   }
 
   /** Reads a set of StringArray values from the field. */
-  getStringArray(key: string, start: number, end: number): LogValueSetStringArray | undefined {
-    if (key in this.fields) return this.fields[key].getStringArray(start, end);
+  getStringArray(key: string, start: number, end: number, uuid?: string): LogValueSetStringArray | undefined {
+    if (key in this.fields) return this.fields[key].getStringArray(start, end, uuid);
   }
 
   /** Writes a new Raw value to the field. */

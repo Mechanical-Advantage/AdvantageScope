@@ -50,6 +50,17 @@ button > img {
   filter: invert(32%) sepia(0%) saturate(60%) hue-rotate(224deg) brightness(100%) contrast(95%);
 }
 
+button > object {
+  position: absolute;
+  max-height: 100%;
+  max-width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(75%);
+
+  pointer-events: none;
+}
+
 button.blurred > img,
 button:disabled > img {
   /* https://codepen.io/sosuke/pen/Pjoqqp */

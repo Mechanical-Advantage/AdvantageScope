@@ -13,6 +13,7 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
+  skipNumericArrayDeprecationWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   usb?: boolean;
 }

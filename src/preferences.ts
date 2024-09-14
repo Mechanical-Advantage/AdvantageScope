@@ -94,7 +94,8 @@ window.addEventListener("message", (event) => {
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
-            skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault
+            skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault,
+            skipNumericArrayDeprecationWarning: oldPrefs.skipNumericArrayDeprecationWarning
           };
           messagePort.postMessage(newPrefs);
         } else {

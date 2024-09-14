@@ -3,6 +3,7 @@ import RLOGDecoder from "./RLOGDecoder";
 
 self.onmessage = (event) => {
   // WORKER SETUP
+  self.onmessage = null;
   let { id, payload } = event.data;
   function resolve(result: any) {
     self.postMessage({ id: id, payload: result });

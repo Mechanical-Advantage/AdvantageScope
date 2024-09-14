@@ -19,7 +19,9 @@ function bundle(input, output, isMain, external = []) {
     external: external,
     plugins: [
       typescript(),
-      nodeResolve(),
+      nodeResolve({
+        preferBuiltins: true
+      }),
       commonjs(),
       cleanup(),
       json(),
@@ -87,6 +89,7 @@ const smallRendererBundles = [
   bundle("unitConversion.ts", "unitConversion.js", false),
   bundle("renameTab.ts", "renameTab.js", false),
   bundle("editFov.ts", "editFov.js", false),
+  bundle("sourceListHelp.ts", "sourceListHelp.js", false),
   bundle("export.ts", "export.js", false),
   bundle("download.ts", "download.js", false),
   bundle("preferences.ts", "preferences.js", false),
@@ -96,7 +99,9 @@ const workerBundles = [
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false),
   bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false),
   bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false),
-  bundle("hub/exportWorker.ts", "hub$exportWorker.js", false)
+  bundle("hub/exportWorker.ts", "hub$exportWorker.js", false),
+  bundle("shared/renderers/threeDimension/workers/loadField.ts", "shared$loadField.js", false),
+  bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false)
 ];
 
 export default (cliArgs) => {

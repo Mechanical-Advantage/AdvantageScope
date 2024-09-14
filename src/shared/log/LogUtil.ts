@@ -1,12 +1,12 @@
 import Fuse from "fuse.js";
-import { Rotation2d, Translation2d } from "../geometry";
 import MatchInfo, { MatchType } from "../MatchInfo";
+import { Rotation2d, Translation2d } from "../geometry";
 import { convert } from "../units";
-import { arraysEqual } from "../util";
+import { arraysEqual, jsonCopy } from "../util";
 import Log from "./Log";
 import LogFieldTree from "./LogFieldTree";
-import LoggableType from "./LoggableType";
 import { LogValueSetBoolean } from "./LogValueSets";
+import LoggableType from "./LoggableType";
 
 export const TYPE_KEY = ".type";
 export const STRUCT_PREFIX = "struct:";
@@ -24,6 +24,13 @@ export const ENABLED_KEYS = withMergedKeys([
   "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled",
   "RobotEnable" // Phoenix
+]);
+export const AUTONOMOUS_KEYS = withMergedKeys([
+  "/DriverStation/Autonomous",
+  "NT:/AdvantageKit/DriverStation/Autonomous",
+  "DS:autonomous",
+  "NT:/FMSInfo/FMSControlData",
+  "/DSLog/Status/DSTeleop"
 ]);
 export const ALLIANCE_KEYS = withMergedKeys([
   "/DriverStation/AllianceStation",
@@ -92,14 +99,23 @@ export function getLogValueText(value: any, type: LoggableType): string {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
     });
     return textArray.join("-");
+  } else if (Array.isArray(value)) {
+    return "[" + value.map((x) => JSON.stringify(x)).join(", ") + "]";
   } else {
     return JSON.stringify(value);
   }
 }
 
-export function getOrDefault(log: Log, key: string, type: LoggableType, timestamp: number, defaultValue: any): any {
+export function getOrDefault(
+  log: Log,
+  key: string,
+  type: LoggableType,
+  timestamp: number,
+  defaultValue: any,
+  uuid?: string
+): any {
   if (log.getType(key) === type) {
-    let logData = log.getRange(key, timestamp, timestamp);
+    let logData = log.getRange(key, timestamp, timestamp, uuid);
     if (logData !== undefined && logData.values.length > 0 && logData.timestamps[0] <= timestamp) {
       return logData.values[0];
     }
@@ -186,6 +202,80 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   return enabledData;
 }
 
+export function getAutonomousData(log: Log): LogValueSetBoolean | null {
+  let autonomousKey = AUTONOMOUS_KEYS.find((key) => log.getFieldKeys().includes(key));
+  if (!autonomousKey) return null;
+  let autonomousData: LogValueSetBoolean | null = null;
+  if (autonomousKey.endsWith("FMSControlData")) {
+    let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
+    if (tempAutoData) {
+      autonomousData = {
+        timestamps: tempAutoData.timestamps,
+        values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
+      };
+    }
+  } else {
+    let tempAutoData = log.getBoolean(autonomousKey, -Infinity, Infinity);
+    if (!tempAutoData) return null;
+    autonomousData = tempAutoData;
+    if (autonomousKey.endsWith("DSTeleop")) {
+      autonomousData = {
+        timestamps: autonomousData.timestamps,
+        values: autonomousData.values.map((value) => !value)
+      };
+    }
+  }
+  return autonomousData;
+}
+
+export function getRobotStateRanges(log: Log): { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] {
+  let enabledData = getEnabledData(log);
+  let autoData = getAutonomousData(log);
+  if (!enabledData || !autoData) return [];
+
+  // Combine enabled and auto data
+  let allTimestamps = [...enabledData.timestamps, ...autoData.timestamps];
+  allTimestamps = [...new Set(allTimestamps)];
+  allTimestamps.sort((a, b) => Number(a) - Number(b));
+  let combined: { timestamp: number; enabled: boolean; auto: boolean }[] = [];
+  allTimestamps.forEach((timestamp) => {
+    let enabled = enabledData!.values.findLast((_, index) => enabledData!.timestamps[index] <= timestamp);
+    let auto = autoData!.values.findLast((_, index) => autoData!.timestamps[index] <= timestamp);
+    if (enabled === undefined) enabled = false;
+    if (auto === undefined) auto = false;
+    combined.push({
+      timestamp: timestamp,
+      enabled: enabled,
+      auto: auto
+    });
+  });
+
+  // Get ranges
+  let ranges: { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] = [];
+  combined.forEach((sample, index) => {
+    let end: number | undefined = undefined;
+    if (sample.enabled) {
+      if (index < combined.length - 1) {
+        end = combined[index + 1].timestamp;
+      }
+      ranges.push({
+        start: sample.timestamp,
+        end: end,
+        mode: sample.auto ? "auto" : "teleop"
+      });
+    } else {
+      let endSample = combined.find((endSample) => endSample.timestamp > sample.timestamp && endSample.enabled);
+      if (endSample) end = endSample.timestamp;
+      ranges.push({
+        start: sample.timestamp,
+        end: end,
+        mode: "disabled"
+      });
+    }
+  });
+  return ranges;
+}
+
 export function getIsRedAlliance(log: Log, time: number): boolean {
   let allianceKey = ALLIANCE_KEYS.find((key) => log.getFieldKeys().includes(key));
   if (!allianceKey) return false;
@@ -194,7 +284,10 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
     // Integer value (station) from AdvantageKit
     let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
-      return tempAllianceData.values[tempAllianceData.values.length - 1] <= 3;
+      return (
+        tempAllianceData.values[tempAllianceData.values.length - 1] <= 3 &&
+        tempAllianceData.values[tempAllianceData.values.length - 1] > 0
+      );
     }
   } else {
     // Boolean value from NT
@@ -261,12 +354,14 @@ export interface JoystickState {
   povs: number[];
 }
 
+export const BlankJoystickState: JoystickState = {
+  buttons: [],
+  axes: [],
+  povs: []
+};
+
 export function getJoystickState(log: Log, joystickId: number, time: number): JoystickState {
-  let state: JoystickState = {
-    buttons: [],
-    axes: [],
-    povs: []
-  };
+  let state = jsonCopy(BlankJoystickState);
   if (joystickId < 0 || joystickId > 5 || joystickId % 1 !== 0) return state;
 
   // Find joystick table

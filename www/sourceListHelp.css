@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  user-select: text;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #222;
+  }
+}
+
+body > * {
+  position: relative;
+  left: 42px;
+  width: calc(100% - 42px - 5px);
+  padding-bottom: 8px;
+}
+
+div.type-header {
+  left: 0%;
+  height: 40px;
+  width: 100%;
+  padding: 0px;
+  border-top: 1px solid #eee;
+}
+
+div.type-header:first-child {
+  border-top: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.type-header {
+    border-top: 1px solid #333;
+  }
+}
+
+div.type-icon-container {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+}
+
+object.type-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(100%);
+}
+
+div.type-title {
+  position: absolute;
+  top: 0%;
+  height: 40px;
+  left: 42px;
+  right: 0%;
+
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+div.source-types {
+  font-style: italic;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+div.parent-warning {
+  color: #ff6600;
+}
+
+table.options {
+  table-layout: auto;
+  border-collapse: collapse;
+}
+
+table.options td {
+  vertical-align: top;
+  padding-bottom: 8px;
+}
+
+table.options td:first-child {
+  padding-left: 0px;
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+table.options td:last-child {
+  width: 100%;
+  padding-left: 5px;
+  padding-right: 0px;
+  text-align: left;
+  word-break: break-word;
+}

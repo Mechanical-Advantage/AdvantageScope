@@ -10,19 +10,46 @@ export default class ScrollSensor {
   private lastScrollLeft: number = 0;
   private lastScrollTop: number = 0;
 
+  private panActive = false;
+  private panLastCursorX = 0;
+
   /**
    * Creates a new ScrollSensor.
    * @param container The container element. The overflow should be "scroll" and the scrollbar should be hidden. The child element should have the dimensions 1000000x1000000px.
    * @param callback A function to be called after each scroll event, with the relative change in x and y.
    */
-  constructor(container: HTMLElement, callback: (dx: number, dy: number) => void) {
+  constructor(container: HTMLElement, callback: (dx: number, dy: number) => void, enableMouseControls = true) {
     this.container = container;
     this.callback = callback;
 
+    // Scroll events
     this.resetNext = true;
     this.container.addEventListener("scroll", () => {
       this.update();
     });
+
+    // Mouse controls
+    if (enableMouseControls) {
+      container.addEventListener("mousedown", (event) => {
+        if (event.shiftKey) return;
+        this.panActive = true;
+        let x = event.clientX - container.getBoundingClientRect().x;
+        this.panLastCursorX = x;
+      });
+      container.addEventListener("mouseleave", () => {
+        this.panActive = false;
+      });
+      container.addEventListener("mouseup", () => {
+        this.panActive = false;
+      });
+      container.addEventListener("mousemove", (event) => {
+        if (this.panActive) {
+          let cursorX = event.clientX - container.getBoundingClientRect().x;
+          callback(this.panLastCursorX - cursorX, 0);
+          this.panLastCursorX = cursorX;
+        }
+      });
+    }
   }
 
   /** Should be called periodically to trigger resets. */
