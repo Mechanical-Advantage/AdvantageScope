@@ -564,33 +564,22 @@ export default class SourceList {
 
       // Rearrange items
       for (let i = 0; i < itemCount; i++) {
+        let state = sourceState[startIndex];
         if (uuid !== this.UUID) {
-          // let element = sourceElement.children[startIndex];
-          // this.LIST.insertBefore(element, this.LIST.children[endIndex]);
-          // let item = sourceState[startIndex];
-          // this.state.splice(endIndex, 0, item);
-          // sourceState.splice(startIndex, 1);
-
           sourceElement.removeChild(sourceElement.children[startIndex]);
-          let state = sourceState[startIndex];
           sourceState.splice(startIndex, 1);
           this.addListItem(state, endIndex);
-
           endIndex++;
         } else if (endIndex < startIndex) {
-          let element = this.LIST.children[startIndex];
-          this.LIST.insertBefore(element, this.LIST.children[endIndex]);
-          let item = this.state[startIndex];
-          this.state.splice(endIndex, 0, item);
-          this.state.splice(startIndex + 1, 1);
+          this.LIST.removeChild(this.LIST.children[startIndex]);
+          this.state.splice(startIndex, 1);
+          this.addListItem(state, endIndex);
           startIndex++;
           endIndex++;
         } else if (endIndex > startIndex) {
-          let element = this.LIST.children[startIndex];
-          this.LIST.insertBefore(element, this.LIST.children[endIndex]);
-          let item = this.state[startIndex];
-          this.state.splice(endIndex, 0, item);
+          this.LIST.removeChild(this.LIST.children[startIndex]);
           this.state.splice(startIndex, 1);
+          this.addListItem(state, endIndex - 1);
         }
       }
     } else {
