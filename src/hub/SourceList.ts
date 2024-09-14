@@ -626,13 +626,19 @@ export default class SourceList {
 
     // Exit if out of range
     let listRect = this.ROOT.getBoundingClientRect();
-    if (listRect.width === 0 || listRect.height === 0) {
+    if (
+      listRect.width === 0 ||
+      listRect.height === 0 ||
+      x < listRect.left ||
+      x > listRect.right ||
+      y < listRect.top ||
+      y > listRect.bottom
+    ) {
       this.DRAG_HIGHLIGHT.hidden = true;
       return;
     }
 
     // Check pixel ranges
-    let withinList = x > listRect.left && x < listRect.right && y > listRect.top && y < listRect.bottom;
     let parentIndex: number | null = null;
     for (let i = 0; i < this.LIST.childElementCount; i++) {
       let itemRect = this.LIST.children[i].getBoundingClientRect();
@@ -682,7 +688,7 @@ export default class SourceList {
     if (end) {
       this.DRAG_HIGHLIGHT.hidden = true;
       if (!typeValidAsChild) parentIndex = null;
-      if (parentIndex !== null || (typeValidAsRoot && withinList)) {
+      if (parentIndex !== null || typeValidAsRoot) {
         draggedFields.forEach((field) => {
           this.addField(field, parentIndex === null ? undefined : parentIndex);
         });
@@ -691,13 +697,17 @@ export default class SourceList {
         element.classList.remove("parent-highlight");
       });
     } else if (typeValidAsChild && parentIndex !== null) {
+      let top = Math.max(this.LIST.children[parentIndex!].getBoundingClientRect().top - listRect.top, 0);
+      let bottom = Math.min(
+        this.LIST.children[parentIndex!].getBoundingClientRect().bottom - listRect.top,
+        listRect.height
+      );
       this.DRAG_HIGHLIGHT.style.left = "0%";
-      this.DRAG_HIGHLIGHT.style.top =
-        (this.LIST.children[parentIndex!].getBoundingClientRect().top - listRect.top).toString() + "px";
+      this.DRAG_HIGHLIGHT.style.top = top.toString() + "px";
       this.DRAG_HIGHLIGHT.style.width = "100%";
-      this.DRAG_HIGHLIGHT.style.height = this.LIST.children[parentIndex!].clientHeight.toString() + "px";
+      this.DRAG_HIGHLIGHT.style.height = (bottom - top).toString() + "px";
       this.DRAG_HIGHLIGHT.hidden = false;
-    } else if (typeValidAsRoot && withinList) {
+    } else if (typeValidAsRoot) {
       this.DRAG_HIGHLIGHT.style.left = "0%";
       this.DRAG_HIGHLIGHT.style.top = "0%";
       this.DRAG_HIGHLIGHT.style.width = "100%";
