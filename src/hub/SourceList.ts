@@ -193,10 +193,10 @@ export default class SourceList {
         if (index === -1) return;
 
         // Update drag item
-        let element = this.LIST.children[index];
         while (this.DRAG_ITEM.firstChild) {
           this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
         }
+        let element = this.LIST.children[index];
         let dragContainer = document.createElement("div");
         dragContainer.style.position = "absolute";
         dragContainer.style.width = element.clientWidth.toString() + "px";
@@ -222,7 +222,6 @@ export default class SourceList {
             });
           });
         }
-
         dragContainer.appendChild(elementClone);
         this.DRAG_ITEM.appendChild(dragContainer);
 
