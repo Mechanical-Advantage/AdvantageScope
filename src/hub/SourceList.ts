@@ -193,10 +193,10 @@ export default class SourceList {
         if (index === -1) return;
 
         // Update drag item
-        let element = this.LIST.children[index];
         while (this.DRAG_ITEM.firstChild) {
           this.DRAG_ITEM.removeChild(this.DRAG_ITEM.firstChild);
         }
+        let element = this.LIST.children[index];
         let dragContainer = document.createElement("div");
         dragContainer.style.position = "absolute";
         dragContainer.style.width = element.clientWidth.toString() + "px";
@@ -222,7 +222,6 @@ export default class SourceList {
             });
           });
         }
-
         dragContainer.appendChild(elementClone);
         this.DRAG_ITEM.appendChild(dragContainer);
 
@@ -564,33 +563,22 @@ export default class SourceList {
 
       // Rearrange items
       for (let i = 0; i < itemCount; i++) {
+        let state = sourceState[startIndex];
         if (uuid !== this.UUID) {
-          // let element = sourceElement.children[startIndex];
-          // this.LIST.insertBefore(element, this.LIST.children[endIndex]);
-          // let item = sourceState[startIndex];
-          // this.state.splice(endIndex, 0, item);
-          // sourceState.splice(startIndex, 1);
-
           sourceElement.removeChild(sourceElement.children[startIndex]);
-          let state = sourceState[startIndex];
           sourceState.splice(startIndex, 1);
           this.addListItem(state, endIndex);
-
           endIndex++;
         } else if (endIndex < startIndex) {
-          let element = this.LIST.children[startIndex];
-          this.LIST.insertBefore(element, this.LIST.children[endIndex]);
-          let item = this.state[startIndex];
-          this.state.splice(endIndex, 0, item);
-          this.state.splice(startIndex + 1, 1);
+          this.LIST.removeChild(this.LIST.children[startIndex]);
+          this.state.splice(startIndex, 1);
+          this.addListItem(state, endIndex);
           startIndex++;
           endIndex++;
         } else if (endIndex > startIndex) {
-          let element = this.LIST.children[startIndex];
-          this.LIST.insertBefore(element, this.LIST.children[endIndex]);
-          let item = this.state[startIndex];
-          this.state.splice(endIndex, 0, item);
+          this.LIST.removeChild(this.LIST.children[startIndex]);
           this.state.splice(startIndex, 1);
+          this.addListItem(state, endIndex - 1);
         }
       }
     } else {
@@ -626,13 +614,19 @@ export default class SourceList {
 
     // Exit if out of range
     let listRect = this.ROOT.getBoundingClientRect();
-    if (listRect.width === 0 || listRect.height === 0) {
+    if (
+      listRect.width === 0 ||
+      listRect.height === 0 ||
+      x < listRect.left ||
+      x > listRect.right ||
+      y < listRect.top ||
+      y > listRect.bottom
+    ) {
       this.DRAG_HIGHLIGHT.hidden = true;
       return;
     }
 
     // Check pixel ranges
-    let withinList = x > listRect.left && x < listRect.right && y > listRect.top && y < listRect.bottom;
     let parentIndex: number | null = null;
     for (let i = 0; i < this.LIST.childElementCount; i++) {
       let itemRect = this.LIST.children[i].getBoundingClientRect();
@@ -682,7 +676,7 @@ export default class SourceList {
     if (end) {
       this.DRAG_HIGHLIGHT.hidden = true;
       if (!typeValidAsChild) parentIndex = null;
-      if (parentIndex !== null || (typeValidAsRoot && withinList)) {
+      if (parentIndex !== null || typeValidAsRoot) {
         draggedFields.forEach((field) => {
           this.addField(field, parentIndex === null ? undefined : parentIndex);
         });
@@ -691,13 +685,17 @@ export default class SourceList {
         element.classList.remove("parent-highlight");
       });
     } else if (typeValidAsChild && parentIndex !== null) {
+      let top = Math.max(this.LIST.children[parentIndex!].getBoundingClientRect().top - listRect.top, 0);
+      let bottom = Math.min(
+        this.LIST.children[parentIndex!].getBoundingClientRect().bottom - listRect.top,
+        listRect.height
+      );
       this.DRAG_HIGHLIGHT.style.left = "0%";
-      this.DRAG_HIGHLIGHT.style.top =
-        (this.LIST.children[parentIndex!].getBoundingClientRect().top - listRect.top).toString() + "px";
+      this.DRAG_HIGHLIGHT.style.top = top.toString() + "px";
       this.DRAG_HIGHLIGHT.style.width = "100%";
-      this.DRAG_HIGHLIGHT.style.height = this.LIST.children[parentIndex!].clientHeight.toString() + "px";
+      this.DRAG_HIGHLIGHT.style.height = (bottom - top).toString() + "px";
       this.DRAG_HIGHLIGHT.hidden = false;
-    } else if (typeValidAsRoot && withinList) {
+    } else if (typeValidAsRoot) {
       this.DRAG_HIGHLIGHT.style.left = "0%";
       this.DRAG_HIGHLIGHT.style.top = "0%";
       this.DRAG_HIGHLIGHT.style.width = "100%";

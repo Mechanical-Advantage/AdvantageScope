@@ -2139,14 +2139,13 @@ function createHubWindow(state?: WindowState) {
         prefs.backgroundMaterial = "acrylic";
       }
       let overlayOptions: TitleBarOverlay = {
-        color: nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff",
+        color: "#00000000",
         symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
         height: 38
       };
       prefs.titleBarOverlay = overlayOptions;
       nativeTheme.addListener("updated", () => {
         if (window) {
-          overlayOptions.color = nativeTheme.shouldUseDarkColors ? "#222222" : "#ffffff";
           overlayOptions.symbolColor = nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000";
           window.setTitleBarOverlay(overlayOptions);
         }
@@ -2568,6 +2567,7 @@ function createSatellite(
       })
     : undefined;
   const state = "state" in config ? config.state : undefined;
+  const uuid = configData !== undefined ? configData.uuid : state!.uuid;
 
   const width = state === undefined ? SATELLITE_DEFAULT_WIDTH : state.width;
   const height = state === undefined ? SATELLITE_DEFAULT_HEIGHT : state.height;
@@ -2623,6 +2623,16 @@ function createSatellite(
           select3DCameraPopup(satellite, message.data.options, message.data.selectedIndex, message.data.fov);
           break;
 
+        case "add-table-range":
+          hubWindows.forEach((window) => {
+            sendMessage(window, "add-table-range", {
+              controllerUUID: uuid,
+              rendererUUID: message.data.uuid,
+              range: message.data.range
+            });
+          });
+          break;
+
         case "save-state":
           stateTracker.saveRendererState(satellite, message.data);
           break;
@@ -2636,6 +2646,10 @@ function createSatellite(
 
         case "open-link":
           shell.openExternal(message.data);
+          break;
+
+        default:
+          console.warn("Unknown message from satellite renderer process", message);
           break;
       }
     });
@@ -2660,7 +2674,6 @@ function createSatellite(
   powerMonitor.on("on-ac", () => sendMessage(satellite, "set-battery", false));
   powerMonitor.on("on-battery", () => sendMessage(satellite, "set-battery", true));
 
-  const uuid = configData !== undefined ? configData.uuid : state!.uuid;
   if (!(uuid in satelliteWindows)) {
     satelliteWindows[uuid] = [];
   }

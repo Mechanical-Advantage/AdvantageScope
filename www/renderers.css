@@ -402,7 +402,7 @@ table.data-table th:last-child {
 table.data-table td {
   height: 16px;
   padding: 4px;
-  font-family: monospace;
+  font-family: Courier, monospace;
   user-select: text;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
@@ -584,7 +584,7 @@ table.console-table td {
   padding: 0px 6px 0px 6px;
   user-select: text;
   vertical-align: top;
-  font-family: monospace;
+  font-family: Courier, monospace;
   font-size: 12px;
   line-height: 16px;
   overflow-wrap: break-word;
@@ -690,7 +690,7 @@ table.stats-values tr.values td:first-child {
 
 table.stats-values tr.values td:not(:first-child) {
   user-select: text;
-  font-family: monospace;
+  font-family: Courier, monospace;
   font-size: 14px;
 }
 
@@ -855,7 +855,7 @@ table.metadata-table td:first-child {
 
 table.metadata-table td:not(:first-child) {
   padding: 6px;
-  font-family: monospace;
+  font-family: Courier, monospace;
   font-size: 14px;
   user-select: text;
 }

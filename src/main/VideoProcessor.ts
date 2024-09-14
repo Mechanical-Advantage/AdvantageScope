@@ -1,10 +1,10 @@
+import ytdl from "@distube/ytdl-core";
 import { ChildProcess, spawn } from "child_process";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
-import ytdl from "ytdl-core";
 import MatchInfo from "../shared/MatchInfo";
 import Preferences from "../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";

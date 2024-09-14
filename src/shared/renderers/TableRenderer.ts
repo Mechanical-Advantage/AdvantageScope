@@ -1,12 +1,13 @@
 import { SelectionMode } from "../Selection";
-import LogField from "../log/LogField";
 import { getLogValueText } from "../log/LogUtil";
 import { LogValueSetAny } from "../log/LogValueSets";
 import LoggableType from "../log/LoggableType";
-import { arraysEqual, formatTimeWithMS } from "../util";
+import { arraysEqual, createUUID, formatTimeWithMS } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class TableRenderer implements TabRenderer {
+  readonly UUID = createUUID();
+
   private ROOT: HTMLElement;
   private HEADER_TEMPLATE: HTMLElement;
   private TABLE_CONTAINER: HTMLElement;
@@ -29,6 +30,7 @@ export default class TableRenderer implements TabRenderer {
   private lastScrollPosition: number | null = null;
   private hoverCursorY: number | null = null;
   private didClearHoveredTime = false;
+  private timestampRange: [number, number] | null = null;
 
   private selectionMode: SelectionMode = SelectionMode.Idle;
   private selectedTime: number | null = null;
@@ -192,6 +194,10 @@ export default class TableRenderer implements TabRenderer {
     return null;
   }
 
+  getTimestampRange(): [number, number] | null {
+    return this.timestampRange;
+  }
+
   render(command: TableRendererCommand): void {
     let initialScrollPosition = this.TABLE_CONTAINER.scrollTop;
     this.selectionMode = command.selectionMode;
@@ -287,28 +293,29 @@ export default class TableRenderer implements TabRenderer {
       this.dataRowTimestamps.push(this.timestamps[i]);
       cellText.push([formatTimeWithMS(this.timestamps[i])]);
     }
+    this.timestampRange =
+      this.dataRowTimestamps.length > 0
+        ? [this.dataRowTimestamps[0], this.dataRowTimestamps[this.dataRowTimestamps.length - 1]]
+        : null;
     command.fields.forEach((field) => {
       if (!field.isAvailable) {
         for (let i = dataRowStart; i < dataRowEnd; i++) {
           cellText[i - dataRowStart].push("null");
         }
-        return;
-      }
-      let fieldObj = LogField.fromSerialized(field.serialized);
-      let data = fieldObj.getRange(this.timestamps[dataRowStart], this.timestamps[dataRowEnd]) as LogValueSetAny;
-      for (let i = dataRowStart; i < dataRowEnd; i++) {
-        let nextIndex = data.timestamps.findIndex((value) => value > this.timestamps[i]);
-        if (nextIndex === -1) nextIndex = data?.timestamps.length;
-        if (nextIndex === 0) {
-          cellText[i - dataRowStart].push("null");
-        } else {
-          let value = data.values[nextIndex - 1];
-          let type = fieldObj.getType();
-          let text = getLogValueText(value, type);
-          if (type === LoggableType.Boolean) {
-            text = (value ? "🟩" : "🟥") + " " + text;
+      } else {
+        for (let i = dataRowStart; i < dataRowEnd; i++) {
+          let nextIndex = field.data!.timestamps.findIndex((value) => value > this.timestamps[i]);
+          if (nextIndex === -1) nextIndex = field.data!.timestamps.length;
+          if (nextIndex === 0 || field.type === null) {
+            cellText[i - dataRowStart].push("null");
+          } else {
+            let value = field.data!.values[nextIndex - 1];
+            let text = getLogValueText(value, field.type);
+            if (field.type === LoggableType.Boolean) {
+              text = (value ? "🟩" : "🟥") + " " + text;
+            }
+            cellText[i - dataRowStart].push(text);
           }
-          cellText[i - dataRowStart].push(text);
         }
       }
     });
@@ -378,7 +385,8 @@ export type TableRendererCommand = {
   fields: {
     key: string;
     isAvailable: boolean;
-    serialized: any;
+    data: LogValueSetAny | null;
+    type: LoggableType | null;
   }[];
   selectionMode: SelectionMode;
   selectedTime: number | null;

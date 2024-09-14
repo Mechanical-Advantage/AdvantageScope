@@ -451,6 +451,7 @@ export default class OdometryController implements TabController {
           }
         }
       });
+      visionTargets.reverse();
       swerveStates.reverse();
 
       // Add object

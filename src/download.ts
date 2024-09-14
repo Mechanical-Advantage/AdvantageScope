@@ -19,7 +19,7 @@ let messagePort: MessagePort | null = null;
 let platform: string = "";
 let preferences: Preferences | null = null;
 
-let lastAddress: string = "";
+let address: string = "";
 let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;
@@ -55,11 +55,16 @@ function handleMainMessage(message: NamedMessage) {
       preferences = message.data;
       let path = "";
       if (preferences) {
-        lastAddress = preferences.usb ? USB_ADDRESS : preferences.rioAddress;
+        address = preferences.usb ? USB_ADDRESS : preferences.rioAddress;
+        // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
+        address = address
+          .split(".")
+          .map((part) => part.replace(/^0+/, "") || "0")
+          .join(".");
         path = preferences.rioPath;
       }
       sendMainMessage("start", {
-        address: lastAddress,
+        address: address,
         path: path
       });
       break;
@@ -94,11 +99,11 @@ function handleMainMessage(message: NamedMessage) {
       if (message.data === "No such file") {
         friendlyText = "Failed to open log folder at <u>" + preferences?.rioPath + "</u>";
       } else if (message.data === "Timed out while waiting for handshake") {
-        friendlyText = "roboRIO not found at <u>" + lastAddress + "</u> (check connection)";
+        friendlyText = "roboRIO not found at <u>" + address + "</u> (check connection)";
       } else if (message.data.includes("ENOTFOUND")) {
-        friendlyText = "Unknown address <u>" + lastAddress + "</u>";
+        friendlyText = "Unknown address <u>" + address + "</u>";
       } else if (message.data === "All configured authentication methods failed") {
-        friendlyText = "Failed to authenticate to roboRIO at <u>" + lastAddress + "</u>";
+        friendlyText = "Failed to authenticate to roboRIO at <u>" + address + "</u>";
       } else if (message.data === "Not connected") {
         friendlyText = "Lost connection to roboRIO";
       } else {
