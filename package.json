@@ -1,7 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "3.2.1",
+  "version": "4.0.0-alpha",
   "description": "Robot telemetry application for FRC",
   "author": {
     "name": "FRC 6328",
