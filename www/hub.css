@@ -131,16 +131,10 @@ div.loading-glow {
   left: var(--side-bar-width);
   width: calc((100% - var(--side-bar-width)) * var(--loading-glow-progress));
   top: 0px;
-  height: 3px;
-  transform: translateY(calc(-3px + 3px * var(--show-loading-glow)));
+  height: 4px;
+  transform: translateY(calc(-4px + 4px * var(--show-loading-glow)));
   transition: transform 0.3s;
   background-color: #303dc9;
-}
-
-body.fancy-title-bar-win div.loading-glow {
-  /* Apparently Windows cuts off a few pixels on the top with a hidden title bar? */
-  height: 5px;
-  transform: translateY(calc(-5px + 5px * var(--show-loading-glow)));
 }
 
 @keyframes publishingGlowPulsing {
