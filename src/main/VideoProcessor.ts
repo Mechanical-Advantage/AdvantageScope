@@ -4,7 +4,7 @@ import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
-import ytdl from "ytdl-core";
+import ytdl from "@distube/ytdl-core";
 import MatchInfo from "../shared/MatchInfo";
 import Preferences from "../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";
