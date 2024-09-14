@@ -410,6 +410,7 @@ export default class ThreeDimensionController implements TabController {
         });
       }
       let mechanism = mechanisms.length === 0 ? null : mergeMechanismStates(mechanisms);
+      visionTargets.reverse();
       swerveStates.reverse();
 
       // Add object
