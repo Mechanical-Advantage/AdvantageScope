@@ -37,6 +37,16 @@ import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/build
 import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
 import {
+  delayBetaSurvey,
+  isBeta,
+  isBetaExpired,
+  isBetaWelcomeComplete,
+  openBetaSurvey,
+  saveBetaWelcomeComplete,
+  shouldPromptBetaSurvey
+} from "./BetaConfig";
+import {
+  APP_VERSION,
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
   DOWNLOAD_PASSWORD,
@@ -232,6 +242,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "prompt-update":
       updateChecker.showPrompt();
+      break;
+
+    case "open-feedback":
+      shell.openExternal("https://github.com/" + REPOSITORY + "/issues/new/choose");
       break;
 
     case "historical-start":
@@ -1634,7 +1648,7 @@ function setupMenu() {
               .then((response) => {
                 if (!response.canceled) {
                   let state = stateTracker.getCurrentApplicationState() as ApplicationState & { version: string };
-                  state.version = app.isPackaged ? app.getVersion() : "dev";
+                  state.version = APP_VERSION;
                   jsonfile.writeFile(response.filePath!, state, { spaces: 2 });
                 }
               });
@@ -1695,7 +1709,7 @@ function setupMenu() {
                   }
 
                   // Check version compatability
-                  if (app.isPackaged && data.version !== app.getVersion()) {
+                  if (app.isPackaged && data.version !== APP_VERSION) {
                     let result = dialog.showMessageBoxSync({
                       type: "warning",
                       title: "Warning",
@@ -2209,7 +2223,48 @@ function createHubWindow(state?: WindowState) {
   resetTouchBar();
 
   // Show window when loaded
-  window.once("ready-to-show", window.show);
+  window.once("ready-to-show", () => {
+    window.show();
+    if (isBeta()) {
+      if (isBetaExpired()) {
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Beta is complete",
+            detail:
+              "The AdvantageScope beta is complete. " +
+              (DISTRIBUTOR === Distributor.WPILib
+                ? "Please update to the latest stable release of WPILib."
+                : "Please download the latest stable release of AdvantageScope from GitHub."),
+            buttons: ["Quit", "Ignore"],
+            defaultId: 0
+          })
+          .then((result) => {
+            if (result.response === 0) app.quit();
+          });
+      } else if (!isBetaWelcomeComplete()) {
+        openBetaWelcome(window);
+      } else if (shouldPromptBetaSurvey()) {
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "We need your help!",
+            detail:
+              "Please take 5 minutes to give us some feedback on the AdvantageScope beta. Users like you help us make AdvantageScope better for everyone!",
+            buttons: ["Give Feedback", "Not Now"]
+          })
+          .then((result) => {
+            if (result.response === 0) {
+              openBetaSurvey();
+            } else {
+              delayBetaSurvey();
+            }
+          });
+      }
+    }
+  });
   let firstLoad = true;
   let createPorts = () => {
     const { port1, port2 } = new MessageChannelMain();
@@ -2239,9 +2294,10 @@ function createHubWindow(state?: WindowState) {
     sendMessage(window, "set-version", {
       platform: process.platform,
       platformRelease: os.release(),
-      appVersion: app.isPackaged ? app.getVersion() : "dev"
+      appVersion: APP_VERSION
     });
     sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
+    sendMessage(window, "show-feedback-button", isBeta());
     sendAllPreferences();
     sendActiveSatellites();
     if (fs.existsSync(TYPE_MEMORY_FILENAME)) {
@@ -2280,8 +2336,8 @@ function createHubWindow(state?: WindowState) {
   });
   powerMonitor.on("on-ac", () => sendMessage(window, "set-battery", false));
   powerMonitor.on("on-battery", () => sendMessage(window, "set-battery", true));
-
   window.loadFile(path.join(__dirname, "../www/hub.html"));
+
   return window;
 }
 
@@ -2904,6 +2960,49 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
     sendAllPreferences();
   });
   helpWindow.loadFile(path.join(__dirname, "../www/sourceListHelp.html"));
+}
+
+/**
+ * Creates a new beta help window.
+ * @param parentWindow The parent window to use for alignment
+ */
+function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
+  const width = 450;
+  const height = 490;
+  let betaWelcome = new BrowserWindow({
+    width: width,
+    height: height,
+    resizable: false,
+    icon: WINDOW_ICON,
+    show: false,
+    fullscreenable: false,
+    modal: true,
+    useContentSize: true,
+    parent: parentWindow,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js")
+    }
+  });
+  // Finish setup
+  betaWelcome.setMenu(null);
+  betaWelcome.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
+  betaWelcome.once("ready-to-show", betaWelcome.show);
+  betaWelcome.on("close", () => {
+    app.quit();
+  });
+  betaWelcome.webContents.on("dom-ready", () => {
+    // Create ports on reload
+    if (betaWelcome === null) return;
+    const { port1, port2 } = new MessageChannelMain();
+    betaWelcome.webContents.postMessage("port", null, [port1]);
+    port2.on("message", () => {
+      betaWelcome.destroy();
+      saveBetaWelcomeComplete();
+      shouldPromptBetaSurvey(); // Ensures survey is scheduled
+    });
+    port2.start();
+  });
+  betaWelcome.loadFile(path.join(__dirname, "../www/betaWelcome.html"));
 }
 
 // APPLICATION EVENTS

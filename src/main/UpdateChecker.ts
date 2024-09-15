@@ -1,5 +1,6 @@
 import { app, dialog, shell } from "electron";
 import fetch from "electron-fetch";
+import { isBeta } from "./BetaConfig";
 import { REPOSITORY, WINDOW_ICON } from "./Constants";
 
 /** Checks for updates from GitHub and prompts the user when requested. */
@@ -45,6 +46,11 @@ export default class UpdateChecker {
       this.alertDetail =
         "Failed to retrieve update information from GitHub. Please check your internet connection and try again.";
       return;
+    }
+
+    // Remove beta releases if not currently a beta
+    if (!isBeta()) {
+      releaseData = releaseData.filter((release: any) => !release["prerelease"]);
     }
 
     // Get version info

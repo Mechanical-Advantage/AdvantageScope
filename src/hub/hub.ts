@@ -28,6 +28,7 @@ const STATE_SAVE_PERIOD_MS = 250;
 const TYPE_MEMORY_SAVE_PERIOD_MS = 1000;
 const DRAG_ITEM = document.getElementById("dragItem") as HTMLElement;
 const UPDATE_BUTTON = document.getElementsByClassName("update")[0] as HTMLElement;
+const FEEDBACK_BUTTON = document.getElementsByClassName("feedback")[0] as HTMLElement;
 
 // Global variables
 declare global {
@@ -432,6 +433,10 @@ UPDATE_BUTTON.addEventListener("click", () => {
   window.sendMainMessage("prompt-update");
 });
 
+FEEDBACK_BUTTON.addEventListener("click", () => {
+  window.sendMainMessage("open-feedback");
+});
+
 // Update touch bar slider position
 setInterval(() => {
   if (window.platform === "darwin") {
@@ -573,6 +578,11 @@ function handleMainMessage(message: NamedMessage) {
     case "show-update-button":
       document.documentElement.style.setProperty("--show-update-button", message.data ? "1" : "0");
       UPDATE_BUTTON.hidden = !message.data;
+      break;
+
+    case "show-feedback-button":
+      document.documentElement.style.setProperty("--show-feedback-button", message.data ? "1" : "0");
+      FEEDBACK_BUTTON.hidden = !message.data;
       break;
 
     case "historical-data":

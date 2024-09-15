@@ -90,6 +90,7 @@ const smallRendererBundles = [
   bundle("renameTab.ts", "renameTab.js", false),
   bundle("editFov.ts", "editFov.js", false),
   bundle("sourceListHelp.ts", "sourceListHelp.js", false),
+  bundle("betaWelcome.ts", "betaWelcome.js", false),
   bundle("export.ts", "export.js", false),
   bundle("download.ts", "download.js", false),
   bundle("preferences.ts", "preferences.js", false),

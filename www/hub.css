@@ -7,6 +7,7 @@
   --show-tuning-button: 0;
   --show-lock-buttons: 0;
   --show-update-button: 0;
+  --show-feedback-button: 0;
   --show-loading-glow: 0;
   --loading-glow-progress: 1;
 }
@@ -50,7 +51,9 @@ div.title-bar-text {
 
 body.fancy-title-bar-mac div.title-bar-text {
   left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
-  right: calc(182px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
+  );
 }
 
 body.fancy-title-bar-win div.title-bar-text {
@@ -595,7 +598,9 @@ div.search-results-item.hovered {
 div.tab-bar {
   position: absolute;
   left: 10px;
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px+ var(--show-feedback-button) * 38px
+  );
   top: 0px;
   height: 50px;
 
@@ -627,7 +632,9 @@ div.tab-bar-shadow-left {
 }
 
 div.tab-bar-shadow-right {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px);
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
+  );
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
@@ -754,7 +761,7 @@ body.fancy-title-bar-win button.tab-control {
 }
 
 button.update {
-  right: calc(154px + var(--show-lock-buttons) * 28px);
+  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px);
 }
 
 button.update > img {
@@ -765,6 +772,24 @@ button.update > img {
 button.update.blurred > img {
   /* https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(85%) sepia(44%) saturate(1384%) hue-rotate(314deg) brightness(114%) contrast(101%);
+}
+
+button.feedback {
+  right: calc(154px + var(--show-lock-buttons) * 28px);
+}
+
+button.feedback > img {
+  transform: translate(-50%, -50%) scale(90%);
+}
+
+button.feedback > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(45%) sepia(26%) saturate(2440%) hue-rotate(246deg) brightness(88%) contrast(91%);
+}
+
+button.feedback.blurred > img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(89%) sepia(17%) saturate(2426%) hue-rotate(196deg) brightness(93%) contrast(95%);
 }
 
 button.play,
@@ -791,6 +816,16 @@ button.unlock.blurred > img {
   button.update.blurred > img {
     /* https://codepen.io/sosuke/pen/Pjoqqp */
     filter: invert(30%) sepia(37%) saturate(3821%) hue-rotate(26deg) brightness(97%) contrast(101%);
+  }
+
+  button.feedback > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(57%) sepia(42%) saturate(2311%) hue-rotate(232deg) brightness(90%) contrast(95%);
+  }
+
+  button.feedback.blurred > img {
+    /* https://codepen.io/sosuke/pen/Pjoqqp */
+    filter: invert(31%) sepia(7%) saturate(5761%) hue-rotate(239deg) brightness(98%) contrast(77%);
   }
 
   button.unlock.blurred > img {

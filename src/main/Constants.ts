@@ -3,6 +3,7 @@ import path from "path";
 import Preferences from "../shared/Preferences";
 
 // General
+export const APP_VERSION = app.isPackaged ? app.getVersion() : "dev";
 export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
 export const ASSETS_REPOSITORY = "Mechanical-Advantage/AdvantageScopeAssets";
 export const ASSET_TAG_DEFAULT = "default-assets-v1";
