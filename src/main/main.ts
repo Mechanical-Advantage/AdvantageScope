@@ -2117,7 +2117,8 @@ function createHubWindow(state?: WindowState) {
     show: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      webviewTag: true
     }
   };
 
@@ -2221,6 +2222,12 @@ function createHubWindow(state?: WindowState) {
     );
   };
   resetTouchBar();
+
+  // Open docs URLs in browser
+  window.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url);
+    return { action: "deny" };
+  });
 
   // Show window when loaded
   window.once("ready-to-show", () => {
@@ -2726,6 +2733,11 @@ function createSatellite(
     }
     sendAllPreferences();
     firstLoad = false;
+  });
+  satellite.webContents.setWindowOpenHandler((details) => {
+    // Open docs URLs in browser
+    shell.openExternal(details.url);
+    return { action: "deny" };
   });
   powerMonitor.on("on-ac", () => sendMessage(satellite, "set-battery", false));
   powerMonitor.on("on-battery", () => sendMessage(satellite, "set-battery", true));

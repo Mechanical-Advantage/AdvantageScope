@@ -13,13 +13,18 @@
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rollup -c --configMain && rollup -c --configLargeRenderers && rollup -c --configSmallRenderers && rollup -c --configWorkers",
-    "build": "npm run compile && electron-builder build",
-    "fast-build": "npm run compile && electron-builder build --dir",
+    "build": "npm run compile && npm run docs:build-embed && electron-builder build",
+    "fast-build": "npm run compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
-    "postinstall": "node getLicenses.mjs && node ffmpegDownload.mjs && node tesseractLangDownload.mjs"
+    "docs:start": "npm --prefix docsSite run start",
+    "docs:build": "npm --prefix docsSite run build",
+    "docs:build-embed": "npm --prefix docsSite run build-embed",
+    "docs:clear": "npm --prefix docsSite run clear",
+    "docs:serve": "npm --prefix docsSite run serve",
+    "postinstall": "npm --prefix docsSite install && node getLicenses.mjs && node ffmpegDownload.mjs && node tesseractLangDownload.mjs"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
@@ -36,7 +41,6 @@
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
     "@types/pngjs": "^6.0.5",
-    "@types/remarkable": "^2.0.3",
     "@types/ssh2": "^1.11.13",
     "@types/three": "^0.168.0",
     "chart.js": "^4.4.0",
@@ -46,13 +50,11 @@
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
-    "highlight.js": "^11.9.0",
     "mathjs": "11.3.0",
     "node-fetch": "^3.3.2",
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "^4.0.0",
     "protobufjs": "^7.2.5",
-    "remarkable": "^2.0.1",
     "rollup": "^3.29.2",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-re": "^1.0.7",
@@ -91,7 +93,7 @@
       "icons/**/*",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
-      "docs/**/*",
+      "docsSite/build/**/*",
       "!**/.*"
     ],
     "extraResources": [

@@ -1,0 +1,14 @@
+{
+  "categories": [
+    {
+      "title": "Introduction",
+      "description": "Learn the basics of our product.",
+      "href": "/docs/introduction"
+    },
+    {
+      "title": "Getting Started",
+      "description": "Start using our product right away.",
+      "href": "/docs/getting-started"
+    }
+  ]
+}
