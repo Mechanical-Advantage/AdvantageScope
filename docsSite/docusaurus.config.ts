@@ -7,10 +7,10 @@ const config: Config = {
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://ascope.littletonrobotics.org",
+  url: "https://mechanical-advantage.github.io/AdvantageScope",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/",
+  baseUrl: "/AdvantageScope/",
 
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
