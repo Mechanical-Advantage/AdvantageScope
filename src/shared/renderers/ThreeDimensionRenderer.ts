@@ -151,6 +151,8 @@ export type ThreeDimensionRendererCommand_GamePieceObj = {
 
 export type ThreeDimensionRendererCommand_TrajectoryObj = {
   type: "trajectory";
+  color: string;
+  size: string;
   poses: AnnotatedPose3d[];
 };
 

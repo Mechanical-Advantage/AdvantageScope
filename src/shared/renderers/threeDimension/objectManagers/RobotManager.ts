@@ -286,6 +286,10 @@ export default class RobotManager extends ObjectManager<
         if (color !== undefined) {
           this.visionLines[i].material.color = new THREE.Color(color);
         }
+        let size = object.visionTargets[i].annotation.visionSize;
+        if (size !== undefined) {
+          this.visionLines[i].material.linewidth = size === "bold" ? 3 : 1;
+        }
       }
     }
 
