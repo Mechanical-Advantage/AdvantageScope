@@ -41,6 +41,8 @@ export default class TrajectoryManager extends ObjectManager<ThreeDimensionRende
       this.line.visible = false;
     } else {
       this.line.visible = true;
+      this.line.material.color = new THREE.Color(object.color);
+      this.line.material.linewidth = object.size === "bold" ? 6 : 2;
       if (object.poses.length !== this.length) {
         this.line.geometry.dispose();
         this.line.geometry = new LineGeometry();

@@ -183,6 +183,15 @@ const OdometryController_Config: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
         }
       ],
       childOf: "robot",
@@ -202,6 +211,15 @@ const OdometryController_Config: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
         },
         {
           key: "format",
@@ -322,7 +340,7 @@ const OdometryController_Config: SourceListConfig = {
       display: "Trajectory",
       symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
       showInTypeName: true,
-      color: "#ff8800",
+      color: "color",
       sourceTypes: [
         "Pose2d[]",
         "Pose3d[]",
@@ -333,7 +351,23 @@ const OdometryController_Config: SourceListConfig = {
         "Trajectory"
       ],
       showDocs: true,
-      options: [],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
+        }
+      ],
       previewType: "Translation2d"
     },
     {
@@ -341,10 +375,25 @@ const OdometryController_Config: SourceListConfig = {
       display: "Trajectory",
       symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
       showInTypeName: true,
-      color: "#ff8800",
+      color: "color",
       sourceTypes: ["NumberArray"],
       showDocs: false,
       options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
+        },
         {
           key: "format",
           display: "Format",

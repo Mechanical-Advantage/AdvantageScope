@@ -44,6 +44,7 @@ export type PoseAnnotations = {
   zebraAlliance?: "blue" | "red";
   aprilTagId?: number;
   visionColor?: string;
+  visionSize?: string;
 };
 
 export type SwerveState = { speed: number; angle: Rotation2d };

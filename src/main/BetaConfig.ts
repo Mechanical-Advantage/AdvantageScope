@@ -93,7 +93,12 @@ export function delayBetaSurvey(): void {
 export function openBetaSurvey(): void {
   let state = getState();
   if (state === null) return;
-  shell.openExternal(BETA_CONFIG!.surveyUrl.replace("__version__", encodeURIComponent(APP_VERSION)));
+  shell.openExternal(
+    BETA_CONFIG!.surveyUrl.replace(
+      "__version__",
+      encodeURIComponent(APP_VERSION + " (" + process.platform + "-" + process.arch + ")")
+    )
+  );
   state.surveyStatus = true;
   jsonfile.writeFileSync(BETA_STATE_FILENAME!, state);
 }

@@ -360,6 +360,7 @@ export default class ThreeDimensionController implements TabController {
               );
               newVisionTargets.forEach((annotatedPose) => {
                 annotatedPose.annotation.visionColor = child.options.color;
+                annotatedPose.annotation.visionSize = child.options.size;
               });
               visionTargets = visionTargets.concat(newVisionTargets);
               break;
@@ -453,6 +454,8 @@ export default class ThreeDimensionController implements TabController {
         case "trajectoryLegacy":
           objects.push({
             type: "trajectory",
+            color: source.options.color,
+            size: source.options.size,
             poses: poses
           });
           break;

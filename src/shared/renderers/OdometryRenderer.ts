@@ -266,8 +266,8 @@ export default class OdometryRenderer implements TabRenderer {
       .forEach((object) => {
         switch (object.type) {
           case "trajectory":
-            context.strokeStyle = "orange";
-            context.lineWidth = 2 * pixelsPerInch;
+            context.strokeStyle = object.color;
+            context.lineWidth = 2 * pixelsPerInch * (object.size === "bold" ? 3 : 1);
             context.lineCap = "round";
             context.lineJoin = "round";
             context.beginPath();
@@ -317,7 +317,7 @@ export default class OdometryRenderer implements TabRenderer {
               object.visionTargets.forEach((target: AnnotatedPose2d) => {
                 context.strokeStyle =
                   target.annotation.visionColor === undefined ? "#00ff00" : target.annotation.visionColor;
-                context.lineWidth = 1 * pixelsPerInch; // 1 inch
+                context.lineWidth = 1 * pixelsPerInch * (target.annotation.visionSize === "bold" ? 3 : 1);
                 context.beginPath();
                 context.moveTo(robotPos[0], robotPos[1]);
                 context.lineTo(...calcCoordinates(target.pose.translation));
@@ -467,6 +467,8 @@ export type OdometryRendererCommand_GhostObj = {
 
 export type OdometryRendererCommand_TrajectoryObj = {
   type: "trajectory";
+  color: string;
+  size: string;
   poses: AnnotatedPose2d[];
 };
 
