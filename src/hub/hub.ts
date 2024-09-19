@@ -49,6 +49,8 @@ declare global {
     sidebar: Sidebar;
     tabs: Tabs;
     tuner: LiveDataTuner | null;
+    getLoadingFields(): Set<string>;
+
     messagePort: MessagePort | null;
     sendMainMessage: (name: string, data?: any) => void;
     startDrag: (x: number, y: number, offsetX: number, offsetY: number, data: any) => void;
@@ -260,6 +262,14 @@ window.requestAnimationFrame(periodic);
 
 // DATA SOURCE HANDLING
 
+window.getLoadingFields = () => {
+  if (historicalSource === null) {
+    return new Set();
+  } else {
+    return historicalSource.getLoadingFields();
+  }
+};
+
 /** Connects to a historical data source. */
 function startHistorical(paths: string[]) {
   historicalSource?.stop();
@@ -280,10 +290,11 @@ function startHistorical(paths: string[]) {
       }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
-        case HistoricalDataSourceStatus.Decoding:
+        case HistoricalDataSourceStatus.DecodingInitial:
           setWindowTitle(logFriendlyName, "Loading");
           break;
-        case HistoricalDataSourceStatus.Ready:
+        case HistoricalDataSourceStatus.DecodingField:
+        case HistoricalDataSourceStatus.Idle:
           setWindowTitle(logFriendlyName);
           setLoading(null);
           break;
@@ -306,6 +317,9 @@ function startHistorical(paths: string[]) {
     },
     (progress: number) => {
       setLoading(progress);
+    },
+    () => {
+      window.sidebar.refresh();
     },
     (log: Log) => {
       window.log = log;

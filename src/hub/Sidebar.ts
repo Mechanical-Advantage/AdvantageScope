@@ -67,6 +67,7 @@ export default class Sidebar {
   private tuningModePublishCallbacks: (() => void)[] = [];
   private tuningValueCache: { [key: string]: string } = {};
   private updateMetadataCallbacks: (() => void)[] = [];
+  private updateLoadingCallbacks: (() => void)[] = [];
 
   constructor() {
     // Set up handle for resizing
@@ -426,6 +427,7 @@ export default class Sidebar {
       // Update type warnings and metadata
       this.updateTypeWarningCallbacks.forEach((callback) => callback());
       this.updateMetadataCallbacks.forEach((callback) => callback());
+      this.updateLoadingCallbacks.forEach((callback) => callback());
     }
   }
 
@@ -879,6 +881,18 @@ export default class Sidebar {
       };
       this.updateMetadataCallbacks.push(updateMetadata);
       updateMetadata();
+
+      // Loading callback
+      let updateLoading = () => {
+        let isLoading = window.getLoadingFields().has(field.fullKey!);
+        if (isLoading) {
+          label.classList.add("loading");
+        } else {
+          label.classList.remove("loading");
+        }
+      };
+      this.updateLoadingCallbacks.push(updateLoading);
+      updateLoading();
     }
 
     // Add children
@@ -971,7 +985,11 @@ export default class Sidebar {
 
   /** Returns the set of field keys that are currently visible. */
   getActiveFields(): Set<string> {
-    this.activeFieldCallbacks.forEach((callback) => callback());
-    return this.activeFields;
+    if (this.sidebarWidth > 0) {
+      this.activeFieldCallbacks.forEach((callback) => callback());
+      return this.activeFields;
+    } else {
+      return new Set();
+    }
   }
 }

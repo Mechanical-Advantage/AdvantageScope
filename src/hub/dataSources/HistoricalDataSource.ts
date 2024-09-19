@@ -1,5 +1,7 @@
 import Log from "../../shared/log/Log";
-import WorkerManager from "../WorkerManager";
+import LogField from "../../shared/log/LogField";
+import LoggableType from "../../shared/log/LoggableType";
+import { scaleValue, setsEqual } from "../../shared/util";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
 export class HistoricalDataSource {
@@ -13,27 +15,39 @@ export class HistoricalDataSource {
 
   private paths: string[] = [];
   private mockProgress: number = 0;
+  private mockProgressActive = true;
   private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private progressCallback: ((progress: number) => void) | null = null;
+  private loadingCallback: (() => void) | null = null;
   private outputCallback: ((log: Log) => void) | null = null;
   private customError: string | null = null;
+
+  private log: Log | null = null;
+  private worker: Worker | null = null;
+  private finishedFields: Set<string> = new Set();
+  private requestedFields: Set<string> = new Set();
+  private fieldRequestInterval: number | null = null;
+  private lastRawRequestFields: Set<string> = new Set();
 
   /**
    * Generates log data from a set of files.
    * @param paths The paths to the log files
    * @param statusCallback A callback to be triggered when the status changes
    * @param progressCallback A callback to be triggered when the progress changes
+   * @param loadingCallback A callback to be triggered when a new set of fields begin loading
    * @param outputCallback A callback to receive the generated log object
    */
   openFile(
     paths: string[],
     statusCallback: (status: HistoricalDataSourceStatus) => void,
     progressCallback: (progress: number) => void,
+    loadingCallback: () => void,
     outputCallback: (log: Log) => void
   ) {
     this.statusCallback = statusCallback;
     this.progressCallback = progressCallback;
+    this.loadingCallback = loadingCallback;
     this.outputCallback = outputCallback;
 
     // Post message to start reading
@@ -55,10 +69,13 @@ export class HistoricalDataSource {
     this.setStatus(HistoricalDataSourceStatus.Reading);
     window.sendMainMessage("historical-start", this.paths);
 
+    // Update field request periodically
+    this.fieldRequestInterval = window.setInterval(() => this.updateFieldRequest(), 50);
+
     // Start mock progress updates
     let startTime = new Date().getTime();
     let sendMockProgress = () => {
-      if (this.status === HistoricalDataSourceStatus.Reading) {
+      if (this.mockProgressActive) {
         let time = (new Date().getTime() - startTime) / 1000;
         this.mockProgress = HistoricalDataSource.calcMockProgress(time);
         if (this.progressCallback !== null) {
@@ -73,6 +90,8 @@ export class HistoricalDataSource {
   /** Cancels the read operation. */
   stop() {
     this.setStatus(HistoricalDataSourceStatus.Stopped);
+    if (this.fieldRequestInterval !== null) window.clearInterval(this.fieldRequestInterval);
+    this.worker?.terminate();
   }
 
   /** Returns an alternative error message to be displayed if log loading fails. */
@@ -80,10 +99,15 @@ export class HistoricalDataSource {
     return this.customError;
   }
 
+  /** Returns the set of fields that are currently loading. */
+  getLoadingFields(): Set<string> {
+    return this.requestedFields;
+  }
+
   /** Process new data from the main process, send to worker. */
   handleMainMessage(data: any) {
     if (this.status !== HistoricalDataSourceStatus.Reading) return;
-    this.setStatus(HistoricalDataSourceStatus.Decoding);
+    this.setStatus(HistoricalDataSourceStatus.DecodingInitial);
     this.customError = data.error;
     let fileContents: (Uint8Array | null)[][] = data.files;
 
@@ -93,60 +117,126 @@ export class HistoricalDataSource {
       return;
     }
 
-    // Start decodes
-    let decodedLogs: (Log | null)[] = new Array(fileContents.length).fill(null);
-    let progressValues: number[] = new Array(fileContents.length).fill(0);
-    let completedCount = 0;
-    for (let i = 0; i < fileContents.length; i++) {
-      // Get contents and worker
-      let contents = fileContents[i];
-      let path = this.paths[i];
-      let selectedWorkerName: string | null = null;
-      Object.entries(this.WORKER_NAMES).forEach(([extension, workerName]) => {
-        if (path.endsWith(extension)) {
-          selectedWorkerName = workerName;
+    // Make worker
+    let selectedWorkerName: string | null = null;
+    Object.entries(this.WORKER_NAMES).forEach(([extension, workerName]) => {
+      if (this.paths[0].endsWith(extension)) {
+        selectedWorkerName = workerName;
+      }
+    });
+    if (selectedWorkerName === null) {
+      this.setStatus(HistoricalDataSourceStatus.Error);
+      return;
+    }
+    this.worker = new Worker("../bundles/" + selectedWorkerName);
+    let request: HistoricalDataSource_WorkerRequest = {
+      type: "start",
+      data: fileContents[0][0]!
+    };
+    this.worker.postMessage(request, [fileContents[0][0]!.buffer]);
+
+    // Process response
+    this.worker.onmessage = (event) => {
+      let message = event.data as HistoricalDataSource_WorkerResponse;
+      switch (message.type) {
+        case "progress":
+          this.mockProgressActive = false;
+          if (this.progressCallback !== null) {
+            this.progressCallback(scaleValue(message.value, [0, 1], [this.mockProgress, 1]));
+          }
+          return; // Exit immediately
+
+        case "initial":
+          this.log = Log.fromSerialized(message.log);
+          break;
+
+        case "fields":
+          message.fields.forEach((field) => {
+            this.log?.setField(field.key, LogField.fromSerialized(field.data));
+            if (field.generatedParent) this.log?.setGeneratedParent(field.key);
+            this.requestedFields.delete(field.key);
+            this.finishedFields.add(field.key);
+          });
+
+          break;
+      }
+      this.setStatus(
+        this.requestedFields.size > 0 ? HistoricalDataSourceStatus.DecodingField : HistoricalDataSourceStatus.Idle
+      );
+      if (this.outputCallback !== null && this.log !== null && this.requestedFields.size === 0) {
+        this.outputCallback(this.log);
+      }
+    };
+  }
+
+  private updateFieldRequest() {
+    if (
+      (this.status === HistoricalDataSourceStatus.Idle || this.status === HistoricalDataSourceStatus.DecodingField) &&
+      this.worker !== null
+    ) {
+      let requestFields: Set<string> = new Set();
+      window.tabs.getActiveFields().forEach((field) => requestFields.add(field));
+      window.sidebar.getActiveFields().forEach((field) => requestFields.add(field));
+
+      // Compare to previous set
+      if (!setsEqual(requestFields, this.lastRawRequestFields)) {
+        this.lastRawRequestFields = new Set([...requestFields]);
+
+        // Always request schemas and AdvantageKit timestamp
+        this.log?.getFieldKeys().forEach((key) => {
+          if (key.startsWith("/.schema")) {
+            requestFields.add(key);
+          }
+        });
+        requestFields.add("/Timestamp");
+
+        // Compare to existing fields
+        requestFields.forEach((field) => {
+          this.log?.getFieldKeys().forEach((existingField) => {
+            if (this.log?.getType(existingField) === LoggableType.Empty) return;
+            if (existingField.startsWith(field) || field.startsWith(existingField)) {
+              requestFields.add(existingField);
+            }
+          });
+        });
+
+        // Filter fields
+        requestFields.forEach((field) => {
+          if (
+            this.requestedFields.has(field) ||
+            this.finishedFields.has(field) ||
+            this.log?.getField(field) === null ||
+            this.log?.isGenerated(field)
+          ) {
+            requestFields.delete(field);
+          }
+        });
+
+        // Decode schemas first
+        let requestFieldsArray = Array.from(requestFields);
+        requestFieldsArray = [
+          ...requestFieldsArray.filter((field) => field.startsWith("/.schema")),
+          ...requestFieldsArray.filter((field) => !field.startsWith("/.schema"))
+        ];
+
+        // Send requests
+        requestFieldsArray.forEach((field) => {
+          let request: HistoricalDataSource_WorkerRequest = {
+            type: "parseField",
+            key: field
+          };
+          this.requestedFields.add(field);
+          this.worker?.postMessage(request);
+        });
+        if (requestFieldsArray.length > 0 && this.loadingCallback !== null) {
+          this.loadingCallback();
         }
-      });
-      if (!selectedWorkerName) {
-        this.setStatus(HistoricalDataSourceStatus.Error);
-        return;
       }
 
-      // Start request
-      WorkerManager.request("../bundles/" + selectedWorkerName, contents, (progress) => {
-        progressValues[i] = progress;
-        if (this.progressCallback && this.status === HistoricalDataSourceStatus.Decoding) {
-          let decodeProgress = progressValues.reduce((a, b) => a + b, 0) / progressValues.length;
-          let totalProgress = this.mockProgress + decodeProgress * (1 - this.mockProgress);
-          this.progressCallback(totalProgress);
-        }
-      })
-        .then((response: any) => {
-          if (this.status === HistoricalDataSourceStatus.Error || this.status === HistoricalDataSourceStatus.Stopped) {
-            return;
-          }
-          decodedLogs[i] = Log.fromSerialized(response);
-          completedCount++;
-          if (completedCount === fileContents.length && this.status === HistoricalDataSourceStatus.Decoding) {
-            // All decodes finised
-            let log: Log =
-              fileContents.length === 1
-                ? decodedLogs[i]!
-                : Log.mergeLogs(decodedLogs.filter((log) => log !== null) as Log[]);
-            if (this.outputCallback !== null) {
-              this.outputCallback(log);
-            }
-            this.setStatus(HistoricalDataSourceStatus.Ready);
-
-            // Hoot non-Pro warning
-            if (data.hasHootNonPro && !window.preferences?.skipHootNonProWarning) {
-              window.sendMainMessage("hoot-non-pro-warning");
-            }
-          }
-        })
-        .catch(() => {
-          this.setStatus(HistoricalDataSourceStatus.Error);
-        });
+      // Update status
+      this.setStatus(
+        this.requestedFields.size > 0 ? HistoricalDataSourceStatus.DecodingField : HistoricalDataSourceStatus.Idle
+      );
     }
   }
 
@@ -165,11 +255,42 @@ export class HistoricalDataSource {
   }
 }
 
+export type HistoricalDataSource_WorkerRequest =
+  | {
+      type: "start";
+      data: Uint8Array;
+    }
+  | {
+      type: "parseField";
+      key: string;
+    };
+
+export type HistoricalDataSource_WorkerResponse =
+  | {
+      type: "progress";
+      value: number;
+    }
+  | {
+      type: "initial";
+      log: any;
+    }
+  | {
+      type: "fields";
+      fields: HistoricalDataSource_WorkerFieldResponse[];
+    };
+
+export type HistoricalDataSource_WorkerFieldResponse = {
+  key: string;
+  data: any;
+  generatedParent: boolean;
+};
+
 export enum HistoricalDataSourceStatus {
   Waiting,
   Reading,
-  Decoding,
-  Ready,
+  DecodingInitial,
+  DecodingField,
+  Idle,
   Error,
   Stopped
 }

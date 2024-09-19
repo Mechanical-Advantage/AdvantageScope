@@ -499,6 +499,31 @@ div.field-item-label {
   text-overflow: clip;
 }
 
+div.field-item-label.loading {
+  animation: Pulse 0.7s ease infinite;
+}
+
+@keyframes Pulse {
+  10% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  90% {
+    opacity: 1;
+  }
+}
+
+@keyframes BackgroundSlide {
+  0% {
+    background-position-x: 0px;
+  }
+  100% {
+    background-position-x: 100000px;
+  }
+}
+
 div.field-item-label.known > span:first-child {
   text-decoration: underline;
 }

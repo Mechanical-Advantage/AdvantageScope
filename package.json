@@ -16,6 +16,7 @@
     "build": "npm run compile && electron-builder build",
     "fast-build": "npm run compile && electron-builder build --dir",
     "watch": "rollup -c -w",
+    "build-wasm": "emcc src/wpilogIndexer/wpilogIndexer.c -o bundles/wpilogIndexer-wasm.js -sEXPORTED_FUNCTIONS=_run,_malloc -sALLOW_MEMORY_GROWTH -O3",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
@@ -63,6 +64,7 @@
   },
   "dependencies": {
     "@distube/ytdl-core": "^4.14.4",
+    "@types/emscripten": "^1.39.13",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
