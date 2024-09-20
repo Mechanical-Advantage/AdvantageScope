@@ -1,7 +1,7 @@
 import Log from "../../shared/log/Log";
 import LogField from "../../shared/log/LogField";
 import LoggableType from "../../shared/log/LoggableType";
-import { scaleValue, setsEqual } from "../../shared/util";
+import { createUUID, scaleValue, setsEqual } from "../../shared/util";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
 export class HistoricalDataSource {
@@ -12,8 +12,9 @@ export class HistoricalDataSource {
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js"
   };
+  private UUID = createUUID();
 
-  private paths: string[] = [];
+  private path = "";
   private mockProgress: number = 0;
   private mockProgressActive = true;
   private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
@@ -32,15 +33,15 @@ export class HistoricalDataSource {
   private lastRawRequestFields: Set<string> = new Set();
 
   /**
-   * Generates log data from a set of files.
-   * @param paths The paths to the log files
+   * Generates log data from a file.
+   * @param path The path to the log file
    * @param statusCallback A callback to be triggered when the status changes
    * @param progressCallback A callback to be triggered when the progress changes
    * @param loadingCallback A callback to be triggered when a new set of fields begin loading
    * @param outputCallback A callback to receive the generated log object
    */
   openFile(
-    paths: string[],
+    path: string,
     statusCallback: (status: HistoricalDataSourceStatus) => void,
     progressCallback: (progress: number) => void,
     loadingCallback: () => void,
@@ -52,23 +53,17 @@ export class HistoricalDataSource {
     this.outputCallback = outputCallback;
 
     // Post message to start reading
-    for (let i = 0; i < paths.length; i++) {
-      let path = paths[i];
-      let newPath = path;
-      if (path.endsWith(".dsevents")) {
-        newPath = path.slice(0, -8) + "dslog";
-      }
-      if (window.platform !== "win32" && path.endsWith(".hoot")) {
-        this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
-        this.setStatus(HistoricalDataSourceStatus.Error);
-        return;
-      }
-      if (!this.paths.includes(newPath)) {
-        this.paths.push(newPath);
-      }
+    if (window.platform !== "win32" && path.endsWith(".hoot")) {
+      this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
+      this.setStatus(HistoricalDataSourceStatus.Error);
+      return;
     }
+    if (path.endsWith(".dsevents")) {
+      path = path.slice(0, -8) + "dslog";
+    }
+    this.path = path;
     this.setStatus(HistoricalDataSourceStatus.Reading);
-    window.sendMainMessage("historical-start", this.paths);
+    window.sendMainMessage("historical-start", { uuid: this.UUID, path: this.path });
 
     // Update field request periodically
     this.fieldRequestInterval = window.setInterval(() => this.updateFieldRequest(), 50);
@@ -91,8 +86,6 @@ export class HistoricalDataSource {
   /** Cancels the read operation. */
   stop() {
     this.setStatus(HistoricalDataSourceStatus.Stopped);
-    if (this.fieldRequestInterval !== null) window.clearInterval(this.fieldRequestInterval);
-    this.worker?.terminate();
   }
 
   /** Returns an alternative error message to be displayed if log loading fails. */
@@ -107,13 +100,13 @@ export class HistoricalDataSource {
 
   /** Process new data from the main process, send to worker. */
   handleMainMessage(data: any) {
-    if (this.status !== HistoricalDataSourceStatus.Reading) return;
+    if (this.status !== HistoricalDataSourceStatus.Reading || data.uuid !== this.UUID) return;
     this.setStatus(HistoricalDataSourceStatus.DecodingInitial);
     this.customError = data.error;
-    let fileContents: (Uint8Array | null)[][] = data.files;
+    let fileContents: (Uint8Array | null)[] = data.files;
 
     // Check for read error (at least one file is all null)
-    if (!fileContents.every((contents) => !contents.every((buffer) => buffer === null))) {
+    if (!fileContents.every((buffer) => buffer !== null)) {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
@@ -121,7 +114,7 @@ export class HistoricalDataSource {
     // Make worker
     let selectedWorkerName: string | null = null;
     Object.entries(this.WORKER_NAMES).forEach(([extension, workerName]) => {
-      if (this.paths[0].endsWith(extension)) {
+      if (this.path.endsWith(extension)) {
         selectedWorkerName = workerName;
       }
     });
@@ -132,9 +125,12 @@ export class HistoricalDataSource {
     this.worker = new Worker("../bundles/" + selectedWorkerName);
     let request: HistoricalDataSource_WorkerRequest = {
       type: "start",
-      data: fileContents[0][0]!
+      data: fileContents as Uint8Array[]
     };
-    this.worker.postMessage(request, [fileContents[0][0]!.buffer]);
+    this.worker.postMessage(
+      request,
+      (fileContents as Uint8Array[]).map((array) => array.buffer)
+    );
 
     // Process response
     this.worker.onmessage = (event) => {
@@ -258,6 +254,11 @@ export class HistoricalDataSource {
   private setStatus(status: HistoricalDataSourceStatus) {
     if (status !== this.status && this.status !== HistoricalDataSourceStatus.Stopped) {
       this.status = status;
+      if (this.status === HistoricalDataSourceStatus.Stopped || this.status === HistoricalDataSourceStatus.Error) {
+        this.worker?.terminate();
+        this.mockProgressActive = false;
+        if (this.fieldRequestInterval !== null) window.clearInterval(this.fieldRequestInterval);
+      }
       if (this.statusCallback !== null) this.statusCallback(status);
     }
   }
@@ -272,7 +273,7 @@ export class HistoricalDataSource {
 export type HistoricalDataSource_WorkerRequest =
   | {
       type: "start";
-      data: Uint8Array;
+      data: Uint8Array[];
     }
   | {
       type: "parseField";

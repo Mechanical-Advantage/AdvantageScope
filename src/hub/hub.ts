@@ -280,7 +280,7 @@ function startHistorical(paths: string[]) {
 
   historicalSource = new HistoricalDataSource();
   historicalSource.openFile(
-    paths,
+    paths[0],
     (status: HistoricalDataSourceStatus) => {
       if (paths.length === 1) {
         let components = paths[0].split(window.platform === "win32" ? "\\" : "/");

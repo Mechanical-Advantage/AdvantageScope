@@ -25,7 +25,7 @@ self.onmessage = async (event) => {
   let request: HistoricalDataSource_WorkerRequest = event.data;
   switch (request.type) {
     case "start":
-      await start(request.data);
+      await start(request.data[0]);
       break;
 
     case "parseField":

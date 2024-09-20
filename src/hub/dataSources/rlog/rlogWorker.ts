@@ -19,7 +19,7 @@ self.onmessage = async (event) => {
 
   let log = new Log(false); // No timestamp set cache for efficiency
   let decoder = new RLOGDecoder(true);
-  let success = decoder.decode(log, request.data, progress);
+  let success = decoder.decode(log, request.data[0], progress);
   if (success) {
     progress(1);
     sendResponse({

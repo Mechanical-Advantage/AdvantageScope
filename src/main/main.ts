@@ -249,29 +249,50 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "historical-start":
-      // Record opened files
-      let paths: string[] = message.data;
-      paths.forEach((path) => app.addRecentDocument(path));
-      fs.writeFile(LAST_OPEN_FILE, paths[0], () => {});
+      {
+        // Record opened files
+        const uuid: string = message.data.uuid;
+        const path: string = message.data.path;
+        app.addRecentDocument(path);
+        fs.writeFile(LAST_OPEN_FILE, path, () => {});
 
-      // Send data if all file reads finished
-      let completedCount = 0;
-      let targetCount = 0;
-      let errorMessage: null | string = null;
-      let hasHootNonPro = false;
-      let sendIfReady = () => {
-        if (completedCount === targetCount) {
-          sendMessage(window, "historical-data", {
-            files: results,
-            error: errorMessage,
-            hasHootNonPro: hasHootNonPro
-          });
-        }
-      };
+        // Send data if all file reads finished
+        let completedCount = 0;
+        let targetCount = 0;
+        let errorMessage: null | string = null;
+        let hasHootNonPro = false;
+        let sendIfReady = () => {
+          if (completedCount === targetCount) {
+            sendMessage(window, "historical-data", {
+              files: results,
+              error: errorMessage,
+              uuid: uuid
+            });
+            if (hasHootNonPro) {
+              dialog
+                .showMessageBox(window, {
+                  type: "info",
+                  title: "Alert",
+                  message: "Limited Signals Available",
+                  detail:
+                    "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
+                  checkboxLabel: "Don't Show Again",
+                  icon: WINDOW_ICON
+                })
+                .then((response) => {
+                  if (response.checkboxChecked) {
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.skipHootNonProWarning = true;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                  }
+                });
+            }
+          }
+        };
 
-      // Read data from file
-      let results: (Buffer | null)[][] = paths.map(() => [null]);
-      paths.forEach((path, index) => {
+        // Read data from file
+        let results: (Buffer | null)[] = [null];
         let openPath = (path: string, callback: (buffer: Buffer) => void) => {
           fs.open(path, "r", (error, file) => {
             if (error) {
@@ -290,10 +311,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         };
         if (path.endsWith(".dslog")) {
           // DSLog, open DSEvents too
-          results[index] = [null, null];
+          results = [null, null];
           targetCount += 2;
-          openPath(path, (buffer) => (results[index][0] = buffer));
-          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[index][1] = buffer));
+          openPath(path, (buffer) => (results[0] = buffer));
+          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
         } else if (path.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
@@ -305,7 +326,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               convertHoot(path)
                 .then((wpilogPath) => {
                   openPath(wpilogPath, (buffer) => {
-                    results[index][0] = buffer;
+                    results[0] = buffer;
                     fs.rmSync(wpilogPath);
                   });
                 })
@@ -316,32 +337,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 });
             });
         } else {
-          // Not DSLog, open normally
+          // Normal log, open normally
           targetCount += 1;
-          openPath(path, (buffer) => (results[index][0] = buffer));
+          openPath(path, (buffer) => (results[0] = buffer));
         }
-      });
-      break;
-
-    case "hoot-non-pro-warning":
-      dialog
-        .showMessageBox(window, {
-          type: "info",
-          title: "Alert",
-          message: "Limited Signals Available",
-          detail:
-            "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
-          checkboxLabel: "Don't Show Again",
-          icon: WINDOW_ICON
-        })
-        .then((response) => {
-          if (response.checkboxChecked) {
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-            prefs.skipHootNonProWarning = true;
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            sendAllPreferences();
-          }
-        });
+      }
       break;
 
     case "numeric-array-deprecation-warning":
