@@ -94,6 +94,7 @@ export function getLogValueText(value: any, type: LoggableType): string {
     return "null";
   } else if (type === LoggableType.Raw) {
     let array: Uint8Array = value;
+    if (array.length === 0) return "(empty)";
     let textArray: string[] = [];
     array.forEach((byte: number) => {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
