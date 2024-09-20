@@ -35,7 +35,7 @@ self.onmessage = async (event) => {
 };
 
 async function start(data: Uint8Array) {
-  let lastProgressTimestamp = new Date().getTime();
+  let lastProgressValue = 0;
   decoder = new WPILOGDecoder(data);
 
   await run(
@@ -103,12 +103,12 @@ async function start(data: Uint8Array) {
       }
 
       // Send progress update
-      let now = new Date().getTime();
-      if (now - lastProgressTimestamp > 1000 / 60) {
-        lastProgressTimestamp = now;
+      let progress = position / data.byteLength;
+      if (progress - lastProgressValue > 0.01) {
+        lastProgressValue = progress;
         sendResponse({
           type: "progress",
-          value: position / data.byteLength
+          value: progress
         });
       }
     }
