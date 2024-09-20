@@ -3,7 +3,7 @@ import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { SelectionMode } from "../shared/Selection";
-import { arraysEqual, setsEqual } from "../shared/util";
+import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
 import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
 
@@ -47,6 +47,7 @@ export default class Sidebar {
   private FIELD_DRAG_THRESHOLD_PX = 3;
   private VALUE_WIDTH_MARGIN_PX = 12;
 
+  private getFilenames: () => string[];
   private sidebarHandleActive = false;
   private sidebarWidth = this.DEFAULT_SIDEBAR_WIDTH;
   private fieldCount = 0;
@@ -69,7 +70,9 @@ export default class Sidebar {
   private updateMetadataCallbacks: (() => void)[] = [];
   private updateLoadingCallbacks: (() => void)[] = [];
 
-  constructor() {
+  constructor(getFilenames: () => string[]) {
+    this.getFilenames = getFilenames;
+
     // Set up handle for resizing
     this.SIDEBAR_HANDLE.addEventListener("mousedown", () => {
       this.sidebarHandleActive = true;
@@ -568,7 +571,20 @@ export default class Sidebar {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerHTML = " &ndash; " + structuredType;
+        typeLabel.innerHTML = " &ndash; " + htmlEncode(structuredType);
+      }
+    } else {
+      if (title.startsWith(this.MERGED_KEY) && indent === 0) {
+        let mergeIndex = Number(title.slice(this.MERGED_KEY.length));
+        let mergedFilenames = this.getFilenames();
+        if (mergeIndex < mergedFilenames.length) {
+          let filename = mergedFilenames[mergeIndex];
+
+          let typeLabel = document.createElement("span");
+          typeLabel.classList.add("field-item-type-label");
+          label.appendChild(typeLabel);
+          typeLabel.innerHTML = " &ndash; " + htmlEncode(filename);
+        }
       }
     }
 

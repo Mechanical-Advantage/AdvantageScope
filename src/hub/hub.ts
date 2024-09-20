@@ -74,7 +74,12 @@ window.isBattery = false;
 window.fps = false;
 
 window.selection = new SelectionImpl();
-window.sidebar = new Sidebar();
+window.sidebar = new Sidebar(() => 
+  historicalSources.map(entry => {
+     let components = entry.path.split(window.platform === "win32" ? "\\" : "/");
+    return components[components.length - 1];
+  })
+);
 window.tabs = new Tabs();
 window.tuner = null;
 window.messagePort = null;
