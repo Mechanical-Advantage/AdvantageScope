@@ -6,7 +6,7 @@ import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, MERGE_PREFIX } from "../shared/log/LogUtil";
 import { clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
@@ -79,11 +79,15 @@ window.tabs = new Tabs();
 window.tuner = null;
 window.messagePort = null;
 
-let historicalSource: HistoricalDataSource | null = null;
+let historicalSources: {
+  source: HistoricalDataSource;
+  path: string;
+  progress: number | null;
+  progressIncluded: boolean;
+}[] = [];
 let liveSource: LiveDataSource | null = null;
 let publisher: NT4Publisher | null = null;
 let isExporting = false;
-let logPath: string | null = null;
 let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
@@ -263,30 +267,68 @@ window.requestAnimationFrame(periodic);
 // DATA SOURCE HANDLING
 
 window.getLoadingFields = () => {
-  if (historicalSource === null) {
-    return new Set();
-  } else {
-    return historicalSource.getLoadingFields();
-  }
+  let output: Set<string> = new Set();
+  historicalSources.forEach((entry) => {
+    entry.source.getLoadingFields().forEach((field) => output.add(field));
+  });
+  return output;
 };
 
 /** Connects to a historical data source. */
-function startHistorical(paths: string[]) {
-  historicalSource?.stop();
+function startHistorical(path: string, clear = true, merge = false) {
+  clear = clear || !merge;
+  if (clear) {
+    historicalSources.forEach((entry) => entry.source.stop());
+    historicalSources = [];
+    window.log = new Log();
+    window.sidebar.refresh();
+    window.tabs.refresh();
+  }
+
   liveSource?.stop();
   window.tuner = null;
   liveActive = false;
+  liveConnected = false;
   setLoading(null);
 
-  historicalSource = new HistoricalDataSource();
-  historicalSource.openFile(
-    paths[0],
+  let updateLoading = () => {
+    if (historicalSources.every((entry) => entry.progress === null)) {
+      historicalSources.forEach((entry) => (entry.progressIncluded = false));
+    }
+
+    let totalProgress = 0;
+    let progressCount = 0;
+    historicalSources.forEach((entry) => {
+      if (!entry.progressIncluded) return;
+      totalProgress += entry.progress === null ? 1 : entry.progress;
+      progressCount++;
+    });
+
+    if (progressCount === 0) {
+      setLoading(null);
+    } else {
+      setLoading(totalProgress / progressCount);
+    }
+  };
+
+  let source = new HistoricalDataSource();
+  let sourceEntry = { source: source, path: path, progress: 0, progressIncluded: true } as {
+    source: HistoricalDataSource;
+    path: string;
+    progress: number | null;
+    progressIncluded: boolean;
+  };
+  historicalSources.push(sourceEntry);
+  source.openFile(
+    window.log,
+    path,
+    merge ? "/" + MERGE_PREFIX + (historicalSources.length - 1).toString() : "",
     (status: HistoricalDataSourceStatus) => {
-      if (paths.length === 1) {
-        let components = paths[0].split(window.platform === "win32" ? "\\" : "/");
+      if (historicalSources.length === 1) {
+        let components = historicalSources[0].path.split(window.platform === "win32" ? "\\" : "/");
         logFriendlyName = components[components.length - 1];
       } else {
-        logFriendlyName = paths.length.toString() + " Log Files";
+        logFriendlyName = historicalSources.length.toString() + " Log Files";
       }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
@@ -296,18 +338,19 @@ function startHistorical(paths: string[]) {
         case HistoricalDataSourceStatus.DecodingField:
         case HistoricalDataSourceStatus.Idle:
           setWindowTitle(logFriendlyName);
-          setLoading(null);
+          sourceEntry.progress = null;
+          updateLoading();
           break;
         case HistoricalDataSourceStatus.Error:
           setWindowTitle(logFriendlyName, "Error");
-          setLoading(null);
-          let message =
-            "There was a problem while reading the log file" + (paths.length === 1 ? "" : "s") + ". Please try again.";
-          if (historicalSource && historicalSource.getCustomError() !== null) {
-            message = historicalSource.getCustomError()!;
+          sourceEntry.progress = null;
+          updateLoading();
+          let message = "There was a problem while reading the log file. Please try again.";
+          if (source.getCustomError() !== null) {
+            message = source.getCustomError()!;
           }
           window.sendMainMessage("error", {
-            title: "Failed to open log" + (paths.length === 1 ? "" : "s"),
+            title: "Failed to open log",
             content: message
           });
           break;
@@ -316,24 +359,20 @@ function startHistorical(paths: string[]) {
       }
     },
     (progress: number) => {
-      setLoading(progress);
+      sourceEntry.progress = progress;
+      updateLoading();
     },
-    () => {
+    (hasNewFields: boolean) => {
       window.sidebar.refresh();
-    },
-    (log: Log) => {
-      window.log = log;
-      logPath = paths[0];
-      liveConnected = false;
-      window.sidebar.refresh();
-      window.tabs.refresh();
+      if (hasNewFields) window.tabs.refresh();
     }
   );
 }
 
 /** Connects to a live data source. */
 function startLive(isSim: boolean) {
-  historicalSource?.stop();
+  historicalSources.forEach((entry) => entry.source.stop());
+  historicalSources = [];
   liveSource?.stop();
   publisher?.stop();
   liveActive = true;
@@ -394,7 +433,6 @@ function startLive(isSim: boolean) {
       }
     },
     (log: Log, timeSupplier: () => number) => {
-      logPath = null;
       liveConnected = true;
       window.log = log;
       window.selection.setLiveConnected(timeSupplier);
@@ -419,7 +457,9 @@ document.addEventListener("drop", (event) => {
       files.push(window.electron.getFilePath(file));
     }
     if (files.length > 0) {
-      startHistorical(files);
+      files.forEach((file, index) => {
+        startHistorical(file, index === 0, files.length > 1);
+      });
     }
   }
 });
@@ -600,9 +640,9 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "historical-data":
-      if (historicalSource !== null) {
-        historicalSource.handleMainMessage(message.data);
-      }
+      historicalSources.forEach((entry) => {
+        entry.source.handleMainMessage(message.data);
+      });
       break;
 
     case "live-data":
@@ -612,13 +652,27 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "open-files":
+      let files: string[] = message.data.files;
+      let merge: boolean = message.data.merge;
+
       if (isExporting) {
         window.sendMainMessage("error", {
-          title: "Cannot open file",
+          title: "Cannot open file" + (files.length !== 1 ? "s" : ""),
           content: "Please wait for the export to finish, then try again."
         });
+      } else if (merge && (liveActive || historicalSources.length === 0)) {
+        window.sendMainMessage("error", {
+          title: "Cannot insert file" + (files.length !== 1 ? "s" : ""),
+          content: 'No log files are currently loaded. Choose "Open Log(s)" to load new files.'
+        });
       } else {
-        startHistorical(message.data);
+        files.forEach((file, index) => {
+          if (merge) {
+            startHistorical(file, false, true);
+          } else {
+            startHistorical(file, index === 0, files.length > 1);
+          }
+        });
       }
       break;
 
@@ -770,6 +824,7 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "start-export":
+      let logPath = historicalSources.length > 0 ? historicalSources[0].path : null;
       if (isExporting) {
         window.sendMainMessage("error", {
           title: "Cannot export data",
@@ -800,7 +855,6 @@ function handleMainMessage(message: NamedMessage) {
 
     case "prepare-export":
       setLoading(null);
-      historicalSource?.stop();
       WorkerManager.request(
         "../bundles/hub$exportWorker.js",
         {

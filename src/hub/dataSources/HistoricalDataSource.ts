@@ -1,5 +1,6 @@
 import Log from "../../shared/log/Log";
 import LogField from "../../shared/log/LogField";
+import { AKIT_TIMESTAMP_KEYS, applyKeyPrefix } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { createUUID, scaleValue, setsEqual } from "../../shared/util";
 
@@ -15,13 +16,13 @@ export class HistoricalDataSource {
   private UUID = createUUID();
 
   private path = "";
+  private keyPrefix = "";
   private mockProgress: number = 0;
   private mockProgressActive = true;
   private status: HistoricalDataSourceStatus = HistoricalDataSourceStatus.Waiting;
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private progressCallback: ((progress: number) => void) | null = null;
-  private loadingCallback: (() => void) | null = null;
-  private outputCallback: ((log: Log) => void) | null = null;
+  private refreshCallback: ((hasNewFields: boolean) => void) | null = null;
   private customError: string | null = null;
 
   private log: Log | null = null;
@@ -34,23 +35,27 @@ export class HistoricalDataSource {
 
   /**
    * Generates log data from a file.
+   * @param log The log object to write to
    * @param path The path to the log file
    * @param statusCallback A callback to be triggered when the status changes
    * @param progressCallback A callback to be triggered when the progress changes
-   * @param loadingCallback A callback to be triggered when a new set of fields begin loading
-   * @param outputCallback A callback to receive the generated log object
+   * @param loadingCallback A callback to be triggered when a new set of data is available
+   * @param keyPrefix A prefix to append to all keys
    */
   openFile(
+    log: Log,
     path: string,
+    keyPrefix: string,
     statusCallback: (status: HistoricalDataSourceStatus) => void,
     progressCallback: (progress: number) => void,
-    loadingCallback: () => void,
-    outputCallback: (log: Log) => void
+    refreshCallback: (hasNewFields: boolean) => void
   ) {
+    this.log = log;
+    this.path = path;
+    this.keyPrefix = keyPrefix;
     this.statusCallback = statusCallback;
     this.progressCallback = progressCallback;
-    this.loadingCallback = loadingCallback;
-    this.outputCallback = outputCallback;
+    this.refreshCallback = refreshCallback;
 
     // Post message to start reading
     if (window.platform !== "win32" && path.endsWith(".hoot")) {
@@ -58,10 +63,9 @@ export class HistoricalDataSource {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
-    if (path.endsWith(".dsevents")) {
-      path = path.slice(0, -8) + "dslog";
+    if (this.path.endsWith(".dsevents")) {
+      this.path = this.path.slice(0, -8) + "dslog";
     }
-    this.path = path;
     this.setStatus(HistoricalDataSourceStatus.Reading);
     window.sendMainMessage("historical-start", { uuid: this.UUID, path: this.path });
 
@@ -144,21 +148,22 @@ export class HistoricalDataSource {
           return; // Exit immediately
 
         case "initial":
-          this.log = Log.fromSerialized(message.log);
+          this.log?.mergeWith(Log.fromSerialized(message.log), this.keyPrefix);
           this.logIsPartial = message.isPartial;
           break;
 
         case "failed":
           this.setStatus(HistoricalDataSourceStatus.Error);
-          return;
+          return; // Exit immediately
 
         case "fields":
           if (this.logIsPartial) {
             message.fields.forEach((field) => {
-              this.log?.setField(field.key, LogField.fromSerialized(field.data));
-              if (field.generatedParent) this.log?.setGeneratedParent(field.key);
-              this.requestedFields.delete(field.key);
-              this.finishedFields.add(field.key);
+              let key = applyKeyPrefix(this.keyPrefix, field.key);
+              this.log?.setField(key, LogField.fromSerialized(field.data));
+              if (field.generatedParent) this.log?.setGeneratedParent(key);
+              this.requestedFields.delete(key);
+              this.finishedFields.add(key);
             });
           }
           break;
@@ -169,11 +174,11 @@ export class HistoricalDataSource {
           : HistoricalDataSourceStatus.Idle
       );
       if (
-        this.outputCallback !== null &&
+        this.refreshCallback !== null &&
         this.log !== null &&
         (this.requestedFields.size === 0 || !this.logIsPartial)
       ) {
-        this.outputCallback(this.log);
+        this.refreshCallback(true);
       }
     };
   }
@@ -194,11 +199,11 @@ export class HistoricalDataSource {
 
         // Always request schemas and AdvantageKit timestamp
         this.log?.getFieldKeys().forEach((key) => {
-          if (key.startsWith("/.schema")) {
+          if (key.includes("/.schema/")) {
             requestFields.add(key);
           }
         });
-        requestFields.add("/Timestamp");
+        AKIT_TIMESTAMP_KEYS.forEach((key) => requestFields.add(key));
 
         // Compare to existing fields
         requestFields.forEach((field) => {
@@ -216,7 +221,8 @@ export class HistoricalDataSource {
             this.requestedFields.has(field) ||
             this.finishedFields.has(field) ||
             this.log?.getField(field) === null ||
-            this.log?.isGenerated(field)
+            this.log?.isGenerated(field) ||
+            !field.startsWith(this.keyPrefix)
           ) {
             requestFields.delete(field);
           }
@@ -225,21 +231,21 @@ export class HistoricalDataSource {
         // Decode schemas first
         let requestFieldsArray = Array.from(requestFields);
         requestFieldsArray = [
-          ...requestFieldsArray.filter((field) => field.startsWith("/.schema")),
-          ...requestFieldsArray.filter((field) => !field.startsWith("/.schema"))
+          ...requestFieldsArray.filter((field) => field.includes("/.schema/")),
+          ...requestFieldsArray.filter((field) => !field.includes("/.schema/"))
         ];
 
         // Send requests
         requestFieldsArray.forEach((field) => {
           let request: HistoricalDataSource_WorkerRequest = {
             type: "parseField",
-            key: field
+            key: field.slice(this.keyPrefix.length)
           };
           this.requestedFields.add(field);
           this.worker?.postMessage(request);
         });
-        if (requestFieldsArray.length > 0 && this.loadingCallback !== null) {
-          this.loadingCallback();
+        if (requestFieldsArray.length > 0 && this.refreshCallback !== null) {
+          this.refreshCallback(false);
         }
       }
 

@@ -34,7 +34,6 @@ import Preferences from "../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
-import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
 import {
   delayBetaSurvey,
@@ -1491,43 +1490,44 @@ function setupMenu() {
       label: "File",
       submenu: [
         {
-          label: "Open...",
+          label: "Open Log(s)...",
           accelerator: "CmdOrCtrl+O",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
-                title: "Select a robot log file to open",
-                properties: ["openFile"],
+                title: "Select the robot log file(s) to open",
+                message: "If multiple files are selected, timestamps will be synchronized",
+                properties: ["openFile", "multiSelections"],
                 filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
-                  sendMessage(window!, "open-files", [files.filePaths[0]]);
+                  sendMessage(window!, "open-files", { files: files.filePaths, merge: false });
                 }
               });
           }
         },
         {
-          label: "Open Multiple...",
+          label: "Add New Log(s)...",
           accelerator: "CmdOrCtrl+Shift+O",
           async click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
-            let filesResponse = await dialog.showOpenDialog(window, {
-              title: "Select up to " + MERGE_MAX_FILES.toString() + " robot log files to open",
-              message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
-              properties: ["openFile", "multiSelections"],
-              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
-              defaultPath: getDefaultLogPath()
-            });
-            let files = filesResponse.filePaths;
-            if (files.length === 0) {
-              return;
-            }
-            sendMessage(window, "open-files", files.slice(0, MERGE_MAX_FILES));
+            dialog
+              .showOpenDialog(window, {
+                title: "Select the robot log file(s) to add to the current log",
+                properties: ["openFile", "multiSelections"],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
+                defaultPath: getDefaultLogPath()
+              })
+              .then((files) => {
+                if (files.filePaths.length > 0) {
+                  sendMessage(window!, "open-files", { files: files.filePaths, merge: true });
+                }
+              });
           }
         },
         {
