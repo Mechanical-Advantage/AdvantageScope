@@ -27,9 +27,5 @@
   "editor.detectIndentation": false,
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
-  "css.lint.vendorPrefix": "ignore",
-  "files.associations": {
-    "cstring": "c",
-    "string.h": "c"
-  }
+  "css.lint.vendorPrefix": "ignore"
 }

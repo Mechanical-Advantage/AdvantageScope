@@ -10,13 +10,6 @@ int64_t readVarInt(void* buffer, int offset, int length) {
   int multiplier = 1;
   for (int i = 0; i < length; i++) {
     uint8_t byte = *(uint8_t*)(buffer + offset + i);
-    if (i == 7) {
-      // Last byte, apply sign
-      if ((byte & (1 << 7))) {
-        value *= -1;
-      }
-      byte &= ~(1 << 7);
-    }
     value += (int64_t)byte << (8 * i);
   }
   return value;
