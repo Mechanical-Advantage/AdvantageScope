@@ -25,6 +25,7 @@ export class HistoricalDataSource {
 
   private log: Log | null = null;
   private worker: Worker | null = null;
+  private logIsPartial = false;
   private finishedFields: Set<string> = new Set();
   private requestedFields: Set<string> = new Set();
   private fieldRequestInterval: number | null = null;
@@ -148,22 +149,34 @@ export class HistoricalDataSource {
 
         case "initial":
           this.log = Log.fromSerialized(message.log);
+          this.logIsPartial = message.isPartial;
           break;
 
-        case "fields":
-          message.fields.forEach((field) => {
-            this.log?.setField(field.key, LogField.fromSerialized(field.data));
-            if (field.generatedParent) this.log?.setGeneratedParent(field.key);
-            this.requestedFields.delete(field.key);
-            this.finishedFields.add(field.key);
-          });
+        case "failed":
+          this.setStatus(HistoricalDataSourceStatus.Error);
+          return;
 
+        case "fields":
+          if (this.logIsPartial) {
+            message.fields.forEach((field) => {
+              this.log?.setField(field.key, LogField.fromSerialized(field.data));
+              if (field.generatedParent) this.log?.setGeneratedParent(field.key);
+              this.requestedFields.delete(field.key);
+              this.finishedFields.add(field.key);
+            });
+          }
           break;
       }
       this.setStatus(
-        this.requestedFields.size > 0 ? HistoricalDataSourceStatus.DecodingField : HistoricalDataSourceStatus.Idle
+        this.requestedFields.size > 0 && this.logIsPartial
+          ? HistoricalDataSourceStatus.DecodingField
+          : HistoricalDataSourceStatus.Idle
       );
-      if (this.outputCallback !== null && this.log !== null && this.requestedFields.size === 0) {
+      if (
+        this.outputCallback !== null &&
+        this.log !== null &&
+        (this.requestedFields.size === 0 || !this.logIsPartial)
+      ) {
         this.outputCallback(this.log);
       }
     };
@@ -172,7 +185,8 @@ export class HistoricalDataSource {
   private updateFieldRequest() {
     if (
       (this.status === HistoricalDataSourceStatus.Idle || this.status === HistoricalDataSourceStatus.DecodingField) &&
-      this.worker !== null
+      this.worker !== null &&
+      this.logIsPartial
     ) {
       let requestFields: Set<string> = new Set();
       window.tabs.getActiveFields().forEach((field) => requestFields.add(field));
@@ -273,6 +287,10 @@ export type HistoricalDataSource_WorkerResponse =
   | {
       type: "initial";
       log: any;
+      isPartial: boolean;
+    }
+  | {
+      type: "failed";
     }
   | {
       type: "fields";

@@ -22,7 +22,7 @@ export default class RLOGDecoder {
     this.isFile = isFile;
   }
 
-  decode(log: Log, dataArray: Buffer, progressCallback?: (progress: number) => void): boolean {
+  decode(log: Log, dataArray: Uint8Array, progressCallback?: (progress: number) => void): boolean {
     let dataBuffer = new DataView(dataArray.buffer);
     let offset = 0;
 

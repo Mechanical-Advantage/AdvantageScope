@@ -38,86 +38,95 @@ async function start(data: Uint8Array) {
   let lastProgressValue = 0;
   decoder = new WPILOGDecoder(data);
 
-  await wpilogIndexer.run(
-    data,
-    (min, max) => {
-      log.updateRangeWithTimestamp(min);
-      log.updateRangeWithTimestamp(max);
-    },
-    (entry, position) => {
-      if (entry === CONTROL_ENTRY) {
-        let record = decoder!.getRecordAtPosition(position)[0]!;
-        if (record.isStart()) {
-          const startData = record.getStartData();
-          entryIds[startData.entry] = startData.name;
-          entryTypes[startData.name] = startData.type;
-          dataRecordPositions[startData.name] = [];
-          switch (startData.type) {
-            case "boolean":
-              log.createBlankField(startData.name, LoggableType.Boolean);
-              break;
-            case "int":
-            case "int64":
-            case "float":
-            case "double":
-              log.createBlankField(startData.name, LoggableType.Number);
-              break;
-            case "string":
-            case "json":
-              log.createBlankField(startData.name, LoggableType.String);
-              break;
-            case "boolean[]":
-              log.createBlankField(startData.name, LoggableType.BooleanArray);
-              break;
-            case "int[]":
-            case "int64[]":
-            case "float[]":
-            case "double[]":
-              log.createBlankField(startData.name, LoggableType.NumberArray);
-              break;
-            case "string[]":
-              log.createBlankField(startData.name, LoggableType.StringArray);
-              break;
-            default: // Default to raw
-              log.createBlankField(startData.name, LoggableType.Raw);
-              if (startData.type.startsWith(STRUCT_PREFIX)) {
-                let schemaType = startData.type.split(STRUCT_PREFIX)[1];
-                log.setStructuredType(startData.name, schemaType);
-              } else if (startData.type.startsWith(PROTO_PREFIX)) {
-                let schemaType = startData.type.split(PROTO_PREFIX)[1];
-                log.setStructuredType(startData.name, schemaType);
-              }
-              break;
+  try {
+    await wpilogIndexer.run(
+      data,
+      (min, max) => {
+        log.updateRangeWithTimestamp(min);
+        log.updateRangeWithTimestamp(max);
+      },
+      (entry, position) => {
+        if (entry === CONTROL_ENTRY) {
+          let record = decoder!.getRecordAtPosition(position)[0]!;
+          if (record.isStart()) {
+            const startData = record.getStartData();
+            entryIds[startData.entry] = startData.name;
+            entryTypes[startData.name] = startData.type;
+            dataRecordPositions[startData.name] = [];
+            switch (startData.type) {
+              case "boolean":
+                log.createBlankField(startData.name, LoggableType.Boolean);
+                break;
+              case "int":
+              case "int64":
+              case "float":
+              case "double":
+                log.createBlankField(startData.name, LoggableType.Number);
+                break;
+              case "string":
+              case "json":
+                log.createBlankField(startData.name, LoggableType.String);
+                break;
+              case "boolean[]":
+                log.createBlankField(startData.name, LoggableType.BooleanArray);
+                break;
+              case "int[]":
+              case "int64[]":
+              case "float[]":
+              case "double[]":
+                log.createBlankField(startData.name, LoggableType.NumberArray);
+                break;
+              case "string[]":
+                log.createBlankField(startData.name, LoggableType.StringArray);
+                break;
+              default: // Default to raw
+                log.createBlankField(startData.name, LoggableType.Raw);
+                if (startData.type.startsWith(STRUCT_PREFIX)) {
+                  let schemaType = startData.type.split(STRUCT_PREFIX)[1];
+                  log.setStructuredType(startData.name, schemaType);
+                } else if (startData.type.startsWith(PROTO_PREFIX)) {
+                  let schemaType = startData.type.split(PROTO_PREFIX)[1];
+                  log.setStructuredType(startData.name, schemaType);
+                }
+                break;
+            }
+            log.setWpilibType(startData.name, startData.type);
+            log.setMetadataString(startData.name, startData.metadata);
+          } else if (record.isSetMetadata()) {
+            let setMetadataData = record.getSetMetadataData();
+            if (setMetadataData.entry in entryIds) {
+              log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
+            }
           }
-          log.setWpilibType(startData.name, startData.type);
-          log.setMetadataString(startData.name, startData.metadata);
-        } else if (record.isSetMetadata()) {
-          let setMetadataData = record.getSetMetadataData();
-          if (setMetadataData.entry in entryIds) {
-            log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
-          }
+        } else {
+          let key = entryIds[entry];
+          dataRecordPositions[key].push(position);
         }
-      } else {
-        let key = entryIds[entry];
-        dataRecordPositions[key].push(position);
-      }
 
-      // Send progress update
-      let progress = position / data.byteLength;
-      if (progress - lastProgressValue > 0.01) {
-        lastProgressValue = progress;
-        sendResponse({
-          type: "progress",
-          value: progress
-        });
+        // Send progress update
+        let progress = position / data.byteLength;
+        if (progress - lastProgressValue > 0.01) {
+          lastProgressValue = progress;
+          sendResponse({
+            type: "progress",
+            value: progress
+          });
+        }
       }
-    }
-  );
+    );
+  } catch (exception) {
+    console.error(exception);
+    sendResponse({
+      type: "failed"
+    });
+    return;
+  }
 
   log.getChangedFields(); // Reset changed fields
   sendResponse({
     type: "initial",
-    log: log.toSerialized()
+    log: log.toSerialized(),
+    isPartial: true
   });
 }
 
