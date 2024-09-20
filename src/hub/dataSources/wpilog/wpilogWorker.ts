@@ -1,7 +1,6 @@
 import Log from "../../../shared/log/Log";
 import { PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
-import { run } from "../../../wpilogIndexer/wpilogIndexer";
 import {
   HistoricalDataSource_WorkerFieldResponse,
   HistoricalDataSource_WorkerRequest,
@@ -10,6 +9,7 @@ import {
 import CustomSchemas from "../schema/CustomSchemas";
 import { WPILOGDecoder } from "./WPILOGDecoder";
 import { CONTROL_ENTRY } from "./WPILOGShared";
+import * as wpilogIndexer from "./indexer/wpilogIndexer";
 
 let decoder: WPILOGDecoder | null = null;
 const log = new Log(false);
@@ -38,7 +38,7 @@ async function start(data: Uint8Array) {
   let lastProgressValue = 0;
   decoder = new WPILOGDecoder(data);
 
-  await run(
+  await wpilogIndexer.run(
     data,
     (min, max) => {
       log.updateRangeWithTimestamp(min);

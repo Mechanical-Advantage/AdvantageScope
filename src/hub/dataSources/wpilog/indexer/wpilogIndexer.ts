@@ -3,7 +3,7 @@ export async function run(
   timestampRangeCallback: (min: number, max: number) => void,
   recordCallback: (entry: number, position: number) => void
 ) {
-  self.importScripts("./wpilogIndexer-wasm.js");
+  self.importScripts("./hub$wpilogIndexer.js");
   await new Promise<void>((resolve) => {
     Module.onRuntimeInitialized = resolve;
   });

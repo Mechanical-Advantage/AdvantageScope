@@ -13,10 +13,10 @@
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rollup -c --configMain && rollup -c --configLargeRenderers && rollup -c --configSmallRenderers && rollup -c --configWorkers",
-    "build": "npm run compile && electron-builder build",
-    "fast-build": "npm run compile && electron-builder build --dir",
+    "wasm:compile": "emcc src/hub/dataSources/wpilog/indexer/wpilogIndexer.c -o bundles/hub\\$wpilogIndexer.js -sEXPORTED_FUNCTIONS=_run,_malloc -sALLOW_MEMORY_GROWTH -O3",
+    "build": "npm run compile && npm run wasm:compile && electron-builder build",
+    "fast-build": "npm run compile && npm run wasm:compile && electron-builder build --dir",
     "watch": "rollup -c -w",
-    "build-wasm": "emcc src/wpilogIndexer/wpilogIndexer.c -o bundles/wpilogIndexer-wasm.js -sEXPORTED_FUNCTIONS=_run,_malloc -sALLOW_MEMORY_GROWTH -O3",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
