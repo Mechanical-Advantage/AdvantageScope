@@ -704,6 +704,20 @@ async function handleMainMessage(message: NamedMessage) {
           content: "Please open a log file with NetworkTables data, then try again."
         });
       } else {
+        // Start mock progress
+        let mockProgress = 0;
+        let mockProgressStart = new Date().getTime();
+        let mockProgressInterval = setInterval(() => {
+          mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000, 1);
+          setLoading(mockProgress);
+        }, 1000 / 60);
+
+        // Load missing fields
+        if (historicalSources.length > 0) {
+          await historicalSources[0].source.loadAllFields(); // Root NT table is always from the first source
+        }
+
+        // Start publisher
         publisher?.stop();
         publisher = new NT4Publisher(message.data, (status) => {
           if (logFriendlyName === null) return;
@@ -863,7 +877,7 @@ async function handleMainMessage(message: NamedMessage) {
       let mockProgress = 0;
       let mockProgressStart = new Date().getTime();
       let mockProgressInterval = setInterval(() => {
-        mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000);
+        mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000, 0.25);
         setLoading(mockProgress);
       }, 1000 / 60);
 
