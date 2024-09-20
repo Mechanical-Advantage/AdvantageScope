@@ -2,7 +2,7 @@ import Log from "../../shared/log/Log";
 import LogField from "../../shared/log/LogField";
 import { AKIT_TIMESTAMP_KEYS, applyKeyPrefix } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
-import { createUUID, scaleValue, setsEqual } from "../../shared/util";
+import { calcMockProgress, createUUID, scaleValue, setsEqual } from "../../shared/util";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
 export class HistoricalDataSource {
@@ -23,6 +23,7 @@ export class HistoricalDataSource {
   private statusCallback: ((status: HistoricalDataSourceStatus) => void) | null = null;
   private progressCallback: ((progress: number) => void) | null = null;
   private refreshCallback: ((hasNewFields: boolean) => void) | null = null;
+  private loadAllCallbacks: (() => void)[] = [];
   private customError: string | null = null;
 
   private log: Log | null = null;
@@ -77,7 +78,7 @@ export class HistoricalDataSource {
     let sendMockProgress = () => {
       if (this.mockProgressActive) {
         let time = (new Date().getTime() - startTime) / 1000;
-        this.mockProgress = HistoricalDataSource.calcMockProgress(time);
+        this.mockProgress = calcMockProgress(time);
         if (this.progressCallback !== null) {
           this.progressCallback(this.mockProgress);
         }
@@ -179,19 +180,41 @@ export class HistoricalDataSource {
         (this.requestedFields.size === 0 || !this.logIsPartial)
       ) {
         this.refreshCallback(true);
+        this.loadAllCallbacks.forEach((callback) => callback());
+        this.loadAllCallbacks = [];
       }
     };
   }
 
-  private updateFieldRequest() {
+  /** Loads all fields that are not currently decoded. */
+  loadAllFields(): Promise<void> {
+    this.updateFieldRequest(true);
+    if (this.requestedFields.size === 0) {
+      return new Promise((resolve) => resolve());
+    } else {
+      return new Promise((resolve) => {
+        this.loadAllCallbacks.push(resolve);
+      });
+    }
+  }
+
+  private updateFieldRequest(loadEverything = false) {
     if (
       (this.status === HistoricalDataSourceStatus.Idle || this.status === HistoricalDataSourceStatus.DecodingField) &&
       this.worker !== null &&
       this.logIsPartial
     ) {
       let requestFields: Set<string> = new Set();
-      window.tabs.getActiveFields().forEach((field) => requestFields.add(field));
-      window.sidebar.getActiveFields().forEach((field) => requestFields.add(field));
+      if (!loadEverything) {
+        // Normal behavior, use active fields
+        window.tabs.getActiveFields().forEach((field) => requestFields.add(field));
+        window.sidebar.getActiveFields().forEach((field) => requestFields.add(field));
+      } else {
+        // Need to access all fields, load everything
+        this.log?.getFieldKeys().forEach((key) => {
+          requestFields.add(key);
+        });
+      }
 
       // Compare to previous set
       if (!setsEqual(requestFields, this.lastRawRequestFields)) {
@@ -267,12 +290,6 @@ export class HistoricalDataSource {
       }
       if (this.statusCallback !== null) this.statusCallback(status);
     }
-  }
-
-  /** Calculates a mock progress value for the initial load time. */
-  private static calcMockProgress(time: number): number {
-    // https://www.desmos.com/calculator/86u4rnu8ob
-    return 0.5 - 0.5 / (0.1 * time + 1);
   }
 }
 

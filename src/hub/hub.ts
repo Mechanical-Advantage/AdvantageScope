@@ -7,7 +7,7 @@ import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import Log from "../shared/log/Log";
 import { AKIT_TIMESTAMP_KEYS, MERGE_PREFIX } from "../shared/log/LogUtil";
-import { clampValue, htmlEncode, scaleValue } from "../shared/util";
+import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
 import SourceList from "./SourceList";
@@ -513,7 +513,7 @@ setInterval(() => {
   }
 }, 1000 / 60);
 
-function handleMainMessage(message: NamedMessage) {
+async function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
     case "restore-state":
       restoreState(message.data);
@@ -859,7 +859,18 @@ function handleMainMessage(message: NamedMessage) {
       break;
 
     case "prepare-export":
-      setLoading(null);
+      // Start mock progress
+      let mockProgress = 0;
+      let mockProgressStart = new Date().getTime();
+      let mockProgressInterval = setInterval(() => {
+        mockProgress = calcMockProgress((new Date().getTime() - mockProgressStart) / 1000);
+        setLoading(mockProgress);
+      }, 1000 / 60);
+
+      // Load missing fields
+      await Promise.all(historicalSources.map((entry) => entry.source.loadAllFields()));
+
+      // Convert to export format
       WorkerManager.request(
         "../bundles/hub$exportWorker.js",
         {
@@ -867,7 +878,8 @@ function handleMainMessage(message: NamedMessage) {
           log: window.log.toSerialized()
         },
         (progress: number) => {
-          setLoading(progress);
+          clearInterval(mockProgressInterval);
+          setLoading(scaleValue(progress, [0, 1], [mockProgress, 1]));
         }
       )
         .then((content) => {
