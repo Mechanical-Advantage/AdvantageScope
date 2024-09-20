@@ -32,7 +32,7 @@ jobs:
       - name: Check formatting
         run: npm run check-format
       - name: Compile WebAssembly
-        run: npm run wasm:compile
+        run: mkdir bundles; npm run wasm:compile
       - name: Compile bundles (FRC 6328)
         run: npm run compile
       - name: Upload bundles (FRC 6328)
