@@ -28,11 +28,13 @@ Feedback, feature requests, and bug reports are welcome on the [issues page](htt
 
 ## Building
 
-To install all dependencies, run:
+To install Node.js dependencies, run:
 
 ```bash
 npm install
 ```
+
+[Emscripten](https://emscripten.org) also needs to be installed (instructions [here](https://emscripten.org/docs/getting_started/downloads.html)).
 
 To build for the current platform, run:
 
