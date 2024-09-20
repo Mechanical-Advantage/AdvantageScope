@@ -268,24 +268,26 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               uuid: uuid
             });
             if (hasHootNonPro) {
-              dialog
-                .showMessageBox(window, {
-                  type: "info",
-                  title: "Alert",
-                  message: "Limited Signals Available",
-                  detail:
-                    "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
-                  checkboxLabel: "Don't Show Again",
-                  icon: WINDOW_ICON
-                })
-                .then((response) => {
-                  if (response.checkboxChecked) {
-                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                    prefs.skipHootNonProWarning = true;
-                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                    sendAllPreferences();
-                  }
-                });
+              let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+              if (!prefs.skipHootNonProWarning) {
+                dialog
+                  .showMessageBox(window, {
+                    type: "info",
+                    title: "Alert",
+                    message: "Limited Signals Available",
+                    detail:
+                      "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
+                    checkboxLabel: "Don't Show Again",
+                    icon: WINDOW_ICON
+                  })
+                  .then((response) => {
+                    if (response.checkboxChecked) {
+                      prefs.skipHootNonProWarning = true;
+                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                      sendAllPreferences();
+                    }
+                  });
+              }
             }
           }
         };
