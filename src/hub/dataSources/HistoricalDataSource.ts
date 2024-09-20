@@ -1,6 +1,6 @@
 import Log from "../../shared/log/Log";
 import LogField from "../../shared/log/LogField";
-import { AKIT_TIMESTAMP_KEYS, applyKeyPrefix } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, applyKeyPrefix, getURCLKeys } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { calcMockProgress, createUUID, scaleValue, setsEqual } from "../../shared/util";
 
@@ -209,6 +209,7 @@ export class HistoricalDataSource {
         // Normal behavior, use active fields
         window.tabs.getActiveFields().forEach((field) => requestFields.add(field));
         window.sidebar.getActiveFields().forEach((field) => requestFields.add(field));
+        getURCLKeys(window.log).forEach((field) => requestFields.add(field));
       } else {
         // Need to access all fields, load everything
         this.log?.getFieldKeys().forEach((key) => {
@@ -251,10 +252,16 @@ export class HistoricalDataSource {
           }
         });
 
-        // Decode schemas first
+        // Decode schemas and URCL metadata first
         let requestFieldsArray = Array.from(requestFields);
         requestFieldsArray = [
-          ...requestFieldsArray.filter((field) => field.includes("/.schema/")),
+          ...requestFieldsArray.filter(
+            (field) =>
+              field.includes("/.schema/") ||
+              // A bit of a hack but it works
+              field.includes("URCL/Raw/Aliases") ||
+              field.includes("URCL/Raw/Persistent")
+          ),
           ...requestFieldsArray.filter((field) => !field.includes("/.schema/"))
         ];
 

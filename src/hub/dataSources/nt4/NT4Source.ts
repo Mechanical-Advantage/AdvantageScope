@@ -1,5 +1,5 @@
 import Log from "../../../shared/log/Log";
-import { PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey } from "../../../shared/log/LogUtil";
+import { PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey, getURCLKeys } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
@@ -84,7 +84,8 @@ export default class NT4Source extends LiveDataSource {
                 ]),
             ...(enabledKey === undefined ? [] : [enabledKey]),
             ...window.tabs.getActiveFields(),
-            ...window.sidebar.getActiveFields()
+            ...window.sidebar.getActiveFields(),
+            ...getURCLKeys(window.log)
           ].forEach((key) => {
             // Compare to announced keys
             announcedKeys.forEach((announcedKey) => {

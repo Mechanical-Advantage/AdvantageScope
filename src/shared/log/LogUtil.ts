@@ -183,6 +183,13 @@ export function filterFieldByPrefixes(
   return [...filteredFields];
 }
 
+export function getURCLKeys(log: Log): string[] {
+  return log.getFieldKeys().filter((key) => {
+    let wpilibType = log.getWpilibType(key);
+    return wpilibType !== null && wpilibType.startsWith("URCL");
+  });
+}
+
 export function getEnabledKey(log: Log): string | undefined {
   return ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
 }
