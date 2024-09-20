@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 const uint64_t OUTPUT_HEADER_SIZE = sizeof(double) * 2 + sizeof(uint32_t);
 const uint64_t OUTPUT_RECORD_SIZE = sizeof(uint32_t) * 2;
