@@ -207,16 +207,30 @@ function parseField(key: string) {
   });
   delete dataRecordPositions[key]; // Clear memory
 
-  // Send fields
+  // Get set of changed fields
   let fieldData: HistoricalDataSource_WorkerFieldResponse[] = [];
+  let hasRoot = false;
   log.getChangedFields().forEach((childKey) => {
     let serialized = log.getField(childKey)!.toSerialized();
+    if (childKey === key) hasRoot = true;
     fieldData.push({
       key: childKey,
       data: serialized,
       generatedParent: log.isGeneratedParent(childKey)
     });
   });
+  if (!hasRoot) {
+    let field = log.getField(key);
+    if (field !== null) {
+      fieldData.push({
+        key: key,
+        data: field.toSerialized(),
+        generatedParent: log.isGeneratedParent(key)
+      });
+    }
+  }
+
+  // Send result
   sendResponse({
     type: "fields",
     fields: fieldData
