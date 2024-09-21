@@ -6,6 +6,29 @@
 /ThirdPartyLicenses.txt
 /eng.traineddata.gz
 
+### Docs ###
+
+# Dependencies
+/docsSite/node_modules
+
+# Production
+/docsSite/build
+
+# Generated files
+/docsSite/.docusaurus
+/docsSite/.cache-loader
+
+# Misc
+/docsSite/.DS_Store
+/docsSite/.env.local
+/docsSite/.env.development.local
+/docsSite/.env.test.local
+/docsSite/.env.production.local
+
+/docsSite/npm-debug.log*
+/docsSite/yarn-debug.log*
+/docsSite/yarn-error.log*
+
 ### Linux ###
 *~
 

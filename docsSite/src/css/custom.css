@@ -1,0 +1,40 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-navbar-background-color: #ffffff;
+  --ifm-color-primary: #446ce3;
+  --ifm-color-primary-dark: #3053bc;
+  --ifm-color-primary-darker: #2040a0;
+  --ifm-color-primary-darkest: #10276d;
+  --ifm-color-primary-light: #6484e5;
+  --ifm-color-primary-lighter: #879de0;
+  --ifm-color-primary-lightest: #a9b7e0;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme="dark"] {
+  --ifm-navbar-background-color: #222222;
+  --ifm-color-primary: #446ce3;
+  --ifm-color-primary-dark: #3053bc;
+  --ifm-color-primary-darker: #2040a0;
+  --ifm-color-primary-darkest: #10276d;
+  --ifm-color-primary-light: #6484e5;
+  --ifm-color-primary-lighter: #879de0;
+  --ifm-color-primary-lightest: #a9b7e0;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.pagination-nav__link--prev .pagination-nav__label:before {
+  content: "\25C0  ";
+}
+
+.pagination-nav__link--next .pagination-nav__label:after {
+  content: "  \25B6";
+}

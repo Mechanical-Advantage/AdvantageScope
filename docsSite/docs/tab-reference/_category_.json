@@ -1,0 +1,8 @@
+{
+  "label": "Tab Reference",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "AdvantageScope supports many ways to view and analyze data, organized into tabs. The type of visualization is selectable for each new tab opened, and multiple tabs of a given type can be open at once. Tabs can be named for ease of organization and can \"pop out\" to separate windows for simultaneous, synchronized data viewing."
+  }
+}

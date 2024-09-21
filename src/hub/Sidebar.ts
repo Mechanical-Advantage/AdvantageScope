@@ -74,13 +74,20 @@ export default class Sidebar {
     this.getFilenames = getFilenames;
 
     // Set up handle for resizing
+    let enableIframes = (enabled: boolean) => {
+      Array.from(document.getElementsByTagName("iframe")).forEach((iframe) => {
+        iframe.style.pointerEvents = enabled ? "initial" : "none";
+      });
+    };
     this.SIDEBAR_HANDLE.addEventListener("mousedown", () => {
       this.sidebarHandleActive = true;
       document.body.style.cursor = "col-resize";
+      enableIframes(false);
     });
     window.addEventListener("mouseup", () => {
       this.sidebarHandleActive = false;
       document.body.style.cursor = "initial";
+      enableIframes(true);
     });
     window.addEventListener("mousemove", (event) => {
       if (this.sidebarHandleActive) {
