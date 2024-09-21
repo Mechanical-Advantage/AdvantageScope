@@ -515,15 +515,6 @@ div.field-item-label.loading {
   }
 }
 
-@keyframes BackgroundSlide {
-  0% {
-    background-position-x: 0px;
-  }
-  100% {
-    background-position-x: 100000px;
-  }
-}
-
 div.field-item-label.known > span:first-child {
   text-decoration: underline;
 }
