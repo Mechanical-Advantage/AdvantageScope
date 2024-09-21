@@ -260,27 +260,34 @@ export class WPILOGDecoder {
     let extraHeaderSize = this.dataView.getUint32(8, true);
     let position = 12 + extraHeaderSize;
     while (true) {
-      if (this.data.length < position + 4) break;
-      let entryLength = (this.data[position] & 0x3) + 1;
-      let sizeLength = ((this.data[position] >> 2) & 0x3) + 1;
-      let timestampLength = ((this.data[position] >> 4) & 0x7) + 1;
-      let headerLength = 1 + entryLength + sizeLength + timestampLength;
-      if (this.data.length < position + headerLength) break;
-
-      let entry = this.readVariableInteger(position + 1, entryLength);
-      let size = this.readVariableInteger(position + 1 + entryLength, sizeLength);
-      let timestamp = this.readVariableInteger(position + 1 + entryLength + sizeLength, timestampLength);
-      if (this.data.length < position + headerLength + size || entry < 0 || size < 0) break;
-      let newPosition = position + headerLength + size;
-      callback(
-        new WPILOGDecoderRecord(
-          entry,
-          timestamp,
-          this.data.subarray(position + headerLength, position + headerLength + size)
-        ),
-        newPosition
-      );
-      position = newPosition;
+      let [record, size] = this.getRecordAtPosition(position);
+      if (record === null) return;
+      position += size;
+      callback(record, position);
     }
+  }
+
+  /** Returns the record stored at the provided offset. */
+  getRecordAtPosition(position: number): [WPILOGDecoderRecord | null, number] {
+    if (this.data.length < position + 4) return [null, 0];
+    let entryLength = (this.data[position] & 0x3) + 1;
+    let sizeLength = ((this.data[position] >> 2) & 0x3) + 1;
+    let timestampLength = ((this.data[position] >> 4) & 0x7) + 1;
+    let headerLength = 1 + entryLength + sizeLength + timestampLength;
+    if (this.data.length < position + headerLength) return [null, 0];
+
+    let entry = this.readVariableInteger(position + 1, entryLength);
+    let size = this.readVariableInteger(position + 1 + entryLength, sizeLength);
+    let timestamp = this.readVariableInteger(position + 1 + entryLength + sizeLength, timestampLength);
+    if (this.data.length < position + headerLength + size || entry < 0 || size < 0) return [null, 0];
+
+    return [
+      new WPILOGDecoderRecord(
+        entry,
+        timestamp,
+        this.data.subarray(position + headerLength, position + headerLength + size)
+      ),
+      headerLength + size
+    ];
   }
 }

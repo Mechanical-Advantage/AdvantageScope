@@ -23,19 +23,25 @@ jobs:
         with:
           node-version: "20.x"
           cache: "npm"
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
       - name: Install Node.js dependencies
         run: npm ci
         env:
           ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
+      - name: Compile WebAssembly
+        run: mkdir bundles; npm run wasm:compile
       - name: Compile bundles (FRC 6328)
         run: npm run compile
       - name: Upload bundles (FRC 6328)
         uses: actions/upload-artifact@v4
         with:
           name: bundles
-          path: bundles/*.js
+          path: |
+            bundles/*.js
+            bundles/*.wasm
       - name: Compile bundles (WPILib)
         run: npm run compile
         env:
@@ -44,7 +50,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bundles-wpilib
-          path: bundles/*.js
+          path: |
+            bundles/*.js
+            bundles/*.wasm
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})

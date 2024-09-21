@@ -89,6 +89,17 @@ function withMergedKeys(keys: string[]): string[] {
   return output;
 }
 
+/** Adds a prefix to a log key. */
+export function applyKeyPrefix(prefix: string, key: string): string {
+  if (prefix.length === 0) {
+    return key;
+  } else if (key.startsWith("/")) {
+    return prefix + key;
+  } else {
+    return prefix + "/" + key;
+  }
+}
+
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
     return "null";
@@ -171,6 +182,13 @@ export function filterFieldByPrefixes(
     });
   });
   return [...filteredFields];
+}
+
+export function getURCLKeys(log: Log): string[] {
+  return log.getFieldKeys().filter((key) => {
+    let wpilibType = log.getWpilibType(key);
+    return wpilibType !== null && wpilibType.startsWith("URCL");
+  });
 }
 
 export function getEnabledKey(log: Log): string | undefined {

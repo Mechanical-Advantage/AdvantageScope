@@ -1,33 +1,35 @@
 import Log from "../../../shared/log/Log";
+import { HistoricalDataSource_WorkerRequest, HistoricalDataSource_WorkerResponse } from "../HistoricalDataSource";
 import RLOGDecoder from "./RLOGDecoder";
 
-self.onmessage = (event) => {
-  // WORKER SETUP
-  self.onmessage = null;
-  let { id, payload } = event.data;
-  function resolve(result: any) {
-    self.postMessage({ id: id, payload: result });
-  }
-  function progress(percent: number) {
-    self.postMessage({ id: id, progress: percent });
-  }
-  function reject() {
-    self.postMessage({ id: id });
-  }
+function sendResponse(response: HistoricalDataSource_WorkerResponse) {
+  self.postMessage(response);
+}
 
-  // MAIN LOGIC
+self.onmessage = async (event) => {
+  let request: HistoricalDataSource_WorkerRequest = event.data;
+  if (request.type !== "start") return;
 
-  // Run worker
+  let progress = (value: number) => {
+    sendResponse({
+      type: "progress",
+      value: value
+    });
+  };
+
   let log = new Log(false); // No timestamp set cache for efficiency
   let decoder = new RLOGDecoder(true);
-  let success = decoder.decode(log, payload[0], progress);
+  let success = decoder.decode(log, request.data[0], progress);
   if (success) {
     progress(1);
-    setTimeout(() => {
-      // Allow progress message to get through first
-      resolve(log.toSerialized());
-    }, 0);
+    sendResponse({
+      type: "initial",
+      log: log.toSerialized(),
+      isPartial: false
+    });
   } else {
-    reject();
+    sendResponse({
+      type: "failed"
+    });
   }
 };

@@ -13,8 +13,9 @@
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rollup -c --configMain && rollup -c --configLargeRenderers && rollup -c --configSmallRenderers && rollup -c --configWorkers",
-    "build": "npm run compile && electron-builder build",
-    "fast-build": "npm run compile && electron-builder build --dir",
+    "wasm:compile": "emcc src/hub/dataSources/wpilog/indexer/wpilogIndexer.c -o bundles/hub\\$wpilogIndexer.js -sEXPORTED_FUNCTIONS=_run,_malloc -sALLOW_MEMORY_GROWTH -O3",
+    "build": "npm run compile && npm run wasm:compile && electron-builder build",
+    "fast-build": "npm run compile && npm run wasm:compile && electron-builder build --dir",
     "watch": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
@@ -63,6 +64,7 @@
   },
   "dependencies": {
     "@distube/ytdl-core": "^4.14.4",
+    "@types/emscripten": "^1.39.13",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
