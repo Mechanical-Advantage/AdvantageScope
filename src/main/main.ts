@@ -2238,7 +2238,7 @@ function createHubWindow(state?: WindowState) {
             title: "Alert",
             message: "We need your help!",
             detail:
-              "Please take 5 minutes to give us some feedback on the AdvantageScope beta. Users like you help us make AdvantageScope better for everyone!",
+              "Please take 10 minutes to give us some feedback on the AdvantageScope beta. Users like you help us make AdvantageScope better for everyone!",
             buttons: ["Give Feedback", "Not Now"]
           })
           .then((result) => {
@@ -2954,17 +2954,16 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
  */
 function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   const width = 450;
-  const height = 490;
+  const height = process.platform === "win32" ? 530 : 490;
   let betaWelcome = new BrowserWindow({
     width: width,
     height: height,
+    useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
-    fullscreenable: false,
-    modal: true,
-    useContentSize: true,
     parent: parentWindow,
+    modal: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
