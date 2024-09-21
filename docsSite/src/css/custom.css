@@ -30,3 +30,11 @@
   --ifm-color-primary-lightest: #a9b7e0;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+.pagination-nav__link--prev .pagination-nav__label:before {
+  content: "\25C0  ";
+}
+
+.pagination-nav__link--next .pagination-nav__label:after {
+  content: "  \25B6";
+}
