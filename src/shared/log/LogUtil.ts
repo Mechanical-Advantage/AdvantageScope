@@ -221,8 +221,12 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   return enabledData;
 }
 
+export function getAutonomousKey(log: Log): string | undefined {
+  return AUTONOMOUS_KEYS.find((key) => log.getFieldKeys().includes(key));
+}
+
 export function getAutonomousData(log: Log): LogValueSetBoolean | null {
-  let autonomousKey = AUTONOMOUS_KEYS.find((key) => log.getFieldKeys().includes(key));
+  let autonomousKey = getAutonomousKey(log);
   if (!autonomousKey) return null;
   let autonomousData: LogValueSetBoolean | null = null;
   if (autonomousKey.endsWith("FMSControlData")) {
