@@ -26,6 +26,9 @@ Feedback, feature requests, and bug reports are welcome on the [issues page](htt
 1. Find the [latest release](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest) under "Releases".
 2. Download the appropriate build based on the OS & architecture. AdvantageScope supports Windows, macOS, and Linux on both x86 and ARM architectures.
 
+> [!IMPORTANT]
+> Before running AppImage builds on Ubuntu 23.10 or later, you must download the AppArmor profile from the releases page and copy it to `/etc/apparmor.d`.
+
 ## Building
 
 To install Node.js dependencies, run:
