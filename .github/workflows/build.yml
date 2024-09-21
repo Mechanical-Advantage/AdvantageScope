@@ -79,6 +79,8 @@ jobs:
         with:
           name: bundles
           path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
@@ -145,6 +147,8 @@ jobs:
         with:
           name: bundles
           path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
@@ -220,6 +224,8 @@ jobs:
         with:
           name: bundles
           path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
@@ -275,6 +281,8 @@ jobs:
         with:
           name: bundles-wpilib
           path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir
         env:
@@ -345,6 +353,8 @@ jobs:
         with:
           name: bundles-wpilib
           path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:
@@ -406,6 +416,8 @@ jobs:
         with:
           name: bundles-wpilib
           path: bundles
+      - name: Build documentation
+        run: npm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -l AppImage
         env:
