@@ -89,11 +89,23 @@ function withMergedKeys(keys: string[]): string[] {
   return output;
 }
 
+/** Adds a prefix to a log key. */
+export function applyKeyPrefix(prefix: string, key: string): string {
+  if (prefix.length === 0) {
+    return key;
+  } else if (key.startsWith("/")) {
+    return prefix + key;
+  } else {
+    return prefix + "/" + key;
+  }
+}
+
 export function getLogValueText(value: any, type: LoggableType): string {
   if (value === null) {
     return "null";
   } else if (type === LoggableType.Raw) {
     let array: Uint8Array = value;
+    if (array.length === 0) return "(empty)";
     let textArray: string[] = [];
     array.forEach((byte: number) => {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
@@ -172,6 +184,13 @@ export function filterFieldByPrefixes(
   return [...filteredFields];
 }
 
+export function getURCLKeys(log: Log): string[] {
+  return log.getFieldKeys().filter((key) => {
+    let wpilibType = log.getWpilibType(key);
+    return wpilibType !== null && wpilibType.startsWith("URCL");
+  });
+}
+
 export function getEnabledKey(log: Log): string | undefined {
   return ENABLED_KEYS.find((key) => log.getFieldKeys().includes(key));
 }
@@ -202,8 +221,12 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   return enabledData;
 }
 
+export function getAutonomousKey(log: Log): string | undefined {
+  return AUTONOMOUS_KEYS.find((key) => log.getFieldKeys().includes(key));
+}
+
 export function getAutonomousData(log: Log): LogValueSetBoolean | null {
-  let autonomousKey = AUTONOMOUS_KEYS.find((key) => log.getFieldKeys().includes(key));
+  let autonomousKey = getAutonomousKey(log);
   if (!autonomousKey) return null;
   let autonomousData: LogValueSetBoolean | null = null;
   if (autonomousKey.endsWith("FMSControlData")) {

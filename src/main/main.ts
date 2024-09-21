@@ -34,7 +34,6 @@ import Preferences from "../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
-import { MERGE_MAX_FILES } from "../shared/log/LogUtil";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
 import {
   delayBetaSurvey,
@@ -249,29 +248,52 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "historical-start":
-      // Record opened files
-      let paths: string[] = message.data;
-      paths.forEach((path) => app.addRecentDocument(path));
-      fs.writeFile(LAST_OPEN_FILE, paths[0], () => {});
+      {
+        // Record opened files
+        const uuid: string = message.data.uuid;
+        const path: string = message.data.path;
+        app.addRecentDocument(path);
+        fs.writeFile(LAST_OPEN_FILE, path, () => {});
 
-      // Send data if all file reads finished
-      let completedCount = 0;
-      let targetCount = 0;
-      let errorMessage: null | string = null;
-      let hasHootNonPro = false;
-      let sendIfReady = () => {
-        if (completedCount === targetCount) {
-          sendMessage(window, "historical-data", {
-            files: results,
-            error: errorMessage,
-            hasHootNonPro: hasHootNonPro
-          });
-        }
-      };
+        // Send data if all file reads finished
+        let completedCount = 0;
+        let targetCount = 0;
+        let errorMessage: null | string = null;
+        let hasHootNonPro = false;
+        let sendIfReady = () => {
+          if (completedCount === targetCount) {
+            sendMessage(window, "historical-data", {
+              files: results,
+              error: errorMessage,
+              uuid: uuid
+            });
+            if (hasHootNonPro) {
+              let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+              if (!prefs.skipHootNonProWarning) {
+                dialog
+                  .showMessageBox(window, {
+                    type: "info",
+                    title: "Alert",
+                    message: "Limited Signals Available",
+                    detail:
+                      "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
+                    checkboxLabel: "Don't Show Again",
+                    icon: WINDOW_ICON
+                  })
+                  .then((response) => {
+                    if (response.checkboxChecked) {
+                      prefs.skipHootNonProWarning = true;
+                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                      sendAllPreferences();
+                    }
+                  });
+              }
+            }
+          }
+        };
 
-      // Read data from file
-      let results: (Buffer | null)[][] = paths.map(() => [null]);
-      paths.forEach((path, index) => {
+        // Read data from file
+        let results: (Buffer | null)[] = [null];
         let openPath = (path: string, callback: (buffer: Buffer) => void) => {
           fs.open(path, "r", (error, file) => {
             if (error) {
@@ -280,24 +302,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               return;
             }
             fs.readFile(file, (error, buffer) => {
-              let limitLength = false;
-              if (buffer.length > 75 * 1024 * 1024) {
-                let response = dialog.showMessageBoxSync(window, {
-                  type: "warning",
-                  title: "Warning",
-                  message: "Very large log file",
-                  detail: "This log file is very large. Would you like to read the full log or only the first 75MB?",
-                  buttons: ["Read First 75MB", "Read Full Log"],
-                  defaultId: 0,
-                  icon: WINDOW_ICON
-                });
-                limitLength = response === 0;
-              }
               completedCount++;
               if (!error) {
-                if (limitLength) {
-                  buffer = buffer.subarray(0, Math.min(buffer.length, 75 * 1024 * 1024));
-                }
                 callback(buffer);
               }
               sendIfReady();
@@ -306,10 +312,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         };
         if (path.endsWith(".dslog")) {
           // DSLog, open DSEvents too
-          results[index] = [null, null];
+          results = [null, null];
           targetCount += 2;
-          openPath(path, (buffer) => (results[index][0] = buffer));
-          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[index][1] = buffer));
+          openPath(path, (buffer) => (results[0] = buffer));
+          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
         } else if (path.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
@@ -321,7 +327,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               convertHoot(path)
                 .then((wpilogPath) => {
                   openPath(wpilogPath, (buffer) => {
-                    results[index][0] = buffer;
+                    results[0] = buffer;
                     fs.rmSync(wpilogPath);
                   });
                 })
@@ -332,32 +338,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 });
             });
         } else {
-          // Not DSLog, open normally
+          // Normal log, open normally
           targetCount += 1;
-          openPath(path, (buffer) => (results[index][0] = buffer));
+          openPath(path, (buffer) => (results[0] = buffer));
         }
-      });
-      break;
-
-    case "hoot-non-pro-warning":
-      dialog
-        .showMessageBox(window, {
-          type: "info",
-          title: "Alert",
-          message: "Limited Signals Available",
-          detail:
-            "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
-          checkboxLabel: "Don't Show Again",
-          icon: WINDOW_ICON
-        })
-        .then((response) => {
-          if (response.checkboxChecked) {
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-            prefs.skipHootNonProWarning = true;
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            sendAllPreferences();
-          }
-        });
+      }
       break;
 
     case "numeric-array-deprecation-warning":
@@ -1507,43 +1492,44 @@ function setupMenu() {
       label: "File",
       submenu: [
         {
-          label: "Open...",
+          label: "Open Log(s)...",
           accelerator: "CmdOrCtrl+O",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
-                title: "Select a robot log file to open",
-                properties: ["openFile"],
+                title: "Select the robot log file(s) to open",
+                message: "If multiple files are selected, timestamps will be aligned automatically",
+                properties: ["openFile", "multiSelections"],
                 filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
-                  sendMessage(window!, "open-files", [files.filePaths[0]]);
+                  sendMessage(window!, "open-files", { files: files.filePaths, merge: false });
                 }
               });
           }
         },
         {
-          label: "Open Multiple...",
+          label: "Add New Log(s)...",
           accelerator: "CmdOrCtrl+Shift+O",
           async click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
-            let filesResponse = await dialog.showOpenDialog(window, {
-              title: "Select up to " + MERGE_MAX_FILES.toString() + " robot log files to open",
-              message: "Up to " + MERGE_MAX_FILES.toString() + " files can be opened together",
-              properties: ["openFile", "multiSelections"],
-              filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
-              defaultPath: getDefaultLogPath()
-            });
-            let files = filesResponse.filePaths;
-            if (files.length === 0) {
-              return;
-            }
-            sendMessage(window, "open-files", files.slice(0, MERGE_MAX_FILES));
+            dialog
+              .showOpenDialog(window, {
+                title: "Select the robot log file(s) to add to the current log",
+                properties: ["openFile", "multiSelections"],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
+                defaultPath: getDefaultLogPath()
+              })
+              .then((files) => {
+                if (files.filePaths.length > 0) {
+                  sendMessage(window!, "open-files", { files: files.filePaths, merge: true });
+                }
+              });
           }
         },
         {
@@ -2259,7 +2245,7 @@ function createHubWindow(state?: WindowState) {
             title: "Alert",
             message: "We need your help!",
             detail:
-              "Please take 5 minutes to give us some feedback on the AdvantageScope beta. Users like you help us make AdvantageScope better for everyone!",
+              "Please take 10 minutes to give us some feedback on the AdvantageScope beta. Users like you help us make AdvantageScope better for everyone!",
             buttons: ["Give Feedback", "Not Now"]
           })
           .then((result) => {
@@ -2980,17 +2966,16 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
  */
 function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   const width = 450;
-  const height = 490;
+  const height = process.platform === "win32" ? 530 : 490;
   let betaWelcome = new BrowserWindow({
     width: width,
     height: height,
+    useContentSize: true,
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
-    fullscreenable: false,
-    modal: true,
-    useContentSize: true,
     parent: parentWindow,
+    modal: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }

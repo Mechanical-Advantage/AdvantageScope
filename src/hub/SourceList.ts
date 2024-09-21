@@ -8,7 +8,7 @@ import {
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
 import {
-  grabChassiSpeeds as grabChassisSpeeds,
+  grabChassisSpeeds,
   grabPosesAuto,
   grabSwerveStates,
   rotation3dTo2d,
@@ -802,16 +802,17 @@ export default class SourceList {
     // Hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let toggleHidden = () => {
-      if (isChild) return;
       let index = Array.from(this.LIST.children).indexOf(item);
       let newVisible = !this.state[index].visible;
       this.state[index].visible = newVisible;
       this.updateItem(item, this.state[index]);
-      while (index < this.state.length) {
-        index++;
-        if (!this.isChild(index)) break;
-        this.state[index].visible = newVisible;
-        this.updateItem(this.LIST.children[index] as HTMLElement, this.state[index]);
+      if (!isChild) {
+        while (index < this.state.length) {
+          index++;
+          if (!this.isChild(index)) break;
+          this.state[index].visible = newVisible;
+          this.updateItem(this.LIST.children[index] as HTMLElement, this.state[index]);
+        }
       }
     };
     hideButton.addEventListener("click", (event) => {
@@ -833,7 +834,6 @@ export default class SourceList {
 
     // Child formatting
     if (isChild) {
-      hideButton.hidden = true;
       item.classList.add("child");
     }
 

@@ -1,6 +1,7 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
@@ -430,6 +431,14 @@ export default class Tabs {
         activeFields.add(field);
       });
     });
+    let enabledKey = getEnabledKey(window.log);
+    if (enabledKey !== undefined) {
+      activeFields.add(enabledKey);
+    }
+    let autonomousKey = getAutonomousKey(window.log);
+    if (autonomousKey !== undefined) {
+      activeFields.add(autonomousKey);
+    }
     return activeFields;
   }
 

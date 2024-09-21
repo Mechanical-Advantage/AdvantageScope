@@ -1,7 +1,8 @@
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
+import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import {
   LineGraphRendererCommand,
   LineGraphRendererCommand_DiscreteField,
@@ -281,6 +282,11 @@ export default class LineGraphController implements TabController {
 
     // Add numeric fields
     this.numericCommandCache = {};
+    const akitTimestampField = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
+    const akitTimestamps =
+      akitTimestampField === undefined
+        ? undefined
+        : window.log.getNumber(akitTimestampField, -Infinity, Infinity)?.timestamps;
     let addNumeric = (
       source: SourceListState,
       dataRange: [number, number],
@@ -295,6 +301,37 @@ export default class LineGraphController implements TabController {
           timeRange[1]
         );
         if (data === undefined) return;
+
+        // Add AdvantageKit samples
+        if (akitTimestamps !== undefined) {
+          switch (fieldItem.type) {
+            case "stepped":
+              // Extra samples wouldn't affect rendering
+              break;
+            case "smooth":
+            case "points":
+              let newData: LogValueSetNumber = { timestamps: [], values: [] };
+              let sourceIndex = 0;
+              let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+              while (
+                akitIndex < akitTimestamps.length &&
+                akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]
+              ) {
+                while (
+                  sourceIndex < data!.timestamps.length - 1 &&
+                  akitTimestamps[akitIndex] >= data!.timestamps[sourceIndex + 1]
+                ) {
+                  sourceIndex++;
+                }
+                newData.timestamps.push(akitTimestamps[akitIndex]);
+                newData.values.push(data!.values[sourceIndex]);
+                akitIndex++;
+              }
+              console.log(newData.timestamps);
+              data = newData;
+              break;
+          }
+        }
 
         // Apply filter
         switch (filter) {

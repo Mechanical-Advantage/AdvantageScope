@@ -41,6 +41,12 @@ export function indexArray(length: number): number[] {
   return Array.from({ length: length }, (_, i) => i);
 }
 
+/** Calculates a mock progress value. */
+export function calcMockProgress(time: number, maxPercent = 0.6): number {
+  // https://www.desmos.com/calculator/86u4rnu8ob
+  return maxPercent - maxPercent / (0.1 * time + 1);
+}
+
 /** Adjust the brightness of a HEX color.*/
 export function shiftColor(color: string, shift: number): string {
   let colorHexArray = color.slice(1).match(/.{1,2}/g);
