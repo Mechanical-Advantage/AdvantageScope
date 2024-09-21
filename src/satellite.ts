@@ -312,7 +312,7 @@ class MockSelection implements Selection {
     throw new Error("Method not implemented.");
   }
 
-  setGrabZoomRange(range: [number, number]) {
+  setGrabZoomRange(range: [number, number] | null) {
     window.sendMainMessage("call-selection-setter", { name: "setGrabZoomRange", args: [range] });
   }
 

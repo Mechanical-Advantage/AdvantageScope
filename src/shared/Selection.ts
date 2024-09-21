@@ -54,7 +54,7 @@ export default interface Selection {
   setPlaybackSpeed(speed: number): void;
 
   /** Sets a new time range for an in-progress grab zoom. */
-  setGrabZoomRange(range: [number, number]): void;
+  setGrabZoomRange(range: [number, number] | null): void;
 
   /** Gets the time range to display for an in-progress grab zoom. */
   getGrabZoomRange(): [number, number] | null;

@@ -50,6 +50,12 @@ export default class Timeline {
         this.grabZoomActive = false;
       }
     });
+    this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
+      if (this.grabZoomActive) {
+        window.selection.setGrabZoomRange(null);
+        this.grabZoomActive = false;
+      }
+    });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
         let hoveredTime = window.selection.getHoveredTime();

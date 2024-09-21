@@ -55,6 +55,12 @@ export default class LineGraphRenderer implements TabRenderer {
         this.grabZoomActive = false;
       }
     });
+    this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
+      if (this.grabZoomActive) {
+        window.selection.setGrabZoomRange(null);
+        this.grabZoomActive = false;
+      }
+    });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
       if (Math.abs(event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x - this.mouseDownX) <= 5) {
         let hoveredTime = this.lastHoveredTime;
@@ -96,6 +102,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
     // Calculate vertical layout (based on discrete fields)
     let graphTop = this.hasController ? 8 : 20;
+    this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
     let graphHeightOpen =
