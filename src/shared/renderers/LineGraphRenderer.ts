@@ -146,21 +146,21 @@ export default class LineGraphRenderer implements TabRenderer {
 
         let startX = scaleValue(field.timestamps[i], timeRange, [graphLeft, graphLeft + graphWidth]);
         let endX: number;
-        if (i === field.timestamps.length - 1) {
+        skippedSamples = 0;
+        while (
+          (endX = scaleValue(field.timestamps[i + skippedSamples + 1], timeRange, [
+            graphLeft,
+            graphLeft + graphWidth
+          ])) -
+            startX <
+            1 / devicePixelRatio &&
+          i + skippedSamples + 1 < field.timestamps.length
+        ) {
+          skippedSamples++;
+          toggle = !toggle;
+        }
+        if (i + skippedSamples === field.timestamps.length - 1) {
           endX = graphLeft + graphWidth;
-        } else {
-          skippedSamples = 0;
-          while (
-            (endX = scaleValue(field.timestamps[i + skippedSamples + 1], timeRange, [
-              graphLeft,
-              graphLeft + graphWidth
-            ])) -
-              startX <
-            1 / devicePixelRatio
-          ) {
-            skippedSamples++;
-            toggle = !toggle;
-          }
         }
         if (endX > graphLeft + graphWidth) endX = graphLeft + graphWidth;
         let topY = graphTop + graphHeight - 20 - renderIndex * 20;
