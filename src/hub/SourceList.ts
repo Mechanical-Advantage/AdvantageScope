@@ -8,7 +8,7 @@ import {
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
 import {
-  grabChassiSpeeds as grabChassisSpeeds,
+  grabChassisSpeeds,
   grabPosesAuto,
   grabSwerveStates,
   rotation3dTo2d,
