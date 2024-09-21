@@ -419,14 +419,15 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Build app
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -l AppImage
+        run: npx electron-builder build --publish never --${{ matrix.arch }} -l dir
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope*.AppImage "AdvantageScope (WPILib).AppImage"
-          zip advantagescope-wpilib-linux-${{ matrix.arch }}.zip "AdvantageScope (WPILib).AppImage"
+          cd dist/linux*
+          zip ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
+          cd ../..
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v4
