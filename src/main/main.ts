@@ -1500,7 +1500,7 @@ function setupMenu() {
             dialog
               .showOpenDialog(window, {
                 title: "Select the robot log file(s) to open",
-                message: "If multiple files are selected, timestamps will be synchronized",
+                message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
                 filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
                 defaultPath: getDefaultLogPath()
