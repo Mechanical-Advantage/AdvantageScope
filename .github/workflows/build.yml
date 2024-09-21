@@ -426,6 +426,7 @@ jobs:
       - name: Prepare artifact
         run: |
           cd dist/linux*
+          mv advantagescope advantagescope-wpilib
           zip ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
           cd ../..
       - name: Upload development artifact
