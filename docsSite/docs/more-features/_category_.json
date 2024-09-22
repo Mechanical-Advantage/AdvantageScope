@@ -1,6 +1,7 @@
 {
   "label": "More Features",
   "position": 4,
+  "collapsed": false,
   "link": {
     "type": "generated-index"
   }

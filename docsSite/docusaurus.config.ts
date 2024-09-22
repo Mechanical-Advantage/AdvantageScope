@@ -30,7 +30,7 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          sidebarCollapsed: false
+          sidebarCollapsed: true
         },
         theme: {
           customCss: "./src/css/custom.css"
