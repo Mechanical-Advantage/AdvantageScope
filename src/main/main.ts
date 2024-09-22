@@ -1797,12 +1797,21 @@ function setupMenu() {
             })
         },
         {
-          label: "New Tab (Popup)", // Hidden item to add keyboard shortcut
+          label: "New Tab (Shortcut)", // Hidden item to add keyboard shortcut
           visible: false,
           accelerator: "CmdOrCtrl+T",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window) newTabPopup(window);
+          }
+        },
+        {
+          label: "New Pop-Out",
+          accelerator: "CmdOrCtrl+Shift+T",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "new-satellite");
           }
         },
         { type: "separator" },

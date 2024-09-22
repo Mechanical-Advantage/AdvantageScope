@@ -774,6 +774,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.addTab(message.data);
       break;
 
+    case "new-satellite":
+      window.tabs.newSatellite();
+      break;
+
     case "move-tab":
       window.tabs.setSelected(window.tabs.getSelectedTab() + message.data);
       break;

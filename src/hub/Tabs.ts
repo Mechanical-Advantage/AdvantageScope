@@ -234,14 +234,7 @@ export default class Tabs {
 
     // Control buttons
     this.CLOSE_BUTTON.addEventListener("click", () => this.close(this.selectedTab));
-    this.POPUP_BUTTON.addEventListener("click", () => {
-      if (this.selectedTab >= 0) {
-        window.sendMainMessage("create-satellite", {
-          uuid: this.tabList[this.selectedTab].controller.UUID,
-          type: this.tabList[this.selectedTab].type
-        });
-      }
-    });
+    this.POPUP_BUTTON.addEventListener("click", () => this.newSatellite());
     this.ADD_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("ask-new-tab");
     });
@@ -555,6 +548,16 @@ export default class Tabs {
     this.CONTROLS_CONTENT.appendChild(controlsElement);
     this.RENDERER_CONTENT.appendChild(rendererElement);
     this.updateElements();
+  }
+
+  /** Create new sallite for current tab. */
+  newSatellite() {
+    if (this.selectedTab >= 0) {
+      window.sendMainMessage("create-satellite", {
+        uuid: this.tabList[this.selectedTab].controller.UUID,
+        type: this.tabList[this.selectedTab].type
+      });
+    }
   }
 
   /** Closes the specified tab. */
