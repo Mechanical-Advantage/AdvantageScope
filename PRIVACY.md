@@ -4,7 +4,7 @@ AdvantageScope is a volunteer-run project that is owned and published by the Lit
 
 ## Information We Collect
 
-Littleton Robotics does not collect data from users of the AdvantageScope application or documentation site ([docs.advantagescope.org](docs.advantagescope.org)).
+Littleton Robotics does not collect data from users of the AdvantageScope application or documentation site ([docs.advantagescope.org](https://docs.advantagescope.org)).
 
 Users of AdvantageScope beta releases may be asked to complete an online feedback survey. Responses to this survey may be retained by Littleton Robotics for the purpose of improving future releases. This information may include the user's team number, email address, operating system, and feedback responses. Personally identifying information will never be shared outside of Littleton Robotics without the user's consent.
 
