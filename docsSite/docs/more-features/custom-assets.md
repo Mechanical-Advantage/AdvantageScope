@@ -8,7 +8,9 @@ AdvantageScope uses a default set of flat field images, field models, robot mode
 
 The set of assets can be customized to add more options if desired. To open the user assets folder, click "Help" > "Show Assets Folder". The expected formats for the assets are defined below. See the default set of [detailed assets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) and [bundled assets](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) for reference.
 
-> Note: To load assets from an alternative location, click "Help" > "Use Custom Assets Folder". The selected folder should be the _parent folder_ where multiple assets in separate subfolders could be placed. This feature allows custom assets to be stored under version control alongside robot code.
+:::Tip
+To load assets from an alternative location, click "Help" > "Use Custom Assets Folder". The selected folder should be the _parent folder_ where multiple assets in separate subfolders could be placed. This feature allows custom assets to be stored under version control alongside robot code.
+:::
 
 ## General Format
 
@@ -19,11 +21,13 @@ All assets are stored in folders with the naming convention "TYPE_NAME". The NAM
 - "Robot"
 - "Joystick"
 
-> Note: Example folder names would be "Field2d_2023Field", "Joystick_OperatorButtons", or "Robot_Dozer".
+:::info
+Example folder names would be "Field2d_2023Field", "Joystick_OperatorButtons", or "Robot_Dozer".
+:::
 
 This folder should contain a file named "config.json" and one or more asset files, as described below. The config file always includes the name of the asset to be displayed by AdvantageScope. This name must be unique for each asset type.
 
-```
+```json
 {
   "name": string // Unique name, required for all asset types
   ... // Type-dependent configuration, described below
@@ -34,7 +38,7 @@ This folder should contain a file named "config.json" and one or more asset file
 
 A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. The config file must be in the following format:
 
-```
+```json
 {
   "name": string // Unique name, required for all asset types
   "sourceUrl": string // Link to the original file, optional
@@ -57,11 +61,15 @@ The simplest way to determine appropriate position and rotation values is by tri
 
 ### Articulated Components
 
+:::warning
+Setting up articulated components can be complex and time-consuming. Consider utilizing AdvantageScope's 3D [`Mechanism2d` support](../tab-reference/3d-field.md#2d-mechanisms), which offers a more streamlined approach to **visualize mechanisms on the 3D field**.
+:::
+
 Robot models can contain articulated components for visualizing mechanism data (see [here](../tab-reference/3d-field.md) for details). The base glTF model should include no components, then each component should be exported as a separate glTF model. Components models follow the naming convention "model_INDEX.glb", so the first articulated component would be "model_0.glb"
 
 Component configuration is provided in the robot's config file. An array of components should be provided under the "components" key. When no component poses are provided by the user in AdvantageScope, the component models will be positioned using the default robot rotations and position (see above). When component poses are provided by the user, the "zeroed" rotations and position are instead applied to bring each component to the robot origin. The user's poses are then applied to move each component to the correct location on the robot.
 
-```
+```json
 "components": [
   {
     "zeroedRotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
@@ -90,7 +98,7 @@ To calibrate the positions of the articulated components, we recommend the follo
 
 An image must be included in the folder with the name "image.png". The config file must be in the following format:
 
-```
+```json
 {
   "name": string // Unique name, required for all asset types
   "components": [...] // Array of component configurations, see below
@@ -99,7 +107,7 @@ An image must be included in the folder with the name "image.png". The config fi
 
 ### Single Button / POV Value:
 
-```
+```json
 {
   "type": "button"
   "isYellow": boolean
@@ -113,7 +121,7 @@ An image must be included in the folder with the name "image.png". The config fi
 
 ### Two-Axis Joystick:
 
-```
+```json
 {
   "type": "joystick" // A joystick that moves in two dimensions
   "isYellow": boolean
@@ -129,7 +137,7 @@ An image must be included in the folder with the name "image.png". The config fi
 
 ### Single Axis:
 
-```
+```json
 {
   "type": "axis" // A single axis value
   "isYellow": boolean
@@ -144,7 +152,7 @@ An image must be included in the folder with the name "image.png". The config fi
 
 An image must be included in the folder with the name "image.png". It should be oriented with the blue alliance on the left. The config file must be in the following format:
 
-```
+```json
 {
   "name": string // Unique name, required for all asset types
   "sourceUrl": string // Link to the original file, optional
@@ -162,7 +170,7 @@ A model must be included in the folder with the name "model.glb". After all rota
 
 The config file must be in the following format:
 
-```
+```json
 {
   "name": string // Unique name, required for all asset types
   "sourceUrl": string // Link to the original file, optional

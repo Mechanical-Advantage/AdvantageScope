@@ -3,7 +3,6 @@ sidebar_position: 3
 ---
 
 import PrefsImage from '../img/prefs.png';
-import Image1 from './img/open-live-1.png';
 
 # Connecting to Live Sources
 
