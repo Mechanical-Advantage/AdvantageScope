@@ -4,9 +4,9 @@ sidebar_position: 4
 
 # 🔢 Table
 
-The table view is designed to show the specific value changes for a set of fields in more detail than the 📉 [Line Graph](../tab-reference/line-graph.md). To add a field, drag it to the main view. To delete a field, click the "X" button next to its name.
+The table view is designed to show the specific value changes for a set of fields in detail. To add a field, drag it to the main view. To delete a field, click the "X" button next to its name. Fields can be rearranged by clicking and dragging.
 
-![Adding fields](./img/table-1.png)
+![Overview](./img/table-1.png)
 
 **A new row is created for each change in any of the displayed fields.** Duplicate rows are not displayed. For example, a table showing the robot state during a match would look like this:
 

@@ -2,74 +2,88 @@
 sidebar_position: 9
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # 🦀 Swerve
 
-The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, and robot rotation. The timeline shows when the robot is enabled and can be used to navigate through the log data.
-
-> Note: To view the swerve visualization alongside other tabs, click the "Add Window" icon just below the navigation/playback controls. To hide the controls at the bottom of the window, click the eye icon.
+The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, robot rotation, and chassis speeds.
 
 ![Overview of swerve tab](./img/swerve-1.png)
 
-## Fields
+<details>
+<summary>Timeline Controls</summary>
 
-To selected a field, drag it to one of the labeled boxes. To remove a field, right-click the box. The purpose and expected format of each field is shown below.
+The timeline is used to control playback and visualization. Clicking on the timeline selects a time, and right-clicking deselects it. The selected time is synchronized across all tabs, making it easy to quickly find this location in other views.
 
-### States
+The green sections of the timeline indicate when the robot is autonomous, and the blue sections indicate when the robot is teleoperated.
 
-Two sets of module states can be displayed simultaneously in red and blue. For instance, the measured states can be compared to the setpoints.
+To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 
-Pose data can be stored as a struct array of four `SwerveModuleState` objects. The example code below shows how to log this data using WPILib or AdvantageKit. The velocity units should match the configured "Max Speed". The order of the modules is also configurable.
+![Timeline](./img/timeline.png)
+
+</details>
+
+## Adding Sources
+
+To get started, drag a field to the "Sources" section. Delete a source using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all sources, click the trash can near the axis title and then `Clear All`. Sources can be rearranged in the list by clicking and dragging.
+
+**To customize each source, click the colored icon or right-click on the field name.** AdvantageScope supports three sources types:
+
+- **Module States:** A set of four swerve module states, displayed as vectors on the diagram.
+- **Chassis Speeds:** Linear and angular speeds displayed in the center of the diagram.
+- **Rotation:** Angular position used to rotate the diagram.
+
+## Data Format
+
+Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleState[]`, `ChassisSpeeds`, `Rotation2d`, or `Rotation3d` types.
+
+Many FRC libraries support these formats, including WPILib and AdvantageKit. The example code below shows how to log swerve module states in Java.
+
+<Tabs>
+<TabItem value="wpilib" label="WPILib" default>
 
 ```java
 SwerveModuleState[] states = new SwerveModuleState[] {
-    new SwerveModuleState(),
-    new SwerveModuleState(),
-    new SwerveModuleState(),
-    new SwerveModuleState()
+  new SwerveModuleState(),
+  new SwerveModuleState(),
+  new SwerveModuleState(),
+  new SwerveModuleState()
 }
 
-// WPILib
 StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-    .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+.getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
 
 periodic() {
-    publisher.set(states);
+  publisher.set(states);
+}
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+```java
+SwerveModuleState[] states = new SwerveModuleState[] {
+  new SwerveModuleState(),
+  new SwerveModuleState(),
+  new SwerveModuleState(),
+  new SwerveModuleState()
 }
 
-// AdvantageKit
 Logger.recordOutput("MyStates", states);
 ```
 
-Alternatively, the state fields can be numeric arrays with the format shown below. The rotation units are configurable (radians or degrees).
-
-```
-[
-  rotation_1, velocity_1,
-  rotation_2, velocity_2,
-  rotation_3, velocity_3,
-  rotation_4, velocity_4
-]
-```
-
-### Robot Rotation
-
-This field can optionally be used to show the robot's current rotation (based on odometry or a gyro). The provided field should be a byte-encoded `Rotation2d` (struct/protobuf) or a number in radians/degrees (the same units as the module rotations). If the robot's pose is already logged, consider using the rotation element or the last item in the pose array as the robot rotation for swerve.
-
-![Pose data as a rotation](./img/swerve-2.png)
+</TabItem>
+</Tabs>
 
 ## Configuration
 
 The following configuration options are available:
 
-- **Max Speed:** The maximum achievable speed of the modules, used to adjust the size of the vectors. The units should match the velocities in the state fields.
-- **Rotation Units:** The units of the module rotations and robot rotation (radians and degrees are supported). Note that all measurements must be CCW+, which matches the standard [WPILib coordinate system](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/geometry/coordinate-systems.html).
-- **Arrangement:** The order of the logged module states. For example, "FL, FR, BL, BR" indicates that:
-  - First module = Front left
-  - Second module = Front right
-  - Third module = Back left
-  - Fourth module = Back right
-- **Size (Left-Right):** The distance between the left and right modules. Any units can be used, but they must match the units for the front-back measurement.
-- **Size (Front-Back):** The distance between the front and back modules. Any units can be used, but they must match the units for the left-right measurement.
-- **Forward Direction:** The direction the robot should be facing when the "Robot Rotation" is zero or blank. This option is often useful to align with odometry data or match videos.
+- **Max Speed:** The maximum achievable speed of the modules, used to adjust the size of the vectors.
+- **Frame Size:** The distances between the left-right and front-back swerve modules. Changes the aspect ratio of the robot diagram.
+- **Orientation:** Adjusts the direction the robot diagram is pointed. This option is often useful to align with odometry data or match videos.
 
-> Note: [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)
+:::note
+[🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)
+:::

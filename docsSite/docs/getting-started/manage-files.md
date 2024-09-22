@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-import PrefsImage from './img/prefs.png';
+import PrefsImage from '../img/prefs.png';
 import Image2 from './img/open-file-2.png';
 
 # Managing Log Files
