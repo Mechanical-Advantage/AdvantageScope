@@ -30,7 +30,10 @@ export default class StructDecoder {
   }
 
   private compileSchema(name: string, schema: string): boolean {
-    let valueSchemaStrs: string[] = schema.split(";").filter((schemaStr) => schemaStr.length > 0);
+    let valueSchemaStrs: string[] = schema
+      .trim()
+      .split(";")
+      .filter((schemaStr) => schemaStr.length > 0);
     let valueSchemas: ValueSchema[] = [];
     for (let i = 0; i < valueSchemaStrs.length; i++) {
       let schemaStr = valueSchemaStrs[i];
