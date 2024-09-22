@@ -2,13 +2,21 @@
 sidebar_position: 12
 ---
 
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
 # 🔍 Metadata
 
 The metadata tab shows values published to the hidden "/Metadata" table or through AdvantageKit. The metadata keys are displayed to the left, and the columns separate data from different sources (e.g. real and replay when using AdvantageKit).
 
 ![Overview of metadata tab](./img/metadata-1.png)
 
-The example code below shows how to log metadata using WPILib. The values must be logged to the "/Metadata" table as strings.
+The example code below shows how to log metadata using Java.
+
+<Tabs>
+<TabItem value="wpilib" label="WPILib" default>
+
+In WPILib, the values must be logged to the "/Metadata" table as strings.
 
 ```java
 // NetworkTables (also saved to DataLog by default)
@@ -21,8 +29,14 @@ StringLogEntry entry = new StringLogEntry(DataLogManager.getLog(), "/Metadata/My
 entry.append("MyValue");
 ```
 
-To save metadata using AdvantageKit, call the method below before starting the logger. Metadata is stored separately when running in real and replay for easy comparison.
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+In AdvantageKit, call the method below before starting the logger. Metadata is stored separately when running in real and replay for easy comparison.
 
 ```java
 Logger.getInstance().recordMetadata("MyKey", "MyValue");
 ```
+
+</TabItem>
+</Tabs>

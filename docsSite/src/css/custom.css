@@ -38,3 +38,25 @@
 .pagination-nav__link--next .pagination-nav__label:after {
   content: "  \25B6";
 }
+
+img {
+  margin-bottom: 15px;
+}
+
+.light-only {
+  display: initial;
+}
+
+.dark-only {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .light-only {
+    display: none;
+  }
+
+  .dark-only {
+    display: initial;
+  }
+}

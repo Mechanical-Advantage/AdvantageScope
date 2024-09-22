@@ -19,7 +19,7 @@ AdvantageScope includes the following tools:
 
 Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). For non-public inquires, please send a message to software@team6328.org.
 
-![Example screenshot](/docs/resources/screenshot-light.png)
+![Example screenshot](/docsSite/docs/img/screenshot-light.png)
 
 ## Installation
 

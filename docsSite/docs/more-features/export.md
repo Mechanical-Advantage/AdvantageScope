@@ -2,6 +2,8 @@
 sidebar_position: 3
 ---
 
+import Image1 from './img/export-1.png';
+
 # Exporting Log Data
 
 AdvantageScope includes a flexible system for exporting log data as a CSV, WPILOG, or MCAP file. The export functions work when viewing a log file or when connected to a live data source. Possible use cases include:
@@ -10,9 +12,9 @@ AdvantageScope includes a flexible system for exporting log data as a CSV, WPILO
 - Exporting a WPILOG file based on NetworkTables data, for later access.
 - Saving a WPILOG with a limited number of fields (and duplicate values removed) to reduce file size.
 
-To view options for exporting, click "File" > "Export Data..." or press **cmd/ctrl + E**.
+To view options for exporting, click `File` > `Export Data...`.
 
-![Export options](./img/export-1.png)
+<img src={Image1} alt="Export options" height="250" />
 
 ## Options
 
