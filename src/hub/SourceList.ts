@@ -995,7 +995,7 @@ export default class SourceList {
         } else {
           value = getOrDefault(window.log, state.logKey, logType, time, null);
         }
-        if (value !== null) {
+        if (value !== null || logType === LoggableType.Empty) {
           if (typeConfig?.previewType !== undefined) {
             if (typeConfig?.previewType !== null) {
               let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
