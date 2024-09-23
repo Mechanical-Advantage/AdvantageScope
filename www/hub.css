@@ -615,7 +615,7 @@ div.tab-bar {
   position: absolute;
   left: 10px;
   right: calc(
-    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px+ var(--show-feedback-button) * 38px
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
   );
   top: 0px;
   height: 50px;
@@ -684,7 +684,9 @@ div.tab-bar-drag-highlight {
 div.tab-bar-scroll {
   position: absolute;
   left: 10px;
-  right: 210px;
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
+  );
   top: 0px;
   height: 50px;
   overflow: scroll;
