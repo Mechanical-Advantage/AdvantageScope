@@ -105,7 +105,7 @@ An image must be included in the folder with the name "image.png". The config fi
 }
 ```
 
-### Single Button / POV Value:
+### Single Button / POV Value
 
 ```json
 {
@@ -119,7 +119,7 @@ An image must be included in the folder with the name "image.png". The config fi
 }
 ```
 
-### Two-Axis Joystick:
+### Two-Axis Joystick
 
 ```json
 {
@@ -135,7 +135,7 @@ An image must be included in the folder with the name "image.png". The config fi
 }
 ```
 
-### Single Axis:
+### Single Axis
 
 ```json
 {
