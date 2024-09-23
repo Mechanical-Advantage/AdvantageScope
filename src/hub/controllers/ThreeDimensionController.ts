@@ -9,6 +9,8 @@ import {
   grabSwerveStates
 } from "../../shared/geometry";
 import {
+  ALLIANCE_KEYS,
+  DRIVER_STATION_KEYS,
   MechanismState,
   getDriverStation,
   getIsRedAlliance,
@@ -184,7 +186,11 @@ export default class ThreeDimensionController implements TabController {
   }
 
   getActiveFields(): string[] {
-    return this.sourceList.getActiveFields();
+    let allianceKeys: string[] = [];
+    if (this.originSetting === "auto") {
+      allianceKeys = ALLIANCE_KEYS;
+    }
+    return [...this.sourceList.getActiveFields(), ...allianceKeys, ...DRIVER_STATION_KEYS];
   }
 
   showTimeline(): boolean {

@@ -11,7 +11,7 @@ import {
   rotation3dTo2d,
   translation3dTo2d
 } from "../../shared/geometry";
-import { getIsRedAlliance } from "../../shared/log/LogUtil";
+import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
 import {
   OdometryRendererCommand,
   OdometryRendererCommand_AnyObj,
@@ -228,7 +228,11 @@ export default class OdometryController implements TabController {
   }
 
   getActiveFields(): string[] {
-    return this.sourceList.getActiveFields();
+    let allianceKeys: string[] = [];
+    if (this.bumperSetting === "auto" || this.originSetting === "auto") {
+      allianceKeys = ALLIANCE_KEYS;
+    }
+    return [...this.sourceList.getActiveFields(), ...allianceKeys];
   }
 
   showTimeline(): boolean {

@@ -1,11 +1,20 @@
 import Log from "../../shared/log/Log";
 import LogField from "../../shared/log/LogField";
-import { AKIT_TIMESTAMP_KEYS, applyKeyPrefix, getURCLKeys } from "../../shared/log/LogUtil";
+import {
+  AKIT_TIMESTAMP_KEYS,
+  EVENT_KEYS,
+  MATCH_NUMBER_KEYS,
+  MATCH_TYPE_KEYS,
+  SYSTEM_TIME_KEYS,
+  applyKeyPrefix,
+  getURCLKeys
+} from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { calcMockProgress, createUUID, scaleValue, setsEqual } from "../../shared/util";
 
 /** A provider of historical log data (i.e. all the data is returned at once). */
 export class HistoricalDataSource {
+  private UUID = createUUID();
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
@@ -13,7 +22,6 @@ export class HistoricalDataSource {
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js"
   };
-  private UUID = createUUID();
 
   private path = "";
   private keyPrefix = "";
@@ -221,13 +229,15 @@ export class HistoricalDataSource {
       if (!setsEqual(requestFields, this.lastRawRequestFields)) {
         this.lastRawRequestFields = new Set([...requestFields]);
 
-        // Always request schemas and AdvantageKit timestamp
+        // Add keys that are always requested
         this.log?.getFieldKeys().forEach((key) => {
           if (key.includes("/.schema/")) {
             requestFields.add(key);
           }
         });
-        AKIT_TIMESTAMP_KEYS.forEach((key) => requestFields.add(key));
+        [...SYSTEM_TIME_KEYS, ...AKIT_TIMESTAMP_KEYS, ...EVENT_KEYS, ...MATCH_TYPE_KEYS, ...MATCH_NUMBER_KEYS].forEach(
+          (key) => requestFields.add(key)
+        );
 
         // Compare to existing fields
         requestFields.forEach((field) => {
