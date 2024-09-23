@@ -40,7 +40,11 @@ To see a full list of supported object types, click the `?` icon. This list also
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
-Many FRC libraries support these formats, including WPILib and AdvantageKit. The example code below shows how to log 2D pose data in Java.
+:::warning
+The legacy number array format for geometry data is now deprecated. See [here](../whats-new/legacy-formats.md) for details.
+:::
+
+Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 2D pose data in Java.
 
 <Tabs>
 <TabItem value="wpilib" label="WPILib" default>
