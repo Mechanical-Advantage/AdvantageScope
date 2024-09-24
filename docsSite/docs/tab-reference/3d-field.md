@@ -90,7 +90,7 @@ Mechanism data can be visualized using 2D mechanisms or articulated 3D component
 
 To visualize mechanism data logged using a [`Mechanism2d``](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ plane of the robot using simple boxes (as shown below). The robot's origin is centered on the bottom edge of the mechanism.
 
-![2D mechanism](./img/3d-field-3.png)
+![2D mechanism](./img/3d-field-2.png)
 
 ### 3D Components
 
@@ -102,7 +102,7 @@ Mechanisms can be visualized with articulated components by logging a set of 3D 
 
 Each component can be moved independently (like an elevator carriage, arm, or end effector). For more information on configuring robots with components, see [Custom Assets](../more-features/custom-assets.md).
 
-![3D mechanism](./img/3d-field-4.png)
+![3D mechanism](./img/3d-field-3.png)
 
 ## Game Piece Objects
 
@@ -122,7 +122,7 @@ The AdvantageKit KitBot 2024 example project includes a simple example of a [com
 
 </details>
 
-![2024 KitBot note visualization](./img/3d-field-5.png)
+![2024 KitBot note visualization](./img/3d-field-4.png)
 
 ## Camera Options
 
@@ -152,7 +152,7 @@ Automatic selection of station number may be inaccurate when viewing log data pr
 
 Each robot model is configured with a set of fixed cameras, like vision and driver cameras. These cameras have fixed positions, aspect ratios, and FOVs. These views are often useful to check vision data or to simulate a driver camera view. In the example below, a driver camera is shown.
 
-![Fixed camera](./img/3d-field-6.png)
+![Fixed camera](./img/3d-field-5.png)
 
 If a "Camera Override" pose is provided, it replaces the default poses of all fixed cameras while retaining their configured FOVs and aspect ratios. This allows the robot code to provide the position of a moving camera, like one mounted to a turret or shooter hood.
 
@@ -179,7 +179,7 @@ The 3D field supports three rendering modes:
 - **Standard (Default):** Render with minimal lighting and simplified 3D models. Runs well on most devices.
 - **Low Power:** Lower the framerate, resolution, and model detail to reduce battery consumption and provide more consistent performance on low-end devices.
 
-![Comparion of rendering modes](./img/3d-field-7.png)
+![Comparion of rendering modes](./img/3d-field-6.png)
 
 To configure the rendering mode, open the preferences window by pressing clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
 
