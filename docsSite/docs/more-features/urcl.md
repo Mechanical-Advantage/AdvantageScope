@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 Since REV does not provide an official method of automatically recording data from the Spark Max and Spark Flex, we have provided an unofficial alternative for Java and C++ called [URCL](https://github.com/Mechanical-Advantage/URCL) (**U**nofficial **R**EV-**C**ompatible **L**ogger). This enables live plotting and logging of all devices similar to CTRE's [Tuner X plotting feature](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) and [Phoenix 6 signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 
-After setup, periodic CAN frames from all Spark Max and Spark Flex devices are published to NetworkTables. WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) can be used to capture the data to a log file. These frames are then viewable in AdvantageScope (see [Managing Log Files](../getting-started/open-file.md) and [Connecting to Live Sources](../getting-started/open-live.md)).
+After setup, periodic CAN frames from all Spark Max and Spark Flex devices are published to NetworkTables. WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) can be used to capture the data to a log file. These frames are then viewable in AdvantageScope (see [Managing Log Files](../getting-started/manage-files.md) and [Connecting to Live Sources](../getting-started/connect-live.md)).
 
 - **All signals** are captured automatically, with **no manual setup for new devices**.
 - **Every frame is captured**, even when the status frame period is faster than the robot loop cycle.
