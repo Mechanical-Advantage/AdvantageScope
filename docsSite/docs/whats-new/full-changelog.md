@@ -40,6 +40,7 @@ sidebar_position: 1
 
 - Enhanced customization options, including the ability to manually change line color, thickness, and display mode (smooth or with sample points).
 - Added support for graphs with discrete fields.
+- Added automatic adjustment of color tones to ensure sufficient contrast.
 - Improved UI for hiding fields and enabling drag-and-drop reordering of fields.
 - Enabled dragging fields between left and right axes.
 - Non-primary axes now have independent gridlines.
