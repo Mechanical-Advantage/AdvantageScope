@@ -2,6 +2,8 @@
 
 AdvantageScope is a volunteer-run project that is owned and published by the Littleton STEM Educational Foundation ("Littleton Robotics"), a non-profit organization based in the United States.
 
+_This policy was last modified on September 24th, 2024._
+
 ## Information We Collect
 
 Littleton Robotics does not collect data from users of the AdvantageScope application or documentation site ([docs.advantagescope.org](https://docs.advantagescope.org)).
