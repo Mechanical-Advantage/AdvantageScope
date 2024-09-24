@@ -20,9 +20,11 @@ The AdvantageScope application may connect to GitHub services to check for updat
 
 Some AdvantageScope features integrate with [The Blue Alliance](https://www.thebluealliance.com/privacy) to provide additional functionality (as indicated by the text "Powered by The Blue Alliance"). These interactions are covered by The Blue Alliance's [privacy policy](https://www.thebluealliance.com/privacy).
 
+When opening files in the Hoot (.hoot) log format, AdvantageScope may integrate with software published by Cross The Road Electronics LLC (CTRE). Use of your data is subject to CTRE's policies, terms and conditions. Contact CTRE at support@ctr-electronics.com for more information.
+
 Opening videos from The Blue Alliance or YouTube requires that the AdvantageScope application interface with Google services, as covered by the Google [privacy policy](https://policies.google.com/privacy).
 
-Users of AdvantageScope beta releases who choose to fill out the feedback survey are interacting with Google Forms, which is also covered by Google's privacy policy
+Users of AdvantageScope beta releases who choose to fill out the feedback survey are interacting with Google Forms, which is also covered by Google's privacy policy.
 
 ## Contact
 
