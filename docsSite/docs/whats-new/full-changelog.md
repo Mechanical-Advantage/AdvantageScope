@@ -89,7 +89,7 @@ sidebar_position: 1
 - Simplified models based on the rendering mode.
 - Added support for using different robot models for each pose.
 - Introduced heatmap objects for data visualization.
-- Expanded coloroptions for the ghost robot.
+- Expanded color options for the ghost robot.
 - Linked vision targets, components, and mechanisms to their respective object sets.
 - Enabled customization of vision target thickness.
 - Allowed users to change trajectory color and thickness.
