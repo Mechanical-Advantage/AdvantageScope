@@ -17,7 +17,7 @@ export default function DocCardList(props: Props): JSX.Element {
   return (
     <section className={clsx("row", className)}>
       {filteredItems.map((item, index) => (
-        <article key={index} className="col col--4 margin-bottom--lg">
+        <article key={index} className="col col--6 margin-bottom--lg">
           <DocCard item={item} />
         </article>
       ))}
