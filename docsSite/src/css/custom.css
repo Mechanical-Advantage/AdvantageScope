@@ -60,3 +60,8 @@ img {
     display: initial;
   }
 }
+
+.close {
+  color: var(--ifm-color-white);
+  opacity: 1;
+}
