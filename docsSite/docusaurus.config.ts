@@ -40,7 +40,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
     image: "img/social.png",
     navbar: {
       title: "AdvantageScope Documentation",
@@ -64,6 +63,14 @@ const config: Config = {
     colorMode: {
       disableSwitch: true,
       respectPrefersColorScheme: true
+    },
+    announcementBar: {
+      id: "offline_info",
+      content:
+        "This documentation is available <b>offline</b> by clicking the 📖 icon in the tab bar of AdvantageScope.",
+      backgroundColor: "#446ce3",
+      textColor: "#ffffff",
+      isCloseable: true
     },
     prism: {
       theme: prismThemes.github,
