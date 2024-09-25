@@ -16,7 +16,7 @@ Below is an hour-long 140MB log file being decoded by the 2024 and 2025 versions
 
 ### ⏳ All-New Timeline Interface
 
-The timeline interface has been completely redesigned to enable precise scrubbing, with controls for **zooming and panning**. Auto and teleop match periods are also colored coded for easier navigation.
+The timeline interface has been completely redesigned to enable precise scrubbing, with controls for **zooming and panning**. Auto and teleop match periods are also color coded for easier navigation.
 
 ![Timeline demo](./img/timeline-demo.gif)
 
