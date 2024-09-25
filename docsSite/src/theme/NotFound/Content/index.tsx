@@ -16,8 +16,11 @@ export default function NotFoundContent({ className }: Props): JSX.Element {
             know that their link is broken!
           </p>
           <p>
-            In the meantime, try navigating to the <a href="/">homepage</a> and see if you can find what you're looking
-            for.
+            <b>Here's where you tried to go: </b>
+            <code>{window.location.pathname + window.location.hash}</code>
+          </p>
+          <p>
+            Try navigating to the <a href="/">homepage</a> and see if you can find what you're looking for there.
           </p>
           <p>
             <img src={Image404} height="250" />
