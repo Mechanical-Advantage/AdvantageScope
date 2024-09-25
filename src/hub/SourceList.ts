@@ -623,6 +623,9 @@ export default class SourceList {
       y > listRect.bottom
     ) {
       this.DRAG_HIGHLIGHT.hidden = true;
+      Array.from(this.LIST.children).forEach((element) => {
+        element.classList.remove("parent-highlight");
+      });
       return;
     }
 
@@ -703,6 +706,9 @@ export default class SourceList {
       this.DRAG_HIGHLIGHT.hidden = false;
     } else {
       this.DRAG_HIGHLIGHT.hidden = true;
+      Array.from(this.LIST.children).forEach((element) => {
+        element.classList.remove("parent-highlight");
+      });
     }
   }
 
