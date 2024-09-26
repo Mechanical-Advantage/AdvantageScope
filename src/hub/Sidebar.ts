@@ -545,8 +545,9 @@ export default class Sidebar {
       label.appendChild(labelSpan);
       labelSpan.innerText = title;
     }
-    label.style.fontStyle = field.fullKey === null ? "normal" : "italic";
-    label.style.cursor = field.fullKey === null ? "auto" : "grab";
+    if (field.fullKey !== null) {
+      label.classList.add("full-key");
+    }
     if (field.fullKey) {
       {
         let typeWarningSpan = document.createElement("span");
