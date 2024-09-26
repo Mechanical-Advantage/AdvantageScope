@@ -427,7 +427,7 @@ jobs:
         run: |
           cd dist/linux*
           mv advantagescope advantagescope-wpilib
-          zip ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
+          zip -r ../../advantagescope-wpilib-linux-${{ matrix.arch }}.zip ./*
           cd ../..
       - name: Upload development artifact
         if: github.event_name != 'release'
