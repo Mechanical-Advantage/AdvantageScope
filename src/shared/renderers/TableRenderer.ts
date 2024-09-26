@@ -332,8 +332,8 @@ export default class TableRenderer implements TabRenderer {
       }
       cellText[rowIndex].forEach((text, cellIndex) => {
         let cell = row.children[cellIndex] as HTMLElement;
-        if (cell.innerText !== text) {
-          cell.innerText = text;
+        if (cell.textContent !== text) {
+          cell.textContent = text;
         }
       });
     });
