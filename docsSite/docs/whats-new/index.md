@@ -1,6 +1,6 @@
 # What's New in 2025?
 
-<h2 style={{textAlign: "center"}}>Smart, Simple, Swift</h2>
+<h2 style={{textAlign: "center"}}>Swift, Simple, Smart</h2>
 
 The 2025 version of AdvantageScope is now in **beta**, and includes over **130 new features and updates!** Check the [full changelog](./full-changelog.md) for a complete list. Some of the most notable new features are explained below.
 
