@@ -515,6 +515,13 @@ setInterval(() => {
 
 async function handleMainMessage(message: NamedMessage) {
   switch (message.name) {
+    case "show-when-ready":
+      // Wait for DOM updates to finish
+      window.requestAnimationFrame(() => {
+        window.sendMainMessage("show");
+      });
+      break;
+
     case "restore-state":
       restoreState(message.data);
       break;
