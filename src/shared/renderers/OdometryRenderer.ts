@@ -83,6 +83,7 @@ export default class OdometryRenderer implements TabRenderer {
       this.lastImageSource = gameData.path;
       this.IMAGE.src = gameData.path;
     }
+    if (!(this.IMAGE.width > 0 && this.IMAGE.height > 0)) return;
 
     // Determine if objects are flipped
     let objectsFlipped = command.origin === "red";
