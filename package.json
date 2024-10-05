@@ -19,7 +19,7 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
-    "wasm:compile": "emcc src/hub/dataSources/wpilog/indexer/wpilogIndexer.c -o bundles/hub\\$wpilogIndexer.js -sEXPORTED_FUNCTIONS=_run,_malloc -sALLOW_MEMORY_GROWTH -O3",
+    "wasm:compile": "node wasmCompile.mjs",
     "docs:start": "cd docsSite && npm run start && cd ..",
     "docs:build": "cd docsSite && npm run build && cd ..",
     "docs:build-embed": "cd docsSite && npm run build-embed && cd ..",
