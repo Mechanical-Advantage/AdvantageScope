@@ -13,6 +13,8 @@ export default class OdometryRenderer implements TabRenderer {
   private heatmap: Heatmap;
   private lastImageSource = "";
   private aspectRatio = 1;
+  private lastRenderState = "";
+  private imageLoadCount = 0;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement;
@@ -20,6 +22,7 @@ export default class OdometryRenderer implements TabRenderer {
     this.IMAGE = document.createElement("img");
     this.HEATMAP_CONTAINER = root.getElementsByClassName("odometry-heatmap-container")[0] as HTMLElement;
     this.heatmap = new Heatmap(this.HEATMAP_CONTAINER);
+    this.IMAGE.addEventListener("load", () => this.imageLoadCount++);
   }
 
   saveState(): unknown {
@@ -33,11 +36,21 @@ export default class OdometryRenderer implements TabRenderer {
   }
 
   render(command: OdometryRendererCommand): void {
-    // Set up canvas
+    // Get setup
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let isVertical = command.orientation === Orientation.DEG_90 || command.orientation === Orientation.DEG_270;
     let width = isVertical ? this.CONTAINER.clientHeight : this.CONTAINER.clientWidth;
     let height = isVertical ? this.CONTAINER.clientWidth : this.CONTAINER.clientHeight;
+
+    // Exit if render state unchanged
+    let renderState: any[] = [width, height, window.devicePixelRatio, command, this.imageLoadCount];
+    let renderStateString = JSON.stringify(renderState);
+    if (renderStateString === this.lastRenderState) {
+      return;
+    }
+    this.lastRenderState = renderStateString;
+
+    // Set up canvas
     this.CANVAS.style.width = width.toString() + "px";
     this.CANVAS.style.height = height.toString() + "px";
     this.CANVAS.width = width * window.devicePixelRatio;
@@ -70,7 +83,6 @@ export default class OdometryRenderer implements TabRenderer {
       this.lastImageSource = gameData.path;
       this.IMAGE.src = gameData.path;
     }
-    if (!(this.IMAGE.width > 0 && this.IMAGE.height > 0)) return;
 
     // Determine if objects are flipped
     let objectsFlipped = command.origin === "red";

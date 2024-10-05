@@ -14,6 +14,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
   private hasController: boolean;
   private scrollSensor: ScrollSensor;
+  private lastRenderState = "";
   private mouseDownX = 0;
   private grabZoomActive = false;
   private grabZoomStartTime = 0;
@@ -94,6 +95,16 @@ export default class LineGraphRenderer implements TabRenderer {
     let width = this.CANVAS.clientWidth;
     let height = this.CANVAS.clientHeight;
     let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    // Exit if render state unchanged
+    let renderState: any[] = [width, height, light, devicePixelRatio, command, this.lastCursorX];
+    let renderStateString = JSON.stringify(renderState);
+    if (renderStateString === this.lastRenderState) {
+      return;
+    }
+    this.lastRenderState = renderStateString;
+
+    // Apply setup and scaling
     this.CANVAS.width = width * devicePixelRatio;
     this.CANVAS.height = height * devicePixelRatio;
     context.scale(devicePixelRatio, devicePixelRatio);
