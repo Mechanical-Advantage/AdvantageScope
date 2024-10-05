@@ -75,7 +75,7 @@ Heatmaps can now be viewed on the 👀 [3D Field](../tab-reference/3d-field.md) 
 
 ### 🤩 New UI on Windows and Linux
 
-The AdvantageScope UI on Windows has been redesigned for a cleaner look with a **translucent sidebar** and **integrated menu and title bars**. The menu bar on Linux uses the same updated style. This cleaner window design was previously only available on macOS.
+The AdvantageScope UI on Windows has been redesigned for a cleaner look with an **integrated menu and title bars**. The menu bar on Linux uses the same updated style. This cleaner window design was previously only available on macOS.
 
 ![Windows UI](./img/windows-ui.png)
 
