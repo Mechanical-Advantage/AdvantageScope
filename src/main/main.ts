@@ -1410,7 +1410,7 @@ function downloadSave(files: string[]) {
                         downloadWindow?.destroy();
                         downloadStop();
                         hubWindows[0].focus();
-                        sendMessage(hubWindows[0], "open-files", [savePath]);
+                        sendMessage(hubWindows[0], "open-files", { files: [savePath], merge: false });
                       }
                     });
                 }
@@ -3214,7 +3214,7 @@ app.whenReady().then(() => {
   // Open file if exists
   if (firstOpenPath !== null && targetWindow !== null) {
     targetWindow.webContents.once("dom-ready", () => {
-      sendMessage(targetWindow!, "open-files", [firstOpenPath]);
+      sendMessage(targetWindow!, "open-files", { files: [firstOpenPath], merge: false });
     });
   }
 
@@ -3242,7 +3242,7 @@ app.on("open-file", (_, path) => {
     // Already running, create a new window
     let window = createHubWindow();
     window.webContents.once("dom-ready", () => {
-      sendMessage(window, "open-files", [path]);
+      sendMessage(window, "open-files", { files: [path], merge: false });
     });
   } else {
     // Not running yet, open in first window
