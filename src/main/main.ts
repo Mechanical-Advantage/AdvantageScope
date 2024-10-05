@@ -694,6 +694,20 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           })
         );
       }
+
+      menu.append(
+        new MenuItem({
+          type: "separator"
+        })
+      );
+      menu.append(
+        new MenuItem({
+          label: "Help",
+          click() {
+            openSourceListHelp(window, config);
+          }
+        })
+      );
       menu.popup({
         window: window,
         x: coordinates[0],
