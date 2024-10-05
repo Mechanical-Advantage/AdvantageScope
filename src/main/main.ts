@@ -2160,12 +2160,15 @@ function createHubWindow(state?: WindowState) {
       if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
       break;
     case "win32":
+      // Skip background material on Windows until https://github.com/electron/electron/issues/41824 is fixed
+      //
+      // let releaseSplit = os.release().split(".");
+      // if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+      //   // Windows 11 22H2
+      //   prefs.backgroundMaterial = "acrylic";
+      // }
+
       prefs.titleBarStyle = "hidden";
-      let releaseSplit = os.release().split(".");
-      if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
-        // Windows 11 22H2
-        prefs.backgroundMaterial = "acrylic";
-      }
       let overlayOptions: TitleBarOverlay = {
         color: "#00000000",
         symbolColor: nativeTheme.shouldUseDarkColors ? "#ffffff" : "#000000",
