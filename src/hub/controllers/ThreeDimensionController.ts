@@ -516,12 +516,22 @@ export default class ThreeDimensionController implements TabController {
       }
     }
 
+    // Get all robot models
+    let allRobotModels: Set<string> = new Set();
+    let allSources = this.sourceList.getState();
+    allSources.forEach((source) => {
+      if (["robot", "robotLegacy", "ghost", "ghostLegacy", "ghostZebra"].includes(source.type)) {
+        allRobotModels.add(source.options.model);
+      }
+    });
+
     return {
       game: this.GAME_SELECT.value,
       origin: origin,
       objects: objects,
       cameraOverride: cameraOverride,
-      autoDriverStation: getDriverStation(window.log, time!)
+      autoDriverStation: getDriverStation(window.log, time!),
+      allRobotModels: [...allRobotModels]
     };
   }
 }

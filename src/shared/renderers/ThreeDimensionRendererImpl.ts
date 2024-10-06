@@ -620,6 +620,24 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       }
       entry.manager.setObjectData(object);
     });
+    this.objectManagers.forEach((entry) => {
+      if (!entry.active && (entry.type === "robot" || entry.type === "ghost")) {
+        let model = (entry.manager as RobotManager).getModel();
+        if (command.allRobotModels.includes(model)) {
+          entry.active = true;
+          entry.manager.setObjectData({
+            type: entry.type as "robot" | "ghost",
+            model: model,
+            color: "#000000",
+            poses: [],
+            components: [],
+            mechanism: null,
+            visionTargets: [],
+            swerveStates: []
+          });
+        }
+      }
+    });
     this.objectManagers
       .filter((entry) => !entry.active)
       .forEach((entry) => {

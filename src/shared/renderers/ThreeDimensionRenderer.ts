@@ -109,6 +109,7 @@ export type ThreeDimensionRendererCommand = {
   objects: ThreeDimensionRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
   autoDriverStation: number;
+  allRobotModels: string[];
 };
 
 export type ThreeDimensionRendererCommand_AnyObj =
