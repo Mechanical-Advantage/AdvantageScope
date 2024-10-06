@@ -595,7 +595,16 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     // Update object managers
     this.objectManagers.forEach((entry) => (entry.active = false));
     command.objects.forEach((object) => {
-      let entry = this.objectManagers.find((entry) => !entry.active && entry.type === object.type);
+      let entry = this.objectManagers.find(
+        (entry) =>
+          !entry.active &&
+          entry.type === object.type &&
+          ((object.type !== "robot" && object.type !== "ghost") ||
+            object.model === (entry.manager as RobotManager).getModel())
+      );
+      if (entry === undefined) {
+        entry = this.objectManagers.find((entry) => !entry.active && entry.type === object.type);
+      }
       if (entry === undefined) {
         entry = {
           type: object.type,
