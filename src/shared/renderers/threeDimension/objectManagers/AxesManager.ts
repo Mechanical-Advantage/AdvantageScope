@@ -20,7 +20,7 @@ export default class AxesManager extends ObjectManager<ThreeDimensionRendererCom
     let axes = makeAxesTemplate(this.materialSpecular, this.materialShininess);
     axes.scale.set(0.25, 0.25, 0.25);
     optimizeGeometries(axes, this.mode, this.materialSpecular, this.materialShininess, false).then((result) => {
-      let axesMerged = result.normal;
+      let axesMerged = result.normal[0];
       if (axesMerged !== null) {
         this.instances = new ResizableInstancedMesh(root, [axesMerged]);
       }

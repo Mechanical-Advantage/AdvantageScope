@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { getSpiralIndex } from "../../util";
 import { disposeObject } from "../ThreeDimensionRendererImpl";
 
 export default async function optimizeGeometries(
@@ -7,83 +8,92 @@ export default async function optimizeGeometries(
   mode: "low-power" | "standard" | "cinematic",
   materialSpecular: THREE.Color,
   materialShininess: number,
-  enableSimplification = true
+  enableSimplification = true,
+  slicingSize?: number
 ): Promise<{
-  normal: THREE.Mesh | null;
-  transparent: THREE.Mesh | null;
-  carpet: THREE.Mesh | null;
+  normal: THREE.Mesh[];
+  transparent: THREE.Mesh[];
+  carpet: THREE.Mesh[];
 }> {
   return new Promise(async (resolve) => {
-    let geometries = getGeometries(object, mode, enableSimplification);
+    let geometries = getGeometries(object, mode, enableSimplification, slicingSize);
 
-    let normalMesh: THREE.Mesh | null = null;
-    let transparentMesh: THREE.Mesh | null = null;
-    let carpetMesh: THREE.Mesh | null = null;
-    if (geometries.normal.length > 0) {
-      let geometry = BufferGeometryUtils.mergeGeometries(geometries.normal, false);
-      if (geometry !== null) {
-        normalMesh = new THREE.Mesh(
-          geometry,
-          new THREE.MeshPhongMaterial({
-            vertexColors: true,
-            side: THREE.DoubleSide,
-            specular: materialSpecular,
-            shininess: materialShininess
-          })
-        );
-        if (mode === "cinematic") {
-          normalMesh.castShadow = true;
-          normalMesh.receiveShadow = false;
+    let normalMeshes: THREE.Mesh[] = [];
+    let transparentMeshes: THREE.Mesh[] = [];
+    let carpetMeshes: THREE.Mesh[] = [];
+    geometries.normal.forEach((group) => {
+      if (group.length > 0) {
+        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+        if (geometry !== null) {
+          let mesh = new THREE.Mesh(
+            geometry,
+            new THREE.MeshPhongMaterial({
+              vertexColors: true,
+              side: THREE.DoubleSide,
+              specular: materialSpecular,
+              shininess: materialShininess
+            })
+          );
+          normalMeshes.push(mesh);
+          if (mode === "cinematic") {
+            mesh.castShadow = true;
+            mesh.receiveShadow = false;
+          }
+          mesh.name = "normal";
         }
-        normalMesh.name = "normal";
       }
-    }
-    if (geometries.transparent.length > 0) {
-      let geometry = BufferGeometryUtils.mergeGeometries(geometries.transparent, false);
-      if (geometry !== null) {
-        transparentMesh = new THREE.Mesh(
-          geometry,
-          new THREE.MeshPhongMaterial({
-            vertexColors: true,
-            side: THREE.DoubleSide,
-            specular: materialSpecular,
-            shininess: materialShininess,
-            transparent: true,
-            opacity: 0.2
-          })
-        );
-        if (mode === "cinematic") {
-          transparentMesh.castShadow = true;
-          transparentMesh.receiveShadow = false;
+    });
+    geometries.transparent.forEach((group) => {
+      if (group.length > 0) {
+        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+        if (geometry !== null) {
+          let mesh = new THREE.Mesh(
+            geometry,
+            new THREE.MeshPhongMaterial({
+              vertexColors: true,
+              side: THREE.DoubleSide,
+              specular: materialSpecular,
+              shininess: materialShininess,
+              transparent: true,
+              opacity: 0.2
+            })
+          );
+          transparentMeshes.push(mesh);
+          if (mode === "cinematic") {
+            mesh.castShadow = true;
+            mesh.receiveShadow = false;
+          }
+          mesh.name = "transparent";
         }
-        transparentMesh.name = "transparent";
       }
-    }
-    if (geometries.carpet.length > 0) {
-      let geometry = BufferGeometryUtils.mergeGeometries(geometries.carpet, false);
-      if (geometry !== null) {
-        carpetMesh = new THREE.Mesh(
-          geometry,
-          new THREE.MeshPhongMaterial({
-            vertexColors: true,
-            side: THREE.DoubleSide,
-            specular: materialSpecular,
-            shininess: 0
-          })
-        );
-        if (mode === "cinematic") {
-          carpetMesh.castShadow = false;
-          carpetMesh.receiveShadow = true;
+    });
+    geometries.carpet.forEach((group) => {
+      if (group.length > 0) {
+        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+        if (geometry !== null) {
+          let mesh = new THREE.Mesh(
+            geometry,
+            new THREE.MeshPhongMaterial({
+              vertexColors: true,
+              side: THREE.DoubleSide,
+              specular: materialSpecular,
+              shininess: 0
+            })
+          );
+          carpetMeshes.push(mesh);
+          if (mode === "cinematic") {
+            mesh.castShadow = false;
+            mesh.receiveShadow = true;
+          }
+          mesh.name = "carpet";
         }
-        carpetMesh.name = "carpet";
       }
-    }
-
+    });
     disposeObject(object);
     resolve({
-      normal: normalMesh,
-      transparent: transparentMesh,
-      carpet: carpetMesh
+      normal: normalMeshes,
+      transparent: transparentMeshes,
+      carpet: carpetMeshes
     });
   });
 }
@@ -91,11 +101,12 @@ export default async function optimizeGeometries(
 function getGeometries(
   object: THREE.Object3D,
   mode: "low-power" | "standard" | "cinematic",
-  enableSimplification = true
-): { normal: THREE.BufferGeometry[]; transparent: THREE.BufferGeometry[]; carpet: THREE.BufferGeometry[] } {
-  let normal: THREE.BufferGeometry[] = [];
-  let transparent: THREE.BufferGeometry[] = [];
-  let carpet: THREE.BufferGeometry[] = [];
+  enableSimplification: boolean,
+  slicingSize?: number
+): { normal: THREE.BufferGeometry[][]; transparent: THREE.BufferGeometry[][]; carpet: THREE.BufferGeometry[][] } {
+  let normal: THREE.BufferGeometry[][] = [];
+  let transparent: THREE.BufferGeometry[][] = [];
+  let carpet: THREE.BufferGeometry[][] = [];
 
   let totalCount = 0;
   object.traverse((object) => {
@@ -128,43 +139,56 @@ function getGeometries(
       }
 
       let include = true;
+      let vertices: THREE.Vector3[] = [];
+      let center = new THREE.Vector3();
+      for (let i = 0; i < geometry.attributes.position.count; i++) {
+        let vertex = new THREE.Vector3(
+          geometry.attributes.position.getX(i),
+          geometry.attributes.position.getY(i),
+          geometry.attributes.position.getZ(i)
+        );
+        vertices.push(vertex);
+        center.add(vertex);
+      }
+      center.divideScalar(vertices.length);
+      let maxRadius = vertices.reduce((prev, vertex) => {
+        let dist = vertex.distanceTo(center);
+        return dist > prev ? dist : prev;
+      }, 0);
       if (enableSimplification && !mesh.name.includes("NOSIMPLIFY")) {
-        let vertices: THREE.Vector3[] = [];
-        let center = new THREE.Vector3();
-        for (let i = 0; i < geometry.attributes.position.count; i++) {
-          let vertex = new THREE.Vector3(
-            geometry.attributes.position.getX(i),
-            geometry.attributes.position.getY(i),
-            geometry.attributes.position.getZ(i)
-          );
-          vertices.push(vertex);
-          center.add(vertex);
-        }
-        center.divideScalar(vertices.length);
-        let maxDistance = vertices.reduce((prev, vertex) => {
-          let dist = vertex.distanceTo(center);
-          return dist > prev ? dist : prev;
-        }, 0);
         switch (mode) {
           case "low-power":
-            if (maxDistance < 0.08) include = false;
+            if (maxRadius < 0.08) include = false;
             break;
           case "standard":
-            if (maxDistance < 0.04) include = false;
+            if (maxRadius < 0.04) include = false;
             break;
           case "cinematic":
-            if (maxDistance < 0.02) include = false;
+            if (maxRadius < 0.02) include = false;
             break;
         }
       }
 
       if (include) {
+        let outputIndex = 0;
+        if (slicingSize !== undefined && maxRadius * 2 < slicingSize) {
+          outputIndex = 1 + getSpiralIndex(Math.floor(center.x / slicingSize), Math.floor(center.y / slicingSize));
+        }
         if (mesh.name.toLowerCase().includes("carpet")) {
-          carpet.push(geometry);
+          while (carpet.length < outputIndex + 1) {
+            carpet.push([]);
+          }
+          carpet[outputIndex].push(geometry);
         } else if (isTransparent) {
-          transparent.push(geometry);
+          while (transparent.length < outputIndex + 1) {
+            transparent.push([]);
+          }
+          transparent[outputIndex].push(geometry);
         } else {
-          normal.push(geometry);
+          while (normal.length < outputIndex + 1) {
+            normal.push([]);
+          }
+          normal[outputIndex].push(geometry);
         }
       }
     }
