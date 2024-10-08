@@ -14,10 +14,6 @@ import Image2 from './img/open-file-2.png';
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.
 
-:::warning
-Hoot files can **only be opened on Windows** and require an installation of [Phoenix Tuner X](https://v6.docs.ctr-electronics.com/en/stable/docs/tuner/index.html).
-:::
-
 ## Opening Logs
 
 In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log files from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.

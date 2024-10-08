@@ -76,9 +76,10 @@ import {
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
-import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
+import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
-import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
+import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
+import { checkHootIsPro, convertHoot } from "./owletInterface";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -336,7 +337,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   });
                 })
                 .catch((reason) => {
-                  errorMessage = reason;
+                  if (typeof reason === "string") {
+                    errorMessage = reason;
+                  } else {
+                    errorMessage = reason.message;
+                  }
                   completedCount++;
                   sendIfReady();
                 });
@@ -1965,6 +1970,19 @@ function setupMenu() {
             });
           }
         },
+        {
+          label: "Owlet Download Status...",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "About",
+              message: "Owlet Download Status",
+              detail: getOwletDownloadStatus(),
+              buttons: ["Close"],
+              icon: WINDOW_ICON
+            });
+          }
+        },
         { type: "separator" },
         {
           label: "Report a Problem",
@@ -3176,7 +3194,7 @@ app.whenReady().then(() => {
   // Load assets
   createAssetFolders();
   convertLegacyAssets();
-  startAssetDownload(() => {
+  startAssetDownloadLoop(() => {
     advantageScopeAssets = loadAssets();
     sendAssets();
   });
@@ -3186,6 +3204,9 @@ app.whenReady().then(() => {
     sendAssets();
   }, 5000);
   advantageScopeAssets = loadAssets();
+
+  // Start owlet download
+  startOwletDownloadLoop();
 
   // Create menu and windows
   setupMenu();
@@ -3230,9 +3251,6 @@ app.whenReady().then(() => {
   if (DISTRIBUTOR === Distributor.FRC6328) {
     checkForUpdate(false);
   }
-
-  // Copy current owlet version to cache
-  copyOwlet();
 });
 
 app.on("window-all-closed", () => {
