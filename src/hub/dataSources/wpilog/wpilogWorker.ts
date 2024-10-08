@@ -47,8 +47,10 @@ async function start(data: Uint8Array) {
       },
       (entry, position) => {
         if (entry === CONTROL_ENTRY) {
-          let record = decoder!.getRecordAtPosition(position)[0]!;
-          if (record.isStart()) {
+          let record = decoder?.getRecordAtPosition(position)[0];
+          if (record === null || record === undefined) {
+            console.warn("Encountered invalid control record at offset", position);
+          } else if (record.isStart()) {
             const startData = record.getStartData();
             entryIds[startData.entry] = startData.name;
             entryTypes[startData.name] = startData.type;
@@ -98,7 +100,7 @@ async function start(data: Uint8Array) {
               log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
             }
           }
-        } else {
+        } else if (entry in entryIds) {
           let key = entryIds[entry];
           dataRecordPositions[key].push(position);
         }
