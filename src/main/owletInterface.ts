@@ -1,5 +1,4 @@
 import { spawn } from "child_process";
-import { compareVersions } from "compare-versions";
 import { app } from "electron";
 import fs from "fs";
 import path from "path";
@@ -14,7 +13,7 @@ import { OWLET_STORAGE } from "./owletDownloadLoop";
  */
 export async function convertHoot(hootPath: string): Promise<string> {
   let owletPath = await getOwletPath(hootPath);
-  let wpilogPath = app.getPath("temp") + "\\hoot_" + createUUID() + ".wpilog";
+  let wpilogPath = path.join(app.getPath("temp"), "hoot_" + createUUID() + ".wpilog");
   let owlet = spawn(owletPath, [hootPath, wpilogPath, "-f", "wpilog"]);
   return new Promise((resolve, reject) => {
     owlet.once("exit", () => {
@@ -56,33 +55,23 @@ async function getOwletPath(hootPath: string): Promise<string> {
     throw new Error("The Hoot log file cannot be decoded because owlet is not available.");
   }
 
-  // Get latest owlet version
-  let owletFilenames = await new Promise<string[]>((resolve) =>
-    fs.readdir(OWLET_STORAGE, (_, files) => resolve(files))
-  );
-  owletFilenames = owletFilenames.filter((filename) => filename.startsWith("owlet-"));
-  if (owletFilenames.length === 0) {
-    throw new Error("The Hoot log file cannot be decoded because owlet is not available.");
-  }
-  owletFilenames = owletFilenames.sort((a, b) => -compareVersions(a.split("-")[1], b.split("-")[1]));
-  let latestOwletPath = path.join(OWLET_STORAGE, owletFilenames[0]);
-
   // Get log file compliancy
-  let owlet = spawn(latestOwletPath, [hootPath, "--compliancy"]);
   let compliancy = await new Promise<number>((resolve, reject) => {
-    let stdout = "";
-    owlet.stdout.on("data", (chunk: string) => {
-      stdout += chunk;
-    });
-    owlet.once("exit", () => {
-      if (owlet.exitCode !== 0) {
-        reject("The Hoot log file cannot be decoded because compliancy cannot be retrieved.");
+    fs.open(hootPath, "r", (error, file) => {
+      if (error) {
+        reject("The Hoot log file could not be opened.");
+        return;
       }
-      let compliancyLine = stdout.split("\n").find((line) => line.includes("hoot log: "));
-      if (compliancyLine === undefined) {
-        throw new Error();
-      }
-      resolve(Number(compliancyLine.slice("hoot log: ".length)));
+
+      let buffer = Buffer.alloc(2);
+      fs.read(file, buffer, 0, 2, 70, (error, bytesRead) => {
+        if (error || bytesRead !== 2) {
+          reject("The Hoot log file cannot be decoded because compliancy cannot be retrieved.");
+          return;
+        }
+        let view = new DataView(buffer.buffer);
+        resolve(view.getUint16(0, true));
+      });
     });
   });
 
@@ -92,6 +81,10 @@ async function getOwletPath(hootPath: string): Promise<string> {
   }
 
   // Find owlet version for compliancy
+  let owletFilenames = await new Promise<string[]>((resolve) =>
+    fs.readdir(OWLET_STORAGE, (_, files) => resolve(files))
+  );
+  owletFilenames = owletFilenames.filter((filename) => filename.startsWith("owlet-"));
   let finalOwletFilename = owletFilenames.find((filename) => filename.includes("-C" + compliancy.toString()));
   if (finalOwletFilename === undefined) {
     throw new Error(
