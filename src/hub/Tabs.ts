@@ -314,7 +314,6 @@ export default class Tabs {
       this.updateTimelineVisibility();
 
       // Render new frame
-      this.tabList[this.selectedTab].renderer.render(this.tabList[this.selectedTab].controller.getCommand());
       this.tabList.forEach((tab, index) => {
         let activeLocal = index === this.selectedTab;
         let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
