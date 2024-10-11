@@ -54,7 +54,8 @@ export default class PointsRenderer implements TabRenderer {
 
     // Render new points
     command.sets.forEach((set) => {
-      set.points.forEach((position, index) => {
+      set.points.forEach((positionSource, index) => {
+        let position = [positionSource[0], positionSource[1]];
         if (
           position[0] < 0 ||
           position[0] > command.dimensions[0] ||

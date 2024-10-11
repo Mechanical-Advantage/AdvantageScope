@@ -726,6 +726,7 @@ async function handleMainMessage(message: NamedMessage) {
         if (historicalSources.length > 0) {
           await historicalSources[0].source.loadAllFields(); // Root NT table is always from the first source
         }
+        clearInterval(mockProgressInterval);
 
         // Start publisher
         publisher?.stop();

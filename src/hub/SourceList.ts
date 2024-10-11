@@ -934,6 +934,7 @@ export default class SourceList {
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
     keySpan.style.textDecoration = this.isFieldAvailable(state) ? "" : "line-through";
+    keyContainer.title = state.logKey;
 
     // Update type width, cloning to a new node in case the controls aren't visible
     let mockTypeName = typeNameElement.cloneNode(true) as HTMLElement;
