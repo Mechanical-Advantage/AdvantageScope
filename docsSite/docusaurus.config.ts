@@ -60,6 +60,23 @@ const config: Config = {
         }
       ]
     },
+    footer: {
+      copyright: "Copyright © 2021-2024 FRC 6328",
+      links: [
+        {
+          label: "Littleton Robotics",
+          href: "https://littletonrobotics.org"
+        },
+        {
+          label: "AdvantageKit",
+          href: "https://docs.advantagekit.org"
+        },
+        {
+          label: "WPILib Docs",
+          href: "https://docs.wpilib.org"
+        }
+      ]
+    },
     colorMode: {
       disableSwitch: true,
       respectPrefersColorScheme: true
