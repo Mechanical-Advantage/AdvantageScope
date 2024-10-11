@@ -27,7 +27,7 @@ export function startAssetDownloadLoop(updateCallback: () => void) {
               ". Please wait a few minutes for the download to complete.";
             updateLocalAssets(assetInfo)
               .then(() => {
-                statusText = "All assets downloaded. Will check for updates periodically.";
+                statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
                 updateCallback();
                 setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
               })

@@ -25,7 +25,7 @@ export async function startOwletDownloadLoop() {
         }
         downloadOwletInternal(OWLET_STORAGE, getElectronPlatform())
           .then(() => {
-            statusText = "Owlet is up-to-date. Will check for updates periodically.";
+            statusText = "Owlet is up-to-date. AdvantageScope will check for updates periodically.";
             setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
           })
           .catch(() => {
