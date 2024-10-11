@@ -210,7 +210,7 @@ jobs:
         run: npm ci
       - name: Install Linux packages
         run: |
-          sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapcraft
+          sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapd
       - name: Install flatpak packages
         if: matrix.format == 'flatpak'
         run: |
