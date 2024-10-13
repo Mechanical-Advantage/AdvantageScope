@@ -36,9 +36,9 @@ function getOwletPlatform(electronPlatform: string): string {
       return "linuxarm64";
     case "linux-armv7l":
       return "linuxarm32";
-    case "win32-x64":
+    case "win-x64":
       return "windowsx86-64";
-    case "win32-arm64":
+    case "win-arm64":
       return "windowsx86-64";
     default:
       return "";
@@ -78,7 +78,7 @@ export async function downloadOwletInternal(target: string, platform: string): P
       // Get download filename
       let filename = "owlet-" + downloadVersion.Version + "-C" + downloadVersion.Compliancy.toString();
       let tempFilename = filename + "-temp";
-      if (platform.startsWith("win32")) {
+      if (platform.startsWith("win")) {
         filename += ".exe";
         tempFilename += ".exe";
       }

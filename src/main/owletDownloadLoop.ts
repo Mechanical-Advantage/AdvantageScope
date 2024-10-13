@@ -39,7 +39,9 @@ export async function startOwletDownloadLoop() {
       });
   };
 
-  await copyBundledOwlet();
+  try {
+    await copyBundledOwlet();
+  } catch {}
   check();
 }
 
