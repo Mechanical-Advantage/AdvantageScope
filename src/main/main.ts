@@ -3204,14 +3204,16 @@ app.whenReady().then(() => {
   }
 
   // Check for file path given as argument
-  let argv = [...process.argv];
-  argv.shift(); // Remove executable path
-  if (!app.isPackaged) {
-    argv.shift(); // Remove bundle path in dev mode
-  }
-  argv = argv.filter((arg) => !arg.startsWith("--"));
-  if (argv.length > 0) {
-    firstOpenPath = argv[0];
+  let fileArgs = process.argv.filter(
+    (x) =>
+      x.endsWith(".wpilog") ||
+      x.endsWith(".rlog") ||
+      x.endsWith(".dslog") ||
+      x.endsWith(".dsevents") ||
+      x.endsWith(".hoot")
+  );
+  if (fileArgs.length > 0) {
+    firstOpenPath = fileArgs[0];
   }
 
   // Open file if exists
