@@ -1,5 +1,5 @@
+import CameraControls from "camera-controls";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import WorkerManager from "../../hub/WorkerManager";
 import {
@@ -77,11 +77,12 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private alert: HTMLElement;
   private spinner: HTMLElement;
 
+  private clock = new THREE.Clock();
   private renderer: THREE.WebGLRenderer;
   private cssRenderer: CSS2DRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
-  private controls: OrbitControls;
+  private controls: CameraControls;
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
@@ -119,6 +120,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private lastCommandString: string = "";
   private lastAssetsString: string = "";
   private lastFieldTitle: string = "";
+  private keysPressed: Set<string> = new Set();
+
+  static {
+    CameraControls.install({ THREE: THREE });
+  }
 
   constructor(
     mode: "cinematic" | "standard" | "low-power",
@@ -183,10 +189,13 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
     // Create controls
     {
-      this.controls = new OrbitControls(this.camera, canvas);
-      this.controls.maxDistance = 250;
-      this.controls.enabled = true;
-      this.controls.update();
+      this.controls = new CameraControls(this.camera, canvas);
+      this.controls.minDistance = 1;
+      this.controls.maxDistance = Infinity;
+      this.controls.smoothTime = 0.1;
+      this.controls.draggingSmoothTime = 0.1;
+      this.controls.infinityDolly = true;
+      this.controls.dollySpeed = 0.25;
     }
 
     // Add lights
@@ -243,16 +252,26 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.wpilibCoordinateGroup.add(this.dsCameraGroup);
     }
 
-    // Render when camera is moved
-    this.controls.addEventListener("change", () => (this.shouldRender = true));
+    // Create key bindings
+    window.addEventListener("keydown", (event) => {
+      if (event.target !== document.body) return;
+      if (canvasContainer.clientHeight === 0) return;
+      this.keysPressed.add(event.code);
+    });
+    window.addEventListener("keyup", (event) => {
+      if (event.target !== document.body) return;
+      this.keysPressed.delete(event.code);
+    });
   }
 
   saveState(): unknown {
+    let position = this.controls.getPosition(new THREE.Vector3());
+    let target = this.controls.getTarget(new THREE.Vector3());
     return {
       cameraIndex: this.cameraIndex,
       orbitFov: this.orbitFov,
-      cameraPosition: [this.camera.position.x, this.camera.position.y, this.camera.position.z],
-      cameraTarget: [this.controls.target.x, this.controls.target.y, this.controls.target.z]
+      cameraPosition: [position.x, position.y, position.z],
+      cameraTarget: [target.x, target.y, target.z]
     };
   }
 
@@ -267,18 +286,16 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     if (
       "cameraPosition" in state &&
       checkArrayType(state.cameraPosition, "number") &&
-      (state.cameraPosition as number[]).length === 3
-    ) {
-      this.camera.position.set(...(state.cameraPosition as [number, number, number]));
-    }
-    if (
+      (state.cameraPosition as number[]).length === 3 &&
       "cameraTarget" in state &&
       checkArrayType(state.cameraTarget, "number") &&
       (state.cameraTarget as number[]).length === 3
     ) {
-      this.controls.target.set(...(state.cameraTarget as [number, number, number]));
+      this.controls.setLookAt(
+        ...(state.cameraPosition as [number, number, number]),
+        ...(state.cameraTarget as [number, number, number])
+      );
     }
-    this.controls.update();
     this.lastCameraIndex = this.cameraIndex; // Don't reset camera position
     this.shouldResetCamera = false;
     this.shouldRender = true;
@@ -299,20 +316,41 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   stop() {}
 
   /** Resets the camera position and controls target. */
-  private resetCamera(command: ThreeDimensionRendererCommand) {
+  private resetCamera(command: ThreeDimensionRendererCommand, animate = true) {
     if (this.cameraIndex === -1) {
       // Orbit field
       if (command && command.game === "Axes") {
-        this.camera.position.copy(this.ORBIT_AXES_DEFAULT_POSITION);
-        this.controls.target.copy(this.ORBIT_AXES_DEFAULT_TARGET);
+        this.controls.setLookAt(
+          this.ORBIT_AXES_DEFAULT_POSITION.x,
+          this.ORBIT_AXES_DEFAULT_POSITION.y,
+          this.ORBIT_AXES_DEFAULT_POSITION.z,
+          this.ORBIT_AXES_DEFAULT_TARGET.x,
+          this.ORBIT_AXES_DEFAULT_TARGET.y,
+          this.ORBIT_AXES_DEFAULT_TARGET.z,
+          animate
+        );
       } else {
-        this.camera.position.copy(this.ORBIT_FIELD_DEFAULT_POSITION);
-        this.controls.target.copy(this.ORBIT_FIELD_DEFAULT_TARGET);
+        this.controls.setLookAt(
+          this.ORBIT_FIELD_DEFAULT_POSITION.x,
+          this.ORBIT_FIELD_DEFAULT_POSITION.y,
+          this.ORBIT_FIELD_DEFAULT_POSITION.z,
+          this.ORBIT_FIELD_DEFAULT_TARGET.x,
+          this.ORBIT_FIELD_DEFAULT_TARGET.y,
+          this.ORBIT_FIELD_DEFAULT_TARGET.z,
+          animate
+        );
       }
     } else if (this.cameraIndex === -2) {
       // Orbit robot
-      this.camera.position.copy(this.ORBIT_ROBOT_DEFAULT_POSITION);
-      this.controls.target.copy(this.ORBIT_ROBOT_DEFAULT_TARGET);
+      this.controls.setLookAt(
+        this.ORBIT_ROBOT_DEFAULT_POSITION.x,
+        this.ORBIT_ROBOT_DEFAULT_POSITION.y,
+        this.ORBIT_ROBOT_DEFAULT_POSITION.z,
+        this.ORBIT_ROBOT_DEFAULT_TARGET.x,
+        this.ORBIT_ROBOT_DEFAULT_TARGET.y,
+        this.ORBIT_ROBOT_DEFAULT_TARGET.z,
+        animate
+      );
     } else {
       // Driver Station
       let fieldConfig = this.getFieldConfig(command);
@@ -327,13 +365,19 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           let position = fieldConfig.driverStations[driverStation];
           this.dsCameraGroup.position.set(position[0], position[1], 0);
           this.dsCameraGroup.rotation.set(0, 0, Math.atan2(-position[1], -position[0]));
-          this.camera.position.copy(this.dsCameraObj.getWorldPosition(new THREE.Vector3()));
-          this.camera.rotation.setFromQuaternion(this.dsCameraObj.getWorldQuaternion(new THREE.Quaternion()));
-          this.controls.target.copy(this.ORBIT_FIELD_DEFAULT_TARGET); // Look at the center of the field
+          let cameraPosition = this.dsCameraObj.getWorldPosition(new THREE.Vector3());
+          this.controls.setLookAt(
+            cameraPosition.x,
+            cameraPosition.y,
+            cameraPosition.z,
+            this.ORBIT_FIELD_DEFAULT_TARGET.x,
+            this.ORBIT_FIELD_DEFAULT_TARGET.y,
+            this.ORBIT_FIELD_DEFAULT_TARGET.z,
+            animate
+          );
         }
       }
     }
-    this.controls.update();
   }
 
   private getFieldConfig(command: ThreeDimensionRendererCommand): Config3dField | null {
@@ -419,6 +463,65 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   }
 
   render(command: ThreeDimensionRendererCommand): void {
+    // Update controls
+    let delta = this.clock.getDelta();
+    let controlsUpdated = false;
+    if (this.keysPressed.has("KeyW")) {
+      if (this.controls.distance <= this.controls.minDistance) {
+        this.controls.dollyInFixed(5 * delta, false);
+      } else {
+        this.controls.dolly(5 * delta, false);
+      }
+      this.controls.update(0);
+      controlsUpdated = true;
+    }
+    if (this.keysPressed.has("KeyS")) {
+      this.controls.dolly(-5 * delta, false);
+      this.controls.update(0);
+      controlsUpdated = true;
+    }
+    if (this.keysPressed.has("KeyA")) {
+      this.controls.truck(-5 * delta, 0, false);
+      this.controls.update(0);
+      controlsUpdated = true;
+    }
+    if (this.keysPressed.has("KeyD")) {
+      this.controls.truck(5 * delta, 0, false);
+      this.controls.update(0);
+      controlsUpdated = true;
+    }
+    let rotate = (x: number, y: number) => {
+      let reference = new THREE.Object3D();
+      this.scene.add(reference);
+      reference.position.copy(this.camera.position);
+      reference.rotation.copy(this.camera.rotation);
+      reference.rotateY(x);
+      if (
+        this.controls.polarAngle + y > this.controls.minPolarAngle + 0.2 &&
+        this.controls.polarAngle + y < this.controls.maxPolarAngle - 0.2
+      ) {
+        reference.rotateX(y);
+      }
+      reference.translateZ(-this.controls.distance);
+      this.controls.setTarget(reference.position.x, reference.position.y, reference.position.z, false);
+      this.scene.remove(reference);
+      this.controls.update(0);
+      controlsUpdated = true;
+    };
+    if (this.keysPressed.has("KeyI")) {
+      rotate(0, 2.5 * delta);
+    }
+    if (this.keysPressed.has("KeyK")) {
+      rotate(0, -2.5 * delta);
+    }
+    if (this.keysPressed.has("KeyJ")) {
+      rotate(2.5 * delta, 0);
+    }
+    if (this.keysPressed.has("KeyL")) {
+      rotate(-2.5 * delta, 0);
+    }
+    controlsUpdated = this.controls.update(delta) || controlsUpdated;
+
     // Check for new parameters
     let commandString = JSON.stringify(command);
     let assetsString = JSON.stringify(window.assets);
@@ -431,7 +534,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       isDark !== this.lastIsDark ||
       command.game !== this.lastFieldTitle ||
       commandString !== this.lastCommandString ||
-      newAssets
+      newAssets ||
+      controlsUpdated
     ) {
       this.lastWidth = this.renderer.domElement.clientWidth;
       this.lastHeight = this.renderer.domElement.clientHeight;
@@ -658,7 +762,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       let dsCamera = this.cameraIndex < CameraIndexEnum.OrbitRobot;
       if (orbitalCamera !== this.controls.enabled) {
         this.controls.enabled = orbitalCamera;
-        this.controls.update();
       }
 
       // Update container and camera based on mode
@@ -672,6 +775,21 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         this.canvas.style.height = "";
         this.annotationsDiv.style.width = "";
         this.annotationsDiv.style.height = "";
+
+        // Record camera position in current coordinate frame
+        let cameraRefPosition = new THREE.Object3D();
+        let cameraRefTarget = new THREE.Object3D();
+        if (this.cameraIndex !== this.lastCameraIndex) {
+          this.wpilibCoordinateGroup.add(cameraRefPosition, cameraRefTarget);
+          cameraRefPosition.position.copy(
+            this.wpilibCoordinateGroup.worldToLocal(this.controls.getPosition(new THREE.Vector3()))
+          );
+          cameraRefTarget.position.copy(
+            this.wpilibCoordinateGroup.worldToLocal(this.controls.getTarget(new THREE.Vector3()))
+          );
+        }
+
+        // Reset location
         if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
           // Reset to default origin
           this.wpilibCoordinateGroup.position.set(0, 0, 0);
@@ -689,11 +807,21 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           this.wpilibCoordinateGroup.position.copy(position.clone().applyQuaternion(rotation));
           this.wpilibCoordinateGroup.rotation.setFromQuaternion(rotation);
         }
+
+        // Switch camera position to new coordinate frame without animation
+        if (this.cameraIndex !== this.lastCameraIndex) {
+          let newPosition = cameraRefPosition.getWorldPosition(new THREE.Vector3());
+          let newTarget = cameraRefTarget.getWorldPosition(new THREE.Vector3());
+          this.controls.setLookAt(newPosition.x, newPosition.y, newPosition.z, newTarget.x, newTarget.y, newTarget.z);
+          this.controls.update(0);
+        }
+
+        // Reset coordinate frame with animation
         if (
           this.cameraIndex !== this.lastCameraIndex ||
           (this.cameraIndex === CameraIndexEnum.DSAuto && this.lastAutoDriverStation !== command.autoDriverStation)
         ) {
-          this.resetCamera(command);
+          this.resetCamera(command, this.lastCameraIndex < 0);
         }
       } else {
         this.canvas.classList.add("fixed");
@@ -732,8 +860,22 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
           referenceObj = this.fixedCameraObj;
         }
         if (referenceObj) {
-          this.camera.position.copy(referenceObj.getWorldPosition(new THREE.Vector3()));
-          this.camera.rotation.setFromQuaternion(referenceObj.getWorldQuaternion(new THREE.Quaternion()));
+          let referencePosition = referenceObj.getWorldPosition(new THREE.Vector3());
+          if (referenceObj.children.length === 0) {
+            referenceObj.add(new THREE.Object3D());
+          }
+          let referenceChild = referenceObj.children[0];
+          referenceChild.position.set(0, 0, -1);
+          let referenceTarget = referenceChild.getWorldPosition(new THREE.Vector3());
+          this.controls.setLookAt(
+            referencePosition.x,
+            referencePosition.y,
+            referencePosition.z,
+            referenceTarget.x,
+            referenceTarget.y,
+            referenceTarget.z
+          );
+          this.controls.update(0);
         }
       }
 
