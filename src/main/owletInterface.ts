@@ -70,7 +70,7 @@ async function getOwletPath(hootPath: string): Promise<string> {
           return;
         }
         let view = new DataView(buffer.buffer);
-        resolve(view.getUint16(0, true));
+        resolve(view.getUint8(0));
       });
     });
   });
