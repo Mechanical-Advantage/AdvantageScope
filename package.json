@@ -46,6 +46,7 @@
     "@types/pngjs": "^6.0.5",
     "@types/ssh2": "^1.11.13",
     "@types/three": "^0.168.0",
+    "camera-controls": "^2.9.0",
     "chart.js": "^4.4.0",
     "color-convert": "^2.0.1",
     "compare-versions": "^6.1.1",
