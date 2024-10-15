@@ -67,6 +67,11 @@ export class HistoricalDataSource {
     this.refreshCallback = refreshCallback;
 
     // Post message to start reading
+    if (window.platform === "win32" && window.platformArch !== "x64") {
+      this.customError = "CTRE does not support Hoot file decoding on Windows for ARM.";
+      this.setStatus(HistoricalDataSourceStatus.Error);
+      return;
+    }
     if (this.path.endsWith(".dsevents")) {
       this.path = this.path.slice(0, -8) + "dslog";
     }
