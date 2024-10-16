@@ -98,9 +98,11 @@ async function start(data: Uint8Array) {
               log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
             }
           }
-        } else {
+        } else if (entry in entryIds) {
           let key = entryIds[entry];
-          dataRecordPositions[key].push(position);
+          if (key in dataRecordPositions) {
+            dataRecordPositions[key].push(position);
+          }
         }
 
         // Send progress update
