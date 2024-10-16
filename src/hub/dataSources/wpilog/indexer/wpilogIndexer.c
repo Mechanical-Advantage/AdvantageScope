@@ -36,12 +36,19 @@ void* run(void* buffer, int bufferSize) {
     uint8_t dataSizeLength = ((lengthBitfield >> 2) & 0x3) + 1;
     uint8_t timestampLength = ((lengthBitfield >> 4) & 0x7) + 1;
     uint8_t headerLength = 1 + entryLength + dataSizeLength + timestampLength;
+    if (bufferSize < offset + headerLength) {
+      break;
+    }
 
     uint32_t entry = readVarInt(buffer, offset + 1, entryLength);
     uint32_t dataSize =
         readVarInt(buffer, offset + 1 + entryLength, dataSizeLength);
     int64_t timestamp = readVarInt(
         buffer, offset + 1 + entryLength + dataSizeLength, timestampLength);
+    if (bufferSize < offset + headerLength + dataSize || entry < 0 ||
+        dataSize < 0) {
+      break;
+    }
 
     // Update timestamp range
     if (entry != CONTROL_ENTRY) {
