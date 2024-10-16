@@ -324,28 +324,57 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else if (path.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
-          checkHootIsPro(path)
-            .then((isPro) => {
-              hasHootNonPro = hasHootNonPro || !isPro;
-            })
-            .finally(() => {
-              convertHoot(path)
-                .then((wpilogPath) => {
-                  openPath(wpilogPath, (buffer) => {
-                    results[0] = buffer;
-                    fs.rmSync(wpilogPath);
-                  });
+          let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+          if (!prefs.ctreLicenseAccepted) {
+            let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
+              dialog
+                .showMessageBox(window, {
+                  type: "info",
+                  title: "Alert",
+                  message: "CTRE Terms & Conditions",
+                  detail:
+                    "Hoot log file decoding requires agreement to CTRE's terms and conditions. Please navigate to the address below to view the full license agreement.\n\n<PLACEHOLDER>",
+                  checkboxLabel: "I Agree",
+                  icon: WINDOW_ICON
                 })
-                .catch((reason) => {
-                  if (typeof reason === "string") {
-                    errorMessage = reason;
-                  } else {
-                    errorMessage = reason.message;
-                  }
-                  completedCount++;
-                  sendIfReady();
-                });
-            });
+                .then((response) => resolve(response))
+            );
+            // TODO: Enable license agreement once CTRE publishes terms and conditions
+            //
+            // if (response.checkboxChecked) {
+            //   prefs.ctreLicenseAccepted = true;
+            //   jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            //   sendAllPreferences();
+            // }
+          }
+          if (!prefs.ctreLicenseAccepted) {
+            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's terms and conditions.";
+            completedCount++;
+            sendIfReady();
+          } else {
+            checkHootIsPro(path)
+              .then((isPro) => {
+                hasHootNonPro = hasHootNonPro || !isPro;
+              })
+              .finally(() => {
+                convertHoot(path)
+                  .then((wpilogPath) => {
+                    openPath(wpilogPath, (buffer) => {
+                      results[0] = buffer;
+                      fs.rmSync(wpilogPath);
+                    });
+                  })
+                  .catch((reason) => {
+                    if (typeof reason === "string") {
+                      errorMessage = reason;
+                    } else {
+                      errorMessage = reason.message;
+                    }
+                    completedCount++;
+                    sendIfReady();
+                  });
+              });
+          }
         } else {
           // Normal log, open normally
           targetCount += 1;
@@ -3187,6 +3216,9 @@ app.whenReady().then(() => {
     }
     if ("skipFrcLogFolderDefault" in oldPrefs && typeof oldPrefs.skipFrcLogFolderDefault === "boolean") {
       prefs.skipFrcLogFolderDefault = oldPrefs.skipFrcLogFolderDefault;
+    }
+    if ("ctreLicenseAccepted" in oldPrefs && typeof oldPrefs.ctreLicenseAccepted === "boolean") {
+      prefs.ctreLicenseAccepted = oldPrefs.ctreLicenseAccepted;
     }
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;

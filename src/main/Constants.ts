@@ -38,7 +38,8 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
-  skipNumericArrayDeprecationWarning: false
+  skipNumericArrayDeprecationWarning: false,
+  ctreLicenseAccepted: false
 };
 export const HUB_DEFAULT_WIDTH = 1100;
 export const HUB_DEFAULT_HEIGHT = 650;
