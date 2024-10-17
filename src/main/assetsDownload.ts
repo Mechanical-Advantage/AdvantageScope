@@ -7,12 +7,12 @@ import { ASSETS_REPOSITORY, ASSET_TAG_DEFAULT, ASSET_TAG_FRC6328, AUTO_ASSETS } 
 
 const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
-const SUCCESS_TIMEOUT_MS = 3 * 60 * 60 * 1000; // 3 hours
+const SUCCESS_TIMEOUT_MS = 6 * 60 * 60 * 1000; // 6 hours
 
 let statusText = "No status available.";
 
 /** Updates the local set of automatic assets and retries periodically in case of network issues. */
-export function startAssetDownload(updateCallback: () => void) {
+export function startAssetDownloadLoop(updateCallback: () => void) {
   let check: () => void = () => {
     checkDiskSpace(AUTO_ASSETS)
       .then((diskSpace) => {
@@ -27,10 +27,7 @@ export function startAssetDownload(updateCallback: () => void) {
               ". Please wait a few minutes for the download to complete.";
             updateLocalAssets(assetInfo)
               .then(() => {
-                statusText =
-                  "All assets downloaded. Will check for updates at " +
-                  new Date(new Date().getTime() + SUCCESS_TIMEOUT_MS).toLocaleTimeString() +
-                  ".";
+                statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
                 updateCallback();
                 setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
               })

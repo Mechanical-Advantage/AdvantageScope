@@ -15,5 +15,6 @@ export default interface Preferences {
   skipHootNonProWarning: boolean;
   skipNumericArrayDeprecationWarning: boolean;
   skipFrcLogFolderDefault: boolean;
+  ctreLicenseAccepted: boolean;
   usb?: boolean;
 }

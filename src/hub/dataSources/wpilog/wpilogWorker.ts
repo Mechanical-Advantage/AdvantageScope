@@ -136,6 +136,17 @@ async function start(data: Uint8Array) {
 
 function parseField(key: string) {
   // Parse records
+  if (!(key in entryTypes)) {
+    // Try removing leading slash, sometimes inserted
+    // when a key prefix is used in the main renderer
+    if (key.startsWith("/")) {
+      key = key.slice(1);
+    }
+    if (!(key in entryTypes)) {
+      console.warn("Unavailable key requested for parsing:", key);
+      return;
+    }
+  }
   const type = entryTypes[key];
   dataRecordPositions[key].forEach((position) => {
     const [record, _] = decoder!.getRecordAtPosition(position);
