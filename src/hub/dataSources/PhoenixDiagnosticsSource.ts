@@ -322,7 +322,7 @@ interface Response_Point {
   Signals: { [key: string]: number };
 }
 
-// Valid as of Phoenix 24.0.0-beta-4
+// Valid as of Phoenix 25.0.0-beta-1
 const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   AppliedRotorPolarity: {
     0: "PositiveIsCounterClockwise",
@@ -336,7 +336,8 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     8: "BridgeReq_MusicTone",
     9: "BridgeReq_FOCEasy",
     12: "BridgeReq_FaultBrake",
-    13: "BridgeReq_FaultCoast"
+    13: "BridgeReq_FaultCoast",
+    14: "BridgeReq_ActiveBrake"
   },
   ControlMode: {
     0: "DisabledOutput",
@@ -427,6 +428,19 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   MotionMagicIsRunning: {
     1: "Enabled",
     0: "Disabled"
+  },
+  MotorOutputStatus: {
+    0: "Unknown",
+    1: "Off",
+    2: "StaticBraking",
+    3: "Motoring",
+    4: "DiscordantMotoring",
+    5: "RegenBraking"
+  },
+  MotorType: {
+    0: "Unknown",
+    1: "Falcon500",
+    2: "KrakenX60"
   },
   ReverseLimit: {
     0: "ClosedToGround",
