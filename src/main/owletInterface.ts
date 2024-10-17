@@ -15,11 +15,8 @@ export async function convertHoot(hootPath: string): Promise<string> {
   let owletPath = await getOwletPath(hootPath);
   let wpilogPath = path.join(app.getPath("temp"), "hoot_" + createUUID() + ".wpilog");
   let owlet = spawn(owletPath, [hootPath, wpilogPath, "-f", "wpilog"]);
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     owlet.once("exit", () => {
-      if (owlet.exitCode !== 0) {
-        reject("Failed to decode Hoot log file.");
-      }
       resolve(wpilogPath);
     });
   });
