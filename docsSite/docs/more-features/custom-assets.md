@@ -42,6 +42,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
 {
   "name": string // Unique name, required for all asset types
   "sourceUrl": string // Link to the original file, optional
+  "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
   "cameras": [ // Fixed camera positions, can be empty
@@ -58,6 +59,14 @@ A model must be included in the folder with the name "model.glb". CAD files must
 ```
 
 The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms are applied in this order.
+
+:::info
+AdvantageScope simplifies model geometry automatically to improve performance, where the level of detail depends on the selected [rendering mode](../tab-reference/3d-field.md#rendering-modes). In cases where model simplification produces undesired effects with custom assets, two solutions can be used:
+
+- To disable automatic removal of a particular mesh, include the string `NOSIMPLIFY` in the mesh name.
+- To disable model simplification for an entire robot model, set the `disableSimplification` option in the configuration to `true`.
+
+:::
 
 ### Articulated Components
 

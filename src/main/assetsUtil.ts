@@ -333,13 +333,20 @@ export function loadAssets(): AdvantageScopeAssets {
             rotations: [],
             position: [0, 0, 0],
             cameras: [],
-            components: []
+            components: [],
+            disableSimplification: false
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
           }
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
             config.sourceUrl = configRaw.sourceUrl;
+          }
+          if (config.name === "Preseto") {
+            console.log(configRaw);
+          }
+          if ("disableSimplification" in configRaw && typeof configRaw.disableSimplification === "boolean") {
+            config.disableSimplification = configRaw.disableSimplification;
           }
           if (
             "rotations" in configRaw &&
