@@ -27,7 +27,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   }
 
   restoreState(state: unknown): void {
-    if (this.implementation !== null) {
+    if (this.implementation !== null && state !== null) {
       this.implementation.restoreState(state);
     }
   }
