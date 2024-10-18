@@ -76,9 +76,10 @@ import {
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
-import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
+import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
-import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
+import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
+import { checkHootIsPro, convertHoot } from "./owletInterface";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -323,24 +324,55 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else if (path.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
-          checkHootIsPro(path)
-            .then((isPro) => {
-              hasHootNonPro = hasHootNonPro || !isPro;
-            })
-            .finally(() => {
-              convertHoot(path)
-                .then((wpilogPath) => {
-                  openPath(wpilogPath, (buffer) => {
-                    results[0] = buffer;
-                    fs.rmSync(wpilogPath);
-                  });
+          let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+          if (!prefs.ctreLicenseAccepted) {
+            let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
+              dialog
+                .showMessageBox(window, {
+                  type: "info",
+                  title: "Alert",
+                  message: "CTRE Terms & Conditions",
+                  detail:
+                    "Hoot log file decoding requires agreement to CTRE's terms and conditions. Please navigate to the address below to view the full license agreement.\n\n<PLACEHOLDER>",
+                  checkboxLabel: "I Agree",
+                  icon: WINDOW_ICON
                 })
-                .catch((reason) => {
-                  errorMessage = reason;
-                  completedCount++;
-                  sendIfReady();
-                });
-            });
+                .then((response) => resolve(response))
+            );
+            if (response.checkboxChecked) {
+              prefs.ctreLicenseAccepted = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
+            }
+          }
+          if (!prefs.ctreLicenseAccepted) {
+            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's terms and conditions.";
+            completedCount++;
+            sendIfReady();
+          } else {
+            checkHootIsPro(path)
+              .then((isPro) => {
+                hasHootNonPro = hasHootNonPro || !isPro;
+              })
+              .finally(() => {
+                convertHoot(path)
+                  .then((wpilogPath) => {
+                    openPath(wpilogPath, (buffer) => {
+                      results[0] = buffer;
+                      fs.rmSync(wpilogPath);
+                    });
+                  })
+                  .catch((reason) => {
+                    if (typeof reason === "string") {
+                      errorMessage = reason;
+                    } else {
+                      errorMessage = reason.message;
+                    }
+                    completedCount++;
+                    sendIfReady();
+                  });
+              });
+          }
         } else {
           // Normal log, open normally
           targetCount += 1;
@@ -1965,6 +1997,19 @@ function setupMenu() {
             });
           }
         },
+        {
+          label: "Owlet Download Status...",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "About",
+              message: "Owlet Download Status",
+              detail: getOwletDownloadStatus(),
+              buttons: ["Close"],
+              icon: WINDOW_ICON
+            });
+          }
+        },
         { type: "separator" },
         {
           label: "Report a Problem",
@@ -2275,6 +2320,7 @@ function createHubWindow(state?: WindowState) {
     sendMessage(window, "set-version", {
       platform: process.platform,
       platformRelease: os.release(),
+      platformArch: app.runningUnderARM64Translation ? "arm64" : process.arch, // Arch of OS, not this binary
       appVersion: APP_VERSION
     });
     sendMessage(window, "show-update-button", updateChecker.getShouldPrompt());
@@ -3169,6 +3215,9 @@ app.whenReady().then(() => {
     if ("skipFrcLogFolderDefault" in oldPrefs && typeof oldPrefs.skipFrcLogFolderDefault === "boolean") {
       prefs.skipFrcLogFolderDefault = oldPrefs.skipFrcLogFolderDefault;
     }
+    if ("ctreLicenseAccepted" in oldPrefs && typeof oldPrefs.ctreLicenseAccepted === "boolean") {
+      prefs.ctreLicenseAccepted = oldPrefs.ctreLicenseAccepted;
+    }
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
   }
@@ -3176,7 +3225,7 @@ app.whenReady().then(() => {
   // Load assets
   createAssetFolders();
   convertLegacyAssets();
-  startAssetDownload(() => {
+  startAssetDownloadLoop(() => {
     advantageScopeAssets = loadAssets();
     sendAssets();
   });
@@ -3186,6 +3235,9 @@ app.whenReady().then(() => {
     sendAssets();
   }, 5000);
   advantageScopeAssets = loadAssets();
+
+  // Start owlet download
+  startOwletDownloadLoop();
 
   // Create menu and windows
   setupMenu();
@@ -3232,9 +3284,6 @@ app.whenReady().then(() => {
   if (DISTRIBUTOR === Distributor.FRC6328) {
     checkForUpdate(false);
   }
-
-  // Copy current owlet version to cache
-  copyOwlet();
 });
 
 app.on("window-all-closed", () => {

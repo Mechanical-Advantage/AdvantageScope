@@ -67,8 +67,8 @@ export class HistoricalDataSource {
     this.refreshCallback = refreshCallback;
 
     // Post message to start reading
-    if (window.platform !== "win32" && path.endsWith(".hoot")) {
-      this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
+    if (path.endsWith(".hoot") && window.platform === "win32" && window.platformArch !== "x64") {
+      this.customError = "CTRE does not support Hoot file decoding on Windows for ARM.";
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
