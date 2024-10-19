@@ -30,7 +30,8 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/Autonomous",
   "DS:autonomous",
   "NT:/FMSInfo/FMSControlData",
-  "/DSLog/Status/DSTeleop"
+  "/DSLog/Status/DSTeleop",
+  "RobotMode" // Phoenix
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
@@ -241,6 +242,14 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
+      };
+    }
+  } else if (autonomousKey.endsWith("RobotMode")) {
+    let tempAutoData = log.getString(autonomousKey, -Infinity, Infinity);
+    if (tempAutoData) {
+      autonomousData = {
+        timestamps: tempAutoData.timestamps,
+        values: tempAutoData.values.map((text) => text === "Autonomous")
       };
     }
   } else {
