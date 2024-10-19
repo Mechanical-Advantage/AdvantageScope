@@ -157,7 +157,11 @@ export default class UpdateChecker {
     let responseString = this.alertOptions[result.response];
     if (responseString === "Download") {
       if (this.alertDownloadUrl === null) {
-        await shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
+        if (isBeta()) {
+          await shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
+        } else {
+          await shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
+        }
       } else {
         await shell.openExternal(this.alertDownloadUrl);
       }
