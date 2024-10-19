@@ -269,7 +269,13 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
 export function getRobotStateRanges(log: Log): { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] {
   let enabledData = getEnabledData(log);
   let autoData = getAutonomousData(log);
-  if (!enabledData || !autoData) return [];
+  if (enabledData === null) return [];
+  if (autoData === null) {
+    autoData = {
+      timestamps: [],
+      values: []
+    };
+  }
 
   // Combine enabled and auto data
   let allTimestamps = [...enabledData.timestamps, ...autoData.timestamps];
