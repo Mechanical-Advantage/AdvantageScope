@@ -266,6 +266,8 @@ export default class StatisticsController implements TabController {
           });
 
           // Get statistics
+          let samplesNonNegative = samples.filter((x) => x >= 0);
+          let samplesPositive = samples.filter((x) => x > 0);
           let statistics: StatisticsRendererCommand_Stats = {
             count: samples.length,
             min: samples.length === 0 ? NaN : stats.minSorted(samples),
@@ -273,13 +275,13 @@ export default class StatisticsController implements TabController {
             mean: samples.length === 0 ? NaN : stats.mean(samples),
             median: samples.length === 0 ? NaN : stats.medianSorted(samples),
             mode: samples.length === 0 ? NaN : stats.modeSorted(samples),
-            geometricMean: samples.length === 0 ? NaN : logAverage(samples.filter((x) => x >= 0)),
-            harmonicMean: samples.length === 0 ? NaN : stats.harmonicMean(samples.filter((x) => x > 0)),
+            geometricMean: samplesNonNegative.length === 0 ? NaN : logAverage(samplesNonNegative),
+            harmonicMean: samplesPositive.length === 0 ? NaN : stats.harmonicMean(samplesPositive),
             quadraticMean: samples.length === 0 ? NaN : stats.rootMeanSquare(samples),
-            standardDeviation: samples.length === 0 ? NaN : stats.sampleStandardDeviation(samples),
+            standardDeviation: samples.length < 2 ? NaN : stats.sampleStandardDeviation(samples),
             medianAbsoluteDeviation: samples.length === 0 ? NaN : stats.medianAbsoluteDeviation(samples),
             interquartileRange: samples.length === 0 ? NaN : stats.interquartileRange(samples),
-            skewness: samples.length === 0 ? NaN : stats.sampleSkewness(samples),
+            skewness: samples.length < 3 ? NaN : stats.sampleSkewness(samples),
             percentile01: samples.length === 0 ? NaN : stats.quantileSorted(samples, 0.01),
             percentile05: samples.length === 0 ? NaN : stats.quantileSorted(samples, 0.05),
             percentile10: samples.length === 0 ? NaN : stats.quantileSorted(samples, 0.1),
