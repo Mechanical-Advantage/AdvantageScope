@@ -21,35 +21,34 @@ function parsePacket(value: Uint8Array, timestamp: number): PhotonPipelineResult
 
   result.targets = [];
   for (let i = 0; i < numTargets; i++) {
-    let target = new PhotonTrackedTarget();
-    target.yaw = view.getFloat64(offset);
+    const yaw = view.getFloat64(offset);
     offset += 8;
-    target.pitch = view.getFloat64(offset);
+    const pitch = view.getFloat64(offset);
     offset += 8;
-    target.area = view.getFloat64(offset);
+    const area = view.getFloat64(offset);
     offset += 8;
-    target.skew = view.getFloat64(offset);
+    const skew = view.getFloat64(offset);
     offset += 8;
-    target.fiducialId = view.getInt32(offset);
+    const fiducialId = view.getInt32(offset);
     offset += 4;
 
-    target.bestCameraToTarget = parseTransform3d(view, offset);
+    const bestCameraToTarget = parseTransform3d(view, offset);
     offset += 7 * 8;
-    target.altCameraToTarget = parseTransform3d(view, offset);
+    const altCameraToTarget = parseTransform3d(view, offset);
     offset += 7 * 8;
-    target.poseAmbiguity = view.getFloat64(offset);
+    const poseAmbiguity = view.getFloat64(offset);
     offset += 8;
 
-    target.minAreaRectCorners = [];
+    const minAreaRectCorners = [];
     for (let j = 0; j < 4; j++) {
       let x = view.getFloat64(offset);
       offset += 8;
       let y = view.getFloat64(offset);
       offset += 8;
-      target.minAreaRectCorners.push({ x: x, y: y });
+      minAreaRectCorners.push(new PhotonTargetCorner(x, y));
     }
 
-    target.detectedCorners = [];
+    const detectedCorners = [];
     const numCorners = view.getInt8(offset);
     offset += 1;
     for (let j = 0; j < numCorners; j++) {
@@ -57,10 +56,54 @@ function parsePacket(value: Uint8Array, timestamp: number): PhotonPipelineResult
       offset += 8;
       let y = view.getFloat64(offset);
       offset += 8;
-      target.detectedCorners.push({ x: x, y: y });
+      detectedCorners.push(new PhotonTargetCorner(x, y));
     }
 
-    result.targets.push(target);
+    result.targets.push({
+      yaw,
+      pitch,
+      area,
+      skew,
+      fiducialId,
+      bestCameraToTarget,
+      altCameraToTarget,
+      poseAmbiguity,
+      minAreaRectCorners,
+      detectedCorners
+    });
+  }
+
+  const hasMultiTagResult = view.getInt8(offset) !== 0;
+  offset += 1;
+  if (hasMultiTagResult) {
+    const best = parseTransform3d(view, offset);
+    offset += 7 * 8;
+    const alt = parseTransform3d(view, offset);
+    offset += 7 * 8;
+    const bestReprojError = view.getFloat64(offset);
+    offset += 8;
+    const altReprojError = view.getFloat64(offset);
+    offset += 8;
+    const ambiguity = view.getFloat64(offset);
+    offset += 8;
+
+    const fiducialIdsUsed = [];
+    for (let i = 0; i < 32; i++) {
+      const fiducialId = view.getInt16(offset);
+      offset += 2;
+      if (fiducialId >= 0) {
+        fiducialIdsUsed.push(fiducialId);
+      }
+    }
+
+    result.multiTagResult = {
+      best,
+      alt,
+      bestReprojError,
+      altReprojError,
+      ambiguity,
+      fiducialIdsUsed
+    };
   }
 
   return result;
@@ -99,9 +142,19 @@ function saveResult(log: Log, baseKey: string, timestamp: number, result: Photon
       }
     });
   }
+
+  if (result.multiTagResult) {
+    Object.entries(result.multiTagResult).forEach(([name, value]) => {
+      if (typeof value === "number") {
+        log.putNumber(`${baseKey}/multiTagResult/${name}`, timestamp, value);
+      } else if (Array.isArray(value)) {
+        log.putNumberArray(`${baseKey}/multiTagResult/${name}`, timestamp, value);
+      }
+    });
+  }
 }
 
-function parseTransform3d(view: DataView, offset: number): number[] {
+function parseTransform3d(view: DataView, offset: number): Transform3d {
   let tx = view.getFloat64(offset);
   offset += 8;
   let ty = view.getFloat64(offset);
@@ -121,25 +174,39 @@ function parseTransform3d(view: DataView, offset: number): number[] {
 }
 
 class PhotonTargetCorner {
-  x: number = 0;
-  y: number = 0;
+  constructor(
+    readonly x: number,
+    readonly y: number
+  ) {}
 }
 
-class PhotonTrackedTarget {
-  yaw: number = 0;
-  pitch: number = 0;
-  area: number = 0;
-  skew: number = 0;
-  fiducialId: number = 0;
-  bestCameraToTarget: number[] = [];
-  altCameraToTarget: number[] = [];
-  poseAmbiguity: number = 0;
-  minAreaRectCorners: PhotonTargetCorner[] = [];
-  detectedCorners: PhotonTargetCorner[] = [];
+type Transform3d = [number, number, number, number, number, number, number];
+
+interface PhotonTrackedTarget {
+  yaw: number;
+  pitch: number;
+  area: number;
+  skew: number;
+  fiducialId: number;
+  bestCameraToTarget: Transform3d;
+  altCameraToTarget: Transform3d;
+  poseAmbiguity: number;
+  minAreaRectCorners: PhotonTargetCorner[];
+  detectedCorners: PhotonTargetCorner[];
+}
+
+interface MultiTargetPNPResult {
+  best: Transform3d;
+  alt: Transform3d;
+  bestReprojError: number;
+  altReprojError: number;
+  ambiguity: number;
+  fiducialIdsUsed: number[];
 }
 
 class PhotonPipelineResult {
   latency: number = 0;
   timestamp: number = 0;
   targets: PhotonTrackedTarget[] = [];
+  multiTagResult: MultiTargetPNPResult | undefined;
 }
