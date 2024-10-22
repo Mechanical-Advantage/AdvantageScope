@@ -339,11 +339,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 })
                 .then((response) => resolve(response))
             );
-            if (response.checkboxChecked) {
-              prefs.ctreLicenseAccepted = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
+            // if (response.checkboxChecked) {
+            //   prefs.ctreLicenseAccepted = true;
+            //   jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            //   sendAllPreferences();
+            // }
           }
           if (!prefs.ctreLicenseAccepted) {
             errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's terms and conditions.";
