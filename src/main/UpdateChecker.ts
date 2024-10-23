@@ -158,10 +158,9 @@ export default class UpdateChecker {
     let responseString = this.alertOptions[result.response];
     if (responseString === "Download") {
       if (this.alertDownloadUrl === null) {
-        await shell.openExternal(`https://github.com/${REPOSITORY}/releases/v${this.latestVersion}`;
-      } else {
-        await shell.openExternal(this.alertDownloadUrl);
+        this.alertDownloadUrl = `https://github.com/${REPOSITORY}/releases/v${this.latestVersion}`;
       }
+      await shell.openExternal(this.alertDownloadUrl);
     } else if (responseString === "View Changelog") {
       await shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
     }
