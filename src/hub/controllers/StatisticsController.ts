@@ -12,6 +12,7 @@ export default class StatisticsController implements TabController {
 
   private UPDATE_PERIOD_MS = 100;
   private DEFAULT_DT = 0.02;
+  private MAX_BINS = 1000;
 
   private TIME_RANGE: HTMLSelectElement;
   private RANGE_MIN: HTMLInputElement;
@@ -55,7 +56,11 @@ export default class StatisticsController implements TabController {
   /** Updates the step size for each histogram input. */
   private updateHistogramInputs() {
     if (Number(this.STEP_SIZE.value) <= 0) {
-      this.STEP_SIZE.value = cleanFloat(Number(this.STEP_SIZE.step) * 0.9).toString();
+      this.STEP_SIZE.value = cleanFloat(Number(this.STEP_SIZE.step)).toString();
+    }
+    let range = Math.abs(Number(this.RANGE_MAX.value) - Number(this.RANGE_MIN.value));
+    if (range / Number(this.STEP_SIZE.value) > this.MAX_BINS) {
+      this.STEP_SIZE.value = cleanFloat(Math.ceil(range / this.MAX_BINS)).toString();
     }
     let step = Math.pow(10, Math.floor(Math.log10(Number(this.STEP_SIZE.value))));
     this.STEP_SIZE.step = step.toString();
@@ -136,12 +141,13 @@ export default class StatisticsController implements TabController {
       this.lastUpdateTime = currentTime;
 
       // Get bins
+      this.updateHistogramInputs;
       let min = Number(this.RANGE_MIN.value);
       let max = Number(this.RANGE_MAX.value);
       let step = Number(this.STEP_SIZE.value);
       if (step <= 0) step = 1;
       let bins: number[] = [];
-      for (let i = min; i < max; i += step) {
+      for (let i = min; i < max && bins.length < this.MAX_BINS; i += step) {
         bins.push(i);
       }
 
