@@ -20,6 +20,7 @@ export default class LineGraphRenderer implements TabRenderer {
   private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
+  private lastCursorInRect = false;
   private didClearHoveredTime = false;
 
   constructor(root: HTMLElement, hasController: boolean) {
@@ -29,11 +30,17 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY = root.getElementsByClassName("line-graph-scroll")[0] as HTMLCanvasElement;
 
     // Hover handling
+    window.addEventListener("mousemove", (event) => {
+      if (this.ROOT.hidden || !this.grabZoomActive) return;
+      this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
+    });
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
       this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
+      this.lastCursorInRect = true;
     });
     this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
       this.lastCursorX = null;
+      this.lastCursorInRect = false;
       window.selection.setHoveredTime(null);
     });
 
@@ -45,21 +52,21 @@ export default class LineGraphRenderer implements TabRenderer {
         this.grabZoomStartTime = this.lastHoveredTime;
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mousemove", () => {
+    window.addEventListener("mousemove", () => {
+      if (this.ROOT.hidden) return;
       if (this.grabZoomActive && this.lastHoveredTime !== null) {
         window.selection.setGrabZoomRange([this.grabZoomStartTime, this.lastHoveredTime]);
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
+    window.addEventListener("mouseup", () => {
+      if (this.ROOT.hidden) return;
       if (this.grabZoomActive) {
         window.selection.finishGrabZoom();
         this.grabZoomActive = false;
-      }
-    });
-    this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
-      if (this.grabZoomActive) {
-        window.selection.setGrabZoomRange(null);
-        this.grabZoomActive = false;
+        if (!this.lastCursorInRect) {
+          this.lastCursorX = null;
+          window.selection.setHoveredTime(null);
+        }
       }
     });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
