@@ -38,7 +38,7 @@ To see a full list of supported sources types, click the `?` icon. This list als
 
 Point data should be published as a byte-encoded struct or protobuf, using the `Translation2d[]` type. Many FRC libraries support this format, including WPILib and AdvantageKit. The example code below shows how to log point data in Java.
 
-<Tabs>
+<Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java

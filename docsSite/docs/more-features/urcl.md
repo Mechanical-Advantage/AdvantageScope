@@ -86,7 +86,7 @@ To more easily identify devices in the log, CAN IDs can be assigned to aliases b
 
 1. After setting up URCL as shown above, configure the SysId routine using `null` for the mechanism log consumer. An example is shown below for Java. This configuration can be performed within the subsystem class.
 
-<Tabs>
+<Tabs groupId="library">
 <TabItem value="WPILib" label="WPILib" default>
 
 ```java

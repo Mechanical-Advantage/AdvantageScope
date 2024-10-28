@@ -45,7 +45,7 @@ The legacy number array format for geometry data is now deprecated. See [here](.
 
 Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
 
-<Tabs>
+<Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java

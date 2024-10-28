@@ -13,7 +13,7 @@ The metadata tab shows values published to the hidden "/Metadata" table or throu
 
 The example code below shows how to log metadata using Java.
 
-<Tabs>
+<Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
 In WPILib, the values must be logged to the "/Metadata" table as strings.
