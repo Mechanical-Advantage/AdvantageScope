@@ -47,7 +47,7 @@ To publish mechanism data using AdvantageKit, record a `Mechanism2d` as an outpu
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-Logger.getInstance().recordOutput("MyMechanism", mechanism);
+Logger.recordOutput("MyMechanism", mechanism);
 ```
 
 </TabItem>

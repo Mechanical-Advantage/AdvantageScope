@@ -35,7 +35,7 @@ entry.append("MyValue");
 In AdvantageKit, call the method below before starting the logger. Metadata is stored separately when running in real and replay for easy comparison.
 
 ```java
-Logger.getInstance().recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("MyKey", "MyValue");
 ```
 
 </TabItem>
