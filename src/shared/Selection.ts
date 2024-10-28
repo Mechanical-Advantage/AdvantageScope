@@ -53,6 +53,9 @@ export default interface Selection {
   /** Updates the playback speed. */
   setPlaybackSpeed(speed: number): void;
 
+  /** Updates whether playback is looping. */
+  setPlaybackLooping(looping: boolean): void;
+
   /** Sets a new time range for an in-progress grab zoom. */
   setGrabZoomRange(range: [number, number] | null): void;
 

@@ -769,8 +769,9 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "set-playback-speed":
-      window.selection.setPlaybackSpeed(message.data);
+    case "set-playback-options":
+      window.selection.setPlaybackSpeed(message.data.speed);
+      window.selection.setPlaybackLooping(message.data.looping);
       break;
 
     case "toggle-sidebar":

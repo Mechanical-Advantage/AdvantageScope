@@ -35,7 +35,7 @@ The navigation buttons (green) on the top manage the tabs and control playback.
 - **Plus Button**: Opens a dropdown menu to create a new tab.
 - **Window Button:** Creates a new pop-out window with the tab tab. This feature can be used to view data from multiple tabs simultaneously.
 - **X Button:** Closes the current tab.
-- **Play Button:** Start and stop real-time playback. _Right-click to change playback speed._
+- **Play Button:** Start and stop real-time playback. _Right-click to change playback speed or enable looping._
 
 ## Viewer Pane
 
