@@ -950,7 +950,7 @@ export default class SourceList {
     // Update hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
-    hideIcon.src = "symbols/" + (state.visible ? "eye.slash.svg" : "eye.svg");
+    hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
     if (state.visible) {
       item.classList.remove("hidden");
     } else {
