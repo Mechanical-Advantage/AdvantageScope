@@ -46,7 +46,7 @@ const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
 
 const TEXT_DECODER = new TextDecoder("UTF-8");
 
-export default class REVSchema {
+export default class REVSchemaLegacy {
   private constructor() {}
 
   /**
@@ -87,10 +87,10 @@ export default class REVSchema {
       }
       if (((messageId >> 6) & 0x3ff) === FIRMWARE_API) {
         // Firmware frame
-        devices[deviceId].firmware = REVSchema.parseFirmware(messageValue);
+        devices[deviceId].firmware = REVSchemaLegacy.parseFirmware(messageValue);
       } else if (((messageId >> 6) & 0x3ff) === MODEL_API) {
         // Device model frame
-        devices[deviceId].model = REVSchema.parseDeviceModel(messageValue);
+        devices[deviceId].model = REVSchemaLegacy.parseDeviceModel(messageValue);
       }
     }
 
@@ -128,8 +128,8 @@ export default class REVSchema {
         let deviceKey = rootKey + getName(deviceId.toString());
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         log.putRaw(frameKey, messageTimestamp, messageValue);
-        if (frameIndex >= 0 && frameIndex < REVSchema.PARSE_PERIODIC.length) {
-          REVSchema.PARSE_PERIODIC[frameIndex](
+        if (frameIndex >= 0 && frameIndex < REVSchemaLegacy.PARSE_PERIODIC.length) {
+          REVSchemaLegacy.PARSE_PERIODIC[frameIndex](
             log,
             deviceKey,
             messageTimestamp,
@@ -161,10 +161,10 @@ export default class REVSchema {
       }
       if (((messageId >> 6) & 0x3ff) === FIRMWARE_API) {
         // Firmware frame
-        devices[deviceId].firmware = REVSchema.parseFirmware(messageValue);
+        devices[deviceId].firmware = REVSchemaLegacy.parseFirmware(messageValue);
       } else if (((messageId >> 6) & 0x3ff) === MODEL_API) {
         // Device model frame
-        devices[deviceId].model = REVSchema.parseDeviceModel(messageValue);
+        devices[deviceId].model = REVSchemaLegacy.parseDeviceModel(messageValue);
       }
     }
 
@@ -203,8 +203,8 @@ export default class REVSchema {
         let deviceKey = key + "/" + devices[deviceId].model + "-" + deviceId.toString();
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         log.putRaw(frameKey, messageTimestamp, messageValue);
-        if (frameIndex >= 0 && frameIndex < REVSchema.PARSE_PERIODIC.length) {
-          REVSchema.PARSE_PERIODIC[frameIndex](
+        if (frameIndex >= 0 && frameIndex < REVSchemaLegacy.PARSE_PERIODIC.length) {
+          REVSchemaLegacy.PARSE_PERIODIC[frameIndex](
             log,
             deviceKey,
             messageTimestamp,
@@ -243,14 +243,14 @@ export default class REVSchema {
   }
 
   private static PARSE_PERIODIC = [
-    REVSchema.parsePeriodic0,
-    REVSchema.parsePeriodic1,
-    REVSchema.parsePeriodic2,
-    REVSchema.parsePeriodic3,
-    REVSchema.parsePeriodic4,
-    REVSchema.parsePeriodic5,
-    REVSchema.parsePeriodic6,
-    REVSchema.parsePeriodic7
+    REVSchemaLegacy.parsePeriodic0,
+    REVSchemaLegacy.parsePeriodic1,
+    REVSchemaLegacy.parsePeriodic2,
+    REVSchemaLegacy.parsePeriodic3,
+    REVSchemaLegacy.parsePeriodic4,
+    REVSchemaLegacy.parsePeriodic5,
+    REVSchemaLegacy.parsePeriodic6,
+    REVSchemaLegacy.parsePeriodic7
   ];
 
   /**
