@@ -1,5 +1,5 @@
 import path from "path";
-import { BETA_CONFIG } from "./main/betaConfig2";
+import { BETA_CONFIG } from "./main/betaConfig";
 import { downloadOwletInternal } from "./main/owletDownload";
 
 function download(platform: string) {

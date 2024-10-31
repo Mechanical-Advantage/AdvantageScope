@@ -5,7 +5,7 @@ import path from "path";
 import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { scaleValue } from "../shared/util";
 import { APP_VERSION } from "./Constants";
-import { BETA_CONFIG } from "./betaConfig2";
+import { BETA_CONFIG } from "./betaConfig";
 
 const BETA_STATE_FILENAME =
   BETA_CONFIG === null ? null : path.join(app.getPath("userData"), "beta-" + BETA_CONFIG.year + ".json");
