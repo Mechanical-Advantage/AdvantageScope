@@ -45,6 +45,9 @@ import {
   shouldPromptBetaSurvey
 } from "./BetaConfig";
 import {
+  AKIT_PATH_INPUT,
+  AKIT_PATH_INPUT_PERIOD,
+  AKIT_PATH_OUTPUT,
   APP_VERSION,
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
@@ -55,7 +58,6 @@ import {
   FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
-  LAST_OPEN_FILE,
   PATHPLANNER_CONNECT_TIMEOUT_MS,
   PATHPLANNER_DATA_TIMEOUT_MS,
   PATHPLANNER_PING_DELAY_MS,
@@ -257,7 +259,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
         app.addRecentDocument(path);
-        fs.writeFile(LAST_OPEN_FILE, path, () => {});
+        fs.writeFile(AKIT_PATH_OUTPUT, path, () => {});
 
         // Send data if all file reads finished
         let completedCount = 0;
@@ -3270,8 +3272,25 @@ app.on("open-file", (_, path) => {
   }
 });
 
+// Monitor for AdvantageKit path input
+if (fs.existsSync(AKIT_PATH_INPUT)) {
+  fs.unlinkSync(AKIT_PATH_INPUT);
+}
+setInterval(() => {
+  if (fs.existsSync(AKIT_PATH_INPUT)) {
+    fs.readFile(AKIT_PATH_INPUT, "utf8", (error, path) => {
+      if (error !== null) return;
+      fs.unlinkSync(AKIT_PATH_INPUT);
+      if (hubWindows.length > 0) {
+        hubWindows[0].focus();
+        sendMessage(hubWindows[0], "open-files", { files: [path.trim()], merge: false });
+      }
+    });
+  }
+}, AKIT_PATH_INPUT_PERIOD);
+
 // Clean up files on quit
 app.on("quit", () => {
-  fs.unlink(LAST_OPEN_FILE, () => {});
+  fs.unlink(AKIT_PATH_OUTPUT, () => {});
   VideoProcessor.cleanup();
 });
