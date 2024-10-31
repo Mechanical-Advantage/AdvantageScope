@@ -14,10 +14,16 @@ type FirmwareVersion = {
 const PERSISTENT_SIZE = 8;
 const PERIODIC_SIZE = 14;
 const PERIODIC_API_CLASS = sparkFramesSpec.periodicFrames.STATUS_0.apiClass;
-const PERIODIC_FRAME_SPECS = Object.entries(sparkFramesSpec.periodicFrames)
-  .filter(([name, _]) => name.startsWith("STATUS_"))
-  .sort(([nameA, _A], [nameB, _B]) => nameA.localeCompare(nameB))
-  .map(([_, spec]) => spec);
+const PERIODIC_FRAME_SPECS = [
+  sparkFramesSpec.periodicFrames.STATUS_0,
+  sparkFramesSpec.periodicFrames.STATUS_1,
+  sparkFramesSpec.periodicFrames.STATUS_2,
+  sparkFramesSpec.periodicFrames.STATUS_3,
+  sparkFramesSpec.periodicFrames.STATUS_4,
+  sparkFramesSpec.periodicFrames.STATUS_5,
+  sparkFramesSpec.periodicFrames.STATUS_6,
+  sparkFramesSpec.periodicFrames.STATUS_7
+];
 const FIRMWARE_FRAME_SPEC = sparkFramesSpec.nonPeriodicFrames.GET_FIRMWARE_VERSION;
 const FIRMWARE_API = (FIRMWARE_FRAME_SPEC.apiClass << 4) | FIRMWARE_FRAME_SPEC.apiIndex;
 
@@ -28,7 +34,7 @@ export default class URCLSchema {
   private constructor() {}
 
   /**
-   * Parses a set of frames recorded by URCL using revision 2.
+   * Parses a set of frames recorded by URCL using revision 3.
    */
   static parseURCLr3(log: Log, key: string, timestamp: number, value: Uint8Array) {
     let devices: { [key: string]: { alias?: string; firmware?: FirmwareVersion } } = {};
