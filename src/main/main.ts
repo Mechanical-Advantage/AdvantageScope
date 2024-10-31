@@ -36,15 +36,6 @@ import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabI
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
 import {
-  delayBetaSurvey,
-  isBeta,
-  isBetaExpired,
-  isBetaWelcomeComplete,
-  openBetaSurvey,
-  saveBetaWelcomeComplete,
-  shouldPromptBetaSurvey
-} from "./BetaConfig";
-import {
   APP_VERSION,
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
@@ -78,6 +69,15 @@ import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
+import {
+  delayBetaSurvey,
+  isBeta,
+  isBetaExpired,
+  isBetaWelcomeComplete,
+  openBetaSurvey,
+  saveBetaWelcomeComplete,
+  shouldPromptBetaSurvey
+} from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot } from "./owletInterface";
 

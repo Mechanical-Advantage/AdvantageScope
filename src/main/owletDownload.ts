@@ -51,7 +51,7 @@ function getOwletPlatform(electronPlatform: string): string {
  * @param target Target folder where owlet is stored
  * @param platform Platform key in Electron format
  */
-export async function downloadOwletInternal(target: string, platform: string): Promise<void> {
+export async function downloadOwletInternal(target: string, platform: string, stableOnly = false): Promise<void> {
   // Create target folder
   if (!fs.existsSync(target)) {
     fs.mkdirSync(target, { recursive: true });
@@ -67,6 +67,12 @@ export async function downloadOwletInternal(target: string, platform: string): P
 
   // Loop through each compliancy version
   for (let i = 0; i < redistIndex.ChannelCompliancy.length; i++) {
+    // Check if stable
+    let compliancyName = redistIndex.ChannelCompliancy[i].Name.toLowerCase();
+    if (stableOnly && (compliancyName.includes("beta") || compliancyName.includes("alpha"))) {
+      continue;
+    }
+
     // Find latest version for compliancy
     let compatibleVersions = owletIndex.Items.filter(
       (version) => version.Compliancy === redistIndex.ChannelCompliancy[i].Compliancy
