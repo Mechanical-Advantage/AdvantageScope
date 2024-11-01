@@ -93,6 +93,11 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
       additionalLanguages: ["java"]
+    },
+    algolia: {
+      appId: "GBP8QKXFZG",
+      apiKey: "a9a4c90f61d9bb34e8d54e71acaccd60",
+      indexName: "advantagescope"
     }
   } satisfies Preset.ThemeConfig
 };
