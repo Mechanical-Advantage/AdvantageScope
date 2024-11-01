@@ -1,9 +1,10 @@
 ---
 name: Question
-about: Ask about features or parts of this project
-title: ""
+about: Ask about features or parts of AdvantageScope
+title: ''
 labels: question
-assignees: ""
+assignees: ''
+
 ---
 
 **Describe the question you have.**

@@ -1,9 +1,10 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: ""
+about: Suggest an idea for AdvantageScope
+title: ''
 labels: enhancement
-assignees: ""
+assignees: ''
+
 ---
 
 **Is your feature request related to a problem? Please describe.**
