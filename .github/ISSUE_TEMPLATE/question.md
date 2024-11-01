@@ -1,10 +1,9 @@
 ---
 name: Question
 about: Ask about features or parts of AdvantageScope
-title: ''
+title: ""
 labels: question
-assignees: ''
-
+assignees: ""
 ---
 
 **Describe the question you have.**
