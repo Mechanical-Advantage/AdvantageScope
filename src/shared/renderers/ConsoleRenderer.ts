@@ -4,10 +4,14 @@ import { arraysEqual, formatTimeWithMS, htmlEncode } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
+  private ERROR_TEXT = "error";
+  private WARNING_TEXT = "warning";
+
   private TABLE_CONTAINER: HTMLElement;
   private TABLE_BODY: HTMLElement;
   private JUMP_INPUT: HTMLInputElement;
   private JUMP_BUTTON: HTMLInputElement;
+  private HIGHLIGHT_BUTTON: HTMLButtonElement;
   private FILTER_INPUT: HTMLInputElement;
   private FIELD_CELL: HTMLElement;
   private FIELD_TEXT: HTMLElement;
@@ -32,6 +36,7 @@ export default class ConsoleRenderer implements TabRenderer {
     this.TABLE_BODY = this.TABLE_CONTAINER.firstElementChild?.firstElementChild as HTMLElement;
     this.JUMP_INPUT = this.TABLE_BODY.firstElementChild?.firstElementChild?.firstElementChild as HTMLInputElement;
     this.JUMP_BUTTON = this.TABLE_BODY.firstElementChild?.firstElementChild?.lastElementChild as HTMLInputElement;
+    this.HIGHLIGHT_BUTTON = this.TABLE_BODY.firstElementChild?.lastElementChild?.children[1] as HTMLButtonElement;
     this.FILTER_INPUT = this.TABLE_BODY.firstElementChild?.lastElementChild?.lastElementChild as HTMLInputElement;
     this.FIELD_CELL = this.TABLE_BODY.firstElementChild?.lastElementChild as HTMLElement;
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild?.firstElementChild as HTMLElement;
@@ -69,6 +74,12 @@ export default class ConsoleRenderer implements TabRenderer {
     this.JUMP_BUTTON.addEventListener("click", jump);
     this.FILTER_INPUT.addEventListener("input", () => this.updateData());
 
+    // Highlight button
+    this.HIGHLIGHT_BUTTON.addEventListener("click", () => {
+      this.HIGHLIGHT_BUTTON.classList.toggle("active");
+      this.updateData();
+    });
+
     // Delete button handling
     this.FIELD_DELETE.addEventListener("click", () => {
       root.dispatchEvent(new CustomEvent("close-field"));
@@ -87,10 +98,22 @@ export default class ConsoleRenderer implements TabRenderer {
   }
 
   saveState(): unknown {
-    return null;
+    return {
+      highlight: this.HIGHLIGHT_BUTTON.classList.contains("active")
+    };
   }
 
-  restoreState(state: unknown): void {}
+  restoreState(state: unknown): void {
+    if (state === null || typeof state !== "object") return;
+    if ("highlight" in state && typeof state.highlight === "boolean") {
+      if (state.highlight) {
+        this.HIGHLIGHT_BUTTON.classList.add("active");
+      } else {
+        this.HIGHLIGHT_BUTTON.classList.remove("active");
+      }
+      this.updateData();
+    }
+  }
 
   getAspectRatio(): number | null {
     return null;
@@ -244,6 +267,24 @@ export default class ConsoleRenderer implements TabRenderer {
       }
       valueFormatted = valueFormatted.replaceAll("\n", "<br />");
 
+      // Update highlight
+      let row = this.TABLE_BODY.children[i + 1];
+      if (this.HIGHLIGHT_BUTTON.classList.contains("active")) {
+        if (values[i].toLowerCase().includes(this.ERROR_TEXT)) {
+          row.classList.add("error");
+        } else {
+          row.classList.remove("error");
+        }
+        if (values[i].toLowerCase().includes(this.WARNING_TEXT)) {
+          row.classList.add("warning");
+        } else {
+          row.classList.remove("warning");
+        }
+      } else {
+        row.classList.remove("error");
+        row.classList.remove("warning");
+      }
+
       // Check if value has changed
       let hasChanged = false;
       if (i > this.renderedTimestamps.length) {
@@ -256,7 +297,6 @@ export default class ConsoleRenderer implements TabRenderer {
 
       // Update cell contents
       if (hasChanged) {
-        let row = this.TABLE_BODY.children[i + 1];
         (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamps[i]);
         (row.children[1] as HTMLElement).innerHTML = valueFormatted;
       }
