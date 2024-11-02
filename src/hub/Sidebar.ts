@@ -30,6 +30,8 @@ export default class Sidebar {
     "ReplayOutputs",
     "SystemStats",
     "PowerDistribution",
+    "Tuning",
+    "NetworkInputs",
     "DashboardInputs",
     "Timestamp",
     "AdvantageKit",
@@ -370,7 +372,7 @@ export default class Sidebar {
   /** Show or hide tuning button based on tuner availability. */
   private updateTuningButton() {
     let tuningButtonVisible = !this.TUNING_BUTTON.hidden;
-    let tunerAvailable = window.tuner !== null;
+    let tunerAvailable = window.tuner !== null && window.tuner.hasTunableFields();
     if (tuningButtonVisible !== tunerAvailable) {
       this.TUNING_BUTTON.hidden = !tunerAvailable;
       document.documentElement.style.setProperty("--show-tuning-button", tunerAvailable ? "1" : "0");
