@@ -55,6 +55,8 @@ New **integration** and **differentiation** options, along with a **streamlined 
 
 Want to visualize even more data at once? Try **popping out the line graph** to a separate window!
 
+Users of the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API can now visualize errors, warnings, and info messages as a compact waterfall chart.
+
 ![Line graph styles](./img/line-graph-styles.png)
 
 ### 📊 Redesigned Statistics View

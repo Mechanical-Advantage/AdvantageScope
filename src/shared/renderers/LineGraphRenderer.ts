@@ -1,6 +1,7 @@
 import ScrollSensor from "../../hub/ScrollSensor";
+import { ensureThemeContrast } from "../Colors";
 import { SelectionMode } from "../Selection";
-import { ValueScaler, calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor } from "../util";
+import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class LineGraphRenderer implements TabRenderer {
@@ -123,8 +124,8 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
-    let graphHeightOpen =
-      graphHeight - command.discreteFields.length * 20 - (command.discreteFields.length > 0 ? 5 : 0);
+    let discreteRowCount = command.discreteFields.length + command.alerts.length;
+    let graphHeightOpen = graphHeight - discreteRowCount * 20 - (discreteRowCount > 0 ? 5 : 0);
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
     // Calculate Y step sizes
@@ -223,6 +224,36 @@ export default class LineGraphRenderer implements TabRenderer {
         context.strokeStyle = field.color;
         context.stroke();
       }
+    });
+
+    // Render alerts
+    command.alerts.forEach((alertsRow, rowIndex) => {
+      let topY = graphTop + graphHeight - 20 - (command.discreteFields.length + rowIndex) * 20;
+      alertsRow.forEach((alert) => {
+        let startX = scaleValue(alert.range[0], timeRange, [graphLeft, graphLeft + graphWidth]);
+        let endX = scaleValue(alert.range[1], timeRange, [graphLeft, graphLeft + graphWidth]);
+
+        // Draw shape
+        switch (alert.type) {
+          case "error":
+            context.fillStyle = ensureThemeContrast("#ff0000");
+            break;
+          case "warning":
+            context.fillStyle = ensureThemeContrast("#ffaa00");
+            break;
+          case "info":
+            context.fillStyle = ensureThemeContrast("#00ff00");
+            break;
+        }
+        context.fillRect(startX, topY, endX - startX, 15);
+
+        // Draw text
+        let adjustedStartX = startX < graphLeft ? graphLeft : startX;
+        if (endX - adjustedStartX > 10) {
+          context.fillStyle = "black";
+          context.fillText(alert.text, adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
+        }
+      });
     });
 
     // Render continuous data
@@ -607,6 +638,7 @@ export type LineGraphRendererCommand = {
   leftFields: LineGraphRendererCommand_NumericField[];
   rightFields: LineGraphRendererCommand_NumericField[];
   discreteFields: LineGraphRendererCommand_DiscreteField[];
+  alerts: LineGraphRendererCommand_AlertSet;
 };
 
 export type LineGraphRendererCommand_NumericField = {
@@ -623,4 +655,12 @@ export type LineGraphRendererCommand_DiscreteField = {
   color: string;
   type: "stripes" | "graph";
   toggleReference: boolean;
+};
+
+export type LineGraphRendererCommand_AlertSet = LineGraphRendererCommand_Alert[][];
+
+export type LineGraphRendererCommand_Alert = {
+  type: "error" | "warning" | "info";
+  text: string;
+  range: [number, number];
 };

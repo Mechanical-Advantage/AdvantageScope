@@ -996,10 +996,10 @@ export default class SourceList {
       let logType = window.log.getType(state.logKey);
       let structuredType = window.log.getStructuredType(state.logKey);
       if (logType !== null) {
-        let value: any;
+        let value: any = null;
         if (logType === LoggableType.Number && this.getNumberPreview !== undefined) {
           value = this.getNumberPreview(state.logKey, time);
-        } else {
+        } else if (logType !== LoggableType.Empty) {
           value = getOrDefault(window.log, state.logKey, logType, time, null);
         }
         if (value !== null || logType === LoggableType.Empty) {
@@ -1159,6 +1159,40 @@ export default class SourceList {
               let count = mechanismState.lines.length;
               text = count.toString() + " segment" + (count === 1 ? "" : "s");
             }
+          } else if (structuredType === "Alerts") {
+            let errorCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/errors",
+              LoggableType.StringArray,
+              time,
+              []
+            ).length;
+            let warningCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/warnings",
+              LoggableType.StringArray,
+              time,
+              []
+            ).length;
+            let infoCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/infos",
+              LoggableType.StringArray,
+              time,
+              []
+            ).length;
+            text =
+              errorCount.toString() +
+              " error" +
+              (errorCount === 1 ? "" : "s") +
+              ", " +
+              warningCount.toString() +
+              " warning" +
+              (warningCount === 1 ? "" : "s") +
+              ", " +
+              infoCount.toString() +
+              " info" +
+              (infoCount === 1 ? "" : "s");
           } else if (
             logType === LoggableType.BooleanArray ||
             logType === LoggableType.NumberArray ||

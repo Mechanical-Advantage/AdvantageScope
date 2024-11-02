@@ -5,6 +5,8 @@ import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText } from "../../share
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import {
   LineGraphRendererCommand,
+  LineGraphRendererCommand_Alert,
+  LineGraphRendererCommand_AlertSet,
   LineGraphRendererCommand_DiscreteField,
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
@@ -468,7 +470,7 @@ export default class LineGraphController implements TabController {
 
     // Add discrete fields
     this.discreteSourceList.getState().forEach((fieldItem) => {
-      if (!fieldItem.visible) return;
+      if (!fieldItem.visible || fieldItem.type === "alerts") return;
 
       let data = window.log.getRange(fieldItem.logKey, timeRange[0], timeRange[1]);
       if (data === undefined) return;
@@ -503,6 +505,76 @@ export default class LineGraphController implements TabController {
         toggleReference: toggleReference
       });
     });
+
+    // Process alerts
+    let alerts: LineGraphRendererCommand_AlertSet = [];
+    (["error", "warning", "info"] as const).forEach((alertType) => {
+      this.discreteSourceList.getState().forEach((fieldItem) => {
+        if (!fieldItem.visible || fieldItem.type !== "alerts") return;
+
+        let valueSet = window.log.getStringArray(fieldItem.logKey + "/" + alertType + "s", -Infinity, Infinity);
+        if (valueSet === undefined) return;
+
+        let allAlerts: LineGraphRendererCommand_Alert[] = [];
+        for (let i = 0; i < valueSet.values.length; i++) {
+          // Add new alerts
+          new Set(valueSet.values[i]).forEach((alertText) => {
+            let currentCount = valueSet!.values[i].filter((x) => x === alertText).length;
+            let activeCount = allAlerts.filter((x) => x.text === alertText && !isFinite(x.range[1])).length;
+            if (currentCount > activeCount) {
+              for (let count = 0; count < currentCount - activeCount; count++) {
+                allAlerts.push({
+                  type: alertType,
+                  text: alertText,
+                  range: [valueSet!.timestamps[i], Infinity]
+                });
+              }
+            }
+          });
+
+          // Clear inactive alerts
+          new Set(allAlerts.map((x) => x.text)).forEach((alertText) => {
+            let currentCount = valueSet!.values[i].filter((x) => x === alertText).length;
+            let activeCount = allAlerts.filter((x) => x.text === alertText && !isFinite(x.range[1])).length;
+            if (activeCount > currentCount) {
+              for (let count = 0; count < activeCount - currentCount; count++) {
+                allAlerts.find((alert) => alert.text === alertText && !isFinite(alert.range[1]))!.range[1] =
+                  valueSet!.timestamps[i];
+              }
+            }
+          });
+        }
+
+        // Clear all remaining active alerts
+        allAlerts.forEach((alert) => {
+          if (alert.range[1] === Infinity) {
+            alert.range[1] = timeRange[1];
+          }
+        });
+
+        // Add alerts to main set
+        allAlerts.forEach((alert) => {
+          let row = -1;
+          do {
+            row++;
+            while (alerts.length <= row) {
+              alerts.push([]);
+            }
+          } while (!alerts[row].every((other) => other.range[1] <= alert.range[0] || other.range[0] >= alert.range[1]));
+          alerts[row].push(alert);
+        });
+      });
+    });
+
+    // Remove offscreen alerts
+    alerts = alerts.map((row) =>
+      row.filter(
+        (alert) =>
+          !(alert.range[0] > timeRange[1] && alert.range[1] > timeRange[1]) &&
+          !(alert.range[0] < timeRange[0] && alert.range[1] < timeRange[0])
+      )
+    );
+    alerts = alerts.filter((row) => row.length > 0);
 
     // Get numeric ranges
     let calcRange = (dataRange: [number, number], lockedRange: [number, number] | null): [number, number] => {
@@ -546,7 +618,8 @@ export default class LineGraphController implements TabController {
           : "left",
       leftFields: leftFieldsCommand,
       rightFields: rightFieldsCommand,
-      discreteFields: discreteFieldsCommand
+      discreteFields: discreteFieldsCommand,
+      alerts: alerts
     };
   }
 
