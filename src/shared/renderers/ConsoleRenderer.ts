@@ -214,23 +214,54 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Update values
     for (let i = 0; i < values.length; i++) {
+      // Format value
+      let valueFormatted = "";
+      if (filter.length > 0) {
+        let lastPosition = -1;
+        let position = -1;
+        while (
+          position + filter.length < values[i].length &&
+          (position = values[i]
+            .toLowerCase()
+            .indexOf(filter.toLowerCase(), position === -1 ? 0 : position + filter.length)) > -1
+        ) {
+          if (lastPosition === -1) {
+            valueFormatted += htmlEncode(values[i].substring(0, position));
+          } else {
+            valueFormatted += htmlEncode(values[i].substring(lastPosition + filter.length, position));
+          }
+          valueFormatted +=
+            '<span class="highlight">' +
+            htmlEncode(values[i].substring(position, position + filter.length)) +
+            "</span>";
+          lastPosition = position;
+        }
+        if (lastPosition !== -1) {
+          valueFormatted += values[i].substring(lastPosition + filter.length);
+        }
+      } else {
+        valueFormatted = htmlEncode(values[i]);
+      }
+      valueFormatted = valueFormatted.replaceAll("\n", "<br />");
+
       // Check if value has changed
       let hasChanged = false;
       if (i > this.renderedTimestamps.length) {
         hasChanged = true; // New row
-      } else if (this.renderedTimestamps[i] !== timestamps[i] || this.renderedValues[i] !== values[i]) {
+        this.renderedValues.push(valueFormatted);
+      } else if (this.renderedTimestamps[i] !== timestamps[i] || this.renderedValues[i] !== valueFormatted) {
         hasChanged = true; // Data has changed
+        this.renderedValues[i] = valueFormatted;
       }
 
       // Update cell contents
       if (hasChanged) {
         let row = this.TABLE_BODY.children[i + 1];
         (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamps[i]);
-        (row.children[1] as HTMLElement).innerHTML = htmlEncode(values[i]).replace("\n", "<br />");
+        (row.children[1] as HTMLElement).innerHTML = valueFormatted;
       }
     }
     this.renderedTimestamps = timestamps;
-    this.renderedValues = values;
   }
 
   /** Updates highlighted times (selected & hovered). */

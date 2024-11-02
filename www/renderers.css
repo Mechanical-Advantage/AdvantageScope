@@ -529,6 +529,10 @@ table.console-table td {
   tab-size: 4;
 }
 
+table.console-table td span.highlight {
+  background-color: #ffff00;
+}
+
 table.console-table td:first-child {
   text-align: right;
   font-weight: bold;
@@ -552,6 +556,10 @@ table.console-table tr.selected td {
     border-right: 1px solid #333;
     border-bottom: 1px solid #eee;
     background-color: #222;
+  }
+
+  table.console-table td span.highlight {
+    color: black;
   }
 
   table.console-table td:first-child {
