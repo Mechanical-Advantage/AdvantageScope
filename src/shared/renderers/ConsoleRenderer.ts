@@ -74,6 +74,14 @@ export default class ConsoleRenderer implements TabRenderer {
       root.dispatchEvent(new CustomEvent("close-field"));
     });
 
+    // Select filter
+    window.addEventListener("keydown", (event) => {
+      if (root === null || root.hidden || event.target !== document.body) return;
+      if (event.metaKey && event.key === "f") {
+        this.FILTER_INPUT.select();
+      }
+    });
+
     // Update field text
     this.updateData();
   }
