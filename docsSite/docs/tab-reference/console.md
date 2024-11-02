@@ -22,5 +22,5 @@ Click the color palette icon to toggle highlighting for warning and error messag
 The controls are similar to the 🔢 [Table](../tab-reference/table.md) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box). Enter text in the "Filter" input to only display rows which contain the filter text. Press **Ctrl+F** to quickly select the "Filter" input.
 
 :::info
-Adding a "!" at the start of the filter text will _exclude_ matching messages from the main view.
+Add a "!" at the start of the filter text to _exclude_ matching messages from the main view.
 :::

@@ -59,6 +59,12 @@ Users of the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/s
 
 ![Line graph styles](./img/line-graph-styles.png)
 
+### 💬 Console Improvements
+
+The 💬 [Console](../tab-reference/console.md) includes new visualization options, like shading for **error and warning message**, the ability to **exclude unwanted messages**, and **highlighting of matching filter text**.
+
+![Console tab](../tab-reference/img/console-1.png)
+
 ### 📊 Redesigned Statistics View
 
 The 📊 [Statistics](../tab-reference/statistics.md) tab is redesigned with several new capabilities. It supports an **unlimited number of fields** with more flexibility for calculating **absolute and relative errors**.
