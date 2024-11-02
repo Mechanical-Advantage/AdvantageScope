@@ -190,12 +190,16 @@ export default class ConsoleRenderer implements TabRenderer {
     let timestamps = this.timestamps;
     let values = this.values;
     const filter = this.FILTER_INPUT.value.toLowerCase();
-    if (filter.length > 0) {
+    if (filter.startsWith("!") ? filter.length > 1 : filter.length > 0) {
       let filteredTimestamps: number[] = [];
       let filteredValues: string[] = [];
       for (let i = 0; i < timestamps.length; i++) {
         let value = values[i];
-        if (value.toLowerCase().includes(filter)) {
+        if (
+          filter.startsWith("!")
+            ? !value.toLowerCase().includes(filter.slice(1).toLowerCase())
+            : value.toLowerCase().includes(filter.toLowerCase())
+        ) {
           filteredTimestamps.push(timestamps[i]);
           filteredValues.push(value);
         }
@@ -239,7 +243,7 @@ export default class ConsoleRenderer implements TabRenderer {
     for (let i = 0; i < values.length; i++) {
       // Format value
       let valueFormatted = "";
-      if (filter.length > 0) {
+      if (filter.length > 0 && !filter.startsWith("!")) {
         let lastPosition = -1;
         let position = -1;
         while (
