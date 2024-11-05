@@ -22,6 +22,8 @@ import {
   uintToBitString
 } from "./bitstring.js";
 
+import { Buffer } from "buffer/";
+
 export function getCanSignalValue(signal: BooleanSignal, frameBitString: BitString): boolean;
 export function getCanSignalValue(signal: IntegerSignal | FloatingPointSignal, frameBitString: BitString): BigNumber;
 export function getCanSignalValue(signal: Signal, frameBitString: BitString): BigNumber | boolean;
@@ -53,15 +55,15 @@ export function getCanSignalValue(signal: Signal, frameBitString: BitString): Bi
       throw new Error("Float signals must be 32 bits");
     }
     const buffer = Buffer.allocUnsafe(4);
-    buffer.writeUInt32LE(Number(signalAsUint));
-    unadjustedValue = buffer.readFloatLE();
+    buffer.writeUInt32LE(Number(signalAsUint), 0);
+    unadjustedValue = buffer.readFloatLE(0);
   } else if (signal.type === "double") {
     if (signal.lengthBits !== 64) {
       throw new Error("Double signals must be 32 bits");
     }
     const buffer = Buffer.allocUnsafe(8);
-    buffer.writeBigUInt64LE(signalAsUint);
-    unadjustedValue = buffer.readDoubleLE();
+    buffer.writeBigUInt64LE(Number(signalAsUint), 0);
+    unadjustedValue = buffer.readDoubleLE(0);
   } else {
     throw new UnreachableError(signal.type);
   }

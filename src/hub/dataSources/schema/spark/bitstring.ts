@@ -11,6 +11,8 @@
  * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import { Buffer } from "buffer/";
+
 /**
  *The least-significant bit is listed first, so that bit position 0 corresponds to character 0 in the string
  */
@@ -29,9 +31,9 @@ export function bufferToBitString(buffer: Buffer): BitString {
       : // We must use the safe version of alloc() here, as some bits may not be overwritten
         Buffer.concat([buffer, Buffer.alloc(8 - buffer.length)]);
 
-  const bufferAsUint = paddedBuffer.readBigUInt64LE();
+  const bufferAsUint = paddedBuffer.readBigUInt64LE(0);
   const lengthBits = buffer.length * 8;
-  return uintToBitString(bufferAsUint, lengthBits);
+  return uintToBitString(bufferAsUint as bigint, lengthBits);
 }
 
 export function bitStringToBuffer(bitString: BitString): Buffer {
@@ -47,7 +49,7 @@ export function bitStringToBuffer(bitString: BitString): Buffer {
   }
 
   const paddedBuffer = Buffer.alloc(8);
-  paddedBuffer.writeBigUInt64LE(bitStringToUint(bitString));
+  paddedBuffer.writeBigUInt64LE(Number(bitStringToUint(bitString)), 0);
 
   const lengthBytes = bitString.length / 8;
   return paddedBuffer.slice(0, lengthBytes);
@@ -79,14 +81,14 @@ export function intToBitString(val: bigint, lengthBits: number): BitString {
 
 export function floatToBitString(value: number): BitString {
   const buffer = Buffer.allocUnsafe(4);
-  buffer.writeFloatLE(value);
-  return uintToBitString(BigInt(buffer.readUInt32LE()), 32);
+  buffer.writeFloatLE(value, 0);
+  return uintToBitString(BigInt(buffer.readUInt32LE(0)), 32);
 }
 
 export function doubleToBitString(value: number): BitString {
   const buffer = Buffer.allocUnsafe(8);
-  buffer.writeDoubleLE(value);
-  return uintToBitString(buffer.readBigUInt64LE(), 64);
+  buffer.writeDoubleLE(value, 0);
+  return uintToBitString(buffer.readBigUInt64LE(0) as bigint, 64);
 }
 
 export function bitStringToUint(bitString: BitString): bigint {

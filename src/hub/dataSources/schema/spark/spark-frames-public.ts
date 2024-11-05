@@ -5,11 +5,11 @@ import { BigNumber } from "bignumber.js";
  */
 
 /**
- * Specification version 2.0.2 of public CAN frames for REV MotorController devices
+ * Specification version 2.0.4 of public CAN frames for REV MotorController devices
  */
 export const sparkFramesSpec = {
   frcJsonSpecVersion: "1.0.0",
-  framesVersion: "2.0.2",
+  framesVersion: "2.0.4",
   deviceInfo: {
     deviceType: "MotorController",
     deviceTypeNumber: 2,
@@ -91,7 +91,7 @@ export const sparkFramesSpec = {
           lengthBits: 16,
           decodeScaleFactor: BigNumber("0.00003082369457075716"),
           offset: BigNumber("0"),
-          decodedMin: BigNumber("0"),
+          decodedMin: BigNumber("-1"),
           decodedMax: BigNumber("1"),
           encodedMin: BigNumber("0"),
           encodedMax: BigNumber("32442.57425742574701599918")
@@ -893,7 +893,7 @@ export const sparkFramesSpec = {
     UNIQUE_ID_BROADCAST: {
       name: "Unique ID Broadcast",
       description:
-        "Contains the unique ID of the device, to allow detecting duplicate CAN IDs. To avoid collisions, the SPARK firmware will send this at an irregular period between 1000ms and 2000ms.",
+        "Contains the unique ID of the device, to allow detecting duplicate CAN IDs. To avoid collisions, the SPARK Flex firmware will send this at an irregular period between 1000ms and 2000ms. SPARK MAX may use a constant period of 1000ms.",
       apiClass: 47,
       apiIndex: 0,
       arbId: 33930240,
@@ -929,13 +929,13 @@ export const sparkFramesSpec = {
         SETPOINT: {
           type: "float" as const,
           name: "Setpoint",
+          description:
+            "By default, the unit is RPM, but it can be changed implicitly using the Velocity Conversion Factor parameter.",
           bitPosition: 0,
           isBigEndian: false,
           lengthBits: 32,
           decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          decodedMin: BigNumber("-1"),
-          decodedMax: BigNumber("1")
+          offset: BigNumber("0")
         },
         ARBITRARY_FEEDFORWARD: {
           type: "int" as const,
@@ -998,13 +998,13 @@ export const sparkFramesSpec = {
         SETPOINT: {
           type: "float" as const,
           name: "Setpoint",
-          description:
-            "By default, the unit is RPM, but it can be changed implicitly using the Velocity Conversion Factor parameter.",
           bitPosition: 0,
           isBigEndian: false,
           lengthBits: 32,
           decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0")
+          offset: BigNumber("0"),
+          decodedMin: BigNumber("-1"),
+          decodedMax: BigNumber("1")
         },
         ARBITRARY_FEEDFORWARD: {
           type: "int" as const,
@@ -1399,9 +1399,9 @@ export const sparkFramesSpec = {
       broadcast: false,
       rtr: false as const
     },
-    MAXMOTION_SETPOINT: {
-      name: "MAXMotion Setpoint",
-      description: "Sets the Control Type to MAXMotion and sets the target position.",
+    MAXMOTION_POSITION_SETPOINT: {
+      name: "MAXMotion Position Setpoint",
+      description: "Sets the Control Type to MAXMotion Position Control and sets the target position.",
       apiClass: 0,
       apiIndex: 8,
       arbId: 33882624,
@@ -1470,7 +1470,7 @@ export const sparkFramesSpec = {
     },
     MAXMOTION_VELOCITY_SETPOINT: {
       name: "MAXMotion Velocity Setpoint",
-      description: "Sets the Control Type to MAXMotion Velocity and sets the target velocity.",
+      description: "Sets the Control Type to MAXMotion Velocity Control and sets the target velocity.",
       apiClass: 0,
       apiIndex: 9,
       arbId: 33882688,
@@ -1866,7 +1866,7 @@ export const sparkFramesSpec = {
           decodedMin: BigNumber("0"),
           decodedMax: BigNumber("63"),
           encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("255")
+          encodedMax: BigNumber("63")
         }
       },
       versionImplemented: "1.5.0",
@@ -2052,10 +2052,10 @@ export const sparkFramesSpec = {
           lengthBits: 8,
           decodeScaleFactor: BigNumber("1"),
           offset: BigNumber("0"),
-          decodedMin: BigNumber("2"),
-          decodedMax: BigNumber("2"),
-          encodedMin: BigNumber("2"),
-          encodedMax: BigNumber("2")
+          decodedMin: BigNumber("3"),
+          decodedMax: BigNumber("3"),
+          encodedMin: BigNumber("3"),
+          encodedMax: BigNumber("3")
         }
       },
       versionImplemented: "1.0.0",
@@ -2086,10 +2086,10 @@ export const sparkFramesSpec = {
           lengthBits: 8,
           decodeScaleFactor: BigNumber("1"),
           offset: BigNumber("0"),
-          decodedMin: BigNumber("2"),
-          decodedMax: BigNumber("2"),
-          encodedMin: BigNumber("2"),
-          encodedMax: BigNumber("2")
+          decodedMin: BigNumber("3"),
+          decodedMax: BigNumber("3"),
+          encodedMin: BigNumber("3"),
+          encodedMax: BigNumber("3")
         }
       },
       versionImplemented: "1.0.0",
@@ -2122,10 +2122,10 @@ export const sparkFramesSpec = {
           lengthBits: 8,
           decodeScaleFactor: BigNumber("1"),
           offset: BigNumber("0"),
-          decodedMin: BigNumber("2"),
-          decodedMax: BigNumber("2"),
-          encodedMin: BigNumber("2"),
-          encodedMax: BigNumber("2")
+          decodedMin: BigNumber("3"),
+          decodedMax: BigNumber("3"),
+          encodedMin: BigNumber("3"),
+          encodedMax: BigNumber("3")
         }
       },
       versionImplemented: "1.4.0",
@@ -2158,10 +2158,10 @@ export const sparkFramesSpec = {
           lengthBits: 8,
           decodeScaleFactor: BigNumber("1"),
           offset: BigNumber("0"),
-          decodedMin: BigNumber("2"),
-          decodedMax: BigNumber("2"),
-          encodedMin: BigNumber("2"),
-          encodedMax: BigNumber("2")
+          decodedMin: BigNumber("3"),
+          decodedMax: BigNumber("3"),
+          encodedMin: BigNumber("3"),
+          encodedMax: BigNumber("3")
         }
       },
       versionImplemented: "1.4.0",
@@ -2194,10 +2194,10 @@ export const sparkFramesSpec = {
           lengthBits: 8,
           decodeScaleFactor: BigNumber("1"),
           offset: BigNumber("0"),
-          decodedMin: BigNumber("2"),
-          decodedMax: BigNumber("2"),
-          encodedMin: BigNumber("2"),
-          encodedMax: BigNumber("2")
+          decodedMin: BigNumber("3"),
+          decodedMax: BigNumber("3"),
+          encodedMin: BigNumber("3"),
+          encodedMax: BigNumber("3")
         }
       },
       versionImplemented: "1.6.3",
@@ -5802,7 +5802,7 @@ export const sparkFramesSpec = {
         RESULT_CODE: {
           type: "uint" as const,
           name: "Result Code",
-          description: "0 on success.",
+          description: "0: Success, 1: Invalid ID, 2: Mismatched Type, 3: Access Mode, 4: Invalid, 5: Not Implemented",
           bitPosition: 48,
           isBigEndian: false,
           lengthBits: 8,
@@ -5816,216 +5816,10 @@ export const sparkFramesSpec = {
       broadcast: false,
       rtr: false as const
     },
-    PARAMETERS_0_TO_64_CHANGED: {
-      name: "Parameters 0 to 64 Changed",
-      description: "Get whether parameters 0 to 64 have changed.",
-      apiClass: 14,
-      apiIndex: 2,
-      arbId: 33896576,
-      lengthBytes: 8,
-      signals: {
-        CHANGED_PARAMETERS_BITFIELD: {
-          type: "uint" as const,
-          name: "Changed Parameters Bitfield",
-          bitPosition: 0,
-          isBigEndian: false,
-          lengthBits: 64,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("18446744073709551615")
-        }
-      },
-      versionImplemented: "25.0.0",
-      broadcast: false,
-      frameRangeName: "Get Parameters Changed",
-      rtr: true as const
-    },
-    PARAMETERS_64_TO_128_CHANGED: {
-      name: "Parameters 64 to 128 Changed",
-      description: "Get whether parameters 64 to 128 have changed.",
-      apiClass: 14,
-      apiIndex: 3,
-      arbId: 33896640,
-      lengthBytes: 8,
-      signals: {
-        CHANGED_PARAMETERS_BITFIELD: {
-          type: "uint" as const,
-          name: "Changed Parameters Bitfield",
-          bitPosition: 0,
-          isBigEndian: false,
-          lengthBits: 64,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("18446744073709551615")
-        }
-      },
-      versionImplemented: "25.0.0",
-      broadcast: false,
-      frameRangeName: "Get Parameters Changed",
-      rtr: true as const
-    },
-    PARAMETERS_128_TO_192_CHANGED: {
-      name: "Parameters 128 to 192 Changed",
-      description: "Get whether parameters 128 to 192 have changed.",
-      apiClass: 14,
-      apiIndex: 4,
-      arbId: 33896704,
-      lengthBytes: 8,
-      signals: {
-        CHANGED_PARAMETERS_BITFIELD: {
-          type: "uint" as const,
-          name: "Changed Parameters Bitfield",
-          bitPosition: 0,
-          isBigEndian: false,
-          lengthBits: 64,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("18446744073709551615")
-        }
-      },
-      versionImplemented: "25.0.0",
-      broadcast: false,
-      frameRangeName: "Get Parameters Changed",
-      rtr: true as const
-    },
-    PARAMETERS_192_TO_256_CHANGED: {
-      name: "Parameters 192 to 256 Changed",
-      description: "Get whether parameters 192 to 256 have changed.",
-      apiClass: 14,
-      apiIndex: 5,
-      arbId: 33896768,
-      lengthBytes: 8,
-      signals: {
-        CHANGED_PARAMETERS_BITFIELD: {
-          type: "uint" as const,
-          name: "Changed Parameters Bitfield",
-          bitPosition: 0,
-          isBigEndian: false,
-          lengthBits: 64,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("18446744073709551615")
-        }
-      },
-      versionImplemented: "25.0.0",
-      broadcast: false,
-      frameRangeName: "Get Parameters Changed",
-      rtr: true as const
-    },
-    GET_PARAMETER_RANGE: {
-      name: "Get Parameter Range",
-      description:
-        "Get the min or max allowed value for a parameter. In response, a Set Statuses Enabled Response frame will be sent.",
-      apiClass: 14,
-      apiIndex: 13,
-      arbId: 33897280,
-      lengthBytes: 2,
-      signals: {
-        PARAMETER_ID: {
-          type: "uint" as const,
-          name: "Parameter ID",
-          bitPosition: 0,
-          isBigEndian: false,
-          lengthBits: 8,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("255")
-        },
-        GET_MIN_VALUE: {
-          type: "boolean" as const,
-          name: "Get Min Value",
-          description: "If true, gets the minimum value, otherwise gets the maximum value.",
-          bitPosition: 8,
-          isBigEndian: false,
-          lengthBits: 1,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("1")
-        },
-        RESERVED: {
-          type: "uint" as const,
-          name: "Reserved",
-          bitPosition: 9,
-          isBigEndian: false,
-          lengthBits: 7,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("127")
-        }
-      },
-      versionImplemented: "25.0.0",
-      broadcast: false,
-      rtr: false as const
-    },
-    GET_PARAMETER_RANGE_RESPONSE: {
-      name: "Get Parameter Range Response",
-      description: "Response containing the min or max allowed value for a parameter.",
-      apiClass: 14,
-      apiIndex: 14,
-      arbId: 33897344,
-      lengthBytes: 6,
-      signals: {
-        PARAMETER_ID: {
-          type: "uint" as const,
-          name: "Parameter ID",
-          bitPosition: 0,
-          isBigEndian: false,
-          lengthBits: 8,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("255")
-        },
-        IS_MIN_VALUE: {
-          type: "boolean" as const,
-          name: "Is Min Value",
-          description: "If true, the Value signal contains the minimum value, otherwise it contains the maximum value.",
-          bitPosition: 8,
-          isBigEndian: false,
-          lengthBits: 1,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("1")
-        },
-        VALUE: {
-          type: "uint" as const,
-          name: "Value",
-          description: "The actual type of this data depends on the Parameter Type of the parameter in question.",
-          bitPosition: 9,
-          isBigEndian: false,
-          lengthBits: 32,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("4294967295")
-        },
-        RESERVED: {
-          type: "uint" as const,
-          name: "Reserved",
-          bitPosition: 41,
-          isBigEndian: false,
-          lengthBits: 7,
-          decodeScaleFactor: BigNumber("1"),
-          offset: BigNumber("0"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("127")
-        }
-      },
-      versionImplemented: "25.0.0",
-      broadcast: false,
-      rtr: false as const
-    },
     READ_PARAMETER_0_AND_1: {
       name: "Read Parameter 0 and 1",
-      description: "Read parameter 0 and 1 at the same time.",
+      description:
+        "Read parameter 0 and 1 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 0,
       arbId: 33897472,
@@ -6063,7 +5857,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_2_AND_3: {
       name: "Read Parameter 2 and 3",
-      description: "Read parameter 2 and 3 at the same time.",
+      description:
+        "Read parameter 2 and 3 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 1,
       arbId: 33897536,
@@ -6101,7 +5896,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_4_AND_5: {
       name: "Read Parameter 4 and 5",
-      description: "Read parameter 4 and 5 at the same time.",
+      description:
+        "Read parameter 4 and 5 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 2,
       arbId: 33897600,
@@ -6139,7 +5935,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_6_AND_7: {
       name: "Read Parameter 6 and 7",
-      description: "Read parameter 6 and 7 at the same time.",
+      description:
+        "Read parameter 6 and 7 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 3,
       arbId: 33897664,
@@ -6177,7 +5974,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_8_AND_9: {
       name: "Read Parameter 8 and 9",
-      description: "Read parameter 8 and 9 at the same time.",
+      description:
+        "Read parameter 8 and 9 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 4,
       arbId: 33897728,
@@ -6215,7 +6013,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_10_AND_11: {
       name: "Read Parameter 10 and 11",
-      description: "Read parameter 10 and 11 at the same time.",
+      description:
+        "Read parameter 10 and 11 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 5,
       arbId: 33897792,
@@ -6253,7 +6052,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_12_AND_13: {
       name: "Read Parameter 12 and 13",
-      description: "Read parameter 12 and 13 at the same time.",
+      description:
+        "Read parameter 12 and 13 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 6,
       arbId: 33897856,
@@ -6291,7 +6091,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_14_AND_15: {
       name: "Read Parameter 14 and 15",
-      description: "Read parameter 14 and 15 at the same time.",
+      description:
+        "Read parameter 14 and 15 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 7,
       arbId: 33897920,
@@ -6329,7 +6130,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_16_AND_17: {
       name: "Read Parameter 16 and 17",
-      description: "Read parameter 16 and 17 at the same time.",
+      description:
+        "Read parameter 16 and 17 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 8,
       arbId: 33897984,
@@ -6367,7 +6169,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_18_AND_19: {
       name: "Read Parameter 18 and 19",
-      description: "Read parameter 18 and 19 at the same time.",
+      description:
+        "Read parameter 18 and 19 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 9,
       arbId: 33898048,
@@ -6405,7 +6208,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_20_AND_21: {
       name: "Read Parameter 20 and 21",
-      description: "Read parameter 20 and 21 at the same time.",
+      description:
+        "Read parameter 20 and 21 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 10,
       arbId: 33898112,
@@ -6443,7 +6247,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_22_AND_23: {
       name: "Read Parameter 22 and 23",
-      description: "Read parameter 22 and 23 at the same time.",
+      description:
+        "Read parameter 22 and 23 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 11,
       arbId: 33898176,
@@ -6481,7 +6286,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_24_AND_25: {
       name: "Read Parameter 24 and 25",
-      description: "Read parameter 24 and 25 at the same time.",
+      description:
+        "Read parameter 24 and 25 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 12,
       arbId: 33898240,
@@ -6519,7 +6325,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_26_AND_27: {
       name: "Read Parameter 26 and 27",
-      description: "Read parameter 26 and 27 at the same time.",
+      description:
+        "Read parameter 26 and 27 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 13,
       arbId: 33898304,
@@ -6557,7 +6364,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_28_AND_29: {
       name: "Read Parameter 28 and 29",
-      description: "Read parameter 28 and 29 at the same time.",
+      description:
+        "Read parameter 28 and 29 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 14,
       arbId: 33898368,
@@ -6595,7 +6403,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_30_AND_31: {
       name: "Read Parameter 30 and 31",
-      description: "Read parameter 30 and 31 at the same time.",
+      description:
+        "Read parameter 30 and 31 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 15,
       apiIndex: 15,
       arbId: 33898432,
@@ -6633,7 +6442,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_32_AND_33: {
       name: "Read Parameter 32 and 33",
-      description: "Read parameter 32 and 33 at the same time.",
+      description:
+        "Read parameter 32 and 33 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 0,
       arbId: 33898496,
@@ -6671,7 +6481,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_34_AND_35: {
       name: "Read Parameter 34 and 35",
-      description: "Read parameter 34 and 35 at the same time.",
+      description:
+        "Read parameter 34 and 35 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 1,
       arbId: 33898560,
@@ -6709,7 +6520,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_36_AND_37: {
       name: "Read Parameter 36 and 37",
-      description: "Read parameter 36 and 37 at the same time.",
+      description:
+        "Read parameter 36 and 37 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 2,
       arbId: 33898624,
@@ -6747,7 +6559,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_38_AND_39: {
       name: "Read Parameter 38 and 39",
-      description: "Read parameter 38 and 39 at the same time.",
+      description:
+        "Read parameter 38 and 39 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 3,
       arbId: 33898688,
@@ -6785,7 +6598,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_40_AND_41: {
       name: "Read Parameter 40 and 41",
-      description: "Read parameter 40 and 41 at the same time.",
+      description:
+        "Read parameter 40 and 41 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 4,
       arbId: 33898752,
@@ -6823,7 +6637,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_42_AND_43: {
       name: "Read Parameter 42 and 43",
-      description: "Read parameter 42 and 43 at the same time.",
+      description:
+        "Read parameter 42 and 43 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 5,
       arbId: 33898816,
@@ -6861,7 +6676,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_44_AND_45: {
       name: "Read Parameter 44 and 45",
-      description: "Read parameter 44 and 45 at the same time.",
+      description:
+        "Read parameter 44 and 45 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 6,
       arbId: 33898880,
@@ -6899,7 +6715,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_46_AND_47: {
       name: "Read Parameter 46 and 47",
-      description: "Read parameter 46 and 47 at the same time.",
+      description:
+        "Read parameter 46 and 47 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 7,
       arbId: 33898944,
@@ -6937,7 +6754,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_48_AND_49: {
       name: "Read Parameter 48 and 49",
-      description: "Read parameter 48 and 49 at the same time.",
+      description:
+        "Read parameter 48 and 49 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 8,
       arbId: 33899008,
@@ -6975,7 +6793,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_50_AND_51: {
       name: "Read Parameter 50 and 51",
-      description: "Read parameter 50 and 51 at the same time.",
+      description:
+        "Read parameter 50 and 51 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 9,
       arbId: 33899072,
@@ -7013,7 +6832,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_52_AND_53: {
       name: "Read Parameter 52 and 53",
-      description: "Read parameter 52 and 53 at the same time.",
+      description:
+        "Read parameter 52 and 53 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 10,
       arbId: 33899136,
@@ -7051,7 +6871,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_54_AND_55: {
       name: "Read Parameter 54 and 55",
-      description: "Read parameter 54 and 55 at the same time.",
+      description:
+        "Read parameter 54 and 55 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 11,
       arbId: 33899200,
@@ -7089,7 +6910,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_56_AND_57: {
       name: "Read Parameter 56 and 57",
-      description: "Read parameter 56 and 57 at the same time.",
+      description:
+        "Read parameter 56 and 57 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 12,
       arbId: 33899264,
@@ -7127,7 +6949,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_58_AND_59: {
       name: "Read Parameter 58 and 59",
-      description: "Read parameter 58 and 59 at the same time.",
+      description:
+        "Read parameter 58 and 59 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 13,
       arbId: 33899328,
@@ -7165,7 +6988,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_60_AND_61: {
       name: "Read Parameter 60 and 61",
-      description: "Read parameter 60 and 61 at the same time.",
+      description:
+        "Read parameter 60 and 61 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 14,
       arbId: 33899392,
@@ -7203,7 +7027,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_62_AND_63: {
       name: "Read Parameter 62 and 63",
-      description: "Read parameter 62 and 63 at the same time.",
+      description:
+        "Read parameter 62 and 63 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 16,
       apiIndex: 15,
       arbId: 33899456,
@@ -7241,7 +7066,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_64_AND_65: {
       name: "Read Parameter 64 and 65",
-      description: "Read parameter 64 and 65 at the same time.",
+      description:
+        "Read parameter 64 and 65 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 0,
       arbId: 33899520,
@@ -7279,7 +7105,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_66_AND_67: {
       name: "Read Parameter 66 and 67",
-      description: "Read parameter 66 and 67 at the same time.",
+      description:
+        "Read parameter 66 and 67 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 1,
       arbId: 33899584,
@@ -7317,7 +7144,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_68_AND_69: {
       name: "Read Parameter 68 and 69",
-      description: "Read parameter 68 and 69 at the same time.",
+      description:
+        "Read parameter 68 and 69 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 2,
       arbId: 33899648,
@@ -7355,7 +7183,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_70_AND_71: {
       name: "Read Parameter 70 and 71",
-      description: "Read parameter 70 and 71 at the same time.",
+      description:
+        "Read parameter 70 and 71 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 3,
       arbId: 33899712,
@@ -7393,7 +7222,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_72_AND_73: {
       name: "Read Parameter 72 and 73",
-      description: "Read parameter 72 and 73 at the same time.",
+      description:
+        "Read parameter 72 and 73 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 4,
       arbId: 33899776,
@@ -7431,7 +7261,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_74_AND_75: {
       name: "Read Parameter 74 and 75",
-      description: "Read parameter 74 and 75 at the same time.",
+      description:
+        "Read parameter 74 and 75 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 5,
       arbId: 33899840,
@@ -7469,7 +7300,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_76_AND_77: {
       name: "Read Parameter 76 and 77",
-      description: "Read parameter 76 and 77 at the same time.",
+      description:
+        "Read parameter 76 and 77 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 6,
       arbId: 33899904,
@@ -7507,7 +7339,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_78_AND_79: {
       name: "Read Parameter 78 and 79",
-      description: "Read parameter 78 and 79 at the same time.",
+      description:
+        "Read parameter 78 and 79 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 7,
       arbId: 33899968,
@@ -7545,7 +7378,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_80_AND_81: {
       name: "Read Parameter 80 and 81",
-      description: "Read parameter 80 and 81 at the same time.",
+      description:
+        "Read parameter 80 and 81 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 8,
       arbId: 33900032,
@@ -7583,7 +7417,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_82_AND_83: {
       name: "Read Parameter 82 and 83",
-      description: "Read parameter 82 and 83 at the same time.",
+      description:
+        "Read parameter 82 and 83 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 9,
       arbId: 33900096,
@@ -7621,7 +7456,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_84_AND_85: {
       name: "Read Parameter 84 and 85",
-      description: "Read parameter 84 and 85 at the same time.",
+      description:
+        "Read parameter 84 and 85 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 10,
       arbId: 33900160,
@@ -7659,7 +7495,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_86_AND_87: {
       name: "Read Parameter 86 and 87",
-      description: "Read parameter 86 and 87 at the same time.",
+      description:
+        "Read parameter 86 and 87 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 11,
       arbId: 33900224,
@@ -7697,7 +7534,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_88_AND_89: {
       name: "Read Parameter 88 and 89",
-      description: "Read parameter 88 and 89 at the same time.",
+      description:
+        "Read parameter 88 and 89 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 12,
       arbId: 33900288,
@@ -7735,7 +7573,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_90_AND_91: {
       name: "Read Parameter 90 and 91",
-      description: "Read parameter 90 and 91 at the same time.",
+      description:
+        "Read parameter 90 and 91 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 13,
       arbId: 33900352,
@@ -7773,7 +7612,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_92_AND_93: {
       name: "Read Parameter 92 and 93",
-      description: "Read parameter 92 and 93 at the same time.",
+      description:
+        "Read parameter 92 and 93 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 14,
       arbId: 33900416,
@@ -7811,7 +7651,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_94_AND_95: {
       name: "Read Parameter 94 and 95",
-      description: "Read parameter 94 and 95 at the same time.",
+      description:
+        "Read parameter 94 and 95 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 17,
       apiIndex: 15,
       arbId: 33900480,
@@ -7849,7 +7690,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_96_AND_97: {
       name: "Read Parameter 96 and 97",
-      description: "Read parameter 96 and 97 at the same time.",
+      description:
+        "Read parameter 96 and 97 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 0,
       arbId: 33900544,
@@ -7887,7 +7729,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_98_AND_99: {
       name: "Read Parameter 98 and 99",
-      description: "Read parameter 98 and 99 at the same time.",
+      description:
+        "Read parameter 98 and 99 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 1,
       arbId: 33900608,
@@ -7925,7 +7768,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_100_AND_101: {
       name: "Read Parameter 100 and 101",
-      description: "Read parameter 100 and 101 at the same time.",
+      description:
+        "Read parameter 100 and 101 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 2,
       arbId: 33900672,
@@ -7963,7 +7807,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_102_AND_103: {
       name: "Read Parameter 102 and 103",
-      description: "Read parameter 102 and 103 at the same time.",
+      description:
+        "Read parameter 102 and 103 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 3,
       arbId: 33900736,
@@ -8001,7 +7846,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_104_AND_105: {
       name: "Read Parameter 104 and 105",
-      description: "Read parameter 104 and 105 at the same time.",
+      description:
+        "Read parameter 104 and 105 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 4,
       arbId: 33900800,
@@ -8039,7 +7885,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_106_AND_107: {
       name: "Read Parameter 106 and 107",
-      description: "Read parameter 106 and 107 at the same time.",
+      description:
+        "Read parameter 106 and 107 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 5,
       arbId: 33900864,
@@ -8077,7 +7924,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_108_AND_109: {
       name: "Read Parameter 108 and 109",
-      description: "Read parameter 108 and 109 at the same time.",
+      description:
+        "Read parameter 108 and 109 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 6,
       arbId: 33900928,
@@ -8115,7 +7963,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_110_AND_111: {
       name: "Read Parameter 110 and 111",
-      description: "Read parameter 110 and 111 at the same time.",
+      description:
+        "Read parameter 110 and 111 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 7,
       arbId: 33900992,
@@ -8153,7 +8002,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_112_AND_113: {
       name: "Read Parameter 112 and 113",
-      description: "Read parameter 112 and 113 at the same time.",
+      description:
+        "Read parameter 112 and 113 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 8,
       arbId: 33901056,
@@ -8191,7 +8041,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_114_AND_115: {
       name: "Read Parameter 114 and 115",
-      description: "Read parameter 114 and 115 at the same time.",
+      description:
+        "Read parameter 114 and 115 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 9,
       arbId: 33901120,
@@ -8229,7 +8080,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_116_AND_117: {
       name: "Read Parameter 116 and 117",
-      description: "Read parameter 116 and 117 at the same time.",
+      description:
+        "Read parameter 116 and 117 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 10,
       arbId: 33901184,
@@ -8267,7 +8119,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_118_AND_119: {
       name: "Read Parameter 118 and 119",
-      description: "Read parameter 118 and 119 at the same time.",
+      description:
+        "Read parameter 118 and 119 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 11,
       arbId: 33901248,
@@ -8305,7 +8158,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_120_AND_121: {
       name: "Read Parameter 120 and 121",
-      description: "Read parameter 120 and 121 at the same time.",
+      description:
+        "Read parameter 120 and 121 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 12,
       arbId: 33901312,
@@ -8343,7 +8197,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_122_AND_123: {
       name: "Read Parameter 122 and 123",
-      description: "Read parameter 122 and 123 at the same time.",
+      description:
+        "Read parameter 122 and 123 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 13,
       arbId: 33901376,
@@ -8381,7 +8236,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_124_AND_125: {
       name: "Read Parameter 124 and 125",
-      description: "Read parameter 124 and 125 at the same time.",
+      description:
+        "Read parameter 124 and 125 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 14,
       arbId: 33901440,
@@ -8419,7 +8275,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_126_AND_127: {
       name: "Read Parameter 126 and 127",
-      description: "Read parameter 126 and 127 at the same time.",
+      description:
+        "Read parameter 126 and 127 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 18,
       apiIndex: 15,
       arbId: 33901504,
@@ -8457,7 +8314,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_128_AND_129: {
       name: "Read Parameter 128 and 129",
-      description: "Read parameter 128 and 129 at the same time.",
+      description:
+        "Read parameter 128 and 129 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 0,
       arbId: 33901568,
@@ -8495,7 +8353,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_130_AND_131: {
       name: "Read Parameter 130 and 131",
-      description: "Read parameter 130 and 131 at the same time.",
+      description:
+        "Read parameter 130 and 131 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 1,
       arbId: 33901632,
@@ -8533,7 +8392,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_132_AND_133: {
       name: "Read Parameter 132 and 133",
-      description: "Read parameter 132 and 133 at the same time.",
+      description:
+        "Read parameter 132 and 133 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 2,
       arbId: 33901696,
@@ -8571,7 +8431,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_134_AND_135: {
       name: "Read Parameter 134 and 135",
-      description: "Read parameter 134 and 135 at the same time.",
+      description:
+        "Read parameter 134 and 135 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 3,
       arbId: 33901760,
@@ -8609,7 +8470,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_136_AND_137: {
       name: "Read Parameter 136 and 137",
-      description: "Read parameter 136 and 137 at the same time.",
+      description:
+        "Read parameter 136 and 137 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 4,
       arbId: 33901824,
@@ -8647,7 +8509,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_138_AND_139: {
       name: "Read Parameter 138 and 139",
-      description: "Read parameter 138 and 139 at the same time.",
+      description:
+        "Read parameter 138 and 139 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 5,
       arbId: 33901888,
@@ -8685,7 +8548,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_140_AND_141: {
       name: "Read Parameter 140 and 141",
-      description: "Read parameter 140 and 141 at the same time.",
+      description:
+        "Read parameter 140 and 141 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 6,
       arbId: 33901952,
@@ -8723,7 +8587,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_142_AND_143: {
       name: "Read Parameter 142 and 143",
-      description: "Read parameter 142 and 143 at the same time.",
+      description:
+        "Read parameter 142 and 143 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 7,
       arbId: 33902016,
@@ -8761,7 +8626,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_144_AND_145: {
       name: "Read Parameter 144 and 145",
-      description: "Read parameter 144 and 145 at the same time.",
+      description:
+        "Read parameter 144 and 145 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 8,
       arbId: 33902080,
@@ -8799,7 +8665,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_146_AND_147: {
       name: "Read Parameter 146 and 147",
-      description: "Read parameter 146 and 147 at the same time.",
+      description:
+        "Read parameter 146 and 147 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 9,
       arbId: 33902144,
@@ -8837,7 +8704,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_148_AND_149: {
       name: "Read Parameter 148 and 149",
-      description: "Read parameter 148 and 149 at the same time.",
+      description:
+        "Read parameter 148 and 149 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 10,
       arbId: 33902208,
@@ -8875,7 +8743,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_150_AND_151: {
       name: "Read Parameter 150 and 151",
-      description: "Read parameter 150 and 151 at the same time.",
+      description:
+        "Read parameter 150 and 151 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 11,
       arbId: 33902272,
@@ -8913,7 +8782,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_152_AND_153: {
       name: "Read Parameter 152 and 153",
-      description: "Read parameter 152 and 153 at the same time.",
+      description:
+        "Read parameter 152 and 153 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 12,
       arbId: 33902336,
@@ -8951,7 +8821,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_154_AND_155: {
       name: "Read Parameter 154 and 155",
-      description: "Read parameter 154 and 155 at the same time.",
+      description:
+        "Read parameter 154 and 155 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 13,
       arbId: 33902400,
@@ -8989,7 +8860,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_156_AND_157: {
       name: "Read Parameter 156 and 157",
-      description: "Read parameter 156 and 157 at the same time.",
+      description:
+        "Read parameter 156 and 157 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 14,
       arbId: 33902464,
@@ -9027,7 +8899,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_158_AND_159: {
       name: "Read Parameter 158 and 159",
-      description: "Read parameter 158 and 159 at the same time.",
+      description:
+        "Read parameter 158 and 159 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 19,
       apiIndex: 15,
       arbId: 33902528,
@@ -9065,7 +8938,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_160_AND_161: {
       name: "Read Parameter 160 and 161",
-      description: "Read parameter 160 and 161 at the same time.",
+      description:
+        "Read parameter 160 and 161 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 0,
       arbId: 33902592,
@@ -9103,7 +8977,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_162_AND_163: {
       name: "Read Parameter 162 and 163",
-      description: "Read parameter 162 and 163 at the same time.",
+      description:
+        "Read parameter 162 and 163 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 1,
       arbId: 33902656,
@@ -9141,7 +9016,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_164_AND_165: {
       name: "Read Parameter 164 and 165",
-      description: "Read parameter 164 and 165 at the same time.",
+      description:
+        "Read parameter 164 and 165 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 2,
       arbId: 33902720,
@@ -9179,7 +9055,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_166_AND_167: {
       name: "Read Parameter 166 and 167",
-      description: "Read parameter 166 and 167 at the same time.",
+      description:
+        "Read parameter 166 and 167 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 3,
       arbId: 33902784,
@@ -9217,7 +9094,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_168_AND_169: {
       name: "Read Parameter 168 and 169",
-      description: "Read parameter 168 and 169 at the same time.",
+      description:
+        "Read parameter 168 and 169 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 4,
       arbId: 33902848,
@@ -9255,7 +9133,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_170_AND_171: {
       name: "Read Parameter 170 and 171",
-      description: "Read parameter 170 and 171 at the same time.",
+      description:
+        "Read parameter 170 and 171 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 5,
       arbId: 33902912,
@@ -9293,7 +9172,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_172_AND_173: {
       name: "Read Parameter 172 and 173",
-      description: "Read parameter 172 and 173 at the same time.",
+      description:
+        "Read parameter 172 and 173 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 6,
       arbId: 33902976,
@@ -9331,7 +9211,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_174_AND_175: {
       name: "Read Parameter 174 and 175",
-      description: "Read parameter 174 and 175 at the same time.",
+      description:
+        "Read parameter 174 and 175 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 7,
       arbId: 33903040,
@@ -9369,7 +9250,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_176_AND_177: {
       name: "Read Parameter 176 and 177",
-      description: "Read parameter 176 and 177 at the same time.",
+      description:
+        "Read parameter 176 and 177 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 8,
       arbId: 33903104,
@@ -9407,7 +9289,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_178_AND_179: {
       name: "Read Parameter 178 and 179",
-      description: "Read parameter 178 and 179 at the same time.",
+      description:
+        "Read parameter 178 and 179 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 9,
       arbId: 33903168,
@@ -9445,7 +9328,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_180_AND_181: {
       name: "Read Parameter 180 and 181",
-      description: "Read parameter 180 and 181 at the same time.",
+      description:
+        "Read parameter 180 and 181 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 10,
       arbId: 33903232,
@@ -9483,7 +9367,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_182_AND_183: {
       name: "Read Parameter 182 and 183",
-      description: "Read parameter 182 and 183 at the same time.",
+      description:
+        "Read parameter 182 and 183 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 11,
       arbId: 33903296,
@@ -9521,7 +9406,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_184_AND_185: {
       name: "Read Parameter 184 and 185",
-      description: "Read parameter 184 and 185 at the same time.",
+      description:
+        "Read parameter 184 and 185 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 12,
       arbId: 33903360,
@@ -9559,7 +9445,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_186_AND_187: {
       name: "Read Parameter 186 and 187",
-      description: "Read parameter 186 and 187 at the same time.",
+      description:
+        "Read parameter 186 and 187 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 13,
       arbId: 33903424,
@@ -9597,7 +9484,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_188_AND_189: {
       name: "Read Parameter 188 and 189",
-      description: "Read parameter 188 and 189 at the same time.",
+      description:
+        "Read parameter 188 and 189 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 14,
       arbId: 33903488,
@@ -9635,7 +9523,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_190_AND_191: {
       name: "Read Parameter 190 and 191",
-      description: "Read parameter 190 and 191 at the same time.",
+      description:
+        "Read parameter 190 and 191 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 20,
       apiIndex: 15,
       arbId: 33903552,
@@ -9673,7 +9562,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_192_AND_193: {
       name: "Read Parameter 192 and 193",
-      description: "Read parameter 192 and 193 at the same time.",
+      description:
+        "Read parameter 192 and 193 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 0,
       arbId: 33903616,
@@ -9711,7 +9601,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_194_AND_195: {
       name: "Read Parameter 194 and 195",
-      description: "Read parameter 194 and 195 at the same time.",
+      description:
+        "Read parameter 194 and 195 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 1,
       arbId: 33903680,
@@ -9749,7 +9640,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_196_AND_197: {
       name: "Read Parameter 196 and 197",
-      description: "Read parameter 196 and 197 at the same time.",
+      description:
+        "Read parameter 196 and 197 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 2,
       arbId: 33903744,
@@ -9787,7 +9679,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_198_AND_199: {
       name: "Read Parameter 198 and 199",
-      description: "Read parameter 198 and 199 at the same time.",
+      description:
+        "Read parameter 198 and 199 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 3,
       arbId: 33903808,
@@ -9825,7 +9718,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_200_AND_201: {
       name: "Read Parameter 200 and 201",
-      description: "Read parameter 200 and 201 at the same time.",
+      description:
+        "Read parameter 200 and 201 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 4,
       arbId: 33903872,
@@ -9863,7 +9757,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_202_AND_203: {
       name: "Read Parameter 202 and 203",
-      description: "Read parameter 202 and 203 at the same time.",
+      description:
+        "Read parameter 202 and 203 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 5,
       arbId: 33903936,
@@ -9901,7 +9796,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_204_AND_205: {
       name: "Read Parameter 204 and 205",
-      description: "Read parameter 204 and 205 at the same time.",
+      description:
+        "Read parameter 204 and 205 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 6,
       arbId: 33904000,
@@ -9939,7 +9835,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_206_AND_207: {
       name: "Read Parameter 206 and 207",
-      description: "Read parameter 206 and 207 at the same time.",
+      description:
+        "Read parameter 206 and 207 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 7,
       arbId: 33904064,
@@ -9977,7 +9874,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_208_AND_209: {
       name: "Read Parameter 208 and 209",
-      description: "Read parameter 208 and 209 at the same time.",
+      description:
+        "Read parameter 208 and 209 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 8,
       arbId: 33904128,
@@ -10015,7 +9913,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_210_AND_211: {
       name: "Read Parameter 210 and 211",
-      description: "Read parameter 210 and 211 at the same time.",
+      description:
+        "Read parameter 210 and 211 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 9,
       arbId: 33904192,
@@ -10053,7 +9952,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_212_AND_213: {
       name: "Read Parameter 212 and 213",
-      description: "Read parameter 212 and 213 at the same time.",
+      description:
+        "Read parameter 212 and 213 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 10,
       arbId: 33904256,
@@ -10091,7 +9991,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_214_AND_215: {
       name: "Read Parameter 214 and 215",
-      description: "Read parameter 214 and 215 at the same time.",
+      description:
+        "Read parameter 214 and 215 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 11,
       arbId: 33904320,
@@ -10129,7 +10030,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_216_AND_217: {
       name: "Read Parameter 216 and 217",
-      description: "Read parameter 216 and 217 at the same time.",
+      description:
+        "Read parameter 216 and 217 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 12,
       arbId: 33904384,
@@ -10167,7 +10069,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_218_AND_219: {
       name: "Read Parameter 218 and 219",
-      description: "Read parameter 218 and 219 at the same time.",
+      description:
+        "Read parameter 218 and 219 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 13,
       arbId: 33904448,
@@ -10205,7 +10108,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_220_AND_221: {
       name: "Read Parameter 220 and 221",
-      description: "Read parameter 220 and 221 at the same time.",
+      description:
+        "Read parameter 220 and 221 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 14,
       arbId: 33904512,
@@ -10243,7 +10147,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_222_AND_223: {
       name: "Read Parameter 222 and 223",
-      description: "Read parameter 222 and 223 at the same time.",
+      description:
+        "Read parameter 222 and 223 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 21,
       apiIndex: 15,
       arbId: 33904576,
@@ -10281,7 +10186,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_224_AND_225: {
       name: "Read Parameter 224 and 225",
-      description: "Read parameter 224 and 225 at the same time.",
+      description:
+        "Read parameter 224 and 225 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 0,
       arbId: 33904640,
@@ -10319,7 +10225,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_226_AND_227: {
       name: "Read Parameter 226 and 227",
-      description: "Read parameter 226 and 227 at the same time.",
+      description:
+        "Read parameter 226 and 227 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 1,
       arbId: 33904704,
@@ -10357,7 +10264,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_228_AND_229: {
       name: "Read Parameter 228 and 229",
-      description: "Read parameter 228 and 229 at the same time.",
+      description:
+        "Read parameter 228 and 229 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 2,
       arbId: 33904768,
@@ -10395,7 +10303,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_230_AND_231: {
       name: "Read Parameter 230 and 231",
-      description: "Read parameter 230 and 231 at the same time.",
+      description:
+        "Read parameter 230 and 231 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 3,
       arbId: 33904832,
@@ -10433,7 +10342,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_232_AND_233: {
       name: "Read Parameter 232 and 233",
-      description: "Read parameter 232 and 233 at the same time.",
+      description:
+        "Read parameter 232 and 233 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 4,
       arbId: 33904896,
@@ -10471,7 +10381,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_234_AND_235: {
       name: "Read Parameter 234 and 235",
-      description: "Read parameter 234 and 235 at the same time.",
+      description:
+        "Read parameter 234 and 235 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 5,
       arbId: 33904960,
@@ -10509,7 +10420,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_236_AND_237: {
       name: "Read Parameter 236 and 237",
-      description: "Read parameter 236 and 237 at the same time.",
+      description:
+        "Read parameter 236 and 237 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 6,
       arbId: 33905024,
@@ -10547,7 +10459,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_238_AND_239: {
       name: "Read Parameter 238 and 239",
-      description: "Read parameter 238 and 239 at the same time.",
+      description:
+        "Read parameter 238 and 239 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 7,
       arbId: 33905088,
@@ -10585,7 +10498,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_240_AND_241: {
       name: "Read Parameter 240 and 241",
-      description: "Read parameter 240 and 241 at the same time.",
+      description:
+        "Read parameter 240 and 241 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 8,
       arbId: 33905152,
@@ -10623,7 +10537,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_242_AND_243: {
       name: "Read Parameter 242 and 243",
-      description: "Read parameter 242 and 243 at the same time.",
+      description:
+        "Read parameter 242 and 243 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 9,
       arbId: 33905216,
@@ -10661,7 +10576,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_244_AND_245: {
       name: "Read Parameter 244 and 245",
-      description: "Read parameter 244 and 245 at the same time.",
+      description:
+        "Read parameter 244 and 245 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 10,
       arbId: 33905280,
@@ -10699,7 +10615,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_246_AND_247: {
       name: "Read Parameter 246 and 247",
-      description: "Read parameter 246 and 247 at the same time.",
+      description:
+        "Read parameter 246 and 247 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 11,
       arbId: 33905344,
@@ -10737,7 +10654,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_248_AND_249: {
       name: "Read Parameter 248 and 249",
-      description: "Read parameter 248 and 249 at the same time.",
+      description:
+        "Read parameter 248 and 249 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 12,
       arbId: 33905408,
@@ -10775,7 +10693,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_250_AND_251: {
       name: "Read Parameter 250 and 251",
-      description: "Read parameter 250 and 251 at the same time.",
+      description:
+        "Read parameter 250 and 251 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 13,
       arbId: 33905472,
@@ -10813,7 +10732,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_252_AND_253: {
       name: "Read Parameter 252 and 253",
-      description: "Read parameter 252 and 253 at the same time.",
+      description:
+        "Read parameter 252 and 253 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 14,
       arbId: 33905536,
@@ -10851,7 +10771,8 @@ export const sparkFramesSpec = {
     },
     READ_PARAMETER_254_AND_255: {
       name: "Read Parameter 254 and 255",
-      description: "Read parameter 254 and 255 at the same time.",
+      description:
+        "Read parameter 254 and 255 at the same time. SPARK MAX does not currently support this in v25.0.0-prerelease.4.",
       apiClass: 22,
       apiIndex: 15,
       arbId: 33905600,

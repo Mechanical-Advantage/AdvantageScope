@@ -71,7 +71,9 @@ export default class URCLSchema {
       }
       if (((messageId >> 6) & 0x3ff) === FIRMWARE_API) {
         // Firmware frame
-        let firmwareValues = parseCanFrame(FIRMWARE_FRAME_SPEC, { data: messageValue });
+        let fullMessageValue = new Uint8Array(8);
+        fullMessageValue.set(messageValue, 0);
+        let firmwareValues = parseCanFrame(FIRMWARE_FRAME_SPEC, { data: fullMessageValue });
         devices[deviceId].firmware = {
           major: Number(firmwareValues.MAJOR),
           minor: Number(firmwareValues.MINOR),
@@ -120,7 +122,18 @@ export default class URCLSchema {
           Object.entries(frameValues).forEach(([signalKey, signalValue]) => {
             if (!(signalKey in frameSpec.signals)) return;
             let signalSpec = (frameSpec.signals as { [key: string]: any })[signalKey];
-            let signalLogKey = (deviceKey = "/" + (signalSpec.name as string).replaceAll(" ", ""));
+            if (signalSpec.name.includes("Reserved")) return;
+            let signalGroup = "";
+            if (signalSpec.name.includes("Fault")) {
+              signalGroup = "Fault";
+            } else if (signalSpec.name.includes("Warning")) {
+              signalGroup = "Warning";
+            }
+            let signalLogKey =
+              deviceKey +
+              "/" +
+              (signalGroup.length === 0 ? "" : signalGroup + "/") +
+              (signalSpec.name as string).replaceAll(" ", "");
             switch (signalSpec.type as string) {
               case "int":
               case "uint":
@@ -132,7 +145,13 @@ export default class URCLSchema {
                 break;
             }
             if ("description" in signalSpec) {
-              log.setMetadataString(key, JSON.stringify({ description: signalSpec.description }));
+              log.setMetadataString(signalLogKey, JSON.stringify({ description: signalSpec.description }));
+            }
+            if (signalSpec.name === "Applied Output") {
+              const voltage = getOrDefault(log, deviceKey + "/Voltage", LoggableType.Number, timestamp, 0);
+              if (voltage > 0) {
+                log.putNumber(deviceKey + "/AppliedOutputVoltage", timestamp, Number(signalValue) * voltage);
+              }
             }
           });
         }
