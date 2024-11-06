@@ -6,7 +6,7 @@ import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS, MERGE_PREFIX } from "../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getEnabledData, MERGE_PREFIX } from "../shared/log/LogUtil";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
@@ -641,6 +641,22 @@ async function handleMainMessage(message: NamedMessage) {
             window.selection.applyTimelineScroll(args[0], args[1], args[2]);
             break;
         }
+      }
+      break;
+
+    case "zoom-enabled":
+      {
+        let enabledData = getEnabledData(window.log);
+        let range = window.log.getTimestampRange();
+        let firstEnableIndex = enabledData === null ? -1 : enabledData.values.findIndex((value) => value);
+        let lastDisableIndex = enabledData === null ? -1 : enabledData.values.findLastIndex((value) => !value);
+        if (firstEnableIndex !== -1) {
+          range[0] = enabledData!.timestamps[firstEnableIndex];
+        }
+        if (lastDisableIndex !== -1) {
+          range[1] = enabledData!.timestamps[lastDisableIndex];
+        }
+        window.selection.setTimelineRange(range, firstEnableIndex === -1 && lastDisableIndex === -1);
       }
       break;
 

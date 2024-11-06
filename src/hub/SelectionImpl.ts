@@ -346,6 +346,13 @@ export default class SelectionImpl implements Selection {
     return this.timelineRange;
   }
 
+  /** Set the visible range for the timeline. */
+  setTimelineRange(range: [number, number], lockMaxZoom: boolean) {
+    this.timelineRange = range;
+    this.timelineMaxZoom = lockMaxZoom;
+    this.applyTimelineScroll(0, 0, 0);
+  }
+
   /** Updates the timeline range based on a scroll event. */
   applyTimelineScroll(dx: number, dy: number, widthPixels: number) {
     // Find available timestamp range

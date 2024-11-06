@@ -1792,6 +1792,16 @@ function setupMenu() {
         { role: "zoomOut" },
         { type: "separator" },
         {
+          label: "Zoom to Enabled Range",
+          accelerator: "CmdOrCtrl+\\",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "zoom-enabled");
+          }
+        },
+        { type: "separator" },
+        {
           label: "Toggle Sidebar",
           accelerator: "CmdOrCtrl+.",
           click(_, baseWindow) {

@@ -68,6 +68,9 @@ export default interface Selection {
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number];
 
+  /** Set the visible range for the timeline. */
+  setTimelineRange(range: [number, number], lockMaxZoom: boolean): void;
+
   /** Updates the timeline range based on a scroll event. */
   applyTimelineScroll(dx: number, dy: number, widthPixels: number): void;
 }

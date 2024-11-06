@@ -332,6 +332,10 @@ class MockSelection implements Selection {
     throw new Error("Method not implemented.");
   }
 
+  setTimelineRange(range: [number, number], lockMaxZoom: boolean) {
+    throw new Error("Method not implemented.");
+  }
+
   applyTimelineScroll(dx: number, dy: number, widthPixels: number): void {
     window.sendMainMessage("call-selection-setter", { name: "applyTimelineScroll", args: [dx, dy, widthPixels] });
   }
