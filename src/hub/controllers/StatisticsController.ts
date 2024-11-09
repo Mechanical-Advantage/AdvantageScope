@@ -258,7 +258,7 @@ export default class StatisticsController implements TabController {
           }
 
           // Sort samples (required for some statistic calculations)
-          samples.sort();
+          samples.sort((a, b) => a - b);
 
           // Get histogram counts
           let histogramCounts: number[] = bins.map(() => 0);
