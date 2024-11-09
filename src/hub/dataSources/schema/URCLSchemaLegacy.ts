@@ -46,7 +46,7 @@ const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
 
 const TEXT_DECODER = new TextDecoder("UTF-8");
 
-export default class REVSchemaLegacy {
+export default class URCLSchemaLegacy {
   private constructor() {}
 
   /**
@@ -87,10 +87,10 @@ export default class REVSchemaLegacy {
       }
       if (((messageId >> 6) & 0x3ff) === FIRMWARE_API) {
         // Firmware frame
-        devices[deviceId].firmware = REVSchemaLegacy.parseFirmware(messageValue);
+        devices[deviceId].firmware = URCLSchemaLegacy.parseFirmware(messageValue);
       } else if (((messageId >> 6) & 0x3ff) === MODEL_API) {
         // Device model frame
-        devices[deviceId].model = REVSchemaLegacy.parseDeviceModel(messageValue);
+        devices[deviceId].model = URCLSchemaLegacy.parseDeviceModel(messageValue);
       }
     }
 
@@ -128,8 +128,8 @@ export default class REVSchemaLegacy {
         let deviceKey = rootKey + getName(deviceId.toString());
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         log.putRaw(frameKey, messageTimestamp, messageValue);
-        if (frameIndex >= 0 && frameIndex < REVSchemaLegacy.PARSE_PERIODIC.length) {
-          REVSchemaLegacy.PARSE_PERIODIC[frameIndex](
+        if (frameIndex >= 0 && frameIndex < URCLSchemaLegacy.PARSE_PERIODIC.length) {
+          URCLSchemaLegacy.PARSE_PERIODIC[frameIndex](
             log,
             deviceKey,
             messageTimestamp,
@@ -161,10 +161,10 @@ export default class REVSchemaLegacy {
       }
       if (((messageId >> 6) & 0x3ff) === FIRMWARE_API) {
         // Firmware frame
-        devices[deviceId].firmware = REVSchemaLegacy.parseFirmware(messageValue);
+        devices[deviceId].firmware = URCLSchemaLegacy.parseFirmware(messageValue);
       } else if (((messageId >> 6) & 0x3ff) === MODEL_API) {
         // Device model frame
-        devices[deviceId].model = REVSchemaLegacy.parseDeviceModel(messageValue);
+        devices[deviceId].model = URCLSchemaLegacy.parseDeviceModel(messageValue);
       }
     }
 
@@ -203,8 +203,8 @@ export default class REVSchemaLegacy {
         let deviceKey = key + "/" + devices[deviceId].model + "-" + deviceId.toString();
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         log.putRaw(frameKey, messageTimestamp, messageValue);
-        if (frameIndex >= 0 && frameIndex < REVSchemaLegacy.PARSE_PERIODIC.length) {
-          REVSchemaLegacy.PARSE_PERIODIC[frameIndex](
+        if (frameIndex >= 0 && frameIndex < URCLSchemaLegacy.PARSE_PERIODIC.length) {
+          URCLSchemaLegacy.PARSE_PERIODIC[frameIndex](
             log,
             deviceKey,
             messageTimestamp,
@@ -243,14 +243,14 @@ export default class REVSchemaLegacy {
   }
 
   private static PARSE_PERIODIC = [
-    REVSchemaLegacy.parsePeriodic0,
-    REVSchemaLegacy.parsePeriodic1,
-    REVSchemaLegacy.parsePeriodic2,
-    REVSchemaLegacy.parsePeriodic3,
-    REVSchemaLegacy.parsePeriodic4,
-    REVSchemaLegacy.parsePeriodic5,
-    REVSchemaLegacy.parsePeriodic6,
-    REVSchemaLegacy.parsePeriodic7
+    URCLSchemaLegacy.parsePeriodic0,
+    URCLSchemaLegacy.parsePeriodic1,
+    URCLSchemaLegacy.parsePeriodic2,
+    URCLSchemaLegacy.parsePeriodic3,
+    URCLSchemaLegacy.parsePeriodic4,
+    URCLSchemaLegacy.parsePeriodic5,
+    URCLSchemaLegacy.parsePeriodic6,
+    URCLSchemaLegacy.parsePeriodic7
   ];
 
   /**
