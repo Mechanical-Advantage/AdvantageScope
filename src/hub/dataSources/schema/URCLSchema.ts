@@ -3,7 +3,7 @@ import Log from "../../../shared/log/Log";
 import { getOrDefault } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { parseCanFrame } from "./spark/can-spec-util";
-import { sparkFramesSpec } from "./spark/spark-frames-public";
+import { sparkFramesSpec } from "./spark/spark-frames";
 
 type FirmwareVersion = {
   major: number;

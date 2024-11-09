@@ -5,11 +5,11 @@ import { BigNumber } from "bignumber.js";
  */
 
 /**
- * Specification version 2.0.4 of public CAN frames for REV MotorController devices
+ * Specification version 2.0.5 of public CAN frames for REV MotorController devices
  */
 export const sparkFramesSpec = {
   frcJsonSpecVersion: "1.0.0",
-  framesVersion: "2.0.4",
+  framesVersion: "2.0.5",
   deviceInfo: {
     deviceType: "MotorController",
     deviceTypeNumber: 2,
@@ -93,8 +93,8 @@ export const sparkFramesSpec = {
           offset: BigNumber("0"),
           decodedMin: BigNumber("-1"),
           decodedMax: BigNumber("1"),
-          encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("32442.57425742574701599918")
+          encodedMin: BigNumber("-32442"),
+          encodedMax: BigNumber("32442")
         },
         VOLTAGE: {
           type: "uint" as const,
@@ -690,7 +690,7 @@ export const sparkFramesSpec = {
           decodedMin: BigNumber("0"),
           decodedMax: BigNumber("5"),
           encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("1020.95808383233881404855")
+          encodedMax: BigNumber("1020")
         },
         ANALOG_VELOCITY: {
           type: "int" as const,
@@ -814,7 +814,7 @@ export const sparkFramesSpec = {
           decodedMin: BigNumber("0"),
           decodedMax: BigNumber("1"),
           encodedMin: BigNumber("0"),
-          encodedMax: BigNumber("64886.13861386136920076194")
+          encodedMax: BigNumber("64886")
         },
         DUTY_CYCLE_PERIOD: {
           type: "uint" as const,
