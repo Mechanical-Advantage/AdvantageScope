@@ -6,80 +6,16 @@ div.documentation-container {
   top: 0px;
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 
-div.documentation-text {
-  padding: 15px;
-  user-select: text;
-  overflow-wrap: normal;
-}
-
-div.documentation-text h1 {
-  margin: 0px 0px 0px 0px;
-}
-
-div.documentation-text h2 {
-  margin: 20px 0px 0px 0px;
-}
-
-div.documentation-text h3 {
-  margin: 20px 0px 0px 0px;
-}
-
-div.documentation-text p {
-  margin: 12px 0px 12px 0px;
-}
-
-div.documentation-text li {
-  margin: 5px 0px 5px 0px;
-}
-
-div.documentation-text a {
-  text-decoration: none;
-}
-
-div.documentation-text a:hover {
-  text-decoration: underline;
-}
-
-div.documentation-text code {
-  font-size: 17px;
-}
-
-div.documentation-text pre > code {
-  display: block;
-  font-size: 14px;
-  background-color: #eee;
-  padding: 8px;
-  overflow-x: auto;
-}
-
-div.documentation-text img,
-div.documentation-text video {
-  max-width: calc(100% - 50px);
-  max-height: 50vh;
-  margin: 10px 15px 10px 15px;
-}
-
-div.documentation-text blockquote {
-  background-color: #eee;
-  margin: 12px 0px 12px 0px;
-  padding: 10px;
-}
-
-div.documentation-text blockquote p {
-  margin: 0px;
-}
-
-@media (prefers-color-scheme: dark) {
-  div.documentation-text pre > code {
-    background-color: #111;
-  }
-
-  div.documentation-text blockquote {
-    background-color: #111;
-  }
+div.documentation-container > * {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 /* Line graph */
@@ -98,7 +34,7 @@ div.line-graph-scroll {
   left: 0px;
   right: 0px;
   top: 8px;
-  bottom: 50px;
+  bottom: 35px;
   overflow: scroll;
 }
 
@@ -552,7 +488,7 @@ table.console-table th:not(:first-child) div {
   left: 0px;
   top: 0px;
   height: 30px;
-  right: 200px;
+  right: 218px;
   padding-left: 5px;
   overflow: hidden;
   font-size: 14px;
@@ -561,7 +497,23 @@ table.console-table th:not(:first-child) div {
   white-space: nowrap;
 }
 
-table.console-table th:not(:first-child) input {
+table.console-table button.highlight-button {
+  position: absolute;
+  top: 50%;
+  right: 188px;
+  height: 25px;
+  width: 25px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  transform: translateY(-50%);
+}
+
+table.console-table button.highlight-button.active img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(84%) sepia(28%) saturate(6635%) hue-rotate(354deg) brightness(96%) contrast(112%);
+}
+
+table.console-table input.filter {
   position: absolute;
   top: 50%;
   right: 5px;
@@ -593,6 +545,10 @@ table.console-table td {
   tab-size: 4;
 }
 
+table.console-table td span.highlight {
+  background-color: #ffff00;
+}
+
 table.console-table td:first-child {
   text-align: right;
   font-weight: bold;
@@ -611,11 +567,39 @@ table.console-table tr.selected td {
   background-color: #e3e3e3;
 }
 
+table.console-table tr.warning td {
+  background-color: #ffaa0055;
+}
+
+table.console-table tr.warning.hovered td {
+  background-color: #ffaa0088;
+}
+
+table.console-table tr.warning.selected td {
+  background-color: #ffaa00aa;
+}
+
+table.console-table tr.error td {
+  background-color: #ff000055;
+}
+
+table.console-table tr.error.hovered td {
+  background-color: #ff000088;
+}
+
+table.console-table tr.error.selected td {
+  background-color: #ff0000aa;
+}
+
 @media (prefers-color-scheme: dark) {
   table.console-table th {
     border-right: 1px solid #333;
     border-bottom: 1px solid #eee;
     background-color: #222;
+  }
+
+  table.console-table td span.highlight {
+    color: black;
   }
 
   table.console-table td:first-child {

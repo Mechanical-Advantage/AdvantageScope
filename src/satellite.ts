@@ -312,7 +312,11 @@ class MockSelection implements Selection {
     throw new Error("Method not implemented.");
   }
 
-  setGrabZoomRange(range: [number, number]) {
+  setPlaybackLooping(looping: boolean): void {
+    throw new Error("Method not implemented.");
+  }
+
+  setGrabZoomRange(range: [number, number] | null) {
     window.sendMainMessage("call-selection-setter", { name: "setGrabZoomRange", args: [range] });
   }
 
@@ -325,6 +329,14 @@ class MockSelection implements Selection {
   }
 
   getTimelineRange(): [number, number] {
+    throw new Error("Method not implemented.");
+  }
+
+  getTimelineIsMaxZoom(): boolean {
+    throw new Error("Method not implemented.");
+  }
+
+  setTimelineRange(range: [number, number], lockMaxZoom: boolean) {
     throw new Error("Method not implemented.");
   }
 

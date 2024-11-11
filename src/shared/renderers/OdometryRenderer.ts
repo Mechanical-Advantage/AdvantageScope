@@ -13,6 +13,8 @@ export default class OdometryRenderer implements TabRenderer {
   private heatmap: Heatmap;
   private lastImageSource = "";
   private aspectRatio = 1;
+  private lastRenderState = "";
+  private imageLoadCount = 0;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement;
@@ -20,6 +22,7 @@ export default class OdometryRenderer implements TabRenderer {
     this.IMAGE = document.createElement("img");
     this.HEATMAP_CONTAINER = root.getElementsByClassName("odometry-heatmap-container")[0] as HTMLElement;
     this.heatmap = new Heatmap(this.HEATMAP_CONTAINER);
+    this.IMAGE.addEventListener("load", () => this.imageLoadCount++);
   }
 
   saveState(): unknown {
@@ -33,11 +36,21 @@ export default class OdometryRenderer implements TabRenderer {
   }
 
   render(command: OdometryRendererCommand): void {
-    // Set up canvas
+    // Get setup
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let isVertical = command.orientation === Orientation.DEG_90 || command.orientation === Orientation.DEG_270;
     let width = isVertical ? this.CONTAINER.clientHeight : this.CONTAINER.clientWidth;
     let height = isVertical ? this.CONTAINER.clientWidth : this.CONTAINER.clientHeight;
+
+    // Exit if render state unchanged
+    let renderState: any[] = [width, height, window.devicePixelRatio, command, this.imageLoadCount];
+    let renderStateString = JSON.stringify(renderState);
+    if (renderStateString === this.lastRenderState) {
+      return;
+    }
+    this.lastRenderState = renderStateString;
+
+    // Set up canvas
     this.CANVAS.style.width = width.toString() + "px";
     this.CANVAS.style.height = height.toString() + "px";
     this.CANVAS.width = width * window.devicePixelRatio;
@@ -266,8 +279,8 @@ export default class OdometryRenderer implements TabRenderer {
       .forEach((object) => {
         switch (object.type) {
           case "trajectory":
-            context.strokeStyle = "orange";
-            context.lineWidth = 2 * pixelsPerInch;
+            context.strokeStyle = object.color;
+            context.lineWidth = 2 * pixelsPerInch * (object.size === "bold" ? 3 : 1);
             context.lineCap = "round";
             context.lineJoin = "round";
             context.beginPath();
@@ -317,7 +330,7 @@ export default class OdometryRenderer implements TabRenderer {
               object.visionTargets.forEach((target: AnnotatedPose2d) => {
                 context.strokeStyle =
                   target.annotation.visionColor === undefined ? "#00ff00" : target.annotation.visionColor;
-                context.lineWidth = 1 * pixelsPerInch; // 1 inch
+                context.lineWidth = 1 * pixelsPerInch * (target.annotation.visionSize === "bold" ? 3 : 1);
                 context.beginPath();
                 context.moveTo(robotPos[0], robotPos[1]);
                 context.lineTo(...calcCoordinates(target.pose.translation));
@@ -467,6 +480,8 @@ export type OdometryRendererCommand_GhostObj = {
 
 export type OdometryRendererCommand_TrajectoryObj = {
   type: "trajectory";
+  color: string;
+  size: string;
   poses: AnnotatedPose2d[];
 };
 

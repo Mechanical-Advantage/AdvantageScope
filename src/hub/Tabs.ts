@@ -1,6 +1,7 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
@@ -233,14 +234,7 @@ export default class Tabs {
 
     // Control buttons
     this.CLOSE_BUTTON.addEventListener("click", () => this.close(this.selectedTab));
-    this.POPUP_BUTTON.addEventListener("click", () => {
-      if (this.selectedTab >= 0) {
-        window.sendMainMessage("create-satellite", {
-          uuid: this.tabList[this.selectedTab].controller.UUID,
-          type: this.tabList[this.selectedTab].type
-        });
-      }
-    });
+    this.POPUP_BUTTON.addEventListener("click", () => this.newSatellite());
     this.ADD_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("ask-new-tab");
     });
@@ -320,7 +314,6 @@ export default class Tabs {
       this.updateTimelineVisibility();
 
       // Render new frame
-      this.tabList[this.selectedTab].renderer.render(this.tabList[this.selectedTab].controller.getCommand());
       this.tabList.forEach((tab, index) => {
         let activeLocal = index === this.selectedTab;
         let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
@@ -430,6 +423,14 @@ export default class Tabs {
         activeFields.add(field);
       });
     });
+    let enabledKey = getEnabledKey(window.log);
+    if (enabledKey !== undefined) {
+      activeFields.add(enabledKey);
+    }
+    let autonomousKey = getAutonomousKey(window.log);
+    if (autonomousKey !== undefined) {
+      activeFields.add(autonomousKey);
+    }
     return activeFields;
   }
 
@@ -546,6 +547,16 @@ export default class Tabs {
     this.CONTROLS_CONTENT.appendChild(controlsElement);
     this.RENDERER_CONTENT.appendChild(rendererElement);
     this.updateElements();
+  }
+
+  /** Create new sallite for current tab. */
+  newSatellite() {
+    if (this.selectedTab >= 0) {
+      window.sendMainMessage("create-satellite", {
+        uuid: this.tabList[this.selectedTab].controller.UUID,
+        type: this.tabList[this.selectedTab].type
+      });
+    }
   }
 
   /** Closes the specified tab. */

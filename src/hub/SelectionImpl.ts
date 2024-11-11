@@ -20,6 +20,7 @@ export default class SelectionImpl implements Selection {
   private playbackStartLog: number = 0;
   private playbackStartReal: number = 0;
   private playbackSpeed: number = 1;
+  private playbackLooping = false;
   private liveConnected: boolean = false;
   private liveTimeSupplier: (() => number) | null = null;
 
@@ -35,10 +36,11 @@ export default class SelectionImpl implements Selection {
     [this.PLAY_BUTTON, this.PAUSE_BUTTON].forEach((button) => {
       button.addEventListener("contextmenu", () => {
         let rect = button.getBoundingClientRect();
-        window.sendMainMessage("ask-playback-speed", {
+        window.sendMainMessage("ask-playback-options", {
           x: Math.round(rect.right),
           y: Math.round(rect.top),
-          speed: this.playbackSpeed
+          speed: this.playbackSpeed,
+          looping: this.playbackLooping
         });
       });
     });
@@ -104,6 +106,10 @@ export default class SelectionImpl implements Selection {
         return Math.max(this.staticTime, window.log.getTimestampRange()[0]);
       case SelectionMode.Playback:
         let time = (this.now() - this.playbackStartReal) * this.playbackSpeed + this.playbackStartLog;
+        if (this.playbackLooping && time > this.timelineRange[1]) {
+          time = this.timelineRange[0];
+          this.setSelectedTime(time);
+        }
         let maxTime = window.log.getTimestampRange()[1];
         if (this.liveTimeSupplier !== null) {
           maxTime = Math.max(maxTime, this.liveTimeSupplier());
@@ -302,6 +308,11 @@ export default class SelectionImpl implements Selection {
     this.playbackSpeed = speed;
   }
 
+  /** Updates whether playback is looping. */
+  setPlaybackLooping(looping: boolean) {
+    this.playbackLooping = looping;
+  }
+
   /** Sets a new time range for an in-progress grab zoom. */
   setGrabZoomRange(range: [number, number] | null) {
     if (range !== null) {
@@ -332,7 +343,19 @@ export default class SelectionImpl implements Selection {
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number] {
     this.applyTimelineScroll(0, 0, 0);
-    return this.timelineRange;
+    return [...this.timelineRange];
+  }
+
+  /** Returns whether the timeline is locked to max zoom. */
+  getTimelineIsMaxZoom(): boolean {
+    return this.timelineMaxZoom;
+  }
+
+  /** Set the visible range for the timeline. */
+  setTimelineRange(range: [number, number], lockMaxZoom: boolean) {
+    this.timelineRange = range;
+    this.timelineMaxZoom = lockMaxZoom;
+    this.applyTimelineScroll(0, 0, 0);
   }
 
   /** Updates the timeline range based on a scroll event. */

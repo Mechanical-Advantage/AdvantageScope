@@ -4,10 +4,14 @@ import { arraysEqual, formatTimeWithMS, htmlEncode } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
+  private ERROR_TEXT = "error";
+  private WARNING_TEXT = "warning";
+
   private TABLE_CONTAINER: HTMLElement;
   private TABLE_BODY: HTMLElement;
   private JUMP_INPUT: HTMLInputElement;
   private JUMP_BUTTON: HTMLInputElement;
+  private HIGHLIGHT_BUTTON: HTMLButtonElement;
   private FILTER_INPUT: HTMLInputElement;
   private FIELD_CELL: HTMLElement;
   private FIELD_TEXT: HTMLElement;
@@ -32,6 +36,7 @@ export default class ConsoleRenderer implements TabRenderer {
     this.TABLE_BODY = this.TABLE_CONTAINER.firstElementChild?.firstElementChild as HTMLElement;
     this.JUMP_INPUT = this.TABLE_BODY.firstElementChild?.firstElementChild?.firstElementChild as HTMLInputElement;
     this.JUMP_BUTTON = this.TABLE_BODY.firstElementChild?.firstElementChild?.lastElementChild as HTMLInputElement;
+    this.HIGHLIGHT_BUTTON = this.TABLE_BODY.firstElementChild?.lastElementChild?.children[1] as HTMLButtonElement;
     this.FILTER_INPUT = this.TABLE_BODY.firstElementChild?.lastElementChild?.lastElementChild as HTMLInputElement;
     this.FIELD_CELL = this.TABLE_BODY.firstElementChild?.lastElementChild as HTMLElement;
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild?.firstElementChild as HTMLElement;
@@ -69,9 +74,23 @@ export default class ConsoleRenderer implements TabRenderer {
     this.JUMP_BUTTON.addEventListener("click", jump);
     this.FILTER_INPUT.addEventListener("input", () => this.updateData());
 
+    // Highlight button
+    this.HIGHLIGHT_BUTTON.addEventListener("click", () => {
+      this.HIGHLIGHT_BUTTON.classList.toggle("active");
+      this.updateData();
+    });
+
     // Delete button handling
     this.FIELD_DELETE.addEventListener("click", () => {
       root.dispatchEvent(new CustomEvent("close-field"));
+    });
+
+    // Select filter
+    window.addEventListener("keydown", (event) => {
+      if (root === null || root.hidden || event.target !== document.body) return;
+      if (event.metaKey && event.key === "f") {
+        this.FILTER_INPUT.select();
+      }
     });
 
     // Update field text
@@ -79,10 +98,22 @@ export default class ConsoleRenderer implements TabRenderer {
   }
 
   saveState(): unknown {
-    return null;
+    return {
+      highlight: this.HIGHLIGHT_BUTTON.classList.contains("active")
+    };
   }
 
-  restoreState(state: unknown): void {}
+  restoreState(state: unknown): void {
+    if (state === null || typeof state !== "object") return;
+    if ("highlight" in state && typeof state.highlight === "boolean") {
+      if (state.highlight) {
+        this.HIGHLIGHT_BUTTON.classList.add("active");
+      } else {
+        this.HIGHLIGHT_BUTTON.classList.remove("active");
+      }
+      this.updateData();
+    }
+  }
 
   getAspectRatio(): number | null {
     return null;
@@ -159,12 +190,16 @@ export default class ConsoleRenderer implements TabRenderer {
     let timestamps = this.timestamps;
     let values = this.values;
     const filter = this.FILTER_INPUT.value.toLowerCase();
-    if (filter.length > 0) {
+    if (filter.startsWith("!") ? filter.length > 1 : filter.length > 0) {
       let filteredTimestamps: number[] = [];
       let filteredValues: string[] = [];
       for (let i = 0; i < timestamps.length; i++) {
         let value = values[i];
-        if (value.toLowerCase().includes(filter)) {
+        if (
+          filter.startsWith("!")
+            ? !value.toLowerCase().includes(filter.slice(1).toLowerCase())
+            : value.toLowerCase().includes(filter.toLowerCase())
+        ) {
           filteredTimestamps.push(timestamps[i]);
           filteredValues.push(value);
         }
@@ -206,23 +241,71 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Update values
     for (let i = 0; i < values.length; i++) {
+      // Format value
+      let valueFormatted = "";
+      if (filter.length > 0 && !filter.startsWith("!")) {
+        let lastPosition = -1;
+        let position = -1;
+        while (
+          position + filter.length < values[i].length &&
+          (position = values[i]
+            .toLowerCase()
+            .indexOf(filter.toLowerCase(), position === -1 ? 0 : position + filter.length)) > -1
+        ) {
+          if (lastPosition === -1) {
+            valueFormatted += htmlEncode(values[i].substring(0, position));
+          } else {
+            valueFormatted += htmlEncode(values[i].substring(lastPosition + filter.length, position));
+          }
+          valueFormatted +=
+            '<span class="highlight">' +
+            htmlEncode(values[i].substring(position, position + filter.length)) +
+            "</span>";
+          lastPosition = position;
+        }
+        if (lastPosition !== -1) {
+          valueFormatted += values[i].substring(lastPosition + filter.length);
+        }
+      } else {
+        valueFormatted = htmlEncode(values[i]);
+      }
+      valueFormatted = valueFormatted.replaceAll("\n", "<br />");
+
+      // Update highlight
+      let row = this.TABLE_BODY.children[i + 1];
+      if (this.HIGHLIGHT_BUTTON.classList.contains("active")) {
+        if (values[i].toLowerCase().includes(this.ERROR_TEXT)) {
+          row.classList.add("error");
+        } else {
+          row.classList.remove("error");
+        }
+        if (values[i].toLowerCase().includes(this.WARNING_TEXT)) {
+          row.classList.add("warning");
+        } else {
+          row.classList.remove("warning");
+        }
+      } else {
+        row.classList.remove("error");
+        row.classList.remove("warning");
+      }
+
       // Check if value has changed
       let hasChanged = false;
       if (i > this.renderedTimestamps.length) {
         hasChanged = true; // New row
-      } else if (this.renderedTimestamps[i] !== timestamps[i] || this.renderedValues[i] !== values[i]) {
+        this.renderedValues.push(valueFormatted);
+      } else if (this.renderedTimestamps[i] !== timestamps[i] || this.renderedValues[i] !== valueFormatted) {
         hasChanged = true; // Data has changed
+        this.renderedValues[i] = valueFormatted;
       }
 
       // Update cell contents
       if (hasChanged) {
-        let row = this.TABLE_BODY.children[i + 1];
         (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamps[i]);
-        (row.children[1] as HTMLElement).innerHTML = htmlEncode(values[i]).replace("\n", "<br />");
+        (row.children[1] as HTMLElement).innerHTML = valueFormatted;
       }
     }
     this.renderedTimestamps = timestamps;
-    this.renderedValues = values;
   }
 
   /** Updates highlighted times (selected & hovered). */

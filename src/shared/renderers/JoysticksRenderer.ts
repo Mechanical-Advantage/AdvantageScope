@@ -10,6 +10,8 @@ export default class JoysticksRenderer implements TabRenderer {
   private BLACK_COLOR = "#222222";
   private WHITE_COLOR = "#eeeeee";
 
+  private lastRenderState = "";
+
   constructor(root: HTMLElement) {
     this.CANVAS = root.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
     for (let i = 0; i < 6; i++) {
@@ -33,11 +35,21 @@ export default class JoysticksRenderer implements TabRenderer {
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let canvasWidth = this.CANVAS.clientWidth;
     let canvasHeight = this.CANVAS.clientHeight;
+    let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    // Exit if render state unchanged
+    let renderState: any[] = [canvasWidth, canvasHeight, isLight, window.devicePixelRatio, command];
+    let renderStateString = JSON.stringify(renderState);
+    if (renderStateString === this.lastRenderState) {
+      return;
+    }
+    this.lastRenderState = renderStateString;
+
+    // Apply setup and scaling
     this.CANVAS.width = canvasWidth * window.devicePixelRatio;
     this.CANVAS.height = canvasHeight * window.devicePixelRatio;
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.clearRect(0, 0, canvasWidth, canvasHeight);
-    let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     // Iterate over joysticks
     command.forEach((joystick, index) => {

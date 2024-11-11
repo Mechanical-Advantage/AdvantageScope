@@ -227,6 +227,15 @@ const ThreeDimensionController_Config: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
         }
       ],
       childOf: "robot",
@@ -246,6 +255,15 @@ const ThreeDimensionController_Config: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
         },
         {
           key: "format",
@@ -420,7 +438,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       display: "Trajectory",
       symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
       showInTypeName: true,
-      color: "#ff8800",
+      color: "color",
       sourceTypes: [
         "Pose2d[]",
         "Pose3d[]",
@@ -431,7 +449,23 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Trajectory"
       ],
       showDocs: true,
-      options: [],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
+        }
+      ],
       previewType: "Translation3d"
     },
     {
@@ -439,10 +473,25 @@ const ThreeDimensionController_Config: SourceListConfig = {
       display: "Trajectory",
       symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
       showInTypeName: true,
-      color: "#ff8800",
+      color: "color",
       sourceTypes: ["NumberArray"],
       showDocs: false,
       options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: false,
+          values: NeonColors
+        },
+        {
+          key: "size",
+          display: "Thickness",
+          showInTypeName: false,
+          values: [
+            { key: "normal", display: "Normal" },
+            { key: "bold", display: "Bold" }
+          ]
+        },
         {
           key: "format",
           display: "Format",

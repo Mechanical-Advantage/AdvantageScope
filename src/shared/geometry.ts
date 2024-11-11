@@ -44,6 +44,7 @@ export type PoseAnnotations = {
   zebraAlliance?: "blue" | "red";
   aprilTagId?: number;
   visionColor?: string;
+  visionSize?: string;
 };
 
 export type SwerveState = { speed: number; angle: Rotation2d };
@@ -670,7 +671,7 @@ export function grabSwerveStates(
   return states;
 }
 
-export function grabChassiSpeeds(log: Log, key: string, timestamp: number, uuid?: string): ChassisSpeeds {
+export function grabChassisSpeeds(log: Log, key: string, timestamp: number, uuid?: string): ChassisSpeeds {
   return {
     vx: getOrDefault(log, key + "/vx", LoggableType.Number, timestamp, 0, uuid),
     vy: getOrDefault(log, key + "/vy", LoggableType.Number, timestamp, 0, uuid),

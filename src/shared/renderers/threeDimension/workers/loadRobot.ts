@@ -43,10 +43,16 @@ self.onmessage = (event) => {
         scene.position.set(...robotConfig!.position);
       }
 
-      let optimized = await optimizeGeometries(scene, mode, materialSpecular, materialShininess);
+      let optimized = await optimizeGeometries(
+        scene,
+        mode,
+        materialSpecular,
+        materialShininess,
+        !robotConfig.disableSimplification
+      );
       let sceneMeshes: THREE.Mesh[] = [];
-      if (optimized.normal !== null) sceneMeshes.push(optimized.normal);
-      if (optimized.transparent !== null) sceneMeshes.push(optimized.transparent);
+      if (optimized.normal.length > 0) sceneMeshes.push(optimized.normal[0]);
+      if (optimized.transparent.length > 0) sceneMeshes.push(optimized.transparent[0]);
       meshes.push(sceneMeshes.map((mesh) => mesh.toJSON()));
     }
 

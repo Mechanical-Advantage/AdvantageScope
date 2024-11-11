@@ -107,7 +107,11 @@ async function updateLocalAssets(downloadInfo: AssetDownloadInfo[]) {
   await Promise.all(
     downloadInfo
       .filter((assetInfo) => !assetInfo.optional && !fs.existsSync(assetInfo.target))
-      .map((assetInfo) => download(assetInfo.source, assetInfo.target, { extract: true }))
+      .map((assetInfo) =>
+        download(assetInfo.source, assetInfo.target + "_download", { extract: true }).then(() =>
+          fs.renameSync(assetInfo.target + "_download", assetInfo.target)
+        )
+      )
   );
 
   // Delete old assets

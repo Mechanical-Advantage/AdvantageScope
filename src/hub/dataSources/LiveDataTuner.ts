@@ -1,5 +1,8 @@
 /** A target for live tuning values, connected to a live data source. */
 export default interface LiveDataTuner {
+  /** Returns whether any key supports tuning. */
+  hasTunableFields(): boolean;
+
   /** Returns whether a particular key support tuning. */
   isTunable(key: string): boolean;
 

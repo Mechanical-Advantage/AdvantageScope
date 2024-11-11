@@ -9,6 +9,8 @@ export default class SwerveRenderer implements TabRenderer {
   private BLACK_COLOR = "#222222";
   private WHITE_COLOR = "#eeeeee";
 
+  private lastRenderState = "";
+
   constructor(root: HTMLElement) {
     this.CONTAINER = root.firstElementChild as HTMLElement;
     this.CANVAS = this.CONTAINER.firstElementChild as HTMLCanvasElement;
@@ -25,6 +27,20 @@ export default class SwerveRenderer implements TabRenderer {
   }
 
   render(command: SwerveRendererCommand): void {
+    // Exit if render state unchanged
+    let renderState: any[] = [
+      this.CONTAINER.clientWidth,
+      this.CONTAINER.clientHeight,
+      window.matchMedia("(prefers-color-scheme: dark)").matches,
+      window.devicePixelRatio,
+      command
+    ];
+    let renderStateString = JSON.stringify(renderState);
+    if (renderStateString === this.lastRenderState) {
+      return;
+    }
+    this.lastRenderState = renderStateString;
+
     // Update canvas size
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let size = Math.min(this.CONTAINER.clientWidth, this.CONTAINER.clientHeight);

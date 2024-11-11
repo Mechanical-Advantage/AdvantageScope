@@ -9,8 +9,8 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
   private GET_DEVICES_TIMEOUT = 400;
   private GET_SIGNALS_TIMEOUT = 200;
   private PLOT_PERIOD = 50;
-  private PLOT_TIMEOUT = 40;
-  private PLOT_RESOLUTION = 50;
+  private PLOT_TIMEOUT = this.PLOT_PERIOD - 10;
+  private PLOT_RESOLUTION = this.PLOT_PERIOD; // Support up to 1Khz signals
 
   private getDevicesInterval: NodeJS.Timeout | null = null;
   private plotInterval: NodeJS.Timeout | null = null;
@@ -84,10 +84,22 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
 
     // Get new plot data periodically
     this.plotInterval = setInterval(() => {
-      // Get active signal IDs
-      let findActiveSignals = (activeFields: string[]) => {
-        let activeSignals: { [key: string]: Response_Signal[] } = {};
-        activeFields.forEach((activeField) => {
+      // Get set of signals to request
+      let activeSignals: { [key: string]: Response_Signal[] } = {};
+      if (window.preferences?.liveSubscribeMode === "logging") {
+        // Logging mode, all signals are active
+        Object.entries(this.deviceSignals).forEach(([deviceName, signals]) => {
+          signals.forEach((signal) => {
+            if (!(deviceName in activeSignals)) {
+              activeSignals[deviceName] = [];
+            }
+            if (activeSignals[deviceName].find((prevSignal) => prevSignal.Id === signal!.Id) !== undefined) return;
+            activeSignals[deviceName].push(signal);
+          });
+        });
+      } else {
+        // Low bandwidth mode, only use active fields
+        [...window.tabs.getActiveFields(), ...window.sidebar.getActiveFields()].forEach((activeField) => {
           if (!activeField.startsWith(PHOENIX_PREFIX)) return;
           let splitKey = activeField.split("/");
           let deviceName: string, signalName: string;
@@ -110,71 +122,52 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
           if (activeSignals[deviceName].find((prevSignal) => prevSignal.Id === signal!.Id) !== undefined) return;
           activeSignals[deviceName].push(signal);
         });
-        return activeSignals;
-      };
-      let tabsActiveSignals = findActiveSignals([...window.tabs.getActiveFields()]);
-      let sidebarActiveSignals = findActiveSignals([...window.sidebar.getActiveFields()]);
-
-      // Choose device to request
-      if (Object.keys(sidebarActiveSignals).length + Object.keys(tabsActiveSignals).length === 0) return;
-      let deviceName = "";
-      let signalCount = 0;
-      Object.entries(tabsActiveSignals).forEach(([activeDeviceName, activeDeviceSignals]) => {
-        if (activeDeviceSignals.length > signalCount) {
-          deviceName = activeDeviceName;
-          signalCount = activeDeviceSignals.length;
-        }
-      });
-      if (signalCount === 0) {
-        // No active signals for tabs, use sidebar instead
-        Object.entries(sidebarActiveSignals).forEach(([activeDeviceName, activeDeviceSignals]) => {
-          if (activeDeviceSignals.length > signalCount) {
-            deviceName = activeDeviceName;
-            signalCount = activeDeviceSignals.length;
-          }
-        });
       }
 
-      // Merge sidebar and tab signals
-      let signals: Response_Signal[] = [];
-      if (deviceName in sidebarActiveSignals) {
-        signals = signals.concat(signals, sidebarActiveSignals[deviceName]);
-      }
-      if (deviceName in tabsActiveSignals) {
-        signals = signals.concat(signals, tabsActiveSignals[deviceName]);
-      }
+      // Request for each device
+      let deviceCount = Object.keys(activeSignals).length;
+      Object.keys(activeSignals).forEach((deviceName, deviceIndex) => {
+        // Offset requests for each device to spread out the load on the RIO
+        window.setTimeout(
+          () => {
+            // Merge sidebar and tab signals
+            let signals = activeSignals[deviceName];
 
-      // Request data
-      if (!(deviceName in this.deviceDescriptions)) return;
-      let device = this.deviceDescriptions[deviceName];
-      this.getPlotData(
-        device,
-        signals.map((signal) => signal.Id)
-      ).then((points) => {
-        // Reset live time based on last timestamp
-        if (this.liveStartLogTime === null && this.liveStartRealTime !== null && points.length > 0) {
-          this.liveStartLogTime =
-            points[points.length - 1].Timestamp - (new Date().getTime() / 1000 - this.liveStartRealTime);
-        }
+            // Request data
+            if (!(deviceName in this.deviceDescriptions)) return;
+            let device = this.deviceDescriptions[deviceName];
+            this.getPlotData(
+              device,
+              signals.map((signal) => signal.Id)
+            ).then((points) => {
+              // Reset live time based on last timestamp
+              if (this.liveStartLogTime === null && this.liveStartRealTime !== null && points.length > 0) {
+                this.liveStartLogTime =
+                  points[points.length - 1].Timestamp - (new Date().getTime() / 1000 - this.liveStartRealTime);
+              }
 
-        // Add all points
-        points.forEach((point) => {
-          Object.entries(point.Signals).forEach(([signalIdStr, value]) => {
-            let signalId = Number(signalIdStr);
-            let signal = signals.find((signal) => signal.Id === signalId);
-            if (signal === undefined) return;
-            let fieldKey = PHOENIX_PREFIX + "/" + deviceName + "/" + signal.Name;
-            let timestamp = point.Timestamp - this.liveStartLogTime!;
-            if (signal.Name in PhoenixEnums) {
-              let valueStr = PhoenixEnums[signal.Name][value];
-              if (valueStr === undefined) valueStr = "";
-              this.log?.putString(fieldKey, timestamp, valueStr);
-            } else {
-              this.log?.putNumber(fieldKey, timestamp, value);
-            }
-          });
-        });
-        this.newOutput();
+              // Add all points
+              points.forEach((point) => {
+                Object.entries(point.Signals).forEach(([signalIdStr, value]) => {
+                  let signalId = Number(signalIdStr);
+                  let signal = signals.find((signal) => signal.Id === signalId);
+                  if (signal === undefined) return;
+                  let fieldKey = PHOENIX_PREFIX + "/" + deviceName + "/" + signal.Name;
+                  let timestamp = point.Timestamp - this.liveStartLogTime!;
+                  if (signal.Name in PhoenixEnums) {
+                    let valueStr = PhoenixEnums[signal.Name][value];
+                    if (valueStr === undefined) valueStr = "";
+                    this.log?.putString(fieldKey, timestamp, valueStr);
+                  } else {
+                    this.log?.putNumber(fieldKey, timestamp, value);
+                  }
+                });
+              });
+              this.newOutput();
+            });
+          },
+          (this.PLOT_PERIOD / deviceCount) * deviceIndex
+        );
       });
     }, this.PLOT_PERIOD);
   }
@@ -322,7 +315,7 @@ interface Response_Point {
   Signals: { [key: string]: number };
 }
 
-// Valid as of Phoenix 24.0.0-beta-4
+// Valid as of Phoenix 25.0.0-beta-1
 const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   AppliedRotorPolarity: {
     0: "PositiveIsCounterClockwise",
@@ -336,7 +329,8 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     8: "BridgeReq_MusicTone",
     9: "BridgeReq_FOCEasy",
     12: "BridgeReq_FaultBrake",
-    13: "BridgeReq_FaultCoast"
+    13: "BridgeReq_FaultCoast",
+    14: "BridgeReq_ActiveBrake"
   },
   ControlMode: {
     0: "DisabledOutput",
@@ -427,6 +421,19 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   MotionMagicIsRunning: {
     1: "Enabled",
     0: "Disabled"
+  },
+  MotorOutputStatus: {
+    0: "Unknown",
+    1: "Off",
+    2: "StaticBraking",
+    3: "Motoring",
+    4: "DiscordantMotoring",
+    5: "RegenBraking"
+  },
+  MotorType: {
+    0: "Unknown",
+    1: "Falcon500",
+    2: "KrakenX60"
   },
   ReverseLimit: {
     0: "ClosedToGround",

@@ -1,30 +1,28 @@
 import Log from "../../../shared/log/Log";
+import { HistoricalDataSource_WorkerRequest, HistoricalDataSource_WorkerResponse } from "../HistoricalDataSource";
 import { DSEventsReader } from "./DSEventsReader";
 import { DSLogReader } from "./DSLogReader";
 
-self.onmessage = (event) => {
-  // WORKER SETUP
-  self.onmessage = null;
-  let { id, payload } = event.data;
-  function resolve(result: any) {
-    self.postMessage({ id: id, payload: result });
-  }
-  function progress(percent: number) {
-    self.postMessage({ id: id, progress: percent });
-  }
-  function reject() {
-    self.postMessage({ id: id });
-  }
+function sendResponse(response: HistoricalDataSource_WorkerResponse) {
+  self.postMessage(response);
+}
 
-  // MAIN LOGIC
+self.onmessage = async (event) => {
+  let request: HistoricalDataSource_WorkerRequest = event.data;
+  if (request.type !== "start") return;
 
-  // Run worker
-  progress(1); // Loading is fast and we don't know how long dslog vs dsevents will take
+  // Loading is fast and we don't know how long dslog vs dsevents will take
+  sendResponse({
+    type: "progress",
+    value: 1
+  });
+
+  // Decode logs
   let log = new Log();
-  if (payload[0] !== null) {
-    let dsLog = new DSLogReader(payload[0]);
+  if (request.data[0] !== null) {
+    let dsLog = new DSLogReader(request.data[0]);
     if (!dsLog.isSupportedVersion()) {
-      reject();
+      sendResponse({ type: "failed" });
       return;
     }
     dsLog.forEach((entry) => {
@@ -49,15 +47,19 @@ self.onmessage = (event) => {
       // log.putNumber("/DSLog/WifiMb", entry.timestamp, entry.wifiMb);
     });
   }
-  if (payload[1] !== null) {
-    let dsEvents = new DSEventsReader(payload[1]);
+  if (request.data[1] !== null) {
+    let dsEvents = new DSEventsReader(request.data[1]);
     if (!dsEvents.isSupportedVersion()) {
-      reject();
+      sendResponse({ type: "failed" });
       return;
     }
     dsEvents.forEach((entry) => {
       log.putString("/DSEvents", entry.timestamp, entry.text);
     });
   }
-  resolve(log.toSerialized());
+  sendResponse({
+    type: "initial",
+    log: log.toSerialized(),
+    isPartial: false
+  });
 };

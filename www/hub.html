@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="hub.css" />
     <link rel="stylesheet" href="renderers.css" />
-    <link rel="stylesheet" href="code.css" />
     <script type="module" src="../bundles/hub.js"></script>
     <title>AdvantageScope</title>
   </head>
@@ -36,6 +35,9 @@
 
     <button class="tab-control update" tabindex="-1" hidden>
       <img src="symbols/exclamationmark.arrow.triangle.2.circlepath.svg" />
+    </button>
+    <button class="tab-control feedback" tabindex="-1" hidden>
+      <img src="symbols/exclamationmark.bubble.svg" />
     </button>
     <button class="tab-control play" tabindex="-1">
       <img src="symbols/play.fill.svg" />
@@ -499,7 +501,7 @@
       <!-- Documentation -->
       <div id="renderer0">
         <div class="documentation-container">
-          <div class="documentation-text"></div>
+          <iframe src="../docsSite/build/index.html"></iframe>
         </div>
       </div>
 
@@ -585,12 +587,15 @@
                 </th>
                 <th>
                   <div>
-                    <span>Hello</span>
+                    <span></span>
                     <button class="console-table-key-delete" tabindex="-1">
                       <img src="symbols/xmark.svg" />
                     </button>
                   </div>
-                  <input type="search" placeholder="Filter" />
+                  <button class="highlight-button" tabindex="-1">
+                    <img src="symbols/paintpalette.fill.svg" />
+                  </button>
+                  <input class="filter" type="search" placeholder="Filter" />
                 </th>
               </tr>
             </tbody>
@@ -686,7 +691,7 @@
           <img src="symbols/exclamationmark.triangle.fill.svg" />
         </button>
         <button class="hide" tabindex="-1">
-          <img src="symbols/eye.slash.svg" />
+          <img src="symbols/eye.svg" />
         </button>
         <button class="remove" tabindex="-1">
           <img src="symbols/xmark.svg" />

@@ -8,7 +8,7 @@ import {
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
 import {
-  grabChassiSpeeds as grabChassisSpeeds,
+  grabChassisSpeeds,
   grabPosesAuto,
   grabSwerveStates,
   rotation3dTo2d,
@@ -623,6 +623,9 @@ export default class SourceList {
       y > listRect.bottom
     ) {
       this.DRAG_HIGHLIGHT.hidden = true;
+      Array.from(this.LIST.children).forEach((element) => {
+        element.classList.remove("parent-highlight");
+      });
       return;
     }
 
@@ -703,6 +706,9 @@ export default class SourceList {
       this.DRAG_HIGHLIGHT.hidden = false;
     } else {
       this.DRAG_HIGHLIGHT.hidden = true;
+      Array.from(this.LIST.children).forEach((element) => {
+        element.classList.remove("parent-highlight");
+      });
     }
   }
 
@@ -802,16 +808,17 @@ export default class SourceList {
     // Hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let toggleHidden = () => {
-      if (isChild) return;
       let index = Array.from(this.LIST.children).indexOf(item);
       let newVisible = !this.state[index].visible;
       this.state[index].visible = newVisible;
       this.updateItem(item, this.state[index]);
-      while (index < this.state.length) {
-        index++;
-        if (!this.isChild(index)) break;
-        this.state[index].visible = newVisible;
-        this.updateItem(this.LIST.children[index] as HTMLElement, this.state[index]);
+      if (!isChild) {
+        while (index < this.state.length) {
+          index++;
+          if (!this.isChild(index)) break;
+          this.state[index].visible = newVisible;
+          this.updateItem(this.LIST.children[index] as HTMLElement, this.state[index]);
+        }
       }
     };
     hideButton.addEventListener("click", (event) => {
@@ -833,7 +840,6 @@ export default class SourceList {
 
     // Child formatting
     if (isChild) {
-      hideButton.hidden = true;
       item.classList.add("child");
     }
 
@@ -928,6 +934,7 @@ export default class SourceList {
     let keySpan = keyContainer.firstElementChild as HTMLElement;
     keySpan.innerText = state.logKey;
     keySpan.style.textDecoration = this.isFieldAvailable(state) ? "" : "line-through";
+    keyContainer.title = state.logKey;
 
     // Update type width, cloning to a new node in case the controls aren't visible
     let mockTypeName = typeNameElement.cloneNode(true) as HTMLElement;
@@ -943,7 +950,7 @@ export default class SourceList {
     // Update hide button
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
-    hideIcon.src = "symbols/" + (state.visible ? "eye.slash.svg" : "eye.svg");
+    hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
     if (state.visible) {
       item.classList.remove("hidden");
     } else {
@@ -989,13 +996,13 @@ export default class SourceList {
       let logType = window.log.getType(state.logKey);
       let structuredType = window.log.getStructuredType(state.logKey);
       if (logType !== null) {
-        let value: any;
+        let value: any = null;
         if (logType === LoggableType.Number && this.getNumberPreview !== undefined) {
           value = this.getNumberPreview(state.logKey, time);
-        } else {
+        } else if (logType !== LoggableType.Empty) {
           value = getOrDefault(window.log, state.logKey, logType, time, null);
         }
-        if (value !== null) {
+        if (value !== null || logType === LoggableType.Empty) {
           if (typeConfig?.previewType !== undefined) {
             if (typeConfig?.previewType !== null) {
               let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
@@ -1152,6 +1159,40 @@ export default class SourceList {
               let count = mechanismState.lines.length;
               text = count.toString() + " segment" + (count === 1 ? "" : "s");
             }
+          } else if (structuredType === "Alerts") {
+            let errorCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/errors",
+              LoggableType.StringArray,
+              time,
+              []
+            ).length;
+            let warningCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/warnings",
+              LoggableType.StringArray,
+              time,
+              []
+            ).length;
+            let infoCount: number = getOrDefault(
+              window.log,
+              state.logKey + "/infos",
+              LoggableType.StringArray,
+              time,
+              []
+            ).length;
+            text =
+              errorCount.toString() +
+              " error" +
+              (errorCount === 1 ? "" : "s") +
+              ", " +
+              warningCount.toString() +
+              " warning" +
+              (warningCount === 1 ? "" : "s") +
+              ", " +
+              infoCount.toString() +
+              " info" +
+              (infoCount === 1 ? "" : "s");
           } else if (
             logType === LoggableType.BooleanArray ||
             logType === LoggableType.NumberArray ||

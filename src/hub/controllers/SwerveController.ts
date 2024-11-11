@@ -1,5 +1,5 @@
 import { SourceListState } from "../../shared/SourceListConfig";
-import { Rotation2d, grabChassiSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
+import { Rotation2d, grabChassisSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
 import { Orientation } from "../../shared/renderers/OdometryRenderer";
 import { SwerveRendererCommand } from "../../shared/renderers/SwerveRenderer";
 import { clampValue, createUUID } from "../../shared/util";
@@ -132,7 +132,7 @@ export default class SwerveController implements TabController {
           color: source.options.color
         });
       } else if (source.type === "chassisSpeeds") {
-        let speeds = grabChassiSpeeds(window.log, source.logKey, time, this.UUID);
+        let speeds = grabChassisSpeeds(window.log, source.logKey, time, this.UUID);
         let angle = Math.atan2(speeds.vy, speeds.vx);
         let length = Math.hypot(speeds.vx, speeds.vy);
         length = clampValue(length / Number(this.MAX_SPEED.value), -1, 1);

@@ -25,7 +25,6 @@ export default class ConsoleController implements TabController {
       let rect = this.TABLE_CONTAINER.getBoundingClientRect();
       let active =
         dragData.x > rect.left && dragData.x < rect.right && dragData.y > rect.top && dragData.y < rect.bottom;
-      console.log(active);
       let validType = window.log.getType(dragData.data.fields[0]) === LoggableType.String;
       this.DRAG_HIGHLIGHT.hidden = true;
       if (active && validType) {

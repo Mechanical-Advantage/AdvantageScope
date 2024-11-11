@@ -41,6 +41,12 @@ export function indexArray(length: number): number[] {
   return Array.from({ length: length }, (_, i) => i);
 }
 
+/** Calculates a mock progress value. */
+export function calcMockProgress(time: number, maxPercent = 0.6): number {
+  // https://www.desmos.com/calculator/86u4rnu8ob
+  return maxPercent - maxPercent / (0.1 * time + 1);
+}
+
 /** Adjust the brightness of a HEX color.*/
 export function shiftColor(color: string, shift: number): string {
   let colorHexArray = color.slice(1).match(/.{1,2}/g);
@@ -163,4 +169,62 @@ export function calcAxisStepSize(dataRange: [number, number], pixelRange: number
   let roundBase = 10 ** Math.floor(Math.log10(stepValueApprox));
   let multiplierLookup = [0, 1, 2, 2, 5, 5, 5, 5, 5, 10, 10]; // Use friendly numbers if possible
   return roundBase * multiplierLookup[Math.round(stepValueApprox / roundBase)];
+}
+
+export function getSpiralIndex(x: number, y: number): number {
+  // https://stackoverflow.com/questions/9970134/get-spiral-index-from-location
+
+  type Point = { x: number; y: number };
+
+  const interior = (p: Point): number => {
+    let a = Math.max(Math.abs(p.x), Math.abs(p.y));
+    return (2 * a - 1) * (2 * a - 1);
+  };
+
+  const startPoint = (p: Point): Point => {
+    let a = Math.max(Math.abs(p.x), Math.abs(p.y));
+    return {
+      x: a,
+      y: -(a - 1)
+    };
+  };
+
+  const offsetFirstRow = (pStart: Point, p: Point): number => {
+    return p.y - pStart.y + 1;
+  };
+
+  let current = { x: x, y: y };
+  let a = Math.max(Math.abs(current.x), Math.abs(current.y));
+  let offset = 0;
+  let interiorCount = interior(current);
+  let start = startPoint(current);
+
+  if (current.x == a && current.y >= start.y) {
+    offset = offsetFirstRow(start, current);
+    return offset + interiorCount;
+  } else if (current.y == a) {
+    let start2 = { x: a, y: a };
+    let off1 = offsetFirstRow(start, start2);
+    let off2 = start2.x - current.x;
+    offset = off1 + off2;
+    return offset + interiorCount;
+  } else if (current.x == -a) {
+    let start2 = { x: a, y: a };
+    let off1 = offsetFirstRow(start, start2);
+    let start3 = { x: -a, y: a };
+    let off2 = start2.x - start3.x;
+    let off3 = start3.y - current.y;
+    offset = off1 + off2 + off3;
+    return offset + interiorCount;
+  } else {
+    let start2 = { x: a, y: a };
+    let off1 = offsetFirstRow(start, start2);
+    let start3 = { x: -a, y: a };
+    let off2 = start2.x - start3.x;
+    let off3 = start3.y - current.y;
+    let start4 = { x: -a, y: -a };
+    let off4 = current.x - start4.x;
+    offset = off1 + off2 + off3 + off4;
+    return interiorCount + offset;
+  }
 }

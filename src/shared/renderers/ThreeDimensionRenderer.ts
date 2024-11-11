@@ -27,7 +27,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   }
 
   restoreState(state: unknown): void {
-    if (this.implementation !== null) {
+    if (this.implementation !== null && state !== null) {
       this.implementation.restoreState(state);
     }
   }
@@ -109,6 +109,7 @@ export type ThreeDimensionRendererCommand = {
   objects: ThreeDimensionRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
   autoDriverStation: number;
+  allRobotModels: string[];
 };
 
 export type ThreeDimensionRendererCommand_AnyObj =
@@ -151,6 +152,8 @@ export type ThreeDimensionRendererCommand_GamePieceObj = {
 
 export type ThreeDimensionRendererCommand_TrajectoryObj = {
   type: "trajectory";
+  color: string;
+  size: string;
   poses: AnnotatedPose3d[];
 };
 

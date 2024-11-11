@@ -1,6 +1,6 @@
 ---
 name: Question
-about: Ask about features or parts of this project
+about: Ask about features or parts of AdvantageScope
 title: ""
 labels: question
 assignees: ""

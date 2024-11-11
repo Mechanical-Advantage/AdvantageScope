@@ -53,8 +53,11 @@ export default interface Selection {
   /** Updates the playback speed. */
   setPlaybackSpeed(speed: number): void;
 
+  /** Updates whether playback is looping. */
+  setPlaybackLooping(looping: boolean): void;
+
   /** Sets a new time range for an in-progress grab zoom. */
-  setGrabZoomRange(range: [number, number]): void;
+  setGrabZoomRange(range: [number, number] | null): void;
 
   /** Gets the time range to display for an in-progress grab zoom. */
   getGrabZoomRange(): [number, number] | null;
@@ -64,6 +67,12 @@ export default interface Selection {
 
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number];
+
+  /** Returns whether the timeline is locked to max zoom. */
+  getTimelineIsMaxZoom(): boolean;
+
+  /** Set the visible range for the timeline. */
+  setTimelineRange(range: [number, number], lockMaxZoom: boolean): void;
 
   /** Updates the timeline range based on a scroll event. */
   applyTimelineScroll(dx: number, dy: number, widthPixels: number): void;

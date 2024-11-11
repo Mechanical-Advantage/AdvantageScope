@@ -106,6 +106,10 @@ export default class RobotManager extends ObjectManager<
     this.hasNewAssets = true;
   }
 
+  getModel(): string {
+    return this.lastModel;
+  }
+
   setObjectData(object: ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj): void {
     let robotConfig = window.assets?.robots.find((robotData) => robotData.name === object.model);
 
@@ -285,6 +289,10 @@ export default class RobotManager extends ObjectManager<
         let color = object.visionTargets[i].annotation.visionColor;
         if (color !== undefined) {
           this.visionLines[i].material.color = new THREE.Color(color);
+        }
+        let size = object.visionTargets[i].annotation.visionSize;
+        if (size !== undefined) {
+          this.visionLines[i].material.linewidth = size === "bold" ? 3 : 1;
         }
       }
     }

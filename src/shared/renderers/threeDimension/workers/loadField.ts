@@ -67,23 +67,22 @@ self.onmessage = (event) => {
           false
         );
         fieldStagedPieces = new THREE.Group();
-        if (fieldStagedPiecesMeshes.normal !== null) fieldStagedPieces.add(fieldStagedPiecesMeshes.normal);
-        if (fieldStagedPiecesMeshes.transparent !== null) fieldStagedPieces.add(fieldStagedPiecesMeshes.transparent);
-        if (fieldStagedPiecesMeshes.carpet !== null) fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet);
+        if (fieldStagedPiecesMeshes.normal.length > 0) fieldStagedPieces.add(fieldStagedPiecesMeshes.normal[0]);
+        if (fieldStagedPiecesMeshes.transparent.length > 0)
+          fieldStagedPieces.add(fieldStagedPiecesMeshes.transparent[0]);
+        if (fieldStagedPiecesMeshes.carpet.length > 0) fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet[0]);
 
         scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-        let fieldMeshes = await optimizeGeometries(scene, mode, materialSpecular, materialShininess);
+        let fieldMeshes = await optimizeGeometries(scene, mode, materialSpecular, materialShininess, true, 1);
         field = new THREE.Group();
-        if (fieldMeshes.normal !== null) field.add(fieldMeshes.normal);
-        if (fieldMeshes.transparent !== null) field.add(fieldMeshes.transparent);
-        if (fieldMeshes.carpet !== null) field.add(fieldMeshes.carpet);
+        [...fieldMeshes.normal, ...fieldMeshes.transparent, ...fieldMeshes.carpet].forEach((mesh) => field.add(mesh));
       } else {
         let gamePieceConfig = fieldConfig.gamePieces[index - 1];
         scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
         scene.position.set(...gamePieceConfig.position);
-        let mesh = (await optimizeGeometries(scene, mode, materialSpecular, materialShininess, false)).normal;
-        if (mesh !== null) {
-          fieldPieces[gamePieceConfig.name] = mesh;
+        let meshes = (await optimizeGeometries(scene, mode, materialSpecular, materialShininess, false)).normal;
+        if (meshes.length > 0) {
+          fieldPieces[gamePieceConfig.name] = meshes[0];
         }
       }
 

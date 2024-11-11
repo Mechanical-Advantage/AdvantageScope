@@ -62,6 +62,7 @@ export interface Config3dRobot {
   path: string;
 
   sourceUrl?: string;
+  disableSimplification: boolean;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   cameras: Config3dRobot_Camera[];
