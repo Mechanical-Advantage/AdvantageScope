@@ -605,8 +605,6 @@ export default class Log {
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
         decodedData = this.photonDecoder.decode(schemaType, value);
-        // console.log("Log: asking to decode " + schemaType)
-        // console.log(decodedData)
       } catch {}
       if (decodedData !== null) {
         this.putUnknownStruct(key, timestamp, decodedData.data);

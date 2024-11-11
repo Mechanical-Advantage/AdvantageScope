@@ -13,7 +13,6 @@ export default class PhotonStructDecoder {
 
   addSchema(name: string, schema: Uint8Array): void {
     let schemaStr = PhotonStructDecoder.textDecoder.decode(schema);
-    // console.log("Adding schema: name " + name + " schema " + schemaStr)
     if (name in this.schemaStrings) return;
     this.schemaStrings[name] = schemaStr;
 
@@ -32,8 +31,6 @@ export default class PhotonStructDecoder {
         break;
       }
     }
-
-    // console.log("Valid schemas: " + Object.keys(this.schemas))
   }
 
   private compileSchema(name: string, schema: string): boolean {
@@ -126,13 +123,11 @@ export default class PhotonStructDecoder {
       let vlaLength: number | null = null;
 
       if (valueSchema.isOptional) {
-        // console.log("Decoding optional for " + valueSchema.name + " at offset " + (value.byteOffset + offset))
         isPresent = PhotonStructDecoder.decodeValue(dataView, offset, ValueType.Bool);
         offset += VALUE_TYPE_MAX_BITS.get(ValueType.Bool)! / 8;
         outputData[valueSchema.name] = null;
       }
       if (valueSchema.isVLA) {
-        // console.log("Decoding VLA len for " + valueSchema.name + " at offset " + (value.byteOffset + offset))
         vlaLength = PhotonStructDecoder.decodeValue(dataView, offset, ValueType.Int8);
         offset += VALUE_TYPE_MAX_BITS.get(ValueType.Int8)! / 8;
       }
@@ -151,14 +146,12 @@ export default class PhotonStructDecoder {
 
           let inner: unknown[] = [];
           for (let i = 0; i < vlaLength; i++) {
-            // console.log("Decoding member " + valueSchema.name + " of type " + valueSchema.type + " at offset " + (value.byteOffset + offset));
             inner.push(PhotonStructDecoder.decodeValue(dataView, offset, type));
             offset += VALUE_TYPE_MAX_BITS.get(type)! / 8;
           }
           outputData[valueSchema.name] = inner;
           outputData[valueSchema.name + "/length"] = vlaLength;
         } else {
-          // console.log("Decoding member " + valueSchema.name + " of type " + valueSchema.type + " at offset " + (value.byteOffset + offset));
           outputSchemaTypes[valueSchema.name] = type;
           outputData[valueSchema.name] = PhotonStructDecoder.decodeValue(dataView, offset, type);
           offset += VALUE_TYPE_MAX_BITS.get(type)! / 8;
