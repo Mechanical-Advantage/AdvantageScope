@@ -112,9 +112,16 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 
 ```java
 // Create the SysId routine
-var sysIdRoutine = new SysIdRoutine.Config(
-  null, null, null,
-  (state) -> Logger.recordOutput("SysIdTestState", state.toString())
+var sysIdRoutine = new SysIdRoutine(
+  new SysIdRoutine.Config(
+    null, null, null,
+    (state) -> Logger.recordOutput("SysIdTestState", state.toString())
+  ),
+  new SysIdRoutine.Mechanism(
+    (voltage) -> subsystem.runVolts(voltage.in(Volts)),
+    null, // No log consumer, since data is recorded by URCL
+    subsystem
+  )
 );
 
 // The methods below return Command objects
