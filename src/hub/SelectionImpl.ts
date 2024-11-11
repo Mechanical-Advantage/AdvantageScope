@@ -343,7 +343,12 @@ export default class SelectionImpl implements Selection {
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number] {
     this.applyTimelineScroll(0, 0, 0);
-    return this.timelineRange;
+    return [...this.timelineRange];
+  }
+
+  /** Returns whether the timeline is locked to max zoom. */
+  getTimelineIsMaxZoom(): boolean {
+    return this.timelineMaxZoom;
   }
 
   /** Set the visible range for the timeline. */

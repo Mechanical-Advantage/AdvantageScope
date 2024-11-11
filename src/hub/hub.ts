@@ -285,9 +285,13 @@ window.getLoadingFields = () => {
 /** Connects to a historical data source. */
 function startHistorical(path: string, clear = true, merge = false) {
   clear = clear || !merge;
+  let originalTimelineRange: null | [number, number] = null;
+  let originalTimelineIsMaxZoom: null | boolean = null;
   if (clear) {
     historicalSources.forEach((entry) => entry.source.stop());
     historicalSources = [];
+    originalTimelineRange = window.selection.getTimelineRange();
+    originalTimelineIsMaxZoom = window.selection.getTimelineIsMaxZoom();
     window.log = new Log();
     window.sidebar.refresh();
     window.tabs.refresh();
@@ -348,6 +352,11 @@ function startHistorical(path: string, clear = true, merge = false) {
           setWindowTitle(logFriendlyName);
           sourceEntry.progress = null;
           updateLoading();
+          if (originalTimelineRange !== null && originalTimelineIsMaxZoom !== null) {
+            window.selection.setTimelineRange(originalTimelineRange, originalTimelineIsMaxZoom);
+            originalTimelineRange = null;
+            originalTimelineIsMaxZoom = null;
+          }
           break;
         case HistoricalDataSourceStatus.Error:
           setWindowTitle(logFriendlyName, "Error");

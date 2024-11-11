@@ -332,6 +332,10 @@ class MockSelection implements Selection {
     throw new Error("Method not implemented.");
   }
 
+  getTimelineIsMaxZoom(): boolean {
+    throw new Error("Method not implemented.");
+  }
+
   setTimelineRange(range: [number, number], lockMaxZoom: boolean) {
     throw new Error("Method not implemented.");
   }

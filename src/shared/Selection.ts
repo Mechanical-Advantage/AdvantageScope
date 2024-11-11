@@ -68,6 +68,9 @@ export default interface Selection {
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number];
 
+  /** Returns whether the timeline is locked to max zoom. */
+  getTimelineIsMaxZoom(): boolean;
+
   /** Set the visible range for the timeline. */
   setTimelineRange(range: [number, number], lockMaxZoom: boolean): void;
 
