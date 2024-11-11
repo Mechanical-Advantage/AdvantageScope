@@ -994,6 +994,23 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       select3DCameraPopup(window, message.data.options, message.data.selectedIndex, message.data.fov);
       break;
 
+    case "export-console":
+      dialog
+        .showSaveDialog(window, {
+          title: "Select export location for console log",
+          defaultPath: "Console " + new Date().toLocaleDateString().replaceAll("/", "-") + ".txt",
+          properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+          filters: [{ name: "Text files", extensions: ["txt"] }]
+        })
+        .then((response) => {
+          if (!response.canceled) {
+            fs.writeFile(response.filePath!, message.data, (err) => {
+              if (err) throw err;
+            });
+          }
+        });
+      break;
+
     case "prompt-export":
       if (message.data.incompleteWarning) {
         dialog

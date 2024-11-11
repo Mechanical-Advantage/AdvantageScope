@@ -488,13 +488,28 @@ table.console-table th:not(:first-child) div {
   left: 0px;
   top: 0px;
   height: 30px;
-  right: 218px;
+  right: 246px;
   padding-left: 5px;
   overflow: hidden;
   font-size: 14px;
   line-height: 30px;
   text-align: left;
   white-space: nowrap;
+}
+
+table.console-table th:not(:first-child) div.wide {
+  right: 218px;
+}
+
+table.console-table button.export-button {
+  position: absolute;
+  top: 50%;
+  right: 216px;
+  height: 25px;
+  width: 25px;
+  padding-top: 9px;
+  padding-bottom: 9px;
+  transform: translateY(-50%);
 }
 
 table.console-table button.highlight-button {

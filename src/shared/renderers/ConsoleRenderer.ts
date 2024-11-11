@@ -11,6 +11,7 @@ export default class ConsoleRenderer implements TabRenderer {
   private TABLE_BODY: HTMLElement;
   private JUMP_INPUT: HTMLInputElement;
   private JUMP_BUTTON: HTMLInputElement;
+  private EXPORT_BUTTON: HTMLButtonElement | null;
   private HIGHLIGHT_BUTTON: HTMLButtonElement;
   private FILTER_INPUT: HTMLInputElement;
   private FIELD_CELL: HTMLElement;
@@ -36,7 +37,12 @@ export default class ConsoleRenderer implements TabRenderer {
     this.TABLE_BODY = this.TABLE_CONTAINER.firstElementChild?.firstElementChild as HTMLElement;
     this.JUMP_INPUT = this.TABLE_BODY.firstElementChild?.firstElementChild?.firstElementChild as HTMLInputElement;
     this.JUMP_BUTTON = this.TABLE_BODY.firstElementChild?.firstElementChild?.lastElementChild as HTMLInputElement;
-    this.HIGHLIGHT_BUTTON = this.TABLE_BODY.firstElementChild?.lastElementChild?.children[1] as HTMLButtonElement;
+    this.EXPORT_BUTTON = hasController
+      ? (this.TABLE_BODY.firstElementChild?.lastElementChild?.children[1] as HTMLButtonElement)
+      : null;
+    this.HIGHLIGHT_BUTTON = this.TABLE_BODY.firstElementChild?.lastElementChild?.getElementsByClassName(
+      "highlight-button"
+    )[0] as HTMLButtonElement;
     this.FILTER_INPUT = this.TABLE_BODY.firstElementChild?.lastElementChild?.lastElementChild as HTMLInputElement;
     this.FIELD_CELL = this.TABLE_BODY.firstElementChild?.lastElementChild as HTMLElement;
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild?.firstElementChild as HTMLElement;
@@ -73,6 +79,20 @@ export default class ConsoleRenderer implements TabRenderer {
     });
     this.JUMP_BUTTON.addEventListener("click", jump);
     this.FILTER_INPUT.addEventListener("input", () => this.updateData());
+
+    // Export button
+    if (this.EXPORT_BUTTON !== null) {
+      this.EXPORT_BUTTON.addEventListener("click", () => {
+        if (this.values.length === 0) {
+          window.sendMainMessage("error", {
+            title: "Cannot export console log",
+            content: "Please add a field with console data, then try again."
+          });
+        } else {
+          window.sendMainMessage("export-console", this.values.join("\n"));
+        }
+      });
+    }
 
     // Highlight button
     this.HIGHLIGHT_BUTTON.addEventListener("click", () => {

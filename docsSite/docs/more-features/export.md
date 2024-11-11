@@ -16,6 +16,10 @@ To view options for exporting, click `File` > `Export Data...`.
 
 <img src={Image1} alt="Export options" height="250" />
 
+:::tip
+In addition to the full-log export described here, the 💬 [Console](../tab-reference/console.md) tab allows console data to be exported to a text file.
+:::
+
 ## Options
 
 The following options are provided when exporting:
