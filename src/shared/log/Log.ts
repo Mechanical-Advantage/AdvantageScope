@@ -15,9 +15,9 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
 import StructDecoder from "./StructDecoder";
-import PhotonStructDecoder from "./PhotonStructDecoder";
 
 /** Represents a collection of log fields. */
 export default class Log {

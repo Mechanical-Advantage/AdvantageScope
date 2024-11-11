@@ -14,7 +14,12 @@ const PointsController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
-      sourceTypes: ["Translation2d", "Translation2d[]", "NumberArray", "TargetCorner:16f6ac0dedc8eaccb951f4895d9e18b6[]"],
+      sourceTypes: [
+        "Translation2d",
+        "Translation2d[]",
+        "NumberArray",
+        "TargetCorner:16f6ac0dedc8eaccb951f4895d9e18b6[]"
+      ],
       showDocs: true,
       options: [
         {

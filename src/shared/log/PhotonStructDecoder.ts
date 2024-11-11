@@ -98,10 +98,7 @@ export default class PhotonStructDecoder {
   }
 
   /** Converts struct-encoded data with a known schema to an object. */
-  decode(
-    name: string,
-    value: Uint8Array | DataView
-  ): { data: unknown; schemaTypes: { [key: string]: string }; } {
+  decode(name: string, value: Uint8Array | DataView): { data: unknown; schemaTypes: { [key: string]: string } } {
     const ret = this.decodeImpl(name, value);
     return {
       data: ret.data,
@@ -110,10 +107,7 @@ export default class PhotonStructDecoder {
   }
 
   /** Converts struct-encoded data with a known schema to an object. */
-  decodeImpl(
-    name: string,
-    value: Uint8Array | DataView
-  ): DecodeResult {
+  decodeImpl(name: string, value: Uint8Array | DataView): DecodeResult {
     if (!(name in this.schemas)) {
       throw new Error("Schema not defined");
     }
@@ -153,7 +147,7 @@ export default class PhotonStructDecoder {
         let type = valueSchema.type as ValueType;
 
         if (vlaLength !== null) {
-          outputSchemaTypes[valueSchema.name] = type + '[]';
+          outputSchemaTypes[valueSchema.name] = type + "[]";
 
           let inner: unknown[] = [];
           for (let i = 0; i < vlaLength; i++) {
@@ -206,8 +200,8 @@ export default class PhotonStructDecoder {
         }
       }
     }
-    
-    console.log(outputSchemaTypes)
+
+    console.log(outputSchemaTypes);
     return {
       data: outputData,
       schemaTypes: outputSchemaTypes,
@@ -285,7 +279,7 @@ export default class PhotonStructDecoder {
 interface DecodeResult {
   data: unknown;
   schemaTypes: { [key: string]: string };
-  bytesConsumed: number
+  bytesConsumed: number;
 }
 
 interface Schema {
