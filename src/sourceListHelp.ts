@@ -61,7 +61,7 @@ window.addEventListener("message", (event) => {
           if (Object.values(LoggableType).includes(type)) {
             return type.replaceAll("Array", "[]").toLowerCase();
           } else {
-            return type;
+            return type.split(":")[0];
           }
         });
 
