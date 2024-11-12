@@ -15,12 +15,14 @@ Drag the desired field to the main view to get started. Each row represents an u
 
 ![Console view](./img/console-1.png)
 
-:::tip
+:::info
 Click the color palette icon to toggle highlighting for warning and error messages. Messages are highlighted if they contain the text "warning" or "error".
 :::
 
-The controls are similar to the 🔢 [Table](../tab-reference/table.md) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box). Enter text in the "Filter" input to only display rows which contain the filter text. Press `Ctrl+F` to quickly select the "Filter" input.
+The controls are similar to the 🔢 [Table](../tab-reference/table.md) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).
 
-:::info
-Add a "!" at the start of the filter text to _exclude_ matching messages from the main view.
+Enter text in the "Filter" input to only display rows which contain the filter text. Press `Ctrl+F` to quickly select the "Filter" input. Add a "!" at the start of the filter text to _exclude_ matching messages from the main view.
+
+:::tip
+Click the save icon to export the console data to a text file.
 :::
