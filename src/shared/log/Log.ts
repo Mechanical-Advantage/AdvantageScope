@@ -3,7 +3,7 @@ import { Pose2d, Translation2d } from "../geometry";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
-import { STRUCT_PREFIX, TYPE_KEY, applyKeyPrefix, getEnabledData, splitLogKey } from "./LogUtil";
+import { PHOTON_PREFIX, STRUCT_PREFIX, TYPE_KEY, applyKeyPrefix, getEnabledData, splitLogKey } from "./LogUtil";
 import {
   LogValueSetAny,
   LogValueSetBoolean,
@@ -15,6 +15,7 @@ import {
   LogValueSetStringArray
 } from "./LogValueSets";
 import LoggableType from "./LoggableType";
+import PhotonStructDecoder from "./PhotonStructDecoder";
 import ProtoDecoder from "./ProtoDecoder";
 import StructDecoder from "./StructDecoder";
 
@@ -24,6 +25,7 @@ export default class Log {
   private msgpackDecoder = new Decoder();
   private structDecoder = new StructDecoder();
   private protoDecoder = new ProtoDecoder();
+  private photonDecoder = new PhotonStructDecoder();
 
   private fields: { [id: string]: LogField } = {};
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
@@ -373,6 +375,11 @@ export default class Log {
     // Check for struct schema
     if (key.includes("/.schema/" + STRUCT_PREFIX)) {
       this.structDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
+      this.photonDecoder.addSchema(key.split(STRUCT_PREFIX)[1], value);
+      this.attemptQueuedStructures();
+    }
+    if (key.includes("/.schema/" + PHOTON_PREFIX)) {
+      this.photonDecoder.addSchema(key.split(PHOTON_PREFIX)[1], value);
       this.attemptQueuedStructures();
     }
   }
@@ -582,6 +589,39 @@ export default class Log {
       } catch {}
       if (decodedValue !== null) {
         this.putUnknownStruct(key, timestamp, decodedValue);
+      }
+    }
+  }
+
+  /** Writes a photonstruct-encoded raw value to the field.
+   *
+   * The schema type should not include "photonstruct:"
+   */
+  putPhotonStruct(key: string, timestamp: number, value: Uint8Array, schemaType: string) {
+    this.putRaw(key, timestamp, value);
+    if (this.fields[key].getType() === LoggableType.Raw) {
+      this.setGeneratedParent(key);
+      this.setStructuredType(key, schemaType);
+      let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
+      try {
+        decodedData = this.photonDecoder.decode(schemaType, value);
+      } catch {}
+      if (decodedData !== null) {
+        this.putUnknownStruct(key, timestamp, decodedData.data);
+        Object.entries(decodedData.schemaTypes).forEach(([childKey, schemaType]) => {
+          // Create the key so it can be dragged even though it doesn't have data
+          let fullChildKey = key + "/" + childKey;
+          this.createBlankField(fullChildKey, LoggableType.Empty);
+          this.processTimestamp(fullChildKey, timestamp);
+          this.setStructuredType(fullChildKey, schemaType);
+        });
+      } else {
+        this.queuedStructs.push({
+          key: key,
+          timestamp: timestamp,
+          value: value,
+          schemaType: schemaType
+        });
       }
     }
   }
