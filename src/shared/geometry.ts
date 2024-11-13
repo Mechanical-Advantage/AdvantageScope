@@ -161,7 +161,7 @@ export function grabPosesAuto(
   logType: string,
   timestamp: number,
   uuid?: string,
-  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
+  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | "DifferentialSample" | "SwerveSample",
   numberArrayUnits?: "radians" | "degrees",
   zebraOrigin?: "blue" | "red",
   zebraFieldWidth?: number,
@@ -214,6 +214,12 @@ export function grabPosesAuto(
       } else {
         return [];
       }
+    case "DifferentialSample":
+    case "SwerveSample":
+      return grabSample(log, key + "/pose", timestamp, uuid); // TODO
+    case "DifferentialSample[]":
+    case "SwerveSample[]":
+      return grabSampleArray(log, key + "/pose", timestamp, uuid); // TODO!
     default:
       return [];
   }
@@ -247,7 +253,7 @@ export function grabNumberArray(
   log: Log,
   key: string,
   timestamp: number,
-  format: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
+  format: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | "DifferentialSample" | "SwerveSample",
   unit?: "radians" | "degrees",
   uuid?: string
 ): AnnotatedPose3d[] {
@@ -438,6 +444,21 @@ export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: stri
   ];
 }
 
+export function grabSample(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return [
+    {
+      pose: pose2dTo3d({
+        translation: [
+          getOrDefault(log, key + "/pose/translation/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/translation/y", LoggableType.Number, timestamp, 0, uuid)
+        ],
+        rotation: getOrDefault(log, key + "/pose/rotation/value", LoggableType.Number, timestamp, 0, uuid)
+      }),
+      annotation: { is2DSource: true }
+    }
+  ];
+}
+
 export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
@@ -462,6 +483,13 @@ export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: stri
 export function grabPose2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabPose2d(log, key + "/" + index.toString(), timestamp)),
+    [] as AnnotatedPose3d[]
+  );
+}
+
+export function grabSampleArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+    (array, index) => array.concat(grabSample(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
@@ -577,7 +605,7 @@ export function grabHeatmapData(
   logType: string,
   timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full",
   uuid?: string,
-  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
+  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | "DifferentialSample" | "SwerveSample",
   numberArrayUnits?: "radians" | "degrees",
   zebraOrigin?: "blue" | "red",
   zebraFieldWidth?: number,

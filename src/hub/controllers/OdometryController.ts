@@ -275,7 +275,13 @@ export default class OdometryController implements TabController {
       }
 
       // Get pose data
-      let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose2d";
+      let numberArrayFormat:
+        | "Translation2d"
+        | "Translation3d"
+        | "DifferentialSample"
+        | "SwerveSample"
+        | "Pose2d"
+        | "Pose3d" = "Pose2d";
       let numberArrayUnits: "radians" | "degrees" = "radians";
       if ("format" in source.options) {
         let formatRaw = source.options.format;
@@ -283,7 +289,9 @@ export default class OdometryController implements TabController {
           formatRaw === "Pose2d" ||
           formatRaw === "Pose3d" ||
           formatRaw === "Translation2d" ||
-          formatRaw === "Translation3d"
+          formatRaw === "Translation3d" ||
+          formatRaw === "DifferentialSample" ||
+          formatRaw === "SwerveSample"
             ? formatRaw
             : "Pose2d";
       }

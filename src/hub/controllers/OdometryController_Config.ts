@@ -23,7 +23,11 @@ const OdometryController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]"
+        "Transform3d[]",
+        "DifferentialSample",
+        "DifferentialSample[]",
+        "SwerveSample",
+        "SwerveSample[]"
       ],
       showDocs: true,
       options: [],
@@ -79,7 +83,11 @@ const OdometryController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]"
+        "Transform3d[]",
+        "DifferentialSample",
+        "DifferentialSample[]",
+        "SwerveSample",
+        "SwerveSample[]"
       ],
       showDocs: true,
       options: [
@@ -174,7 +182,11 @@ const OdometryController_Config: SourceListConfig = {
         "Translation2d",
         "Translation3d",
         "Translation2d[]",
-        "Translation3d[]"
+        "Translation3d[]",
+        "DifferentialSample",
+        "DifferentialSample[]",
+        "SwerveSample",
+        "SwerveSample[]"
       ],
       showDocs: true,
       options: [
@@ -348,7 +360,9 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d[]",
         "Translation2d[]",
         "Translation3d[]",
-        "Trajectory"
+        "Trajectory",
+        "DifferentialSample[]",
+        "SwerveSample[]"
       ],
       showDocs: true,
       options: [
@@ -428,6 +442,10 @@ const OdometryController_Config: SourceListConfig = {
         "Translation3d",
         "Translation2d[]",
         "Translation3d[]",
+        "DifferentialSample",
+        "DifferentialSample[]",
+        "SwerveSample",
+        "SwerveSample[]",
         "ZebraTranslation"
       ],
       showDocs: true,
@@ -501,7 +519,11 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d",
         "Transform2d[]",
         "Transform3d[]",
-        "Trajectory"
+        "Trajectory",
+        "DifferentialSample",
+        "DifferentialSample[]",
+        "SwerveSample",
+        "SwerveSample[]"
       ],
       showDocs: true,
       options: [
