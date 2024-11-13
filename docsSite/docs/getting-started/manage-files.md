@@ -18,10 +18,6 @@ import Image2 from './img/open-file-2.png';
 Hoot log files can only be opened after agreeing to CTRE's [terms and conditions](https://PLACEHOLDER). AdvantageScope displays a prompt to confirm agreement to these terms when opening a Hoot log file for the first time.
 :::
 
-:::warning
-Hoot log files cannot be opened on Windows for ARM devices, regardless of the version of AdvantageScope installed. This is a limitation of CTRE's Hoot file decoding tool.
-:::
-
 ## Opening Logs
 
 In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log files from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.
