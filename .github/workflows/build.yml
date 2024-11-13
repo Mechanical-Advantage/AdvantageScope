@@ -18,23 +18,26 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
         env:
           ASCOPE_NO_FFMPEG: true
       - name: Check formatting
-        run: npm run check-format
+        run: pnpm run check-format
       - name: Compile WebAssembly
-        run: mkdir bundles; npm run wasm:compile
+        run: mkdir bundles; pnpm run wasm:compile
       - name: Compile bundles (FRC 6328)
-        run: npm run compile
+        run: pnpm run compile
       - name: Upload bundles (FRC 6328)
         uses: actions/upload-artifact@v4
         with:
@@ -43,7 +46,7 @@ jobs:
             bundles/*.js
             bundles/*.wasm
       - name: Compile bundles (WPILib)
-        run: npm run compile
+        run: pnpm run compile
         env:
           ASCOPE_DISTRIBUTOR: WPILIB
       - name: Upload bundles (WPILib)
@@ -67,20 +70,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
           name: bundles
           path: bundles
       - name: Build documentation
-        run: npm run docs:build-embed
+        run: pnpm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
@@ -124,13 +130,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -148,7 +157,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build documentation
-        run: npm run docs:build-embed
+        run: pnpm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch }} --publish never
         env:
@@ -201,13 +210,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
       - name: Install Linux packages
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapd
@@ -225,7 +237,7 @@ jobs:
           name: bundles
           path: bundles
       - name: Build documentation
-        run: npm run docs:build-embed
+        run: pnpm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
@@ -269,20 +281,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
           name: bundles-wpilib
           path: bundles
       - name: Build documentation
-        run: npm run docs:build-embed
+        run: pnpm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir
         env:
@@ -330,13 +345,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -354,7 +372,7 @@ jobs:
           name: bundles-wpilib
           path: bundles
       - name: Build documentation
-        run: npm run docs:build-embed
+        run: pnpm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:
@@ -404,20 +422,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm"
+          cache: "pnpm"
       - name: Install Node.js dependencies
-        run: npm ci
+        run: pnpm i
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
           name: bundles-wpilib
           path: bundles
       - name: Build documentation
-        run: npm run docs:build-embed
+        run: pnpm run docs:build-embed
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -l dir
         env:
