@@ -13,19 +13,19 @@
   "scripts": {
     "start": "electron bundles/main.js",
     "compile": "rollup -c --configMain && rollup -c --configLargeRenderers && rollup -c --configSmallRenderers && rollup -c --configWorkers",
-    "build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build",
-    "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
+    "build": "pnpm run compile && pnpm run wasm:compile && pnpm run docs:build-embed && electron-builder build",
+    "fast-build": "pnpm run compile && pnpm run wasm:compile && pnpm run docs:build-embed && electron-builder build --dir",
     "watch": "rollup -c -w",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
     "wasm:compile": "node wasmCompile.mjs",
-    "docs:start": "cd docsSite && npm run start && cd ..",
-    "docs:build": "cd docsSite && npm run build && cd ..",
-    "docs:build-embed": "cd docsSite && npm run build-embed && cd ..",
-    "docs:clear": "cd docsSite && npm run clear && cd ..",
-    "docs:serve": "cd docsSite && npm run serve && cd ..",
-    "postinstall": "cd docsSite && npm install && cd .. && node getLicenses.mjs && node ffmpegDownload.mjs && node tesseractLangDownload.mjs"
+    "docs:start": "cd docsSite && pnpm run start && cd ..",
+    "docs:build": "cd docsSite && pnpm run build && cd ..",
+    "docs:build-embed": "cd docsSite && pnpm run build-embed && cd ..",
+    "docs:clear": "cd docsSite && pnpm run clear && cd ..",
+    "docs:serve": "cd docsSite && pnpm run serve && cd ..",
+    "postinstall": "cd docsSite && pnpm install && cd .. && node getLicenses.mjs && node ffmpegDownload.mjs && node tesseractLangDownload.mjs"
   },
   "devDependencies": {
     "@electron/notarize": "^2.1.0",
