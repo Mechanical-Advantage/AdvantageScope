@@ -216,10 +216,10 @@ export function grabPosesAuto(
       }
     case "DifferentialSample":
     case "SwerveSample":
-      return grabSample(log, key + "/pose", timestamp, uuid); // TODO
+      return grabSample(log, key, timestamp, uuid);
     case "DifferentialSample[]":
     case "SwerveSample[]":
-      return grabSampleArray(log, key + "/pose", timestamp, uuid); // TODO!
+      return grabSampleArray(log, key, timestamp, uuid);
     default:
       return [];
   }
@@ -299,6 +299,10 @@ export function grabNumberArray(
           }
         });
       }
+      break;
+    case "DifferentialSample":
+    case "SwerveSample":
+      //TODO
       break;
     case "Pose3d":
       for (let i = 0; i < value.length - 6; i += 7) {
