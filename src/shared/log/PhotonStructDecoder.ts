@@ -194,7 +194,6 @@ export default class PhotonStructDecoder {
       }
     }
 
-    console.log(outputSchemaTypes);
     return {
       data: outputData,
       schemaTypes: outputSchemaTypes,
