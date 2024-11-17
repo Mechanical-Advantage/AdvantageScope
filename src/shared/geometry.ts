@@ -161,7 +161,7 @@ export function grabPosesAuto(
   logType: string,
   timestamp: number,
   uuid?: string,
-  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | "DifferentialSample" | "SwerveSample",
+  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
   zebraOrigin?: "blue" | "red",
   zebraFieldWidth?: number,
@@ -214,12 +214,9 @@ export function grabPosesAuto(
       } else {
         return [];
       }
-    case "DifferentialSample":
-    case "SwerveSample":
-      return grabSample(log, key, timestamp, uuid);
     case "DifferentialSample[]":
     case "SwerveSample[]":
-      return grabSampleArray(log, key, timestamp, uuid);
+      return grabChoreoSampleArray(log, key, timestamp, uuid);
     default:
       return [];
   }
@@ -253,7 +250,7 @@ export function grabNumberArray(
   log: Log,
   key: string,
   timestamp: number,
-  format: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | "DifferentialSample" | "SwerveSample",
+  format: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   unit?: "radians" | "degrees",
   uuid?: string
 ): AnnotatedPose3d[] {
@@ -299,10 +296,6 @@ export function grabNumberArray(
           }
         });
       }
-      break;
-    case "DifferentialSample":
-    case "SwerveSample":
-      //TODO
       break;
     case "Pose3d":
       for (let i = 0; i < value.length - 6; i += 7) {
@@ -448,7 +441,7 @@ export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: stri
   ];
 }
 
-export function grabSample(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+export function grabChoreoSample(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
       pose: pose2dTo3d({
@@ -491,9 +484,9 @@ export function grabPose2dArray(log: Log, key: string, timestamp: number, uuid?:
   );
 }
 
-export function grabSampleArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+export function grabChoreoSampleArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
-    (array, index) => array.concat(grabSample(log, key + "/" + index.toString(), timestamp)),
+    (array, index) => array.concat(grabChoreoSample(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
@@ -609,7 +602,7 @@ export function grabHeatmapData(
   logType: string,
   timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full",
   uuid?: string,
-  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | "DifferentialSample" | "SwerveSample",
+  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
   zebraOrigin?: "blue" | "red",
   zebraFieldWidth?: number,
