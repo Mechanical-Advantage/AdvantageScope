@@ -23,9 +23,7 @@ const OdometryController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]",
-        "DifferentialSample[]",
-        "SwerveSample[]"
+        "Transform3d[]"
       ],
       showDocs: true,
       options: [],
@@ -81,9 +79,7 @@ const OdometryController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]",
-        "DifferentialSample[]",
-        "SwerveSample[]"
+        "Transform3d[]"
       ],
       showDocs: true,
       options: [
@@ -178,9 +174,7 @@ const OdometryController_Config: SourceListConfig = {
         "Translation2d",
         "Translation3d",
         "Translation2d[]",
-        "Translation3d[]",
-        "DifferentialSample[]",
-        "SwerveSample[]"
+        "Translation3d[]"
       ],
       showDocs: true,
       options: [
@@ -436,8 +430,6 @@ const OdometryController_Config: SourceListConfig = {
         "Translation3d",
         "Translation2d[]",
         "Translation3d[]",
-        "DifferentialSample[]",
-        "SwerveSample[]",
         "ZebraTranslation"
       ],
       showDocs: true,
@@ -511,9 +503,9 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d",
         "Transform2d[]",
         "Transform3d[]",
-        "Trajectory",
         "DifferentialSample[]",
-        "SwerveSample[]"
+        "SwerveSample[]",
+        "Trajectory"
       ],
       showDocs: true,
       options: [
