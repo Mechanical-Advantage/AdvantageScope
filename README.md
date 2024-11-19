@@ -1,4 +1,4 @@
-# ![AdvantageScope](/banner.png)
+# ![AdvantageScope](/docsSite/docs/img/banner.png)
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
