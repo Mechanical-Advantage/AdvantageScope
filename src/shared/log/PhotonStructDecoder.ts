@@ -67,7 +67,8 @@ export default class PhotonStructDecoder {
         if (arrayLengthStr === "?") {
           isArray = true; // VLA
         } else {
-          throw new Error("Fixed length arrays are unimplemented");
+          console.warn("Fixed length arrays are unimplemented");
+          return false;
         }
       } else {
         // Normal value
@@ -75,7 +76,8 @@ export default class PhotonStructDecoder {
       }
 
       if (isOptional && isArray) {
-        throw Error("Can't be optional AND array?");
+        console.warn("Can't be optional AND array?");
+        return false;
       }
 
       // Create schema
