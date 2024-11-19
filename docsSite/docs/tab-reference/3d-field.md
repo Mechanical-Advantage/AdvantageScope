@@ -118,7 +118,7 @@ Another simple use case is showing the state of game pieces within the robot bas
 <details>
 <summary>Code Example</summary>
 
-The AdvantageKit KitBot 2024 example project includes a simple example of a [command](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) that animates a note traveling from the robot to the speaker. This command is incorporated into the standard [launch sequence](https://github.com/Mechanical-Advantage/AdvantageKit/blob/main/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73), triggering the animation whenever a note is released. [This video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) shows how game piece animations can be used to visualize auto routines for several different games.
+The AdvantageKit KitBot 2024 example project includes a simple example of a [command](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) that animates a note traveling from the robot to the speaker. This command is incorporated into the standard [launch sequence](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73), triggering the animation whenever a note is released. [This video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) shows how game piece animations can be used to visualize auto routines for several different games.
 
 </details>
 
