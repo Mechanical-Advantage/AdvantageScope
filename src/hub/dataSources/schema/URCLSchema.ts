@@ -119,9 +119,18 @@ export default class URCLSchema {
         if (frameIndex >= 0 && frameIndex < PERIODIC_FRAME_SPECS.length) {
           let frameSpec = PERIODIC_FRAME_SPECS[frameIndex];
           let frameValues = parseCanFrame(frameSpec, { data: messageValue }) as { [key: string]: BigNumber | boolean };
+
+          // Variables for calculating derived values
+          let appliedOutput: number | null = null;
+          let voltage: number | null = null;
+          let outputCurrent: number | null = null;
+
+          // Iterate over signals
           Object.entries(frameValues).forEach(([signalKey, signalValue]) => {
             if (!(signalKey in frameSpec.signals)) return;
             let signalSpec = (frameSpec.signals as { [key: string]: any })[signalKey];
+
+            // Get signal log key
             if (signalSpec.name.includes("Reserved")) return;
             let signalGroup = "";
             if (signalSpec.name.includes("Fault")) {
@@ -129,11 +138,13 @@ export default class URCLSchema {
             } else if (signalSpec.name.includes("Warning")) {
               signalGroup = "Warning";
             }
-            let signalLogKey =
-              deviceKey +
-              "/" +
-              (signalGroup.length === 0 ? "" : signalGroup + "/") +
-              (signalSpec.name as string).replaceAll(" ", "");
+            let signalName = signalSpec.name.replaceAll(" ", "");
+            if (signalName === "Current") {
+              signalName = "CurrentOutput";
+            }
+            let signalLogKey = deviceKey + "/" + (signalGroup.length === 0 ? "" : signalGroup + "/") + signalName;
+
+            // Add signal to log
             switch (signalSpec.type as string) {
               case "int":
               case "uint":
@@ -147,13 +158,38 @@ export default class URCLSchema {
             if ("description" in signalSpec) {
               log.setMetadataString(signalLogKey, JSON.stringify({ description: signalSpec.description }));
             }
-            if (signalSpec.name === "Applied Output") {
-              const voltage = getOrDefault(log, deviceKey + "/Voltage", LoggableType.Number, timestamp, 0);
-              if (voltage > 0) {
-                log.putNumber(deviceKey + "/AppliedOutputVoltage", timestamp, Number(signalValue) * voltage);
-              }
+
+            // Save for derived fields
+            if (signalName === "AppliedOutput") {
+              appliedOutput = Number(signalValue);
+            } else if (signalName === "Voltage") {
+              voltage = Number(signalValue);
+            } else if (signalName === "CurrentOutput") {
+              outputCurrent = Number(signalValue);
             }
           });
+
+          // Add derived fields
+          if (appliedOutput !== null && voltage !== null && voltage > 0) {
+            log.putNumber(deviceKey + "/AppliedOutputVoltage", timestamp, appliedOutput * voltage);
+            log.setMetadataString(
+              deviceKey + "/AppliedOutputVoltage",
+              JSON.stringify({
+                description:
+                  "Calculated by AdvantageScope. The estimated voltage output based on the applied output (duty cycle) and input voltage of the Spark."
+              })
+            );
+          }
+          if (outputCurrent !== null && appliedOutput !== null) {
+            log.putNumber(deviceKey + "/CurrentInput", timestamp, Math.abs(outputCurrent * appliedOutput));
+            log.setMetadataString(
+              deviceKey + "/CurrentInput",
+              JSON.stringify({
+                description:
+                  "Calculated by AdvantageScope. The input (supply) current based on the applied output (duty cycle) and output (stator) current of the Spark."
+              })
+            );
+          }
         }
       }
     }
