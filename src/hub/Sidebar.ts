@@ -33,6 +33,7 @@ export default class Sidebar {
     "Tuning",
     "NetworkInputs",
     "DashboardInputs",
+    "RadioStatus",
     "Timestamp",
     "AdvantageKit",
     "DS",
