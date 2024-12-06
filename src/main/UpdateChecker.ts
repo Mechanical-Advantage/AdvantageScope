@@ -1,7 +1,7 @@
 import { app, dialog, shell } from "electron";
 import fetch from "electron-fetch";
-import { isBeta } from "./BetaConfig";
 import { REPOSITORY, WINDOW_ICON } from "./Constants";
+import { isBeta } from "./betaUtil";
 
 /** Checks for updates from GitHub and prompts the user when requested. */
 export default class UpdateChecker {

@@ -5,14 +5,8 @@ import path from "path";
 import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { scaleValue } from "../shared/util";
 import { APP_VERSION } from "./Constants";
+import { BETA_CONFIG } from "./betaConfig";
 
-// Constants
-const BETA_CONFIG: BetaConfig | null = {
-  year: "2025",
-  expiration: new Date(2025, 0, 4),
-  surveyUrl:
-    "https://docs.google.com/forms/d/e/1FAIpQLSe7xxOln2NUO6pNrGQAPAJ5W7HH2dcIfcCYYi0etTQQE5ORwg/viewform?usp=pp_url&entry.1466744914=__version__"
-};
 const BETA_STATE_FILENAME =
   BETA_CONFIG === null ? null : path.join(app.getPath("userData"), "beta-" + BETA_CONFIG.year + ".json");
 
@@ -110,11 +104,6 @@ export function openBetaSurvey(): void {
 }
 
 // Types
-type BetaConfig = {
-  year: string;
-  expiration: Date;
-  surveyUrl: string;
-};
 type BetaState = {
   welcomeComplete: boolean;
   surveyStatus: number | boolean;

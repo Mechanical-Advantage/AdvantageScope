@@ -11,6 +11,7 @@ import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";
 import VideoSource from "../shared/VideoSource";
 import { createUUID, zfill } from "../shared/util";
 import { PREFS_FILENAME, VIDEO_CACHE, VIDEO_CACHE_FALLBACK, WINDOW_ICON } from "./Constants";
+import getElectronPlatform from "./getElectronPlatform";
 
 export class VideoProcessor {
   private static NUM_TESSERACT_WORKERS = 8;
@@ -106,24 +107,11 @@ export class VideoProcessor {
       fs.mkdirSync(cachePath, { recursive: true });
 
       // Find ffmpeg path
-      let platformString = "";
-      switch (process.platform) {
-        case "darwin":
-          platformString = "mac";
-          break;
-        case "linux":
-          platformString = "linux";
-          break;
-        case "win32":
-          platformString = "win";
-          break;
-      }
       let ffmpegPath: string;
-      let arch = process.arch === "arm" ? "armv7l" : process.arch;
       if (app.isPackaged) {
-        ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + platformString + "-" + arch);
+        ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + getElectronPlatform());
       } else {
-        ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + platformString + "-" + arch);
+        ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + getElectronPlatform());
       }
 
       // Start ffmpeg
