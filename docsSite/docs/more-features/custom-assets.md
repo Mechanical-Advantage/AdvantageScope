@@ -78,6 +78,10 @@ Robot models can contain articulated components for visualizing mechanism data (
 
 Component configuration is provided in the robot's config file. An array of components should be provided under the "components" key. When no component poses are provided by the user in AdvantageScope, the component models will be positioned using the default robot rotations and position (see above). When component poses are provided by the user, the "zeroed" rotations and position are instead applied to bring each component to the robot origin. The user's poses are then applied to move each component to the correct location on the robot.
 
+:::tip
+When positioning 3D components relative to the robot, the origin of the coordinate system matches the published pose of the robot. Note that this pose generally uses a height of zero, which is the floor plane and NOT the robot bellypan (for typical 2D robot movement).
+:::
+
 ```json
 "components": [
   {
