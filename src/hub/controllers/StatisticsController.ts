@@ -12,6 +12,7 @@ export default class StatisticsController implements TabController {
 
   private UPDATE_PERIOD_MS = 100;
   private DEFAULT_DT = 0.02;
+  private MAX_BINS = 1000;
 
   private TIME_RANGE: HTMLSelectElement;
   private RANGE_MIN: HTMLInputElement;
@@ -55,7 +56,11 @@ export default class StatisticsController implements TabController {
   /** Updates the step size for each histogram input. */
   private updateHistogramInputs() {
     if (Number(this.STEP_SIZE.value) <= 0) {
-      this.STEP_SIZE.value = cleanFloat(Number(this.STEP_SIZE.step) * 0.9).toString();
+      this.STEP_SIZE.value = cleanFloat(Number(this.STEP_SIZE.step)).toString();
+    }
+    let range = Math.abs(Number(this.RANGE_MAX.value) - Number(this.RANGE_MIN.value));
+    if (range / Number(this.STEP_SIZE.value) > this.MAX_BINS) {
+      this.STEP_SIZE.value = cleanFloat(Math.ceil(range / this.MAX_BINS)).toString();
     }
     let step = Math.pow(10, Math.floor(Math.log10(Number(this.STEP_SIZE.value))));
     this.STEP_SIZE.step = step.toString();
@@ -136,12 +141,13 @@ export default class StatisticsController implements TabController {
       this.lastUpdateTime = currentTime;
 
       // Get bins
+      this.updateHistogramInputs;
       let min = Number(this.RANGE_MIN.value);
       let max = Number(this.RANGE_MAX.value);
       let step = Number(this.STEP_SIZE.value);
       if (step <= 0) step = 1;
       let bins: number[] = [];
-      for (let i = min; i < max; i += step) {
+      for (let i = min; i < max && bins.length < this.MAX_BINS; i += step) {
         bins.push(i);
       }
 
@@ -252,7 +258,7 @@ export default class StatisticsController implements TabController {
           }
 
           // Sort samples (required for some statistic calculations)
-          samples.sort();
+          samples.sort((a, b) => a - b);
 
           // Get histogram counts
           let histogramCounts: number[] = bins.map(() => 0);
@@ -266,6 +272,8 @@ export default class StatisticsController implements TabController {
           });
 
           // Get statistics
+          let samplesNonNegative = samples.filter((x) => x >= 0);
+          let samplesPositive = samples.filter((x) => x > 0);
           let statistics: StatisticsRendererCommand_Stats = {
             count: samples.length,
             min: samples.length === 0 ? NaN : stats.minSorted(samples),
@@ -273,13 +281,13 @@ export default class StatisticsController implements TabController {
             mean: samples.length === 0 ? NaN : stats.mean(samples),
             median: samples.length === 0 ? NaN : stats.medianSorted(samples),
             mode: samples.length === 0 ? NaN : stats.modeSorted(samples),
-            geometricMean: samples.length === 0 ? NaN : logAverage(samples.filter((x) => x >= 0)),
-            harmonicMean: samples.length === 0 ? NaN : stats.harmonicMean(samples.filter((x) => x > 0)),
+            geometricMean: samplesNonNegative.length === 0 ? NaN : logAverage(samplesNonNegative),
+            harmonicMean: samplesPositive.length === 0 ? NaN : stats.harmonicMean(samplesPositive),
             quadraticMean: samples.length === 0 ? NaN : stats.rootMeanSquare(samples),
-            standardDeviation: samples.length === 0 ? NaN : stats.sampleStandardDeviation(samples),
+            standardDeviation: samples.length < 2 ? NaN : stats.sampleStandardDeviation(samples),
             medianAbsoluteDeviation: samples.length === 0 ? NaN : stats.medianAbsoluteDeviation(samples),
             interquartileRange: samples.length === 0 ? NaN : stats.interquartileRange(samples),
-            skewness: samples.length === 0 ? NaN : stats.sampleSkewness(samples),
+            skewness: samples.length < 3 ? NaN : stats.sampleSkewness(samples),
             percentile01: samples.length === 0 ? NaN : stats.quantileSorted(samples, 0.01),
             percentile05: samples.length === 0 ? NaN : stats.quantileSorted(samples, 0.05),
             percentile10: samples.length === 0 ? NaN : stats.quantileSorted(samples, 0.1),

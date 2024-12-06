@@ -1,6 +1,7 @@
 import ScrollSensor from "../../hub/ScrollSensor";
+import { ensureThemeContrast } from "../Colors";
 import { SelectionMode } from "../Selection";
-import { ValueScaler, calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor } from "../util";
+import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class LineGraphRenderer implements TabRenderer {
@@ -20,6 +21,7 @@ export default class LineGraphRenderer implements TabRenderer {
   private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
   private lastHoveredTime: number | null = null;
+  private lastCursorInRect = false;
   private didClearHoveredTime = false;
 
   constructor(root: HTMLElement, hasController: boolean) {
@@ -29,11 +31,17 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY = root.getElementsByClassName("line-graph-scroll")[0] as HTMLCanvasElement;
 
     // Hover handling
+    window.addEventListener("mousemove", (event) => {
+      if (this.ROOT.hidden || !this.grabZoomActive) return;
+      this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
+    });
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
       this.lastCursorX = event.clientX - this.ROOT.getBoundingClientRect().x;
+      this.lastCursorInRect = true;
     });
     this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
       this.lastCursorX = null;
+      this.lastCursorInRect = false;
       window.selection.setHoveredTime(null);
     });
 
@@ -45,21 +53,21 @@ export default class LineGraphRenderer implements TabRenderer {
         this.grabZoomStartTime = this.lastHoveredTime;
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mousemove", () => {
+    window.addEventListener("mousemove", () => {
+      if (this.ROOT.hidden) return;
       if (this.grabZoomActive && this.lastHoveredTime !== null) {
         window.selection.setGrabZoomRange([this.grabZoomStartTime, this.lastHoveredTime]);
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
+    window.addEventListener("mouseup", () => {
+      if (this.ROOT.hidden) return;
       if (this.grabZoomActive) {
         window.selection.finishGrabZoom();
         this.grabZoomActive = false;
-      }
-    });
-    this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
-      if (this.grabZoomActive) {
-        window.selection.setGrabZoomRange(null);
-        this.grabZoomActive = false;
+        if (!this.lastCursorInRect) {
+          this.lastCursorX = null;
+          window.selection.setHoveredTime(null);
+        }
       }
     });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {
@@ -116,8 +124,8 @@ export default class LineGraphRenderer implements TabRenderer {
     this.SCROLL_OVERLAY.style.top = graphTop.toString() + "px";
     let graphHeight = height - graphTop - 35;
     if (graphHeight < 1) graphHeight = 1;
-    let graphHeightOpen =
-      graphHeight - command.discreteFields.length * 20 - (command.discreteFields.length > 0 ? 5 : 0);
+    let discreteRowCount = command.discreteFields.length + command.alerts.length;
+    let graphHeightOpen = graphHeight - discreteRowCount * 20 - (discreteRowCount > 0 ? 5 : 0);
     if (graphHeightOpen < 1) graphHeightOpen = 1;
 
     // Calculate Y step sizes
@@ -216,6 +224,36 @@ export default class LineGraphRenderer implements TabRenderer {
         context.strokeStyle = field.color;
         context.stroke();
       }
+    });
+
+    // Render alerts
+    command.alerts.forEach((alertsRow, rowIndex) => {
+      let topY = graphTop + graphHeight - 20 - (command.discreteFields.length + rowIndex) * 20;
+      alertsRow.forEach((alert) => {
+        let startX = scaleValue(alert.range[0], timeRange, [graphLeft, graphLeft + graphWidth]);
+        let endX = scaleValue(alert.range[1], timeRange, [graphLeft, graphLeft + graphWidth]);
+
+        // Draw shape
+        switch (alert.type) {
+          case "error":
+            context.fillStyle = ensureThemeContrast("#ff0000");
+            break;
+          case "warning":
+            context.fillStyle = ensureThemeContrast("#ffaa00");
+            break;
+          case "info":
+            context.fillStyle = ensureThemeContrast("#00ff00");
+            break;
+        }
+        context.fillRect(startX, topY, endX - startX, 15);
+
+        // Draw text
+        let adjustedStartX = startX < graphLeft ? graphLeft : startX;
+        if (endX - adjustedStartX > 10) {
+          context.fillStyle = "black";
+          context.fillText(alert.text, adjustedStartX + 5, topY + 15 / 2, endX - adjustedStartX - 10);
+        }
+      });
     });
 
     // Render continuous data
@@ -600,6 +638,7 @@ export type LineGraphRendererCommand = {
   leftFields: LineGraphRendererCommand_NumericField[];
   rightFields: LineGraphRendererCommand_NumericField[];
   discreteFields: LineGraphRendererCommand_DiscreteField[];
+  alerts: LineGraphRendererCommand_AlertSet;
 };
 
 export type LineGraphRendererCommand_NumericField = {
@@ -616,4 +655,12 @@ export type LineGraphRendererCommand_DiscreteField = {
   color: string;
   type: "stripes" | "graph";
   toggleReference: boolean;
+};
+
+export type LineGraphRendererCommand_AlertSet = LineGraphRendererCommand_Alert[][];
+
+export type LineGraphRendererCommand_Alert = {
+  type: "error" | "warning" | "info";
+  text: string;
+  range: [number, number];
 };

@@ -1,4 +1,4 @@
-# ![AdvantageScope](/banner.png)
+# ![AdvantageScope](/docsSite/docs/img/banner.png)
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
@@ -66,6 +66,6 @@ npm start
 
 ## Assets
 
-For details on adding custom assets, see [Custom Assets](/docs/CUSTOM-ASSETS.md).
+For details on adding custom assets, see [Custom Assets](https://docs.advantagescope.org/more-features/custom-assets).
 
 Bundled assets are stored under [`bundledAssets`](/bundledAssets/). Larger assets are downloaded automatically by AdvantageScope from the [AdvantageScopeAssets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) repository.

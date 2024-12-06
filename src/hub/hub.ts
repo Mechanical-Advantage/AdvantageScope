@@ -6,7 +6,7 @@ import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS, MERGE_PREFIX } from "../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, MERGE_PREFIX, getEnabledData } from "../shared/log/LogUtil";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
@@ -286,9 +286,13 @@ window.getLoadingFields = () => {
 /** Connects to a historical data source. */
 function startHistorical(path: string, clear = true, merge = false) {
   clear = clear || !merge;
+  let originalTimelineRange: null | [number, number] = null;
+  let originalTimelineIsMaxZoom: null | boolean = null;
   if (clear) {
     historicalSources.forEach((entry) => entry.source.stop());
     historicalSources = [];
+    originalTimelineRange = window.selection.getTimelineRange();
+    originalTimelineIsMaxZoom = window.selection.getTimelineIsMaxZoom();
     window.log = new Log();
     window.sidebar.refresh();
     window.tabs.refresh();
@@ -349,6 +353,11 @@ function startHistorical(path: string, clear = true, merge = false) {
           setWindowTitle(logFriendlyName);
           sourceEntry.progress = null;
           updateLoading();
+          if (originalTimelineRange !== null && originalTimelineIsMaxZoom !== null) {
+            window.selection.setTimelineRange(originalTimelineRange, originalTimelineIsMaxZoom);
+            originalTimelineRange = null;
+            originalTimelineIsMaxZoom = null;
+          }
           break;
         case HistoricalDataSourceStatus.Error:
           setWindowTitle(logFriendlyName, "Error");
@@ -646,6 +655,22 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
+    case "zoom-enabled":
+      {
+        let enabledData = getEnabledData(window.log);
+        let range = window.log.getTimestampRange();
+        let firstEnableIndex = enabledData === null ? -1 : enabledData.values.findIndex((value) => value);
+        let lastDisableIndex = enabledData === null ? -1 : enabledData.values.findLastIndex((value) => !value);
+        if (firstEnableIndex !== -1) {
+          range[0] = enabledData!.timestamps[firstEnableIndex];
+        }
+        if (lastDisableIndex !== -1) {
+          range[1] = enabledData!.timestamps[lastDisableIndex];
+        }
+        window.selection.setTimelineRange(range, firstEnableIndex === -1 && lastDisableIndex === -1);
+      }
+      break;
+
     case "show-update-button":
       document.documentElement.style.setProperty("--show-update-button", message.data ? "1" : "0");
       UPDATE_BUTTON.hidden = !message.data;
@@ -771,8 +796,9 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "set-playback-speed":
-      window.selection.setPlaybackSpeed(message.data);
+    case "set-playback-options":
+      window.selection.setPlaybackSpeed(message.data.speed);
+      window.selection.setPlaybackLooping(message.data.looping);
       break;
 
     case "toggle-sidebar":

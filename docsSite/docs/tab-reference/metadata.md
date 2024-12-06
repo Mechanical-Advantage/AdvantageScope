@@ -13,7 +13,7 @@ The metadata tab shows values published to the hidden "/Metadata" table or throu
 
 The example code below shows how to log metadata using Java.
 
-<Tabs>
+<Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
 In WPILib, the values must be logged to the "/Metadata" table as strings.
@@ -35,7 +35,7 @@ entry.append("MyValue");
 In AdvantageKit, call the method below before starting the logger. Metadata is stored separately when running in real and replay for easy comparison.
 
 ```java
-Logger.getInstance().recordMetadata("MyKey", "MyValue");
+Logger.recordMetadata("MyKey", "MyValue");
 ```
 
 </TabItem>

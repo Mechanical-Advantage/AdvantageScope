@@ -2,8 +2,8 @@
 sidebar_position: 1
 ---
 
-import Image2 from './img/line-graph-2.png';
 import Image3 from './img/line-graph-3.png';
+import Image4 from './img/line-graph-4.png';
 
 # 📉 Line Graph
 
@@ -29,11 +29,17 @@ To get started, drag a field to one of the three sections (left, right, or discr
 The color and line style of each field can be customized by clicking the colored icon or right-clicking on the field name.
 :::
 
+:::tip
+Data from the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API can be visualized by adding the alerts group as a discrete field. An example visualization is shown below.
+
+![Alerts visualization](./img/line-graph-2.png)
+:::
+
 ### Adjusting Axes
 
 By default, each axis adjusts its range based on the visible data. To disable auto-ranging and lock the range to its current min and max, click the three dots near the axis title and then `Lock Axis`. To manually adjust the range, choose `Edit Range...` and enter the desired values.
 
-<img src={Image2} alt="Editing axis range" height="250" />
+<img src={Image3} alt="Editing axis range" height="250" />
 
 ### Unit Conversion
 
@@ -43,7 +49,7 @@ To adjust the units for an axis, click the three dots near the axis title and th
 To quickly enable or disable unit conversion, click the three dots near the axis title and choose `Recent Presets` or `Reset Units`.
 :::
 
-<img src={Image3} alt="Editing unit conversion" height="250" />
+<img src={Image4} alt="Editing unit conversion" height="250" />
 
 ### Integration & Differentiation
 

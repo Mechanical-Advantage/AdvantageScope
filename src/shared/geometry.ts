@@ -184,6 +184,8 @@ export function grabPosesAuto(
       return grabRotation2dArray(log, key, timestamp, uuid);
     case "Rotation3d[]":
       return grabRotation3dArray(log, key, timestamp, uuid);
+    case "TargetCorner:16f6ac0dedc8eaccb951f4895d9e18b6[]":
+      return grabTargetCornerArray(log, key, timestamp, uuid);
     case "Translation2d":
       return grabTranslation2d(log, key, timestamp, uuid);
     case "Translation3d":
@@ -352,6 +354,28 @@ export function grabRotation3dArray(log: Log, key: string, timestamp: number, uu
     (array, index) => array.concat(grabRotation3d(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
+}
+
+export function grabTargetCornerArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+    (array, index) => array.concat(grabTargetCorner(log, key + "/" + index.toString(), timestamp)),
+    [] as AnnotatedPose3d[]
+  );
+}
+
+export function grabTargetCorner(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return [
+    {
+      pose: {
+        translation: translation2dTo3d([
+          getOrDefault(log, key + "/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/y", LoggableType.Number, timestamp, 0, uuid)
+        ]),
+        rotation: Rotation3dZero
+      },
+      annotation: { is2DSource: true }
+    }
+  ];
 }
 
 export function grabTranslation2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {

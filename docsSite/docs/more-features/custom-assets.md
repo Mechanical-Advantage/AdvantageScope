@@ -42,6 +42,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
 {
   "name": string // Unique name, required for all asset types
   "sourceUrl": string // Link to the original file, optional
+  "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
   "cameras": [ // Fixed camera positions, can be empty
@@ -59,6 +60,14 @@ A model must be included in the folder with the name "model.glb". CAD files must
 
 The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms are applied in this order.
 
+:::info
+AdvantageScope simplifies model geometry automatically to improve performance, where the level of detail depends on the selected [rendering mode](../tab-reference/3d-field.md#rendering-modes). In cases where model simplification produces undesired effects with custom assets, two solutions can be used:
+
+- To disable automatic removal of a particular mesh, include the string `NOSIMPLIFY` in the mesh name.
+- To disable model simplification for an entire robot model, set the `disableSimplification` option in the configuration to `true`.
+
+:::
+
 ### Articulated Components
 
 :::warning
@@ -68,6 +77,10 @@ Setting up articulated components can be complex and time-consuming. Consider ut
 Robot models can contain articulated components for visualizing mechanism data (see [here](../tab-reference/3d-field.md) for details). The base glTF model should include no components, then each component should be exported as a separate glTF model. Components models follow the naming convention "model_INDEX.glb", so the first articulated component would be "model_0.glb"
 
 Component configuration is provided in the robot's config file. An array of components should be provided under the "components" key. When no component poses are provided by the user in AdvantageScope, the component models will be positioned using the default robot rotations and position (see above). When component poses are provided by the user, the "zeroed" rotations and position are instead applied to bring each component to the robot origin. The user's poses are then applied to move each component to the correct location on the robot.
+
+:::tip
+When positioning 3D components relative to the robot, the origin of the coordinate system matches the published pose of the robot. Note that this pose generally uses a height of zero, which is the floor plane and NOT the robot bellypan (for typical 2D robot movement).
+:::
 
 ```json
 "components": [

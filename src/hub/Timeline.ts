@@ -14,6 +14,7 @@ export default class Timeline {
   private grabZoomActive = false;
   private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
+  private lastCursorInRect = false;
 
   constructor(container: HTMLElement) {
     this.CONTAINER = container;
@@ -21,11 +22,17 @@ export default class Timeline {
     this.SCROLL_OVERLAY = container.getElementsByClassName("timeline-scroll")[0] as HTMLCanvasElement;
 
     // Hover handling
+    window.addEventListener("mousemove", (event) => {
+      if (this.CONTAINER.hidden || !this.grabZoomActive) return;
+      this.lastCursorX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
+    });
     this.SCROLL_OVERLAY.addEventListener("mousemove", (event) => {
       this.lastCursorX = event.clientX - this.SCROLL_OVERLAY.getBoundingClientRect().x;
+      this.lastCursorInRect = true;
     });
     this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
       this.lastCursorX = null;
+      this.lastCursorInRect = false;
       window.selection.setHoveredTime(null);
     });
 
@@ -38,22 +45,22 @@ export default class Timeline {
         this.grabZoomStartTime = hoveredTime;
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mousemove", () => {
+    window.addEventListener("mousemove", () => {
+      if (this.CONTAINER.hidden) return;
       let hoveredTime = window.selection.getHoveredTime();
       if (this.grabZoomActive && hoveredTime !== null) {
         window.selection.setGrabZoomRange([this.grabZoomStartTime, hoveredTime]);
       }
     });
-    this.SCROLL_OVERLAY.addEventListener("mouseup", () => {
+    window.addEventListener("mouseup", () => {
+      if (this.CONTAINER.hidden) return;
       if (this.grabZoomActive) {
         window.selection.finishGrabZoom();
         this.grabZoomActive = false;
-      }
-    });
-    this.SCROLL_OVERLAY.addEventListener("mouseleave", () => {
-      if (this.grabZoomActive) {
-        window.selection.setGrabZoomRange(null);
-        this.grabZoomActive = false;
+        if (!this.lastCursorInRect) {
+          this.lastCursorX = null;
+          window.selection.setHoveredTime(null);
+        }
       }
     });
     this.SCROLL_OVERLAY.addEventListener("click", (event) => {

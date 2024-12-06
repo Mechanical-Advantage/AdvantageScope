@@ -47,60 +47,64 @@ async function start(data: Uint8Array) {
       },
       (entry, position) => {
         if (entry === CONTROL_ENTRY) {
-          let record = decoder!.getRecordAtPosition(position)[0]!;
-          if (record.isStart()) {
-            const startData = record.getStartData();
-            entryIds[startData.entry] = startData.name;
-            entryTypes[startData.name] = startData.type;
-            dataRecordPositions[startData.name] = [];
-            switch (startData.type) {
-              case "boolean":
-                log.createBlankField(startData.name, LoggableType.Boolean);
-                break;
-              case "int":
-              case "int64":
-              case "float":
-              case "double":
-                log.createBlankField(startData.name, LoggableType.Number);
-                break;
-              case "string":
-              case "json":
-                log.createBlankField(startData.name, LoggableType.String);
-                break;
-              case "boolean[]":
-                log.createBlankField(startData.name, LoggableType.BooleanArray);
-                break;
-              case "int[]":
-              case "int64[]":
-              case "float[]":
-              case "double[]":
-                log.createBlankField(startData.name, LoggableType.NumberArray);
-                break;
-              case "string[]":
-                log.createBlankField(startData.name, LoggableType.StringArray);
-                break;
-              default: // Default to raw
-                log.createBlankField(startData.name, LoggableType.Raw);
-                if (startData.type.startsWith(STRUCT_PREFIX)) {
-                  let schemaType = startData.type.split(STRUCT_PREFIX)[1];
-                  log.setStructuredType(startData.name, schemaType);
-                } else if (startData.type.startsWith(PROTO_PREFIX)) {
-                  let schemaType = startData.type.split(PROTO_PREFIX)[1];
-                  log.setStructuredType(startData.name, schemaType);
-                }
-                break;
-            }
-            log.setWpilibType(startData.name, startData.type);
-            log.setMetadataString(startData.name, startData.metadata);
-          } else if (record.isSetMetadata()) {
-            let setMetadataData = record.getSetMetadataData();
-            if (setMetadataData.entry in entryIds) {
-              log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
+          let record = decoder?.getRecordAtPosition(position)[0];
+          if (record !== null && record !== undefined) {
+            if (record.isStart()) {
+              const startData = record.getStartData();
+              entryIds[startData.entry] = startData.name;
+              entryTypes[startData.name] = startData.type;
+              dataRecordPositions[startData.name] = [];
+              switch (startData.type) {
+                case "boolean":
+                  log.createBlankField(startData.name, LoggableType.Boolean);
+                  break;
+                case "int":
+                case "int64":
+                case "float":
+                case "double":
+                  log.createBlankField(startData.name, LoggableType.Number);
+                  break;
+                case "string":
+                case "json":
+                  log.createBlankField(startData.name, LoggableType.String);
+                  break;
+                case "boolean[]":
+                  log.createBlankField(startData.name, LoggableType.BooleanArray);
+                  break;
+                case "int[]":
+                case "int64[]":
+                case "float[]":
+                case "double[]":
+                  log.createBlankField(startData.name, LoggableType.NumberArray);
+                  break;
+                case "string[]":
+                  log.createBlankField(startData.name, LoggableType.StringArray);
+                  break;
+                default: // Default to raw
+                  log.createBlankField(startData.name, LoggableType.Raw);
+                  if (startData.type.startsWith(STRUCT_PREFIX)) {
+                    let schemaType = startData.type.split(STRUCT_PREFIX)[1];
+                    log.setStructuredType(startData.name, schemaType);
+                  } else if (startData.type.startsWith(PROTO_PREFIX)) {
+                    let schemaType = startData.type.split(PROTO_PREFIX)[1];
+                    log.setStructuredType(startData.name, schemaType);
+                  }
+                  break;
+              }
+              log.setWpilibType(startData.name, startData.type);
+              log.setMetadataString(startData.name, startData.metadata);
+            } else if (record.isSetMetadata()) {
+              let setMetadataData = record.getSetMetadataData();
+              if (setMetadataData.entry in entryIds) {
+                log.setMetadataString(entryIds[setMetadataData.entry], setMetadataData.metadata);
+              }
             }
           }
-        } else {
+        } else if (entry in entryIds) {
           let key = entryIds[entry];
-          dataRecordPositions[key].push(position);
+          if (key in dataRecordPositions) {
+            dataRecordPositions[key].push(position);
+          }
         }
 
         // Send progress update

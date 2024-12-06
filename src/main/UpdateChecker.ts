@@ -10,6 +10,7 @@ export default class UpdateChecker {
   private alertDetail = "Checking for update information. Please try again.";
   private alertOptions: string[] | null = null;
   private alertCancelId: number | null = null;
+  private latestVersion = "";
   private alertDownloadUrl: string | null = null;
 
   async check() {
@@ -56,7 +57,7 @@ export default class UpdateChecker {
     // Get version info
     let currentVersion = app.getVersion();
     let latestVersionInfo = releaseData[0];
-    let latestVersion = latestVersionInfo["tag_name"].slice(1);
+    this.latestVersion = latestVersionInfo["tag_name"].slice(1);
     let latestDate = new Date(latestVersionInfo["published_at"]);
     let latestDateText = latestDate.toLocaleDateString();
     let translated = process.arch !== "arm64" && app.runningUnderARM64Translation;
@@ -69,21 +70,21 @@ export default class UpdateChecker {
     this.alertDownloadUrl = null;
 
     // Set appropriate prompt
-    if (currentVersion !== latestVersion && translated) {
+    if (currentVersion !== this.latestVersion && translated) {
       this.alertMessage = "Download latest native version?";
       this.alertDetail =
         "Version " +
-        latestVersion +
+        this.latestVersion +
         " is available (released " +
         latestDateText +
         "). You're currently running the x86 build of version " +
         currentVersion +
         " on an arm64 platform. Would you like to download the latest native version?";
-    } else if (currentVersion !== latestVersion) {
+    } else if (currentVersion !== this.latestVersion) {
       this.alertMessage = "Download latest version?";
       this.alertDetail =
         "Version " +
-        latestVersion +
+        this.latestVersion +
         " is available (released " +
         latestDateText +
         "). You're currently running version " +
@@ -157,10 +158,9 @@ export default class UpdateChecker {
     let responseString = this.alertOptions[result.response];
     if (responseString === "Download") {
       if (this.alertDownloadUrl === null) {
-        await shell.openExternal("https://github.com/" + REPOSITORY + "/releases/latest");
-      } else {
-        await shell.openExternal(this.alertDownloadUrl);
+        this.alertDownloadUrl = `https://github.com/${REPOSITORY}/releases/v${this.latestVersion}`;
       }
+      await shell.openExternal(this.alertDownloadUrl);
     } else if (responseString === "View Changelog") {
       await shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
     }

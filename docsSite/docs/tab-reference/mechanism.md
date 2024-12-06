@@ -18,7 +18,7 @@ The timeline is used to control playback and visualization. Clicking on the time
 
 The green sections of the timeline indicate when the robot is autonomous, and the blue sections indicate when the robot is teleoperated.
 
-To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again.
+To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
 ![Timeline](./img/timeline.png)
 
@@ -30,7 +30,7 @@ To get started, drag a `Mechanism2d` to the control pane. Delete a mechanism usi
 
 ## Publishing Data
 
-<Tabs>
+<Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
 To publish mechanism data using WPILib, send a `Mechanism2d` object to NetworkTables (shown below). If data logging is enabled, the mechanisms can also be viewed based the generated WPILOG file.
@@ -47,7 +47,7 @@ To publish mechanism data using AdvantageKit, record a `Mechanism2d` as an outpu
 
 ```java
 Mechanism2d mechanism = new Mechanism2d(3, 3);
-Logger.getInstance().recordOutput("MyMechanism", mechanism);
+Logger.recordOutput("MyMechanism", mechanism);
 ```
 
 </TabItem>

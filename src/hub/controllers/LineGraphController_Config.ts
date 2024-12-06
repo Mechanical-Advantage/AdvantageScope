@@ -127,6 +127,16 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
           values: GraphColors
         }
       ]
+    },
+    {
+      key: "alerts",
+      display: "Alerts",
+      symbol: "list.bullet",
+      showInTypeName: false,
+      color: "#ffaa00",
+      sourceTypes: ["Alerts"],
+      showDocs: true,
+      options: []
     }
   ]
 };

@@ -1,13 +1,23 @@
 import LoggableType from "../../../shared/log/LoggableType";
 import LiveDataTuner from "../LiveDataTuner";
 import { NT4_Client } from "./NT4";
-import { AKIT_PREFIX, WPILOG_PREFIX } from "./NT4Source";
+import { AKIT_PREFIX, AKIT_TUNING_PREFIX, WPILOG_PREFIX } from "./NT4Source";
 
 export default class NT4Tuner implements LiveDataTuner {
   private client: NT4_Client;
+  private akitMode: boolean;
 
-  constructor(client: NT4_Client) {
+  constructor(client: NT4_Client, akitMode: boolean) {
     this.client = client;
+    this.akitMode = akitMode;
+  }
+
+  hasTunableFields(): boolean {
+    if (this.akitMode) {
+      return !window.log.getFieldKeys().every((key) => !key.startsWith(AKIT_TUNING_PREFIX));
+    } else {
+      return true;
+    }
   }
 
   isTunable(key: string): boolean {
@@ -45,6 +55,14 @@ export default class NT4Tuner implements LiveDataTuner {
   }
 
   private getRemoteKey(key: string): string {
-    return key.slice(WPILOG_PREFIX.length);
+    if (this.akitMode) {
+      if (key.startsWith(AKIT_TUNING_PREFIX)) {
+        return key;
+      } else {
+        return AKIT_PREFIX + key;
+      }
+    } else {
+      return key.slice(WPILOG_PREFIX.length);
+    }
   }
 }

@@ -276,7 +276,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   }
 
   restoreState(state: unknown) {
-    if (typeof state !== "object" || state === null) return;
+    if (state === null || typeof state !== "object") return;
     if ("cameraIndex" in state && typeof state.cameraIndex === "number") {
       this.cameraIndex = state.cameraIndex;
     }

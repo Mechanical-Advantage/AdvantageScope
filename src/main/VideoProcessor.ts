@@ -10,7 +10,7 @@ import Preferences from "../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";
 import VideoSource from "../shared/VideoSource";
 import { createUUID, zfill } from "../shared/util";
-import { PREFS_FILENAME, VIDEO_CACHE, WINDOW_ICON } from "./Constants";
+import { PREFS_FILENAME, VIDEO_CACHE, VIDEO_CACHE_FALLBACK, WINDOW_ICON } from "./Constants";
 import getElectronPlatform from "./getElectronPlatform";
 
 export class VideoProcessor {
@@ -95,12 +95,12 @@ export class VideoProcessor {
     menuCoordinates: null | [number, number],
     callback: (data: any) => void
   ) {
-    let loadPath = (videoPath: string) => {
+    let loadPath = (videoPath: string, videoCache: string) => {
       // Indicate download has started
       callback({ uuid: uuid });
 
       // Create cache folder
-      let cachePath = path.join(VIDEO_CACHE, createUUID()) + path.sep;
+      let cachePath = path.join(videoCache, createUUID()) + path.sep;
       if (fs.existsSync(cachePath)) {
         fs.rmSync(cachePath, { recursive: true });
       }
@@ -284,7 +284,12 @@ export class VideoProcessor {
             matchStartFrame: matchStartFrame
           });
         } else if (code === 1) {
-          sendError();
+          if (videoCache === VIDEO_CACHE && fullOutput.includes("No space left on device")) {
+            fs.rmSync(cachePath, { recursive: true });
+            loadPath(videoPath, VIDEO_CACHE_FALLBACK);
+          } else {
+            sendError();
+          }
         }
       });
     };
@@ -293,7 +298,7 @@ export class VideoProcessor {
     switch (source) {
       case VideoSource.Local:
         this.getLocalPath(window)
-          .then(loadPath)
+          .then((path) => loadPath(path, VIDEO_CACHE))
           .catch(() => {});
         break;
       case VideoSource.YouTube:
@@ -309,7 +314,7 @@ export class VideoProcessor {
           });
         } else {
           this.getDirectUrlFromYouTubeUrl(clipboardText)
-            .then(loadPath)
+            .then((path) => loadPath(path, VIDEO_CACHE))
             .catch(() => {
               callback({ uuid: uuid, error: true });
               dialog.showMessageBox(window, {
@@ -327,7 +332,7 @@ export class VideoProcessor {
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
             this.getDirectUrlFromYouTubeUrl(url)
-              .then(loadPath)
+              .then((path) => loadPath(path, VIDEO_CACHE))
               .catch(() => {
                 callback({ uuid: uuid, error: true });
                 dialog.showMessageBox(window, {
@@ -475,16 +480,18 @@ export class VideoProcessor {
     Object.values(VideoProcessor.processes).forEach((process) => {
       process.kill();
     });
-    if (fs.existsSync(VIDEO_CACHE)) {
-      try {
-        fs.rmSync(VIDEO_CACHE, { recursive: true });
-      } catch {
-        // ffmpeg might not have shut down completely, and "rmSync" will
-        // sometimes throw an exception if files are still being written.
-        // Fail silently instead of crashing since the OS will clear the
-        // few remaining images automatically (or we will on the next shutdown).
+    [VIDEO_CACHE, VIDEO_CACHE_FALLBACK].forEach((videoCache) => {
+      if (fs.existsSync(videoCache)) {
+        try {
+          fs.rmSync(videoCache, { recursive: true });
+        } catch {
+          // ffmpeg might not have shut down completely, and "rmSync" will
+          // sometimes throw an exception if files are still being written.
+          // Fail silently instead of crashing since the OS will clear the
+          // few remaining images automatically (or we will on the next shutdown).
+        }
       }
-    }
+    });
   }
 
   // https://github.com/sindresorhus/video-extensions

@@ -36,6 +36,9 @@ import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabI
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
 import {
+  AKIT_PATH_INPUT,
+  AKIT_PATH_INPUT_PERIOD,
+  AKIT_PATH_OUTPUT,
   APP_VERSION,
   DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
@@ -46,7 +49,6 @@ import {
   FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
-  LAST_OPEN_FILE,
   PATHPLANNER_CONNECT_TIMEOUT_MS,
   PATHPLANNER_DATA_TIMEOUT_MS,
   PATHPLANNER_PING_DELAY_MS,
@@ -258,7 +260,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
         app.addRecentDocument(path);
-        fs.writeFile(LAST_OPEN_FILE, path, () => {});
+        fs.writeFile(AKIT_PATH_OUTPUT, path, () => {});
 
         // Send data if all file reads finished
         let completedCount = 0;
@@ -539,21 +541,36 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "ask-playback-speed":
-      const playbackSpeedMenu = new Menu();
+    case "ask-playback-options":
+      const playbackOptionsMenu = new Menu();
       Array(0.25, 0.5, 1, 1.5, 2, 4, 8).forEach((value) => {
-        playbackSpeedMenu.append(
+        playbackOptionsMenu.append(
           new MenuItem({
             label: (value * 100).toString() + "%",
             type: "checkbox",
             checked: value === message.data.speed,
             click() {
-              sendMessage(window, "set-playback-speed", value);
+              sendMessage(window, "set-playback-options", { speed: value, looping: message.data.looping });
             }
           })
         );
       });
-      playbackSpeedMenu.popup({
+      playbackOptionsMenu.append(
+        new MenuItem({
+          type: "separator"
+        })
+      );
+      playbackOptionsMenu.append(
+        new MenuItem({
+          label: "Loop Visible Range",
+          type: "checkbox",
+          checked: message.data.looping,
+          click() {
+            sendMessage(window, "set-playback-options", { speed: message.data.speed, looping: !message.data.looping });
+          }
+        })
+      );
+      playbackOptionsMenu.popup({
         window: window,
         x: message.data.x,
         y: message.data.y
@@ -1007,6 +1024,23 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "ask-3d-camera":
       select3DCameraPopup(window, message.data.options, message.data.selectedIndex, message.data.fov);
+      break;
+
+    case "export-console":
+      dialog
+        .showSaveDialog(window, {
+          title: "Select export location for console log",
+          defaultPath: "Console " + new Date().toLocaleDateString().replaceAll("/", "-") + ".txt",
+          properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
+          filters: [{ name: "Text files", extensions: ["txt"] }]
+        })
+        .then((response) => {
+          if (!response.canceled) {
+            fs.writeFile(response.filePath!, message.data, (err) => {
+              if (err) throw err;
+            });
+          }
+        });
       break;
 
     case "prompt-export":
@@ -1805,6 +1839,16 @@ function setupMenu() {
         { role: "resetZoom" },
         { role: "zoomIn" },
         { role: "zoomOut" },
+        { type: "separator" },
+        {
+          label: "Zoom to Enabled Range",
+          accelerator: "CmdOrCtrl+\\",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "zoom-enabled");
+          }
+        },
         { type: "separator" },
         {
           label: "Toggle Sidebar",
@@ -3304,8 +3348,25 @@ app.on("open-file", (_, path) => {
   }
 });
 
+// Monitor for AdvantageKit path input
+if (fs.existsSync(AKIT_PATH_INPUT)) {
+  fs.unlinkSync(AKIT_PATH_INPUT);
+}
+setInterval(() => {
+  if (fs.existsSync(AKIT_PATH_INPUT)) {
+    fs.readFile(AKIT_PATH_INPUT, "utf8", (error, path) => {
+      if (error !== null) return;
+      fs.unlinkSync(AKIT_PATH_INPUT);
+      if (hubWindows.length > 0) {
+        hubWindows[0].focus();
+        sendMessage(hubWindows[0], "open-files", { files: [path.trim()], merge: false });
+      }
+    });
+  }
+}, AKIT_PATH_INPUT_PERIOD);
+
 // Clean up files on quit
 app.on("quit", () => {
-  fs.unlink(LAST_OPEN_FILE, () => {});
+  fs.unlink(AKIT_PATH_OUTPUT, () => {});
   VideoProcessor.cleanup();
 });

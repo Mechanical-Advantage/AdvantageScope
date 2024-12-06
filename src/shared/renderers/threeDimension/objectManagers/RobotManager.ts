@@ -338,13 +338,13 @@ export default class RobotManager extends ObjectManager<
         // Update length
         const newScale = new THREE.Vector3(length, line.weight * 0.01, line.weight * 0.01);
         const newTranslation = new THREE.Vector3(length / 2, 0, 0);
-        const scaleFactor = newScale.clone().divide(meshEntry.scale);
-        const translationDelta = newTranslation.clone().sub(meshEntry.translation);
-        meshEntry.scale = newScale;
-        meshEntry.translation = newTranslation;
-        if (!scaleFactor.equals(new THREE.Vector3(1, 1, 1))) {
-          meshEntry.geometry.scale(scaleFactor.x, scaleFactor.y, scaleFactor.z);
-          meshEntry.geometry.translate(translationDelta.x, translationDelta.y, translationDelta.z);
+        if (!newScale.equals(meshEntry.scale) || !newTranslation.equals(meshEntry.translation)) {
+          meshEntry.geometry.translate(-meshEntry.translation.x, -meshEntry.translation.y, -meshEntry.translation.z);
+          meshEntry.geometry.scale(1 / meshEntry.scale.x, 1 / meshEntry.scale.y, 1 / meshEntry.scale.z);
+          meshEntry.geometry.scale(newScale.x, newScale.y, newScale.z);
+          meshEntry.geometry.translate(newTranslation.x, newTranslation.y, newTranslation.z);
+          meshEntry.scale = newScale;
+          meshEntry.translation = newTranslation;
         }
 
         // Update color
