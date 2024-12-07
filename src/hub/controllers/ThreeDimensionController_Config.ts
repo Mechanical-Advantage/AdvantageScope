@@ -446,6 +446,8 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform3d[]",
         "Translation2d[]",
         "Translation3d[]",
+        "SwerveSample[]",
+        "DifferentialSample[]",
         "Trajectory"
       ],
       showDocs: true,

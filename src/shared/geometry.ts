@@ -214,6 +214,9 @@ export function grabPosesAuto(
       } else {
         return [];
       }
+    case "DifferentialSample[]":
+    case "SwerveSample[]":
+      return grabChoreoSampleArray(log, key, timestamp, uuid);
     default:
       return [];
   }
@@ -438,6 +441,21 @@ export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: stri
   ];
 }
 
+export function grabChoreoSample(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return [
+    {
+      pose: pose2dTo3d({
+        translation: [
+          getOrDefault(log, key + "/pose/translation/x", LoggableType.Number, timestamp, 0, uuid),
+          getOrDefault(log, key + "/pose/translation/y", LoggableType.Number, timestamp, 0, uuid)
+        ],
+        rotation: getOrDefault(log, key + "/pose/rotation/value", LoggableType.Number, timestamp, 0, uuid)
+      }),
+      annotation: { is2DSource: true }
+    }
+  ];
+}
+
 export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return [
     {
@@ -462,6 +480,13 @@ export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: stri
 export function grabPose2dArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
   return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
     (array, index) => array.concat(grabPose2d(log, key + "/" + index.toString(), timestamp)),
+    [] as AnnotatedPose3d[]
+  );
+}
+
+export function grabChoreoSampleArray(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
+  return indexArray(getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid)).reduce(
+    (array, index) => array.concat(grabChoreoSample(log, key + "/" + index.toString(), timestamp)),
     [] as AnnotatedPose3d[]
   );
 }
