@@ -342,9 +342,6 @@ export function loadAssets(): AdvantageScopeAssets {
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
             config.sourceUrl = configRaw.sourceUrl;
           }
-          if (config.name === "Preseto") {
-            console.log(configRaw);
-          }
           if ("disableSimplification" in configRaw && typeof configRaw.disableSimplification === "boolean") {
             config.disableSimplification = configRaw.disableSimplification;
           }

@@ -99,6 +99,6 @@ As part of our transition to struct, the legacy number array format for geometry
 
 ### 📖 New Documentation Site
 
-You're viewing the updated version of the AdvantageScope documentation, which supports **easier navigation** via the sidebar and a more **refined mobile interface**. This documentation can be accessed online at [docs.advantagescope.org](https://docs.advantagescope.org), or offline by clicking the 📖 icon in the tab bar.
+You're viewing the updated version of the AdvantageScope documentation, which supports **easier navigation** via the sidebar, a **built-in search feature**, and a **refined mobile interface**. This documentation can be accessed online at [docs.advantagescope.org](https://docs.advantagescope.org), or offline by clicking the 📖 icon in the tab bar.
 
 ![Documentation screenshot](./img/docs-screenshot.png)
