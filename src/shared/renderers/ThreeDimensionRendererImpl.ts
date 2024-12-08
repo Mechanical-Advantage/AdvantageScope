@@ -29,6 +29,7 @@ import HeatmapManager from "./threeDimension/objectManagers/HeatmapManager";
 import RobotManager from "./threeDimension/objectManagers/RobotManager";
 import TrajectoryManager from "./threeDimension/objectManagers/TrajectoryManager";
 import ZebraManager from "./threeDimension/objectManagers/ZebraManager";
+import PoseWithVarManagerManager from "./threeDimension/objectManagers/PoseWithVarManager";
 
 export default class ThreeDimensionRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
@@ -446,6 +447,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         break;
       case "axes":
         manager = new AxesManager(...args);
+        break;
+      case "axesWithVar":
+        manager = new PoseWithVarManagerManager(...args);
         break;
       case "cone":
         manager = new ConeManager(...args);

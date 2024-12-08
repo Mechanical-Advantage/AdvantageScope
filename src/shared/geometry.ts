@@ -23,6 +23,21 @@ export type Pose3d = {
   translation: Translation3d;
   rotation: Rotation3d;
 };
+
+export type Pose3Variance = {
+  rx: number;
+  ry: number;
+  rz: number;
+  tx: number;
+  ty: number;
+  tz: number;
+};
+
+export type Pose3dWithVariance = {
+  translation: Translation3d;
+  rotation: Rotation3d;
+  variance: Pose3Variance;
+};
 export const Translation3dZero: Translation3d = [0, 0, 0];
 export const Rotation3dZero: Rotation3d = [1, 0, 0, 0];
 export const Pose3dZero: Pose3d = {
@@ -36,6 +51,10 @@ export type AnnotatedPose2d = {
 };
 export type AnnotatedPose3d = {
   pose: Pose3d;
+  annotation: PoseAnnotations;
+};
+export type AnnotatedPose3dWithVariance = {
+  pose: Pose3dWithVariance;
   annotation: PoseAnnotations;
 };
 export type PoseAnnotations = {
@@ -199,6 +218,7 @@ export function grabPosesAuto(
       return grabPose2d(log, key, timestamp, uuid);
     case "Pose3d":
     case "Transform3d":
+    case "Pose3WithVariance":
       return grabPose3d(log, key, timestamp, uuid);
     case "Pose2d[]":
     case "Transform2d[]":
@@ -436,6 +456,29 @@ export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: stri
       annotation: { is2DSource: true }
     }
   ];
+}
+
+export function grabPose3dWithVariance(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3dWithVariance[] {
+  let ret = grabPose3d(log, key + "/pose", timestamp, uuid)
+  return ret.map(it => {
+    // huge hack lol
+    const ret: AnnotatedPose3dWithVariance = {
+      pose: {
+        translation: it.pose.translation,
+        rotation: it.pose.rotation,
+        variance: {
+          rx: 0,
+          ry: 0,
+          rz: 0,
+          tx: getOrDefault(log, key + "/covariance/3", LoggableType.Number, timestamp, 0.01, uuid),
+          ty: getOrDefault(log, key + "/covariance/4", LoggableType.Number, timestamp, 0.01, uuid),
+          tz: getOrDefault(log, key + "/covariance/5", LoggableType.Number, timestamp, 0.01, uuid),
+        }
+      },
+      annotation: it.annotation
+    };
+    return ret;
+  });
 }
 
 export function grabPose3d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { STANDARD_FIELD_LENGTH, STANDARD_FIELD_WIDTH } from "../../AdvantageScopeAssets";
-import makeAxesTemplate from "./AxesTemplate";
+import { makeAxesTemplate } from "./AxesTemplate";
 
 export default function makeAxesField(materialSpecular: THREE.Color, materialShininess: number): THREE.Object3D {
   let field = new THREE.Group();

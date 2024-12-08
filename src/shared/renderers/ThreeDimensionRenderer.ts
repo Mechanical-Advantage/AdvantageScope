@@ -1,4 +1,4 @@
-import { AnnotatedPose3d, SwerveState } from "../geometry";
+import { AnnotatedPose3d, AnnotatedPose3dWithVariance, SwerveState } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import TabRenderer from "./TabRenderer";
 import ThreeDimensionRendererImpl from "./ThreeDimensionRendererImpl";
@@ -121,7 +121,7 @@ export type ThreeDimensionRendererCommand_AnyObj =
   | ThreeDimensionRendererCommand_AprilTagObj
   | ThreeDimensionRendererCommand_AxesObj
   | ThreeDimensionRendererCommand_ConeObj
-  | ThreeDimensionRendererCommand_ZebraMarkerObj;
+  | ThreeDimensionRendererCommand_ZebraMarkerObj | ThreeDimensionRendererCommand_AxesWithVarianceObj;
 
 export type ThreeDimensionRendererCommand_GenericRobotObj = {
   model: string;
@@ -171,6 +171,11 @@ export type ThreeDimensionRendererCommand_AprilTagObj = {
 export type ThreeDimensionRendererCommand_AxesObj = {
   type: "axes";
   poses: AnnotatedPose3d[];
+};
+
+export type ThreeDimensionRendererCommand_AxesWithVarianceObj = {
+  type: "axesWithVar";
+  poses: AnnotatedPose3dWithVariance[];
 };
 
 export type ThreeDimensionRendererCommand_ConeObj = {
