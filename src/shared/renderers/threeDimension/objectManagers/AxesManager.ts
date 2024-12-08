@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { ThreeDimensionRendererCommand_AxesObj } from "../../ThreeDimensionRenderer";
-import makeAxesTemplate from "../AxesTemplate";
 import ObjectManager from "../ObjectManager";
 import optimizeGeometries from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
+import { makeAxesTemplate } from "../AxesTemplate";
 
 export default class AxesManager extends ObjectManager<ThreeDimensionRendererCommand_AxesObj> {
   private instances: ResizableInstancedMesh | null = null;

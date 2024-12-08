@@ -3,8 +3,10 @@ import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
   AnnotatedPose3d,
+  AnnotatedPose3dWithVariance,
   SwerveState,
   grabHeatmapData,
+  grabPose3dWithVariance,
   grabPosesAuto,
   grabSwerveStates
 } from "../../shared/geometry";
@@ -295,6 +297,7 @@ export default class ThreeDimensionController implements TabController {
       let components: AnnotatedPose3d[] = [];
       let mechanisms: MechanismState[] = [];
       let visionTargets: AnnotatedPose3d[] = [];
+      let posesWithVar: AnnotatedPose3dWithVariance[] = [];
       let swerveStates: {
         values: SwerveState[];
         color: string;
@@ -413,6 +416,11 @@ export default class ThreeDimensionController implements TabController {
               });
               break;
             }
+              
+            case "Pose3WithVariance": {
+              console.log("adsfasdfasdf")
+
+            }
           }
         });
       }
@@ -487,6 +495,25 @@ export default class ThreeDimensionController implements TabController {
           objects.push({
             type: "axes",
             poses: poses
+          });
+          break;
+        case "Pose3WithVariance":
+          if (!time) {
+            break;
+          }
+ 
+          let newPoses = grabPose3dWithVariance(
+            window.log,
+            source.logKey,
+            time!,
+            this.UUID,
+          );
+
+          posesWithVar = newPoses;
+
+          objects.push({
+            type: "axesWithVar",
+            poses: posesWithVar
           });
           break;
         case "cone":

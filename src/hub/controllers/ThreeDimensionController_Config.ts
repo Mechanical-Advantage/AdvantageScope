@@ -793,6 +793,18 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showDocs: true,
       options: [],
       previewType: "Translation2d"
+    },
+    {
+      key: "Pose3WithVariance",
+      display: "Pose3WithVariance",
+      symbol: "move.3d",
+      showInTypeName: true,
+      color: "#000000",
+      darkColor: "#ffffff",
+      sourceTypes: ["Pose3WithVariance"],
+      showDocs: true,
+      options: [],
+      previewType: "Pose3d"
     }
   ]
 };

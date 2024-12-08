@@ -11,6 +11,8 @@ export default class ResizableInstancedMesh {
   private dummy = new THREE.Object3D();
   private meshes: (THREE.InstancedMesh | null)[] = [];
 
+  private scalemap: Record<string, THREE.Vector3> = {};
+
   constructor(
     parent: THREE.Object3D,
     sources: (THREE.Mesh | { geometry: THREE.BufferGeometry; material: THREE.Material | THREE.Material[] })[],
@@ -51,6 +53,10 @@ export default class ResizableInstancedMesh {
     });
   }
 
+  setScale(geom_uuid: string, scale: THREE.Vector3): void {
+    this.scalemap[geom_uuid] = scale;
+  }
+
   setPoses(poses: Pose3d[]): void {
     // Resize instanced mesh
     if (poses.length > this.count) {
@@ -80,8 +86,18 @@ export default class ResizableInstancedMesh {
       } else {
         this.dummy.position.set(1e6, 1e6, 1e6);
       }
-      this.dummy.updateMatrix();
       this.meshes.forEach((mesh) => {
+        const scale = this.scalemap[mesh?.geometry.uuid || ""];
+        if (scale) {
+          this.dummy.scale.set(
+            scale.x,
+            scale.y,
+            scale.z
+          );
+        } else {
+          this.dummy.scale.set(1,1,1);
+        }
+        this.dummy.updateMatrix();
         mesh?.setMatrixAt(i, this.dummy.matrix);
       });
     }

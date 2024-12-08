@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default function makeAxesTemplate(materialSpecular: THREE.Color, materialShininess: number): THREE.Object3D {
+export function makeAxesTemplate(materialSpecular: THREE.Color, materialShininess: number): THREE.Object3D {
   let axes = new THREE.Object3D();
   const radius = 0.02;
 
@@ -56,6 +56,28 @@ export default function makeAxesTemplate(materialSpecular: THREE.Color, material
   zAxis.position.set(0.0, 0.0, 0.5);
   zAxis.rotateX(Math.PI / 2);
   axes.add(zAxis);
+
+  return axes;
+}
+
+export function makeCovarianceEllipseTemplate(materialSpecular: THREE.Color, materialShininess: number): THREE.Object3D {
+  let axes = new THREE.Object3D();
+
+  const radius = 1.0;
+
+  const center = new THREE.Mesh(
+    new THREE.SphereGeometry(radius, 32, 16),
+    new THREE.MeshPhongMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.15,
+      specular: materialSpecular,
+      shininess: materialShininess
+    })
+  );
+  center.castShadow = true;
+  center.receiveShadow = true;
+  axes.add(center);
 
   return axes;
 }
