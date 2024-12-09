@@ -1,13 +1,15 @@
+import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
+import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
-function bundle(input, output, isMain, external = []) {
+function bundle(input, output, isMain, isXR, external = []) {
   const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
   return {
     input: "src/" + input,
@@ -23,7 +25,9 @@ function bundle(input, output, isMain, external = []) {
         preferBuiltins: true
       }),
       commonjs(),
-      cleanup(),
+      ...(isXR
+        ? [getBabelOutputPlugin({ presets: [["@babel/preset-env", { modules: false }]] }), terser()]
+        : [cleanup()]),
       json(),
       replace({
         preventAssignment: true,
@@ -68,33 +72,39 @@ function bundle(input, output, isMain, external = []) {
 }
 
 const mainBundles = [
-  bundle("main/main.ts", "main.js", true, [
+  bundle("main/main.ts", "main.js", true, false, [
     "electron",
     "electron-fetch",
     "fs",
     "jsonfile",
     "net",
     "os",
+    "ws",
+    "http",
     "path",
     "ssh2",
     "download",
     "ytdl-core",
     "tesseract.js"
   ]),
-  bundle("preload.ts", "preload.js", true, ["electron"])
+  bundle("preload.ts", "preload.js", true, false, ["electron"])
 ];
-const largeRendererBundles = [bundle("hub/hub.ts", "hub.js", false), bundle("satellite.ts", "satellite.js", false)];
+const largeRendererBundles = [
+  bundle("hub/hub.ts", "hub.js", false, false),
+  bundle("satellite.ts", "satellite.js", false, false),
+  bundle("xrClient/xrClient.ts", "xrClient.js", false, true)
+];
 const smallRendererBundles = [
-  bundle("editRange.ts", "editRange.js", false),
-  bundle("unitConversion.ts", "unitConversion.js", false),
-  bundle("renameTab.ts", "renameTab.js", false),
-  bundle("editFov.ts", "editFov.js", false),
-  bundle("sourceListHelp.ts", "sourceListHelp.js", false),
-  bundle("betaWelcome.ts", "betaWelcome.js", false),
-  bundle("export.ts", "export.js", false),
-  bundle("download.ts", "download.js", false),
-  bundle("preferences.ts", "preferences.js", false),
-  bundle("licenses.ts", "licenses.js", false)
+  bundle("editRange.ts", "editRange.js", false, false),
+  bundle("unitConversion.ts", "unitConversion.js", false, false),
+  bundle("renameTab.ts", "renameTab.js", false, false),
+  bundle("editFov.ts", "editFov.js", false, false),
+  bundle("sourceListHelp.ts", "sourceListHelp.js", false, false),
+  bundle("betaWelcome.ts", "betaWelcome.js", false, false),
+  bundle("export.ts", "export.js", false, false),
+  bundle("download.ts", "download.js", false, false),
+  bundle("preferences.ts", "preferences.js", false, false),
+  bundle("licenses.ts", "licenses.js", false, false)
 ];
 const workerBundles = [
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false),

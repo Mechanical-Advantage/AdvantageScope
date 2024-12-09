@@ -81,6 +81,7 @@ import { VideoProcessor } from "./VideoProcessor";
 import { getAssetDownloadStatus, startAssetDownload } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import { checkHootIsPro, convertHoot, copyOwlet } from "./hootUtil";
+import { startXRServer } from "./xrServer";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -2986,7 +2987,7 @@ function openXR(parentWindow: Electron.BrowserWindow) {
   xrWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   xrWindow.once("ready-to-show", xrWindow.show);
   xrWindow.once("close", downloadStop);
-  xrWindow.loadFile(path.join(__dirname, "../www/xr.html"));
+  xrWindow.loadFile(path.join(__dirname, "../www/xrControls.html"));
 }
 
 /**
@@ -3279,6 +3280,9 @@ app.whenReady().then(() => {
 
   // Copy current owlet version to cache
   copyOwlet();
+
+  // Start XR server for testing
+  startXRServer();
 });
 
 app.on("window-all-closed", () => {

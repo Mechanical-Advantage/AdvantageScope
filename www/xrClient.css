@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+div.container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+canvas {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
