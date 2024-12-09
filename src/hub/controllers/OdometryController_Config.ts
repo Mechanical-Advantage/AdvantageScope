@@ -348,7 +348,9 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d[]",
         "Translation2d[]",
         "Translation3d[]",
-        "Trajectory"
+        "Trajectory",
+        "DifferentialSample[]",
+        "SwerveSample[]"
       ],
       showDocs: true,
       options: [
@@ -501,6 +503,8 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d",
         "Transform2d[]",
         "Transform3d[]",
+        "DifferentialSample[]",
+        "SwerveSample[]",
         "Trajectory"
       ],
       showDocs: true,
