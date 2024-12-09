@@ -64,6 +64,8 @@ npm run watch
 npm start
 ```
 
+If you only need to change a subset of bundles, we can specify that using `npm run watch -- --configLargeRenderers` (or similar). See the [rollup config](rollup.config.mjs) for more info.
+
 ## Assets
 
 For details on adding custom assets, see [Custom Assets](https://docs.advantagescope.org/more-features/custom-assets).

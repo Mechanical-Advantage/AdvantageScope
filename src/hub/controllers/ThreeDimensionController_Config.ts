@@ -801,7 +801,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
       showInTypeName: true,
       color: "#000000",
       darkColor: "#ffffff",
-      sourceTypes: ["Pose3WithVariance"],
+      sourceTypes: ["Pose3WithCovariance"],
       showDocs: true,
       options: [],
       previewType: "Pose3d"

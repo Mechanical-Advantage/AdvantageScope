@@ -1,3 +1,4 @@
+import { column, cross, divide, dot, eigs, index, MathCollection, MathType, matrix, norm, sqrt, subset } from "mathjs";
 import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
@@ -458,10 +459,72 @@ export function grabPose2d(log: Log, key: string, timestamp: number, uuid?: stri
   ];
 }
 
-export function grabPose3dWithVariance(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3dWithVariance[] {
-  let ret = grabPose3d(log, key + "/pose", timestamp, uuid)
-  return ret.map(it => {
+export function grabPose3dWithVariance(
+  log: Log,
+  key: string,
+  timestamp: number,
+  uuid?: string
+): AnnotatedPose3dWithVariance[] {
+  let ret = grabPose3d(log, key + "/pose", timestamp, uuid);
+  return ret.map((it) => {
     // huge hack lol
+
+    const matrixData: number[] = [...Array(36).keys()].map((it) =>
+      getOrDefault(log, key + "/covariance/" + it, LoggableType.Number, timestamp, 0.0, uuid)
+    );
+
+    let out: number[][] = [];
+    for (let i = 0; i < matrixData.length; i += 6) {
+      out.push(matrixData.slice(i, i + 6));
+    }
+
+    const mat = matrix(out);
+    console.log(mat);
+
+    const trans = mat.subset(
+      index([3, 4, 5], [3, 4, 5])
+    )
+    console.log(trans)
+
+    const vecnorm = (it: MathCollection) => {
+      let sum = 0;
+      it.forEach(n => sum += n * n);
+      return sqrt(sum);
+    };
+
+    const eigenSol = eigs(trans);
+
+    let vec0: MathCollection = column(eigenSol.vectors, 0)
+    vec0 = divide(vec0, vecnorm(vec0));
+    let val0 = subset(eigenSol.values, index(0))
+
+    let vec1 = column(eigenSol.vectors, 1)
+    vec1 = divide(vec1, vecnorm(vec1));
+    let val1 = subset(eigenSol.values, index(1))
+
+    let vec2 = column(eigenSol.vectors, 2)
+    vec2 = divide(vec2, vecnorm(vec2));
+    const val2 = subset(eigenSol.values, index(2))
+
+    // check right-handed-ness
+    const cc = cross(vec0, vec1);
+    if (dot(cc, vec2) < 1) {
+      const newVec0 = vec1;
+      const newVal0 = val1;
+      const newVec1 = vec0;
+      const newVal1 = val0;
+
+      vec0 = newVec0;
+      val0 = newVal0;
+      vec1 = newVec1;
+      val1 = newVal1;
+    }
+
+    // see https://github.com/ros-visualization/rviz/pull/1576/files
+    // convert vec0/1/2 into a rotation matrix, and use that as orientation
+    // use x/y/z scale as sqrt(eigenvalues) to convert variance->stddev
+    // make sure to prerotate by pose orientation - see the diff in the above PR
+
     const ret: AnnotatedPose3dWithVariance = {
       pose: {
         translation: it.pose.translation,
@@ -472,7 +535,7 @@ export function grabPose3dWithVariance(log: Log, key: string, timestamp: number,
           rz: 0,
           tx: getOrDefault(log, key + "/covariance/3", LoggableType.Number, timestamp, 0.01, uuid),
           ty: getOrDefault(log, key + "/covariance/4", LoggableType.Number, timestamp, 0.01, uuid),
-          tz: getOrDefault(log, key + "/covariance/5", LoggableType.Number, timestamp, 0.01, uuid),
+          tz: getOrDefault(log, key + "/covariance/5", LoggableType.Number, timestamp, 0.01, uuid)
         }
       },
       annotation: it.annotation

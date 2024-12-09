@@ -416,10 +416,9 @@ export default class ThreeDimensionController implements TabController {
               });
               break;
             }
-              
-            case "Pose3WithVariance": {
-              console.log("adsfasdfasdf")
 
+            case "Pose3WithVariance": {
+              console.log("adsfasdfasdf");
             }
           }
         });
@@ -501,13 +500,8 @@ export default class ThreeDimensionController implements TabController {
           if (!time) {
             break;
           }
- 
-          let newPoses = grabPose3dWithVariance(
-            window.log,
-            source.logKey,
-            time!,
-            this.UUID,
-          );
+
+          let newPoses = grabPose3dWithVariance(window.log, source.logKey, time!, this.UUID);
 
           posesWithVar = newPoses;
 

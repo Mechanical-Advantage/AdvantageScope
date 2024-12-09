@@ -54,7 +54,7 @@
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
-    "mathjs": "11.3.0",
+    "mathjs": "^11.3.0",
     "node-fetch": "^3.3.2",
     "prettier": "3.0.3",
     "prettier-plugin-organize-imports": "^4.0.0",
