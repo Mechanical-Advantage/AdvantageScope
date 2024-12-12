@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export default class ManualCamera extends THREE.Camera {
+export default class XRCamera extends THREE.Camera {
   type = "Camera";
   matrixWorldInverse = new THREE.Matrix4();
   projectionMatrix = new THREE.Matrix4();
@@ -21,6 +21,6 @@ export default class ManualCamera extends THREE.Camera {
   }
 
   clone(_: boolean): any {
-    return new ManualCamera().copy(this);
+    return new XRCamera().copy(this);
   }
 }

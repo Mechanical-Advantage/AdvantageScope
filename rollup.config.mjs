@@ -26,7 +26,14 @@ function bundle(input, output, isMain, isXR, external = []) {
       }),
       commonjs(),
       ...(isXR
-        ? [getBabelOutputPlugin({ presets: [["@babel/preset-env", { modules: false }]] }), terser()]
+        ? [
+            getBabelOutputPlugin({
+              presets: [["@babel/preset-env", { modules: false }]],
+              compact: true,
+              targets: "iOS 16" // AdvantageScope XR is built for iOS 16
+            }),
+            terser()
+          ]
         : [cleanup()]),
       json(),
       replace({
