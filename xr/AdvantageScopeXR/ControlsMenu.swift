@@ -6,18 +6,18 @@ struct ControlsMenu: View {
     var body: some View {
         HStack {
             Button("Scan Code", systemImage: "qrcode") {
-                appState.scanningQR = true
+                appState.scanningQR.toggle()
             }
-            .disabled(appState.scanningQR)
             .opacity(appState.scanningQR ? 0.5 : 1)
+            
             Button("Recalibrate", systemImage: "scope") {
                 // TODO
             }
         }
         .buttonStyle(ControlButton())
         .padding()
+        .statusBarHidden(true)
         .opacity(appState.showControls ? 1 : 0)
-        .statusBarHidden(!appState.showControls)
         .animation(.easeInOut(duration: 0.25), value: appState.showControls)
     }
 }
@@ -32,7 +32,6 @@ struct ControlButton : ButtonStyle {
             .clipShape(Capsule())
             .controlSize(.large)
             .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
-            .opacity(configuration.isPressed ? 0.6 : 1.0)
             .animation(.easeInOut, value: configuration.isPressed)
     }
 }

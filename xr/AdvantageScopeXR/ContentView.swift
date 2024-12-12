@@ -28,7 +28,7 @@ struct ContentView : View {
             )
             
             // UI overlays
-            .overlay(alignment: .top) {
+            .safeAreaInset(edge: .top, spacing: 0) {
                 ControlsMenu()
             }
             .safeAreaInset(edge: .bottom, spacing: 0) {
