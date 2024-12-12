@@ -98,8 +98,7 @@ const mainBundles = [
 ];
 const largeRendererBundles = [
   bundle("hub/hub.ts", "hub.js", false, false),
-  bundle("satellite.ts", "satellite.js", false, false),
-  bundle("xrClient/xrClient.ts", "xrClient.js", false, true)
+  bundle("satellite.ts", "satellite.js", false, false)
 ];
 const smallRendererBundles = [
   bundle("editRange.ts", "editRange.js", false, false),
@@ -114,12 +113,17 @@ const smallRendererBundles = [
   bundle("licenses.ts", "licenses.js", false, false)
 ];
 const workerBundles = [
-  bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false),
-  bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false),
-  bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false),
-  bundle("hub/exportWorker.ts", "hub$exportWorker.js", false),
-  bundle("shared/renderers/threeDimension/workers/loadField.ts", "shared$loadField.js", false),
-  bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false)
+  bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
+  bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
+  bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
+  bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false),
+  bundle("shared/renderers/threeDimension/workers/loadField.ts", "shared$loadField.js", false, false),
+  bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
+];
+const xrClientBundles = [
+  bundle("xrClient/xrClient.ts", "xrClient.js", false, true),
+  bundle("shared/renderers/threeDimension/workers/loadField.ts", "xrClient$loadField.js", false, true),
+  bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "xrClient$loadRobot.js", false, true)
 ];
 
 export default (cliArgs) => {
@@ -127,6 +131,7 @@ export default (cliArgs) => {
   if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
+  if (cliArgs.configXRClient === true) return xrClientBundles;
 
-  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles];
+  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrClientBundles];
 };
