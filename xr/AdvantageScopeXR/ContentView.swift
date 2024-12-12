@@ -24,7 +24,11 @@ struct ContentView : View {
         
             // Web overlay
             .overlay(
-                webOverlay.ignoresSafeArea(.all).allowsHitTesting(false)
+                webOverlay
+                    .ignoresSafeArea(.all)
+                    .allowsHitTesting(false)
+                    .opacity(appState.scanningQR ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.25), value: appState.scanningQR)
             )
             
             // UI overlays
