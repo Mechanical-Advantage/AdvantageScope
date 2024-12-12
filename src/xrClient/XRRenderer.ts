@@ -89,21 +89,18 @@ export default class XRRenderer {
   }
 
   private temperatureToColor(temperature: number): THREE.Color {
-    // https://github.com/brundagejoe/ColorTemperatureConverter
+    // https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
     let red, green, blue;
     temperature /= 100;
     if (temperature <= 66) {
       red = 255;
     } else {
-      red = temperature - 60;
-      red = 329.698727446 * Math.pow(red, -0.1332047592);
+      red = 329.698727446 * Math.pow(temperature - 60, -0.1332047592);
     }
     if (temperature <= 66) {
-      green = temperature;
-      green = 99.4708025861 * Math.log(green) - 161.1195681661;
+      green = 99.4708025861 * Math.log(temperature) - 161.1195681661;
     } else {
-      green = temperature - 60;
-      green = 288.1221695283 * Math.pow(green, -0.0755148492);
+      green = 288.1221695283 * Math.pow(temperature - 60, -0.0755148492);
     }
     if (temperature >= 66) {
       blue = 255;
@@ -111,8 +108,7 @@ export default class XRRenderer {
       if (temperature <= 19) {
         blue = 0;
       } else {
-        blue = temperature - 10;
-        blue = 138.5177312231 * Math.log(blue) - 305.0447927307;
+        blue = 138.5177312231 * Math.log(temperature - 10) - 305.0447927307;
       }
     }
     red = clampValue(red, 0, 255);
