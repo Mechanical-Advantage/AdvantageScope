@@ -1,12 +1,30 @@
 import fs from "fs";
 import http from "http";
+import { networkInterfaces } from "os";
 import path from "path";
 import { WebSocketServer } from "ws";
-import { XR_NATIVE_HOST_COMPATIBILITY, XR_SERVER_PORT } from "./Constants";
+import { XR_NATIVE_HOST_COMPATIBILITY, XR_SERVER_PORT, XR_URL_PREFIX } from "./Constants";
+
+let httpServer: http.Server | null = null;
+let wsServer: WebSocketServer | null = null;
+
+export function getQRText(): string {
+  const interfaces = networkInterfaces();
+  let ipAddresses: Set<string> = new Set();
+  Object.values(interfaces).forEach((addressSet) => {
+    if (addressSet === undefined) return;
+    addressSet.forEach((addressData) => {
+      if (!addressData.internal && addressData.family === "IPv4") {
+        ipAddresses.add(addressData.address);
+      }
+    });
+  });
+  return XR_URL_PREFIX + Array.from(ipAddresses).join("_");
+}
 
 export function startXRServer() {
   // Create HTTP server
-  let httpServer = http
+  httpServer = http
     .createServer((request, response) => {
       switch (request.url) {
         case "/":
@@ -41,7 +59,7 @@ export function startXRServer() {
     .listen(XR_SERVER_PORT);
 
   // Create WebSocket server
-  let wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
+  wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
   wsServer.on("connection", (socket) => {
     socket.on("message", function message(data) {
       console.log("Received: %s", data);
@@ -49,4 +67,9 @@ export function startXRServer() {
 
     socket.send(XR_NATIVE_HOST_COMPATIBILITY.toString());
   });
+}
+
+export function stopXRServer() {
+  httpServer?.close();
+  wsServer?.close();
 }
