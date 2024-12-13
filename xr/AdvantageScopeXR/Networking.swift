@@ -9,11 +9,13 @@ class Networking : WebSocketDelegate {
     
     private var socket: WebSocket?
     private var reconnecting = false
+    private var currentServerAddress: String?
+    private var attemptCount = 0
     
     func start(_ appState: AppState, _ webOverlay: WebOverlay) {
         self.appState = appState
         self.webOverlay = webOverlay
-        addressSubscriber = appState.$serverAddress.sink() {address in
+        addressSubscriber = appState.$serverAddresses.sink() {address in
             // Force disconnect and reconnect to new address
             // Always runs once at startup for initial connection
             self.disconnected()
@@ -21,12 +23,14 @@ class Networking : WebSocketDelegate {
     }
     
     private func startConnection() {
-        if (appState.serverAddress.isEmpty) {
+        if (appState.serverAddresses.isEmpty) {
             disconnected()
             return
         }
-        var request = URLRequest(url: URL(string: "ws://" + appState.serverAddress + ":56328/ws")!)
-        request.timeoutInterval = 2
+        attemptCount += 1
+        currentServerAddress = appState.serverAddresses[attemptCount % appState.serverAddresses.count]
+        var request = URLRequest(url: URL(string: "ws://" + currentServerAddress! + ":56328/ws")!)
+        request.timeoutInterval = 0.5
         socket = WebSocket(request: request)
         socket?.delegate = self
         socket?.connect()
@@ -35,7 +39,9 @@ class Networking : WebSocketDelegate {
     private func connected() {
         if (!appState.serverConnected) {
             appState.serverConnected = true
-            webOverlay.load(appState.serverAddress)
+            if (currentServerAddress != nil) {
+                webOverlay.load(currentServerAddress!)
+            }
         }
     }
     

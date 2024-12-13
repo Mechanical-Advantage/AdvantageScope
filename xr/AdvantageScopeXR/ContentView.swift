@@ -7,7 +7,7 @@ class AppState : ObservableObject {
     @Published var trackingReady = false
     @Published var calibrating = false
     @Published var serverConnected = false
-    @Published var serverAddress = ""
+    @Published var serverAddresses: [String] = []
 }
 
 struct ContentView : View {
@@ -27,8 +27,8 @@ struct ContentView : View {
                 webOverlay
                     .ignoresSafeArea(.all)
                     .allowsHitTesting(false)
-                    .opacity(appState.scanningQR ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.25), value: appState.scanningQR)
+                    .opacity(appState.scanningQR || !appState.serverConnected ? 0 : 1)
+                    .animation(.easeInOut(duration: 0.25), value: appState.scanningQR || !appState.serverConnected)
             )
             
             // UI overlays

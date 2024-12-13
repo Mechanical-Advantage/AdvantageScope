@@ -31,10 +31,10 @@ class QRScanner {
                 request.results![0].payloadStringValue != nil) {
                 let value = request.results![0].payloadStringValue!
                 if (value.starts(with: self.prefix)) {
-                    let address = String(value.dropFirst(self.prefix.count))
+                    let addresses = value.dropFirst(self.prefix.count).split(separator: "_").map{ String($0) }
                     DispatchQueue.main.sync() {
                         self.appState.scanningQR = false
-                        self.appState.serverAddress = address
+                        self.appState.serverAddresses = addresses
                     }
                 }
             }
