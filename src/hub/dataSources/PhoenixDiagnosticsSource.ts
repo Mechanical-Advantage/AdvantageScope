@@ -42,7 +42,7 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
           this.setStatus(LiveDataSourceStatus.Active);
           devices.forEach((device) => {
             // Phoenix 6 devices use a "pro" application regardless of
-            // license state. Phoenix 5 devices evices use a different
+            // license state. Phoenix 5 devices devices use a different
             // protocol that does not advertise a list of signals, so
             // don't include them in the list
             if (!device.IsPROApplication) return;
