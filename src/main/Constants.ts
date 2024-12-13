@@ -48,6 +48,10 @@ export const HUB_DEFAULT_HEIGHT = 650;
 export const SATELLITE_DEFAULT_WIDTH = 900;
 export const SATELLITE_DEFAULT_HEIGHT = 500;
 
+// XR Server
+export const XR_SERVER_PORT = 56328;
+export const XR_NATIVE_HOST_COMPATIBILITY = 0;
+
 // Live RLOG
 export const RLOG_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
 export const RLOG_DATA_TIMEOUT_MS = 3000; // How long with no data until timeout

@@ -1,8 +1,6 @@
 import ARKit
 
 class QRScanner {
-    private let prefix = "https://asxr.team6328.org/?a="
-    
     private var started = false
     private var appState: AppState! = nil
     private var processing = false
@@ -30,8 +28,8 @@ class QRScanner {
                 !request.results!.isEmpty &&
                 request.results![0].payloadStringValue != nil) {
                 let value = request.results![0].payloadStringValue!
-                if (value.starts(with: self.prefix)) {
-                    let addresses = value.dropFirst(self.prefix.count).split(separator: "_").map{ String($0) }
+                if (value.starts(with: Constants.qrPrefix)) {
+                    let addresses = value.dropFirst(Constants.qrPrefix.count).split(separator: "_").map{ String($0) }
                     DispatchQueue.main.sync() {
                         self.appState.scanningQR = false
                         self.appState.serverAddresses = addresses

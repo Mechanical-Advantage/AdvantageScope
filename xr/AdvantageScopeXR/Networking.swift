@@ -2,6 +2,13 @@ import Starscream
 import SwiftUI
 import Combine
 
+enum ServerCompatibility {
+    case unknown
+    case supported
+    case serverTooOld
+    case serverTooNew
+}
+
 class Networking : WebSocketDelegate {
     private var appState: AppState! = nil
     private var webOverlay: WebOverlay! = nil
@@ -29,7 +36,7 @@ class Networking : WebSocketDelegate {
         }
         attemptCount += 1
         currentServerAddress = appState.serverAddresses[attemptCount % appState.serverAddresses.count]
-        var request = URLRequest(url: URL(string: "ws://" + currentServerAddress! + ":56328/ws")!)
+        var request = URLRequest(url: URL(string: "ws://" + currentServerAddress! + ":" + String(Constants.serverPort) + "/ws")!)
         request.timeoutInterval = 0.5
         socket = WebSocket(request: request)
         socket?.delegate = self
@@ -39,15 +46,13 @@ class Networking : WebSocketDelegate {
     private func connected() {
         if (!appState.serverConnected) {
             appState.serverConnected = true
-            if (currentServerAddress != nil) {
-                webOverlay.load(currentServerAddress!)
-            }
         }
     }
     
     private func disconnected() {
         if (appState.serverConnected) {
             appState.serverConnected = false
+            appState.serverCompatibility = .unknown
         }
         if (reconnecting) {
             return
@@ -67,9 +72,26 @@ class Networking : WebSocketDelegate {
             case .disconnected:
                 disconnected()
             case .text(let string):
-                print("Received text: \(string)")
+                if (appState.serverCompatibility == .unknown) {
+                    let serverCompatibility = Int(string)
+                    if (serverCompatibility != nil) {
+                        // Update compatibility state
+                        if (serverCompatibility! == Constants.nativeHostCompatibility) {
+                            appState.serverCompatibility = .supported
+                        } else if (serverCompatibility! < Constants.nativeHostCompatibility) {
+                            appState.serverCompatibility = .serverTooOld
+                        } else if (serverCompatibility! > Constants.nativeHostCompatibility) {
+                            appState.serverCompatibility = .serverTooNew
+                        }
+                        
+                        // If compatible, load web overlay
+                        if (appState.serverCompatibility == .supported && currentServerAddress != nil) {
+                            webOverlay.load(currentServerAddress!)
+                        }
+                    }
+                }
             case .binary(let data):
-                print("Received data: \(data.count)")
+                break
             case .ping(_):
                 break
             case .pong(_):

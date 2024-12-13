@@ -2,6 +2,7 @@ import fs from "fs";
 import http from "http";
 import path from "path";
 import { WebSocketServer } from "ws";
+import { XR_NATIVE_HOST_COMPATIBILITY, XR_SERVER_PORT } from "./Constants";
 
 export function startXRServer() {
   // Create HTTP server
@@ -37,7 +38,7 @@ export function startXRServer() {
       response.writeHead(404);
       response.end("Not found");
     })
-    .listen(56328);
+    .listen(XR_SERVER_PORT);
 
   // Create WebSocket server
   let wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
@@ -46,6 +47,6 @@ export function startXRServer() {
       console.log("Received: %s", data);
     });
 
-    socket.send("Hello from WS!");
+    socket.send(XR_NATIVE_HOST_COMPATIBILITY.toString());
   });
 }

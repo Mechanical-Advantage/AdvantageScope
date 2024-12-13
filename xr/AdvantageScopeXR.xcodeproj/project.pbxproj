@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8C103A852D093F9900FAE4C0 /* ARRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C103A822D093F9900FAE4C0 /* ARRenderer.swift */; };
 		8C103A862D093F9900FAE4C0 /* ARShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8C103A832D093F9900FAE4C0 /* ARShaders.metal */; };
+		8C1672E62D0BB126004100D8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1672E52D0BB125004100D8 /* Constants.swift */; };
 		8C1A9EB92C11695700DCF1E3 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 8C1A9EB82C11695700DCF1E3 /* Starscream */; };
 		8C2126132D05014700C92898 /* WebOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2126122D05014700C92898 /* WebOverlay.swift */; };
 		8C2759A22C0995BD0067FD80 /* ControlsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */; };
@@ -39,6 +40,7 @@
 		8C103A832D093F9900FAE4C0 /* ARShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ARShaders.metal; sourceTree = "<group>"; };
 		8C103A842D093F9900FAE4C0 /* ARShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARShaderTypes.h; sourceTree = "<group>"; };
 		8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AdvantageScopeXR-Bridging-Header.h"; sourceTree = "<group>"; };
+		8C1672E52D0BB125004100D8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		8C2126122D05014700C92898 /* WebOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebOverlay.swift; sourceTree = "<group>"; };
 		8C2126142D05044700C92898 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsMenu.swift; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 		8CBFA6DA2BF8663D009AA8CD /* AdvantageScopeXR */ = {
 			isa = PBXGroup;
 			children = (
+				8C1672E52D0BB125004100D8 /* Constants.swift */,
 				8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */,
 				8C28075C2D07CD33008F4721 /* ARManager.swift */,
 				8C103A822D093F9900FAE4C0 /* ARRenderer.swift */,
@@ -178,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CBFA6DE2BF8663D009AA8CD /* ContentView.swift in Sources */,
+				8C1672E62D0BB126004100D8 /* Constants.swift in Sources */,
 				8C103A852D093F9900FAE4C0 /* ARRenderer.swift in Sources */,
 				8C103A862D093F9900FAE4C0 /* ARShaders.metal in Sources */,
 				8C28075D2D07CD35008F4721 /* ARManager.swift in Sources */,

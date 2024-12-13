@@ -8,6 +8,7 @@ class AppState : ObservableObject {
     @Published var calibrating = false
     @Published var serverConnected = false
     @Published var serverAddresses: [String] = []
+    @Published var serverCompatibility = ServerCompatibility.unknown
 }
 
 struct ContentView : View {
@@ -27,8 +28,8 @@ struct ContentView : View {
                 webOverlay
                     .ignoresSafeArea(.all)
                     .allowsHitTesting(false)
-                    .opacity(appState.scanningQR || !appState.serverConnected ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.25), value: appState.scanningQR || !appState.serverConnected)
+                    .opacity(showWebOverlay() ? 1 : 0)
+                    .animation(.easeInOut(duration: 0.25), value: showWebOverlay())
             )
             
             // UI overlays
@@ -53,6 +54,10 @@ struct ContentView : View {
                 arManager.addFrameCallback(qrScanner.processFrame)
                 qrScanner.start(appState)
             }
+    }
+    
+    private func showWebOverlay() -> Bool {
+        return !appState.scanningQR && appState.serverConnected && appState.serverCompatibility == .supported
     }
 }
 
