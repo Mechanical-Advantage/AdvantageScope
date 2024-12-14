@@ -329,7 +329,6 @@ export default class LineGraphController implements TabController {
                 newData.values.push(data!.values[sourceIndex]);
                 akitIndex++;
               }
-              console.log(newData.timestamps);
               data = newData;
               break;
           }
