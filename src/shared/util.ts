@@ -89,6 +89,13 @@ export function scaleValue(value: number, oldRange: [number, number], newRange: 
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];
 }
 
+/** Converts a value between two ranges. */
+export function scaleValueClamped(value: number, oldRange: [number, number], newRange: [number, number]): number {
+  return (
+    clampValue((value - oldRange[0]) / (oldRange[1] - oldRange[0]), 0, 1) * (newRange[1] - newRange[0]) + newRange[0]
+  );
+}
+
 /** Converts a value between two ranges, with caching for better performance. */
 export class ValueScaler {
   private a: number;
