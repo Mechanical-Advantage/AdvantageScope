@@ -104,12 +104,31 @@ const workerBundles = [
   bundle("shared/renderers/threeDimension/workers/loadField.ts", "shared$loadField.js", false),
   bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false)
 ];
+const runOwletDownload = {
+  input: "src/runOwletDownload.ts",
+  output: {
+    file: "runOwletDownload.js",
+    format: "cjs"
+  },
+  context: "this",
+  external: ["download"],
+  plugins: [
+    typescript(),
+    nodeResolve({
+      preferBuiltins: true
+    }),
+    commonjs(),
+    json()
+  ],
+  onwarn() {}
+};
 
 export default (cliArgs) => {
   if (cliArgs.configMain === true) return mainBundles;
   if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
+  if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
   return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles];
 };

@@ -39,6 +39,7 @@ declare global {
     typeMemory: SourceListTypeMemory;
     platform: string;
     platformRelease: string;
+    platformArch: string;
     appVersion: string;
     isFullscreen: boolean;
     isFocused: boolean;
@@ -565,6 +566,7 @@ async function handleMainMessage(message: NamedMessage) {
     case "set-version":
       window.platform = message.data.platform;
       window.platformRelease = message.data.platformRelease;
+      window.platformArch = message.data.platformArch;
       window.appVersion = message.data.appVersion;
       updateFancyWindow();
       break;

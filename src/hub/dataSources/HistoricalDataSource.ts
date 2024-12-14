@@ -67,11 +67,6 @@ export class HistoricalDataSource {
     this.refreshCallback = refreshCallback;
 
     // Post message to start reading
-    if (window.platform !== "win32" && path.endsWith(".hoot")) {
-      this.customError = "Hoot log files cannot be decoded on macOS or Linux.";
-      this.setStatus(HistoricalDataSourceStatus.Error);
-      return;
-    }
     if (this.path.endsWith(".dsevents")) {
       this.path = this.path.slice(0, -8) + "dslog";
     }
