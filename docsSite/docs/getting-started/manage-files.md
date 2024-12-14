@@ -15,7 +15,7 @@ import Image2 from './img/open-file-2.png';
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.
 
 :::info
-Hoot log files can only be opened after agreeing to CTRE's [terms and conditions](https://PLACEHOLDER). AdvantageScope displays a prompt to confirm agreement to these terms when opening a Hoot log file for the first time.
+Hoot log files can only be opened after agreeing to CTRE's [end user license agreement](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt). AdvantageScope displays a prompt to confirm agreement to these terms when opening a Hoot log file for the first time.
 :::
 
 ## Opening Logs

@@ -5,6 +5,9 @@ import path from "path";
 import { createUUID } from "../shared/util";
 import { OWLET_STORAGE } from "./owletDownloadLoop";
 
+export const CTRE_LICENSE_URL =
+  "https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt";
+
 /**
  * Converts a Hoot log to WPILOG
  *

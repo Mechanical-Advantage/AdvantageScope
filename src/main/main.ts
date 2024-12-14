@@ -1,22 +1,22 @@
 import { hex } from "color-convert";
 import {
+  app,
   BrowserWindow,
   BrowserWindowConstructorOptions,
+  clipboard,
+  dialog,
   FileFilter,
   Menu,
   MenuItem,
   MessageChannelMain,
   MessagePortMain,
-  TitleBarOverlay,
-  TouchBar,
-  TouchBarSlider,
-  app,
-  clipboard,
-  dialog,
   nativeImage,
   nativeTheme,
   powerMonitor,
-  shell
+  shell,
+  TitleBarOverlay,
+  TouchBar,
+  TouchBarSlider
 } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
@@ -81,7 +81,7 @@ import {
   shouldPromptBetaSurvey
 } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
-import { checkHootIsPro, convertHoot } from "./owletInterface";
+import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -93,6 +93,7 @@ let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 let hubExportingIds: Set<number> = new Set();
+let ctreLicensePrompt: Promise<void> | null = null;
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
@@ -326,29 +327,50 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else if (path.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
+
+          // Prompt for CTRE license if not accepted
           let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
           if (!prefs.ctreLicenseAccepted) {
-            let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
-              dialog
-                .showMessageBox(window, {
-                  type: "info",
-                  title: "Alert",
-                  message: "CTRE Terms & Conditions",
-                  detail:
-                    "Hoot log file decoding requires agreement to CTRE's terms and conditions. Please navigate to the address below to view the full license agreement.\n\n<PLACEHOLDER>",
-                  checkboxLabel: "I Agree",
-                  icon: WINDOW_ICON
-                })
-                .then((response) => resolve(response))
-            );
-            // if (response.checkboxChecked) {
-            //   prefs.ctreLicenseAccepted = true;
-            //   jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            //   sendAllPreferences();
-            // }
+            if (ctreLicensePrompt === null) {
+              ctreLicensePrompt = new Promise(async (resolve) => {
+                while (true) {
+                  let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
+                    dialog
+                      .showMessageBox(window, {
+                        type: "question",
+                        title: "Alert",
+                        message: "CTRE License Agreement",
+                        detail:
+                          "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
+                        checkboxLabel: "I Agree",
+                        buttons: ["View License", "OK"],
+                        defaultId: 1,
+                        icon: WINDOW_ICON
+                      })
+                      .then((response) => resolve(response))
+                  );
+                  if (response.response === 1) {
+                    if (response.checkboxChecked) {
+                      prefs.ctreLicenseAccepted = true;
+                      jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                      sendAllPreferences();
+                    }
+                    resolve();
+                    break;
+                  } else {
+                    shell.openExternal(CTRE_LICENSE_URL);
+                  }
+                }
+              });
+            }
+            await ctreLicensePrompt;
+            ctreLicensePrompt = null;
           }
+
+          // Check for license and open file
+          prefs = jsonfile.readFileSync(PREFS_FILENAME);
           if (!prefs.ctreLicenseAccepted) {
-            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's terms and conditions.";
+            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's end user license agreement.";
             completedCount++;
             sendIfReady();
           } else {
