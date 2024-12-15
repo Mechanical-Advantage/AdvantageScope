@@ -7,11 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="xrControls.css" />
-    <title>XR &mdash; AdvantageScope</title>
+    <script type="module" src="../bundles/xrControls.js"></script>
+    <title>XR Controls &mdash; AdvantageScope</title>
   </head>
   <body>
-    <h3>AdvantageScope XR is coming soon!</h3>
-    <p>Stay tuned for updates.</p>
-    <img src="xrControls.webp" />
+    <div class="qr-container">
+      <div class="qr"></div>
+    </div>
+    <div class="controls">
+      <div class="title">Scan the code to start AdvantageScope XR</div>
+      <div class="details">
+        Requires an iPhone or iPad running iOS/iPadOS 16 or later. Devices must be connected to the same Wi-Fi network.
+        Check the documentation for details.
+      </div>
+      <table>
+        <tr>
+          <td>Calibration</td>
+          <td colspan="2">
+            <select name="calibration-mode">
+              <option value="0">Miniature</option>
+              <option value="1">Full-Size (Blue Alliance)</option>
+              <option value="2">Full-Size (Red Alliance)</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Show Carpet</td>
+          <td>Show Field</td>
+          <td>Show Robots</td>
+        </tr>
+        <tr>
+          <td><input name="show-carpet" type="checkbox" /></td>
+          <td><input name="show-field" type="checkbox" checked /></td>
+          <td><input name="show-robots" type="checkbox" checked /></td>
+        </tr>
+      </table>
+    </div>
   </body>
 </html>

@@ -606,6 +606,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.setActiveSatellites(message.data);
       break;
 
+    case "set-active-xr-uuid":
+      window.tabs.setActiveXRUUID(message.data);
+      break;
+
     case "call-selection-setter":
       let uuid: string = message.data.uuid;
       let name: string = message.data.name;

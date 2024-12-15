@@ -52,7 +52,7 @@ export default class ThreeDimensionController implements TabController {
 
     // Set up XR button
     this.XR_BUTTON.addEventListener("click", () => {
-      window.sendMainMessage("open-xr");
+      window.sendMainMessage("open-xr", this.UUID);
     });
 
     // Set up game select
@@ -68,6 +68,15 @@ export default class ThreeDimensionController implements TabController {
       });
     });
     this.updateOriginSwitcher();
+  }
+
+  /** Sets whether XR streamling is currently active for this tab. */
+  setXRActive(active: boolean) {
+    if (active) {
+      this.XR_BUTTON.classList.add("active");
+    } else {
+      this.XR_BUTTON.classList.remove("active");
+    }
   }
 
   /** Updates game select with the latest options. */

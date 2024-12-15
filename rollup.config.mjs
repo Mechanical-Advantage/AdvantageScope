@@ -9,7 +9,7 @@ import fs from "fs";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
-function bundle(input, output, isMain, isXR, external = []) {
+function bundle(input, output, isMain, isXRClient, external = []) {
   const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
   return {
     input: "src/" + input,
@@ -25,7 +25,7 @@ function bundle(input, output, isMain, isXR, external = []) {
         preferBuiltins: true
       }),
       commonjs(),
-      ...(isXR
+      ...(isXRClient
         ? [
             getBabelOutputPlugin({
               presets: [["@babel/preset-env", { modules: false }]],
@@ -120,7 +120,8 @@ const workerBundles = [
   bundle("shared/renderers/threeDimension/workers/loadField.ts", "shared$loadField.js", false, false),
   bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
 ];
-const xrClientBundles = [
+const xrBundles = [
+  bundle("xrControls.ts", "xrControls.js", false, false),
   bundle("xrClient/xrClient.ts", "xrClient.js", false, true),
   bundle("shared/renderers/threeDimension/workers/loadField.ts", "xrClient$loadField.js", false, true),
   bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "xrClient$loadRobot.js", false, true)
@@ -149,7 +150,7 @@ export default (cliArgs) => {
   if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
-  if (cliArgs.configXRClient === true) return xrClientBundles;
+  if (cliArgs.configXR === true) return xrBundles;
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
   return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrClientBundles];

@@ -1,13 +1,18 @@
+import { Encoder } from "@msgpack/msgpack";
 import fs from "fs";
 import http from "http";
 import { networkInterfaces } from "os";
 import path from "path";
 import { WebSocketServer } from "ws";
-import { XR_NATIVE_HOST_COMPATIBILITY, XR_SERVER_PORT, XR_URL_PREFIX } from "./Constants";
+import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
+import { XRSettings } from "../shared/XRSettings";
+import { XR_SERVER_PORT, XR_URL_PREFIX } from "./Constants";
 
 export namespace XRServer {
   let httpServer: http.Server | null = null;
   let wsServer: WebSocketServer | null = null;
+  let xrSettings: XRSettings | null = null;
+  const msgpackEncoder = new Encoder();
 
   export function getQRText(): string {
     const interfaces = networkInterfaces();
@@ -61,17 +66,26 @@ export namespace XRServer {
 
     // Create WebSocket server
     wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
-    wsServer.on("connection", (socket) => {
-      socket.on("message", function message(data) {
-        console.log("Received: %s", data);
-      });
-
-      socket.send(XR_NATIVE_HOST_COMPATIBILITY.toString());
-    });
   }
 
   export function stop() {
     httpServer?.close();
     wsServer?.close();
+    xrSettings = null;
+  }
+
+  export function setXRSettings(settings: XRSettings) {
+    xrSettings = settings;
+  }
+
+  export function setHubCommand(command: ThreeDimensionRendererCommand) {
+    if (xrSettings === null) return;
+    let message = msgpackEncoder.encode({
+      settings: xrSettings,
+      command: command
+    });
+    wsServer?.clients.forEach((client) => {
+      client.send(message);
+    });
   }
 }

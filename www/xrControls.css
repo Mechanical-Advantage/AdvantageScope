@@ -1,16 +1,70 @@
+body {
+  overflow: hidden;
+}
+
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #222;
   }
 }
 
-body {
-  text-align: center;
+div.qr-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  max-width: 50%;
+  aspect-ratio: 1;
 }
 
-img {
+div.controls {
   position: absolute;
-  left: 0;
-  bottom: 0;
+  right: 0px;
+  top: 0px;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+div.controls > div {
+  text-align: center;
+  padding: 10px 15px 10px 15px;
+}
+
+div.controls > div.title {
+  font-weight: bold;
+  font-size: 9vh;
+}
+
+div.controls > div.details {
+  font-size: 5vh;
+  font-style: italic;
+}
+
+table {
   width: 100%;
+  table-layout: fixed;
+}
+
+td {
+  text-align: center;
+  font-size: 5vh;
+  font-weight: lighter;
+  padding: 3px;
+}
+
+tr:first-child td:first-child {
+  text-align: right;
+}
+
+select {
+  font-size: 5vh;
+  width: calc(100% - 16px);
+  margin: 8px;
+}
+
+input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+  filter: saturate(0%);
 }

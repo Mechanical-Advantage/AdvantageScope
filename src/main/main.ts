@@ -69,6 +69,8 @@ import {
 import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
 import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
+import { XRControls } from "./XRControls";
+import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
 import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import {
@@ -82,14 +84,12 @@ import {
 } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
-import { startXRServer } from "./xrServer";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
 let downloadWindow: BrowserWindow | null = null;
 let prefsWindow: BrowserWindow | null = null;
 let licensesWindow: BrowserWindow | null = null;
-let xrWindow: BrowserWindow | null = null;
 let satelliteWindows: { [id: string]: BrowserWindow[] } = {};
 let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
@@ -192,6 +192,13 @@ function sendActiveSatellites() {
     sendMessage(window, "set-active-satellites", activeSatellites);
   });
 }
+
+// Send XR state to all hub windows
+XRControls.addSourceUUIDCallback((uuid) => {
+  hubWindows.forEach((window) => {
+    sendMessage(window, "set-active-xr-uuid", uuid);
+  });
+});
 
 /**
  * Process a message from a hub window.
@@ -1126,7 +1133,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "open-xr":
-      openXR(window);
+      XRControls.open(message.data, window);
+      break;
+
+    case "update-xr-command":
+      XRServer.setHubCommand(message.data);
       break;
 
     default:
@@ -2915,7 +2926,6 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   prefsWindow.setMenu(null);
-  prefsWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   prefsWindow.once("ready-to-show", prefsWindow.show);
   prefsWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
@@ -2965,7 +2975,6 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   downloadWindow.setMenu(null);
-  downloadWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   downloadWindow.once("ready-to-show", downloadWindow.show);
   downloadWindow.once("close", downloadStop);
   downloadWindow.webContents.on("dom-ready", () => {
@@ -3018,44 +3027,9 @@ function openLicenses(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   licensesWindow.setMenu(null);
-  licensesWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   licensesWindow.once("ready-to-show", licensesWindow.show);
   licensesWindow.once("close", downloadStop);
   licensesWindow.loadFile(path.join(__dirname, "../www/licenses.html"));
-}
-
-/**
- * Creates a new XR window if it doesn't already exist.
- * @param parentWindow The parent window to use for alignment
- */
-function openXR(parentWindow: Electron.BrowserWindow) {
-  if (xrWindow !== null && !xrWindow.isDestroyed()) {
-    xrWindow.focus();
-    return;
-  }
-
-  const width = 400;
-  const height = 400;
-  xrWindow = new BrowserWindow({
-    width: width,
-    height: height,
-    x: Math.floor(parentWindow.getBounds().x + parentWindow.getBounds().width / 2 - width / 2),
-    y: Math.floor(parentWindow.getBounds().y + parentWindow.getBounds().height / 2 - height / 2),
-    resizable: false,
-    icon: WINDOW_ICON,
-    show: false,
-    fullscreenable: false,
-    webPreferences: {
-      preload: path.join(__dirname, "preload.js")
-    }
-  });
-
-  // Finish setup
-  xrWindow.setMenu(null);
-  xrWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
-  xrWindow.once("ready-to-show", xrWindow.show);
-  xrWindow.once("close", downloadStop);
-  xrWindow.loadFile(path.join(__dirname, "../www/xrControls.html"));
 }
 
 /**
@@ -3085,7 +3059,6 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
 
   // Finish setup
   helpWindow.setMenu(null);
-  helpWindow.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   helpWindow.once("ready-to-show", helpWindow.show);
   helpWindow.once("close", downloadStop);
   helpWindow.webContents.on("dom-ready", () => {
@@ -3125,7 +3098,6 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   });
   // Finish setup
   betaWelcome.setMenu(null);
-  betaWelcome.setFullScreenable(false); // Call separately b/c the normal behavior is broken: https://github.com/electron/electron/pull/39086
   betaWelcome.once("ready-to-show", betaWelcome.show);
   betaWelcome.on("close", () => {
     app.quit();
@@ -3351,9 +3323,6 @@ app.whenReady().then(() => {
   if (DISTRIBUTOR === Distributor.FRC6328) {
     checkForUpdate(false);
   }
-
-  // Start XR server for testing
-  startXRServer();
 });
 
 app.on("window-all-closed", () => {
