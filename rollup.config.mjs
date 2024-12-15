@@ -125,6 +125,24 @@ const xrClientBundles = [
   bundle("shared/renderers/threeDimension/workers/loadField.ts", "xrClient$loadField.js", false, true),
   bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "xrClient$loadRobot.js", false, true)
 ];
+const runOwletDownload = {
+  input: "src/runOwletDownload.ts",
+  output: {
+    file: "runOwletDownload.js",
+    format: "cjs"
+  },
+  context: "this",
+  external: ["download"],
+  plugins: [
+    typescript(),
+    nodeResolve({
+      preferBuiltins: true
+    }),
+    commonjs(),
+    json()
+  ],
+  onwarn() {}
+};
 
 export default (cliArgs) => {
   if (cliArgs.configMain === true) return mainBundles;
@@ -132,6 +150,7 @@ export default (cliArgs) => {
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
   if (cliArgs.configXRClient === true) return xrClientBundles;
+  if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
   return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrClientBundles];
 };

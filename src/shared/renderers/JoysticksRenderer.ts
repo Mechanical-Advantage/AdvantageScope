@@ -11,12 +11,16 @@ export default class JoysticksRenderer implements TabRenderer {
   private WHITE_COLOR = "#eeeeee";
 
   private lastRenderState = "";
+  private imageLoadCount = 0;
 
   constructor(root: HTMLElement) {
     this.CANVAS = root.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
     for (let i = 0; i < 6; i++) {
       let image = document.createElement("img");
       this.IMAGES.push(image);
+      image.addEventListener("load", () => {
+        this.imageLoadCount++;
+      });
     }
   }
 
@@ -38,7 +42,14 @@ export default class JoysticksRenderer implements TabRenderer {
     let isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     // Exit if render state unchanged
-    let renderState: any[] = [canvasWidth, canvasHeight, isLight, window.devicePixelRatio, command];
+    let renderState: any[] = [
+      canvasWidth,
+      canvasHeight,
+      isLight,
+      window.devicePixelRatio,
+      command,
+      this.imageLoadCount
+    ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
       return;

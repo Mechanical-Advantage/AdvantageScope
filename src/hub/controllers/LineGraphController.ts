@@ -11,7 +11,7 @@ import {
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
 import { NoopUnitConversion, UnitConversionPreset, convertWithPreset } from "../../shared/units";
-import { clampValue, createUUID, scaleValue } from "../../shared/util";
+import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
 import TabController from "./TabController";
@@ -329,7 +329,6 @@ export default class LineGraphController implements TabController {
                 newData.values.push(data!.values[sourceIndex]);
                 akitIndex++;
               }
-              console.log(newData.timestamps);
               data = newData;
               break;
           }
@@ -388,7 +387,7 @@ export default class LineGraphController implements TabController {
             case "smooth":
               // Interpolate to displayed value
               if (data.timestamps.length >= 2) {
-                data.values[0] = scaleValue(
+                data.values[0] = scaleValueClamped(
                   timeRange[0],
                   [data.timestamps[0], data.timestamps[1]],
                   [data.values[0], data.values[1]]
@@ -415,12 +414,14 @@ export default class LineGraphController implements TabController {
               break;
             case "smooth":
               // Interpolate to displayed value
-              data.values[data.values.length - 1] = scaleValue(
-                timeRange[1],
-                [data.timestamps[data.timestamps.length - 2], data.timestamps[data.timestamps.length - 1]],
-                [data.values[data.values.length - 2], data.values[data.values.length - 1]]
-              );
-              data.timestamps[data.timestamps.length - 1] = timeRange[1];
+              if (data.timestamps.length >= 2) {
+                data.values[data.values.length - 1] = scaleValueClamped(
+                  timeRange[1],
+                  [data.timestamps[data.timestamps.length - 2], data.timestamps[data.timestamps.length - 1]],
+                  [data.values[data.values.length - 2], data.values[data.values.length - 1]]
+                );
+                data.timestamps[data.timestamps.length - 1] = timeRange[1];
+              }
               break;
           }
         } else if (

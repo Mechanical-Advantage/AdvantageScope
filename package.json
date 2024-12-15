@@ -1,7 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "4.0.0-beta-3",
+  "version": "4.0.0-beta-4",
   "description": "Robot telemetry application for FRC",
   "author": {
     "name": "FRC 6328",
@@ -16,6 +16,7 @@
     "build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build",
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rollup -c -w",
+    "download-owlet": "rollup -c --configRunOwletDownload && node runOwletDownload.js",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "test-ytdl": "node testYtdl.mjs",
@@ -25,7 +26,7 @@
     "docs:build-embed": "cd docsSite && npm run build-embed && cd ..",
     "docs:clear": "cd docsSite && npm run clear && cd ..",
     "docs:serve": "cd docsSite && npm run serve && cd ..",
-    "postinstall": "cd docsSite && npm install && cd .. && node getLicenses.mjs && node ffmpegDownload.mjs && node tesseractLangDownload.mjs"
+    "postinstall": "cd docsSite && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node ffmpegDownload.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -41,6 +42,7 @@
     "@rollup/plugin-typescript": "12.1.1",
     "@types/chart.js": "^2.9.38",
     "@types/color-convert": "^2.0.3",
+    "@types/compare-versions": "^3.3.0",
     "@types/download": "^8.0.2",
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
@@ -52,6 +54,7 @@
     "camera-controls": "^2.9.0",
     "chart.js": "^4.4.0",
     "color-convert": "^2.0.1",
+    "compare-versions": "^6.1.1",
     "electron": "^32.0.2",
     "electron-builder": "^24.6.4",
     "fuse.js": "^7.0.0",
@@ -65,7 +68,7 @@
     "rollup": "^3.29.2",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-re": "^1.0.7",
-    "simple-statistics": "^7.8.3",
+    "simple-statistics": "^7.8.7",
     "three": "^0.168.0",
     "tslib": "^2.6.2",
     "type-fest": "^4.26.1",
@@ -104,6 +107,11 @@
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
       "docsSite/build/**/*",
+      {
+        "filter": [
+          "owlet/${os}-${arch}/*"
+        ]
+      },
       "!**/.*"
     ],
     "extraResources": [
