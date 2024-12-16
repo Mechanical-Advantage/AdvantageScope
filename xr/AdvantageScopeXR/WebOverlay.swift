@@ -3,9 +3,16 @@ import WebKit
 
 struct WebOverlay: UIViewRepresentable {
     @EnvironmentObject var appState: AppState
-    private var webView = WKWebView()
+    private var webView: WKWebView!
+    let messageHandler = ScriptMessageHandler()
     
-    func makeUIView(context: Context) -> WKWebView  {
+    init() {
+        let contentController = WKUserContentController()
+        contentController.add(messageHandler, name: "asxr")
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        
+        webView = WKWebView(frame: CGRect(), configuration: config)
         webView.isOpaque = false
         webView.backgroundColor = UIColor.clear
         webView.scrollView.backgroundColor = UIColor.clear
@@ -17,7 +24,10 @@ struct WebOverlay: UIViewRepresentable {
             webView.perform(Selector(("setInspectable:")), with: true)
         }
         #endif
-        
+    }
+    
+    func makeUIView(context: Context) -> WKWebView  {
+        messageHandler.appState = appState
         return webView;
     }
     
@@ -30,13 +40,60 @@ struct WebOverlay: UIViewRepresentable {
         }
     }
     
+    private func isWebViewReady() -> Bool {
+        return webView.url != nil && !webView.isLoading
+    }
+    
+    // MARK: - JS Outgoing Messages
+    
+    func setReceivedCommand(_ data: Data) {
+        guard (isWebViewReady()) else { return }
+        let base64Data = data.base64EncodedString()
+        webView.evaluateJavaScript("setCommand(\"\(base64Data)\")")
+    }
+    
     func render(_ data: Dictionary<String, Any>) {
+        guard (isWebViewReady()) else { return }
         do {
             let json = try JSONSerialization.data(withJSONObject: data, options: JSONSerialization.WritingOptions(rawValue: 0))
             let jsonData = NSString(data: json, encoding: String.Encoding.utf8.rawValue)!
             webView.evaluateJavaScript("render(\(jsonData))")
         } catch {
             print("Failed to serialize JSON")
+        }
+    }
+    
+    func requestCalibration() {
+        guard (isWebViewReady()) else { return }
+        webView.evaluateJavaScript("requestCalibration()")
+    }
+    
+    func userTap() {
+        guard (isWebViewReady()) else { return }
+        webView.evaluateJavaScript("userTap()")
+    }
+}
+
+class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
+    var appState: AppState? = nil
+    
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        guard (message.name == "asxr") else { return }
+        let messageBody = message.body as! NSDictionary
+        let name = messageBody["name"] as! String
+        let data = messageBody["data"]
+        
+        switch (name) {
+        case "setCalibrationText":
+            guard (appState != nil) else { return }
+            let newText = data as! String
+            if (newText.isEmpty && !appState!.calibrationText.isEmpty) {
+                appState!.showControls = false
+            }
+            appState!.calibrationText = newText
+            break
+        default:
+            break
         }
     }
 }

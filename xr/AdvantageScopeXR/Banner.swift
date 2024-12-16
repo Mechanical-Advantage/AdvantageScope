@@ -23,8 +23,10 @@ struct Banner: View {
             return "Update AdvantageScope XR to the latest version, then try again."
         } else if (!appState.serverConnected ) {
             return "Searching for server..."
-        } else if (!appState.trackingReady) {
+        } else if (!appState.trackingReady || appState.calibrationText == "$TRACKING_WARNING") {
             return "Move " + UIDevice.current.model + " to detect environment."
+        } else if (!appState.calibrationText.isEmpty) {
+            return appState.calibrationText
         } else {
             return ""
         }

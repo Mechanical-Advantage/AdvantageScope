@@ -1,24 +1,42 @@
 import * as THREE from "three";
+import { Line2 } from "three/examples/jsm/lines/Line2.js";
+import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
+import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { clampValue } from "../shared/util";
+import { XRCalibrationMode, XRSettings } from "../shared/XRSettings";
+import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
+import { convert } from "../shared/units";
+import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
-import { XRCameraState } from "./XRTypes";
+import { RaycastResult, XRCameraState } from "./XRTypes";
+import { sendHostMessage } from "./xrClient";
 
 export default class XRRenderer {
+  private FIELD_REF_X_SIZE = convert(54, "feet", "meters");
+  private FIELD_REF_Y_SIZE = convert(27, "feet", "meters");
+
   private canvas: HTMLCanvasElement;
   private renderer: THREE.WebGLRenderer;
   private composer: EffectComposer;
   private flimPass: FilmPass;
   private lastFrameTime = 0;
+  private resolution = new THREE.Vector2();
 
   private scene: THREE.Scene;
   private camera: XRCamera;
   private ambientLight: THREE.AmbientLight;
   private directionalLight: THREE.DirectionalLight;
-  private boxObject: THREE.Mesh;
+  private anchors: THREE.Object3D[] = [];
+  private cursor: THREE.Object3D;
+  private fieldRoot: THREE.Object3D;
+  private fieldCoordinateRoot: THREE.Object3D;
+
+  private lastCalibrationMode: XRCalibrationMode | null = null;
+  private lastInvalidRaycast = 0;
+  private lastRaycastResult: RaycastResult = { isValid: false };
 
   constructor() {
     this.canvas = document.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
@@ -32,27 +50,273 @@ export default class XRRenderer {
     this.composer.addPass(new OutputPass());
     this.lastFrameTime = new Date().getTime();
 
+    // Create lights
     this.ambientLight = new THREE.AmbientLight(0xd4d4d4);
     this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
     this.directionalLight.position.set(1, 1, 1);
     this.scene.add(this.ambientLight, this.directionalLight);
 
-    this.boxObject = new THREE.Mesh(
-      new THREE.BoxGeometry(0.1, 0.1, 0.1),
-      new THREE.MeshStandardMaterial({ color: "red" })
+    // Create cursor
+    this.cursor = new THREE.Group();
+    this.scene.add(this.cursor);
+    this.cursor.add(
+      new THREE.Mesh(
+        new THREE.SphereGeometry(0.005, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2),
+        new THREE.MeshPhongMaterial({ color: "yellow" })
+      )
     );
-    this.scene.add(this.boxObject);
+    this.cursor.add(
+      new THREE.Mesh(
+        new THREE.CircleGeometry(0.05, 64),
+        new THREE.MeshPhongMaterial({ color: "yellow", transparent: true, opacity: 0.02, side: THREE.DoubleSide })
+      ).rotateX(Math.PI / 2)
+    );
+
+    // Create field root
+    this.fieldRoot = new THREE.Group();
+    this.scene.add(this.fieldRoot);
+    this.fieldCoordinateRoot = new THREE.Group();
+    this.fieldCoordinateRoot.rotateX(Math.PI / 2);
+    this.fieldRoot.add(this.fieldCoordinateRoot);
+
+    this.fieldCoordinateRoot.add(
+      new Line2(
+        new LineGeometry().setPositions([
+          -this.FIELD_REF_X_SIZE / 2,
+          -this.FIELD_REF_Y_SIZE / 2,
+          0,
+          -this.FIELD_REF_X_SIZE / 2,
+          this.FIELD_REF_Y_SIZE / 2,
+          0
+        ]),
+        new LineMaterial({
+          linewidth: 5,
+          resolution: this.resolution,
+          color: "blue"
+        })
+      )
+    );
+    this.fieldCoordinateRoot.add(
+      new Line2(
+        new LineGeometry().setPositions([
+          this.FIELD_REF_X_SIZE / 2,
+          -this.FIELD_REF_Y_SIZE / 2,
+          0,
+          this.FIELD_REF_X_SIZE / 2,
+          this.FIELD_REF_Y_SIZE / 2,
+          0
+        ]),
+        new LineMaterial({
+          linewidth: 5,
+          resolution: this.resolution,
+          color: "red"
+        })
+      )
+    );
+    this.fieldCoordinateRoot.add(
+      new Line2(
+        new LineGeometry().setPositions([
+          -this.FIELD_REF_X_SIZE / 2,
+          -this.FIELD_REF_Y_SIZE / 2,
+          0,
+          this.FIELD_REF_X_SIZE / 2,
+          -this.FIELD_REF_Y_SIZE / 2,
+          0
+        ]),
+        new LineMaterial({
+          linewidth: 5,
+          resolution: this.resolution,
+          color: "white"
+        })
+      )
+    );
+    this.fieldCoordinateRoot.add(
+      new Line2(
+        new LineGeometry().setPositions([
+          -this.FIELD_REF_X_SIZE / 2,
+          this.FIELD_REF_Y_SIZE / 2,
+          0,
+          this.FIELD_REF_X_SIZE / 2,
+          this.FIELD_REF_Y_SIZE / 2,
+          0
+        ]),
+        new LineMaterial({
+          linewidth: 5,
+          resolution: this.resolution,
+          color: "white"
+        })
+      )
+    );
   }
 
-  render(cameraState: XRCameraState) {
+  resetAnchors() {
+    while (this.anchors.length > 0) {
+      this.scene.remove(this.anchors.pop()!);
+    }
+  }
+
+  userTap() {
+    // Add a new anchor
+    if (this.lastRaycastResult.isValid) {
+      let anchor = new THREE.Object3D();
+      anchor.position.set(...this.lastRaycastResult.position);
+      this.scene.add(anchor);
+      this.anchors.push(anchor);
+    }
+  }
+
+  private updateFieldRootMiniature(blueReference: THREE.Vector3, redReference: THREE.Vector3) {
+    this.fieldRoot.position.copy(blueReference.clone().add(redReference).divideScalar(2));
+    let blueToRed = redReference.clone().sub(blueReference);
+    let scale = blueToRed.length() / this.FIELD_REF_X_SIZE;
+    this.fieldRoot.scale.set(scale, scale, scale);
+    this.fieldRoot.rotation.set(0, Math.atan2(blueToRed.x, blueToRed.z) - Math.PI / 2, 0);
+  }
+
+  private updateFieldRootFullSize(
+    isRed: boolean,
+    allianceReference1: THREE.Vector3,
+    allianceReference2: THREE.Vector3,
+    wallReference?: THREE.Vector3
+  ) {
+    this.fieldRoot.scale.set(1, 1, 1);
+    let height = allianceReference1.y;
+
+    let yShift = 0;
+    if (wallReference !== undefined) {
+      const allianceReference2d = new THREE.Vector2(allianceReference1.z, allianceReference1.x);
+      const wallReference2d = new THREE.Vector2(wallReference.z, wallReference.x);
+      const allianceWallNormalized = new THREE.Vector2(allianceReference2.z, allianceReference2.x)
+        .sub(allianceReference2d)
+        .normalize();
+      const distance = wallReference2d.clone().sub(allianceReference2d).dot(allianceWallNormalized);
+      if (distance > 0) {
+        yShift = this.FIELD_REF_Y_SIZE / 2 - distance;
+      } else {
+        yShift = -this.FIELD_REF_Y_SIZE / 2 - distance;
+      }
+    }
+
+    let yaw = Math.atan2(allianceReference2.x - allianceReference1.x, allianceReference2.z - allianceReference1.z);
+    if (wallReference !== undefined) {
+      let yawToCursor = Math.atan2(wallReference.x - allianceReference1.x, wallReference.z - allianceReference1.z);
+      let isFlipped = wrapRadians(yaw - yawToCursor) > 0;
+      if (isFlipped) {
+        yaw += Math.PI;
+        yShift *= -1;
+      }
+    }
+    let centerX =
+      allianceReference1.x + Math.sin(yaw + Math.PI / 2) * (this.FIELD_REF_X_SIZE / 2) - Math.sin(yaw) * yShift;
+    let centerZ =
+      allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (this.FIELD_REF_X_SIZE / 2) - Math.cos(yaw) * yShift;
+
+    this.fieldRoot.position.set(centerX, height, centerZ);
+    this.fieldRoot.rotation.set(0, yaw + (isRed ? Math.PI : 0), 0);
+  }
+
+  render(cameraState: XRCameraState, settings: XRSettings, command: ThreeDimensionRendererCommand) {
+    // Reset anchors when changing calibration mode
+    if (settings.calibration !== this.lastCalibrationMode) {
+      this.lastCalibrationMode = settings.calibration;
+      this.resetAnchors();
+    }
+
+    // Update raycast result
+    this.lastRaycastResult = cameraState.raycast;
+    if (!cameraState.raycast.isValid) {
+      this.lastInvalidRaycast = new Date().getTime();
+    }
+    const raycastUnreliable = new Date().getTime() - this.lastInvalidRaycast < 500;
+
+    // Update calibration
+    let calibrationText = "";
+    let isCalibrating = false;
+    switch (settings.calibration) {
+      case XRCalibrationMode.Miniature:
+        isCalibrating = this.anchors.length < 2;
+        switch (this.anchors.length) {
+          case 0:
+            calibrationText = "Tap to place the blue alliance wall.";
+            this.fieldRoot.visible = false;
+            break;
+          case 1:
+            calibrationText = "Tap to place the red alliance wall.";
+            this.fieldRoot.visible = !raycastUnreliable;
+            if (this.fieldRoot.visible && cameraState.raycast.isValid) {
+              this.updateFieldRootMiniature(
+                this.anchors[0].position,
+                new THREE.Vector3(...cameraState.raycast.position)
+              );
+            }
+            break;
+          default:
+            this.fieldRoot.visible = true;
+            this.updateFieldRootMiniature(this.anchors[0].position, this.anchors[1].position);
+            break;
+        }
+        break;
+
+      case XRCalibrationMode.FullSizeBlue:
+      case XRCalibrationMode.FullSizeRed:
+        isCalibrating = this.anchors.length < 3;
+        let colorText = settings.calibration === XRCalibrationMode.FullSizeBlue ? "blue" : "red";
+        let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
+        switch (this.anchors.length) {
+          case 0:
+            calibrationText = `Tap to select the base of the ${colorText} alliance wall.`;
+            this.fieldRoot.visible = false;
+            break;
+          case 1:
+            calibrationText = `Tap to select another point on the base of the ${colorText} alliance wall, at least 6 feet away from the previous point.`;
+            this.fieldRoot.visible = !raycastUnreliable;
+            if (this.fieldRoot.visible && cameraState.raycast.isValid) {
+              let position1 = this.anchors[0].position;
+              let position2 = new THREE.Vector3(...cameraState.raycast.position);
+              this.fieldRoot.visible = position1.distanceTo(position2) > convert(6, "inches", "meters");
+              if (this.fieldRoot.visible) {
+                this.updateFieldRootFullSize(isRed, position1, position2);
+              }
+            }
+            break;
+          case 2:
+            calibrationText = `Tap to select the base of one of the long field barriers.`;
+            this.fieldRoot.visible = !raycastUnreliable;
+            if (this.fieldRoot.visible && cameraState.raycast.isValid) {
+              this.updateFieldRootFullSize(
+                isRed,
+                this.anchors[0].position,
+                this.anchors[1].position,
+                new THREE.Vector3(...cameraState.raycast.position)
+              );
+            }
+            break;
+          default:
+            this.fieldRoot.visible = true;
+            this.updateFieldRootFullSize(
+              isRed,
+              this.anchors[0].position,
+              this.anchors[1].position,
+              this.anchors[2].position
+            );
+            break;
+        }
+        break;
+    }
+    if (isCalibrating && raycastUnreliable) {
+      calibrationText = "$TRACKING_WARNING"; // Special indicator to display warning about poor tracking
+    }
+    sendHostMessage("setCalibrationText", calibrationText);
+
+    // Update cursor position
+    this.cursor.visible = isCalibrating && !raycastUnreliable && cameraState.raycast.isValid;
     if (cameraState.raycast.isValid) {
-      this.boxObject.position.set(
+      this.cursor.position.set(
         cameraState.raycast.position[0],
-        cameraState.raycast.position[1] + 0.05,
+        cameraState.raycast.position[1],
         cameraState.raycast.position[2]
       );
     }
-    this.boxObject.visible = cameraState.raycast.isValid;
 
     // Update camera position, grain, and lighting
     this.camera.matrixWorldInverse.fromArray(cameraState.camera.worldInverse);
@@ -82,6 +346,7 @@ export default class XRRenderer {
       this.composer.setPixelRatio(devicePixelRatio);
       this.renderer.setSize(viewWidthPx, viewHeightPx, true);
       this.composer.setSize(viewWidthPx, viewHeightPx);
+      this.resolution.set(viewWidthPx, viewHeightPx);
     }
     const now = new Date().getTime();
     this.composer.render((now - this.lastFrameTime) * 1e-3);

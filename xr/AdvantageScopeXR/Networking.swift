@@ -70,9 +70,10 @@ class Networking : WebSocketDelegate {
                 connected()
             case .disconnected:
                 disconnected()
-            case .text(let string):
+            case .text(_):
                 break
             case .binary(let data):
+                webOverlay.setReceivedCommand(data)
                 break
             case .ping(_):
                 break

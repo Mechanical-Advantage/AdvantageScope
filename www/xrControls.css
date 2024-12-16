@@ -15,6 +15,13 @@ div.qr-container {
   height: 100%;
   max-width: 50%;
   aspect-ratio: 1;
+  background-color: #f3f3f3;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.qr-container {
+    background-color: #1b1b1b;
+  }
 }
 
 div.controls {

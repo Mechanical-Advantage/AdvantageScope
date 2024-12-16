@@ -66,6 +66,7 @@ let periodic = () => {
   CONTROLS_DIV.style.width = width.toString() + "px";
   const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   if (isDark !== lastIsDark && lastQRText.length > 0) {
+    lastIsDark = isDark;
     makeQRcode(lastQRText);
   }
   window.requestAnimationFrame(periodic);
@@ -96,8 +97,8 @@ function handleMainMessage(message: NamedMessage) {
     case "qr-text":
       let newQRText: string = message.data;
       if (newQRText !== lastQRText) {
-        makeQRcode(newQRText);
         lastQRText = newQRText;
+        makeQRcode(newQRText);
       }
       break;
   }

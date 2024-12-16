@@ -3,9 +3,9 @@ import MetalKit
 
 class AppState : ObservableObject {
     @Published var showControls = true
-    @Published var scanningQR = false
+    @Published var scanningQR = true
     @Published var trackingReady = false
-    @Published var calibrating = false
+    @Published var calibrationText = ""
     
     @Published var serverIncompatibility: NativeHostIncompatibility = .none
     @Published var serverAddresses: [String] = []
@@ -36,7 +36,7 @@ struct ContentView : View {
         
             // UI overlays
             .safeAreaInset(edge: .top) {
-                ControlsMenu()
+                ControlsMenu(requestCalibration: webOverlay.requestCalibration)
                     .environmentObject(recordingPreviewState)
             }
             .safeAreaInset(edge: .bottom) {
@@ -54,7 +54,9 @@ struct ContentView : View {
         
             // Event handling
             .onTapGesture(coordinateSpace: .global) { location in
-                if (!appState.calibrating || location.y < 200) {
+                if (!appState.calibrationText.isEmpty && location.y > 150) {
+                    webOverlay.userTap()
+                } else {
                     appState.showControls.toggle()
                 }
             }

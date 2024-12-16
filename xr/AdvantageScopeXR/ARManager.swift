@@ -96,6 +96,7 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         var cameraData = Dictionary<String, Any>()
         cameraData["projection"] = simdFloat4x4ToArray(m: frame.camera.projectionMatrix(for: orientation, viewportSize: viewportSize, zNear: 0.001, zFar: 1000.0))
         cameraData["worldInverse"] = simdFloat4x4ToArray(m: simd_inverse(cameraTransform))
+        cameraData["position"] = [cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z]
         
         // Get frame size
         var frameSize = Array<Int>()
@@ -136,6 +137,7 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         if (appState != nil) {
             appState!.trackingReady = frame.camera.trackingState == .normal
         }
+    
         
         // Run frame callbacks
         for callback in frameCallbacks {

@@ -3,6 +3,7 @@ import ReplayKit
 
 struct ControlsMenu: View {
     @EnvironmentObject var appState: AppState
+    let requestCalibration: () -> Void
     
     var body: some View {
         HStack {
@@ -15,7 +16,7 @@ struct ControlsMenu: View {
             RecordButton()
             
             Button("Recalibrate", systemImage: "scope") {
-                // TODO
+                requestCalibration()
             }
         }
         .buttonStyle(ControlButton(highlight: false))
