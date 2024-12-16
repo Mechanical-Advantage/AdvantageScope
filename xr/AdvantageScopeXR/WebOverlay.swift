@@ -10,6 +10,14 @@ struct WebOverlay: UIViewRepresentable {
         webView.backgroundColor = UIColor.clear
         webView.scrollView.backgroundColor = UIColor.clear
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        
+        // Enable remote inspection with Safari for debug builds
+        #if DEBUG
+        if webView.responds(to: Selector(("setInspectable:"))) {
+            webView.perform(Selector(("setInspectable:")), with: true)
+        }
+        #endif
+        
         return webView;
     }
     
