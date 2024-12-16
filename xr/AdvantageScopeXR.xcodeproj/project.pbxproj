@@ -20,6 +20,7 @@
 		8CBFA6DC2BF8663D009AA8CD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DB2BF8663D009AA8CD /* AppDelegate.swift */; };
 		8CBFA6DE2BF8663D009AA8CD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */; };
 		8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
+		8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -52,6 +53,7 @@
 		8CBFA6DB2BF8663D009AA8CD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +87,7 @@
 		8CBFA6DA2BF8663D009AA8CD /* AdvantageScopeXR */ = {
 			isa = PBXGroup;
 			children = (
+				8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */,
 				8C1672E52D0BB125004100D8 /* Constants.swift */,
 				8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */,
 				8C28075C2D07CD33008F4721 /* ARManager.swift */,
@@ -188,6 +191,7 @@
 				8C362AC42C0B600400AD3091 /* Networking.swift in Sources */,
 				8C2759A42C09960A0067FD80 /* Banner.swift in Sources */,
 				8C6767DB2C11551C00277484 /* QRScanner.swift in Sources */,
+				8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */,
 				8C2759A22C0995BD0067FD80 /* ControlsMenu.swift in Sources */,
 				8CBFA6DC2BF8663D009AA8CD /* AppDelegate.swift in Sources */,
 				8C2126132D05014700C92898 /* WebOverlay.swift in Sources */,

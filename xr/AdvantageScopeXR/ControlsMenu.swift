@@ -1,20 +1,24 @@
 import SwiftUI
+import ReplayKit
 
 struct ControlsMenu: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
         HStack {
-            Button("Scan Code", systemImage: "qrcode") {
+            Button("Scan", systemImage: "qrcode") {
                 appState.scanningQR.toggle()
             }
             .opacity(appState.scanningQR ? 0.5 : 1)
+            .animation(.easeInOut(duration: 0.1), value: appState.scanningQR)
+            
+            RecordButton()
             
             Button("Recalibrate", systemImage: "scope") {
                 // TODO
             }
         }
-        .buttonStyle(ControlButton())
+        .buttonStyle(ControlButton(highlight: false))
         .padding()
         .statusBarHidden(true)
         .opacity(appState.showControls ? 1 : 0)
@@ -23,15 +27,17 @@ struct ControlsMenu: View {
 }
 
 struct ControlButton : ButtonStyle {
-    @State private var animate = false
+    let highlight: Bool
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(10)
-            .background(.thinMaterial)
+            .foregroundStyle(highlight ? Color.white : Color.primary)
+            .background(highlight ? AnyShapeStyle(Color.red) : AnyShapeStyle(.thinMaterial))
             .clipShape(Capsule())
             .controlSize(.large)
-            .scaleEffect(configuration.isPressed ? 0.9 : 1.0)
-            .animation(.easeInOut, value: configuration.isPressed)
+            .opacity(configuration.isPressed ? 0.75 : 1)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+            .animation(.none, value: highlight)
     }
 }

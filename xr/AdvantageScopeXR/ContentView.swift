@@ -13,6 +13,7 @@ class AppState : ObservableObject {
 
 struct ContentView : View {
     @StateObject private var appState = AppState()
+    @StateObject private var recordingPreviewState = RecordingPreviewState()
     @State private var arManager = ARManager()
 
     private let networking = Networking()
@@ -31,15 +32,24 @@ struct ContentView : View {
                     .opacity(showWebOverlay() ? 1 : 0)
                     .animation(.easeInOut(duration: 0.25), value: showWebOverlay())
             )
-            
+        
             // UI overlays
-            .safeAreaInset(edge: .top, spacing: 0) {
+            .safeAreaInset(edge: .top) {
                 ControlsMenu()
+                    .environmentObject(recordingPreviewState)
             }
-            .safeAreaInset(edge: .bottom, spacing: 0) {
+            .safeAreaInset(edge: .bottom) {
                 Banner()
             }
             .environmentObject(appState)
+        
+            // Recording preview
+            .fullScreenCover(isPresented: $recordingPreviewState.showFullScreen) {
+                recordingPreviewState.view.ignoresSafeArea(.all)
+            }
+            .sheet(isPresented: $recordingPreviewState.showSheet) {
+                recordingPreviewState.view.ignoresSafeArea(.all)
+            }
         
             // Event handling
             .onTapGesture(coordinateSpace: .global) { location in
