@@ -2,9 +2,8 @@ import Starscream
 import SwiftUI
 import Combine
 
-enum ServerCompatibility {
-    case unknown
-    case supported
+enum NativeHostIncompatibility {
+    case none
     case serverTooOld
     case serverTooNew
 }
@@ -46,13 +45,13 @@ class Networking : WebSocketDelegate {
     private func connected() {
         if (!appState.serverConnected) {
             appState.serverConnected = true
+            webOverlay.load(currentServerAddress!)
         }
     }
     
     private func disconnected() {
         if (appState.serverConnected) {
             appState.serverConnected = false
-            appState.serverCompatibility = .unknown
         }
         if (reconnecting) {
             return
@@ -72,24 +71,7 @@ class Networking : WebSocketDelegate {
             case .disconnected:
                 disconnected()
             case .text(let string):
-                if (appState.serverCompatibility == .unknown) {
-                    let serverCompatibility = Int(string)
-                    if (serverCompatibility != nil) {
-                        // Update compatibility state
-                        if (serverCompatibility! == Constants.nativeHostCompatibility) {
-                            appState.serverCompatibility = .supported
-                        } else if (serverCompatibility! < Constants.nativeHostCompatibility) {
-                            appState.serverCompatibility = .serverTooOld
-                        } else if (serverCompatibility! > Constants.nativeHostCompatibility) {
-                            appState.serverCompatibility = .serverTooNew
-                        }
-                        
-                        // If compatible, load web overlay
-                        if (appState.serverCompatibility == .supported && currentServerAddress != nil) {
-                            webOverlay.load(currentServerAddress!)
-                        }
-                    }
-                }
+                break
             case .binary(let data):
                 break
             case .ping(_):

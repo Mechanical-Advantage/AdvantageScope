@@ -6,9 +6,10 @@ class AppState : ObservableObject {
     @Published var scanningQR = false
     @Published var trackingReady = false
     @Published var calibrating = false
-    @Published var serverConnected = false
+    
+    @Published var serverIncompatibility: NativeHostIncompatibility = .none
     @Published var serverAddresses: [String] = []
-    @Published var serverCompatibility = ServerCompatibility.unknown
+    @Published var serverConnected = false
 }
 
 struct ContentView : View {
@@ -67,7 +68,7 @@ struct ContentView : View {
     }
     
     private func showWebOverlay() -> Bool {
-        return !appState.scanningQR && appState.serverConnected && appState.serverCompatibility == .supported
+        return !appState.scanningQR && appState.serverConnected
     }
 }
 

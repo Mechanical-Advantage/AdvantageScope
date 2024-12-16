@@ -17,12 +17,12 @@ struct Banner: View {
     private func text() -> String {
         if (appState.scanningQR) {
             return "Scan QR code displayed in AdvantageScope."
-        } else if (!appState.serverConnected || appState.serverCompatibility == .unknown) {
-            return "Searching for server..."
-        } else if (appState.serverCompatibility == .serverTooOld) {
+        } else if (appState.serverIncompatibility == .serverTooOld) {
             return "Update AdvantageScope to the latest version, then try again."
-        } else if (appState.serverCompatibility == .serverTooNew) {
+        } else if (appState.serverIncompatibility == .serverTooNew) {
             return "Update AdvantageScope XR to the latest version, then try again."
+        } else if (!appState.serverConnected ) {
+            return "Searching for server..."
         } else if (!appState.trackingReady) {
             return "Move " + UIDevice.current.model + " to detect environment."
         } else {

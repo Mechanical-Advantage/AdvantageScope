@@ -29,14 +29,49 @@ class QRScanner {
                 request.results![0].payloadStringValue != nil) {
                 let value = request.results![0].payloadStringValue!
                 if (value.starts(with: Constants.qrPrefix)) {
-                    let addresses = value.dropFirst(Constants.qrPrefix.count).split(separator: "_").map{ String($0) }
-                    DispatchQueue.main.sync() {
-                        self.appState.scanningQR = false
-                        self.appState.serverAddresses = addresses
-                    }
+                    self.parseURL(value)
                 }
             }
             self.processing = false
+        }
+    }
+    
+    func parseURL(_ url: String) {
+        // Parse components
+        let components = NSURLComponents(string: url)
+        var nativeHostCompatibility: Int? = nil
+        var addresses: [String] = []
+        components?.queryItems?.forEach {item in
+            if (item.value != nil) {
+                switch (item.name) {
+                case "c":
+                    nativeHostCompatibility = Int(item.value!)
+                    break
+                case "a":
+                    addresses = item.value!.split(separator: "_").map{ String($0) }
+                    break
+                default:
+                    break
+                }
+            }
+        }
+        
+        // Get server incompatibility value
+        if (nativeHostCompatibility == nil) {
+            return
+        }
+        var incompatibilityValue: NativeHostIncompatibility = .none
+        if (nativeHostCompatibility! < Constants.nativeHostCompatibility) {
+            incompatibilityValue = .serverTooOld
+        } else if (nativeHostCompatibility! > Constants.nativeHostCompatibility) {
+            incompatibilityValue = .serverTooNew
+        }
+        
+        // Update app state
+        DispatchQueue.main.sync() {
+            self.appState.scanningQR = false
+            self.appState.serverIncompatibility = incompatibilityValue
+            self.appState.serverAddresses = addresses
         }
     }
 }
