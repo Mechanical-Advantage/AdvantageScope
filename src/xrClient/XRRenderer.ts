@@ -33,6 +33,7 @@ export default class XRRenderer {
   private cursor: THREE.Object3D;
   private fieldRoot: THREE.Object3D;
   private fieldCoordinateRoot: THREE.Object3D;
+  private fieldSizingReference: THREE.Object3D;
 
   private lastCalibrationMode: XRCalibrationMode | null = null;
   private lastInvalidRaycast = 0;
@@ -79,74 +80,35 @@ export default class XRRenderer {
     this.fieldCoordinateRoot.rotateX(Math.PI / 2);
     this.fieldRoot.add(this.fieldCoordinateRoot);
 
-    this.fieldCoordinateRoot.add(
-      new Line2(
-        new LineGeometry().setPositions([
-          -this.FIELD_REF_X_SIZE / 2,
-          -this.FIELD_REF_Y_SIZE / 2,
-          0,
-          -this.FIELD_REF_X_SIZE / 2,
-          this.FIELD_REF_Y_SIZE / 2,
-          0
-        ]),
-        new LineMaterial({
-          linewidth: 5,
-          resolution: this.resolution,
-          color: "blue"
-        })
-      )
-    );
-    this.fieldCoordinateRoot.add(
-      new Line2(
-        new LineGeometry().setPositions([
-          this.FIELD_REF_X_SIZE / 2,
-          -this.FIELD_REF_Y_SIZE / 2,
-          0,
-          this.FIELD_REF_X_SIZE / 2,
-          this.FIELD_REF_Y_SIZE / 2,
-          0
-        ]),
-        new LineMaterial({
-          linewidth: 5,
-          resolution: this.resolution,
-          color: "red"
-        })
-      )
-    );
-    this.fieldCoordinateRoot.add(
-      new Line2(
-        new LineGeometry().setPositions([
-          -this.FIELD_REF_X_SIZE / 2,
-          -this.FIELD_REF_Y_SIZE / 2,
-          0,
-          this.FIELD_REF_X_SIZE / 2,
-          -this.FIELD_REF_Y_SIZE / 2,
-          0
-        ]),
-        new LineMaterial({
-          linewidth: 5,
-          resolution: this.resolution,
-          color: "white"
-        })
-      )
-    );
-    this.fieldCoordinateRoot.add(
-      new Line2(
-        new LineGeometry().setPositions([
-          -this.FIELD_REF_X_SIZE / 2,
-          this.FIELD_REF_Y_SIZE / 2,
-          0,
-          this.FIELD_REF_X_SIZE / 2,
-          this.FIELD_REF_Y_SIZE / 2,
-          0
-        ]),
-        new LineMaterial({
-          linewidth: 5,
-          resolution: this.resolution,
-          color: "white"
-        })
-      )
-    );
+    // Create field sizing reference
+    this.fieldSizingReference = new THREE.Group();
+    this.fieldCoordinateRoot.add(this.fieldSizingReference);
+    let referenceCorners = [
+      [-this.FIELD_REF_X_SIZE / 2, -this.FIELD_REF_Y_SIZE / 2],
+      [-this.FIELD_REF_X_SIZE / 2, this.FIELD_REF_Y_SIZE / 2],
+      [this.FIELD_REF_X_SIZE / 2, this.FIELD_REF_Y_SIZE / 2],
+      [this.FIELD_REF_X_SIZE / 2, -this.FIELD_REF_Y_SIZE / 2]
+    ] as const;
+    let referenceColors = ["blue", "white", "red", "white"] as const;
+    for (let i = 0; i < 4; i++) {
+      this.fieldSizingReference.add(
+        new Line2(
+          new LineGeometry().setPositions([
+            referenceCorners[i][0],
+            referenceCorners[i][1],
+            0,
+            referenceCorners[(i + 1) % 4][0],
+            referenceCorners[(i + 1) % 4][1],
+            0
+          ]),
+          new LineMaterial({
+            linewidth: 3,
+            resolution: this.resolution,
+            color: referenceColors[i]
+          })
+        )
+      );
+    }
   }
 
   resetAnchors() {
