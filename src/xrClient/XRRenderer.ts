@@ -510,9 +510,17 @@ export default class XRRenderer {
       }
     }
 
-    // Update staged game pieces
+    // Update visible field elements
+    this.field?.children.forEach((child) => {
+      if (child.name.includes("carpet")) {
+        child.visible = settings.showCarpet;
+      } else {
+        child.visible = settings.showField;
+      }
+    });
     if (this.fieldStagedPieces !== null) {
-      this.fieldStagedPieces.visible = command.objects.every((object) => object.type !== "gamePiece");
+      this.fieldStagedPieces.visible =
+        settings.showField && command.objects.every((object) => object.type !== "gamePiece");
     }
 
     // Update object managers
