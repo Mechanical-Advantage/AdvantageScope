@@ -12,7 +12,7 @@ export default class GamePieceManager extends ObjectManager<ThreeDimensionRender
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic",
+    mode: "low-power" | "standard" | "cinematic" | "xr",
     requestRender: () => void,
     gamePieces: { [key: string]: THREE.Mesh }
   ) {

@@ -6,8 +6,31 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import WorkerManager from "../hub/WorkerManager";
+import {
+  AdvantageScopeAssets,
+  Config3dField,
+  DEFAULT_DRIVER_STATIONS,
+  STANDARD_FIELD_LENGTH,
+  STANDARD_FIELD_WIDTH
+} from "../shared/AdvantageScopeAssets";
 import { XRCalibrationMode, XRSettings } from "../shared/XRSettings";
-import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
+import {
+  ThreeDimensionRendererCommand,
+  ThreeDimensionRendererCommand_AnyObj
+} from "../shared/renderers/ThreeDimensionRenderer";
+import { disposeObject } from "../shared/renderers/ThreeDimensionRendererImpl";
+import makeAxesField from "../shared/renderers/threeDimension/AxesField";
+import makeEvergreenField from "../shared/renderers/threeDimension/EvergreenField";
+import ObjectManager from "../shared/renderers/threeDimension/ObjectManager";
+import AprilTagManager from "../shared/renderers/threeDimension/objectManagers/AprilTagManager";
+import AxesManager from "../shared/renderers/threeDimension/objectManagers/AxesManager";
+import ConeManager from "../shared/renderers/threeDimension/objectManagers/ConeManager";
+import GamePieceManager from "../shared/renderers/threeDimension/objectManagers/GamePieceManager";
+import HeatmapManager from "../shared/renderers/threeDimension/objectManagers/HeatmapManager";
+import RobotManager from "../shared/renderers/threeDimension/objectManagers/RobotManager";
+import TrajectoryManager from "../shared/renderers/threeDimension/objectManagers/TrajectoryManager";
+import ZebraManager from "../shared/renderers/threeDimension/objectManagers/ZebraManager";
 import { convert } from "../shared/units";
 import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
@@ -15,33 +38,52 @@ import { RaycastResult, XRCameraState } from "./XRTypes";
 import { sendHostMessage } from "./xrClient";
 
 export default class XRRenderer {
-  private FIELD_REF_X_SIZE = convert(54, "feet", "meters");
-  private FIELD_REF_Y_SIZE = convert(27, "feet", "meters");
+  private MATERIAL_SPECULAR: THREE.Color = new THREE.Color(0x000000);
+  private MATERIAL_SHININESS = 0;
 
   private canvas: HTMLCanvasElement;
+  private spinner: HTMLElement;
   private renderer: THREE.WebGLRenderer;
   private composer: EffectComposer;
   private flimPass: FilmPass;
   private lastFrameTime = 0;
   private resolution = new THREE.Vector2();
 
-  private scene: THREE.Scene;
-  private camera: XRCamera;
-  private ambientLight: THREE.AmbientLight;
-  private directionalLight: THREE.DirectionalLight;
-  private anchors: THREE.Object3D[] = [];
-  private cursor: THREE.Object3D;
-  private fieldRoot: THREE.Object3D;
-  private fieldCoordinateRoot: THREE.Object3D;
-  private fieldSizingReference: THREE.Object3D;
-
   private lastCalibrationMode: XRCalibrationMode | null = null;
   private lastInvalidRaycast = 0;
   private lastRaycastResult: RaycastResult = { isValid: false };
 
+  private scene: THREE.Scene;
+  private camera: XRCamera;
+  private ambientLight: THREE.AmbientLight;
+  private anchors: THREE.Object3D[] = [];
+  private cursor: THREE.Object3D;
+  private fieldRoot: THREE.Object3D;
+  private fieldSizingReference: THREE.Object3D;
+  private wpilibCoordinateGroup: THREE.Object3D;
+  private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
+  private field: THREE.Object3D | null = null;
+  private fieldStagedPieces: THREE.Object3D | null = null;
+  private fieldPieces: { [key: string]: THREE.Mesh } = {};
+
+  private objectManagers: {
+    type: ThreeDimensionRendererCommand_AnyObj["type"];
+    manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    active: boolean;
+  }[] = [];
+
+  private primaryRobotModel = "";
+  private fieldConfigCache: Config3dField | null = null;
+  private robotLoadingCount = 0;
+  private shouldLoadNewField = false;
+  private isFieldLoading = false;
+  private lastFieldTitle: string = "";
+  private lastAssetsString: string = "";
+
   constructor() {
     this.canvas = document.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
+    this.spinner = document.getElementsByClassName("spinner-cubes-container")[0] as HTMLElement;
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
     this.scene = new THREE.Scene();
     this.camera = new XRCamera();
     this.composer = new EffectComposer(this.renderer);
@@ -51,11 +93,24 @@ export default class XRRenderer {
     this.composer.addPass(new OutputPass());
     this.lastFrameTime = new Date().getTime();
 
-    // Create lights
-    this.ambientLight = new THREE.AmbientLight(0xd4d4d4);
-    this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    this.directionalLight.position.set(1, 1, 1);
-    this.scene.add(this.ambientLight, this.directionalLight);
+    // Create coordinate groups
+    this.fieldRoot = new THREE.Group();
+    this.scene.add(this.fieldRoot);
+    this.wpilibCoordinateGroup = new THREE.Group();
+    this.fieldRoot.add(this.wpilibCoordinateGroup);
+    this.wpilibCoordinateGroup.rotateX(-Math.PI / 2);
+    this.wpilibFieldCoordinateGroup = new THREE.Group();
+    this.wpilibCoordinateGroup.add(this.wpilibFieldCoordinateGroup);
+
+    // Add lights
+    {
+      this.ambientLight = new THREE.AmbientLight(0xd4d4d4);
+      this.scene.add(this.ambientLight);
+    }
+    {
+      const light = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
+      this.scene.add(light);
+    }
 
     // Create cursor
     this.cursor = new THREE.Group();
@@ -73,21 +128,15 @@ export default class XRRenderer {
       ).rotateX(Math.PI / 2)
     );
 
-    // Create field root
-    this.fieldRoot = new THREE.Group();
-    this.scene.add(this.fieldRoot);
-    this.fieldCoordinateRoot = new THREE.Group();
-    this.fieldCoordinateRoot.rotateX(Math.PI / 2);
-    this.fieldRoot.add(this.fieldCoordinateRoot);
-
     // Create field sizing reference
     this.fieldSizingReference = new THREE.Group();
-    this.fieldCoordinateRoot.add(this.fieldSizingReference);
+    this.fieldRoot.add(this.fieldSizingReference);
+    this.fieldSizingReference.rotateX(-Math.PI / 2);
     let referenceCorners = [
-      [-this.FIELD_REF_X_SIZE / 2, -this.FIELD_REF_Y_SIZE / 2],
-      [-this.FIELD_REF_X_SIZE / 2, this.FIELD_REF_Y_SIZE / 2],
-      [this.FIELD_REF_X_SIZE / 2, this.FIELD_REF_Y_SIZE / 2],
-      [this.FIELD_REF_X_SIZE / 2, -this.FIELD_REF_Y_SIZE / 2]
+      [-STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2],
+      [-STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_WIDTH / 2],
+      [STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_WIDTH / 2],
+      [STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2]
     ] as const;
     let referenceColors = ["blue", "white", "red", "white"] as const;
     for (let i = 0; i < 4; i++) {
@@ -127,14 +176,16 @@ export default class XRRenderer {
     }
   }
 
+  /** Updates the field position based on reference points. */
   private updateFieldRootMiniature(blueReference: THREE.Vector3, redReference: THREE.Vector3) {
     this.fieldRoot.position.copy(blueReference.clone().add(redReference).divideScalar(2));
     let blueToRed = redReference.clone().sub(blueReference);
-    let scale = blueToRed.length() / this.FIELD_REF_X_SIZE;
+    let scale = blueToRed.length() / STANDARD_FIELD_LENGTH;
     this.fieldRoot.scale.set(scale, scale, scale);
     this.fieldRoot.rotation.set(0, Math.atan2(blueToRed.x, blueToRed.z) - Math.PI / 2, 0);
   }
 
+  /** Updates the field position based on reference points. */
   private updateFieldRootFullSize(
     isRed: boolean,
     allianceReference1: THREE.Vector3,
@@ -153,9 +204,9 @@ export default class XRRenderer {
         .normalize();
       const distance = wallReference2d.clone().sub(allianceReference2d).dot(allianceWallNormalized);
       if (distance > 0) {
-        yShift = this.FIELD_REF_Y_SIZE / 2 - distance;
+        yShift = STANDARD_FIELD_WIDTH / 2 - distance;
       } else {
-        yShift = -this.FIELD_REF_Y_SIZE / 2 - distance;
+        yShift = -STANDARD_FIELD_WIDTH / 2 - distance;
       }
     }
 
@@ -169,15 +220,102 @@ export default class XRRenderer {
       }
     }
     let centerX =
-      allianceReference1.x + Math.sin(yaw + Math.PI / 2) * (this.FIELD_REF_X_SIZE / 2) - Math.sin(yaw) * yShift;
+      allianceReference1.x + Math.sin(yaw + Math.PI / 2) * (STANDARD_FIELD_LENGTH / 2) - Math.sin(yaw) * yShift;
     let centerZ =
-      allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (this.FIELD_REF_X_SIZE / 2) - Math.cos(yaw) * yShift;
+      allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (STANDARD_FIELD_LENGTH / 2) - Math.cos(yaw) * yShift;
 
     this.fieldRoot.position.set(centerX, height, centerZ);
     this.fieldRoot.rotation.set(0, yaw + (isRed ? Math.PI : 0), 0);
   }
 
-  render(cameraState: XRCameraState, settings: XRSettings, command: ThreeDimensionRendererCommand) {
+  private getFieldConfig(
+    command: ThreeDimensionRendererCommand,
+    assets: AdvantageScopeAssets | null
+  ): Config3dField | null {
+    let fieldTitle = command.game;
+    if (fieldTitle === "Evergreen") {
+      return {
+        name: "Evergreen",
+        path: "",
+        rotations: [],
+        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
+        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
+        defaultOrigin: "auto",
+        driverStations: DEFAULT_DRIVER_STATIONS,
+        gamePieces: []
+      };
+    } else if (fieldTitle === "Axes") {
+      return {
+        name: "Axes",
+        path: "",
+        rotations: [],
+        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
+        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
+        defaultOrigin: "blue",
+        driverStations: DEFAULT_DRIVER_STATIONS,
+        gamePieces: []
+      };
+    } else {
+      let fieldConfig = assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
+      if (fieldConfig === undefined) return null;
+      return fieldConfig;
+    }
+  }
+
+  /** Make a new object manager for the provided type. */
+  private makeObjectManager(
+    type: ThreeDimensionRendererCommand_AnyObj["type"]
+  ): ObjectManager<ThreeDimensionRendererCommand_AnyObj> {
+    let args = [
+      this.wpilibFieldCoordinateGroup,
+      this.MATERIAL_SPECULAR,
+      this.MATERIAL_SHININESS,
+      "xr",
+      () => {}
+    ] as const;
+    let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    switch (type) {
+      case "robot":
+      case "ghost":
+        manager = new RobotManager(
+          ...args,
+          () => this.robotLoadingCount++,
+          () => this.robotLoadingCount--
+        );
+        break;
+      case "gamePiece":
+        manager = new GamePieceManager(...args, this.fieldPieces);
+        break;
+      case "trajectory":
+        manager = new TrajectoryManager(...args);
+        break;
+      case "heatmap":
+        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
+        break;
+      case "aprilTag":
+        manager = new AprilTagManager(...args);
+        break;
+      case "axes":
+        manager = new AxesManager(...args);
+        break;
+      case "cone":
+        manager = new ConeManager(...args);
+        break;
+      case "zebra":
+        manager = new ZebraManager(...args);
+        break;
+    }
+    manager.setResolution(this.resolution);
+    return manager;
+  }
+
+  /** Draws a new frame based on an updated camera position. */
+  render(
+    cameraState: XRCameraState,
+    settings: XRSettings,
+    command: ThreeDimensionRendererCommand,
+    assets: AdvantageScopeAssets | null
+  ) {
     // Reset anchors when changing calibration mode
     if (settings.calibration !== this.lastCalibrationMode) {
       this.lastCalibrationMode = settings.calibration;
@@ -280,6 +418,167 @@ export default class XRRenderer {
       );
     }
 
+    // Update field visibility
+    this.fieldSizingReference.visible = isCalibrating;
+    this.wpilibCoordinateGroup.visible = !isCalibrating;
+
+    // Get field config
+    let fieldTitle = command.game;
+    let fieldConfigTmp = this.getFieldConfig(command, assets);
+    this.fieldConfigCache = fieldConfigTmp;
+    if (fieldConfigTmp === null) return;
+    let fieldConfig = fieldConfigTmp;
+
+    // Update field coordinates
+    if (fieldConfig) {
+      let isBlue = command.origin === "blue";
+      this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), isBlue ? 0 : Math.PI);
+      this.wpilibFieldCoordinateGroup.position.set(
+        convert(fieldConfig.widthInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
+        convert(fieldConfig.heightInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
+        0
+      );
+    }
+
+    // Update field
+    let assetsString = JSON.stringify(assets);
+    let newAssets = assetsString !== this.lastAssetsString;
+    if (fieldTitle !== this.lastFieldTitle || newAssets) {
+      this.shouldLoadNewField = true;
+      this.lastFieldTitle = fieldTitle;
+      this.lastAssetsString = assetsString;
+    }
+    if (this.shouldLoadNewField && !this.isFieldLoading) {
+      this.shouldLoadNewField = false;
+
+      // Remove old field
+      if (this.field) {
+        this.wpilibCoordinateGroup.remove(this.field);
+        disposeObject(this.field);
+      }
+      if (this.fieldStagedPieces) {
+        this.wpilibCoordinateGroup.remove(this.fieldStagedPieces);
+        disposeObject(this.fieldStagedPieces);
+      }
+
+      // Insert new field
+      let newFieldPieces: typeof this.fieldPieces = {};
+      let newFieldReady = () => {
+        // Add new field
+        if (this.field) {
+          this.wpilibCoordinateGroup.add(this.field);
+          if (this.fieldStagedPieces !== null) this.wpilibCoordinateGroup.add(this.fieldStagedPieces);
+        }
+
+        // Reset game piece objects
+        this.objectManagers.filter((entry) => entry.type === "gamePiece").forEach((entry) => entry.manager.dispose());
+        this.objectManagers = this.objectManagers.filter((entry) => entry.type !== "gamePiece");
+        Object.values(this.fieldPieces).forEach((mesh) => {
+          disposeObject(mesh);
+        });
+        this.fieldPieces = newFieldPieces;
+      };
+
+      // Load new field
+      if (fieldTitle === "Evergreen") {
+        this.isFieldLoading = false;
+        this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.fieldStagedPieces = new THREE.Object3D();
+        newFieldReady();
+      } else if (fieldTitle === "Axes") {
+        this.isFieldLoading = false;
+        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.fieldStagedPieces = new THREE.Object3D();
+        newFieldReady();
+      } else {
+        this.isFieldLoading = true;
+        WorkerManager.request("/loadField.js", {
+          fieldConfig: fieldConfig,
+          mode: "xr",
+          materialSpecular: this.MATERIAL_SPECULAR.toArray(),
+          materialShininess: this.MATERIAL_SHININESS
+        }).then((result) => {
+          const loader = new THREE.ObjectLoader();
+          this.field = loader.parse(result.field);
+          this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
+          Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
+            newFieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
+          });
+          newFieldReady();
+          this.isFieldLoading = false;
+        });
+      }
+    }
+
+    // Update staged game pieces
+    if (this.fieldStagedPieces !== null) {
+      this.fieldStagedPieces.visible = command.objects.every((object) => object.type !== "gamePiece");
+    }
+
+    // Update object managers
+    this.objectManagers.forEach((entry) => (entry.active = false));
+    command.objects.forEach((object) => {
+      let entry = this.objectManagers.find(
+        (entry) =>
+          !entry.active &&
+          entry.type === object.type &&
+          ((object.type !== "robot" && object.type !== "ghost") ||
+            object.model === (entry.manager as RobotManager).getModel())
+      );
+      if (entry === undefined) {
+        entry = this.objectManagers.find((entry) => !entry.active && entry.type === object.type);
+      }
+      if (entry === undefined) {
+        entry = {
+          type: object.type,
+          manager: this.makeObjectManager(object.type),
+          active: true
+        };
+        this.objectManagers.push(entry);
+      } else {
+        entry.active = true;
+      }
+      if (newAssets && (entry.type === "robot" || entry.type === "ghost")) {
+        let robotManager = entry.manager as RobotManager;
+        robotManager.setAssetsOverride(assets);
+        robotManager.newAssets();
+      }
+      entry.manager.setObjectData(object);
+    });
+    this.objectManagers.forEach((entry) => {
+      if (!entry.active && (entry.type === "robot" || entry.type === "ghost")) {
+        let model = (entry.manager as RobotManager).getModel();
+        if (command.allRobotModels.includes(model)) {
+          entry.active = true;
+          entry.manager.setObjectData({
+            type: entry.type as "robot" | "ghost",
+            model: model,
+            color: "#000000",
+            poses: [],
+            components: [],
+            mechanism: null,
+            visionTargets: [],
+            swerveStates: []
+          });
+        }
+      }
+    });
+    this.objectManagers
+      .filter((entry) => !entry.active)
+      .forEach((entry) => {
+        entry.manager.dispose();
+      });
+    this.objectManagers = this.objectManagers.filter((entry) => entry.active);
+
+    // Update spinner
+    if ((this.robotLoadingCount > 0 || this.isFieldLoading) && !isCalibrating) {
+      this.spinner.classList.add("visible");
+      this.spinner.classList.add("animating");
+    } else if (this.spinner.classList.contains("visible")) {
+      this.spinner.classList.remove("visible");
+      window.setTimeout(() => this.spinner.classList.remove("animating"), 250);
+    }
+
     // Update camera position, grain, and lighting
     this.camera.matrixWorldInverse.fromArray(cameraState.camera.worldInverse);
     this.camera.projectionMatrix.fromArray(cameraState.camera.projection);
@@ -289,15 +588,16 @@ export default class XRRenderer {
     this.ambientLight.color = this.temperatureToColor(cameraState.lighting.temperature);
 
     // Calculate effective device pixel ratio
-    const frameWidthPx = cameraState.frameSize[0];
-    const frameHeightPx = cameraState.frameSize[1];
+    // const frameWidthPx = cameraState.frameSize[0];
+    // const frameHeightPx = cameraState.frameSize[1];
     const viewWidthPx = this.canvas.parentElement!.clientWidth;
     const viewHeightPx = this.canvas.parentElement!.clientHeight;
-    const viewWidthSubPx = viewWidthPx * window.devicePixelRatio;
-    const viewHeightSubPx = viewHeightPx * window.devicePixelRatio;
-    const isHorizontalCropped = frameWidthPx / frameHeightPx > viewWidthPx / viewHeightPx;
-    const devicePixelRatio =
-      (isHorizontalCropped ? frameHeightPx / viewHeightSubPx : frameWidthPx / viewWidthSubPx) * 1.5; // Running at a slightly higher resolution improves antialiasing
+    // const viewWidthSubPx = viewWidthPx * window.devicePixelRatio;
+    // const viewHeightSubPx = viewHeightPx * window.devicePixelRatio;
+    // const isHorizontalCropped = frameWidthPx / frameHeightPx > viewWidthPx / viewHeightPx;
+    // const devicePixelRatio =
+    //   (isHorizontalCropped ? frameHeightPx / viewHeightSubPx : frameWidthPx / viewWidthSubPx) * 1.5; // Running at a slightly higher resolution improves antialiasing
+    const devicePixelRatio = window.devicePixelRatio;
 
     // Render frame
     if (

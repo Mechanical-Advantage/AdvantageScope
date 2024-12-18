@@ -17,21 +17,25 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   const robotConfig: Config3dRobot = payload.robotConfig;
-  const mode: "cinematic" | "standard" | "low-power" = payload.mode;
+  const mode: "cinematic" | "standard" | "low-power" | "xr" = payload.mode;
   const materialSpecular = new THREE.Color().fromArray(payload.materialSpecular);
   const materialShininess: number = payload.materialShininess;
+  let urlTransformer: (path: string) => string = (x) => x;
+  if (mode === "xr") {
+    urlTransformer = (url) => "/asset?path=" + encodeURIComponent(url);
+  }
 
   let meshes: THREE.MeshJSON[][] = [];
 
   const gltfLoader = new GLTFLoader();
   Promise.all([
     new Promise((resolve) => {
-      gltfLoader.load(robotConfig.path, resolve);
+      gltfLoader.load(urlTransformer(robotConfig.path), resolve);
     }),
     ...robotConfig.components.map(
       (_, index) =>
         new Promise((resolve) => {
-          gltfLoader.load(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
+          gltfLoader.load(urlTransformer(robotConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"), resolve);
         })
     )
   ]).then(async (gltfs) => {

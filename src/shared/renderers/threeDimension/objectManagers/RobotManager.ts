@@ -3,6 +3,7 @@ import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import WorkerManager from "../../../../hub/WorkerManager";
+import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
 import { SwerveState } from "../../../geometry";
 import { convert } from "../../../units";
 import { transformPx } from "../../../util";
@@ -21,7 +22,7 @@ import ResizableInstancedMesh from "../ResizableInstancedMesh";
 export default class RobotManager extends ObjectManager<
   ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj
 > {
-  private SWERVE_CANVAS_PX = 2000;
+  private SWERVE_CANVAS_PX: number;
   private SWERVE_CANVAS_METERS = 4;
   private SWERVE_BUMPER_OFFSET = 0.15;
 
@@ -55,20 +56,23 @@ export default class RobotManager extends ObjectManager<
   private dummyConfigPose = new THREE.Object3D();
   private dummyUserPose = new THREE.Group().add(this.dummyConfigPose);
   private dummyRobotPose = new THREE.Group().add(this.dummyUserPose);
+  private assetsOverride: AdvantageScopeAssets | null = null;
   private hasNewAssets = false;
   private lastModel = "";
   private lastColor = "";
+  private lastHadSwerveStates = false;
 
   constructor(
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic",
+    mode: "low-power" | "standard" | "cinematic" | "xr",
     requestRender: () => void,
     loadingStart: () => void,
     loadingEnd: () => void
   ) {
     super(root, materialSpecular, materialShininess, mode, requestRender);
+    this.SWERVE_CANVAS_PX = this.mode === "xr" ? 250 : 1000;
     this.loadingStart = loadingStart;
     this.loadingEnd = loadingEnd;
 
@@ -95,6 +99,7 @@ export default class RobotManager extends ObjectManager<
       this.visionLines.shift();
     }
     this.swerveTexture.dispose();
+    document.body.removeChild(this.swerveContainer);
   }
 
   setResolution(resolution: THREE.Vector2) {
@@ -106,12 +111,17 @@ export default class RobotManager extends ObjectManager<
     this.hasNewAssets = true;
   }
 
+  setAssetsOverride(assets: AdvantageScopeAssets | null) {
+    this.assetsOverride = assets;
+  }
+
   getModel(): string {
     return this.lastModel;
   }
 
   setObjectData(object: ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj): void {
-    let robotConfig = window.assets?.robots.find((robotData) => robotData.name === object.model);
+    let assets = this.assetsOverride ?? window.assets;
+    let robotConfig = assets?.robots.find((robotData) => robotData.name === object.model);
 
     // Load new robot model
     if (object.model !== this.lastModel || this.hasNewAssets) {
@@ -132,7 +142,7 @@ export default class RobotManager extends ObjectManager<
         this.loadingStart();
         if (this.isLoading) this.loadingEnd();
         this.isLoading = true;
-        WorkerManager.request("../bundles/shared$loadRobot.js", {
+        WorkerManager.request(this.mode === "xr" ? "/loadRobot.js" : "../bundles/shared$loadRobot.js", {
           robotConfig: robotConfig!,
           mode: this.mode,
           materialSpecular: this.materialSpecular.toArray(),
@@ -433,6 +443,8 @@ export default class RobotManager extends ObjectManager<
         }
       });
     });
-    this.swerveTexture.needsUpdate = true;
+    let hasSwerveStates = object.swerveStates.length > 0;
+    this.swerveTexture.needsUpdate = hasSwerveStates || this.lastHadSwerveStates;
+    this.lastHadSwerveStates = hasSwerveStates;
   }
 }

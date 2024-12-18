@@ -1,4 +1,5 @@
 import { Decoder } from "@msgpack/msgpack";
+import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
 import { XRSettings } from "../shared/XRSettings";
 import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
@@ -10,6 +11,7 @@ const msgpackDecoder = new Decoder();
 let renderer: XRRenderer;
 let settings: XRSettings | null = null;
 let command: ThreeDimensionRendererCommand | null = null;
+let assets: AdvantageScopeAssets | null = null;
 
 window.addEventListener("load", () => {
   renderer = new XRRenderer();
@@ -21,15 +23,17 @@ window.setCommand = (commandRaw: string) => {
   let fullCommand = msgpackDecoder.decode(commandBuffer) as {
     settings: XRSettings;
     command: ThreeDimensionRendererCommand;
+    assets: AdvantageScopeAssets;
   };
   settings = fullCommand.settings;
   command = fullCommand.command;
+  assets = fullCommand.assets;
 };
 
 // @ts-expect-error
 window.render = (cameraState: XRCameraState) => {
   if (settings !== null && command !== null) {
-    renderer.render(cameraState, settings, command);
+    renderer.render(cameraState, settings, command, assets);
   }
 };
 

@@ -20,7 +20,7 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic",
+    mode: "low-power" | "standard" | "cinematic" | "xr",
     requestRender: () => void,
     getFieldConfig: () => Config3dField | null
   ) {

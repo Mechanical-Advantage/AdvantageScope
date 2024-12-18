@@ -107,6 +107,7 @@ let advantageScopeAssets: AdvantageScopeAssets = {
   joysticks: [],
   loadFailures: []
 };
+XRServer.assetsSupplier = () => advantageScopeAssets;
 
 // Live RLOG variables
 let rlogSockets: { [id: number]: net.Socket } = {};
@@ -1137,7 +1138,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "update-xr-command":
-      XRServer.setHubCommand(message.data);
+      XRServer.setHubCommand(message.data, advantageScopeAssets);
       break;
 
     default:

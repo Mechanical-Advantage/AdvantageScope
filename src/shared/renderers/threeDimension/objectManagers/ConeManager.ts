@@ -21,7 +21,7 @@ export default class ConeManager extends ObjectManager<ThreeDimensionRendererCom
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic",
+    mode: "low-power" | "standard" | "cinematic" | "xr",
     requestRender: () => void
   ) {
     super(root, materialSpecular, materialShininess, mode, requestRender);

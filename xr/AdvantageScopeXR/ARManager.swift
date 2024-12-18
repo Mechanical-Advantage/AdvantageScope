@@ -94,7 +94,7 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         
         // Update camera data
         var cameraData = Dictionary<String, Any>()
-        cameraData["projection"] = simdFloat4x4ToArray(m: frame.camera.projectionMatrix(for: orientation, viewportSize: viewportSize, zNear: 0.001, zFar: 1000.0))
+        cameraData["projection"] = simdFloat4x4ToArray(m: frame.camera.projectionMatrix(for: orientation, viewportSize: viewportSize, zNear: 0.15, zFar: 50.0))
         cameraData["worldInverse"] = simdFloat4x4ToArray(m: simd_inverse(cameraTransform))
         cameraData["position"] = [cameraTransform.columns.3.x, cameraTransform.columns.3.y, cameraTransform.columns.3.z]
         

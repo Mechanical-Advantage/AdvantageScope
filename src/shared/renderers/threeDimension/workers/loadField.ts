@@ -17,9 +17,13 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   const fieldConfig: Config3dField = payload.fieldConfig;
-  const mode: "cinematic" | "standard" | "low-power" = payload.mode;
+  const mode: "cinematic" | "standard" | "low-power" | "xr" = payload.mode;
   const materialSpecular = new THREE.Color().fromArray(payload.materialSpecular);
   const materialShininess: number = payload.materialShininess;
+  let urlTransformer: (path: string) => string = (x) => x;
+  if (mode === "xr") {
+    urlTransformer = (url) => "/asset?path=" + encodeURIComponent(url);
+  }
 
   let field = new THREE.Object3D();
   let fieldStagedPieces = new THREE.Object3D();
@@ -28,12 +32,12 @@ self.onmessage = (event) => {
   const gltfLoader = new GLTFLoader();
   Promise.all([
     new Promise((resolve) => {
-      gltfLoader.load(fieldConfig.path, resolve);
+      gltfLoader.load(urlTransformer(fieldConfig.path), resolve);
     }),
     ...fieldConfig.gamePieces.map(
       (_, index) =>
         new Promise((resolve) => {
-          gltfLoader.load(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
+          gltfLoader.load(urlTransformer(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"), resolve);
         })
     )
   ]).then(async (gltfs) => {
