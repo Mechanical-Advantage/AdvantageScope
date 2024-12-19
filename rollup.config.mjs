@@ -121,10 +121,8 @@ const workerBundles = [
   bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
 ];
 const xrBundles = [
-  bundle("xrControls.ts", "xrControls.js", false, false),
   bundle("xrClient/xrClient.ts", "xrClient.js", false, true),
-  bundle("shared/renderers/threeDimension/workers/loadField.ts", "xrClient$loadField.js", false, true),
-  bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "xrClient$loadRobot.js", false, true)
+  bundle("xrControls.ts", "xrControls.js", false, false)
 ];
 const runOwletDownload = {
   input: "src/runOwletDownload.ts",

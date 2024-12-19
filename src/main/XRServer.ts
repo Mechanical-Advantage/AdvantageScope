@@ -56,18 +56,6 @@ export namespace XRServer {
               response.writeHead(200, { "Content-Type": "text/javascript" });
               response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" }));
               return;
-            case "/loadField.js":
-              response.writeHead(200, { "Content-Type": "text/javascript" });
-              response.end(
-                fs.readFileSync(path.join(__dirname, "../bundles/xrClient$loadField.js"), { encoding: "utf-8" })
-              );
-              return;
-            case "/loadRobot.js":
-              response.writeHead(200, { "Content-Type": "text/javascript" });
-              response.end(
-                fs.readFileSync(path.join(__dirname, "../bundles/xrClient$loadRobot.js"), { encoding: "utf-8" })
-              );
-              return;
             case "/asset":
               let assetPath = url.searchParams.get("path");
               if (assetPath === null) {
