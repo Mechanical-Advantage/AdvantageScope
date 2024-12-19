@@ -30,24 +30,25 @@ export default abstract class WorkerManager {
 
   private static handleResponse(event: any) {
     let message = event.data;
-    let finalResponse = false;
+    let deleteWorker = () => {
+      WorkerManager.workers[message.id].worker.terminate();
+      delete WorkerManager.workers[message.id];
+    };
     if (message.id in WorkerManager.workers) {
       if ("payload" in message) {
-        finalResponse = true;
-        WorkerManager.workers[message.id].resolve(message.payload);
+        let resolve = WorkerManager.workers[message.id].resolve;
+        deleteWorker();
+        resolve(message.payload);
       } else if ("progress" in message) {
         let progress = WorkerManager.workers[message.id].progress;
         if (progress !== undefined) {
           progress(message.progress as number);
         }
       } else {
-        finalResponse = true;
-        WorkerManager.workers[message.id].reject(null);
+        let reject = WorkerManager.workers[message.id].reject;
+        deleteWorker();
+        reject(null);
       }
-    }
-    if (finalResponse) {
-      WorkerManager.workers[message.id].worker.terminate();
-      delete WorkerManager.workers[message.id];
     }
   }
 }
