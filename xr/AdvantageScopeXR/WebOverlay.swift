@@ -34,7 +34,7 @@ struct WebOverlay: UIViewRepresentable {
     func updateUIView(_ uiView: WKWebView, context: Context) {}
     
     func load(_ serverAddress: String) {
-        let url = URL(string: "http://" + serverAddress + ":56328")
+        let url = URL(string: "http://" + serverAddress + ":" + String(Constants.serverPort))
         if (url != nil) {
             webView.load(URLRequest(url: url!))
         }
