@@ -23,7 +23,7 @@ import { disposeObject, getQuaternionFromRotSeq } from "../shared/renderers/Thre
 import makeAxesField from "../shared/renderers/threeDimension/AxesField";
 import makeEvergreenField from "../shared/renderers/threeDimension/EvergreenField";
 import ObjectManager from "../shared/renderers/threeDimension/ObjectManager";
-import optimizeGeometries from "../shared/renderers/threeDimension/OptimizeGeometries";
+import optimizeGeometries, { XR_MAX_RADIUS } from "../shared/renderers/threeDimension/OptimizeGeometries";
 import AprilTagManager from "../shared/renderers/threeDimension/objectManagers/AprilTagManager";
 import AxesManager from "../shared/renderers/threeDimension/objectManagers/AxesManager";
 import ConeManager from "../shared/renderers/threeDimension/objectManagers/ConeManager";
@@ -542,7 +542,7 @@ export default class XRRenderer {
                   let dist = vertex.distanceTo(center);
                   return dist > prev ? dist : prev;
                 }, 0);
-                if (maxRadius < 0.08) {
+                if (maxRadius < XR_MAX_RADIUS) {
                   // Dispose mesh
                   mesh.visible = false;
                   mesh.geometry.dispose();
@@ -650,6 +650,7 @@ export default class XRRenderer {
       if (entry.type === "robot" || entry.type === "ghost") {
         let robotManager = entry.manager as RobotManager;
         robotManager.setAssetsOverride(assets);
+        robotManager.setHideRobotModels(!settings.showRobots);
         if (newAssets) {
           robotManager.newAssets();
         }

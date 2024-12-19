@@ -18,6 +18,7 @@ import {
   rotation3dToQuaternion
 } from "../../ThreeDimensionRendererImpl";
 import ObjectManager from "../ObjectManager";
+import { XR_MAX_RADIUS } from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
 export default class RobotManager extends ObjectManager<
@@ -59,10 +60,12 @@ export default class RobotManager extends ObjectManager<
   private dummyUserPose = new THREE.Group().add(this.dummyConfigPose);
   private dummyRobotPose = new THREE.Group().add(this.dummyUserPose);
   private assetsOverride: AdvantageScopeAssets | null = null;
+  private hideRobotModels = false;
   private hasNewAssets = false;
   private lastModel = "";
   private lastColor = "";
   private lastHadSwerveStates = false;
+  private lastHideRobotModels = false;
 
   constructor(
     root: THREE.Object3D,
@@ -121,6 +124,10 @@ export default class RobotManager extends ObjectManager<
     this.assetsOverride = assets;
   }
 
+  setHideRobotModels(hide: boolean) {
+    this.hideRobotModels = hide;
+  }
+
   getModel(): string {
     return this.lastModel;
   }
@@ -130,10 +137,11 @@ export default class RobotManager extends ObjectManager<
     let robotConfig = assets?.robots.find((robotData) => robotData.name === object.model);
 
     // Load new robot model
-    if (object.model !== this.lastModel || this.hasNewAssets) {
+    if (object.model !== this.lastModel || this.hideRobotModels !== this.lastHideRobotModels || this.hasNewAssets) {
       this.shouldLoadNewModel = true;
       this.lastModel = object.model;
       this.hasNewAssets = false;
+      this.lastHideRobotModels = this.hideRobotModels;
     }
     if (this.shouldLoadNewModel && !this.isLoading) {
       this.shouldLoadNewModel = false;
@@ -142,7 +150,7 @@ export default class RobotManager extends ObjectManager<
       });
       this.meshes = [];
 
-      if (robotConfig !== undefined) {
+      if (robotConfig !== undefined && !this.hideRobotModels) {
         this.loadingCounter++;
         let loadingCounter = this.loadingCounter;
         this.loadingStart();
@@ -210,7 +218,7 @@ export default class RobotManager extends ObjectManager<
                   return dist > prev ? dist : prev;
                 }, 0);
                 let enableSimplification = !robotConfig.disableSimplification && !mesh.name.includes("NOSIMPLIFY");
-                if (maxRadius >= 0.08 || !enableSimplification) {
+                if (maxRadius >= XR_MAX_RADIUS || !enableSimplification) {
                   // Apply world matrix to geometry
                   let geometry = mesh.geometry.clone();
                   mesh.updateWorldMatrix(true, false);
