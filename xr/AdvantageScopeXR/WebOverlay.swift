@@ -4,7 +4,7 @@ import WebKit
 struct WebOverlay: UIViewRepresentable {
     @EnvironmentObject var appState: AppState
     private var webView: WKWebView!
-    let messageHandler = ScriptMessageHandler()
+    private let messageHandler = ScriptMessageHandler()
     
     init() {
         let contentController = WKUserContentController()
