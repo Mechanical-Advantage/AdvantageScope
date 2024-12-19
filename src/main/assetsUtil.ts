@@ -28,7 +28,7 @@ import {
 } from "./Constants";
 
 const USER_ASSETS_README =
-  'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/CUSTOM-ASSETS.md';
+  'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
 const CONVERT_LEGACY_ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWxYZabcdefghijklnopqrstuvwxyz0123456789".split("");
 
 /** Returns the path to the user assets folder. */

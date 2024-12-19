@@ -1,6 +1,6 @@
 import ExportOptions from "./shared/ExportOptions";
 
-const HELP_URL = "https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/docs/EXPORT.md#options";
+const HELP_URL = "https://docs.advantagescope.org/more-features/export/#options";
 
 const FORMAT = document.getElementById("format") as HTMLInputElement;
 const SAMPLING_MODE = document.getElementById("samplingMode") as HTMLInputElement;
