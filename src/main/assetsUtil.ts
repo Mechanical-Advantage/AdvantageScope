@@ -642,8 +642,14 @@ export function loadAssets(): AdvantageScopeAssets {
     // Built-in fields added in code to end of list
     assets.field3ds.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
 
-    // All robots in asset files, no special sorting required
-    assets.robots.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+    // All robots in asset files, sort numbers in reverse to put the most recent KitBot at the top
+    assets.robots.sort((a, b) => {
+      if (/^\d/.test(a.name) && /^\d/.test(b.name)) {
+        return -a.name.localeCompare(b.name, undefined, { numeric: true });
+      } else {
+        return a.name.localeCompare(b.name, undefined, { numeric: true });
+      }
+    });
 
     // Built-in joysticks added in code to beginning of list
     assets.joysticks.sort((a, b) => (a.name > b.name ? -1 : b.name > a.name ? 1 : 0));
