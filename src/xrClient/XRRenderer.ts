@@ -580,6 +580,7 @@ export default class XRRenderer {
               // Separate carpet
               let carpet = new THREE.Group();
               scene.traverse((object) => {
+                if (!(object as THREE.Mesh).isMesh) return;
                 if (object.name.toLowerCase().includes("carpet")) {
                   let rotation = object.getWorldQuaternion(new THREE.Quaternion());
                   let position = object.getWorldPosition(new THREE.Vector3());
