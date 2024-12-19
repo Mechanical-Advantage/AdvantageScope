@@ -19,6 +19,7 @@
 		8C6767DB2C11551C00277484 /* QRScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6767DA2C11551C00277484 /* QRScanner.swift */; };
 		8CBC9A722D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
 		8CBC9A732D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
+		8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
 		8CBFA6DE2BF8663D009AA8CD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */; };
 		8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
 		8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
@@ -293,6 +294,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
