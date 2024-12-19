@@ -2,11 +2,11 @@ import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import WorkerManager from "../hub/WorkerManager";
 import {
   AdvantageScopeAssets,
   Config3dField,
@@ -19,10 +19,11 @@ import {
   ThreeDimensionRendererCommand,
   ThreeDimensionRendererCommand_AnyObj
 } from "../shared/renderers/ThreeDimensionRenderer";
-import { disposeObject } from "../shared/renderers/ThreeDimensionRendererImpl";
+import { disposeObject, getQuaternionFromRotSeq } from "../shared/renderers/ThreeDimensionRendererImpl";
 import makeAxesField from "../shared/renderers/threeDimension/AxesField";
 import makeEvergreenField from "../shared/renderers/threeDimension/EvergreenField";
 import ObjectManager from "../shared/renderers/threeDimension/ObjectManager";
+import optimizeGeometries from "../shared/renderers/threeDimension/OptimizeGeometries";
 import AprilTagManager from "../shared/renderers/threeDimension/objectManagers/AprilTagManager";
 import AxesManager from "../shared/renderers/threeDimension/objectManagers/AxesManager";
 import ConeManager from "../shared/renderers/threeDimension/objectManagers/ConeManager";
@@ -63,6 +64,7 @@ export default class XRRenderer {
   private wpilibCoordinateGroup: THREE.Object3D;
   private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
+  private fieldCarpet: THREE.Object3D | null = null;
   private fieldStagedPieces: THREE.Object3D | null = null;
   private fieldPieces: { [key: string]: THREE.Mesh } = {};
 
@@ -270,7 +272,7 @@ export default class XRRenderer {
       this.wpilibFieldCoordinateGroup,
       this.MATERIAL_SPECULAR,
       this.MATERIAL_SHININESS,
-      "xr",
+      "standard",
       () => {}
     ] as const;
     let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
@@ -280,7 +282,8 @@ export default class XRRenderer {
         manager = new RobotManager(
           ...args,
           () => this.robotLoadingCount++,
-          () => this.robotLoadingCount--
+          () => this.robotLoadingCount--,
+          true
         );
         break;
       case "gamePiece":
@@ -456,6 +459,10 @@ export default class XRRenderer {
         this.wpilibCoordinateGroup.remove(this.field);
         disposeObject(this.field);
       }
+      if (this.fieldCarpet) {
+        this.wpilibCoordinateGroup.remove(this.fieldCarpet);
+        disposeObject(this.fieldCarpet);
+      }
       if (this.fieldStagedPieces) {
         this.wpilibCoordinateGroup.remove(this.fieldStagedPieces);
         disposeObject(this.fieldStagedPieces);
@@ -467,6 +474,7 @@ export default class XRRenderer {
         // Add new field
         if (this.field) {
           this.wpilibCoordinateGroup.add(this.field);
+          if (this.fieldCarpet !== null) this.wpilibCoordinateGroup.add(this.fieldCarpet);
           if (this.fieldStagedPieces !== null) this.wpilibCoordinateGroup.add(this.fieldStagedPieces);
         }
 
@@ -482,27 +490,125 @@ export default class XRRenderer {
       // Load new field
       if (fieldTitle === "Evergreen") {
         this.isFieldLoading = false;
-        this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        let fullField = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        let carpet = fullField.getObjectByName("carpet")!;
+        carpet.removeFromParent();
+        this.field = fullField;
+        this.fieldCarpet = carpet;
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else if (fieldTitle === "Axes") {
         this.isFieldLoading = false;
         this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.fieldCarpet = new THREE.Object3D();
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else {
         this.isFieldLoading = true;
-        WorkerManager.request("/loadField.js", {
-          fieldConfig: fieldConfig,
-          mode: "xr",
-          materialSpecular: this.MATERIAL_SPECULAR.toArray(),
-          materialShininess: this.MATERIAL_SHININESS
-        }).then((result) => {
-          const loader = new THREE.ObjectLoader();
-          this.field = loader.parse(result.field);
-          this.fieldStagedPieces = loader.parse(result.fieldStagedPieces);
-          Object.entries(result.fieldPieces).forEach(([name, meshData]) => {
-            newFieldPieces[name] = loader.parse(meshData) as THREE.Mesh;
+        const loader = new GLTFLoader();
+        const urlTransformer: (path: string) => string = (url) => "/asset?path=" + encodeURIComponent(url);
+        Promise.all([
+          new Promise((resolve) => {
+            loader.load(urlTransformer(fieldConfig.path), resolve);
+          }),
+          ...fieldConfig.gamePieces.map(
+            (_, index) =>
+              new Promise((resolve) => {
+                loader.load(urlTransformer(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb"), resolve);
+              })
+          )
+        ]).then((gltfs) => {
+          let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
+          if (fieldConfig === undefined) return;
+          gltfScenes.forEach(async (scene, index) => {
+            // Apply adjustments
+            scene.traverse((node: any) => {
+              let mesh = node as THREE.Mesh; // Traverse function returns Object3d or Mesh
+              if (mesh.isMesh) {
+                // Remove if too small
+                let vertices: THREE.Vector3[] = [];
+                let center = new THREE.Vector3();
+                for (let i = 0; i < mesh.geometry.attributes.position.count; i++) {
+                  let vertex = new THREE.Vector3(
+                    mesh.geometry.attributes.position.getX(i),
+                    mesh.geometry.attributes.position.getY(i),
+                    mesh.geometry.attributes.position.getZ(i)
+                  );
+                  vertices.push(vertex);
+                  center.add(vertex);
+                }
+                center.divideScalar(vertices.length);
+                let maxRadius = vertices.reduce((prev, vertex) => {
+                  let dist = vertex.distanceTo(center);
+                  return dist > prev ? dist : prev;
+                }, 0);
+                if (maxRadius < 0.12) {
+                  // Dispose mesh
+                  mesh.visible = false;
+                  mesh.geometry.dispose();
+                  if (mesh.material instanceof THREE.MeshStandardMaterial) {
+                    mesh.material.dispose();
+                  }
+                } else {
+                  // Adjust material
+                  if (mesh.material instanceof THREE.MeshStandardMaterial) {
+                    mesh.material.metalness = 0;
+                    mesh.material.roughness = 1;
+                  }
+                }
+              }
+            });
+
+            // Add to scene
+            if (index === 0) {
+              // Separate staged pieces
+              let stagedPieces = new THREE.Group();
+              fieldConfig.gamePieces.forEach((gamePieceConfig) => {
+                gamePieceConfig.stagedObjects.forEach((stagedName) => {
+                  let stagedObject = scene.getObjectByName(stagedName);
+                  if (stagedObject !== undefined) {
+                    let rotation = stagedObject.getWorldQuaternion(new THREE.Quaternion());
+                    let position = stagedObject.getWorldPosition(new THREE.Vector3());
+                    stagedObject.removeFromParent();
+                    stagedObject.rotation.setFromQuaternion(rotation);
+                    stagedObject.position.copy(position);
+                    stagedPieces.add(stagedObject);
+                  }
+                });
+              });
+
+              // Separate carpet
+              let carpet = new THREE.Group();
+              scene.traverse((object) => {
+                if (object.name.toLowerCase().includes("carpet")) {
+                  let rotation = object.getWorldQuaternion(new THREE.Quaternion());
+                  let position = object.getWorldPosition(new THREE.Vector3());
+                  let objectClone = object.clone(false);
+                  object.visible = false;
+                  objectClone.rotation.setFromQuaternion(rotation);
+                  objectClone.position.copy(position);
+                  carpet.add(objectClone);
+                }
+              });
+
+              // Save components
+              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+              carpet.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+              stagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+              this.field = scene;
+              this.fieldCarpet = carpet;
+              this.fieldStagedPieces = stagedPieces;
+            } else {
+              let gamePieceConfig = fieldConfig.gamePieces[index - 1];
+              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
+              scene.position.set(...gamePieceConfig.position);
+              let meshes = (
+                await optimizeGeometries(scene, "standard", this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, false)
+              ).normal;
+              if (meshes.length > 0) {
+                newFieldPieces[gamePieceConfig.name] = meshes[0];
+              }
+            }
           });
           newFieldReady();
           this.isFieldLoading = false;
@@ -511,13 +617,8 @@ export default class XRRenderer {
     }
 
     // Update visible field elements
-    this.field?.children.forEach((child) => {
-      if (child.name.includes("carpet")) {
-        child.visible = settings.showCarpet;
-      } else {
-        child.visible = settings.showField;
-      }
-    });
+    if (this.field !== null) this.field.visible = settings.showField;
+    if (this.fieldCarpet !== null) this.fieldCarpet.visible = settings.showCarpet;
     if (this.fieldStagedPieces !== null) {
       this.fieldStagedPieces.visible =
         settings.showField && command.objects.every((object) => object.type !== "gamePiece");

@@ -18,7 +18,7 @@ export default class ZebraManager extends ObjectManager<ThreeDimensionRendererCo
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic" | "xr",
+    mode: "low-power" | "standard" | "cinematic",
     requestRender: () => void
   ) {
     super(root, materialSpecular, materialShininess, mode, requestRender);

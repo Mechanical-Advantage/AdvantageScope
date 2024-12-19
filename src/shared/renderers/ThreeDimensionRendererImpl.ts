@@ -429,7 +429,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         manager = new RobotManager(
           ...args,
           () => this.robotLoadingCount++,
-          () => this.robotLoadingCount--
+          () => this.robotLoadingCount--,
+          false
         );
         break;
       case "gamePiece":

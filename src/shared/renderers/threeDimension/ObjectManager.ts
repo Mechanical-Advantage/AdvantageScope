@@ -5,7 +5,7 @@ export default abstract class ObjectManager<ObjectType extends ThreeDimensionRen
   protected root: THREE.Object3D;
   protected materialSpecular: THREE.Color;
   protected materialShininess: number;
-  protected mode: "low-power" | "standard" | "cinematic" | "xr";
+  protected mode: "low-power" | "standard" | "cinematic";
   protected requestRender: () => void;
   protected resolution = new THREE.Vector2();
 
@@ -13,7 +13,7 @@ export default abstract class ObjectManager<ObjectType extends ThreeDimensionRen
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic" | "xr",
+    mode: "low-power" | "standard" | "cinematic",
     requestRender: () => void
   ) {
     this.root = root;

@@ -5,7 +5,7 @@ import { disposeObject } from "../ThreeDimensionRendererImpl";
 
 export default async function optimizeGeometries(
   object: THREE.Object3D,
-  mode: "low-power" | "standard" | "cinematic" | "xr",
+  mode: "low-power" | "standard" | "cinematic",
   materialSpecular: THREE.Color,
   materialShininess: number,
   enableSimplification = true,
@@ -100,7 +100,7 @@ export default async function optimizeGeometries(
 
 function getGeometries(
   object: THREE.Object3D,
-  mode: "low-power" | "standard" | "cinematic" | "xr",
+  mode: "low-power" | "standard" | "cinematic",
   enableSimplification: boolean,
   slicingSize?: number
 ): { normal: THREE.BufferGeometry[][]; transparent: THREE.BufferGeometry[][]; carpet: THREE.BufferGeometry[][] } {
@@ -157,9 +157,6 @@ function getGeometries(
       }, 0);
       if (enableSimplification && !mesh.name.includes("NOSIMPLIFY")) {
         switch (mode) {
-          case "xr":
-            if (maxRadius < 0.16) include = false;
-            break;
           case "low-power":
             if (maxRadius < 0.08) include = false;
             break;

@@ -26,6 +26,7 @@ export default class RobotManager extends ObjectManager<
   private SWERVE_CANVAS_METERS = 4;
   private SWERVE_BUMPER_OFFSET = 0.15;
 
+  private isXR: boolean;
   private loadingStart: () => void;
   private loadingEnd: () => void;
 
@@ -66,13 +67,15 @@ export default class RobotManager extends ObjectManager<
     root: THREE.Object3D,
     materialSpecular: THREE.Color,
     materialShininess: number,
-    mode: "low-power" | "standard" | "cinematic" | "xr",
+    mode: "low-power" | "standard" | "cinematic",
     requestRender: () => void,
     loadingStart: () => void,
-    loadingEnd: () => void
+    loadingEnd: () => void,
+    isXR: boolean
   ) {
     super(root, materialSpecular, materialShininess, mode, requestRender);
-    this.SWERVE_CANVAS_PX = this.mode === "xr" ? 250 : 1000;
+    this.SWERVE_CANVAS_PX = isXR ? 250 : 1000;
+    this.isXR = isXR;
     this.loadingStart = loadingStart;
     this.loadingEnd = loadingEnd;
 
@@ -142,7 +145,7 @@ export default class RobotManager extends ObjectManager<
         this.loadingStart();
         if (this.isLoading) this.loadingEnd();
         this.isLoading = true;
-        WorkerManager.request(this.mode === "xr" ? "/loadRobot.js" : "../bundles/shared$loadRobot.js", {
+        WorkerManager.request(this.isXR ? "/loadRobot.js" : "../bundles/shared$loadRobot.js", {
           robotConfig: robotConfig!,
           mode: this.mode,
           materialSpecular: this.materialSpecular.toArray(),
