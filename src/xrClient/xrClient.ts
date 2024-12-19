@@ -12,6 +12,7 @@ let renderer: XRRenderer;
 let settings: XRSettings | null = null;
 let command: ThreeDimensionRendererCommand | null = null;
 let assets: AdvantageScopeAssets | null = null;
+let isRendering = false;
 
 window.addEventListener("load", () => {
   renderer = new XRRenderer();
@@ -32,8 +33,10 @@ window.setCommand = (commandRaw: string) => {
 
 // @ts-expect-error
 window.render = (cameraState: XRCameraState) => {
-  if (settings !== null && command !== null) {
+  if (settings !== null && command !== null && !isRendering) {
+    isRendering = true;
     renderer.render(cameraState, settings, command, assets);
+    isRendering = false;
   }
 };
 

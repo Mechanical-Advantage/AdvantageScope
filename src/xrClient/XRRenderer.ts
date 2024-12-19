@@ -542,7 +542,7 @@ export default class XRRenderer {
                   let dist = vertex.distanceTo(center);
                   return dist > prev ? dist : prev;
                 }, 0);
-                if (maxRadius < 0.12) {
+                if (maxRadius < 0.08) {
                   // Dispose mesh
                   mesh.visible = false;
                   mesh.geometry.dispose();
@@ -647,10 +647,12 @@ export default class XRRenderer {
       } else {
         entry.active = true;
       }
-      if (newAssets && (entry.type === "robot" || entry.type === "ghost")) {
+      if (entry.type === "robot" || entry.type === "ghost") {
         let robotManager = entry.manager as RobotManager;
         robotManager.setAssetsOverride(assets);
-        robotManager.newAssets();
+        if (newAssets) {
+          robotManager.newAssets();
+        }
       }
       entry.manager.setObjectData(object);
     });
