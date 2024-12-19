@@ -1134,7 +1134,36 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "open-xr":
-      XRControls.open(message.data, window);
+      {
+        let startXR = () => XRControls.open(message.data, window);
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (prefs.skipXRExperimentalWarning) {
+          startXR();
+        } else {
+          dialog
+            .showMessageBox(window, {
+              type: "info",
+              title: "Alert",
+              message: "Experimental Feature",
+              detail:
+                "AdvantageScope XR is an experimental feature, and may not function properly on all devices. Please report any problems via the GitHub issues page.",
+              buttons: ["Continue", "Cancel"],
+              defaultId: 0,
+              checkboxLabel: "Don't Show Again",
+              icon: WINDOW_ICON
+            })
+            .then((response) => {
+              if (response.response === 0) {
+                if (response.checkboxChecked) {
+                  prefs.skipXRExperimentalWarning = true;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                }
+                startXR();
+              }
+            });
+        }
+      }
       break;
 
     case "update-xr-command":
@@ -3254,6 +3283,9 @@ app.whenReady().then(() => {
     }
     if ("skipFrcLogFolderDefault" in oldPrefs && typeof oldPrefs.skipFrcLogFolderDefault === "boolean") {
       prefs.skipFrcLogFolderDefault = oldPrefs.skipFrcLogFolderDefault;
+    }
+    if ("skipXRExperimentalWarning" in oldPrefs && typeof oldPrefs.skipXRExperimentalWarning === "boolean") {
+      prefs.skipXRExperimentalWarning = oldPrefs.skipXRExperimentalWarning;
     }
     if ("ctreLicenseAccepted" in oldPrefs && typeof oldPrefs.ctreLicenseAccepted === "boolean") {
       prefs.ctreLicenseAccepted = oldPrefs.ctreLicenseAccepted;

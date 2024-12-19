@@ -42,6 +42,7 @@ export const DEFAULT_PREFS: Preferences = {
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
   skipNumericArrayDeprecationWarning: false,
+  skipXRExperimentalWarning: false,
   ctreLicenseAccepted: false
 };
 export const HUB_DEFAULT_WIDTH = 1100;
