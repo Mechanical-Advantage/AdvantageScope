@@ -3,9 +3,14 @@ import MetalKit
 
 class AppState : ObservableObject {
     @Published var showControls = true
-    @Published var scanningQR = true
     @Published var trackingReady = false
     @Published var calibrationText = ""
+    
+    #if APPCLIP
+    @Published var scanningQR = false
+    #else
+    @Published var scanningQR = true
+    #endif
     
     @Published var serverIncompatibility: NativeHostIncompatibility = .none
     @Published var serverAddresses: [String] = []
@@ -66,6 +71,11 @@ struct ContentView : View {
                 arManager.webOverlay = webOverlay
                 arManager.addFrameCallback(qrScanner.processFrame)
                 qrScanner.start(appState)
+            }
+            .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) {activity in
+                if (activity.webpageURL != nil) {
+                    qrScanner.parseURL(activity.webpageURL!)
+                }
             }
     }
     

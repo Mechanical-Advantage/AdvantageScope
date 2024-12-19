@@ -7,11 +7,13 @@ struct ControlsMenu: View {
     
     var body: some View {
         HStack {
+            #if !APPCLIP
             Button("Scan", systemImage: "qrcode") {
                 appState.scanningQR.toggle()
             }
             .opacity(appState.scanningQR ? 0.5 : 1)
             .animation(.easeInOut(duration: 0.1), value: appState.scanningQR)
+            #endif
             
             RecordButton()
             

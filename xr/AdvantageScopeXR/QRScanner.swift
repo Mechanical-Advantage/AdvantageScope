@@ -37,8 +37,15 @@ class QRScanner {
     }
     
     func parseURL(_ url: String) {
+        parseURL(NSURLComponents(string: url))
+    }
+    
+    func parseURL(_ url: URL) {
+        parseURL(NSURLComponents(url: url, resolvingAgainstBaseURL: false))
+    }
+    
+    private func parseURL(_ components: NSURLComponents?) {
         // Parse components
-        let components = NSURLComponents(string: url)
         var nativeHostCompatibility: Int? = nil
         var addresses: [String] = []
         components?.queryItems?.forEach {item in
@@ -68,7 +75,7 @@ class QRScanner {
         }
         
         // Update app state
-        DispatchQueue.main.sync() {
+        DispatchQueue.main.async() {
             self.appState.scanningQR = false
             self.appState.serverIncompatibility = incompatibilityValue
             self.appState.serverAddresses = addresses
