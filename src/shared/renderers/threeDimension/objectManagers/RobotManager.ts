@@ -108,7 +108,9 @@ export default class RobotManager extends ObjectManager<
       this.visionLines.shift();
     }
     this.swerveTexture.dispose();
-    document.body.removeChild(this.swerveContainer);
+    if (!this.isXR) {
+      document.body.removeChild(this.swerveContainer);
+    }
   }
 
   setResolution(resolution: THREE.Vector2) {
