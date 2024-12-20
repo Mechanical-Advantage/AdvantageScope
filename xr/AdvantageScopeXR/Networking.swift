@@ -64,7 +64,7 @@ class Networking : WebSocketDelegate {
         self.socket?.forceDisconnect()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.reconnecting = false
-            self.startConnection() // Starscream bug prevents reusing WebSocket
+            self.startConnection()
         }
     }
     
