@@ -57,6 +57,7 @@ export default class XRRenderer {
   private scene: THREE.Scene;
   private camera: XRCamera;
   private ambientLight: THREE.AmbientLight;
+  private spotLight: THREE.SpotLight;
   private anchors: { [key: string]: THREE.Object3D } = {};
   private markedPoints: THREE.Object3D[] = [];
   private cursor: THREE.Object3D;
@@ -105,14 +106,12 @@ export default class XRRenderer {
     this.wpilibCoordinateGroup.add(this.wpilibFieldCoordinateGroup);
 
     // Add lights
-    {
-      this.ambientLight = new THREE.AmbientLight(0xd4d4d4);
-      this.scene.add(this.ambientLight);
-    }
-    {
-      const light = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
-      this.scene.add(light);
-    }
+    this.ambientLight = new THREE.AmbientLight(0xd4d4d4);
+    this.scene.add(this.ambientLight);
+    this.spotLight = new THREE.SpotLight(0xffffff, 1, 30, 45 * (Math.PI / 180), 0.2, 2);
+    this.spotLight.position.set(0, 15, 0);
+    this.spotLight.target.position.set(0, 0, 0);
+    this.fieldRoot.add(this.spotLight, this.spotLight.target);
 
     // Create cursor
     this.cursor = new THREE.Group();
@@ -129,6 +128,7 @@ export default class XRRenderer {
         new THREE.MeshPhongMaterial({ color: "yellow", transparent: true, opacity: 0.02, side: THREE.DoubleSide })
       ).rotateX(Math.PI / 2)
     );
+    this.cursor.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2));
 
     // Create field sizing reference
     this.fieldSizingReference = new THREE.Group();
@@ -467,6 +467,7 @@ export default class XRRenderer {
 
     // Update field visibility
     this.fieldSizingReference.visible = isCalibrating;
+    this.spotLight.visible = !isCalibrating;
     this.wpilibCoordinateGroup.visible = !isCalibrating;
 
     // Update field coordinates
@@ -729,13 +730,18 @@ export default class XRRenderer {
       window.setTimeout(() => this.spinner.classList.remove("animating"), 250);
     }
 
-    // Update camera position, grain, and lighting
+    // Update rendering options from AR state
     this.camera.matrixWorldInverse.fromArray(renderState.camera.worldInverse);
     this.camera.projectionMatrix.fromArray(renderState.camera.projection);
-    // @ts-expect-error
-    this.flimPass.uniforms.intensity.value = renderState.lighting.grain;
-    this.ambientLight.intensity = renderState.lighting.intensity * 0.8;
-    this.ambientLight.color = this.temperatureToColor(renderState.lighting.temperature);
+    (this.flimPass.uniforms as any).intensity.value = renderState.lighting.grain;
+    this.ambientLight.intensity = renderState.lighting.intensity;
+    this.spotLight.intensity =
+      (1 - (1 - renderState.lighting.intensity) * 0.5) * // Lower intensity of lighting changes
+      400 * // Base intensity value at source
+      Math.pow(this.fieldRoot.scale.x, 2); // Constant intensity regardless of distance
+    const lightColor = this.temperatureToColor(renderState.lighting.temperature);
+    this.ambientLight.color = lightColor;
+    this.spotLight.color = lightColor;
 
     // Calculate effective device pixel ratio
     const viewWidthPx = this.canvas.parentElement!.clientWidth;
