@@ -1,7 +1,7 @@
 import { Decoder } from "@msgpack/msgpack";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
-import { XRCameraState, XRPacket, XRSettings, XRStreamingMode } from "../shared/XRTypes";
+import { XRPacket, XRFrameState as XRRenderState, XRSettings, XRStreamingMode } from "../shared/XRTypes";
 import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
 import XRRenderer from "./XRRenderer";
 
@@ -51,10 +51,10 @@ window.setCommand = (commandRaw: string, isQueued: boolean) => {
 };
 
 // @ts-expect-error
-window.render = (cameraState: XRCameraState) => {
+window.render = (renderState: XRRenderState) => {
   if (settings !== null && command !== null && !isRendering) {
     isRendering = true;
-    renderer.render(cameraState, settings, command, assets);
+    renderer.render(renderState, settings, command, assets);
     isRendering = false;
   }
 };

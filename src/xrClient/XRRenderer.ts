@@ -14,7 +14,7 @@ import {
   STANDARD_FIELD_LENGTH,
   STANDARD_FIELD_WIDTH
 } from "../shared/AdvantageScopeAssets";
-import { RaycastResult, XRCalibrationMode, XRCameraState, XRSettings } from "../shared/XRTypes";
+import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
 import {
   ThreeDimensionRendererCommand,
   ThreeDimensionRendererCommand_AnyObj
@@ -317,7 +317,7 @@ export default class XRRenderer {
 
   /** Draws a new frame based on an updated camera position. */
   render(
-    cameraState: XRCameraState,
+    renderState: XRFrameState,
     settings: XRSettings,
     command: ThreeDimensionRendererCommand,
     assets: AdvantageScopeAssets | null
@@ -329,7 +329,7 @@ export default class XRRenderer {
     }
 
     // Update anchors
-    Object.entries(cameraState.anchors).forEach(([anchorId, translation]) => {
+    Object.entries(renderState.anchors).forEach(([anchorId, translation]) => {
       if (!(anchorId in this.anchors)) {
         this.anchors[anchorId] = new THREE.Group();
         this.scene.add(this.anchors[anchorId]);
@@ -338,8 +338,8 @@ export default class XRRenderer {
     });
 
     // Update raycast status
-    this.lastRaycastResult = cameraState.raycast;
-    if (!cameraState.raycast.isValid) {
+    this.lastRaycastResult = renderState.raycast;
+    if (!renderState.raycast.isValid) {
       this.lastInvalidRaycast = new Date().getTime();
     }
     const raycastUnreliable = new Date().getTime() - this.lastInvalidRaycast < 500;
@@ -370,12 +370,12 @@ export default class XRRenderer {
           case 1:
             calibrationText = "Tap to place the red alliance wall.";
             this.fieldRoot.visible = !raycastUnreliable;
-            if (this.fieldRoot.visible && cameraState.raycast.isValid) {
+            if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootMiniature(
                 fieldLength,
                 this.markedPoints[0].getWorldPosition(new THREE.Vector3()),
-                new THREE.Vector3(...cameraState.raycast.position).add(
-                  new THREE.Vector3(...cameraState.anchors[cameraState.raycast.anchorId])
+                new THREE.Vector3(...renderState.raycast.position).add(
+                  new THREE.Vector3(...renderState.anchors[renderState.raycast.anchorId])
                 )
               );
             }
@@ -404,10 +404,10 @@ export default class XRRenderer {
           case 1:
             calibrationText = `Tap to select another point on the base of the ${colorText} alliance wall, at least 6 feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
-            if (this.fieldRoot.visible && cameraState.raycast.isValid) {
+            if (this.fieldRoot.visible && renderState.raycast.isValid) {
               let position1 = this.markedPoints[0].getWorldPosition(new THREE.Vector3());
-              let position2 = new THREE.Vector3(...cameraState.raycast.position).add(
-                new THREE.Vector3(...cameraState.anchors[cameraState.raycast.anchorId])
+              let position2 = new THREE.Vector3(...renderState.raycast.position).add(
+                new THREE.Vector3(...renderState.anchors[renderState.raycast.anchorId])
               );
               this.fieldRoot.visible = position1.distanceTo(position2) > convert(6, "inches", "meters");
               if (this.fieldRoot.visible) {
@@ -418,15 +418,15 @@ export default class XRRenderer {
           case 2:
             calibrationText = `Tap to select the base of one of the long field barriers.`;
             this.fieldRoot.visible = !raycastUnreliable;
-            if (this.fieldRoot.visible && cameraState.raycast.isValid) {
+            if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootFullSize(
                 isRed,
                 fieldLength,
                 fieldWidth,
                 this.markedPoints[0].getWorldPosition(new THREE.Vector3()),
                 this.markedPoints[1].getWorldPosition(new THREE.Vector3()),
-                new THREE.Vector3(...cameraState.raycast.position).add(
-                  new THREE.Vector3(...cameraState.anchors[cameraState.raycast.anchorId])
+                new THREE.Vector3(...renderState.raycast.position).add(
+                  new THREE.Vector3(...renderState.anchors[renderState.raycast.anchorId])
                 )
               );
             }
@@ -455,13 +455,13 @@ export default class XRRenderer {
     this.lastIsCalibrating = isCalibrating;
 
     // Update cursor position
-    this.cursor.visible = isCalibrating && !raycastUnreliable && cameraState.raycast.isValid;
-    if (cameraState.raycast.isValid) {
-      let anchorTranslation = cameraState.anchors[cameraState.raycast.anchorId];
+    this.cursor.visible = isCalibrating && !raycastUnreliable && renderState.raycast.isValid;
+    if (renderState.raycast.isValid) {
+      let anchorTranslation = renderState.anchors[renderState.raycast.anchorId];
       this.cursor.position.set(
-        cameraState.raycast.position[0] + anchorTranslation[0],
-        cameraState.raycast.position[1] + anchorTranslation[1],
-        cameraState.raycast.position[2] + anchorTranslation[2]
+        renderState.raycast.position[0] + anchorTranslation[0],
+        renderState.raycast.position[1] + anchorTranslation[1],
+        renderState.raycast.position[2] + anchorTranslation[2]
       );
     }
 
@@ -730,16 +730,16 @@ export default class XRRenderer {
     }
 
     // Update camera position, grain, and lighting
-    this.camera.matrixWorldInverse.fromArray(cameraState.camera.worldInverse);
-    this.camera.projectionMatrix.fromArray(cameraState.camera.projection);
+    this.camera.matrixWorldInverse.fromArray(renderState.camera.worldInverse);
+    this.camera.projectionMatrix.fromArray(renderState.camera.projection);
     // @ts-expect-error
-    this.flimPass.uniforms.intensity.value = cameraState.lighting.grain;
-    this.ambientLight.intensity = cameraState.lighting.intensity * 0.8;
-    this.ambientLight.color = this.temperatureToColor(cameraState.lighting.temperature);
+    this.flimPass.uniforms.intensity.value = renderState.lighting.grain;
+    this.ambientLight.intensity = renderState.lighting.intensity * 0.8;
+    this.ambientLight.color = this.temperatureToColor(renderState.lighting.temperature);
 
     // Calculate effective device pixel ratio
-    // const frameWidthPx = cameraState.frameSize[0];
-    // const frameHeightPx = cameraState.frameSize[1];
+    // const frameWidthPx = frameState.frameSize[0];
+    // const frameHeightPx = frameState.frameSize[1];
     const viewWidthPx = this.canvas.parentElement!.clientWidth;
     const viewHeightPx = this.canvas.parentElement!.clientHeight;
     // const viewWidthSubPx = viewWidthPx * window.devicePixelRatio;

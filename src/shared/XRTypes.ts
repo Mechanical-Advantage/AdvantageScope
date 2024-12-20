@@ -26,7 +26,7 @@ export type XRPacket =
   | { type: "command"; time: number; value: ThreeDimensionRendererCommand }
   | { type: "assets"; time: number; value: AdvantageScopeAssets };
 
-export type XRCameraState = {
+export type XRFrameState = {
   camera: { projection: number[]; worldInverse: number[]; position: Translation3d };
   frameSize: [number, number];
   lighting: LightingState;
