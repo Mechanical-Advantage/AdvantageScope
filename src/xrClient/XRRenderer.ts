@@ -135,10 +135,10 @@ export default class XRRenderer {
     this.fieldRoot.add(this.fieldSizingReference);
     this.fieldSizingReference.rotateX(-Math.PI / 2);
     let referenceCorners = [
-      [-STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2],
-      [-STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_WIDTH / 2],
-      [STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_WIDTH / 2],
-      [STANDARD_FIELD_LENGTH / 2, -STANDARD_FIELD_WIDTH / 2]
+      [-0.5, -0.5],
+      [-0.5, 0.5],
+      [0.5, 0.5],
+      [0.5, -0.5]
     ] as const;
     let referenceColors = ["blue", "white", "red", "white"] as const;
     for (let i = 0; i < 4; i++) {
@@ -179,10 +179,10 @@ export default class XRRenderer {
   }
 
   /** Updates the field position based on reference points. */
-  private updateFieldRootMiniature(blueReference: THREE.Vector3, redReference: THREE.Vector3) {
+  private updateFieldRootMiniature(fieldLength: number, blueReference: THREE.Vector3, redReference: THREE.Vector3) {
     this.fieldRoot.position.copy(blueReference.clone().add(redReference).divideScalar(2));
     let blueToRed = redReference.clone().sub(blueReference);
-    let scale = blueToRed.length() / STANDARD_FIELD_LENGTH;
+    let scale = blueToRed.length() / fieldLength;
     this.fieldRoot.scale.set(scale, scale, scale);
     this.fieldRoot.rotation.set(0, Math.atan2(blueToRed.x, blueToRed.z) - Math.PI / 2, 0);
   }
@@ -190,6 +190,8 @@ export default class XRRenderer {
   /** Updates the field position based on reference points. */
   private updateFieldRootFullSize(
     isRed: boolean,
+    fieldLength: number,
+    fieldWidth: number,
     allianceReference1: THREE.Vector3,
     allianceReference2: THREE.Vector3,
     wallReference?: THREE.Vector3
@@ -206,9 +208,9 @@ export default class XRRenderer {
         .normalize();
       const distance = wallReference2d.clone().sub(allianceReference2d).dot(allianceWallNormalized);
       if (distance > 0) {
-        yShift = STANDARD_FIELD_WIDTH / 2 - distance;
+        yShift = fieldWidth / 2 - distance;
       } else {
-        yShift = -STANDARD_FIELD_WIDTH / 2 - distance;
+        yShift = -fieldWidth / 2 - distance;
       }
     }
 
@@ -221,10 +223,8 @@ export default class XRRenderer {
         yShift *= -1;
       }
     }
-    let centerX =
-      allianceReference1.x + Math.sin(yaw + Math.PI / 2) * (STANDARD_FIELD_LENGTH / 2) - Math.sin(yaw) * yShift;
-    let centerZ =
-      allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (STANDARD_FIELD_LENGTH / 2) - Math.cos(yaw) * yShift;
+    let centerX = allianceReference1.x + Math.sin(yaw + Math.PI / 2) * (fieldLength / 2) - Math.sin(yaw) * yShift;
+    let centerZ = allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (fieldLength / 2) - Math.cos(yaw) * yShift;
 
     this.fieldRoot.position.set(centerX, height, centerZ);
     this.fieldRoot.rotation.set(0, yaw + (isRed ? Math.PI : 0), 0);
@@ -332,6 +332,18 @@ export default class XRRenderer {
     }
     const raycastUnreliable = new Date().getTime() - this.lastInvalidRaycast < 500;
 
+    // Get field config
+    let fieldTitle = command.game;
+    let fieldConfigTmp = this.getFieldConfig(command, assets);
+    this.fieldConfigCache = fieldConfigTmp;
+    if (fieldConfigTmp === null) return;
+    let fieldConfig = fieldConfigTmp;
+
+    // Update field reference size
+    const fieldLength = convert(fieldConfig.widthInches, "inches", "meters");
+    const fieldWidth = convert(fieldConfig.heightInches, "inches", "meters");
+    this.fieldSizingReference.scale.set(fieldLength, fieldWidth, 0);
+
     // Update calibration
     let calibrationText = "";
     let isCalibrating = false;
@@ -348,6 +360,7 @@ export default class XRRenderer {
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && cameraState.raycast.isValid) {
               this.updateFieldRootMiniature(
+                fieldLength,
                 this.anchors[0].position,
                 new THREE.Vector3(...cameraState.raycast.position)
               );
@@ -355,7 +368,7 @@ export default class XRRenderer {
             break;
           default:
             this.fieldRoot.visible = true;
-            this.updateFieldRootMiniature(this.anchors[0].position, this.anchors[1].position);
+            this.updateFieldRootMiniature(fieldLength, this.anchors[0].position, this.anchors[1].position);
             break;
         }
         break;
@@ -378,7 +391,7 @@ export default class XRRenderer {
               let position2 = new THREE.Vector3(...cameraState.raycast.position);
               this.fieldRoot.visible = position1.distanceTo(position2) > convert(6, "inches", "meters");
               if (this.fieldRoot.visible) {
-                this.updateFieldRootFullSize(isRed, position1, position2);
+                this.updateFieldRootFullSize(isRed, fieldLength, fieldWidth, position1, position2);
               }
             }
             break;
@@ -388,6 +401,8 @@ export default class XRRenderer {
             if (this.fieldRoot.visible && cameraState.raycast.isValid) {
               this.updateFieldRootFullSize(
                 isRed,
+                fieldLength,
+                fieldWidth,
                 this.anchors[0].position,
                 this.anchors[1].position,
                 new THREE.Vector3(...cameraState.raycast.position)
@@ -398,6 +413,8 @@ export default class XRRenderer {
             this.fieldRoot.visible = true;
             this.updateFieldRootFullSize(
               isRed,
+              fieldLength,
+              fieldWidth,
               this.anchors[0].position,
               this.anchors[1].position,
               this.anchors[2].position
@@ -424,13 +441,6 @@ export default class XRRenderer {
     // Update field visibility
     this.fieldSizingReference.visible = isCalibrating;
     this.wpilibCoordinateGroup.visible = !isCalibrating;
-
-    // Get field config
-    let fieldTitle = command.game;
-    let fieldConfigTmp = this.getFieldConfig(command, assets);
-    this.fieldConfigCache = fieldConfigTmp;
-    if (fieldConfigTmp === null) return;
-    let fieldConfig = fieldConfigTmp;
 
     // Update field coordinates
     if (fieldConfig) {
