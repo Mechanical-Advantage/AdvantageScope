@@ -87,11 +87,10 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
         switch (name) {
         case "setCalibrationText":
             guard (appState != nil) else { return }
-            let newText = data as! String
-            if (newText.isEmpty && !appState!.calibrationText.isEmpty) {
-                appState!.showControls = false
-            }
-            appState!.calibrationText = newText
+            appState!.calibrationText = data as! String
+            break
+        case "showControls":
+            appState!.showControls = data as! Bool
             break
         case "clearAnchors":
             arManager?.clearAnchors()

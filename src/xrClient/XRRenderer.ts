@@ -53,6 +53,7 @@ export default class XRRenderer {
   private lastCalibrationMode: XRCalibrationMode | null = null;
   private lastInvalidRaycast = 0;
   private lastRaycastResult: RaycastResult = { isValid: false };
+  private lastIsCalibrating = false;
 
   private scene: THREE.Scene;
   private camera: XRCamera;
@@ -75,7 +76,6 @@ export default class XRRenderer {
     active: boolean;
   }[] = [];
 
-  private primaryRobotModel = "";
   private fieldConfigCache: Config3dField | null = null;
   private robotLoadingCount = 0;
   private shouldLoadNewField = false;
@@ -450,6 +450,10 @@ export default class XRRenderer {
       calibrationText = "$TRACKING_WARNING"; // Special indicator to display warning about poor tracking
     }
     sendHostMessage("setCalibrationText", calibrationText);
+    if (!isCalibrating && this.lastIsCalibrating) {
+      sendHostMessage("showControls", false);
+    }
+    this.lastIsCalibrating = isCalibrating;
 
     // Update cursor position
     this.cursor.visible = isCalibrating && !raycastUnreliable && cameraState.raycast.isValid;
