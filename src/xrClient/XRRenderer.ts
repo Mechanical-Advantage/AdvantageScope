@@ -738,15 +738,8 @@ export default class XRRenderer {
     this.ambientLight.color = this.temperatureToColor(renderState.lighting.temperature);
 
     // Calculate effective device pixel ratio
-    // const frameWidthPx = frameState.frameSize[0];
-    // const frameHeightPx = frameState.frameSize[1];
     const viewWidthPx = this.canvas.parentElement!.clientWidth;
     const viewHeightPx = this.canvas.parentElement!.clientHeight;
-    // const viewWidthSubPx = viewWidthPx * window.devicePixelRatio;
-    // const viewHeightSubPx = viewHeightPx * window.devicePixelRatio;
-    // const isHorizontalCropped = frameWidthPx / frameHeightPx > viewWidthPx / viewHeightPx;
-    // const devicePixelRatio =
-    //   (isHorizontalCropped ? frameHeightPx / viewHeightSubPx : frameWidthPx / viewWidthSubPx) * 1.5; // Running at a slightly higher resolution improves antialiasing
     const devicePixelRatio = window.devicePixelRatio;
 
     // Render frame
