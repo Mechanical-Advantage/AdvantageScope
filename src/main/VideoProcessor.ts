@@ -116,7 +116,15 @@ export class VideoProcessor {
 
       // Start ffmpeg
       if (uuid in VideoProcessor.processes) VideoProcessor.processes[uuid].kill();
-      let ffmpeg = spawn(ffmpegPath, ["-i", videoPath, "-q:v", "2", path.join(cachePath, "%08d.jpg")]);
+      let ffmpeg = spawn(ffmpegPath, [
+        "-i",
+        videoPath,
+        "-vf",
+        "scale=1920:-2,setsar=1:1", // Limit to 1920px width
+        "-q:v",
+        "2",
+        path.join(cachePath, "%08d.jpg")
+      ]);
       VideoProcessor.processes[uuid] = ffmpeg;
       let running = true;
       let fullOutput = "";

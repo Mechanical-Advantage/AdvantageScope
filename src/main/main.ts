@@ -2718,6 +2718,7 @@ function createExportWindow(
   // Finish setup
   exportWindow.setMenu(null);
   exportWindow.once("ready-to-show", parentWindow.show);
+  let isPreparingExport = false;
   exportWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2761,10 +2762,16 @@ function createExportWindow(
           })
           .then((response) => {
             if (!response.canceled) {
+              isPreparingExport = true;
               exportWindow.destroy();
               sendMessage(parentWindow, "prepare-export", { path: response.filePath, options: exportOptions });
             }
           });
+      }
+    });
+    exportWindow.on("closed", () => {
+      if (!isPreparingExport) {
+        sendMessage(parentWindow, "cancel-export");
       }
     });
     exportWindow.on("blur", () => port2.postMessage({ isFocused: false }));
