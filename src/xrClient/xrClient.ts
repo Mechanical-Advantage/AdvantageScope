@@ -42,7 +42,7 @@ window.render = (cameraState: XRCameraState) => {
 
 // @ts-expect-error
 window.requestCalibration = () => {
-  renderer.resetAnchors();
+  renderer.resetMarkedPoints();
 };
 
 // @ts-expect-error

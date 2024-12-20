@@ -70,6 +70,7 @@ struct ContentView : View {
                 arManager.appState = appState
                 arManager.webOverlay = webOverlay
                 arManager.addFrameCallback(qrScanner.processFrame)
+                webOverlay.messageHandler.arManager = arManager
                 qrScanner.start(appState)
             }
             .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) {activity in

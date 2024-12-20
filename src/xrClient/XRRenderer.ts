@@ -57,7 +57,8 @@ export default class XRRenderer {
   private scene: THREE.Scene;
   private camera: XRCamera;
   private ambientLight: THREE.AmbientLight;
-  private anchors: THREE.Object3D[] = [];
+  private anchors: { [key: string]: THREE.Object3D } = {};
+  private markedPoints: THREE.Object3D[] = [];
   private cursor: THREE.Object3D;
   private fieldRoot: THREE.Object3D;
   private fieldSizingReference: THREE.Object3D;
@@ -162,19 +163,22 @@ export default class XRRenderer {
     }
   }
 
-  resetAnchors() {
-    while (this.anchors.length > 0) {
-      this.scene.remove(this.anchors.pop()!);
-    }
+  resetMarkedPoints() {
+    Object.values(this.anchors).forEach((anchor) => {
+      this.scene.remove(anchor);
+    });
+    this.anchors = {};
+    this.markedPoints = [];
+    sendHostMessage("clearAnchors");
   }
 
   userTap() {
-    // Add a new anchor
+    // Add a new marked point
     if (this.lastRaycastResult.isValid) {
-      let anchor = new THREE.Object3D();
-      anchor.position.set(...this.lastRaycastResult.position);
-      this.scene.add(anchor);
-      this.anchors.push(anchor);
+      let markedPoint = new THREE.Object3D();
+      markedPoint.position.set(...this.lastRaycastResult.position);
+      this.markedPoints.push(markedPoint);
+      this.anchors[this.lastRaycastResult.anchorId].add(markedPoint);
     }
   }
 
@@ -319,13 +323,22 @@ export default class XRRenderer {
     command: ThreeDimensionRendererCommand,
     assets: AdvantageScopeAssets | null
   ) {
-    // Reset anchors when changing calibration mode
+    // Reset marked points when changing calibration mode
     if (settings.calibration !== this.lastCalibrationMode) {
       this.lastCalibrationMode = settings.calibration;
-      this.resetAnchors();
+      this.resetMarkedPoints();
     }
 
-    // Update raycast result
+    // Update anchors
+    Object.entries(cameraState.anchors).forEach(([anchorId, translation]) => {
+      if (!(anchorId in this.anchors)) {
+        this.anchors[anchorId] = new THREE.Group();
+        this.scene.add(this.anchors[anchorId]);
+      }
+      this.anchors[anchorId].position.set(...translation);
+    });
+
+    // Update raycast status
     this.lastRaycastResult = cameraState.raycast;
     if (!cameraState.raycast.isValid) {
       this.lastInvalidRaycast = new Date().getTime();
@@ -349,8 +362,8 @@ export default class XRRenderer {
     let isCalibrating = false;
     switch (settings.calibration) {
       case XRCalibrationMode.Miniature:
-        isCalibrating = this.anchors.length < 2;
-        switch (this.anchors.length) {
+        isCalibrating = this.markedPoints.length < 2;
+        switch (this.markedPoints.length) {
           case 0:
             calibrationText = "Tap to place the blue alliance wall.";
             this.fieldRoot.visible = false;
@@ -361,24 +374,30 @@ export default class XRRenderer {
             if (this.fieldRoot.visible && cameraState.raycast.isValid) {
               this.updateFieldRootMiniature(
                 fieldLength,
-                this.anchors[0].position,
-                new THREE.Vector3(...cameraState.raycast.position)
+                this.markedPoints[0].getWorldPosition(new THREE.Vector3()),
+                new THREE.Vector3(...cameraState.raycast.position).add(
+                  new THREE.Vector3(...cameraState.anchors[cameraState.raycast.anchorId])
+                )
               );
             }
             break;
           default:
             this.fieldRoot.visible = true;
-            this.updateFieldRootMiniature(fieldLength, this.anchors[0].position, this.anchors[1].position);
+            this.updateFieldRootMiniature(
+              fieldLength,
+              this.markedPoints[0].getWorldPosition(new THREE.Vector3()),
+              this.markedPoints[1].getWorldPosition(new THREE.Vector3())
+            );
             break;
         }
         break;
 
       case XRCalibrationMode.FullSizeBlue:
       case XRCalibrationMode.FullSizeRed:
-        isCalibrating = this.anchors.length < 3;
+        isCalibrating = this.markedPoints.length < 3;
         let colorText = settings.calibration === XRCalibrationMode.FullSizeBlue ? "blue" : "red";
         let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
-        switch (this.anchors.length) {
+        switch (this.markedPoints.length) {
           case 0:
             calibrationText = `Tap to select the base of the ${colorText} alliance wall.`;
             this.fieldRoot.visible = false;
@@ -387,8 +406,10 @@ export default class XRRenderer {
             calibrationText = `Tap to select another point on the base of the ${colorText} alliance wall, at least 6 feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && cameraState.raycast.isValid) {
-              let position1 = this.anchors[0].position;
-              let position2 = new THREE.Vector3(...cameraState.raycast.position);
+              let position1 = this.markedPoints[0].getWorldPosition(new THREE.Vector3());
+              let position2 = new THREE.Vector3(...cameraState.raycast.position).add(
+                new THREE.Vector3(...cameraState.anchors[cameraState.raycast.anchorId])
+              );
               this.fieldRoot.visible = position1.distanceTo(position2) > convert(6, "inches", "meters");
               if (this.fieldRoot.visible) {
                 this.updateFieldRootFullSize(isRed, fieldLength, fieldWidth, position1, position2);
@@ -403,9 +424,11 @@ export default class XRRenderer {
                 isRed,
                 fieldLength,
                 fieldWidth,
-                this.anchors[0].position,
-                this.anchors[1].position,
-                new THREE.Vector3(...cameraState.raycast.position)
+                this.markedPoints[0].getWorldPosition(new THREE.Vector3()),
+                this.markedPoints[1].getWorldPosition(new THREE.Vector3()),
+                new THREE.Vector3(...cameraState.raycast.position).add(
+                  new THREE.Vector3(...cameraState.anchors[cameraState.raycast.anchorId])
+                )
               );
             }
             break;
@@ -415,9 +438,9 @@ export default class XRRenderer {
               isRed,
               fieldLength,
               fieldWidth,
-              this.anchors[0].position,
-              this.anchors[1].position,
-              this.anchors[2].position
+              this.markedPoints[0].getWorldPosition(new THREE.Vector3()),
+              this.markedPoints[1].getWorldPosition(new THREE.Vector3()),
+              this.markedPoints[2].getWorldPosition(new THREE.Vector3())
             );
             break;
         }
@@ -431,10 +454,11 @@ export default class XRRenderer {
     // Update cursor position
     this.cursor.visible = isCalibrating && !raycastUnreliable && cameraState.raycast.isValid;
     if (cameraState.raycast.isValid) {
+      let anchorTranslation = cameraState.anchors[cameraState.raycast.anchorId];
       this.cursor.position.set(
-        cameraState.raycast.position[0],
-        cameraState.raycast.position[1],
-        cameraState.raycast.position[2]
+        cameraState.raycast.position[0] + anchorTranslation[0],
+        cameraState.raycast.position[1] + anchorTranslation[1],
+        cameraState.raycast.position[2] + anchorTranslation[2]
       );
     }
 

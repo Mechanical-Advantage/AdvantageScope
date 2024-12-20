@@ -5,6 +5,7 @@ export type XRCameraState = {
   frameSize: [number, number];
   lighting: LightingState;
   raycast: RaycastResult;
+  anchors: AnchorResult;
 };
 
 export type LightingState = {
@@ -13,4 +14,6 @@ export type LightingState = {
   temperature: number;
 };
 
-export type RaycastResult = { isValid: false } | { isValid: true; position: Translation3d };
+export type RaycastResult = { isValid: false } | { isValid: true; position: Translation3d; anchorId: string };
+
+export type AnchorResult = { [key: string]: Translation3d };

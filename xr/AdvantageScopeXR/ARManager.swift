@@ -13,6 +13,7 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
     private var renderer: ARRenderer! = nil
     private var viewportSize: CGSize = CGSize()
     private var frameCallbacks: [(_ frame: ARFrame) -> Void] = []
+    private var cachedAnchors: [ARAnchor] = []
     
     override init() {
         super.init()
@@ -41,6 +42,10 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
     
     func addFrameCallback(_ callback: @escaping (_ frame: ARFrame) -> Void) {
         frameCallbacks.append(callback)
+    }
+    
+    func clearAnchors() {
+        cachedAnchors = []
     }
     
     // MARK: - MTKViewDelegate
@@ -117,12 +122,34 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         var raycastData = Dictionary<String, Any>()
         raycastData["isValid"] = false
         if (frame.camera.trackingState == .normal) {
-            let raycastResults = session.raycast(frame.raycastQuery(from: CGPoint(x: 0.5, y: 0.5), allowing: .estimatedPlane, alignment: .horizontal))
-            if (!raycastResults.isEmpty) {
+            let raycastResults = session.raycast(frame.raycastQuery(from: CGPoint(x: 0.5, y: 0.5), allowing: .existingPlaneGeometry, alignment: .horizontal))
+            if (!raycastResults.isEmpty && raycastResults[0].anchor != nil) {
+                let result = raycastResults[0]
+                let anchor = result.anchor!
+                let pointTransform = result.worldTransform
+                let anchorTransform = anchor.transform
+                
+                // Save results
                 raycastData["isValid"] = true
-                let transform = raycastResults[0].worldTransform
-                raycastData["position"] = [transform.columns.3.x, transform.columns.3.y, transform.columns.3.z]
+                raycastData["position"] = [
+                    pointTransform.columns.3.x - anchorTransform.columns.3.x,
+                    pointTransform.columns.3.y - anchorTransform.columns.3.y,
+                    pointTransform.columns.3.z - anchorTransform.columns.3.z
+                ]
+                raycastData["anchorId"] = result.anchor!.identifier.uuidString
+                
+                // Start tracking anchor if new
+                if (!cachedAnchors.contains(where: { $0.identifier == result.anchor!.identifier })) {
+                    cachedAnchors.append(anchor)
+                }
             }
+        }
+        
+        // Get anchors
+        var anchorData = Dictionary<String, Any>()
+        for anchor in cachedAnchors {
+            let transform = anchor.transform
+            anchorData[anchor.identifier.uuidString] = [transform.columns.3.x, transform.columns.3.y, transform.columns.3.z]
         }
         
         // Publish data
@@ -131,18 +158,36 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         renderData["frameSize"] = frameSize
         renderData["lighting"] = lightingData
         renderData["raycast"] = raycastData
+        renderData["anchors"] = anchorData
         webOverlay?.render(renderData)
         
         // Update tracking state
         if (appState != nil) {
             appState!.trackingReady = frame.camera.trackingState == .normal
         }
-    
         
         // Run frame callbacks
         for callback in frameCallbacks {
             callback(frame)
         }
+    }
+    
+    func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
+        var newCachedAnchors: [ARAnchor] = []
+        for cachedAnchor in cachedAnchors {
+            var found = false;
+            for anchor in anchors {
+                if anchor.identifier == cachedAnchor.identifier {
+                    found = true;
+                    newCachedAnchors.append(anchor)
+                    break
+                }
+            }
+            if (!found) {
+                newCachedAnchors.append(cachedAnchor)
+            }
+        }
+        cachedAnchors = newCachedAnchors
     }
     
     func simdFloat4x4ToArray(m: simd_float4x4) -> [Float] {

@@ -4,7 +4,7 @@ import WebKit
 struct WebOverlay: UIViewRepresentable {
     @EnvironmentObject var appState: AppState
     private var webView: WKWebView!
-    private let messageHandler = ScriptMessageHandler()
+    let messageHandler = ScriptMessageHandler()
     
     init() {
         let contentController = WKUserContentController()
@@ -76,6 +76,7 @@ struct WebOverlay: UIViewRepresentable {
 
 class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
     var appState: AppState? = nil
+    var arManager: ARManager? = nil
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard (message.name == "asxr") else { return }
@@ -91,6 +92,9 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
                 appState!.showControls = false
             }
             appState!.calibrationText = newText
+            break
+        case "clearAnchors":
+            arManager?.clearAnchors()
             break
         default:
             break
