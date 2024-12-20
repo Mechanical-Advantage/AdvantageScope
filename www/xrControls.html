@@ -17,17 +17,26 @@
     <div class="controls">
       <div class="title">Scan the code to start AdvantageScope XR</div>
       <div class="details">
-        Requires an iPhone or iPad running iOS/iPadOS 16 or later. Devices must be connected to the same Wi-Fi network.
-        Check the documentation for details.
+        Requires an iPhone or iPad running iOS 16 or later. Devices must be connected to the same Wi-Fi network. Check
+        the documentation for details.
       </div>
       <table>
         <tr>
-          <td>Calibration</td>
+          <td class="right">Calibration</td>
           <td colspan="2">
             <select name="calibration-mode">
               <option value="0">Miniature</option>
               <option value="1">Full-Size (Blue Alliance)</option>
               <option value="2">Full-Size (Red Alliance)</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="right">Streaming</td>
+          <td colspan="2">
+            <select name="streaming-mode">
+              <option value="0">Smooth</option>
+              <option value="1">Low Latency</option>
             </select>
           </td>
         </tr>

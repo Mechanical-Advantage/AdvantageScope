@@ -14,7 +14,7 @@ import {
   STANDARD_FIELD_LENGTH,
   STANDARD_FIELD_WIDTH
 } from "../shared/AdvantageScopeAssets";
-import { XRCalibrationMode, XRSettings } from "../shared/XRSettings";
+import { RaycastResult, XRCalibrationMode, XRCameraState, XRSettings } from "../shared/XRTypes";
 import {
   ThreeDimensionRendererCommand,
   ThreeDimensionRendererCommand_AnyObj
@@ -35,7 +35,6 @@ import ZebraManager from "../shared/renderers/threeDimension/objectManagers/Zebr
 import { convert } from "../shared/units";
 import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
-import { RaycastResult, XRCameraState } from "./XRTypes";
 import { sendHostMessage } from "./xrClient";
 
 export default class XRRenderer {

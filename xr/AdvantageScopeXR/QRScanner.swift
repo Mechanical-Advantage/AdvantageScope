@@ -53,10 +53,8 @@ class QRScanner {
                 switch (item.name) {
                 case "c":
                     nativeHostCompatibility = Int(item.value!)
-                    break
                 case "a":
                     addresses = item.value!.split(separator: "_").map{ String($0) }
-                    break
                 default:
                     break
                 }

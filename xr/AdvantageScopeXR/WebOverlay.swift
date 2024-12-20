@@ -40,16 +40,16 @@ struct WebOverlay: UIViewRepresentable {
         }
     }
     
-    private func isWebViewReady() -> Bool {
+    func isWebViewReady() -> Bool {
         return webView.url != nil && !webView.isLoading
     }
     
     // MARK: - JS Outgoing Messages
     
-    func setReceivedCommand(_ data: Data) {
+    func setReceivedCommand(_ data: Data, isQueued: Bool) {
         guard (isWebViewReady()) else { return }
         let base64Data = data.base64EncodedString()
-        webView.evaluateJavaScript("setCommand(\"\(base64Data)\")")
+        webView.evaluateJavaScript("setCommand(\"\(base64Data)\", \(isQueued ? "true" : "false"))")
     }
     
     func render(_ data: Dictionary<String, Any>) {
@@ -88,13 +88,10 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case "setCalibrationText":
             guard (appState != nil) else { return }
             appState!.calibrationText = data as! String
-            break
         case "showControls":
             appState!.showControls = data as! Bool
-            break
         case "clearAnchors":
             arManager?.clearAnchors()
-            break
         default:
             break
         }

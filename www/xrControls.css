@@ -40,11 +40,11 @@ div.controls > div {
 
 div.controls > div.title {
   font-weight: bold;
-  font-size: 9vh;
+  font-size: 8.5vh;
 }
 
 div.controls > div.details {
-  font-size: 5vh;
+  font-size: 4.5vh;
   font-style: italic;
 }
 
@@ -57,17 +57,17 @@ td {
   text-align: center;
   font-size: 5vh;
   font-weight: lighter;
-  padding: 3px;
+  padding-bottom: 8px;
 }
 
-tr:first-child td:first-child {
+td.right {
   text-align: right;
 }
 
 select {
   font-size: 5vh;
   width: calc(100% - 16px);
-  margin: 8px;
+  margin: 4px;
 }
 
 input[type="checkbox"] {

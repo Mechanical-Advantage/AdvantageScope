@@ -1,11 +1,11 @@
 import { Decoder } from "@msgpack/msgpack";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
-import { XRSettings } from "../shared/XRSettings";
+import { XRCameraState, XRPacket, XRSettings, XRStreamingMode } from "../shared/XRTypes";
 import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
 import XRRenderer from "./XRRenderer";
-import { XRCameraState } from "./XRTypes";
 
+const bufferLengthMs = 250;
 const msgpackDecoder = new Decoder();
 
 let renderer: XRRenderer;
@@ -13,22 +13,41 @@ let settings: XRSettings | null = null;
 let command: ThreeDimensionRendererCommand | null = null;
 let assets: AdvantageScopeAssets | null = null;
 let isRendering = false;
+let serverTimeOffset: number | null = null;
 
 window.addEventListener("load", () => {
   renderer = new XRRenderer();
 });
 
 // @ts-expect-error
-window.setCommand = (commandRaw: string) => {
+window.setCommand = (commandRaw: string, isQueued: boolean) => {
   let commandBuffer = Uint8Array.from(atob(commandRaw), (c) => c.charCodeAt(0));
-  let fullCommand = msgpackDecoder.decode(commandBuffer) as {
-    settings: XRSettings;
-    command: ThreeDimensionRendererCommand;
-    assets: AdvantageScopeAssets;
-  };
-  settings = fullCommand.settings;
-  command = fullCommand.command;
-  assets = fullCommand.assets;
+  let packet = msgpackDecoder.decode(commandBuffer) as XRPacket;
+  switch (packet.type) {
+    case "settings":
+      settings = packet.value;
+      break;
+    case "command":
+      if (!isQueued && serverTimeOffset === null) {
+        serverTimeOffset = packet.time - new Date().getTime();
+      }
+      const isBuffered = settings === null || settings.streaming === XRStreamingMode.Smooth;
+      const timeout = packet.time + (isBuffered ? bufferLengthMs : 0) - new Date().getTime() + (serverTimeOffset ?? 0);
+      if (timeout < 0 || !isBuffered) {
+        command = packet.value;
+      } else {
+        setTimeout(() => {
+          const isBuffered = settings === null || settings.streaming === XRStreamingMode.Smooth;
+          if (isBuffered) {
+            command = packet.value;
+          }
+        }, timeout);
+      }
+      break;
+    case "assets":
+      assets = packet.value;
+      break;
+  }
 };
 
 // @ts-expect-error

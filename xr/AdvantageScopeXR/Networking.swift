@@ -18,6 +18,9 @@ class Networking : WebSocketDelegate {
     private var currentServerAddress: String?
     private var attemptCount = 0
     
+    private let maxQueuedCommands = 500
+    private var queuedCommands: [Data] = []
+    
     func start(_ appState: AppState, _ webOverlay: WebOverlay) {
         self.appState = appState
         self.webOverlay = webOverlay
@@ -46,6 +49,7 @@ class Networking : WebSocketDelegate {
         if (!appState.serverConnected) {
             appState.serverConnected = true
             webOverlay.load(currentServerAddress!)
+            queuedCommands = []
         }
     }
     
@@ -66,29 +70,22 @@ class Networking : WebSocketDelegate {
     
     func didReceive(event: WebSocketEvent, client: any WebSocketClient) {
         switch event {
-            case .connected:
-                connected()
-            case .disconnected:
-                disconnected()
-            case .text(_):
-                break
-            case .binary(let data):
-                webOverlay.setReceivedCommand(data)
-                break
-            case .ping(_):
-                break
-            case .pong(_):
-                break
-            case .viabilityChanged(_):
-                break
-            case .reconnectSuggested(_):
-                break
-            case .cancelled:
-                disconnected()
-            case .error:
-                disconnected()
-            case .peerClosed:
-                disconnected()
+        case .binary(let data):
+            if (webOverlay.isWebViewReady()) {
+                for command in queuedCommands {
+                    webOverlay.setReceivedCommand(command, isQueued: true)
+                }
+                queuedCommands.removeAll()
+                webOverlay.setReceivedCommand(data, isQueued: false)
+            } else if (queuedCommands.count < maxQueuedCommands) {
+                queuedCommands.append(data)
             }
+        case .connected:
+            connected()
+        case .disconnected, .cancelled, .error, .peerClosed:
+            disconnected()
+        case .text(_), .ping(_), .pong(_), .viabilityChanged(_), .reconnectSuggested(_):
+            break
+        }
     }
 }

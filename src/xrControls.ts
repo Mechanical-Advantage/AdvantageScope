@@ -1,11 +1,12 @@
 import QRCodeStyling from "qr-code-styling";
 import NamedMessage from "./shared/NamedMessage";
-import { XRSettings } from "./shared/XRSettings";
+import { XRSettings } from "./shared/XRTypes";
 
 const QR_CONTAINER = document.getElementsByClassName("qr-container")[0] as HTMLElement;
 const QR_DIV = document.getElementsByClassName("qr")[0] as HTMLElement;
 const CONTROLS_DIV = document.getElementsByClassName("controls")[0] as HTMLElement;
 const CALIBRATION_MODE = document.getElementsByName("calibration-mode")[0] as HTMLSelectElement;
+const STREAMING_MDOE = document.getElementsByName("streaming-mode")[0] as HTMLSelectElement;
 const SHOW_CARPET = document.getElementsByName("show-carpet")[0] as HTMLInputElement;
 const SHOW_FIELD = document.getElementsByName("show-field")[0] as HTMLInputElement;
 const SHOW_ROBOTS = document.getElementsByName("show-robots")[0] as HTMLInputElement;
@@ -50,13 +51,14 @@ function makeQRcode(text: string) {
 function sendSettings() {
   let settings: XRSettings = {
     calibration: Number(CALIBRATION_MODE.value),
+    streaming: Number(STREAMING_MDOE.value),
     showCarpet: SHOW_CARPET.checked,
     showField: SHOW_FIELD.checked,
     showRobots: SHOW_ROBOTS.checked
   };
   sendMainMessage("xr-settings", settings);
 }
-[CALIBRATION_MODE, SHOW_CARPET, SHOW_FIELD, SHOW_ROBOTS].forEach((input) =>
+[CALIBRATION_MODE, STREAMING_MDOE, SHOW_CARPET, SHOW_FIELD, SHOW_ROBOTS].forEach((input) =>
   input.addEventListener("change", sendSettings)
 );
 

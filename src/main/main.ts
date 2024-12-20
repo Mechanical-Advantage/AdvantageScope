@@ -1167,7 +1167,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "update-xr-command":
-      XRServer.setHubCommand(message.data, advantageScopeAssets);
+      XRServer.setHubCommand(message.data);
       break;
 
     default:

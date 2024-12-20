@@ -6,7 +6,7 @@ import path from "path";
 import { WebSocketServer } from "ws";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
-import { XRSettings } from "../shared/XRSettings";
+import { XRPacket, XRSettings } from "../shared/XRTypes";
 import { XR_SERVER_PORT, XR_URL_PREFIX } from "./Constants";
 
 export namespace XRServer {
@@ -111,6 +111,25 @@ export namespace XRServer {
 
     // Create WebSocket server
     wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
+    wsServer.on("connection", (socket) => {
+      // Send current settings
+      if (xrSettings !== null) {
+        let packet: XRPacket = {
+          type: "settings",
+          time: new Date().getTime(),
+          value: xrSettings
+        };
+        socket.send(msgpackEncoder.encode(packet));
+      }
+
+      // Send assets
+      let packet: XRPacket = {
+        type: "assets",
+        time: new Date().getTime(),
+        value: assetsSupplier()
+      };
+      socket.send(msgpackEncoder.encode(packet));
+    });
   }
 
   export function stop() {
@@ -121,15 +140,27 @@ export namespace XRServer {
 
   export function setXRSettings(settings: XRSettings) {
     xrSettings = settings;
+
+    // Broadcast to all clients
+    let packet: XRPacket = {
+      type: "settings",
+      time: new Date().getTime(),
+      value: settings
+    };
+    let message = msgpackEncoder.encode(packet);
+    wsServer?.clients.forEach((client) => {
+      client.send(message);
+    });
   }
 
-  export function setHubCommand(command: ThreeDimensionRendererCommand, assets: AdvantageScopeAssets) {
-    if (xrSettings === null) return;
-    let message = msgpackEncoder.encode({
-      settings: xrSettings,
-      command: command,
-      assets: assets
-    });
+  export function setHubCommand(command: ThreeDimensionRendererCommand) {
+    // Broadcast to all clients
+    let packet: XRPacket = {
+      type: "command",
+      time: new Date().getTime(),
+      value: command
+    };
+    let message = msgpackEncoder.encode(packet);
     wsServer?.clients.forEach((client) => {
       client.send(message);
     });
