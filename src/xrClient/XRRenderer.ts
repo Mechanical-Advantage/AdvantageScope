@@ -162,13 +162,13 @@ export default class XRRenderer {
     }
   }
 
-  resetMarkedPoints() {
+  resetCalibration() {
     Object.values(this.anchors).forEach((anchor) => {
       this.scene.remove(anchor);
     });
     this.anchors = {};
     this.markedPoints = [];
-    sendHostMessage("clearAnchors");
+    sendHostMessage("recalibrate");
   }
 
   userTap() {
@@ -325,7 +325,7 @@ export default class XRRenderer {
     // Reset marked points when changing calibration mode
     if (settings.calibration !== this.lastCalibrationMode) {
       this.lastCalibrationMode = settings.calibration;
-      this.resetMarkedPoints();
+      this.resetCalibration();
     }
 
     // Update anchors

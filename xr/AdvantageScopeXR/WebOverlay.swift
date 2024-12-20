@@ -90,8 +90,8 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
             appState!.calibrationText = data as! String
         case "showControls":
             appState!.showControls = data as! Bool
-        case "clearAnchors":
-            arManager?.clearAnchors()
+        case "recalibrate":
+            arManager?.recalibrate()
         default:
             break
         }

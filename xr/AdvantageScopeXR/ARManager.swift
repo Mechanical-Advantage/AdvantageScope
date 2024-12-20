@@ -10,6 +10,7 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
     let session = ARSession()
     let view = MTKView()
     
+    private let arConfig = ARWorldTrackingConfiguration()
     private var renderer: ARRenderer! = nil
     private var viewportSize: CGSize = CGSize()
     private var frameCallbacks: [(_ frame: ARFrame) -> Void] = []
@@ -20,7 +21,6 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         
         // Initialize AR session
         session.delegate = self
-        let arConfig = ARWorldTrackingConfiguration()
         arConfig.worldAlignment = .gravity
         arConfig.planeDetection = .horizontal
         session.run(arConfig)
@@ -44,8 +44,9 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         frameCallbacks.append(callback)
     }
     
-    func clearAnchors() {
+    func recalibrate() {
         cachedAnchors = []
+        session.run(arConfig, options: [.resetTracking, .resetSceneReconstruction, .removeExistingAnchors])
     }
     
     // MARK: - MTKViewDelegate
@@ -105,8 +106,8 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         
         // Get frame size
         var frameSize = Array<Int>()
-        frameSize.append(CVPixelBufferGetWidth(frame.capturedImage))
-        frameSize.append(CVPixelBufferGetHeight(frame.capturedImage))
+        frameSize.append(Int(frame.camera.imageResolution.width))
+        frameSize.append(Int(frame.camera.imageResolution.height))
         
         // Get lighting data
         var lightingData = Dictionary<String, Any>()

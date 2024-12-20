@@ -61,7 +61,7 @@ window.render = (renderState: XRRenderState) => {
 
 // @ts-expect-error
 window.requestCalibration = () => {
-  renderer.resetMarkedPoints();
+  renderer.resetCalibration();
 };
 
 // @ts-expect-error
