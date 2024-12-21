@@ -46,7 +46,6 @@ export default class XRRenderer {
   private renderer: THREE.WebGLRenderer;
   private composer: EffectComposer;
   private flimPass: FilmPass;
-  private lastFrameTime = 0;
   private resolution = new THREE.Vector2();
 
   private lastCalibrationMode: XRCalibrationMode | null = null;
@@ -94,7 +93,6 @@ export default class XRRenderer {
     this.flimPass = new FilmPass(1, false);
     this.composer.addPass(this.flimPass);
     this.composer.addPass(new OutputPass());
-    this.lastFrameTime = new Date().getTime();
 
     // Create coordinate groups
     this.fieldRoot = new THREE.Group();
@@ -760,9 +758,7 @@ export default class XRRenderer {
       this.composer.setSize(viewWidthPx, viewHeightPx);
       this.resolution.set(viewWidthPx, viewHeightPx);
     }
-    const now = new Date().getTime();
-    this.composer.render((now - this.lastFrameTime) * 1e-3);
-    this.lastFrameTime = now;
+    this.composer.render(1 / 60);
   }
 
   private temperatureToColor(temperature: number): THREE.Color {
