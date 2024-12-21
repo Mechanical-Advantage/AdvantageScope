@@ -59,12 +59,8 @@ AdvantageScope XR is only supported on iOS and iPadOS. The client application re
 6. Control the field model as normal using the host device, including **log playback and live streaming**. The state of the field model is displayed live on the client device.
 7. To quickly **record a video**, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
 
-:::tip
-AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
-:::
-
 :::warning
-Heatmaps and zebra marker labels are not yet available in XR. Stayed tuned for updates.
+AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
 :::
 
 ## Options

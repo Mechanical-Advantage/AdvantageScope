@@ -294,7 +294,7 @@ export default class XRRenderer {
         manager = new TrajectoryManager(...args);
         break;
       case "heatmap":
-        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
+        manager = new HeatmapManager(...args, () => this.fieldConfigCache, true);
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);
@@ -664,7 +664,6 @@ export default class XRRenderer {
     // Update object managers
     this.objectManagers.forEach((entry) => (entry.active = false));
     command.objects.forEach((object) => {
-      if (object.type === "heatmap") return; // Heatmaps are not supported in XR yet
       let entry = this.objectManagers.find(
         (entry) =>
           !entry.active &&

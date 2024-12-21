@@ -440,7 +440,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         manager = new TrajectoryManager(...args);
         break;
       case "heatmap":
-        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
+        manager = new HeatmapManager(...args, () => this.fieldConfigCache, false);
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);

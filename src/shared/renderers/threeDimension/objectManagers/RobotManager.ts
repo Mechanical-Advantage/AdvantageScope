@@ -78,7 +78,7 @@ export default class RobotManager extends ObjectManager<
     isXR: boolean
   ) {
     super(root, materialSpecular, materialShininess, mode, requestRender);
-    this.SWERVE_CANVAS_PX = isXR ? 250 : 1000;
+    this.SWERVE_CANVAS_PX = isXR ? 250 : 1000; // Canvas texture updates are very slow in XR
     this.isXR = isXR;
     this.loadingStart = loadingStart;
     this.loadingEnd = loadingEnd;
