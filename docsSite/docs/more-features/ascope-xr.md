@@ -21,7 +21,7 @@ TODO
 
 ## Requirements
 
-- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.0.0 or later).
+- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.0.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client:** An iPhone or iPad running iOS/iPadOS 16 or later. No app installation is required.
 - **Network:** Both devices must be connected to the same network (Wi-Fi, USB tethering, etc). Subject to the requirement below, this network does not need to be connected to the internet.
 - **Internet:** If AdvantageScope XR has not been used recently, the mobile device must have an internet connection (e.g. cellular data). To eliminate this requirement, check the [offline usage](#offline-usage) section below.
