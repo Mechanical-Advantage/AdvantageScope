@@ -54,6 +54,18 @@ jobs:
             bundles/*.js
             bundles/*.wasm
 
+  build-ios:
+    name: Build for iOS
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build AdvantageScopeXR
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
+      - name: Build AdvantageScopeXRClip
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
+
   build-win:
     name: Build for Windows (${{ matrix.arch }})
     needs: compile
