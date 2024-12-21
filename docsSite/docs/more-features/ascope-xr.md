@@ -64,7 +64,7 @@ AdvantageScope XR is a demanding application, and may experience performance iss
 :::
 
 :::warning
-Heatmaps, swerve states, and zebra marker labels are not yet available in XR.
+Heatmaps, swerve states, and zebra marker labels are not yet available in XR. Stayed tuned for updates.
 :::
 
 ## Options
