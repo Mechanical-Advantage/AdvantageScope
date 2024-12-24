@@ -830,7 +830,7 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "close-tab":
-      window.tabs.close(window.tabs.getSelectedTab());
+      window.tabs.close(window.tabs.getSelectedTab(), message.data);
       break;
 
     case "rename-tab":

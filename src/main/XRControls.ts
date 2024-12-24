@@ -10,6 +10,7 @@ export namespace XRControls {
   let window: BrowserWindow | null = null;
   let windowPort: MessagePortMain | null = null;
   let qrTextInterval: NodeJS.Timeout | null = null;
+  let hasConfirmedClose = false;
 
   function setSourceUUID(newSourceUUID: string | null) {
     if (sourceUUID === null && newSourceUUID !== null) {
@@ -86,7 +87,7 @@ export namespace XRControls {
     // Finish setup
     window.setMenu(null);
     window.once("ready-to-show", window.show);
-    let hasConfirmedClose = false;
+    hasConfirmedClose = false;
     window.on("close", (event) => {
       if (window === null || hasConfirmedClose) return;
       event.preventDefault();
@@ -100,12 +101,16 @@ export namespace XRControls {
         icon: WINDOW_ICON
       });
       if (response === 1) {
-        hasConfirmedClose = true;
-        window.close();
-        setSourceUUID(null);
-        if (qrTextInterval !== null) clearInterval(qrTextInterval);
+        close();
       }
     });
     window.loadFile(path.join(__dirname, "../www/xrControls.html"));
+  }
+
+  export function close() {
+    hasConfirmedClose = true;
+    window?.close();
+    setSourceUUID(null);
+    if (qrTextInterval !== null) clearInterval(qrTextInterval);
   }
 }

@@ -565,14 +565,20 @@ export default class Tabs {
   }
 
   /** Closes the specified tab. */
-  close(index: number) {
+  close(index: number, force = false) {
     if (index < 1 || index > this.tabList.length - 1) return;
-    this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
-    this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
-    this.tabList.splice(index, 1);
-    if (this.selectedTab > index) this.selectedTab--;
-    if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
-    this.updateElements();
+
+    // If active XR, confirm before closing
+    if (!force && this.tabList[index].controller.UUID === this.activeXRUUID) {
+      window.sendMainMessage("confirm-xr-close", this.activeXRUUID);
+    } else {
+      this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
+      this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
+      this.tabList.splice(index, 1);
+      if (this.selectedTab > index) this.selectedTab--;
+      if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
+      this.updateElements();
+    }
   }
 
   /** Returns the index of the selected tab. */
