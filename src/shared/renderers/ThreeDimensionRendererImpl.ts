@@ -420,6 +420,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.MATERIAL_SPECULAR,
       this.MATERIAL_SHININESS,
       this.mode,
+      false,
       () => (this.shouldRender = true)
     ] as const;
     let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
@@ -429,8 +430,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         manager = new RobotManager(
           ...args,
           () => this.robotLoadingCount++,
-          () => this.robotLoadingCount--,
-          false
+          () => this.robotLoadingCount--
         );
         break;
       case "gamePiece":
@@ -440,7 +440,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         manager = new TrajectoryManager(...args);
         break;
       case "heatmap":
-        manager = new HeatmapManager(...args, () => this.fieldConfigCache, false);
+        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);

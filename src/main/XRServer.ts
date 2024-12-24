@@ -56,6 +56,26 @@ export namespace XRServer {
               response.writeHead(200, { "Content-Type": "text/javascript" });
               response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" }));
               return;
+            case "/apriltag":
+              let family = url.searchParams.get("family");
+              let name = url.searchParams.get("name");
+              if (family === null || name === null || family.includes("..") || name.includes("..")) {
+                response.writeHead(400);
+                response.end("Family or name not provided or invalid");
+                return;
+              }
+
+              const imgPath = path.join(__dirname, "../www/textures/apriltag-" + family + "/" + name + ".png");
+              try {
+                let imgData = fs.readFileSync(imgPath);
+                response.writeHead(200, { "Content-Type": "image/png" });
+                response.end(imgData);
+              } catch {
+                response.writeHead(404);
+                response.end("Texture not found");
+                return;
+              }
+              return;
             case "/asset":
               let assetPath = url.searchParams.get("path");
               if (assetPath === null) {

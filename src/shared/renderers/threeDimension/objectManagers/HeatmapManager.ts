@@ -10,7 +10,6 @@ import ObjectManager from "../ObjectManager";
 export default class HeatmapManager extends ObjectManager<ThreeDimensionRendererCommand_HeatmapObj> {
   private HEIGHT_PIXELS: number;
 
-  private isXR: boolean;
   private getFieldConfig: () => Config3dField | null;
   private container = document.createElement("div");
   private heatmap = new Heatmap(this.container);
@@ -22,11 +21,11 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
+    isXR: boolean,
     requestRender: () => void,
-    getFieldConfig: () => Config3dField | null,
-    isXR: boolean
+    getFieldConfig: () => Config3dField | null
   ) {
-    super(root, materialSpecular, materialShininess, mode, requestRender);
+    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
     this.getFieldConfig = getFieldConfig;
     this.isXR = isXR;
     this.HEIGHT_PIXELS = isXR ? 25 : 800; // Canvas texture updates are very slow in XR

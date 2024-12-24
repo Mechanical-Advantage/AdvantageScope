@@ -28,7 +28,6 @@ export default class RobotManager extends ObjectManager<
   private SWERVE_CANVAS_METERS = 3;
   private SWERVE_BUMPER_OFFSET = 0.15;
 
-  private isXR: boolean;
   private loadingStart: () => void;
   private loadingEnd: () => void;
 
@@ -72,13 +71,12 @@ export default class RobotManager extends ObjectManager<
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
+    isXR: boolean,
     requestRender: () => void,
     loadingStart: () => void,
-    loadingEnd: () => void,
-    isXR: boolean
+    loadingEnd: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, requestRender);
-    this.isXR = isXR;
+    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
     this.loadingStart = loadingStart;
     this.loadingEnd = loadingEnd;
 

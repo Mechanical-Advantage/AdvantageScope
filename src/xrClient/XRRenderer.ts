@@ -274,6 +274,7 @@ export default class XRRenderer {
       this.MATERIAL_SPECULAR,
       this.MATERIAL_SHININESS,
       "standard",
+      true,
       () => {}
     ] as const;
     let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
@@ -283,8 +284,7 @@ export default class XRRenderer {
         manager = new RobotManager(
           ...args,
           () => this.robotLoadingCount++,
-          () => this.robotLoadingCount--,
-          true
+          () => this.robotLoadingCount--
         );
         break;
       case "gamePiece":
@@ -294,7 +294,7 @@ export default class XRRenderer {
         manager = new TrajectoryManager(...args);
         break;
       case "heatmap":
-        manager = new HeatmapManager(...args, () => this.fieldConfigCache, true);
+        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);

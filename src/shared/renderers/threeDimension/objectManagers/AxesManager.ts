@@ -13,9 +13,10 @@ export default class AxesManager extends ObjectManager<ThreeDimensionRendererCom
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
+    isXR: boolean,
     requestRender: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, requestRender);
+    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
 
     let axes = makeAxesTemplate(this.materialSpecular, this.materialShininess);
     axes.scale.set(0.25, 0.25, 0.25);
