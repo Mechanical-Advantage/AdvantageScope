@@ -25,14 +25,14 @@ function makeQRcode(text: string) {
     type: "svg",
     data: text,
     qrOptions: {
-      errorCorrectionLevel: "L"
+      errorCorrectionLevel: "M"
     },
     dotsOptions: {
-      type: "extra-rounded",
-      color: isDark ? "#6484e5" : "#012be5"
+      type: "rounded",
+      color: isDark ? "#879de0" : "#2040a0"
     },
     cornersSquareOptions: {
-      type: "extra-rounded"
+      type: "dot"
     },
     cornersDotOptions: {
       type: "dot"
