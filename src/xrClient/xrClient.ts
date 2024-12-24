@@ -52,10 +52,14 @@ window.setCommand = (commandRaw: string, isQueued: boolean) => {
 
 // @ts-expect-error
 window.render = (renderState: XRRenderState) => {
-  if (settings !== null && command !== null && !isRendering) {
+  if (!isRendering) {
     isRendering = true;
-    renderer.render(renderState, settings, command, assets);
-    isRendering = false;
+    window.requestAnimationFrame(() => {
+      if (settings !== null && command !== null) {
+        renderer.render(renderState, settings, command, assets);
+      }
+      isRendering = false;
+    });
   }
 };
 
