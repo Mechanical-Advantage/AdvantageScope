@@ -60,6 +60,10 @@ AdvantageScope XR is only supported on iOS and iPadOS. The client application re
 7. To quickly **record a video**, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
 
 :::warning
+Heatmaps, swerve states, and Zebra labels are not available yet in XR. All other object types are supported.
+:::
+
+:::tip
 AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
 :::
 

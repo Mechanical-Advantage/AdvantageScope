@@ -664,6 +664,7 @@ export default class XRRenderer {
     // Update object managers
     this.objectManagers.forEach((entry) => (entry.active = false));
     command.objects.forEach((object) => {
+      if (object.type === "heatmap") return; // Heatmap disabled in XR
       let entry = this.objectManagers.find(
         (entry) =>
           !entry.active &&
