@@ -74,6 +74,7 @@ sidebar_position: 1
 
 ### 👀 3D Field
 
+- Added AdvantageScope XR for 3D visualization in augmented reality.
 - Supported the combination of 2D and 3D poses.
 - Improved the UI for configuring poses.
 - Added the ability to temporarily hide objects.
