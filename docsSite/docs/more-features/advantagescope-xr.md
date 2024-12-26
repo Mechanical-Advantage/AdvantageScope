@@ -33,7 +33,7 @@ AdvantageScope XR is only supported on iOS and iPadOS. We do not have any immedi
 
 - **Consistency:** AdvantageScope XR is a demanding application. While Android devices vary widely in processing power and features, the iPhone and iPad provide a consistent development experience across generations. All recent iOS and iPadOS devices are powerful enough to run AdvantageScope XR, and newer devices support additional features AdvantageScope can utilize (such as LiDAR).
 
-- **Availability:** The iPhone remains the most common smartphone that students in the United States are likely to own or have easily accessible from peers. Supporting iOS maximizes the number of users who have easy access to AdvantageScope XR.
+- **Availability:** The iPhone remains the most common smartphone that students in the United States are likely to own or have easily accessible from peers, and is much more prevalent than any model of VR or mixed reality headset. Supporting iOS maximizes the number of users who have easy access to AdvantageScope XR.
 
 - **Tablet Support:** We think many users will want to take advantage of running AdvantageScope XR on a tablet, since tablets provide a larger display that is easier for multiple people to see at once. iPad is the most commonly used tablet worldwide, so supporting iPadOS makes the tablet experience as accessible as possible.
 
