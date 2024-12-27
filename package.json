@@ -19,7 +19,6 @@
     "download-owlet": "rollup -c --configRunOwletDownload && node runOwletDownload.js",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "test-ytdl": "node testYtdl.mjs",
     "wasm:compile": "node wasmCompile.mjs",
     "docs:start": "cd docsSite && npm run start && cd ..",
     "docs:build": "cd docsSite && npm run build && cd ..",
