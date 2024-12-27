@@ -65,3 +65,7 @@ img {
   color: var(--ifm-color-white);
   opacity: 1;
 }
+
+.hidden {
+  display: none !important;
+}

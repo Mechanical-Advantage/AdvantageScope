@@ -308,7 +308,7 @@ export default class OdometryController implements TabController {
           );
         }
       } else {
-        let timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" = "enabled";
+        let timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" | "visible" = "enabled";
         if ("timeRange" in source.options) {
           let timeRangeRaw = source.options.timeRange;
           timeRange =
@@ -316,7 +316,8 @@ export default class OdometryController implements TabController {
             timeRangeRaw === "auto" ||
             timeRangeRaw === "teleop" ||
             timeRangeRaw === "teleop-no-endgame" ||
-            timeRangeRaw === "full"
+            timeRangeRaw === "full" ||
+            timeRangeRaw === "visible"
               ? timeRangeRaw
               : "enabled";
         }

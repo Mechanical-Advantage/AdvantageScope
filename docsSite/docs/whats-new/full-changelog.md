@@ -7,6 +7,9 @@ sidebar_position: 1
 ### Log File Loading
 
 - Significantly improved log decoding speed (up to 100x faster).
+- Improved Hoot log integration, including support for additional platforms.
+- Added support for 2025 releases of URCL.
+- Added support for Photon struct decoding.
 - Enabled selection of multiple files using the standard "Open" menu.
 - Added the option to open additional logs while another log is already open.
 
@@ -19,10 +22,11 @@ sidebar_position: 1
 - Hovering over timestamps now displays a preview of the corresponding data.
 - Added timestamps directly on the timeline for easier reference.
 - The cursor now snaps to the start and end of match periods.
+- Added option to loop over visible range.
+- Added keyboard shortcut to zoom to the enabled range.
 
 ### Window Design
 
-- Implemented a translucent sidebar on Windows 11 for a more modern look.
 - Integrated the title bar into the main window on Windows
 - Introduced custom menu bars for both Windows and Linux.
 - Adjusted the loading bar height for better visibility.
@@ -71,6 +75,7 @@ sidebar_position: 1
 - Allowed users to change trajectory colors and thickness.
 - Expanded heatmap range options to include auto, teleop, and teleop (no endgame).
 - Added deprecation warnings for numeric array formats ([details](./legacy-formats.md)).
+- Added support for Choreo trajectory visualization.
 
 ### 👀 3D Field
 
@@ -100,7 +105,9 @@ sidebar_position: 1
 - Increased the variety of cone color options.
 - Removed source links for fields and robots to simplify the interface.
 - Added deprecation warnings for numeric array formats ([details](./legacy-formats.md)).
-- Added a mysterious "XR" button...
+- Improved camera controls (infinite zoom, keyboard inputs, animations).
+- Added option to disable simplification of robot assets.
+- Added support for Choreo trajectory visualization.
 
 ### 🔢 Table
 
@@ -185,5 +192,7 @@ sidebar_position: 1
 - Switched WPILib Linux distribution from a package to a directory.
 - Added an AppArmor profile for Ubuntu.
 - Updated the WPILib logo.
+- Updated Phoenix diagnostics for 2025, including support for multiple devices.
+- Updates to support compatibility with 2025 AdvantageKit features.
 - Added startup alerts, feedback buttons, and survey prompts for the beta version.
 - Added a privacy policy document ([link](../legal/privacy-policy.md)).

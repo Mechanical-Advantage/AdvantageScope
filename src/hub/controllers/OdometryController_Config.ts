@@ -443,7 +443,8 @@ const OdometryController_Config: SourceListConfig = {
             { key: "auto", display: "Auto" },
             { key: "teleop", display: "Teleop" },
             { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
-            { key: "full", display: "Full Log" }
+            { key: "full", display: "Full Log" },
+            { key: "visible", display: "Visible Range" }
           ]
         }
       ],
@@ -468,7 +469,8 @@ const OdometryController_Config: SourceListConfig = {
             { key: "auto", display: "Auto" },
             { key: "teleop", display: "Teleop" },
             { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
-            { key: "full", display: "Full Log" }
+            { key: "full", display: "Full Log" },
+            { key: "visible", display: "Visible Range" }
           ]
         },
         {

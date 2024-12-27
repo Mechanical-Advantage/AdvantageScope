@@ -600,7 +600,7 @@ export function grabHeatmapData(
   log: Log,
   key: string,
   logType: string,
-  timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full",
+  timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" | "visible",
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
@@ -624,6 +624,9 @@ export function grabHeatmapData(
         return currentRange?.mode === "teleop";
       case "teleop-no-endgame":
         return currentRange?.mode === "teleop" && currentRange?.end !== undefined && currentRange?.end - timestamp > 30;
+      case "visible":
+        const timelineRange = window.selection.getTimelineRange();
+        return timestamp >= timelineRange[0] && timestamp <= timelineRange[1];
     }
   };
   for (let sampleTime = log.getTimestampRange()[0]; sampleTime < log.getTimestampRange()[1]; sampleTime += HEATMAP_DT) {
