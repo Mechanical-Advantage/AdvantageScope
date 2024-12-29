@@ -36,6 +36,12 @@ This folder should contain a file named "config.json" and one or more asset file
 
 ## 3D Robot Models
 
+### Video Tutorial
+
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+### Overview
+
 A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. The config file must be in the following format:
 
 ```json
