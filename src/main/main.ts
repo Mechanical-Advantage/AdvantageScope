@@ -3041,7 +3041,7 @@ function openXR(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const height = 400;
+  const height = 350;
   xrWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -3054,6 +3054,12 @@ function openXR(parentWindow: Electron.BrowserWindow) {
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
+  });
+
+  // Open URLs in browser
+  xrWindow.webContents.setWindowOpenHandler((details) => {
+    shell.openExternal(details.url);
+    return { action: "deny" };
   });
 
   // Finish setup
