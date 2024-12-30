@@ -8,7 +8,7 @@ import Image2 from "./img/xr-2.png";
 # AdvantageScope XR
 
 :::warning
-AdvantageScope XR is an experimental feature, and may not function properly on all devices. Please report any problems via the [GitHub issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+AdvantageScope XR is an experimental feature, and may not function properly on all devices. Please report any problems via the [GitHub issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues), though note that during the season we always prioritize bug fixes that affect non-experimental features.
 :::
 
 AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to life in augmented reality, enabling you to visualize data in all new ways. See a simulated auto in life size, review match strategy with a tabletop field model, overlay diagnostic information on a real robot, and so much more! The video below demonstrates several use cases for this feature:
@@ -17,7 +17,7 @@ AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to li
 
 ## Requirements
 
-- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.0.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client:** An iPhone or iPad running iOS/iPadOS 16 or later. No app installation is required.
 - **Network:** Both devices must be connected to the same network (Wi-Fi, USB tethering, etc). Subject to the requirement below, this network does not need to be connected to the internet.
 - **Internet:** If AdvantageScope XR has not been used recently, the mobile device must have an internet connection (e.g. cellular data). To eliminate this requirement, check the [offline usage](#offline-usage) section below.
@@ -33,7 +33,7 @@ AdvantageScope XR is only supported on iOS and iPadOS. We do not have any immedi
 
 - **Consistency:** AdvantageScope XR is a demanding application. While Android devices vary widely in processing power and features, the iPhone and iPad provide a consistent development experience across generations. All recent iOS and iPadOS devices are powerful enough to run AdvantageScope XR, and newer devices support additional features AdvantageScope can utilize (such as LiDAR).
 
-- **Availability:** The iPhone remains the most common smartphone that students in the United States are likely to own or have easily accessible from peers, and is much more prevalent than any model of VR or mixed reality headset. Supporting iOS maximizes the number of users who have easy access to AdvantageScope XR.
+- **Availability:** The iPhone remains the most common smartphone that students in the United States are likely to own or have easily accessible from peers, and is more widely available than any model of VR or mixed reality headset. Supporting iOS maximizes the number of users who have easy access to AdvantageScope XR.
 
 - **Tablet Support:** We think many users will want to take advantage of running AdvantageScope XR on a tablet, since tablets provide a larger display that is easier for multiple people to see at once. iPad is the most commonly used tablet worldwide, so supporting iPadOS makes the tablet experience as accessible as possible.
 
