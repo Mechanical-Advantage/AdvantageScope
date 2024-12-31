@@ -75,7 +75,7 @@ const config: Config = {
       ]
     },
     footer: {
-      copyright: "Copyright © 2021-2024 FRC 6328",
+      copyright: "Copyright © 2021-2025 FRC 6328",
       links: [
         {
           label: "Littleton Robotics",
