@@ -70,6 +70,7 @@ export default class Tabs {
   }[] = [];
   private selectedTab = 0;
   private activeSatellites: string[] = [];
+  private activeXRUUID: string | null = null;
   private controlsHandleActive = false;
 
   constructor() {
@@ -317,7 +318,8 @@ export default class Tabs {
       this.tabList.forEach((tab, index) => {
         let activeLocal = index === this.selectedTab;
         let activeSatellite = this.activeSatellites.includes(tab.controller.UUID);
-        if (activeLocal || activeSatellite) {
+        let activeXR = tab.controller.UUID === this.activeXRUUID;
+        if (activeLocal || activeSatellite || activeXR) {
           if (tab.type === TabType.Table) {
             // Update range from renderer
             let renderer = tab.renderer as TableRenderer;
@@ -335,6 +337,9 @@ export default class Tabs {
               command: command,
               title: title
             });
+          }
+          if (activeXR) {
+            window.sendMainMessage("update-xr-command", command);
           }
         }
       });
@@ -560,14 +565,20 @@ export default class Tabs {
   }
 
   /** Closes the specified tab. */
-  close(index: number) {
+  close(index: number, force = false) {
     if (index < 1 || index > this.tabList.length - 1) return;
-    this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
-    this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
-    this.tabList.splice(index, 1);
-    if (this.selectedTab > index) this.selectedTab--;
-    if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
-    this.updateElements();
+
+    // If active XR, confirm before closing
+    if (!force && this.tabList[index].controller.UUID === this.activeXRUUID) {
+      window.sendMainMessage("confirm-xr-close", this.activeXRUUID);
+    } else {
+      this.RENDERER_CONTENT.removeChild(this.tabList[index].rendererElement);
+      this.CONTROLS_CONTENT.removeChild(this.tabList[index].controlsElement);
+      this.tabList.splice(index, 1);
+      if (this.selectedTab > index) this.selectedTab--;
+      if (this.selectedTab > this.tabList.length - 1) this.selectedTab = this.tabList.length - 1;
+      this.updateElements();
+    }
   }
 
   /** Returns the index of the selected tab. */
@@ -603,6 +614,16 @@ export default class Tabs {
   /** Updates the list of active satellites for data publishing. */
   setActiveSatellites(activeSatellites: string[]) {
     this.activeSatellites = activeSatellites;
+  }
+
+  /** Updates the UUID for the tab broadcasting to XR. */
+  setActiveXRUUID(uuid: string | null) {
+    this.activeXRUUID = uuid;
+    this.tabList.forEach((tab) => {
+      if (tab.type === TabType.ThreeDimension) {
+        (tab.controller as ThreeDimensionController).setXRActive(tab.controller.UUID === uuid);
+      }
+    });
   }
 
   /** Check whether the UUID is associated with a tab. */

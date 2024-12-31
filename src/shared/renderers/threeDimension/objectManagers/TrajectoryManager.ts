@@ -14,9 +14,10 @@ export default class TrajectoryManager extends ObjectManager<ThreeDimensionRende
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
+    isXR: boolean,
     requestRender: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, requestRender);
+    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
 
     this.line = new Line2(
       new LineGeometry(),

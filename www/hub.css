@@ -1524,6 +1524,33 @@ div.three-dimension-settings {
     border-left: 1px solid black;
   }
 }
+div.setting-blocks div.split div.xr-button img {
+  /* https://codepen.io/sosuke/pen/Pjoqqp */
+  filter: invert(56%) sepia(51%) saturate(1742%) hue-rotate(225deg) brightness(101%) contrast(101%);
+}
+
+div.setting-blocks div.split div.xr-button.active {
+  animation: xr-active 1s ease-in-out infinite;
+}
+
+div.setting-blocks div.split div.xr-button.active img {
+  filter: invert(100%);
+}
+
+@keyframes xr-active {
+  0% {
+    background-color: #800080;
+    border: 1px solid #500050;
+  }
+  50% {
+    background-color: #c880ff;
+    border: 1px solid #9850cf;
+  }
+  100% {
+    background-color: #800080;
+    border: 1px solid #500050;
+  }
+}
 
 /* Statistics */
 

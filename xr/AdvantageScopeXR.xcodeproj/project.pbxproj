@@ -1,0 +1,700 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 70;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8C103A852D093F9900FAE4C0 /* ARRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C103A822D093F9900FAE4C0 /* ARRenderer.swift */; };
+		8C103A862D093F9900FAE4C0 /* ARShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8C103A832D093F9900FAE4C0 /* ARShaders.metal */; };
+		8C1672E62D0BB126004100D8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1672E52D0BB125004100D8 /* Constants.swift */; };
+		8C1A9EB92C11695700DCF1E3 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 8C1A9EB82C11695700DCF1E3 /* Starscream */; };
+		8C2126132D05014700C92898 /* WebOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2126122D05014700C92898 /* WebOverlay.swift */; };
+		8C2759A22C0995BD0067FD80 /* ControlsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */; };
+		8C2759A42C09960A0067FD80 /* Banner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2759A32C09960A0067FD80 /* Banner.swift */; };
+		8C28075D2D07CD35008F4721 /* ARManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28075C2D07CD33008F4721 /* ARManager.swift */; };
+		8C362AC42C0B600400AD3091 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C362AC32C0B600400AD3091 /* Networking.swift */; };
+		8C6767DB2C11551C00277484 /* QRScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6767DA2C11551C00277484 /* QRScanner.swift */; };
+		8CBC9A722D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
+		8CBC9A732D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
+		8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
+		8CBFA6DE2BF8663D009AA8CD /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */; };
+		8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
+		8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
+		8CF342672D14065200291788 /* AdvantageScopeXRClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 8CF342582D14065100291788 /* AdvantageScopeXRClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8CF3426E2D1406BF00291788 /* Starscream in Frameworks */ = {isa = PBXBuildFile; productRef = 8CF3426D2D1406BF00291788 /* Starscream */; };
+		8CF342702D1408E200291788 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */; };
+		8CF342712D1408E700291788 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C1672E52D0BB125004100D8 /* Constants.swift */; };
+		8CF342722D1408F000291788 /* ARManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28075C2D07CD33008F4721 /* ARManager.swift */; };
+		8CF342732D1408F400291788 /* ARRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C103A822D093F9900FAE4C0 /* ARRenderer.swift */; };
+		8CF342742D1408F700291788 /* ARShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8C103A832D093F9900FAE4C0 /* ARShaders.metal */; };
+		8CF342752D14090400291788 /* WebOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2126122D05014700C92898 /* WebOverlay.swift */; };
+		8CF342762D14090900291788 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */; };
+		8CF342772D14090C00291788 /* ControlsMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */; };
+		8CF342782D14091000291788 /* Banner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2759A32C09960A0067FD80 /* Banner.swift */; };
+		8CF342792D14091300291788 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C362AC32C0B600400AD3091 /* Networking.swift */; };
+		8CF3427A2D14091700291788 /* QRScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6767DA2C11551C00277484 /* QRScanner.swift */; };
+		8CF3427D2D140A1200291788 /* ARShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C103A842D093F9900FAE4C0 /* ARShaderTypes.h */; };
+		8CF3427E2D140A1200291788 /* ARShaderTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C103A842D093F9900FAE4C0 /* ARShaderTypes.h */; };
+		8CF3427F2D140A1600291788 /* AdvantageScopeXR-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */; };
+		8CF342802D140A1600291788 /* AdvantageScopeXR-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8CF342652D14065200291788 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8CBFA6D02BF8663D009AA8CD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8CF342572D14065100291788;
+			remoteInfo = AdvantageScopeXRClip;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8CB5DDE62C11677F00D9B341 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+				8CF342672D14065200291788 /* AdvantageScopeXRClip.app in Embed App Clips */,
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		8C103A822D093F9900FAE4C0 /* ARRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARRenderer.swift; sourceTree = "<group>"; };
+		8C103A832D093F9900FAE4C0 /* ARShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ARShaders.metal; sourceTree = "<group>"; };
+		8C103A842D093F9900FAE4C0 /* ARShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARShaderTypes.h; sourceTree = "<group>"; };
+		8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AdvantageScopeXR-Bridging-Header.h"; sourceTree = "<group>"; };
+		8C1672E52D0BB125004100D8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		8C2126122D05014700C92898 /* WebOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebOverlay.swift; sourceTree = "<group>"; };
+		8C2126142D05044700C92898 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ControlsMenu.swift; sourceTree = "<group>"; };
+		8C2759A32C09960A0067FD80 /* Banner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Banner.swift; sourceTree = "<group>"; };
+		8C28075C2D07CD33008F4721 /* ARManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARManager.swift; sourceTree = "<group>"; };
+		8C362AC32C0B600400AD3091 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
+		8C6767DA2C11551C00277484 /* QRScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanner.swift; sourceTree = "<group>"; };
+		8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvantageScopeXR.swift; sourceTree = "<group>"; };
+		8CBFA6D82BF8663D009AA8CD /* AdvantageScopeXR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvantageScopeXR.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
+		8CF342582D14065100291788 /* AdvantageScopeXRClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvantageScopeXRClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8CF342682D14065200291788 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8CF342572D14065100291788 /* AdvantageScopeXRClip */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8CF342592D14065100291788 /* AdvantageScopeXRClip */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (8CF342682D14065200291788 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = AdvantageScopeXRClip; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8CBFA6D52BF8663D009AA8CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8C1A9EB92C11695700DCF1E3 /* Starscream in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CF342552D14065100291788 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CF3426E2D1406BF00291788 /* Starscream in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8CBFA6CF2BF8663C009AA8CD = {
+			isa = PBXGroup;
+			children = (
+				8CBFA6DA2BF8663D009AA8CD /* AdvantageScopeXR */,
+				8CF342592D14065100291788 /* AdvantageScopeXRClip */,
+				8CF3426C2D1406BF00291788 /* Frameworks */,
+				8CBFA6D92BF8663D009AA8CD /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8CBFA6D92BF8663D009AA8CD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8CBFA6D82BF8663D009AA8CD /* AdvantageScopeXR.app */,
+				8CF342582D14065100291788 /* AdvantageScopeXRClip.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8CBFA6DA2BF8663D009AA8CD /* AdvantageScopeXR */ = {
+			isa = PBXGroup;
+			children = (
+				8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */,
+				8CCB366F2D0F8A0600F516D8 /* RecordButton.swift */,
+				8C1672E52D0BB125004100D8 /* Constants.swift */,
+				8C103A8A2D093FD200FAE4C0 /* AdvantageScopeXR-Bridging-Header.h */,
+				8C28075C2D07CD33008F4721 /* ARManager.swift */,
+				8C103A822D093F9900FAE4C0 /* ARRenderer.swift */,
+				8C103A832D093F9900FAE4C0 /* ARShaders.metal */,
+				8C103A842D093F9900FAE4C0 /* ARShaderTypes.h */,
+				8C2126142D05044700C92898 /* Info.plist */,
+				8C2126122D05014700C92898 /* WebOverlay.swift */,
+				8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */,
+				8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */,
+				8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */,
+				8C2759A32C09960A0067FD80 /* Banner.swift */,
+				8C362AC32C0B600400AD3091 /* Networking.swift */,
+				8C6767DA2C11551C00277484 /* QRScanner.swift */,
+			);
+			path = AdvantageScopeXR;
+			sourceTree = "<group>";
+		};
+		8CF3426C2D1406BF00291788 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8CF3427B2D140A0800291788 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CF342802D140A1600291788 /* AdvantageScopeXR-Bridging-Header.h in Headers */,
+				8CF3427E2D140A1200291788 /* ARShaderTypes.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CF3427C2D140A0C00291788 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CF3427F2D140A1600291788 /* AdvantageScopeXR-Bridging-Header.h in Headers */,
+				8CF3427D2D140A1200291788 /* ARShaderTypes.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		8CBFA6D72BF8663D009AA8CD /* AdvantageScopeXR */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8CBFA6E62BF8663E009AA8CD /* Build configuration list for PBXNativeTarget "AdvantageScopeXR" */;
+			buildPhases = (
+				8CF3427C2D140A0C00291788 /* Headers */,
+				8CBFA6D42BF8663D009AA8CD /* Sources */,
+				8CBFA6D52BF8663D009AA8CD /* Frameworks */,
+				8CBFA6D62BF8663D009AA8CD /* Resources */,
+				8CB5DDE62C11677F00D9B341 /* Embed App Clips */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8CF342662D14065200291788 /* PBXTargetDependency */,
+			);
+			name = AdvantageScopeXR;
+			packageProductDependencies = (
+				8C1A9EB82C11695700DCF1E3 /* Starscream */,
+			);
+			productName = "XR Testing";
+			productReference = 8CBFA6D82BF8663D009AA8CD /* AdvantageScopeXR.app */;
+			productType = "com.apple.product-type.application";
+		};
+		8CF342572D14065100291788 /* AdvantageScopeXRClip */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8CF342692D14065200291788 /* Build configuration list for PBXNativeTarget "AdvantageScopeXRClip" */;
+			buildPhases = (
+				8CF3427B2D140A0800291788 /* Headers */,
+				8CF342542D14065100291788 /* Sources */,
+				8CF342552D14065100291788 /* Frameworks */,
+				8CF342562D14065100291788 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				8CF342592D14065100291788 /* AdvantageScopeXRClip */,
+			);
+			name = AdvantageScopeXRClip;
+			packageProductDependencies = (
+				8CF3426D2D1406BF00291788 /* Starscream */,
+			);
+			productName = AdvantageScopeXRClip;
+			productReference = 8CF342582D14065100291788 /* AdvantageScopeXRClip.app */;
+			productType = "com.apple.product-type.application.on-demand-install-capable";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8CBFA6D02BF8663D009AA8CD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1620;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					8CBFA6D72BF8663D009AA8CD = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					8CF342572D14065100291788 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+				};
+			};
+			buildConfigurationList = 8CBFA6D32BF8663D009AA8CD /* Build configuration list for PBXProject "AdvantageScopeXR" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8CBFA6CF2BF8663C009AA8CD;
+			packageReferences = (
+				8C1A9EB72C11695700DCF1E3 /* XCRemoteSwiftPackageReference "Starscream" */,
+			);
+			productRefGroup = 8CBFA6D92BF8663D009AA8CD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8CBFA6D72BF8663D009AA8CD /* AdvantageScopeXR */,
+				8CF342572D14065100291788 /* AdvantageScopeXRClip */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8CBFA6D62BF8663D009AA8CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CF342562D14065100291788 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8CBFA6D42BF8663D009AA8CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CBC9A722D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */,
+				8CBFA6DE2BF8663D009AA8CD /* ContentView.swift in Sources */,
+				8C1672E62D0BB126004100D8 /* Constants.swift in Sources */,
+				8C103A852D093F9900FAE4C0 /* ARRenderer.swift in Sources */,
+				8C103A862D093F9900FAE4C0 /* ARShaders.metal in Sources */,
+				8C28075D2D07CD35008F4721 /* ARManager.swift in Sources */,
+				8C362AC42C0B600400AD3091 /* Networking.swift in Sources */,
+				8C2759A42C09960A0067FD80 /* Banner.swift in Sources */,
+				8C6767DB2C11551C00277484 /* QRScanner.swift in Sources */,
+				8CCB36702D0F8A0900F516D8 /* RecordButton.swift in Sources */,
+				8C2759A22C0995BD0067FD80 /* ControlsMenu.swift in Sources */,
+				8C2126132D05014700C92898 /* WebOverlay.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8CF342542D14065100291788 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CBC9A732D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */,
+				8CF342722D1408F000291788 /* ARManager.swift in Sources */,
+				8CF342792D14091300291788 /* Networking.swift in Sources */,
+				8CF342732D1408F400291788 /* ARRenderer.swift in Sources */,
+				8CF3427A2D14091700291788 /* QRScanner.swift in Sources */,
+				8CF342762D14090900291788 /* ContentView.swift in Sources */,
+				8CF342702D1408E200291788 /* RecordButton.swift in Sources */,
+				8CF342752D14090400291788 /* WebOverlay.swift in Sources */,
+				8CF342712D1408E700291788 /* Constants.swift in Sources */,
+				8CF342782D14091000291788 /* Banner.swift in Sources */,
+				8CF342772D14090C00291788 /* ControlsMenu.swift in Sources */,
+				8CF342742D1408F700291788 /* ARShaders.metal in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8CF342662D14065200291788 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8CF342572D14065100291788 /* AdvantageScopeXRClip */;
+			targetProxy = 8CF342652D14065200291788 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8CBFA6E42BF8663E009AA8CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8CBFA6E52BF8663E009AA8CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8CBFA6E72BF8663E009AA8CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6S3UQC528P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AdvantageScopeXR/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AScope XR";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "AdvantageScope XR uses the camera to show augmented reality content.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "AdvantageScope XR uses the local network to communicate with the AdvantageScope desktop app.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AdvantageScopeXR/AdvantageScopeXR-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8CBFA6E82BF8663E009AA8CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6S3UQC528P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AdvantageScopeXR/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AScope XR";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "AdvantageScope XR uses the camera to show augmented reality content.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "AdvantageScope XR uses the local network to communicate with the AdvantageScope desktop app.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AdvantageScopeXR/AdvantageScopeXR-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		8CF3426A2D14065200291788 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AdvantageScopeXRClip/AdvantageScopeXRClip.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6S3UQC528P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AdvantageScopeXRClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AScope XR";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "AdvantageScope XR uses the camera to show augmented reality content.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "AdvantageScope XR uses the local network to communicate with the AdvantageScope desktop app.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG APPCLIP";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AdvantageScopeXR/AdvantageScopeXR-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8CF3426B2D14065200291788 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AdvantageScopeXRClip/AdvantageScopeXRClip.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 6S3UQC528P;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AdvantageScopeXRClip/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "AScope XR";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "AdvantageScope XR uses the camera to show augmented reality content.";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "AdvantageScope XR uses the local network to communicate with the AdvantageScope desktop app.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiredDeviceCapabilities = arkit;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = org.littletonrobotics.advantagescopexr.Clip;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = APPCLIP;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "AdvantageScopeXR/AdvantageScopeXR-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8CBFA6D32BF8663D009AA8CD /* Build configuration list for PBXProject "AdvantageScopeXR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CBFA6E42BF8663E009AA8CD /* Debug */,
+				8CBFA6E52BF8663E009AA8CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8CBFA6E62BF8663E009AA8CD /* Build configuration list for PBXNativeTarget "AdvantageScopeXR" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CBFA6E72BF8663E009AA8CD /* Debug */,
+				8CBFA6E82BF8663E009AA8CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8CF342692D14065200291788 /* Build configuration list for PBXNativeTarget "AdvantageScopeXRClip" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8CF3426A2D14065200291788 /* Debug */,
+				8CF3426B2D14065200291788 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8C1A9EB72C11695700DCF1E3 /* XCRemoteSwiftPackageReference "Starscream" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/daltoniam/Starscream.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.8;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8C1A9EB82C11695700DCF1E3 /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C1A9EB72C11695700DCF1E3 /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
+		};
+		8CF3426D2D1406BF00291788 /* Starscream */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8C1A9EB72C11695700DCF1E3 /* XCRemoteSwiftPackageReference "Starscream" */;
+			productName = Starscream;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 8CBFA6D02BF8663D009AA8CD /* Project object */;
+}

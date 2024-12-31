@@ -39,6 +39,20 @@ const config: Config = {
     ]
   ],
 
+  plugins: [
+    [
+      "@docusaurus/plugin-client-redirects",
+      {
+        redirects: [
+          {
+            to: "/more-features/advantagescope-xr",
+            from: "/xr"
+          }
+        ]
+      }
+    ]
+  ],
+
   themeConfig: {
     image: "img/social.png",
     navbar: {

@@ -19,9 +19,10 @@ export default class ZebraManager extends ObjectManager<ThreeDimensionRendererCo
     materialSpecular: THREE.Color,
     materialShininess: number,
     mode: "low-power" | "standard" | "cinematic",
+    isXR: boolean,
     requestRender: () => void
   ) {
-    super(root, materialSpecular, materialShininess, mode, requestRender);
+    super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
     this.mesh.castShadow = true;
     this.root.add(this.mesh, this.label);
   }

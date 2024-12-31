@@ -6,6 +6,12 @@ The 2025 version of AdvantageScope is now in **beta**, and includes over **130 n
 
 ![2025 Feature Poster](./img/poster.png)
 
+### 📸 AdvantageScope XR
+
+AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to life in **augmented reality**, enabling you to visualize data in all new ways. See a simulated auto in life size, review match strategy with a tabletop field model, overlay diagnostic information on a real robot, and so much more! The video below demonstrates several use cases for this feature:
+
+<iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ### ⏩ 100x Faster Log Decoding
 
 (That's not a typo.)

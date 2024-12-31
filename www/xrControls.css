@@ -1,0 +1,77 @@
+body {
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #222;
+  }
+}
+
+div.qr-container {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  max-width: 50%;
+  aspect-ratio: 1;
+  background-color: #f3f3f3;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.qr-container {
+    background-color: #1b1b1b;
+  }
+}
+
+div.controls {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+div.controls > div {
+  text-align: center;
+  padding: 10px 15px 10px 15px;
+}
+
+div.controls > div.title {
+  font-weight: bold;
+  font-size: 8.5vh;
+}
+
+div.controls > div.details {
+  font-size: 4.5vh;
+  font-style: italic;
+}
+
+table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+td {
+  text-align: center;
+  font-size: 5vh;
+  font-weight: lighter;
+  padding-bottom: 8px;
+}
+
+td.right {
+  text-align: right;
+}
+
+select {
+  font-size: 5vh;
+  width: calc(100% - 16px);
+  margin: 4px;
+}
+
+input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+  filter: saturate(0%);
+}

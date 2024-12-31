@@ -420,6 +420,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.MATERIAL_SPECULAR,
       this.MATERIAL_SHININESS,
       this.mode,
+      false,
       () => (this.shouldRender = true)
     ] as const;
     let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;

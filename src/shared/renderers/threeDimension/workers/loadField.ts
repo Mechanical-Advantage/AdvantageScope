@@ -75,6 +75,9 @@ self.onmessage = (event) => {
         scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
         let fieldMeshes = await optimizeGeometries(scene, mode, materialSpecular, materialShininess, true, 1);
         field = new THREE.Group();
+        fieldMeshes.carpet.forEach((mesh) => {
+          mesh.name = "carpet";
+        });
         [...fieldMeshes.normal, ...fieldMeshes.transparent, ...fieldMeshes.carpet].forEach((mesh) => field.add(mesh));
       } else {
         let gamePieceConfig = fieldConfig.gamePieces[index - 1];

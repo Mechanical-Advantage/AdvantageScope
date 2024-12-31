@@ -54,14 +54,14 @@ export default class AprilTagManager extends ObjectManager<ThreeDimensionRendere
         };
         entry.object.castShadow = true;
         this.root.add(entry.object);
+        const textureName =
+          annotatedPose.annotation.aprilTagId === undefined
+            ? "smile"
+            : zfill(annotatedPose.annotation.aprilTagId.toString(), 3);
         this.textureLoader.load(
-          "../www/textures/apriltag-" +
-            object.family +
-            "/" +
-            (annotatedPose.annotation.aprilTagId === undefined
-              ? "smile"
-              : zfill(annotatedPose.annotation.aprilTagId.toString(), 3)) +
-            ".png",
+          this.isXR
+            ? `/apriltag?family=${object.family}&name=${textureName}`
+            : `../www/textures/apriltag-${object.family}/${textureName}.png`,
           (texture) => {
             texture.minFilter = THREE.NearestFilter;
             texture.magFilter = THREE.NearestFilter;

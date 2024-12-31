@@ -111,3 +111,9 @@ $RECYCLE.BIN/
 
 # IDE Specific Files
 .idea
+
+# Xcode
+build/*
+*.pbxuser
+*.mode1v3
+xcuserdata
