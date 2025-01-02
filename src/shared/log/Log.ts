@@ -763,8 +763,8 @@ export default class Log {
     }
   }
 
-  /** Merges a new log into this log. */
-  mergeWith(source: Log, prefix = ""): void {
+  /** Merges a new log into this log. Returns the timestamp offset. */
+  mergeWith(source: Log, prefix = ""): number {
     // Serialize source and adjust timestamps
     let offset = 0;
     let targetEnabledData = getEnabledData(this);
@@ -828,6 +828,7 @@ export default class Log {
       protoDescriptors.push(descriptor);
     });
     this.protoDecoder = ProtoDecoder.fromSerialized(protoDescriptors);
+    return offset;
   }
 
   /** Returns a serialized version of the data from this log. */
