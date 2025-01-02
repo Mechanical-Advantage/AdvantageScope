@@ -3205,6 +3205,15 @@ process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 // Silence unhandled promise rejections
 process.on("unhandledRejection", () => {});
 
+// Set WM_CLASS for Linux
+if (process.platform === "linux") {
+  if (DISTRIBUTOR === Distributor.WPILib) {
+    app.setName("AdvantageScope (WPILib)");
+  } else {
+    app.setName("AdvantageScope");
+  }
+}
+
 app.whenReady().then(() => {
   // Check preferences and set theme
   if (!fs.existsSync(PREFS_FILENAME)) {
