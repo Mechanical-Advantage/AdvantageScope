@@ -67,7 +67,7 @@ Users of the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/s
 
 ### 💬 Console Improvements
 
-The 💬 [Console](../tab-reference/console.md) includes new visualization options, like shading for **error and warning message**, the ability to **exclude unwanted messages**, **highlight of matching filter text**, and **text file exporting**.
+The 💬 [Console](../tab-reference/console.md) includes new visualization options, like shading for **error and warning messages**, the ability to **exclude unwanted messages**, **highlight of matching filter text**, and **text file exporting**.
 
 ![Console tab](../tab-reference/img/console-1.png)
 
