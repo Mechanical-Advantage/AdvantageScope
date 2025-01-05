@@ -123,6 +123,19 @@ function getGeometries(
       mesh.updateWorldMatrix(true, false);
       geometry.applyMatrix4(mesh.matrixWorld);
 
+      // Remove unused attributes (interferes with merge)
+      let attributeNames = Object.keys(geometry.attributes);
+      if (!attributeNames.includes("normal") || !attributeNames.includes("position")) {
+        // Doesn't include required attributes, remove
+        return;
+      }
+      attributeNames.forEach((name) => {
+        if (name !== "normal" && name !== "position") {
+          geometry.deleteAttribute(name);
+        }
+      });
+
+      // Apply color from material as attribute
       let isTransparent = false;
       if (!Array.isArray(mesh.material)) {
         isTransparent = mesh.material.transparent && mesh.material.opacity < 0.75;
@@ -143,6 +156,7 @@ function getGeometries(
         }
       }
 
+      // Apply simplification
       let include = true;
       let vertices: THREE.Vector3[] = [];
       let center = new THREE.Vector3();
@@ -174,6 +188,7 @@ function getGeometries(
         }
       }
 
+      // Save final geometry
       if (include) {
         let outputIndex = 0;
         if (slicingSize !== undefined && maxRadius * 2 < slicingSize) {
