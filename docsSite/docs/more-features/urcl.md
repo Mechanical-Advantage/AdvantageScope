@@ -23,7 +23,7 @@ As this library is not an official REV tool, support queries should be directed 
 
 ## Setup
 
-Install the URCL vendordep by going to "WPILib: Manage Vendor Libraries" > "Install new libraries (online)" in VSCode and pasting in the URL below.
+Install the URCL vendordep by following the instructions to install [3rd party libraries](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html). Use the following vendor JSON URL:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/maven/URCL.json
@@ -60,6 +60,23 @@ void Robot::RobotInit() {
   // If logging only to DataLog
   URCL::Start(frc::DataLogManager::GetLog());
 }
+```
+
+</TabItem>
+<TabItem value="python" label="Python">
+
+```python
+import urcl
+import wpilib
+
+class Robot(wpilib.TimedRobot):
+    def robotInit(self):
+        # If publishing to NetworkTables and DataLog
+        wpilib.DataLogManager.start()
+        urcl.start()
+
+        # If logging only to DataLog
+        urcl.start(wpilib.DataLogManager.getLog())
 ```
 
 </TabItem>
