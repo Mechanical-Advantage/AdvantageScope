@@ -203,26 +203,27 @@ export default class SwerveRenderer implements TabRenderer {
       // Linear speed
       let angle = Math.atan2(speed.value.vy, speed.value.vx);
       let length = Math.hypot(speed.value.vx, speed.value.vy);
-      if (length < 0.05) return;
-      length *= fullVectorPx;
+      if (length >= 0.05) {
+        length *= fullVectorPx;
 
-      let arrowBack = transformPx(centerPx, command.rotation + angle, [0, 0]);
-      let arrowFront = transformPx(centerPx, command.rotation + angle, [length, 0]);
-      let arrowLeft = transformPx(centerPx, command.rotation + angle, [
-        length - moduleRadiusPx * 0.4,
-        moduleRadiusPx * 0.4
-      ]);
-      let arrowRight = transformPx(centerPx, command.rotation + angle, [
-        length - moduleRadiusPx * 0.4,
-        moduleRadiusPx * -0.4
-      ]);
-      context.beginPath();
-      context.moveTo(...arrowBack);
-      context.lineTo(...arrowFront);
-      context.moveTo(...arrowLeft);
-      context.lineTo(...arrowFront);
-      context.lineTo(...arrowRight);
-      context.stroke();
+        let arrowBack = transformPx(centerPx, command.rotation + angle, [0, 0]);
+        let arrowFront = transformPx(centerPx, command.rotation + angle, [length, 0]);
+        let arrowLeft = transformPx(centerPx, command.rotation + angle, [
+          length - moduleRadiusPx * 0.4,
+          moduleRadiusPx * 0.4
+        ]);
+        let arrowRight = transformPx(centerPx, command.rotation + angle, [
+          length - moduleRadiusPx * 0.4,
+          moduleRadiusPx * -0.4
+        ]);
+        context.beginPath();
+        context.moveTo(...arrowBack);
+        context.lineTo(...arrowFront);
+        context.moveTo(...arrowLeft);
+        context.lineTo(...arrowFront);
+        context.lineTo(...arrowRight);
+        context.stroke();
+      }
 
       // Angular speed
       if (Math.abs(speed.value.omega) > 0.1) {
