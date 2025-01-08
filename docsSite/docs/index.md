@@ -59,7 +59,7 @@ block
 style={{ marginBottom: "15px" }}
 />
 
-Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). For non-public inquires, please send a message to software@team6328.org.
+Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). For non-public inquiries, please send a message to software@team6328.org.
 
 <img src={ScreenshotLight} class="light-only" />
 <img src={ScreenshotDark} class="dark-only" />
