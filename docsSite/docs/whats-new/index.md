@@ -103,6 +103,12 @@ As part of our transition to struct, the legacy number array format for geometry
 
 ![2D & 3D intermixing](./img/2d-3d-mixed.png)
 
+### 🦉 Hoot Log Decoding
+
+Hoot log decoding has been significantly improved, including **support for macOS and Linux** in addition to Windows. Plus, an installation of **Phoenix Tuner X is no longer required** and AdvantageScope can open files from **older versions of Phoenix** while operating **fully offline**.
+
+![Hoot decoding](./img/hoot-decoding.png)
+
 ### 📖 New Documentation Site
 
 You're viewing the updated version of the AdvantageScope documentation, which supports **easier navigation** via the sidebar, a **built-in search feature**, and a **refined mobile interface**. This documentation can be accessed online at [docs.advantagescope.org](https://docs.advantagescope.org), or offline by clicking the 📖 icon in the tab bar.
