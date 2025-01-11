@@ -171,7 +171,13 @@ export default class VideoController implements TabController {
     this.SKIP_BACK_BUTTON.addEventListener("click", () => skipTime(-5));
     this.SKIP_FORWARD_BUTTON.addEventListener("click", () => skipTime(5));
     window.addEventListener("keydown", (event) => {
-      if (root === null || root.hidden || event.target !== document.body || event.metaKey) return;
+      if (
+        root === null ||
+        root.hidden ||
+        event.target !== document.body ||
+        (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
+      )
+        return;
       switch (event.code) {
         case "ArrowUp":
         case "ArrowDown":

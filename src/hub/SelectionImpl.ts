@@ -61,7 +61,11 @@ export default class SelectionImpl implements Selection {
         case "ArrowLeft":
         case "ArrowRight":
           // Unlocked video uses arrow keys to navigate by frame
-          if (window.tabs.isUnlockedVideoSelected() || this.mode !== SelectionMode.Static || event.metaKey) {
+          if (
+            window.tabs.isUnlockedVideoSelected() ||
+            this.mode !== SelectionMode.Static ||
+            (window.platform === "darwin" ? event.metaKey : event.ctrlKey)
+          ) {
             return;
           }
 

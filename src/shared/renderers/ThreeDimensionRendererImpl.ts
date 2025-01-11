@@ -254,7 +254,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
     // Create key bindings
     window.addEventListener("keydown", (event) => {
-      if (event.metaKey) return;
+      if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
       if (event.target !== document.body) return;
       if (canvasContainer.clientHeight === 0) return;
       this.keysPressed.add(event.code);
