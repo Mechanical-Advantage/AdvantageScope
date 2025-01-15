@@ -27,6 +27,7 @@ export default class RobotManager extends ObjectManager<
   private SWERVE_CANVAS_PX = 1000;
   private SWERVE_CANVAS_METERS = 3;
   private SWERVE_BUMPER_OFFSET = 0.15;
+  private MECHANISM_WIDTH_PER_WEIGHT = 0.01;
 
   private loadingStart: () => void;
   private loadingEnd: () => void;
@@ -436,14 +437,21 @@ export default class RobotManager extends ObjectManager<
         this.mechanismLines.shift();
       }
     } else {
+      // Filter to visible lines
+      let mechanismLines = object.mechanism?.lines.filter(
+        (line) =>
+          Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]) >= 1e-3 &&
+          line.weight * this.MECHANISM_WIDTH_PER_WEIGHT >= 1e-3
+      );
+
       // Remove extra lines
-      while (this.mechanismLines.length > object.mechanism.lines.length) {
+      while (this.mechanismLines.length > mechanismLines.length) {
         this.mechanismLines[0].mesh.dispose(true, object.type === "robot"); // Ghost material is shared, don't dispose
         this.mechanismLines.shift();
       }
 
       // Add new lines
-      while (this.mechanismLines.length < object.mechanism.lines.length) {
+      while (this.mechanismLines.length < mechanismLines.length) {
         const geometry = new THREE.BoxGeometry(1, 1, 1);
         const material =
           object.type === "ghost"
@@ -459,15 +467,19 @@ export default class RobotManager extends ObjectManager<
       }
 
       // Update children
-      for (let i = 0; i < object.mechanism.lines.length; i++) {
-        const line = object.mechanism.lines[i];
+      for (let i = 0; i < mechanismLines.length; i++) {
+        const line = mechanismLines[i];
         const meshEntry = this.mechanismLines[i];
 
         const length = Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]);
         const angle = Math.atan2(line.end[1] - line.start[1], line.end[0] - line.start[0]);
 
         // Update length
-        const newScale = new THREE.Vector3(length, line.weight * 0.01, line.weight * 0.01);
+        const newScale = new THREE.Vector3(
+          length,
+          line.weight * this.MECHANISM_WIDTH_PER_WEIGHT,
+          line.weight * this.MECHANISM_WIDTH_PER_WEIGHT
+        );
         const newTranslation = new THREE.Vector3(length / 2, 0, 0);
         if (!newScale.equals(meshEntry.scale) || !newTranslation.equals(meshEntry.translation)) {
           meshEntry.geometry.translate(-meshEntry.translation.x, -meshEntry.translation.y, -meshEntry.translation.z);
