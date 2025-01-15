@@ -195,14 +195,19 @@ export default class PhoenixDiagnosticsSource extends LiveDataSource {
   /** Converts a device object to its simple name. */
   private getDeviceName(device: Response_Device): string {
     let name = device.Model.replaceAll(" ", "");
-    if (name.startsWith("CANCoder")) {
+    let nameLower = name.toLowerCase();
+    if (nameLower.startsWith("cancoder")) {
       name = "CANcoder";
-    } else if (name.startsWith("TalonFX")) {
+    } else if (nameLower.startsWith("talonfxs")) {
+      name = "TalonFXS";
+    } else if (nameLower.startsWith("talonfx")) {
       name = "TalonFX";
-    } else if (name.startsWith("Pigeon2")) {
+    } else if (nameLower.startsWith("pigeon2")) {
       name = "Pigeon2";
-    } else if (name.startsWith("CANrange")) {
+    } else if (nameLower.startsWith("canrage")) {
       name = "CANrange";
+    } else if (nameLower.startsWith("candi")) {
+      name = "CANdi";
     }
     name = name + "-" + (device.Name.startsWith(device.Model) ? device.ID.toString() : device.Name);
     if (device.CANivoreDevName.length > 0) {
@@ -317,7 +322,7 @@ interface Response_Point {
   Signals: { [key: string]: number };
 }
 
-// Valid as of Phoenix 25.0.0-beta-4
+// Valid as of Phoenix 25.2.0
 const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   AppliedRotorPolarity: {
     0: "PositiveIsCounterClockwise",
@@ -332,7 +337,8 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     9: "BridgeReq_FOCEasy",
     12: "BridgeReq_FaultBrake",
     13: "BridgeReq_FaultCoast",
-    14: "BridgeReq_ActiveBrake"
+    14: "BridgeReq_ActiveBrake",
+    15: "BridgeReq_VariableBrake"
   },
   ConnectedMotor: {
     0: "Unknown",
@@ -418,6 +424,14 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     23: "Follower",
     24: "Reserved",
     25: "CoastOut"
+  },
+  ExternalMotorTempStatus: {
+    0: "Collecting",
+    1: "Disconnected",
+    2: "TooHot",
+    3: "Normal",
+    4: "NotUsed",
+    5: "WrongMotorOrShorted"
   },
   ForwardLimit: {
     0: "ClosedToGround",
