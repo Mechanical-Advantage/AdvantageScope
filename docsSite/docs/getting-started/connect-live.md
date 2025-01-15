@@ -78,7 +78,7 @@ Fields published by AdvantageKit to the `AdvantageKit` subtable are output-only 
 For example, a tunable number can be published using the [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs) class:
 
 ```java
-LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber");
+LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
 ```
 
 :::warning
