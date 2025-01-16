@@ -492,6 +492,16 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.controls.update(0);
       controlsUpdated = true;
     }
+    if (this.keysPressed.has("KeyQ")) {
+      this.controls.elevate(-5 * delta, false);
+      this.controls.update(0);
+      controlsUpdated = true;
+    }
+    if (this.keysPressed.has("KeyE")) {
+      this.controls.elevate(5 * delta, false);
+      this.controls.update(0);
+      controlsUpdated = true;
+    }
     let rotate = (x: number, y: number) => {
       let reference = new THREE.Object3D();
       this.scene.add(reference);
