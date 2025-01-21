@@ -137,7 +137,7 @@ Right-click the rendered field view and click "Set FOV..." to adjust the FOV of 
 This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** rotates the camera, and **right-click + drag** pans the camera. **Scroll** to zoom in and out.
 
 :::tip
-The camera can also be controlled using the keyboard. The **WASD** keys are used to translate and the **IJKL** keys are used to rotate.
+The camera can also be controlled using the keyboard. The **WASD** keys are used to translate, the **IJKL** keys are used to rotate, and the **E** and **Q** keys are used to translate vertically.
 :::
 
 ### Orbit Robot
