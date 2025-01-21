@@ -141,6 +141,8 @@ export default class URCLSchema {
             let signalName = signalSpec.name.replaceAll(" ", "");
             if (signalName === "Current") {
               signalName = "CurrentOutput";
+            } else if (signalName === "Voltage") {
+              signalName = "InputVoltage";
             }
             let signalLogKey = deviceKey + "/" + (signalGroup.length === 0 ? "" : signalGroup + "/") + signalName;
 
@@ -162,7 +164,7 @@ export default class URCLSchema {
             // Save for derived fields
             if (signalName === "AppliedOutput") {
               appliedOutput = Number(signalValue);
-            } else if (signalName === "Voltage") {
+            } else if (signalName === "InputVoltage") {
               voltage = Number(signalValue);
             } else if (signalName === "CurrentOutput") {
               outputCurrent = Number(signalValue);
