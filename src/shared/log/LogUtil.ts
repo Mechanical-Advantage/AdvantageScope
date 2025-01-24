@@ -570,17 +570,23 @@ export function getMechanismState(log: Log, key: string, time: number): Mechanis
 }
 
 export function mergeMechanismStates(states: MechanismState[]): MechanismState {
+  let newWidth = Math.max(...states.map((state) => state.dimensions[0]));
+  let newHeight = Math.max(...states.map((state) => state.dimensions[1]));
+
   let lines: MechanismLine[] = [];
   states.forEach((state) => {
-    lines = lines.concat(state.lines);
+    let xOffset = (newWidth - state.dimensions[0]) / 2;
+    state.lines.forEach((line) => {
+      let newLine = jsonCopy(line);
+      newLine.start[0] += xOffset;
+      newLine.end[0] += xOffset;
+      lines.push(newLine);
+    });
   });
 
   return {
     backgroundColor: states[0].backgroundColor,
-    dimensions: [
-      Math.max(...states.map((state) => state.dimensions[0])),
-      Math.max(...states.map((state) => state.dimensions[1]))
-    ],
+    dimensions: [newWidth, newHeight],
     lines: lines
   };
 }
