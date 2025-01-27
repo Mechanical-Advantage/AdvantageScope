@@ -99,6 +99,12 @@ URCL compatibility with AdvantageKit is provided for convenience only; the data 
 
 To more easily identify devices in the log, CAN IDs can be assigned to aliases by passing a map object to the `start()` or `startExternal()` method. The keys are CAN IDs and the values are strings for the names to use in the log. Any devices not assigned an alias will be logged using their default names.
 
+:::warning
+To minimize CAN utilization, most status frames for Spark devices are **disabled by default** until an associated getter method is called. Any data included in these disabled status frames will not be available in the URCL log.
+
+For more details, check the [REVLib documentation](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). We recommend using the [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) when configuring the Spark to manually enable any signals you wish to include in the log file.
+:::
+
 ## SysId Usage
 
 1. After setting up URCL as shown above, configure the SysId routine using `null` for the mechanism log consumer. An example is shown below for Java. This configuration can be performed within the subsystem class.
