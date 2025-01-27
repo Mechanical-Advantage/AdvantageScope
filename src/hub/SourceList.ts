@@ -45,6 +45,7 @@ export default class SourceList {
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
   private supplementalStateSuppliers: (() => SourceListState)[];
   private getNumberPreview: ((key: string, time: number) => number | null) | undefined;
+  private mouseDownInfo: [number, number] | null = null;
 
   private refreshLastFields: Set<string> = new Set();
   private refreshLastStructTypes: { [key: string]: string | null } = {};
@@ -162,34 +163,33 @@ export default class SourceList {
     });
 
     // Entry dragging support
-    let mouseDownInfo: [number, number] | null = null;
     this.LIST.addEventListener("mousedown", (event) => {
-      mouseDownInfo = [event.clientX, event.clientY];
+      this.mouseDownInfo = [event.clientX, event.clientY];
     });
     this.LIST.addEventListener("mouseup", () => {
-      mouseDownInfo = null;
+      this.mouseDownInfo = null;
     });
     this.LIST.addEventListener("mousemove", (event) => {
       // Start drag
       if (
-        mouseDownInfo !== null &&
-        (Math.abs(event.clientX - mouseDownInfo[0]) >= this.DRAG_THRESHOLD_PX ||
-          Math.abs(event.clientY - mouseDownInfo[1]) >= this.DRAG_THRESHOLD_PX)
+        this.mouseDownInfo !== null &&
+        (Math.abs(event.clientX - this.mouseDownInfo[0]) >= this.DRAG_THRESHOLD_PX ||
+          Math.abs(event.clientY - this.mouseDownInfo[1]) >= this.DRAG_THRESHOLD_PX)
       ) {
         // Find item
         let index = -1;
         Array.from(this.LIST.children).forEach((element, i) => {
           let rect = element.getBoundingClientRect();
           if (
-            mouseDownInfo![0] >= rect.left &&
-            mouseDownInfo![0] <= rect.right &&
-            mouseDownInfo![1] >= rect.top &&
-            mouseDownInfo![1] <= rect.bottom
+            this.mouseDownInfo![0] >= rect.left &&
+            this.mouseDownInfo![0] <= rect.right &&
+            this.mouseDownInfo![1] >= rect.top &&
+            this.mouseDownInfo![1] <= rect.bottom
           ) {
             index = i;
           }
         });
-        mouseDownInfo = null;
+        this.mouseDownInfo = null;
         if (index === -1) return;
 
         // Update drag item
@@ -789,6 +789,7 @@ export default class SourceList {
       promptType([Math.round(rect.right), Math.round(rect.top)]);
     });
     item.addEventListener("contextmenu", (event) => {
+      this.mouseDownInfo = null; // Prevent dragging
       promptType([event.clientX, event.clientY]);
     });
 
