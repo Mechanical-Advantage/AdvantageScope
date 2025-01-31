@@ -26,8 +26,13 @@ export default class CameraStreamRenderer implements TabRenderer {
     if (this.VIEWER_CONTAINER.style.gridTemplateColumns !== `repeat(${command.columns}, 1fr)`) {
       this.VIEWER_CONTAINER.style.gridTemplateColumns = `repeat(${command.columns}, 1fr)`;
     }
-    if (this.VIEWER_CONTAINER.style.gridTemplateRows !== `repeat(${Math.ceil(command.streams.length / command.columns)}, minmax(0, 1fr))`) {
-      this.VIEWER_CONTAINER.style.gridTemplateRows = `repeat(${Math.ceil(command.streams.length / command.columns)}, minmax(0, 1fr))`;
+    if (
+      this.VIEWER_CONTAINER.style.gridTemplateRows !==
+      `repeat(${Math.ceil(command.streams.length / command.columns)}, minmax(0, 1fr))`
+    ) {
+      this.VIEWER_CONTAINER.style.gridTemplateRows = `repeat(${Math.ceil(
+        command.streams.length / command.columns
+      )}, minmax(0, 1fr))`;
     }
 
     var streamsChanged = false;
@@ -58,7 +63,7 @@ export default class CameraStreamRenderer implements TabRenderer {
         img.src = stream.url;
         img.onerror = () => {
           img.src = "symbols/exclamationmark.triangle.fill.svg";
-        }
+        };
         // add a hidden span to store the full url
         let urlSpan = viewer.appendChild(document.createElement("span"));
         urlSpan.textContent = stream.url;
@@ -77,11 +82,11 @@ export default class CameraStreamRenderer implements TabRenderer {
 }
 
 export type CameraStream = {
-  url: string,
-  source: string
-}
+  url: string;
+  source: string;
+};
 
 export type CameraStreamRendererCommand = {
-  streams: CameraStream[],
-  columns: number
+  streams: CameraStream[];
+  columns: number;
 };

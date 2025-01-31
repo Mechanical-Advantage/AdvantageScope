@@ -17,11 +17,17 @@ export default class CameraStreamController implements TabController {
   private COLUMNS: HTMLInputElement;
 
   private sourceList: SourceList;
-  
-  public static constructUrl(baseUrl: string, resolution: { width: number, height: number }, fps: number, compression: number): string {
+
+  public static constructUrl(
+    baseUrl: string,
+    resolution: { width: number; height: number },
+    fps: number,
+    compression: number
+  ): string {
     if (fps !== -1) baseUrl += `&fps=${fps}`;
     if (compression !== -1) baseUrl += `&compression=${compression}`;
-    if (resolution.width !== -1 && resolution.height !== -1) baseUrl += `&resolution=${resolution.width}x${resolution.height}`;
+    if (resolution.width !== -1 && resolution.height !== -1)
+      baseUrl += `&resolution=${resolution.width}x${resolution.height}`;
     return baseUrl;
   }
 
@@ -58,20 +64,22 @@ export default class CameraStreamController implements TabController {
     let sources = this.sourceList.getState(true);
     return {
       columns: Number(this.COLUMNS.value),
-      streams: sources.map((source) => {
-        if (source.type === "stream") {
-          let baseUrl = getOrDefault(window.log, source.logKey, LoggableType.String, time, "", this.UUID);
-          baseUrl = baseUrl.replace("mjpg:", "");
-          let resolution = { width: Number(this.WIDTH.value), height: Number(this.HEIGHT.value) };
-          let fps = Number(this.FPS.value);
-          let compression = Number(this.COMPRESSION.value);
-          return {
-            source: baseUrl,
-            url: CameraStreamController.constructUrl(baseUrl, resolution, fps, compression),
+      streams: sources
+        .map((source) => {
+          if (source.type === "stream") {
+            let baseUrl = getOrDefault(window.log, source.logKey, LoggableType.String, time, "", this.UUID);
+            baseUrl = baseUrl.replace("mjpg:", "");
+            let resolution = { width: Number(this.WIDTH.value), height: Number(this.HEIGHT.value) };
+            let fps = Number(this.FPS.value);
+            let compression = Number(this.COMPRESSION.value);
+            return {
+              source: baseUrl,
+              url: CameraStreamController.constructUrl(baseUrl, resolution, fps, compression)
+            };
           }
-        }
-      }).filter((url): url is CameraStream => url !== undefined)
-    }
+        })
+        .filter((url): url is CameraStream => url !== undefined)
+    };
   }
 
   saveState(): unknown {
@@ -81,7 +89,7 @@ export default class CameraStreamController implements TabController {
       height: Number(this.HEIGHT.value),
       fps: Number(this.FPS.value),
       compression: Number(this.COMPRESSION.value),
-      columns: Number(this.COLUMNS.value),
+      columns: Number(this.COLUMNS.value)
     };
   }
 

@@ -872,7 +872,7 @@ div.camerastream-container div.camerastream-viewer p {
 }
 
 @media (prefers-color-scheme: dark) {
-  div.camerastream-container div.camerastream-viewer  {
+  div.camerastream-container div.camerastream-viewer {
     background-color: #292929;
     border: 1px solid #cccccc;
   }
@@ -881,7 +881,7 @@ div.camerastream-container div.camerastream-viewer p {
 div.camerastream-container div.camerastream-viewer img {
   width: 100%;
   height: 100%;
-  object-fit:contain;
+  object-fit: contain;
 }
 
 /* Metadata */
