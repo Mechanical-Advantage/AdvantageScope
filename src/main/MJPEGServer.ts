@@ -66,7 +66,7 @@ export class MJPEGServer {
       app.get("/", (req, res) => {
         const stream_ids = Array.from(this.latestFrames.keys());
         res.send(
-          "<h1>AdvantageScope MJPEG Server</h1><p>Currenly active streams:</p><ul>" +
+          "<h1>AdvantageScope MJPEG Server</h1><p>Currently active streams:</p><ul>" +
             stream_ids.map((stream_id) => `<li><a href="/${stream_id}">${stream_id}</a></li>`).join("") +
             "</ul>"
         );
