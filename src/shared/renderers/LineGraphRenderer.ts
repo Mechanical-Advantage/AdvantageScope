@@ -281,8 +281,7 @@ export default class LineGraphRenderer implements TabRenderer {
             context.beginPath();
             context.moveTo(graphLeft + graphWidth, yScaler.calculate(field.values[field.values.length - 1]));
             let i = field.values.length - 1;
-            let iterCount = 0;
-            while (iterCount++ < 100) {
+            while (true) {
               let x = xScaler.calculate(field.timestamps[i]);
 
               // Render start of current data point
