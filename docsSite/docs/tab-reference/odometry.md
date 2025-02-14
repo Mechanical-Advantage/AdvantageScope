@@ -24,6 +24,14 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
+:::warning
+**Why are there two 2025 field options?**
+
+AdvantageScope includes two 2025 field images: "2025 Field (Welded)" and "2025 Field (AndyMark)". As explained in [Team Update 12](https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf), there are two versions of the Reefscape field with different dimensions and processor locations. Teams should use the correct AprilTag layout and field dimensions in code (see the Team Update for details), then choose the matching field image in AdvantageScope to ensure that the visualization is accurate.
+
+_The 2025 field image used by AdvantageScope prior to Febuary 2025 is equivalent to the "2025 Field (Welded) option._
+:::
+
 ## Adding Objects
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
