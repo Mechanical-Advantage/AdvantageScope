@@ -529,7 +529,8 @@ export default class LineGraphRenderer implements TabRenderer {
     if (command.showLeftAxis) {
       context.textAlign = "right";
       let stepPos = Math.floor(command.leftRange[1] / leftStepSize) * leftStepSize;
-      while (true) {
+      let iterCount = 0;
+      while (iterCount++ < 100) {
         let y = scaleValue(stepPos, command.leftRange, [graphTop + graphHeightOpen, graphTop]);
         if (y > graphTop + graphHeight) break;
 
@@ -558,7 +559,8 @@ export default class LineGraphRenderer implements TabRenderer {
     if (command.showRightAxis) {
       context.textAlign = "left";
       let stepPos = Math.floor(command.rightRange[1] / rightStepSize) * rightStepSize;
-      while (true) {
+      let iterCount = 0;
+      while (iterCount++ < 100) {
         let y = scaleValue(stepPos, command.rightRange, [graphTop + graphHeightOpen, graphTop]);
         if (y > graphTop + graphHeight) break;
 
@@ -587,7 +589,8 @@ export default class LineGraphRenderer implements TabRenderer {
     // Render x axis
     context.textAlign = "center";
     let stepPos = Math.ceil(cleanFloat(timeRange[0] / timeStepSize)) * timeStepSize;
-    while (true) {
+    let iterCount = 0;
+    while (iterCount++ < 100) {
       let x = scaleValue(stepPos, timeRange, [graphLeft, graphLeft + graphWidth]);
 
       // Clean up final x (scroll can cause rounding problems)
