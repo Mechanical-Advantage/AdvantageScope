@@ -347,7 +347,9 @@ export default class SelectionImpl implements Selection {
   /** Returns the visible range for the timeline. */
   getTimelineRange(): [number, number] {
     this.applyTimelineScroll(0, 0, 0);
-    return [...this.timelineRange];
+    let safeTimelineRange = [...this.timelineRange] as [number, number];
+    safeTimelineRange[1] = Math.max(safeTimelineRange[1], safeTimelineRange[0] + 1e-3);
+    return safeTimelineRange;
   }
 
   /** Returns whether the timeline is locked to max zoom. */

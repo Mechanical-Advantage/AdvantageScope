@@ -48,7 +48,7 @@ export class VideoProcessor {
       height: 30 / 1080
     },
 
-    // Large banner format (lower) - 2024
+    // Large banner format (lower) - 2024/2025
     {
       left: 865 / 1920,
       top: 980 / 1080,
@@ -56,12 +56,28 @@ export class VideoProcessor {
       height: 90 / 1080
     },
 
-    // Large banner format (upper) - 2024
+    // Large banner format (upper) - 2024/2025
     {
       left: 865 / 1920,
       top: 160 / 1080,
       width: 200 / 1920,
       height: 90 / 1080
+    },
+
+    // Web stream format (lower) - 2025
+    {
+      left: 900 / 1920,
+      top: 960 / 1080,
+      width: 120 / 1920,
+      height: 68 / 1080
+    },
+
+    // Web stream format (upper) - 2025
+    {
+      left: 600 / 1920,
+      top: 40 / 1080,
+      width: 80 / 1920,
+      height: 45 / 1080
     }
   ];
 

@@ -71,7 +71,7 @@ export default class Sidebar {
   private tuningModePublishCallbacks: (() => void)[] = [];
   private tuningValueCache: { [key: string]: string } = {};
   private updateMetadataCallbacks: (() => void)[] = [];
-  private updateLoadingCallbacks: (() => void)[] = [];
+  private updateLoadingCallbacks: ((loadingFields: Set<string>) => void)[] = [];
 
   constructor(getFilenames: () => string[]) {
     this.getFilenames = getFilenames;
@@ -440,7 +440,7 @@ export default class Sidebar {
       // Update type warnings and metadata
       this.updateTypeWarningCallbacks.forEach((callback) => callback());
       this.updateMetadataCallbacks.forEach((callback) => callback());
-      this.updateLoadingCallbacks.forEach((callback) => callback());
+      this.updateLoadingCallbacks.forEach((callback) => callback(window.getLoadingFields()));
     }
   }
 
@@ -910,16 +910,18 @@ export default class Sidebar {
       updateMetadata();
 
       // Loading callback
-      let updateLoading = () => {
-        let isLoading = window.getLoadingFields().has(field.fullKey!);
-        if (isLoading) {
+      let lastLoading = false;
+      let updateLoading = (loadingFields: Set<string>) => {
+        let isLoading = loadingFields.has(field.fullKey!);
+        if (isLoading && !lastLoading) {
           label.classList.add("loading");
-        } else {
+        } else if (!isLoading && lastLoading) {
           label.classList.remove("loading");
         }
+        lastLoading = isLoading;
       };
       this.updateLoadingCallbacks.push(updateLoading);
-      updateLoading();
+      updateLoading(window.getLoadingFields());
     }
 
     // Add children
