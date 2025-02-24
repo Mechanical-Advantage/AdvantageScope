@@ -12,6 +12,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 
   private implementation: ThreeDimensionRendererImpl | null = null;
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
+  private stateRestoreCache: unknown | null = null;
 
   constructor(root: HTMLElement) {
     this.CANVAS = root.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement;
@@ -27,8 +28,12 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   }
 
   restoreState(state: unknown): void {
-    if (this.implementation !== null && state !== null) {
-      this.implementation.restoreState(state);
+    if (state !== null) {
+      if (this.implementation === null) {
+        this.stateRestoreCache = state;
+      } else {
+        this.implementation.restoreState(state);
+      }
     }
   }
 
@@ -87,7 +92,10 @@ export default class ThreeDimensionRenderer implements TabRenderer {
         this.ALERT,
         this.SPINNER
       );
-      if (state !== null) {
+      if (this.stateRestoreCache !== null) {
+        this.implementation.restoreState(this.stateRestoreCache);
+        this.stateRestoreCache = null;
+      } else if (state !== null) {
         this.implementation.restoreState(state);
       }
     }

@@ -205,7 +205,8 @@ export default class Timeline {
     context.textBaseline = "middle";
     context.globalAlpha = 0.5;
     let stepPos = Math.ceil(cleanFloat(timeRange[0] / stepSize)) * stepSize;
-    while (true) {
+    let iterCount = 0;
+    while (iterCount++ < 100) {
       let x = scaleValue(stepPos, timeRange, [0, width]);
       if (x > width + 1) {
         break;
