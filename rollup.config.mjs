@@ -158,5 +158,5 @@ export default (cliArgs) => {
   if (cliArgs.configXR === true) return xrBundles;
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
-  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrClientBundles];
+  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
 };
