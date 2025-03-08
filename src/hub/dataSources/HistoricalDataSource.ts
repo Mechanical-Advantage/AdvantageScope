@@ -5,6 +5,7 @@ import {
   EVENT_KEYS,
   MATCH_NUMBER_KEYS,
   MATCH_TYPE_KEYS,
+  MERGE_PREFIX,
   SYSTEM_TIME_KEYS,
   applyKeyPrefix,
   getURCLKeys
@@ -255,7 +256,8 @@ export class HistoricalDataSource {
             this.finishedFields.has(field) ||
             this.log?.getField(field) === null ||
             this.log?.isGenerated(field) ||
-            !field.startsWith(this.keyPrefix)
+            !field.startsWith(this.keyPrefix) ||
+            (this.keyPrefix.length === 0 && field.startsWith("/" + MERGE_PREFIX))
           ) {
             requestFields.delete(field);
           }
