@@ -162,7 +162,7 @@ function parseField(key: string, skipMessage = false) {
     dataRecordPositions[key].forEach((position) => {
       const [record, _] = decoder!.getRecordAtPosition(position);
       if (record === null) return;
-      let timestamp = Math.max(0, record.getTimestamp() / 1000000.0);
+      let timestamp = record.getTimestamp() / 1000000.0;
       try {
         switch (type) {
           case "boolean":

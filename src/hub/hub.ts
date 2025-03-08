@@ -355,6 +355,11 @@ function startHistorical(path: string, clear = true, merge = false) {
           updateLoading();
           if (originalTimelineRange !== null && originalTimelineIsMaxZoom !== null) {
             window.selection.setTimelineRange(originalTimelineRange, originalTimelineIsMaxZoom);
+            let newTimelineRange = window.selection.getTimelineRange();
+            if (window.selection.getTimelineIsMaxZoom() && originalTimelineRange[0] >= 0 && newTimelineRange[0] < 0) {
+              // If the new log data made the locked range negative, limit to positive values
+              window.selection.setTimelineRange([0, newTimelineRange[1]], false);
+            }
             originalTimelineRange = null;
             originalTimelineIsMaxZoom = null;
           }
