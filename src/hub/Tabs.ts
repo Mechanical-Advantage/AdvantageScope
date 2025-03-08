@@ -586,6 +586,11 @@ export default class Tabs {
     return this.selectedTab;
   }
 
+  /** Returns the type of the selected tab. */
+  getSelectedTabType(): TabType {
+    return this.tabList[this.selectedTab].type;
+  }
+
   /** Changes which tab is currently selected. */
   setSelected(index: number) {
     if (index < 0 || index > this.tabList.length - 1) return;
@@ -703,7 +708,6 @@ export default class Tabs {
   isUnlockedVideoSelected(): boolean {
     if (this.tabList[this.selectedTab].type === TabType.Video) {
       return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
-      return false;
     } else {
       return false;
     }

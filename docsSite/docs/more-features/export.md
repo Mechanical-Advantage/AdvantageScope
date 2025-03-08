@@ -20,6 +20,14 @@ To view options for exporting, click `File` > `Export Data...`.
 In addition to the full-log export described here, the 💬 [Console](../tab-reference/console.md) tab allows console data to be exported to a text file.
 :::
 
+:::warning
+**Exporting Data for SysId**
+
+We do not recommend using this feature to export log data **generated in simulation** for use in [SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html), as SysId requires additional timestamp data inconsistent with AdvantageScope's default export options. Note that log data **generated _outside_ of simulation** may be exported for use in SysId with minimal data loss (though maximum accuracy can be achieved by using the _original_ data log directly in SysId).
+
+_This warning **does not apply** to logs produced by AdvantageKit, which can be exported with no data loss by selecting the "AdvantageKit Cycles" option. See [this page](https://docs.advantagekit.org/data-flow/sysid-compatibility) for details._
+:::
+
 ## Options
 
 The following options are provided when exporting:

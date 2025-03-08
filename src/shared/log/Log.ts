@@ -31,7 +31,7 @@ export default class Log {
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private enableTimestampSetCache: boolean;
-  private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
+  private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[]; sourceCounts: number[] } } = {};
   private changedFields: Set<string> = new Set();
 
   private queuedStructs: QueuedStructure[] = [];
@@ -248,12 +248,20 @@ export default class Log {
       // Multiple fields, read from cache if possible
       let saveCache = false;
       if (uuid !== null && this.enableTimestampSetCache) {
-        if (uuid in this.timestampSetCache && arraysEqual(this.timestampSetCache[uuid].keys, keys)) {
+        if (
+          uuid in this.timestampSetCache &&
+          arraysEqual(this.timestampSetCache[uuid].keys, keys) &&
+          arraysEqual(
+            this.timestampSetCache[uuid].sourceCounts,
+            keys.map((key) => this.fields[key].getTimestamps().length)
+          )
+        ) {
           return [...this.timestampSetCache[uuid].timestamps];
         }
         this.timestampSetCache[uuid] = {
           keys: keys,
-          timestamps: []
+          timestamps: [],
+          sourceCounts: keys.map(() => 0)
         };
         saveCache = true;
       }
@@ -261,7 +269,10 @@ export default class Log {
       // Get new data
       output = [...new Set(keys.map((key) => this.fields[key].getTimestamps()).flat())];
       output.sort((a, b) => a - b);
-      if (saveCache && uuid) this.timestampSetCache[uuid].timestamps = output;
+      if (saveCache && uuid) {
+        this.timestampSetCache[uuid].timestamps = output;
+        this.timestampSetCache[uuid].sourceCounts = keys.map((key) => this.fields[key].getTimestamps().length);
+      }
     } else if (keys.length === 1) {
       // Single field
       output = [...this.fields[keys[0]].getTimestamps()];
@@ -776,7 +787,7 @@ export default class Log {
       sourceEnabledData.values.includes(true)
     ) {
       offset =
-        targetEnabledData.timestamps[sourceEnabledData.values.indexOf(true)] -
+        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
         sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
     }
     let sourceSerialized = source.toSerialized();

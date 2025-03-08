@@ -337,6 +337,7 @@ table.data-table th:last-child {
 
 table.data-table td {
   height: 16px;
+  line-height: 16px;
   padding: 4px;
   font-family: Courier, monospace;
   user-select: text;

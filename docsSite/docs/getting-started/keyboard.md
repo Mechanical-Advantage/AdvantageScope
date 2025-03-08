@@ -80,7 +80,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <table>
 <tr><td>`Space`</td><td>Toggle playback</td></tr>
 <tr><td>`Left` and `Right`</td><td>Step through log file</td></tr>
-<tr><td>`L`</td><td>Toggle lock when viewing live data</td></tr>
+<tr><td>`L` or `Ctrl+L`</td><td>Toggle lock when viewing live data</td></tr>
 <tr><td>`Ctrl+\`</td><td>Zoom timeline to enabled range</td></tr>
 </table>
 

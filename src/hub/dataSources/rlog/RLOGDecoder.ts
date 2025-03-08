@@ -1,5 +1,5 @@
 import Log from "../../../shared/log/Log";
-import { PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import CustomSchemas from "../schema/CustomSchemas";
 import { TEXT_DECODER } from "../wpilog/WPILOGShared";
@@ -186,6 +186,9 @@ export default class RLOGDecoder {
                       } else {
                         log.putStruct(key, timestamp, value, schemaType, false);
                       }
+                    } else if (type.startsWith(PHOTON_PREFIX)) {
+                      let schemaType = type.split(PHOTON_PREFIX)[1];
+                      log.putPhotonStruct(key, timestamp, value, schemaType);
                     } else if (type.startsWith(PROTO_PREFIX)) {
                       let schemaType = type.split(PROTO_PREFIX)[1];
                       log.putProto(key, timestamp, value, schemaType);

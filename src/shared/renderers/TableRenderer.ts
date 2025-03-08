@@ -241,7 +241,7 @@ export default class TableRenderer implements TabRenderer {
 
     // Update row height (not all platforms render the same way)
     if (this.dataRows.length > 0) {
-      let rowHeight = this.dataRows[0].clientHeight;
+      let rowHeight = this.dataRows[0].getBoundingClientRect().height;
       if (rowHeight > 0 && rowHeight !== this.ROW_HEIGHT_PX) {
         this.ROW_HEIGHT_PX = rowHeight;
       }

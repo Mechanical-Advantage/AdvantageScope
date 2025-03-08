@@ -1,5 +1,5 @@
 import Log from "../../../shared/log/Log";
-import { getEnabledKey, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import { getEnabledKey, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import {
   HistoricalDataSource_WorkerFieldResponse,
@@ -85,6 +85,9 @@ async function start(data: Uint8Array) {
                   if (startData.type.startsWith(STRUCT_PREFIX)) {
                     let schemaType = startData.type.split(STRUCT_PREFIX)[1];
                     log.setStructuredType(startData.name, schemaType);
+                  } else if (startData.type.startsWith(PHOTON_PREFIX)) {
+                    let schemaType = startData.type.split(PHOTON_PREFIX)[1];
+                    log.setStructuredType(startData.name, schemaType);
                   } else if (startData.type.startsWith(PROTO_PREFIX)) {
                     let schemaType = startData.type.split(PROTO_PREFIX)[1];
                     log.setStructuredType(startData.name, schemaType);
@@ -159,7 +162,7 @@ function parseField(key: string, skipMessage = false) {
     dataRecordPositions[key].forEach((position) => {
       const [record, _] = decoder!.getRecordAtPosition(position);
       if (record === null) return;
-      let timestamp = Math.max(0, record.getTimestamp() / 1000000.0);
+      let timestamp = record.getTimestamp() / 1000000.0;
       try {
         switch (type) {
           case "boolean":
@@ -208,6 +211,9 @@ function parseField(key: string, skipMessage = false) {
               } else {
                 log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
               }
+            } else if (type.startsWith(PHOTON_PREFIX)) {
+              let schemaType = type.split(PHOTON_PREFIX)[1];
+              log.putPhotonStruct(key, timestamp, record.getRaw(), schemaType);
             } else if (type.startsWith(PROTO_PREFIX)) {
               let schemaType = type.split(PROTO_PREFIX)[1];
               log.putProto(key, timestamp, record.getRaw(), schemaType);
