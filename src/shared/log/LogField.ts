@@ -54,7 +54,7 @@ export default class LogField {
       const value = this.data.values[i];
 
       // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it (don't include it in the new array).
-      if (this.data.timestamps.length >= 2 && this.data.timestamps[1] < clearTimestamp) {
+      if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
         this.stripingReference = !this.stripingReference;
         continue;
       }
