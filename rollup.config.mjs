@@ -65,6 +65,13 @@ function bundle(input, output, isMain, isXRClient, external = []) {
           {
             test: /eval.*\(moduleName\);/g,
             replace: "undefined;"
+          },
+
+          // Remove dependency on node:sqlite (not actually
+          // used, so just replace with stand-in dependency)
+          {
+            test: /node:sqlite/g,
+            replace: "fs"
           }
         ]
       })
