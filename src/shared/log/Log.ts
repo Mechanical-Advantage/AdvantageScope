@@ -776,7 +776,7 @@ export default class Log {
       sourceEnabledData.values.includes(true)
     ) {
       offset =
-        targetEnabledData.timestamps[sourceEnabledData.values.indexOf(true)] -
+        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
         sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
     }
     let sourceSerialized = source.toSerialized();
