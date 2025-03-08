@@ -708,7 +708,6 @@ export default class Tabs {
   isUnlockedVideoSelected(): boolean {
     if (this.tabList[this.selectedTab].type === TabType.Video) {
       return !(this.tabList[this.selectedTab].controller as VideoController).isLocked();
-      return false;
     } else {
       return false;
     }
