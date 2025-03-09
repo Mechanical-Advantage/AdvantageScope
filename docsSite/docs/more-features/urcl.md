@@ -23,10 +23,10 @@ As this library is not an official REV tool, support queries should be directed 
 
 ## Setup
 
-Install the URCL vendordep by following the instructions to install [3rd party libraries](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html). Use the following vendor JSON URL:
+Install the URCL vendordep by following the instructions to install [3rd party libraries](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) using the dependency manager in VSCode. Alternatively, you can use the following vendor JSON URL:
 
 ```
-https://raw.githubusercontent.com/Mechanical-Advantage/URCL/maven/URCL.json
+https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 ```
 
 URCL publishes to NetworkTables by default, where data can be saved to a log file by enabling WPILib's DataLogManager. Alternatively, URCL can log directly to a DataLog. The logger should be started in `robotInit`, as shown below.
