@@ -91,6 +91,8 @@ export function findKey(log: Log, search: string[]): string | undefined {
     let unmerged = removeMergePrefix(fieldKeys[i]);
     if (search.includes(unmerged)) {
       return fieldKeys[i];
+    } else if (unmerged.startsWith("/") && search.includes(unmerged.slice(1))) {
+      return fieldKeys[i];
     }
   }
   return undefined;
