@@ -783,12 +783,64 @@ export default class Log {
     if (
       targetEnabledData &&
       sourceEnabledData &&
-      targetEnabledData.values.includes(true) &&
-      sourceEnabledData.values.includes(true)
+      targetEnabledData.values.length > 1 &&
+      sourceEnabledData.values.length > 1
     ) {
-      offset =
-        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
-        sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
+      // Remove initial value if disabled, logs may have started at a different time
+      let adjustedTargetEnabledData = targetEnabledData.values[0]
+        ? targetEnabledData
+        : {
+            timestamps: targetEnabledData.timestamps.slice(1),
+            values: targetEnabledData.values.slice(1)
+          };
+      let adjustedSourceEnabledData = sourceEnabledData.values[0]
+        ? sourceEnabledData
+        : {
+            timestamps: sourceEnabledData.timestamps.slice(1),
+            values: sourceEnabledData.values.slice(1)
+          };
+      console.log("Target", adjustedTargetEnabledData);
+      console.log("Source", adjustedSourceEnabledData);
+
+      // Find best alignment
+      let bestAvgError = Infinity;
+      for (let targetAlignIdx = 0; targetAlignIdx < adjustedTargetEnabledData.values.length; targetAlignIdx++) {
+        for (let sourceAlignIdx = 0; sourceAlignIdx < adjustedSourceEnabledData.values.length; sourceAlignIdx++) {
+          if (adjustedTargetEnabledData.values[targetAlignIdx] !== adjustedSourceEnabledData.values[sourceAlignIdx])
+            continue;
+          const potentialOffset =
+            adjustedTargetEnabledData.timestamps[targetAlignIdx] - adjustedSourceEnabledData.timestamps[sourceAlignIdx];
+
+          // Measure timestamp errors for neighboring boundaries
+          let totalError = 0;
+          let sampleCount = 0;
+          for (
+            let i = -Math.min(targetAlignIdx, sourceAlignIdx);
+            i <
+            Math.min(
+              adjustedTargetEnabledData.values.length - targetAlignIdx,
+              adjustedSourceEnabledData.values.length - sourceAlignIdx
+            );
+            i++
+          ) {
+            let targetTimestamp = adjustedTargetEnabledData.timestamps[targetAlignIdx + i];
+            let sourceTimestamp = adjustedSourceEnabledData.timestamps[sourceAlignIdx + i];
+            totalError += Math.abs(targetTimestamp - (sourceTimestamp + potentialOffset));
+            sampleCount += 1;
+          }
+
+          // Replace offset if better than current
+          if (sampleCount > 0) {
+            let avgError = totalError / sampleCount;
+            console.log(targetAlignIdx, sourceAlignIdx, avgError, sampleCount);
+            if (avgError < bestAvgError) {
+              offset = potentialOffset;
+              bestAvgError = avgError;
+              console.log("Best");
+            }
+          }
+        }
+      }
     }
     let sourceSerialized = source.toSerialized();
     Object.values(sourceSerialized.fields).forEach((field) => {
