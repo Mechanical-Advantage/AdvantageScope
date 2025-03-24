@@ -3,6 +3,8 @@ import LiveDataTuner from "../LiveDataTuner";
 import { NT4_Client } from "./NT4";
 import { AKIT_PREFIX, AKIT_TUNING_PREFIX, WPILOG_PREFIX } from "./NT4Source";
 
+const NON_TUNING_PREFIX = /^\/(?:AdvantageKit|Robot)/;
+
 export default class NT4Tuner implements LiveDataTuner {
   private client: NT4_Client;
   private akitMode: boolean;
@@ -25,7 +27,7 @@ export default class NT4Tuner implements LiveDataTuner {
     const type = window.log.getType(key);
     return (
       (type === LoggableType.Number || type === LoggableType.Boolean) &&
-      !remoteKey.startsWith(AKIT_PREFIX) &&
+      !NON_TUNING_PREFIX.test(remoteKey) &&
       !window.log.isGenerated(key)
     );
   }
