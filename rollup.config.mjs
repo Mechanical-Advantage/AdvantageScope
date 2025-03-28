@@ -1,12 +1,9 @@
-import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
-import terser from "@rollup/plugin-terser";
-import typescript from "@rollup/plugin-typescript";
+import swc from "@rollup/plugin-swc";
 import fs from "fs";
-import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
 function bundle(input, output, isMain, isXRClient, external = []) {
@@ -20,22 +17,25 @@ function bundle(input, output, isMain, isXRClient, external = []) {
     context: "this",
     external: external,
     plugins: [
-      typescript(),
+      json(),
       nodeResolve({
-        preferBuiltins: true
+        preferBuiltins: true,
+        extensions: [".ts", ".js", ".json"]
       }),
       commonjs(),
-      ...(isXRClient
-        ? [
-            getBabelOutputPlugin({
-              presets: [["@babel/preset-env", { modules: false }]],
-              compact: true,
-              targets: "iOS 16" // AdvantageScope XR is built for iOS 16
-            }),
-            terser()
-          ]
-        : [cleanup()]),
-      json(),
+      swc({
+        swc: {
+          jsc: {
+            target: isXRClient ? undefined : "esnext"
+          },
+          minify: isXRClient,
+          env: isXRClient
+            ? {
+                targets: "iOS 16" // AdvantageScope XR is built for iOS 16
+              }
+            : undefined
+        }
+      }),
       replace({
         preventAssignment: true,
         values: {
@@ -140,12 +140,19 @@ const runOwletDownload = {
   context: "this",
   external: ["download"],
   plugins: [
-    typescript(),
+    json(),
     nodeResolve({
-      preferBuiltins: true
+      preferBuiltins: true,
+      extensions: [".ts", ".js", ".json"]
     }),
     commonjs(),
-    json()
+    swc({
+      swc: {
+        jsc: {
+          target: "esnext"
+        }
+      }
+    })
   ],
   onwarn() {}
 };
