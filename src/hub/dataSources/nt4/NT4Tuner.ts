@@ -3,8 +3,6 @@ import LiveDataTuner from "../LiveDataTuner";
 import { NT4_Client } from "./NT4";
 import { AKIT_PREFIX, AKIT_TUNING_PREFIX, WPILOG_PREFIX } from "./NT4Source";
 
-const NON_TUNING_PREFIX = /^\/(?:AdvantageKit|Robot)/;
-
 export default class NT4Tuner implements LiveDataTuner {
   private client: NT4_Client;
   private akitMode: boolean;
@@ -25,11 +23,25 @@ export default class NT4Tuner implements LiveDataTuner {
   isTunable(key: string): boolean {
     const remoteKey = this.getRemoteKey(key);
     const type = window.log.getType(key);
-    return (
-      (type === LoggableType.Number || type === LoggableType.Boolean) &&
-      !NON_TUNING_PREFIX.test(remoteKey) &&
-      !window.log.isGenerated(key)
-    );
+
+    // Only numbers and booleans can be tuned
+    if (type !== LoggableType.Number && type !== LoggableType.Boolean) {
+      return false;
+    }
+
+    if (window.log.isGenerated(key)) {
+      return false;
+    }
+
+    if (remoteKey.startsWith(AKIT_PREFIX)) {
+      return true;
+    }
+
+    if (window.log.getField("NT:/Robot/DogLog/Options")) {
+      return !remoteKey.startsWith("/Robot");
+    }
+
+    return true;
   }
 
   publish(key: string, value: number | boolean): void {
