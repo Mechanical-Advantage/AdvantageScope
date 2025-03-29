@@ -26,6 +26,7 @@ export default class NT4Tuner implements LiveDataTuner {
     return (
       (type === LoggableType.Number || type === LoggableType.Boolean) &&
       !remoteKey.startsWith(AKIT_PREFIX) &&
+      (window.log.getField("NT:/Robot/DogLog/Options") === null || !remoteKey.startsWith("/Robot")) &&
       !window.log.isGenerated(key)
     );
   }
