@@ -51,9 +51,13 @@ async function start(data: Uint8Array) {
           if (record !== null && record !== undefined) {
             if (record.isStart()) {
               const startData = record.getStartData();
+              if (!(startData.name in dataRecordPositions) || entryTypes[startData.name] !== startData.type) {
+                // If the entry was previously declared with a different type, clear
+                // the old data to avoid a conflict (use the last declared type)
+                dataRecordPositions[startData.name] = [];
+              }
               entryIds[startData.entry] = startData.name;
               entryTypes[startData.name] = startData.type;
-              dataRecordPositions[startData.name] = [];
               switch (startData.type) {
                 case "boolean":
                   log.createBlankField(startData.name, LoggableType.Boolean);
