@@ -23,25 +23,12 @@ export default class NT4Tuner implements LiveDataTuner {
   isTunable(key: string): boolean {
     const remoteKey = this.getRemoteKey(key);
     const type = window.log.getType(key);
-
-    // Only numbers and booleans can be tuned
-    if (type !== LoggableType.Number && type !== LoggableType.Boolean) {
-      return false;
-    }
-
-    if (window.log.isGenerated(key)) {
-      return false;
-    }
-
-    if (remoteKey.startsWith(AKIT_PREFIX)) {
-      return true;
-    }
-
-    if (window.log.getField("NT:/Robot/DogLog/Options")) {
-      return !remoteKey.startsWith("/Robot");
-    }
-
-    return true;
+    return (
+      (type === LoggableType.Number || type === LoggableType.Boolean) &&
+      !remoteKey.startsWith(AKIT_PREFIX) &&
+      (window.log.getField("NT:/Robot/DogLog/Options") === null || !remoteKey.startsWith("/Robot")) &&
+      !window.log.isGenerated(key)
+    );
   }
 
   publish(key: string, value: number | boolean): void {
