@@ -15,6 +15,7 @@ let decoder: WPILOGDecoder | null = null;
 const log = new Log(false);
 const entryIds: { [id: number]: string } = {};
 const entryTypes: { [id: string]: string } = {};
+const entryStartTimes: { [id: number]: number } = {};
 const dataRecordPositions: { [id: string]: number[] } = {};
 
 function sendResponse(response: HistoricalDataSource_WorkerResponse) {
@@ -36,6 +37,7 @@ self.onmessage = async (event) => {
 
 async function start(data: Uint8Array) {
   let lastProgressValue = 0;
+  let shortLivedFieldNames: Set<string> = new Set();
   decoder = new WPILOGDecoder(data);
 
   try {
@@ -58,6 +60,7 @@ async function start(data: Uint8Array) {
               }
               entryIds[startData.entry] = startData.name;
               entryTypes[startData.name] = startData.type;
+              entryStartTimes[startData.entry] = record.getTimestamp();
               switch (startData.type) {
                 case "boolean":
                   log.createBlankField(startData.name, LoggableType.Boolean);
@@ -100,6 +103,16 @@ async function start(data: Uint8Array) {
               }
               log.setWpilibType(startData.name, startData.type);
               log.setMetadataString(startData.name, startData.metadata);
+            } else if (record.isFinish()) {
+              let entry = record.getFinishEntry();
+
+              // Entry has existed for less than a second so ignore
+              if (record.getTimestamp() - entryStartTimes[entry] < 1e6) {
+                shortLivedFieldNames.add(entryIds[entry]);
+                log.deleteField(entryIds[entry]);
+                delete entryIds[entry];
+                delete entryStartTimes[entry];
+              }
             } else if (record.isSetMetadata()) {
               let setMetadataData = record.getSetMetadataData();
               if (setMetadataData.entry in entryIds) {
@@ -131,6 +144,11 @@ async function start(data: Uint8Array) {
       type: "failed"
     });
     return;
+  }
+
+  // Warn about short-lived fields
+  if (shortLivedFieldNames.size > 0) {
+    console.warn("Ignoring short-lived WPILOG entries:", [...shortLivedFieldNames].toSorted());
   }
 
   // Load enabled field (required for merging)

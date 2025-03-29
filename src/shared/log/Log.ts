@@ -43,10 +43,32 @@ export default class Log {
   }
 
   /** Checks if the field exists and registers it if necessary. */
-  public createBlankField(key: string, type: LoggableType) {
+  createBlankField(key: string, type: LoggableType) {
     if (key in this.fields) return;
     this.fields[key] = new LogField(type);
     this.changedFields.add(key);
+  }
+
+  /** Removes all data for a field. */
+  deleteField(key: string) {
+    if (key in this.fields) {
+      delete this.fields[key];
+      this.generatedParents.delete(key);
+      this.changedFields.delete(key);
+
+      // Update timestamp cache
+      Object.entries(this.timestampSetCache).forEach(([uuid, cacheValues]) => {
+        if (cacheValues.keys.includes(key)) {
+          cacheValues.keys = cacheValues.keys.filter((x) => x !== key);
+          let newTimestamps = [...new Set(cacheValues.keys.map((key) => this.fields[key].getTimestamps()).flat())];
+          newTimestamps.sort((a, b) => a - b);
+          this.timestampSetCache[uuid].timestamps = newTimestamps;
+          this.timestampSetCache[uuid].sourceCounts = cacheValues.keys.map(
+            (key) => this.fields[key].getTimestamps().length
+          );
+        }
+      });
+    }
   }
 
   /** Clears all data before the provided timestamp. */
