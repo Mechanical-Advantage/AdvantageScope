@@ -74,10 +74,10 @@ export class VideoProcessor {
 
     // Web stream format (upper) - 2025
     {
-      left: 600 / 1920,
-      top: 40 / 1080,
-      width: 80 / 1920,
-      height: 45 / 1080
+      left: 900 / 1920,
+      top: 65 / 1080,
+      width: 120 / 1920,
+      height: 68 / 1080
     }
   ];
 
