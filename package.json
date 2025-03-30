@@ -75,7 +75,7 @@
     "typescript": "5.6.3"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.4",
+    "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#cf7aa2a42409b5cdff98341dc7a14326019d488e",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "check-disk-space": "^3.4.0",
