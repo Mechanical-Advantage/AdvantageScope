@@ -9,6 +9,7 @@ const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const THREE_DIMENSION_MODE_AC = document.getElementById("threeDimensionModeAc") as HTMLInputElement;
 const THREE_DIMENSION_MODE_BATTERY = document.getElementById("threeDimensionModeBattery") as HTMLInputElement;
+const THREE_DIMENSION_ANTIALIASING = document.getElementById("threeDimensionAntialiasing") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
@@ -48,6 +49,7 @@ window.addEventListener("message", (event) => {
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
       THREE_DIMENSION_MODE_AC.value = oldPrefs.threeDimensionModeAc;
       THREE_DIMENSION_MODE_BATTERY.value = oldPrefs.threeDimensionModeBattery;
+      THREE_DIMENSION_ANTIALIASING.value = oldPrefs.threeDimensionAntialiasing;
       TBA_API_KEY.value = oldPrefs.tbaApiKey;
 
       // Close function
@@ -80,6 +82,10 @@ window.addEventListener("message", (event) => {
           if (THREE_DIMENSION_MODE_BATTERY.value === "standard") threeDimensionModeBattery = "standard";
           if (THREE_DIMENSION_MODE_BATTERY.value === "low-power") threeDimensionModeBattery = "low-power";
 
+          let threeDimensionAntialiasing: "on" | "off" = "on";
+          if (THREE_DIMENSION_ANTIALIASING.value === "on") threeDimensionAntialiasing = "on";
+          if (THREE_DIMENSION_ANTIALIASING.value === "off") threeDimensionAntialiasing = "off";
+
           let newPrefs: Preferences = {
             theme: theme,
             rioAddress: RIO_ADDRESS.value,
@@ -91,6 +97,7 @@ window.addEventListener("message", (event) => {
             rlogPort: oldPrefs.rlogPort,
             threeDimensionModeAc: threeDimensionModeAc,
             threeDimensionModeBattery: threeDimensionModeBattery,
+            threeDimensionAntialiasing: threeDimensionAntialiasing,
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,

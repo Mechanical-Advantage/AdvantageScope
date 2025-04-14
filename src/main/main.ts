@@ -2964,7 +2964,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const rows = 10;
+  const rows = 11;
   const height = rows * 27 + 54;
   prefsWindow = new BrowserWindow({
     width: width,
@@ -3298,6 +3298,12 @@ app.whenReady().then(() => {
         oldPrefs.threeDimensionModeBattery === "low-power")
     ) {
       prefs.threeDimensionModeBattery = oldPrefs.threeDimensionModeBattery;
+    }
+    if (
+      "threeDimensionAntialiasing" in oldPrefs &&
+      (oldPrefs.threeDimensionAntialiasing === "on" || oldPrefs.threeDimensionAntialiasing === "off")
+    ) {
+      prefs.threeDimensionAntialiasing = oldPrefs.threeDimensionAntialiasing;
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;

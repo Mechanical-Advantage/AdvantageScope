@@ -37,6 +37,7 @@ export const DEFAULT_PREFS: Preferences = {
   rlogPort: 5800,
   threeDimensionModeAc: "standard",
   threeDimensionModeBattery: "",
+  threeDimensionAntialiasing: "on",
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,

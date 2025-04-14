@@ -129,6 +129,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
 
   constructor(
     mode: "cinematic" | "standard" | "low-power",
+    useAA: "on" | "off",
     canvas: HTMLCanvasElement,
     canvasContainer: HTMLElement,
     annotationsDiv: HTMLElement,
@@ -143,7 +144,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     this.spinner = spinner;
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
-      powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default"
+      powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default",
+      antialias: useAA == "on"
     });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = mode === "cinematic";
