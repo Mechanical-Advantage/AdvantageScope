@@ -10,6 +10,7 @@ export default interface Preferences {
   rlogPort: number;
   threeDimensionModeAc: "cinematic" | "standard" | "low-power";
   threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
+  threeDimensionAntialiasing: "on" | "off";
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;

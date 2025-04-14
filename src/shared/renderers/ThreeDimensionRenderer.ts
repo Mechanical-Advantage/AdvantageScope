@@ -12,6 +12,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 
   private implementation: ThreeDimensionRendererImpl | null = null;
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
+  private lastUseAA: "on" | "off" = "on";
   private stateRestoreCache: unknown | null = null;
 
   constructor(root: HTMLElement) {
@@ -58,9 +59,15 @@ export default class ThreeDimensionRenderer implements TabRenderer {
       }
     }
 
+    let useAA: "on" | "off" = "on";
+    if (window.preferences) {
+      useAA = window.preferences.threeDimensionAntialiasing;
+    }
+
     // Recreate visualizer if necessary
-    if (mode !== this.lastMode && mode !== null) {
+    if ((mode !== this.lastMode || useAA != this.lastUseAA) && mode !== null) {
       this.lastMode = mode;
+      this.lastUseAA = useAA;
       let state: any = null;
       if (this.implementation !== null) {
         state = this.implementation.saveState();
@@ -86,6 +93,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
       }
       this.implementation = new ThreeDimensionRendererImpl(
         mode,
+        useAA,
         this.CANVAS,
         this.CANVAS_CONTAINER,
         this.ANNOTATIONS_DIV,
