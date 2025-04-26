@@ -9,11 +9,9 @@ import {
   grabSwerveStates
 } from "../../shared/geometry";
 import {
-  ALLIANCE_KEYS,
   DRIVER_STATION_KEYS,
   MechanismState,
   getDriverStation,
-  getIsRedAlliance,
   getMechanismState,
   getOrDefault,
   mergeMechanismStates
@@ -32,12 +30,10 @@ import ThreeDimensionController_Config from "./ThreeDimensionController_Config";
 export default class ThreeDimensionController implements TabController {
   UUID = createUUID();
 
-  private ORIGIN_SWITCHER: HTMLElement;
   private XR_BUTTON: HTMLButtonElement;
-  private GAME_SELECT: HTMLSelectElement;
+  private FIELD_SELECT: HTMLSelectElement;
 
   private sourceList: SourceList;
-  private originSetting: "auto" | "blue" | "red" = "auto";
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -46,9 +42,8 @@ export default class ThreeDimensionController implements TabController {
       []
     );
     let settings = root.getElementsByClassName("three-dimension-settings")[0] as HTMLElement;
-    this.ORIGIN_SWITCHER = settings.getElementsByClassName("origin-switcher")[0] as HTMLElement;
     this.XR_BUTTON = settings.getElementsByClassName("xr-button")[0] as HTMLButtonElement;
-    this.GAME_SELECT = settings.getElementsByClassName("game-select")[0] as HTMLSelectElement;
+    this.FIELD_SELECT = settings.getElementsByClassName("field-select")[0] as HTMLSelectElement;
 
     // Set up XR button
     this.XR_BUTTON.addEventListener("click", () => {
@@ -56,18 +51,9 @@ export default class ThreeDimensionController implements TabController {
     });
 
     // Set up game select
-    this.GAME_SELECT.addEventListener("change", () => this.updateGameDependentControls());
-    this.updateGameOptions();
+    this.FIELD_SELECT.addEventListener("change", () => this.updateFieldDependentControls());
+    this.updateFieldOptions();
     this.updateRobotOptions();
-
-    // Set up switchers
-    (["auto", "blue", "red"] as const).forEach((value, index) => {
-      this.ORIGIN_SWITCHER.children[index].addEventListener("click", () => {
-        this.originSetting = value;
-        this.updateOriginSwitcher();
-      });
-    });
-    this.updateOriginSwitcher();
   }
 
   /** Sets whether XR streamling is currently active for this tab. */
@@ -79,27 +65,39 @@ export default class ThreeDimensionController implements TabController {
     }
   }
 
-  /** Updates game select with the latest options. */
-  private updateGameOptions() {
-    let value = this.GAME_SELECT.value;
-    while (this.GAME_SELECT.firstChild) {
-      this.GAME_SELECT.removeChild(this.GAME_SELECT.firstChild);
+  /** Updates field select with the latest options. */
+  private updateFieldOptions() {
+    let value = this.FIELD_SELECT.value;
+    let frcGroup = this.FIELD_SELECT.firstElementChild as HTMLElement;
+    let ftcGroup = this.FIELD_SELECT.lastElementChild as HTMLElement;
+    while (frcGroup.firstChild) {
+      frcGroup.removeChild(frcGroup.firstChild);
+    }
+    while (ftcGroup.firstChild) {
+      ftcGroup.removeChild(ftcGroup.firstChild);
     }
     let options: string[] = [];
     if (window.assets !== null) {
-      options = [...window.assets.field3ds.map((game) => game.name), "Evergreen", "Axes"];
-      options.forEach((title) => {
+      [
+        ...window.assets.field3ds,
+        { name: "Evergreen", id: "FRC:Evergreen", isFTC: false },
+        { name: "Evergreen", id: "FTC:Evergreen", isFTC: true },
+        { name: "Axes", id: "FRC:Axes", isFTC: false },
+        { name: "Axes", id: "FTC:Axes", isFTC: true }
+      ].forEach((field) => {
         let option = document.createElement("option");
-        option.innerText = title;
-        this.GAME_SELECT.appendChild(option);
+        option.innerText = field.name;
+        option.value = field.id;
+        options.push(field.id);
+        (field.isFTC ? ftcGroup : frcGroup).appendChild(option);
       });
     }
     if (options.includes(value)) {
-      this.GAME_SELECT.value = value;
+      this.FIELD_SELECT.value = value;
     } else {
-      this.GAME_SELECT.value = options[0];
+      this.FIELD_SELECT.selectedIndex = 0;
     }
-    this.updateGameDependentControls(this.GAME_SELECT.value === value); // Skip origin reset if game is unchanged
+    this.updateFieldDependentControls();
   }
 
   /** Updates source list with the latest robot models. */
@@ -121,14 +119,9 @@ export default class ThreeDimensionController implements TabController {
     this.sourceList.setOptionValues("ghostZebra", "model", sourceListValues);
   }
 
-  /** Updates the alliance select, source button, and game pieces based on the selected value. */
-  private updateGameDependentControls(skipOriginReset = false) {
-    let fieldConfig = window.assets?.field3ds.find((game) => game.name === this.GAME_SELECT.value);
-
-    if (fieldConfig !== undefined && !skipOriginReset) {
-      this.originSetting = fieldConfig.defaultOrigin;
-      this.updateOriginSwitcher();
-    }
+  /** Updates the robots, source button, and game pieces based on the selected value. */
+  private updateFieldDependentControls() {
+    let fieldConfig = window.assets?.field3ds.find((game) => game.id === this.FIELD_SELECT.value);
 
     let gamePieces: string[] = [];
     if (fieldConfig !== undefined) {
@@ -144,45 +137,27 @@ export default class ThreeDimensionController implements TabController {
     this.sourceList.setOptionValues("gamePieceLegacy", "variant", sourceListValues);
   }
 
-  /** Updates the switcher elements to match the internal state. */
-  private updateOriginSwitcher() {
-    let selectedIndex = ["auto", "blue", "red"].indexOf(this.originSetting);
-    if (selectedIndex === -1) selectedIndex = 0;
-    for (let i = 0; i < 3; i++) {
-      if (i === selectedIndex) {
-        this.ORIGIN_SWITCHER.children[i].classList.add("selected");
-      } else {
-        this.ORIGIN_SWITCHER.children[i].classList.remove("selected");
-      }
-    }
-  }
-
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
-      game: this.GAME_SELECT.value,
-      origin: this.originSetting
+      game: this.FIELD_SELECT.value
     };
   }
 
   restoreState(state: unknown): void {
     if (typeof state !== "object" || state === null) return;
 
-    this.updateGameOptions();
+    this.updateFieldOptions();
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
     if ("game" in state && typeof state.game === "string") {
-      this.GAME_SELECT.value = state.game;
-      if (this.GAME_SELECT.value === "") {
-        this.GAME_SELECT.selectedIndex = 0;
+      this.FIELD_SELECT.value = state.game;
+      if (this.FIELD_SELECT.value === "") {
+        this.FIELD_SELECT.selectedIndex = 0;
       }
     }
-    if ("origin" in state && (state.origin === "auto" || state.origin === "blue" || state.origin === "red")) {
-      this.originSetting = state.origin;
-    }
-    this.updateGameDependentControls(true);
-    this.updateOriginSwitcher();
+    this.updateFieldDependentControls();
   }
 
   refresh(): void {
@@ -190,16 +165,12 @@ export default class ThreeDimensionController implements TabController {
   }
 
   newAssets(): void {
-    this.updateGameOptions();
+    this.updateFieldOptions();
     this.updateRobotOptions();
   }
 
   getActiveFields(): string[] {
-    let allianceKeys: string[] = [];
-    if (this.originSetting === "auto") {
-      allianceKeys = ALLIANCE_KEYS;
-    }
-    return [...this.sourceList.getActiveFields(), ...allianceKeys, ...DRIVER_STATION_KEYS];
+    return [...this.sourceList.getActiveFields(), ...DRIVER_STATION_KEYS];
   }
 
   showTimeline(): boolean {
@@ -211,14 +182,9 @@ export default class ThreeDimensionController implements TabController {
     let time = window.selection.getRenderTime();
 
     // Get game data
-    let gameData = window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value);
-    let fieldWidth = gameData === undefined ? 0 : convert(gameData.widthInches, "inches", "meters");
-    let fieldHeight = gameData === undefined ? 0 : convert(gameData.heightInches, "inches", "meters");
-
-    // Get alliance
-    let autoRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
-    let origin: "blue" | "red" =
-      (this.originSetting === "auto" && autoRedAlliance) || this.originSetting === "red" ? "red" : "blue";
+    let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
+    let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
+    let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
 
     let objects: ThreeDimensionRendererCommand_AnyObj[] = [];
     let cameraOverride: AnnotatedPose3d | null = null;
@@ -268,7 +234,6 @@ export default class ThreeDimensionController implements TabController {
             this.UUID,
             numberArrayFormat,
             numberArrayUnits,
-            origin,
             fieldWidth,
             fieldHeight
           );
@@ -295,7 +260,6 @@ export default class ThreeDimensionController implements TabController {
           this.UUID,
           numberArrayFormat,
           numberArrayUnits,
-          origin,
           fieldWidth,
           fieldHeight
         );
@@ -536,8 +500,8 @@ export default class ThreeDimensionController implements TabController {
     });
 
     return {
-      game: this.GAME_SELECT.value,
-      origin: origin,
+      field: this.FIELD_SELECT.value,
+      origin: "blue",
       objects: objects,
       cameraOverride: cameraOverride,
       autoDriverStation: getDriverStation(window.log, time!),

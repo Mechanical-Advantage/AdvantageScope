@@ -72,7 +72,7 @@ import { VideoProcessor } from "./VideoProcessor";
 import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
-import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
+import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import {
   delayBetaSurvey,
   isBeta,
@@ -3333,7 +3333,6 @@ app.whenReady().then(() => {
 
   // Load assets
   createAssetFolders();
-  convertLegacyAssets();
   startAssetDownloadLoop(() => {
     advantageScopeAssets = loadAssets();
     sendAssets();

@@ -26,7 +26,14 @@ const OdometryController_Config: SourceListConfig = {
         "Transform3d[]"
       ],
       showDocs: true,
-      options: [],
+      options: [
+        {
+          key: "bumpers",
+          display: "Bumpers",
+          showInTypeName: false,
+          values: [{ key: "auto", display: "Alliance Color" }, ...NeonColors]
+        }
+      ],
       parentKey: "robot",
       previewType: "Pose2d"
     },
@@ -40,6 +47,12 @@ const OdometryController_Config: SourceListConfig = {
       sourceTypes: ["NumberArray"],
       showDocs: false,
       options: [
+        {
+          key: "bumpers",
+          display: "Bumpers",
+          showInTypeName: false,
+          values: [{ key: "auto", display: "Alliance Color" }, ...NeonColors]
+        },
         {
           key: "format",
           display: "Format",

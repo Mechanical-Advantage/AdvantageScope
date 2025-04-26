@@ -1,13 +1,21 @@
 import * as THREE from "three";
-import { ALLIANCE_STATION_WIDTH, STANDARD_FIELD_LENGTH, STANDARD_FIELD_WIDTH } from "../../AdvantageScopeAssets";
+import {
+  ALLIANCE_STATION_WIDTH,
+  FRC_STANDARD_FIELD_LENGTH,
+  FRC_STANDARD_FIELD_WIDTH
+} from "../../AdvantageScopeAssets";
 import { convert } from "../../units";
 
-export default function makeEvergreenField(materialSpecular: THREE.Color, materialShininess: number): THREE.Object3D {
+export default function makeEvergreenField(
+  materialSpecular: THREE.Color,
+  materialShininess: number,
+  isFTC: boolean
+): THREE.Object3D {
   let field = new THREE.Group();
 
   // Floor
   let carpet = new THREE.Mesh(
-    new THREE.PlaneGeometry(STANDARD_FIELD_LENGTH + 4, STANDARD_FIELD_WIDTH + 1),
+    new THREE.PlaneGeometry(FRC_STANDARD_FIELD_LENGTH + 4, FRC_STANDARD_FIELD_WIDTH + 1),
     new THREE.MeshPhongMaterial({ color: 0x888888, side: THREE.DoubleSide })
   );
   carpet.name = "carpet";
@@ -15,10 +23,10 @@ export default function makeEvergreenField(materialSpecular: THREE.Color, materi
 
   // Guardrails
   const guardrailHeight = convert(20, "inches", "meters");
-  [-STANDARD_FIELD_WIDTH / 2, STANDARD_FIELD_WIDTH / 2].forEach((y) => {
+  [-FRC_STANDARD_FIELD_WIDTH / 2, FRC_STANDARD_FIELD_WIDTH / 2].forEach((y) => {
     [0, guardrailHeight].forEach((z) => {
       let guardrail = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.02, 0.02, STANDARD_FIELD_LENGTH, 12),
+        new THREE.CylinderGeometry(0.02, 0.02, FRC_STANDARD_FIELD_LENGTH, 12),
         new THREE.MeshPhongMaterial({ color: 0xdddddd })
       );
       field.add(guardrail);
@@ -27,7 +35,7 @@ export default function makeEvergreenField(materialSpecular: THREE.Color, materi
     });
     {
       let panel = new THREE.Mesh(
-        new THREE.PlaneGeometry(STANDARD_FIELD_LENGTH, guardrailHeight),
+        new THREE.PlaneGeometry(FRC_STANDARD_FIELD_LENGTH, guardrailHeight),
         new THREE.MeshPhongMaterial({
           color: 0xffffff,
           side: THREE.DoubleSide,
@@ -39,8 +47,12 @@ export default function makeEvergreenField(materialSpecular: THREE.Color, materi
       panel.rotateX(Math.PI / 2);
       panel.position.set(0, y, guardrailHeight / 2);
     }
-    for (let x = -STANDARD_FIELD_LENGTH / 2; x < STANDARD_FIELD_LENGTH / 2; x += STANDARD_FIELD_LENGTH / 16) {
-      if (x === -STANDARD_FIELD_LENGTH / 2) continue;
+    for (
+      let x = -FRC_STANDARD_FIELD_LENGTH / 2;
+      x < FRC_STANDARD_FIELD_LENGTH / 2;
+      x += FRC_STANDARD_FIELD_LENGTH / 16
+    ) {
+      if (x === -FRC_STANDARD_FIELD_LENGTH / 2) continue;
       let guardrail = new THREE.Mesh(
         new THREE.CylinderGeometry(0.02, 0.02, guardrailHeight, 12),
         new THREE.MeshPhongMaterial({ color: 0xdddddd })
@@ -56,16 +68,16 @@ export default function makeEvergreenField(materialSpecular: THREE.Color, materi
   const allianceStationHeight = convert(78, "inches", "meters");
   const allianceStationSolidHeight = convert(36.75, "inches", "meters");
   const allianceStationShelfDepth = convert(12.25, "inches", "meters");
-  const fillerWidth = (STANDARD_FIELD_WIDTH - allianceStationWidth * 3) / 2;
+  const fillerWidth = (FRC_STANDARD_FIELD_WIDTH - allianceStationWidth * 3) / 2;
   const blueColor = 0x6379a6;
   const redColor = 0xa66363;
-  [-STANDARD_FIELD_LENGTH / 2, STANDARD_FIELD_LENGTH / 2].forEach((x) => {
+  [-FRC_STANDARD_FIELD_LENGTH / 2, FRC_STANDARD_FIELD_LENGTH / 2].forEach((x) => {
     [0, allianceStationSolidHeight, allianceStationHeight].forEach((z) => {
       let guardrail = new THREE.Mesh(
         new THREE.CylinderGeometry(
           0.02,
           0.02,
-          z === allianceStationSolidHeight ? allianceStationWidth * 3 : STANDARD_FIELD_WIDTH,
+          z === allianceStationSolidHeight ? allianceStationWidth * 3 : FRC_STANDARD_FIELD_WIDTH,
           12
         ),
         new THREE.MeshPhongMaterial({ color: 0xdddddd })
@@ -74,12 +86,12 @@ export default function makeEvergreenField(materialSpecular: THREE.Color, materi
       guardrail.position.set(x, 0, z);
     });
     [
-      -STANDARD_FIELD_WIDTH / 2,
+      -FRC_STANDARD_FIELD_WIDTH / 2,
       allianceStationWidth * -1.5,
       allianceStationWidth * -0.5,
       allianceStationWidth * 0.5,
       allianceStationWidth * 1.5,
-      STANDARD_FIELD_WIDTH / 2
+      FRC_STANDARD_FIELD_WIDTH / 2
     ].forEach((y) => {
       let guardrail = new THREE.Mesh(
         new THREE.CylinderGeometry(0.02, 0.02, allianceStationHeight, 12),
@@ -89,7 +101,7 @@ export default function makeEvergreenField(materialSpecular: THREE.Color, materi
       guardrail.rotateX(Math.PI / 2);
       guardrail.position.set(x, y, allianceStationHeight / 2);
     });
-    [-STANDARD_FIELD_WIDTH / 2 + fillerWidth / 2, STANDARD_FIELD_WIDTH / 2 - fillerWidth / 2].forEach((y) => {
+    [-FRC_STANDARD_FIELD_WIDTH / 2 + fillerWidth / 2, FRC_STANDARD_FIELD_WIDTH / 2 - fillerWidth / 2].forEach((y) => {
       let filler = new THREE.Mesh(
         new THREE.PlaneGeometry(allianceStationHeight, fillerWidth),
         new THREE.MeshPhongMaterial({ color: x < 0 ? blueColor : redColor, side: THREE.DoubleSide })

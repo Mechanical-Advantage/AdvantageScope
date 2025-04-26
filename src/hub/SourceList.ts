@@ -1061,7 +1061,6 @@ export default class SourceList {
                   this.UUID,
                   numberArrayFormat,
                   numberArrayUnits,
-                  "red", // Display in native coordinate system
                   0,
                   0
                 );

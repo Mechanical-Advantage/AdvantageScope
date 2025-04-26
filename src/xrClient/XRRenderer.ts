@@ -11,8 +11,10 @@ import {
   AdvantageScopeAssets,
   Config3dField,
   DEFAULT_DRIVER_STATIONS,
-  STANDARD_FIELD_LENGTH,
-  STANDARD_FIELD_WIDTH
+  FRC_STANDARD_FIELD_LENGTH,
+  FRC_STANDARD_FIELD_WIDTH,
+  FTC_STANDARD_FIELD_LENGTH,
+  FTC_STANDARD_FIELD_WIDTH
 } from "../shared/AdvantageScopeAssets";
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
 import {
@@ -79,7 +81,7 @@ export default class XRRenderer {
   private robotLoadingCount = 0;
   private shouldLoadNewField = false;
   private isFieldLoading = false;
-  private lastFieldTitle: string = "";
+  private lastFieldId: string = "";
   private lastAssetsString: string = "";
 
   constructor() {
@@ -235,33 +237,68 @@ export default class XRRenderer {
     command: ThreeDimensionRendererCommand,
     assets: AdvantageScopeAssets | null
   ): Config3dField | null {
-    let fieldTitle = command.game;
-    if (fieldTitle === "Evergreen") {
-      return {
-        name: "Evergreen",
-        path: "",
-        rotations: [],
-        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "auto",
-        driverStations: DEFAULT_DRIVER_STATIONS,
-        gamePieces: []
-      };
-    } else if (fieldTitle === "Axes") {
-      return {
-        name: "Axes",
-        path: "",
-        rotations: [],
-        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "blue",
-        driverStations: DEFAULT_DRIVER_STATIONS,
-        gamePieces: []
-      };
-    } else {
-      let fieldConfig = assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
-      if (fieldConfig === undefined) return null;
-      return fieldConfig;
+    let fieldId = command.field;
+    switch (fieldId) {
+      case "FRC:Evergreen":
+        return {
+          name: "Evergreen",
+          path: "",
+          id: "FRC:Evergreen",
+          isFTC: false,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      case "FTC:Evergreen":
+        return {
+          name: "Evergreen",
+          path: "",
+          id: "FTC:Evergreen",
+          isFTC: true,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      case "FRC:Axes":
+        return {
+          name: "Axes",
+          path: "",
+          id: "FRC:Axes",
+          isFTC: false,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      case "FTC:Axes":
+        return {
+          name: "Axes",
+          path: "",
+          id: "FTC:Axes",
+          isFTC: true,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      default:
+        let fieldConfig = assets?.field3ds.find((fieldData) => fieldData.id === fieldId);
+        if (fieldConfig === undefined) return null;
+        return fieldConfig;
     }
   }
 
@@ -343,7 +380,7 @@ export default class XRRenderer {
     const raycastUnreliable = new Date().getTime() - this.lastInvalidRaycast < 500;
 
     // Get field config
-    let fieldTitle = command.game;
+    let fieldId = command.field;
     let fieldConfigTmp = this.getFieldConfig(command, assets);
     this.fieldConfigCache = fieldConfigTmp;
     if (fieldConfigTmp === null) return;
@@ -482,9 +519,9 @@ export default class XRRenderer {
     // Update field
     let assetsString = JSON.stringify(assets);
     let newAssets = assetsString !== this.lastAssetsString;
-    if (fieldTitle !== this.lastFieldTitle || newAssets) {
+    if (fieldId !== this.lastFieldId || newAssets) {
       this.shouldLoadNewField = true;
-      this.lastFieldTitle = fieldTitle;
+      this.lastFieldId = fieldId;
       this.lastAssetsString = assetsString;
     }
     if (this.shouldLoadNewField && !this.isFieldLoading) {
@@ -524,18 +561,22 @@ export default class XRRenderer {
       };
 
       // Load new field
-      if (fieldTitle === "Evergreen") {
+      if (fieldId === "FRC:Evergreen" || fieldId === "FTC:Evergreen") {
         this.isFieldLoading = false;
-        let fullField = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        let fullField = makeEvergreenField(
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          fieldId === "FTC:Evergreen"
+        );
         let carpet = fullField.getObjectByName("carpet")!;
         carpet.removeFromParent();
         this.field = fullField;
         this.fieldCarpet = carpet;
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
-      } else if (fieldTitle === "Axes") {
+      } else if (fieldId === "FRC:Axes" || fieldId === "FTC:Axes") {
         this.isFieldLoading = false;
-        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Axes");
         this.fieldCarpet = new THREE.Object3D();
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();

@@ -7,8 +7,10 @@ import {
   Config3dField,
   Config3d_Rotation,
   DEFAULT_DRIVER_STATIONS,
-  STANDARD_FIELD_LENGTH,
-  STANDARD_FIELD_WIDTH
+  FRC_STANDARD_FIELD_LENGTH,
+  FRC_STANDARD_FIELD_WIDTH,
+  FTC_STANDARD_FIELD_LENGTH,
+  FTC_STANDARD_FIELD_WIDTH
 } from "../AdvantageScopeAssets";
 import { Rotation3d } from "../geometry";
 import { convert } from "../units";
@@ -36,13 +38,17 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private MAX_ORBIT_FOV = 160;
   private MIN_ORBIT_FOV = 10;
   private ORBIT_FIELD_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
-  private ORBIT_AXES_DEFAULT_TARGET = new THREE.Vector3(STANDARD_FIELD_LENGTH / 2, 0, -STANDARD_FIELD_WIDTH / 2);
+  private ORBIT_AXES_DEFAULT_TARGET = new THREE.Vector3(
+    FRC_STANDARD_FIELD_LENGTH / 2,
+    0,
+    -FTC_STANDARD_FIELD_WIDTH / 2
+  );
   private ORBIT_ROBOT_DEFAULT_TARGET = new THREE.Vector3(0, 0.5, 0);
   private ORBIT_FIELD_DEFAULT_POSITION = new THREE.Vector3(0, 6, -12);
   private ORBIT_AXES_DEFAULT_POSITION = new THREE.Vector3(
-    2 + STANDARD_FIELD_LENGTH / 2,
+    2 + FRC_STANDARD_FIELD_LENGTH / 2,
     2,
-    -4 - STANDARD_FIELD_WIDTH / 2
+    -4 - FTC_STANDARD_FIELD_WIDTH / 2
   );
   private ORBIT_ROBOT_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
   private DS_CAMERA_HEIGHT = convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
@@ -120,7 +126,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private lastIsDark: boolean | null = null;
   private lastCommandString: string = "";
   private lastAssets: AdvantageScopeAssets | null = null;
-  private lastFieldTitle: string = "";
+  private lastFieldId: string = "";
   private keysPressed: Set<string> = new Set();
 
   static {
@@ -321,7 +327,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private resetCamera(command: ThreeDimensionRendererCommand, animate = true) {
     if (this.cameraIndex === -1) {
       // Orbit field
-      if (command && command.game === "Axes") {
+      if (command && command.field === "Axes") {
         this.controls.setLookAt(
           this.ORBIT_AXES_DEFAULT_POSITION.x,
           this.ORBIT_AXES_DEFAULT_POSITION.y,
@@ -383,33 +389,68 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   }
 
   private getFieldConfig(command: ThreeDimensionRendererCommand): Config3dField | null {
-    let fieldTitle = command.game;
-    if (fieldTitle === "Evergreen") {
-      return {
-        name: "Evergreen",
-        path: "",
-        rotations: [],
-        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "auto",
-        driverStations: DEFAULT_DRIVER_STATIONS,
-        gamePieces: []
-      };
-    } else if (fieldTitle === "Axes") {
-      return {
-        name: "Axes",
-        path: "",
-        rotations: [],
-        widthInches: convert(STANDARD_FIELD_LENGTH, "meters", "inches"),
-        heightInches: convert(STANDARD_FIELD_WIDTH, "meters", "inches"),
-        defaultOrigin: "blue",
-        driverStations: DEFAULT_DRIVER_STATIONS,
-        gamePieces: []
-      };
-    } else {
-      let fieldConfig = window.assets?.field3ds.find((fieldData) => fieldData.name === fieldTitle);
-      if (fieldConfig === undefined) return null;
-      return fieldConfig;
+    let fieldId = command.field;
+    switch (fieldId) {
+      case "FRC:Evergreen":
+        return {
+          name: "Evergreen",
+          path: "",
+          id: "FRC:Evergreen",
+          isFTC: false,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      case "FTC:Evergreen":
+        return {
+          name: "Evergreen",
+          path: "",
+          id: "FTC:Evergreen",
+          isFTC: true,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      case "FRC:Axes":
+        return {
+          name: "Axes",
+          path: "",
+          id: "FRC:Axes",
+          isFTC: false,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      case "FTC:Axes":
+        return {
+          name: "Axes",
+          path: "",
+          id: "FTC:Axes",
+          isFTC: true,
+          rotations: [],
+          position: [0, 0, 0],
+          widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+          heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+          driverStations: DEFAULT_DRIVER_STATIONS,
+          gamePieces: []
+        };
+
+      default:
+        let fieldConfig = window.assets?.field3ds.find((fieldData) => fieldData.id === fieldId);
+        if (fieldConfig === undefined) return null;
+        return fieldConfig;
     }
   }
 
@@ -548,7 +589,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.renderer.domElement.clientHeight !== this.lastHeight ||
       window.devicePixelRatio !== this.lastDevicePixelRatio ||
       isDark !== this.lastIsDark ||
-      command.game !== this.lastFieldTitle ||
+      command.field !== this.lastFieldId ||
       commandString !== this.lastCommandString ||
       newAssets ||
       controlsUpdated
@@ -581,7 +622,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     this.shouldRender = false;
 
     // Get field config
-    let fieldTitle = command.game;
+    let fieldId = command.field;
     let fieldConfigTmp = this.getFieldConfig(command);
     this.fieldConfigCache = fieldConfigTmp;
     if (fieldConfigTmp === null) return;
@@ -605,17 +646,17 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
 
     // Update field
-    if (fieldTitle !== this.lastFieldTitle || newFieldAssets) {
+    if (fieldId !== this.lastFieldId || newFieldAssets) {
       this.shouldLoadNewField = true;
 
       // Reset camera if switching between axis and non-axis or if using DS camera
       if (
-        ((fieldTitle === "Axes") !== (this.lastFieldTitle === "Axes") && this.lastFieldTitle !== "") ||
+        ((fieldId === "Axes") !== (this.lastFieldId === "Axes") && this.lastFieldId !== "") ||
         this.cameraIndex < -2
       ) {
         this.resetCamera(command);
       }
-      this.lastFieldTitle = fieldTitle;
+      this.lastFieldId = fieldId;
     }
     if (this.shouldLoadNewField && !this.isFieldLoading) {
       this.shouldLoadNewField = false;
@@ -652,14 +693,14 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       };
 
       // Load new field
-      if (fieldTitle === "Evergreen") {
+      if (fieldId === "FRC:Evergreen" || fieldId === "FTC:Evergreen") {
         this.isFieldLoading = false;
-        this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.field = makeEvergreenField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Evergreen");
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
-      } else if (fieldTitle === "Axes") {
+      } else if (fieldId === "FRC:Axes" || fieldId === "FTC:Axes") {
         this.isFieldLoading = false;
-        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS);
+        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Axes");
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
       } else {

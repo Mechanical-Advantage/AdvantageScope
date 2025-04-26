@@ -112,7 +112,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 }
 
 export type ThreeDimensionRendererCommand = {
-  game: string;
+  field: string;
   origin: "blue" | "red";
   objects: ThreeDimensionRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;

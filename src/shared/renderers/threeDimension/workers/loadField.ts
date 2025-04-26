@@ -59,6 +59,7 @@ self.onmessage = (event) => {
         });
 
         stagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+        stagedPieces.position.set(...fieldConfig.position);
         let fieldStagedPiecesMeshes = await optimizeGeometries(
           stagedPieces,
           mode,
@@ -73,6 +74,7 @@ self.onmessage = (event) => {
         if (fieldStagedPiecesMeshes.carpet.length > 0) fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet[0]);
 
         scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+        scene.position.set(...fieldConfig.position);
         let fieldMeshes = await optimizeGeometries(scene, mode, materialSpecular, materialShininess, true, 1);
         field = new THREE.Group();
         fieldMeshes.carpet.forEach((mesh) => {

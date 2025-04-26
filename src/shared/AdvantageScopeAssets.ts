@@ -1,15 +1,18 @@
 import { convert } from "./units";
 
-export const STANDARD_FIELD_LENGTH = convert(54, "feet", "meters");
-export const STANDARD_FIELD_WIDTH = convert(27, "feet", "meters");
+export const FRC_STANDARD_FIELD_LENGTH = convert(54, "feet", "meters");
+export const FRC_STANDARD_FIELD_WIDTH = convert(27, "feet", "meters");
+export const FTC_STANDARD_FIELD_LENGTH = convert(12, "feet", "meters");
+export const FTC_STANDARD_FIELD_WIDTH = convert(12, "feet", "meters");
+
 export const ALLIANCE_STATION_WIDTH = convert(69, "inches", "meters");
 export const DEFAULT_DRIVER_STATIONS: [number, number][] = [
-  [-STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
-  [-STANDARD_FIELD_LENGTH / 2, 0],
-  [-STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
-  [STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
-  [STANDARD_FIELD_LENGTH / 2, 0],
-  [STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH]
+  [-FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
+  [-FRC_STANDARD_FIELD_LENGTH / 2, 0],
+  [-FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
+  [FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
+  [FRC_STANDARD_FIELD_LENGTH / 2, 0],
+  [FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH]
 ];
 
 export interface AdvantageScopeAssets {
@@ -23,24 +26,26 @@ export interface AdvantageScopeAssets {
 export interface Config2d {
   name: string;
   path: string;
+  id: string;
 
+  isFTC: boolean;
   sourceUrl?: string;
   topLeft: [number, number];
   bottomRight: [number, number];
   widthInches: number;
   heightInches: number;
-  defaultOrigin: "auto" | "blue" | "red";
 }
 
 export interface Config3dField {
   name: string;
   path: string;
+  id: string;
 
-  sourceUrl?: string; // Unused starting in 2025
+  isFTC: boolean;
   rotations: Config3d_Rotation[];
+  position: [number, number, number];
   widthInches: number;
   heightInches: number;
-  defaultOrigin: "auto" | "blue" | "red";
   driverStations: [number, number][];
   gamePieces: Config3dField_GamePiece[];
 }
@@ -61,7 +66,6 @@ export interface Config3dRobot {
   name: string;
   path: string;
 
-  sourceUrl?: string;
   disableSimplification: boolean;
   rotations: Config3d_Rotation[];
   position: [number, number, number];

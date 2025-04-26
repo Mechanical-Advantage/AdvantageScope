@@ -76,26 +76,26 @@ export default class OdometryRenderer implements TabRenderer {
         break;
     }
 
-    // Get game data and update image element
-    let gameData = window.assets?.field2ds.find((game) => game.name === command.game);
-    if (!gameData) return;
-    if (gameData.path !== this.lastImageSource) {
-      this.lastImageSource = gameData.path;
-      this.IMAGE.src = gameData.path;
+    // Get field data and update image element
+    let fieldData = window.assets?.field2ds.find((field) => field.id === command.field);
+    if (!fieldData) return;
+    if (fieldData.path !== this.lastImageSource) {
+      this.lastImageSource = fieldData.path;
+      this.IMAGE.src = fieldData.path;
     }
     if (!(this.IMAGE.width > 0 && this.IMAGE.height > 0)) return;
 
-    // Determine if objects are flipped
-    let objectsFlipped = command.origin === "red";
+    // Determine if objects are shifted (center field origin)
+    let objectsShifted = fieldData.isFTC;
 
     // Render background
-    let fieldWidth = gameData.bottomRight[0] - gameData.topLeft[0];
-    let fieldHeight = gameData.bottomRight[1] - gameData.topLeft[1];
+    let fieldWidth = fieldData.bottomRight[0] - fieldData.topLeft[0];
+    let fieldHeight = fieldData.bottomRight[1] - fieldData.topLeft[1];
 
-    let topMargin = gameData.topLeft[1];
-    let bottomMargin = this.IMAGE.height - gameData.bottomRight[1];
-    let leftMargin = gameData.topLeft[0];
-    let rightMargin = this.IMAGE.width - gameData.bottomRight[0];
+    let topMargin = fieldData.topLeft[1];
+    let bottomMargin = this.IMAGE.height - fieldData.bottomRight[1];
+    let leftMargin = fieldData.topLeft[0];
+    let rightMargin = this.IMAGE.width - fieldData.bottomRight[0];
 
     let margin = Math.min(topMargin, bottomMargin, leftMargin, rightMargin);
     let extendedFieldWidth = fieldWidth + margin * 2;
@@ -107,8 +107,8 @@ export default class OdometryRenderer implements TabRenderer {
     } else {
       imageScalar = width / extendedFieldWidth;
     }
-    let fieldCenterX = fieldWidth * 0.5 + gameData.topLeft[0];
-    let fieldCenterY = fieldHeight * 0.5 + gameData.topLeft[1];
+    let fieldCenterX = fieldWidth * 0.5 + fieldData.topLeft[0];
+    let fieldCenterY = fieldHeight * 0.5 + fieldData.topLeft[1];
     let renderValues = [
       Math.floor(width * 0.5 - fieldCenterX * imageScalar), // X (normal)
       Math.floor(height * 0.5 - fieldCenterY * imageScalar), // Y (normal)
@@ -121,30 +121,29 @@ export default class OdometryRenderer implements TabRenderer {
     this.aspectRatio = isVertical ? fieldHeight / fieldWidth : fieldWidth / fieldHeight;
 
     // Calculate field edges
-    let canvasFieldLeft = renderValues[0] + gameData.topLeft[0] * imageScalar;
-    let canvasFieldTop = renderValues[1] + gameData.topLeft[1] * imageScalar;
+    let canvasFieldLeft = renderValues[0] + fieldData.topLeft[0] * imageScalar;
+    let canvasFieldTop = renderValues[1] + fieldData.topLeft[1] * imageScalar;
     let canvasFieldWidth = fieldWidth * imageScalar;
     let canvasFieldHeight = fieldHeight * imageScalar;
-    let pixelsPerInch = (canvasFieldHeight / gameData.heightInches + canvasFieldWidth / gameData.widthInches) / 2;
+    let pixelsPerInch = (canvasFieldHeight / fieldData.heightInches + canvasFieldWidth / fieldData.widthInches) / 2;
     let robotLengthPixels = pixelsPerInch * command.size;
 
     // Convert translation to pixel coordinates
     let calcCoordinates = (translation: Translation2d): [number, number] => {
-      if (!gameData) return [0, 0];
+      if (!fieldData) return [0, 0];
       let positionInches = [convert(translation[0], "meters", "inches"), convert(translation[1], "meters", "inches")];
 
-      positionInches[1] = gameData.heightInches - positionInches[1]; // Positive y is flipped on the canvas
+      positionInches[1] = fieldData.heightInches - positionInches[1]; // Positive y is flipped on the canvas
 
       let positionPixels: [number, number] = [
-        positionInches[0] * (canvasFieldWidth / gameData.widthInches),
-        positionInches[1] * (canvasFieldHeight / gameData.heightInches)
+        positionInches[0] * (canvasFieldWidth / fieldData.widthInches),
+        positionInches[1] * (canvasFieldHeight / fieldData.heightInches)
       ];
-      if (objectsFlipped) {
-        positionPixels[0] = canvasFieldLeft + canvasFieldWidth - positionPixels[0];
-        positionPixels[1] = canvasFieldTop + canvasFieldHeight - positionPixels[1];
-      } else {
-        positionPixels[0] += canvasFieldLeft;
-        positionPixels[1] += canvasFieldTop;
+      positionPixels[0] += canvasFieldLeft;
+      positionPixels[1] += canvasFieldTop;
+      if (objectsShifted) {
+        positionPixels[0] += canvasFieldWidth / 2;
+        positionPixels[1] -= canvasFieldHeight / 2;
       }
       return positionPixels;
     };
@@ -156,16 +155,16 @@ export default class OdometryRenderer implements TabRenderer {
         values: SwerveState[];
         color: string;
       }[],
+      bumperColor?: string,
       ghostColor?: string
     ) => {
       let centerPos = calcCoordinates(pose.translation);
       let rotation = pose.rotation;
-      if (objectsFlipped) rotation += Math.PI;
 
       // Render robot
       context.fillStyle = ghostColor !== undefined ? ghostColor : "#222";
-      context.strokeStyle = ghostColor !== undefined ? ghostColor : command.bumpers;
-      context.lineWidth = 3 * pixelsPerInch;
+      context.strokeStyle = ghostColor !== undefined ? ghostColor : bumperColor !== undefined ? bumperColor : "white";
+      context.lineWidth = (fieldData.isFTC ? 1 : 3) * pixelsPerInch;
       let backLeft = transformPx(centerPos, rotation, [robotLengthPixels * -0.5, robotLengthPixels * 0.5]);
       let frontLeft = transformPx(centerPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * 0.5]);
       let frontRight = transformPx(centerPos, rotation, [robotLengthPixels * 0.5, robotLengthPixels * -0.5]);
@@ -188,7 +187,7 @@ export default class OdometryRenderer implements TabRenderer {
 
       // Render arrow
       context.strokeStyle = "white";
-      context.lineWidth = 1.5 * pixelsPerInch;
+      context.lineWidth = (fieldData.isFTC ? 1 : 1.5) * pixelsPerInch;
       let arrowBack = transformPx(centerPos, rotation, [robotLengthPixels * -0.3, 0]);
       let arrowFront = transformPx(centerPos, rotation, [robotLengthPixels * 0.3, 0]);
       let arrowLeft = transformPx(centerPos, rotation, [robotLengthPixels * 0.15, robotLengthPixels * 0.15]);
@@ -264,8 +263,8 @@ export default class OdometryRenderer implements TabRenderer {
     this.heatmap.update(
       heatmapTranslations,
       [canvasFieldWidth, canvasFieldHeight],
-      [convert(gameData.widthInches, "inches", "meters"), convert(gameData.heightInches, "inches", "meters")],
-      objectsFlipped
+      [convert(fieldData.widthInches, "inches", "meters"), convert(fieldData.heightInches, "inches", "meters")],
+      objectsShifted
     );
     let heatmapCanvas = this.heatmap.getCanvas();
     if (heatmapCanvas !== null) {
@@ -338,7 +337,7 @@ export default class OdometryRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.swerveStates);
+              drawRobot(pose.pose, object.swerveStates, object.bumperColor);
             });
             break;
           case "ghost":
@@ -364,7 +363,6 @@ export default class OdometryRenderer implements TabRenderer {
             object.poses.forEach((pose) => {
               let position = calcCoordinates(pose.pose.translation);
               let rotation = pose.pose.rotation;
-              if (objectsFlipped) rotation += Math.PI;
 
               context.strokeStyle = "white";
               context.lineCap = "round";
@@ -440,11 +438,9 @@ export enum Orientation {
 }
 
 export type OdometryRendererCommand = {
-  game: string;
-  bumpers: "blue" | "red";
-  origin: "blue" | "red";
+  field: string;
   orientation: Orientation;
-  size: 30 | 27 | 24;
+  size: number;
   objects: OdometryRendererCommand_AnyObj[];
 };
 
@@ -460,6 +456,7 @@ export type OdometryRendererCommand_RobotObj = {
   type: "robot";
   poses: AnnotatedPose2d[];
   trails: Translation2d[][];
+  bumperColor: string;
   visionTargets: AnnotatedPose2d[];
   swerveStates: {
     values: SwerveState[];
