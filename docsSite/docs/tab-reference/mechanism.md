@@ -46,7 +46,7 @@ SmartDashboard.putData("MyMechanism", mechanism);
 To publish mechanism data using AdvantageKit, record a `Mechanism2d` as an output field (shown below). Note that this call only records the current state of the `Mechanism2d`, so it must be called every loop cycle after the object is updated.
 
 ```java
-Mechanism2d mechanism = new Mechanism2d(3, 3);
+LoggedMechanism2d mechanism = new LoggedMechanism2d(3, 3);
 Logger.recordOutput("MyMechanism", mechanism);
 ```
 
