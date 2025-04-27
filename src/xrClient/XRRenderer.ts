@@ -7,15 +7,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import {
-  AdvantageScopeAssets,
-  Config3dField,
-  DEFAULT_DRIVER_STATIONS,
-  FRC_STANDARD_FIELD_LENGTH,
-  FRC_STANDARD_FIELD_WIDTH,
-  FTC_STANDARD_FIELD_LENGTH,
-  FTC_STANDARD_FIELD_WIDTH
-} from "../shared/AdvantageScopeAssets";
+import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField } from "../shared/AdvantageScopeAssets";
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
 import {
   ThreeDimensionRendererCommand,
@@ -25,7 +17,10 @@ import { disposeObject, getQuaternionFromRotSeq } from "../shared/renderers/Thre
 import makeAxesField from "../shared/renderers/threeDimension/AxesField";
 import makeEvergreenField from "../shared/renderers/threeDimension/EvergreenField";
 import ObjectManager from "../shared/renderers/threeDimension/ObjectManager";
-import optimizeGeometries, { XR_MAX_RADIUS } from "../shared/renderers/threeDimension/OptimizeGeometries";
+import optimizeGeometries, {
+  FTC_MULTIPLIER,
+  XR_MAX_RADIUS
+} from "../shared/renderers/threeDimension/OptimizeGeometries";
 import AprilTagManager from "../shared/renderers/threeDimension/objectManagers/AprilTagManager";
 import AxesManager from "../shared/renderers/threeDimension/objectManagers/AxesManager";
 import ConeManager from "../shared/renderers/threeDimension/objectManagers/ConeManager";
@@ -82,6 +77,7 @@ export default class XRRenderer {
   private shouldLoadNewField = false;
   private isFieldLoading = false;
   private lastFieldId: string = "";
+  private lastIsFTC: boolean | null = null;
   private lastAssetsString: string = "";
 
   constructor() {
@@ -140,7 +136,7 @@ export default class XRRenderer {
       [0.5, 0.5],
       [0.5, -0.5]
     ] as const;
-    let referenceColors = ["blue", "white", "red", "white"] as const;
+    let referenceColors = ["red", "white", "blue", "white"] as const;
     for (let i = 0; i < 4; i++) {
       this.fieldSizingReference.add(
         new Line2(
@@ -182,12 +178,12 @@ export default class XRRenderer {
   }
 
   /** Updates the field position based on reference points. */
-  private updateFieldRootMiniature(fieldLength: number, blueReference: THREE.Vector3, redReference: THREE.Vector3) {
-    this.fieldRoot.position.copy(blueReference.clone().add(redReference).divideScalar(2));
-    let blueToRed = redReference.clone().sub(blueReference);
-    let scale = blueToRed.length() / fieldLength;
+  private updateFieldRootMiniature(fieldLength: number, redReference: THREE.Vector3, blueReference: THREE.Vector3) {
+    this.fieldRoot.position.copy(redReference.clone().add(blueReference).divideScalar(2));
+    let redToBlue = blueReference.clone().sub(redReference);
+    let scale = redToBlue.length() / fieldLength;
     this.fieldRoot.scale.set(scale, scale, scale);
-    this.fieldRoot.rotation.set(0, Math.atan2(blueToRed.x, blueToRed.z) - Math.PI / 2, 0);
+    this.fieldRoot.rotation.set(0, Math.atan2(redToBlue.x, redToBlue.z) - Math.PI / 2, 0);
   }
 
   /** Updates the field position based on reference points. */
@@ -230,76 +226,17 @@ export default class XRRenderer {
     let centerZ = allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (fieldLength / 2) - Math.cos(yaw) * yShift;
 
     this.fieldRoot.position.set(centerX, height, centerZ);
-    this.fieldRoot.rotation.set(0, yaw + (isRed ? Math.PI : 0), 0);
+    this.fieldRoot.rotation.set(0, yaw + (isRed ? 0 : Math.PI), 0);
   }
 
   private getFieldConfig(
     command: ThreeDimensionRendererCommand,
     assets: AdvantageScopeAssets | null
   ): Config3dField | null {
-    let fieldId = command.field;
-    switch (fieldId) {
-      case "FRC:Evergreen":
-        return {
-          name: "Evergreen",
-          path: "",
-          id: "FRC:Evergreen",
-          isFTC: false,
-          rotations: [],
-          position: [0, 0, 0],
-          widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-          heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-          driverStations: DEFAULT_DRIVER_STATIONS,
-          gamePieces: []
-        };
-
-      case "FTC:Evergreen":
-        return {
-          name: "Evergreen",
-          path: "",
-          id: "FTC:Evergreen",
-          isFTC: true,
-          rotations: [],
-          position: [0, 0, 0],
-          widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-          heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-          driverStations: DEFAULT_DRIVER_STATIONS,
-          gamePieces: []
-        };
-
-      case "FRC:Axes":
-        return {
-          name: "Axes",
-          path: "",
-          id: "FRC:Axes",
-          isFTC: false,
-          rotations: [],
-          position: [0, 0, 0],
-          widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-          heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-          driverStations: DEFAULT_DRIVER_STATIONS,
-          gamePieces: []
-        };
-
-      case "FTC:Axes":
-        return {
-          name: "Axes",
-          path: "",
-          id: "FTC:Axes",
-          isFTC: true,
-          rotations: [],
-          position: [0, 0, 0],
-          widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-          heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
-          driverStations: DEFAULT_DRIVER_STATIONS,
-          gamePieces: []
-        };
-
-      default:
-        let fieldConfig = assets?.field3ds.find((fieldData) => fieldData.id === fieldId);
-        if (fieldConfig === undefined) return null;
-        return fieldConfig;
-    }
+    if (assets === null) return null;
+    let fieldConfig = [...assets.field3ds, ...BuiltIn3dFields].find((fieldData) => fieldData.id === command.field);
+    if (fieldConfig === undefined) return null;
+    return fieldConfig;
   }
 
   /** Make a new object manager for the provided type. */
@@ -331,7 +268,15 @@ export default class XRRenderer {
         manager = new TrajectoryManager(...args);
         break;
       case "heatmap":
-        manager = new HeatmapManager(...args, () => this.fieldConfigCache);
+        manager = new HeatmapManager(
+          this.wpilibCoordinateGroup,
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          "standard",
+          false,
+          () => {},
+          () => this.fieldConfigCache
+        );
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);
@@ -357,7 +302,7 @@ export default class XRRenderer {
     command: ThreeDimensionRendererCommand,
     assets: AdvantageScopeAssets | null
   ) {
-    // Reset marked points when changing calibration mode
+    // Reset calibration when changing calibration mode
     if (settings.calibration !== this.lastCalibrationMode) {
       this.lastCalibrationMode = settings.calibration;
       this.resetCalibration();
@@ -385,6 +330,13 @@ export default class XRRenderer {
     this.fieldConfigCache = fieldConfigTmp;
     if (fieldConfigTmp === null) return;
     let fieldConfig = fieldConfigTmp;
+    let isFTC = fieldConfig.isFTC;
+
+    // Reset calibration when switching between FRC and FTC
+    if (isFTC !== this.lastIsFTC && this.lastIsFTC !== null) {
+      this.resetCalibration();
+    }
+    this.lastIsFTC = isFTC;
 
     // Update field reference size
     const fieldLength = convert(fieldConfig.widthInches, "inches", "meters");
@@ -399,11 +351,11 @@ export default class XRRenderer {
         isCalibrating = this.markedPoints.length < 2;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = "Tap to place the blue alliance wall.";
+            calibrationText = `Tap to place the ${isFTC ? "wall near the red alliance area" : "red alliance wall"}.`;
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = "Tap to place the red alliance wall.";
+            calibrationText = `Tap to place the ${isFTC ? "wall near the blue alliance area" : "blue alliance wall"}.`;
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootMiniature(
@@ -433,11 +385,15 @@ export default class XRRenderer {
         let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to select the base of the ${colorText} alliance wall.`;
+            calibrationText = `Tap to place the base of the ${
+              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
+            }.`;
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to select another point on the base of the ${colorText} alliance wall, at least 6 feet away from the previous point.`;
+            calibrationText = `Tap to select another point on the base of the ${
+              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
+            }, at least ${isFTC ? "3" : "6"} feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               let position1 = this.markedPoints[0].getWorldPosition(new THREE.Vector3());
@@ -451,7 +407,9 @@ export default class XRRenderer {
             }
             break;
           case 2:
-            calibrationText = `Tap to select the base of one of the long field barriers.`;
+            calibrationText = `Tap to select the base of one of the ${
+              isFTC ? "perpendicular" : "long"
+            } field barriers.`;
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootFullSize(
@@ -507,13 +465,35 @@ export default class XRRenderer {
 
     // Update field coordinates
     if (fieldConfig) {
-      let isBlue = command.origin === "blue";
-      this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), isBlue ? 0 : Math.PI);
-      this.wpilibFieldCoordinateGroup.position.set(
-        convert(fieldConfig.widthInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
-        convert(fieldConfig.heightInches / 2, "inches", "meters") * (isBlue ? -1 : 1),
-        0
-      );
+      switch (fieldConfig.coordinateSystem) {
+        case "wall-alliance":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
+            new THREE.Vector3(0, 0, 1),
+            command.isRedAlliance ? 0 : Math.PI
+          );
+          this.wpilibFieldCoordinateGroup.position.set(
+            convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+            convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+            0
+          );
+          break;
+        case "wall-blue":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+          this.wpilibFieldCoordinateGroup.position.set(
+            convert(fieldConfig.widthInches / 2, "inches", "meters"),
+            convert(fieldConfig.heightInches / 2, "inches", "meters"),
+            0
+          );
+          break;
+        case "center-rotated":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
+          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+          break;
+        case "center-red":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
+          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+          break;
+      }
     }
 
     // Update field
@@ -576,7 +556,12 @@ export default class XRRenderer {
         newFieldReady();
       } else if (fieldId === "FRC:Axes" || fieldId === "FTC:Axes") {
         this.isFieldLoading = false;
-        this.field = makeAxesField(this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, fieldId === "FTC:Axes");
+        this.field = makeAxesField(
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          fieldConfig.coordinateSystem,
+          fieldId === "FTC:Axes"
+        );
         this.fieldCarpet = new THREE.Object3D();
         this.fieldStagedPieces = new THREE.Object3D();
         newFieldReady();
@@ -619,7 +604,7 @@ export default class XRRenderer {
                   let dist = vertex.distanceTo(center);
                   return dist > prev ? dist : prev;
                 }, 0);
-                if (maxRadius < XR_MAX_RADIUS) {
+                if (maxRadius < XR_MAX_RADIUS * (fieldConfig.isFTC ? FTC_MULTIPLIER : 1)) {
                   // Dispose mesh
                   mesh.visible = false;
                   mesh.geometry.dispose();

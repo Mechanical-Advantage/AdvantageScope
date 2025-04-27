@@ -7,6 +7,7 @@ export const XR_MAX_RADIUS = 0.08;
 export const LOW_POWER_MAX_RADIUS = 0.08;
 export const STANDARD_MAX_RADIUS = 0.04;
 export const CINEMATIC_MAX_RADIUS = 0.02;
+export const FTC_MULTIPLIER = 0.25;
 
 export default async function optimizeGeometries(
   object: THREE.Object3D,
@@ -14,6 +15,7 @@ export default async function optimizeGeometries(
   materialSpecular: THREE.Color,
   materialShininess: number,
   enableSimplification = true,
+  isFTC: boolean = false,
   slicingSize?: number
 ): Promise<{
   normal: THREE.Mesh[];
@@ -21,7 +23,7 @@ export default async function optimizeGeometries(
   carpet: THREE.Mesh[];
 }> {
   return new Promise(async (resolve) => {
-    let geometries = getGeometries(object, mode, enableSimplification, slicingSize);
+    let geometries = getGeometries(object, mode, enableSimplification, isFTC, slicingSize);
 
     let normalMeshes: THREE.Mesh[] = [];
     let transparentMeshes: THREE.Mesh[] = [];
@@ -107,6 +109,7 @@ function getGeometries(
   object: THREE.Object3D,
   mode: "low-power" | "standard" | "cinematic",
   enableSimplification: boolean,
+  isFTC: boolean,
   slicingSize?: number
 ): { normal: THREE.BufferGeometry[][]; transparent: THREE.BufferGeometry[][]; carpet: THREE.BufferGeometry[][] } {
   let normal: THREE.BufferGeometry[][] = [];
@@ -177,13 +180,13 @@ function getGeometries(
       if (enableSimplification && !mesh.name.includes("NOSIMPLIFY")) {
         switch (mode) {
           case "low-power":
-            if (maxRadius < LOW_POWER_MAX_RADIUS) include = false;
+            if (maxRadius < LOW_POWER_MAX_RADIUS * (isFTC ? FTC_MULTIPLIER : 1)) include = false;
             break;
           case "standard":
-            if (maxRadius < STANDARD_MAX_RADIUS) include = false;
+            if (maxRadius < STANDARD_MAX_RADIUS * (isFTC ? FTC_MULTIPLIER : 1)) include = false;
             break;
           case "cinematic":
-            if (maxRadius < CINEMATIC_MAX_RADIUS) include = false;
+            if (maxRadius < CINEMATIC_MAX_RADIUS * (isFTC ? FTC_MULTIPLIER : 1)) include = false;
             break;
         }
       }

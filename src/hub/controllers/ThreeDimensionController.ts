@@ -1,3 +1,4 @@
+import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
 import { SourceListItemState, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
 import {
   APRIL_TAG_16H5_COUNT,
@@ -9,9 +10,11 @@ import {
   grabSwerveStates
 } from "../../shared/geometry";
 import {
+  ALLIANCE_KEYS,
   DRIVER_STATION_KEYS,
   MechanismState,
   getDriverStation,
+  getIsRedAlliance,
   getMechanismState,
   getOrDefault,
   mergeMechanismStates
@@ -78,13 +81,7 @@ export default class ThreeDimensionController implements TabController {
     }
     let options: string[] = [];
     if (window.assets !== null) {
-      [
-        ...window.assets.field3ds,
-        { name: "Evergreen", id: "FRC:Evergreen", isFTC: false },
-        { name: "Evergreen", id: "FTC:Evergreen", isFTC: true },
-        { name: "Axes", id: "FRC:Axes", isFTC: false },
-        { name: "Axes", id: "FTC:Axes", isFTC: true }
-      ].forEach((field) => {
+      [...window.assets.field3ds, ...BuiltIn3dFields].forEach((field) => {
         let option = document.createElement("option");
         option.innerText = field.name;
         option.value = field.id;
@@ -102,9 +99,14 @@ export default class ThreeDimensionController implements TabController {
 
   /** Updates source list with the latest robot models. */
   private updateRobotOptions() {
+    if (window.assets === null) return;
+    let fieldConfig = [...window.assets.field3ds, ...BuiltIn3dFields].find(
+      (game) => game.id === this.FIELD_SELECT.value
+    );
+    let isFTC = fieldConfig !== undefined && fieldConfig.isFTC;
     let robotList: string[] = [];
     if (window.assets !== null) {
-      robotList = window.assets.robots.map((robot) => robot.name);
+      robotList = window.assets.robots.filter((robot) => robot.isFTC === isFTC).map((robot) => robot.name);
     }
     if (robotList.length === 0) {
       robotList.push("KitBot");
@@ -121,7 +123,10 @@ export default class ThreeDimensionController implements TabController {
 
   /** Updates the robots, source button, and game pieces based on the selected value. */
   private updateFieldDependentControls() {
-    let fieldConfig = window.assets?.field3ds.find((game) => game.id === this.FIELD_SELECT.value);
+    if (window.assets === null) return;
+    let fieldConfig = [...window.assets.field3ds, ...BuiltIn3dFields].find(
+      (game) => game.id === this.FIELD_SELECT.value
+    );
 
     let gamePieces: string[] = [];
     if (fieldConfig !== undefined) {
@@ -135,6 +140,8 @@ export default class ThreeDimensionController implements TabController {
     });
     this.sourceList.setOptionValues("gamePiece", "variant", sourceListValues);
     this.sourceList.setOptionValues("gamePieceLegacy", "variant", sourceListValues);
+
+    this.updateRobotOptions();
   }
 
   saveState(): unknown {
@@ -170,7 +177,7 @@ export default class ThreeDimensionController implements TabController {
   }
 
   getActiveFields(): string[] {
-    return [...this.sourceList.getActiveFields(), ...DRIVER_STATION_KEYS];
+    return [...this.sourceList.getActiveFields(), ...ALLIANCE_KEYS, ...DRIVER_STATION_KEYS];
   }
 
   showTimeline(): boolean {
@@ -181,10 +188,13 @@ export default class ThreeDimensionController implements TabController {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
-    // Get game data
+    // Get field data
     let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
     let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
     let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+
+    // Get alliance
+    let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
 
     let objects: ThreeDimensionRendererCommand_AnyObj[] = [];
     let cameraOverride: AnnotatedPose3d | null = null;
@@ -501,7 +511,7 @@ export default class ThreeDimensionController implements TabController {
 
     return {
       field: this.FIELD_SELECT.value,
-      origin: "blue",
+      isRedAlliance: isRedAlliance,
       objects: objects,
       cameraOverride: cameraOverride,
       autoDriverStation: getDriverStation(window.log, time!),

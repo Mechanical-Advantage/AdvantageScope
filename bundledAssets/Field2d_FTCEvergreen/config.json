@@ -1,6 +1,7 @@
 {
   "name": "Evergreen",
   "isFTC": true,
+  "coordinateSystem": "center-rotated",
   "topLeft": [134, 134],
   "bottomRight": [2368, 2366],
   "widthInches": 144,

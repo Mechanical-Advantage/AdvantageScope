@@ -111,9 +111,11 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   }
 }
 
+// Most poses are still in their original coordinate system
+// Heatmap poses are already converted to a center-red coordinate system
 export type ThreeDimensionRendererCommand = {
   field: string;
-  origin: "blue" | "red";
+  isRedAlliance: boolean;
   objects: ThreeDimensionRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
   autoDriverStation: number;

@@ -6,13 +6,20 @@ export const FTC_STANDARD_FIELD_LENGTH = convert(12, "feet", "meters");
 export const FTC_STANDARD_FIELD_WIDTH = convert(12, "feet", "meters");
 
 export const ALLIANCE_STATION_WIDTH = convert(69, "inches", "meters");
-export const DEFAULT_DRIVER_STATIONS: [number, number][] = [
-  [-FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
-  [-FRC_STANDARD_FIELD_LENGTH / 2, 0],
-  [-FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
+export const DEFAULT_DRIVER_STATIONS_FRC: [number, number][] = [
   [FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
   [FRC_STANDARD_FIELD_LENGTH / 2, 0],
-  [FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH]
+  [FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
+  [-FRC_STANDARD_FIELD_LENGTH / 2, ALLIANCE_STATION_WIDTH],
+  [-FRC_STANDARD_FIELD_LENGTH / 2, 0],
+  [-FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH]
+];
+const DEFAULT_DRIVER_STATION_Y_OFFSET_FTC = FTC_STANDARD_FIELD_LENGTH / 2 + convert(39, "inches", "meters");
+export const DEFAULT_DRIVER_STATIONS_FTC: [number, number][] = [
+  [DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, -FTC_STANDARD_FIELD_WIDTH / 6],
+  [DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, FTC_STANDARD_FIELD_WIDTH / 6],
+  [-DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, FTC_STANDARD_FIELD_WIDTH / 6],
+  [-DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, -FTC_STANDARD_FIELD_WIDTH / 6]
 ];
 
 export interface AdvantageScopeAssets {
@@ -23,12 +30,19 @@ export interface AdvantageScopeAssets {
   loadFailures: string[];
 }
 
+export type CoordinateSystem =
+  | "wall-alliance" // FRC 2022
+  | "wall-blue" // FRC 2023-2026
+  | "center-rotated" // FTC pre-2027
+  | "center-red"; // FRC & FTC 2027
+
 export interface Config2d {
   name: string;
   path: string;
   id: string;
 
   isFTC: boolean;
+  coordinateSystem: CoordinateSystem;
   sourceUrl?: string;
   topLeft: [number, number];
   bottomRight: [number, number];
@@ -42,6 +56,7 @@ export interface Config3dField {
   id: string;
 
   isFTC: boolean;
+  coordinateSystem: CoordinateSystem;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   widthInches: number;
@@ -66,6 +81,7 @@ export interface Config3dRobot {
   name: string;
   path: string;
 
+  isFTC: boolean;
   disableSimplification: boolean;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
@@ -128,3 +144,58 @@ export interface ConfigJoystick_Axis {
   sourceIndex: number;
   sourceRange: [number, number]; // Min greater than max to invert
 }
+
+export const BuiltIn3dFields: Config3dField[] = [
+  {
+    name: "Evergreen",
+    path: "",
+    id: "FRC:Evergreen",
+    isFTC: false,
+    coordinateSystem: "wall-blue",
+    rotations: [],
+    position: [0, 0, 0],
+    widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    driverStations: DEFAULT_DRIVER_STATIONS_FRC,
+    gamePieces: []
+  },
+  {
+    name: "Evergreen",
+    path: "",
+    id: "FTC:Evergreen",
+    isFTC: true,
+    coordinateSystem: "center-rotated",
+    rotations: [],
+    position: [0, 0, 0],
+    widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    driverStations: DEFAULT_DRIVER_STATIONS_FTC,
+    gamePieces: []
+  },
+  {
+    name: "Axes",
+    path: "",
+    id: "FRC:Axes",
+    isFTC: false,
+    coordinateSystem: "wall-blue",
+    rotations: [],
+    position: [0, 0, 0],
+    widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    driverStations: DEFAULT_DRIVER_STATIONS_FRC,
+    gamePieces: []
+  },
+  {
+    name: "Axes",
+    path: "",
+    id: "FTC:Axes",
+    isFTC: true,
+    coordinateSystem: "center-rotated",
+    rotations: [],
+    position: [0, 0, 0],
+    widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    driverStations: DEFAULT_DRIVER_STATIONS_FTC,
+    gamePieces: []
+  }
+];

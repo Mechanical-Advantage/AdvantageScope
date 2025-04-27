@@ -5,11 +5,11 @@ import {
   SwerveState,
   Translation2d,
   annotatedPose3dTo2d,
+  convertFromCoordinateSystem,
   grabHeatmapData,
   grabPosesAuto,
   grabSwerveStates,
-  rotation3dTo2d,
-  translation3dTo2d
+  rotation3dTo2d
 } from "../../shared/geometry";
 import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
 import {
@@ -305,7 +305,7 @@ export default class OdometryController implements TabController {
           }
           timestamps.push(endTime);
           timestamps.forEach((sampleTime) => {
-            let pose3ds = grabPosesAuto(
+            let poses = grabPosesAuto(
               window.log,
               source.logKey,
               source.logType,
@@ -315,10 +315,19 @@ export default class OdometryController implements TabController {
               numberArrayUnits,
               fieldWidth,
               fieldHeight
-            );
-            if (pose3ds.length !== trails.length) return;
-            pose3ds.forEach((pose, index) => {
-              trails[index].push(translation3dTo2d(pose.pose.translation));
+            ).map((x) => annotatedPose3dTo2d(x));
+            if (poses.length !== trails.length) return;
+            if (fieldData !== undefined) {
+              poses = convertFromCoordinateSystem(
+                poses,
+                fieldData.coordinateSystem,
+                isRedAlliance ? "red" : "blue",
+                fieldWidth,
+                fieldHeight
+              );
+            }
+            poses.forEach((pose, index) => {
+              trails[index].push(pose.pose.translation);
             });
           });
         }
@@ -410,6 +419,24 @@ export default class OdometryController implements TabController {
       });
       visionTargets.reverse();
       swerveStates.reverse();
+
+      // Apply coordinate system
+      if (fieldData !== undefined) {
+        poses = convertFromCoordinateSystem(
+          poses,
+          fieldData.coordinateSystem,
+          isRedAlliance ? "red" : "blue",
+          fieldWidth,
+          fieldHeight
+        );
+        visionTargets = convertFromCoordinateSystem(
+          visionTargets,
+          fieldData.coordinateSystem,
+          isRedAlliance ? "red" : "blue",
+          fieldWidth,
+          fieldHeight
+        );
+      }
 
       // Add object
       switch (source.type) {

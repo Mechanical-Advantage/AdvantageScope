@@ -85,9 +85,6 @@ export default class OdometryRenderer implements TabRenderer {
     }
     if (!(this.IMAGE.width > 0 && this.IMAGE.height > 0)) return;
 
-    // Determine if objects are shifted (center field origin)
-    let objectsShifted = fieldData.isFTC;
-
     // Render background
     let fieldWidth = fieldData.bottomRight[0] - fieldData.topLeft[0];
     let fieldHeight = fieldData.bottomRight[1] - fieldData.topLeft[1];
@@ -132,19 +129,18 @@ export default class OdometryRenderer implements TabRenderer {
     let calcCoordinates = (translation: Translation2d): [number, number] => {
       if (!fieldData) return [0, 0];
       let positionInches = [convert(translation[0], "meters", "inches"), convert(translation[1], "meters", "inches")];
-
-      positionInches[1] = fieldData.heightInches - positionInches[1]; // Positive y is flipped on the canvas
-
       let positionPixels: [number, number] = [
-        positionInches[0] * (canvasFieldWidth / fieldData.widthInches),
-        positionInches[1] * (canvasFieldHeight / fieldData.heightInches)
+        scaleValue(
+          positionInches[0],
+          [-fieldData.widthInches / 2, fieldData.widthInches / 2],
+          [canvasFieldLeft, canvasFieldLeft + canvasFieldWidth]
+        ),
+        scaleValue(
+          positionInches[1],
+          [-fieldData.heightInches / 2, fieldData.heightInches / 2],
+          [canvasFieldTop + canvasFieldHeight, canvasFieldTop]
+        )
       ];
-      positionPixels[0] += canvasFieldLeft;
-      positionPixels[1] += canvasFieldTop;
-      if (objectsShifted) {
-        positionPixels[0] += canvasFieldWidth / 2;
-        positionPixels[1] -= canvasFieldHeight / 2;
-      }
       return positionPixels;
     };
 
@@ -263,8 +259,7 @@ export default class OdometryRenderer implements TabRenderer {
     this.heatmap.update(
       heatmapTranslations,
       [canvasFieldWidth, canvasFieldHeight],
-      [convert(fieldData.widthInches, "inches", "meters"), convert(fieldData.heightInches, "inches", "meters")],
-      objectsShifted
+      [convert(fieldData.widthInches, "inches", "meters"), convert(fieldData.heightInches, "inches", "meters")]
     );
     let heatmapCanvas = this.heatmap.getCanvas();
     if (heatmapCanvas !== null) {
@@ -437,6 +432,7 @@ export enum Orientation {
   DEG_270 = 3
 }
 
+// All poses are already converted to a center-red coordinate system
 export type OdometryRendererCommand = {
   field: string;
   orientation: Orientation;

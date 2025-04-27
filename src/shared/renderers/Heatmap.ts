@@ -10,7 +10,6 @@ export default class Heatmap {
   private heatmap: h337.Heatmap<"value", "x", "y"> | null = null;
   private lastPixelDimensions: [number, number] = [0, 0];
   private lastFieldDimensions: [number, number] = [0, 0];
-  private lastShifted = false;
   private lastTranslationsStr = "";
 
   constructor(container: HTMLElement) {
@@ -26,25 +25,18 @@ export default class Heatmap {
     }
   }
 
-  update(
-    translations: Translation2d[],
-    pixelDimensions: [number, number],
-    fieldDimensions: [number, number],
-    shifted = false
-  ) {
+  update(translations: Translation2d[], pixelDimensions: [number, number], fieldDimensions: [number, number]) {
     // Recreate heatmap canvas
     let newHeatmapInstance = false;
     if (
       pixelDimensions[0] !== this.lastPixelDimensions[0] ||
       pixelDimensions[1] !== this.lastPixelDimensions[1] ||
       fieldDimensions[0] !== this.lastFieldDimensions[0] ||
-      fieldDimensions[1] !== this.lastFieldDimensions[1] ||
-      shifted !== this.lastShifted
+      fieldDimensions[1] !== this.lastFieldDimensions[1]
     ) {
       newHeatmapInstance = true;
       this.lastPixelDimensions = pixelDimensions;
       this.lastFieldDimensions = fieldDimensions;
-      this.lastShifted = shifted;
       while (this.container.firstChild) {
         this.container.removeChild(this.container.firstChild);
       }
@@ -72,8 +64,8 @@ export default class Heatmap {
       }
 
       translations.forEach((translation) => {
-        let gridX = Math.floor(translation[0] / gridSizeMeters);
-        let gridY = Math.floor(translation[1] / gridSizeMeters);
+        let gridX = Math.floor((translation[0] + fieldDimensions[0] / 2) / gridSizeMeters);
+        let gridY = Math.floor((translation[1] + fieldDimensions[1] / 2) / gridSizeMeters);
         if (gridX >= 0 && gridY >= 0 && gridX < grid.length && gridY < grid[0].length) {
           grid[gridX][gridY] += 1;
         }
@@ -92,10 +84,6 @@ export default class Heatmap {
             scaleValue(x, [0, fieldDimensions[0]], [0, pixelDimensions[0]]),
             scaleValue(y, [0, fieldDimensions[1]], [pixelDimensions[1], 0])
           ];
-          if (shifted) {
-            coordinates[0] += pixelDimensions[0] / 2;
-            coordinates[1] -= pixelDimensions[1] / 2;
-          }
           coordinates[0] = Math.round(coordinates[0]);
           coordinates[1] = Math.round(coordinates[1]);
           maxValue = Math.max(maxValue, gridValue);

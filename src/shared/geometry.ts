@@ -1,3 +1,4 @@
+import { CoordinateSystem } from "./AdvantageScopeAssets";
 import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
@@ -151,6 +152,55 @@ export function annotatedPose3dTo2d(input: AnnotatedPose3d): AnnotatedPose2d {
     },
     annotation: input.annotation
   };
+}
+
+// COORDINATE SYSTEM CONVERSION
+
+export function convertFromCoordinateSystem<PoseType extends Pose2d | AnnotatedPose2d | Pose2d[] | AnnotatedPose2d[]>(
+  pose: PoseType,
+  sourceCoordinateSystem: CoordinateSystem,
+  currentAlliance: "red" | "blue",
+  fieldLength: number,
+  fieldWidth: number
+): PoseType {
+  if (Array.isArray(pose)) {
+    return pose.map((x) =>
+      convertFromCoordinateSystem(x, sourceCoordinateSystem, currentAlliance, fieldLength, fieldWidth)
+    ) as PoseType;
+  } else if ("annotation" in pose) {
+    return {
+      pose: convertFromCoordinateSystem(pose.pose, sourceCoordinateSystem, currentAlliance, fieldLength, fieldWidth),
+      annotation: pose.annotation
+    } as PoseType;
+  } else {
+    switch (sourceCoordinateSystem) {
+      case "wall-alliance":
+        switch (currentAlliance) {
+          case "blue":
+            return {
+              translation: [fieldLength / 2 - pose.translation[0], fieldWidth / 2 - pose.translation[1]],
+              rotation: pose.rotation + Math.PI
+            } as PoseType;
+          case "red":
+            return {
+              translation: [pose.translation[0] - fieldLength / 2, pose.translation[1] - fieldWidth / 2],
+              rotation: pose.rotation
+            } as PoseType;
+        }
+      case "wall-blue":
+        return {
+          translation: [fieldLength / 2 - pose.translation[0], fieldWidth / 2 - pose.translation[1]],
+          rotation: pose.rotation + Math.PI
+        } as PoseType;
+      case "center-rotated":
+        return {
+          translation: [pose.translation[1], -pose.translation[0]],
+          rotation: pose.rotation - Math.PI / 2
+        } as PoseType;
+      default:
+        return pose;
+    }
+  }
 }
 
 // LOG READING UTILITIES
@@ -574,9 +624,9 @@ export function grabZebraTranslation(
   let splitKey = key.split("FRC");
   let teamNumber = splitKey.length > 1 ? Number(splitKey[splitKey.length - 1]) : undefined;
 
-  // Zebra always uses red origin, convert to blue
-  x = fieldWidth - x;
-  y = fieldHeight - y;
+  // Zebra always uses red wall origin, convert to center
+  x += fieldWidth / 2;
+  y += fieldHeight / 2;
   return [
     {
       pose: pose2dTo3d({

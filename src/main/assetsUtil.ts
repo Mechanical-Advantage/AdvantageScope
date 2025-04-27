@@ -13,7 +13,8 @@ import {
   ConfigJoystick_Axis,
   ConfigJoystick_Button,
   ConfigJoystick_Joystick,
-  DEFAULT_DRIVER_STATIONS
+  DEFAULT_DRIVER_STATIONS_FRC,
+  DEFAULT_DRIVER_STATIONS_FTC
 } from "../shared/AdvantageScopeAssets";
 import Preferences from "../shared/Preferences";
 import { checkArrayType } from "../shared/util";
@@ -21,7 +22,6 @@ import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from
 
 const USER_ASSETS_README =
   'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
-const CONVERT_LEGACY_ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWxYZabcdefghijklnopqrstuvwxyz0123456789".split("");
 
 /** Returns the path to the user assets folder. */
 export function getUserAssetsPath() {
@@ -83,6 +83,7 @@ export function loadAssets(): AdvantageScopeAssets {
             path: encodePath(path.join(parentFolder, object.name, "image.png")),
             id: "",
             isFTC: false,
+            coordinateSystem: "center-red",
             topLeft: [-1, -1],
             bottomRight: [-1, -1],
             widthInches: 0,
@@ -97,6 +98,16 @@ export function loadAssets(): AdvantageScopeAssets {
             // Pre-2026 format, skip
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
             return;
+          }
+          if (
+            "coordinateSystem" in configRaw &&
+            typeof configRaw.coordinateSystem === "string" &&
+            (configRaw.coordinateSystem === "wall-alliance" ||
+              configRaw.coordinateSystem === "wall-blue" ||
+              configRaw.coordinateSystem === "center-rotated" ||
+              configRaw.coordinateSystem === "center-red")
+          ) {
+            config.coordinateSystem = configRaw.coordinateSystem;
           }
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
             config.sourceUrl = configRaw.sourceUrl;
@@ -142,11 +153,12 @@ export function loadAssets(): AdvantageScopeAssets {
             path: encodePath(path.join(parentFolder, object.name, "model.glb")),
             id: "",
             isFTC: false,
+            coordinateSystem: "center-red",
             rotations: [],
             position: [0, 0, 0],
             widthInches: 0,
             heightInches: 0,
-            driverStations: DEFAULT_DRIVER_STATIONS,
+            driverStations: DEFAULT_DRIVER_STATIONS_FRC,
             gamePieces: []
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
@@ -154,10 +166,23 @@ export function loadAssets(): AdvantageScopeAssets {
           }
           if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
             config.isFTC = configRaw.isFTC;
+            if (config.isFTC) {
+              config.driverStations = DEFAULT_DRIVER_STATIONS_FTC;
+            }
           } else {
             // Pre-2026 format, skip
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
             return;
+          }
+          if (
+            "coordinateSystem" in configRaw &&
+            typeof configRaw.coordinateSystem === "string" &&
+            (configRaw.coordinateSystem === "wall-alliance" ||
+              configRaw.coordinateSystem === "wall-blue" ||
+              configRaw.coordinateSystem === "center-rotated" ||
+              configRaw.coordinateSystem === "center-red")
+          ) {
+            config.coordinateSystem = configRaw.coordinateSystem;
           }
           if (
             "rotations" in configRaw &&
@@ -189,7 +214,7 @@ export function loadAssets(): AdvantageScopeAssets {
           if (
             "driverStations" in configRaw &&
             Array.isArray(configRaw.driverStations) &&
-            configRaw.driverStations.length === 6 &&
+            configRaw.driverStations.length === (config.isFTC ? 4 : 6) &&
             configRaw.driverStations.every((position) => checkArrayType(position, "number") && position.length === 2)
           ) {
             config.driverStations = configRaw.driverStations;
@@ -250,6 +275,7 @@ export function loadAssets(): AdvantageScopeAssets {
           let config: Config3dRobot = {
             name: "",
             path: encodePath(path.join(parentFolder, object.name, "model.glb")),
+            isFTC: false,
             rotations: [],
             position: [0, 0, 0],
             cameras: [],
@@ -258,6 +284,9 @@ export function loadAssets(): AdvantageScopeAssets {
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
+          }
+          if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
+            config.isFTC = configRaw.isFTC;
           }
           if ("disableSimplification" in configRaw && typeof configRaw.disableSimplification === "boolean") {
             config.disableSimplification = configRaw.disableSimplification;
