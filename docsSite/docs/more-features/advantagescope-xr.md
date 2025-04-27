@@ -73,7 +73,7 @@ The XR controls window presents several options that control how the model is di
 - **Streaming:**
   - Choose _Smooth_ for applications where some latency is acceptable in exchange for more reliable streaming, such as simulating auto routines or playing back log files.
   - Choose _Low-Latency_ for real-time applications where some jitter is acceptable, such as overlaying data on a real robot or driving a simulated robot in teleop.
-- **Show Carpet:** Display the flat carpet model under the field instead of overlaying on a real surface.
+- **Show Floor:** Display the flat carpet/tile model under the field instead of overlaying on a real surface.
 - **Show Field:** Display the field model, including the field barrier and game-specific elements. Custom [game piece objects](/tab-reference/3d-field#game-piece-objects) are always displayed.
 - **Show Robots:** Display the robot models, can be disabled when overlaying data on a real robot (such as vision targets or 2D mechanisms).
 
