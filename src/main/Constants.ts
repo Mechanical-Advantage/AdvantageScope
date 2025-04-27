@@ -72,6 +72,11 @@ export const PATHPLANNER_DATA_TIMEOUT_MS = 3000; // How long with no data until 
 export const PATHPLANNER_PING_DELAY_MS = 250; // How long to wait between pings
 export const PATHPLANNER_PING_TEXT = "ping";
 
+
+export const FTCDASHBOARD_PORT = 8000;
+export const FTCDASHBOARD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
+export const FTCDASHBOARD_DATA_TIMEOUT_MS = 300000; // How long with no data until timeout
+
 // Download
 export const DOWNLOAD_USERNAME = "lvuser";
 export const DOWNLOAD_PASSWORD = "";
