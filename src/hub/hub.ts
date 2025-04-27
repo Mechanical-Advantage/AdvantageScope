@@ -21,6 +21,7 @@ import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
+import FtcDashboardSource from "./dataSources/FtcDashboardSource";
 
 // Constants
 const STATE_SAVE_PERIOD_MS = 250;
@@ -416,6 +417,9 @@ function startLive(isSim: boolean) {
       break;
     case "rlog":
       liveSource = new RLOGServerSource();
+      break;
+    case "ftcdashboard":
+      liveSource = new FtcDashboardSource();
       break;
   }
 
