@@ -205,6 +205,10 @@ export default class OdometryController implements TabController {
     let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
     let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
     let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+    let coordinateSystem =
+      (window.preferences?.coordinateSystem === "automatic"
+        ? fieldData?.coordinateSystem
+        : window.preferences?.coordinateSystem) ?? "center-red";
 
     // Get alliance
     let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
@@ -320,7 +324,7 @@ export default class OdometryController implements TabController {
             if (fieldData !== undefined) {
               poses = convertFromCoordinateSystem(
                 poses,
-                fieldData.coordinateSystem,
+                coordinateSystem,
                 isRedAlliance ? "red" : "blue",
                 fieldWidth,
                 fieldHeight
@@ -424,14 +428,14 @@ export default class OdometryController implements TabController {
       if (fieldData !== undefined) {
         poses = convertFromCoordinateSystem(
           poses,
-          fieldData.coordinateSystem,
+          coordinateSystem,
           isRedAlliance ? "red" : "blue",
           fieldWidth,
           fieldHeight
         );
         visionTargets = convertFromCoordinateSystem(
           visionTargets,
-          fieldData.coordinateSystem,
+          coordinateSystem,
           isRedAlliance ? "red" : "blue",
           fieldWidth,
           fieldHeight

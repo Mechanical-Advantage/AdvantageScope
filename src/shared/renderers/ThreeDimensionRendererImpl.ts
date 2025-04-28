@@ -2,7 +2,13 @@ import CameraControls from "camera-controls";
 import * as THREE from "three";
 import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import WorkerManager from "../../hub/WorkerManager";
-import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, Config3d_Rotation } from "../AdvantageScopeAssets";
+import {
+  AdvantageScopeAssets,
+  BuiltIn3dFields,
+  Config3dField,
+  Config3d_Rotation,
+  CoordinateSystem
+} from "../AdvantageScopeAssets";
 import { Rotation3d } from "../geometry";
 import { convert } from "../units";
 import { checkArrayType, clampValue } from "../util";
@@ -129,6 +135,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private lastAssets: AdvantageScopeAssets | null = null;
   private lastFieldId: string = "";
   private lastIsFTC: boolean | null = null;
+  private lastCoordinateSystem: CoordinateSystem | null = null;
   private keysPressed: Set<string> = new Set();
 
   static {
@@ -580,6 +587,17 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       return; // Continue trying to render
     }
 
+    // Update field if currently axes and coordinate system changes
+    if (
+      command.coordinateSystem !== this.lastCoordinateSystem &&
+      this.lastCoordinateSystem !== null &&
+      (command.field === "FRC:Axes" || command.field === "FTC:Axes")
+    ) {
+      this.shouldLoadNewField = true;
+      this.shouldRender = true;
+    }
+    this.lastCoordinateSystem = command.coordinateSystem;
+
     // Check if rendering should continue
     if (!this.shouldRender) {
       return;
@@ -601,36 +619,34 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
 
     // Update field coordinates
-    if (fieldConfig) {
-      switch (fieldConfig.coordinateSystem) {
-        case "wall-alliance":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
-            new THREE.Vector3(0, 0, 1),
-            command.isRedAlliance ? 0 : Math.PI
-          );
-          this.wpilibFieldCoordinateGroup.position.set(
-            convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-            convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-            0
-          );
-          break;
-        case "wall-blue":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
-          this.wpilibFieldCoordinateGroup.position.set(
-            convert(fieldConfig.widthInches / 2, "inches", "meters"),
-            convert(fieldConfig.heightInches / 2, "inches", "meters"),
-            0
-          );
-          break;
-        case "center-rotated":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
-          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-          break;
-        case "center-red":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
-          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-          break;
-      }
+    switch (command.coordinateSystem) {
+      case "wall-alliance":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
+          new THREE.Vector3(0, 0, 1),
+          command.isRedAlliance ? 0 : Math.PI
+        );
+        this.wpilibFieldCoordinateGroup.position.set(
+          convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          0
+        );
+        break;
+      case "wall-blue":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+        this.wpilibFieldCoordinateGroup.position.set(
+          convert(fieldConfig.widthInches / 2, "inches", "meters"),
+          convert(fieldConfig.heightInches / 2, "inches", "meters"),
+          0
+        );
+        break;
+      case "center-rotated":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
+        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+        break;
+      case "center-red":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
+        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+        break;
     }
 
     // Update field
@@ -701,7 +717,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         this.field = makeAxesField(
           this.MATERIAL_SPECULAR,
           this.MATERIAL_SHININESS,
-          fieldConfig.coordinateSystem,
+          command.coordinateSystem,
           fieldId === "FTC:Axes"
         );
         this.fieldStagedPieces = new THREE.Object3D();

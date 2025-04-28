@@ -189,9 +189,15 @@ export default class ThreeDimensionController implements TabController {
     let time = window.selection.getRenderTime();
 
     // Get field data
-    let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
+    let fieldData = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
+      (game) => game.id === this.FIELD_SELECT.value
+    );
     let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
     let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+    let coordinateSystem =
+      (window.preferences?.coordinateSystem === "automatic"
+        ? fieldData?.coordinateSystem
+        : window.preferences?.coordinateSystem) ?? "center-red";
 
     // Get alliance
     let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
@@ -512,6 +518,7 @@ export default class ThreeDimensionController implements TabController {
     return {
       field: this.FIELD_SELECT.value,
       isRedAlliance: isRedAlliance,
+      coordinateSystem: coordinateSystem,
       objects: objects,
       cameraOverride: cameraOverride,
       autoDriverStation: getDriverStation(window.log, time!),

@@ -19,12 +19,18 @@ export default function makeAxesField(
   let fieldWidth = isFTC ? FTC_STANDARD_FIELD_WIDTH : FRC_STANDARD_FIELD_WIDTH;
 
   let axes = makeAxesTemplate(materialSpecular, materialShininess);
+  field.add(axes);
   if (isFTC) {
     axes.scale.set(0.5, 0.5, 0.5);
   }
   switch (coorindateSystem) {
     case "wall-alliance":
-      // Unimplemented, never used for axes
+      axes.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+      axes.position.set(fieldLength / 2, fieldWidth / 2, 0);
+      let axesClone = axes.clone();
+      field.add(axesClone);
+      axesClone.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
+      axesClone.position.set(-fieldLength / 2, -fieldWidth / 2, 0);
       break;
 
     case "wall-blue":
@@ -43,7 +49,6 @@ export default function makeAxesField(
       break;
   }
 
-  field.add(axes);
   let outline = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([
       new THREE.Vector3(-fieldLength / 2, -fieldWidth / 2, 0),

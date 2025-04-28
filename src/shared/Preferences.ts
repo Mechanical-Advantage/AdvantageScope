@@ -1,3 +1,5 @@
+import { CoordinateSystem } from "./AdvantageScopeAssets";
+
 /** A set of application preferences. */
 export default interface Preferences {
   theme: "light" | "dark" | "system";
@@ -8,6 +10,7 @@ export default interface Preferences {
   liveDiscard: number;
   publishFilter: string;
   rlogPort: number;
+  coordinateSystem: "automatic" | CoordinateSystem;
   threeDimensionModeAc: "cinematic" | "standard" | "low-power";
   threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
   tbaApiKey: string;

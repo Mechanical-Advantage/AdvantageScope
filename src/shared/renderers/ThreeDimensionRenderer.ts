@@ -1,3 +1,4 @@
+import { CoordinateSystem } from "../AdvantageScopeAssets";
 import { AnnotatedPose3d, SwerveState } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import TabRenderer from "./TabRenderer";
@@ -116,6 +117,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 export type ThreeDimensionRendererCommand = {
   field: string;
   isRedAlliance: boolean;
+  coordinateSystem: CoordinateSystem;
   objects: ThreeDimensionRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
   autoDriverStation: number;

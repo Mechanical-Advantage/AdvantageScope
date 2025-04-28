@@ -3017,7 +3017,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const rows = 10;
+  const rows = 11;
   const height = rows * 27 + 54;
   prefsWindow = new BrowserWindow({
     width: width,
@@ -3315,6 +3315,16 @@ app.whenReady().then(() => {
     }
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
+    }
+    if (
+      "coordinateSystem" in oldPrefs &&
+      (oldPrefs.coordinateSystem === "automatic" ||
+        oldPrefs.coordinateSystem === "wall-alliance" ||
+        oldPrefs.coordinateSystem === "wall-blue" ||
+        oldPrefs.coordinateSystem === "center-rotated" ||
+        oldPrefs.coordinateSystem === "center-red")
+    ) {
+      prefs.coordinateSystem = oldPrefs.coordinateSystem;
     }
     if ("threeDimensionMode" in oldPrefs) {
       // Migrate from v2

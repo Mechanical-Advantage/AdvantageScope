@@ -7,7 +7,7 @@ import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField } from "../shared/AdvantageScopeAssets";
+import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../shared/AdvantageScopeAssets";
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
 import {
   ThreeDimensionRendererCommand,
@@ -78,6 +78,7 @@ export default class XRRenderer {
   private isFieldLoading = false;
   private lastFieldId: string = "";
   private lastIsFTC: boolean | null = null;
+  private lastCoordinateSystem: CoordinateSystem | null = null;
   private lastAssetsString: string = "";
 
   constructor() {
@@ -338,6 +339,16 @@ export default class XRRenderer {
     }
     this.lastIsFTC = isFTC;
 
+    // Update field if currently axes and coordinate system changes
+    if (
+      command.coordinateSystem !== this.lastCoordinateSystem &&
+      this.lastCoordinateSystem !== null &&
+      (fieldId === "FRC:Axes" || fieldId === "FTC:Axes")
+    ) {
+      this.shouldLoadNewField = true;
+    }
+    this.lastCoordinateSystem = command.coordinateSystem;
+
     // Update field reference size
     const fieldLength = convert(fieldConfig.widthInches, "inches", "meters");
     const fieldWidth = convert(fieldConfig.heightInches, "inches", "meters");
@@ -464,36 +475,34 @@ export default class XRRenderer {
     this.wpilibCoordinateGroup.visible = !isCalibrating;
 
     // Update field coordinates
-    if (fieldConfig) {
-      switch (fieldConfig.coordinateSystem) {
-        case "wall-alliance":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
-            new THREE.Vector3(0, 0, 1),
-            command.isRedAlliance ? 0 : Math.PI
-          );
-          this.wpilibFieldCoordinateGroup.position.set(
-            convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-            convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-            0
-          );
-          break;
-        case "wall-blue":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
-          this.wpilibFieldCoordinateGroup.position.set(
-            convert(fieldConfig.widthInches / 2, "inches", "meters"),
-            convert(fieldConfig.heightInches / 2, "inches", "meters"),
-            0
-          );
-          break;
-        case "center-rotated":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
-          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-          break;
-        case "center-red":
-          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
-          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-          break;
-      }
+    switch (command.coordinateSystem) {
+      case "wall-alliance":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
+          new THREE.Vector3(0, 0, 1),
+          command.isRedAlliance ? 0 : Math.PI
+        );
+        this.wpilibFieldCoordinateGroup.position.set(
+          convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          0
+        );
+        break;
+      case "wall-blue":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
+        this.wpilibFieldCoordinateGroup.position.set(
+          convert(fieldConfig.widthInches / 2, "inches", "meters"),
+          convert(fieldConfig.heightInches / 2, "inches", "meters"),
+          0
+        );
+        break;
+      case "center-rotated":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
+        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+        break;
+      case "center-red":
+        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
+        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+        break;
     }
 
     // Update field
@@ -559,7 +568,7 @@ export default class XRRenderer {
         this.field = makeAxesField(
           this.MATERIAL_SPECULAR,
           this.MATERIAL_SHININESS,
-          fieldConfig.coordinateSystem,
+          command.coordinateSystem,
           fieldId === "FTC:Axes"
         );
         this.fieldCarpet = new THREE.Object3D();

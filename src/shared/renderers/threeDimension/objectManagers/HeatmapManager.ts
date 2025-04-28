@@ -59,11 +59,15 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
       Math.round(this.HEIGHT_PIXELS * (fieldDimensions[0] / fieldDimensions[1])),
       this.HEIGHT_PIXELS
     ];
+    let coordinateSystem =
+      (window.preferences?.coordinateSystem === "automatic"
+        ? fieldConfig.coordinateSystem
+        : window.preferences?.coordinateSystem) ?? "center-red";
     let translations = object.poses.map(
       (x) =>
         convertFromCoordinateSystem(
           annotatedPose3dTo2d(x),
-          fieldConfig.coordinateSystem,
+          coordinateSystem,
           this.isRedAlliance ? "red" : "blue",
           fieldDimensions[0],
           fieldDimensions[1]

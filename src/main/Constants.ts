@@ -34,6 +34,7 @@ export const DEFAULT_PREFS: Preferences = {
   liveDiscard: 1200,
   publishFilter: "",
   rlogPort: 5800,
+  coordinateSystem: "automatic",
   threeDimensionModeAc: "standard",
   threeDimensionModeBattery: "",
   tbaApiKey: "",
