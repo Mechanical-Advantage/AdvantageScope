@@ -1,11 +1,16 @@
-import Log from "../../shared/log/Log";
-import { LiveDataSource, LiveDataSourceStatus } from "./LiveDataSource";
-import { Pose2d } from "../../shared/geometry";
+import Log from "../../../shared/log/Log";
+import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
+import { Pose2d } from "../../../shared/geometry";
+import { ConfigState, ConfigAction, ConfigVarState } from "./configTypes";
+import configReducer, { initialState } from "./configReducer";
+import LiveDataTuner from "../LiveDataTuner";
 
-export default class FtcDashboardSource extends LiveDataSource {
+export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
   private RECONNECT_DELAY_MS = 500;
   private timeout: NodeJS.Timeout | null = null;
   private liveZeroTime = 0;
+  private configState: ConfigState = initialState;
+  private tunableKeys: string[] = [];
 
   connect(
     address: string,
@@ -58,19 +63,26 @@ export default class FtcDashboardSource extends LiveDataSource {
 
       // Add data
       if (decoded !== null) {
-        const timestamp = new Date().getTime() / 1000 - this.liveZeroTime;
+        let timestamp = new Date().getTime() / 1000 - this.liveZeroTime;
+        if (Object.hasOwn(decoded, "configRoot")) {
+          configReducer(this.configState, decoded)
+          this.parseConfigState(this.configState.configRoot,timestamp)
+        }
         if (Object.hasOwn(decoded, "telemetry")) {
           let packets: any[] = decoded.telemetry;
           for (const packet of packets) {
+            if (Object.hasOwn(packet, "timestamp")) {
+              timestamp = packet.timestamp / 1000 - this.liveZeroTime;
+            }
             if (Object.hasOwn(packet, "data")) {
                 for (const key of Object.getOwnPropertyNames(packet.data)) {
                   let data = packet.data[key];
                   switch (typeof data) {
                     case "string":
-                      try {
+                      if (!isNaN(Number(data)) && !isNaN(parseFloat(data))) {
                         let num = Number(data);
                         this.log.putNumber(key, timestamp, num)
-                      } catch {
+                      } else {
                         this.log.putString(key, timestamp, data);
                       }
                       break;
@@ -85,10 +97,10 @@ export default class FtcDashboardSource extends LiveDataSource {
                       break;
                   }
                 }
-              if (Object.hasOwn(packet,"x") && Object.hasOwn(packet, "y")) {
+              if (Object.hasOwn(packet.data,"x") && Object.hasOwn(packet.data, "y")) {
                 this.log.putPose("Pose", timestamp, <Pose2d>{
-                  translation: [Number(packet.x) / 39.37008, Number(packet.y) / 39.37008],
-                  rotation: Object.hasOwn(packet,"heading") ? Number(packet.heading) : 0.0
+                  translation: [Number(packet.data.x) / 39.37008, Number(packet.data.y) / 39.37008],
+                  rotation: Object.hasOwn(packet.data,"heading") ? Number(packet.data.heading) : 0.0
                 });
               }
             }
@@ -131,5 +143,47 @@ export default class FtcDashboardSource extends LiveDataSource {
         });
       }
     }, this.RECONNECT_DELAY_MS);
+  }
+
+  parseConfigState(state: ConfigVarState, timestamp: number, path = "/Config") {
+    switch (state.__type) {
+      case "boolean":
+        this.log!!.putBoolean(path,timestamp,state.__value as boolean);
+        this.tunableKeys.concat(path);
+        break;
+      case "double":
+      case "float":
+      case "int":
+      case "long":
+        this.log!!.putNumber(path,timestamp,Number(state.__value));
+        this.tunableKeys.concat(path);
+        break;
+      case "string":
+        this.log!!.putString(path,timestamp,state.__value as string)
+        this.tunableKeys.concat(path);
+        break;
+      case "custom":
+        if (state.__value === null) {
+          break;
+        } else {
+          for (const entry of Object.keys(state.__value)) {
+            this.parseConfigState(state.__value[entry], timestamp, path + "/" + entry)
+          }
+          break;
+        }
+    }
+  }
+
+  hasTunableFields(): boolean {
+    return this.configState !== initialState
+  }
+  isTunable(key: string): boolean {
+    throw new Error("Method not implemented.");
+  }
+  publish(key: string, value: number | boolean): void {
+    throw new Error("Method not implemented.");
+  }
+  unpublish(key: string): void {
+    // do nothing (not possible for FTCDashboard)
   }
 }
