@@ -17,6 +17,7 @@ window.addEventListener("load", () => {
       .replaceAll("\r\n", "\n")
       .replaceAll("\n\n", "<br><br>")
       .replaceAll("\n&gt;", "<br>&gt;")
+      .replaceAll("\n-", "<br>-")
       .replaceAll("\n", " ");
     while (cleanText.includes("  ")) {
       cleanText = cleanText.replaceAll("  ", " ");

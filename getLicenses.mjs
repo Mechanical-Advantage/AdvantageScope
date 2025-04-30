@@ -14,7 +14,10 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
     .readdirSync(modulePath === "" ? "." : modulePath)
     .filter(
       (filename) =>
-        filename.toLowerCase().startsWith("license") && !filename.endsWith(".js") && !filename.endsWith(".json")
+        filename.toLowerCase().startsWith("license") &&
+        !filename.endsWith(".js") &&
+        !filename.endsWith(".json") &&
+        !filename.includes("header")
     );
   let licenseText = null;
   if (licenseFiles.length > 0) {
