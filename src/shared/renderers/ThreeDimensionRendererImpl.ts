@@ -1,6 +1,5 @@
 import CameraControls from "camera-controls";
 import * as THREE from "three";
-import { CSS2DRenderer } from "three/examples/jsm/renderers/CSS2DRenderer.js";
 import WorkerManager from "../../hub/WorkerManager";
 import {
   AdvantageScopeAssets,
@@ -28,7 +27,6 @@ import GamePieceManager from "./threeDimension/objectManagers/GamePieceManager";
 import HeatmapManager from "./threeDimension/objectManagers/HeatmapManager";
 import RobotManager from "./threeDimension/objectManagers/RobotManager";
 import TrajectoryManager from "./threeDimension/objectManagers/TrajectoryManager";
-import ZebraManager from "./threeDimension/objectManagers/ZebraManager";
 
 export default class ThreeDimensionRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
@@ -86,13 +84,11 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private mode: "cinematic" | "standard" | "low-power";
   private canvas: HTMLCanvasElement;
   private canvasContainer: HTMLElement;
-  private annotationsDiv: HTMLElement;
   private alert: HTMLElement;
   private spinner: HTMLElement;
 
   private clock = new THREE.Clock();
   private renderer: THREE.WebGLRenderer;
-  private cssRenderer: CSS2DRenderer;
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private controls: CameraControls;
@@ -146,14 +142,12 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     mode: "cinematic" | "standard" | "low-power",
     canvas: HTMLCanvasElement,
     canvasContainer: HTMLElement,
-    annotationsDiv: HTMLElement,
     alert: HTMLElement,
     spinner: HTMLElement
   ) {
     this.mode = mode;
     this.canvas = canvas;
     this.canvasContainer = canvasContainer;
-    this.annotationsDiv = annotationsDiv;
     this.alert = alert;
     this.spinner = spinner;
     this.renderer = new THREE.WebGLRenderer({
@@ -163,7 +157,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = mode === "cinematic";
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    this.cssRenderer = new CSS2DRenderer({ element: annotationsDiv });
     this.scene = new THREE.Scene();
     if (mode !== "cinematic") {
       this.MATERIAL_SPECULAR = new THREE.Color(0x000000);
@@ -466,9 +459,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         break;
       case "cone":
         manager = new ConeManager(...args);
-        break;
-      case "zebra":
-        manager = new ZebraManager(...args);
         break;
     }
     manager.setResolution(this.resolutionVector);
@@ -849,11 +839,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       if (orbitalCamera || dsCamera) {
         this.canvas.classList.remove("fixed");
         this.canvasContainer.classList.remove("fixed");
-        this.annotationsDiv.classList.remove("fixed");
         this.canvas.style.width = "";
         this.canvas.style.height = "";
-        this.annotationsDiv.style.width = "";
-        this.annotationsDiv.style.height = "";
 
         // Record camera position in current coordinate frame
         let cameraRefPosition = new THREE.Object3D();
@@ -905,7 +892,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       } else {
         this.canvas.classList.add("fixed");
         this.canvasContainer.classList.add("fixed");
-        this.annotationsDiv.classList.add("fixed");
 
         // Get fixed aspect ratio and FOV
         let cameraConfig = robotConfig === undefined ? undefined : robotConfig.cameras[this.cameraIndex];
@@ -918,13 +904,9 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
         if (aspectRatio > parentAspectRatio) {
           this.canvas.style.width = "100%";
           this.canvas.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
-          this.annotationsDiv.style.width = "100%";
-          this.annotationsDiv.style.height = ((parentAspectRatio / aspectRatio) * 100).toString() + "%";
         } else {
           this.canvas.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
           this.canvas.style.height = "100%";
-          this.annotationsDiv.style.width = ((aspectRatio / parentAspectRatio) * 100).toString() + "%";
-          this.annotationsDiv.style.height = "100%";
         }
 
         // Update camera position
@@ -1003,7 +985,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       this.canvas.height / devicePixelRatio !== clientHeight
     ) {
       this.renderer.setSize(clientWidth, clientHeight, false);
-      this.cssRenderer.setSize(clientWidth, clientHeight);
       this.camera.aspect = clientWidth / clientHeight;
       this.camera.updateProjectionMatrix();
       this.resolutionVector.set(clientWidth, clientHeight);
@@ -1014,7 +995,6 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     this.scene.background = isDark ? new THREE.Color("#222222") : new THREE.Color("#ffffff");
     this.renderer.setPixelRatio(devicePixelRatio);
     this.renderer.render(this.scene, this.camera);
-    this.cssRenderer.render(this.scene, this.camera);
   }
 }
 

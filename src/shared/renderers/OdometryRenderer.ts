@@ -267,7 +267,7 @@ export default class OdometryRenderer implements TabRenderer {
     }
 
     // Draw objects
-    const renderingOrder = ["trajectory", "robot", "ghost", "arrow", "zebra"];
+    const renderingOrder = ["trajectory", "robot", "ghost", "arrow"];
     command.objects
       .toSorted((objA, objB) => renderingOrder.indexOf(objA.type) - renderingOrder.indexOf(objB.type))
       .forEach((object) => {
@@ -394,32 +394,6 @@ export default class OdometryRenderer implements TabRenderer {
               context.stroke();
             });
             break;
-          case "zebra":
-            context.font =
-              Math.round(12 * pixelsPerInch).toString() +
-              "px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
-            object.poses.forEach((pose) => {
-              let coordinates = calcCoordinates(pose.pose.translation);
-
-              if (!pose.annotation.zebraAlliance) return;
-              context.fillStyle = pose.annotation.zebraAlliance;
-              context.strokeStyle = "white";
-              context.lineWidth = 2 * pixelsPerInch;
-              context.beginPath();
-              context.arc(coordinates[0], coordinates[1], 6 * pixelsPerInch, 0, Math.PI * 2);
-              context.fill();
-              context.stroke();
-
-              if (!pose.annotation.zebraTeam) return;
-              context.fillStyle = "white";
-              context.textAlign = "center";
-              context.fillText(
-                pose.annotation.zebraTeam.toString(),
-                coordinates[0],
-                coordinates[1] - 15 * pixelsPerInch
-              );
-            });
-            break;
         }
       });
   }
@@ -445,8 +419,7 @@ export type OdometryRendererCommand_AnyObj =
   | OdometryRendererCommand_GhostObj
   | OdometryRendererCommand_TrajectoryObj
   | OdometryRendererCommand_HeatmapObj
-  | OdometryRendererCommand_ArrowObj
-  | OdometryRendererCommand_ZebraMarkerObj;
+  | OdometryRendererCommand_ArrowObj;
 
 export type OdometryRendererCommand_RobotObj = {
   type: "robot";
@@ -487,9 +460,4 @@ export type OdometryRendererCommand_ArrowObj = {
   type: "arrow";
   poses: AnnotatedPose2d[];
   position: "center" | "back" | "front";
-};
-
-export type OdometryRendererCommand_ZebraMarkerObj = {
-  type: "zebra";
-  poses: AnnotatedPose2d[];
 };

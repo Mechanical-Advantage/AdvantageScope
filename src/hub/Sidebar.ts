@@ -4,7 +4,6 @@ import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { SelectionMode } from "../shared/Selection";
 import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
-import { ZEBRA_LOG_KEY } from "./dataSources/LoadZebra";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
 
 export default class Sidebar {
@@ -42,8 +41,7 @@ export default class Sidebar {
     "messages",
     "systemTime",
     "DSLog",
-    "DSEvents",
-    ZEBRA_LOG_KEY
+    "DSEvents"
   ];
   private HIDDEN_KEYS = [".schema", "Metadata", "RealMetadata", "ReplayMetadata"];
   private INDENT_SIZE_PX = 20;

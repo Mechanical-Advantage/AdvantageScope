@@ -259,9 +259,7 @@ export default class OdometryController implements TabController {
             time,
             this.UUID,
             numberArrayFormat,
-            numberArrayUnits,
-            fieldWidth,
-            fieldHeight
+            numberArrayUnits
           );
         }
       } else {
@@ -285,9 +283,7 @@ export default class OdometryController implements TabController {
           timeRange,
           this.UUID,
           numberArrayFormat,
-          numberArrayUnits,
-          fieldWidth,
-          fieldHeight
+          numberArrayUnits
         );
       }
       let poses = pose3ds.map(annotatedPose3dTo2d);
@@ -316,9 +312,7 @@ export default class OdometryController implements TabController {
               sampleTime,
               this.UUID,
               numberArrayFormat,
-              numberArrayUnits,
-              fieldWidth,
-              fieldHeight
+              numberArrayUnits
             ).map((x) => annotatedPose3dTo2d(x));
             if (poses.length !== trails.length) return;
             if (fieldData !== undefined) {
@@ -458,7 +452,6 @@ export default class OdometryController implements TabController {
           break;
         case "ghost":
         case "ghostLegacy":
-        case "ghostZebra":
           objects.push({
             type: "ghost",
             poses: poses,
@@ -492,12 +485,6 @@ export default class OdometryController implements TabController {
             type: "arrow",
             poses: poses,
             position: position
-          });
-          break;
-        case "zebra":
-          objects.push({
-            type: "zebra",
-            poses: poses
           });
           break;
       }

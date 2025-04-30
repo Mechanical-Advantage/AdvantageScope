@@ -28,7 +28,6 @@ import GamePieceManager from "../shared/renderers/threeDimension/objectManagers/
 import HeatmapManager from "../shared/renderers/threeDimension/objectManagers/HeatmapManager";
 import RobotManager from "../shared/renderers/threeDimension/objectManagers/RobotManager";
 import TrajectoryManager from "../shared/renderers/threeDimension/objectManagers/TrajectoryManager";
-import ZebraManager from "../shared/renderers/threeDimension/objectManagers/ZebraManager";
 import { convert } from "../shared/units";
 import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
@@ -287,9 +286,6 @@ export default class XRRenderer {
         break;
       case "cone":
         manager = new ConeManager(...args);
-        break;
-      case "zebra":
-        manager = new ZebraManager(...args);
         break;
     }
     manager.setResolution(this.resolution);

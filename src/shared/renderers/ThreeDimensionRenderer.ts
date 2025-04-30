@@ -7,7 +7,6 @@ import ThreeDimensionRendererImpl from "./ThreeDimensionRendererImpl";
 export default class ThreeDimensionRenderer implements TabRenderer {
   private CANVAS: HTMLCanvasElement;
   private CANVAS_CONTAINER: HTMLElement;
-  private ANNOTATIONS_DIV: HTMLElement;
   private ALERT: HTMLElement;
   private SPINNER: HTMLElement;
 
@@ -18,7 +17,6 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   constructor(root: HTMLElement) {
     this.CANVAS = root.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement;
     this.CANVAS_CONTAINER = root.getElementsByClassName("three-dimension-canvas-container")[0] as HTMLElement;
-    this.ANNOTATIONS_DIV = root.getElementsByClassName("three-dimension-annotations")[0] as HTMLElement;
     this.ALERT = root.getElementsByClassName("three-dimension-alert")[0] as HTMLElement;
     this.SPINNER = root.getElementsByClassName("spinner-cubes-container")[0] as HTMLElement;
     this.updateImplementation();
@@ -76,20 +74,10 @@ export default class ThreeDimensionRenderer implements TabRenderer {
         this.CANVAS.replaceWith(newCanvas);
         this.CANVAS = newCanvas;
       }
-      {
-        let newDiv = document.createElement("div");
-        this.ANNOTATIONS_DIV.classList.forEach((className) => {
-          newDiv.classList.add(className);
-        });
-        newDiv.id = this.ANNOTATIONS_DIV.id;
-        this.ANNOTATIONS_DIV.replaceWith(newDiv);
-        this.ANNOTATIONS_DIV = newDiv;
-      }
       this.implementation = new ThreeDimensionRendererImpl(
         mode,
         this.CANVAS,
         this.CANVAS_CONTAINER,
-        this.ANNOTATIONS_DIV,
         this.ALERT,
         this.SPINNER
       );
@@ -132,8 +120,7 @@ export type ThreeDimensionRendererCommand_AnyObj =
   | ThreeDimensionRendererCommand_HeatmapObj
   | ThreeDimensionRendererCommand_AprilTagObj
   | ThreeDimensionRendererCommand_AxesObj
-  | ThreeDimensionRendererCommand_ConeObj
-  | ThreeDimensionRendererCommand_ZebraMarkerObj;
+  | ThreeDimensionRendererCommand_ConeObj;
 
 export type ThreeDimensionRendererCommand_GenericRobotObj = {
   model: string;
@@ -189,10 +176,5 @@ export type ThreeDimensionRendererCommand_ConeObj = {
   type: "cone";
   color: string;
   position: "center" | "back" | "front";
-  poses: AnnotatedPose3d[];
-};
-
-export type ThreeDimensionRendererCommand_ZebraMarkerObj = {
-  type: "zebra";
   poses: AnnotatedPose3d[];
 };

@@ -118,7 +118,6 @@ export default class ThreeDimensionController implements TabController {
     this.sourceList.setOptionValues("robotLegacy", "model", sourceListValues);
     this.sourceList.setOptionValues("ghost", "model", sourceListValues);
     this.sourceList.setOptionValues("ghostLegacy", "model", sourceListValues);
-    this.sourceList.setOptionValues("ghostZebra", "model", sourceListValues);
   }
 
   /** Updates the robots, source button, and game pieces based on the selected value. */
@@ -249,9 +248,7 @@ export default class ThreeDimensionController implements TabController {
             time,
             this.UUID,
             numberArrayFormat,
-            numberArrayUnits,
-            fieldWidth,
-            fieldHeight
+            numberArrayUnits
           );
         }
       } else {
@@ -275,9 +272,7 @@ export default class ThreeDimensionController implements TabController {
           timeRange,
           this.UUID,
           numberArrayFormat,
-          numberArrayUnits,
-          fieldWidth,
-          fieldHeight
+          numberArrayUnits
         );
       }
 
@@ -426,7 +421,6 @@ export default class ThreeDimensionController implements TabController {
           break;
         case "ghost":
         case "ghostLegacy":
-        case "ghostZebra":
           objects.push({
             type: "ghost",
             color: source.options.color,
@@ -497,12 +491,6 @@ export default class ThreeDimensionController implements TabController {
             cameraOverride = poses[0];
           }
           break;
-        case "zebra":
-          objects.push({
-            type: "zebra",
-            poses: poses
-          });
-          break;
       }
     }
 
@@ -510,7 +498,7 @@ export default class ThreeDimensionController implements TabController {
     let allRobotModels: Set<string> = new Set();
     let allSources = this.sourceList.getState();
     allSources.forEach((source) => {
-      if (["robot", "robotLegacy", "ghost", "ghostLegacy", "ghostZebra"].includes(source.type)) {
+      if (["robot", "robotLegacy", "ghost", "ghostLegacy"].includes(source.type)) {
         allRobotModels.add(source.options.model);
       }
     });
