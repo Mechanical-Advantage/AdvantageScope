@@ -33,8 +33,8 @@ export interface AdvantageScopeAssets {
 export type CoordinateSystem =
   | "wall-alliance" // FRC 2022
   | "wall-blue" // FRC 2023-2026
-  | "center-rotated" // FTC pre-2027
-  | "center-red"; // FRC & FTC 2027
+  | "center-rotated" // FTC traditional
+  | "center-red"; // SystemCore
 
 export interface Config2d {
   name: string;
