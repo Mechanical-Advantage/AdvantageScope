@@ -59,12 +59,14 @@ self.onmessage = (event) => {
         });
 
         stagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+        stagedPieces.position.set(...fieldConfig.position);
         let fieldStagedPiecesMeshes = await optimizeGeometries(
           stagedPieces,
           mode,
           materialSpecular,
           materialShininess,
-          false
+          false,
+          fieldConfig.isFTC
         );
         fieldStagedPieces = new THREE.Group();
         if (fieldStagedPiecesMeshes.normal.length > 0) fieldStagedPieces.add(fieldStagedPiecesMeshes.normal[0]);
@@ -73,7 +75,16 @@ self.onmessage = (event) => {
         if (fieldStagedPiecesMeshes.carpet.length > 0) fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet[0]);
 
         scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-        let fieldMeshes = await optimizeGeometries(scene, mode, materialSpecular, materialShininess, true, 1);
+        scene.position.set(...fieldConfig.position);
+        let fieldMeshes = await optimizeGeometries(
+          scene,
+          mode,
+          materialSpecular,
+          materialShininess,
+          true,
+          fieldConfig.isFTC,
+          1
+        );
         field = new THREE.Group();
         fieldMeshes.carpet.forEach((mesh) => {
           mesh.name = "carpet";
@@ -83,7 +94,9 @@ self.onmessage = (event) => {
         let gamePieceConfig = fieldConfig.gamePieces[index - 1];
         scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
         scene.position.set(...gamePieceConfig.position);
-        let meshes = (await optimizeGeometries(scene, mode, materialSpecular, materialShininess, false)).normal;
+        let meshes = (
+          await optimizeGeometries(scene, mode, materialSpecular, materialShininess, false, fieldConfig.isFTC)
+        ).normal;
         if (meshes.length > 0) {
           fieldPieces[gamePieceConfig.name] = meshes[0];
         }

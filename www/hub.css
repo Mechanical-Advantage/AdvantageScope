@@ -1329,7 +1329,7 @@ div.setting-blocks div.split-2 div {
 }
 
 div.setting-blocks div.split-1 div {
-  width: 100%;
+  width: 60%;
 }
 
 div.setting-blocks div.split div img {
@@ -1384,17 +1384,17 @@ div.setting-blocks > div:first-child {
   margin-top: 5px;
 }
 
-div.setting-blocks div.game > div {
+div.setting-blocks div.field > div {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
 }
 
-div.setting-blocks select.game-select {
+div.setting-blocks select.field-select {
   height: 24px;
 }
 
-div.setting-blocks a.game-source {
+div.setting-blocks a.field-source {
   padding: 5px;
   font-size: 14px;
 }
@@ -1405,7 +1405,7 @@ div.setting-blocks input {
   text-align: center;
 }
 
-div.setting-blocks select:not(.game-select) {
+div.setting-blocks select:not(.field-select) {
   margin: 5px;
   width: 70%;
   height: 25px;
@@ -1422,6 +1422,14 @@ div.setting-blocks input[type="number"]::-webkit-inner-spin-button {
     /* Lighten blue tone  */
     filter: hue-rotate(-45deg) brightness(450%);
   }
+}
+
+div.setting-blocks.frc .ftc-only {
+  display: none;
+}
+
+div.setting-blocks.ftc .frc-only {
+  display: none;
 }
 
 div.tab-centered {
@@ -1473,7 +1481,7 @@ div.odometry-sources {
   height: 100%;
   left: 0%;
   width: 60%;
-  min-width: calc(100% - 300px);
+  min-width: calc(100% - 250px);
 }
 
 div.odometry-settings {
@@ -1482,7 +1490,7 @@ div.odometry-settings {
   height: 100%;
   right: 0%;
   width: 40%;
-  max-width: 300px;
+  max-width: 250px;
   border-left: 1px solid #ddd;
 
   overflow-x: hidden;

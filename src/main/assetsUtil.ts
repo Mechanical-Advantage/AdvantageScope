@@ -1,4 +1,3 @@
-import { dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
@@ -14,22 +13,15 @@ import {
   ConfigJoystick_Axis,
   ConfigJoystick_Button,
   ConfigJoystick_Joystick,
-  DEFAULT_DRIVER_STATIONS
+  DEFAULT_DRIVER_STATIONS_FRC,
+  DEFAULT_DRIVER_STATIONS_FTC
 } from "../shared/AdvantageScopeAssets";
 import Preferences from "../shared/Preferences";
 import { checkArrayType } from "../shared/util";
-import {
-  AUTO_ASSETS,
-  BUNDLED_ASSETS,
-  DEFAULT_USER_ASSETS,
-  LEGACY_ASSETS,
-  PREFS_FILENAME,
-  WINDOW_ICON
-} from "./Constants";
+import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./Constants";
 
 const USER_ASSETS_README =
   'This folder contains extra assets for the odometry, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
-const CONVERT_LEGACY_ALLOWED_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWxYZabcdefghijklnopqrstuvwxyz0123456789".split("");
 
 /** Returns the path to the user assets folder. */
 export function getUserAssetsPath() {
@@ -50,83 +42,6 @@ export function createAssetFolders() {
     fs.mkdirSync(DEFAULT_USER_ASSETS);
   }
   fs.writeFileSync(path.join(DEFAULT_USER_ASSETS, "README.txt"), USER_ASSETS_README);
-}
-
-/** Converts any custom "FRC Data" assets to the current format. */
-export function convertLegacyAssets() {
-  if (!fs.existsSync(LEGACY_ASSETS)) return;
-  if (fs.readdirSync(LEGACY_ASSETS).filter((x) => !x.startsWith(".")).length <= 1) {
-    // Delete unused FRC data folder
-    fs.rmSync(LEGACY_ASSETS, { recursive: true });
-    return;
-  }
-
-  // Prompt user to confirm
-  let result = dialog.showMessageBoxSync({
-    type: "info",
-    title: "Info",
-    message: "Convert legacy AdvantageScope assets?",
-    detail:
-      'Legacy "FRC Data" assets found. Click "Continue" to convert to a format compatible with this version of AdvantageScope.',
-    buttons: ["Continue", "Cancel"],
-    icon: WINDOW_ICON
-  });
-  if (result !== 0) return;
-
-  // Convert assets
-  fs.readdirSync(LEGACY_ASSETS).forEach((file) => {
-    if (!file.endsWith(".json")) return;
-    let title = file.split("_").slice(1).join("_").split(".").slice(0, -1).join(".");
-    let config = jsonfile.readFileSync(path.join(LEGACY_ASSETS, file));
-    let isField2d = file.startsWith("Field2d_");
-    let isField3d = file.startsWith("Field3d_");
-    let isRobot = file.startsWith("Robot_");
-    let isJoystick = file.startsWith("Joystick_");
-
-    // Create target folder
-    let targetPath = path.join(
-      DEFAULT_USER_ASSETS,
-      file.split("_")[0] +
-        "_" +
-        title
-          .split("")
-          .filter((x) => CONVERT_LEGACY_ALLOWED_CHARS.includes(x))
-          .join("")
-    );
-    if (fs.existsSync(targetPath)) return;
-    fs.mkdirSync(targetPath);
-
-    // Copy assets
-    if (isField2d) {
-      fs.copyFileSync(path.join(LEGACY_ASSETS, "Field2d_" + title + ".png"), path.join(targetPath, "image.png"));
-    } else if (isField3d) {
-      fs.copyFileSync(path.join(LEGACY_ASSETS, "Field3d_" + title + ".glb"), path.join(targetPath, "model.glb"));
-    } else if (isRobot) {
-      fs.copyFileSync(path.join(LEGACY_ASSETS, "Robot_" + title + ".glb"), path.join(targetPath, "model.glb"));
-      let index = 0;
-      while (true) {
-        let source = path.join(LEGACY_ASSETS, "Robot_" + title + "_" + index.toString() + ".glb");
-        if (!fs.existsSync(source)) break;
-        fs.copyFileSync(source, path.join(targetPath, "model_" + index.toString() + ".glb"));
-        index++;
-      }
-    } else if (isJoystick) {
-      fs.copyFileSync(path.join(LEGACY_ASSETS, "Joystick_" + title + ".png"), path.join(targetPath, "image.png"));
-    }
-
-    // Update config
-    if (isJoystick) {
-      config = {
-        name: title,
-        components: config
-      };
-    }
-    config.name = title;
-    jsonfile.writeFileSync(path.join(targetPath, "config.json"), config, { spaces: 2 });
-  });
-
-  // Delete FRC data folder
-  fs.rmSync(LEGACY_ASSETS, { recursive: true });
 }
 
 /** Loads all current FRC data (bundled and extra). */
@@ -166,14 +81,33 @@ export function loadAssets(): AdvantageScopeAssets {
           let config: Config2d = {
             name: "",
             path: encodePath(path.join(parentFolder, object.name, "image.png")),
+            id: "",
+            isFTC: false,
+            coordinateSystem: "center-red",
             topLeft: [-1, -1],
             bottomRight: [-1, -1],
             widthInches: 0,
-            heightInches: 0,
-            defaultOrigin: "auto"
+            heightInches: 0
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
+          }
+          if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
+            config.isFTC = configRaw.isFTC;
+          } else {
+            // Pre-2026 format, skip
+            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+            return;
+          }
+          if (
+            "coordinateSystem" in configRaw &&
+            typeof configRaw.coordinateSystem === "string" &&
+            (configRaw.coordinateSystem === "wall-alliance" ||
+              configRaw.coordinateSystem === "wall-blue" ||
+              configRaw.coordinateSystem === "center-rotated" ||
+              configRaw.coordinateSystem === "center-red")
+          ) {
+            config.coordinateSystem = configRaw.coordinateSystem;
           }
           if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
             config.sourceUrl = configRaw.sourceUrl;
@@ -199,15 +133,6 @@ export function loadAssets(): AdvantageScopeAssets {
             config.heightInches = configRaw.heightInches;
           }
           if (
-            "defaultOrigin" in configRaw &&
-            typeof configRaw.defaultOrigin === "string" &&
-            (configRaw.defaultOrigin === "auto" ||
-              configRaw.defaultOrigin === "red" ||
-              configRaw.defaultOrigin === "blue")
-          ) {
-            config.defaultOrigin = configRaw.defaultOrigin;
-          }
-          if (
             config.name.length > 0 &&
             config.topLeft[0] >= 0 &&
             config.topLeft[1] >= 0 &&
@@ -217,6 +142,7 @@ export function loadAssets(): AdvantageScopeAssets {
             config.heightInches > 0 &&
             fs.existsSync(decodeURIComponent(config.path))
           ) {
+            config.id = (config.isFTC ? "FTC" : "FRC") + ":" + config.name;
             assets.field2ds.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
@@ -225,18 +151,38 @@ export function loadAssets(): AdvantageScopeAssets {
           let config: Config3dField = {
             name: "",
             path: encodePath(path.join(parentFolder, object.name, "model.glb")),
+            id: "",
+            isFTC: false,
+            coordinateSystem: "center-red",
             rotations: [],
+            position: [0, 0, 0],
             widthInches: 0,
             heightInches: 0,
-            defaultOrigin: "auto",
-            driverStations: DEFAULT_DRIVER_STATIONS,
+            driverStations: DEFAULT_DRIVER_STATIONS_FRC,
             gamePieces: []
           };
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
           }
-          if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
-            config.sourceUrl = configRaw.sourceUrl;
+          if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
+            config.isFTC = configRaw.isFTC;
+            if (config.isFTC) {
+              config.driverStations = DEFAULT_DRIVER_STATIONS_FTC;
+            }
+          } else {
+            // Pre-2026 format, skip
+            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+            return;
+          }
+          if (
+            "coordinateSystem" in configRaw &&
+            typeof configRaw.coordinateSystem === "string" &&
+            (configRaw.coordinateSystem === "wall-alliance" ||
+              configRaw.coordinateSystem === "wall-blue" ||
+              configRaw.coordinateSystem === "center-rotated" ||
+              configRaw.coordinateSystem === "center-red")
+          ) {
+            config.coordinateSystem = configRaw.coordinateSystem;
           }
           if (
             "rotations" in configRaw &&
@@ -252,6 +198,13 @@ export function loadAssets(): AdvantageScopeAssets {
           ) {
             config.rotations = configRaw.rotations;
           }
+          if (
+            "position" in configRaw &&
+            checkArrayType(configRaw.position, "number") &&
+            (configRaw.position as number[]).length === 3
+          ) {
+            config.position = configRaw.position as [number, number, number];
+          }
           if ("widthInches" in configRaw && typeof configRaw.widthInches === "number") {
             config.widthInches = configRaw.widthInches;
           }
@@ -259,18 +212,9 @@ export function loadAssets(): AdvantageScopeAssets {
             config.heightInches = configRaw.heightInches;
           }
           if (
-            "defaultOrigin" in configRaw &&
-            typeof configRaw.defaultOrigin === "string" &&
-            (configRaw.defaultOrigin === "auto" ||
-              configRaw.defaultOrigin === "red" ||
-              configRaw.defaultOrigin === "blue")
-          ) {
-            config.defaultOrigin = configRaw.defaultOrigin;
-          }
-          if (
             "driverStations" in configRaw &&
             Array.isArray(configRaw.driverStations) &&
-            configRaw.driverStations.length === 6 &&
+            configRaw.driverStations.length === (config.isFTC ? 4 : 6) &&
             configRaw.driverStations.every((position) => checkArrayType(position, "number") && position.length === 2)
           ) {
             config.driverStations = configRaw.driverStations;
@@ -322,6 +266,7 @@ export function loadAssets(): AdvantageScopeAssets {
               fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
             )
           ) {
+            config.id = (config.isFTC ? "FTC" : "FRC") + ":" + config.name;
             assets.field3ds.push(config);
             assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
           }
@@ -330,6 +275,7 @@ export function loadAssets(): AdvantageScopeAssets {
           let config: Config3dRobot = {
             name: "",
             path: encodePath(path.join(parentFolder, object.name, "model.glb")),
+            isFTC: false,
             rotations: [],
             position: [0, 0, 0],
             cameras: [],
@@ -339,8 +285,8 @@ export function loadAssets(): AdvantageScopeAssets {
           if ("name" in configRaw && typeof configRaw.name === "string") {
             config.name = configRaw.name;
           }
-          if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
-            config.sourceUrl = configRaw.sourceUrl;
+          if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
+            config.isFTC = configRaw.isFTC;
           }
           if ("disableSimplification" in configRaw && typeof configRaw.disableSimplification === "boolean") {
             config.disableSimplification = configRaw.disableSimplification;
@@ -609,12 +555,12 @@ export function loadAssets(): AdvantageScopeAssets {
     loadFailures: assets.loadFailures
   };
   assets.field2ds.forEach((asset) => {
-    if (uniqueAssets.field2ds.find((other) => other.name === asset.name) === undefined) {
+    if (uniqueAssets.field2ds.find((other) => other.id === asset.id) === undefined) {
       uniqueAssets.field2ds.push(asset);
     }
   });
   assets.field3ds.forEach((asset) => {
-    if (uniqueAssets.field3ds.find((other) => other.name === asset.name) === undefined) {
+    if (uniqueAssets.field3ds.find((other) => other.id === asset.id) === undefined) {
       uniqueAssets.field3ds.push(asset);
     }
   });

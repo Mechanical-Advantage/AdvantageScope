@@ -72,7 +72,7 @@ import { VideoProcessor } from "./VideoProcessor";
 import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
-import { convertLegacyAssets, createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
+import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
 import {
   delayBetaSurvey,
   isBeta,
@@ -1054,7 +1054,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "ask-3d-camera":
-      select3DCameraPopup(window, message.data.options, message.data.selectedIndex, message.data.fov);
+      select3DCameraPopup(
+        window,
+        message.data.options,
+        message.data.selectedIndex,
+        message.data.fov,
+        message.data.isFTC
+      );
       break;
 
     case "export-console":
@@ -1234,7 +1240,13 @@ function newTabPopup(window: BrowserWindow) {
   });
 }
 
-function select3DCameraPopup(window: BrowserWindow, options: string[], selectedIndex: number, fov: number) {
+function select3DCameraPopup(
+  window: BrowserWindow,
+  options: string[],
+  selectedIndex: number,
+  fov: number,
+  isFTC: boolean
+) {
   const cameraMenu = new Menu();
   cameraMenu.append(
     new MenuItem({
@@ -1258,65 +1270,100 @@ function select3DCameraPopup(window: BrowserWindow, options: string[], selectedI
   );
   cameraMenu.append(
     new MenuItem({
-      label: "Driver Station",
-      submenu: [
-        {
-          label: "Auto",
-          type: "checkbox",
-          checked: selectedIndex === -3,
-          click() {
-            sendMessage(window, "set-3d-camera", -3);
-          }
-        },
-        {
-          label: "Blue 1",
-          type: "checkbox",
-          checked: selectedIndex === -4,
-          click() {
-            sendMessage(window, "set-3d-camera", -4);
-          }
-        },
-        {
-          label: "Blue 2",
-          type: "checkbox",
-          checked: selectedIndex === -5,
-          click() {
-            sendMessage(window, "set-3d-camera", -5);
-          }
-        },
-        {
-          label: "Blue 3",
-          type: "checkbox",
-          checked: selectedIndex === -6,
-          click() {
-            sendMessage(window, "set-3d-camera", -6);
-          }
-        },
-        {
-          label: "Red 1",
-          type: "checkbox",
-          checked: selectedIndex === -7,
-          click() {
-            sendMessage(window, "set-3d-camera", -7);
-          }
-        },
-        {
-          label: "Red 2",
-          type: "checkbox",
-          checked: selectedIndex === -8,
-          click() {
-            sendMessage(window, "set-3d-camera", -8);
-          }
-        },
-        {
-          label: "Red 3",
-          type: "checkbox",
-          checked: selectedIndex === -9,
-          click() {
-            sendMessage(window, "set-3d-camera", -9);
-          }
-        }
-      ]
+      label: isFTC ? "Driver Perspective" : "Driver Station",
+      submenu: isFTC
+        ? [
+            {
+              label: "Blue Left",
+              type: "checkbox",
+              checked: selectedIndex === -4,
+              click() {
+                sendMessage(window, "set-3d-camera", -4);
+              }
+            },
+            {
+              label: "Blue Right",
+              type: "checkbox",
+              checked: selectedIndex === -5,
+              click() {
+                sendMessage(window, "set-3d-camera", -5);
+              }
+            },
+            {
+              label: "Red Left",
+              type: "checkbox",
+              checked: selectedIndex === -6,
+              click() {
+                sendMessage(window, "set-3d-camera", -6);
+              }
+            },
+            {
+              label: "Red Right",
+              type: "checkbox",
+              checked: selectedIndex === -7,
+              click() {
+                sendMessage(window, "set-3d-camera", -7);
+              }
+            }
+          ]
+        : [
+            {
+              label: "Auto",
+              type: "checkbox",
+              checked: selectedIndex === -3,
+              click() {
+                sendMessage(window, "set-3d-camera", -3);
+              }
+            },
+            {
+              label: "Blue 1",
+              type: "checkbox",
+              checked: selectedIndex === -4,
+              click() {
+                sendMessage(window, "set-3d-camera", -4);
+              }
+            },
+            {
+              label: "Blue 2",
+              type: "checkbox",
+              checked: selectedIndex === -5,
+              click() {
+                sendMessage(window, "set-3d-camera", -5);
+              }
+            },
+            {
+              label: "Blue 3",
+              type: "checkbox",
+              checked: selectedIndex === -6,
+              click() {
+                sendMessage(window, "set-3d-camera", -6);
+              }
+            },
+            {
+              label: "Red 1",
+              type: "checkbox",
+              checked: selectedIndex === -7,
+              click() {
+                sendMessage(window, "set-3d-camera", -7);
+              }
+            },
+            {
+              label: "Red 2",
+              type: "checkbox",
+              checked: selectedIndex === -8,
+              click() {
+                sendMessage(window, "set-3d-camera", -8);
+              }
+            },
+            {
+              label: "Red 3",
+              type: "checkbox",
+              checked: selectedIndex === -9,
+              click() {
+                sendMessage(window, "set-3d-camera", -9);
+              }
+            }
+          ]
     })
   );
   cameraMenu.append(
@@ -2881,7 +2928,13 @@ function createSatellite(
           break;
 
         case "ask-3d-camera":
-          select3DCameraPopup(satellite, message.data.options, message.data.selectedIndex, message.data.fov);
+          select3DCameraPopup(
+            satellite,
+            message.data.options,
+            message.data.selectedIndex,
+            message.data.fov,
+            message.data.isFTC
+          );
           break;
 
         case "add-table-range":
@@ -2964,7 +3017,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const rows = 10;
+  const rows = 11;
   const height = rows * 27 + 54;
   prefsWindow = new BrowserWindow({
     width: width,
@@ -3263,6 +3316,16 @@ app.whenReady().then(() => {
     if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
       prefs.rlogPort = oldPrefs.rlogPort;
     }
+    if (
+      "coordinateSystem" in oldPrefs &&
+      (oldPrefs.coordinateSystem === "automatic" ||
+        oldPrefs.coordinateSystem === "wall-alliance" ||
+        oldPrefs.coordinateSystem === "wall-blue" ||
+        oldPrefs.coordinateSystem === "center-rotated" ||
+        oldPrefs.coordinateSystem === "center-red")
+    ) {
+      prefs.coordinateSystem = oldPrefs.coordinateSystem;
+    }
     if ("threeDimensionMode" in oldPrefs) {
       // Migrate from v2
       switch (oldPrefs.threeDimensionMode) {
@@ -3333,7 +3396,6 @@ app.whenReady().then(() => {
 
   // Load assets
   createAssetFolders();
-  convertLegacyAssets();
   startAssetDownloadLoop(() => {
     advantageScopeAssets = loadAssets();
     sendAssets();

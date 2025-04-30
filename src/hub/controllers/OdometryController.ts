@@ -5,11 +5,11 @@ import {
   SwerveState,
   Translation2d,
   annotatedPose3dTo2d,
+  convertFromCoordinateSystem,
   grabHeatmapData,
   grabPosesAuto,
   grabSwerveStates,
-  rotation3dTo2d,
-  translation3dTo2d
+  rotation3dTo2d
 } from "../../shared/geometry";
 import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
 import {
@@ -29,19 +29,17 @@ export default class OdometryController implements TabController {
   private static TRAIL_LENGTH_SECS = 3;
   private static TRAIL_DT = 0.1;
 
-  private BUMPER_SWITCHER: HTMLElement;
-  private ORIGIN_SWITCHER: HTMLElement;
+  private SETTINGS: HTMLElement;
   private ORIENTATION_SWITCHER: HTMLElement;
   private SIZE_SWITCHER: HTMLElement;
-  private GAME_SELECT: HTMLSelectElement;
-  private GAME_SOURCE: HTMLElement;
+  private FIELD_SELECT: HTMLSelectElement;
+  private FIELD_SOURCE: HTMLElement;
 
   private sourceList: SourceList;
 
   private bumperSetting: "auto" | "blue" | "red" = "auto";
-  private originSetting: "auto" | "blue" | "red" = "auto";
   private orientationSetting = Orientation.DEG_0;
-  private sizeSetting: 30 | 27 | 24 = 30;
+  private sizeSetting: "large" | "medium" | "small" = "large";
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -49,37 +47,23 @@ export default class OdometryController implements TabController {
       OdometryController_Config,
       []
     );
-    let settings = root.getElementsByClassName("odometry-settings")[0] as HTMLElement;
-    this.BUMPER_SWITCHER = settings.getElementsByClassName("bumper-switcher")[0] as HTMLElement;
-    this.ORIGIN_SWITCHER = settings.getElementsByClassName("origin-switcher")[0] as HTMLElement;
-    this.ORIENTATION_SWITCHER = settings.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
-    this.SIZE_SWITCHER = settings.getElementsByClassName("size-switcher")[0] as HTMLElement;
-    this.GAME_SELECT = settings.getElementsByClassName("game-select")[0] as HTMLSelectElement;
-    this.GAME_SOURCE = settings.getElementsByClassName("game-source")[0] as HTMLElement;
+    this.SETTINGS = root.getElementsByClassName("odometry-settings")[0] as HTMLElement;
+    this.ORIENTATION_SWITCHER = this.SETTINGS.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
+    this.SIZE_SWITCHER = this.SETTINGS.getElementsByClassName("size-switcher")[0] as HTMLElement;
+    this.FIELD_SELECT = this.SETTINGS.getElementsByClassName("field-select")[0] as HTMLSelectElement;
+    this.FIELD_SOURCE = this.SETTINGS.getElementsByClassName("field-source")[0] as HTMLElement;
 
-    // Set up game select
-    this.GAME_SELECT.addEventListener("change", () => this.updateGameDependentControls());
-    this.GAME_SOURCE.addEventListener("click", () => {
+    // Set up field select
+    this.FIELD_SELECT.addEventListener("change", () => this.updateFieldDependentControls());
+    this.FIELD_SOURCE.addEventListener("click", () => {
       window.sendMainMessage(
         "open-link",
-        window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value)?.sourceUrl
+        window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value)?.sourceUrl
       );
     });
-    this.updateGameOptions();
+    this.updateFieldOptions();
 
     // Set up switchers
-    (["auto", "blue", "red"] as const).forEach((value, index) => {
-      this.BUMPER_SWITCHER.children[index].addEventListener("click", () => {
-        this.bumperSetting = value;
-        this.updateSwitchers();
-      });
-    });
-    (["auto", "blue", "red"] as const).forEach((value, index) => {
-      this.ORIGIN_SWITCHER.children[index].addEventListener("click", () => {
-        this.originSetting = value;
-        this.updateSwitchers();
-      });
-    });
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
       this.orientationSetting--;
       if (this.orientationSetting < 0) this.orientationSetting = 3;
@@ -88,7 +72,7 @@ export default class OdometryController implements TabController {
       this.orientationSetting++;
       if (this.orientationSetting > 3) this.orientationSetting = 0;
     });
-    ([30, 27, 24] as const).forEach((value, index) => {
+    (["large", "medium", "small"] as const).forEach((value, index) => {
       this.SIZE_SWITCHER.children[index].addEventListener("click", () => {
         this.sizeSetting = value;
         this.updateSwitchers();
@@ -97,71 +81,53 @@ export default class OdometryController implements TabController {
     this.updateSwitchers();
   }
 
-  /** Updates game select with the latest options. */
-  private updateGameOptions() {
-    let value = this.GAME_SELECT.value;
-    while (this.GAME_SELECT.firstChild) {
-      this.GAME_SELECT.removeChild(this.GAME_SELECT.firstChild);
+  /** Updates field select with the latest options. */
+  private updateFieldOptions() {
+    let value = this.FIELD_SELECT.value;
+    let frcGroup = this.FIELD_SELECT.firstElementChild as HTMLElement;
+    let ftcGroup = this.FIELD_SELECT.lastElementChild as HTMLElement;
+    while (frcGroup.firstChild) {
+      frcGroup.removeChild(frcGroup.firstChild);
+    }
+    while (ftcGroup.firstChild) {
+      ftcGroup.removeChild(ftcGroup.firstChild);
     }
     let options: string[] = [];
     if (window.assets !== null) {
-      options = window.assets.field2ds.map((game) => game.name);
-      options.forEach((title) => {
+      window.assets.field2ds.forEach((field) => {
         let option = document.createElement("option");
-        option.innerText = title;
-        this.GAME_SELECT.appendChild(option);
+        option.innerText = field.name;
+        option.value = field.id;
+        options.push(field.id);
+        (field.isFTC ? ftcGroup : frcGroup).appendChild(option);
       });
     }
     if (options.includes(value)) {
-      this.GAME_SELECT.value = value;
+      this.FIELD_SELECT.value = value;
     } else {
-      this.GAME_SELECT.value = options[0];
+      this.FIELD_SELECT.selectedIndex = 0;
     }
-    this.updateGameDependentControls(this.GAME_SELECT.value === value); // Skip origin reset if game is unchanged
+    this.updateFieldDependentControls();
   }
 
-  /** Updates the alliance and source buttons based on the selected value. */
-  private updateGameDependentControls(skipOriginReset = false) {
-    let fieldConfig = window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value);
-    this.GAME_SOURCE.hidden = fieldConfig !== undefined && fieldConfig.sourceUrl === undefined;
-
-    if (fieldConfig !== undefined && !skipOriginReset) {
-      this.originSetting = fieldConfig.defaultOrigin;
-      this.updateSwitchers();
+  /** Updates the source link and size switcher based on the selected field. */
+  private updateFieldDependentControls() {
+    let fieldConfig = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value);
+    this.FIELD_SOURCE.hidden = fieldConfig !== undefined && fieldConfig.sourceUrl === undefined;
+    if (fieldConfig?.isFTC) {
+      this.SETTINGS.classList.add("ftc");
+      this.SETTINGS.classList.remove("frc");
+    } else {
+      this.SETTINGS.classList.add("frc");
+      this.SETTINGS.classList.remove("ftc");
     }
   }
 
   /** Updates the switcher elements to match the internal state. */
   private updateSwitchers() {
-    // Bumpers
-    {
-      let selectedIndex = ["auto", "blue", "red"].indexOf(this.bumperSetting);
-      if (selectedIndex === -1) selectedIndex = 0;
-      for (let i = 0; i < 3; i++) {
-        if (i === selectedIndex) {
-          this.BUMPER_SWITCHER.children[i].classList.add("selected");
-        } else {
-          this.BUMPER_SWITCHER.children[i].classList.remove("selected");
-        }
-      }
-    }
-
-    // Origin
-    {
-      let selectedIndex = ["auto", "blue", "red"].indexOf(this.originSetting);
-      if (selectedIndex === -1) selectedIndex = 0;
-      for (let i = 0; i < 3; i++) {
-        if (i === selectedIndex) {
-          this.ORIGIN_SWITCHER.children[i].classList.add("selected");
-        } else {
-          this.ORIGIN_SWITCHER.children[i].classList.remove("selected");
-        }
-      }
-    }
-
     // Size
     {
-      let selectedIndex = [30, 27, 24].indexOf(this.sizeSetting);
+      let selectedIndex = ["large", "medium", "small"].indexOf(this.sizeSetting);
       if (selectedIndex === -1) selectedIndex = 0;
       for (let i = 0; i < 3; i++) {
         if (i === selectedIndex) {
@@ -176,9 +142,8 @@ export default class OdometryController implements TabController {
   saveState(): unknown {
     return {
       sources: this.sourceList.getState(),
-      game: this.GAME_SELECT.value,
+      field: this.FIELD_SELECT.value,
       bumpers: this.bumperSetting,
-      origin: this.originSetting,
       orientation: this.orientationSetting,
       size: this.sizeSetting
     };
@@ -187,21 +152,18 @@ export default class OdometryController implements TabController {
   restoreState(state: unknown): void {
     if (typeof state !== "object" || state === null) return;
 
-    this.updateGameOptions();
+    this.updateFieldOptions();
     if ("sources" in state) {
       this.sourceList.setState(state.sources as SourceListState);
     }
-    if ("game" in state && typeof state.game === "string") {
-      this.GAME_SELECT.value = state.game;
-      if (this.GAME_SELECT.value === "") {
-        this.GAME_SELECT.selectedIndex = 0;
+    if ("field" in state && typeof state.field === "string") {
+      this.FIELD_SELECT.value = state.field;
+      if (this.FIELD_SELECT.value === "") {
+        this.FIELD_SELECT.selectedIndex = 0;
       }
     }
     if ("bumpers" in state && (state.bumpers === "auto" || state.bumpers === "blue" || state.bumpers === "red")) {
       this.bumperSetting = state.bumpers;
-    }
-    if ("origin" in state && (state.origin === "auto" || state.origin === "blue" || state.origin === "red")) {
-      this.originSetting = state.origin;
     }
     if (
       "orientation" in state &&
@@ -212,10 +174,10 @@ export default class OdometryController implements TabController {
     ) {
       this.orientationSetting = state.orientation;
     }
-    if ("size" in state && (state.size === 30 || state.size === 27 || state.size === 24)) {
+    if ("size" in state && (state.size === "large" || state.size === "medium" || state.size === "small")) {
       this.sizeSetting = state.size;
     }
-    this.updateGameDependentControls(true);
+    this.updateFieldDependentControls();
     this.updateSwitchers();
   }
 
@@ -224,15 +186,11 @@ export default class OdometryController implements TabController {
   }
 
   newAssets(): void {
-    this.updateGameOptions();
+    this.updateFieldOptions();
   }
 
   getActiveFields(): string[] {
-    let allianceKeys: string[] = [];
-    if (this.bumperSetting === "auto" || this.originSetting === "auto") {
-      allianceKeys = ALLIANCE_KEYS;
-    }
-    return [...this.sourceList.getActiveFields(), ...allianceKeys];
+    return [...this.sourceList.getActiveFields(), ...ALLIANCE_KEYS];
   }
 
   showTimeline(): boolean {
@@ -243,17 +201,17 @@ export default class OdometryController implements TabController {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
-    // Get game data
-    let gameData = window.assets?.field2ds.find((game) => game.name === this.GAME_SELECT.value);
-    let fieldWidth = gameData === undefined ? 0 : convert(gameData.widthInches, "inches", "meters");
-    let fieldHeight = gameData === undefined ? 0 : convert(gameData.heightInches, "inches", "meters");
+    // Get field data
+    let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
+    let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
+    let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+    let coordinateSystem =
+      (window.preferences?.coordinateSystem === "automatic"
+        ? fieldData?.coordinateSystem
+        : window.preferences?.coordinateSystem) ?? "center-red";
 
     // Get alliance
-    let autoRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
-    let bumpers: "blue" | "red" =
-      (this.bumperSetting === "auto" && autoRedAlliance) || this.bumperSetting === "red" ? "red" : "blue";
-    let origin: "blue" | "red" =
-      (this.originSetting === "auto" && autoRedAlliance) || this.originSetting === "red" ? "red" : "blue";
+    let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
 
     // Get objects
     let objects: OdometryRendererCommand_AnyObj[] = [];
@@ -302,7 +260,6 @@ export default class OdometryController implements TabController {
             this.UUID,
             numberArrayFormat,
             numberArrayUnits,
-            origin,
             fieldWidth,
             fieldHeight
           );
@@ -329,7 +286,6 @@ export default class OdometryController implements TabController {
           this.UUID,
           numberArrayFormat,
           numberArrayUnits,
-          origin,
           fieldWidth,
           fieldHeight
         );
@@ -353,7 +309,7 @@ export default class OdometryController implements TabController {
           }
           timestamps.push(endTime);
           timestamps.forEach((sampleTime) => {
-            let pose3ds = grabPosesAuto(
+            let poses = grabPosesAuto(
               window.log,
               source.logKey,
               source.logType,
@@ -361,13 +317,21 @@ export default class OdometryController implements TabController {
               this.UUID,
               numberArrayFormat,
               numberArrayUnits,
-              origin,
               fieldWidth,
               fieldHeight
-            );
-            if (pose3ds.length !== trails.length) return;
-            pose3ds.forEach((pose, index) => {
-              trails[index].push(translation3dTo2d(pose.pose.translation));
+            ).map((x) => annotatedPose3dTo2d(x));
+            if (poses.length !== trails.length) return;
+            if (fieldData !== undefined) {
+              poses = convertFromCoordinateSystem(
+                poses,
+                coordinateSystem,
+                isRedAlliance ? "red" : "blue",
+                fieldWidth,
+                fieldHeight
+              );
+            }
+            poses.forEach((pose, index) => {
+              trails[index].push(pose.pose.translation);
             });
           });
         }
@@ -460,6 +424,24 @@ export default class OdometryController implements TabController {
       visionTargets.reverse();
       swerveStates.reverse();
 
+      // Apply coordinate system
+      if (fieldData !== undefined) {
+        poses = convertFromCoordinateSystem(
+          poses,
+          coordinateSystem,
+          isRedAlliance ? "red" : "blue",
+          fieldWidth,
+          fieldHeight
+        );
+        visionTargets = convertFromCoordinateSystem(
+          visionTargets,
+          coordinateSystem,
+          isRedAlliance ? "red" : "blue",
+          fieldWidth,
+          fieldHeight
+        );
+      }
+
       // Add object
       switch (source.type) {
         case "robot":
@@ -468,6 +450,8 @@ export default class OdometryController implements TabController {
             type: "robot",
             poses: poses,
             trails: trails,
+            bumperColor:
+              source.options.bumpers === "auto" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumpers,
             visionTargets: visionTargets,
             swerveStates: swerveStates
           });
@@ -519,13 +503,25 @@ export default class OdometryController implements TabController {
       }
     }
 
+    // Get size setting
+    let size = 0;
+    switch (this.sizeSetting) {
+      case "large":
+        size = fieldData?.isFTC ? 18 : 30;
+        break;
+      case "medium":
+        size = fieldData?.isFTC ? 16 : 27;
+        break;
+      case "small":
+        size = fieldData?.isFTC ? 14 : 24;
+        break;
+    }
+
     objects.reverse();
     return {
-      game: this.GAME_SELECT.value,
-      bumpers: bumpers,
-      origin: origin,
+      field: this.FIELD_SELECT.value,
       orientation: this.orientationSetting,
-      size: this.sizeSetting,
+      size: size,
       objects: objects
     };
   }

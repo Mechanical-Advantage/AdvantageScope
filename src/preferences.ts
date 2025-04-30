@@ -1,3 +1,4 @@
+import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
 import Preferences from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
@@ -7,6 +8,7 @@ const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
+const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
 const THREE_DIMENSION_MODE_AC = document.getElementById("threeDimensionModeAc") as HTMLInputElement;
 const THREE_DIMENSION_MODE_BATTERY = document.getElementById("threeDimensionModeBattery") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
@@ -46,6 +48,7 @@ window.addEventListener("message", (event) => {
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
+      COORDINATE_SYSTEM.value = oldPrefs.coordinateSystem;
       THREE_DIMENSION_MODE_AC.value = oldPrefs.threeDimensionModeAc;
       THREE_DIMENSION_MODE_BATTERY.value = oldPrefs.threeDimensionModeBattery;
       TBA_API_KEY.value = oldPrefs.tbaApiKey;
@@ -69,6 +72,13 @@ window.addEventListener("message", (event) => {
           if (LIVE_SUBSCRIBE_MODE.value === "low-bandwidth") liveSubscribeMode = "low-bandwidth";
           if (LIVE_SUBSCRIBE_MODE.value === "logging") liveSubscribeMode = "logging";
 
+          let coordinateSystem: "automatic" | CoordinateSystem = "automatic";
+          if (COORDINATE_SYSTEM.value === "automatic") coordinateSystem = "automatic";
+          if (COORDINATE_SYSTEM.value === "wall-alliance") coordinateSystem = "wall-alliance";
+          if (COORDINATE_SYSTEM.value === "wall-blue") coordinateSystem = "wall-blue";
+          if (COORDINATE_SYSTEM.value === "center-rotated") coordinateSystem = "center-rotated";
+          if (COORDINATE_SYSTEM.value === "center-red") coordinateSystem = "center-red";
+
           let threeDimensionModeAc: "cinematic" | "standard" | "low-power" = "standard";
           if (THREE_DIMENSION_MODE_AC.value === "cinematic") threeDimensionModeAc = "cinematic";
           if (THREE_DIMENSION_MODE_AC.value === "standard") threeDimensionModeAc = "standard";
@@ -89,6 +99,7 @@ window.addEventListener("message", (event) => {
             liveDiscard: Number(LIVE_DISCARD.value),
             publishFilter: PUBLISH_FILTER.value,
             rlogPort: oldPrefs.rlogPort,
+            coordinateSystem: coordinateSystem,
             threeDimensionModeAc: threeDimensionModeAc,
             threeDimensionModeBattery: threeDimensionModeBattery,
             tbaApiKey: TBA_API_KEY.value,

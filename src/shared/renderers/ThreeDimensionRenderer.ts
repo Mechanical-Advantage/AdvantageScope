@@ -1,3 +1,4 @@
+import { CoordinateSystem } from "../AdvantageScopeAssets";
 import { AnnotatedPose3d, SwerveState } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import TabRenderer from "./TabRenderer";
@@ -111,9 +112,12 @@ export default class ThreeDimensionRenderer implements TabRenderer {
   }
 }
 
+// Most poses are still in their original coordinate system
+// Heatmap poses are already converted to a center-red coordinate system
 export type ThreeDimensionRendererCommand = {
-  game: string;
-  origin: "blue" | "red";
+  field: string;
+  isRedAlliance: boolean;
+  coordinateSystem: CoordinateSystem;
   objects: ThreeDimensionRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
   autoDriverStation: number;

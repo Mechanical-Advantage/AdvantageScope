@@ -47,7 +47,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
 ```json
 {
   "name": string // Unique name, required for all asset types
-  "sourceUrl": string // Link to the original file, optional
+  "isFTC": string // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
@@ -169,36 +169,47 @@ An image must be included in the folder with the name "image.png". The config fi
 
 ## Flat Field Images
 
-An image must be included in the folder with the name "image.png". It should be oriented with the blue alliance on the left. The config file must be in the following format:
+An image must be included in the folder with the name "image.png". It should be oriented with the red alliance on the left. The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "isFTC": boolean // Whether this is an FTC field instead of an FRC field
+  "coordinateSystem": // The default coordinate system to use (see below)
+      "wall-alliance" |  // FRC 2022
+      "wall-blue" |      // FRC 2023-2026
+      "center-rotated" | // FTC traditional
+      "center-red"       // SystemCore
   "sourceUrl": string // Link to the original file, optional
   "topLeft": [number, number] // Pixel coordinate (origin at upper left)
   "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)
-  "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
 }
 ```
 
 ## 3D Field Models
 
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
 
 The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
-  "sourceUrl": string // Link to the original file, optional
+  "isFTC": boolean // Whether this is an FTC field instead of an FRC field
+  "coordinateSystem": // The default coordinate system to use (see below)
+      "wall-alliance" |  // FRC 2022
+      "wall-blue" |      // FRC 2023-2026
+      "center-rotated" | // FTC traditional
+      "center-red"       // SystemCore
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)
   "defaultOrigin": "auto" | "blue" | "red" // Default origin location, "auto" if unspecified
   "driverStations": [
-    [number, number] (x6) // Driver station positions (X & Y in meters relative to the center of the field), ordered B1, B2, B3, R1, R2, R3
+    [number, number] // Driver station positions (X & Y in meters relative to the center of the field)
+    ...              // For FRC, 6 elements ordered [B1, B2, B3, R1, R2, R3]. For FTC, 4 elements ordered [BL, BR, RL, RR].
   ]
   "gamePieces": [ // List of game piece types
     {

@@ -17,6 +17,7 @@ self.onmessage = (event) => {
   // MAIN LOGIC
 
   const robotConfig: Config3dRobot = payload.robotConfig;
+  const isFTC: boolean = payload.isFTC;
   const mode: "cinematic" | "standard" | "low-power" = payload.mode;
   const materialSpecular = new THREE.Color().fromArray(payload.materialSpecular);
   const materialShininess: number = payload.materialShininess;
@@ -48,7 +49,8 @@ self.onmessage = (event) => {
         mode,
         materialSpecular,
         materialShininess,
-        !robotConfig.disableSimplification
+        !robotConfig.disableSimplification,
+        isFTC
       );
       let sceneMeshes: THREE.Mesh[] = [];
       if (optimized.normal.length > 0) sceneMeshes.push(optimized.normal[0]);

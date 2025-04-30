@@ -18,7 +18,7 @@ import {
   rotation3dToQuaternion
 } from "../../ThreeDimensionRendererImpl";
 import ObjectManager from "../ObjectManager";
-import { XR_MAX_RADIUS } from "../OptimizeGeometries";
+import { FTC_MULTIPLIER, XR_MAX_RADIUS } from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
 export default class RobotManager extends ObjectManager<
@@ -222,7 +222,7 @@ export default class RobotManager extends ObjectManager<
                   return dist > prev ? dist : prev;
                 }, 0);
                 let enableSimplification = !robotConfig.disableSimplification && !mesh.name.includes("NOSIMPLIFY");
-                if (maxRadius >= XR_MAX_RADIUS || !enableSimplification) {
+                if (maxRadius >= XR_MAX_RADIUS * (robotConfig.isFTC ? FTC_MULTIPLIER : 1) || !enableSimplification) {
                   // Apply world matrix to geometry
                   let geometry = mesh.geometry.clone();
                   mesh.updateWorldMatrix(true, false);
@@ -265,6 +265,7 @@ export default class RobotManager extends ObjectManager<
           // Desktop, load models with worker and mesh merging
           WorkerManager.request("../bundles/shared$loadRobot.js", {
             robotConfig: robotConfig!,
+            isFTC: robotConfig.isFTC,
             mode: this.mode,
             materialSpecular: this.materialSpecular.toArray(),
             materialShininess: this.materialShininess

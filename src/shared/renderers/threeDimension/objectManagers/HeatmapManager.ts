@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Config3dField } from "../../../AdvantageScopeAssets";
-import { translation3dTo2d } from "../../../geometry";
+import { annotatedPose3dTo2d, convertFromCoordinateSystem } from "../../../geometry";
 import { convert } from "../../../units";
 import Heatmap from "../../Heatmap";
 import { ThreeDimensionRendererCommand_HeatmapObj } from "../../ThreeDimensionRenderer";
@@ -15,6 +15,7 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
   private heatmap = new Heatmap(this.container);
   private canvas: HTMLCanvasElement | null = null;
   private mesh: THREE.Mesh | null = null;
+  private isRedAlliance = false;
 
   constructor(
     root: THREE.Object3D,
@@ -41,6 +42,10 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
     document.body.removeChild(this.container);
   }
 
+  setIsRedAlliance(isRedAlliance: boolean) {
+    this.isRedAlliance = isRedAlliance;
+  }
+
   setObjectData(object: ThreeDimensionRendererCommand_HeatmapObj): void {
     let fieldConfig = this.getFieldConfig();
     if (fieldConfig === null) return;
@@ -54,7 +59,20 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
       Math.round(this.HEIGHT_PIXELS * (fieldDimensions[0] / fieldDimensions[1])),
       this.HEIGHT_PIXELS
     ];
-    let translations = object.poses.map((x) => translation3dTo2d(x.pose.translation));
+    let coordinateSystem =
+      (window.preferences?.coordinateSystem === "automatic"
+        ? fieldConfig.coordinateSystem
+        : window.preferences?.coordinateSystem) ?? "center-red";
+    let translations = object.poses.map(
+      (x) =>
+        convertFromCoordinateSystem(
+          annotatedPose3dTo2d(x),
+          coordinateSystem,
+          this.isRedAlliance ? "red" : "blue",
+          fieldDimensions[0],
+          fieldDimensions[1]
+        ).pose.translation
+    );
     this.heatmap.update(translations, pixelDimensions, fieldDimensions);
 
     // Update texture
@@ -73,7 +91,7 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
           transparent: true
         })
       );
-      this.mesh.position.set(fieldDimensions[0] / 2, fieldDimensions[1] / 2, 0.02);
+      this.mesh.position.set(0, 0, 0.02);
       this.root.add(this.mesh);
     }
     if (this.mesh !== null) {

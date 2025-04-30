@@ -1,3 +1,4 @@
+import { CoordinateSystem } from "./AdvantageScopeAssets";
 import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
@@ -153,6 +154,55 @@ export function annotatedPose3dTo2d(input: AnnotatedPose3d): AnnotatedPose2d {
   };
 }
 
+// COORDINATE SYSTEM CONVERSION
+
+export function convertFromCoordinateSystem<PoseType extends Pose2d | AnnotatedPose2d | Pose2d[] | AnnotatedPose2d[]>(
+  pose: PoseType,
+  sourceCoordinateSystem: CoordinateSystem,
+  currentAlliance: "red" | "blue",
+  fieldLength: number,
+  fieldWidth: number
+): PoseType {
+  if (Array.isArray(pose)) {
+    return pose.map((x) =>
+      convertFromCoordinateSystem(x, sourceCoordinateSystem, currentAlliance, fieldLength, fieldWidth)
+    ) as PoseType;
+  } else if ("annotation" in pose) {
+    return {
+      pose: convertFromCoordinateSystem(pose.pose, sourceCoordinateSystem, currentAlliance, fieldLength, fieldWidth),
+      annotation: pose.annotation
+    } as PoseType;
+  } else {
+    switch (sourceCoordinateSystem) {
+      case "wall-alliance":
+        switch (currentAlliance) {
+          case "blue":
+            return {
+              translation: [fieldLength / 2 - pose.translation[0], fieldWidth / 2 - pose.translation[1]],
+              rotation: pose.rotation + Math.PI
+            } as PoseType;
+          case "red":
+            return {
+              translation: [pose.translation[0] - fieldLength / 2, pose.translation[1] - fieldWidth / 2],
+              rotation: pose.rotation
+            } as PoseType;
+        }
+      case "wall-blue":
+        return {
+          translation: [fieldLength / 2 - pose.translation[0], fieldWidth / 2 - pose.translation[1]],
+          rotation: pose.rotation + Math.PI
+        } as PoseType;
+      case "center-rotated":
+        return {
+          translation: [pose.translation[1], -pose.translation[0]],
+          rotation: pose.rotation - Math.PI / 2
+        } as PoseType;
+      default:
+        return pose;
+    }
+  }
+}
+
 // LOG READING UTILITIES
 
 export function grabPosesAuto(
@@ -163,7 +213,6 @@ export function grabPosesAuto(
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
-  zebraOrigin?: "blue" | "red",
   zebraFieldWidth?: number,
   zebraFieldHeight?: number
 ): AnnotatedPose3d[] {
@@ -209,8 +258,8 @@ export function grabPosesAuto(
     case "Trajectory":
       return grabTrajectory(log, key, timestamp, uuid);
     case "ZebraTranslation":
-      if (zebraOrigin !== undefined && zebraFieldWidth !== undefined && zebraFieldHeight !== undefined) {
-        return grabZebraTranslation(log, key, timestamp, zebraOrigin, zebraFieldWidth, zebraFieldHeight, uuid);
+      if (zebraFieldWidth !== undefined && zebraFieldHeight !== undefined) {
+        return grabZebraTranslation(log, key, timestamp, zebraFieldWidth, zebraFieldHeight, uuid);
       } else {
         return [];
       }
@@ -540,7 +589,6 @@ export function grabZebraTranslation(
   log: Log,
   key: string,
   timestamp: number,
-  origin: "blue" | "red",
   fieldWidth: number,
   fieldHeight: number,
   uuid?: string
@@ -576,11 +624,9 @@ export function grabZebraTranslation(
   let splitKey = key.split("FRC");
   let teamNumber = splitKey.length > 1 ? Number(splitKey[splitKey.length - 1]) : undefined;
 
-  // Zebra always uses red origin, convert translation
-  if (origin === "blue") {
-    x = fieldWidth - x;
-    y = fieldHeight - y;
-  }
+  // Zebra always uses red wall origin, convert to center
+  x += fieldWidth / 2;
+  y += fieldHeight / 2;
   return [
     {
       pose: pose2dTo3d({
@@ -604,7 +650,6 @@ export function grabHeatmapData(
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
   numberArrayUnits?: "radians" | "degrees",
-  zebraOrigin?: "blue" | "red",
   zebraFieldWidth?: number,
   zebraFieldHeight?: number
 ): AnnotatedPose3d[] {
@@ -640,7 +685,6 @@ export function grabHeatmapData(
         uuid,
         numberArrayFormat,
         numberArrayUnits,
-        zebraOrigin,
         zebraFieldWidth,
         zebraFieldHeight
       )
