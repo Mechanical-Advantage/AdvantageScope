@@ -169,7 +169,7 @@ An image must be included in the folder with the name "image.png". The config fi
 
 ## Flat Field Images
 
-An image must be included in the folder with the name "image.png". It should be oriented with the blue alliance on the left. The config file must be in the following format:
+An image must be included in the folder with the name "image.png". It should be oriented with the red alliance on the left. The config file must be in the following format:
 
 ```json
 {
@@ -190,7 +190,7 @@ An image must be included in the folder with the name "image.png". It should be 
 
 ## 3D Field Models
 
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the blue alliance on the left. CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
 
 The config file must be in the following format:
 
