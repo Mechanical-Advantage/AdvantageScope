@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import { APRIL_TAG_16H5_SIZE, APRIL_TAG_36H11_SIZE } from "../../../geometry";
 import { zfill } from "../../../util";
-import { ThreeDimensionRendererCommand_AprilTagObj } from "../../ThreeDimensionRenderer";
-import { rotation3dToQuaternion } from "../../ThreeDimensionRendererImpl";
+import { Field3dRendererCommand_AprilTagObj } from "../../Field3dRenderer";
+import { rotation3dToQuaternion } from "../../Field3dRendererImpl";
 import ObjectManager from "../ObjectManager";
 
-export default class AprilTagManager extends ObjectManager<ThreeDimensionRendererCommand_AprilTagObj> {
+export default class AprilTagManager extends ObjectManager<Field3dRendererCommand_AprilTagObj> {
   private tags: { idStr: string; active: boolean; object: THREE.Mesh }[] = [];
 
   private textureLoader = new THREE.TextureLoader();
@@ -28,7 +28,7 @@ export default class AprilTagManager extends ObjectManager<ThreeDimensionRendere
     this.idTextures.forEach((texture) => texture.dispose());
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_AprilTagObj): void {
+  setObjectData(object: Field3dRendererCommand_AprilTagObj): void {
     this.tags.forEach((entry) => (entry.active = false));
 
     object.poses.forEach((annotatedPose) => {

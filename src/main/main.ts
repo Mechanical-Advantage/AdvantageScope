@@ -3317,32 +3317,14 @@ app.whenReady().then(() => {
     ) {
       prefs.coordinateSystem = oldPrefs.coordinateSystem;
     }
-    if ("threeDimensionMode" in oldPrefs) {
-      // Migrate from v2
-      switch (oldPrefs.threeDimensionMode) {
-        case "quality":
-          prefs.threeDimensionModeAc = "standard";
-          prefs.threeDimensionModeBattery = "";
-          break;
-        case "efficiency":
-          prefs.threeDimensionModeAc = "low-power";
-          prefs.threeDimensionModeBattery = "";
-          break;
-        case "auto":
-          prefs.threeDimensionModeAc = "standard";
-          prefs.threeDimensionModeBattery = "low-power";
-          break;
-        default:
-          break;
-      }
-    }
     if (
       "threeDimensionModeAc" in oldPrefs &&
       (oldPrefs.threeDimensionModeAc === "cinematic" ||
         oldPrefs.threeDimensionModeAc === "standard" ||
         oldPrefs.threeDimensionModeAc === "low-power")
     ) {
-      prefs.threeDimensionModeAc = oldPrefs.threeDimensionModeAc;
+      // Migrate from v4
+      prefs.field3dModeAc = oldPrefs.threeDimensionModeAc;
     }
     if (
       "threeDimensionModeBattery" in oldPrefs &&
@@ -3351,7 +3333,25 @@ app.whenReady().then(() => {
         oldPrefs.threeDimensionModeBattery === "standard" ||
         oldPrefs.threeDimensionModeBattery === "low-power")
     ) {
-      prefs.threeDimensionModeBattery = oldPrefs.threeDimensionModeBattery;
+      // Migrate from v4
+      prefs.field3dModeBattery = oldPrefs.threeDimensionModeBattery;
+    }
+    if (
+      "field3dModeAc" in oldPrefs &&
+      (oldPrefs.field3dModeAc === "cinematic" ||
+        oldPrefs.field3dModeAc === "standard" ||
+        oldPrefs.field3dModeAc === "low-power")
+    ) {
+      prefs.field3dModeAc = oldPrefs.field3dModeAc;
+    }
+    if (
+      "field3dModeBattery" in oldPrefs &&
+      (oldPrefs.field3dModeBattery === "" ||
+        oldPrefs.field3dModeBattery === "cinematic" ||
+        oldPrefs.field3dModeBattery === "standard" ||
+        oldPrefs.field3dModeBattery === "low-power")
+    ) {
+      prefs.field3dModeBattery = oldPrefs.field3dModeBattery;
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;

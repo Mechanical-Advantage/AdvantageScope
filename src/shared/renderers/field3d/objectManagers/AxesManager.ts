@@ -1,11 +1,11 @@
 import * as THREE from "three";
-import { ThreeDimensionRendererCommand_AxesObj } from "../../ThreeDimensionRenderer";
+import { Field3dRendererCommand_AxesObj } from "../../Field3dRenderer";
 import makeAxesTemplate from "../AxesTemplate";
 import ObjectManager from "../ObjectManager";
 import optimizeGeometries from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
-export default class AxesManager extends ObjectManager<ThreeDimensionRendererCommand_AxesObj> {
+export default class AxesManager extends ObjectManager<Field3dRendererCommand_AxesObj> {
   private instances: ResizableInstancedMesh | null = null;
 
   constructor(
@@ -32,7 +32,7 @@ export default class AxesManager extends ObjectManager<ThreeDimensionRendererCom
     this.instances?.dispose();
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_AxesObj): void {
+  setObjectData(object: Field3dRendererCommand_AxesObj): void {
     this.instances?.setPoses(object.poses.map((x) => x.pose));
   }
 }

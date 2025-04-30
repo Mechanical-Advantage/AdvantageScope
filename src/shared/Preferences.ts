@@ -11,8 +11,8 @@ export default interface Preferences {
   publishFilter: string;
   rlogPort: number;
   coordinateSystem: "automatic" | CoordinateSystem;
-  threeDimensionModeAc: "cinematic" | "standard" | "low-power";
-  threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
+  field3dModeAc: "cinematic" | "standard" | "low-power";
+  field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;

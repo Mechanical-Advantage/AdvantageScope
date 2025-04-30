@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { ThreeDimensionRendererCommand_ConeObj } from "../../ThreeDimensionRenderer";
+import { Field3dRendererCommand_ConeObj } from "../../Field3dRenderer";
 import ObjectManager from "../ObjectManager";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
-export default class ConeManager extends ObjectManager<ThreeDimensionRendererCommand_ConeObj> {
+export default class ConeManager extends ObjectManager<Field3dRendererCommand_ConeObj> {
   private instances: ResizableInstancedMesh;
 
   private geometry: THREE.ConeGeometry;
@@ -65,7 +65,7 @@ export default class ConeManager extends ObjectManager<ThreeDimensionRendererCom
     this.instances.dispose();
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_ConeObj): void {
+  setObjectData(object: Field3dRendererCommand_ConeObj): void {
     if (object.position !== this.lastPosition) {
       let delta = this.getOffset(object.position) - this.getOffset(this.lastPosition);
       this.geometry.translate(delta, 0, 0);

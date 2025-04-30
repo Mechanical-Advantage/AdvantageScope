@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { Pose3d } from "../../geometry";
-import { rotation3dToQuaternion } from "../ThreeDimensionRendererImpl";
+import { rotation3dToQuaternion } from "../Field3dRendererImpl";
 
 export default class ResizableInstancedMesh {
   private parent: THREE.Object3D;

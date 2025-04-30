@@ -2,11 +2,11 @@ import { NeonColors, NeonColors_RedStart } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 import { SwerveArrangementValues } from "./SwerveController_Config";
 
-const ThreeDimensionController_Config: SourceListConfig = {
+const Field3dController_Config: SourceListConfig = {
   title: "Poses",
   autoAdvance: true,
   allowChildrenFromDrag: false,
-  typeMemoryId: "threeDimension",
+  typeMemoryId: "field3d",
   types: [
     {
       key: "robot",
@@ -786,4 +786,4 @@ const ThreeDimensionController_Config: SourceListConfig = {
   ]
 };
 
-export default ThreeDimensionController_Config;
+export default Field3dController_Config;

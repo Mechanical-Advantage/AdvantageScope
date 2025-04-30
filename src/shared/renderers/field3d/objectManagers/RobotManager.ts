@@ -8,21 +8,14 @@ import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
 import { SwerveState } from "../../../geometry";
 import { convert } from "../../../units";
 import { transformPx } from "../../../util";
-import {
-  ThreeDimensionRendererCommand_GhostObj,
-  ThreeDimensionRendererCommand_RobotObj
-} from "../../ThreeDimensionRenderer";
-import {
-  getQuaternionFromRotSeq,
-  quaternionToRotation3d,
-  rotation3dToQuaternion
-} from "../../ThreeDimensionRendererImpl";
+import { Field3dRendererCommand_GhostObj, Field3dRendererCommand_RobotObj } from "../../Field3dRenderer";
+import { getQuaternionFromRotSeq, quaternionToRotation3d, rotation3dToQuaternion } from "../../Field3dRendererImpl";
 import ObjectManager from "../ObjectManager";
 import { FTC_MULTIPLIER, XR_MAX_RADIUS } from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
 export default class RobotManager extends ObjectManager<
-  ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj
+  Field3dRendererCommand_RobotObj | Field3dRendererCommand_GhostObj
 > {
   private SWERVE_CANVAS_PX = 1000;
   private SWERVE_CANVAS_METERS = 3;
@@ -136,7 +129,7 @@ export default class RobotManager extends ObjectManager<
     return this.lastModel;
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_RobotObj | ThreeDimensionRendererCommand_GhostObj): void {
+  setObjectData(object: Field3dRendererCommand_RobotObj | Field3dRendererCommand_GhostObj): void {
     let assets = this.assetsOverride ?? window.assets;
     let robotConfig = assets?.robots.find((robotData) => robotData.name === object.model);
 

@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import * as BufferGeometryUtils from "three/examples/jsm/utils/BufferGeometryUtils.js";
 import { getSpiralIndex } from "../../util";
-import { disposeObject } from "../ThreeDimensionRendererImpl";
+import { disposeObject } from "../Field3dRendererImpl";
 
 export const XR_MAX_RADIUS = 0.08;
 export const LOW_POWER_MAX_RADIUS = 0.08;

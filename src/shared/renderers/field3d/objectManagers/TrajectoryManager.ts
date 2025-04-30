@@ -2,10 +2,10 @@ import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
-import { ThreeDimensionRendererCommand_TrajectoryObj } from "../../ThreeDimensionRenderer";
+import { Field3dRendererCommand_TrajectoryObj } from "../../Field3dRenderer";
 import ObjectManager from "../ObjectManager";
 
-export default class TrajectoryManager extends ObjectManager<ThreeDimensionRendererCommand_TrajectoryObj> {
+export default class TrajectoryManager extends ObjectManager<Field3dRendererCommand_TrajectoryObj> {
   private line: Line2;
   private length = 0;
 
@@ -37,7 +37,7 @@ export default class TrajectoryManager extends ObjectManager<ThreeDimensionRende
     this.line.material.resolution = resolution;
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_TrajectoryObj): void {
+  setObjectData(object: Field3dRendererCommand_TrajectoryObj): void {
     if (object.poses.length <= 1) {
       this.line.visible = false;
     } else {

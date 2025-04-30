@@ -56,7 +56,7 @@ export default class SelectionImpl implements Selection {
 
         case "KeyL":
           if (
-            window.tabs.getSelectedTabType() === TabType.ThreeDimension &&
+            window.tabs.getSelectedTabType() === TabType.Field3d &&
             !(window.platform === "darwin" ? event.metaKey : event.ctrlKey)
           ) {
             return;
