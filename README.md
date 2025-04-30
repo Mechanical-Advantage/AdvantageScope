@@ -1,4 +1,4 @@
-# ![AdvantageScope](/docsSite/docs/img/banner.png)
+# ![AdvantageScope](/docs/docs/img/banner.png)
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
@@ -19,7 +19,7 @@ AdvantageScope includes the following tools:
 
 Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). For non-public inquiries, please send a message to software@team6328.org.
 
-![Example screenshot](/docsSite/docs/img/screenshot-light.png)
+![Example screenshot](/docs/docs/img/screenshot-light.png)
 
 ## Installation
 
