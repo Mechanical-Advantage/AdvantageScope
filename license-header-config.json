@@ -1,0 +1,33 @@
+{
+  "ignore": [
+    "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.h|*.metal)",
+    "bundles",
+    "docs/build",
+    "docs/.docusaurus",
+    "runOwletDownload.js"
+  ],
+  "license": "license-header.txt",
+  "licenseFormats": {
+    "js|ts|mjs|tsx|swift|h|metal": {
+      "append": "",
+      "eachLine": {
+        "prepend": "// "
+      }
+    },
+    "html": {
+      "prepend": "<!--",
+      "append": "-->\n",
+      "eachLine": {
+        "prepend": "  "
+      }
+    },
+    "css": {
+      "prepend": "/*",
+      "append": "*/\n",
+      "eachLine": {
+        "prepend": "  "
+      }
+    }
+  },
+  "trailingWhitespace": "TRIM"
+}

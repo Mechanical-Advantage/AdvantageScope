@@ -9,13 +9,17 @@ import fs from "fs";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
+const licenseHeader =
+  "// Copyright (c) Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
+
 function bundle(input, output, isMain, isXRClient, external = []) {
   const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
   return {
     input: "src/" + input,
     output: {
       file: "bundles/" + output,
-      format: isMain ? "cjs" : "es"
+      format: isMain ? "cjs" : "es",
+      banner: licenseHeader
     },
     context: "this",
     external: external,

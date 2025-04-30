@@ -4,11 +4,11 @@
   "version": "4.1.6",
   "description": "Robot telemetry application for FRC",
   "author": {
-    "name": "FRC 6328",
+    "name": "Littleton Robotics",
     "email": "software@littletonrobotics.org",
     "url": "https://littletonrobotics.org"
   },
-  "license": "MIT",
+  "license": "BSD-3-Clause",
   "main": "bundles/main.js",
   "scripts": {
     "start": "electron bundles/main.js",
@@ -17,8 +17,8 @@
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rollup -c -w",
     "download-owlet": "rollup -c --configRunOwletDownload && node runOwletDownload.js",
-    "format": "prettier --write .",
-    "check-format": "prettier --check .",
+    "format": "prettier --write . && license-check-and-add add -f license-header-config.json",
+    "check-format": "prettier --check .&& license-check-and-add check -f license-header-config.json",
     "wasm:compile": "node wasmCompile.mjs",
     "docs:start": "cd docs && npm run start && cd ..",
     "docs:build": "cd docs && npm run build && cd ..",
@@ -59,6 +59,7 @@
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
+    "license-check-and-add": "^4.0.5",
     "mathjs": "11.3.0",
     "node-fetch": "^3.3.2",
     "prettier": "3.0.3",
@@ -96,7 +97,7 @@
   },
   "build": {
     "appId": "org.littletonrobotics.advantagescope",
-    "copyright": "Copyright © 2021-2025 FRC 6328",
+    "copyright": "Copyright © 2021-2025 Littleton Robotics",
     "npmRebuild": false,
     "publish": [],
     "afterSign": "notarize.js",
