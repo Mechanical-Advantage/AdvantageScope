@@ -7,7 +7,7 @@ export const XR_MAX_RADIUS = 0.08;
 export const LOW_POWER_MAX_RADIUS = 0.08;
 export const STANDARD_MAX_RADIUS = 0.04;
 export const CINEMATIC_MAX_RADIUS = 0.02;
-export const FTC_MULTIPLIER = 0.25;
+export const FTC_MULTIPLIER = 0.25; // FTC components are smaller, adjust appropriately to avoid cutting too agressively
 
 export default async function optimizeGeometries(
   object: THREE.Object3D,
