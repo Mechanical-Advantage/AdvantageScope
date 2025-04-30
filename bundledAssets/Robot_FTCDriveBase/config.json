@@ -11,24 +11,13 @@
       "degrees": 90
     }
   ],
-  "position": [
-    0,
-    0,
-    0.037
-  ],
+  "position": [0, 0, 0.037],
   "cameras": [
     {
       "name": "Front Camera",
       "rotations": [],
-      "position": [
-        0.2,
-        0,
-        0.2
-      ],
-      "resolution": [
-        640,
-        480
-      ],
+      "position": [0.2, 0, 0.2],
+      "resolution": [640, 480],
       "fov": 54.5
     },
     {
@@ -39,15 +28,8 @@
           "degrees": 180
         }
       ],
-      "position": [
-        -0.2,
-        0,
-        0.2
-      ],
-      "resolution": [
-        640,
-        480
-      ],
+      "position": [-0.2, 0, 0.2],
+      "resolution": [640, 480],
       "fov": 54.5
     }
   ],
