@@ -1511,7 +1511,7 @@ div.three-dimension-sources {
   height: 100%;
   left: 0%;
   width: 60%;
-  min-width: calc(100% - 160px);
+  min-width: calc(100% - 200px);
 }
 
 div.three-dimension-settings {
@@ -1520,7 +1520,7 @@ div.three-dimension-settings {
   height: 100%;
   right: 0%;
   width: 40%;
-  max-width: 160px;
+  max-width: 200px;
   border-left: 1px solid #ddd;
 
   overflow-x: hidden;
