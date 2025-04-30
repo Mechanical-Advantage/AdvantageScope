@@ -3,7 +3,7 @@ import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
 import { convert } from "./units";
-import { indexArray, jsonCopy, scaleValue } from "./util";
+import { indexArray, jsonCopy } from "./util";
 
 export type Translation2d = [number, number]; // meters (x, y)
 export type Rotation2d = number; // radians
@@ -41,8 +41,6 @@ export type AnnotatedPose3d = {
 };
 export type PoseAnnotations = {
   is2DSource: boolean;
-  zebraTeam?: number;
-  zebraAlliance?: "blue" | "red";
   aprilTagId?: number;
   visionColor?: string;
   visionSize?: string;
@@ -212,9 +210,7 @@ export function grabPosesAuto(
   timestamp: number,
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  numberArrayUnits?: "radians" | "degrees",
-  zebraFieldWidth?: number,
-  zebraFieldHeight?: number
+  numberArrayUnits?: "radians" | "degrees"
 ): AnnotatedPose3d[] {
   switch (logType) {
     case "Number":
@@ -257,12 +253,6 @@ export function grabPosesAuto(
       return grabPose3dArray(log, key, timestamp, uuid);
     case "Trajectory":
       return grabTrajectory(log, key, timestamp, uuid);
-    case "ZebraTranslation":
-      if (zebraFieldWidth !== undefined && zebraFieldHeight !== undefined) {
-        return grabZebraTranslation(log, key, timestamp, zebraFieldWidth, zebraFieldHeight, uuid);
-      } else {
-        return [];
-      }
     case "DifferentialSample[]":
     case "SwerveSample[]":
       return grabChoreoSampleArray(log, key, timestamp, uuid);
@@ -585,63 +575,6 @@ export function grabAprilTagArray(log: Log, key: string, timestamp: number, uuid
   );
 }
 
-export function grabZebraTranslation(
-  log: Log,
-  key: string,
-  timestamp: number,
-  fieldWidth: number,
-  fieldHeight: number,
-  uuid?: string
-): AnnotatedPose3d[] {
-  let x: number | null = null;
-  let y: number | null = null;
-  {
-    let xData = window.log.getNumber(key + "/x", timestamp, timestamp);
-    if (xData !== undefined && xData.values.length > 0) {
-      if (xData.values.length === 1) {
-        x = xData.values[0];
-      } else {
-        x = scaleValue(timestamp, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
-      }
-    }
-  }
-  {
-    let yData = window.log.getNumber(key + "/y", timestamp, timestamp);
-    if (yData !== undefined && yData.values.length > 0) {
-      if (yData.values.length === 1) {
-        y = yData.values[0];
-      } else {
-        y = scaleValue(timestamp, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
-      }
-    }
-  }
-  if (x === null || y === null) return [];
-  x = convert(x, "feet", "meters");
-  y = convert(y, "feet", "meters");
-
-  let alliance: "blue" | "red" =
-    getOrDefault(log, key + "/alliance", LoggableType.String, Infinity, 0, uuid) === "red" ? "red" : "blue"; // Read alliance from end of log
-  let splitKey = key.split("FRC");
-  let teamNumber = splitKey.length > 1 ? Number(splitKey[splitKey.length - 1]) : undefined;
-
-  // Zebra always uses red wall origin, convert to center
-  x += fieldWidth / 2;
-  y += fieldHeight / 2;
-  return [
-    {
-      pose: pose2dTo3d({
-        translation: [x, y],
-        rotation: Rotation2dZero
-      }),
-      annotation: {
-        zebraAlliance: alliance,
-        zebraTeam: teamNumber,
-        is2DSource: true
-      }
-    }
-  ];
-}
-
 export function grabHeatmapData(
   log: Log,
   key: string,
@@ -649,9 +582,7 @@ export function grabHeatmapData(
   timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" | "visible",
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  numberArrayUnits?: "radians" | "degrees",
-  zebraFieldWidth?: number,
-  zebraFieldHeight?: number
+  numberArrayUnits?: "radians" | "degrees"
 ): AnnotatedPose3d[] {
   let poses: AnnotatedPose3d[] = [];
   let isFullLog = timeRange === "full";
@@ -676,19 +607,7 @@ export function grabHeatmapData(
   };
   for (let sampleTime = log.getTimestampRange()[0]; sampleTime < log.getTimestampRange()[1]; sampleTime += HEATMAP_DT) {
     if (!isValid(sampleTime)) continue;
-    poses = poses.concat(
-      grabPosesAuto(
-        log,
-        key,
-        logType,
-        sampleTime,
-        uuid,
-        numberArrayFormat,
-        numberArrayUnits,
-        zebraFieldWidth,
-        zebraFieldHeight
-      )
-    );
+    poses = poses.concat(grabPosesAuto(log, key, logType, sampleTime, uuid, numberArrayFormat, numberArrayUnits));
   }
   return poses;
 }

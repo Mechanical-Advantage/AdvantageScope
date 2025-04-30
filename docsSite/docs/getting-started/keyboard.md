@@ -14,7 +14,6 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <tr><td>`Ctrl+K`</td><td>Connect to robot as a live source</td></tr>
 <tr><td>`Ctrl+Shift+K`</td><td>Connect to simulator as a live source</td></tr>
 <tr><td>`Ctrl+D`</td><td>Download log files from the robot</td></tr>
-<tr><td>`Option+Z`</td><td>Load Zebra MotionWorks™️ data</td></tr>
 </table>
 
 ### Data Export

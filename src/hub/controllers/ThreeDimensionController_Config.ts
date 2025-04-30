@@ -23,8 +23,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]",
-        "ZebraTranslation"
+        "Transform3d[]"
       ],
       showDocs: true,
       options: [
@@ -95,8 +94,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Transform2d",
         "Transform3d",
         "Transform2d[]",
-        "Transform3d[]",
-        "ZebraTranslation"
+        "Transform3d[]"
       ],
       showDocs: true,
       options: [
@@ -527,8 +525,7 @@ const ThreeDimensionController_Config: SourceListConfig = {
         "Translation2d",
         "Translation3d",
         "Translation2d[]",
-        "Translation3d[]",
-        "ZebraTranslation"
+        "Translation3d[]"
       ],
       showDocs: true,
       options: [
@@ -785,18 +782,6 @@ const ThreeDimensionController_Config: SourceListConfig = {
       options: [],
       numberArrayDeprecated: true,
       previewType: "Pose3d"
-    },
-    {
-      key: "zebra",
-      display: "Zebra Marker",
-      symbol: "mappin.circle.fill",
-      showInTypeName: true,
-      color: "#000000",
-      darkColor: "#ffffff",
-      sourceTypes: ["ZebraTranslation"],
-      showDocs: true,
-      options: [],
-      previewType: "Translation2d"
     }
   ]
 };

@@ -87,19 +87,7 @@ body.satellite div.three-dimension-canvas-container.fixed {
   height: 100%;
 }
 
-div.three-dimension-annotations {
-  pointer-events: none;
-}
-
-div.three-dimension-annotations > div {
-  text-align: center;
-  font-weight: bold;
-  color: #ffffff;
-  text-shadow: 0px 0px 10px black;
-}
-
-canvas.three-dimension-canvas:not(.fixed),
-div.three-dimension-annotations:not(.fixed) {
+canvas.three-dimension-canvas:not(.fixed) {
   position: absolute;
   left: 0%;
   top: 0%;
@@ -107,8 +95,7 @@ div.three-dimension-annotations:not(.fixed) {
   height: 100%;
 }
 
-canvas.three-dimension-canvas.fixed,
-div.three-dimension-annotations.fixed {
+canvas.three-dimension-canvas.fixed {
   position: absolute;
   left: 50%;
   top: 50%;

@@ -1060,9 +1060,7 @@ export default class SourceList {
                   time,
                   this.UUID,
                   numberArrayFormat,
-                  numberArrayUnits,
-                  0,
-                  0
+                  numberArrayUnits
                 );
                 poseStrings = poses.map((annotatedPose) => {
                   switch (typeConfig?.previewType) {

@@ -149,27 +149,6 @@ const OdometryController_Config: SourceListConfig = {
       previewType: "Pose2d"
     },
     {
-      key: "ghostZebra",
-      display: "Ghost",
-      symbol: "location.fill.viewfinder",
-      showInTypeName: true,
-      color: "color",
-      sourceTypes: ["ZebraTranslation"],
-      showDocs: false,
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: NeonColors
-        }
-      ],
-      initialSelectionOption: "color",
-      parentKey: "robot",
-      previewType: "Translation2d"
-    },
-
-    {
       key: "vision",
       display: "Vision Target",
       symbol: "scope",
@@ -442,8 +421,7 @@ const OdometryController_Config: SourceListConfig = {
         "Translation2d",
         "Translation3d",
         "Translation2d[]",
-        "Translation3d[]",
-        "ZebraTranslation"
+        "Translation3d[]"
       ],
       showDocs: true,
       options: [
@@ -582,18 +560,6 @@ const OdometryController_Config: SourceListConfig = {
       initialSelectionOption: "position",
       numberArrayDeprecated: true,
       previewType: "Pose2d"
-    },
-    {
-      key: "zebra",
-      display: "Zebra Marker",
-      symbol: "mappin.circle.fill",
-      showInTypeName: true,
-      color: "#000000",
-      darkColor: "#ffffff",
-      sourceTypes: ["ZebraTranslation"],
-      showDocs: true,
-      options: [],
-      previewType: "Translation2d"
     }
   ]
 };

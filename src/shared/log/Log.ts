@@ -783,19 +783,6 @@ export default class Log {
     }
   }
 
-  /** Writes a coordinate with the "ZebraTranslation" structured type. */
-  putZebraTranslation(key: string, timestamp: number, x: number, y: number, alliance: string) {
-    this.putNumber(key + "/x", timestamp, x);
-    this.putNumber(key + "/y", timestamp, y);
-    this.putString(key + "/alliance", timestamp, alliance);
-    if (!(key in this.fields)) {
-      this.createBlankField(key, LoggableType.Empty);
-      this.setStructuredType(key, "ZebraTranslation");
-      this.setGeneratedParent(key);
-      this.processTimestamp(key, timestamp);
-    }
-  }
-
   /** Merges a new log into this log. Returns the timestamp offset. */
   mergeWith(source: Log, prefix = ""): number {
     // Serialize source and adjust timestamps
