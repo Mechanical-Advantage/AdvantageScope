@@ -42,7 +42,7 @@ href: "/category/more-features"
 AdvantageScope includes the following tools:
 
 - A wide selection of flexible graphs and charts
-- 2D and 3D field visualizations of odometry data, with customizable CAD-based robots
+- 2D and 3D field visualizations of pose data, with customizable CAD-based robots
 - Synchronized video playback from a separately loaded match video
 - Joystick visualization, showing driver actions on customizable controller representations
 - Swerve drive module vector displays

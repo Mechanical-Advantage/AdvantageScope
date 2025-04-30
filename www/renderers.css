@@ -47,9 +47,9 @@ div.line-graph-scroll-content {
   height: 1000000px;
 }
 
-/* Odometry */
+/* 2D Field */
 
-div.odometry-canvas-container {
+div.field-2d-canvas-container {
   position: absolute;
   top: 0%;
   left: 0%;
@@ -57,7 +57,7 @@ div.odometry-canvas-container {
   height: 100%;
 }
 
-canvas.odometry-canvas {
+canvas.field-2d-canvas {
   position: absolute;
   left: 50%;
   top: 50%;

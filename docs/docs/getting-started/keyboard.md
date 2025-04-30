@@ -53,7 +53,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <td>`Option+V`</td><td>[🎬 Video](../tab-reference/video.md)</td>
 </tr>
 <tr>
-<td>`Option+O`</td><td>[🗺 Odometry](../tab-reference/odometry.md)</td>
+<td>`Option+2`</td><td>[🗺 2D Field](../tab-reference/2d-field.md)</td>
 <td>`Option+J`</td><td>[🎮 Joysticks](../tab-reference/joysticks.md)</td>
 </tr>
 <tr>

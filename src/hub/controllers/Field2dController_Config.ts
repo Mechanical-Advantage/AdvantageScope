@@ -2,11 +2,11 @@ import { NeonColors, NeonColors_RedStart } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 import { SwerveArrangementValues } from "./SwerveController_Config";
 
-const OdometryController_Config: SourceListConfig = {
+const Field2dController_Config: SourceListConfig = {
   title: "Poses",
   autoAdvance: true,
   allowChildrenFromDrag: false,
-  typeMemoryId: "odometry",
+  typeMemoryId: "field2d",
   types: [
     {
       key: "robot",
@@ -564,4 +564,4 @@ const OdometryController_Config: SourceListConfig = {
   ]
 };
 
-export default OdometryController_Config;
+export default Field2dController_Config;

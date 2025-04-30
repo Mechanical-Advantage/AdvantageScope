@@ -4,12 +4,12 @@ import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
+import Field2dRenderer from "../shared/renderers/Field2dRenderer";
 import Field3dRenderer from "../shared/renderers/Field3dRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
-import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
@@ -20,12 +20,12 @@ import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
+import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
 import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
 import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
-import OdometryController from "./controllers/OdometryController";
 import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
 import SwerveController from "./controllers/SwerveController";
@@ -80,7 +80,7 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Table, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Console, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Statistics, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Odometry, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Field2d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Field3d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Joysticks, 85);
@@ -285,7 +285,7 @@ export default class Tabs {
     // Add default tabs
     this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
-    this.addTab(TabType.Odometry);
+    this.addTab(TabType.Field2d);
     this.addTab(TabType.Field3d);
     this.setSelected(1);
 
@@ -478,9 +478,9 @@ export default class Tabs {
         controller = new LineGraphController(controlsElement);
         renderer = new LineGraphRenderer(rendererElement, true);
         break;
-      case TabType.Odometry:
-        controller = new OdometryController(controlsElement);
-        renderer = new OdometryRenderer(rendererElement);
+      case TabType.Field2d:
+        controller = new Field2dController(controlsElement);
+        renderer = new Field2dRenderer(rendererElement);
         break;
       case TabType.Field3d:
         controller = new Field3dController(controlsElement);

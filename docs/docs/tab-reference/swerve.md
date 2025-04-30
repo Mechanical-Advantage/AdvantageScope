@@ -86,7 +86,7 @@ The following configuration options are available:
 
 - **Max Speed:** The maximum achievable speed of the modules, used to adjust the size of the vectors.
 - **Frame Size:** The distances between the left-right and front-back swerve modules. Changes the aspect ratio of the robot diagram.
-- **Orientation:** Adjusts the direction the robot diagram is pointed. This option is often useful to align with odometry data or match videos.
+- **Orientation:** Adjusts the direction the robot diagram is pointed. This option is often useful to align with pose data or match videos.
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

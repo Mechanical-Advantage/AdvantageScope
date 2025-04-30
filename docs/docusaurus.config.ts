@@ -47,6 +47,10 @@ const config: Config = {
           {
             to: "/more-features/advantagescope-xr",
             from: "/xr"
+          },
+          {
+            to: "/tab-reference/2d-field",
+            from: "/tab-reference/odometry"
           }
         ]
       }
