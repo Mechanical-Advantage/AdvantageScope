@@ -5,6 +5,7 @@ import Selection, { SelectionMode } from "./shared/Selection";
 import TabType, { getTabIcon } from "./shared/TabType";
 import ConsoleRenderer from "./shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "./shared/renderers/DocumentationRenderer";
+import Field3dRenderer from "./shared/renderers/Field3dRenderer";
 import JoysticksRenderer from "./shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "./shared/renderers/LineGraphRenderer";
 import MechanismRenderer from "./shared/renderers/MechanismRenderer";
@@ -15,7 +16,6 @@ import StatisticsRenderer from "./shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "./shared/renderers/SwerveRenderer";
 import TabRenderer from "./shared/renderers/TabRenderer";
 import TableRenderer from "./shared/renderers/TableRenderer";
-import ThreeDimensionRenderer from "./shared/renderers/ThreeDimensionRenderer";
 import VideoRenderer from "./shared/renderers/VideoRenderer";
 import { htmlEncode } from "./shared/util";
 
@@ -65,8 +65,8 @@ function updateVisualizer() {
     case TabType.Odometry:
       renderer = new OdometryRenderer(root);
       break;
-    case TabType.ThreeDimension:
-      renderer = new ThreeDimensionRenderer(root);
+    case TabType.Field3d:
+      renderer = new Field3dRenderer(root);
       break;
     case TabType.Table:
       renderer = new TableRenderer(root, false);
@@ -163,14 +163,14 @@ window.addEventListener("message", (event) => {
           break;
 
         case "set-3d-camera":
-          if (type === TabType.ThreeDimension) {
-            (renderer as ThreeDimensionRenderer).set3DCamera(message.data);
+          if (type === TabType.Field3d) {
+            (renderer as Field3dRenderer).set3DCamera(message.data);
           }
           break;
 
         case "edit-fov":
-          if (type === TabType.ThreeDimension) {
-            (renderer as ThreeDimensionRenderer).setFov(message.data);
+          if (type === TabType.Field3d) {
+            (renderer as Field3dRenderer).setFov(message.data);
           }
           break;
 

@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import { ThreeDimensionRendererCommand_GamePieceObj } from "../../ThreeDimensionRenderer";
+import { Field3dRendererCommand_GamePieceObj } from "../../Field3dRenderer";
 import ObjectManager from "../ObjectManager";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
 
-export default class GamePieceManager extends ObjectManager<ThreeDimensionRendererCommand_GamePieceObj> {
+export default class GamePieceManager extends ObjectManager<Field3dRendererCommand_GamePieceObj> {
   private gamePieces: { [key: string]: THREE.Mesh };
   private instances: ResizableInstancedMesh | null = null;
   private lastVariant = "";
@@ -27,7 +27,7 @@ export default class GamePieceManager extends ObjectManager<ThreeDimensionRender
     this.instances?.dispose(false, false);
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_GamePieceObj): void {
+  setObjectData(object: Field3dRendererCommand_GamePieceObj): void {
     // Create new instances
     if (object.variant !== this.lastVariant || this.instances === null) {
       this.lastVariant = object.variant;

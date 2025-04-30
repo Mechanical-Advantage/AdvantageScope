@@ -9,25 +9,19 @@ import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../shared/AdvantageScopeAssets";
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
-import {
-  ThreeDimensionRendererCommand,
-  ThreeDimensionRendererCommand_AnyObj
-} from "../shared/renderers/ThreeDimensionRenderer";
-import { disposeObject, getQuaternionFromRotSeq } from "../shared/renderers/ThreeDimensionRendererImpl";
-import makeAxesField from "../shared/renderers/threeDimension/AxesField";
-import makeEvergreenField from "../shared/renderers/threeDimension/EvergreenField";
-import ObjectManager from "../shared/renderers/threeDimension/ObjectManager";
-import optimizeGeometries, {
-  FTC_MULTIPLIER,
-  XR_MAX_RADIUS
-} from "../shared/renderers/threeDimension/OptimizeGeometries";
-import AprilTagManager from "../shared/renderers/threeDimension/objectManagers/AprilTagManager";
-import AxesManager from "../shared/renderers/threeDimension/objectManagers/AxesManager";
-import ConeManager from "../shared/renderers/threeDimension/objectManagers/ConeManager";
-import GamePieceManager from "../shared/renderers/threeDimension/objectManagers/GamePieceManager";
-import HeatmapManager from "../shared/renderers/threeDimension/objectManagers/HeatmapManager";
-import RobotManager from "../shared/renderers/threeDimension/objectManagers/RobotManager";
-import TrajectoryManager from "../shared/renderers/threeDimension/objectManagers/TrajectoryManager";
+import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../shared/renderers/Field3dRenderer";
+import { disposeObject, getQuaternionFromRotSeq } from "../shared/renderers/Field3dRendererImpl";
+import makeAxesField from "../shared/renderers/field3d/AxesField";
+import makeEvergreenField from "../shared/renderers/field3d/EvergreenField";
+import ObjectManager from "../shared/renderers/field3d/ObjectManager";
+import optimizeGeometries, { FTC_MULTIPLIER, XR_MAX_RADIUS } from "../shared/renderers/field3d/OptimizeGeometries";
+import AprilTagManager from "../shared/renderers/field3d/objectManagers/AprilTagManager";
+import AxesManager from "../shared/renderers/field3d/objectManagers/AxesManager";
+import ConeManager from "../shared/renderers/field3d/objectManagers/ConeManager";
+import GamePieceManager from "../shared/renderers/field3d/objectManagers/GamePieceManager";
+import HeatmapManager from "../shared/renderers/field3d/objectManagers/HeatmapManager";
+import RobotManager from "../shared/renderers/field3d/objectManagers/RobotManager";
+import TrajectoryManager from "../shared/renderers/field3d/objectManagers/TrajectoryManager";
 import { convert } from "../shared/units";
 import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
@@ -66,8 +60,8 @@ export default class XRRenderer {
   private fieldPieces: { [key: string]: THREE.Mesh } = {};
 
   private objectManagers: {
-    type: ThreeDimensionRendererCommand_AnyObj["type"];
-    manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    type: Field3dRendererCommand_AnyObj["type"];
+    manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     active: boolean;
   }[] = [];
 
@@ -229,10 +223,7 @@ export default class XRRenderer {
     this.fieldRoot.rotation.set(0, yaw + (isRed ? 0 : Math.PI), 0);
   }
 
-  private getFieldConfig(
-    command: ThreeDimensionRendererCommand,
-    assets: AdvantageScopeAssets | null
-  ): Config3dField | null {
+  private getFieldConfig(command: Field3dRendererCommand, assets: AdvantageScopeAssets | null): Config3dField | null {
     if (assets === null) return null;
     let fieldConfig = [...assets.field3ds, ...BuiltIn3dFields].find((fieldData) => fieldData.id === command.field);
     if (fieldConfig === undefined) return null;
@@ -240,9 +231,7 @@ export default class XRRenderer {
   }
 
   /** Make a new object manager for the provided type. */
-  private makeObjectManager(
-    type: ThreeDimensionRendererCommand_AnyObj["type"]
-  ): ObjectManager<ThreeDimensionRendererCommand_AnyObj> {
+  private makeObjectManager(type: Field3dRendererCommand_AnyObj["type"]): ObjectManager<Field3dRendererCommand_AnyObj> {
     let args = [
       this.wpilibFieldCoordinateGroup,
       this.MATERIAL_SPECULAR,
@@ -251,7 +240,7 @@ export default class XRRenderer {
       true,
       () => {}
     ] as const;
-    let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     switch (type) {
       case "robot":
       case "ghost":
@@ -296,7 +285,7 @@ export default class XRRenderer {
   render(
     renderState: XRFrameState,
     settings: XRSettings,
-    command: ThreeDimensionRendererCommand,
+    command: Field3dRendererCommand,
     assets: AdvantageScopeAssets | null
   ) {
     // Reset calibration when changing calibration mode

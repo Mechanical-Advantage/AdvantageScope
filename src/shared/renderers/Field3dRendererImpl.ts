@@ -11,24 +11,24 @@ import {
 import { Rotation3d } from "../geometry";
 import { convert } from "../units";
 import { checkArrayType, clampValue } from "../util";
-import TabRenderer from "./TabRenderer";
 import {
-  ThreeDimensionRendererCommand,
-  ThreeDimensionRendererCommand_AnyObj,
-  ThreeDimensionRendererCommand_RobotObj
-} from "./ThreeDimensionRenderer";
-import makeAxesField from "./threeDimension/AxesField";
-import makeEvergreenField from "./threeDimension/EvergreenField";
-import ObjectManager from "./threeDimension/ObjectManager";
-import AprilTagManager from "./threeDimension/objectManagers/AprilTagManager";
-import AxesManager from "./threeDimension/objectManagers/AxesManager";
-import ConeManager from "./threeDimension/objectManagers/ConeManager";
-import GamePieceManager from "./threeDimension/objectManagers/GamePieceManager";
-import HeatmapManager from "./threeDimension/objectManagers/HeatmapManager";
-import RobotManager from "./threeDimension/objectManagers/RobotManager";
-import TrajectoryManager from "./threeDimension/objectManagers/TrajectoryManager";
+  Field3dRendererCommand,
+  Field3dRendererCommand_AnyObj,
+  Field3dRendererCommand_RobotObj
+} from "./Field3dRenderer";
+import TabRenderer from "./TabRenderer";
+import makeAxesField from "./field3d/AxesField";
+import makeEvergreenField from "./field3d/EvergreenField";
+import ObjectManager from "./field3d/ObjectManager";
+import AprilTagManager from "./field3d/objectManagers/AprilTagManager";
+import AxesManager from "./field3d/objectManagers/AxesManager";
+import ConeManager from "./field3d/objectManagers/ConeManager";
+import GamePieceManager from "./field3d/objectManagers/GamePieceManager";
+import HeatmapManager from "./field3d/objectManagers/HeatmapManager";
+import RobotManager from "./field3d/objectManagers/RobotManager";
+import TrajectoryManager from "./field3d/objectManagers/TrajectoryManager";
 
-export default class ThreeDimensionRendererImpl implements TabRenderer {
+export default class Field3dRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
   private MAX_ORBIT_FOV = 160;
   private MIN_ORBIT_FOV = 10;
@@ -105,8 +105,8 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   private spotLights: THREE.SpotLight[] = [];
 
   private objectManagers: {
-    type: ThreeDimensionRendererCommand_AnyObj["type"];
-    manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    type: Field3dRendererCommand_AnyObj["type"];
+    manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     active: boolean;
   }[] = [];
 
@@ -324,7 +324,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   stop() {}
 
   /** Resets the camera position and controls target. */
-  private resetCamera(command: ThreeDimensionRendererCommand, isFTC: boolean, animate = true) {
+  private resetCamera(command: Field3dRendererCommand, isFTC: boolean, animate = true) {
     this.controls.minDistance = isFTC ? this.CONTROLS_MIN_DISTANCE_FTC : this.CONTROLS_MIN_DISTANCE_FRC;
     if (this.cameraIndex === -1) {
       // Orbit field
@@ -403,7 +403,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
   }
 
-  private getFieldConfig(command: ThreeDimensionRendererCommand): Config3dField | null {
+  private getFieldConfig(command: Field3dRendererCommand): Config3dField | null {
     if (window.assets === null) return null;
     let fieldConfig = [...window.assets.field3ds, ...BuiltIn3dFields].find(
       (fieldData) => fieldData.id === command.field
@@ -413,9 +413,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
   }
 
   /** Make a new object manager for the provided type. */
-  private makeObjectManager(
-    type: ThreeDimensionRendererCommand_AnyObj["type"]
-  ): ObjectManager<ThreeDimensionRendererCommand_AnyObj> {
+  private makeObjectManager(type: Field3dRendererCommand_AnyObj["type"]): ObjectManager<Field3dRendererCommand_AnyObj> {
     let args = [
       this.wpilibFieldCoordinateGroup,
       this.MATERIAL_SPECULAR,
@@ -424,7 +422,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
       false,
       () => (this.shouldRender = true)
     ] as const;
-    let manager: ObjectManager<ThreeDimensionRendererCommand_AnyObj>;
+    let manager: ObjectManager<Field3dRendererCommand_AnyObj>;
     switch (type) {
       case "robot":
       case "ghost":
@@ -469,7 +467,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     return this.aspectRatio;
   }
 
-  render(command: ThreeDimensionRendererCommand): void {
+  render(command: Field3dRendererCommand): void {
     // Update controls
     let delta = this.clock.getDelta();
     let controlsUpdated = false;
@@ -733,9 +731,7 @@ export default class ThreeDimensionRendererImpl implements TabRenderer {
     }
 
     // Update primary robot
-    let robotObjects = command.objects.filter(
-      (object) => object.type === "robot"
-    ) as ThreeDimensionRendererCommand_RobotObj[];
+    let robotObjects = command.objects.filter((object) => object.type === "robot") as Field3dRendererCommand_RobotObj[];
     this.primaryRobotGroup.visible = false;
     if (robotObjects.length > 0) {
       this.primaryRobotModel = robotObjects[0].model;

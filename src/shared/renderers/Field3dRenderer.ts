@@ -1,23 +1,23 @@
 import { CoordinateSystem } from "../AdvantageScopeAssets";
 import { AnnotatedPose3d, SwerveState } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
+import Field3dRendererImpl from "./Field3dRendererImpl";
 import TabRenderer from "./TabRenderer";
-import ThreeDimensionRendererImpl from "./ThreeDimensionRendererImpl";
 
-export default class ThreeDimensionRenderer implements TabRenderer {
+export default class Field3dRenderer implements TabRenderer {
   private CANVAS: HTMLCanvasElement;
   private CANVAS_CONTAINER: HTMLElement;
   private ALERT: HTMLElement;
   private SPINNER: HTMLElement;
 
-  private implementation: ThreeDimensionRendererImpl | null = null;
+  private implementation: Field3dRendererImpl | null = null;
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
   private stateRestoreCache: unknown | null = null;
 
   constructor(root: HTMLElement) {
-    this.CANVAS = root.getElementsByClassName("three-dimension-canvas")[0] as HTMLCanvasElement;
-    this.CANVAS_CONTAINER = root.getElementsByClassName("three-dimension-canvas-container")[0] as HTMLElement;
-    this.ALERT = root.getElementsByClassName("three-dimension-alert")[0] as HTMLElement;
+    this.CANVAS = root.getElementsByClassName("field-3d-canvas")[0] as HTMLCanvasElement;
+    this.CANVAS_CONTAINER = root.getElementsByClassName("field-3d-canvas-container")[0] as HTMLElement;
+    this.ALERT = root.getElementsByClassName("field-3d-alert")[0] as HTMLElement;
     this.SPINNER = root.getElementsByClassName("spinner-cubes-container")[0] as HTMLElement;
     this.updateImplementation();
   }
@@ -50,10 +50,10 @@ export default class ThreeDimensionRenderer implements TabRenderer {
     // Get current mode
     let mode: "cinematic" | "standard" | "low-power" | null = null;
     if (window.preferences) {
-      if (window.isBattery && window.preferences.threeDimensionModeBattery !== "") {
-        mode = window.preferences.threeDimensionModeBattery;
+      if (window.isBattery && window.preferences.field3dModeBattery !== "") {
+        mode = window.preferences.field3dModeBattery;
       } else {
-        mode = window.preferences.threeDimensionModeAc;
+        mode = window.preferences.field3dModeAc;
       }
     }
 
@@ -74,13 +74,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
         this.CANVAS.replaceWith(newCanvas);
         this.CANVAS = newCanvas;
       }
-      this.implementation = new ThreeDimensionRendererImpl(
-        mode,
-        this.CANVAS,
-        this.CANVAS_CONTAINER,
-        this.ALERT,
-        this.SPINNER
-      );
+      this.implementation = new Field3dRendererImpl(mode, this.CANVAS, this.CANVAS_CONTAINER, this.ALERT, this.SPINNER);
       if (this.stateRestoreCache !== null) {
         this.implementation.restoreState(this.stateRestoreCache);
         this.stateRestoreCache = null;
@@ -94,7 +88,7 @@ export default class ThreeDimensionRenderer implements TabRenderer {
     return this.implementation === null ? null : this.implementation.getAspectRatio();
   }
 
-  render(command: ThreeDimensionRendererCommand): void {
+  render(command: Field3dRendererCommand): void {
     this.updateImplementation();
     this.implementation?.render(command);
   }
@@ -102,27 +96,27 @@ export default class ThreeDimensionRenderer implements TabRenderer {
 
 // Most poses are still in their original coordinate system
 // Heatmap poses are already converted to a center-red coordinate system
-export type ThreeDimensionRendererCommand = {
+export type Field3dRendererCommand = {
   field: string;
   isRedAlliance: boolean;
   coordinateSystem: CoordinateSystem;
-  objects: ThreeDimensionRendererCommand_AnyObj[];
+  objects: Field3dRendererCommand_AnyObj[];
   cameraOverride: AnnotatedPose3d | null;
   autoDriverStation: number;
   allRobotModels: string[];
 };
 
-export type ThreeDimensionRendererCommand_AnyObj =
-  | ThreeDimensionRendererCommand_RobotObj
-  | ThreeDimensionRendererCommand_GhostObj
-  | ThreeDimensionRendererCommand_GamePieceObj
-  | ThreeDimensionRendererCommand_TrajectoryObj
-  | ThreeDimensionRendererCommand_HeatmapObj
-  | ThreeDimensionRendererCommand_AprilTagObj
-  | ThreeDimensionRendererCommand_AxesObj
-  | ThreeDimensionRendererCommand_ConeObj;
+export type Field3dRendererCommand_AnyObj =
+  | Field3dRendererCommand_RobotObj
+  | Field3dRendererCommand_GhostObj
+  | Field3dRendererCommand_GamePieceObj
+  | Field3dRendererCommand_TrajectoryObj
+  | Field3dRendererCommand_HeatmapObj
+  | Field3dRendererCommand_AprilTagObj
+  | Field3dRendererCommand_AxesObj
+  | Field3dRendererCommand_ConeObj;
 
-export type ThreeDimensionRendererCommand_GenericRobotObj = {
+export type Field3dRendererCommand_GenericRobotObj = {
   model: string;
   poses: AnnotatedPose3d[];
   components: AnnotatedPose3d[];
@@ -134,45 +128,45 @@ export type ThreeDimensionRendererCommand_GenericRobotObj = {
   }[];
 };
 
-export type ThreeDimensionRendererCommand_RobotObj = ThreeDimensionRendererCommand_GenericRobotObj & {
+export type Field3dRendererCommand_RobotObj = Field3dRendererCommand_GenericRobotObj & {
   type: "robot";
 };
 
-export type ThreeDimensionRendererCommand_GhostObj = ThreeDimensionRendererCommand_GenericRobotObj & {
+export type Field3dRendererCommand_GhostObj = Field3dRendererCommand_GenericRobotObj & {
   type: "ghost";
   color: string;
 };
 
-export type ThreeDimensionRendererCommand_GamePieceObj = {
+export type Field3dRendererCommand_GamePieceObj = {
   type: "gamePiece";
   variant: string;
   poses: AnnotatedPose3d[];
 };
 
-export type ThreeDimensionRendererCommand_TrajectoryObj = {
+export type Field3dRendererCommand_TrajectoryObj = {
   type: "trajectory";
   color: string;
   size: string;
   poses: AnnotatedPose3d[];
 };
 
-export type ThreeDimensionRendererCommand_HeatmapObj = {
+export type Field3dRendererCommand_HeatmapObj = {
   type: "heatmap";
   poses: AnnotatedPose3d[];
 };
 
-export type ThreeDimensionRendererCommand_AprilTagObj = {
+export type Field3dRendererCommand_AprilTagObj = {
   type: "aprilTag";
   poses: AnnotatedPose3d[];
   family: "36h11" | "16h5";
 };
 
-export type ThreeDimensionRendererCommand_AxesObj = {
+export type Field3dRendererCommand_AxesObj = {
   type: "axes";
   poses: AnnotatedPose3d[];
 };
 
-export type ThreeDimensionRendererCommand_ConeObj = {
+export type Field3dRendererCommand_ConeObj = {
   type: "cone";
   color: string;
   position: "center" | "back" | "front";

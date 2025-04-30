@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { ThreeDimensionRendererCommand_AnyObj } from "../ThreeDimensionRenderer";
+import { Field3dRendererCommand_AnyObj } from "../Field3dRenderer";
 
-export default abstract class ObjectManager<ObjectType extends ThreeDimensionRendererCommand_AnyObj> {
+export default abstract class ObjectManager<ObjectType extends Field3dRendererCommand_AnyObj> {
   protected root: THREE.Object3D;
   protected materialSpecular: THREE.Color;
   protected materialShininess: number;

@@ -2,12 +2,12 @@ import * as THREE from "three";
 import { Config3dField } from "../../../AdvantageScopeAssets";
 import { annotatedPose3dTo2d, convertFromCoordinateSystem } from "../../../geometry";
 import { convert } from "../../../units";
+import { Field3dRendererCommand_HeatmapObj } from "../../Field3dRenderer";
+import { disposeObject } from "../../Field3dRendererImpl";
 import Heatmap from "../../Heatmap";
-import { ThreeDimensionRendererCommand_HeatmapObj } from "../../ThreeDimensionRenderer";
-import { disposeObject } from "../../ThreeDimensionRendererImpl";
 import ObjectManager from "../ObjectManager";
 
-export default class HeatmapManager extends ObjectManager<ThreeDimensionRendererCommand_HeatmapObj> {
+export default class HeatmapManager extends ObjectManager<Field3dRendererCommand_HeatmapObj> {
   private HEIGHT_PIXELS: number;
 
   private getFieldConfig: () => Config3dField | null;
@@ -46,7 +46,7 @@ export default class HeatmapManager extends ObjectManager<ThreeDimensionRenderer
     this.isRedAlliance = isRedAlliance;
   }
 
-  setObjectData(object: ThreeDimensionRendererCommand_HeatmapObj): void {
+  setObjectData(object: Field3dRendererCommand_HeatmapObj): void {
     let fieldConfig = this.getFieldConfig();
     if (fieldConfig === null) return;
 

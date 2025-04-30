@@ -1505,7 +1505,7 @@ div.odometry-settings {
 
 /* 3D Field */
 
-div.three-dimension-sources {
+div.field-3d-sources {
   position: absolute;
   top: 0%;
   height: 100%;
@@ -1514,7 +1514,7 @@ div.three-dimension-sources {
   min-width: calc(100% - 200px);
 }
 
-div.three-dimension-settings {
+div.field-3d-settings {
   position: absolute;
   top: 0%;
   height: 100%;
@@ -1528,7 +1528,7 @@ div.three-dimension-settings {
 }
 
 @media (prefers-color-scheme: dark) {
-  div.three-dimension-settings {
+  div.field-3d-settings {
     border-left: 1px solid black;
   }
 }

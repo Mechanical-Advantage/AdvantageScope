@@ -20,17 +20,14 @@ import {
   mergeMechanismStates
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
-import {
-  ThreeDimensionRendererCommand,
-  ThreeDimensionRendererCommand_AnyObj
-} from "../../shared/renderers/ThreeDimensionRenderer";
+import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { convert } from "../../shared/units";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
+import Field3dController_Config from "./Field3dController_Config";
 import TabController from "./TabController";
-import ThreeDimensionController_Config from "./ThreeDimensionController_Config";
 
-export default class ThreeDimensionController implements TabController {
+export default class Field3dController implements TabController {
   UUID = createUUID();
 
   private XR_BUTTON: HTMLButtonElement;
@@ -40,11 +37,11 @@ export default class ThreeDimensionController implements TabController {
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
-      root.getElementsByClassName("three-dimension-sources")[0] as HTMLElement,
-      ThreeDimensionController_Config,
+      root.getElementsByClassName("field-3d-sources")[0] as HTMLElement,
+      Field3dController_Config,
       []
     );
-    let settings = root.getElementsByClassName("three-dimension-settings")[0] as HTMLElement;
+    let settings = root.getElementsByClassName("field-3d-settings")[0] as HTMLElement;
     this.XR_BUTTON = settings.getElementsByClassName("xr-button")[0] as HTMLButtonElement;
     this.FIELD_SELECT = settings.getElementsByClassName("field-select")[0] as HTMLSelectElement;
 
@@ -183,7 +180,7 @@ export default class ThreeDimensionController implements TabController {
     return true;
   }
 
-  getCommand(): ThreeDimensionRendererCommand {
+  getCommand(): Field3dRendererCommand {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
@@ -201,19 +198,19 @@ export default class ThreeDimensionController implements TabController {
     // Get alliance
     let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
 
-    let objects: ThreeDimensionRendererCommand_AnyObj[] = [];
+    let objects: Field3dRendererCommand_AnyObj[] = [];
     let cameraOverride: AnnotatedPose3d | null = null;
     let sources = this.sourceList.getState(true);
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
-      let typeConfig = ThreeDimensionController_Config.types.find((typeConfig) => typeConfig.key === source.type);
+      let typeConfig = Field3dController_Config.types.find((typeConfig) => typeConfig.key === source.type);
       if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
       // Find children
       let children: SourceListItemState[] = [];
       while (
         sources.length > i + 1 &&
-        ThreeDimensionController_Config.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !==
+        Field3dController_Config.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !==
           undefined
       ) {
         i++;

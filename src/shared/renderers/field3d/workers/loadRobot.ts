@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dRobot } from "../../../AdvantageScopeAssets";
-import { getQuaternionFromRotSeq } from "../../ThreeDimensionRendererImpl";
+import { getQuaternionFromRotSeq } from "../../Field3dRendererImpl";
 import optimizeGeometries from "../OptimizeGeometries";
 import { prepareTransfer } from "./prepareTransfer";
 
