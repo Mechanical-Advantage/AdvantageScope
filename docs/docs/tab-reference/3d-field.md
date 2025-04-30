@@ -8,7 +8,7 @@ import PrefsImage from '../img/prefs.png';
 
 # 👀 3D Field
 
-The 3D field shows a 3D visualization of the robot and field. It can be used with regular 2D odometry, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. [AdvantageScope XR](../more-features/advantagescope-xr.md) allows this tab to be visualized using augmented reality. The timeline shows when the robot is enabled and can be used to navigate through the log data.
+The 3D field shows a 3D visualization of the robot and field. It can be used with regular 2D poses, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. [AdvantageScope XR](../more-features/advantagescope-xr.md) allows this tab to be visualized using augmented reality. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
 ![Example of 3D field tab](./img/3d-field-1.png)
 

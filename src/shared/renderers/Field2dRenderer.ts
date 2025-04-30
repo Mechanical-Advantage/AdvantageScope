@@ -4,7 +4,7 @@ import { scaleValue, transformPx } from "../util";
 import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
 
-export default class OdometryRenderer implements TabRenderer {
+export default class Field2dRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private IMAGE: HTMLImageElement;
@@ -17,10 +17,10 @@ export default class OdometryRenderer implements TabRenderer {
   private imageLoadCount = 0;
 
   constructor(root: HTMLElement) {
-    this.CONTAINER = root.getElementsByClassName("odometry-canvas-container")[0] as HTMLElement;
-    this.CANVAS = root.getElementsByClassName("odometry-canvas")[0] as HTMLCanvasElement;
+    this.CONTAINER = root.getElementsByClassName("field-2d-canvas-container")[0] as HTMLElement;
+    this.CANVAS = root.getElementsByClassName("field-2d-canvas")[0] as HTMLCanvasElement;
     this.IMAGE = document.createElement("img");
-    this.HEATMAP_CONTAINER = root.getElementsByClassName("odometry-heatmap-container")[0] as HTMLElement;
+    this.HEATMAP_CONTAINER = root.getElementsByClassName("field-2d-heatmap-container")[0] as HTMLElement;
     this.heatmap = new Heatmap(this.HEATMAP_CONTAINER);
     this.IMAGE.addEventListener("load", () => this.imageLoadCount++);
   }
@@ -35,7 +35,7 @@ export default class OdometryRenderer implements TabRenderer {
     return this.aspectRatio;
   }
 
-  render(command: OdometryRendererCommand): void {
+  render(command: Field2dRendererCommand): void {
     // Get setup
     let context = this.CANVAS.getContext("2d") as CanvasRenderingContext2D;
     let isVertical = command.orientation === Orientation.DEG_90 || command.orientation === Orientation.DEG_270;
@@ -407,21 +407,21 @@ export enum Orientation {
 }
 
 // All poses are already converted to a center-red coordinate system
-export type OdometryRendererCommand = {
+export type Field2dRendererCommand = {
   field: string;
   orientation: Orientation;
   size: number;
-  objects: OdometryRendererCommand_AnyObj[];
+  objects: Field2dRendererCommand_AnyObj[];
 };
 
-export type OdometryRendererCommand_AnyObj =
-  | OdometryRendererCommand_RobotObj
-  | OdometryRendererCommand_GhostObj
-  | OdometryRendererCommand_TrajectoryObj
-  | OdometryRendererCommand_HeatmapObj
-  | OdometryRendererCommand_ArrowObj;
+export type Field2dRendererCommand_AnyObj =
+  | Field2dRendererCommand_RobotObj
+  | Field2dRendererCommand_GhostObj
+  | Field2dRendererCommand_TrajectoryObj
+  | Field2dRendererCommand_HeatmapObj
+  | Field2dRendererCommand_ArrowObj;
 
-export type OdometryRendererCommand_RobotObj = {
+export type Field2dRendererCommand_RobotObj = {
   type: "robot";
   poses: AnnotatedPose2d[];
   trails: Translation2d[][];
@@ -433,7 +433,7 @@ export type OdometryRendererCommand_RobotObj = {
   }[];
 };
 
-export type OdometryRendererCommand_GhostObj = {
+export type Field2dRendererCommand_GhostObj = {
   type: "ghost";
   poses: AnnotatedPose2d[];
   color: string;
@@ -444,19 +444,19 @@ export type OdometryRendererCommand_GhostObj = {
   }[];
 };
 
-export type OdometryRendererCommand_TrajectoryObj = {
+export type Field2dRendererCommand_TrajectoryObj = {
   type: "trajectory";
   color: string;
   size: string;
   poses: AnnotatedPose2d[];
 };
 
-export type OdometryRendererCommand_HeatmapObj = {
+export type Field2dRendererCommand_HeatmapObj = {
   type: "heatmap";
   poses: AnnotatedPose2d[];
 };
 
-export type OdometryRendererCommand_ArrowObj = {
+export type Field2dRendererCommand_ArrowObj = {
   type: "arrow";
   poses: AnnotatedPose2d[];
   position: "center" | "back" | "front";

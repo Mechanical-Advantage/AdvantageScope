@@ -28,13 +28,13 @@ The timeline interface has been completely redesigned to enable precise scrubbin
 
 ### 🎛️ All-New Control Interface
 
-The visualization controls for many tabs, including the 🗺️ [Odometry](../tab-reference/odometry.md) and 👀 [3D Field](../tab-reference/3d-field.md) tabs have been redesigned from scratch to make the interface more **simple, consistent, and capable**. New features like nested objects, visibility toggles, and object settings make it easier to get started while enabling advanced new visualization options.
+The visualization controls for many tabs, including the 🗺️ [2D field](../tab-reference/2d-field.md) and 👀 [3D Field](../tab-reference/3d-field.md) tabs have been redesigned from scratch to make the interface more **simple, consistent, and capable**. New features like nested objects, visibility toggles, and object settings make it easier to get started while enabling advanced new visualization options.
 
 ![New controls](./img/new-controls.png)
 
 ### 🎨 Expanded Color Options
 
-Several brand-new colors are available when visualizing **ghosts, vision targets, and trajectories**. And for the first time, multiple ghost colors are supported on the 🗺️ [Odometry](../tab-reference/odometry.md) tab!
+Several brand-new colors are available when visualizing **ghosts, vision targets, and trajectories**. And for the first time, multiple ghost colors are supported on the 🗺️ [2D Field](../tab-reference/2d-field.md) tab!
 
 ![Rainbow ghosts](./img/rainbow-ghosts.png)
 
@@ -47,7 +47,7 @@ Several brand-new colors are available when visualizing **ghosts, vision targets
 
 ### 🦀 New Swerve Visualizations
 
-Swerve module states can be **visualized in 2D or 3D** by overlaying vectors on the 🗺️ [Odometry](../tab-reference/odometry.md) and 👀 [3D Field](../tab-reference/3d-field.md) tabs.
+Swerve module states can be **visualized in 2D or 3D** by overlaying vectors on the 🗺️ [2D Field](../tab-reference/2d-field.md) and 👀 [3D Field](../tab-reference/3d-field.md) tabs.
 
 Looking to go deeper? Try visualizing **chassis speeds** on the 🦀 [Swerve](../tab-reference/swerve.md) tab, which can now display an unlimited number of data sets!
 

@@ -13,17 +13,17 @@ import {
 } from "../../shared/geometry";
 import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
 import {
-  OdometryRendererCommand,
-  OdometryRendererCommand_AnyObj,
+  Field2dRendererCommand,
+  Field2dRendererCommand_AnyObj,
   Orientation
-} from "../../shared/renderers/OdometryRenderer";
+} from "../../shared/renderers/Field2dRenderer";
 import { convert } from "../../shared/units";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
-import OdometryController_Config from "./OdometryController_Config";
+import Field2dController_Config from "./Field2dController_Config";
 import TabController from "./TabController";
 
-export default class OdometryController implements TabController {
+export default class Field2dController implements TabController {
   UUID = createUUID();
 
   private static TRAIL_LENGTH_SECS = 3;
@@ -43,11 +43,11 @@ export default class OdometryController implements TabController {
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
-      root.getElementsByClassName("odometry-sources")[0] as HTMLElement,
-      OdometryController_Config,
+      root.getElementsByClassName("field-2d-sources")[0] as HTMLElement,
+      Field2dController_Config,
       []
     );
-    this.SETTINGS = root.getElementsByClassName("odometry-settings")[0] as HTMLElement;
+    this.SETTINGS = root.getElementsByClassName("field-2d-settings")[0] as HTMLElement;
     this.ORIENTATION_SWITCHER = this.SETTINGS.getElementsByClassName("orientation-switcher")[0] as HTMLElement;
     this.SIZE_SWITCHER = this.SETTINGS.getElementsByClassName("size-switcher")[0] as HTMLElement;
     this.FIELD_SELECT = this.SETTINGS.getElementsByClassName("field-select")[0] as HTMLSelectElement;
@@ -197,7 +197,7 @@ export default class OdometryController implements TabController {
     return true;
   }
 
-  getCommand(): OdometryRendererCommand {
+  getCommand(): Field2dRendererCommand {
     // Get timestamp
     let time = window.selection.getRenderTime();
 
@@ -214,18 +214,18 @@ export default class OdometryController implements TabController {
     let isRedAlliance = time === null ? false : getIsRedAlliance(window.log, time);
 
     // Get objects
-    let objects: OdometryRendererCommand_AnyObj[] = [];
+    let objects: Field2dRendererCommand_AnyObj[] = [];
     let sources = this.sourceList.getState(true);
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
-      let typeConfig = OdometryController_Config.types.find((typeConfig) => typeConfig.key === source.type);
+      let typeConfig = Field2dController_Config.types.find((typeConfig) => typeConfig.key === source.type);
       if (typeConfig?.childOf !== undefined) continue; // This is a child, don't render
 
       // Find children
       let children: SourceListItemState[] = [];
       while (
         sources.length > i + 1 &&
-        OdometryController_Config.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !==
+        Field2dController_Config.types.find((typeConfig) => typeConfig.key === sources[i + 1].type)?.childOf !==
           undefined
       ) {
         i++;
@@ -292,14 +292,14 @@ export default class OdometryController implements TabController {
       let trails: Translation2d[][] = Array(poses.length).fill([]);
       if (time !== null) {
         if (source.type === "robot" || source.type === "robotLegacy") {
-          let startTime = Math.max(window.log.getTimestampRange()[0], time - OdometryController.TRAIL_LENGTH_SECS);
-          let endTime = Math.min(window.log.getTimestampRange()[1], time + OdometryController.TRAIL_LENGTH_SECS);
+          let startTime = Math.max(window.log.getTimestampRange()[0], time - Field2dController.TRAIL_LENGTH_SECS);
+          let endTime = Math.min(window.log.getTimestampRange()[1], time + Field2dController.TRAIL_LENGTH_SECS);
 
           let timestamps = [startTime];
           for (
-            let sampleTime = Math.ceil(startTime / OdometryController.TRAIL_DT) * OdometryController.TRAIL_DT;
+            let sampleTime = Math.ceil(startTime / Field2dController.TRAIL_DT) * Field2dController.TRAIL_DT;
             sampleTime < endTime;
-            sampleTime += OdometryController.TRAIL_DT
+            sampleTime += Field2dController.TRAIL_DT
           ) {
             timestamps.push(sampleTime);
           }

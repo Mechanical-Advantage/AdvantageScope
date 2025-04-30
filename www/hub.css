@@ -1473,9 +1473,9 @@ div.line-graph-discrete {
   }
 }
 
-/* Odometry */
+/* 2D Field */
 
-div.odometry-sources {
+div.field-2d-sources {
   position: absolute;
   top: 0%;
   height: 100%;
@@ -1484,7 +1484,7 @@ div.odometry-sources {
   min-width: calc(100% - 250px);
 }
 
-div.odometry-settings {
+div.field-2d-settings {
   position: absolute;
   top: 0%;
   height: 100%;
@@ -1498,7 +1498,7 @@ div.odometry-settings {
 }
 
 @media (prefers-color-scheme: dark) {
-  div.odometry-settings {
+  div.field-2d-settings {
     border-left: 1px solid black;
   }
 }

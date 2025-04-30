@@ -1,7 +1,7 @@
 enum TabType {
   Documentation,
   LineGraph,
-  Odometry,
+  Field2d,
   Field3d,
   Table,
   Console,
@@ -26,8 +26,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "";
     case TabType.LineGraph:
       return "Line Graph";
-    case TabType.Odometry:
-      return "Odometry";
+    case TabType.Field2d:
+      return "2D Field";
     case TabType.Field3d:
       return "3D Field";
     case TabType.Table:
@@ -59,7 +59,7 @@ export function getTabIcon(type: TabType): string {
       return "📖";
     case TabType.LineGraph:
       return "📉";
-    case TabType.Odometry:
+    case TabType.Field2d:
       return "🗺";
     case TabType.Field3d:
       return "👀";
@@ -94,8 +94,8 @@ export function getTabAccelerator(type: TabType): string {
       switch (type) {
         case TabType.LineGraph:
           return "G";
-        case TabType.Odometry:
-          return "O";
+        case TabType.Field2d:
+          return "2";
         case TabType.Field3d:
           return "3";
         case TabType.Table:

@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Legacy Format Deprecation
 
-WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! Starting in 2025, AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 Odometry](../tab-reference/odometry.md) and [👀 3D Field](../tab-reference/3d-field.md) tabs with **no manual configuration** and **no unit errors**.
+WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! Starting in 2025, AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](../tab-reference/2d-field.md) and [👀 3D Field](../tab-reference/3d-field.md) tabs with **no manual configuration** and **no unit errors**.
 
 In 2024, AdvantageScope supported both structs and the legacy "number array" format for geometry types. The legacy format packed structured data into a format like `double[]` (e.g. a pose would be represented by the array `[x, y, rotation]`).
 

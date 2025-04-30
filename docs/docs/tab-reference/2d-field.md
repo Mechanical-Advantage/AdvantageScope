@@ -5,11 +5,11 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 Odometry
+# 🗺 2D Field
 
-The odometry tab shows a 2D visualization of the robot overlayed on a map of the field. It can also show extra data like vision targeting status and reference poses.
+The 2D field tab shows a 2D visualization of the robot overlayed on a map of the field. It can also show extra data like vision targeting status and reference poses.
 
-![Overview of odometry tab](./img/odometry-1.png)
+![Overview of 2D field tab](./img/2d-field-1.png)
 
 <details>
 <summary>Timeline Controls</summary>
@@ -42,7 +42,7 @@ To get started, drag a field to the "Poses" section. Delete an object using the 
 To see a full list of supported object types, click the `?` icon. This list also includes the supported data types and whether the objects must be added as children.
 :::
 
-![Odometry with objects](./img/odometry-2.png)
+![2D field with objects](./img/2d-field-2.png)
 
 ## Data Format
 
