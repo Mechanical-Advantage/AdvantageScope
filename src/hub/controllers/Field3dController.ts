@@ -294,7 +294,7 @@ export default class Field3dController implements TabController {
             }
 
             case "mechanism": {
-              let state = getMechanismState(window.log, child.logKey, time!);
+              let state = getMechanismState(window.log, child.logKey, time!, child.options.axis);
               if (state !== null) {
                 mechanisms.push(state);
               }

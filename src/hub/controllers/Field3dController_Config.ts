@@ -195,7 +195,17 @@ const Field3dController_Config: SourceListConfig = {
       color: "#888888",
       sourceTypes: ["Mechanism2d"],
       showDocs: true,
-      options: [],
+      options: [
+        {
+          key: "axis",
+          display: "Axis",
+          showInTypeName: true,
+          values: [
+            { key: "x", display: "XZ Axis" },
+            { key: "y", display: "YZ Axis" }
+          ]
+        }
+      ],
       childOf: "robot"
     },
     {
