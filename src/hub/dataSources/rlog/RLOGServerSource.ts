@@ -18,7 +18,7 @@ export default class RLOGServerSource extends LiveDataSource {
     statusCallback: (status: LiveDataSourceStatus) => void,
     outputCallback: (log: Log, timeSupplier: () => number) => void
   ) {
-    super.connect(address, statusCallback, outputCallback);
+    super.connect(address, statusCallback, outputCallback, false);
 
     if (window.preferences === null) {
       this.setStatus(LiveDataSourceStatus.Error);

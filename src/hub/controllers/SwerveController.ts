@@ -1,6 +1,6 @@
 import { SourceListState } from "../../shared/SourceListConfig";
 import { Rotation2d, grabChassisSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
-import { Orientation } from "../../shared/renderers/OdometryRenderer";
+import { Orientation } from "../../shared/renderers/Field2dRenderer";
 import { SwerveRendererCommand } from "../../shared/renderers/SwerveRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";

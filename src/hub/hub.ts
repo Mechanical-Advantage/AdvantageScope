@@ -16,7 +16,6 @@ import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
-import loadZebra from "./dataSources/LoadZebra";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
@@ -355,6 +354,11 @@ function startHistorical(path: string, clear = true, merge = false) {
           updateLoading();
           if (originalTimelineRange !== null && originalTimelineIsMaxZoom !== null) {
             window.selection.setTimelineRange(originalTimelineRange, originalTimelineIsMaxZoom);
+            let newTimelineRange = window.selection.getTimelineRange();
+            if (window.selection.getTimelineIsMaxZoom() && originalTimelineRange[0] >= 0 && newTimelineRange[0] < 0) {
+              // If the new log data made the locked range negative, limit to positive values
+              window.selection.setTimelineRange([0, newTimelineRange[1]], false);
+            }
             originalTimelineRange = null;
             originalTimelineIsMaxZoom = null;
           }
@@ -780,24 +784,6 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "stop-publish":
       publisher?.stop();
-      break;
-
-    case "load-zebra":
-      if (liveActive) {
-        window.sendMainMessage("error", {
-          title: "Cannot load Zebra data",
-          content: "Loading Zebra data is not allowed while connected to a live source."
-        });
-      } else {
-        setLoading(1);
-        loadZebra()
-          .then(() => {
-            setLoading(null);
-          })
-          .catch(() => {
-            setLoading(null);
-          });
-      }
       break;
 
     case "set-playback-options":

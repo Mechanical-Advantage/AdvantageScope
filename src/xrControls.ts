@@ -7,7 +7,7 @@ const QR_DIV = document.getElementsByClassName("qr")[0] as HTMLElement;
 const CONTROLS_DIV = document.getElementsByClassName("controls")[0] as HTMLElement;
 const CALIBRATION_MODE = document.getElementsByName("calibration-mode")[0] as HTMLSelectElement;
 const STREAMING_MDOE = document.getElementsByName("streaming-mode")[0] as HTMLSelectElement;
-const SHOW_CARPET = document.getElementsByName("show-carpet")[0] as HTMLInputElement;
+const SHOW_FLOOR = document.getElementsByName("show-floor")[0] as HTMLInputElement;
 const SHOW_FIELD = document.getElementsByName("show-field")[0] as HTMLInputElement;
 const SHOW_ROBOTS = document.getElementsByName("show-robots")[0] as HTMLInputElement;
 
@@ -52,13 +52,13 @@ function sendSettings() {
   let settings: XRSettings = {
     calibration: Number(CALIBRATION_MODE.value),
     streaming: Number(STREAMING_MDOE.value),
-    showCarpet: SHOW_CARPET.checked,
+    showCarpet: SHOW_FLOOR.checked,
     showField: SHOW_FIELD.checked,
     showRobots: SHOW_ROBOTS.checked
   };
   sendMainMessage("xr-settings", settings);
 }
-[CALIBRATION_MODE, STREAMING_MDOE, SHOW_CARPET, SHOW_FIELD, SHOW_ROBOTS].forEach((input) =>
+[CALIBRATION_MODE, STREAMING_MDOE, SHOW_FLOOR, SHOW_FIELD, SHOW_ROBOTS].forEach((input) =>
   input.addEventListener("change", sendSettings)
 );
 

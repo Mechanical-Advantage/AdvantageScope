@@ -22,17 +22,17 @@ export const ENABLED_KEYS = [
   "/DriverStation/Enabled",
   "NT:/AdvantageKit/DriverStation/Enabled",
   "DS:enabled",
-  "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSDisabled",
-  "RobotEnable" // Phoenix
+  "RobotEnable", // Phoenix
+  "NT:/FMSInfo/FMSControlData"
 ];
 export const AUTONOMOUS_KEYS = [
   "/DriverStation/Autonomous",
   "NT:/AdvantageKit/DriverStation/Autonomous",
   "DS:autonomous",
-  "NT:/FMSInfo/FMSControlData",
   "/DSLog/Status/DSTeleop",
-  "RobotMode" // Phoenix
+  "RobotMode", // Phoenix
+  "NT:/FMSInfo/FMSControlData"
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
@@ -87,13 +87,18 @@ export function removeMergePrefix(key: string): string {
 
 export function findKey(log: Log, search: string[]): string | undefined {
   let fieldKeys = log.getFieldKeys();
+  let bestKey: string | undefined = undefined;
+  let bestKeySearchIndex = Infinity;
   for (let i = 0; i < fieldKeys.length; i++) {
     let unmerged = removeMergePrefix(fieldKeys[i]);
-    if (search.includes(unmerged)) {
-      return fieldKeys[i];
+    let searchIndex: number;
+    if ((searchIndex = search.indexOf(unmerged)) !== -1) {
+      if (searchIndex < bestKeySearchIndex) bestKey = fieldKeys[i];
+    } else if (unmerged.startsWith("/") && (searchIndex = search.indexOf(unmerged.slice(1))) !== -1) {
+      if (searchIndex < bestKeySearchIndex) bestKey = fieldKeys[i];
     }
   }
-  return undefined;
+  return bestKey;
 }
 
 /** Adds a prefix to a log key. */

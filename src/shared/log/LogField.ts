@@ -45,15 +45,31 @@ export default class LogField {
   }
 
   /** Clears all data before the provided timestamp. */
-  clearBeforeTime(timestamp: number) {
-    while (this.data.timestamps.length >= 2 && this.data.timestamps[1] < timestamp) {
-      this.data.timestamps.shift();
-      this.data.values.shift();
-      this.stripingReference = !this.stripingReference;
+  clearBeforeTime(clearTimestamp: number) {
+    const newTimestamps = [];
+    const newValues = [];
+
+    for (let i = 0; i < this.data.timestamps.length; i++) {
+      const timestamp = this.data.timestamps[i];
+      const value = this.data.values[i];
+
+      // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it (don't include it in the new array).
+      if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
+        this.stripingReference = !this.stripingReference;
+        continue;
+      }
+
+      newTimestamps.push(timestamp);
+      newValues.push(value);
     }
-    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < timestamp) {
-      this.data.timestamps[0] = timestamp;
+
+    // If there are any left over timestamps, reassign the first timestamp to the given timestamp?
+    if (newTimestamps.length > 0 && newTimestamps[0] < clearTimestamp) {
+      newTimestamps[0] = clearTimestamp;
     }
+
+    this.data.timestamps = newTimestamps;
+    this.data.values = newValues;
   }
 
   /** Returns the values in the specified timestamp range.

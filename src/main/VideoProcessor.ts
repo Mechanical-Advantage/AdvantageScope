@@ -74,10 +74,10 @@ export class VideoProcessor {
 
     // Web stream format (upper) - 2025
     {
-      left: 600 / 1920,
-      top: 40 / 1080,
-      width: 80 / 1920,
-      height: 45 / 1080
+      left: 900 / 1920,
+      top: 65 / 1080,
+      width: 120 / 1920,
+      height: 68 / 1080
     }
   ];
 
@@ -249,32 +249,32 @@ export class VideoProcessor {
                   timerValues.push({ frame: sampleFrame, text: timerText });
                   timerValues.sort((a, b) => a.frame - b.frame);
 
-                  // Search for 14 -> 13 transition
-                  let lastIs14 = false;
-                  let secs14Frame: number | null = null;
+                  // Search for 13 -> 12 transition
+                  let lastIs13 = false;
+                  let secs13Frame: number | null = null;
                   for (let i = 0; i < timerValues.length; i++) {
-                    let is14 = timerValues[i].text.includes("14");
-                    let is13 = !is14 && timerValues[i].text.includes("13");
-                    if (lastIs14 && is13) {
-                      secs14Frame = timerValues[i - 1].frame;
+                    let is13 = timerValues[i].text.includes("13");
+                    let is12 = !is13 && timerValues[i].text.includes("12");
+                    if (lastIs13 && is12) {
+                      secs13Frame = timerValues[i - 1].frame;
                       break;
                     }
-                    lastIs14 = is14;
+                    lastIs13 = is13;
                   }
-                  if (secs14Frame === null) return;
+                  if (secs13Frame === null) return;
                   timerStartFound = true;
 
                   // Find exact frame
                   let jobs: Promise<string>[] = [];
-                  for (let frame = secs14Frame; frame < secs14Frame + fps; frame++) {
+                  for (let frame = secs13Frame; frame < secs13Frame + fps; frame++) {
                     jobs.push(this.readTimerText(cachePath + zfill(frame.toString(), 8) + ".jpg", width, height));
                   }
                   const results = await Promise.all(jobs);
                   results.forEach((timerText, index) => {
                     if (matchStartFrame > 0) return;
-                    if (timerText.includes("13")) {
-                      let secs13Frame = secs14Frame! + index;
-                      matchStartFrame = Math.round(secs13Frame - fps * 2);
+                    if (timerText.includes("12")) {
+                      let secs12Frame = secs13Frame! + index;
+                      matchStartFrame = Math.round(secs12Frame - fps * 3);
                     }
                   });
                 }

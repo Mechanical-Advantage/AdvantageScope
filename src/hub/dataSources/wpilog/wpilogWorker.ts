@@ -1,5 +1,5 @@
 import Log from "../../../shared/log/Log";
-import { getEnabledKey, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
+import { getEnabledKey, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import {
   HistoricalDataSource_WorkerFieldResponse,
@@ -15,6 +15,7 @@ let decoder: WPILOGDecoder | null = null;
 const log = new Log(false);
 const entryIds: { [id: number]: string } = {};
 const entryTypes: { [id: string]: string } = {};
+const entryStartTimes: { [id: number]: number } = {};
 const dataRecordPositions: { [id: string]: number[] } = {};
 
 function sendResponse(response: HistoricalDataSource_WorkerResponse) {
@@ -36,6 +37,7 @@ self.onmessage = async (event) => {
 
 async function start(data: Uint8Array) {
   let lastProgressValue = 0;
+  let shortLivedFieldNames: Set<string> = new Set();
   decoder = new WPILOGDecoder(data);
 
   try {
@@ -51,9 +53,14 @@ async function start(data: Uint8Array) {
           if (record !== null && record !== undefined) {
             if (record.isStart()) {
               const startData = record.getStartData();
+              if (!(startData.name in dataRecordPositions) || entryTypes[startData.name] !== startData.type) {
+                // If the entry was previously declared with a different type, clear
+                // the old data to avoid a conflict (use the last declared type)
+                dataRecordPositions[startData.name] = [];
+              }
               entryIds[startData.entry] = startData.name;
               entryTypes[startData.name] = startData.type;
-              dataRecordPositions[startData.name] = [];
+              entryStartTimes[startData.entry] = record.getTimestamp();
               switch (startData.type) {
                 case "boolean":
                   log.createBlankField(startData.name, LoggableType.Boolean);
@@ -85,6 +92,9 @@ async function start(data: Uint8Array) {
                   if (startData.type.startsWith(STRUCT_PREFIX)) {
                     let schemaType = startData.type.split(STRUCT_PREFIX)[1];
                     log.setStructuredType(startData.name, schemaType);
+                  } else if (startData.type.startsWith(PHOTON_PREFIX)) {
+                    let schemaType = startData.type.split(PHOTON_PREFIX)[1];
+                    log.setStructuredType(startData.name, schemaType);
                   } else if (startData.type.startsWith(PROTO_PREFIX)) {
                     let schemaType = startData.type.split(PROTO_PREFIX)[1];
                     log.setStructuredType(startData.name, schemaType);
@@ -93,6 +103,16 @@ async function start(data: Uint8Array) {
               }
               log.setWpilibType(startData.name, startData.type);
               log.setMetadataString(startData.name, startData.metadata);
+            } else if (record.isFinish()) {
+              let entry = record.getFinishEntry();
+
+              // Entry has existed for less than a second so ignore
+              if (record.getTimestamp() - entryStartTimes[entry] < 1e6) {
+                shortLivedFieldNames.add(entryIds[entry]);
+                log.deleteField(entryIds[entry]);
+                delete entryIds[entry];
+                delete entryStartTimes[entry];
+              }
             } else if (record.isSetMetadata()) {
               let setMetadataData = record.getSetMetadataData();
               if (setMetadataData.entry in entryIds) {
@@ -124,6 +144,11 @@ async function start(data: Uint8Array) {
       type: "failed"
     });
     return;
+  }
+
+  // Warn about short-lived fields
+  if (shortLivedFieldNames.size > 0) {
+    console.warn("Ignoring short-lived WPILOG entries:", [...shortLivedFieldNames].toSorted());
   }
 
   // Load enabled field (required for merging)
@@ -159,7 +184,7 @@ function parseField(key: string, skipMessage = false) {
     dataRecordPositions[key].forEach((position) => {
       const [record, _] = decoder!.getRecordAtPosition(position);
       if (record === null) return;
-      let timestamp = Math.max(0, record.getTimestamp() / 1000000.0);
+      let timestamp = record.getTimestamp() / 1000000.0;
       try {
         switch (type) {
           case "boolean":
@@ -208,6 +233,9 @@ function parseField(key: string, skipMessage = false) {
               } else {
                 log.putStruct(key, timestamp, record.getRaw(), schemaType, false);
               }
+            } else if (type.startsWith(PHOTON_PREFIX)) {
+              let schemaType = type.split(PHOTON_PREFIX)[1];
+              log.putPhotonStruct(key, timestamp, record.getRaw(), schemaType);
             } else if (type.startsWith(PROTO_PREFIX)) {
               let schemaType = type.split(PROTO_PREFIX)[1];
               log.putProto(key, timestamp, record.getRaw(), schemaType);

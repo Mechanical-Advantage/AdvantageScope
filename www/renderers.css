@@ -47,9 +47,9 @@ div.line-graph-scroll-content {
   height: 1000000px;
 }
 
-/* Odometry */
+/* 2D Field */
 
-div.odometry-canvas-container {
+div.field-2d-canvas-container {
   position: absolute;
   top: 0%;
   left: 0%;
@@ -57,7 +57,7 @@ div.odometry-canvas-container {
   height: 100%;
 }
 
-canvas.odometry-canvas {
+canvas.field-2d-canvas {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -66,7 +66,7 @@ canvas.odometry-canvas {
 
 /* 3D Field */
 
-div.three-dimension-canvas-container {
+div.field-3d-canvas-container {
   position: absolute;
   bottom: 0%;
   left: 0%;
@@ -75,31 +75,19 @@ div.three-dimension-canvas-container {
   overflow: hidden;
 }
 
-body.satellite div.three-dimension-canvas-container {
+body.satellite div.field-3d-canvas-container {
   height: 100%;
 }
 
-div.three-dimension-canvas-container.fixed {
+div.field-3d-canvas-container.fixed {
   height: calc(100% + 10px);
 }
 
-body.satellite div.three-dimension-canvas-container.fixed {
+body.satellite div.field-3d-canvas-container.fixed {
   height: 100%;
 }
 
-div.three-dimension-annotations {
-  pointer-events: none;
-}
-
-div.three-dimension-annotations > div {
-  text-align: center;
-  font-weight: bold;
-  color: #ffffff;
-  text-shadow: 0px 0px 10px black;
-}
-
-canvas.three-dimension-canvas:not(.fixed),
-div.three-dimension-annotations:not(.fixed) {
+canvas.field-3d-canvas:not(.fixed) {
   position: absolute;
   left: 0%;
   top: 0%;
@@ -107,19 +95,18 @@ div.three-dimension-annotations:not(.fixed) {
   height: 100%;
 }
 
-canvas.three-dimension-canvas.fixed,
-div.three-dimension-annotations.fixed {
+canvas.field-3d-canvas.fixed {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 }
 
-canvas.three-dimension-canvas.fixed {
+canvas.field-3d-canvas.fixed {
   border: 1px solid #555;
 }
 
-div.three-dimension-alert {
+div.field-3d-alert {
   position: absolute;
   left: 50%;
   top: 20px;
@@ -131,11 +118,11 @@ div.three-dimension-alert {
 }
 
 @media (prefers-color-scheme: dark) {
-  canvas.three-dimension-canvas.fixed {
+  canvas.field-3d-canvas.fixed {
     border: 1px solid #999;
   }
 
-  div.three-dimension-alert {
+  div.field-3d-alert {
     background-color: #222;
     border: 1px solid #999;
   }
@@ -337,6 +324,7 @@ table.data-table th:last-child {
 
 table.data-table td {
   height: 16px;
+  line-height: 16px;
   padding: 4px;
   font-family: Courier, monospace;
   user-select: text;

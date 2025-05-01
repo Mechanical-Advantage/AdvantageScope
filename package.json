@@ -1,8 +1,8 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "4.1.2",
-  "description": "Robot telemetry application for FRC",
+  "version": "4.1.6",
+  "description": "Robot telemetry application",
   "author": {
     "name": "FRC 6328",
     "email": "software@littletonrobotics.org",
@@ -20,12 +20,12 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "wasm:compile": "node wasmCompile.mjs",
-    "docs:start": "cd docsSite && npm run start && cd ..",
-    "docs:build": "cd docsSite && npm run build && cd ..",
-    "docs:build-embed": "cd docsSite && npm run build-embed && cd ..",
-    "docs:clear": "cd docsSite && npm run clear && cd ..",
-    "docs:serve": "cd docsSite && npm run serve && cd ..",
-    "postinstall": "cd docsSite && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node ffmpegDownload.mjs && npm run download-owlet"
+    "docs:start": "cd docs && npm run start && cd ..",
+    "docs:build": "cd docs && npm run build && cd ..",
+    "docs:build-embed": "cd docs && npm run build-embed && cd ..",
+    "docs:clear": "cd docs && npm run clear && cd ..",
+    "docs:serve": "cd docs && npm run serve && cd ..",
+    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node ffmpegDownload.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -75,8 +75,7 @@
     "typescript": "5.6.3"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.4",
-    "@docusaurus/plugin-client-redirects": "^3.6.3",
+    "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#cf7aa2a42409b5cdff98341dc7a14326019d488e",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "check-disk-space": "^3.4.0",
@@ -107,7 +106,7 @@
       "icons/**/*",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
-      "docsSite/build/**/*",
+      "docs/build/**/*",
       {
         "filter": [
           "owlet/${os}-${arch}/*"

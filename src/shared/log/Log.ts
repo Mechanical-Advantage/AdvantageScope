@@ -31,7 +31,7 @@ export default class Log {
   private generatedParents: Set<string> = new Set(); // Children of these fields are generated
   private timestampRange: [number, number] | null = null;
   private enableTimestampSetCache: boolean;
-  private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[] } } = {};
+  private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[]; sourceCounts: number[] } } = {};
   private changedFields: Set<string> = new Set();
 
   private queuedStructs: QueuedStructure[] = [];
@@ -43,10 +43,32 @@ export default class Log {
   }
 
   /** Checks if the field exists and registers it if necessary. */
-  public createBlankField(key: string, type: LoggableType) {
+  createBlankField(key: string, type: LoggableType) {
     if (key in this.fields) return;
     this.fields[key] = new LogField(type);
     this.changedFields.add(key);
+  }
+
+  /** Removes all data for a field. */
+  deleteField(key: string) {
+    if (key in this.fields) {
+      delete this.fields[key];
+      this.generatedParents.delete(key);
+      this.changedFields.delete(key);
+
+      // Update timestamp cache
+      Object.entries(this.timestampSetCache).forEach(([uuid, cacheValues]) => {
+        if (cacheValues.keys.includes(key)) {
+          cacheValues.keys = cacheValues.keys.filter((x) => x !== key);
+          let newTimestamps = [...new Set(cacheValues.keys.map((key) => this.fields[key].getTimestamps()).flat())];
+          newTimestamps.sort((a, b) => a - b);
+          this.timestampSetCache[uuid].timestamps = newTimestamps;
+          this.timestampSetCache[uuid].sourceCounts = cacheValues.keys.map(
+            (key) => this.fields[key].getTimestamps().length
+          );
+        }
+      });
+    }
   }
 
   /** Clears all data before the provided timestamp. */
@@ -248,12 +270,20 @@ export default class Log {
       // Multiple fields, read from cache if possible
       let saveCache = false;
       if (uuid !== null && this.enableTimestampSetCache) {
-        if (uuid in this.timestampSetCache && arraysEqual(this.timestampSetCache[uuid].keys, keys)) {
+        if (
+          uuid in this.timestampSetCache &&
+          arraysEqual(this.timestampSetCache[uuid].keys, keys) &&
+          arraysEqual(
+            this.timestampSetCache[uuid].sourceCounts,
+            keys.map((key) => this.fields[key].getTimestamps().length)
+          )
+        ) {
           return [...this.timestampSetCache[uuid].timestamps];
         }
         this.timestampSetCache[uuid] = {
           keys: keys,
-          timestamps: []
+          timestamps: [],
+          sourceCounts: keys.map(() => 0)
         };
         saveCache = true;
       }
@@ -261,7 +291,10 @@ export default class Log {
       // Get new data
       output = [...new Set(keys.map((key) => this.fields[key].getTimestamps()).flat())];
       output.sort((a, b) => a - b);
-      if (saveCache && uuid) this.timestampSetCache[uuid].timestamps = output;
+      if (saveCache && uuid) {
+        this.timestampSetCache[uuid].timestamps = output;
+        this.timestampSetCache[uuid].sourceCounts = keys.map((key) => this.fields[key].getTimestamps().length);
+      }
     } else if (keys.length === 1) {
       // Single field
       output = [...this.fields[keys[0]].getTimestamps()];
@@ -750,19 +783,6 @@ export default class Log {
     }
   }
 
-  /** Writes a coordinate with the "ZebraTranslation" structured type. */
-  putZebraTranslation(key: string, timestamp: number, x: number, y: number, alliance: string) {
-    this.putNumber(key + "/x", timestamp, x);
-    this.putNumber(key + "/y", timestamp, y);
-    this.putString(key + "/alliance", timestamp, alliance);
-    if (!(key in this.fields)) {
-      this.createBlankField(key, LoggableType.Empty);
-      this.setStructuredType(key, "ZebraTranslation");
-      this.setGeneratedParent(key);
-      this.processTimestamp(key, timestamp);
-    }
-  }
-
   /** Merges a new log into this log. Returns the timestamp offset. */
   mergeWith(source: Log, prefix = ""): number {
     // Serialize source and adjust timestamps
@@ -776,7 +796,7 @@ export default class Log {
       sourceEnabledData.values.includes(true)
     ) {
       offset =
-        targetEnabledData.timestamps[sourceEnabledData.values.indexOf(true)] -
+        targetEnabledData.timestamps[targetEnabledData.values.indexOf(true)] -
         sourceEnabledData.timestamps[sourceEnabledData.values.indexOf(true)];
     }
     let sourceSerialized = source.toSerialized();

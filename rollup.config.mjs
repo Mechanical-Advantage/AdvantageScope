@@ -124,8 +124,8 @@ const workerBundles = [
   bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
   bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
   bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false),
-  bundle("shared/renderers/threeDimension/workers/loadField.ts", "shared$loadField.js", false, false),
-  bundle("shared/renderers/threeDimension/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
+  bundle("shared/renderers/field3d/workers/loadField.ts", "shared$loadField.js", false, false),
+  bundle("shared/renderers/field3d/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
 ];
 const xrBundles = [
   bundle("xrClient/xrClient.ts", "xrClient.js", false, true),
@@ -158,5 +158,5 @@ export default (cliArgs) => {
   if (cliArgs.configXR === true) return xrBundles;
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
-  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrClientBundles];
+  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
 };

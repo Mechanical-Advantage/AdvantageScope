@@ -1060,10 +1060,7 @@ export default class SourceList {
                   time,
                   this.UUID,
                   numberArrayFormat,
-                  numberArrayUnits,
-                  "red", // Display in native coordinate system
-                  0,
-                  0
+                  numberArrayUnits
                 );
                 poseStrings = poses.map((annotatedPose) => {
                   switch (typeConfig?.previewType) {
@@ -1075,9 +1072,9 @@ export default class SourceList {
                     case "Translation2d": {
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(2) +
+                        annotatedPose.pose.translation[0].toFixed(3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(2) +
+                        annotatedPose.pose.translation[1].toFixed(3) +
                         "m"
                       );
                     }
@@ -1085,9 +1082,9 @@ export default class SourceList {
                     case "Transform2d": {
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(2) +
+                        annotatedPose.pose.translation[0].toFixed(3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(2) +
+                        annotatedPose.pose.translation[1].toFixed(3) +
                         "m, \u03b8: " +
                         convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
                         "\u00b0"
@@ -1108,11 +1105,11 @@ export default class SourceList {
                     case "Translation3d": {
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(2) +
+                        annotatedPose.pose.translation[0].toFixed(3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(2) +
+                        annotatedPose.pose.translation[1].toFixed(3) +
                         "m, Z: " +
-                        annotatedPose.pose.translation[2].toFixed(2) +
+                        annotatedPose.pose.translation[2].toFixed(3) +
                         "m"
                       );
                     }
@@ -1120,11 +1117,11 @@ export default class SourceList {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(2) +
+                        annotatedPose.pose.translation[0].toFixed(3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(2) +
+                        annotatedPose.pose.translation[1].toFixed(3) +
                         "m, Z: " +
-                        annotatedPose.pose.translation[2].toFixed(2) +
+                        annotatedPose.pose.translation[2].toFixed(3) +
                         "m, Roll: " +
                         convert(rpy[0], "radians", "degrees").toFixed(2) +
                         "\u00b0, Pitch: " +
