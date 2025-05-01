@@ -4,7 +4,8 @@
     "bundles",
     "docs/build",
     "docs/.docusaurus",
-    "runOwletDownload.js"
+    "runOwletDownload.js",
+    "src/hub/dataSources/schema/spark/*"
   ],
   "license": "license-header.txt",
   "licenseFormats": {
