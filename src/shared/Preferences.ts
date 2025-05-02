@@ -13,7 +13,7 @@ export default interface Preferences {
   coordinateSystem: "automatic" | CoordinateSystem;
   field3dModeAc: "cinematic" | "standard" | "low-power";
   field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
-  threeDimensionAntialiasing: "on" | "off";
+  field3dAntialiasing: boolean;
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;

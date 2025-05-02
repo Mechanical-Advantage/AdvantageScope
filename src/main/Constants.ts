@@ -37,7 +37,7 @@ export const DEFAULT_PREFS: Preferences = {
   coordinateSystem: "automatic",
   field3dModeAc: "standard",
   field3dModeBattery: "",
-  threeDimensionAntialiasing: "on",
+  field3dAntialiasing: true,
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,

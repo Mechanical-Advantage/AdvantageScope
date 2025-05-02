@@ -3354,10 +3354,10 @@ app.whenReady().then(() => {
       prefs.field3dModeBattery = oldPrefs.field3dModeBattery;
     }
     if (
-      "threeDimensionAntialiasing" in oldPrefs &&
-      (oldPrefs.threeDimensionAntialiasing === "on" || oldPrefs.threeDimensionAntialiasing === "off")
+      "field3dAntialiasing" in oldPrefs &&
+      (oldPrefs.field3dAntialiasing === "on" || oldPrefs.field3dAntialiasing === "off")
     ) {
-      prefs.threeDimensionAntialiasing = oldPrefs.threeDimensionAntialiasing;
+      prefs.field3dAntialiasing = oldPrefs.field3dAntialiasing;
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;

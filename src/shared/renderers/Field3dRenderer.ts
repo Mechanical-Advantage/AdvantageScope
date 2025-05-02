@@ -12,7 +12,7 @@ export default class Field3dRenderer implements TabRenderer {
 
   private implementation: Field3dRendererImpl | null = null;
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
-  private lastUseAA: "on" | "off" = "on";
+  private lastUseAA = true;
   private stateRestoreCache: unknown | null = null;
 
   constructor(root: HTMLElement) {
@@ -58,9 +58,9 @@ export default class Field3dRenderer implements TabRenderer {
       }
     }
 
-    let useAA: "on" | "off" = "on";
+    let useAA = true;
     if (window.preferences) {
-      useAA = window.preferences.threeDimensionAntialiasing;
+      useAA = window.preferences.field3dAntialiasing;
     }
 
     // Recreate visualizer if necessary
