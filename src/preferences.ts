@@ -1,3 +1,4 @@
+import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
 import Preferences from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
@@ -7,8 +8,9 @@ const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
-const THREE_DIMENSION_MODE_AC = document.getElementById("threeDimensionModeAc") as HTMLInputElement;
-const THREE_DIMENSION_MODE_BATTERY = document.getElementById("threeDimensionModeBattery") as HTMLInputElement;
+const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
+const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
+const FIELD_3D_MODE_BATTERY = document.getElementById("field3dModeBattery") as HTMLInputElement;
 const THREE_DIMENSION_ANTIALIASING = document.getElementById("threeDimensionAntialiasing") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
@@ -47,8 +49,9 @@ window.addEventListener("message", (event) => {
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
-      THREE_DIMENSION_MODE_AC.value = oldPrefs.threeDimensionModeAc;
-      THREE_DIMENSION_MODE_BATTERY.value = oldPrefs.threeDimensionModeBattery;
+      COORDINATE_SYSTEM.value = oldPrefs.coordinateSystem;
+      FIELD_3D_MODE_AC.value = oldPrefs.field3dModeAc;
+      FIELD_3D_MODE_BATTERY.value = oldPrefs.field3dModeBattery;
       THREE_DIMENSION_ANTIALIASING.value = oldPrefs.threeDimensionAntialiasing;
       TBA_API_KEY.value = oldPrefs.tbaApiKey;
 
@@ -71,16 +74,23 @@ window.addEventListener("message", (event) => {
           if (LIVE_SUBSCRIBE_MODE.value === "low-bandwidth") liveSubscribeMode = "low-bandwidth";
           if (LIVE_SUBSCRIBE_MODE.value === "logging") liveSubscribeMode = "logging";
 
-          let threeDimensionModeAc: "cinematic" | "standard" | "low-power" = "standard";
-          if (THREE_DIMENSION_MODE_AC.value === "cinematic") threeDimensionModeAc = "cinematic";
-          if (THREE_DIMENSION_MODE_AC.value === "standard") threeDimensionModeAc = "standard";
-          if (THREE_DIMENSION_MODE_AC.value === "low-power") threeDimensionModeAc = "low-power";
+          let coordinateSystem: "automatic" | CoordinateSystem = "automatic";
+          if (COORDINATE_SYSTEM.value === "automatic") coordinateSystem = "automatic";
+          if (COORDINATE_SYSTEM.value === "wall-alliance") coordinateSystem = "wall-alliance";
+          if (COORDINATE_SYSTEM.value === "wall-blue") coordinateSystem = "wall-blue";
+          if (COORDINATE_SYSTEM.value === "center-rotated") coordinateSystem = "center-rotated";
+          if (COORDINATE_SYSTEM.value === "center-red") coordinateSystem = "center-red";
 
-          let threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power" = "";
-          if (THREE_DIMENSION_MODE_BATTERY.value === "") threeDimensionModeBattery = "";
-          if (THREE_DIMENSION_MODE_BATTERY.value === "cinematic") threeDimensionModeBattery = "cinematic";
-          if (THREE_DIMENSION_MODE_BATTERY.value === "standard") threeDimensionModeBattery = "standard";
-          if (THREE_DIMENSION_MODE_BATTERY.value === "low-power") threeDimensionModeBattery = "low-power";
+          let field3dModeAc: "cinematic" | "standard" | "low-power" = "standard";
+          if (FIELD_3D_MODE_AC.value === "cinematic") field3dModeAc = "cinematic";
+          if (FIELD_3D_MODE_AC.value === "standard") field3dModeAc = "standard";
+          if (FIELD_3D_MODE_AC.value === "low-power") field3dModeAc = "low-power";
+
+          let field3dModeBattery: "" | "cinematic" | "standard" | "low-power" = "";
+          if (FIELD_3D_MODE_BATTERY.value === "") field3dModeBattery = "";
+          if (FIELD_3D_MODE_BATTERY.value === "cinematic") field3dModeBattery = "cinematic";
+          if (FIELD_3D_MODE_BATTERY.value === "standard") field3dModeBattery = "standard";
+          if (FIELD_3D_MODE_BATTERY.value === "low-power") field3dModeBattery = "low-power";
 
           let threeDimensionAntialiasing: "on" | "off" = "on";
           if (THREE_DIMENSION_ANTIALIASING.value === "on") threeDimensionAntialiasing = "on";
@@ -95,8 +105,9 @@ window.addEventListener("message", (event) => {
             liveDiscard: Number(LIVE_DISCARD.value),
             publishFilter: PUBLISH_FILTER.value,
             rlogPort: oldPrefs.rlogPort,
-            threeDimensionModeAc: threeDimensionModeAc,
-            threeDimensionModeBattery: threeDimensionModeBattery,
+            coordinateSystem: coordinateSystem,
+            field3dModeAc: field3dModeAc,
+            field3dModeBattery: field3dModeBattery,
             threeDimensionAntialiasing: threeDimensionAntialiasing,
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,

@@ -2,7 +2,7 @@ import { Decoder } from "@msgpack/msgpack";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
 import { XRPacket, XRFrameState as XRRenderState, XRSettings, XRStreamingMode } from "../shared/XRTypes";
-import { ThreeDimensionRendererCommand } from "../shared/renderers/ThreeDimensionRenderer";
+import { Field3dRendererCommand } from "../shared/renderers/Field3dRenderer";
 import XRRenderer from "./XRRenderer";
 
 const bufferLengthMs = 250;
@@ -10,7 +10,7 @@ const msgpackDecoder = new Decoder();
 
 let renderer: XRRenderer;
 let settings: XRSettings | null = null;
-let command: ThreeDimensionRendererCommand | null = null;
+let command: Field3dRendererCommand | null = null;
 let assets: AdvantageScopeAssets | null = null;
 let isRendering = false;
 let serverTimeOffset: number | null = null;

@@ -1,8 +1,9 @@
+import { CoordinateSystem } from "./AdvantageScopeAssets";
 import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
 import { convert } from "./units";
-import { indexArray, jsonCopy, scaleValue } from "./util";
+import { indexArray, jsonCopy } from "./util";
 
 export type Translation2d = [number, number]; // meters (x, y)
 export type Rotation2d = number; // radians
@@ -40,8 +41,6 @@ export type AnnotatedPose3d = {
 };
 export type PoseAnnotations = {
   is2DSource: boolean;
-  zebraTeam?: number;
-  zebraAlliance?: "blue" | "red";
   aprilTagId?: number;
   visionColor?: string;
   visionSize?: string;
@@ -153,6 +152,55 @@ export function annotatedPose3dTo2d(input: AnnotatedPose3d): AnnotatedPose2d {
   };
 }
 
+// COORDINATE SYSTEM CONVERSION
+
+export function convertFromCoordinateSystem<PoseType extends Pose2d | AnnotatedPose2d | Pose2d[] | AnnotatedPose2d[]>(
+  pose: PoseType,
+  sourceCoordinateSystem: CoordinateSystem,
+  currentAlliance: "red" | "blue",
+  fieldLength: number,
+  fieldWidth: number
+): PoseType {
+  if (Array.isArray(pose)) {
+    return pose.map((x) =>
+      convertFromCoordinateSystem(x, sourceCoordinateSystem, currentAlliance, fieldLength, fieldWidth)
+    ) as PoseType;
+  } else if ("annotation" in pose) {
+    return {
+      pose: convertFromCoordinateSystem(pose.pose, sourceCoordinateSystem, currentAlliance, fieldLength, fieldWidth),
+      annotation: pose.annotation
+    } as PoseType;
+  } else {
+    switch (sourceCoordinateSystem) {
+      case "wall-alliance":
+        switch (currentAlliance) {
+          case "blue":
+            return {
+              translation: [fieldLength / 2 - pose.translation[0], fieldWidth / 2 - pose.translation[1]],
+              rotation: pose.rotation + Math.PI
+            } as PoseType;
+          case "red":
+            return {
+              translation: [pose.translation[0] - fieldLength / 2, pose.translation[1] - fieldWidth / 2],
+              rotation: pose.rotation
+            } as PoseType;
+        }
+      case "wall-blue":
+        return {
+          translation: [fieldLength / 2 - pose.translation[0], fieldWidth / 2 - pose.translation[1]],
+          rotation: pose.rotation + Math.PI
+        } as PoseType;
+      case "center-rotated":
+        return {
+          translation: [pose.translation[1], -pose.translation[0]],
+          rotation: pose.rotation - Math.PI / 2
+        } as PoseType;
+      default:
+        return pose;
+    }
+  }
+}
+
 // LOG READING UTILITIES
 
 export function grabPosesAuto(
@@ -162,10 +210,7 @@ export function grabPosesAuto(
   timestamp: number,
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  numberArrayUnits?: "radians" | "degrees",
-  zebraOrigin?: "blue" | "red",
-  zebraFieldWidth?: number,
-  zebraFieldHeight?: number
+  numberArrayUnits?: "radians" | "degrees"
 ): AnnotatedPose3d[] {
   switch (logType) {
     case "Number":
@@ -208,12 +253,6 @@ export function grabPosesAuto(
       return grabPose3dArray(log, key, timestamp, uuid);
     case "Trajectory":
       return grabTrajectory(log, key, timestamp, uuid);
-    case "ZebraTranslation":
-      if (zebraOrigin !== undefined && zebraFieldWidth !== undefined && zebraFieldHeight !== undefined) {
-        return grabZebraTranslation(log, key, timestamp, zebraOrigin, zebraFieldWidth, zebraFieldHeight, uuid);
-      } else {
-        return [];
-      }
     case "DifferentialSample[]":
     case "SwerveSample[]":
       return grabChoreoSampleArray(log, key, timestamp, uuid);
@@ -536,66 +575,6 @@ export function grabAprilTagArray(log: Log, key: string, timestamp: number, uuid
   );
 }
 
-export function grabZebraTranslation(
-  log: Log,
-  key: string,
-  timestamp: number,
-  origin: "blue" | "red",
-  fieldWidth: number,
-  fieldHeight: number,
-  uuid?: string
-): AnnotatedPose3d[] {
-  let x: number | null = null;
-  let y: number | null = null;
-  {
-    let xData = window.log.getNumber(key + "/x", timestamp, timestamp);
-    if (xData !== undefined && xData.values.length > 0) {
-      if (xData.values.length === 1) {
-        x = xData.values[0];
-      } else {
-        x = scaleValue(timestamp, [xData.timestamps[0], xData.timestamps[1]], [xData.values[0], xData.values[1]]);
-      }
-    }
-  }
-  {
-    let yData = window.log.getNumber(key + "/y", timestamp, timestamp);
-    if (yData !== undefined && yData.values.length > 0) {
-      if (yData.values.length === 1) {
-        y = yData.values[0];
-      } else {
-        y = scaleValue(timestamp, [yData.timestamps[0], yData.timestamps[1]], [yData.values[0], yData.values[1]]);
-      }
-    }
-  }
-  if (x === null || y === null) return [];
-  x = convert(x, "feet", "meters");
-  y = convert(y, "feet", "meters");
-
-  let alliance: "blue" | "red" =
-    getOrDefault(log, key + "/alliance", LoggableType.String, Infinity, 0, uuid) === "red" ? "red" : "blue"; // Read alliance from end of log
-  let splitKey = key.split("FRC");
-  let teamNumber = splitKey.length > 1 ? Number(splitKey[splitKey.length - 1]) : undefined;
-
-  // Zebra always uses red origin, convert translation
-  if (origin === "blue") {
-    x = fieldWidth - x;
-    y = fieldHeight - y;
-  }
-  return [
-    {
-      pose: pose2dTo3d({
-        translation: [x, y],
-        rotation: Rotation2dZero
-      }),
-      annotation: {
-        zebraAlliance: alliance,
-        zebraTeam: teamNumber,
-        is2DSource: true
-      }
-    }
-  ];
-}
-
 export function grabHeatmapData(
   log: Log,
   key: string,
@@ -603,10 +582,7 @@ export function grabHeatmapData(
   timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" | "visible",
   uuid?: string,
   numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  numberArrayUnits?: "radians" | "degrees",
-  zebraOrigin?: "blue" | "red",
-  zebraFieldWidth?: number,
-  zebraFieldHeight?: number
+  numberArrayUnits?: "radians" | "degrees"
 ): AnnotatedPose3d[] {
   let poses: AnnotatedPose3d[] = [];
   let isFullLog = timeRange === "full";
@@ -631,20 +607,7 @@ export function grabHeatmapData(
   };
   for (let sampleTime = log.getTimestampRange()[0]; sampleTime < log.getTimestampRange()[1]; sampleTime += HEATMAP_DT) {
     if (!isValid(sampleTime)) continue;
-    poses = poses.concat(
-      grabPosesAuto(
-        log,
-        key,
-        logType,
-        sampleTime,
-        uuid,
-        numberArrayFormat,
-        numberArrayUnits,
-        zebraOrigin,
-        zebraFieldWidth,
-        zebraFieldHeight
-      )
-    );
+    poses = poses.concat(grabPosesAuto(log, key, logType, sampleTime, uuid, numberArrayFormat, numberArrayUnits));
   }
   return poses;
 }

@@ -4,33 +4,33 @@ import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
+import Field2dRenderer from "../shared/renderers/Field2dRenderer";
+import Field3dRenderer from "../shared/renderers/Field3dRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
-import OdometryRenderer from "../shared/renderers/OdometryRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
-import ThreeDimensionRenderer from "../shared/renderers/ThreeDimensionRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { UnitConversionPreset } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
+import Field2dController from "./controllers/Field2dController";
+import Field3dController from "./controllers/Field3dController";
 import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
 import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
-import OdometryController from "./controllers/OdometryController";
 import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
 import SwerveController from "./controllers/SwerveController";
 import TabController, { NoopController } from "./controllers/TabController";
 import TableController from "./controllers/TableController";
-import ThreeDimensionController from "./controllers/ThreeDimensionController";
 import VideoController from "./controllers/VideoController";
 
 export default class Tabs {
@@ -80,8 +80,8 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Table, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Console, 0);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Statistics, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.Odometry, undefined);
-    this.FIXED_CONTROL_HEIGHTS.set(TabType.ThreeDimension, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Field2d, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.Field3d, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Video, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Joysticks, 85);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Swerve, undefined);
@@ -285,8 +285,8 @@ export default class Tabs {
     // Add default tabs
     this.addTab(TabType.Documentation);
     this.addTab(TabType.LineGraph);
-    this.addTab(TabType.Odometry);
-    this.addTab(TabType.ThreeDimension);
+    this.addTab(TabType.Field2d);
+    this.addTab(TabType.Field3d);
     this.setSelected(1);
 
     // Scroll management
@@ -478,13 +478,13 @@ export default class Tabs {
         controller = new LineGraphController(controlsElement);
         renderer = new LineGraphRenderer(rendererElement, true);
         break;
-      case TabType.Odometry:
-        controller = new OdometryController(controlsElement);
-        renderer = new OdometryRenderer(rendererElement);
+      case TabType.Field2d:
+        controller = new Field2dController(controlsElement);
+        renderer = new Field2dRenderer(rendererElement);
         break;
-      case TabType.ThreeDimension:
-        controller = new ThreeDimensionController(controlsElement);
-        renderer = new ThreeDimensionRenderer(rendererElement);
+      case TabType.Field3d:
+        controller = new Field3dController(controlsElement);
+        renderer = new Field3dRenderer(rendererElement);
         break;
       case TabType.Table:
         controller = new TableController(rendererElement);
@@ -625,8 +625,8 @@ export default class Tabs {
   setActiveXRUUID(uuid: string | null) {
     this.activeXRUUID = uuid;
     this.tabList.forEach((tab) => {
-      if (tab.type === TabType.ThreeDimension) {
-        (tab.controller as ThreeDimensionController).setXRActive(tab.controller.UUID === uuid);
+      if (tab.type === TabType.Field3d) {
+        (tab.controller as Field3dController).setXRActive(tab.controller.UUID === uuid);
       }
     });
   }
@@ -681,15 +681,15 @@ export default class Tabs {
 
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {
-    if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
-      (this.tabList[this.selectedTab].renderer as ThreeDimensionRenderer).set3DCamera(index);
+    if (this.tabList[this.selectedTab].type === TabType.Field3d) {
+      (this.tabList[this.selectedTab].renderer as Field3dRenderer).set3DCamera(index);
     }
   }
 
   /** Switches the orbit FOV for the selected 3D field. */
   setFov(fov: number) {
-    if (this.tabList[this.selectedTab].type === TabType.ThreeDimension) {
-      (this.tabList[this.selectedTab].renderer as ThreeDimensionRenderer).setFov(fov);
+    if (this.tabList[this.selectedTab].type === TabType.Field3d) {
+      (this.tabList[this.selectedTab].renderer as Field3dRenderer).setFov(fov);
     }
   }
 

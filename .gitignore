@@ -11,25 +11,25 @@
 ### Docs ###
 
 # Dependencies
-/docsSite/node_modules
+/docs/node_modules
 
 # Production
-/docsSite/build
+/docs/build
 
 # Generated files
-/docsSite/.docusaurus
-/docsSite/.cache-loader
+/docs/.docusaurus
+/docs/.cache-loader
 
 # Misc
-/docsSite/.DS_Store
-/docsSite/.env.local
-/docsSite/.env.development.local
-/docsSite/.env.test.local
-/docsSite/.env.production.local
+/docs/.DS_Store
+/docs/.env.local
+/docs/.env.development.local
+/docs/.env.test.local
+/docs/.env.production.local
 
-/docsSite/npm-debug.log*
-/docsSite/yarn-debug.log*
-/docsSite/yarn-error.log*
+/docs/npm-debug.log*
+/docs/yarn-debug.log*
+/docs/yarn-error.log*
 
 ### Linux ###
 *~
