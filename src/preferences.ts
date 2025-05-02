@@ -11,6 +11,7 @@ const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElem
 const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
 const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
 const FIELD_3D_MODE_BATTERY = document.getElementById("field3dModeBattery") as HTMLInputElement;
+const FIELD_3D_ANTIALIASING = document.getElementById("field3dAntialiasing") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
 const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
@@ -51,6 +52,7 @@ window.addEventListener("message", (event) => {
       COORDINATE_SYSTEM.value = oldPrefs.coordinateSystem;
       FIELD_3D_MODE_AC.value = oldPrefs.field3dModeAc;
       FIELD_3D_MODE_BATTERY.value = oldPrefs.field3dModeBattery;
+      FIELD_3D_ANTIALIASING.value = oldPrefs.field3dAntialiasing.toString();
       TBA_API_KEY.value = oldPrefs.tbaApiKey;
 
       // Close function
@@ -102,6 +104,7 @@ window.addEventListener("message", (event) => {
             coordinateSystem: coordinateSystem,
             field3dModeAc: field3dModeAc,
             field3dModeBattery: field3dModeBattery,
+            field3dAntialiasing: FIELD_3D_ANTIALIASING.value === "true",
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
