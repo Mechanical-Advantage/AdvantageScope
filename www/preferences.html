@@ -75,9 +75,21 @@
           </td>
         </tr>
         <tr>
+          <td class="label">Coordinate System</td>
+          <td class="input" tabindex="-1">
+            <select id="coordinateSystem">
+              <option value="automatic">Automatic</option>
+              <option value="center-red">Center/Red (SystemCore)</option>
+              <option value="center-rotated">Center/Rotated (FTC Traditional)</option>
+              <option value="wall-blue">Blue Wall (FRC 2023-2026)</option>
+              <option value="wall-alliance">Alliance Wall (FRC 2022)</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
           <td class="label">3D Mode (Default)</td>
           <td class="input" tabindex="-1">
-            <select id="threeDimensionModeAc">
+            <select id="field3dModeAc">
               <option value="cinematic">Cinematic</option>
               <option value="standard">Standard</option>
               <option value="low-power">Low Power</option>
@@ -87,11 +99,20 @@
         <tr>
           <td class="label">3D Mode (Battery)</td>
           <td class="input" tabindex="-1">
-            <select id="threeDimensionModeBattery">
+            <select id="field3dModeBattery">
               <option value="">Default</option>
               <option value="cinematic">Cinematic</option>
               <option value="standard">Standard</option>
               <option value="low-power">Low Power</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">3D Antialiasing</td>
+          <td class="input" tabindex="-1">
+            <select id="field3dAntialiasing">
+              <option value="true">On</option>
+              <option value="false">Off</option>
             </select>
           </td>
         </tr>

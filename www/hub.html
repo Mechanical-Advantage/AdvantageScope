@@ -132,50 +132,20 @@
         <div class="line-graph-axis line-graph-discrete"></div>
       </div>
 
-      <!-- Odometry -->
+      <!-- 2D Field -->
       <div id="controller2">
-        <div class="odometry-sources"></div>
-        <div class="odometry-settings setting-blocks fix-first">
+        <div class="field-2d-sources"></div>
+        <div class="field-2d-settings setting-blocks fix-first">
           <div class="title">
-            <div class="full">Game</div>
+            <div class="full">Field</div>
           </div>
-          <div class="game input">
+          <div class="field input">
             <div>
-              <select class="game-select" tabindex="-1"></select>
-              <a class="game-source" href="#" tabindex="-1">Source</a>
-            </div>
-          </div>
-
-          <div class="title">
-            <div class="half">Bumpers</div>
-            <div class="half">Origin</div>
-          </div>
-          <div class="alliance input">
-            <div class="half">
-              <div class="bumper-switcher split split-3">
-                <div title="Auto">
-                  <img class="invertable" src="symbols/switch.2.svg" />
-                </div>
-                <div title="Blue">
-                  <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
-                </div>
-                <div title="Red">
-                  <img src="symbols/r.circle.fill.red.svg" />
-                </div>
-              </div>
-            </div>
-            <div class="half">
-              <div class="origin-switcher split split-3">
-                <div title="Auto">
-                  <img class="invertable" src="symbols/switch.2.svg" />
-                </div>
-                <div title="Blue">
-                  <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
-                </div>
-                <div title="Red">
-                  <img src="symbols/r.circle.fill.red.svg" />
-                </div>
-              </div>
+              <select class="field-select" tabindex="-1">
+                <optgroup label="FRC Fields"></optgroup>
+                <optgroup label="FTC Fields"></optgroup>
+              </select>
+              <a class="field-source" href="#" tabindex="-1">Source</a>
             </div>
           </div>
 
@@ -183,7 +153,7 @@
             <div class="half">Orientation</div>
             <div class="half">Size</div>
           </div>
-          <div class="orientation input">
+          <div class="orientation input tall">
             <div class="half">
               <div class="orientation-switcher split split-2">
                 <div>
@@ -197,13 +167,16 @@
             <div class="half">
               <div class="size-switcher split split-3">
                 <div>
-                  <img class="invertable" src="symbols/30.square.fill.svg" />
+                  <img class="invertable frc-only" src="symbols/30.square.fill.svg" />
+                  <img class="invertable ftc-only" src="symbols/18.square.fill.svg" />
                 </div>
                 <div>
-                  <img class="invertable" src="symbols/27.square.fill.svg" />
+                  <img class="invertable frc-only" src="symbols/27.square.fill.svg" />
+                  <img class="invertable ftc-only" src="symbols/16.square.fill.svg" />
                 </div>
                 <div>
-                  <img class="invertable" src="symbols/24.square.fill.svg" />
+                  <img class="invertable frc-only" src="symbols/24.square.fill.svg" />
+                  <img class="invertable ftc-only" src="symbols/14.square.fill.svg" />
                 </div>
               </div>
             </div>
@@ -213,36 +186,25 @@
 
       <!-- 3D Field -->
       <div id="controller3">
-        <div class="three-dimension-sources"></div>
-        <div class="three-dimension-settings setting-blocks fix-first">
+        <div class="field-3d-sources"></div>
+        <div class="field-3d-settings setting-blocks fix-first">
           <div class="title">
-            <div class="full">Game</div>
+            <div class="full">Field</div>
           </div>
-          <div class="game input">
+          <div class="field input">
             <div>
-              <select class="game-select" tabindex="-1"></select>
+              <select class="field-select" tabindex="-1">
+                <optgroup label="FRC Fields"></optgroup>
+                <optgroup label="FTC Fields"></optgroup>
+              </select>
             </div>
           </div>
 
           <div class="title">
-            <div class="percent-70">Origin</div>
-            <div class="percent-30">XR</div>
+            <div class="full">XR</div>
           </div>
           <div class="alliance input tall">
-            <div class="percent-70">
-              <div class="origin-switcher split split-3">
-                <div title="Auto">
-                  <img class="invertable" src="symbols/switch.2.svg" />
-                </div>
-                <div title="Blue">
-                  <img class="lighten" src="symbols/b.circle.fill.blue.svg" />
-                </div>
-                <div title="Red">
-                  <img src="symbols/r.circle.fill.red.svg" />
-                </div>
-              </div>
-            </div>
-            <div class="percent-30">
+            <div class="full">
               <div class="bumper-switcher split split-1">
                 <div class="xr-button">
                   <img src="symbols/sparkles.square.filled.on.square.svg" />
@@ -501,7 +463,7 @@
       <!-- Documentation -->
       <div id="renderer0">
         <div class="documentation-container">
-          <iframe src="../docsSite/build/index.html"></iframe>
+          <iframe src="../docs/build/index.html"></iframe>
         </div>
       </div>
 
@@ -513,20 +475,19 @@
         </div>
       </div>
 
-      <!-- Odometry -->
+      <!-- 2D Field -->
       <div id="renderer2">
-        <div class="odometry-canvas-container">
-          <canvas class="odometry-canvas"></canvas>
+        <div class="field-2d-canvas-container">
+          <canvas class="field-2d-canvas"></canvas>
         </div>
-        <div class="odometry-heatmap-container" hidden></div>
+        <div class="field-2d-heatmap-container" hidden></div>
       </div>
 
       <!-- 3D Field -->
       <div id="renderer3">
-        <div class="three-dimension-canvas-container">
-          <canvas class="three-dimension-canvas"></canvas>
-          <div class="three-dimension-annotations"></div>
-          <div class="three-dimension-alert" hidden></div>
+        <div class="field-3d-canvas-container">
+          <canvas class="field-3d-canvas"></canvas>
+          <div class="field-3d-alert" hidden></div>
         </div>
         <div class="spinner-cubes-container">
           <div class="spinner-cubes">

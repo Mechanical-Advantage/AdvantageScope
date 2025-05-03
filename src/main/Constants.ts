@@ -6,8 +6,8 @@ import Preferences from "../shared/Preferences";
 export const APP_VERSION = app.isPackaged ? app.getVersion() : "dev";
 export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
 export const ASSETS_REPOSITORY = "Mechanical-Advantage/AdvantageScopeAssets";
-export const ASSET_TAG_DEFAULT = "default-assets-v1";
-export const ASSET_TAG_FRC6328 = "frc-6328-assets-v1";
+export const ASSET_TAG_DEFAULT = "default-assets-v2";
+export const ASSET_TAG_FRC6328 = "frc-6328-assets-v2";
 export const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
 export const STATE_FILENAME = path.join(
   app.getPath("userData"),
@@ -18,7 +18,6 @@ export const RECENT_UNITS_FILENAME = path.join(app.getPath("userData"), "recent-
 export const BUNDLED_ASSETS = path.join(__dirname, "..", "bundledAssets");
 export const AUTO_ASSETS = path.join(app.getPath("userData"), "autoAssets");
 export const DEFAULT_USER_ASSETS = path.join(app.getPath("userData"), "userAssets");
-export const LEGACY_ASSETS = path.join(app.getPath("userData"), "frcData");
 export const AKIT_PATH_OUTPUT = path.join(app.getPath("temp"), "akit-log-path.txt");
 export const AKIT_PATH_INPUT = path.join(app.getPath("temp"), "ascope-log-path.txt");
 export const AKIT_PATH_INPUT_PERIOD = 250;
@@ -35,8 +34,10 @@ export const DEFAULT_PREFS: Preferences = {
   liveDiscard: 1200,
   publishFilter: "",
   rlogPort: 5800,
-  threeDimensionModeAc: "standard",
-  threeDimensionModeBattery: "",
+  coordinateSystem: "automatic",
+  field3dModeAc: "standard",
+  field3dModeBattery: "",
+  field3dAntialiasing: true,
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,

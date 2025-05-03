@@ -1,3 +1,5 @@
+import { CoordinateSystem } from "./AdvantageScopeAssets";
+
 /** A set of application preferences. */
 export default interface Preferences {
   theme: "light" | "dark" | "system";
@@ -8,8 +10,10 @@ export default interface Preferences {
   liveDiscard: number;
   publishFilter: string;
   rlogPort: number;
-  threeDimensionModeAc: "cinematic" | "standard" | "low-power";
-  threeDimensionModeBattery: "" | "cinematic" | "standard" | "low-power";
+  coordinateSystem: "automatic" | CoordinateSystem;
+  field3dModeAc: "cinematic" | "standard" | "low-power";
+  field3dModeBattery: "" | "cinematic" | "standard" | "low-power";
+  field3dAntialiasing: boolean;
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
