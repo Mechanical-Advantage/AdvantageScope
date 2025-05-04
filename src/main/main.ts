@@ -25,7 +25,6 @@ import os from "os";
 import path from "path";
 import { PNG } from "pngjs";
 import { Client } from "ssh2";
-import { WebSocket } from "ws";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { ensureThemeContrast } from "../shared/Colors";
 import ExportOptions from "../shared/ExportOptions";
@@ -48,8 +47,6 @@ import {
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
   FRC_LOG_FOLDER,
-  FTCDASHBOARD_DATA_TIMEOUT_MS,
-  FTCDASHBOARD_PORT,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PATHPLANNER_CONNECT_TIMEOUT_MS,
@@ -121,11 +118,6 @@ let rlogDataArrays: { [id: number]: Uint8Array } = {};
 let pathPlannerSockets: { [id: number]: net.Socket } = {};
 let pathPlannerSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 let pathPlannerDataStrings: { [id: number]: string } = {};
-
-// FTC Dashboard variables
-let ftcDashboardSockets: { [id: number]: WebSocket } = {};
-let ftcDashboardSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
-let ftcDashboardDataStrings: { [id: number]: string } = {};
 
 // Download variables
 let downloadClient: Client | null = null;
@@ -556,41 +548,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       pathPlannerSockets[windowId]?.destroy();
       break;
 
-    case "live-ftcdashboard-start":
-      ftcDashboardSockets[windowId]?.close();
-      let url = "ws://" + message.data.address + ":" + FTCDASHBOARD_PORT;
-      ftcDashboardSockets[windowId] = new WebSocket(url);
-
-      ftcDashboardDataStrings[windowId] = "";
-      ftcDashboardSockets[windowId].addEventListener("message", (event) => {
-        ftcDashboardDataStrings[windowId] += event.data;
-        if (ftcDashboardSocketTimeouts[windowId] !== null) clearTimeout(ftcDashboardSocketTimeouts[windowId]);
-        ftcDashboardSocketTimeouts[windowId] = setTimeout(() => {
-          ftcDashboardSockets[windowId]?.close();
-        }, FTCDASHBOARD_DATA_TIMEOUT_MS);
-
-        let success = sendMessage(window, "live-data", {
-          uuid: message.data.uuid,
-          success: true,
-          string: event.data
-        });
-        if (!success) {
-          ftcDashboardSockets[windowId]?.close();
-        }
-      });
-
-      ftcDashboardSockets[windowId].addEventListener("error", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-
-      ftcDashboardSockets[windowId].addEventListener("close", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-      break;
-
-    case "live-ftcdashboard-stop":
-      ftcDashboardSockets[windowId]?.close();
-      break;
 
     case "open-link":
       shell.openExternal(message.data);
