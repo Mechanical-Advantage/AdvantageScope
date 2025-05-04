@@ -6,11 +6,21 @@ import configReducer, { initialState } from "./configReducer";
 import { ConfigState, ConfigVarState } from "./configTypes";
 
 export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
+  private FTCDASHBOARD_PORT = 8000;
+  private FTCDASHBOARD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
+  private FTCDASHBOARD_DATA_TIMEOUT_MS = 10000; // How long with no data until timeout
+  private FTCDASHBOARD_PING_TIMEOUT_MS = 1000; // How often to ping
   private RECONNECT_DELAY_MS = 500;
-  private timeout: NodeJS.Timeout | null = null;
+  private timeout: ReturnType<typeof setTimeout> | null = null;
   private liveZeroTime = 0;
   private configState: ConfigState = initialState;
   private tunableKeys: string[] = [];
+
+  private socket: WebSocket | null = null;
+  private socketTimeout: ReturnType<typeof setTimeout> | null = null;
+  private pingTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  private robotClockSkew = 0;
 
   connect(
     address: string,
@@ -23,10 +33,27 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
       this.log = new Log();
-      window.sendMainMessage("live-ftcdashboard-start", {
-        uuid: this.UUID,
-        address: address
+      this.socket?.close();
+      let url = "ws://" + address + ":" + this.FTCDASHBOARD_PORT;
+      this.socket = new WebSocket(url);
+
+      this.socket.addEventListener("message", (event) => {
+        if (this.socketTimeout !== null) clearTimeout(this.socketTimeout);
+        this.socketTimeout = setTimeout(() => {
+          this.socket?.close();
+        }, this.FTCDASHBOARD_DATA_TIMEOUT_MS);
+
+        this.decodeData(event.data);
       });
+
+      this.socket.addEventListener("error", () => {
+        this.reconnect();
+      });
+
+      this.socket.addEventListener("close", () => {
+        this.reconnect();
+      });
+      this.ping();
     }
   }
 
@@ -34,10 +61,28 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     super.stop();
     window.sendMainMessage("live-ftcdashboard-stop");
   }
-
   handleMainMessage(data: any) {
+    // do nothing
+  }
+
+  ping() {
+    if (!this.socket) {
+      return;
+    }
+    if (this.socket.readyState === 1) {
+      // OPEN
+      let pingMsg = JSON.stringify({ type: "GET_ROBOT_STATUS" });
+      this.socket.send(pingMsg);
+    }
+
+    if (this.pingTimeout !== null) clearTimeout(this.pingTimeout);
+    this.pingTimeout = setTimeout(() => {
+      this.ping();
+    }, this.FTCDASHBOARD_PING_TIMEOUT_MS);
+  }
+
+  decodeData(data: string) {
     if (this.log === null) return;
-    if (data.uuid !== this.UUID) return;
     if (this.status === LiveDataSourceStatus.Stopped) return;
 
     if (this.timeout !== null) {
@@ -45,87 +90,96 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
       this.timeout = null;
     }
 
-    if (data.success) {
-      // Update time on first connection
-      if (this.liveZeroTime === 0) {
-        this.liveZeroTime = new Date().getTime() / 1000;
+    // Update time on first connection
+    if (this.liveZeroTime === 0) {
+      this.liveZeroTime = new Date().getTime() / 1000;
+    }
+
+    // Receiving data, set to active
+    this.setStatus(LiveDataSourceStatus.Active);
+
+    // Decode JSON
+    let decoded: any = null;
+    try {
+      decoded = JSON.parse(data);
+    } catch {}
+
+    // Add data
+    if (decoded !== null) {
+      let timestamp = new Date().getTime() / 1000 - this.liveZeroTime;
+      if (Object.hasOwn(decoded, "configRoot")) {
+        configReducer(this.configState, decoded);
+        this.parseConfigState(this.configState.configRoot, timestamp);
       }
-
-      // Receiving data, set to active
-      this.setStatus(LiveDataSourceStatus.Active);
-
-      // Decode JSON
-      let decoded: any = null;
-      try {
-        decoded = JSON.parse(data.string);
-      } catch {}
-
-      // Add data
-      if (decoded !== null) {
-        let timestamp = new Date().getTime() / 1000 - this.liveZeroTime;
-        if (Object.hasOwn(decoded, "configRoot")) {
-          configReducer(this.configState, decoded);
-          this.parseConfigState(this.configState.configRoot, timestamp);
-        }
-        if (Object.hasOwn(decoded, "telemetry")) {
-          let packets: any[] = decoded.telemetry;
-          for (const packet of packets) {
-            if (Object.hasOwn(packet, "timestamp")) {
-              timestamp = packet.timestamp / 1000 - this.liveZeroTime;
+      if (Object.hasOwn(decoded, "telemetry")) {
+        let packets: any[] = decoded.telemetry;
+        for (const packet of packets) {
+          if (Object.hasOwn(packet, "timestamp")) {
+            let packetTimestamp = packet.timestamp / 1000 - this.liveZeroTime;
+            if (this.robotClockSkew === 0) {
+              this.robotClockSkew = timestamp - packetTimestamp;
             }
-            if (Object.hasOwn(packet, "data")) {
-              for (const key of Object.getOwnPropertyNames(packet.data)) {
-                let data = packet.data[key];
-                switch (typeof data) {
-                  case "string":
-                    if (!isNaN(Number(data)) && !isNaN(parseFloat(data))) {
-                      let num = Number(data);
-                      this.log.putNumber(key, timestamp, num);
-                    } else {
-                      this.log.putString(key, timestamp, data);
-                    }
-                    break;
-                  case "boolean":
-                    this.log.putBoolean(key, timestamp, data);
-                    break;
-                  case "number":
-                    this.log.putNumber(key, timestamp, data);
-                    break;
-                  case "bigint":
-                    this.log.putNumber(key, timestamp, Number(data));
-                    break;
-                }
-              }
-              if (Object.hasOwn(packet.data, "x") && Object.hasOwn(packet.data, "y")) {
-                this.log.putPose("Pose", timestamp, <Pose2d>{
-                  translation: [Number(packet.data.x) / 39.37008, Number(packet.data.y) / 39.37008],
-                  rotation: Object.hasOwn(packet.data, "heading") ? Number(packet.data.heading) : 0.0
-                });
-              }
-            }
+            packetTimestamp += this.robotClockSkew;
+            timestamp = packetTimestamp;
+          }
+          if (Object.hasOwn(packet, "data")) {
+            this.logObject(packet.data, timestamp);
           }
         }
       }
+      if (Object.hasOwn(decoded, "status")) {
+        this.logObject(decoded.status, timestamp);
+      }
+    }
 
-      // Run output callback
-      if (this.outputCallback !== null) {
-        this.outputCallback(this.log, () => {
-          if (this.log) {
-            return new Date().getTime() / 1000 - this.liveZeroTime;
+    // Run output callback
+    if (this.outputCallback !== null) {
+      this.outputCallback(this.log, () => {
+        if (this.log) {
+          return new Date().getTime() / 1000 - this.liveZeroTime;
+        } else {
+          return 0;
+        }
+      });
+    }
+  }
+
+  private logObject(obj: any, timestamp: number) {
+    if (!this.log) {
+      return;
+    }
+    for (const key of Object.getOwnPropertyNames(obj)) {
+      let data = obj[key];
+      switch (typeof data) {
+        case "string":
+          if (!isNaN(Number(data)) && !isNaN(parseFloat(data))) {
+            let num = Number(data);
+            this.log.putNumber(key, timestamp, num);
           } else {
-            return 0;
+            this.log.putString(key, timestamp, data);
           }
-        });
+          break;
+        case "boolean":
+          this.log.putBoolean(key, timestamp, data);
+          break;
+        case "number":
+          this.log.putNumber(key, timestamp, data);
+          break;
+        case "bigint":
+          this.log.putNumber(key, timestamp, Number(data));
+          break;
       }
-    } else {
-      // Failed to connect (or just disconnected), stop and reconnect automatically
-      this.reconnect();
+    }
+    if (Object.hasOwn(obj, "x") && Object.hasOwn(obj, "y")) {
+      this.log.putPose("Pose", timestamp, <Pose2d>{
+        translation: [Number(obj.x) / 39.37008, Number(obj.y) / 39.37008],
+        rotation: Object.hasOwn(obj, "heading") ? Number(obj.heading) : 0.0
+      });
     }
   }
 
   private reconnect() {
     this.setStatus(LiveDataSourceStatus.Connecting);
-    window.sendMainMessage("live-ftcdashboard-stop");
     this.timeout = setTimeout(() => {
       if (window.preferences === null) {
         // No preferences, can't reconnect
@@ -134,11 +188,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
         // Try to reconnect
         this.log = new Log();
         this.liveZeroTime = 0;
-        window.sendMainMessage("live-ftcdashboard-start", {
-          uuid: this.UUID,
-          address: this.address,
-          port: window.preferences.rlogPort
-        });
+        this.connect(this.address!!, this.statusCallback!!, this.outputCallback!!);
       }
     }, this.RECONNECT_DELAY_MS);
   }
