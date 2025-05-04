@@ -3,11 +3,10 @@ import Log from "../../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import LiveDataTuner from "../LiveDataTuner";
 import configReducer, { initialState } from "./configReducer";
-import { ConfigState, ConfigVarState } from "./configTypes";
+import { ConfigState, ConfigVar, ConfigVarState, SaveConfigAction } from "./configTypes";
 
 export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
   private FTCDASHBOARD_PORT = 8000;
-  private FTCDASHBOARD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
   private FTCDASHBOARD_DATA_TIMEOUT_MS = 10000; // How long with no data until timeout
   private FTCDASHBOARD_PING_TIMEOUT_MS = 1000; // How often to ping
   private RECONNECT_DELAY_MS = 500;
@@ -108,7 +107,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     if (decoded !== null) {
       let timestamp = new Date().getTime() / 1000 - this.liveZeroTime;
       if (Object.hasOwn(decoded, "configRoot")) {
-        configReducer(this.configState, decoded);
+        this.configState = configReducer(this.configState, decoded);
         this.parseConfigState(this.configState.configRoot, timestamp);
       }
       if (Object.hasOwn(decoded, "telemetry")) {
@@ -128,7 +127,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
         }
       }
       if (Object.hasOwn(decoded, "status")) {
-        this.logObject(decoded.status, timestamp);
+        this.logObject(decoded.status, timestamp, "/_Status/");
       }
     }
 
@@ -144,12 +143,13 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     }
   }
 
-  private logObject(obj: any, timestamp: number) {
+  private logObject(obj: any, timestamp: number, path: string = "") {
     if (!this.log) {
       return;
     }
-    for (const key of Object.getOwnPropertyNames(obj)) {
-      let data = obj[key];
+    for (const name of Object.getOwnPropertyNames(obj)) {
+      let data = obj[name];
+      let key = path + name;
       switch (typeof data) {
         case "string":
           if (!isNaN(Number(data)) && !isNaN(parseFloat(data))) {
@@ -193,22 +193,22 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     }, this.RECONNECT_DELAY_MS);
   }
 
-  parseConfigState(state: ConfigVarState, timestamp: number, path = "/Config") {
+  private parseConfigState(state: ConfigVarState, timestamp: number, path = "/_Config") {
     switch (state.__type) {
       case "boolean":
         this.log!!.putBoolean(path, timestamp, state.__value as boolean);
-        this.tunableKeys.concat(path);
+        this.tunableKeys.push(path);
         break;
       case "double":
       case "float":
       case "int":
       case "long":
         this.log!!.putNumber(path, timestamp, Number(state.__value));
-        this.tunableKeys.concat(path);
+        this.tunableKeys.push(path);
         break;
       case "string":
         this.log!!.putString(path, timestamp, state.__value as string);
-        this.tunableKeys.concat(path);
+        this.tunableKeys.push(path);
         break;
       case "custom":
         if (state.__value === null) {
@@ -226,12 +226,50 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     return this.configState !== initialState;
   }
   isTunable(key: string): boolean {
-    throw new Error("Method not implemented.");
+    return this.tunableKeys.indexOf(key) > -1;
   }
   publish(key: string, value: number | boolean): void {
-    throw new Error("Method not implemented.");
+    if (!this.isTunable(key)) {
+      return;
+    }
+    let path = key.split("/");
+    console.log("configPath", path);
+    if (path[0] === "" && path[1] === "_Config") {
+      path = path.slice(2);
+    } else {
+      return;
+    }
+    let saveAction: SaveConfigAction = { type: "SAVE_CONFIG", configDiff: this.generateConfigDiff(path, value) };
+    console.log("saveAction", saveAction);
+    let saveMsg = JSON.stringify(saveAction);
+    this.socket!!.send(saveMsg);
+  }
+
+  generateConfigDiff(path: string[], value: number | boolean): ConfigVar {
+    if (path.length === 0) {
+      if (typeof value === "number") {
+        return {
+          __type: "double",
+          __value: value
+        };
+      } else {
+        return {
+          __type: "boolean",
+          __value: value
+        };
+      }
+    } else {
+      return {
+        __type: "custom",
+        __value: { [path[0]]: this.generateConfigDiff(path.slice(1), value) }
+      };
+    }
   }
   unpublish(key: string): void {
     // do nothing (not possible for FTCDashboard)
+  }
+
+  getTuner(): LiveDataTuner | null {
+    return this;
   }
 }
