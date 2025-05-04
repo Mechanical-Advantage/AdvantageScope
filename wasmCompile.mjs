@@ -26,16 +26,17 @@ try {
         console.log(stdout);
         console.error(stderr);
         if (error === null) {
+          // Copy to Lite bundles
+          fs.copyFileSync("bundles/hub$wpilogIndexer.js", "lite/bundles/hub$wpilogIndexer.js");
+          fs.copyFileSync("bundles/hub$wpilogIndexer.wasm", "lite/bundles/hub$wpilogIndexer.wasm");
+
+          // Exit successfully
           resolve();
         } else {
           reject();
         }
       }
     );
-
-    // Copy to Lite bundles
-    fs.copyFileSync("bundles/hub$wpilogIndexer.js", "lite/bundles/hub$wpilogIndexer.js");
-    fs.copyFileSync("bundles/hub$wpilogIndexer.wasm", "lite/bundles/hub$wpilogIndexer.wasm");
   });
 } catch (exception) {
   process.exit(1);
