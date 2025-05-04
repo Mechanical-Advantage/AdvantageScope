@@ -548,7 +548,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       pathPlannerSockets[windowId]?.destroy();
       break;
 
-
     case "open-link":
       shell.openExternal(message.data);
       break;
