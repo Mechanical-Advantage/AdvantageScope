@@ -2,7 +2,7 @@ import checkDiskSpace from "check-disk-space";
 import download from "download";
 import fs from "fs";
 import path from "path";
-import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
+import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
 import { ASSETS_REPOSITORY, ASSET_TAG_DEFAULT, ASSET_TAG_FRC6328, AUTO_ASSETS } from "./Constants";
 
 const REQUIRED_SPACE_GB = 8;
@@ -90,7 +90,7 @@ async function getAssetInfo(): Promise<AssetDownloadInfo[]> {
         downloadInfo.push({
           target: path.join(AUTO_ASSETS, asset.name.slice(0, asset.name.length - 4)), // Remove ".zip"
           source: asset.browser_download_url,
-          optional: DISTRIBUTOR === Distributor.WPILib && release.tag_name === ASSET_TAG_FRC6328
+          optional: DISTRIBUTION === Distribution.WPILib && release.tag_name === ASSET_TAG_FRC6328
         });
       });
     }

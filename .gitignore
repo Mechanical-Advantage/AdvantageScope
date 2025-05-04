@@ -1,6 +1,7 @@
 /node_modules
 /dist
 /bundles
+/lite/bundles
 /ffmpeg
 /src/licenses.json
 /ThirdPartyLicenses.txt

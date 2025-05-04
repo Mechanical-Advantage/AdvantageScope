@@ -10,11 +10,17 @@ import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
 function bundle(input, output, isMain, isXRClient, external = []) {
-  const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
+  const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
+  const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+  const packageJson = JSON.parse(
+    fs.readFileSync("package.json", {
+      encoding: "utf-8"
+    })
+  );
   return {
     input: "src/" + input,
     output: {
-      file: "bundles/" + output,
+      file: (isLite ? "lite/" : "") + "bundles/" + output,
       format: isMain ? "cjs" : "es"
     },
     context: "this",
@@ -34,12 +40,22 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             }),
             terser()
           ]
+        : isLite
+        ? [
+            getBabelOutputPlugin({
+              presets: [["@babel/preset-env", { modules: false }]],
+              compact: true,
+              targets: "> 0.1%, not dead"
+            }),
+            terser({ mangle: { reserved: ["Module"] } })
+          ]
         : [cleanup()]),
       json(),
       replace({
         preventAssignment: true,
         values: {
-          __distributor__: isWpilib ? "WPILib" : "FRC6328",
+          __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : "FRC6328",
+          __version__: packageJson.version,
           __build_date__: new Date().toLocaleString("en-US", {
             timeZone: "UTC",
             hour12: false,
@@ -51,11 +67,7 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             second: "numeric",
             timeZoneName: "short"
           }),
-          __copyright__: JSON.parse(
-            fs.readFileSync("package.json", {
-              encoding: "utf-8"
-            })
-          ).build.copyright
+          __copyright__: packageJson.build.copyright
         }
       }),
       replaceRegEx({
@@ -85,8 +97,8 @@ function bundle(input, output, isMain, isXRClient, external = []) {
   };
 }
 
-const mainBundles = [
-  bundle("main/main.ts", "main.js", true, false, [
+const mainElectronBundles = [
+  bundle("main/electron/main.ts", "main.js", true, false, [
     "electron",
     "electron-fetch",
     "fs",
@@ -103,6 +115,7 @@ const mainBundles = [
   ]),
   bundle("preload.ts", "preload.js", true, false, ["electron"])
 ];
+const mainLiteBundles = [bundle("main/lite/main.ts", "main.js", false, false)];
 const largeRendererBundles = [
   bundle("hub/hub.ts", "hub.js", false, false),
   bundle("satellite.ts", "satellite.js", false, false)
@@ -151,12 +164,18 @@ const runOwletDownload = {
 };
 
 export default (cliArgs) => {
-  if (cliArgs.configMain === true) return mainBundles;
+  const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+  if (cliArgs.configMain === true) return isLite ? mainLiteBundles : mainElectronBundles;
   if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
-  if (cliArgs.configXR === true) return xrBundles;
+  if (cliArgs.configXR === true) {
+    if (isLite) process.exit();
+    return xrBundles;
+  }
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
-  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
+  return isLite
+    ? [...mainLiteBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
+    : [...mainElectronBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
 };

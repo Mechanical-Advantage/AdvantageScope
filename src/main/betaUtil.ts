@@ -2,7 +2,7 @@ import { app, shell } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
-import { DISTRIBUTOR, Distributor } from "../shared/buildConstants";
+import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
 import { scaleValue } from "../shared/util";
 import { APP_VERSION } from "./Constants";
 import { BETA_CONFIG } from "./betaConfig";
@@ -96,7 +96,7 @@ export function openBetaSurvey(): void {
   shell.openExternal(
     BETA_CONFIG!.surveyUrl.replace(
       "__version__",
-      encodeURIComponent(APP_VERSION + "/" + process.platform + "-" + process.arch + "/" + Distributor[DISTRIBUTOR])
+      encodeURIComponent(APP_VERSION + "/" + process.platform + "-" + process.arch + "/" + Distribution[DISTRIBUTION])
     )
   );
   state.surveyStatus = true;

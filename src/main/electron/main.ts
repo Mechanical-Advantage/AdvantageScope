@@ -25,16 +25,16 @@ import os from "os";
 import path from "path";
 import { PNG } from "pngjs";
 import { Client } from "ssh2";
-import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
-import { ensureThemeContrast } from "../shared/Colors";
-import ExportOptions from "../shared/ExportOptions";
-import LineGraphFilter from "../shared/LineGraphFilter";
-import NamedMessage from "../shared/NamedMessage";
-import Preferences from "../shared/Preferences";
-import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
-import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../shared/TabType";
-import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
-import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../shared/units";
+import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
+import { ensureThemeContrast } from "../../shared/Colors";
+import ExportOptions from "../../shared/ExportOptions";
+import LineGraphFilter from "../../shared/LineGraphFilter";
+import NamedMessage from "../../shared/NamedMessage";
+import Preferences from "../../shared/Preferences";
+import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
+import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
+import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
+import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
@@ -65,14 +65,14 @@ import {
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
   WINDOW_ICON
-} from "./Constants";
-import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
-import UpdateChecker from "./UpdateChecker";
-import { VideoProcessor } from "./VideoProcessor";
-import { XRControls } from "./XRControls";
-import { XRServer } from "./XRServer";
-import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
-import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetsUtil";
+} from "../Constants";
+import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "../StateTracker";
+import UpdateChecker from "../UpdateChecker";
+import { VideoProcessor } from "../VideoProcessor";
+import { XRControls } from "../XRControls";
+import { XRServer } from "../XRServer";
+import { getAssetDownloadStatus, startAssetDownloadLoop } from "../assetsDownload";
+import { createAssetFolders, getUserAssetsPath, loadAssets } from "../assetsUtil";
 import {
   delayBetaSurvey,
   isBeta,
@@ -81,9 +81,9 @@ import {
   openBetaSurvey,
   saveBetaWelcomeComplete,
   shouldPromptBetaSurvey
-} from "./betaUtil";
-import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
-import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
+} from "../betaUtil";
+import { getOwletDownloadStatus, startOwletDownloadLoop } from "../owletDownloadLoop";
+import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "../owletInterface";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -2232,7 +2232,7 @@ function setupMenu() {
             openPreferences(window);
           }
         },
-        ...(DISTRIBUTOR === Distributor.FRC6328
+        ...(DISTRIBUTION === Distribution.FRC6328
           ? [
               {
                 label: "Check for Updates...",
@@ -2279,7 +2279,7 @@ function setupMenu() {
           openPreferences(window);
         }
       },
-      ...(DISTRIBUTOR === Distributor.FRC6328
+      ...(DISTRIBUTION === Distribution.FRC6328
         ? [
             {
               label: "Check for Updates...",
@@ -2309,7 +2309,7 @@ function setupMenu() {
 function createAboutWindow() {
   let detailLines: string[] = [];
   detailLines.push("Version: " + (app.isPackaged ? app.getVersion() : "Development"));
-  detailLines.push("Distributor: " + (DISTRIBUTOR === Distributor.WPILib ? "WPILib" : "FRC 6328"));
+  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328"));
   detailLines.push("Platform: " + process.platform + "-" + process.arch);
   detailLines.push("Build Date: " + BUILD_DATE);
   detailLines.push("Electron: " + process.versions.electron);
@@ -2518,7 +2518,7 @@ function createHubWindow(state?: WindowState) {
             message: "Beta is complete",
             detail:
               "The AdvantageScope beta is complete. " +
-              (DISTRIBUTOR === Distributor.WPILib
+              (DISTRIBUTION === Distribution.WPILib
                 ? "Please update to the latest stable release of WPILib."
                 : "Please download the latest stable release of AdvantageScope from GitHub."),
             buttons: ["Quit", "Ignore"],
@@ -3251,7 +3251,7 @@ process.on("unhandledRejection", () => {});
 
 // Set WM_CLASS for Linux
 if (process.platform === "linux") {
-  if (DISTRIBUTOR === Distributor.WPILib) {
+  if (DISTRIBUTION === Distribution.WPILib) {
     app.setName("AdvantageScope (WPILib)");
   } else {
     app.setName("AdvantageScope");
@@ -3449,7 +3449,7 @@ app.whenReady().then(() => {
   });
 
   // Check for update and show button on hub windows (but don't prompt)
-  if (DISTRIBUTOR === Distributor.FRC6328) {
+  if (DISTRIBUTION === Distribution.FRC6328) {
     checkForUpdate(false);
   }
 });

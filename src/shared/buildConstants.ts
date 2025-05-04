@@ -1,9 +1,11 @@
-export enum Distributor {
+export enum Distribution {
   FRC6328,
-  WPILib
+  WPILib,
+  Lite
 }
 
 // @ts-ignore
-export const DISTRIBUTOR: Distributor = Distributor.__distributor__;
+export const DISTRIBUTION: Distribution = Distribution.__distribution__;
+export const VERSION: string = "__version__";
 export const BUILD_DATE: string = "__build_date__";
 export const COPYRIGHT: string = "__copyright__";

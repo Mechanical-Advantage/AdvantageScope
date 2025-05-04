@@ -45,7 +45,7 @@ jobs:
       - name: Compile bundles (WPILib)
         run: npm run compile
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
       - name: Upload bundles (WPILib)
         uses: actions/upload-artifact@v4
         with:
@@ -298,7 +298,7 @@ jobs:
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
@@ -370,7 +370,7 @@ jobs:
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
@@ -433,7 +433,7 @@ jobs:
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -l dir
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
