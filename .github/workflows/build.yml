@@ -53,6 +53,17 @@ jobs:
           path: |
             bundles/*.js
             bundles/*.wasm
+      - name: Compile bundles (Lite)
+        run: npm run compile
+        env:
+          ASCOPE_DISTRIBUTION: LITE
+      - name: Prepare Lite bundle
+        run: mv lite lite-tmp && cp -rL lite-tmp lite
+      - name: Upload Lite
+        uses: actions/upload-artifact@v4
+        with:
+          name: lite
+          path: lite/
 
   build-ios:
     name: Build for iOS
