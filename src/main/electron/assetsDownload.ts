@@ -2,8 +2,9 @@ import checkDiskSpace from "check-disk-space";
 import download from "download";
 import fs from "fs";
 import path from "path";
-import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
-import { ASSETS_REPOSITORY, ASSET_TAG_DEFAULT, ASSET_TAG_FRC6328, AUTO_ASSETS } from "./Constants";
+import { DISTRIBUTION, Distribution } from "../../shared/buildConstants";
+import { GITHUB_ASSET_TAG_DEFAULT, GITHUB_ASSET_TAG_FRC6328, GITHUB_ASSETS_REPOSITORY } from "../github";
+import { AUTO_ASSETS } from "./ElectronConstants";
 
 const REQUIRED_SPACE_GB = 8;
 const FAILURE_TIMEOUT_MS = 30 * 1000; // 30 seconds
@@ -63,7 +64,7 @@ interface AssetDownloadInfo {
 /** Gets the set of assets to download from GitHub. */
 async function getAssetInfo(): Promise<AssetDownloadInfo[]> {
   // Get all release info
-  let response = await fetch("https://api.github.com/repos/" + ASSETS_REPOSITORY + "/releases", {
+  let response = await fetch("https://api.github.com/repos/" + GITHUB_ASSETS_REPOSITORY + "/releases", {
     method: "GET",
     headers: {
       pragma: "no-cache",
@@ -85,12 +86,12 @@ async function getAssetInfo(): Promise<AssetDownloadInfo[]> {
   // Extract download info
   let downloadInfo: AssetDownloadInfo[] = [];
   releaseData.forEach((release) => {
-    if (release.tag_name === ASSET_TAG_DEFAULT || release.tag_name === ASSET_TAG_FRC6328) {
+    if (release.tag_name === GITHUB_ASSET_TAG_DEFAULT || release.tag_name === GITHUB_ASSET_TAG_FRC6328) {
       release.assets.forEach((asset) => {
         downloadInfo.push({
           target: path.join(AUTO_ASSETS, asset.name.slice(0, asset.name.length - 4)), // Remove ".zip"
           source: asset.browser_download_url,
-          optional: DISTRIBUTION === Distribution.WPILib && release.tag_name === ASSET_TAG_FRC6328
+          optional: DISTRIBUTION === Distribution.WPILib && release.tag_name === GITHUB_ASSET_TAG_FRC6328
         });
       });
     }

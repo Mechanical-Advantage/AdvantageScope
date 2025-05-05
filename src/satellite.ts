@@ -106,7 +106,7 @@ window.sendMainMessage = (name: string, data?: any) => {
 };
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;

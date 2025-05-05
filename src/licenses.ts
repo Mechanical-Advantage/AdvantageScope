@@ -1,11 +1,16 @@
 import licenses from "./licenses.json";
+import { Distribution, DISTRIBUTION } from "./shared/buildConstants";
 
 window.addEventListener("load", () => {
   document.body.innerHTML = "";
   (licenses as { module: string; text: string }[]).forEach((license) => {
     let moduleElement = document.createElement("div");
     moduleElement.classList.add("module-text");
-    moduleElement.innerText = license.module;
+    let moduleText = license.module;
+    if (DISTRIBUTION === Distribution.Lite && moduleText === "AdvantageScope") {
+      moduleText = "AdvantageScope Lite";
+    }
+    moduleElement.innerText = moduleText;
     document.body.appendChild(moduleElement);
 
     let textElement = document.createElement("div");

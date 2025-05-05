@@ -1,8 +1,187 @@
+<!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="AScope Lite" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="apple-touch-icon" type="image/x-icon" href="app-icon.png" />
+    <link rel="stylesheet" href="popups.css" />
+    <script type="module" src="bundles/main.js"></script>
     <title>AdvantageScope Lite</title>
+    <style>
+      :root {
+        --side-bar-width: 300px;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background-color: #fff;
+        user-select: none;
+      }
+
+      div.side-bar-loading-background {
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        width: var(--side-bar-width);
+        height: 100%;
+        background-color: #e9e9e9;
+      }
+
+      div.viewer-loading-shadow {
+        position: absolute;
+        left: var(--side-bar-width);
+        top: 0%;
+        right: 0%;
+        height: 100%;
+        box-shadow: 0px 0px 3px 0px #00000022;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #222;
+        }
+
+        div.side-bar-loading-background {
+          background-color: #292929;
+        }
+
+        div.viewer-loading-shadow {
+          box-shadow: 0px 0px 0px 1px #000;
+        }
+      }
+
+      iframe {
+        position: absolute;
+        border: none;
+      }
+
+      iframe.hub-frame {
+        left: 0%;
+        top: 0%;
+        width: 100%;
+        height: 100%;
+        opacity: 0%;
+        transition: filter 0.3s;
+      }
+
+      iframe.hub-frame.background {
+        pointer-events: none;
+        filter: brightness(50%);
+      }
+
+      iframe.popup-frame {
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 10px;
+        border: 1px solid #ababab;
+        box-shadow: 0 1px 35px rgba(0, 0, 0, 0.5);
+        background-color: #fff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        iframe.popup-frame {
+          border: 1px solid #4a4a4a;
+          background-color: #222;
+        }
+      }
+
+      div.pointer-block {
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        width: 100%;
+        height: 100%;
+      }
+
+      div.menu-anchor {
+        position: absolute;
+        pointer-events: none;
+      }
+
+      .popup-menu {
+        min-width: 150px;
+      }
+
+      .popup-menu .popup-menu--container .popup-menu--submenu .popup-menu--submenu-arrow svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .popup-menu .disabled {
+        pointer-events: none;
+        opacity: 0.35;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .popup-menu .popup-menu--submenu-content,
+        .popup-menu .popup-menu--container {
+          background: #191919;
+          border: 1px solid #3a3a3a;
+          box-shadow: 0 1px 14px rgba(0, 0, 0, 0.8);
+        }
+
+        .popup-menu .popup-menu--container {
+          color: #b1b1b1;
+        }
+
+        .popup-menu .popup-menu--container .popup-menu--submenu:focus,
+        .popup-menu .popup-menu--container .popup-menu--submenu:active,
+        .popup-menu .popup-menu--container .popup-menu--submenu:hover,
+        .popup-menu .popup-menu--container .popup-menu--item:focus,
+        .popup-menu .popup-menu--container .popup-menu--item:active,
+        .popup-menu .popup-menu--container .popup-menu--item:hover {
+          background: #000000;
+        }
+
+        .popup-menu .popup-menu--container .popup-menu--item-separator {
+          background-color: #2b2b2b;
+        }
+
+        .popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-top:after {
+          border-bottom: 10px solid #3a3a3a;
+        }
+
+        .popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-top:before {
+          border-bottom: 8px solid #191919;
+        }
+
+        .popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-bottom:after {
+          border-top: 10px solid #3a3a3a;
+        }
+
+        .popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-bottom:before {
+          border-top: 8px solid #191919;
+        }
+      }
+    </style>
+    <script>
+      // Update side bar width for loading background
+      let state = window.localStorage.getItem("AdvantageScopeLite/state");
+      if (state !== null) {
+        let width = JSON.parse(state).sidebar.width;
+        document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px");
+      }
+    </script>
   </head>
+
   <body>
-    Welcome to AdvantageScope Lite!
+    <div class="side-bar-loading-background"></div>
+    <div class="viewer-loading-shadow"></div>
+    <iframe src="www/hub.html" class="hub-frame"></iframe>
+    <iframe scr="" class="popup-frame" hidden></iframe>
+    <div class="pointer-block" hidden></div>
+    <div class="menu-anchor"></div>
   </body>
 </html>

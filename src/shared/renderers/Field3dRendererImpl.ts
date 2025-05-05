@@ -264,7 +264,7 @@ export default class Field3dRendererImpl implements TabRenderer {
     // Create key bindings
     window.addEventListener("keydown", (event) => {
       if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
-      if (event.target !== document.body) return;
+      if (event.target !== document.body && event.target !== window) return;
       if (canvasContainer.clientHeight === 0) return;
       this.keysPressed.add(event.code);
     });

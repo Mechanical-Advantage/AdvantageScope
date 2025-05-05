@@ -81,8 +81,17 @@ div.title-bar-menu::-webkit-scrollbar {
 }
 
 body.fancy-title-bar-win div.title-bar-menu,
-body.fancy-title-bar-linux div.title-bar-menu {
+body.fancy-title-bar-linux div.title-bar-menu,
+body.fancy-title-bar-lite div.title-bar-menu {
   display: initial;
+}
+
+body.fancy-title-bar-lite div.title-bar-menu {
+  max-width: 180px;
+}
+
+body.fancy-title-bar-lite div.title-bar-menu .hide-lite {
+  display: none;
 }
 
 div.title-bar-menu table {
@@ -195,7 +204,8 @@ div.side-bar-shadow {
 
 body.fancy-title-bar-mac div.side-bar-shadow,
 body.fancy-title-bar-win div.side-bar-shadow,
-body.fancy-title-bar-linux div.side-bar-shadow {
+body.fancy-title-bar-linux div.side-bar-shadow,
+body.fancy-title-bar-lite div.side-bar-shadow {
   display: initial;
 }
 
@@ -217,12 +227,14 @@ div.side-bar {
 
 body.fancy-title-bar-mac div.side-bar,
 body.fancy-title-bar-win div.side-bar,
-body.fancy-title-bar-linux div.side-bar {
+body.fancy-title-bar-linux div.side-bar,
+body.fancy-title-bar-lite div.side-bar {
   top: 38px;
 }
 
 body.fancy-title-bar-win div.side-bar::-webkit-scrollbar,
-body.fancy-title-bar-linux div.side-bar::-webkit-scrollbar {
+body.fancy-title-bar-linux div.side-bar::-webkit-scrollbar,
+body.fancy-title-bar-lite div.side-bar::-webkit-scrollbar {
   display: none;
 }
 
@@ -618,6 +630,13 @@ div.tab-bar {
   white-space: nowrap;
 }
 
+body.fancy-title-bar-lite div.tab-bar {
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
+      33px
+  );
+}
+
 body.fancy-title-bar-mac div.tab-bar {
   right: 10px;
 }
@@ -646,6 +665,13 @@ div.tab-bar-shadow-right {
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
   );
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
+}
+
+body.fancy-title-bar-lite div.tab-bar-shadow-right {
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
+      33px
+  );
 }
 
 body.fancy-title-bar-mac div.tab-bar-shadow-right {
@@ -684,6 +710,13 @@ div.tab-bar-scroll {
   top: 0px;
   height: 50px;
   overflow: scroll;
+}
+
+body.fancy-title-bar-lite div.tab-bar-scroll {
+  right: calc(
+    154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
+      33px
+  );
 }
 
 body.fancy-title-bar-mac div.tab-bar-scroll {
@@ -776,6 +809,10 @@ button.update {
   right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px);
 }
 
+body.fancy-title-bar-lite button.update {
+  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px - 33px);
+}
+
 button.update > img {
   /* https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(60%) sepia(41%) saturate(3324%) hue-rotate(356deg) brightness(96%) contrast(112%);
@@ -788,6 +825,10 @@ button.update.blurred > img {
 
 button.feedback {
   right: calc(154px + var(--show-lock-buttons) * 28px);
+}
+
+body.fancy-title-bar-lite button.feedback {
+  right: calc(154px + var(--show-lock-buttons) * 28px - 33px);
 }
 
 button.feedback > img {
@@ -809,9 +850,19 @@ button.pause {
   right: calc(116px + var(--show-lock-buttons) * 28px);
 }
 
+body.fancy-title-bar-lite button.play,
+body.fancy-title-bar-lite button.pause {
+  right: calc(116px + var(--show-lock-buttons) * 28px - 33px);
+}
+
 button.lock,
 button.unlock {
   right: 116px;
+}
+
+body.fancy-title-bar-lite button.lock,
+body.fancy-title-bar-lite button.unlock {
+  right: calc(116px - 33px);
 }
 
 button.unlock > img {
@@ -850,8 +901,16 @@ button.close {
   right: 78px;
 }
 
+body.fancy-title-bar-lite button.close {
+  right: calc(78px - 33px);
+}
+
 button.popup {
   right: 45px;
+}
+
+body.fancy-title-bar-lite button.popup {
+  display: none;
 }
 
 button.close img {

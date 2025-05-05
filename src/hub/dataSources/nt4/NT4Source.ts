@@ -1,5 +1,6 @@
+import { Distribution, DISTRIBUTION } from "../../../shared/buildConstants";
 import Log from "../../../shared/log/Log";
-import { PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX, getEnabledKey, getURCLKeys } from "../../../shared/log/LogUtil";
+import { getEnabledKey, getURCLKeys, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
@@ -28,11 +29,19 @@ export default class NT4Source extends LiveDataSource {
     super();
     this.akitMode = akitMode;
 
-    let periodic = () => {
-      this.periodic();
+    if (window.requestIdleCallback !== undefined) {
+      let periodic = () => {
+        this.periodic();
+        window.requestIdleCallback(periodic, { timeout: 100 });
+      };
       window.requestIdleCallback(periodic, { timeout: 100 });
-    };
-    window.requestIdleCallback(periodic, { timeout: 100 });
+    } else {
+      let periodic = () => {
+        this.periodic();
+        window.requestAnimationFrame(periodic);
+      };
+      window.requestAnimationFrame(periodic);
+    }
   }
 
   private periodic() {
@@ -181,7 +190,7 @@ export default class NT4Source extends LiveDataSource {
       this.log = new Log();
       this.client = new NT4_Client(
         address,
-        "AdvantageScope",
+        DISTRIBUTION === Distribution.Lite ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce
           if (!this.log) return;

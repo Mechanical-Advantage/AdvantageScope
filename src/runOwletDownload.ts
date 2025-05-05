@@ -1,6 +1,6 @@
 import path from "path";
 import { BETA_CONFIG } from "./main/betaConfig";
-import { downloadOwletInternal } from "./main/owletDownload";
+import { downloadOwletInternal } from "./main/electron/owletDownload";
 
 function download(platform: string) {
   downloadOwletInternal(path.join("owlet", platform), platform, BETA_CONFIG === null).then(() => {

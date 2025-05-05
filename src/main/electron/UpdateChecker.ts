@@ -1,7 +1,8 @@
 import { app, dialog, shell } from "electron";
 import fetch from "electron-fetch";
-import { REPOSITORY, WINDOW_ICON } from "./Constants";
-import { isBeta } from "./betaUtil";
+import { isBeta } from "../betaUtil";
+import { GITHUB_REPOSITORY } from "../github";
+import { WINDOW_ICON } from "./ElectronConstants";
 
 /** Checks for updates from GitHub and prompts the user when requested. */
 export default class UpdateChecker {
@@ -158,11 +159,11 @@ export default class UpdateChecker {
     let responseString = this.alertOptions[result.response];
     if (responseString === "Download") {
       if (this.alertDownloadUrl === null) {
-        this.alertDownloadUrl = `https://github.com/${REPOSITORY}/releases/v${this.latestVersion}`;
+        this.alertDownloadUrl = `https://github.com/${GITHUB_REPOSITORY}/releases/v${this.latestVersion}`;
       }
       await shell.openExternal(this.alertDownloadUrl);
     } else if (responseString === "View Changelog") {
-      await shell.openExternal("https://github.com/" + REPOSITORY + "/releases");
+      await shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/releases");
     }
   }
 }

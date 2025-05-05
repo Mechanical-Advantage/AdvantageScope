@@ -43,10 +43,9 @@ export default class LineGraphController implements TabController {
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
       LineGraphController_NumericConfig,
       [() => this.rightSourceList.getState(), () => this.discreteSourceList.getState()],
-      (coordinates) => {
+      (rect) => {
         window.sendMainMessage("ask-edit-axis", {
-          x: coordinates[0],
-          y: coordinates[1],
+          rect: rect,
           legend: "left",
           lockedRange: this.leftLockedRange,
           unitConversion: this.leftUnitConversion,
@@ -62,10 +61,9 @@ export default class LineGraphController implements TabController {
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
       LineGraphController_NumericConfig,
       [() => this.leftSourceList.getState(), () => this.discreteSourceList.getState()],
-      (coordinates) => {
+      (rect) => {
         window.sendMainMessage("ask-edit-axis", {
-          x: coordinates[0],
-          y: coordinates[1],
+          rect: rect,
           legend: "right",
           lockedRange: this.rightLockedRange,
           unitConversion: this.rightUnitConversion,
@@ -81,10 +79,9 @@ export default class LineGraphController implements TabController {
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
       LineGraphController_DiscreteConfig,
       [() => this.leftSourceList.getState(), () => this.rightSourceList.getState()],
-      (coordinates) => {
+      (rect) => {
         window.sendMainMessage("ask-edit-axis", {
-          x: coordinates[0],
-          y: coordinates[1],
+          rect: rect,
           legend: "discrete",
           config: LineGraphController_DiscreteConfig
         });

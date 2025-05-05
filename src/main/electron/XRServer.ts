@@ -4,10 +4,10 @@ import http from "http";
 import { networkInterfaces } from "os";
 import path from "path";
 import { WebSocketServer } from "ws";
-import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
-import { Field3dRendererCommand } from "../shared/renderers/Field3dRenderer";
-import { XRPacket, XRSettings } from "../shared/XRTypes";
-import { XR_SERVER_PORT, XR_URL_PREFIX } from "./Constants";
+import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
+import { Field3dRendererCommand } from "../../shared/renderers/Field3dRenderer";
+import { XRPacket, XRSettings } from "../../shared/XRTypes";
+import { XR_SERVER_PORT, XR_URL_PREFIX } from "./ElectronConstants";
 
 export namespace XRServer {
   let httpServer: http.Server | null = null;

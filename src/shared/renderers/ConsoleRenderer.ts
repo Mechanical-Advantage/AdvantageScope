@@ -107,7 +107,7 @@ export default class ConsoleRenderer implements TabRenderer {
 
     // Select filter
     window.addEventListener("keydown", (event) => {
-      if (root === null || root.hidden || event.target !== document.body) return;
+      if (root === null || root.hidden || (event.target !== document.body && event.target !== window)) return;
       if ((window.platform === "darwin" ? event.metaKey : event.ctrlKey) && event.key === "f") {
         this.FILTER_INPUT.select();
       }

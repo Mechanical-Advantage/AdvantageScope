@@ -3,6 +3,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   user-select: text;
+  background-color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {

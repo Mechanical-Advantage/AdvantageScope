@@ -9,9 +9,10 @@ import fs from "fs";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
+const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
+const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+
 function bundle(input, output, isMain, isXRClient, external = []) {
-  const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
-  const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
   const packageJson = JSON.parse(
     fs.readFileSync("package.json", {
       encoding: "utf-8"
@@ -97,28 +98,29 @@ function bundle(input, output, isMain, isXRClient, external = []) {
   };
 }
 
-const mainElectronBundles = [
-  bundle("main/electron/main.ts", "main.js", true, false, [
-    "electron",
-    "electron-fetch",
-    "fs",
-    "jsonfile",
-    "net",
-    "os",
-    "ws",
-    "http",
-    "path",
-    "ssh2",
-    "download",
-    "ytdl-core",
-    "tesseract.js"
-  ]),
-  bundle("preload.ts", "preload.js", true, false, ["electron"])
-];
-const mainLiteBundles = [bundle("main/lite/main.ts", "main.js", false, false)];
+const mainBundles = isLite
+  ? [bundle("main/lite/main.ts", "main.js", false, false)]
+  : [
+      bundle("main/electron/main.ts", "main.js", true, false, [
+        "electron",
+        "electron-fetch",
+        "fs",
+        "jsonfile",
+        "net",
+        "os",
+        "ws",
+        "http",
+        "path",
+        "ssh2",
+        "download",
+        "ytdl-core",
+        "tesseract.js"
+      ]),
+      bundle("preload.ts", "preload.js", true, false, ["electron"])
+    ];
 const largeRendererBundles = [
   bundle("hub/hub.ts", "hub.js", false, false),
-  bundle("satellite.ts", "satellite.js", false, false)
+  ...(isLite ? [] : [bundle("satellite.ts", "satellite.js", false, false)])
 ];
 const smallRendererBundles = [
   bundle("editRange.ts", "editRange.js", false, false),
@@ -136,7 +138,7 @@ const workerBundles = [
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
   bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
   bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
-  bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false),
+  ...(isLite ? [] : [bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false)]),
   bundle("shared/renderers/field3d/workers/loadField.ts", "shared$loadField.js", false, false),
   bundle("shared/renderers/field3d/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
 ];
@@ -164,8 +166,7 @@ const runOwletDownload = {
 };
 
 export default (cliArgs) => {
-  const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
-  if (cliArgs.configMain === true) return isLite ? mainLiteBundles : mainElectronBundles;
+  if (cliArgs.configMain === true) return mainBundles;
   if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;

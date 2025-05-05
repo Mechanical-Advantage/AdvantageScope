@@ -23,3 +23,25 @@ export default interface Preferences {
   ctreLicenseAccepted: boolean;
   usb?: boolean;
 }
+
+export const DEFAULT_PREFS: Preferences = {
+  theme: "system",
+  rioAddress: "10.00.00.2",
+  rioPath: "/U/logs",
+  liveMode: "nt4",
+  liveSubscribeMode: "low-bandwidth",
+  liveDiscard: 1200,
+  publishFilter: "",
+  rlogPort: 5800,
+  coordinateSystem: "automatic",
+  field3dModeAc: "standard",
+  field3dModeBattery: "",
+  field3dAntialiasing: true,
+  tbaApiKey: "",
+  userAssetsFolder: null,
+  skipHootNonProWarning: false,
+  skipFrcLogFolderDefault: false,
+  skipNumericArrayDeprecationWarning: false,
+  skipXRExperimentalWarning: false,
+  ctreLicenseAccepted: false
+};

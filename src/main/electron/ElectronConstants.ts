@@ -1,13 +1,8 @@
 import { app } from "electron";
 import path from "path";
-import Preferences from "../shared/Preferences";
 
 // General
 export const APP_VERSION = app.isPackaged ? app.getVersion() : "dev";
-export const REPOSITORY = "Mechanical-Advantage/AdvantageScope";
-export const ASSETS_REPOSITORY = "Mechanical-Advantage/AdvantageScopeAssets";
-export const ASSET_TAG_DEFAULT = "default-assets-v2";
-export const ASSET_TAG_FRC6328 = "frc-6328-assets-v2";
 export const PREFS_FILENAME = path.join(app.getPath("userData"), "prefs.json");
 export const STATE_FILENAME = path.join(
   app.getPath("userData"),
@@ -25,27 +20,6 @@ export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantagescope-video-
 export const VIDEO_CACHE_FALLBACK = path.join(app.getPath("userData"), "video-cache");
 export const FRC_LOG_FOLDER = "C:\\Users\\Public\\Documents\\FRC\\Log Files";
 export const WINDOW_ICON = process.platform === "darwin" ? undefined : path.join(__dirname, "../icons/window-icon.png");
-export const DEFAULT_PREFS: Preferences = {
-  theme: process.platform === "linux" ? "light" : "system",
-  rioAddress: "10.00.00.2",
-  rioPath: "/U/logs",
-  liveMode: "nt4",
-  liveSubscribeMode: "low-bandwidth",
-  liveDiscard: 1200,
-  publishFilter: "",
-  rlogPort: 5800,
-  coordinateSystem: "automatic",
-  field3dModeAc: "standard",
-  field3dModeBattery: "",
-  field3dAntialiasing: true,
-  tbaApiKey: "",
-  userAssetsFolder: null,
-  skipHootNonProWarning: false,
-  skipFrcLogFolderDefault: false,
-  skipNumericArrayDeprecationWarning: false,
-  skipXRExperimentalWarning: false,
-  ctreLicenseAccepted: false
-};
 export const HUB_DEFAULT_WIDTH = 1100;
 export const HUB_DEFAULT_HEIGHT = 650;
 export const SATELLITE_DEFAULT_WIDTH = 900;

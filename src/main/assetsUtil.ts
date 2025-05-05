@@ -18,7 +18,7 @@ import {
 } from "../shared/AdvantageScopeAssets";
 import Preferences from "../shared/Preferences";
 import { checkArrayType } from "../shared/util";
-import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./Constants";
+import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./electron/ElectronConstants";
 
 const USER_ASSETS_README =
   'This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';

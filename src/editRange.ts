@@ -6,7 +6,7 @@ const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       // Update button focus

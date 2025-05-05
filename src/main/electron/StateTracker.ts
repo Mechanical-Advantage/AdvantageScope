@@ -7,7 +7,7 @@ import {
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   STATE_FILENAME
-} from "./Constants";
+} from "./ElectronConstants";
 
 export default class StateTracker {
   private SAVE_PERIOD_MS = 250;

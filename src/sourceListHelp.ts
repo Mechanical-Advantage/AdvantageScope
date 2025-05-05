@@ -10,7 +10,7 @@ function isDark() {
 }
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;

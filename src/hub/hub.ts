@@ -5,8 +5,9 @@ import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
+import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
-import { AKIT_TIMESTAMP_KEYS, MERGE_PREFIX, getEnabledData } from "../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getEnabledData, MERGE_PREFIX } from "../shared/log/LogUtil";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
 import SelectionImpl from "./SelectionImpl";
 import Sidebar from "./Sidebar";
@@ -145,6 +146,11 @@ function updateFancyWindow() {
   } else {
     document.body.classList.remove("fancy-title-bar-linux");
   }
+  if (window.platform === "lite") {
+    document.body.classList.add("fancy-title-bar-lite");
+  } else {
+    document.body.classList.remove("fancy-title-bar-lite");
+  }
 
   // Using fancy sidebar?
   if (window.platform === "darwin") {
@@ -274,6 +280,12 @@ window.requestAnimationFrame(periodic);
 
 // DATA SOURCE HANDLING
 
+function checkLiveAutoStart() {
+  if (DISTRIBUTION == Distribution.Lite && window.preferences !== null) {
+    startLive();
+  }
+}
+
 window.getLoadingFields = () => {
   let output: Set<string> = new Set();
   historicalSources.forEach((entry) => {
@@ -392,7 +404,7 @@ function startHistorical(path: string, clear = true, merge = false) {
 }
 
 /** Connects to a live data source. */
-function startLive(isSim: boolean) {
+function startLive(isSim = false) {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
   liveSource?.stop();
@@ -420,7 +432,9 @@ function startLive(isSim: boolean) {
   }
 
   let address = "";
-  if (isSim) {
+  if (DISTRIBUTION === Distribution.Lite) {
+    address = window.location.hostname;
+  } else if (isSim) {
     address = SIM_ADDRESS;
   } else if (window.preferences?.usb) {
     address = USB_ADDRESS;
@@ -496,7 +510,7 @@ window.sendMainMessage = (name: string, data?: any) => {
 };
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     window.messagePort = event.ports[0];
     window.messagePort.onmessage = (event) => {
       let message: NamedMessage = event.data;
@@ -577,6 +591,7 @@ async function handleMainMessage(message: NamedMessage) {
 
     case "set-preferences":
       window.preferences = message.data;
+      checkLiveAutoStart();
       break;
 
     case "set-assets":

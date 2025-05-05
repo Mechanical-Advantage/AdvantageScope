@@ -26,21 +26,32 @@ import path from "path";
 import { PNG } from "pngjs";
 import { Client } from "ssh2";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
+import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
+import { createAssetFolders, getUserAssetsPath, loadAssets } from "../assetsUtil";
+import {
+  delayBetaSurvey,
+  isBeta,
+  isBetaExpired,
+  isBetaWelcomeComplete,
+  openBetaSurvey,
+  saveBetaWelcomeComplete,
+  shouldPromptBetaSurvey
+} from "../betaUtil";
+import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
   AKIT_PATH_OUTPUT,
   APP_VERSION,
-  DEFAULT_PREFS,
   DOWNLOAD_CONNECT_TIMEOUT_MS,
   DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
@@ -56,7 +67,6 @@ import {
   PATHPLANNER_PORT,
   PREFS_FILENAME,
   RECENT_UNITS_FILENAME,
-  REPOSITORY,
   RLOG_CONNECT_TIMEOUT_MS,
   RLOG_DATA_TIMEOUT_MS,
   RLOG_HEARTBEAT_DATA,
@@ -65,25 +75,15 @@ import {
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
   WINDOW_ICON
-} from "../Constants";
-import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "../StateTracker";
-import UpdateChecker from "../UpdateChecker";
-import { VideoProcessor } from "../VideoProcessor";
-import { XRControls } from "../XRControls";
-import { XRServer } from "../XRServer";
-import { getAssetDownloadStatus, startAssetDownloadLoop } from "../assetsDownload";
-import { createAssetFolders, getUserAssetsPath, loadAssets } from "../assetsUtil";
-import {
-  delayBetaSurvey,
-  isBeta,
-  isBetaExpired,
-  isBetaWelcomeComplete,
-  openBetaSurvey,
-  saveBetaWelcomeComplete,
-  shouldPromptBetaSurvey
-} from "../betaUtil";
-import { getOwletDownloadStatus, startOwletDownloadLoop } from "../owletDownloadLoop";
-import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "../owletInterface";
+} from "./ElectronConstants";
+import StateTracker, { ApplicationState, SatelliteWindowState, WindowState } from "./StateTracker";
+import UpdateChecker from "./UpdateChecker";
+import { VideoProcessor } from "./VideoProcessor";
+import { XRControls } from "./XRControls";
+import { XRServer } from "./XRServer";
+import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
+import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
+import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -261,7 +261,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "open-feedback":
-      shell.openExternal("https://github.com/" + REPOSITORY + "/issues/new/choose");
+      shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
       break;
 
     case "historical-start":
@@ -561,10 +561,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         let submenu = appMenu.items[index].submenu;
         if (submenu === undefined) return;
         if (message.name === "open-app-menu") {
+          const rect: ButtonRect = message.data.rect;
           submenu.popup({
             window: window,
-            x: message.data.coordinates[0],
-            y: message.data.coordinates[1]
+            x: rect.x + rect.width,
+            y: rect.y
           });
         } else {
           submenu.closePopup(window);
@@ -601,217 +602,223 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           }
         })
       );
+      const rect: ButtonRect = message.data.rect;
       playbackOptionsMenu.popup({
         window: window,
-        x: message.data.x,
-        y: message.data.y
+        x: rect.x + rect.width,
+        y: rect.y
       });
       break;
 
     case "ask-new-tab":
-      newTabPopup(window);
+      newTabPopup(window, message.data);
       break;
 
     case "source-list-type-prompt":
-      let uuid: string = message.data.uuid;
-      let config: SourceListConfig = message.data.config;
-      let state: SourceListItemState = message.data.state;
-      let coordinates: [number, number] = message.data.coordinates;
-      const menu = new Menu();
+      {
+        let uuid: string = message.data.uuid;
+        let config: SourceListConfig = message.data.config;
+        let state: SourceListItemState = message.data.state;
+        let rect: ButtonRect = message.data.rect;
+        const menu = new Menu();
 
-      let respond = () => {
-        sendMessage(window, "source-list-type-response", {
-          uuid: uuid,
-          state: state
-        });
-      };
+        let respond = () => {
+          sendMessage(window, "source-list-type-response", {
+            uuid: uuid,
+            state: state
+          });
+        };
 
-      // Make color icon
-      let getIcon = (value: string): Electron.NativeImage | undefined => {
-        if (!value.startsWith("#")) {
-          return undefined;
-        }
-
-        // Make icon with color
-        const size = 15;
-        const color = hex.rgb(ensureThemeContrast(value, nativeTheme.shouldUseDarkColors));
-        const png = new PNG({ width: size, height: size });
-        for (let y = 0; y < size; y++) {
-          for (let x = 0; x < size; x++) {
-            const idx = (y * size + x) * 4;
-            png.data[idx + 0] = color[0];
-            png.data[idx + 1] = color[1];
-            png.data[idx + 2] = color[2];
-            png.data[idx + 3] = 255;
+        // Make color icon
+        let getIcon = (value: string): Electron.NativeImage | undefined => {
+          if (!value.startsWith("#")) {
+            return undefined;
           }
-        }
-        const data = PNG.sync.write(png).toString("base64");
-        return nativeImage.createFromDataURL("data:image/png;base64," + data);
-      };
 
-      // Add options
-      let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
-      if (currentTypeConfig.options.length === 1) {
-        let optionConfig = currentTypeConfig.options[0];
-        optionConfig.values.forEach((optionValue) => {
-          menu.append(
-            new MenuItem({
-              label: optionValue.display,
-              type: "checkbox",
-              checked: optionValue.key === state.options[optionConfig.key],
-              icon: getIcon(optionValue.key),
-              click() {
-                state.options[optionConfig.key] = optionValue.key;
-                respond();
-              }
-            })
-          );
-        });
-      } else {
-        currentTypeConfig.options.forEach((optionConfig) => {
-          menu.append(
-            new MenuItem({
-              label: optionConfig.display,
-              submenu: optionConfig.values.map((optionValue) => {
-                return {
-                  label: optionValue.display,
-                  type: "checkbox",
-                  checked: optionValue.key === state.options[optionConfig.key],
-                  icon: getIcon(optionValue.key),
-                  click() {
-                    state.options[optionConfig.key] = optionValue.key;
-                    respond();
-                  }
-                };
+          // Make icon with color
+          const size = 15;
+          const color = hex.rgb(ensureThemeContrast(value, nativeTheme.shouldUseDarkColors));
+          const png = new PNG({ width: size, height: size });
+          for (let y = 0; y < size; y++) {
+            for (let x = 0; x < size; x++) {
+              const idx = (y * size + x) * 4;
+              png.data[idx + 0] = color[0];
+              png.data[idx + 1] = color[1];
+              png.data[idx + 2] = color[2];
+              png.data[idx + 3] = 255;
+            }
+          }
+          const data = PNG.sync.write(png).toString("base64");
+          return nativeImage.createFromDataURL("data:image/png;base64," + data);
+        };
+
+        // Add options
+        let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
+        if (currentTypeConfig.options.length === 1) {
+          let optionConfig = currentTypeConfig.options[0];
+          optionConfig.values.forEach((optionValue) => {
+            menu.append(
+              new MenuItem({
+                label: optionValue.display,
+                type: "checkbox",
+                checked: optionValue.key === state.options[optionConfig.key],
+                icon: getIcon(optionValue.key),
+                click() {
+                  state.options[optionConfig.key] = optionValue.key;
+                  respond();
+                }
               })
-            })
-          );
-        });
-      }
-
-      // Add type options
-      let validTypes = config.types.filter(
-        (typeConfig) =>
-          typeConfig.sourceTypes.includes(state.logType) && typeConfig.childOf === currentTypeConfig.childOf
-      );
-      if (validTypes.length > 1) {
-        if (menu.items.length > 0) {
-          menu.append(
-            new MenuItem({
-              type: "separator"
-            })
-          );
-        }
-        validTypes.forEach((typeConfig) => {
-          let current = state.type === typeConfig.key;
-          let optionConfig = current
-            ? undefined
-            : typeConfig.options.find((optionConfig) => optionConfig.key === typeConfig.initialSelectionOption);
-          menu.append(
-            new MenuItem({
-              label: typeConfig.display,
-              type: current ? "checkbox" : optionConfig !== undefined ? "submenu" : "normal",
-              checked: current,
-              submenu:
-                optionConfig === undefined
-                  ? undefined
-                  : optionConfig.values.map((optionValue) => {
-                      return {
-                        label: optionValue.display,
-                        icon: getIcon(optionValue.key),
-                        click() {
-                          state.type = typeConfig.key;
-                          let newOptions: { [key: string]: string } = {};
-                          typeConfig.options.forEach((optionConfig) => {
-                            if (
-                              optionConfig.key in state.options &&
-                              optionConfig.values
-                                .map((valueConfig) => valueConfig.key)
-                                .includes(state.options[optionConfig.key])
-                            ) {
-                              newOptions[optionConfig.key] = state.options[optionConfig.key];
-                            } else {
-                              newOptions[optionConfig.key] = optionConfig.values[0].key;
-                            }
-                          });
-                          state.options = newOptions;
-                          state.options[typeConfig.initialSelectionOption!] = optionValue.key;
-                          respond();
-                        }
-                      };
-                    }),
-              click:
-                optionConfig !== undefined
-                  ? undefined
-                  : () => {
-                      state.type = typeConfig.key;
-                      let newOptions: { [key: string]: string } = {};
-                      typeConfig.options.forEach((optionConfig) => {
-                        if (
-                          optionConfig.key in state.options &&
-                          optionConfig.values
-                            .map((valueConfig) => valueConfig.key)
-                            .includes(state.options[optionConfig.key])
-                        ) {
-                          newOptions[optionConfig.key] = state.options[optionConfig.key];
-                        } else {
-                          newOptions[optionConfig.key] = optionConfig.values[0].key;
-                        }
-                      });
-                      state.options = newOptions;
+            );
+          });
+        } else {
+          currentTypeConfig.options.forEach((optionConfig) => {
+            menu.append(
+              new MenuItem({
+                label: optionConfig.display,
+                submenu: optionConfig.values.map((optionValue) => {
+                  return {
+                    label: optionValue.display,
+                    type: "checkbox",
+                    checked: optionValue.key === state.options[optionConfig.key],
+                    icon: getIcon(optionValue.key),
+                    click() {
+                      state.options[optionConfig.key] = optionValue.key;
                       respond();
                     }
+                  };
+                })
+              })
+            );
+          });
+        }
+
+        // Add type options
+        let validTypes = config.types.filter(
+          (typeConfig) =>
+            typeConfig.sourceTypes.includes(state.logType) && typeConfig.childOf === currentTypeConfig.childOf
+        );
+        if (validTypes.length > 1) {
+          if (menu.items.length > 0) {
+            menu.append(
+              new MenuItem({
+                type: "separator"
+              })
+            );
+          }
+          validTypes.forEach((typeConfig) => {
+            let current = state.type === typeConfig.key;
+            let optionConfig = current
+              ? undefined
+              : typeConfig.options.find((optionConfig) => optionConfig.key === typeConfig.initialSelectionOption);
+            menu.append(
+              new MenuItem({
+                label: typeConfig.display,
+                type: current ? "checkbox" : optionConfig !== undefined ? "submenu" : "normal",
+                checked: current,
+                submenu:
+                  optionConfig === undefined
+                    ? undefined
+                    : optionConfig.values.map((optionValue) => {
+                        return {
+                          label: optionValue.display,
+                          icon: getIcon(optionValue.key),
+                          click() {
+                            state.type = typeConfig.key;
+                            let newOptions: { [key: string]: string } = {};
+                            typeConfig.options.forEach((optionConfig) => {
+                              if (
+                                optionConfig.key in state.options &&
+                                optionConfig.values
+                                  .map((valueConfig) => valueConfig.key)
+                                  .includes(state.options[optionConfig.key])
+                              ) {
+                                newOptions[optionConfig.key] = state.options[optionConfig.key];
+                              } else {
+                                newOptions[optionConfig.key] = optionConfig.values[0].key;
+                              }
+                            });
+                            state.options = newOptions;
+                            state.options[typeConfig.initialSelectionOption!] = optionValue.key;
+                            respond();
+                          }
+                        };
+                      }),
+                click:
+                  optionConfig !== undefined
+                    ? undefined
+                    : () => {
+                        state.type = typeConfig.key;
+                        let newOptions: { [key: string]: string } = {};
+                        typeConfig.options.forEach((optionConfig) => {
+                          if (
+                            optionConfig.key in state.options &&
+                            optionConfig.values
+                              .map((valueConfig) => valueConfig.key)
+                              .includes(state.options[optionConfig.key])
+                          ) {
+                            newOptions[optionConfig.key] = state.options[optionConfig.key];
+                          } else {
+                            newOptions[optionConfig.key] = optionConfig.values[0].key;
+                          }
+                        });
+                        state.options = newOptions;
+                        respond();
+                      }
+              })
+            );
+          });
+        }
+
+        if (menu.items.length === 0) {
+          menu.append(
+            new MenuItem({
+              label: "No Options",
+              enabled: false
             })
           );
-        });
-      }
+        }
 
-      if (menu.items.length === 0) {
         menu.append(
           new MenuItem({
-            label: "No Options",
-            enabled: false
+            type: "separator"
           })
         );
+        menu.append(
+          new MenuItem({
+            label: "Help",
+            click() {
+              openSourceListHelp(window, config);
+            }
+          })
+        );
+        menu.popup({
+          window: window,
+          x: Math.round(rect.x + rect.width),
+          y: Math.round(rect.y)
+        });
       }
-
-      menu.append(
-        new MenuItem({
-          type: "separator"
-        })
-      );
-      menu.append(
-        new MenuItem({
-          label: "Help",
-          click() {
-            openSourceListHelp(window, config);
-          }
-        })
-      );
-      menu.popup({
-        window: window,
-        x: coordinates[0],
-        y: coordinates[1]
-      });
       break;
 
     case "source-list-clear-prompt":
-      const clearMenu = new Menu();
-      clearMenu.append(
-        new MenuItem({
-          label: "Clear All",
-          click() {
-            sendMessage(window, "source-list-clear-response", {
-              uuid: message.data.uuid
-            });
-          }
-        })
-      );
-      clearMenu.popup({
-        window: window,
-        x: message.data.coordinates[0],
-        y: message.data.coordinates[1]
-      });
+      {
+        const clearMenu = new Menu();
+        clearMenu.append(
+          new MenuItem({
+            label: "Clear All",
+            click() {
+              sendMessage(window, "source-list-clear-response", {
+                uuid: message.data.uuid
+              });
+            }
+          })
+        );
+        const rect: ButtonRect = message.data.rect;
+        clearMenu.popup({
+          window: window,
+          x: Math.round(rect.x + rect.width),
+          y: Math.round(rect.y)
+        });
+      }
       break;
 
     case "source-list-help":
@@ -819,201 +826,205 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "ask-edit-axis":
-      let legend: string = message.data.legend;
-      const editAxisMenu = new Menu();
+      {
+        let legend: string = message.data.legend;
+        const editAxisMenu = new Menu();
 
-      if (legend === "discrete") {
-        // Discrete controls
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Add Enabled State",
-            click() {
-              sendMessage(window, "add-discrete-enabled");
-            }
-          })
-        );
-      } else {
-        // Left and right controls
-        let lockedRange: [number, number] | null = message.data.lockedRange;
-        let unitConversion: UnitConversionPreset = message.data.unitConversion;
-        let filter: LineGraphFilter = message.data.filter;
+        if (legend === "discrete") {
+          // Discrete controls
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Add Enabled State",
+              click() {
+                sendMessage(window, "add-discrete-enabled");
+              }
+            })
+          );
+        } else {
+          // Left and right controls
+          let lockedRange: [number, number] | null = message.data.lockedRange;
+          let unitConversion: UnitConversionPreset = message.data.unitConversion;
+          let filter: LineGraphFilter = message.data.filter;
 
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Lock Axis",
-            type: "checkbox",
-            checked: lockedRange !== null,
-            click() {
-              sendMessage(window, "edit-axis", {
-                legend: legend,
-                lockedRange: lockedRange === null ? [null, null] : null,
-                unitConversion: unitConversion,
-                filter: filter
-              });
-            }
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Edit Range...",
-            enabled: lockedRange !== null,
-            click() {
-              createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Lock Axis",
+              type: "checkbox",
+              checked: lockedRange !== null,
+              click() {
                 sendMessage(window, "edit-axis", {
                   legend: legend,
-                  lockedRange: newLockedRange,
+                  lockedRange: lockedRange === null ? [null, null] : null,
                   unitConversion: unitConversion,
                   filter: filter
                 });
-              });
-            }
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            type: "separator"
-          })
-        );
-        let updateRecents = (newUnitConversion: UnitConversionPreset) => {
-          let newUnitConversionStr = JSON.stringify(newUnitConversion);
-          if (newUnitConversionStr !== JSON.stringify(NoopUnitConversion)) {
-            let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
-              ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
-              : [];
-            recentUnits = recentUnits.filter((x) => JSON.stringify(x) !== newUnitConversionStr);
-            recentUnits.splice(0, 0, newUnitConversion);
-            while (recentUnits.length > MAX_RECENT_UNITS) {
-              recentUnits.pop();
-            }
-            jsonfile.writeFileSync(RECENT_UNITS_FILENAME, recentUnits);
-          }
-        };
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Edit Units...",
-            click() {
-              createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
-                sendMessage(window, "edit-axis", {
-                  legend: legend,
-                  lockedRange: lockedRange,
-                  unitConversion: newUnitConversion,
-                  filter: filter
+              }
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Edit Range...",
+              enabled: lockedRange !== null,
+              click() {
+                createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
+                  sendMessage(window, "edit-axis", {
+                    legend: legend,
+                    lockedRange: newLockedRange,
+                    unitConversion: unitConversion,
+                    filter: filter
+                  });
                 });
-                updateRecents(newUnitConversion);
-              });
+              }
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              type: "separator"
+            })
+          );
+          let updateRecents = (newUnitConversion: UnitConversionPreset) => {
+            let newUnitConversionStr = JSON.stringify(newUnitConversion);
+            if (newUnitConversionStr !== JSON.stringify(NoopUnitConversion)) {
+              let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
+                ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
+                : [];
+              recentUnits = recentUnits.filter((x) => JSON.stringify(x) !== newUnitConversionStr);
+              recentUnits.splice(0, 0, newUnitConversion);
+              while (recentUnits.length > MAX_RECENT_UNITS) {
+                recentUnits.pop();
+              }
+              jsonfile.writeFileSync(RECENT_UNITS_FILENAME, recentUnits);
             }
-          })
-        );
-        let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
-          ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
-          : [];
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Recent Presets",
-            type: "submenu",
-            enabled: recentUnits.length > 0,
-            submenu: recentUnits.map((preset) => {
-              let fromToText =
-                preset.from === undefined || preset.to === undefined
-                  ? ""
-                  : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                    " \u2192 " +
-                    preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
-              let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
-              let bothPresent = fromToText.length > 0 && factorText.length > 0;
-              return {
-                label: fromToText + (bothPresent ? ", " : "") + factorText,
-                click() {
+          };
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Edit Units...",
+              click() {
+                createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
                   sendMessage(window, "edit-axis", {
                     legend: legend,
                     lockedRange: lockedRange,
-                    unitConversion: preset,
+                    unitConversion: newUnitConversion,
                     filter: filter
                   });
-                  updateRecents(preset);
-                }
-              };
+                  updateRecents(newUnitConversion);
+                });
+              }
             })
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Reset Units",
-            enabled: JSON.stringify(unitConversion) !== JSON.stringify(NoopUnitConversion),
-            click() {
-              sendMessage(window, "edit-axis", {
-                legend: legend,
-                lockedRange: lockedRange,
-                unitConversion: NoopUnitConversion,
-                filter: filter
-              });
-            }
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            type: "separator"
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Differentiate",
-            type: "checkbox",
-            checked: filter === LineGraphFilter.Differentiate,
-            click() {
-              sendMessage(window, "edit-axis", {
-                legend: legend,
-                lockedRange: lockedRange,
-                unitConversion: unitConversion,
-                filter: filter === LineGraphFilter.Differentiate ? LineGraphFilter.None : LineGraphFilter.Differentiate
-              });
-            }
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            label: "Integrate",
-            type: "checkbox",
-            checked: filter === LineGraphFilter.Integrate,
-            click() {
-              sendMessage(window, "edit-axis", {
-                legend: legend,
-                lockedRange: lockedRange,
-                unitConversion: unitConversion,
-                filter: filter === LineGraphFilter.Integrate ? LineGraphFilter.None : LineGraphFilter.Integrate
-              });
-            }
-          })
-        );
-        editAxisMenu.append(
-          new MenuItem({
-            type: "separator"
-          })
-        );
-      }
+          );
+          let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
+            ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
+            : [];
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Recent Presets",
+              type: "submenu",
+              enabled: recentUnits.length > 0,
+              submenu: recentUnits.map((preset) => {
+                let fromToText =
+                  preset.from === undefined || preset.to === undefined
+                    ? ""
+                    : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                      " \u2192 " +
+                      preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
+                let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
+                let bothPresent = fromToText.length > 0 && factorText.length > 0;
+                return {
+                  label: fromToText + (bothPresent ? ", " : "") + factorText,
+                  click() {
+                    sendMessage(window, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: preset,
+                      filter: filter
+                    });
+                    updateRecents(preset);
+                  }
+                };
+              })
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Reset Units",
+              enabled: JSON.stringify(unitConversion) !== JSON.stringify(NoopUnitConversion),
+              click() {
+                sendMessage(window, "edit-axis", {
+                  legend: legend,
+                  lockedRange: lockedRange,
+                  unitConversion: NoopUnitConversion,
+                  filter: filter
+                });
+              }
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              type: "separator"
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Differentiate",
+              type: "checkbox",
+              checked: filter === LineGraphFilter.Differentiate,
+              click() {
+                sendMessage(window, "edit-axis", {
+                  legend: legend,
+                  lockedRange: lockedRange,
+                  unitConversion: unitConversion,
+                  filter:
+                    filter === LineGraphFilter.Differentiate ? LineGraphFilter.None : LineGraphFilter.Differentiate
+                });
+              }
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              label: "Integrate",
+              type: "checkbox",
+              checked: filter === LineGraphFilter.Integrate,
+              click() {
+                sendMessage(window, "edit-axis", {
+                  legend: legend,
+                  lockedRange: lockedRange,
+                  unitConversion: unitConversion,
+                  filter: filter === LineGraphFilter.Integrate ? LineGraphFilter.None : LineGraphFilter.Integrate
+                });
+              }
+            })
+          );
+          editAxisMenu.append(
+            new MenuItem({
+              type: "separator"
+            })
+          );
+        }
 
-      // Always include help and clear buttons
-      editAxisMenu.append(
-        new MenuItem({
-          label: "Help",
-          click() {
-            openSourceListHelp(window, message.data.config);
-          }
-        })
-      );
-      editAxisMenu.append(
-        new MenuItem({
-          label: "Clear All",
-          click() {
-            sendMessage(window, "clear-axis", legend);
-          }
-        })
-      );
-      editAxisMenu.popup({
-        window: window,
-        x: message.data.x,
-        y: message.data.y
-      });
+        // Always include help and clear buttons
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Help",
+            click() {
+              openSourceListHelp(window, message.data.config);
+            }
+          })
+        );
+        editAxisMenu.append(
+          new MenuItem({
+            label: "Clear All",
+            click() {
+              sendMessage(window, "clear-axis", legend);
+            }
+          })
+        );
+        const rect: ButtonRect = message.data.rect;
+        editAxisMenu.popup({
+          window: window,
+          x: Math.round(rect.x + rect.width),
+          y: Math.round(rect.y)
+        });
+      }
       break;
 
     case "ask-rename-tab":
@@ -1216,7 +1227,7 @@ setInterval(() => {
 }, PATHPLANNER_PING_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
-function newTabPopup(window: BrowserWindow) {
+function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
   if (!hubWindows.includes(window)) return;
   const newTabMenu = new Menu();
   getAllTabTypes()
@@ -1232,11 +1243,10 @@ function newTabPopup(window: BrowserWindow) {
         })
       );
     });
-
   newTabMenu.popup({
     window: window,
-    x: window.getBounds().width - 12,
-    y: process.platform === "win32" ? 48 : 10
+    x: rect.x + rect.width,
+    y: rect.y
   });
 }
 
@@ -2019,7 +2029,13 @@ function setupMenu() {
           accelerator: "CmdOrCtrl+T",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
-            if (window) newTabPopup(window);
+            if (window)
+              newTabPopup(window, {
+                x: window.getBounds().width - 12,
+                y: process.platform === "win32" ? 48 : 10,
+                width: 0,
+                height: 0
+              });
           }
         },
         {
@@ -2181,7 +2197,7 @@ function setupMenu() {
         {
           label: "Report a Problem",
           click() {
-            shell.openExternal("https://github.com/" + REPOSITORY + "/issues");
+            shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues");
           }
         },
         {
@@ -2193,7 +2209,7 @@ function setupMenu() {
         {
           label: "GitHub Repository",
           click() {
-            shell.openExternal("https://github.com/" + REPOSITORY);
+            shell.openExternal("https://github.com/" + GITHUB_REPOSITORY);
           }
         },
         {
@@ -3260,12 +3276,16 @@ if (process.platform === "linux") {
 
 app.whenReady().then(() => {
   // Check preferences and set theme
+  let defaultPrefs = DEFAULT_PREFS;
+  if (process.platform === "linux") {
+    defaultPrefs.theme = "light";
+  }
   if (!fs.existsSync(PREFS_FILENAME)) {
-    jsonfile.writeFileSync(PREFS_FILENAME, DEFAULT_PREFS);
-    nativeTheme.themeSource = DEFAULT_PREFS.theme;
+    jsonfile.writeFileSync(PREFS_FILENAME, defaultPrefs);
+    nativeTheme.themeSource = defaultPrefs.theme;
   } else {
     let oldPrefs = jsonfile.readFileSync(PREFS_FILENAME);
-    let prefs = DEFAULT_PREFS;
+    let prefs = defaultPrefs;
     if (
       "theme" in oldPrefs &&
       (oldPrefs.theme === "light" || oldPrefs.theme === "dark" || oldPrefs.theme === "system")

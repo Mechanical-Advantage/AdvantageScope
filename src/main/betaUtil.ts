@@ -4,8 +4,8 @@ import jsonfile from "jsonfile";
 import path from "path";
 import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
 import { scaleValue } from "../shared/util";
-import { APP_VERSION } from "./Constants";
 import { BETA_CONFIG } from "./betaConfig";
+import { APP_VERSION } from "./electron/ElectronConstants";
 
 const BETA_STATE_FILENAME =
   BETA_CONFIG === null ? null : path.join(app.getPath("userData"), "beta-" + BETA_CONFIG.year + ".json");

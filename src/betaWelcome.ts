@@ -7,7 +7,7 @@ function updateDisable() {
 }
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
 
     CHECKBOXES.forEach((checkbox) => {

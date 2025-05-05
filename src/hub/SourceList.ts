@@ -1,3 +1,4 @@
+import ButtonRect from "../shared/ButtonRect";
 import { ensureThemeContrast } from "../shared/Colors";
 import {
   SourceListConfig,
@@ -61,7 +62,7 @@ export default class SourceList {
     root: HTMLElement,
     config: SourceListConfig,
     supplementalStateSuppliers: (() => SourceListState)[],
-    editButtonCallback?: (coordinates: [number, number]) => void,
+    editButtonCallback?: (rect: ButtonRect) => void,
     getNumberPreview?: (key: string, time: number) => number | null
   ) {
     this.config = jsonCopy(config);
@@ -132,16 +133,25 @@ export default class SourceList {
     // Edit button
     this.EDIT_BUTTON.addEventListener("click", () => {
       let rect = this.EDIT_BUTTON.getBoundingClientRect();
-      let coordinates: [number, number] = [Math.round(rect.right), Math.round(rect.top)];
       if (editButtonCallback !== undefined) {
-        editButtonCallback(coordinates);
+        editButtonCallback({
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        });
       }
     });
     this.CLEAR_BUTTON.addEventListener("click", () => {
       let rect = this.CLEAR_BUTTON.getBoundingClientRect();
       window.sendMainMessage("source-list-clear-prompt", {
         uuid: this.UUID,
-        coordinates: [Math.round(rect.right), Math.round(rect.top)]
+        rect: {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        }
       });
       SourceList.clearPromptCallbacks[this.UUID] = () => {
         delete SourceList.clearPromptCallbacks[this.UUID];
@@ -748,13 +758,13 @@ export default class SourceList {
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    let promptType = (coordinates: [number, number]) => {
+    let promptType = (rect: ButtonRect) => {
       let index = Array.from(this.LIST.children).indexOf(item);
       window.sendMainMessage("source-list-type-prompt", {
         uuid: this.UUID,
         config: this.config,
         state: this.state[index],
-        coordinates: coordinates
+        rect: rect
       });
       let originalType = this.state[index].type;
       SourceList.typePromptCallbacks[this.UUID] = (newState) => {
@@ -786,11 +796,21 @@ export default class SourceList {
     };
     typeButton.addEventListener("click", () => {
       let rect = typeButton.getBoundingClientRect();
-      promptType([Math.round(rect.right), Math.round(rect.top)]);
+      promptType({
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+      });
     });
     item.addEventListener("contextmenu", (event) => {
       this.mouseDownInfo = null; // Prevent dragging
-      promptType([event.clientX, event.clientY]);
+      promptType({
+        x: event.clientX,
+        y: event.clientY,
+        width: 0,
+        height: 0
+      });
     });
 
     // Warning button
