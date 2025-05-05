@@ -11,8 +11,27 @@ on:
     types: [published]
 
 jobs:
-  compile:
-    name: Check & Compile
+  check-formatting:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
+      - name: Check formatting
+        run: npm run check-format
+
+  compile-frc6328:
+    name: Compile for FRC 6328
     runs-on: ubuntu-latest
 
     steps:
@@ -29,37 +48,79 @@ jobs:
         run: npm ci
         env:
           ASCOPE_NO_FFMPEG: true
-      - name: Check formatting
-        run: npm run check-format
       - name: Compile WebAssembly
         run: npm run wasm:compile
-      - name: Compile bundles (FRC 6328)
+      - name: Compile bundles
         run: npm run compile
-      - name: Upload bundles (FRC 6328)
+      - name: Upload bundles
         uses: actions/upload-artifact@v4
         with:
           name: bundles
           path: |
             bundles/*.js
             bundles/*.wasm
-      - name: Compile bundles (WPILib)
+
+  compile-wpilib:
+    name: Compile for WPILib
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
+      - name: Compile WebAssembly
+        run: npm run wasm:compile
+      - name: Compile bundles
         run: npm run compile
         env:
           ASCOPE_DISTRIBUTION: WPILIB
-      - name: Upload bundles (WPILib)
+      - name: Upload bundles
         uses: actions/upload-artifact@v4
         with:
           name: bundles-wpilib
           path: |
             bundles/*.js
             bundles/*.wasm
-      - name: Compile bundles (Lite)
+
+  compile-lite:
+    name: Compile for Lite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
+      - name: Compile WebAssembly
+        run: npm run wasm:compile
+      - name: Compile bundles
         run: npm run compile
         env:
           ASCOPE_DISTRIBUTION: LITE
-      - name: Prepare Lite bundle
+      - name: Build documentation
+        run: npm run docs:build-embed
+      - name: Prepare artifact
         run: mv lite lite-tmp && cp -rL lite-tmp lite
-      - name: Upload Lite
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: lite
@@ -79,7 +140,7 @@ jobs:
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
-    needs: compile
+    needs: compile-frc6328
     runs-on: windows-latest
 
     strategy:
@@ -136,7 +197,7 @@ jobs:
 
   build-mac:
     name: Build for macOS (${{ matrix.arch }})
-    needs: compile
+    needs: compile-frc6328
     runs-on: macos-latest
 
     strategy:
@@ -204,7 +265,7 @@ jobs:
 
   build-linux:
     name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
-    needs: compile
+    needs: compile-frc6328
     runs-on: ubuntu-latest
 
     strategy:
@@ -281,7 +342,7 @@ jobs:
 
   build-wpilib-win:
     name: "WPILib: Build for Windows (${{ matrix.arch }})"
-    needs: compile
+    needs: compile-wpilib
     runs-on: windows-latest
 
     strategy:
@@ -342,7 +403,7 @@ jobs:
 
   build-wpilib-mac:
     name: "WPILib: Build for macOS (${{ matrix.arch }})"
-    needs: compile
+    needs: compile-wpilib
     runs-on: macos-latest
 
     strategy:
@@ -416,7 +477,7 @@ jobs:
 
   build-wpilib-linux:
     name: "WPILib: Build for Linux (${{ matrix.arch }})"
-    needs: compile
+    needs: compile-wpilib
     runs-on: ubuntu-latest
 
     strategy:
