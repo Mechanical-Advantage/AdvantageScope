@@ -37,7 +37,6 @@ export default class Field2dController implements TabController {
 
   private sourceList: SourceList;
 
-  private bumperSetting: "auto" | "blue" | "red" = "auto";
   private orientationSetting = Orientation.DEG_0;
   private sizeSetting: "large" | "medium" | "small" = "large";
 
@@ -143,7 +142,6 @@ export default class Field2dController implements TabController {
     return {
       sources: this.sourceList.getState(),
       field: this.FIELD_SELECT.value,
-      bumpers: this.bumperSetting,
       orientation: this.orientationSetting,
       size: this.sizeSetting
     };
@@ -161,9 +159,6 @@ export default class Field2dController implements TabController {
       if (this.FIELD_SELECT.value === "") {
         this.FIELD_SELECT.selectedIndex = 0;
       }
-    }
-    if ("bumpers" in state && (state.bumpers === "auto" || state.bumpers === "blue" || state.bumpers === "red")) {
-      this.bumperSetting = state.bumpers;
     }
     if (
       "orientation" in state &&
@@ -445,7 +440,7 @@ export default class Field2dController implements TabController {
             poses: poses,
             trails: trails,
             bumperColor:
-              source.options.bumpers === "auto" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumpers,
+              source.options.bumpers === "" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumpers,
             visionTargets: visionTargets,
             swerveStates: swerveStates
           });
