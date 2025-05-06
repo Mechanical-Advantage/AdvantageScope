@@ -10,6 +10,7 @@ const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
 const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
+const FIELD_3D_MODE_AC_LABEL = document.getElementById("field3dModeAcLabel") as HTMLElement;
 const FIELD_3D_MODE_BATTERY = document.getElementById("field3dModeBattery") as HTMLInputElement;
 const FIELD_3D_ANTIALIASING = document.getElementById("field3dAntialiasing") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
@@ -46,6 +47,7 @@ window.addEventListener("message", (event) => {
 
         case "lite":
           document.body.classList.add("lite");
+          FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
           let i = 0;
           while (i < LIVE_MODE.childElementCount) {
             let option = LIVE_MODE.children[i] as HTMLOptionElement;
