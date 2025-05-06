@@ -1,4 +1,5 @@
 import { SelectionMode } from "../Selection";
+import { Distribution, DISTRIBUTION } from "../buildConstants";
 import LogField from "../log/LogField";
 import { arraysEqual, formatTimeWithMS, htmlEncode } from "../util";
 import TabRenderer from "./TabRenderer";
@@ -48,6 +49,11 @@ export default class ConsoleRenderer implements TabRenderer {
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild?.firstElementChild as HTMLElement;
     this.FIELD_DELETE = this.FIELD_CELL.firstElementChild?.lastElementChild as HTMLButtonElement;
     this.HAND_ICON = root.getElementsByClassName("large-table-hand-icon")[0] as HTMLElement;
+
+    // Hide export button for Lite
+    if (DISTRIBUTION === Distribution.Lite && this.EXPORT_BUTTON !== null) {
+      this.EXPORT_BUTTON.hidden = true;
+    }
 
     // Jump input handling
     let jump = () => {
