@@ -181,7 +181,7 @@ function initHub() {
       typeof event.target === "object" &&
       "tagName" in event.target &&
       typeof event.target.tagName === "string" &&
-      event.target.tagName.toLowerCase() === "input"
+      (event.target.tagName.toLowerCase() === "input" || event.target.tagName.toLowerCase() === "select")
     ) {
       // Input, allow propagation
       return;
