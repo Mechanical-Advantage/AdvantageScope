@@ -56,14 +56,6 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     }
   }
 
-  stop() {
-    super.stop();
-    window.sendMainMessage("live-ftcdashboard-stop");
-  }
-  handleMainMessage(data: any) {
-    // do nothing
-  }
-
   ping() {
     if (!this.socket) {
       return;
@@ -147,6 +139,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     if (!this.log) {
       return;
     }
+    let foundPoses = new Map<string, Pose2d>();
     for (const name of Object.getOwnPropertyNames(obj)) {
       let data = obj[name];
       let key = path + name;
@@ -169,12 +162,52 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
           this.log.putNumber(key, timestamp, Number(data));
           break;
       }
+      // this is pretty evil
+      // looking for better solutions...
+      // TODO it also doesn't work
+      let label = name.split(" ").slice(0, -2).join(" ") + " Pose";
+      if (name.endsWith(" x") || name === "x") {
+        if (!foundPoses.has(name)) {
+          foundPoses.set(label, { translation: [Number(data) / 39.37008, 0], rotation: 0 });
+        } else {
+          let cur = foundPoses.get(name)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: [Number(data) / 39.37008, cur.translation.at(1)],
+            rotation: cur.rotation
+          });
+        }
+      }
+      if (name.endsWith(" y") || name === "y") {
+        if (!foundPoses.has(name)) {
+          foundPoses.set(name, { translation: [0, Number(data) / 39.37008], rotation: 0 });
+        } else {
+          let cur = foundPoses.get(name)!!;
+          foundPoses.set(name, <Pose2d>{
+            translation: [cur.translation.at(0), Number(data) / 39.37008],
+            rotation: cur.rotation
+          });
+        }
+      }
+      if (name.endsWith(" heading") || name === "heading") {
+        if (!foundPoses.has(name)) {
+          foundPoses.set(name, { translation: [0, 0], rotation: Number(data) });
+        } else {
+          let cur = foundPoses.get(name)!!;
+          foundPoses.set(name, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
+        }
+      }
+      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
+        if (!foundPoses.has(name)) {
+          foundPoses.set(name, { translation: [0, 0], rotation: (Number(data) * 2 * Math.PI) / 360 });
+        } else {
+          let cur = foundPoses.get(name)!!;
+          foundPoses.set(name, <Pose2d>{ translation: cur.translation, rotation: (Number(data) * 2 * Math.PI) / 360 });
+        }
+      }
     }
-    if (Object.hasOwn(obj, "x") && Object.hasOwn(obj, "y")) {
-      this.log.putPose("Pose", timestamp, <Pose2d>{
-        translation: [Number(obj.x) / 39.37008, Number(obj.y) / 39.37008],
-        rotation: Object.hasOwn(obj, "heading") ? Number(obj.heading) : 0.0
-      });
+
+    for (const name of foundPoses.keys()) {
+      this.log.putPose(name, timestamp, foundPoses.get(name)!!);
     }
   }
 
@@ -233,14 +266,12 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
       return;
     }
     let path = key.split("/");
-    console.log("configPath", path);
     if (path[0] === "" && path[1] === "_Config") {
       path = path.slice(2);
     } else {
       return;
     }
     let saveAction: SaveConfigAction = { type: "SAVE_CONFIG", configDiff: this.generateConfigDiff(path, value) };
-    console.log("saveAction", saveAction);
     let saveMsg = JSON.stringify(saveAction);
     this.socket!!.send(saveMsg);
   }
@@ -269,7 +300,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     // do nothing (not possible for FTCDashboard)
   }
 
-  getTuner(): LiveDataTuner | null {
+  getTuner(): LiveDataTuner {
     return this;
   }
 }
