@@ -8,6 +8,14 @@ body {
   }
 }
 
+body.lite .hide-lite {
+  display: none;
+}
+
+body.lite .show-lite {
+  display: initial;
+}
+
 table {
   position: absolute;
   top: 10px;

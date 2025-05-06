@@ -14,7 +14,7 @@
   <body>
     <table>
       <tbody>
-        <tr>
+        <tr class="hide-lite">
           <td class="label">Application Theme</td>
           <td class="input" tabindex="-1">
             <select id="theme">
@@ -24,7 +24,7 @@
             </select>
           </td>
         </tr>
-        <tr>
+        <tr class="hide-lite">
           <td class="label">roboRIO Address</td>
           <td class="input" tabindex="-1">
             <input type="text" id="rioAddress" />
@@ -68,7 +68,7 @@
             </select>
           </td>
         </tr>
-        <tr>
+        <tr class="hide-lite">
           <td class="label">NT Publish Prefixes</td>
           <td class="input" tabindex="-1">
             <input type="text" id="publishFilter" />
@@ -87,7 +87,8 @@
           </td>
         </tr>
         <tr>
-          <td class="label">3D Mode (Default)</td>
+          <td class="label hide-lite">3D Mode (Default)</td>
+          <td class="label show-lite">3D Mode</td>
           <td class="input" tabindex="-1">
             <select id="field3dModeAc">
               <option value="cinematic">Cinematic</option>
@@ -96,7 +97,7 @@
             </select>
           </td>
         </tr>
-        <tr>
+        <tr class="hide-lite">
           <td class="label">3D Mode (Battery)</td>
           <td class="input" tabindex="-1">
             <select id="field3dModeBattery">
@@ -116,7 +117,7 @@
             </select>
           </td>
         </tr>
-        <tr>
+        <tr class="hide-lite">
           <td class="label">TBA API Key</td>
           <td class="input" tabindex="-1">
             <input type="text" id="tbaApiKey" />

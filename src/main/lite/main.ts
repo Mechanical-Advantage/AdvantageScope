@@ -4,7 +4,7 @@ import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import { DEFAULT_PREFS } from "../../shared/Preferences";
+import { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
   getAllTabTypes,
@@ -57,7 +57,7 @@ popupMenu.on("close", () => {
  * @param size The dimensions of the popup
  * @param type Whether the dimensions are fixed pixel values or percentages
  * @param messageCallback Callback for incoming messages
- * @returns // The message port for outgoing messages
+ * @returns The message port for outgoing messages
  */
 function openPopupWindow(
   path: string,
@@ -97,17 +97,11 @@ function openPopupWindow(
 
 /** Close any open popup windows */
 function closePopupWindow() {
-  POPUP_FRAME.onload = null;
   window.onclick = null;
+  POPUP_FRAME.onload = null;
   POPUP_FRAME.hidden = true;
+  POPUP_FRAME.src = "";
   HUB_FRAME.classList.remove("background");
-}
-
-/** Opens a popup window for source list help. */
-function openSourceListHelp(config: SourceListConfig) {
-  openPopupWindow("www/sourceListHelp.html", [30, 65], "percent").then((port) => {
-    sendMessage(port, "set-config", config);
-  });
 }
 
 /**
@@ -124,6 +118,30 @@ function sendMessage(port: MessagePort | null, name: string, data?: any): boolea
     return false;
   }
   return true;
+}
+
+/** Opens a popup window for source list help. */
+function openSourceListHelp(config: SourceListConfig) {
+  openPopupWindow("www/sourceListHelp.html", [30, 65], "percent").then((port) => {
+    sendMessage(port, "set-config", config);
+  });
+}
+
+/** Opens a popup window for preferences. */
+function openPreferences() {
+  const width = 400;
+  const rows = 7;
+  const height = rows * 27 + 54;
+  openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
+    closePopupWindow();
+    sendMessage(hubPort, "set-preferences", message);
+    localStorage.setItem("AdvantageScopeLite/prefs", JSON.stringify(message));
+  }).then((port) => {
+    let prefs = DEFAULT_PREFS;
+    let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
+    if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+    port.postMessage({ platform: "lite", prefs: prefs });
+  });
 }
 
 function initHub() {
@@ -143,7 +161,10 @@ function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
-  sendMessage(hubPort, "set-preferences", DEFAULT_PREFS);
+  let prefs = DEFAULT_PREFS;
+  let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
+  if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+  sendMessage(hubPort, "set-preferences", prefs);
   let typeMemory = localStorage.getItem("AdvantageScopeLite/type-memory");
   if (typeMemory !== null) sendMessage(hubPort, "restore-type-memory", JSON.parse(typeMemory));
   let state = localStorage.getItem("AdvantageScopeLite/state");
@@ -318,7 +339,7 @@ function handleHubMessage(message: NamedMessage) {
               {
                 content: `Show Preferences (\u21e7 ${modifier} ,)`,
                 callback() {
-                  // TODO
+                  openPreferences();
                 }
               },
               {
@@ -811,7 +832,7 @@ window.addEventListener("load", () => {
     } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
       sendMessage(hubPort, "close-tab", false);
     } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
-      // TODO
+      openPreferences();
     } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
       triggered = false;
       getAllTabTypes()

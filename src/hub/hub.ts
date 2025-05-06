@@ -281,7 +281,7 @@ window.requestAnimationFrame(periodic);
 // DATA SOURCE HANDLING
 
 function checkLiveAutoStart() {
-  if (DISTRIBUTION == Distribution.Lite && window.preferences !== null) {
+  if (DISTRIBUTION == Distribution.Lite && window.preferences !== null && !liveActive) {
     startLive();
   }
 }

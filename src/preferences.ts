@@ -1,5 +1,5 @@
 import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
-import Preferences from "./shared/Preferences";
+import Preferences, { LITE_ALLOWED_LIVE_MODES } from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
 const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;
@@ -37,10 +37,25 @@ window.addEventListener("message", (event) => {
       let oldPrefs: Preferences = event.data.prefs;
 
       // Update values
-      if (platform === "linux") {
-        (THEME.children[0] as HTMLElement).hidden = true;
-        (THEME.children[1] as HTMLElement).innerText = "Light";
-        (THEME.children[2] as HTMLElement).innerText = "Dark";
+      switch (platform) {
+        case "linux":
+          (THEME.children[0] as HTMLElement).hidden = true;
+          (THEME.children[1] as HTMLElement).innerText = "Light";
+          (THEME.children[2] as HTMLElement).innerText = "Dark";
+          break;
+
+        case "lite":
+          document.body.classList.add("lite");
+          let i = 0;
+          while (i < LIVE_MODE.childElementCount) {
+            let option = LIVE_MODE.children[i] as HTMLOptionElement;
+            if ((LITE_ALLOWED_LIVE_MODES as string[]).includes(option.value)) {
+              i++;
+            } else {
+              LIVE_MODE.removeChild(option);
+            }
+          }
+          break;
       }
       THEME.value = oldPrefs.theme;
       RIO_ADDRESS.value = oldPrefs.rioAddress;

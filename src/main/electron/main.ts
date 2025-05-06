@@ -31,7 +31,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, { DEFAULT_PREFS } from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
@@ -3276,136 +3276,17 @@ if (process.platform === "linux") {
 
 app.whenReady().then(() => {
   // Check preferences and set theme
-  let defaultPrefs = DEFAULT_PREFS;
+  let prefs = DEFAULT_PREFS;
   if (process.platform === "linux") {
-    defaultPrefs.theme = "light";
+    prefs.theme = "light";
   }
   if (!fs.existsSync(PREFS_FILENAME)) {
-    jsonfile.writeFileSync(PREFS_FILENAME, defaultPrefs);
-    nativeTheme.themeSource = defaultPrefs.theme;
+    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+    nativeTheme.themeSource = prefs.theme;
   } else {
-    let oldPrefs = jsonfile.readFileSync(PREFS_FILENAME);
-    let prefs = defaultPrefs;
-    if (
-      "theme" in oldPrefs &&
-      (oldPrefs.theme === "light" || oldPrefs.theme === "dark" || oldPrefs.theme === "system")
-    ) {
-      prefs.theme = oldPrefs.theme;
-    }
-    if ("rioAddress" in oldPrefs && typeof oldPrefs.rioAddress === "string") {
-      prefs.rioAddress = oldPrefs.rioAddress;
-    }
-    if ("address" in oldPrefs && typeof oldPrefs.address === "string") {
-      // Migrate from v1
-      prefs.rioAddress = oldPrefs.address;
-    }
-    if ("rioPath" in oldPrefs && typeof oldPrefs.rioPath === "string") {
-      prefs.rioPath = oldPrefs.rioPath;
-    }
-    if (
-      "liveMode" in oldPrefs &&
-      (oldPrefs.liveMode === "nt4" ||
-        oldPrefs.liveMode === "nt4-akit" ||
-        oldPrefs.liveMode === "phoenix" ||
-        oldPrefs.liveMode === "pathplanner" ||
-        oldPrefs.liveMode === "rlog")
-    ) {
-      prefs.liveMode = oldPrefs.liveMode;
-    }
-    if (
-      "liveSubscribeMode" in oldPrefs &&
-      (oldPrefs.liveSubscribeMode === "low-bandwidth" || oldPrefs.liveSubscribeMode === "logging")
-    ) {
-      prefs.liveSubscribeMode = oldPrefs.liveSubscribeMode;
-    }
-    if ("liveDiscard" in oldPrefs && typeof oldPrefs.liveDiscard === "number") {
-      prefs.liveDiscard = oldPrefs.liveDiscard;
-    }
-    if ("publishFilter" in oldPrefs && typeof oldPrefs.publishFilter === "string") {
-      prefs.publishFilter = oldPrefs.publishFilter;
-    }
-    if ("rlogPort" in oldPrefs && typeof oldPrefs.rlogPort === "number") {
-      prefs.rlogPort = oldPrefs.rlogPort;
-    }
-    if (
-      "coordinateSystem" in oldPrefs &&
-      (oldPrefs.coordinateSystem === "automatic" ||
-        oldPrefs.coordinateSystem === "wall-alliance" ||
-        oldPrefs.coordinateSystem === "wall-blue" ||
-        oldPrefs.coordinateSystem === "center-rotated" ||
-        oldPrefs.coordinateSystem === "center-red")
-    ) {
-      prefs.coordinateSystem = oldPrefs.coordinateSystem;
-    }
-    if (
-      "threeDimensionModeAc" in oldPrefs &&
-      (oldPrefs.threeDimensionModeAc === "cinematic" ||
-        oldPrefs.threeDimensionModeAc === "standard" ||
-        oldPrefs.threeDimensionModeAc === "low-power")
-    ) {
-      // Migrate from v4
-      prefs.field3dModeAc = oldPrefs.threeDimensionModeAc;
-    }
-    if (
-      "threeDimensionModeBattery" in oldPrefs &&
-      (oldPrefs.threeDimensionModeBattery === "" ||
-        oldPrefs.threeDimensionModeBattery === "cinematic" ||
-        oldPrefs.threeDimensionModeBattery === "standard" ||
-        oldPrefs.threeDimensionModeBattery === "low-power")
-    ) {
-      // Migrate from v4
-      prefs.field3dModeBattery = oldPrefs.threeDimensionModeBattery;
-    }
-    if (
-      "field3dModeAc" in oldPrefs &&
-      (oldPrefs.field3dModeAc === "cinematic" ||
-        oldPrefs.field3dModeAc === "standard" ||
-        oldPrefs.field3dModeAc === "low-power")
-    ) {
-      prefs.field3dModeAc = oldPrefs.field3dModeAc;
-    }
-    if (
-      "field3dModeBattery" in oldPrefs &&
-      (oldPrefs.field3dModeBattery === "" ||
-        oldPrefs.field3dModeBattery === "cinematic" ||
-        oldPrefs.field3dModeBattery === "standard" ||
-        oldPrefs.field3dModeBattery === "low-power")
-    ) {
-      prefs.field3dModeBattery = oldPrefs.field3dModeBattery;
-    }
-    if (
-      "field3dAntialiasing" in oldPrefs &&
-      (oldPrefs.field3dAntialiasing === "on" || oldPrefs.field3dAntialiasing === "off")
-    ) {
-      prefs.field3dAntialiasing = oldPrefs.field3dAntialiasing;
-    }
-    if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
-      prefs.tbaApiKey = oldPrefs.tbaApiKey;
-    }
-    if (
-      "userAssetsFolder" in oldPrefs &&
-      typeof oldPrefs.userAssetsFolder === "string" &&
-      fs.existsSync(oldPrefs.userAssetsFolder)
-    ) {
-      prefs.userAssetsFolder = oldPrefs.userAssetsFolder;
-    }
-    if ("skipHootNonProWarning" in oldPrefs && typeof oldPrefs.skipHootNonProWarning === "boolean") {
-      prefs.skipHootNonProWarning = oldPrefs.skipHootNonProWarning;
-    }
-    if (
-      "skipNumericArrayDeprecationWarning" in oldPrefs &&
-      typeof oldPrefs.skipNumericArrayDeprecationWarning === "boolean"
-    ) {
-      prefs.skipNumericArrayDeprecationWarning = oldPrefs.skipNumericArrayDeprecationWarning;
-    }
-    if ("skipFrcLogFolderDefault" in oldPrefs && typeof oldPrefs.skipFrcLogFolderDefault === "boolean") {
-      prefs.skipFrcLogFolderDefault = oldPrefs.skipFrcLogFolderDefault;
-    }
-    if ("skipXRExperimentalWarning" in oldPrefs && typeof oldPrefs.skipXRExperimentalWarning === "boolean") {
-      prefs.skipXRExperimentalWarning = oldPrefs.skipXRExperimentalWarning;
-    }
-    if ("ctreLicenseAccepted" in oldPrefs && typeof oldPrefs.ctreLicenseAccepted === "boolean") {
-      prefs.ctreLicenseAccepted = oldPrefs.ctreLicenseAccepted;
+    mergePreferences(prefs, jsonfile.readFileSync(PREFS_FILENAME));
+    if (prefs.userAssetsFolder !== null && !fs.existsSync(prefs.userAssetsFolder)) {
+      prefs.userAssetsFolder = null;
     }
     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
     nativeTheme.themeSource = prefs.theme;
