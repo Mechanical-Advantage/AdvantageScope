@@ -45,6 +45,9 @@ export const DEFAULT_PREFS: Preferences = {
   skipXRExperimentalWarning: false,
   ctreLicenseAccepted: false
 };
+
+// Phoenix not possible due to cross origin restrictions
+// PathPlanner and RLOG not possible because they use raw TCP
 export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
