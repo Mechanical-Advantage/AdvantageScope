@@ -118,6 +118,8 @@ jobs:
           ASCOPE_DISTRIBUTION: LITE
       - name: Build documentation
         run: npm run docs:build-embed
+        env:
+          ASCOPE_DISTRIBUTION: LITE
       - name: Prepare artifact
         run: mv lite lite-tmp && cp -rL lite-tmp lite
       - name: Upload artifact
