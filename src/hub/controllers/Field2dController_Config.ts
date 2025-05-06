@@ -13,8 +13,7 @@ const Field2dController_Config: SourceListConfig = {
       display: "Robot",
       symbol: "location.fill",
       showInTypeName: true,
-      color: "#000000",
-      darkColor: "#ffffff",
+      color: "bumpers",
       sourceTypes: [
         "Pose2d",
         "Pose3d",
@@ -31,7 +30,7 @@ const Field2dController_Config: SourceListConfig = {
           key: "bumpers",
           display: "Bumpers",
           showInTypeName: false,
-          values: [{ key: "auto", display: "Alliance Color" }, ...NeonColors]
+          values: [{ key: "", display: "Alliance Color" }, ...NeonColors]
         }
       ],
       parentKey: "robot",
@@ -42,8 +41,7 @@ const Field2dController_Config: SourceListConfig = {
       display: "Robot",
       symbol: "location.fill",
       showInTypeName: true,
-      color: "#000000",
-      darkColor: "#ffffff",
+      color: "bumpers",
       sourceTypes: ["NumberArray"],
       showDocs: false,
       options: [
@@ -51,7 +49,7 @@ const Field2dController_Config: SourceListConfig = {
           key: "bumpers",
           display: "Bumpers",
           showInTypeName: false,
-          values: [{ key: "auto", display: "Alliance Color" }, ...NeonColors]
+          values: [{ key: "", display: "Alliance Color" }, ...NeonColors]
         },
         {
           key: "format",
