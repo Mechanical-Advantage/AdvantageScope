@@ -149,6 +149,11 @@ export default class RRLOGDecoder {
                 typeof msg === "bigint"
               ) {
                 this.lastTimestamp = rrTimeToInt(msg);
+                if (key === "OPMODE_PRE_START") {
+                  log.putBoolean("RUNNING", this.lastTimestamp, true);
+                } else if (key === "OPMODE_POST_STOP") {
+                  log.putBoolean("RUNNING", this.lastTimestamp, false);
+                }
 
                 // blindly guessing, this works with roadrunner's built in writing, hopefully others follow the standard
               } else if (msg instanceof Map && msg.has("timestamp")) {
