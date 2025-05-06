@@ -556,6 +556,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "close-app-menu":
       {
         let index: number = message.data.index;
+        if (index >= 2) index++; // Account for edit menu
         let appMenu = Menu.getApplicationMenu();
         if (appMenu === null || index >= appMenu.items.length) return;
         let submenu = appMenu.items[index].submenu;
@@ -1715,6 +1716,117 @@ function setupMenu() {
 
   const template: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [
     {
+      role: isMac ? "appMenu" : undefined,
+      label: isMac ? "" : "App",
+      submenu: [
+        {
+          label: "About AdvantageScope",
+          click() {
+            createAboutWindow();
+          }
+        },
+        ...(isMac ? [{ type: "separator" as const }] : []),
+        {
+          label: isMac ? "Settings..." : "Show Preferences...",
+          accelerator: "CmdOrCtrl+,",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined) return;
+            openPreferences(window);
+          }
+        },
+        ...(DISTRIBUTION === Distribution.FRC6328
+          ? [
+              {
+                label: "Check for Updates...",
+                click() {
+                  checkForUpdate(true);
+                }
+              }
+            ]
+          : []),
+        {
+          label: "Show Licenses...",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined) return;
+            openLicenses(window);
+          }
+        },
+        { type: "separator" },
+        {
+          label: "Show Assets Folder",
+          click() {
+            shell.openPath(getUserAssetsPath());
+          }
+        },
+        {
+          label: "Use Custom Assets Folder",
+          type: "checkbox",
+          checked: prefs.userAssetsFolder !== null,
+          async click(item) {
+            const isCustom = item.checked;
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            if (isCustom) {
+              let result = await dialog.showOpenDialog({
+                title: "Select folder containing custom AdvantageScope assets",
+                buttonLabel: "Open",
+                properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
+              });
+              if (result.filePaths.length >= 1) {
+                prefs.userAssetsFolder = result.filePaths[0];
+              }
+            } else {
+              prefs.userAssetsFolder = null;
+            }
+            item.checked = prefs.userAssetsFolder !== null;
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            advantageScopeAssets = loadAssets();
+            sendAllPreferences();
+            sendAssets();
+          }
+        },
+        {
+          label: "Asset Download Status...",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "About",
+              message: "Asset Download Status",
+              detail: getAssetDownloadStatus(),
+              buttons: ["Close"],
+              icon: WINDOW_ICON
+            });
+          }
+        },
+        {
+          label: "Owlet Download Status...",
+          click() {
+            dialog.showMessageBox({
+              type: "info",
+              title: "About",
+              message: "Owlet Download Status",
+              detail: getOwletDownloadStatus(),
+              buttons: ["Close"],
+              icon: WINDOW_ICON
+            });
+          }
+        },
+        ...(isMac
+          ? ([
+              { type: "separator" },
+              { role: "services" },
+              { type: "separator" },
+              { role: "hide" },
+              { role: "hideOthers" },
+              { role: "unhide" },
+              { type: "separator" },
+              { role: "quit" }
+            ] as const)
+          : [])
+      ]
+    },
+    {
       label: "File",
       submenu: [
         {
@@ -1963,6 +2075,7 @@ function setupMenu() {
       ]
     },
     { role: "editMenu" },
+
     {
       role: "viewMenu",
       submenu: [
@@ -2136,65 +2249,6 @@ function setupMenu() {
       role: "help",
       submenu: [
         {
-          label: "Show Assets Folder",
-          click() {
-            shell.openPath(getUserAssetsPath());
-          }
-        },
-        {
-          label: "Use Custom Assets Folder",
-          type: "checkbox",
-          checked: prefs.userAssetsFolder !== null,
-          async click(item) {
-            const isCustom = item.checked;
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-            if (isCustom) {
-              let result = await dialog.showOpenDialog({
-                title: "Select folder containing custom AdvantageScope assets",
-                buttonLabel: "Open",
-                properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
-              });
-              if (result.filePaths.length >= 1) {
-                prefs.userAssetsFolder = result.filePaths[0];
-              }
-            } else {
-              prefs.userAssetsFolder = null;
-            }
-            item.checked = prefs.userAssetsFolder !== null;
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            advantageScopeAssets = loadAssets();
-            sendAllPreferences();
-            sendAssets();
-          }
-        },
-        {
-          label: "Asset Download Status...",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Asset Download Status",
-              detail: getAssetDownloadStatus(),
-              buttons: ["Close"],
-              icon: WINDOW_ICON
-            });
-          }
-        },
-        {
-          label: "Owlet Download Status...",
-          click() {
-            dialog.showMessageBox({
-              type: "info",
-              title: "About",
-              message: "Owlet Download Status",
-              detail: getOwletDownloadStatus(),
-              buttons: ["Close"],
-              icon: WINDOW_ICON
-            });
-          }
-        },
-        { type: "separator" },
-        {
           label: "Report a Problem",
           click() {
             shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues");
@@ -2227,95 +2281,6 @@ function setupMenu() {
       ]
     }
   ];
-
-  if (isMac) {
-    template.splice(0, 0, {
-      role: "appMenu",
-      submenu: [
-        {
-          label: "About AdvantageScope",
-          click() {
-            createAboutWindow();
-          }
-        },
-        { type: "separator" },
-        {
-          label: "Settings...",
-          accelerator: "Cmd+,",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined) return;
-            openPreferences(window);
-          }
-        },
-        ...(DISTRIBUTION === Distribution.FRC6328
-          ? [
-              {
-                label: "Check for Updates...",
-                click() {
-                  checkForUpdate(true);
-                }
-              }
-            ]
-          : []),
-        {
-          label: "Show Licenses...",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined) return;
-            openLicenses(window);
-          }
-        },
-        { type: "separator" },
-        { role: "services" },
-        { type: "separator" },
-        { role: "hide" },
-        { role: "hideOthers" },
-        { role: "unhide" },
-        { type: "separator" },
-        { role: "quit" }
-      ]
-    });
-  } else {
-    (template[template.length - 1].submenu as Electron.MenuItemConstructorOptions[]).splice(
-      0,
-      0,
-      {
-        label: "About AdvantageScope",
-        click() {
-          createAboutWindow();
-        }
-      },
-      {
-        label: "Show Preferences...",
-        accelerator: "Ctrl+,",
-        click(_, baseWindow) {
-          const window = baseWindow as BrowserWindow | undefined;
-          if (window === undefined) return;
-          openPreferences(window);
-        }
-      },
-      ...(DISTRIBUTION === Distribution.FRC6328
-        ? [
-            {
-              label: "Check for Updates...",
-              click() {
-                checkForUpdate(true);
-              }
-            }
-          ]
-        : []),
-      {
-        label: "Show Licenses...",
-        click(_, baseWindow) {
-          const window = baseWindow as BrowserWindow | undefined;
-          if (window === undefined) return;
-          openLicenses(window);
-        }
-      },
-      { type: "separator" }
-    );
-  }
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
@@ -2388,7 +2353,7 @@ function createHubWindow(state?: WindowState) {
       if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
       break;
     case "win32":
-      // Skip background material on Windows until https://github.com/electron/electron/issues/41824 is fixed
+      // Skip background material on Windows until https://github.com/electron/electron/issues/46753 is fixed
       //
       // let releaseSplit = os.release().split(".");
       // if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {

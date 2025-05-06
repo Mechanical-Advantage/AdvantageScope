@@ -683,14 +683,24 @@ async function handleMainMessage(message: NamedMessage) {
         let enabledData = getEnabledData(window.log);
         let range = window.log.getTimestampRange();
         let firstEnableIndex = enabledData === null ? -1 : enabledData.values.findIndex((value) => value);
-        let lastDisableIndex = enabledData === null ? -1 : enabledData.values.findLastIndex((value) => !value);
+        let lastDisableIndex = -1;
         if (firstEnableIndex !== -1) {
           range[0] = enabledData!.timestamps[firstEnableIndex];
+
+          lastDisableIndex = enabledData === null ? -1 : enabledData.values.findLastIndex((value) => !value);
+          if (
+            enabledData !== null &&
+            enabledData.values.length > 0 &&
+            enabledData.values[enabledData.values.length - 1]
+          ) {
+            // Last value was enabled
+            lastDisableIndex = -1;
+          }
+          if (lastDisableIndex < firstEnableIndex) lastDisableIndex = -1;
+          if (lastDisableIndex !== -1) range[1] = enabledData!.timestamps[lastDisableIndex];
         }
-        if (lastDisableIndex !== -1) {
-          range[1] = enabledData!.timestamps[lastDisableIndex];
-        }
-        window.selection.setTimelineRange(range, firstEnableIndex === -1 && lastDisableIndex === -1);
+        window.selection.unlock();
+        window.selection.setTimelineRange(range, false);
       }
       break;
 
