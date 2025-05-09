@@ -1,6 +1,6 @@
 {
   "ignore": [
-    "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.h|*.metal)",
+    "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.c|*.h|*.metal)",
     "bundles",
     "docs/build",
     "docs/.docusaurus",
@@ -9,7 +9,7 @@
   ],
   "license": "license-header.txt",
   "licenseFormats": {
-    "js|ts|mjs|tsx|swift|h|metal": {
+    "js|ts|mjs|tsx|swift|c|h|metal": {
       "append": "",
       "eachLine": {
         "prepend": "// "
