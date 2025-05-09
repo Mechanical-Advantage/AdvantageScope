@@ -12,9 +12,11 @@ BUNDLED_ASSETS_PATH = os.path.abspath(os.path.join(ROOT, "bundledAssets"))
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
+        # Don't serve directly since all assets are available under "/assets"
         if self.path.startswith("/bundledAssets"):
             self.send_error(404, "File not found.")
 
+        # Serve list of asset files
         elif self.path == "/assets" or self.path == "/assets/":
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
@@ -37,6 +39,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             json_string = json.dumps(asset_file_list, separators=(',', ':'))
             self.wfile.write(json_string.encode('utf-8'))
 
+        # Serve asset files (bundled or extra)
         elif self.path.startswith("/assets"):
             asset_path = self.path[(len("/assets") + 1):]
             extra_asset_path = os.path.join(EXTRA_ASSETS_PATH, asset_path)
@@ -61,12 +64,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     return
             self.send_error(404, "File not found")
 
+        # Serve everything else
         else:
             super().do_GET()
 
 
 if __name__ == "__main__":
-    # Check for extra assets path
+    # Create extra assets folder
     if not os.path.exists(EXTRA_ASSETS_PATH):
         os.mkdir(EXTRA_ASSETS_PATH)
         print(f"Created folder for extra assets: {EXTRA_ASSETS_PATH}")
