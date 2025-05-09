@@ -2,6 +2,7 @@
 /dist
 /bundles
 /lite/bundles
+/lite/bundledAssets
 /ffmpeg
 /src/licenses.json
 /ThirdPartyLicenses.txt
