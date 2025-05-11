@@ -1,4 +1,5 @@
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
+import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
@@ -15,6 +16,7 @@ import {
 } from "../../shared/TabType";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
+import { loadAssets } from "./assetLoader";
 
 let HUB_FRAME: HTMLIFrameElement;
 let POPUP_FRAME: HTMLIFrameElement;
@@ -23,6 +25,7 @@ let MENU_ANCHOR: HTMLElement;
 
 let hubPort: MessagePort | null = null;
 let popupMenu = new TinyPopupMenu();
+let assetsPromise: Promise<AdvantageScopeAssets>;
 
 /**
  * Open a new popup menu
@@ -144,7 +147,7 @@ function openPreferences() {
   });
 }
 
-function initHub() {
+async function initHub() {
   // Create message ports
   const channel = new MessageChannel();
   HUB_FRAME.contentWindow?.postMessage("port", "*", [channel.port1]);
@@ -165,6 +168,7 @@ function initHub() {
   let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
   sendMessage(hubPort, "set-preferences", prefs);
+  sendMessage(hubPort, "set-assets", await assetsPromise);
   let typeMemory = localStorage.getItem("AdvantageScopeLite/type-memory");
   if (typeMemory !== null) sendMessage(hubPort, "restore-type-memory", JSON.parse(typeMemory));
   let state = localStorage.getItem("AdvantageScopeLite/state");
@@ -216,6 +220,10 @@ function handleHubMessage(message: NamedMessage) {
       if ((typeMemoryRaw === null || originalTypeMemoryStr) !== newTypeMemoryStr) {
         localStorage.setItem("AdvantageScopeLite/type-memory", JSON.stringify(typeMemory));
       }
+      break;
+
+    case "open-link":
+      window.open(message.data, "_blank");
       break;
 
     case "open-app-menu":
@@ -780,6 +788,127 @@ function handleHubMessage(message: NamedMessage) {
       }
       break;
 
+    case "ask-3d-camera":
+      {
+        let position: [number, number] = message.data.position;
+        let options: string[] = message.data.options;
+        let selectedIndex: number = message.data.selectedIndex;
+        let fov: number = message.data.fov;
+        let isFTC: boolean = message.data.isFTC;
+
+        let menuItems: (MenuItem | Submenu | "-")[] = [
+          {
+            content: (selectedIndex === -1 ? "\u2714 " : "") + "Orbit Field",
+            callback() {
+              sendMessage(hubPort, "set-3d-camera", -1);
+            }
+          },
+          {
+            content: (selectedIndex === -2 ? "\u2714 " : "") + "Orbit Robot",
+            callback() {
+              sendMessage(hubPort, "set-3d-camera", -2);
+            }
+          },
+          {
+            content: isFTC ? "Driver View" : "Driver Station",
+            items: isFTC
+              ? [
+                  {
+                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue Left",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -4);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue Right",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -5);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Red Left",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -6);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red Right",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -7);
+                    }
+                  }
+                ]
+              : [
+                  {
+                    content: (selectedIndex === -3 ? "\u2714 " : "") + "Auto",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -3);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue 1",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -4);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue 2",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -5);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Blue 3",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -6);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red 1",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -7);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -8 ? "\u2714 " : "") + "Red 2",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -8);
+                    }
+                  },
+                  {
+                    content: (selectedIndex === -9 ? "\u2714 " : "") + "Red 3",
+                    callback() {
+                      sendMessage(hubPort, "set-3d-camera", -9);
+                    }
+                  }
+                ]
+          },
+          {
+            content: "Set FOV",
+            async callback() {
+              let port = await openPopupWindow("www/editFov.html", [300, 81], "pixels", (message) => {
+                closePopupWindow();
+                sendMessage(hubPort, "edit-fov", message);
+              });
+              port.postMessage(fov);
+            }
+          }
+        ];
+        if (options.length > 0) {
+          menuItems.push("-");
+        }
+        options.forEach((option, index) => {
+          menuItems.push({
+            content: (index === selectedIndex ? "\u2714 " : "") + option,
+            callback() {
+              sendMessage(hubPort, "set-3d-camera", index);
+            }
+          });
+        });
+        openMenu({ x: position[0], y: position[1], width: 0, height: 0 }, menuItems);
+      }
+      break;
+
     default:
       console.warn("Unknown message from hub", message);
       break;
@@ -788,6 +917,9 @@ function handleHubMessage(message: NamedMessage) {
 
 // Get elements on page load
 window.addEventListener("load", () => {
+  // Load assets
+  assetsPromise = loadAssets();
+
   // Get HTML elements
   HUB_FRAME = document.getElementsByClassName("hub-frame")[0] as HTMLIFrameElement;
   POPUP_FRAME = document.getElementsByClassName("popup-frame")[0] as HTMLIFrameElement;
@@ -867,5 +999,16 @@ window.addEventListener("load", () => {
         })
       );
     }
+  });
+  window.addEventListener("keyup", (event) => {
+    HUB_FRAME.contentWindow?.dispatchEvent(
+      new KeyboardEvent("keyup", {
+        key: event.key,
+        code: event.code,
+        metaKey: event.metaKey,
+        ctrlKey: event.ctrlKey,
+        altKey: event.altKey
+      })
+    );
   });
 });

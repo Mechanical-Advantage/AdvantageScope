@@ -4,6 +4,8 @@ import socketserver
 import os
 import json
 
+import urllib
+
 PORT = 6328
 ROOT = "lite"
 EXTRA_ASSETS_PATH = os.path.abspath("ascope_assets")
@@ -41,7 +43,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Serve asset files (bundled or extra)
         elif self.path.startswith("/assets"):
-            asset_path = self.path[(len("/assets") + 1):]
+            asset_path = urllib.parse.unquote(self.path[(len("/assets") + 1):])
             extra_asset_path = os.path.join(EXTRA_ASSETS_PATH, asset_path)
             bundled_asset_path = os.path.join(BUNDLED_ASSETS_PATH, asset_path)
             for path in [extra_asset_path, bundled_asset_path]:

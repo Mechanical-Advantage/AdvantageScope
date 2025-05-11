@@ -36,7 +36,6 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
-import { createAssetFolders, getUserAssetsPath, loadAssets } from "../assetsUtil";
 import {
   delayBetaSurvey,
   isBeta,
@@ -81,7 +80,8 @@ import UpdateChecker from "./UpdateChecker";
 import { VideoProcessor } from "./VideoProcessor";
 import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
-import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetsDownload";
+import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
+import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -1068,6 +1068,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "ask-3d-camera":
       select3DCameraPopup(
         window,
+        message.data.position,
         message.data.options,
         message.data.selectedIndex,
         message.data.fov,
@@ -1253,6 +1254,7 @@ function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
 
 function select3DCameraPopup(
   window: BrowserWindow,
+  position: [number, number],
   options: string[],
   selectedIndex: number,
   fov: number,
@@ -1281,7 +1283,7 @@ function select3DCameraPopup(
   );
   cameraMenu.append(
     new MenuItem({
-      label: isFTC ? "Driver Perspective" : "Driver Station",
+      label: isFTC ? "Driver View" : "Driver Station",
       submenu: isFTC
         ? [
             {
@@ -1407,7 +1409,9 @@ function select3DCameraPopup(
     );
   });
   cameraMenu.popup({
-    window: window
+    window: window,
+    x: Math.round(position[0]),
+    y: Math.round(position[1])
   });
 }
 
@@ -2902,6 +2906,7 @@ function createSatellite(
         case "ask-3d-camera":
           select3DCameraPopup(
             satellite,
+            message.data.position,
             message.data.options,
             message.data.selectedIndex,
             message.data.fov,

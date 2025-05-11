@@ -176,6 +176,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         let cameraList = robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => camera.name);
         window.sendMainMessage("ask-3d-camera", {
           options: cameraList,
+          position: [event.clientX, event.clientY],
           selectedIndex: this.cameraIndex >= cameraList.length ? CameraIndexEnum.OrbitField : this.cameraIndex,
           fov: this.orbitFov,
           isFTC: this.fieldConfigCache !== null && this.fieldConfigCache.isFTC
@@ -263,13 +264,15 @@ export default class Field3dRendererImpl implements TabRenderer {
 
     // Create key bindings
     window.addEventListener("keydown", (event) => {
+      console.log(event);
       if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
       if (event.target !== document.body && event.target !== window) return;
       if (canvasContainer.clientHeight === 0) return;
       this.keysPressed.add(event.code);
     });
     window.addEventListener("keyup", (event) => {
-      if (event.target !== document.body) return;
+      console.log(event);
+      if (event.target !== document.body && event.target !== window) return;
       this.keysPressed.delete(event.code);
     });
   }
