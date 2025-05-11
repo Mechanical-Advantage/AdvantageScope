@@ -96,16 +96,15 @@ function handleMainMessage(message: NamedMessage) {
       // Set error text
       console.warn(message.data);
       let friendlyText = "";
-      if (message.data === "No such file") {
-        friendlyText = "Failed to open log folder at <u>" + preferences?.rioPath + "</u>";
-      } else if (message.data === "Timed out while waiting for handshake") {
+      if (message.data === "No files") {
+        friendlyText = `No files found in folder <u>${preferences?.rioPath}</u> (check path)`;
+      } else if (
+        message.data.includes("ENETUNREACH") ||
+        message.data.includes("EHOSTDOWN") ||
+        message.data.includes("ENOTFOUND") ||
+        message.data.toLowerCase().includes("timeout")
+      ) {
         friendlyText = "roboRIO not found at <u>" + address + "</u> (check connection)";
-      } else if (message.data.includes("ENOTFOUND")) {
-        friendlyText = "Unknown address <u>" + address + "</u>";
-      } else if (message.data === "All configured authentication methods failed") {
-        friendlyText = "Failed to authenticate to roboRIO at <u>" + address + "</u>";
-      } else if (message.data === "Not connected") {
-        friendlyText = "Lost connection to roboRIO";
       } else {
         friendlyText = "Unknown error: " + message.data;
       }
@@ -307,8 +306,10 @@ window.addEventListener("keydown", (event) => {
     } else {
       // Select all
       selectedFiles = [...filenames];
-      Array.from(FILE_LIST_ITEMS.children).forEach((row) => {
-        row.classList.add("selected");
+      Array.from(FILE_LIST_ITEMS.children).forEach((row, index) => {
+        if (index < filenames.length) {
+          row.classList.add("selected");
+        }
       });
     }
   }
