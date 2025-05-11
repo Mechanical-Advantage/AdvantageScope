@@ -201,6 +201,11 @@ function handleHubMessage(message: NamedMessage) {
       HUB_FRAME.style.opacity = "100%";
       break;
 
+    case "alert":
+    case "error":
+      window.alert(message.data.content);
+      break;
+
     case "save-state":
       localStorage.setItem("AdvantageScopeLite/state", JSON.stringify(message.data));
       break;
@@ -220,6 +225,10 @@ function handleHubMessage(message: NamedMessage) {
       if ((typeMemoryRaw === null || originalTypeMemoryStr) !== newTypeMemoryStr) {
         localStorage.setItem("AdvantageScopeLite/type-memory", JSON.stringify(typeMemory));
       }
+      break;
+
+    case "open-feedback":
+      window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
       break;
 
     case "open-link":
