@@ -1480,20 +1480,8 @@ function downloadStart() {
                       .map((file) => {
                         return {
                           name: file.name,
-                          size: file.size,
-                          randomized:
-                            file.name.includes("TBD") || // WPILib DataLogManager
-                            (file.name.startsWith("Log_") && !file.name.includes("-")) // AdvantageKit
+                          size: file.size
                         };
-                      })
-                      .sort((a, b) => {
-                        if (a.randomized && !b.randomized) {
-                          return 1;
-                        } else if (!a.randomized && b.randomized) {
-                          return -1;
-                        } else {
-                          return -a.name.localeCompare(b.name);
-                        }
                       })
                   );
                 }

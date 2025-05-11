@@ -1,3 +1,4 @@
+import { DISTRIBUTION, Distribution } from "./shared/buildConstants";
 import { USB_ADDRESS } from "./shared/IPAddresses";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
@@ -19,7 +20,7 @@ let messagePort: MessagePort | null = null;
 let platform: string = "";
 let preferences: Preferences | null = null;
 
-let address: string = "";
+let address: string = DISTRIBUTION === Distribution.Lite ? window.location.hostname : "";
 let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;
@@ -55,12 +56,14 @@ function handleMainMessage(message: NamedMessage) {
       preferences = message.data;
       let path = "";
       if (preferences) {
-        address = preferences.usb ? USB_ADDRESS : preferences.rioAddress;
-        // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
-        address = address
-          .split(".")
-          .map((part) => part.replace(/^0+/, "") || "0")
-          .join(".");
+        if (DISTRIBUTION !== Distribution.Lite) {
+          address = preferences.usb ? USB_ADDRESS : preferences.rioAddress;
+          // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
+          address = address
+            .split(".")
+            .map((part) => part.replace(/^0+/, "") || "0")
+            .join(".");
+        }
         path = preferences.rioPath;
       }
       sendMainMessage("start", {
@@ -98,7 +101,7 @@ function handleMainMessage(message: NamedMessage) {
       let friendlyText = "";
       if (message.data === "No such file") {
         friendlyText = "Failed to open log folder at <u>" + preferences?.rioPath + "</u>";
-      } else if (message.data === "Timed out while waiting for handshake") {
+      } else if (message.data === "Timed out while waiting for handshake" || message.data === "Fetch failed") {
         friendlyText = "roboRIO not found at <u>" + address + "</u> (check connection)";
       } else if (message.data.includes("ENOTFOUND")) {
         friendlyText = "Unknown address <u>" + address + "</u>";
@@ -181,8 +184,24 @@ function handleMainMessage(message: NamedMessage) {
         FILE_LIST_ITEMS.removeChild(FILE_LIST_ITEMS.firstChild);
       }
 
+      // Get and sort filenames
+      let fileData: { name: string; size: number }[] = message.data;
+      let isRandomized = (name: string): boolean =>
+        name.includes("TBD") || // WPILib DataLogManager
+        ((name.startsWith("Log_") || name.startsWith("akit_")) && !name.includes("-")); // AdvantageKit
+      fileData.sort((a, b) => {
+        let aRandomized = isRandomized(a.name);
+        let bRandomized = isRandomized(b.name);
+        if (aRandomized && !bRandomized) {
+          return 1;
+        } else if (!aRandomized && bRandomized) {
+          return -1;
+        } else {
+          return -a.name.localeCompare(b.name);
+        }
+      });
+
       // Add new list items
-      let fileData: { name: string; size: number; randomized: boolean }[] = message.data;
       filenames = fileData.map((file) => file.name);
       fileData.forEach((file, index) => {
         let item = document.createElement("div");
@@ -233,6 +252,9 @@ function handleMainMessage(message: NamedMessage) {
           case "linux":
           case "win32":
             img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
+            break;
+          case "lite":
+            img.src = "/icons/" + extension + "-icon.png";
             break;
         }
         let filenameSpan = document.createElement("span");
@@ -297,7 +319,11 @@ DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     save();
-  } else if (event.key === "a" && (platform === "darwin" ? event.metaKey : event.ctrlKey)) {
+  } else if (
+    DISTRIBUTION !== Distribution.Lite &&
+    event.key === "a" &&
+    (platform === "darwin" ? event.metaKey : event.ctrlKey)
+  ) {
     if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];
@@ -311,5 +337,11 @@ window.addEventListener("keydown", (event) => {
         row.classList.add("selected");
       });
     }
+  }
+});
+window.addEventListener("load", () => {
+  if (DISTRIBUTION === Distribution.Lite) {
+    (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = true;
+    (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = false;
   }
 });
