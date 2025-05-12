@@ -104,6 +104,7 @@ let isExporting = false;
 let logFriendlyName: string | null = null;
 let liveActive = false;
 let liveConnected = false;
+let liveAutoStartComplete = false;
 
 let dragActive = false;
 let dragOffsetX = 0;
@@ -288,8 +289,9 @@ window.requestAnimationFrame(periodic);
 // DATA SOURCE HANDLING
 
 function checkLiveAutoStart() {
-  if (DISTRIBUTION == Distribution.Lite && window.preferences !== null && !liveActive) {
+  if (DISTRIBUTION == Distribution.Lite && window.preferences !== null && !liveAutoStartComplete) {
     startLive();
+    liveAutoStartComplete = true;
   }
 }
 
