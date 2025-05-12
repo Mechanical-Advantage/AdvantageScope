@@ -357,7 +357,7 @@ export default class Field2dRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.swerveStates, object.color);
+              drawRobot(pose.pose, object.swerveStates, undefined, object.color);
             });
             break;
           case "arrow":
