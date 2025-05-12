@@ -3200,14 +3200,23 @@ app.whenReady().then(() => {
       prefs.theme = oldPrefs.theme;
     }
     if ("rioAddress" in oldPrefs && typeof oldPrefs.rioAddress === "string") {
-      prefs.rioAddress = oldPrefs.rioAddress;
+      // Migrate from v4
+      prefs.robotAddress = oldPrefs.rioAddress;
+    }
+    if ("robotAddress" in oldPrefs && typeof oldPrefs.robotAddress === "string") {
+      prefs.robotAddress = oldPrefs.robotAddress;
     }
     if ("address" in oldPrefs && typeof oldPrefs.address === "string") {
       // Migrate from v1
-      prefs.rioAddress = oldPrefs.address;
+      prefs.robotAddress = oldPrefs.address;
     }
     if ("rioPath" in oldPrefs && typeof oldPrefs.rioPath === "string") {
-      prefs.rioPath = oldPrefs.rioPath;
+      // Migrate from v4
+      prefs.remotePath = oldPrefs.rioPath;
+    }
+    if ("remotePath" in oldPrefs && typeof oldPrefs.remotePath === "string") {
+      // Migrate from v4
+      prefs.remotePath = oldPrefs.remotePath;
     }
     if (
       "liveMode" in oldPrefs &&

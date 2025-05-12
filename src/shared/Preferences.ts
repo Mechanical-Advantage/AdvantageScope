@@ -10,8 +10,8 @@ import { CoordinateSystem } from "./AdvantageScopeAssets";
 /** A set of application preferences. */
 export default interface Preferences {
   theme: "light" | "dark" | "system";
-  rioAddress: string;
-  rioPath: string;
+  robotAddress: string;
+  remotePath: string;
   liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog";
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;

@@ -433,7 +433,7 @@ function startLive(isSim: boolean) {
     address = USB_ADDRESS;
   } else {
     if (window.preferences) {
-      address = window.preferences.rioAddress;
+      address = window.preferences.robotAddress;
     }
   }
 

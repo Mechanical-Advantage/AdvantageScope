@@ -62,13 +62,13 @@ function handleMainMessage(message: NamedMessage) {
       preferences = message.data;
       let path = "";
       if (preferences) {
-        address = preferences.usb ? USB_ADDRESS : preferences.rioAddress;
+        address = preferences.usb ? USB_ADDRESS : preferences.robotAddress;
         // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
         address = address
           .split(".")
           .map((part) => part.replace(/^0+/, "") || "0")
           .join(".");
-        path = preferences.rioPath;
+        path = preferences.remotePath;
       }
       sendMainMessage("start", {
         address: address,
@@ -104,14 +104,14 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No files") {
-        friendlyText = `No files found in folder <u>${preferences?.rioPath}</u> (check path)`;
+        friendlyText = `No files found in folder <u>${preferences?.remotePath}</u> (check path)`;
       } else if (
         message.data.includes("ENETUNREACH") ||
         message.data.includes("EHOSTDOWN") ||
         message.data.includes("ENOTFOUND") ||
         message.data.toLowerCase().includes("timeout")
       ) {
-        friendlyText = "roboRIO not found at <u>" + address + "</u> (check connection)";
+        friendlyText = `Robot not found at <u>${address}</u> (check connection)`;
       } else {
         friendlyText = "Unknown error: " + message.data;
       }
