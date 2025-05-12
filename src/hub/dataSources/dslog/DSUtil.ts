@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 /** Converts from a LabView timestamp to a normal unix time. */
 export function convertLVTime(seconds: bigint, fractional: bigint): number {
   let time = -2082826800; // 1904/1/1
