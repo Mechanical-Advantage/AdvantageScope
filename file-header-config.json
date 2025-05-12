@@ -7,7 +7,7 @@
     "runOwletDownload.js",
     "src/hub/dataSources/schema/spark/*"
   ],
-  "license": "license-header.txt",
+  "license": "file-header.txt",
   "licenseFormats": {
     "js|ts|mjs|tsx|swift|c|h|metal": {
       "append": "",
