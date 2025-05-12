@@ -195,4 +195,4 @@ The 3D field supports three rendering modes:
 
 To configure the rendering mode, open the preferences window by pressing clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
 
-<img src={PrefsImage} alt="Diagram of roboRIO preferences" height="350" />
+<img src={PrefsImage} alt="Diagram of preferences" height="350" />

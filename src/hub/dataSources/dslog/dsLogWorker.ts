@@ -36,7 +36,7 @@ self.onmessage = async (event) => {
       log.putNumber("/DSLog/TripTimeMS", entry.timestamp, entry.tripTimeMs);
       log.putNumber("/DSLog/PacketLoss", entry.timestamp, entry.packetLoss);
       log.putNumber("/DSLog/BatteryVoltage", entry.timestamp, entry.batteryVolts);
-      log.putNumber("/DSLog/RioCPUUtilization", entry.timestamp, entry.rioCpuUtilization);
+      log.putNumber("/DSLog/CPUUtilization", entry.timestamp, entry.cpuUtilization);
       log.putBoolean("/DSLog/Status/Brownout", entry.timestamp, entry.brownout);
       log.putBoolean("/DSLog/Status/Watchdog", entry.timestamp, entry.watchdog);
       log.putBoolean("/DSLog/Status/DSTeleop", entry.timestamp, entry.dsTeleop);

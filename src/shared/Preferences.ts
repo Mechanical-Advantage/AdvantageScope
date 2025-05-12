@@ -10,8 +10,8 @@ import { CoordinateSystem } from "./AdvantageScopeAssets";
 /** A set of application preferences. */
 export default interface Preferences {
   theme: "light" | "dark" | "system";
-  rioAddress: string;
-  rioPath: string;
+  robotAddress: string;
+  remotePath: string;
   liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog";
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
@@ -61,15 +61,23 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
     basePrefs.theme = newPrefs.theme;
   }
-  if ("rioAddress" in newPrefs && typeof newPrefs.rioAddress === "string") {
-    basePrefs.rioAddress = newPrefs.rioAddress;
-  }
   if ("address" in newPrefs && typeof newPrefs.address === "string") {
     // Migrate from v1
-    basePrefs.rioAddress = newPrefs.address;
+    basePrefs.robotAddress = newPrefs.address;
+  }
+  if ("rioAddress" in newPrefs && typeof newPrefs.rioAddress === "string") {
+    // Migrate from v4
+    basePrefs.robotAddress = newPrefs.rioAddress;
+  }
+  if ("robotAddress" in newPrefs && typeof newPrefs.robotAddress === "string") {
+    basePrefs.robotAddress = newPrefs.robotAddress;
   }
   if ("rioPath" in newPrefs && typeof newPrefs.rioPath === "string") {
-    basePrefs.rioPath = newPrefs.rioPath;
+    // Migrate from v4
+    basePrefs.remotePath = newPrefs.rioPath;
+  }
+  if ("remotePath" in newPrefs && typeof newPrefs.remotePath === "string") {
+    basePrefs.remotePath = newPrefs.remotePath;
   }
   if (
     "liveMode" in newPrefs &&

@@ -64,14 +64,14 @@ function handleMainMessage(message: NamedMessage) {
       let path = "";
       if (preferences) {
         if (DISTRIBUTION !== Distribution.Lite) {
-          address = preferences.usb ? USB_ADDRESS : preferences.rioAddress;
+          address = preferences.usb ? USB_ADDRESS : preferences.robotAddress;
           // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
           address = address
             .split(".")
             .map((part) => part.replace(/^0+/, "") || "0")
             .join(".");
         }
-        path = preferences.rioPath;
+        path = preferences.remotePath;
       }
       sendMainMessage("start", {
         address: address,
@@ -107,9 +107,9 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No such file") {
-        friendlyText = `Failed to open log folder at <u>${preferences?.rioPath}</u>`;
+        friendlyText = `Failed to open log folder at <u>${preferences?.remotePath}</u>`;
       } else if (message.data === "No files") {
-        friendlyText = `No files found in folder <u>${preferences?.rioPath}</u> (check path)`;
+        friendlyText = `No files found in folder <u>${preferences?.remotePath}</u> (check path)`;
       } else if (
         message.data.includes("ENETUNREACH") ||
         message.data.includes("EHOSTDOWN") ||
@@ -117,7 +117,7 @@ function handleMainMessage(message: NamedMessage) {
         message.data.toLowerCase().includes("timeout") ||
         message.data === "Fetch failed"
       ) {
-        friendlyText = "roboRIO not found at <u>" + address + "</u> (check connection)";
+        friendlyText = `Robot not found at <u>${address}</u> (check connection)`;
       } else {
         friendlyText = "Unknown error: " + message.data;
       }
