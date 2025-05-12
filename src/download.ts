@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { DISTRIBUTION, Distribution } from "./shared/buildConstants";
 import { USB_ADDRESS } from "./shared/IPAddresses";
 import NamedMessage from "./shared/NamedMessage";
@@ -100,15 +107,17 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No such file") {
-        friendlyText = "Failed to open log folder at <u>" + preferences?.rioPath + "</u>";
-      } else if (message.data === "Timed out while waiting for handshake" || message.data === "Fetch failed") {
+        friendlyText = `Failed to open log folder at <u>${preferences?.rioPath}</u>`;
+      } else if (message.data === "No files") {
+        friendlyText = `No files found in folder <u>${preferences?.rioPath}</u> (check path)`;
+      } else if (
+        message.data.includes("ENETUNREACH") ||
+        message.data.includes("EHOSTDOWN") ||
+        message.data.includes("ENOTFOUND") ||
+        message.data.toLowerCase().includes("timeout") ||
+        message.data === "Fetch failed"
+      ) {
         friendlyText = "roboRIO not found at <u>" + address + "</u> (check connection)";
-      } else if (message.data.includes("ENOTFOUND")) {
-        friendlyText = "Unknown address <u>" + address + "</u>";
-      } else if (message.data === "All configured authentication methods failed") {
-        friendlyText = "Failed to authenticate to roboRIO at <u>" + address + "</u>";
-      } else if (message.data === "Not connected") {
-        friendlyText = "Lost connection to roboRIO";
       } else {
         friendlyText = "Unknown error: " + message.data;
       }
@@ -333,8 +342,10 @@ window.addEventListener("keydown", (event) => {
     } else {
       // Select all
       selectedFiles = [...filenames];
-      Array.from(FILE_LIST_ITEMS.children).forEach((row) => {
-        row.classList.add("selected");
+      Array.from(FILE_LIST_ITEMS.children).forEach((row, index) => {
+        if (index < filenames.length) {
+          row.classList.add("selected");
+        }
       });
     }
   }

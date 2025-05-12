@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import fs from "fs";
 import fetch from "node-fetch";
 import path from "path";
@@ -14,7 +21,10 @@ Object.keys(packageLock.packages).forEach(async (modulePath) => {
     .readdirSync(modulePath === "" ? "." : modulePath)
     .filter(
       (filename) =>
-        filename.toLowerCase().startsWith("license") && !filename.endsWith(".js") && !filename.endsWith(".json")
+        filename.toLowerCase().startsWith("license") &&
+        !filename.endsWith(".js") &&
+        !filename.endsWith(".json") &&
+        !filename.includes("header")
     );
   let licenseText = null;
   if (licenseFiles.length > 0) {

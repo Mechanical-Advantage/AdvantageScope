@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
@@ -11,6 +18,8 @@ import replaceRegEx from "rollup-plugin-re";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+const licenseHeader =
+  "// Copyright (c) Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
 function bundle(input, output, isMain, isXRClient, external = []) {
   const packageJson = JSON.parse(
@@ -22,7 +31,8 @@ function bundle(input, output, isMain, isXRClient, external = []) {
     input: "src/" + input,
     output: {
       file: (isLite ? "lite/" : "") + "bundles/" + output,
-      format: isMain ? "cjs" : "es"
+      format: isMain ? "cjs" : "es",
+      banner: licenseHeader
     },
     context: "this",
     external: external,
@@ -111,7 +121,7 @@ const mainBundles = isLite
         "ws",
         "http",
         "path",
-        "ssh2",
+        "basic-ftp",
         "download",
         "ytdl-core",
         "tesseract.js"
