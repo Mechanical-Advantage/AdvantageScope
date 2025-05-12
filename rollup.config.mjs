@@ -17,7 +17,7 @@ import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
 const licenseHeader =
-  "// Copyright (c) Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
+  "// Copyright (c) 2021-2025 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
 function bundle(input, output, isMain, isXRClient, external = []) {
   const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
