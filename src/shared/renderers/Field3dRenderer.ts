@@ -19,6 +19,7 @@ export default class Field3dRenderer implements TabRenderer {
 
   private implementation: Field3dRendererImpl | null = null;
   private lastMode: "cinematic" | "standard" | "low-power" | null = null;
+  private lastUseAA = true;
   private stateRestoreCache: unknown | null = null;
 
   constructor(root: HTMLElement) {
@@ -64,9 +65,15 @@ export default class Field3dRenderer implements TabRenderer {
       }
     }
 
+    let useAA = true;
+    if (window.preferences) {
+      useAA = window.preferences.field3dAntialiasing;
+    }
+
     // Recreate visualizer if necessary
-    if (mode !== this.lastMode && mode !== null) {
+    if ((mode !== this.lastMode || useAA != this.lastUseAA) && mode !== null) {
       this.lastMode = mode;
+      this.lastUseAA = useAA;
       let state: any = null;
       if (this.implementation !== null) {
         state = this.implementation.saveState();
@@ -81,7 +88,14 @@ export default class Field3dRenderer implements TabRenderer {
         this.CANVAS.replaceWith(newCanvas);
         this.CANVAS = newCanvas;
       }
-      this.implementation = new Field3dRendererImpl(mode, this.CANVAS, this.CANVAS_CONTAINER, this.ALERT, this.SPINNER);
+      this.implementation = new Field3dRendererImpl(
+        mode,
+        useAA,
+        this.CANVAS,
+        this.CANVAS_CONTAINER,
+        this.ALERT,
+        this.SPINNER
+      );
       if (this.stateRestoreCache !== null) {
         this.implementation.restoreState(this.stateRestoreCache);
         this.stateRestoreCache = null;

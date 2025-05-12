@@ -147,6 +147,7 @@ export default class Field3dRendererImpl implements TabRenderer {
 
   constructor(
     mode: "cinematic" | "standard" | "low-power",
+    useAA: boolean,
     canvas: HTMLCanvasElement,
     canvasContainer: HTMLElement,
     alert: HTMLElement,
@@ -159,7 +160,8 @@ export default class Field3dRendererImpl implements TabRenderer {
     this.spinner = spinner;
     this.renderer = new THREE.WebGLRenderer({
       canvas: canvas,
-      powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default"
+      powerPreference: mode === "cinematic" ? "high-performance" : mode === "low-power" ? "low-power" : "default",
+      antialias: useAA
     });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = mode === "cinematic";

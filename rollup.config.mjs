@@ -107,7 +107,7 @@ const mainBundles = [
     "ws",
     "http",
     "path",
-    "ssh2",
+    "basic-ftp",
     "download",
     "ytdl-core",
     "tesseract.js"

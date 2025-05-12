@@ -888,15 +888,21 @@ export default class SourceList {
       typeIconHidden = temp;
     }
     let color: string;
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (typeConfig.color.startsWith("#")) {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       if (isDark && typeConfig.darkColor !== undefined) {
         color = typeConfig.darkColor;
       } else {
         color = typeConfig.color;
       }
-    } else {
+    } else if (state.options[typeConfig.color].startsWith("#")) {
       color = state.options[typeConfig.color];
+    } else {
+      if (isDark) {
+        color = "#ffffff";
+      } else {
+        color = "#000000";
+      }
     }
     color = ensureThemeContrast(color);
     let dataPath = "symbols/sourceList/" + typeConfig.symbol + ".svg";
