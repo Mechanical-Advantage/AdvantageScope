@@ -1434,7 +1434,7 @@ function handleDownloadMessage(message: NamedMessage) {
   }
 }
 
-/** Starts a new SSH connection. */
+/** Starts a new FTP connection. */
 async function downloadStart() {
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
@@ -1512,7 +1512,7 @@ async function downloadStart() {
   readFiles();
 }
 
-/** Closes the SSH connection. */
+/** Closes the FTP connection. */
 function downloadStop() {
   downloadClient?.trackProgress();
   downloadClient?.close();
