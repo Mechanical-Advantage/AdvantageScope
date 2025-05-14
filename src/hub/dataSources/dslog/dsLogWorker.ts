@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import Log from "../../../shared/log/Log";
 import { HistoricalDataSource_WorkerRequest, HistoricalDataSource_WorkerResponse } from "../HistoricalDataSource";
 import { DSEventsReader } from "./DSEventsReader";
@@ -29,7 +36,7 @@ self.onmessage = async (event) => {
       log.putNumber("/DSLog/TripTimeMS", entry.timestamp, entry.tripTimeMs);
       log.putNumber("/DSLog/PacketLoss", entry.timestamp, entry.packetLoss);
       log.putNumber("/DSLog/BatteryVoltage", entry.timestamp, entry.batteryVolts);
-      log.putNumber("/DSLog/RioCPUUtilization", entry.timestamp, entry.rioCpuUtilization);
+      log.putNumber("/DSLog/CPUUtilization", entry.timestamp, entry.cpuUtilization);
       log.putBoolean("/DSLog/Status/Brownout", entry.timestamp, entry.brownout);
       log.putBoolean("/DSLog/Status/Watchdog", entry.timestamp, entry.watchdog);
       log.putBoolean("/DSLog/Status/DSTeleop", entry.timestamp, entry.dsTeleop);

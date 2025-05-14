@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { SIM_ADDRESS, USB_ADDRESS } from "../../../shared/IPAddresses";
 import { filterFieldByPrefixes, getOrDefault, logValuesEqual } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
@@ -24,7 +31,7 @@ export class NT4Publisher {
       address = USB_ADDRESS;
     } else {
       if (window.preferences) {
-        address = window.preferences.rioAddress;
+        address = window.preferences.robotAddress;
       }
     }
 

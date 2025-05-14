@@ -1,9 +1,16 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
 import Preferences from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
-const RIO_ADDRESS = document.getElementById("rioAddress") as HTMLInputElement;
-const RIO_PATH = document.getElementById("rioPath") as HTMLInputElement;
+const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElement;
+const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
@@ -43,8 +50,8 @@ window.addEventListener("message", (event) => {
         (THEME.children[2] as HTMLElement).innerText = "Dark";
       }
       THEME.value = oldPrefs.theme;
-      RIO_ADDRESS.value = oldPrefs.rioAddress;
-      RIO_PATH.value = oldPrefs.rioPath;
+      ROBOT_ADDRESS.value = oldPrefs.robotAddress;
+      REMOTE_PATH.value = oldPrefs.remotePath;
       LIVE_MODE.value = oldPrefs.liveMode;
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
@@ -94,8 +101,8 @@ window.addEventListener("message", (event) => {
 
           let newPrefs: Preferences = {
             theme: theme,
-            rioAddress: RIO_ADDRESS.value,
-            rioPath: RIO_PATH.value,
+            robotAddress: ROBOT_ADDRESS.value,
+            remotePath: REMOTE_PATH.value,
             liveMode: liveMode,
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),

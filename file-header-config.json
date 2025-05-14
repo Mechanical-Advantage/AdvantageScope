@@ -1,0 +1,34 @@
+{
+  "ignore": [
+    "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.c|*.h|*.metal)",
+    "bundles",
+    "docs/build",
+    "docs/.docusaurus",
+    "runOwletDownload.js",
+    "src/hub/dataSources/schema/spark/*"
+  ],
+  "license": "file-header.txt",
+  "licenseFormats": {
+    "js|ts|mjs|tsx|swift|c|h|metal": {
+      "append": "",
+      "eachLine": {
+        "prepend": "// "
+      }
+    },
+    "html": {
+      "prepend": "<!--",
+      "append": "-->\n",
+      "eachLine": {
+        "prepend": "  "
+      }
+    },
+    "css": {
+      "prepend": "/*",
+      "append": "*/\n",
+      "eachLine": {
+        "prepend": "  "
+      }
+    }
+  },
+  "trailingWhitespace": "TRIM"
+}

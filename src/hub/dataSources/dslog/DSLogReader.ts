@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { convertLVTime, getPDType, PowerDistributionType } from "./DSUtil";
 
 /** Represents a single DS cycle from a DSLog file */
@@ -6,7 +13,7 @@ export interface DSLogEntry {
   tripTimeMs: number;
   packetLoss: number;
   batteryVolts: number;
-  rioCpuUtilization: number;
+  cpuUtilization: number;
   brownout: boolean;
   watchdog: boolean;
   dsTeleop: boolean;
@@ -76,7 +83,7 @@ export class DSLogReader {
           tripTimeMs: this.dataView.getUint8(position) * 0.5,
           packetLoss: Math.min(Math.max(this.dataView.getInt8(position + 1) * 4 * 0.01, 0), 1),
           batteryVolts: batteryVolts,
-          rioCpuUtilization: this.dataView.getUint8(position + 4) * 0.5 * 0.01,
+          cpuUtilization: this.dataView.getUint8(position + 4) * 0.5 * 0.01,
           brownout: (mask & (1 << 7)) === 0,
           watchdog: (mask & (1 << 6)) === 0,
           dsTeleop: (mask & (1 << 5)) === 0,

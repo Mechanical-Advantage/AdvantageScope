@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { SourceListState } from "../../shared/SourceListConfig";
 import { Rotation2d, grabChassisSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
 import { Orientation } from "../../shared/renderers/Field2dRenderer";
