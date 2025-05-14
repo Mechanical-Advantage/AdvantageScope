@@ -7,7 +7,7 @@ import { ConfigState, ConfigVar, ConfigVarState, SaveConfigAction } from "./conf
 
 export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
   private FTCDASHBOARD_PORT = 8000;
-  private FTCDASHBOARD_DATA_TIMEOUT_MS = 10000; // How long with no data until timeout
+  private FTCDASHBOARD_DATA_TIMEOUT_MS = 5000; // How long with no data until timeout
   private FTCDASHBOARD_PING_TIMEOUT_MS = 1000; // How often to ping
   private RECONNECT_DELAY_MS = 500;
   private timeout: ReturnType<typeof setTimeout> | null = null;
@@ -221,6 +221,9 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
         // Try to reconnect
         this.log = new Log();
         this.liveZeroTime = 0;
+        this.robotClockSkew = 0;
+        this.configState = initialState;
+        this.tunableKeys = [];
         this.connect(this.address!!, this.statusCallback!!, this.outputCallback!!);
       }
     }, this.RECONNECT_DELAY_MS);
