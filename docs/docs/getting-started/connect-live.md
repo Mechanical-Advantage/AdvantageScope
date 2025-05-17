@@ -12,11 +12,11 @@ All visualizations in AdvantageScope are designed to receive live data from a ro
 
 Open the preferences window by clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
-<img src={PrefsImage} alt="Diagram of roboRIO preferences" height="350" />
+<img src={PrefsImage} alt="Diagram of preferences" height="350" />
 
-### roboRIO Address
+### Robot Address
 
-Enter the roboRIO address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
+Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
 
 ### Live Source
 
@@ -41,7 +41,7 @@ During a live connection, data is stored locally to allow for replay of past dat
 
 ## Starting the Connection
 
-To start the connection to a robot (using the configured "roboRIO Address") or a simulator (using "127.0.0.1"), follow these steps:
+To start the connection to a robot (using the configured "Robot Address") or a simulator (using "127.0.0.1"), follow these steps:
 
 - **Robot:** Click `File` > `Connect to Robot`
 - **Simulator:** Click `File` > `Connect to Simulator`

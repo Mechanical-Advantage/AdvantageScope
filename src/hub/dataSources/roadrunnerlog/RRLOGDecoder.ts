@@ -59,7 +59,7 @@ export default class RRLOGDecoder {
         let numConstants = dataBuffer.getInt32(shiftOffset(4));
         let schema = new EnumSchema();
         for (let i = 0; i < numConstants; i++) {
-          schema.constants.concat(readString());
+          schema.constants.push(readString());
         }
         return schema;
       } else {
