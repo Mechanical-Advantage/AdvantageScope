@@ -33,7 +33,7 @@ div.title-bar {
   display: none;
   z-index: 5;
   user-select: none;
-  -webkit-app-region: drag;
+  -webkit-app-region: drag; /* Window dragging support for Electron */
 }
 
 body {
@@ -83,6 +83,7 @@ div.title-bar-menu {
   display: none;
   -webkit-app-region: no-drag;
   overflow-x: auto;
+  scrollbar-width: none; /* Required for Firefox */
 }
 
 div.title-bar-menu::-webkit-scrollbar {
@@ -116,7 +117,7 @@ div.title-bar-menu td {
 
 div.title-bar-menu button {
   width: 100%;
-  height: 100%;
+  height: 28px; /* Firefox doesn't support using "100%" here */
   font-size: 12px;
   padding-left: 3px;
   padding-right: 3px;
@@ -232,6 +233,7 @@ div.side-bar {
   bottom: 0px;
   z-index: 4;
   overflow: auto;
+  scrollbar-width: none; /* Required for Firefox */
 }
 
 body.fancy-title-bar-mac div.side-bar,
@@ -436,6 +438,11 @@ div.field-item {
     rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
     rgba(0, 0, 0, 0) calc(100% - 10px)
   );
+  -moz-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
+    rgba(0, 0, 0, 0) calc(100% - 10px)
+  );
 }
 
 div.field-value {
@@ -464,6 +471,7 @@ div.field-value input {
   background-color: #ffffff;
   border: 1px solid #888888;
   border-radius: 2px;
+  -moz-appearance: textfield;
 }
 
 div.field-value input:focus {
@@ -637,6 +645,7 @@ div.tab-bar {
 
   overflow: auto;
   white-space: nowrap;
+  scrollbar-width: none; /* Required for Firefox */
 }
 
 body.fancy-title-bar-lite div.tab-bar {
@@ -719,6 +728,7 @@ div.tab-bar-scroll {
   top: 0px;
   height: 50px;
   overflow: scroll;
+  scrollbar-width: none; /* Required for Firefox */
 }
 
 body.fancy-title-bar-lite div.tab-bar-scroll {
@@ -969,6 +979,7 @@ div.timeline-scroll {
   height: 100%;
   overflow: scroll;
   z-index: 9;
+  scrollbar-width: none; /* Required for Firefox */
 }
 
 div.timeline-scroll::-webkit-scrollbar {
@@ -1479,6 +1490,10 @@ div.setting-blocks select:not(.field-select) {
   height: 25px;
 }
 
+div.setting-blocks input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 div.setting-blocks input[type="number"]::-webkit-outer-spin-button,
 div.setting-blocks input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -1793,6 +1808,8 @@ input.video-timeline-slider {
   appearance: none;
   background-color: #aaa;
 }
+
+/* Video tab is not used with Lite so Firefox support not required */
 
 input.video-timeline-slider::-webkit-slider-thumb {
   appearance: none;
