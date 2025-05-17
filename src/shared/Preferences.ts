@@ -12,7 +12,7 @@ export default interface Preferences {
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
-  liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog";
+  liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog" | "ftcdashboard";
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
   publishFilter: string;
