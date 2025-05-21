@@ -433,12 +433,8 @@ div.field-item {
   right: calc(var(--value-width));
   top: 0px;
   height: 100%;
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) calc(100% - 10px - 20px), rgba(0, 0, 0, 0) calc(100% - 10px));
   -webkit-mask-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
-    rgba(0, 0, 0, 0) calc(100% - 10px)
-  );
-  -moz-mask-image: linear-gradient(
     to right,
     rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
     rgba(0, 0, 0, 0) calc(100% - 10px)
