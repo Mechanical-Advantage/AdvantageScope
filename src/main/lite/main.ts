@@ -1054,7 +1054,7 @@ window.addEventListener("load", () => {
     let triggered = true;
     let lowerKey = event.key.toLowerCase();
     if (event.shiftKey && event.metaKey && lowerKey === "o") {
-      // TODO
+      openDownload();
     } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
       sendMessage(hubPort, "start-live", false);
     } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
