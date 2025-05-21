@@ -336,7 +336,7 @@ async function handleHubMessage(message: NamedMessage) {
                   detailLines.push("Build Date: " + BUILD_DATE);
                   detailLines.push("User Agent: " + navigator.userAgent);
                   let detail = detailLines.join("\n");
-                  window.alert("==== AdvantageScope Lite ====\n" + COPYRIGHT + "\n\n" + detail);
+                  window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
                 }
               },
               {
