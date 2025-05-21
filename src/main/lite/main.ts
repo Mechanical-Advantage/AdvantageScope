@@ -28,6 +28,8 @@ import { loadAssets } from "./assetLoader";
 let HUB_FRAME: HTMLIFrameElement;
 let POPUP_FRAME: HTMLIFrameElement;
 let POINTER_BLOCK: HTMLElement;
+let TOO_SMALL_WARNING: HTMLElement;
+let MOBILE_WARNING: HTMLElement;
 let MENU_ANCHOR: HTMLElement;
 
 let hubPort: MessagePort | null = null;
@@ -1015,7 +1017,19 @@ window.addEventListener("load", () => {
   HUB_FRAME = document.getElementsByClassName("hub-frame")[0] as HTMLIFrameElement;
   POPUP_FRAME = document.getElementsByClassName("popup-frame")[0] as HTMLIFrameElement;
   POINTER_BLOCK = document.getElementsByClassName("pointer-block")[0] as HTMLElement;
+  TOO_SMALL_WARNING = document.getElementsByClassName("too-small")[0] as HTMLElement;
+  MOBILE_WARNING = TOO_SMALL_WARNING.getElementsByClassName("mobile-warning")[0] as HTMLElement;
   MENU_ANCHOR = document.getElementsByClassName("menu-anchor")[0] as HTMLElement;
+
+  // Set up too small warning
+  let updateTooSmallWarning = () => {
+    TOO_SMALL_WARNING.hidden = window.innerWidth >= 800 && window.innerHeight >= 400;
+    let userAgent = navigator.userAgent.toLowerCase();
+    MOBILE_WARNING.hidden =
+      !userAgent.includes("iphone") && !userAgent.includes("android") && !userAgent.includes("mobile");
+  };
+  window.addEventListener("resize", () => updateTooSmallWarning());
+  updateTooSmallWarning();
 
   // Set up pointer block
   POINTER_BLOCK.addEventListener("click", () => {

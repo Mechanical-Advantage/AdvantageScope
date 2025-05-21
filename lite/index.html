@@ -20,6 +20,7 @@
     <meta name="apple-mobile-web-app-title" content="AScope Lite" />
     <link rel="icon" type="image/x-icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" type="image/x-icon" href="icons/apple-touch-icon.png" />
+    <link rel="stylesheet" href="www/global.css" />
     <link rel="stylesheet" href="popups.css" />
     <script type="module" src="bundles/main.js"></script>
     <title>AdvantageScope Lite</title>
@@ -36,6 +37,46 @@
         overflow: hidden;
         background-color: #fff;
         user-select: none;
+      }
+
+      div.too-small {
+        position: absolute;
+        left: 0%;
+        top: 0%;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        background-color: #fff;
+      }
+
+      div.too-small > div {
+        position: absolute;
+        left: 0%;
+        width: 100%;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+      }
+
+      div.too-small img.icon {
+        height: calc(min(15vh, 15vw));
+      }
+
+      div.too-small div.text {
+        margin-top: calc(min(25px, 3vh));
+        margin-left: 15%;
+        margin-right: 15%;
+        font-size: calc(min(5vh, 5vw));
+      }
+
+      @media (prefers-color-scheme: dark) {
+        div.too-small {
+          background-color: #222;
+        }
+
+        div.too-small img.icon {
+          filter: invert(100%);
+        }
       }
 
       div.side-bar-loading-background {
@@ -186,6 +227,15 @@
   </head>
 
   <body>
+    <div class="too-small" hidden>
+      <div>
+        <img class="icon" src="www/symbols/rectangle.slash.svg" />
+        <div class="text">
+          Not enough space, please change the screen layout.
+          <span class="mobile-warning" hidden>AdvantageScope Lite works best on desktop and tablet devices.</span>
+        </div>
+      </div>
+    </div>
     <div class="side-bar-loading-background"></div>
     <div class="viewer-loading-shadow"></div>
     <iframe src="www/hub.html" class="hub-frame"></iframe>
