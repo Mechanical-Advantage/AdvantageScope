@@ -38,6 +38,7 @@ import ExportOptions from "../shared/ExportOptions";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
+import { PathTransformer } from "../shared/pathTransform";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTOR, Distributor } from "../shared/buildConstants";
@@ -169,6 +170,112 @@ function sendAllPreferences() {
     });
   });
   if (downloadWindow !== null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
+}
+
+function transformFieldPathsInState(state: any, fromMode: string, toMode: string, autoFieldPaths: boolean) {
+  if (!autoFieldPaths || fromMode === toMode) return;
+  
+  if (!state?.tabs) return;
+  
+  try {
+    let actualTabs;
+    if (state.tabs.tabs) {
+      actualTabs = Array.isArray(state.tabs.tabs) ? state.tabs.tabs : Object.values(state.tabs.tabs);
+    } else {
+      actualTabs = Array.isArray(state.tabs) ? state.tabs : Object.values(state.tabs);
+    }
+    
+    actualTabs.forEach((tab: any) => {
+      if (!tab?.controller) return;
+
+      const config = tab.controller;
+
+      const transformSources = (sources: any[], keyName: string = 'key') => {
+        if (sources && Array.isArray(sources)) {
+          sources.forEach((source: any) => {
+            if (source[keyName]) {
+              source[keyName] = PathTransformer.transformPath(source[keyName], fromMode, toMode);
+            }
+          });
+        }
+      };
+
+      switch (tab.type) {
+        case TabType.Documentation: // 0
+          break;
+          
+        case TabType.LineGraph: // 1
+          transformSources(config.leftSources, 'logKey');
+          transformSources(config.rightSources, 'logKey');
+          transformSources(config.discreteSources, 'logKey');
+          break;
+          
+        case TabType.Field2d: // 2
+          transformSources(config.sources, 'logKey');
+          break;
+          
+        case TabType.Field3d: // 3
+          transformSources(config.sources, 'logKey');
+          break;
+          
+        case TabType.Table: // 4
+          if (Array.isArray(config)) {
+            for (let i = 0; i < config.length; i++) {
+              if (typeof config[i] === 'string') {
+                config[i] = PathTransformer.transformPath(config[i], fromMode, toMode);
+              }
+            }
+          }
+          break;
+          
+        case TabType.Console: // 5
+          if (typeof config === 'string') {
+            tab.controller = PathTransformer.transformPath(config, fromMode, toMode);
+          }
+          break;
+          
+        case TabType.Statistics: // 6
+          transformSources(config.sources, 'logKey');
+          break;
+          
+        case TabType.Video: // 7
+          break;
+          
+        case TabType.Joysticks: // 8
+          break;
+          
+        case TabType.Swerve: // 9
+          transformSources(config.sources, 'logKey');
+          break;
+          
+        case TabType.Mechanism: // 10
+          if (Array.isArray(config)) {
+            config.forEach((item) => {
+              if (item && typeof item === 'object' && 'logKey' in item) {
+                item.logKey = PathTransformer.transformPath(item.logKey, fromMode, toMode);
+              }
+            });
+          } else if (config && config.sources) {
+            transformSources(config.sources, 'logKey');
+          } else if (typeof config === 'string') {
+            tab.controller = PathTransformer.transformPath(config, fromMode, toMode);
+          }
+          break;
+          
+        case TabType.Points: // 11
+          transformSources(config.sources, 'logKey');
+          break;
+          
+        case TabType.Metadata: // 12
+          break;
+          
+        default:
+          break;
+      }
+    });
+  } catch (error) {
+    console.error("Error during path transformation:", error);
+  }
 }
 
 /** Sends the current set of assets to all windows. */
@@ -2960,12 +3067,38 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
     prefsWindow?.webContents.postMessage("port", null, [port1]);
+    const oldPrefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
     port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
     port2.on("message", (event) => {
-      prefsWindow?.destroy();
-      jsonfile.writeFileSync(PREFS_FILENAME, event.data);
-      sendAllPreferences();
+  prefsWindow?.destroy();
+  const newPrefs: Preferences = event.data;
+  
+  console.log(`Old live mode: ${oldPrefs.liveMode}, New live mode: ${newPrefs.liveMode}, Auto field paths: ${newPrefs.autoFieldPaths}`);
+  
+  // Check if live mode changed and auto field paths is enabled
+  if (oldPrefs.liveMode !== newPrefs.liveMode && newPrefs.autoFieldPaths) {
+    console.log("Live mode changed and auto field paths enabled, transforming paths...");
+    
+    // Transform paths in all hub windows
+    hubWindows.forEach((window) => {
+      if (!window.isDestroyed()) {
+        let rendererState = stateTracker.getRendererState(window);
+        if (rendererState) {
+          console.log("Found renderer state, transforming...");
+          transformFieldPathsInState(rendererState, oldPrefs.liveMode, newPrefs.liveMode, newPrefs.autoFieldPaths);
+          stateTracker.saveRendererState(window, rendererState);
+          // Send the correct message type - this should be "restore-state", not "state-update"
+          sendMessage(window, "restore-state", rendererState);
+        } else {
+          console.log("No renderer state found for window");
+        }
+      }
     });
+  }
+  
+  jsonfile.writeFileSync(PREFS_FILENAME, newPrefs);
+  sendAllPreferences();
+});
     prefsWindow?.on("blur", () => port2.postMessage({ isFocused: false }));
     prefsWindow?.on("focus", () => port2.postMessage({ isFocused: true }));
     port2.start();
@@ -3297,6 +3430,11 @@ app.whenReady().then(() => {
     }
     if ("tbaApiKey" in oldPrefs && typeof oldPrefs.tbaApiKey === "string") {
       prefs.tbaApiKey = oldPrefs.tbaApiKey;
+    }
+    if (!("autoFieldPaths" in oldPrefs) || typeof oldPrefs.autoFieldPaths !== "boolean") {
+      prefs.autoFieldPaths = true;
+    } else {
+      prefs.autoFieldPaths = oldPrefs.autoFieldPaths;
     }
     if (
       "userAssetsFolder" in oldPrefs &&

@@ -12,6 +12,7 @@ const THEME = document.getElementById("theme") as HTMLInputElement;
 const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElement;
 const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
 const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
+const AUTO_FIELD_PATHS = document.getElementById("autoFieldPaths") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
@@ -53,6 +54,7 @@ window.addEventListener("message", (event) => {
       ROBOT_ADDRESS.value = oldPrefs.robotAddress;
       REMOTE_PATH.value = oldPrefs.remotePath;
       LIVE_MODE.value = oldPrefs.liveMode;
+      AUTO_FIELD_PATHS.value = oldPrefs.autoFieldPaths.toString();
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
@@ -104,6 +106,7 @@ window.addEventListener("message", (event) => {
             robotAddress: ROBOT_ADDRESS.value,
             remotePath: REMOTE_PATH.value,
             liveMode: liveMode,
+            autoFieldPaths: AUTO_FIELD_PATHS.value === "true",
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
             publishFilter: PUBLISH_FILTER.value,

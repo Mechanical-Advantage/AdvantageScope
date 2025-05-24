@@ -37,6 +37,7 @@ export const DEFAULT_PREFS: Preferences = {
   robotAddress: "10.00.00.2",
   remotePath: "/U/logs",
   liveMode: "nt4",
+  autoFieldPaths: true,
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
   publishFilter: "",
