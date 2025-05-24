@@ -28,8 +28,10 @@ export class PathTransformer {
     
     // Replace AdvantageKit with NT4 prefix
     else if ((fromMode === "rlog" || fromMode === "nt4-akit") && toMode === "nt4") {
-      if (!path.startsWith("NT:/AdvantageKit")) {
-        transformedPath = "NT:/AdvantageKit" + path;
+      if (path.startsWith(PathTransformer.NT4_PREFIX)) {
+      transformedPath = path;
+      } else {
+      transformedPath = PathTransformer.NT4_PREFIX + PathTransformer.AKIT_PREFIX + path;
       }
     }
     
