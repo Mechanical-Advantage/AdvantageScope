@@ -3073,24 +3073,18 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   prefsWindow?.destroy();
   const newPrefs: Preferences = event.data;
   
-  console.log(`Old live mode: ${oldPrefs.liveMode}, New live mode: ${newPrefs.liveMode}, Auto field paths: ${newPrefs.autoFieldPaths}`);
-  
   // Check if live mode changed and auto field paths is enabled
-  if (oldPrefs.liveMode !== newPrefs.liveMode && newPrefs.autoFieldPaths) {
-    console.log("Live mode changed and auto field paths enabled, transforming paths...");
-    
+  if (oldPrefs.liveMode !== newPrefs.liveMode && newPrefs.autoFieldPaths) {    
     // Transform paths in all hub windows
     hubWindows.forEach((window) => {
       if (!window.isDestroyed()) {
         let rendererState = stateTracker.getRendererState(window);
         if (rendererState) {
-          console.log("Found renderer state, transforming...");
           transformFieldPathsInState(rendererState, oldPrefs.liveMode, newPrefs.liveMode, newPrefs.autoFieldPaths);
           stateTracker.saveRendererState(window, rendererState);
           // Send the correct message type - this should be "restore-state", not "state-update"
           sendMessage(window, "restore-state", rendererState);
         } else {
-          console.log("No renderer state found for window");
         }
       }
     });
