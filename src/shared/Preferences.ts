@@ -13,6 +13,7 @@ export default interface Preferences {
   robotAddress: string;
   remotePath: string;
   liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog";
+  autoFieldPaths: boolean;
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
   publishFilter: string;
