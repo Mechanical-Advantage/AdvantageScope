@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
@@ -426,7 +433,7 @@ function startLive(isSim: boolean) {
     address = USB_ADDRESS;
   } else {
     if (window.preferences) {
-      address = window.preferences.rioAddress;
+      address = window.preferences.robotAddress;
     }
   }
 

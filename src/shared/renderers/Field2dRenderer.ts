@@ -1,3 +1,10 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { AnnotatedPose2d, Pose2d, SwerveState, Translation2d } from "../geometry";
 import { convert } from "../units";
 import { scaleValue, transformPx } from "../util";
@@ -350,7 +357,7 @@ export default class Field2dRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.swerveStates, object.color);
+              drawRobot(pose.pose, object.swerveStates, undefined, object.color);
             });
             break;
           case "arrow":

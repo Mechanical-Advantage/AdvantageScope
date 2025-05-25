@@ -34,17 +34,17 @@ After opening a log file, additional logs can be easily added to the visualizati
 
 In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more log files to add to the current visualization. The fields from each log will be recorded under tables named `Log0`, `Log1`, etc.
 
-## Downloading from a roboRIO
+## Downloading From the Robot
 
 <details>
 <summary>Configuration</summary>
 
-Open the preferences window by clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the roboRIO address and log folder. Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
+Open the preferences window by clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder. Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
 
-<img src={PrefsImage} alt="Diagram of roboRIO preferences" height="350" />
+<img src={PrefsImage} alt="Diagram of preferences" height="350" />
 </details>
 
-Click `File` > `Download Logs...` to open the download window. Once connected to the roboRIO, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
+Click `File` > `Download Logs...` to open the download window. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
 
 :::tip
 When downloading multiple files, AdvantageScope skips any that already exist in the destination folder.
