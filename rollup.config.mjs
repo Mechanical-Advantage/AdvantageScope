@@ -187,6 +187,6 @@ export default (cliArgs) => {
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
   return isLite
-    ? [...mainLiteBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
-    : [...mainElectronBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
+    ? [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
+    : [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
 };
