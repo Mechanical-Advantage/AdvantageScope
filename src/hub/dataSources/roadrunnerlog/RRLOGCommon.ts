@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-export type MessageSchema = StructSchema | PrimitiveSchema | EnumSchema;
+export type MessageSchema = StructSchema | PrimitiveSchema | EnumSchema | ArraySchema;
 export class StructSchema {
   fields = new Map<string, MessageSchema>();
 }
@@ -22,4 +22,11 @@ export class EnumSchema {
   constants: string[] = [];
 }
 
-export type RRMessage = boolean | number | bigint | string | Map<string, RRMessage>;
+export class ArraySchema {
+  schema: MessageSchema;
+  constructor(schema: MessageSchema) {
+    this.schema = schema;
+  }
+}
+
+export type RRMessage = boolean | number | bigint | string | Map<string, RRMessage> | RRMessage[];

@@ -7,7 +7,7 @@
 
 import { Pose2d } from "../../../shared/geometry";
 import Log from "../../../shared/log/Log";
-import { EnumSchema, MessageSchema, PrimitiveSchema, RRMessage, StructSchema } from "./RRLOGCommon";
+import { ArraySchema, EnumSchema, MessageSchema, PrimitiveSchema, RRMessage, StructSchema } from "./RRLOGCommon";
 
 export default class RRLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [0];
@@ -69,8 +69,26 @@ export default class RRLOGDecoder {
           schema.constants.push(readString());
         }
         return schema;
+      } else if (schemaType === 7) {
+        let schema = new ArraySchema(readSchema());
+        //offset += 4;
+        return schema;
       } else {
         throw "Unknown schema type: " + schemaType;
+      }
+    }
+
+    function arraySchemaCount(schema: MessageSchema): number {
+      if (schema instanceof StructSchema) {
+        let count = 0;
+        for (const [key, value] of schema.fields.entries()) {
+          count += arraySchemaCount(value);
+        }
+        return count;
+      } else if (schema instanceof ArraySchema) {
+        return 1 + arraySchemaCount(schema.schema);
+      } else {
+        return 0;
       }
     }
 
@@ -91,10 +109,18 @@ export default class RRLOGDecoder {
         return readString();
       } else if (schema === PrimitiveSchema.BOOLEAN) {
         return dataArray[shiftOffset(1)] !== 0;
-      } else {
-        // Must be EnumSchema; for some reason checking is a warning
+      } else if (schema instanceof EnumSchema) {
         let ordinal = dataBuffer.getInt32(shiftOffset(4));
         return schema.constants[ordinal];
+      } else if (schema instanceof ArraySchema) {
+        let size = dataBuffer.getInt32(shiftOffset(4));
+        let msg: RRMessage[] = [];
+        for (let i = 0; i < size; ++i) {
+          msg.push(readMsg(schema.schema)); // the schema of the array elements
+        }
+        return msg;
+      } else {
+        throw "Unknown schema type: " + schema;
       }
     }
 
@@ -102,7 +128,7 @@ export default class RRLOGDecoder {
       if (this.firstTimestamp === null) {
         this.firstTimestamp = rr;
       }
-      return Number(rr - this.firstTimestamp) / 1e9;
+      return Number(rr - this.firstTimestamp) / 1e9; // nanoseconds to seconds
     };
 
     try {
@@ -140,7 +166,11 @@ export default class RRLOGDecoder {
             case 0: // New channel definition
               keyID = Object.keys(this.keyIDs).length;
               this.keyIDs[keyID] = readString();
-              this.keySchemas[keyID] = readSchema();
+              let newSchema = readSchema();
+              this.keySchemas[keyID] = newSchema;
+              // workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
+              // really annoying issue where each ArraySchema in a definition adds 4 00 bytes to the end of the definition
+              shiftOffset(4 * arraySchemaCount(newSchema));
               break;
             case 1: // New message
               keyID = dataBuffer.getInt32(shiftOffset(4));
@@ -152,7 +182,10 @@ export default class RRLOGDecoder {
 
               // guaranteed by writer
               if (
-                (key === "OPMODE_PRE_INIT" || key === "OPMODE_PRE_START" || key === "OPMODE_POST_STOP") &&
+                (key === "OPMODE_PRE_INIT" ||
+                  key === "OPMODE_PRE_START" ||
+                  key === "OPMODE_POST_STOP" ||
+                  key === "TIMESTAMP") &&
                 typeof msg === "bigint"
               ) {
                 this.lastTimestamp = rrTimeToInt(msg);
@@ -192,7 +225,7 @@ export default class RRLOGDecoder {
                       rotation: msg.get("heading")
                     });
                   }
-                  // struct
+                  // struct or array
                   log.putUnknownStruct(key, timestamp, msg);
                   break;
               }
