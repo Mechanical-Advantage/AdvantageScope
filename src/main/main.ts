@@ -1792,7 +1792,7 @@ function setupMenu() {
                 title: "Select the robot log file(s) to open",
                 message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log"] }],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -1812,7 +1812,7 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select the robot log file(s) to add to the current log",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log"] }],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -3366,7 +3366,8 @@ app.whenReady().then(() => {
       x.endsWith(".rlog") ||
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents") ||
-      x.endsWith(".hoot")
+      x.endsWith(".hoot") ||
+      x.endsWith(".log")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];

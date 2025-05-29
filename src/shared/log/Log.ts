@@ -548,7 +548,7 @@ export default class Log {
   }
 
   /** Writes an unknown array or object to the children of the field. */
-  private putUnknownStruct(key: string, timestamp: number, value: unknown, allowRootWrite = false) {
+  putUnknownStruct(key: string, timestamp: number, value: unknown, allowRootWrite = false) {
     if (value === null) return;
 
     // Check for primitive types first (if first call, writing to the root is not allowed)
@@ -573,7 +573,12 @@ export default class Log {
     }
 
     // Not a primitive, call recursively
-    if (Array.isArray(value)) {
+    if (value instanceof Map) {
+      // Add object entries
+      for (const [objectKey, objectValue] of value.entries()) {
+        this.putUnknownStruct(key + "/" + objectKey, timestamp, objectValue, true);
+      }
+    } else if (Array.isArray(value)) {
       // If all items are the same type, add whole array
       if (allowRootWrite && checkArrayType(value, "boolean")) {
         this.putBooleanArray(key, timestamp, value);
