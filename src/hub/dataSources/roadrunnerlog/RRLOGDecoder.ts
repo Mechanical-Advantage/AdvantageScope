@@ -10,7 +10,7 @@ import Log from "../../../shared/log/Log";
 import { ArraySchema, EnumSchema, MessageSchema, PrimitiveSchema, RRMessage, StructSchema } from "./RRLOGCommon";
 
 export default class RRLOGDecoder {
-  private SUPPORTED_LOG_REVISIONS = [0];
+  private SUPPORTED_LOG_REVISIONS = [0, 1];
   private STRING_DECODER = new TextDecoder("UTF-8");
 
   private isFile;
@@ -168,9 +168,11 @@ export default class RRLOGDecoder {
               this.keyIDs[keyID] = readString();
               let newSchema = readSchema();
               this.keySchemas[keyID] = newSchema;
-              // workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
-              // really annoying issue where each ArraySchema in a definition adds 4 00 bytes to the end of the definition
-              shiftOffset(4 * arraySchemaCount(newSchema));
+              if (this.logRevision === 0) {
+                // workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
+                // really annoying issue where each ArraySchema in a definition adds 4 00 bytes to the end of the definition
+                shiftOffset(4 * arraySchemaCount(newSchema));
+              }
               break;
             case 1: // New message
               keyID = dataBuffer.getInt32(shiftOffset(4));
