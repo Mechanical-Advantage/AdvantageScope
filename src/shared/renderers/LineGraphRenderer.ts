@@ -112,7 +112,26 @@ export default class LineGraphRenderer implements TabRenderer {
     let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     // Exit if render state unchanged
-    let renderState: any[] = [width, height, light, devicePixelRatio, command, this.lastCursorX];
+    let renderState: any[] = [
+      width,
+      height,
+      light,
+      devicePixelRatio,
+      command.timeRange,
+      command.selectionMode,
+      command.selectedTime,
+      command.hoveredTime,
+      command.grabZoomRange,
+      command.leftRange,
+      command.rightRange,
+      command.showLeftAxis,
+      command.showRightAxis,
+      command.priorityAxis,
+      this.lastCursorX,
+      command.leftFields.map((field) => field.values.length),
+      command.discreteFields.map((field) => field.values.length),
+      command.rightFields.map((field) => field.values.length)
+    ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
       return;
