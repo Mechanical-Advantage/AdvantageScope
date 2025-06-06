@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
-import Preferences from "./shared/Preferences";
+import Preferences, { LITE_ALLOWED_LIVE_MODES } from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
 const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElement;
@@ -17,6 +17,7 @@ const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
 const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
+const FIELD_3D_MODE_AC_LABEL = document.getElementById("field3dModeAcLabel") as HTMLElement;
 const FIELD_3D_MODE_BATTERY = document.getElementById("field3dModeBattery") as HTMLInputElement;
 const FIELD_3D_ANTIALIASING = document.getElementById("field3dAntialiasing") as HTMLInputElement;
 const TBA_API_KEY = document.getElementById("tbaApiKey") as HTMLInputElement;
@@ -24,7 +25,7 @@ const EXIT_BUTTON = document.getElementById("exit") as HTMLInputElement;
 const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       // Update button focus
@@ -44,10 +45,26 @@ window.addEventListener("message", (event) => {
       let oldPrefs: Preferences = event.data.prefs;
 
       // Update values
-      if (platform === "linux") {
-        (THEME.children[0] as HTMLElement).hidden = true;
-        (THEME.children[1] as HTMLElement).innerText = "Light";
-        (THEME.children[2] as HTMLElement).innerText = "Dark";
+      switch (platform) {
+        case "linux":
+          (THEME.children[0] as HTMLElement).hidden = true;
+          (THEME.children[1] as HTMLElement).innerText = "Light";
+          (THEME.children[2] as HTMLElement).innerText = "Dark";
+          break;
+
+        case "lite":
+          document.body.classList.add("lite");
+          FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
+          let i = 0;
+          while (i < LIVE_MODE.childElementCount) {
+            let option = LIVE_MODE.children[i] as HTMLOptionElement;
+            if ((LITE_ALLOWED_LIVE_MODES as string[]).includes(option.value)) {
+              i++;
+            } else {
+              LIVE_MODE.removeChild(option);
+            }
+          }
+          break;
       }
       THEME.value = oldPrefs.theme;
       ROBOT_ADDRESS.value = oldPrefs.robotAddress;

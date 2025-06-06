@@ -1,0 +1,151 @@
+/*
+  Copyright (c) 2021-2025 Littleton Robotics
+  http://github.com/Mechanical-Advantage
+
+  Use of this source code is governed by a BSD
+  license that can be found in the LICENSE file
+  at the root directory of this project.
+*/
+
+/* https://github.com/GastonZalba/tiny-popup-menu/blob/v1.0.10/lib/style/css/tiny-popup-menu.css */
+
+.popup-menu {
+  width: -moz-max-content;
+  width: -webkit-max-content;
+  width: max-content;
+  min-width: 50px;
+  right: 0;
+  padding: 0;
+  --ofx: $tmp-arrowWidth;
+  z-index: 9999;
+  font-family: sans-serif;
+}
+.popup-menu .popup-menu--submenu-content,
+.popup-menu .popup-menu--container {
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #c5c5c5;
+  box-shadow: 0 1px 14px rgba(0, 0, 0, 0.2);
+  z-index: 9998;
+  padding: 10px 0;
+}
+.popup-menu .popup-menu--container {
+  position: relative;
+  color: #4e4e4e;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: center;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu,
+.popup-menu .popup-menu--container .popup-menu--item {
+  font-weight: 100;
+  padding: 6px 16px;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu:focus,
+.popup-menu .popup-menu--container .popup-menu--submenu:active,
+.popup-menu .popup-menu--container .popup-menu--submenu:hover,
+.popup-menu .popup-menu--container .popup-menu--item:focus,
+.popup-menu .popup-menu--container .popup-menu--item:active,
+.popup-menu .popup-menu--container .popup-menu--item:hover {
+  background: #ebebeb;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu {
+  display: -webkit-flex;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu > span {
+  cursor: default;
+  margin: auto;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu .popup-menu--submenu-content {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  top: 0;
+  min-width: -moz-max-content;
+  min-width: -webkit-max-content;
+  min-width: max-content;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu .popup-menu--submenu-arrow svg {
+  width: 20px;
+  height: 20px;
+  fill: #4e4e4e;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-arrow {
+  margin-left: -12px;
+  margin-right: -8px;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-content {
+  left: 100%;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-arrow {
+  margin-left: -12px;
+  order: -1;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-content {
+  right: 100%;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu:hover .popup-menu--submenu-content,
+.popup-menu .popup-menu--container .popup-menu--submenu:focus .popup-menu--submenu-content {
+  opacity: 1;
+  visibility: visible;
+}
+.popup-menu .popup-menu--container .popup-menu--item {
+  cursor: pointer;
+}
+.popup-menu .popup-menu--container .popup-menu--item-separator {
+  width: 100%;
+  height: 1px;
+  display: block;
+  margin: 6px 0;
+  background-color: #d4d4d4;
+}
+.popup-menu.popup-menu--show-arrow:after {
+  content: "";
+  z-index: 997;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.popup-menu.popup-menu--show-arrow:before {
+  content: "";
+  z-index: 9999;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+.popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-top:after {
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid #c5c5c5;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  left: calc(50% - var(--ofx) - 2px);
+  top: -17px;
+}
+.popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-top:before {
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid #ffffff;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+  left: calc(50% - var(--ofx));
+  top: -14px;
+}
+.popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-bottom:after {
+  border-top: 10px solid #c5c5c5;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  left: calc(50% - var(--ofx) - 2px);
+  bottom: -17px;
+}
+.popup-menu.popup-menu--show-arrow.popup-menu--show-arrow-bottom:before {
+  border-top: 8px solid #ffffff;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+  left: calc(50% - var(--ofx));
+  bottom: -14px;
+}

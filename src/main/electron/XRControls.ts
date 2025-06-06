@@ -7,8 +7,8 @@
 
 import { BrowserWindow, dialog, MessageChannelMain, MessagePortMain } from "electron";
 import path from "path";
-import NamedMessage from "../shared/NamedMessage";
-import { WINDOW_ICON } from "./Constants";
+import NamedMessage from "../../shared/NamedMessage";
+import { WINDOW_ICON } from "./ElectronConstants";
 import { XRServer } from "./XRServer";
 
 export namespace XRControls {
