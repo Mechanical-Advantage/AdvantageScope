@@ -125,11 +125,28 @@ jobs:
           mkdir AdvantageScopeLite
           cp lite_server.py AdvantageScopeLite/lite_server.py
           cp -rL lite AdvantageScopeLite/lite
-      - name: Upload artifact
+          zip -r AdvantageScopeLite.zip AdvantageScopeLite/
+      - name: Upload development artifact
         uses: actions/upload-artifact@v4
         with:
           name: AdvantageScopeLite
           path: AdvantageScopeLite/
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: AdvantageScopeLite.zip
+          asset_name: AdvantageScopeLite.zip
+          asset_content_type: "application/zip"
 
   build-ios:
     name: Build for iOS
