@@ -4,9 +4,9 @@ sidebar_position: 2
 
 # Legacy Format Deprecation
 
-WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! Starting in 2025, AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](../tab-reference/2d-field.md) and [👀 3D Field](../tab-reference/3d-field.md) tabs with **no manual configuration** and **no unit errors**.
+WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](../tab-reference/2d-field.md) and [👀 3D Field](../tab-reference/3d-field.md) tabs with **no manual configuration** and **no unit errors**.
 
-In 2024, AdvantageScope supported both structs and the legacy "number array" format for geometry types. The legacy format packed structured data into a format like `double[]` (e.g. a pose would be represented by the array `[x, y, rotation]`).
+Before 2025, AdvantageScope supported both structs and the legacy "number array" format for geometry types. The legacy format packed structured data into a format like `double[]` (e.g. a pose would be represented by the array `[x, y, rotation]`).
 
 :::info
 For more information on the design of structs and their advantages, check out [this post](https://www.chiefdelphi.com/t/introducing-monologue-annotation-based-telemetry-and-data-logging-for-java-teams/443917/5).
@@ -14,16 +14,17 @@ For more information on the design of structs and their advantages, check out [t
 
 ## What's Changing?
 
-In 2025, AdvantageScope continues to support both the modern struct format and the legacy number array format. However, **the legacy number array format is now <u>deprecated</u> and will be removed in 2026**. AdvantageScope will present a warning when the legacy format is used, and additional information must be manually provided to specify the packing format and units.
+In 2025 and 2026, AdvantageScope continues to support both the modern struct format and the legacy number array format. However, **the legacy number array format is now <u>deprecated</u> and will be removed in 2027**. AdvantageScope will present a warning when the legacy format is used, and additional information must be manually provided to specify the packing format and units.
 
 |                 | Modern Struct Format | Legacy Number Array Format |
 | --------------- | -------------------- | -------------------------- |
 | **2024** (v3.x) | ✅ Recommended       | ✅ Supported               |
 | **2025** (v4.x) | ✅ Recommended       | ⚠️ Deprecated              |
-| **2026** (v5.x) | ✅ Recommended       | ❌ Removed                 |
+| **2026** (v5.x) | ✅ Recommended       | ⚠️ Deprecated              |
+| **2027** (v6.x) | ✅ Recommended       | ❌ Removed                 |
 
 :::warning
-While the legacy format can still be used in 2025, additional information must be provided about the packing format and units of each field. After adding an array field to a tab, the format can be configured by clicking the icon to the left of the field name.
+While the legacy format can still be used, additional information must be provided about the packing format and units of each field. After adding an array field to a tab, the format can be configured by clicking the icon to the left of the field name.
 :::
 
 ## How Do I Update?
@@ -46,7 +47,7 @@ publisher.set(new Pose2d());
 ```
 
 :::tip
-WPILib does not yet have a struct alternative to the [`SmartDashboard`](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/smartdashboard/SmartDashboard.html) style `put` methods. Consider using another logging library such as Monologue that supports an imperative API.
+WPILib will support a struct alternative to the [`SmartDashboard`](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/smartdashboard/SmartDashboard.html) style `put` methods in 2027. In the meantime, consider using another logging library such as Monologue that supports an imperative API.
 :::
 
 </details>
@@ -54,11 +55,23 @@ WPILib does not yet have a struct alternative to the [`SmartDashboard`](https://
 <details>
 <summary>Field2d</summary>
 
-WPILib's `Field2d` class does not yet support the modern struct format. Stay tuned for updates!
+WPILib's `Field2d` class does not support the modern struct format, but will be superseded by an improved telemetry API in 2027. In the meantime, users who wish to try the modern format can publish pose data using the NetworkTables API shown above.
 
-:::tip
-In the meantime, users who wish to try the modern format can publish pose data using the NetworkTables API shown above.
-:::
+</details>
+
+<details>
+<summary>Epilogue</summary>
+
+To publish struct data using Epilogue, simply return a supported object type from a logged method:
+
+```java
+@Logged
+public class MyClass {
+  public Pose2d getPose() {
+    return new Pose2d();
+  }
+}
+```
 
 </details>
 
@@ -78,22 +91,6 @@ Objects can also be logged imperatively:
 
 ```java
 log("MyPose", new Pose2d());
-```
-
-</details>
-
-<details>
-<summary>Epilogue</summary>
-
-To publish struct data using Epilogue, simply return a supported object type from a logged method:
-
-```java
-@Logged
-public class MyClass {
-  public Pose2d getPose() {
-    return new Pose2d();
-  }
-}
 ```
 
 </details>
@@ -141,9 +138,9 @@ logEntry.append(new Pose2d());
 </details>
 
 <details>
-<summary>Phoenix Signal Logger</summary>
+<summary>Phoenix Signal Logger (Hoot)</summary>
 
-The Phoenix signal logger does not currently support the modern struct format. Consider publishing geometry data using one of the logging libraries shown above instead of using custom signals in Phoenix.
+The Phoenix signal logger does not support the modern struct format. Consider publishing geometry data using one of the logging libraries shown above instead of using custom signals in Phoenix.
 
 :::tip
 AdvantageScope can automatically merge log files from multiple sources, such as Hoot and WPILOG files. See [here](../getting-started/manage-files.md) for details.
