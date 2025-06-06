@@ -121,12 +121,15 @@ jobs:
         env:
           ASCOPE_DISTRIBUTION: LITE
       - name: Prepare artifact
-        run: mv lite lite-tmp && cp -rL lite-tmp lite
+        run: |
+          mkdir AdvantageScopeLite
+          cp lite_server.py AdvantageScopeLite/lite_server.py
+          cp -rL lite AdvantageScopeLite/lite
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: lite
-          path: lite/
+          name: AdvantageScopeLite
+          path: AdvantageScopeLite/
 
   build-ios:
     name: Build for iOS
