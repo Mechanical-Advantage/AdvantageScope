@@ -434,7 +434,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         title: "Alert",
         message: "Deprecated data format",
         detail:
-          "The legacy numeric array format for structured data is deprecated and will be removed in 2026. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
+          "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
         icon: WINDOW_ICON
       });
       break;
