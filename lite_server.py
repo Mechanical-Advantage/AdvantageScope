@@ -2,6 +2,7 @@ import http.server
 import mimetypes
 import socketserver
 import os
+import sys
 import json
 
 import urllib
@@ -11,6 +12,7 @@ ROOT = "lite"
 EXTRA_ASSETS_PATH = os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.abspath(os.path.join(ROOT, "bundledAssets"))
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
+ENABLE_LOG_DOWNLOADS = os.getlogin() == "systemcore" or "--enable-logs" in sys.argv
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -71,18 +73,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # Serve list of logs
         elif request.path == "/logs" or request.path == "/logs/":
             files = []
-            if "folder" in query and len(query["folder"]) > 0:
-                if not os.path.exists(query["folder"][0]) or not os.path.isdir(query["folder"][0]):
-                    self.send_error(404, "Requested folder does not exist")
-                    return
-                for filename in [x for x in os.listdir(query["folder"][0]) if not x.startswith(".")]:
-                    for suffix in ALLOWED_LOG_SUFFIXES:
-                        if filename.endswith(suffix):
-                            files.append({
-                                "name": filename,
-                                "size": os.path.getsize(os.path.join(query["folder"][0], filename))
-                            })
-                            break
+            if ENABLE_LOG_DOWNLOADS:
+                if "folder" in query and len(query["folder"]) > 0:
+                    if not os.path.exists(query["folder"][0]) or not os.path.isdir(query["folder"][0]):
+                        self.send_error(404, "Requested folder does not exist")
+                        return
+                    for filename in [x for x in os.listdir(query["folder"][0]) if not x.startswith(".")]:
+                        for suffix in ALLOWED_LOG_SUFFIXES:
+                            if filename.endswith(suffix):
+                                files.append({
+                                    "name": filename,
+                                    "size": os.path.getsize(os.path.join(query["folder"][0], filename))
+                                })
+                                break
             json_string = json.dumps(files, separators=(',', ':'))
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
@@ -91,7 +94,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Serve log file
         elif request.path.startswith("/logs"):
-            if "folder" in query and len(query["folder"]) > 0:
+            if ENABLE_LOG_DOWNLOADS and "folder" in query and len(query["folder"]) > 0:
                 filename = urllib.parse.unquote(request.path[len("/logs/"):])
                 is_valid = False
                 for suffix in ALLOWED_LOG_SUFFIXES:
@@ -126,6 +129,10 @@ if __name__ == "__main__":
     if not os.path.exists(EXTRA_ASSETS_PATH):
         os.mkdir(EXTRA_ASSETS_PATH)
         print(f"Created folder for extra assets: {EXTRA_ASSETS_PATH}")
+
+    # Check if SystemCore
+    if not ENABLE_LOG_DOWNLOADS:
+        print("Log downloads are currently disabled. Pass \"--enable-logs\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem.\n")
 
     # Start server
     os.chdir(ROOT)
