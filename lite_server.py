@@ -4,8 +4,8 @@ import socketserver
 import os
 import sys
 import json
-
 import urllib
+import gzip
 
 PORT = 6328
 ROOT = "lite"
@@ -16,6 +16,26 @@ ENABLE_LOG_DOWNLOADS = os.getlogin() == "systemcore" or "--enable-logs" in sys.a
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
+    def _send_response_with_compression(self, status_code, content_type, source_data):
+        """Sends a response, compressing it with gzip if the client supports it."""
+        use_gzip = "gzip" in self.headers.get("Accept-Encoding", "")
+
+        if use_gzip:
+            data = gzip.compress(source_data)
+            content_length = len(data)
+        else:
+            data = source_data
+            content_length = len(source_data)
+
+        self.send_response(status_code)
+        self.send_header("Content-type", content_type)
+        self.send_header("Content-Length", str(content_length))
+        if use_gzip:
+            self.send_header("Content-Encoding", "gzip")
+        self.end_headers()
+
+        self.wfile.write(data)
+
     def do_GET(self):
         request = urllib.parse.urlparse(self.path)
         query = urllib.parse.parse_qs(request.query)
@@ -35,15 +55,13 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                             contents = None
                             if filename == "config.json":
                                 try:
-                                    contents = json.loads(open(path, "r").read())
+                                    with open(path, "r") as f:
+                                        contents = json.load(f)
                                 except:
                                     pass
                             asset_file_list[os.path.relpath(path, root)] = contents
             json_string = json.dumps(asset_file_list, separators=(',', ':'))
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json_string.encode('utf-8'))
+            self._send_response_with_compression(200, "application/json", json_string.encode('utf-8'))
 
         # Serve asset files (bundled or extra)
         elif request.path.startswith("/assets"):
@@ -54,17 +72,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 if os.path.exists(path) and os.path.isfile(path):
                     try:
                         with open(path, 'rb') as f:
-                            self.send_response(200)
+                            file_content = f.read()
                             mimetype, _ = mimetypes.guess_type(path)
-                            if mimetype:
-                                self.send_header('Content-type', mimetype)
-                            self.send_header('Content-length', str(os.path.getsize(path)))
-                            self.end_headers()
-                            while True:
-                                chunk = f.read(4096)
-                                if not chunk:
-                                    break
-                                self.wfile.write(chunk)
+                            if not mimetype:
+                                mimetype = 'application/octet-stream'
+                            self._send_response_with_compression(200, mimetype, file_content)
                     except Exception as e:
                         self.send_error(500, f"Error serving file: {e}")
                     return
@@ -75,45 +87,32 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             files = []
             if ENABLE_LOG_DOWNLOADS:
                 if "folder" in query and len(query["folder"]) > 0:
-                    if not os.path.exists(query["folder"][0]) or not os.path.isdir(query["folder"][0]):
+                    folder_path = query["folder"][0]
+                    if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
                         self.send_error(404, "Requested folder does not exist")
                         return
-                    for filename in [x for x in os.listdir(query["folder"][0]) if not x.startswith(".")]:
+                    for filename in [x for x in os.listdir(folder_path) if not x.startswith(".")]:
                         for suffix in ALLOWED_LOG_SUFFIXES:
                             if filename.endswith(suffix):
                                 files.append({
                                     "name": filename,
-                                    "size": os.path.getsize(os.path.join(query["folder"][0], filename))
+                                    "size": os.path.getsize(os.path.join(folder_path, filename))
                                 })
                                 break
             json_string = json.dumps(files, separators=(',', ':'))
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json_string.encode('utf-8'))
+            self._send_response_with_compression(200, "application/json", json_string.encode("utf-8"))
 
         # Serve log file
         elif request.path.startswith("/logs"):
             if ENABLE_LOG_DOWNLOADS and "folder" in query and len(query["folder"]) > 0:
                 filename = urllib.parse.unquote(request.path[len("/logs/"):])
-                is_valid = False
-                for suffix in ALLOWED_LOG_SUFFIXES:
-                    if filename.endswith(suffix):
-                        is_valid = True
-                        break
-                if is_valid:
+                if any(filename.endswith(suffix) for suffix in ALLOWED_LOG_SUFFIXES):
                     full_path = os.path.join(query["folder"][0], filename)
                     if os.path.exists(full_path):
                         try:
                             with open(full_path, 'rb') as f:
-                                self.send_response(200)
-                                self.send_header('Content-length', str(os.path.getsize(full_path)))
-                                self.end_headers()
-                                while True:
-                                    chunk = f.read(4096)
-                                    if not chunk:
-                                        break
-                                    self.wfile.write(chunk)
+                                file_content = f.read()
+                                self._send_response_with_compression(200, "application/octet-stream", file_content)
                         except Exception as e:
                             self.send_error(500, f"Error serving file: {e}")
                         return
@@ -121,7 +120,27 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Serve everything else
         else:
-            super().do_GET()
+            filepath = self.translate_path(self.path)
+            if os.path.isdir(filepath):
+                index_path = os.path.join(filepath, "index.html")
+                if os.path.exists(index_path):
+                    filepath = index_path
+                else:
+                    self.send_error(404, f"File not found: {self.path}")
+                    return
+
+            if os.path.exists(filepath) and os.path.isfile(filepath):
+                try:
+                    with open(filepath, "rb") as f:
+                        file_content = f.read()
+                        mimetype, _ = mimetypes.guess_type(filepath)
+                        if not mimetype:
+                            mimetype = "application/octet-stream"
+                        self._send_response_with_compression(200, mimetype, file_content)
+                except Exception as e:
+                    self.send_error(500, f"Error serving file: {e}")
+            else:
+                self.send_error(404, f"File not found: {self.path}")
 
 
 if __name__ == "__main__":
