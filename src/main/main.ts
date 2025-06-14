@@ -1486,7 +1486,7 @@ async function downloadStart() {
                   size: file.size,
                   randomized:
                     file.name.includes("TBD") || // WPILib DataLogManager
-                    (file.name.startsWith("Log_") && !file.name.includes("-")) // AdvantageKit
+                    ((file.name.startsWith("Log_") || file.name.startsWith("akit_")) && !file.name.includes("-")) // AdvantageKit
                 };
               })
               .sort((a, b) => {
