@@ -17,6 +17,10 @@ body {
   }
 }
 
+body.lite .hide-lite {
+  display: none;
+}
+
 table {
   position: absolute;
   top: 10px;

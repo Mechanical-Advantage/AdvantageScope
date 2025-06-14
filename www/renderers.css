@@ -45,6 +45,7 @@ div.line-graph-scroll {
   top: 8px;
   bottom: 35px;
   overflow: scroll;
+  scrollbar-width: none; /* Required for Firefox */
 }
 
 div.line-graph-scroll::-webkit-scrollbar {

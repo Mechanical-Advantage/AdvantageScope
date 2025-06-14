@@ -194,7 +194,13 @@ export default class Tabs {
         ) {
           window.sendMainMessage("ask-rename-tab", {
             index: index,
-            name: this.tabList[index].title
+            name: this.tabList[index].title,
+            rect: {
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height
+            }
           });
         }
       });
@@ -244,7 +250,13 @@ export default class Tabs {
     this.CLOSE_BUTTON.addEventListener("click", () => this.close(this.selectedTab));
     this.POPUP_BUTTON.addEventListener("click", () => this.newSatellite());
     this.ADD_BUTTON.addEventListener("click", () => {
-      window.sendMainMessage("ask-new-tab");
+      const rect = this.ADD_BUTTON.getBoundingClientRect();
+      window.sendMainMessage("ask-new-tab", {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+      });
     });
 
     // Drag handling

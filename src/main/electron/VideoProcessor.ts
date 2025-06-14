@@ -12,12 +12,12 @@ import fs from "fs";
 import jsonfile from "jsonfile";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
-import MatchInfo from "../shared/MatchInfo";
-import Preferences from "../shared/Preferences";
-import { getTBAMatchInfo, getTBAMatchKey } from "../shared/TBAUtil";
-import VideoSource from "../shared/VideoSource";
-import { createUUID, zfill } from "../shared/util";
-import { PREFS_FILENAME, VIDEO_CACHE, VIDEO_CACHE_FALLBACK, WINDOW_ICON } from "./Constants";
+import MatchInfo from "../../shared/MatchInfo";
+import Preferences from "../../shared/Preferences";
+import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
+import VideoSource from "../../shared/VideoSource";
+import { createUUID, zfill } from "../../shared/util";
+import { PREFS_FILENAME, VIDEO_CACHE, VIDEO_CACHE_FALLBACK, WINDOW_ICON } from "./ElectronConstants";
 import getElectronPlatform from "./getElectronPlatform";
 
 export class VideoProcessor {

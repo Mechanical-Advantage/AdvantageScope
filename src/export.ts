@@ -20,7 +20,7 @@ const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
 const HELP_BUTTON = document.getElementsByClassName("help-div")[0].firstElementChild as HTMLElement;
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       if (typeof event.data === "object") {

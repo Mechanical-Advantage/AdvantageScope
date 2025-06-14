@@ -7,6 +7,7 @@
 
 import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
 import { SourceListItemState, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
+import { DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
@@ -53,6 +54,12 @@ export default class Field3dController implements TabController {
     this.FIELD_SELECT = settings.getElementsByClassName("field-select")[0] as HTMLSelectElement;
 
     // Set up XR button
+    if (DISTRIBUTION === Distribution.Lite) {
+      Array.from(settings.getElementsByClassName("xr-control")).forEach((element) => {
+        let htmlElement = element as HTMLElement;
+        htmlElement.parentElement?.removeChild(htmlElement);
+      });
+    }
     this.XR_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("open-xr", this.UUID);
     });
