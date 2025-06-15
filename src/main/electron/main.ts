@@ -43,15 +43,6 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
-import {
-  delayBetaSurvey,
-  isBeta,
-  isBetaExpired,
-  isBetaWelcomeComplete,
-  openBetaSurvey,
-  saveBetaWelcomeComplete,
-  shouldPromptBetaSurvey
-} from "../betaUtil";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
@@ -87,6 +78,7 @@ import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
+import { isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -2464,23 +2456,6 @@ function createHubWindow(state?: WindowState) {
           });
       } else if (!isBetaWelcomeComplete()) {
         openBetaWelcome(window);
-      } else if (shouldPromptBetaSurvey()) {
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "We need your help!",
-            detail:
-              "Please take 10 minutes to give us some feedback on the AdvantageScope beta. Users like you help us make AdvantageScope better for everyone!",
-            buttons: ["Give Feedback", "Not Now"]
-          })
-          .then((result) => {
-            if (result.response === 0) {
-              openBetaSurvey();
-            } else {
-              delayBetaSurvey();
-            }
-          });
       }
     }
   });
@@ -3148,7 +3123,6 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
     port2.on("message", () => {
       betaWelcome.destroy();
       saveBetaWelcomeComplete();
-      shouldPromptBetaSurvey(); // Ensures survey is scheduled
     });
     port2.start();
   });

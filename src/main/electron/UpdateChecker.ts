@@ -7,8 +7,8 @@
 
 import { app, dialog, shell } from "electron";
 import fetch from "electron-fetch";
-import { isBeta } from "../betaUtil";
 import { GITHUB_REPOSITORY } from "../github";
+import { isBeta } from "./betaUtil";
 import { WINDOW_ICON } from "./ElectronConstants";
 
 /** Checks for updates from GitHub and prompts the user when requested. */

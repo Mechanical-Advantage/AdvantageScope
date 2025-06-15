@@ -217,8 +217,10 @@
       }
     </style>
     <script>
+      const LOCAL_STORAGE_STATE_KEY = "AdvantageScopeLite/state";
+
       // Update side bar width for loading background
-      let state = window.localStorage.getItem("AdvantageScopeLite/state");
+      let state = window.localStorage.getItem(LOCAL_STORAGE_STATE_KEY);
       if (state !== null) {
         let width = JSON.parse(state).sidebar.width;
         document.documentElement.style.setProperty("--side-bar-width", width.toString() + "px");

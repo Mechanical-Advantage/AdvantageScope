@@ -15,7 +15,7 @@ const configEmbed = Object.assign(config, {
   themeConfig: Object.assign(config.themeConfig!, {
     announcementBar: isLite
       ? {
-          id: "lite_warning",
+          id: "ascope_lite_warning",
           content:
             "This documentation describes the desktop version of AdvantageScope, which includes some features not available in AdvantageScope Lite.",
           backgroundColor: "#446ce3",

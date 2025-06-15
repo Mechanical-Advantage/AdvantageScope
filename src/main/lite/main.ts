@@ -24,6 +24,8 @@ import {
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
+import { isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
+import { LocalStorageKeys } from "./localStorageKeys";
 
 let HUB_FRAME: HTMLIFrameElement;
 let POPUP_FRAME: HTMLIFrameElement;
@@ -36,6 +38,7 @@ let hubPort: MessagePort | null = null;
 let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
+let popupRequiresForceClose = false;
 
 /**
  * Open a new popup menu
@@ -76,9 +79,12 @@ function openPopupWindow(
   path: string,
   size: [number, number],
   type: "pixels" | "percent",
-  messageCallback?: (message: NamedMessage | any, port: MessagePort) => void
+  messageCallback?: (message: NamedMessage | any, port: MessagePort) => void,
+  requireForceClose = false
 ): Promise<MessagePort> {
   return new Promise((resolve) => {
+    popupRequiresForceClose = requireForceClose;
+
     if (downloadInterval !== null) {
       window.clearInterval(downloadInterval);
     }
@@ -101,19 +107,22 @@ function openPopupWindow(
       resolve(channel.port2);
 
       // Close events
-      window.onclick = () => closePopupWindow();
-      POPUP_FRAME.contentWindow?.addEventListener("keydown", (event) => {
-        if (event.code === "Escape") {
-          closePopupWindow();
-        }
-      });
+      if (!requireForceClose) {
+        window.onclick = () => closePopupWindow();
+        POPUP_FRAME.contentWindow?.addEventListener("keydown", (event) => {
+          if (event.code === "Escape") {
+            closePopupWindow();
+          }
+        });
+      }
     };
     POPUP_FRAME.src = path;
   });
 }
 
 /** Close any open popup windows */
-function closePopupWindow() {
+function closePopupWindow(forceClose = false) {
+  if (popupRequiresForceClose && !forceClose) return;
   window.onclick = null;
   POPUP_FRAME.onload = null;
   POPUP_FRAME.hidden = true;
@@ -155,10 +164,10 @@ function openPreferences() {
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
     closePopupWindow();
     sendMessage(hubPort, "set-preferences", message);
-    localStorage.setItem("AdvantageScopeLite/prefs", JSON.stringify(message));
+    localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
   }).then((port) => {
     let prefs = DEFAULT_PREFS;
-    let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
+    let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
     if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
     port.postMessage({ platform: "lite", prefs: prefs });
   });
@@ -203,7 +212,7 @@ function openDownload() {
     }
   }).then((port) => {
     let prefs = DEFAULT_PREFS;
-    let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
+    let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
     if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
     sendMessage(port, "set-platform", "lite");
     sendMessage(port, "set-preferences", prefs);
@@ -228,13 +237,13 @@ async function initHub() {
     appVersion: LITE_VERSION
   });
   let prefs = DEFAULT_PREFS;
-  let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
+  let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
   sendMessage(hubPort, "set-preferences", prefs);
   sendMessage(hubPort, "set-assets", await assetsPromise);
-  let typeMemory = localStorage.getItem("AdvantageScopeLite/type-memory");
+  let typeMemory = localStorage.getItem(LocalStorageKeys.TYPE_MEMORY);
   if (typeMemory !== null) sendMessage(hubPort, "restore-type-memory", JSON.parse(typeMemory));
-  let state = localStorage.getItem("AdvantageScopeLite/state");
+  let state = localStorage.getItem(LocalStorageKeys.STATE);
   if (state !== null) sendMessage(hubPort, "restore-state", JSON.parse(state));
   sendMessage(hubPort, "show-when-ready");
 
@@ -270,11 +279,11 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "save-state":
-      localStorage.setItem("AdvantageScopeLite/state", JSON.stringify(message.data));
+      localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(message.data));
       break;
 
     case "save-type-memory":
-      let typeMemoryRaw = localStorage.getItem("AdvantageScopeLite/type-memory");
+      let typeMemoryRaw = localStorage.getItem(LocalStorageKeys.TYPE_MEMORY);
       let typeMemory: SourceListTypeMemory = typeMemoryRaw === null ? {} : JSON.parse(typeMemoryRaw);
       let originalTypeMemoryStr = JSON.stringify(typeMemory);
       Object.entries(message.data as SourceListTypeMemory).forEach(([memoryId, fields]) => {
@@ -286,7 +295,7 @@ async function handleHubMessage(message: NamedMessage) {
       });
       let newTypeMemoryStr = JSON.stringify(typeMemory);
       if ((typeMemoryRaw === null || originalTypeMemoryStr) !== newTypeMemoryStr) {
-        localStorage.setItem("AdvantageScopeLite/type-memory", JSON.stringify(typeMemory));
+        localStorage.setItem(LocalStorageKeys.TYPE_MEMORY, JSON.stringify(typeMemory));
       }
       break;
 
@@ -300,7 +309,7 @@ async function handleHubMessage(message: NamedMessage) {
         const path: string = message.data.path;
 
         let prefs = DEFAULT_PREFS;
-        let prefsRaw = localStorage.getItem("AdvantageScopeLite/prefs");
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
 
         let response = await fetch(`/logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
@@ -748,14 +757,14 @@ async function handleHubMessage(message: NamedMessage) {
           let updateRecents = (newUnitConversion: UnitConversionPreset) => {
             let newUnitConversionStr = JSON.stringify(newUnitConversion);
             if (newUnitConversionStr !== JSON.stringify(NoopUnitConversion)) {
-              let recentUnitsRaw = localStorage.getItem("AdvantageScopeLite/recent-units");
+              let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
               let recentUnits: UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
               recentUnits = recentUnits.filter((x) => JSON.stringify(x) !== newUnitConversionStr);
               recentUnits.splice(0, 0, newUnitConversion);
               while (recentUnits.length > MAX_RECENT_UNITS) {
                 recentUnits.pop();
               }
-              localStorage.setItem("AdvantageScopeLite/recent-units", JSON.stringify(recentUnits));
+              localStorage.setItem(LocalStorageKeys.RECENT_UNITS, JSON.stringify(recentUnits));
             }
           };
           menuItems.push({
@@ -775,7 +784,7 @@ async function handleHubMessage(message: NamedMessage) {
               port.postMessage(unitConversion);
             }
           });
-          let recentUnitsRaw = localStorage.getItem("AdvantageScopeLite/recent-units");
+          let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
           let recentUnits: UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
           menuItems.push({
             content: "Recent Presets",
@@ -1036,15 +1045,6 @@ window.addEventListener("load", () => {
     popupMenu.close();
   });
 
-  // Handle hub loading
-  if (HUB_FRAME.contentWindow?.document.readyState === "complete") {
-    initHub();
-  } else {
-    HUB_FRAME.addEventListener("load", () => {
-      initHub();
-    });
-  }
-
   // Prevent dragging
   document.addEventListener("mousedown", (event) => event.preventDefault());
   document.addEventListener("mousemove", (event) => event.preventDefault());
@@ -1116,4 +1116,38 @@ window.addEventListener("load", () => {
       })
     );
   });
+
+  // Handle hub loading
+  if (HUB_FRAME.contentWindow?.document.readyState === "complete") {
+    initHub();
+  } else {
+    HUB_FRAME.addEventListener("load", () => {
+      initHub();
+    });
+  }
+
+  // Beta init
+  if (isBeta()) {
+    if (isBetaExpired()) {
+      if (
+        confirm(
+          "The AdvantageScope Lite beta is complete. Please follow the instructions in the documentation to update to the latest stable release."
+        )
+      ) {
+        // Redirect to SystemCore home page
+        location.href = "http://" + location.hostname;
+      }
+    } else if (!isBetaWelcomeComplete()) {
+      openPopupWindow(
+        "www/betaWelcome.html",
+        [450, 490],
+        "pixels",
+        () => {
+          closePopupWindow(true); // Force close
+          saveBetaWelcomeComplete();
+        },
+        true // Require force close
+      );
+    }
+  }
 });
