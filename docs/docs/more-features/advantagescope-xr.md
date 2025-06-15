@@ -7,10 +7,6 @@ import Image2 from "./img/xr-2.png";
 
 # AdvantageScope XR
 
-:::warning
-AdvantageScope XR is an experimental feature, and may not function properly on all devices. Please report any problems via the [GitHub issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues), though note that during the season we always prioritize bug fixes that affect non-experimental features.
-:::
-
 AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to life in augmented reality, enabling you to visualize data in all new ways. See a simulated auto in life size, review match strategy with a tabletop field model, overlay diagnostic information on a real robot, and so much more! The video below demonstrates several use cases for this feature:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

@@ -134,7 +134,6 @@ window.addEventListener("message", (event) => {
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
             skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault,
             skipNumericArrayDeprecationWarning: oldPrefs.skipNumericArrayDeprecationWarning,
-            skipXRExperimentalWarning: oldPrefs.skipXRExperimentalWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted
           };
           messagePort.postMessage(newPrefs);

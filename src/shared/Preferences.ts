@@ -26,7 +26,6 @@ export default interface Preferences {
   skipHootNonProWarning: boolean;
   skipNumericArrayDeprecationWarning: boolean;
   skipFrcLogFolderDefault: boolean;
-  skipXRExperimentalWarning: boolean;
   ctreLicenseAccepted: boolean;
   usb?: boolean;
 }
@@ -49,7 +48,6 @@ export const DEFAULT_PREFS: Preferences = {
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
   skipNumericArrayDeprecationWarning: false,
-  skipXRExperimentalWarning: false,
   ctreLicenseAccepted: false
 };
 
@@ -170,9 +168,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipFrcLogFolderDefault" in newPrefs && typeof newPrefs.skipFrcLogFolderDefault === "boolean") {
     basePrefs.skipFrcLogFolderDefault = newPrefs.skipFrcLogFolderDefault;
-  }
-  if ("skipXRExperimentalWarning" in newPrefs && typeof newPrefs.skipXRExperimentalWarning === "boolean") {
-    basePrefs.skipXRExperimentalWarning = newPrefs.skipXRExperimentalWarning;
   }
   if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
     basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;
