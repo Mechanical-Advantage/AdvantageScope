@@ -9,7 +9,7 @@ import { spawn } from "child_process";
 import { app } from "electron";
 import fs from "fs";
 import path from "path";
-import { createUUID } from "../shared/util";
+import { createUUID } from "../../shared/util";
 import { OWLET_STORAGE } from "./owletDownloadLoop";
 
 export const CTRE_LICENSE_URL =

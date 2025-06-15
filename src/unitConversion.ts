@@ -54,7 +54,7 @@ function updateUnitOptions() {
 }
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
     messagePort.onmessage = (event) => {
       // Update button focus

@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { Distribution, DISTRIBUTION } from "./shared/buildConstants";
+
 const CHECKBOXES = Array.from(document.getElementsByTagName("input")) as HTMLInputElement[];
 const CONTINUE_BUTTON = document.getElementsByTagName("button")[0] as HTMLButtonElement;
 
@@ -14,7 +16,7 @@ function updateDisable() {
 }
 
 window.addEventListener("message", (event) => {
-  if (event.source === window && event.data === "port") {
+  if (event.data === "port") {
     let messagePort = event.ports[0];
 
     CHECKBOXES.forEach((checkbox) => {
@@ -26,5 +28,24 @@ window.addEventListener("message", (event) => {
     CONTINUE_BUTTON.addEventListener("click", () => {
       messagePort.postMessage(null);
     });
+
+    messagePort.onmessage = (event) => {
+      let isAlpha: boolean = event.data;
+      Array.from(document.getElementsByClassName("beta-only")).forEach((element) => {
+        (element as HTMLElement).hidden = isAlpha;
+      });
+      Array.from(document.getElementsByClassName("alpha-only")).forEach((element) => {
+        (element as HTMLElement).hidden = !isAlpha;
+      });
+    };
   }
+});
+
+window.addEventListener("load", () => {
+  Array.from(document.getElementsByClassName("desktop-only")).forEach((element) => {
+    (element as HTMLElement).hidden = DISTRIBUTION === Distribution.Lite;
+  });
+  Array.from(document.getElementsByClassName("lite-only")).forEach((element) => {
+    (element as HTMLElement).hidden = DISTRIBUTION !== Distribution.Lite;
+  });
 });

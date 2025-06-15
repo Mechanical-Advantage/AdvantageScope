@@ -39,8 +39,11 @@ export default class DocumentationRenderer implements TabRenderer {
 
   restoreState(state: unknown): void {
     if (typeof state === "string") {
-      this.IFRAME.contentWindow!.location.hash = state;
-      this.stateQueue = state;
+      if (this.loaded) {
+        this.IFRAME.contentWindow!.location.hash = state;
+      } else {
+        this.stateQueue = state;
+      }
     }
   }
 
