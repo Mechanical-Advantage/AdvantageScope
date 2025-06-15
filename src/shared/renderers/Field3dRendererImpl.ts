@@ -16,7 +16,7 @@ import {
   CoordinateSystem
 } from "../AdvantageScopeAssets";
 import { Rotation3d } from "../geometry";
-import { convert } from "../units";
+import { Units } from "../units";
 import { checkArrayType, clampValue } from "../util";
 import {
   Field3dRendererCommand,
@@ -47,7 +47,7 @@ export default class Field3dRendererImpl implements TabRenderer {
   private ORBIT_FIELD_FTC_DEFAULT_POSITION = new THREE.Vector3(0, 2, -4);
   private ORBIT_ROBOT_FRC_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
   private ORBIT_ROBOT_FTC_DEFAULT_POSITION = new THREE.Vector3(1, 0.5, 0.5);
-  private DS_CAMERA_HEIGHT = convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
+  private DS_CAMERA_HEIGHT = Units.convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
   private DS_CAMERA_OFFSET_FRC = 1.5; // Distance away from the glass
   private DS_CAMERA_TARGET_FTC = new THREE.Vector3(0, -0.2, 0);
   private CONTROLS_MIN_DISTANCE_FRC = 1;
@@ -628,16 +628,16 @@ export default class Field3dRendererImpl implements TabRenderer {
           command.isRedAlliance ? 0 : Math.PI
         );
         this.wpilibFieldCoordinateGroup.position.set(
-          convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          Units.convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          Units.convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
           0
         );
         break;
       case "wall-blue":
         this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
         this.wpilibFieldCoordinateGroup.position.set(
-          convert(fieldConfig.widthInches / 2, "inches", "meters"),
-          convert(fieldConfig.heightInches / 2, "inches", "meters"),
+          Units.convert(fieldConfig.widthInches / 2, "inches", "meters"),
+          Units.convert(fieldConfig.heightInches / 2, "inches", "meters"),
           0
         );
         break;
@@ -1030,7 +1030,7 @@ export function getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Q
     if (rotation.axis === "y") axis.setY(1);
     if (rotation.axis === "z") axis.setZ(1);
     quaternion.premultiply(
-      new THREE.Quaternion().setFromAxisAngle(axis, convert(rotation.degrees, "degrees", "radians"))
+      new THREE.Quaternion().setFromAxisAngle(axis, Units.convert(rotation.degrees, "degrees", "radians"))
     );
   });
   return quaternion;

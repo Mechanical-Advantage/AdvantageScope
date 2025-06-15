@@ -24,7 +24,7 @@ import {
 } from "../shared/geometry";
 import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
-import { convert } from "../shared/units";
+import { Units } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 
 export default class SourceList {
@@ -1070,7 +1070,7 @@ export default class SourceList {
                     "\u03bd: " +
                       state.speed.toFixed(2) +
                       "m/s, \u03b8: " +
-                      convert(state.angle, "radians", "degrees").toFixed(2) +
+                      Units.convert(state.angle, "radians", "degrees").toFixed(2) +
                       "\u00b0"
                   );
                 });
@@ -1082,7 +1082,7 @@ export default class SourceList {
                     "m/s, \u03bdy: " +
                     chassisSpeeds.vy.toFixed(2) +
                     "m/s, \u03a9: " +
-                    convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
+                    Units.convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
                     "\u00b0/s"
                 );
               } else {
@@ -1099,7 +1099,8 @@ export default class SourceList {
                   switch (typeConfig?.previewType) {
                     case "Rotation2d": {
                       return (
-                        convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
+                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                        "\u00b0"
                       );
                     }
                     case "Translation2d": {
@@ -1119,7 +1120,7 @@ export default class SourceList {
                         "m, Y: " +
                         annotatedPose.pose.translation[1].toFixed(3) +
                         "m, \u03b8: " +
-                        convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
                         "\u00b0"
                       );
                     }
@@ -1127,11 +1128,11 @@ export default class SourceList {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return (
                         "Roll: " +
-                        convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
                         "\u00b0, Pitch: " +
-                        convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
                         "\u00b0, Yaw: " +
-                        convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
                         "\u00b0"
                       );
                     }
@@ -1156,11 +1157,11 @@ export default class SourceList {
                         "m, Z: " +
                         annotatedPose.pose.translation[2].toFixed(3) +
                         "m, Roll: " +
-                        convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
                         "\u00b0, Pitch: " +
-                        convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
                         "\u00b0, Yaw: " +
-                        convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
                         "\u00b0"
                       );
                     }

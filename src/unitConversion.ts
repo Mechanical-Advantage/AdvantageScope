@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { evaluate } from "mathjs";
-import { GROUPED_UNITS, UnitConversionPreset } from "./shared/units";
+import { Units } from "./shared/units";
 
 const UNIT_TYPE = document.getElementById("unitType") as HTMLInputElement;
 const FROM_UNIT = document.getElementById("fromUnit") as HTMLInputElement;
@@ -41,7 +41,7 @@ function updateUnitOptions() {
     FROM_UNIT.disabled = false;
     TO_UNIT.disabled = false;
 
-    Object.keys(GROUPED_UNITS[type]).forEach((unit, index) => {
+    Object.keys(Units.GROUPED_UNITS[type]).forEach((unit, index) => {
       let option = document.createElement("option");
       option.innerText = unit;
       FROM_UNIT.appendChild(option);
@@ -70,10 +70,10 @@ window.addEventListener("message", (event) => {
       }
 
       // Normal message
-      let originalConversion: UnitConversionPreset = event.data;
+      let originalConversion: Units.UnitConversionPreset = event.data;
 
       // Add type options
-      ["none", ...Object.keys(GROUPED_UNITS)].forEach((unitType) => {
+      ["none", ...Object.keys(Units.GROUPED_UNITS)].forEach((unitType) => {
         let option = document.createElement("option");
         option.innerText = unitType;
         UNIT_TYPE.appendChild(option);
@@ -114,7 +114,7 @@ window.addEventListener("message", (event) => {
 
         // Save data
         let unitType = UNIT_TYPE.value === "none" ? null : UNIT_TYPE.value;
-        let conversion: UnitConversionPreset = {
+        let conversion: Units.UnitConversionPreset = {
           type: unitType,
           factor: factor
         };

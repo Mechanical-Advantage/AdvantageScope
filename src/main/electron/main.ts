@@ -42,7 +42,7 @@ import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Prefe
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
-import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
@@ -842,7 +842,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else {
           // Left and right controls
           let lockedRange: [number, number] | null = message.data.lockedRange;
-          let unitConversion: UnitConversionPreset = message.data.unitConversion;
+          let unitConversion: Units.UnitConversionPreset = message.data.unitConversion;
           let filter: LineGraphFilter = message.data.filter;
 
           editAxisMenu.append(
@@ -881,15 +881,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               type: "separator"
             })
           );
-          let updateRecents = (newUnitConversion: UnitConversionPreset) => {
+          let updateRecents = (newUnitConversion: Units.UnitConversionPreset) => {
             let newUnitConversionStr = JSON.stringify(newUnitConversion);
-            if (newUnitConversionStr !== JSON.stringify(NoopUnitConversion)) {
-              let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
+            if (newUnitConversionStr !== JSON.stringify(Units.NoopUnitConversion)) {
+              let recentUnits: Units.UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
                 ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
                 : [];
               recentUnits = recentUnits.filter((x) => JSON.stringify(x) !== newUnitConversionStr);
               recentUnits.splice(0, 0, newUnitConversion);
-              while (recentUnits.length > MAX_RECENT_UNITS) {
+              while (recentUnits.length > Units.MAX_RECENT_UNITS) {
                 recentUnits.pop();
               }
               jsonfile.writeFileSync(RECENT_UNITS_FILENAME, recentUnits);
@@ -911,7 +911,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               }
             })
           );
-          let recentUnits: UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
+          let recentUnits: Units.UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
             ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
             : [];
           editAxisMenu.append(
@@ -946,12 +946,12 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           editAxisMenu.append(
             new MenuItem({
               label: "Reset Units",
-              enabled: JSON.stringify(unitConversion) !== JSON.stringify(NoopUnitConversion),
+              enabled: JSON.stringify(unitConversion) !== JSON.stringify(Units.NoopUnitConversion),
               click() {
                 sendMessage(window, "edit-axis", {
                   legend: legend,
                   lockedRange: lockedRange,
-                  unitConversion: NoopUnitConversion,
+                  unitConversion: Units.NoopUnitConversion,
                   filter: filter
                 });
               }
@@ -2512,8 +2512,8 @@ function createEditRangeWindow(
  */
 function createUnitConversionWindow(
   parentWindow: Electron.BrowserWindow,
-  unitConversion: UnitConversionPreset,
-  callback: (unitConversion: UnitConversionPreset) => void
+  unitConversion: Units.UnitConversionPreset,
+  callback: (unitConversion: Units.UnitConversionPreset) => void
 ) {
   const unitConversionWindow = new BrowserWindow({
     width: 300,

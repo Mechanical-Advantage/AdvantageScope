@@ -17,7 +17,7 @@ import {
   LineGraphRendererCommand_DiscreteField,
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
-import { NoopUnitConversion, UnitConversionPreset, convertWithPreset } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
@@ -37,8 +37,8 @@ export default class LineGraphController implements TabController {
 
   private leftLockedRange: [number, number] | null = null;
   private rightLockedRange: [number, number] | null = null;
-  private leftUnitConversion = NoopUnitConversion;
-  private rightUnitConversion = NoopUnitConversion;
+  private leftUnitConversion = Units.NoopUnitConversion;
+  private rightUnitConversion = Units.NoopUnitConversion;
   private leftFilter = LineGraphFilter.None;
   private rightFilter = LineGraphFilter.None;
 
@@ -123,10 +123,10 @@ export default class LineGraphController implements TabController {
       this.rightLockedRange = state.rightLockedRange as [number, number] | null;
     }
     if ("leftUnitConversion" in state) {
-      this.leftUnitConversion = state.leftUnitConversion as UnitConversionPreset;
+      this.leftUnitConversion = state.leftUnitConversion as Units.UnitConversionPreset;
     }
     if ("rightUnitConversion" in state) {
-      this.rightUnitConversion = state.rightUnitConversion as UnitConversionPreset;
+      this.rightUnitConversion = state.rightUnitConversion as Units.UnitConversionPreset;
     }
     if ("leftFilter" in state) {
       this.leftFilter = state.leftFilter as LineGraphFilter;
@@ -196,7 +196,7 @@ export default class LineGraphController implements TabController {
   editAxis(
     legend: string,
     lockedRange: [number, number] | null,
-    unitConversion: UnitConversionPreset,
+    unitConversion: Units.UnitConversionPreset,
     filter: LineGraphFilter
   ) {
     switch (legend) {
@@ -297,7 +297,7 @@ export default class LineGraphController implements TabController {
       source: SourceListState,
       dataRange: [number, number],
       command: LineGraphRendererCommand_NumericField[],
-      unitConversion: UnitConversionPreset,
+      unitConversion: Units.UnitConversionPreset,
       filter: LineGraphFilter
     ) => {
       source.forEach((fieldItem) => {
@@ -378,7 +378,7 @@ export default class LineGraphController implements TabController {
 
         // Clamp values
         data.values = data.values.map((value) =>
-          clampValue(convertWithPreset(value, unitConversion), -this.MAX_VALUE, this.MAX_VALUE)
+          clampValue(Units.convertWithPreset(value, unitConversion), -this.MAX_VALUE, this.MAX_VALUE)
         );
 
         // Trim early point

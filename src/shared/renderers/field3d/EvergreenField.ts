@@ -13,7 +13,7 @@ import {
   FTC_STANDARD_FIELD_LENGTH,
   FTC_STANDARD_FIELD_WIDTH
 } from "../../AdvantageScopeAssets";
-import { convert } from "../../units";
+import { Units } from "../../units";
 
 export default function makeEvergreenField(
   materialSpecular: THREE.Color,
@@ -37,7 +37,7 @@ export default function makeEvergreenField(
 
   // Guardrails
   const tubeRadius = isFTC ? 0.01 : 0.02;
-  const guardrailHeight = convert(isFTC ? 12 : 20, "inches", "meters");
+  const guardrailHeight = Units.convert(isFTC ? 12 : 20, "inches", "meters");
   [
     -(isFTC ? FTC_STANDARD_FIELD_WIDTH : FRC_STANDARD_FIELD_WIDTH) / 2,
     (isFTC ? FTC_STANDARD_FIELD_WIDTH : FRC_STANDARD_FIELD_WIDTH) / 2
@@ -127,9 +127,9 @@ export default function makeEvergreenField(
     });
   } else {
     const allianceStationWidth = ALLIANCE_STATION_WIDTH;
-    const allianceStationHeight = convert(78, "inches", "meters");
-    const allianceStationSolidHeight = convert(36.75, "inches", "meters");
-    const allianceStationShelfDepth = convert(12.25, "inches", "meters");
+    const allianceStationHeight = Units.convert(78, "inches", "meters");
+    const allianceStationSolidHeight = Units.convert(36.75, "inches", "meters");
+    const allianceStationShelfDepth = Units.convert(12.25, "inches", "meters");
     const fillerWidth = (FRC_STANDARD_FIELD_WIDTH - allianceStationWidth * 3) / 2;
     [-FRC_STANDARD_FIELD_LENGTH / 2, FRC_STANDARD_FIELD_LENGTH / 2].forEach((x) => {
       [0, allianceStationSolidHeight, allianceStationHeight].forEach((z) => {

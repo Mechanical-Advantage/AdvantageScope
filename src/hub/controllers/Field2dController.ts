@@ -24,7 +24,7 @@ import {
   Field2dRendererCommand_AnyObj,
   Orientation
 } from "../../shared/renderers/Field2dRenderer";
-import { convert } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field2dController_Config from "./Field2dController_Config";
@@ -205,8 +205,8 @@ export default class Field2dController implements TabController {
 
     // Get field data
     let fieldData = window.assets?.field2ds.find((game) => game.id === this.FIELD_SELECT.value);
-    let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
-    let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+    let fieldWidth = fieldData === undefined ? 0 : Units.convert(fieldData.widthInches, "inches", "meters");
+    let fieldHeight = fieldData === undefined ? 0 : Units.convert(fieldData.heightInches, "inches", "meters");
     let coordinateSystem =
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldData?.coordinateSystem

@@ -21,7 +21,7 @@ import {
   getTabIcon,
   LITE_COMPATIBLE_TABS
 } from "../../shared/TabType";
-import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
@@ -723,7 +723,7 @@ async function handleHubMessage(message: NamedMessage) {
         } else {
           // Left and right controls
           let lockedRange: [number, number] | null = message.data.lockedRange;
-          let unitConversion: UnitConversionPreset = message.data.unitConversion;
+          let unitConversion: Units.UnitConversionPreset = message.data.unitConversion;
           let filter: LineGraphFilter = message.data.filter;
 
           menuItems.push({
@@ -754,14 +754,14 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
           menuItems.push("-");
-          let updateRecents = (newUnitConversion: UnitConversionPreset) => {
+          let updateRecents = (newUnitConversion: Units.UnitConversionPreset) => {
             let newUnitConversionStr = JSON.stringify(newUnitConversion);
-            if (newUnitConversionStr !== JSON.stringify(NoopUnitConversion)) {
+            if (newUnitConversionStr !== JSON.stringify(Units.NoopUnitConversion)) {
               let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
-              let recentUnits: UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
+              let recentUnits: Units.UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
               recentUnits = recentUnits.filter((x) => JSON.stringify(x) !== newUnitConversionStr);
               recentUnits.splice(0, 0, newUnitConversion);
-              while (recentUnits.length > MAX_RECENT_UNITS) {
+              while (recentUnits.length > Units.MAX_RECENT_UNITS) {
                 recentUnits.pop();
               }
               localStorage.setItem(LocalStorageKeys.RECENT_UNITS, JSON.stringify(recentUnits));
@@ -771,7 +771,7 @@ async function handleHubMessage(message: NamedMessage) {
             content: "Edit Units",
             async callback() {
               let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
-                let newUnitConversion: UnitConversionPreset = message;
+                let newUnitConversion: Units.UnitConversionPreset = message;
                 closePopupWindow();
                 sendMessage(hubPort, "edit-axis", {
                   legend: legend,
@@ -785,7 +785,7 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
           let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
-          let recentUnits: UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
+          let recentUnits: Units.UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
           menuItems.push({
             content: "Recent Presets",
             className: recentUnits.length > 0 ? "" : "disabled",
@@ -814,12 +814,12 @@ async function handleHubMessage(message: NamedMessage) {
           });
           menuItems.push({
             content: "Reset Units",
-            className: JSON.stringify(unitConversion) !== JSON.stringify(NoopUnitConversion) ? "" : "disabled",
+            className: JSON.stringify(unitConversion) !== JSON.stringify(Units.NoopUnitConversion) ? "" : "disabled",
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
                 lockedRange: lockedRange,
-                unitConversion: NoopUnitConversion,
+                unitConversion: Units.NoopUnitConversion,
                 filter: filter
               });
             }

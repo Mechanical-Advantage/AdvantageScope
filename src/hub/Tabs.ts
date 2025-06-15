@@ -23,7 +23,7 @@ import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
-import { UnitConversionPreset } from "../shared/units";
+import { Units } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
@@ -671,7 +671,7 @@ export default class Tabs {
   editAxis(
     legend: string,
     lockedRange: [number, number] | null,
-    unitConversion: UnitConversionPreset,
+    unitConversion: Units.UnitConversionPreset,
     filter: LineGraphFilter
   ) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {

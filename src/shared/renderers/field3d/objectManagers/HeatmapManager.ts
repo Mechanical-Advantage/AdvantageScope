@@ -8,7 +8,7 @@
 import * as THREE from "three";
 import { Config3dField } from "../../../AdvantageScopeAssets";
 import { annotatedPose3dTo2d, convertFromCoordinateSystem } from "../../../geometry";
-import { convert } from "../../../units";
+import { Units } from "../../../units";
 import { Field3dRendererCommand_HeatmapObj } from "../../Field3dRenderer";
 import { disposeObject } from "../../Field3dRendererImpl";
 import Heatmap from "../../Heatmap";
@@ -59,8 +59,8 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
 
     // Update heatmap
     let fieldDimensions: [number, number] = [
-      convert(fieldConfig.widthInches, "inches", "meters"),
-      convert(fieldConfig.heightInches, "inches", "meters")
+      Units.convert(fieldConfig.widthInches, "inches", "meters"),
+      Units.convert(fieldConfig.heightInches, "inches", "meters")
     ];
     let pixelDimensions: [number, number] = [
       Math.round(this.HEIGHT_PIXELS * (fieldDimensions[0] / fieldDimensions[1])),

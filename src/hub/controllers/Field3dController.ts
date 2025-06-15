@@ -29,7 +29,7 @@ import {
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
-import { convert } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
@@ -202,8 +202,8 @@ export default class Field3dController implements TabController {
     let fieldData = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
       (game) => game.id === this.FIELD_SELECT.value
     );
-    let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
-    let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+    let fieldWidth = fieldData === undefined ? 0 : Units.convert(fieldData.widthInches, "inches", "meters");
+    let fieldHeight = fieldData === undefined ? 0 : Units.convert(fieldData.heightInches, "inches", "meters");
     let coordinateSystem =
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldData?.coordinateSystem
