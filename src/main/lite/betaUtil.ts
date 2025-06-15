@@ -34,6 +34,11 @@ export function isBetaWelcomeComplete(): boolean {
   return state.welcomeComplete;
 }
 
+/** Returns whether the release is an alpha. */
+export function isAlpha(): boolean {
+  return isBeta() && BETA_CONFIG!.isAlpha;
+}
+
 /** Records that the beta welcome was acknowledged by the user. */
 export function saveBetaWelcomeComplete(): void {
   let state = getState();

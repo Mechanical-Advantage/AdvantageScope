@@ -28,6 +28,16 @@ window.addEventListener("message", (event) => {
     CONTINUE_BUTTON.addEventListener("click", () => {
       messagePort.postMessage(null);
     });
+
+    messagePort.onmessage = (event) => {
+      let isAlpha: boolean = event.data;
+      Array.from(document.getElementsByClassName("beta-only")).forEach((element) => {
+        (element as HTMLElement).hidden = isAlpha;
+      });
+      Array.from(document.getElementsByClassName("alpha-only")).forEach((element) => {
+        (element as HTMLElement).hidden = !isAlpha;
+      });
+    };
   }
 });
 

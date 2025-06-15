@@ -78,7 +78,7 @@ import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
-import { isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
+import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -2442,9 +2442,11 @@ function createHubWindow(state?: WindowState) {
           .showMessageBox(window, {
             type: "info",
             title: "Alert",
-            message: "Beta is complete",
+            message: (isAlpha() ? "Alpha" : "Beta") + " is complete",
             detail:
-              "The AdvantageScope beta is complete. " +
+              "The AdvantageScope " +
+              (isAlpha() ? "alpha" : "beta") +
+              " is complete. " +
               (DISTRIBUTION === Distribution.WPILib
                 ? "Please update to the latest stable release of WPILib."
                 : "Please download the latest stable release of AdvantageScope from GitHub."),
@@ -3111,7 +3113,6 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   });
   // Finish setup
   betaWelcome.setMenu(null);
-  betaWelcome.once("ready-to-show", betaWelcome.show);
   betaWelcome.on("close", () => {
     app.quit();
   });
@@ -3120,11 +3121,13 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
     if (betaWelcome === null) return;
     const { port1, port2 } = new MessageChannelMain();
     betaWelcome.webContents.postMessage("port", null, [port1]);
+    port2.postMessage(isAlpha());
     port2.on("message", () => {
       betaWelcome.destroy();
       saveBetaWelcomeComplete();
     });
     port2.start();
+    betaWelcome.show();
   });
   betaWelcome.loadFile(path.join(__dirname, "../www/betaWelcome.html"));
 }

@@ -24,7 +24,7 @@ import {
 import { MAX_RECENT_UNITS, NoopUnitConversion, UnitConversionPreset } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
-import { isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
+import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
 import { LocalStorageKeys } from "./localStorageKeys";
 
 let HUB_FRAME: HTMLIFrameElement;
@@ -1131,7 +1131,9 @@ window.addEventListener("load", () => {
     if (isBetaExpired()) {
       if (
         confirm(
-          "The AdvantageScope Lite beta is complete. Please follow the instructions in the documentation to update to the latest stable release."
+          `The AdvantageScope Lite ${
+            isAlpha() ? "alpha" : "beta"
+          } is complete. Please follow the instructions in the documentation to update to the latest stable release.`
         )
       ) {
         // Redirect to SystemCore home page
@@ -1147,7 +1149,9 @@ window.addEventListener("load", () => {
           saveBetaWelcomeComplete();
         },
         true // Require force close
-      );
+      ).then((port) => {
+        port.postMessage(isAlpha());
+      });
     }
   }
 });
