@@ -1489,10 +1489,7 @@ async function downloadStart() {
               .map((file) => {
                 return {
                   name: file.name,
-                  size: file.size,
-                  randomized:
-                    file.name.includes("TBD") || // WPILib DataLogManager
-                    ((file.name.startsWith("Log_") || file.name.startsWith("akit_")) && !file.name.includes("-")) // AdvantageKit
+                  size: file.size
                 };
               })
           );

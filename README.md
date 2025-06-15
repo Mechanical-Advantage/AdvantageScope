@@ -51,10 +51,11 @@ To build for another platform, run:
 npm run build -- --win --x64 # For full list of options, run "npx electron-builder help"
 ```
 
-To build the WPILib version, set the environment variable `ASCOPE_DISTRIBUTION` to `WPILIB` before building:
+To build the WPILib or Lite distributions, set the environment variable `ASCOPE_DISTRIBUTION` before building:
 
 ```bash
 export ASCOPE_DISTRIBUTION=WPILIB
+export ASCOPE_DISTRIBUTION=LITE
 ```
 
 For development, run:
