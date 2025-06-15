@@ -12,7 +12,7 @@ ROOT = "lite"
 EXTRA_ASSETS_PATH = os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.abspath(os.path.join(ROOT, "bundledAssets"))
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
-ENABLE_LOG_DOWNLOADS = os.getlogin() == "systemcore" or "--enable-logs" in sys.argv
+ENABLE_LOG_DOWNLOADS = os.uname() == "systemcore" or "--enable-logs" in sys.argv
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
