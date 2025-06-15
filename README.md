@@ -37,7 +37,7 @@ To install Node.js dependencies, run:
 npm install
 ```
 
-[Emscripten](https://emscripten.org) also needs to be installed (instructions [here](https://emscripten.org/docs/getting_started/downloads.html)).
+[Emscripten](https://emscripten.org) 3.1.74 also needs to be installed (instructions [here](https://emscripten.org/docs/getting_started/downloads.html)).
 
 To build for the current platform, run:
 

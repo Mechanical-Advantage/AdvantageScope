@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Publish
+    name: Deploy
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -44,3 +44,18 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  algolia-crawl:
+    name: Algolia Crawl
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Algolia Crawler
+        uses: algolia/algoliasearch-crawler-github-actions@v1.1.13
+        with:
+          crawler-user-id: ${{ secrets.ALGOLIA_CRAWLER_USER_ID }}
+          crawler-api-key: ${{ secrets.ALGOLIA_CRAWLER_API_KEY }}
+          algolia-app-id: ${{ secrets.ALGOLIA_APPLICATION_ID }}
+          algolia-api-key: ${{ secrets.ALGOLIA_API_KEY }}
+          site-url: "https://docs.advantagescope.org"
+          crawler-name: "advantagescope"

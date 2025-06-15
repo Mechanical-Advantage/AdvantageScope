@@ -155,7 +155,7 @@ function handleMainMessage(message: NamedMessage) {
 
         let detailsText =
           Math.floor(currentSize / 1e6).toString() + "MB / " + Math.floor(totalSize / 1e6).toString() + "MB";
-        if (new Date().getTime() / 1000 - startTime > 0.5) {
+        if (new Date().getTime() / 1000 - startTime > 0.5 && currentSize > 1e6) {
           // Wait to establish speed
           let speed = Math.round((currentSize / (new Date().getTime() / 1000 - startTime) / 1e6) * 8);
           let remainingSeconds = Math.floor(

@@ -305,17 +305,21 @@ export default class Field3dRendererImpl implements TabRenderer {
       "cameraPosition" in state &&
       checkArrayType(state.cameraPosition, "number") &&
       (state.cameraPosition as number[]).length === 3 &&
+      !(state.cameraPosition as number[]).every((x) => x === 0) &&
       "cameraTarget" in state &&
       checkArrayType(state.cameraTarget, "number") &&
-      (state.cameraTarget as number[]).length === 3
+      (state.cameraTarget as number[]).length === 3 &&
+      !(state.cameraTarget as number[]).every((x) => x === 0)
     ) {
       this.controls.setLookAt(
         ...(state.cameraPosition as [number, number, number]),
         ...(state.cameraTarget as [number, number, number])
       );
+      this.shouldResetCamera = false;
+    } else {
+      this.shouldResetCamera = true;
     }
     this.lastCameraIndex = this.cameraIndex; // Don't reset camera position
-    this.shouldResetCamera = false;
     this.shouldRender = true;
   }
 
