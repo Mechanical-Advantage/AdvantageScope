@@ -37,7 +37,7 @@ export default class UpdateChecker {
     let releaseData;
     try {
       // @ts-ignore
-      let response = await fetch.default("https://api.github.com/repos/" + REPOSITORY + "/releases", {
+      let response = await fetch.default("https://api.github.com/repos/" + GITHUB_REPOSITORY + "/releases", {
         method: "GET",
         headers: {
           pragma: "no-cache",
@@ -62,8 +62,15 @@ export default class UpdateChecker {
       releaseData = releaseData.filter((release: any) => !release["prerelease"]);
     }
 
-    // Get version info
+    // Filter to same major version
     let currentVersion = app.getVersion();
+    let currentMajorVersion = currentVersion.split(".")[0];
+    releaseData = releaseData.filter(
+      (release: any) => release["tag_name"].substring(1).split(".")[0] === currentMajorVersion
+    );
+    console.log(releaseData.map((x: any) => x["tag_name"]));
+
+    // Get version info
     let latestVersionInfo = releaseData[0];
     this.latestVersion = latestVersionInfo["tag_name"].slice(1);
     let latestDate = new Date(latestVersionInfo["published_at"]);
