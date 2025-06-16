@@ -40,7 +40,7 @@ rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR/$PACKAGE_DIR"
 
 echo "Copying overlay structure..."
-cp -r overlay/* "$BUILD_DIR/$PACKAGE_DIR/"
+cp -rL overlay/* "$BUILD_DIR/$PACKAGE_DIR/"
 
 echo "Copying CONTROL files..."
 mkdir -p "$BUILD_DIR/$PACKAGE_DIR/CONTROL"

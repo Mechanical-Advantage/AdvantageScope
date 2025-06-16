@@ -138,7 +138,7 @@ jobs:
       - name: Upload development artifact (SystemCore)
         uses: actions/upload-artifact@v4
         with:
-          name: AdvantageScopeLite-SystemCore
+          name: AdvantageScopeLite-systemcore
           path: lite/ipk/advantagescope-lite_*.ipk
 
   build-ios:
