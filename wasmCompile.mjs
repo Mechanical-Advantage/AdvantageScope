@@ -14,8 +14,8 @@ try {
     if (!fs.existsSync("bundles")) {
       fs.mkdirSync("bundles");
     }
-    if (!fs.existsSync("lite/bundles")) {
-      fs.mkdirSync("lite/bundles");
+    if (!fs.existsSync("lite/static/bundles")) {
+      fs.mkdirSync("lite/static/bundles");
     }
 
     // Compile wasm
@@ -34,8 +34,8 @@ try {
         console.error(stderr);
         if (error === null) {
           // Copy to Lite bundles
-          fs.copyFileSync("bundles/hub$wpilogIndexer.js", "lite/bundles/hub$wpilogIndexer.js");
-          fs.copyFileSync("bundles/hub$wpilogIndexer.wasm", "lite/bundles/hub$wpilogIndexer.wasm");
+          fs.copyFileSync("bundles/hub$wpilogIndexer.js", "lite/static/bundles/hub$wpilogIndexer.js");
+          fs.copyFileSync("bundles/hub$wpilogIndexer.wasm", "lite/static/bundles/hub$wpilogIndexer.wasm");
 
           // Exit successfully
           resolve();

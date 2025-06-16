@@ -30,7 +30,7 @@ function bundle(input, output, isMain, isXRClient, external = []) {
   return {
     input: "src/" + input,
     output: {
-      file: (isLite ? "lite/" : "") + "bundles/" + output,
+      file: (isLite ? "lite/static/" : "") + "bundles/" + output,
       format: isMain ? "cjs" : "es",
       banner: licenseHeader
     },

@@ -11,7 +11,7 @@ import path from "path";
 
 // Constants
 const bundledAssetsPath = "bundledAssets";
-const liteAssetsPath = path.join("lite", "bundledAssets");
+const liteAssetsPath = path.join("lite", "static", "bundledAssets");
 const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
 const githubAssetsTag = "default-assets-v2";
 const githubAssetNames = [
