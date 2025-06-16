@@ -1,0 +1,12 @@
+Package: advantagescope-lite
+Version: 1.0.0
+Description: Robot telemetry application
+Section: development
+Priority: optional
+Maintainer: Littleton Robotics
+Architecture: all
+Source: local
+X-Port: 6328
+X-Has-UI: true
+X-Auto-Start: true
+X-Icon-Path: /usr/share/advantagescope-lite.png

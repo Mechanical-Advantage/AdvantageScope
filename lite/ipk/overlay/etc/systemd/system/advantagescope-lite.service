@@ -1,0 +1,23 @@
+[Unit]
+Description=AdvantageScope Lite Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/local/bin/advantagescope-lite/lite_server.py
+Restart=always
+RestartSec=5
+TimeoutStartSec=3
+TimeoutStopSec=3
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log
+
+[Install]
+WantedBy=multi-user.target
