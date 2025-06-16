@@ -47,7 +47,7 @@ mkdir -p "$BUILD_DIR/$PACKAGE_DIR/CONTROL"
 cp control/* "$BUILD_DIR/$PACKAGE_DIR/CONTROL/"
 
 echo "Updating version in control file..."
-sed -i '' -e "s/^Version:.*/Version: ${PACKAGE_VERSION}/" "$BUILD_DIR/$PACKAGE_DIR/CONTROL/control"
+sed -i -e "s/^Version:.*/Version: ${PACKAGE_VERSION}/" "$BUILD_DIR/$PACKAGE_DIR/CONTROL/control"
 
 echo "Setting file permissions..."
 
