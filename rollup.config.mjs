@@ -141,9 +141,8 @@ const smallRendererBundles = [
   bundle("betaWelcome.ts", "betaWelcome.js", false, false),
   bundle("preferences.ts", "preferences.js", false, false),
   bundle("licenses.ts", "licenses.js", false, false),
-  ...(isLite
-    ? []
-    : [bundle("export.ts", "export.js", false, false), bundle("download.ts", "download.js", false, false)])
+  bundle("download.ts", "download.js", false, false),
+  ...(isLite ? [] : [bundle("export.ts", "export.js", false, false)])
 ];
 const workerBundles = [
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
