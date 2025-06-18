@@ -6,6 +6,7 @@ Priority: optional
 Maintainer: Littleton Robotics
 Architecture: all
 Source: local
+X-Display-Name: AdvantageScope Lite
 X-Port: 6328
 X-Has-UI: true
 X-Auto-Start: true

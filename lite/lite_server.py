@@ -1,3 +1,10 @@
+# Copyright (c) 2021-2025 Littleton Robotics
+# http://github.com/Mechanical-Advantage
+#
+# Use of this source code is governed by a BSD
+# license that can be found in the LICENSE file
+# at the root directory of this project.
+
 import http.server
 import mimetypes
 import socketserver
@@ -8,11 +15,12 @@ import urllib
 import gzip
 
 PORT = 6328
-ROOT = "static"
-EXTRA_ASSETS_PATH = os.path.abspath("user_assets")
-BUNDLED_ASSETS_PATH = os.path.abspath(os.path.join(ROOT, "bundledAssets"))
+ROOT = os.path.abspath("static")
+IS_SYSTEMCORE = os.uname().nodename == "robot"
+EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
+BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
-ENABLE_LOG_DOWNLOADS = os.uname() == "systemcore" or "--enable-logs" in sys.argv
+ENABLE_LOG_DOWNLOADS = IS_SYSTEMCORE or "--enable-logs" in sys.argv
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -149,7 +157,7 @@ if __name__ == "__main__":
         os.mkdir(EXTRA_ASSETS_PATH)
         print(f"Created folder for extra assets: {EXTRA_ASSETS_PATH}")
 
-    # Check if SystemCore
+    # Warn if log downloads disabled
     if not ENABLE_LOG_DOWNLOADS:
         print("Log downloads are currently disabled. Pass \"--enable-logs\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem.\n")
 
