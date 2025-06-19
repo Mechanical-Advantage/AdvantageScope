@@ -163,7 +163,7 @@ if __name__ == "__main__":
 
     # Start server
     os.chdir(ROOT)
-    httpd = socketserver.TCPServer(("", PORT), Handler, bind_and_activate=False)
+    httpd = socketserver.ThreadingTCPServer(("", PORT), Handler, bind_and_activate=False)
     httpd.allow_reuse_address = True
     httpd.daemon_threads = True
     print(f"Serving AdvantageScope Lite on port {PORT}")
