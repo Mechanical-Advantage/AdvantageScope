@@ -27,7 +27,7 @@ import LiveDataTuner from "./dataSources/LiveDataTuner";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
-import NT4Source from "./dataSources/nt4/NT4Source";
+import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 
 // Constants
@@ -424,10 +424,13 @@ function startLive(isSim = false) {
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
     case "nt4":
-      liveSource = new NT4Source(false);
+      liveSource = new NT4Source(NT4Mode.Default);
       break;
     case "nt4-akit":
-      liveSource = new NT4Source(true);
+      liveSource = new NT4Source(NT4Mode.AdvantageKit);
+      break;
+    case "nt4-systemcore":
+      liveSource = new NT4Source(NT4Mode.SystemCore);
       break;
     case "phoenix":
       liveSource = new PhoenixDiagnosticsSource();

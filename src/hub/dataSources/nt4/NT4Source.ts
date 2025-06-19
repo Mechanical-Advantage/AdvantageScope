@@ -13,15 +13,21 @@ import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
-import { NT4_Client, NT4_Topic } from "./NT4";
+import { NT4_Client, NT4_PORT_DEFAULT, NT4_PORT_SYSTEMCORE, NT4_Topic } from "./NT4";
 import NT4Tuner from "./NT4Tuner";
 
 export const WPILOG_PREFIX = "NT:";
 export const AKIT_PREFIX = "/AdvantageKit";
 export const AKIT_TUNING_PREFIX = "/Tuning";
 
+export enum NT4Mode {
+  Default,
+  AdvantageKit,
+  SystemCore
+}
+
 export default class NT4Source extends LiveDataSource {
-  private akitMode: boolean;
+  private mode: NT4Mode;
   private client: NT4_Client | null = null;
 
   private shouldRunOutputCallback = false;
@@ -32,9 +38,9 @@ export default class NT4Source extends LiveDataSource {
   private lowBandwidthTopicSubscription: number | null = null;
   private lowBandwidthDataSubscriptions: { [id: string]: number } = {};
 
-  constructor(akitMode: boolean) {
+  constructor(mode: NT4Mode) {
     super();
-    this.akitMode = akitMode;
+    this.mode = mode;
 
     if (window.requestIdleCallback !== undefined) {
       let periodic = () => {
@@ -72,7 +78,7 @@ export default class NT4Source extends LiveDataSource {
         }
         if (this.loggingSubscription === null) {
           this.loggingSubscription = this.client.subscribe(
-            this.akitMode ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
+            this.mode === NT4Mode.AdvantageKit ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
             true,
             true,
             0.02
@@ -86,7 +92,7 @@ export default class NT4Source extends LiveDataSource {
         }
         if (this.lowBandwidthTopicSubscription === null) {
           this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
-            this.akitMode ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
+            this.mode === NT4Mode.AdvantageKit ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
             true
           );
         }
@@ -97,7 +103,7 @@ export default class NT4Source extends LiveDataSource {
           let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
           let enabledKey = getEnabledKey(this.log);
           [
-            ...(this.akitMode
+            ...(this.mode === NT4Mode.AdvantageKit
               ? ["/.schema", "/Timestamp"]
               : [
                   WPILOG_PREFIX + "/.schema",
@@ -118,7 +124,7 @@ export default class NT4Source extends LiveDataSource {
                 subscribeKey = announcedKey;
               }
               if (subscribeKey !== null) {
-                if (this.akitMode) {
+                if (this.mode === NT4Mode.AdvantageKit) {
                   if (subscribeKey.startsWith(AKIT_TUNING_PREFIX)) {
                     activeFields.add(subscribeKey);
                   } else {
@@ -197,6 +203,7 @@ export default class NT4Source extends LiveDataSource {
       this.log = new Log();
       this.client = new NT4_Client(
         address,
+        this.mode === NT4Mode.SystemCore ? NT4_PORT_SYSTEMCORE : NT4_PORT_DEFAULT,
         DISTRIBUTION === Distribution.Lite ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce
@@ -348,7 +355,7 @@ export default class NT4Source extends LiveDataSource {
           if (!this.connectTime && this.client !== null) {
             this.connectTime = this.client.getClientTime_us();
           }
-          if (this.akitMode) {
+          if (this.mode === NT4Mode.AdvantageKit) {
             this.noFieldsTimeout = setTimeout(() => {
               window.sendMainMessage("error", {
                 title: "Problem with NT4 connection",
@@ -382,13 +389,13 @@ export default class NT4Source extends LiveDataSource {
     if (this.client === null || this.log === null) {
       throw "Cannot create NT4 tuner before starting connection";
     } else {
-      return new NT4Tuner(this.client, this.akitMode);
+      return new NT4Tuner(this.client, this.mode === NT4Mode.AdvantageKit);
     }
   }
 
   /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */
   private getKeyFromTopic(topic: NT4_Topic): string {
-    if (this.akitMode) {
+    if (this.mode === NT4Mode.AdvantageKit) {
       if (topic.name.startsWith(AKIT_PREFIX)) {
         return topic.name.slice(AKIT_PREFIX.length);
       } else {
