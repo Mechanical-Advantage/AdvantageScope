@@ -15,13 +15,11 @@ export default class DocumentationRenderer implements TabRenderer {
   private loaded = false;
   private scrollPosition = 0;
   private shouldResetScroll = false;
+  private firstRender = true;
 
   constructor(content: HTMLElement) {
     this.CONTAINER = content.getElementsByClassName("documentation-container")[0] as HTMLElement;
     this.IFRAME = this.CONTAINER.firstElementChild as HTMLIFrameElement;
-    this.IFRAME.addEventListener("load", () => {
-      this.loaded = true;
-    });
 
     // Periodic function to record when tab is hidden
     let periodic = () => {
@@ -52,6 +50,15 @@ export default class DocumentationRenderer implements TabRenderer {
   }
 
   render(_: unknown): void {
+    // Load documentation page once visible
+    if (this.firstRender) {
+      this.firstRender = false;
+      this.IFRAME.src = "../docs/build/index.html";
+      this.IFRAME.addEventListener("load", () => {
+        this.loaded = true;
+      });
+    }
+
     // Navigate to initial page when loaded
     if (this.stateQueue !== null && this.loaded) {
       this.IFRAME.contentWindow!.location.hash = this.stateQueue;
