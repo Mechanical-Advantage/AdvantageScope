@@ -21,6 +21,7 @@
     <link rel="icon" type="image/x-icon" href="icons/favicon.ico" />
     <link rel="apple-touch-icon" type="image/x-icon" href="icons/apple-touch-icon.png" />
     <link rel="stylesheet" href="www/global.css" />
+    <link rel="stylesheet" href="www/loadingAnimation.css" />
     <link rel="stylesheet" href="popups.css" />
     <script type="module" src="bundles/main.js"></script>
     <title>AdvantageScope Lite</title>
@@ -88,7 +89,7 @@
         background-color: #e9e9e9;
       }
 
-      div.viewer-loading-shadow {
+      div.viewer-loading {
         position: absolute;
         left: var(--side-bar-width);
         top: 0%;
@@ -238,8 +239,18 @@
         </div>
       </div>
     </div>
+
     <div class="side-bar-loading-background"></div>
-    <div class="viewer-loading-shadow"></div>
+    <div class="viewer-loading">
+      <div class="loading">
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+        <div class="loading-bar"></div>
+      </div>
+    </div>
+
     <iframe src="www/hub.html" class="hub-frame"></iframe>
     <iframe scr="" class="popup-frame" hidden></iframe>
     <div class="pointer-block" hidden></div>
