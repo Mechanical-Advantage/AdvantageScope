@@ -3,7 +3,7 @@
 /bundles
 /lite/static/bundles
 /lite/static/bundledAssets
-/lite/user_assets
+/lite/ascope_assets
 /lite/ipk/build
 /lite/ipk/*.ipk
 /ffmpeg
