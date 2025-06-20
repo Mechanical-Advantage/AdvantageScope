@@ -8,22 +8,25 @@
 import LoggableType from "../../../shared/log/LoggableType";
 import LiveDataTuner from "../LiveDataTuner";
 import { NT4_Client } from "./NT4";
-import { AKIT_PREFIX, AKIT_TUNING_PREFIX, WPILOG_PREFIX } from "./NT4Source";
+import { AKIT_PREFIX, AKIT_TUNING_PREFIX, NT4Mode, WPILOG_PREFIX } from "./NT4Source";
 
 export default class NT4Tuner implements LiveDataTuner {
   private client: NT4_Client;
-  private akitMode: boolean;
+  private mode: NT4Mode;
 
-  constructor(client: NT4_Client, akitMode: boolean) {
+  constructor(client: NT4_Client, mode: NT4Mode) {
     this.client = client;
-    this.akitMode = akitMode;
+    this.mode = mode;
   }
 
   hasTunableFields(): boolean {
-    if (this.akitMode) {
-      return !window.log.getFieldKeys().every((key) => !key.startsWith(AKIT_TUNING_PREFIX));
-    } else {
-      return true;
+    switch (this.mode) {
+      case NT4Mode.Default:
+        return true;
+      case NT4Mode.AdvantageKit:
+        return !window.log.getFieldKeys().every((key) => !key.startsWith(AKIT_TUNING_PREFIX));
+      case NT4Mode.SystemCore:
+        return false;
     }
   }
 
@@ -63,7 +66,7 @@ export default class NT4Tuner implements LiveDataTuner {
   }
 
   private getRemoteKey(key: string): string {
-    if (this.akitMode) {
+    if (this.mode === NT4Mode.AdvantageKit) {
       if (key.startsWith(AKIT_TUNING_PREFIX)) {
         return key;
       } else {

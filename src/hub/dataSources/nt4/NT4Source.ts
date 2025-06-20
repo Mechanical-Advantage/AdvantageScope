@@ -389,7 +389,7 @@ export default class NT4Source extends LiveDataSource {
     if (this.client === null || this.log === null) {
       throw "Cannot create NT4 tuner before starting connection";
     } else {
-      return new NT4Tuner(this.client, this.mode === NT4Mode.AdvantageKit);
+      return new NT4Tuner(this.client, this.mode);
     }
   }
 
