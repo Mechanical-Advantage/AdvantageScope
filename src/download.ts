@@ -351,8 +351,6 @@ window.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("load", () => {
-  if (DISTRIBUTION === Distribution.Lite) {
-    (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = true;
-    (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = false;
-  }
+  (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = DISTRIBUTION === Distribution.Lite;
+  (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = DISTRIBUTION !== Distribution.Lite;
 });
