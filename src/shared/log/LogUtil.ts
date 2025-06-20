@@ -453,9 +453,13 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
     JOYSTICK_KEYS.forEach((joystickKey) => {
       if (tablePrefix !== "") return;
       if (removeMergePrefix(key).startsWith(joystickKey + joystickId.toString())) {
-        tablePrefix = key.slice(0, key.indexOf(joystickKey)) + joystickKey + joystickId.toString() + "/";
         isSystemcore = joystickKey.endsWith("/Netcomm/Control/ControlData/Joysticks/");
         isAkit = joystickKey.endsWith("/DriverStation/Joystick");
+        if (isSystemcore) {
+          let joystickCount = getOrDefault(log, joystickKey + "length", LoggableType.Number, time, 0);
+          if (joystickId >= joystickCount) return;
+        }
+        tablePrefix = key.slice(0, key.indexOf(joystickKey)) + joystickKey + joystickId.toString() + "/";
       }
     });
   });
