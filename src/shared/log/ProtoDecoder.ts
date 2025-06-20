@@ -84,7 +84,7 @@ export default class ProtoDecoder {
       findSchemaTypes(decodedData[key], key);
     });
     return {
-      data: decodedData.toJSON(),
+      data: type.toObject(decodedData, { defaults: true }),
       schemaTypes: schemaTypes
     };
   }
