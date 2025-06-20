@@ -107,17 +107,15 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No such file") {
-        friendlyText = `Failed to open log folder at <u>${preferences?.remotePath}</u>`;
-      } else if (message.data === "No files") {
-        friendlyText = `No files found in folder <u>${preferences?.remotePath}</u> (check path)`;
-      } else if (
-        message.data.includes("ENETUNREACH") ||
-        message.data.includes("EHOSTDOWN") ||
-        message.data.includes("ENOTFOUND") ||
-        message.data.toLowerCase().includes("timeout") ||
-        message.data === "Fetch failed"
-      ) {
-        friendlyText = `Robot not found at <u>${address}</u> (check connection)`;
+        friendlyText = "Failed to open log folder at <u>" + preferences?.remotePath + "</u>";
+      } else if (message.data === "Timed out while waiting for handshake" || message.data === "Fetch failed") {
+        friendlyText = "Robot not found at <u>" + address + "</u> (check connection)";
+      } else if (message.data.includes("ENOTFOUND")) {
+        friendlyText = "Unknown address <u>" + address + "</u>";
+      } else if (message.data === "All configured authentication methods failed") {
+        friendlyText = "Failed to authenticate to robot at <u>" + address + "</u>";
+      } else if (message.data === "Not connected") {
+        friendlyText = "Lost connection to robot";
       } else {
         friendlyText = "Unknown error: " + message.data;
       }

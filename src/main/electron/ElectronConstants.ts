@@ -54,6 +54,8 @@ export const PATHPLANNER_PING_DELAY_MS = 250; // How long to wait between pings
 export const PATHPLANNER_PING_TEXT = "ping";
 
 // Download
-export const DOWNLOAD_TIMEOUT_MS = 2000; // Timeout for FTP operations
-export const DOWNLOAD_RETRY_DELAY_MS = 2000; // How long to wait between connection attempts
-export const DOWNLOAD_REFRESH_INTERVAL_MS = 3000; // How often to refresh file list when connected
+export const DOWNLOAD_USERNAME = "systemcore";
+export const DOWNLOAD_PASSWORD = "systemcore";
+export const DOWNLOAD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
+export const DOWNLOAD_RETRY_DELAY_MS = 1000; // How long to wait between connection attempts
+export const DOWNLOAD_REFRESH_INTERVAL_MS = 5000; // How often to refresh file list when connected

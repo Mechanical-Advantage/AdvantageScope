@@ -121,7 +121,7 @@ const mainBundles = isLite
         "ws",
         "http",
         "path",
-        "basic-ftp",
+        "ssh2",
         "download",
         "ytdl-core",
         "tesseract.js"
