@@ -5,7 +5,11 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-export const BETA_CONFIG: BetaConfig | null = null;
+export const BETA_CONFIG: BetaConfig | null = {
+  year: "2027",
+  isAlpha: true,
+  expiration: new Date(2027, 0, 9)
+};
 
 export type BetaConfig = {
   year: string;
