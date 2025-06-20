@@ -16,12 +16,12 @@ For more information on the design of structs and their advantages, check out [t
 
 In 2025 and 2026, AdvantageScope continues to support both the modern struct format and the legacy number array format. However, **the legacy number array format is now <u>deprecated</u> and will be removed in 2027**. AdvantageScope will present a warning when the legacy format is used, and additional information must be manually provided to specify the packing format and units.
 
-|                 | Modern Struct Format | Legacy Number Array Format |
-| --------------- | -------------------- | -------------------------- |
-| **2024** (v3.x) | ✅ Recommended       | ✅ Supported               |
-| **2025** (v4.x) | ✅ Recommended       | ⚠️ Deprecated              |
-| **2026** (v5.x) | ✅ Recommended       | ⚠️ Deprecated              |
-| **2027** (v6.x) | ✅ Recommended       | ❌ Removed                 |
+|                  | Modern Struct Format | Legacy Number Array Format |
+| ---------------- | -------------------- | -------------------------- |
+| **2024** (v3.x)  | ✅ Recommended       | ✅ Supported               |
+| **2025** (v4.x)  | ✅ Recommended       | ⚠️ Deprecated              |
+| **2026** (v26.x) | ✅ Recommended       | ⚠️ Deprecated              |
+| **2027** (v27.x) | ✅ Recommended       | ❌ Removed                 |
 
 :::warning
 While the legacy format can still be used, additional information must be provided about the packing format and units of each field. After adding an array field to a tab, the format can be configured by clicking the icon to the left of the field name.
