@@ -7,7 +7,6 @@
 
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
-import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
@@ -447,9 +446,7 @@ function startLive(isSim = false) {
   if (DISTRIBUTION === Distribution.Lite) {
     address = window.location.hostname;
   } else if (isSim) {
-    address = SIM_ADDRESS;
-  } else if (window.preferences?.usb) {
-    address = USB_ADDRESS;
+    address = "127.0.0.1";
   } else {
     if (window.preferences) {
       address = window.preferences.robotAddress;

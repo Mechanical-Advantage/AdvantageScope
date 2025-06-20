@@ -27,7 +27,6 @@ export default interface Preferences {
   skipNumericArrayDeprecationWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
-  usb?: boolean;
 }
 
 export const DEFAULT_PREFS: Preferences = {

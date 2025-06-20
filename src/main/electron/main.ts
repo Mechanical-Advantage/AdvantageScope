@@ -97,7 +97,6 @@ let ctreLicensePrompt: Promise<void> | null = null;
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
-let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
@@ -147,7 +146,6 @@ function sendMessage(window: BrowserWindow, name: string, data?: any): boolean {
 /** Sends the current preferences to all windows (including USB menu bar setting) */
 function sendAllPreferences() {
   let data: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  data.usb = usingUsb;
   nativeTheme.themeSource = data.theme;
   hubWindows.forEach((window) => {
     if (!window.isDestroyed()) {
@@ -1862,16 +1860,6 @@ function setupMenu() {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             openDownload(window);
-          }
-        },
-        { type: "separator" },
-        {
-          label: "Use USB roboRIO Address",
-          type: "checkbox",
-          checked: false,
-          click(item) {
-            usingUsb = item.checked;
-            sendAllPreferences();
           }
         },
         { type: "separator" },

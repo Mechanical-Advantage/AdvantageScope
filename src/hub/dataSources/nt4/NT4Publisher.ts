@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { SIM_ADDRESS, USB_ADDRESS } from "../../../shared/IPAddresses";
 import { filterFieldByPrefixes, getOrDefault, logValuesEqual } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { NT4_Client, NT4_PORT_DEFAULT } from "./NT4";
@@ -26,9 +25,7 @@ export class NT4Publisher {
     // Get address
     let address = "";
     if (isSim) {
-      address = SIM_ADDRESS;
-    } else if (window.preferences?.usb) {
-      address = USB_ADDRESS;
+      address = "127.0.0.1";
     } else {
       if (window.preferences) {
         address = window.preferences.robotAddress;

@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { DISTRIBUTION, Distribution } from "./shared/buildConstants";
-import { USB_ADDRESS } from "./shared/IPAddresses";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
 import { zfill } from "./shared/util";
@@ -64,9 +63,8 @@ function handleMainMessage(message: NamedMessage) {
       let path = "";
       if (preferences) {
         if (DISTRIBUTION !== Distribution.Lite) {
-          address = preferences.usb ? USB_ADDRESS : preferences.robotAddress;
           // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
-          address = address
+          address = preferences.robotAddress
             .split(".")
             .map((part) => part.replace(/^0+/, "") || "0")
             .join(".");
