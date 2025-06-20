@@ -575,11 +575,21 @@ export default class Log {
     // Not a primitive, call recursively
     if (Array.isArray(value)) {
       // If all items are the same type, add whole array
-      if (allowRootWrite && checkArrayType(value, "boolean")) {
+      let existingType = this.getType(key);
+      if (
+        allowRootWrite &&
+        (value.length > 0 ? checkArrayType(value, "boolean") : existingType === LoggableType.BooleanArray)
+      ) {
         this.putBooleanArray(key, timestamp, value);
-      } else if (allowRootWrite && checkArrayType(value, "number")) {
+      } else if (
+        allowRootWrite &&
+        (value.length > 0 ? checkArrayType(value, "number") : existingType === LoggableType.NumberArray)
+      ) {
         this.putNumberArray(key, timestamp, value);
-      } else if (allowRootWrite && checkArrayType(value, "string")) {
+      } else if (
+        allowRootWrite &&
+        (value.length > 0 ? checkArrayType(value, "string") : existingType === LoggableType.StringArray)
+      ) {
         this.putStringArray(key, timestamp, value);
       } else {
         // Add array items as unknown structs
