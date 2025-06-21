@@ -5,8 +5,8 @@ Wants=network.target
 
 [Service]
 Type=simple
-User=root
-Group=root
+User=systemcore
+Group=systemcore
 WorkingDirectory=/usr/local/bin/advantagescope-lite
 ExecStart=/usr/bin/env python3 lite_server.py
 Restart=always
