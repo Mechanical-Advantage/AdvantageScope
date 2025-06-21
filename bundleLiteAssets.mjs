@@ -27,6 +27,31 @@ const githubAssetNames = [
   "Robot_FTCDriveBaseV1"
 ];
 
+// Check if up-to-date
+let shouldExitEarly = false;
+if (fs.existsSync(liteAssetsPath)) {
+  let existingAssetNames = fs.readdirSync(liteAssetsPath);
+
+  // Sort both arrays for reliable comparison
+  existingAssetNames.sort();
+  const targetAssetNames = [...githubAssetNames, ...fs.readdirSync(bundledAssetsPath)].sort();
+
+  // Check if lengths are the same and all elements match
+  if (existingAssetNames.length === targetAssetNames.length) {
+    shouldExitEarly = true;
+    for (let i = 0; i < existingAssetNames.length; i++) {
+      if (existingAssetNames[i] !== targetAssetNames[i]) {
+        shouldExitEarly = false;
+        break;
+      }
+    }
+  }
+}
+if (shouldExitEarly) {
+  console.log("Lite assets are already up-to-date. Skipping download.");
+  process.exit(0);
+}
+
 // Delete existing Lite assets
 if (fs.existsSync(liteAssetsPath)) {
   fs.rmSync(liteAssetsPath, { recursive: true });
