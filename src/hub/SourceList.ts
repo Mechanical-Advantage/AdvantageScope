@@ -820,20 +820,8 @@ export default class SourceList {
       });
     });
 
-    // Warning button
-    let warningButton = item.getElementsByClassName("warning")[0] as HTMLButtonElement;
-    let enableWarning = typeConfig?.numberArrayDeprecated === true;
-    warningButton.hidden = !enableWarning;
-    let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
-    keyContainer.style.setProperty("--has-warning", enableWarning ? "1" : "0");
-    warningButton.addEventListener("click", () => {
-      window.sendMainMessage("numeric-array-deprecation-warning", { force: true });
-    });
-    if (enableWarning) {
-      window.sendMainMessage("numeric-array-deprecation-warning", { force: false });
-    }
-
     // Hide button
+    let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let toggleHidden = () => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -1039,32 +1027,13 @@ export default class SourceList {
         if (value !== null || logType === LoggableType.Empty) {
           if (typeConfig?.previewType !== undefined) {
             if (typeConfig?.previewType !== null) {
-              let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
-              let numberArrayUnits: "radians" | "degrees" = "radians";
-              if ("format" in state.options) {
-                let formatRaw = state.options.format;
-                numberArrayFormat =
-                  formatRaw === "Pose2d" ||
-                  formatRaw === "Pose3d" ||
-                  formatRaw === "Translation2d" ||
-                  formatRaw === "Translation3d"
-                    ? formatRaw
-                    : "Pose3d";
-              }
+              let numberRotationUnits: "radians" | "degrees" = "radians";
               if ("units" in state.options) {
-                numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
+                numberRotationUnits = state.options.units === "degrees" ? "degrees" : "radians";
               }
               let poseStrings: string[] = [];
               if (typeConfig?.previewType === "SwerveModuleState[]") {
-                let swerveStates = grabSwerveStates(
-                  window.log,
-                  state.logKey,
-                  state.logType,
-                  time,
-                  undefined,
-                  numberArrayUnits,
-                  this.UUID
-                );
+                let swerveStates = grabSwerveStates(window.log, state.logKey, time, undefined, this.UUID);
                 swerveStates.forEach((state) => {
                   poseStrings.push(
                     "\u03bd: " +
@@ -1092,8 +1061,7 @@ export default class SourceList {
                   state.logType,
                   time,
                   this.UUID,
-                  numberArrayFormat,
-                  numberArrayUnits
+                  numberRotationUnits
                 );
                 poseStrings = poses.map((annotatedPose) => {
                   switch (typeConfig?.previewType) {

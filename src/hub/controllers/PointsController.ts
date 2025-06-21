@@ -132,7 +132,7 @@ export default class PointsController implements TabController {
         case "plus":
         case "cross":
         case "circle":
-          let poses = grabPosesAuto(window.log, source.logKey, source.logType, time, this.UUID, "Translation2d");
+          let poses = grabPosesAuto(window.log, source.logKey, source.logType, time, this.UUID);
           sets.push({
             points: poses.map((x) => translation3dTo2d(x.pose.translation)),
             shape: shape,

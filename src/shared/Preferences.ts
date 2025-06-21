@@ -24,7 +24,6 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
-  skipNumericArrayDeprecationWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
 }
@@ -46,7 +45,6 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
-  skipNumericArrayDeprecationWarning: false,
   ctreLicenseAccepted: false
 };
 
@@ -159,12 +157,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
-  }
-  if (
-    "skipNumericArrayDeprecationWarning" in newPrefs &&
-    typeof newPrefs.skipNumericArrayDeprecationWarning === "boolean"
-  ) {
-    basePrefs.skipNumericArrayDeprecationWarning = newPrefs.skipNumericArrayDeprecationWarning;
   }
   if ("skipFrcLogFolderDefault" in newPrefs && typeof newPrefs.skipFrcLogFolderDefault === "boolean") {
     basePrefs.skipFrcLogFolderDefault = newPrefs.skipFrcLogFolderDefault;

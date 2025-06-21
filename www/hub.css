@@ -1167,7 +1167,7 @@ div.source-list div.key-container {
   top: 0px;
   height: 30px;
   left: calc(30px + var(--type-width));
-  max-width: calc(100% - 31px - var(--type-width) - 55px - (var(--has-warning) * 25px));
+  max-width: calc(100% - 31px - var(--type-width) - 55px);
 
   text-align: right;
   direction: rtl;
@@ -1181,7 +1181,7 @@ div.source-list div.key-container {
 
 div.source-list div.item.child div.key-container {
   left: calc(55px + var(--type-width));
-  max-width: calc(100% - 31px - 25px - var(--type-width) - 55px - (var(--has-warning) * 25px));
+  max-width: calc(100% - 31px - 25px - var(--type-width) - 55px);
 }
 
 div.source-list div.key-container span {
@@ -1198,29 +1198,6 @@ div.source-list button.hide {
   top: 15px;
   right: 40px;
   transform: translate(50%, -50%);
-}
-
-div.source-list button.warning {
-  top: 15px;
-  right: 65px;
-  transform: translate(50%, -50%);
-}
-
-div.source-list button.warning > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(60%) sepia(41%) saturate(3324%) hue-rotate(356deg) brightness(96%) contrast(112%);
-}
-
-div.source-list button.warning.blurred > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(85%) sepia(44%) saturate(1384%) hue-rotate(314deg) brightness(114%) contrast(101%);
-}
-
-@media (prefers-color-scheme: dark) {
-  div.source-list button.warning.blurred > img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(30%) sepia(37%) saturate(3821%) hue-rotate(26deg) brightness(97%) contrast(101%);
-  }
 }
 
 div.source-list img.value-symbol {

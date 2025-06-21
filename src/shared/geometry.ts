@@ -216,18 +216,11 @@ export function grabPosesAuto(
   logType: string,
   timestamp: number,
   uuid?: string,
-  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  numberArrayUnits?: "radians" | "degrees"
+  numberRotationUnits?: "radians" | "degrees"
 ): AnnotatedPose3d[] {
   switch (logType) {
     case "Number":
-      return grabNumberRotation(log, key, timestamp, numberArrayUnits, uuid);
-    case "NumberArray":
-      if (numberArrayFormat !== undefined) {
-        return grabNumberArray(log, key, timestamp, numberArrayFormat, numberArrayUnits, uuid);
-      } else {
-        return [];
-      }
+      return grabNumberRotation(log, key, timestamp, numberRotationUnits, uuid);
     case "Rotation2d":
       return grabRotation2d(log, key, timestamp, uuid);
     case "Rotation3d":
@@ -290,74 +283,6 @@ export function grabNumberRotation(
       }
     }
   ];
-}
-
-export function grabNumberArray(
-  log: Log,
-  key: string,
-  timestamp: number,
-  format: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  unit?: "radians" | "degrees",
-  uuid?: string
-): AnnotatedPose3d[] {
-  let value = getOrDefault(log, key, LoggableType.NumberArray, timestamp, [], uuid);
-  let poses: AnnotatedPose3d[] = [];
-  let finalUnit: "radians" | "degrees" = unit === "degrees" ? "degrees" : "radians";
-  switch (format) {
-    case "Translation2d":
-      for (let i = 0; i < value.length - 1; i += 2) {
-        poses.push({
-          pose: {
-            translation: translation2dTo3d([value[i], value[i + 1]]),
-            rotation: Rotation3dZero
-          },
-          annotation: {
-            is2DSource: true
-          }
-        });
-      }
-      break;
-    case "Translation3d":
-      for (let i = 0; i < value.length - 2; i += 3) {
-        poses.push({
-          pose: {
-            translation: [value[i], value[i + 1], value[i + 2]],
-            rotation: Rotation3dZero
-          },
-          annotation: {
-            is2DSource: false
-          }
-        });
-      }
-      break;
-    case "Pose2d":
-      for (let i = 0; i < value.length - 2; i += 3) {
-        poses.push({
-          pose: pose2dTo3d({
-            translation: [value[i], value[i + 1]],
-            rotation: Units.convert(value[i + 2], finalUnit, "radians")
-          }),
-          annotation: {
-            is2DSource: true
-          }
-        });
-      }
-      break;
-    case "Pose3d":
-      for (let i = 0; i < value.length - 6; i += 7) {
-        poses.push({
-          pose: {
-            translation: [value[i], value[i + 1], value[i + 2]],
-            rotation: [value[i + 3], value[i + 4], value[i + 5], value[i + 6]]
-          },
-          annotation: {
-            is2DSource: false
-          }
-        });
-      }
-      break;
-  }
-  return poses;
 }
 
 export function grabRotation2d(log: Log, key: string, timestamp: number, uuid?: string): AnnotatedPose3d[] {
@@ -587,9 +512,7 @@ export function grabHeatmapData(
   key: string,
   logType: string,
   timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" | "visible",
-  uuid?: string,
-  numberArrayFormat?: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d",
-  numberArrayUnits?: "radians" | "degrees"
+  uuid?: string
 ): AnnotatedPose3d[] {
   let poses: AnnotatedPose3d[] = [];
   let isFullLog = timeRange === "full";
@@ -614,7 +537,7 @@ export function grabHeatmapData(
   };
   for (let sampleTime = log.getTimestampRange()[0]; sampleTime < log.getTimestampRange()[1]; sampleTime += HEATMAP_DT) {
     if (!isValid(sampleTime)) continue;
-    poses = poses.concat(grabPosesAuto(log, key, logType, sampleTime, uuid, numberArrayFormat, numberArrayUnits));
+    poses = poses.concat(grabPosesAuto(log, key, logType, sampleTime, uuid));
   }
   return poses;
 }
@@ -622,37 +545,17 @@ export function grabHeatmapData(
 export function grabSwerveStates(
   log: Log,
   key: string,
-  logType: string,
   timestamp: number,
   arrangement?: string,
-  rotationUnits: "radians" | "degrees" = "radians",
   uuid?: string
 ): SwerveState[] {
   let states: SwerveState[] = [];
-  switch (logType) {
-    case "NumberArray":
-      {
-        let value: number[] = getOrDefault(log, key, LoggableType.NumberArray, timestamp, [], uuid);
-        for (let i = 0; i < value.length - 1; i += 2) {
-          states.push({
-            speed: value[i + 1],
-            angle: Units.convert(value[i], rotationUnits, "radians")
-          });
-        }
-      }
-      break;
-
-    case "SwerveModuleState[]":
-      {
-        let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
-        for (let i = 0; i < length; i++) {
-          states.push({
-            speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
-            angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
-          });
-        }
-      }
-      break;
+  let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
+  for (let i = 0; i < length; i++) {
+    states.push({
+      speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
+      angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
+    });
   }
 
   // Apply arrangement

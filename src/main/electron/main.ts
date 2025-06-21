@@ -411,25 +411,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "numeric-array-deprecation-warning":
-      let shouldForce: boolean = message.data.force;
-      let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-      if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-      if (!prefs.skipNumericArrayDeprecationWarning) {
-        prefs.skipNumericArrayDeprecationWarning = true;
-        jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-        sendAllPreferences();
-      }
-      dialog.showMessageBox(window, {
-        type: "info",
-        title: "Alert",
-        message: "Deprecated data format",
-        detail:
-          "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
-        icon: WINDOW_ICON
-      });
-      break;
-
     case "live-rlog-start":
       rlogSockets[windowId]?.destroy();
       rlogSockets[windowId] = net.createConnection({
