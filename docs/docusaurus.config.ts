@@ -58,6 +58,10 @@ const config: Config = {
           {
             to: "/tab-reference/2d-field",
             from: "/tab-reference/odometry"
+          },
+          {
+            to: "/legacy-formats",
+            from: "/whats-new/legacy-formats"
           }
         ]
       }
