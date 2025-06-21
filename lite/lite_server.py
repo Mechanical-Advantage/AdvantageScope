@@ -14,7 +14,7 @@ import json
 import urllib
 import gzip
 
-PORT = 6328
+PORT = 5808
 ROOT = os.path.abspath("static")
 IS_SYSTEMCORE = os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
