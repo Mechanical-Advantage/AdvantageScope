@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Legacy Format Deprecation
 
-WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](../tab-reference/2d-field.md) and [👀 3D Field](../tab-reference/3d-field.md) tabs with **no manual configuration** and **no unit errors**.
+WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](tab-reference/2d-field.md) and [👀 3D Field](tab-reference/3d-field.md) tabs with **no manual configuration** and **no unit errors**.
 
 Before 2025, AdvantageScope supported both structs and the legacy "number array" format for geometry types. The legacy format packed structured data into a format like `double[]` (e.g. a pose would be represented by the array `[x, y, rotation]`).
 
@@ -143,7 +143,7 @@ logEntry.append(new Pose2d());
 The Phoenix signal logger does not support the modern struct format. Consider publishing geometry data using one of the logging libraries shown above instead of using custom signals in Phoenix.
 
 :::tip
-AdvantageScope can automatically merge log files from multiple sources, such as Hoot and WPILOG files. See [here](../getting-started/manage-files.md) for details.
+AdvantageScope can automatically merge log files from multiple sources, such as Hoot and WPILOG files. See [here](getting-started/manage-files.md) for details.
 :::
 
 </details>
