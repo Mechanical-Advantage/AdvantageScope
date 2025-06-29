@@ -304,7 +304,9 @@ export default class LineGraphController implements TabController {
         let data = window.log.getNumber(
           fieldItem.logKey,
           filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],
-          timeRange[1]
+          timeRange[1],
+          undefined,
+          filter === LineGraphFilter.Differentiate ? -1 : 0
         );
         if (data === undefined) return;
 
@@ -343,7 +345,7 @@ export default class LineGraphController implements TabController {
           case LineGraphFilter.Differentiate:
             {
               let newValues: number[] = [];
-              for (let i = 0; i < data.values.length; i++) {
+              for (let i = 1; i < data.values.length; i++) {
                 let prevIndex = Math.max(0, i - 1);
                 let nextIndex = Math.min(data.values.length - 1, i + 1);
                 newValues.push(
@@ -352,6 +354,7 @@ export default class LineGraphController implements TabController {
                 );
               }
               data.values = newValues;
+              data.timestamps.splice(0, 1); // Extra sample included in initial range
             }
             break;
           case LineGraphFilter.Integrate:
