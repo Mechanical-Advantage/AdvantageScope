@@ -563,8 +563,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           const rect: ButtonRect = message.data.rect;
           submenu.popup({
             window: window,
-            x: rect.x + rect.width,
-            y: rect.y
+            x: Math.round(rect.x),
+            y: Math.ceil(rect.y + rect.height)
           });
         } else {
           submenu.closePopup(window);
