@@ -24,7 +24,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Version (required):**
-Copy the contents of the "About AdvantageScope" window and paste it here. On Windows/Linux, click "Help" > "About AdvantageScope". On macOS, click "AdvantageScope" > "About AdvantageScope" in the menu bar.
+Copy and paste the contents of the "About AdvantageScope" window or add a screenshot. On Windows/Linux, click "Help" > "About AdvantageScope". On macOS, click "AdvantageScope" > "About AdvantageScope" in the menu bar.
 
 **Additional context**
 Add any other context about the problem here.

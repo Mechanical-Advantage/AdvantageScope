@@ -48,6 +48,18 @@ export namespace Units {
       hours: 1 / 3600,
       days: 1 / 86400
     },
+    data: {
+      bits: 1,
+      bytes: 1 / 8,
+      kilobits: 1 / 1024,
+      kilobytes: 1 / (1024 * 8),
+      megabits: 1 / (1024 * 1024),
+      megabytes: 1 / (1024 * 1024 * 8),
+      gigabits: 1 / (1024 * 1024 * 1024),
+      gigabytes: 1 / (1024 * 1024 * 1024 * 8),
+      terabits: 1 / (1024 * 1024 * 1024 * 1024),
+      terabytes: 1 / (1024 * 1024 * 1024 * 1024 * 8)
+    },
     temperature: {
       celsius: 1,
       fahrenheit: 1 // Requires custom conversion
