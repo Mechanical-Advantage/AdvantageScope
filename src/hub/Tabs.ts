@@ -9,6 +9,7 @@ import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
 import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
+import CameraStreamRenderer from "../shared/renderers/CameraStreamRenderer";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
 import Field2dRenderer from "../shared/renderers/Field2dRenderer";
@@ -26,6 +27,7 @@ import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
+import CameraStreamController from "./controllers/CameraStreamController";
 import ConsoleController from "./controllers/ConsoleController";
 import Field2dController from "./controllers/Field2dController";
 import Field3dController from "./controllers/Field3dController";
@@ -94,6 +96,7 @@ export default class Tabs {
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Swerve, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Mechanism, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Points, undefined);
+    this.FIXED_CONTROL_HEIGHTS.set(TabType.CameraStream, undefined);
     this.FIXED_CONTROL_HEIGHTS.set(TabType.Metadata, 0);
 
     // Hover and click handling
@@ -536,6 +539,10 @@ export default class Tabs {
       case TabType.Points:
         controller = new PointsController(controlsElement);
         renderer = new PointsRenderer(rendererElement);
+        break;
+      case TabType.CameraStream:
+        controller = new CameraStreamController(controlsElement);
+        renderer = new CameraStreamRenderer(rendererElement);
         break;
       case TabType.Metadata:
         controller = new MetadataController();

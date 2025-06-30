@@ -18,6 +18,7 @@ enum TabType {
   Swerve,
   Mechanism,
   Points,
+  CameraStream,
   Metadata
 }
 
@@ -68,6 +69,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Mechanism";
     case TabType.Points:
       return "Points";
+    case TabType.CameraStream:
+      return "Camera Stream"
     case TabType.Metadata:
       return "Metadata";
     default:
@@ -101,6 +104,8 @@ export function getTabIcon(type: TabType): string {
       return "⚙️";
     case TabType.Points:
       return "📍";
+    case TabType.CameraStream:
+      return "📷";
     case TabType.Metadata:
       return "🔍";
     default:
@@ -136,6 +141,8 @@ export function getTabAccelerator(type: TabType): string {
           return "M";
         case TabType.Points:
           return "P";
+        case TabType.CameraStream:
+          return "E"
         case TabType.Metadata:
           return "I";
         default:
