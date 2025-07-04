@@ -1,19 +1,26 @@
+// Copyright (c) 2021-2025 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import { Pose2d } from "../../../shared/geometry";
 import Log from "../../../shared/log/Log";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import LiveDataTuner from "../LiveDataTuner";
 import configReducer, { initialState } from "./configReducer";
-import { ConfigState, ConfigVar, ConfigVarState, SaveConfigAction } from "./configTypes";
+import { BasicVarType, ConfigState, ConfigVar, ConfigVarState, SaveConfigAction } from "./configTypes";
 
 export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
   private FTCDASHBOARD_PORT = 8000;
   private FTCDASHBOARD_DATA_TIMEOUT_MS = 5000; // How long with no data until timeout
   private FTCDASHBOARD_PING_TIMEOUT_MS = 1000; // How often to ping
-  private RECONNECT_DELAY_MS = 500;
+  private RECONNECT_DELAY_MS = 2000;
   private timeout: ReturnType<typeof setTimeout> | null = null;
   private liveZeroTime = 0;
   private configState: ConfigState = initialState;
-  private tunableKeys: string[] = [];
+  private tunableKeysTypes = new Map<string, BasicVarType>(); // key, type
 
   private socket: WebSocket | null = null;
   private socketTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -34,7 +41,11 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
       this.log = new Log();
       this.socket?.close();
       let url = "ws://" + address + ":" + this.FTCDASHBOARD_PORT;
-      this.socket = new WebSocket(url);
+      try {
+        this.socket = new WebSocket(url);
+      } catch (e) {
+        return this.reconnect();
+      }
 
       this.socket.addEventListener("message", (event) => {
         if (this.socketTimeout !== null) clearTimeout(this.socketTimeout);
@@ -162,15 +173,13 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
           this.log.putNumber(key, timestamp, Number(data));
           break;
       }
-      // this is pretty evil
-      // looking for better solutions...
-      // TODO it also doesn't work
-      let label = name.split(" ").slice(0, -2).join(" ") + " Pose";
+      // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
+      let label = name.split(" ").slice(0, -1).join(" ") + " Pose";
       if (name.endsWith(" x") || name === "x") {
-        if (!foundPoses.has(name)) {
+        if (!foundPoses.has(label)) {
           foundPoses.set(label, { translation: [Number(data) / 39.37008, 0], rotation: 0 });
         } else {
-          let cur = foundPoses.get(name)!!;
+          let cur = foundPoses.get(label)!!;
           foundPoses.set(label, <Pose2d>{
             translation: [Number(data) / 39.37008, cur.translation.at(1)],
             rotation: cur.rotation
@@ -178,36 +187,36 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
         }
       }
       if (name.endsWith(" y") || name === "y") {
-        if (!foundPoses.has(name)) {
-          foundPoses.set(name, { translation: [0, Number(data) / 39.37008], rotation: 0 });
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, Number(data) / 39.37008], rotation: 0 });
         } else {
-          let cur = foundPoses.get(name)!!;
-          foundPoses.set(name, <Pose2d>{
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
             translation: [cur.translation.at(0), Number(data) / 39.37008],
             rotation: cur.rotation
           });
         }
       }
       if (name.endsWith(" heading") || name === "heading") {
-        if (!foundPoses.has(name)) {
-          foundPoses.set(name, { translation: [0, 0], rotation: Number(data) });
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, 0], rotation: Number(data) });
         } else {
-          let cur = foundPoses.get(name)!!;
-          foundPoses.set(name, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
         }
       }
       if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
-        if (!foundPoses.has(name)) {
-          foundPoses.set(name, { translation: [0, 0], rotation: (Number(data) * 2 * Math.PI) / 360 });
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, 0], rotation: (Number(data) * 2 * Math.PI) / 360 });
         } else {
-          let cur = foundPoses.get(name)!!;
-          foundPoses.set(name, <Pose2d>{ translation: cur.translation, rotation: (Number(data) * 2 * Math.PI) / 360 });
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: (Number(data) * 2 * Math.PI) / 360 });
         }
       }
     }
 
-    for (const name of foundPoses.keys()) {
-      this.log.putPose(name, timestamp, foundPoses.get(name)!!);
+    for (const label of foundPoses.keys()) {
+      this.log.putPose(label, timestamp, foundPoses.get(label)!!);
     }
   }
 
@@ -223,7 +232,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
         this.liveZeroTime = 0;
         this.robotClockSkew = 0;
         this.configState = initialState;
-        this.tunableKeys = [];
+        this.tunableKeysTypes = new Map<string, BasicVarType>();
         this.connect(this.address!!, this.statusCallback!!, this.outputCallback!!);
       }
     }, this.RECONNECT_DELAY_MS);
@@ -233,18 +242,18 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     switch (state.__type) {
       case "boolean":
         this.log!!.putBoolean(path, timestamp, state.__value as boolean);
-        this.tunableKeys.push(path);
+        this.tunableKeysTypes.set(path, state.__type);
         break;
       case "double":
       case "float":
       case "int":
       case "long":
         this.log!!.putNumber(path, timestamp, Number(state.__value));
-        this.tunableKeys.push(path);
+        this.tunableKeysTypes.set(path, state.__type);
         break;
       case "string":
         this.log!!.putString(path, timestamp, state.__value as string);
-        this.tunableKeys.push(path);
+        this.tunableKeysTypes.set(path, state.__type);
         break;
       case "custom":
         if (state.__value === null) {
@@ -262,7 +271,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     return this.configState !== initialState;
   }
   isTunable(key: string): boolean {
-    return this.tunableKeys.indexOf(key) > -1;
+    return this.tunableKeysTypes.get(key) != undefined;
   }
   publish(key: string, value: number | boolean): void {
     if (!this.isTunable(key)) {
@@ -274,32 +283,28 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     } else {
       return;
     }
-    let saveAction: SaveConfigAction = { type: "SAVE_CONFIG", configDiff: this.generateConfigDiff(path, value) };
+    let saveAction: SaveConfigAction = {
+      type: "SAVE_CONFIG",
+      configDiff: this.generateConfigDiff(path, value, this.tunableKeysTypes.get(key)!!)
+    };
     let saveMsg = JSON.stringify(saveAction);
     this.socket!!.send(saveMsg);
   }
 
-  generateConfigDiff(path: string[], value: number | boolean): ConfigVar {
+  generateConfigDiff(path: string[], value: number | boolean, type: BasicVarType): ConfigVar {
     if (path.length === 0) {
-      if (typeof value === "number") {
-        return {
-          __type: "double",
-          __value: value
-        };
-      } else {
-        return {
-          __type: "boolean",
-          __value: value
-        };
-      }
+      return {
+        __type: type,
+        __value: value
+      };
     } else {
       return {
         __type: "custom",
-        __value: { [path[0]]: this.generateConfigDiff(path.slice(1), value) }
+        __value: { [path[0]]: this.generateConfigDiff(path.slice(1), value, type) }
       };
     }
   }
-  unpublish(key: string): void {
+  unpublish(_key: string): void {
     // do nothing (not possible for FTCDashboard)
   }
 
