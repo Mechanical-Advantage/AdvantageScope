@@ -16,15 +16,21 @@ import fs from "fs";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
+const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
+const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
 const licenseHeader =
   "// Copyright (c) 2021-2025 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
 function bundle(input, output, isMain, isXRClient, external = []) {
-  const isWpilib = process.env.ASCOPE_DISTRIBUTOR === "WPILIB";
+  const packageJson = JSON.parse(
+    fs.readFileSync("package.json", {
+      encoding: "utf-8"
+    })
+  );
   return {
     input: "src/" + input,
     output: {
-      file: "bundles/" + output,
+      file: (isLite ? "lite/static/" : "") + "bundles/" + output,
       format: isMain ? "cjs" : "es",
       banner: licenseHeader
     },
@@ -45,12 +51,22 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             }),
             terser()
           ]
+        : isLite
+        ? [
+            getBabelOutputPlugin({
+              presets: [["@babel/preset-env", { modules: false }]],
+              compact: true,
+              targets: "> 0.1%, not dead"
+            }),
+            terser({ mangle: { reserved: ["Module"] } })
+          ]
         : [cleanup()]),
       json(),
       replace({
         preventAssignment: true,
         values: {
-          __distributor__: isWpilib ? "WPILib" : "FRC6328",
+          __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : "FRC6328",
+          __version__: packageJson.version,
           __build_date__: new Date().toLocaleString("en-US", {
             timeZone: "UTC",
             hour12: false,
@@ -62,11 +78,7 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             second: "numeric",
             timeZoneName: "short"
           }),
-          __copyright__: JSON.parse(
-            fs.readFileSync("package.json", {
-              encoding: "utf-8"
-            })
-          ).build.copyright
+          __copyright__: packageJson.build.copyright
         }
       }),
       replaceRegEx({
@@ -96,27 +108,29 @@ function bundle(input, output, isMain, isXRClient, external = []) {
   };
 }
 
-const mainBundles = [
-  bundle("main/main.ts", "main.js", true, false, [
-    "electron",
-    "electron-fetch",
-    "fs",
-    "jsonfile",
-    "net",
-    "os",
-    "ws",
-    "http",
-    "path",
-    "basic-ftp",
-    "download",
-    "ytdl-core",
-    "tesseract.js"
-  ]),
-  bundle("preload.ts", "preload.js", true, false, ["electron"])
-];
+const mainBundles = isLite
+  ? [bundle("main/lite/main.ts", "main.js", false, false)]
+  : [
+      bundle("main/electron/main.ts", "main.js", true, false, [
+        "electron",
+        "electron-fetch",
+        "fs",
+        "jsonfile",
+        "net",
+        "os",
+        "ws",
+        "http",
+        "path",
+        "basic-ftp",
+        "download",
+        "ytdl-core",
+        "tesseract.js"
+      ]),
+      bundle("preload.ts", "preload.js", true, false, ["electron"])
+    ];
 const largeRendererBundles = [
   bundle("hub/hub.ts", "hub.js", false, false),
-  bundle("satellite.ts", "satellite.js", false, false)
+  ...(isLite ? [] : [bundle("satellite.ts", "satellite.js", false, false)])
 ];
 const smallRendererBundles = [
   bundle("editRange.ts", "editRange.js", false, false),
@@ -125,17 +139,17 @@ const smallRendererBundles = [
   bundle("editFov.ts", "editFov.js", false, false),
   bundle("sourceListHelp.ts", "sourceListHelp.js", false, false),
   bundle("betaWelcome.ts", "betaWelcome.js", false, false),
-  bundle("export.ts", "export.js", false, false),
-  bundle("download.ts", "download.js", false, false),
   bundle("preferences.ts", "preferences.js", false, false),
-  bundle("licenses.ts", "licenses.js", false, false)
+  bundle("licenses.ts", "licenses.js", false, false),
+  bundle("download.ts", "download.js", false, false),
+  ...(isLite ? [] : [bundle("export.ts", "export.js", false, false)])
 ];
 const workerBundles = [
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
   bundle("hub/dataSources/roadrunnerlog/rrlogWorker.ts", "hub$rrlogWorker.js", false, false),
   bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
   bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
-  bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false),
+  ...(isLite ? [] : [bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false)]),
   bundle("shared/renderers/field3d/workers/loadField.ts", "shared$loadField.js", false, false),
   bundle("shared/renderers/field3d/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
 ];
@@ -167,8 +181,13 @@ export default (cliArgs) => {
   if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
-  if (cliArgs.configXR === true) return xrBundles;
+  if (cliArgs.configXR === true) {
+    if (isLite) process.exit();
+    return xrBundles;
+  }
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
-  return [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
+  return isLite
+    ? [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
+    : [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
 };

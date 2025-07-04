@@ -5,14 +5,14 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { convert } from "./units";
+import { Units } from "./units";
 
-export const FRC_STANDARD_FIELD_LENGTH = convert(54, "feet", "meters");
-export const FRC_STANDARD_FIELD_WIDTH = convert(27, "feet", "meters");
-export const FTC_STANDARD_FIELD_LENGTH = convert(12, "feet", "meters");
-export const FTC_STANDARD_FIELD_WIDTH = convert(12, "feet", "meters");
+export const FRC_STANDARD_FIELD_LENGTH = Units.convert(54, "feet", "meters");
+export const FRC_STANDARD_FIELD_WIDTH = Units.convert(27, "feet", "meters");
+export const FTC_STANDARD_FIELD_LENGTH = Units.convert(12, "feet", "meters");
+export const FTC_STANDARD_FIELD_WIDTH = Units.convert(12, "feet", "meters");
 
-export const ALLIANCE_STATION_WIDTH = convert(69, "inches", "meters");
+export const ALLIANCE_STATION_WIDTH = Units.convert(69, "inches", "meters");
 export const DEFAULT_DRIVER_STATIONS_FRC: [number, number][] = [
   [FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH],
   [FRC_STANDARD_FIELD_LENGTH / 2, 0],
@@ -21,7 +21,7 @@ export const DEFAULT_DRIVER_STATIONS_FRC: [number, number][] = [
   [-FRC_STANDARD_FIELD_LENGTH / 2, 0],
   [-FRC_STANDARD_FIELD_LENGTH / 2, -ALLIANCE_STATION_WIDTH]
 ];
-const DEFAULT_DRIVER_STATION_Y_OFFSET_FTC = FTC_STANDARD_FIELD_LENGTH / 2 + convert(39, "inches", "meters");
+const DEFAULT_DRIVER_STATION_Y_OFFSET_FTC = FTC_STANDARD_FIELD_LENGTH / 2 + Units.convert(39, "inches", "meters");
 export const DEFAULT_DRIVER_STATIONS_FTC: [number, number][] = [
   [DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, -FTC_STANDARD_FIELD_WIDTH / 6],
   [DEFAULT_DRIVER_STATION_Y_OFFSET_FTC, FTC_STANDARD_FIELD_WIDTH / 6],
@@ -161,8 +161,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     coordinateSystem: "wall-blue",
     rotations: [],
     position: [0, 0, 0],
-    widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-    heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: Units.convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FRC,
     gamePieces: []
   },
@@ -174,8 +174,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     coordinateSystem: "center-rotated",
     rotations: [],
     position: [0, 0, 0],
-    widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-    heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: Units.convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FTC,
     gamePieces: []
   },
@@ -187,8 +187,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     coordinateSystem: "wall-blue",
     rotations: [],
     position: [0, 0, 0],
-    widthInches: convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-    heightInches: convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: Units.convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FRC,
     gamePieces: []
   },
@@ -200,8 +200,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     coordinateSystem: "center-rotated",
     rotations: [],
     position: [0, 0, 0],
-    widthInches: convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
-    heightInches: convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
+    widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
+    heightInches: Units.convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FTC,
     gamePieces: []
   }

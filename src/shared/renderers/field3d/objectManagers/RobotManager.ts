@@ -13,7 +13,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
 import { SwerveState } from "../../../geometry";
-import { convert } from "../../../units";
+import { Units } from "../../../units";
 import { transformPx } from "../../../util";
 import { Field3dRendererCommand_GhostObj, Field3dRendererCommand_RobotObj } from "../../Field3dRenderer";
 import { getQuaternionFromRotSeq, quaternionToRotation3d, rotation3dToQuaternion } from "../../Field3dRendererImpl";
@@ -558,7 +558,7 @@ export default class RobotManager extends ObjectManager<
             vectorRotation += Math.PI;
           }
           if (vectorSpeed < 0.05) return;
-          let vectorLength = pxPerMeter * convert(36, "inches", "meters") * vectorSpeed;
+          let vectorLength = pxPerMeter * Units.convert(36, "inches", "meters") * vectorSpeed;
           let arrowBack = transformPx(moduleCenterPx, vectorRotation, [0, 0]);
           let arrowFront = transformPx(moduleCenterPx, vectorRotation, [vectorLength, 0]);
           let arrowLeft = transformPx(moduleCenterPx, vectorRotation, [

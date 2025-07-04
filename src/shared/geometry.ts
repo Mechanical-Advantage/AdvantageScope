@@ -9,7 +9,7 @@ import { CoordinateSystem } from "./AdvantageScopeAssets";
 import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
-import { convert } from "./units";
+import { Units } from "./units";
 import { indexArray, jsonCopy } from "./util";
 
 export type Translation2d = [number, number]; // meters (x, y)
@@ -58,8 +58,8 @@ export type ChassisSpeeds = { vx: number; vy: number; omega: number };
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
-export const APRIL_TAG_36H11_SIZE = convert(8.125, "inches", "meters");
-export const APRIL_TAG_16H5_SIZE = convert(8, "inches", "meters");
+export const APRIL_TAG_36H11_SIZE = Units.convert(8.125, "inches", "meters");
+export const APRIL_TAG_16H5_SIZE = Units.convert(8, "inches", "meters");
 export const HEATMAP_DT = 0.25;
 
 // FORMAT CONVERSION UTILITIES
@@ -277,7 +277,7 @@ export function grabNumberRotation(
 ): AnnotatedPose3d[] {
   let value = getOrDefault(log, key, LoggableType.Number, timestamp, 0, uuid);
   if (unit === "degrees") {
-    value = convert(value, "degrees", "radians");
+    value = Units.convert(value, "degrees", "radians");
   }
   return [
     {
@@ -335,7 +335,7 @@ export function grabNumberArray(
         poses.push({
           pose: pose2dTo3d({
             translation: [value[i], value[i + 1]],
-            rotation: convert(value[i + 2], finalUnit, "radians")
+            rotation: Units.convert(value[i + 2], finalUnit, "radians")
           }),
           annotation: {
             is2DSource: true
@@ -636,7 +636,7 @@ export function grabSwerveStates(
         for (let i = 0; i < value.length - 1; i += 2) {
           states.push({
             speed: value[i + 1],
-            angle: convert(value[i], rotationUnits, "radians")
+            angle: Units.convert(value[i], rotationUnits, "radians")
           });
         }
       }

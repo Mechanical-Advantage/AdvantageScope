@@ -11,8 +11,59 @@ on:
     types: [published]
 
 jobs:
-  compile:
-    name: Check & Compile
+  check-formatting:
+    name: Check Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
+      - name: Check formatting
+        run: npm run check-format
+
+  compile-frc6328:
+    name: Compile for FRC 6328
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.74
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
+      - name: Compile WebAssembly
+        run: npm run wasm:compile
+      - name: Compile bundles
+        run: npm run compile
+      - name: Upload bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundles
+          path: |
+            bundles/*.js
+            bundles/*.wasm
+
+  compile-wpilib:
+    name: Compile for WPILib
     runs-on: ubuntu-latest
 
     steps:
@@ -29,30 +80,68 @@ jobs:
         run: npm ci
         env:
           ASCOPE_NO_FFMPEG: true
-      - name: Check formatting
-        run: npm run check-format
       - name: Compile WebAssembly
-        run: mkdir bundles; npm run wasm:compile
-      - name: Compile bundles (FRC 6328)
-        run: npm run compile
-      - name: Upload bundles (FRC 6328)
-        uses: actions/upload-artifact@v4
-        with:
-          name: bundles
-          path: |
-            bundles/*.js
-            bundles/*.wasm
-      - name: Compile bundles (WPILib)
+        run: npm run wasm:compile
+      - name: Compile bundles
         run: npm run compile
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
-      - name: Upload bundles (WPILib)
+          ASCOPE_DISTRIBUTION: WPILIB
+      - name: Upload bundles
         uses: actions/upload-artifact@v4
         with:
           name: bundles-wpilib
           path: |
             bundles/*.js
             bundles/*.wasm
+
+  compile-lite:
+    name: Compile for Lite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: 3.1.74
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          ASCOPE_NO_FFMPEG: true
+      - name: Compile WebAssembly
+        run: npm run wasm:compile
+      - name: Compile bundles
+        run: npm run compile
+        env:
+          ASCOPE_DISTRIBUTION: LITE
+      - name: Build documentation
+        run: npm run docs:build-embed
+        env:
+          ASCOPE_DISTRIBUTION: LITE
+      - name: Prepare artifact (desktop)
+        run: |
+          mkdir advantagescopelite-desktop
+          cp lite/lite_server.py advantagescopelite-desktop/lite_server.py
+          cp -rL lite/static advantagescopelite-desktop/static
+          zip -r advantagescopelite-desktop.zip advantagescopelite-desktop/
+      - name: Upload development artifact (desktop)
+        uses: actions/upload-artifact@v4
+        with:
+          name: advantagescopelite-desktop
+          path: advantagescopelite-desktop/
+      - name: Build IPK (SystemCore)
+        run: cd lite/ipk && ./build.sh
+      - name: Upload development artifact (SystemCore)
+        uses: actions/upload-artifact@v4
+        with:
+          name: advantagescopelite-systemcore
+          path: lite/ipk/advantagescope-lite_*.ipk
 
   build-ios:
     name: Build for iOS
@@ -68,7 +157,7 @@ jobs:
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
-    needs: compile
+    needs: compile-frc6328
     runs-on: windows-latest
 
     strategy:
@@ -125,7 +214,7 @@ jobs:
 
   build-mac:
     name: Build for macOS (${{ matrix.arch }})
-    needs: compile
+    needs: compile-frc6328
     runs-on: macos-latest
 
     strategy:
@@ -193,7 +282,7 @@ jobs:
 
   build-linux:
     name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
-    needs: compile
+    needs: compile-frc6328
     runs-on: ubuntu-latest
 
     strategy:
@@ -270,7 +359,7 @@ jobs:
 
   build-wpilib-win:
     name: "WPILib: Build for Windows (${{ matrix.arch }})"
-    needs: compile
+    needs: compile-wpilib
     runs-on: windows-latest
 
     strategy:
@@ -298,7 +387,7 @@ jobs:
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -w dir
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
@@ -331,7 +420,7 @@ jobs:
 
   build-wpilib-mac:
     name: "WPILib: Build for macOS (${{ matrix.arch }})"
-    needs: compile
+    needs: compile-wpilib
     runs-on: macos-latest
 
     strategy:
@@ -370,7 +459,7 @@ jobs:
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -m dir
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
@@ -405,7 +494,7 @@ jobs:
 
   build-wpilib-linux:
     name: "WPILib: Build for Linux (${{ matrix.arch }})"
-    needs: compile
+    needs: compile-wpilib
     runs-on: ubuntu-latest
 
     strategy:
@@ -433,7 +522,7 @@ jobs:
       - name: Build app
         run: npx electron-builder build --publish never --${{ matrix.arch }} -l dir
         env:
-          ASCOPE_DISTRIBUTOR: WPILIB
+          ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |

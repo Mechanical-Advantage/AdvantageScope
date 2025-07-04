@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
@@ -135,7 +136,7 @@ export default class Sidebar {
     Array.from(menuBar.getElementsByTagName("button")).forEach((button, index) => {
       let active = false;
       button.addEventListener("click", () => {
-        if (active) {
+        if (active && DISTRIBUTION !== Distribution.Lite) {
           active = false;
           window.sendMainMessage("close-app-menu", {
             index: index
@@ -145,7 +146,12 @@ export default class Sidebar {
           let rect = button.getBoundingClientRect();
           window.sendMainMessage("open-app-menu", {
             index: index,
-            coordinates: [Math.round(rect.left), Math.round(rect.bottom)]
+            rect: {
+              x: rect.x,
+              y: rect.y,
+              width: rect.width,
+              height: rect.height
+            }
           });
         }
       });

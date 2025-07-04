@@ -16,7 +16,7 @@ import {
   CoordinateSystem
 } from "../AdvantageScopeAssets";
 import { Rotation3d } from "../geometry";
-import { convert } from "../units";
+import { Units } from "../units";
 import { checkArrayType, clampValue } from "../util";
 import {
   Field3dRendererCommand,
@@ -47,7 +47,7 @@ export default class Field3dRendererImpl implements TabRenderer {
   private ORBIT_FIELD_FTC_DEFAULT_POSITION = new THREE.Vector3(0, 2, -4);
   private ORBIT_ROBOT_FRC_DEFAULT_POSITION = new THREE.Vector3(2, 1, 1);
   private ORBIT_ROBOT_FTC_DEFAULT_POSITION = new THREE.Vector3(1, 0.5, 0.5);
-  private DS_CAMERA_HEIGHT = convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
+  private DS_CAMERA_HEIGHT = Units.convert(62, "inches", "meters"); // https://www.ergocenter.ncsu.edu/wp-content/uploads/sites/18/2017/09/Anthropometric-Summary-Data-Tables.pdf
   private DS_CAMERA_OFFSET_FRC = 1.5; // Distance away from the glass
   private DS_CAMERA_TARGET_FTC = new THREE.Vector3(0, -0.2, 0);
   private CONTROLS_MIN_DISTANCE_FRC = 1;
@@ -183,6 +183,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         let cameraList = robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => camera.name);
         window.sendMainMessage("ask-3d-camera", {
           options: cameraList,
+          position: [event.clientX, event.clientY],
           selectedIndex: this.cameraIndex >= cameraList.length ? CameraIndexEnum.OrbitField : this.cameraIndex,
           fov: this.orbitFov,
           isFTC: this.fieldConfigCache !== null && this.fieldConfigCache.isFTC
@@ -271,12 +272,12 @@ export default class Field3dRendererImpl implements TabRenderer {
     // Create key bindings
     window.addEventListener("keydown", (event) => {
       if (window.platform === "darwin" ? event.metaKey : event.ctrlKey) return;
-      if (event.target !== document.body) return;
+      if (event.target !== document.body && event.target !== window) return;
       if (canvasContainer.clientHeight === 0) return;
       this.keysPressed.add(event.code);
     });
     window.addEventListener("keyup", (event) => {
-      if (event.target !== document.body) return;
+      if (event.target !== document.body && event.target !== window) return;
       this.keysPressed.delete(event.code);
     });
   }
@@ -304,17 +305,21 @@ export default class Field3dRendererImpl implements TabRenderer {
       "cameraPosition" in state &&
       checkArrayType(state.cameraPosition, "number") &&
       (state.cameraPosition as number[]).length === 3 &&
+      !(state.cameraPosition as number[]).every((x) => x === 0) &&
       "cameraTarget" in state &&
       checkArrayType(state.cameraTarget, "number") &&
-      (state.cameraTarget as number[]).length === 3
+      (state.cameraTarget as number[]).length === 3 &&
+      !(state.cameraTarget as number[]).every((x) => x === 0)
     ) {
       this.controls.setLookAt(
         ...(state.cameraPosition as [number, number, number]),
         ...(state.cameraTarget as [number, number, number])
       );
+      this.shouldResetCamera = false;
+    } else {
+      this.shouldResetCamera = true;
     }
     this.lastCameraIndex = this.cameraIndex; // Don't reset camera position
-    this.shouldResetCamera = false;
     this.shouldRender = true;
   }
 
@@ -623,16 +628,16 @@ export default class Field3dRendererImpl implements TabRenderer {
           command.isRedAlliance ? 0 : Math.PI
         );
         this.wpilibFieldCoordinateGroup.position.set(
-          convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          Units.convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          Units.convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
           0
         );
         break;
       case "wall-blue":
         this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
         this.wpilibFieldCoordinateGroup.position.set(
-          convert(fieldConfig.widthInches / 2, "inches", "meters"),
-          convert(fieldConfig.heightInches / 2, "inches", "meters"),
+          Units.convert(fieldConfig.widthInches / 2, "inches", "meters"),
+          Units.convert(fieldConfig.heightInches / 2, "inches", "meters"),
           0
         );
         break;
@@ -1025,7 +1030,7 @@ export function getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Q
     if (rotation.axis === "y") axis.setY(1);
     if (rotation.axis === "z") axis.setZ(1);
     quaternion.premultiply(
-      new THREE.Quaternion().setFromAxisAngle(axis, convert(rotation.degrees, "degrees", "radians"))
+      new THREE.Quaternion().setFromAxisAngle(axis, Units.convert(rotation.degrees, "degrees", "radians"))
     );
   });
   return quaternion;

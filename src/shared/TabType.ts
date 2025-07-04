@@ -27,6 +27,21 @@ export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }
 
+export const LITE_COMPATIBLE_TABS = [
+  TabType.Documentation,
+  TabType.LineGraph,
+  TabType.Field2d,
+  TabType.Field3d,
+  TabType.Table,
+  TabType.Console,
+  TabType.Statistics,
+  TabType.Joysticks,
+  TabType.Swerve,
+  TabType.Mechanism,
+  TabType.Points,
+  TabType.Metadata
+];
+
 export function getDefaultTabTitle(type: TabType): string {
   switch (type) {
     case TabType.Documentation:

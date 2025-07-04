@@ -1,7 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "4.1.6",
+  "version": "26.0.0-dev",
   "description": "Robot telemetry application",
   "author": {
     "name": "Littleton Robotics",
@@ -25,7 +25,7 @@
     "docs:build-embed": "cd docs && npm run build-embed && cd ..",
     "docs:clear": "cd docs && npm run clear && cd ..",
     "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node ffmpegDownload.mjs && npm run download-owlet"
+    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node ffmpegDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -70,6 +70,7 @@
     "rollup-plugin-re": "^1.0.7",
     "simple-statistics": "^7.8.7",
     "three": "^0.168.0",
+    "tiny-popup-menu": "^1.0.10",
     "tslib": "^2.6.2",
     "type-fest": "^4.26.1",
     "typescript": "5.6.3"

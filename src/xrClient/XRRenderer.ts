@@ -29,7 +29,7 @@ import GamePieceManager from "../shared/renderers/field3d/objectManagers/GamePie
 import HeatmapManager from "../shared/renderers/field3d/objectManagers/HeatmapManager";
 import RobotManager from "../shared/renderers/field3d/objectManagers/RobotManager";
 import TrajectoryManager from "../shared/renderers/field3d/objectManagers/TrajectoryManager";
-import { convert } from "../shared/units";
+import { Units } from "../shared/units";
 import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
 import { sendHostMessage } from "./xrClient";
@@ -342,8 +342,8 @@ export default class XRRenderer {
     this.lastCoordinateSystem = command.coordinateSystem;
 
     // Update field reference size
-    const fieldLength = convert(fieldConfig.widthInches, "inches", "meters");
-    const fieldWidth = convert(fieldConfig.heightInches, "inches", "meters");
+    const fieldLength = Units.convert(fieldConfig.widthInches, "inches", "meters");
+    const fieldWidth = Units.convert(fieldConfig.heightInches, "inches", "meters");
     this.fieldSizingReference.scale.set(fieldLength, fieldWidth, 0);
 
     // Update calibration
@@ -403,7 +403,7 @@ export default class XRRenderer {
               let position2 = new THREE.Vector3(...renderState.raycast.position).add(
                 new THREE.Vector3(...renderState.anchors[renderState.raycast.anchorId])
               );
-              this.fieldRoot.visible = position1.distanceTo(position2) > convert(6, "inches", "meters");
+              this.fieldRoot.visible = position1.distanceTo(position2) > Units.convert(6, "inches", "meters");
               if (this.fieldRoot.visible) {
                 this.updateFieldRootFullSize(isRed, fieldLength, fieldWidth, position1, position2);
               }
@@ -474,16 +474,16 @@ export default class XRRenderer {
           command.isRedAlliance ? 0 : Math.PI
         );
         this.wpilibFieldCoordinateGroup.position.set(
-          convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          Units.convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
+          Units.convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
           0
         );
         break;
       case "wall-blue":
         this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
         this.wpilibFieldCoordinateGroup.position.set(
-          convert(fieldConfig.widthInches / 2, "inches", "meters"),
-          convert(fieldConfig.heightInches / 2, "inches", "meters"),
+          Units.convert(fieldConfig.widthInches / 2, "inches", "meters"),
+          Units.convert(fieldConfig.heightInches / 2, "inches", "meters"),
           0
         );
         break;

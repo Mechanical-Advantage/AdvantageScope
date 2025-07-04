@@ -28,6 +28,7 @@ void* run(void* buffer, int bufferSize) {
   int offset = 12 + extraHeaderSize;
 
   // Set up output
+  uint8_t hasInitialTimestamp = 0;
   int64_t minTimestamp = 0;
   int64_t maxTimestamp = 0;
   uint32_t recordCount = 0;
@@ -59,12 +60,13 @@ void* run(void* buffer, int bufferSize) {
 
     // Update timestamp range
     if (entry != CONTROL_ENTRY) {
-      if (recordCount == 0 || timestamp < minTimestamp) {
+      if (!hasInitialTimestamp || timestamp < minTimestamp) {
         minTimestamp = timestamp;
       }
-      if (recordCount == 0 || timestamp > maxTimestamp) {
+      if (!hasInitialTimestamp || timestamp > maxTimestamp) {
         maxTimestamp = timestamp;
       }
+      hasInitialTimestamp = 1;
     }
 
     // Expand output if necessary
