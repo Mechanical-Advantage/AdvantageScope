@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { AnnotatedPose2d, Pose2d, SwerveState, Translation2d } from "../geometry";
-import { convert } from "../units";
+import { Units } from "../units";
 import { scaleValue, transformPx } from "../util";
 import Heatmap from "./Heatmap";
 import TabRenderer from "./TabRenderer";
@@ -135,7 +135,10 @@ export default class Field2dRenderer implements TabRenderer {
     // Convert translation to pixel coordinates
     let calcCoordinates = (translation: Translation2d): [number, number] => {
       if (!fieldData) return [0, 0];
-      let positionInches = [convert(translation[0], "meters", "inches"), convert(translation[1], "meters", "inches")];
+      let positionInches = [
+        Units.convert(translation[0], "meters", "inches"),
+        Units.convert(translation[1], "meters", "inches")
+      ];
       let positionPixels: [number, number] = [
         scaleValue(
           positionInches[0],
@@ -266,7 +269,10 @@ export default class Field2dRenderer implements TabRenderer {
     this.heatmap.update(
       heatmapTranslations,
       [canvasFieldWidth, canvasFieldHeight],
-      [convert(fieldData.widthInches, "inches", "meters"), convert(fieldData.heightInches, "inches", "meters")]
+      [
+        Units.convert(fieldData.widthInches, "inches", "meters"),
+        Units.convert(fieldData.heightInches, "inches", "meters")
+      ]
     );
     let heatmapCanvas = this.heatmap.getCanvas();
     if (heatmapCanvas !== null) {

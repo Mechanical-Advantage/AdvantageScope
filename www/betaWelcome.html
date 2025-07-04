@@ -17,13 +17,18 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="betaWelcome.css" />
     <script type="module" src="../bundles/betaWelcome.js"></script>
-    <title>Beta</title>
+    <title>Welcome</title>
   </head>
   <body>
     <h1>Welcome 👋</h1>
-    <h2>THIS IS A BETA</h2>
-    <p>
+    <h2 class="beta-only">THIS IS A BETA RELEASE</h2>
+    <h2 class="alpha-only" hidden>THIS IS AN ALPHA RELEASE</h2>
+    <p class="desktop-only">
       Thanks for helping us test and improve upcoming features in AdvantageScope! Please check the boxes below to
+      acknowledge each statement before continuing.
+    </p>
+    <p class="lite-only" hidden>
+      Thanks for helping us test and improve upcoming features in AdvantageScope Lite! Please check the boxes below to
       acknowledge each statement before continuing.
     </p>
     <table>
@@ -48,13 +53,17 @@
           <td>
             <input type="checkbox" />
           </td>
-          <td>I agree to fill out one or more short surveys about my experience using the AdvantageScope beta.</td>
+          <td>I agree to provide feedback to the developers if asked about my experience using this release.</td>
         </tr>
       </tbody>
     </table>
-    <p>
+    <p class="desktop-only">
       At any time, click the <span class="purple">purple icon</span> in the title bar to report an issue, request a
       feature, or ask a question.
+    </p>
+    <p class="lite-only" hidden>
+      You can report an issue, request a feature, or ask a question on the issues page of the AdvantageScope GitHub
+      repository.
     </p>
     <button disabled>Continue</button>
   </body>

@@ -17,7 +17,7 @@ import {
   LineGraphRendererCommand_DiscreteField,
   LineGraphRendererCommand_NumericField
 } from "../../shared/renderers/LineGraphRenderer";
-import { NoopUnitConversion, UnitConversionPreset, convertWithPreset } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { clampValue, createUUID, scaleValueClamped } from "../../shared/util";
 import SourceList from "../SourceList";
 import { LineGraphController_DiscreteConfig, LineGraphController_NumericConfig } from "./LineGraphController_Config";
@@ -37,8 +37,8 @@ export default class LineGraphController implements TabController {
 
   private leftLockedRange: [number, number] | null = null;
   private rightLockedRange: [number, number] | null = null;
-  private leftUnitConversion = NoopUnitConversion;
-  private rightUnitConversion = NoopUnitConversion;
+  private leftUnitConversion = Units.NoopUnitConversion;
+  private rightUnitConversion = Units.NoopUnitConversion;
   private leftFilter = LineGraphFilter.None;
   private rightFilter = LineGraphFilter.None;
 
@@ -50,10 +50,9 @@ export default class LineGraphController implements TabController {
       root.getElementsByClassName("line-graph-left")[0] as HTMLElement,
       LineGraphController_NumericConfig,
       [() => this.rightSourceList.getState(), () => this.discreteSourceList.getState()],
-      (coordinates) => {
+      (rect) => {
         window.sendMainMessage("ask-edit-axis", {
-          x: coordinates[0],
-          y: coordinates[1],
+          rect: rect,
           legend: "left",
           lockedRange: this.leftLockedRange,
           unitConversion: this.leftUnitConversion,
@@ -69,10 +68,9 @@ export default class LineGraphController implements TabController {
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
       LineGraphController_NumericConfig,
       [() => this.leftSourceList.getState(), () => this.discreteSourceList.getState()],
-      (coordinates) => {
+      (rect) => {
         window.sendMainMessage("ask-edit-axis", {
-          x: coordinates[0],
-          y: coordinates[1],
+          rect: rect,
           legend: "right",
           lockedRange: this.rightLockedRange,
           unitConversion: this.rightUnitConversion,
@@ -88,10 +86,9 @@ export default class LineGraphController implements TabController {
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
       LineGraphController_DiscreteConfig,
       [() => this.leftSourceList.getState(), () => this.rightSourceList.getState()],
-      (coordinates) => {
+      (rect) => {
         window.sendMainMessage("ask-edit-axis", {
-          x: coordinates[0],
-          y: coordinates[1],
+          rect: rect,
           legend: "discrete",
           config: LineGraphController_DiscreteConfig
         });
@@ -126,10 +123,10 @@ export default class LineGraphController implements TabController {
       this.rightLockedRange = state.rightLockedRange as [number, number] | null;
     }
     if ("leftUnitConversion" in state) {
-      this.leftUnitConversion = state.leftUnitConversion as UnitConversionPreset;
+      this.leftUnitConversion = state.leftUnitConversion as Units.UnitConversionPreset;
     }
     if ("rightUnitConversion" in state) {
-      this.rightUnitConversion = state.rightUnitConversion as UnitConversionPreset;
+      this.rightUnitConversion = state.rightUnitConversion as Units.UnitConversionPreset;
     }
     if ("leftFilter" in state) {
       this.leftFilter = state.leftFilter as LineGraphFilter;
@@ -199,7 +196,7 @@ export default class LineGraphController implements TabController {
   editAxis(
     legend: string,
     lockedRange: [number, number] | null,
-    unitConversion: UnitConversionPreset,
+    unitConversion: Units.UnitConversionPreset,
     filter: LineGraphFilter
   ) {
     switch (legend) {
@@ -300,14 +297,16 @@ export default class LineGraphController implements TabController {
       source: SourceListState,
       dataRange: [number, number],
       command: LineGraphRendererCommand_NumericField[],
-      unitConversion: UnitConversionPreset,
+      unitConversion: Units.UnitConversionPreset,
       filter: LineGraphFilter
     ) => {
       source.forEach((fieldItem) => {
         let data = window.log.getNumber(
           fieldItem.logKey,
           filter === LineGraphFilter.Integrate ? -Infinity : timeRange[0],
-          timeRange[1]
+          timeRange[1],
+          undefined,
+          filter === LineGraphFilter.Differentiate ? -1 : 0
         );
         if (data === undefined) return;
 
@@ -346,7 +345,7 @@ export default class LineGraphController implements TabController {
           case LineGraphFilter.Differentiate:
             {
               let newValues: number[] = [];
-              for (let i = 0; i < data.values.length; i++) {
+              for (let i = 1; i < data.values.length; i++) {
                 let prevIndex = Math.max(0, i - 1);
                 let nextIndex = Math.min(data.values.length - 1, i + 1);
                 newValues.push(
@@ -355,6 +354,7 @@ export default class LineGraphController implements TabController {
                 );
               }
               data.values = newValues;
+              data.timestamps.splice(0, 1); // Extra sample included in initial range
             }
             break;
           case LineGraphFilter.Integrate:
@@ -381,7 +381,7 @@ export default class LineGraphController implements TabController {
 
         // Clamp values
         data.values = data.values.map((value) =>
-          clampValue(convertWithPreset(value, unitConversion), -this.MAX_VALUE, this.MAX_VALUE)
+          clampValue(Units.convertWithPreset(value, unitConversion), -this.MAX_VALUE, this.MAX_VALUE)
         );
 
         // Trim early point

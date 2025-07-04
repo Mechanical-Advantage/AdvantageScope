@@ -364,43 +364,79 @@ export default class Log {
   }
 
   /** Reads a set of generic values from the field. */
-  getRange(key: string, start: number, end: number, uuid?: string): LogValueSetAny | undefined {
+  getRange(key: string, start: number, end: number, uuid?: string, startOffset?: number): LogValueSetAny | undefined {
     if (key in this.fields) return this.fields[key].getRange(start, end, uuid);
   }
 
   /** Reads a set of Raw values from the field. */
-  getRaw(key: string, start: number, end: number, uuid?: string): LogValueSetRaw | undefined {
+  getRaw(key: string, start: number, end: number, uuid?: string, startOffset?: number): LogValueSetRaw | undefined {
     if (key in this.fields) return this.fields[key].getRaw(start, end, uuid);
   }
 
   /** Reads a set of Boolean values from the field. */
-  getBoolean(key: string, start: number, end: number, uuid?: string): LogValueSetBoolean | undefined {
-    if (key in this.fields) return this.fields[key].getBoolean(start, end, uuid);
+  getBoolean(
+    key: string,
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetBoolean | undefined {
+    if (key in this.fields) return this.fields[key].getBoolean(start, end, uuid, startOffset);
   }
 
   /** Reads a set of Number values from the field. */
-  getNumber(key: string, start: number, end: number, uuid?: string): LogValueSetNumber | undefined {
-    if (key in this.fields) return this.fields[key].getNumber(start, end, uuid);
+  getNumber(
+    key: string,
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetNumber | undefined {
+    if (key in this.fields) return this.fields[key].getNumber(start, end, uuid, startOffset);
   }
 
   /** Reads a set of String values from the field. */
-  getString(key: string, start: number, end: number, uuid?: string): LogValueSetString | undefined {
-    if (key in this.fields) return this.fields[key].getString(start, end, uuid);
+  getString(
+    key: string,
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetString | undefined {
+    if (key in this.fields) return this.fields[key].getString(start, end, uuid, startOffset);
   }
 
   /** Reads a set of BooleanArray values from the field. */
-  getBooleanArray(key: string, start: number, end: number, uuid?: string): LogValueSetBooleanArray | undefined {
-    if (key in this.fields) return this.fields[key].getBooleanArray(start, end, uuid);
+  getBooleanArray(
+    key: string,
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetBooleanArray | undefined {
+    if (key in this.fields) return this.fields[key].getBooleanArray(start, end, uuid, startOffset);
   }
 
   /** Reads a set of NumberArray values from the field. */
-  getNumberArray(key: string, start: number, end: number, uuid?: string): LogValueSetNumberArray | undefined {
-    if (key in this.fields) return this.fields[key].getNumberArray(start, end, uuid);
+  getNumberArray(
+    key: string,
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetNumberArray | undefined {
+    if (key in this.fields) return this.fields[key].getNumberArray(start, end, uuid, startOffset);
   }
 
   /** Reads a set of StringArray values from the field. */
-  getStringArray(key: string, start: number, end: number, uuid?: string): LogValueSetStringArray | undefined {
-    if (key in this.fields) return this.fields[key].getStringArray(start, end, uuid);
+  getStringArray(
+    key: string,
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetStringArray | undefined {
+    if (key in this.fields) return this.fields[key].getStringArray(start, end, uuid, startOffset);
   }
 
   /** Writes a new Raw value to the field. */
@@ -580,11 +616,21 @@ export default class Log {
       }
     } else if (Array.isArray(value)) {
       // If all items are the same type, add whole array
-      if (allowRootWrite && checkArrayType(value, "boolean")) {
+      let existingType = this.getType(key);
+      if (
+        allowRootWrite &&
+        (value.length > 0 ? checkArrayType(value, "boolean") : existingType === LoggableType.BooleanArray)
+      ) {
         this.putBooleanArray(key, timestamp, value);
-      } else if (allowRootWrite && checkArrayType(value, "number")) {
+      } else if (
+        allowRootWrite &&
+        (value.length > 0 ? checkArrayType(value, "number") : existingType === LoggableType.NumberArray)
+      ) {
         this.putNumberArray(key, timestamp, value);
-      } else if (allowRootWrite && checkArrayType(value, "string")) {
+      } else if (
+        allowRootWrite &&
+        (value.length > 0 ? checkArrayType(value, "string") : existingType === LoggableType.StringArray)
+      ) {
         this.putStringArray(key, timestamp, value);
       } else {
         // Add array items as unknown structs

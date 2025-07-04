@@ -1,6 +1,11 @@
 /node_modules
 /dist
 /bundles
+/lite/static/bundles
+/lite/static/bundledAssets
+/lite/ascope_assets
+/lite/ipk/build
+/lite/ipk/*.ipk
 /ffmpeg
 /src/licenses.json
 /ThirdPartyLicenses.txt

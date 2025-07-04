@@ -9,6 +9,6 @@ export const BETA_CONFIG: BetaConfig | null = null;
 
 export type BetaConfig = {
   year: string;
+  isAlpha: boolean;
   expiration: Date;
-  surveyUrl: string;
 };

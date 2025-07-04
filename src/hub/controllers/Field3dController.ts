@@ -7,6 +7,7 @@
 
 import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
 import { SourceListItemState, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
+import { DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
@@ -28,7 +29,7 @@ import {
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
-import { convert } from "../../shared/units";
+import { Units } from "../../shared/units";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
@@ -53,6 +54,12 @@ export default class Field3dController implements TabController {
     this.FIELD_SELECT = settings.getElementsByClassName("field-select")[0] as HTMLSelectElement;
 
     // Set up XR button
+    if (DISTRIBUTION === Distribution.Lite) {
+      Array.from(settings.getElementsByClassName("xr-control")).forEach((element) => {
+        let htmlElement = element as HTMLElement;
+        htmlElement.parentElement?.removeChild(htmlElement);
+      });
+    }
     this.XR_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("open-xr", this.UUID);
     });
@@ -195,8 +202,8 @@ export default class Field3dController implements TabController {
     let fieldData = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
       (game) => game.id === this.FIELD_SELECT.value
     );
-    let fieldWidth = fieldData === undefined ? 0 : convert(fieldData.widthInches, "inches", "meters");
-    let fieldHeight = fieldData === undefined ? 0 : convert(fieldData.heightInches, "inches", "meters");
+    let fieldWidth = fieldData === undefined ? 0 : Units.convert(fieldData.widthInches, "inches", "meters");
+    let fieldHeight = fieldData === undefined ? 0 : Units.convert(fieldData.heightInches, "inches", "meters");
     let coordinateSystem =
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldData?.coordinateSystem

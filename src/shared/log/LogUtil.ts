@@ -8,7 +8,7 @@
 import Fuse from "fuse.js";
 import MatchInfo, { MatchType } from "../MatchInfo";
 import { Rotation2d, Translation2d } from "../geometry";
-import { convert } from "../units";
+import { Units } from "../units";
 import { arraysEqual, jsonCopy } from "../util";
 import Log from "./Log";
 import LogFieldTree from "./LogFieldTree";
@@ -536,7 +536,7 @@ export function getMechanismState(log: Log, key: string, time: number, axis: str
         0
       ) as number;
 
-      let endRotation = startRotation + convert(angle, "degrees", "radians");
+      let endRotation = startRotation + Units.convert(angle, "degrees", "radians");
       let endTranslation: Translation2d = [
         startTranslation[0] + Math.cos(endRotation) * length,
         startTranslation[1] + Math.sin(endRotation) * length

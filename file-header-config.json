@@ -1,6 +1,6 @@
 {
   "ignore": [
-    "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.c|*.h|*.metal)",
+    "**/!(*.js|*.mjs|*.ts|*.tsx|*.swift|*.html|*.css|*.c|*.h|*.metal|*.py)",
     "bundles",
     "docs/build",
     "docs/.docusaurus",
@@ -27,6 +27,12 @@
       "append": "*/\n",
       "eachLine": {
         "prepend": "  "
+      }
+    },
+    "python": {
+      "append": "",
+      "eachLine": {
+        "prepend": "# "
       }
     }
   },

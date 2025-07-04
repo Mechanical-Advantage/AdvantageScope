@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import ButtonRect from "../shared/ButtonRect";
 import { ensureThemeContrast } from "../shared/Colors";
 import {
   SourceListConfig,
@@ -23,7 +24,7 @@ import {
 } from "../shared/geometry";
 import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
-import { convert } from "../shared/units";
+import { Units } from "../shared/units";
 import { createUUID, jsonCopy } from "../shared/util";
 
 export default class SourceList {
@@ -68,7 +69,7 @@ export default class SourceList {
     root: HTMLElement,
     config: SourceListConfig,
     supplementalStateSuppliers: (() => SourceListState)[],
-    editButtonCallback?: (coordinates: [number, number]) => void,
+    editButtonCallback?: (rect: ButtonRect) => void,
     getNumberPreview?: (key: string, time: number) => number | null
   ) {
     this.config = jsonCopy(config);
@@ -139,16 +140,25 @@ export default class SourceList {
     // Edit button
     this.EDIT_BUTTON.addEventListener("click", () => {
       let rect = this.EDIT_BUTTON.getBoundingClientRect();
-      let coordinates: [number, number] = [Math.round(rect.right), Math.round(rect.top)];
       if (editButtonCallback !== undefined) {
-        editButtonCallback(coordinates);
+        editButtonCallback({
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        });
       }
     });
     this.CLEAR_BUTTON.addEventListener("click", () => {
       let rect = this.CLEAR_BUTTON.getBoundingClientRect();
       window.sendMainMessage("source-list-clear-prompt", {
         uuid: this.UUID,
-        coordinates: [Math.round(rect.right), Math.round(rect.top)]
+        rect: {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height
+        }
       });
       SourceList.clearPromptCallbacks[this.UUID] = () => {
         delete SourceList.clearPromptCallbacks[this.UUID];
@@ -755,13 +765,13 @@ export default class SourceList {
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    let promptType = (coordinates: [number, number]) => {
+    let promptType = (rect: ButtonRect) => {
       let index = Array.from(this.LIST.children).indexOf(item);
       window.sendMainMessage("source-list-type-prompt", {
         uuid: this.UUID,
         config: this.config,
         state: this.state[index],
-        coordinates: coordinates
+        rect: rect
       });
       let originalType = this.state[index].type;
       SourceList.typePromptCallbacks[this.UUID] = (newState) => {
@@ -793,11 +803,21 @@ export default class SourceList {
     };
     typeButton.addEventListener("click", () => {
       let rect = typeButton.getBoundingClientRect();
-      promptType([Math.round(rect.right), Math.round(rect.top)]);
+      promptType({
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+      });
     });
     item.addEventListener("contextmenu", (event) => {
       this.mouseDownInfo = null; // Prevent dragging
-      promptType([event.clientX, event.clientY]);
+      promptType({
+        x: event.clientX,
+        y: event.clientY,
+        width: 0,
+        height: 0
+      });
     });
 
     // Warning button
@@ -1050,7 +1070,7 @@ export default class SourceList {
                     "\u03bd: " +
                       state.speed.toFixed(2) +
                       "m/s, \u03b8: " +
-                      convert(state.angle, "radians", "degrees").toFixed(2) +
+                      Units.convert(state.angle, "radians", "degrees").toFixed(2) +
                       "\u00b0"
                   );
                 });
@@ -1062,7 +1082,7 @@ export default class SourceList {
                     "m/s, \u03bdy: " +
                     chassisSpeeds.vy.toFixed(2) +
                     "m/s, \u03a9: " +
-                    convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
+                    Units.convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
                     "\u00b0/s"
                 );
               } else {
@@ -1079,7 +1099,8 @@ export default class SourceList {
                   switch (typeConfig?.previewType) {
                     case "Rotation2d": {
                       return (
-                        convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) + "\u00b0"
+                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                        "\u00b0"
                       );
                     }
                     case "Translation2d": {
@@ -1099,7 +1120,7 @@ export default class SourceList {
                         "m, Y: " +
                         annotatedPose.pose.translation[1].toFixed(3) +
                         "m, \u03b8: " +
-                        convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
                         "\u00b0"
                       );
                     }
@@ -1107,11 +1128,11 @@ export default class SourceList {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return (
                         "Roll: " +
-                        convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
                         "\u00b0, Pitch: " +
-                        convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
                         "\u00b0, Yaw: " +
-                        convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
                         "\u00b0"
                       );
                     }
@@ -1136,11 +1157,11 @@ export default class SourceList {
                         "m, Z: " +
                         annotatedPose.pose.translation[2].toFixed(3) +
                         "m, Roll: " +
-                        convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
                         "\u00b0, Pitch: " +
-                        convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
                         "\u00b0, Yaw: " +
-                        convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
                         "\u00b0"
                       );
                     }

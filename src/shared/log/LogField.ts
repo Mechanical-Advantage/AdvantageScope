@@ -53,30 +53,22 @@ export default class LogField {
 
   /** Clears all data before the provided timestamp. */
   clearBeforeTime(clearTimestamp: number) {
-    const newTimestamps = [];
-    const newValues = [];
-
     for (let i = 0; i < this.data.timestamps.length; i++) {
-      const timestamp = this.data.timestamps[i];
-      const value = this.data.values[i];
-
-      // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it (don't include it in the new array).
+      // If there is more than 1 timestamps and if it occurs before the given timestamp, remove it
       if (this.data.timestamps.length >= 2 && this.data.timestamps[i + 1] < clearTimestamp) {
         this.stripingReference = !this.stripingReference;
         continue;
       }
 
-      newTimestamps.push(timestamp);
-      newValues.push(value);
+      this.data.timestamps.splice(0, i);
+      this.data.values.splice(0, i);
+      break;
     }
 
-    // If there are any left over timestamps, reassign the first timestamp to the given timestamp?
-    if (newTimestamps.length > 0 && newTimestamps[0] < clearTimestamp) {
-      newTimestamps[0] = clearTimestamp;
+    // If there are any left over timestamps, reassign the first timestamp to the given timestamp
+    if (this.data.timestamps.length > 0 && this.data.timestamps[0] < clearTimestamp) {
+      this.data.timestamps[0] = clearTimestamp;
     }
-
-    this.data.timestamps = newTimestamps;
-    this.data.values = newValues;
   }
 
   /** Returns the values in the specified timestamp range.
@@ -84,7 +76,7 @@ export default class LogField {
    * If a UUID is provided, requests for single timestamps will cache
    * the timestamp index to make searches of chronological data faster.
    */
-  getRange(start: number, end: number, uuid?: string): LogValueSetAny {
+  getRange(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetAny {
     let timestamps: number[];
     let values: any[];
 
@@ -111,6 +103,9 @@ export default class LogField {
       startValueIndex = this.data.timestamps.length - 1;
     } else if (startValueIndex !== 0) {
       startValueIndex -= 1;
+    }
+    if (startOffset !== undefined && startOffset >= -startValueIndex) {
+      startValueIndex += startOffset;
     }
 
     let endValueIndex = -1;
@@ -140,38 +135,43 @@ export default class LogField {
   }
 
   /** Reads a set of Raw values from the field. */
-  getRaw(start: number, end: number, uuid?: string): LogValueSetRaw | undefined {
-    if (this.type === LoggableType.Raw) return this.getRange(start, end);
+  getRaw(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetRaw | undefined {
+    if (this.type === LoggableType.Raw) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Reads a set of Boolean values from the field. */
-  getBoolean(start: number, end: number, uuid?: string): LogValueSetBoolean | undefined {
-    if (this.type === LoggableType.Boolean) return this.getRange(start, end);
+  getBoolean(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetBoolean | undefined {
+    if (this.type === LoggableType.Boolean) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Reads a set of Number values from the field. */
-  getNumber(start: number, end: number, uuid?: string): LogValueSetNumber | undefined {
-    if (this.type === LoggableType.Number) return this.getRange(start, end);
+  getNumber(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetNumber | undefined {
+    if (this.type === LoggableType.Number) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Reads a set of String values from the field. */
-  getString(start: number, end: number, uuid?: string): LogValueSetString | undefined {
-    if (this.type === LoggableType.String) return this.getRange(start, end);
+  getString(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetString | undefined {
+    if (this.type === LoggableType.String) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Reads a set of BooleanArray values from the field. */
-  getBooleanArray(start: number, end: number, uuid?: string): LogValueSetBooleanArray | undefined {
-    if (this.type === LoggableType.BooleanArray) return this.getRange(start, end);
+  getBooleanArray(
+    start: number,
+    end: number,
+    uuid?: string,
+    startOffset?: number
+  ): LogValueSetBooleanArray | undefined {
+    if (this.type === LoggableType.BooleanArray) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Reads a set of NumberArray values from the field. */
-  getNumberArray(start: number, end: number, uuid?: string): LogValueSetNumberArray | undefined {
-    if (this.type === LoggableType.NumberArray) return this.getRange(start, end);
+  getNumberArray(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetNumberArray | undefined {
+    if (this.type === LoggableType.NumberArray) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Reads a set of StringArray values from the field. */
-  getStringArray(start: number, end: number, uuid?: string): LogValueSetStringArray | undefined {
-    if (this.type === LoggableType.StringArray) return this.getRange(start, end);
+  getStringArray(start: number, end: number, uuid?: string, startOffset?: number): LogValueSetStringArray | undefined {
+    if (this.type === LoggableType.StringArray) return this.getRange(start, end, uuid, startOffset);
   }
 
   /** Inserts a new value at the correct index. */

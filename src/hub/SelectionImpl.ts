@@ -45,16 +45,20 @@ export default class SelectionImpl implements Selection {
       button.addEventListener("contextmenu", () => {
         let rect = button.getBoundingClientRect();
         window.sendMainMessage("ask-playback-options", {
-          x: Math.round(rect.right),
-          y: Math.round(rect.top),
           speed: this.playbackSpeed,
-          looping: this.playbackLooping
+          looping: this.playbackLooping,
+          rect: {
+            x: rect.x,
+            y: rect.y,
+            width: rect.width,
+            height: rect.height
+          }
         });
       });
     });
 
     window.addEventListener("keydown", (event) => {
-      if (event.target !== document.body) return;
+      if (event.target !== document.body && event.target !== window) return;
       switch (event.code) {
         case "Space":
           event.preventDefault();
