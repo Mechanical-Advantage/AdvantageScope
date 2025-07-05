@@ -55,10 +55,10 @@
     "color-convert": "^2.0.1",
     "compare-versions": "^6.1.1",
     "electron": "^32.0.2",
-    "electron-builder": "^24.6.4",
+    "electron-builder": "^26.0.0",
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
-    "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
+    "heatmap.js": "github:jwbonner/heatmap.js#24b4455c95f5e54cb50ab8bb06f9229d30426362",
     "license-check-and-add": "^4.0.5",
     "mathjs": "11.3.0",
     "node-fetch": "^3.3.2",
@@ -77,7 +77,7 @@
     "typescript": "5.6.3"
   },
   "dependencies": {
-    "@distube/ytdl-core": "github:ToddyTheNoobDud/ytdl-core-stuff#cf7aa2a42409b5cdff98341dc7a14326019d488e",
+    "@distube/ytdl-core": "^4.16.12",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "check-disk-space": "^3.4.0",
@@ -86,7 +86,7 @@
     "jsonfile": "^6.1.0",
     "pngjs": "^7.0.0",
     "ssh2": "^1.14.0",
-    "tesseract.js": "https://github.com/jwbonner/tesseract.js.git",
+    "tesseract.js": "^6.0.0",
     "ws": "^8.18.0"
   },
   "prettier": {
@@ -102,6 +102,9 @@
     "npmRebuild": false,
     "publish": [],
     "afterSign": "notarize.js",
+    "electronFuses": {
+      "runAsNode": false
+    },
     "files": [
       "www/**/*",
       "bundles/*",
