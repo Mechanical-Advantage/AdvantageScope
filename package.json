@@ -85,7 +85,7 @@
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
     "pngjs": "^7.0.0",
-    "tesseract.js": "https://github.com/jwbonner/tesseract.js.git",
+    "tesseract.js": "^6.0.0",
     "ws": "^8.18.0"
   },
   "prettier": {
