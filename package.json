@@ -54,7 +54,7 @@
     "color-convert": "^2.0.1",
     "compare-versions": "^6.1.1",
     "electron": "^32.0.2",
-    "electron-builder": "^24.6.4",
+    "electron-builder": "^26.0.0",
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
     "heatmap.js": "https://github.com/jwbonner/heatmap.js.git",
@@ -101,6 +101,9 @@
     "npmRebuild": false,
     "publish": [],
     "afterSign": "notarize.js",
+    "electronFuses": {
+      "runAsNode": false
+    },
     "files": [
       "www/**/*",
       "bundles/*",
