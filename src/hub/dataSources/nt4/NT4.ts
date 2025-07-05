@@ -7,8 +7,8 @@
 
 import { Decoder, Encoder } from "@msgpack/msgpack";
 
-export const NT4_PORT_DEFAULT = 5810;
-export const NT4_PORT_SYSTEMCORE = 6810;
+export const NT4_PORTS_DEFAULT = [5810];
+export const NT4_PORTS_SYSTEMCORE = [6810];
 
 const typestrIdxLookup: { [id: string]: number } = {
   boolean: 0,
@@ -108,7 +108,8 @@ export class NT4_Client {
   private onDisconnect: () => void;
 
   private serverAddr;
-  private serverPort;
+  private serverPorts;
+  private activeServerPort: number | null = null;
   private ws: WebSocket | null = null;
   private rttWs: WebSocket | null = null;
   private timestampInterval: NodeJS.Timeout | null = null;
@@ -138,7 +139,7 @@ export class NT4_Client {
    */
   constructor(
     serverAddr: string,
-    serverPort: number,
+    serverPorts: number[],
     appName: string,
     onTopicAnnounce: (topic: NT4_Topic) => void,
     onTopicUnannounce: (topic: NT4_Topic) => void,
@@ -147,7 +148,7 @@ export class NT4_Client {
     onDisconnect: () => void
   ) {
     this.serverAddr = serverAddr;
-    this.serverPort = serverPort;
+    this.serverPorts = serverPorts;
     this.appName = appName;
     this.onTopicAnnounce = onTopicAnnounce;
     this.onTopicUnannounce = onTopicUnannounce;
@@ -174,14 +175,19 @@ export class NT4_Client {
     let result: Response | null = null;
     let requestStart = new Date().getTime();
     try {
-      result = await fetch("http://" + this.serverAddr + ":" + this.serverPort.toString(), {
-        signal: AbortSignal.timeout(250)
-      });
+      result = await Promise.any(
+        this.serverPorts.map((port) =>
+          fetch("http://" + this.serverAddr + ":" + port.toString(), {
+            signal: AbortSignal.timeout(250)
+          })
+        )
+      );
     } catch (err) {}
     if (result === null || !result.ok) {
       let requestLength = new Date().getTime() - requestStart;
       setTimeout(() => this.connectOnAlive(), 350 - requestLength);
     } else {
+      this.activeServerPort = parseInt(result.url.split(":")[2].split("/")[0]);
       this.ws_connect();
     }
   }
@@ -665,8 +671,9 @@ export class NT4_Client {
   }
 
   private ws_connect(rttWs = false) {
+    if (this.activeServerPort === null) return;
     let ws = new WebSocket(
-      "ws://" + this.serverAddr + ":" + this.serverPort.toString() + "/nt/" + this.appName,
+      "ws://" + this.serverAddr + ":" + this.activeServerPort.toString() + "/nt/" + this.appName,
       rttWs ? ["rtt.networktables.first.wpi.edu"] : ["v4.1.networktables.first.wpi.edu", "networktables.first.wpi.edu"]
     );
     if (rttWs) {

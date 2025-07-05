@@ -15,6 +15,7 @@ import LogFieldTree from "./LogFieldTree";
 import { LogValueSetBoolean } from "./LogValueSets";
 import LoggableType from "./LoggableType";
 
+export const ARRAY_TEXT_SIZE_LIMIT = 500;
 export const TYPE_KEY = ".type";
 export const STRUCT_PREFIX = "struct:";
 export const PROTO_PREFIX = "proto:";
@@ -138,12 +139,17 @@ export function getLogValueText(value: any, type: LoggableType): string {
     let array: Uint8Array = value;
     if (array.length === 0) return "(empty)";
     let textArray: string[] = [];
-    array.forEach((byte: number) => {
+    array.slice(0, ARRAY_TEXT_SIZE_LIMIT).forEach((byte: number) => {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
     });
+    if (array.length > ARRAY_TEXT_SIZE_LIMIT) textArray.push("...");
     return textArray.join("-");
   } else if (Array.isArray(value)) {
-    return "[" + value.map((x) => JSON.stringify(x)).join(", ") + "]";
+    let limitedArray = value.slice(0, ARRAY_TEXT_SIZE_LIMIT);
+    if (limitedArray.length < value.length) {
+      limitedArray.push("...");
+    }
+    return "[" + limitedArray.map((x) => JSON.stringify(x)).join(", ") + "]";
   } else {
     return JSON.stringify(value);
   }
