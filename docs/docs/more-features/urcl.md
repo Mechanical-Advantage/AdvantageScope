@@ -35,7 +35,7 @@ URCL publishes to NetworkTables by default, where data can be saved to a log fil
 <TabItem value="java" label="WPILib (Java)" default>
 
 ```java
-public void robotInit() {
+public Robot() {
   // If publishing to NetworkTables and DataLog
   DataLogManager.start();
   URCL.start();
@@ -52,7 +52,7 @@ public void robotInit() {
 #include "frc/DataLogManager.h"
 #include "URCL.h"
 
-void Robot::RobotInit() {
+Robot::Robot() {
   // If publishing to NetworkTables and DataLog
   frc::DataLogManager::Start();
   URCL::Start();
@@ -83,7 +83,7 @@ class Robot(wpilib.TimedRobot):
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-public void robotInit() {
+public Robot() {
   // ...
   Logger.registerURCL(URCL.startExternal());
   Logger.start();
