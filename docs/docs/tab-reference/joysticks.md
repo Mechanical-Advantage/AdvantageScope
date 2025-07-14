@@ -25,7 +25,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 Select the joystickstypes in the table at the bottom of the tab. Joystick IDs range from 0 to 5, and match the IDs in the Driver Station and WPILib. More information about joysticks can be found in the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 
-AdvantageScope includes a set of common joysticks, including a "Generic Joystick" with all buttons, axes, and POVs in a grid format (seen above). To add a custom joystick, see [Custom Assets](../more-features/custom-assets.md).
+AdvantageScope includes a set of common joysticks, including a "Generic Joystick" with all buttons, axes, and POVs in a grid format (seen above). To add a custom joystick, see [Custom Assets](/more-features/custom-assets).
 
 :::warning
 **Joystick data is NOT available via a NetworkTables connection with stock WPILib.** WPILib log files (with [joystick logging enabled](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), AdvantageKit logs, and AdvantageKit streaming are supported.

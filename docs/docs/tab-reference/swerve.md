@@ -39,7 +39,7 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleState[]`, `ChassisSpeeds`, `Rotation2d`, or `Rotation3d` types.
 
 :::warning
-The legacy number array format for swerve data is now deprecated. See [here](../legacy-formats.md) for details.
+The legacy number array format for swerve data is now deprecated. See [here](../legacy-formats) for details.
 :::
 
 Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log swerve module states in Java.

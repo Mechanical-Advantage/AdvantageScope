@@ -1,7 +1,3 @@
----
-sidebar_position: 1
----
-
 import Image1 from "./img/xr-1.png";
 import Image2 from "./img/xr-2.png";
 

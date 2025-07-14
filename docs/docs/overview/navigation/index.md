@@ -1,8 +1,4 @@
----
-sidebar_position: 1
----
-
-# App Navigation
+# 🧭 App Navigation
 
 The screenshot below shows the important elements of the main AdvantageScope window. The exact appearance differs between operating systems.
 
