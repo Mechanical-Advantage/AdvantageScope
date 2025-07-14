@@ -1,15 +1,11 @@
----
-sidebar_position: 2
----
-
-import PrefsImage from '../img/prefs.png';
+import PrefsImage from '../../img/prefs.png';
 import Image2 from './img/open-file-2.png';
 
-# Managing Log Files
+# 📂 Log Files
 
 ## Supported Formats
 
-- **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit. [URCL](../more-features/urcl.md) can be used to capture signals from REV motor controllers to a WPILOG file.
+- **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit. [URCL](/more-features/urcl) can be used to capture signals from REV motor controllers to a WPILOG file.
 - **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope automatically searches for the corresponding log file when opening either log type.
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.
@@ -39,7 +35,7 @@ In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more 
 <details>
 <summary>Configuration</summary>
 
-Open the preferences window by clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder. Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
+Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder. Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
 
 <img src={PrefsImage} alt="Diagram of preferences" height="350" />
 </details>
