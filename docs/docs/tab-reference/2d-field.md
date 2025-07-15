@@ -49,7 +49,7 @@ To see a full list of supported object types, click the `?` icon. This list also
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
 :::warning
-The legacy number array format for geometry data is now deprecated. See [here](../legacy-formats.md) for details.
+The legacy number array format for geometry data is now deprecated. See [here](../legacy-formats) for details.
 :::
 
 Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 2D pose data in Java.
@@ -93,12 +93,10 @@ Logger.recordOutput("MyPoseArray", new Pose2d[] {poseA, poseB});
 
 ## Configuration
 
-- **Game:** The field image to use, defaults to the most recent game. To add a custom field image, see [Custom Assets](../more-features/custom-assets.md).
-- **Bumpers:** The color of the robot's bumpers. Choosing the switch icon will use the current alliance color.
-- **Origin:** The position of the field origin, on the blue or red alliance wall. Choosing the switch icon will use the current alliance color
+- **Field:** The field image to use. All recent FRC and FTC games are supported. To add a custom field image, see [Custom Assets](/more-features/custom-assets).
 - **Orientation:** The orientation of the field image in the viewer pane.
 - **Size:** The side length of the robot (30 inches, 27 inches, or 24 inches).
 
-:::warning
-Automatic selection of alliance color may be inaccurate when viewing log data produced by AdvantageKit 2023 or earlier.
+:::info
+The coordinate system used on the this tab is customizable. See the [coordinate system](/more-features/coordinate-systems) page for details.
 :::

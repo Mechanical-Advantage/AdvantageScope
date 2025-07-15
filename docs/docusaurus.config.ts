@@ -20,7 +20,7 @@ const config: Config = {
   baseUrl: "/",
 
   onBrokenLinks: "throw",
-  onBrokenMarkdownLinks: "warn",
+  onBrokenMarkdownLinks: "throw",
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -52,16 +52,48 @@ const config: Config = {
       {
         redirects: [
           {
-            to: "/more-features/advantagescope-xr",
+            to: "/tab-reference/3d-field/advantagescope-xr",
             from: "/xr"
+          },
+          {
+            to: "/legacy-formats",
+            from: "/whats-new/legacy-formats"
+          },
+          {
+            to: "/overview/navigation",
+            from: "/getting-started/navigation"
+          },
+          {
+            to: "/overview/navigation/keyboard",
+            from: "/getting-started/keyboard"
+          },
+          {
+            to: "/overview/log-files",
+            from: "/getting-started/manage-files"
+          },
+          {
+            to: "/overview/log-files/export",
+            from: "/more-features/export"
+          },
+          {
+            to: "/overview/live-sources",
+            from: "/getting-started/connect-live"
+          },
+          {
+            to: "/overview/champs-conference",
+            from: "/getting-started/champs-conference"
           },
           {
             to: "/tab-reference/2d-field",
             from: "/tab-reference/odometry"
           },
           {
-            to: "/legacy-formats",
-            from: "/whats-new/legacy-formats"
+            to: "/tab-reference/3d-field/advantagescope-xr",
+            from: "/more-features/advantagescope-xr"
+          },
+          {
+            to: "/more-features/custom-assets/gltf-convert",
+            from: "/more-features/gltf-convert"
           }
         ]
       }
@@ -107,7 +139,7 @@ const config: Config = {
       ]
     },
     colorMode: {
-      disableSwitch: true,
+      disableSwitch: false,
       respectPrefersColorScheme: true
     },
     announcementBar: {
@@ -119,8 +151,8 @@ const config: Config = {
       isCloseable: true
     },
     prism: {
-      theme: prismThemes.github,
-      darkTheme: prismThemes.dracula,
+      theme: prismThemes.jettwaveLight,
+      darkTheme: prismThemes.jettwaveDark,
       additionalLanguages: ["java"]
     },
     algolia: {

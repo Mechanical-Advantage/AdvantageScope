@@ -1,5 +1,5 @@
 ---
-sidebar_position: 8
+sidebar_position: 3
 ---
 
 # Publishing NetworkTables Data
@@ -21,13 +21,13 @@ To start publishing, a log file containing NetworkTables data must be open. Then
 
 The top of the window displays the text "Searching" or "Publishing" to indicate the status of data publishing. AdvantageScope attempts to reconnect automatically using the same settings after a disconnect.
 
-All fields will be published using their stored values at the _selected timestamp_ used by many AdvantageScope tabs. This allows for real-time network playback through the same mechanism as playback within AdvantageScope. See [App Navigation](../getting-started/navigation.md) for more details. If no timestamp is selected, fields are published using their stored values at the _hovered timestamp_.
+All fields will be published using their stored values at the _selected timestamp_ used by many AdvantageScope tabs. This allows for real-time network playback through the same mechanism as playback within AdvantageScope. See [App Navigation](/overview/navigation) for more details. If no timestamp is selected, fields are published using their stored values at the _hovered timestamp_.
 
 To stop publishing, click `File` > `Publish NT Data` > `Stop Publishing`.
 
 ## Filtering Fields
 
-By default, AdvantageScope publishes all NetworkTables fields stored in the log file (except server-published meta topics). Some use cases, like mimicking a coprocessor, require only publishing a limited set of fields or subtables. To adjust the set of allowed field prefixes, open the preferences window by clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
+By default, AdvantageScope publishes all NetworkTables fields stored in the log file (except server-published meta topics). Some use cases, like mimicking a coprocessor, require only publishing a limited set of fields or subtables. To adjust the set of allowed field prefixes, open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
 The "NT Publish Prefixes" option sets the allowable prefixes for fields published to NetworkTables. If left blank, all fields will be included. Otherwise, a command-separated list of prefixes or fields can be provided. See examples below.
 

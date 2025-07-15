@@ -1,7 +1,3 @@
----
-sidebar_position: 4
----
-
 # Keyboard Shortcuts
 
 AdvantageScope includes numerous keyboard shortcuts that allow for faster navigation. Shortcuts that use the `ctrl` key are replaced by the ⌘ key on macOS.
@@ -49,28 +45,28 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 
 <table>
 <tr>
-<td>`Option+G`</td><td>[📉 Line Graph](../tab-reference/line-graph.md)</td>
-<td>`Option+V`</td><td>[🎬 Video](../tab-reference/video.md)</td>
+<td>`Option+G`</td><td>[📉 Line Graph](/tab-reference/line-graph)</td>
+<td>`Option+V`</td><td>[🎬 Video](/tab-reference/video)</td>
 </tr>
 <tr>
-<td>`Option+2`</td><td>[🗺 2D Field](../tab-reference/2d-field.md)</td>
-<td>`Option+J`</td><td>[🎮 Joysticks](../tab-reference/joysticks.md)</td>
+<td>`Option+2`</td><td>[🗺 2D Field](/tab-reference/2d-field)</td>
+<td>`Option+J`</td><td>[🎮 Joysticks](/tab-reference/joysticks)</td>
 </tr>
 <tr>
-<td>`Option+3`</td><td>[👀 3D Field](../tab-reference/3d-field.md)</td>
-<td>`Option+D`</td><td>[🦀 Swerve](../tab-reference/swerve.md)</td>
+<td>`Option+3`</td><td>[👀 3D Field](/tab-reference/3d-field)</td>
+<td>`Option+D`</td><td>[🦀 Swerve](/tab-reference/swerve)</td>
 </tr>
 <tr>
-<td>`Option+T`</td><td>[🔢 Table](../tab-reference/table.md)</td>
-<td>`Option+M`</td><td>[⚙️ Mechanism](../tab-reference/mechanism.md)</td>
+<td>`Option+T`</td><td>[🔢 Table](/tab-reference/table)</td>
+<td>`Option+M`</td><td>[⚙️ Mechanism](/tab-reference/mechanism)</td>
 </tr>
 <tr>
-<td>`Option+C`</td><td>[💬 Console](../tab-reference/console.md)</td>
-<td>`Option+P`</td><td>[📍 Points](../tab-reference/points.md)</td>
+<td>`Option+C`</td><td>[💬 Console](/tab-reference/console)</td>
+<td>`Option+P`</td><td>[📍 Points](/tab-reference/points)</td>
 </tr>
 <tr>
-<td>`Option+S`</td><td>[📊 Statistics](../tab-reference/statistics.md)</td>
-<td>`Option+I`</td><td>[🔍 Metadata](../tab-reference/metadata.md)</td>
+<td>`Option+S`</td><td>[📊 Statistics](/tab-reference/statistics)</td>
+<td>`Option+I`</td><td>[🔍 Metadata](/tab-reference/metadata)</td>
 </tr>
 </table>
 

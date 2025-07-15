@@ -18,8 +18,8 @@ AdvantageScope is a robot diagnostics, log review/analysis, and data visualizati
 items={[
 {
 type: "category",
-label: "Getting Started",
-href: "/category/getting-started"
+label: "Overview",
+href: "/category/overview"
 },
 {
 type: "category",
@@ -34,7 +34,7 @@ href: "/category/more-features"
 {
 type: "category",
 label: "Championship Conference",
-href: "/getting-started/champs-conference"
+href: "/overview/champs-conference"
 }
 ]}
 />
