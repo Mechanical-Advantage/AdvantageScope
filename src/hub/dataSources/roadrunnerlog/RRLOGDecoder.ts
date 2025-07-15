@@ -192,7 +192,8 @@ export default class RRLOGDecoder {
               ) {
                 this.lastTimestamp = rrTimeToInt(msg);
                 if (key === "OPMODE_PRE_START") {
-                  log.putBoolean("RUNNING", this.lastTimestamp, true);
+                  // offset start time by 50ms to show the values returned by the first loop
+                  log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
                 } else if (key === "OPMODE_POST_STOP") {
                   log.putBoolean("RUNNING", this.lastTimestamp, false);
                 }
