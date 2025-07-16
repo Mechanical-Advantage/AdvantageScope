@@ -72,7 +72,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 </details>
 
 :::tip
-If desired, the camera FOV can be adjusted in the 3D field view to match the look of the video. For details, see "Camera Options" on the 👀 [3D Field](../tab-reference/3d-field.md) page.
+If desired, the camera FOV can be adjusted in the 3D field view to match the look of the video. For details, see "Camera Options" on the 👀 [3D Field](/tab-reference/3d-field) page.
 :::
 
 ![Video snapshot with odometry](./img/video-4.png)
