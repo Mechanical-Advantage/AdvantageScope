@@ -138,6 +138,11 @@ const config: Config = {
         }
       ]
     },
+    docs: {
+      sidebar: {
+        hideable: true
+      }
+    },
     colorMode: {
       disableSwitch: false,
       respectPrefersColorScheme: true
