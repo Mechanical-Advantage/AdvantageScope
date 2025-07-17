@@ -146,6 +146,7 @@ const smallRendererBundles = [
 ];
 const workerBundles = [
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
+  bundle("hub/dataSources/roadrunnerlog/rrlogWorker.ts", "hub$rrlogWorker.js", false, false),
   bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
   bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
   ...(isLite ? [] : [bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false)]),
