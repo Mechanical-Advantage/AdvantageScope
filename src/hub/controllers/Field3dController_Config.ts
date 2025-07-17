@@ -204,12 +204,12 @@ const Field3dController_Config: SourceListConfig = {
       showDocs: true,
       options: [
         {
-          key: "axis",
-          display: "Axis",
-          showInTypeName: true,
+          key: "plane",
+          display: "Plane",
+          showInTypeName: false,
           values: [
-            { key: "x", display: "XZ Axis" },
-            { key: "y", display: "YZ Axis" }
+            { key: "xz", display: "XZ Plane" },
+            { key: "yz", display: "YZ Plane" }
           ]
         }
       ],

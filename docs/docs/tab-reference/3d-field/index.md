@@ -92,7 +92,7 @@ Mechanism data can be visualized using 2D mechanisms or articulated 3D component
 
 ### 2D Mechanisms
 
-To visualize mechanism data logged using a [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ plane of the robot using simple boxes (as shown below). The robot's origin is centered on the bottom edge of the mechanism.
+To visualize mechanism data logged using a [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ or YZ plane of the robot using simple boxes, as shown below. Click the gear icon or right-click on the field name to switch between the XZ and YZ planes. The robot's origin is centered on the bottom edge of the mechanism.
 
 ![2D mechanism](./img/3d-field-2.png)
 
