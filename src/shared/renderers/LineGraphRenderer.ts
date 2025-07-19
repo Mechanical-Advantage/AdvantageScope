@@ -128,9 +128,9 @@ export default class LineGraphRenderer implements TabRenderer {
       command.showRightAxis,
       command.priorityAxis,
       this.lastCursorX,
-      command.leftFields.map((field) => field.values.length),
-      command.discreteFields.map((field) => field.values.length),
-      command.rightFields.map((field) => field.values.length)
+      command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
+      command.discreteFields.map((field) => [field.values.length, field.color, field.type, field.toggleReference]),
+      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size])
     ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {
