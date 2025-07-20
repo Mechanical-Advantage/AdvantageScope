@@ -43,7 +43,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
 ```json
 {
   "name": string // Unique name, required for all asset types
-  "isFTC": string // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
+  "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
