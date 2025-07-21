@@ -68,7 +68,6 @@ export default class UpdateChecker {
     releaseData = releaseData.filter(
       (release: any) => release["tag_name"].substring(1).split(".")[0] === currentMajorVersion
     );
-    console.log(releaseData.map((x: any) => x["tag_name"]));
 
     // Get version info
     let latestVersionInfo = releaseData[0];
