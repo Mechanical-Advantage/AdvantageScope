@@ -68,7 +68,16 @@ export default class UpdateChecker {
     releaseData = releaseData.filter(
       (release: any) => release["tag_name"].substring(1).split(".")[0] === currentMajorVersion
     );
-    console.log(releaseData.map((x: any) => x["tag_name"]));
+    if (releaseData.length === 0) {
+      this.shouldPrompt = false;
+      this.alertOptions = null;
+      this.alertCancelId = null;
+      this.alertDownloadUrl = null;
+      this.alertMessage = "No update data available";
+      this.alertDetail =
+        "No update information was found for the installed version of AdvantageScope. Please check the AdvantageScope GitHub repository to download the latest release.";
+      return;
+    }
 
     // Get version info
     let latestVersionInfo = releaseData[0];

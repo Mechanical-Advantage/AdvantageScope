@@ -247,6 +247,14 @@ export default class LineGraphController implements TabController {
     let enabledKey = getEnabledKey(window.log);
     if (enabledKey !== undefined) {
       this.discreteSourceList.addField(enabledKey);
+    } else {
+      window.sendMainMessage("error", {
+        title: "No enabled state",
+        content:
+          window.log.getFieldCount() === 0
+            ? "Please open a log file or connect to a live source, then try again."
+            : "Please open a different log file or a live source, then try again."
+      });
     }
   }
 

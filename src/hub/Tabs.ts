@@ -24,6 +24,7 @@ import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
 import TableRenderer from "../shared/renderers/TableRenderer";
 import VideoRenderer from "../shared/renderers/VideoRenderer";
 import { Units } from "../shared/units";
+import { clampValue } from "../shared/util";
 import ScrollSensor from "./ScrollSensor";
 import Timeline from "./Timeline";
 import ConsoleController from "./controllers/ConsoleController";
@@ -216,21 +217,8 @@ export default class Tabs {
       document.body.style.cursor = "initial";
     });
     window.addEventListener("mousemove", (event) => {
-      let fixedHeight = this.FIXED_CONTROL_HEIGHTS.get(this.tabList[this.selectedTab].type);
       if (this.controlsHandleActive) {
-        let height = window.innerHeight - event.clientY;
-        if (height >= 30 && height < 100) height = 100;
-        if (height < 30) {
-          if (this.tabList[this.selectedTab].controlsHeight > 0) {
-            height = 0;
-          } else {
-            height = this.tabList[this.selectedTab].controlsHeight;
-          }
-        }
-        if (fixedHeight !== undefined && height !== 0) {
-          height = fixedHeight;
-        }
-        this.tabList[this.selectedTab].controlsHeight = height;
+        this.tabList[this.selectedTab].controlsHeight = window.innerHeight - event.clientY;
         this.updateControlsHeight();
       }
     });
@@ -373,11 +361,18 @@ export default class Tabs {
     availableHeight -= 150;
     if (this.selectedTab < 0 || this.selectedTab >= this.tabList.length) return;
     let selectedTab = this.tabList[this.selectedTab];
-    let tabConfig = this.FIXED_CONTROL_HEIGHTS.get(selectedTab.type);
-    selectedTab.controlsHeight = Math.min(selectedTab.controlsHeight, availableHeight);
 
-    let appliedHeight = Math.max(selectedTab.controlsHeight, 0);
-    this.CONTROLS_HANDLE.hidden = tabConfig === 0;
+    let fixedHeight = this.FIXED_CONTROL_HEIGHTS.get(selectedTab.type);
+    let appliedHeight = clampValue(selectedTab.controlsHeight, 0, availableHeight);
+    if (fixedHeight !== undefined) {
+      appliedHeight = appliedHeight > 30 ? fixedHeight : 0;
+    } else {
+      if (appliedHeight >= 30 && appliedHeight < 100) appliedHeight = 100;
+      if (appliedHeight > availableHeight) appliedHeight = 0;
+      if (appliedHeight < 30) appliedHeight = 0;
+    }
+    selectedTab.controlsHeight = appliedHeight;
+    this.CONTROLS_HANDLE.hidden = fixedHeight === 0;
     this.CONTROLS_CONTENT.hidden = appliedHeight === 0;
     document.documentElement.style.setProperty("--tab-controls-height", appliedHeight.toString() + "px");
     document.documentElement.style.setProperty("--show-tab-controls", appliedHeight === 0 ? "0" : "1");

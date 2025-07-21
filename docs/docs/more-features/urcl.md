@@ -1,15 +1,15 @@
 ---
-sidebar_position: 2
+sidebar_position: 1
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Unofficial REV-Compatible Logger
+# 📝 Unofficial REV-Compatible Logger
 
 Since REV does not provide an official method of automatically recording data from the Spark Max and Spark Flex, we have provided an unofficial alternative for Java and C++ called [URCL](https://github.com/Mechanical-Advantage/URCL) (**U**nofficial **R**EV-**C**ompatible **L**ogger). This enables live plotting and logging of all devices similar to CTRE's [Tuner X plotting feature](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) and [Phoenix 6 signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 
-After setup, periodic CAN frames from all Spark Max and Spark Flex devices are published to NetworkTables or DataLog. When using NetworkTables, WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) can be used to capture the data to a log file. These frames are viewable in AdvantageScope (see [Managing Log Files](../getting-started/manage-files.md) and [Connecting to Live Sources](../getting-started/connect-live.md)).
+After setup, periodic CAN frames from all Spark Max and Spark Flex devices are published to NetworkTables or DataLog. When using NetworkTables, WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) can be used to capture the data to a log file. These frames are viewable in AdvantageScope (see [Managing Log Files](/overview/log-files) and [Connecting to Live Sources](/overview/live-sources)).
 
 - **All signals** are captured automatically, with **no manual setup for new devices**.
 - **Every frame is captured**, even when the status frame period is faster than the robot loop cycle.
@@ -35,7 +35,7 @@ URCL publishes to NetworkTables by default, where data can be saved to a log fil
 <TabItem value="java" label="WPILib (Java)" default>
 
 ```java
-public void robotInit() {
+public Robot() {
   // If publishing to NetworkTables and DataLog
   DataLogManager.start();
   URCL.start();
@@ -52,7 +52,7 @@ public void robotInit() {
 #include "frc/DataLogManager.h"
 #include "URCL.h"
 
-void Robot::RobotInit() {
+Robot::Robot() {
   // If publishing to NetworkTables and DataLog
   frc::DataLogManager::Start();
   URCL::Start();
@@ -83,7 +83,7 @@ class Robot(wpilib.TimedRobot):
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-public void robotInit() {
+public Robot() {
   // ...
   Logger.registerURCL(URCL.startExternal());
   Logger.start();

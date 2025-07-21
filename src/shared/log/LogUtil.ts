@@ -15,6 +15,7 @@ import LogFieldTree from "./LogFieldTree";
 import { LogValueSetBoolean } from "./LogValueSets";
 import LoggableType from "./LoggableType";
 
+export const ARRAY_TEXT_SIZE_LIMIT = 500;
 export const TYPE_KEY = ".type";
 export const STRUCT_PREFIX = "struct:";
 export const PROTO_PREFIX = "proto:";
@@ -127,12 +128,17 @@ export function getLogValueText(value: any, type: LoggableType): string {
     let array: Uint8Array = value;
     if (array.length === 0) return "(empty)";
     let textArray: string[] = [];
-    array.forEach((byte: number) => {
+    array.slice(0, ARRAY_TEXT_SIZE_LIMIT).forEach((byte: number) => {
       textArray.push((byte & 0xff).toString(16).padStart(2, "0"));
     });
+    if (array.length > ARRAY_TEXT_SIZE_LIMIT) textArray.push("...");
     return textArray.join("-");
   } else if (Array.isArray(value)) {
-    return "[" + value.map((x) => JSON.stringify(x)).join(", ") + "]";
+    let limitedArray = value.slice(0, ARRAY_TEXT_SIZE_LIMIT);
+    if (limitedArray.length < value.length) {
+      limitedArray.push("...");
+    }
+    return "[" + limitedArray.map((x) => JSON.stringify(x)).join(", ") + "]";
   } else {
     return JSON.stringify(value);
   }
@@ -484,7 +490,6 @@ export type MechanismState = {
   backgroundColor: string;
   dimensions: [number, number];
   lines: MechanismLine[];
-  axis: string;
 };
 
 export type MechanismLine = {
@@ -494,7 +499,7 @@ export type MechanismLine = {
   weight: number;
 };
 
-export function getMechanismState(log: Log, key: string, time: number, axis: string = "x"): MechanismState | null {
+export function getMechanismState(log: Log, key: string, time: number): MechanismState | null {
   // Get general config
   let backgroundColor = getOrDefault(log, key + "/backgroundColor", LoggableType.String, time, null);
   let dimensions = getOrDefault(log, key + "/dims", LoggableType.NumberArray, time, null);
@@ -579,8 +584,7 @@ export function getMechanismState(log: Log, key: string, time: number, axis: str
   return {
     backgroundColor: backgroundColor,
     dimensions: dimensions,
-    lines: lines,
-    axis: axis
+    lines: lines
   };
 }
 
@@ -602,8 +606,7 @@ export function mergeMechanismStates(states: MechanismState[]): MechanismState {
   return {
     backgroundColor: states[0].backgroundColor,
     dimensions: [newWidth, newHeight],
-    lines: lines,
-    axis: states[0].axis
+    lines: lines
   };
 }
 

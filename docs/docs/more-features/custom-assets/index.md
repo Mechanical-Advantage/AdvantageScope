@@ -1,15 +1,11 @@
----
-sidebar_position: 5
----
+# ⚙️ Custom Assets
 
-# Custom Assets
+AdvantageScope uses a default set of flat field images, field models, robot models, and joystick configurations. Simple assets (e.g. evergreen fields) are included in the initial installation. Detailed assets (e.g. season-specific fields) are downloaded automatically in the background when AdvantageScope is connected to the internet. To check the status of these downloads, click `App`/`AdvantageScope` > `Asset Download Status...`.
 
-AdvantageScope uses a default set of flat field images, field models, robot models, and joystick configurations. Simple assets (e.g. evergreen fields) are included in the initial installation. Detailed assets (e.g. season-specific fields) are downloaded automatically in the background when AdvantageScope is connected to the internet. To check the status of these downloads, click `Help` > `Asset Download Status...`.
-
-The set of assets can be customized to add more options if desired. To open the user assets folder, click `Help` > `Show Assets Folder`. The expected formats for the assets are defined below. See the default set of [detailed assets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) and [bundled assets](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) for reference.
+The set of assets can be customized to add more options if desired. To open the user assets folder, click `App`/`AdvantageScope` > `Show Assets Folder`. The expected formats for the assets are defined below. See the default set of [detailed assets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) and [bundled assets](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) for reference.
 
 :::tip
-To load assets from an alternative location, click `Help` > `Use Custom Assets Folder`. The selected folder should be the _parent folder_ where multiple assets in separate subfolders could be placed. This feature allows custom assets to be stored under version control alongside robot code.
+To load assets from an alternative location, click `App`/`AdvantageScope` > `Use Custom Assets Folder`. The selected folder should be the _parent folder_ where multiple assets in separate subfolders could be placed. This feature allows custom assets to be stored under version control alongside robot code.
 :::
 
 ## General Format
@@ -42,12 +38,12 @@ This folder should contain a file named "config.json" and one or more asset file
 
 ### Overview
 
-A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. The config file must be in the following format:
+A model must be included in the folder with the name "model.glb". CAD files must be converted to glTF; see [this page](gltf-convert) for details. The config file must be in the following format:
 
 ```json
 {
   "name": string // Unique name, required for all asset types
-  "isFTC": string // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
+  "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "position": [number, number, number] // Position offset in meters, applied after rotation
@@ -67,7 +63,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
 The simplest way to determine appropriate position and rotation values is by trial and error. We recommend adjusting rotation before position as the transforms are applied in this order.
 
 :::info
-AdvantageScope simplifies model geometry automatically to improve performance, where the level of detail depends on the selected [rendering mode](../tab-reference/3d-field.md#rendering-modes). In cases where model simplification produces undesired effects with custom assets, two solutions can be used:
+AdvantageScope simplifies model geometry automatically to improve performance, where the level of detail depends on the selected [rendering mode](/tab-reference/3d-field#rendering-modes). In cases where model simplification produces undesired effects with custom assets, two solutions can be used:
 
 - To disable automatic removal of a particular mesh, include the string `NOSIMPLIFY` in the mesh name.
 - To disable model simplification for an entire robot model, set the `disableSimplification` option in the configuration to `true`.
@@ -77,10 +73,10 @@ AdvantageScope simplifies model geometry automatically to improve performance, w
 ### Articulated Components
 
 :::warning
-Setting up articulated components can be complex and time-consuming. Consider utilizing AdvantageScope's 3D [`Mechanism2d` support](../tab-reference/3d-field.md#2d-mechanisms), which offers a more streamlined approach to **visualize mechanisms on the 3D field**.
+Setting up articulated components can be complex and time-consuming. Consider utilizing AdvantageScope's 3D [`Mechanism2d` support](/tab-reference/3d-field#2d-mechanisms), which offers a more streamlined approach to **visualize mechanisms on the 3D field**.
 :::
 
-Robot models can contain articulated components for visualizing mechanism data (see [here](../tab-reference/3d-field.md) for details). The base glTF model should include no components, then each component should be exported as a separate glTF model. Components models follow the naming convention "model_INDEX.glb", so the first articulated component would be "model_0.glb"
+Robot models can contain articulated components for visualizing mechanism data (see [here](/tab-reference/3d-field) for details). The base glTF model should include no components, then each component should be exported as a separate glTF model. Components models follow the naming convention "model_INDEX.glb", so the first articulated component would be "model_0.glb"
 
 Component configuration is provided in the robot's config file. An array of components should be provided under the "components" key. When no component poses are provided by the user in AdvantageScope, the component models will be positioned using the default robot rotations and position (see above). When component poses are provided by the user, the "zeroed" rotations and position are instead applied to bring each component to the robot origin. The user's poses are then applied to move each component to the correct location on the robot.
 
@@ -190,7 +186,7 @@ An image must be included in the folder with the name "image.png". It should be 
 
 ## 3D Field Models
 
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](../more-features/gltf-convert.md) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
 
 The config file must be in the following format:
 

@@ -1,14 +1,10 @@
----
-sidebar_position: 3
----
-
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import PrefsImage from '../img/prefs.png';
+import PrefsImage from '../../img/prefs.png';
 
 # 👀 3D Field
 
-The 3D field shows a 3D visualization of the robot and field. It can be used with regular 2D poses, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. [AdvantageScope XR](../more-features/advantagescope-xr.md) allows this tab to be visualized using augmented reality. The timeline shows when the robot is enabled and can be used to navigate through the log data.
+The 3D field shows a 3D visualization of the robot and field. It can be used with regular 2D poses, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. [AdvantageScope XR](advantagescope-xr) allows this tab to be visualized using augmented reality. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
 ![Example of 3D field tab](./img/3d-field-1.png)
 
@@ -21,7 +17,7 @@ The green sections of the timeline indicate when the robot is autonomous, and th
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+![Timeline](../img/timeline.png)
 
 </details>
 
@@ -48,7 +44,7 @@ To see a full list of supported object types, click the `?` icon. This list also
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
 :::warning
-The legacy number array format for geometry data is now deprecated. See [here](../legacy-formats.md) for details.
+The legacy number array format for geometry data is now deprecated. See [here](/legacy-formats) for details.
 :::
 
 Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
@@ -96,7 +92,7 @@ Mechanism data can be visualized using 2D mechanisms or articulated 3D component
 
 ### 2D Mechanisms
 
-To visualize mechanism data logged using a [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ plane of the robot using simple boxes (as shown below). The robot's origin is centered on the bottom edge of the mechanism.
+To visualize mechanism data logged using a [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ or YZ plane of the robot using simple boxes, as shown below. Click the gear icon or right-click on the field name to switch between the XZ and YZ planes. The robot's origin is centered on the bottom edge of the mechanism.
 
 ![2D mechanism](./img/3d-field-2.png)
 
@@ -108,7 +104,7 @@ Setting up 3D components can be complex and time-consuming. Consider utilizing A
 
 Mechanisms can be visualized with articulated components by logging a set of 3D poses that represent the robot-relative locations of each component. Add the poses to an existing robot or ghost object and set the object type to "Component".
 
-Each component can be moved independently (like an elevator carriage, arm, or end effector). For more information on configuring robots with components, see [Custom Assets](../more-features/custom-assets.md).
+Each component can be moved independently (like an elevator carriage, arm, or end effector). For more information on configuring robots with components, see [Custom Assets](/more-features/custom-assets).
 
 ![3D mechanism](./img/3d-field-3.png)
 
@@ -174,13 +170,10 @@ Consistent with other pose data, the "Camera Override" pose must be _field relat
 
 ## Configuration
 
-The following configuration options are available:
+The field model can be configured using the dropdown. All recent FRC and FTC games are supported. We recommend using the "Evergreen" fields for devices with limited graphical performance. The "Axes" fields display only XYZ axes at the origin with a field outline for scale.
 
-- **Field:** The field model to use, defaults to the most recent game. We recommend using the "Evergreen" field for devices with limited graphical performance. The "Axes" field displays only XYZ axes at the origin with a field outline for scale.
-- **Origin:** The position of the field origin, on the blue or red alliance wall. Choosing the switch icon will use the current alliance color
-
-:::warning
-Automatic selection of alliance color may be inaccurate when viewing log data produced by AdvantageKit 2023 or earlier.
+:::info
+The coordinate system used on the this tab is customizable. See the [coordinate system](/more-features/coordinate-systems) page for details.
 :::
 
 ### Rendering Modes
@@ -193,6 +186,6 @@ The 3D field supports three rendering modes:
 
 ![Comparion of rendering modes](./img/3d-field-6.png)
 
-To configure the rendering mode, open the preferences window by pressing clicking `Help` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
+To configure the rendering mode, open the preferences window by pressing clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
 
 <img src={PrefsImage} alt="Diagram of preferences" height="350" />
