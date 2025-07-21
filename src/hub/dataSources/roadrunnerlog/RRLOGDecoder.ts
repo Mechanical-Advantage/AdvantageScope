@@ -15,8 +15,8 @@ export default class RRLOGDecoder {
 
   private magic: string | null = null; //
   private logRevision: number | null = null;
-  private firstTimestamp: bigint | null = null;
-  private lastTimestamp: number = 0; // no guarantee of ever finding a timestamp; default to 0 just in case
+  private firstRRTimestamp: bigint | null = null;
+  private lastTimestamp: number = 0;
   private lastProgressTimestamp = 0;
   private keyIDs: { [id: number]: string } = {};
   private keySchemas: { [id: number]: MessageSchema } = {};
@@ -39,9 +39,8 @@ export default class RRLOGDecoder {
     function readSchema(): MessageSchema {
       let schemaType = dataBuffer.getInt32(shiftOffset(4));
       if (schemaType === 0) {
-        // StructSchema
-        let numFields = dataBuffer.getInt32(shiftOffset(4));
         let schema = new StructSchema();
+        let numFields = dataBuffer.getInt32(shiftOffset(4));
         for (let i = 0; i < numFields; i++) {
           schema.fields.set(readString(), readSchema());
         }
@@ -57,8 +56,8 @@ export default class RRLOGDecoder {
       } else if (schemaType === 5) {
         return PrimitiveSchema.BOOLEAN;
       } else if (schemaType === 6) {
-        let numConstants = dataBuffer.getInt32(shiftOffset(4));
         let schema = new EnumSchema();
+        let numConstants = dataBuffer.getInt32(shiftOffset(4));
         for (let i = 0; i < numConstants; i++) {
           schema.constants.push(readString());
         }
@@ -74,7 +73,7 @@ export default class RRLOGDecoder {
       if (schema instanceof StructSchema) {
         let count = 0;
         for (const entry of schema.fields.entries()) {
-          // recursively search the child schemas
+          // Recursively search the child schemas
           count += arraySchemaCount(entry[1]);
         }
         return count;
@@ -117,11 +116,11 @@ export default class RRLOGDecoder {
       }
     }
 
-    const rrTimeToInt = (rr: bigint) => {
-      if (this.firstTimestamp === null) {
-        this.firstTimestamp = rr;
+    const rrTimestampToSeconds = (rrTimestamp: bigint) => {
+      if (this.firstRRTimestamp === null) {
+        this.firstRRTimestamp = rrTimestamp;
       }
-      return Number(rr - this.firstTimestamp) / 1e9; // nanoseconds to seconds
+      return Number(rrTimestamp - this.firstRRTimestamp) / 1e9; // Nanoseconds to seconds
     };
 
     try {
@@ -144,15 +143,15 @@ export default class RRLOGDecoder {
 
       while (true) {
         // Check for the start of another log
-        // Allows users to combine auto and teleop logs for full match replays
+        // Allows users to concatenate auto and teleop logs for full match replays
         if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
           shiftOffset(2);
-          // check log revision again for completeness (probably not needed)
+          // Check log revision again for completeness (probably not needed)
           this.logRevision = dataBuffer.getInt16(shiftOffset(2));
           if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
             return false;
           }
-          // channels and keys are per-log
+          // Channels and keys are per-log
           this.keyIDs = {};
           this.keySchemas = {};
         }
@@ -173,8 +172,8 @@ export default class RRLOGDecoder {
             let newSchema = readSchema();
             this.keySchemas[keyID] = newSchema;
             if (this.logRevision === 0) {
-              // workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
-              // really annoying issue where each ArraySchema in a definition adds 4 00 bytes to the end of the definition
+              // Workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
+              // In v0, each ArraySchema in a definition adds 4 00 bytes to the end of the definition
               shiftOffset(4 * arraySchemaCount(newSchema));
             }
             break;
@@ -184,9 +183,9 @@ export default class RRLOGDecoder {
             let schema = this.keySchemas[keyID];
             let msg = readMsg(schema);
 
-            // find a timestamp
+            // Find a timestamp
 
-            // guaranteed by writer
+            // Automatically added by log writer
             if (
               (key === "OPMODE_PRE_INIT" ||
                 key === "OPMODE_PRE_START" ||
@@ -194,19 +193,19 @@ export default class RRLOGDecoder {
                 key === "TIMESTAMP") &&
               typeof msg === "bigint"
             ) {
-              this.lastTimestamp = rrTimeToInt(msg);
+              this.lastTimestamp = rrTimestampToSeconds(msg);
               if (key === "OPMODE_PRE_START") {
-                // offset start time by 50ms to show the values returned by the first loop
+                // Offset start time by 50ms to show the values returned by the first loop
                 log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
               } else if (key === "OPMODE_POST_STOP") {
                 log.putBoolean("RUNNING", this.lastTimestamp, false);
               }
 
-              // blindly guessing, this works with roadrunner's built in writing, hopefully others follow the standard
+              // Automatically parse timestamp fields of Roadrunner's built in message classes
             } else if (msg instanceof Map && msg.has("timestamp")) {
               let timestamp = msg.get("timestamp");
               if (timestamp != undefined && typeof timestamp === "bigint") {
-                this.lastTimestamp = rrTimeToInt(timestamp);
+                this.lastTimestamp = rrTimestampToSeconds(timestamp);
               }
             }
 
