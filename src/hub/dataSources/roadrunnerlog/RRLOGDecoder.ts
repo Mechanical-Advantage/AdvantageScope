@@ -142,113 +142,109 @@ export default class RRLOGDecoder {
         }
       }
 
-      mainLoop: while (true) {
-        if (offset >= dataArray.length) break mainLoop; // No more data, so we can't start a new entry
+      while (true) {
+        // Check for the start of another log
+        // Allows users to combine auto and teleop logs for full match replays
+        if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
+          shiftOffset(2);
+          // check log revision again for completeness (probably not needed)
+          this.logRevision = dataBuffer.getInt16(shiftOffset(2));
+          if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
+            return false;
+          }
+          // channels and keys are per-log
+          this.keyIDs = {};
+          this.keySchemas = {};
+        }
 
-        readLoop: while (true) {
-          // Check for the start of another log
-          // Allows users to combine auto and teleop logs for full match replays
-          if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
-            shiftOffset(2);
-            // check log revision again for completeness (probably not needed)
-            this.logRevision = dataBuffer.getInt16(shiftOffset(2));
-            if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
-              return false;
+        let type: number;
+        try {
+          type = dataBuffer.getInt32(shiftOffset(4));
+          if (type === undefined) break; // This was the last cycle, save the data
+        } catch (e) {
+          break;
+        }
+
+        let keyID: number;
+        switch (type) {
+          case 0: // New channel definition
+            keyID = Object.keys(this.keyIDs).length;
+            this.keyIDs[keyID] = readString();
+            let newSchema = readSchema();
+            this.keySchemas[keyID] = newSchema;
+            if (this.logRevision === 0) {
+              // workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
+              // really annoying issue where each ArraySchema in a definition adds 4 00 bytes to the end of the definition
+              shiftOffset(4 * arraySchemaCount(newSchema));
             }
-            // channels and keys are per-log
-            this.keyIDs = {};
-            this.keySchemas = {};
-          }
+            break;
+          case 1: // New message
+            keyID = dataBuffer.getInt32(shiftOffset(4));
+            let key = this.keyIDs[keyID];
+            let schema = this.keySchemas[keyID];
+            let msg = readMsg(schema);
 
-          let type: number;
-          try {
-            type = dataBuffer.getInt32(shiftOffset(4));
-            if (type === undefined) break readLoop; // This was the last cycle, save the data
-          } catch (e) {
-            break readLoop;
-          }
+            // find a timestamp
 
-          let keyID: number;
-          switch (type) {
-            case 0: // New channel definition
-              keyID = Object.keys(this.keyIDs).length;
-              this.keyIDs[keyID] = readString();
-              let newSchema = readSchema();
-              this.keySchemas[keyID] = newSchema;
-              if (this.logRevision === 0) {
-                // workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
-                // really annoying issue where each ArraySchema in a definition adds 4 00 bytes to the end of the definition
-                shiftOffset(4 * arraySchemaCount(newSchema));
-              }
-              break;
-            case 1: // New message
-              keyID = dataBuffer.getInt32(shiftOffset(4));
-              let key = this.keyIDs[keyID];
-              let schema = this.keySchemas[keyID];
-              let msg = readMsg(schema);
-
-              // find a timestamp
-
-              // guaranteed by writer
-              if (
-                (key === "OPMODE_PRE_INIT" ||
-                  key === "OPMODE_PRE_START" ||
-                  key === "OPMODE_POST_STOP" ||
-                  key === "TIMESTAMP") &&
-                typeof msg === "bigint"
-              ) {
-                this.lastTimestamp = rrTimeToInt(msg);
-                if (key === "OPMODE_PRE_START") {
-                  // offset start time by 50ms to show the values returned by the first loop
-                  log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
-                } else if (key === "OPMODE_POST_STOP") {
-                  log.putBoolean("RUNNING", this.lastTimestamp, false);
-                }
-
-                // blindly guessing, this works with roadrunner's built in writing, hopefully others follow the standard
-              } else if (msg instanceof Map && msg.has("timestamp")) {
-                let timestamp = msg.get("timestamp");
-                if (timestamp != undefined && typeof timestamp === "bigint") {
-                  this.lastTimestamp = rrTimeToInt(timestamp);
-                }
+            // guaranteed by writer
+            if (
+              (key === "OPMODE_PRE_INIT" ||
+                key === "OPMODE_PRE_START" ||
+                key === "OPMODE_POST_STOP" ||
+                key === "TIMESTAMP") &&
+              typeof msg === "bigint"
+            ) {
+              this.lastTimestamp = rrTimeToInt(msg);
+              if (key === "OPMODE_PRE_START") {
+                // offset start time by 50ms to show the values returned by the first loop
+                log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
+              } else if (key === "OPMODE_POST_STOP") {
+                log.putBoolean("RUNNING", this.lastTimestamp, false);
               }
 
-              let timestamp = this.lastTimestamp;
-              let type = typeof msg;
-              switch (type) {
-                case "boolean":
-                  log.putBoolean(key, timestamp, <boolean>msg);
-                  break;
-                case "number":
-                  log.putNumber(key, timestamp, <number>msg);
-                  break;
-                case "bigint":
-                  log.putNumber(key, timestamp, Number(msg)); // unsafe??
-                  break;
-                case "string":
-                  log.putString(key, timestamp, <string>msg);
-                  break;
-                default:
-                  if (msg instanceof Map && msg.has("x") && msg.has("y") && msg.has("heading")) {
-                    log.putPose(key, timestamp, <Pose2d>{
-                      translation: [<number>msg.get("x") / 39.37008, <number>msg.get("y") / 39.37008],
-                      rotation: msg.get("heading")
-                    });
-                  }
-                  // struct or array
-                  log.putUnknownStruct(key, timestamp, msg);
-                  break;
+              // blindly guessing, this works with roadrunner's built in writing, hopefully others follow the standard
+            } else if (msg instanceof Map && msg.has("timestamp")) {
+              let timestamp = msg.get("timestamp");
+              if (timestamp != undefined && typeof timestamp === "bigint") {
+                this.lastTimestamp = rrTimeToInt(timestamp);
               }
-              break;
-          }
-
-          // Send progress update
-          if (progressCallback !== undefined) {
-            let now = new Date().getTime();
-            if (now - this.lastProgressTimestamp > 1000 / 60) {
-              this.lastProgressTimestamp = now;
-              progressCallback(offset / dataBuffer.byteLength);
             }
+
+            let timestamp = this.lastTimestamp;
+            let type = typeof msg;
+            switch (type) {
+              case "boolean":
+                log.putBoolean(key, timestamp, <boolean>msg);
+                break;
+              case "number":
+                log.putNumber(key, timestamp, <number>msg);
+                break;
+              case "bigint":
+                log.putNumber(key, timestamp, Number(msg)); // unsafe??
+                break;
+              case "string":
+                log.putString(key, timestamp, <string>msg);
+                break;
+              default:
+                if (msg instanceof Map && msg.has("x") && msg.has("y") && msg.has("heading")) {
+                  log.putPose(key, timestamp, <Pose2d>{
+                    translation: [<number>msg.get("x") / 39.37008, <number>msg.get("y") / 39.37008],
+                    rotation: msg.get("heading")
+                  });
+                }
+                // struct or array
+                log.putUnknownStruct(key, timestamp, msg);
+                break;
+            }
+            break;
+        }
+
+        // Send progress update
+        if (progressCallback !== undefined) {
+          let now = new Date().getTime();
+          if (now - this.lastProgressTimestamp > 1000 / 60) {
+            this.lastProgressTimestamp = now;
+            progressCallback(offset / dataBuffer.byteLength);
           }
         }
       }
