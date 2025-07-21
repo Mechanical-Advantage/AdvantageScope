@@ -814,7 +814,7 @@ export default class Field3dRendererImpl implements TabRenderer {
             color: "#000000",
             poses: [],
             components: [],
-            mechanism: null,
+            mechanisms: { xz: null, yz: null },
             visionTargets: [],
             swerveStates: []
           });

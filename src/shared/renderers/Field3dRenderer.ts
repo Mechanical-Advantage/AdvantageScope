@@ -141,7 +141,10 @@ export type Field3dRendererCommand_GenericRobotObj = {
   model: string;
   poses: AnnotatedPose3d[];
   components: AnnotatedPose3d[];
-  mechanism: MechanismState | null;
+  mechanisms: {
+    xz: MechanismState | null;
+    yz: MechanismState | null;
+  };
   visionTargets: AnnotatedPose3d[];
   swerveStates: {
     values: SwerveState[];
