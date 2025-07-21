@@ -13,6 +13,7 @@ import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
 import { SwerveState } from "../../../geometry";
+import { MechanismState } from "../../../log/LogUtil";
 import { Units } from "../../../units";
 import { transformPx } from "../../../util";
 import { Field3dRendererCommand_GhostObj, Field3dRendererCommand_RobotObj } from "../../Field3dRenderer";
@@ -20,6 +21,14 @@ import { getQuaternionFromRotSeq, quaternionToRotation3d, rotation3dToQuaternion
 import ObjectManager from "../ObjectManager";
 import { FTC_MULTIPLIER, XR_MAX_RADIUS } from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
+
+type MechanismLineData = {
+  mesh: ResizableInstancedMesh;
+  geometry: THREE.BoxGeometry;
+  scale: THREE.Vector3;
+  translation: THREE.Vector3;
+  material: THREE.MeshPhongMaterial;
+};
 
 export default class RobotManager extends ObjectManager<
   Field3dRendererCommand_RobotObj | Field3dRendererCommand_GhostObj
@@ -41,13 +50,8 @@ export default class RobotManager extends ObjectManager<
     shininess: this.materialShininess
   });
   private visionLines: Line2[] = [];
-  private mechanismLines: {
-    mesh: ResizableInstancedMesh;
-    geometry: THREE.BoxGeometry;
-    scale: THREE.Vector3;
-    translation: THREE.Vector3;
-    material: THREE.MeshPhongMaterial;
-  }[] = [];
+  private mechanismLinesXZ: MechanismLineData[] = [];
+  private mechanismLinesYZ: MechanismLineData[] = [];
 
   private swerveContainer: HTMLElement | null = null;
   private swerveCanvas: HTMLCanvasElement | null = null;
@@ -100,9 +104,8 @@ export default class RobotManager extends ObjectManager<
     this.meshes.forEach((mesh) => {
       mesh.dispose();
     });
-    this.mechanismLines.forEach((entry) => {
-      entry.mesh.dispose();
-    });
+    this.mechanismLinesXZ.forEach((entry) => entry.mesh.dispose());
+    this.mechanismLinesYZ.forEach((entry) => entry.mesh.dispose());
     while (this.visionLines.length > 0) {
       this.visionLines[0].geometry.dispose();
       this.visionLines[0].material.dispose();
@@ -431,95 +434,94 @@ export default class RobotManager extends ObjectManager<
     }
 
     // Update mechanism
-    if (object.mechanism === null) {
-      // No mechanism data, remove all meshes
-      while (this.mechanismLines.length > 0) {
-        this.mechanismLines[0].mesh.dispose(true, object.type === "robot"); // Ghost material is shared, don't dispose
-        this.mechanismLines.shift();
-      }
-    } else {
-      // Filter to visible lines
-      let mechanismLines = object.mechanism?.lines.filter(
-        (line) =>
-          Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]) >= 1e-3 &&
-          line.weight * this.MECHANISM_WIDTH_PER_WEIGHT >= 1e-3
-      );
-
-      // Remove extra lines
-      while (this.mechanismLines.length > mechanismLines.length) {
-        this.mechanismLines[0].mesh.dispose(true, object.type === "robot"); // Ghost material is shared, don't dispose
-        this.mechanismLines.shift();
-      }
-
-      // Add new lines
-      while (this.mechanismLines.length < mechanismLines.length) {
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material =
-          object.type === "ghost"
-            ? this.ghostMaterial
-            : new THREE.MeshPhongMaterial({ specular: this.materialSpecular, shininess: this.materialShininess });
-        this.mechanismLines.push({
-          mesh: new ResizableInstancedMesh(this.root, [{ geometry: geometry, material: material }]),
-          geometry: geometry,
-          scale: new THREE.Vector3(1, 1, 1),
-          translation: new THREE.Vector3(),
-          material: material
-        });
-      }
-
-      // Update children
-      for (let i = 0; i < mechanismLines.length; i++) {
-        const line = mechanismLines[i];
-        const meshEntry = this.mechanismLines[i];
-
-        const length = Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]);
-        const angle = Math.atan2(line.end[1] - line.start[1], line.end[0] - line.start[0]);
-
-        // Update length
-        const newScale = new THREE.Vector3(
-          object.mechanism.axis == "x" ? length : line.weight * this.MECHANISM_WIDTH_PER_WEIGHT,
-          object.mechanism.axis == "x" ? line.weight * this.MECHANISM_WIDTH_PER_WEIGHT : length,
-          line.weight * this.MECHANISM_WIDTH_PER_WEIGHT
+    let updateMechanism = (state: MechanismState | null, lines: MechanismLineData[], plane: "xz" | "yz") => {
+      if (state === null) {
+        // No mechanism data, remove all meshes
+        while (lines.length > 0) {
+          lines[0].mesh.dispose(true, object.type === "robot"); // Ghost material is shared, don't dispose
+          lines.shift();
+        }
+      } else {
+        // Filter to visible lines
+        let mechanismLines = state?.lines.filter(
+          (line) =>
+            Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]) >= 1e-3 &&
+            line.weight * this.MECHANISM_WIDTH_PER_WEIGHT >= 1e-3
         );
-        const newTranslation =
-          object.mechanism.axis == "x" ? new THREE.Vector3(length / 2, 0, 0) : new THREE.Vector3(0, length / 2, 0);
-        if (!newScale.equals(meshEntry.scale) || !newTranslation.equals(meshEntry.translation)) {
-          meshEntry.geometry.translate(-meshEntry.translation.x, -meshEntry.translation.y, -meshEntry.translation.z);
-          meshEntry.geometry.scale(1 / meshEntry.scale.x, 1 / meshEntry.scale.y, 1 / meshEntry.scale.z);
-          meshEntry.geometry.scale(newScale.x, newScale.y, newScale.z);
-          meshEntry.geometry.translate(newTranslation.x, newTranslation.y, newTranslation.z);
-          meshEntry.scale = newScale;
-          meshEntry.translation = newTranslation;
+
+        // Remove extra lines
+        while (lines.length > mechanismLines.length) {
+          lines[0].mesh.dispose(true, object.type === "robot"); // Ghost material is shared, don't dispose
+          lines.shift();
         }
 
-        // Update color
-        if (object.type !== "ghost") {
-          meshEntry.material.color = new THREE.Color(line.color);
+        // Add new lines
+        while (lines.length < mechanismLines.length) {
+          const geometry = new THREE.BoxGeometry(1, 1, 1);
+          const material =
+            object.type === "ghost"
+              ? this.ghostMaterial
+              : new THREE.MeshPhongMaterial({ specular: this.materialSpecular, shininess: this.materialShininess });
+          lines.push({
+            mesh: new ResizableInstancedMesh(this.root, [{ geometry: geometry, material: material }]),
+            geometry: geometry,
+            scale: new THREE.Vector3(1, 1, 1),
+            translation: new THREE.Vector3(),
+            material: material
+          });
         }
 
-        // Update pose
-        meshEntry.mesh.setPoses(
-          object.poses
-            .map((x) => x.pose)
-            .map((robotPose) => {
-              this.dummyRobotPose.rotation.setFromQuaternion(rotation3dToQuaternion(robotPose.rotation));
-              this.dummyRobotPose.position.set(...robotPose.translation);
+        // Update children
+        for (let i = 0; i < mechanismLines.length; i++) {
+          const line = mechanismLines[i];
+          const meshEntry = lines[i];
 
-              if (object.mechanism?.axis == "x") {
-                this.dummyUserPose.position.set(line.start[0] - object.mechanism!.dimensions[0] / 2, 0, line.start[1]);
+          const length = Math.hypot(line.end[1] - line.start[1], line.end[0] - line.start[0]);
+          const angle = Math.atan2(line.end[1] - line.start[1], line.end[0] - line.start[0]);
+
+          // Update length
+          const newScale = new THREE.Vector3(
+            length,
+            line.weight * this.MECHANISM_WIDTH_PER_WEIGHT,
+            line.weight * this.MECHANISM_WIDTH_PER_WEIGHT
+          );
+          const newTranslation = new THREE.Vector3(length / 2, 0, 0);
+          if (!newScale.equals(meshEntry.scale) || !newTranslation.equals(meshEntry.translation)) {
+            meshEntry.geometry.translate(-meshEntry.translation.x, -meshEntry.translation.y, -meshEntry.translation.z);
+            meshEntry.geometry.scale(1 / meshEntry.scale.x, 1 / meshEntry.scale.y, 1 / meshEntry.scale.z);
+            meshEntry.geometry.scale(newScale.x, newScale.y, newScale.z);
+            meshEntry.geometry.translate(newTranslation.x, newTranslation.y, newTranslation.z);
+            meshEntry.scale = newScale;
+            meshEntry.translation = newTranslation;
+          }
+
+          // Update color
+          if (object.type !== "ghost") {
+            meshEntry.material.color = new THREE.Color(line.color);
+          }
+
+          // Update pose
+          meshEntry.mesh.setPoses(
+            object.poses
+              .map((x) => x.pose)
+              .map((robotPose) => {
+                this.dummyRobotPose.rotation.setFromQuaternion(rotation3dToQuaternion(robotPose.rotation));
+                if (plane == "yz") this.dummyRobotPose.rotateZ(Math.PI / 2);
+                this.dummyRobotPose.position.set(...robotPose.translation);
+
+                this.dummyUserPose.position.set(line.start[0] - state.dimensions[0] / 2, 0, line.start[1]);
                 this.dummyUserPose.rotation.set(0, -angle, 0);
-              } else {
-                this.dummyUserPose.position.set(0, line.start[0] - object.mechanism!.dimensions[0] / 2, line.start[1]);
-                this.dummyUserPose.rotation.set(angle, 0, 0);
-              }
-              return {
-                translation: this.dummyUserPose.getWorldPosition(new THREE.Vector3()).toArray(),
-                rotation: quaternionToRotation3d(this.dummyUserPose.getWorldQuaternion(new THREE.Quaternion()))
-              };
-            })
-        );
+                return {
+                  translation: this.dummyUserPose.getWorldPosition(new THREE.Vector3()).toArray(),
+                  rotation: quaternionToRotation3d(this.dummyUserPose.getWorldQuaternion(new THREE.Quaternion()))
+                };
+              })
+          );
+        }
       }
-    }
+    };
+    updateMechanism(object.mechanisms.xz, this.mechanismLinesXZ, "xz");
+    updateMechanism(object.mechanisms.yz, this.mechanismLinesYZ, "yz");
 
     // Update swerve canvas (disabled in XR)
     if (!this.isXR) {

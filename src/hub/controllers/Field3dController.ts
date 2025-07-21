@@ -289,7 +289,8 @@ export default class Field3dController implements TabController {
 
       // Add data from children
       let components: AnnotatedPose3d[] = [];
-      let mechanisms: MechanismState[] = [];
+      let mechanismsXZ: MechanismState[] = [];
+      let mechanismsYZ: MechanismState[] = [];
       let visionTargets: AnnotatedPose3d[] = [];
       let swerveStates: {
         values: SwerveState[];
@@ -308,9 +309,9 @@ export default class Field3dController implements TabController {
             }
 
             case "mechanism": {
-              let state = getMechanismState(window.log, child.logKey, time!, child.options.axis);
+              let state = getMechanismState(window.log, child.logKey, time!);
               if (state !== null) {
-                mechanisms.push(state);
+                (child.options.plane === "yz" ? mechanismsYZ : mechanismsXZ).push(state);
               }
               break;
             }
@@ -412,7 +413,8 @@ export default class Field3dController implements TabController {
           }
         });
       }
-      let mechanism = mechanisms.length === 0 ? null : mergeMechanismStates(mechanisms);
+      let mechanismXZ = mechanismsXZ.length === 0 ? null : mergeMechanismStates(mechanismsXZ);
+      let mechanismYZ = mechanismsYZ.length === 0 ? null : mergeMechanismStates(mechanismsYZ);
       visionTargets.reverse();
       swerveStates.reverse();
 
@@ -425,7 +427,10 @@ export default class Field3dController implements TabController {
             model: source.options.model,
             poses: poses,
             components: components,
-            mechanism: mechanism,
+            mechanisms: {
+              xz: mechanismXZ,
+              yz: mechanismYZ
+            },
             visionTargets: visionTargets,
             swerveStates: swerveStates
           });
@@ -438,7 +443,10 @@ export default class Field3dController implements TabController {
             model: source.options.model,
             poses: poses,
             components: components,
-            mechanism: mechanism,
+            mechanisms: {
+              xz: mechanismXZ,
+              yz: mechanismYZ
+            },
             visionTargets: visionTargets,
             swerveStates: swerveStates
           });
