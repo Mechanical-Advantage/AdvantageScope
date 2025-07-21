@@ -25,7 +25,7 @@ self.onmessage = async (event) => {
   };
 
   let log = new Log(false); // No timestamp set cache for efficiency
-  let decoder = new RRLOGDecoder(true);
+  let decoder = new RRLOGDecoder();
   let success = decoder.decode(log, request.data[0], progress);
   if (success) {
     progress(1);

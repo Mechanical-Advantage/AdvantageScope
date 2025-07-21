@@ -13,8 +13,6 @@ export default class RRLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [0, 1];
   private STRING_DECODER = new TextDecoder("UTF-8");
 
-  private isFile;
-
   private magic: string | null = null; //
   private logRevision: number | null = null;
   private firstTimestamp: bigint | null = null;
@@ -22,10 +20,6 @@ export default class RRLOGDecoder {
   private lastProgressTimestamp = 0;
   private keyIDs: { [id: number]: string } = {};
   private keySchemas: { [id: number]: MessageSchema } = {};
-
-  constructor(isFile: boolean) {
-    this.isFile = isFile;
-  }
 
   decode(log: Log, dataArray: Uint8Array, progressCallback?: (progress: number) => void): boolean {
     let dataBuffer = new DataView(dataArray.buffer);
@@ -70,9 +64,7 @@ export default class RRLOGDecoder {
         }
         return schema;
       } else if (schemaType === 7) {
-        let schema = new ArraySchema(readSchema());
-        //offset += 4;
-        return schema;
+        return new ArraySchema(readSchema());
       } else {
         throw "Unknown schema type: " + schemaType;
       }
@@ -81,8 +73,9 @@ export default class RRLOGDecoder {
     function arraySchemaCount(schema: MessageSchema): number {
       if (schema instanceof StructSchema) {
         let count = 0;
-        for (const [key, value] of schema.fields.entries()) {
-          count += arraySchemaCount(value);
+        for (const entry of schema.fields.entries()) {
+          // recursively search the child schemas
+          count += arraySchemaCount(entry[1]);
         }
         return count;
       } else if (schema instanceof ArraySchema) {
@@ -153,6 +146,20 @@ export default class RRLOGDecoder {
         if (offset >= dataArray.length) break mainLoop; // No more data, so we can't start a new entry
 
         readLoop: while (true) {
+          // Check for the start of another log
+          // Allows users to combine auto and teleop logs for full match replays
+          if (this.STRING_DECODER.decode(dataArray.subarray(offset, offset + 2)) === "RR") {
+            shiftOffset(2);
+            // check log revision again for completeness (probably not needed)
+            this.logRevision = dataBuffer.getInt16(shiftOffset(2));
+            if (!this.SUPPORTED_LOG_REVISIONS.includes(this.logRevision)) {
+              return false;
+            }
+            // channels and keys are per-log
+            this.keyIDs = {};
+            this.keySchemas = {};
+          }
+
           let type: number;
           try {
             type = dataBuffer.getInt32(shiftOffset(4));
