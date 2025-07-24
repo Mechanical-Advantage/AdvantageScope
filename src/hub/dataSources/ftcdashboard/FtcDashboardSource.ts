@@ -23,6 +23,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
   private interval: ReturnType<typeof setInterval> | null = null;
 
   private robotClockSkew = 0;
+  private running = false;
 
   connect(
     address: string,
@@ -102,12 +103,23 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
             timestamp = packetTimestamp;
           }
           if (Object.hasOwn(packet, "data")) {
+            if (!this.running) {
+              this.running = true;
+              this.log.putBoolean("RUNNING", timestamp, this.running);
+            }
             this.logObject(packet.data, timestamp);
           }
         }
       }
       if (Object.hasOwn(decoded, "status")) {
         this.logObject(decoded.status, timestamp, "/_Status/");
+        // Status is only updated once per second, so this won't be particularly accurate (but good enough for stop detection)
+        // Presence of telemetry used for start detection
+        if (Object.hasOwn(decoded.status, "activeOpMode") && Object.hasOwn(decoded.status, "activeOpModeStatus")) {
+          this.running =
+            decoded.status.activeOpMode != "$Stop$Robot$" && decoded.status.activeOpModeStatus == "RUNNING";
+          this.log.putBoolean("RUNNING", timestamp, this.running);
+        }
       }
     }
 
