@@ -14,17 +14,13 @@ import { BasicVarType, ConfigState, ConfigVar, ConfigVarState, SaveConfigAction 
 
 export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
   private FTCDASHBOARD_PORT = 8000;
-  private FTCDASHBOARD_DATA_TIMEOUT_MS = 5000; // How long with no data until timeout
   private FTCDASHBOARD_PING_TIMEOUT_MS = 1000; // How often to ping
-  private RECONNECT_DELAY_MS = 2000;
-  private timeout: ReturnType<typeof setTimeout> | null = null;
   private liveZeroTime = 0;
   private configState: ConfigState = initialState;
   private tunableKeysTypes = new Map<string, BasicVarType>(); // key, type
 
   private socket: WebSocket | null = null;
-  private socketTimeout: ReturnType<typeof setTimeout> | null = null;
-  private pingTimeout: ReturnType<typeof setTimeout> | null = null;
+  private interval: ReturnType<typeof setInterval> | null = null;
 
   private robotClockSkew = 0;
 
@@ -38,59 +34,40 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     if (window.preferences === null) {
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
-      this.log = new Log();
       this.socket?.close();
       let url = "ws://" + address + ":" + this.FTCDASHBOARD_PORT;
-      try {
-        this.socket = new WebSocket(url);
-      } catch (e) {
-        return this.reconnect();
-      }
+      // Below lambda directly ported from FTC Dashboard frontend
+      this.interval = setInterval(() => {
+        if (this.socket === null || this.socket.readyState === WebSocket.CLOSED) {
+          this.setStatus(LiveDataSourceStatus.Connecting);
 
-      this.socket.addEventListener("message", (event) => {
-        if (this.socketTimeout !== null) clearTimeout(this.socketTimeout);
-        this.socketTimeout = setTimeout(() => {
-          this.socket?.close();
-        }, this.FTCDASHBOARD_DATA_TIMEOUT_MS);
+          this.log = new Log();
+          this.liveZeroTime = 0;
+          this.robotClockSkew = 0;
+          this.configState = initialState;
+          this.tunableKeysTypes = new Map<string, BasicVarType>();
+          this.socket = new WebSocket(url);
+          this.socket.onmessage = (evt) => {
+            this.decodeData(evt.data);
+          };
 
-        this.decodeData(event.data);
-      });
+          this.socket.onopen = () => {
+            this.setStatus(LiveDataSourceStatus.Active);
+          };
 
-      this.socket.addEventListener("error", () => {
-        this.reconnect();
-      });
-
-      this.socket.addEventListener("close", () => {
-        this.reconnect();
-      });
-      this.ping();
+          this.socket.onclose = () => {
+            this.setStatus(LiveDataSourceStatus.Connecting);
+          };
+        } else if (this.socket.readyState === WebSocket.OPEN) {
+          this.socket.send(JSON.stringify({ type: "GET_ROBOT_STATUS" }));
+        }
+      }, this.FTCDASHBOARD_PING_TIMEOUT_MS);
     }
-  }
-
-  ping() {
-    if (!this.socket) {
-      return;
-    }
-    if (this.socket.readyState === 1) {
-      // OPEN
-      let pingMsg = JSON.stringify({ type: "GET_ROBOT_STATUS" });
-      this.socket.send(pingMsg);
-    }
-
-    if (this.pingTimeout !== null) clearTimeout(this.pingTimeout);
-    this.pingTimeout = setTimeout(() => {
-      this.ping();
-    }, this.FTCDASHBOARD_PING_TIMEOUT_MS);
   }
 
   decodeData(data: string) {
     if (this.log === null) return;
     if (this.status === LiveDataSourceStatus.Stopped) return;
-
-    if (this.timeout !== null) {
-      clearTimeout(this.timeout);
-      this.timeout = null;
-    }
 
     // Update time on first connection
     if (this.liveZeroTime === 0) {
@@ -218,24 +195,6 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
     for (const label of foundPoses.keys()) {
       this.log.putPose(label, timestamp, foundPoses.get(label)!!);
     }
-  }
-
-  private reconnect() {
-    this.setStatus(LiveDataSourceStatus.Connecting);
-    this.timeout = setTimeout(() => {
-      if (window.preferences === null) {
-        // No preferences, can't reconnect
-        this.setStatus(LiveDataSourceStatus.Error);
-      } else {
-        // Try to reconnect
-        this.log = new Log();
-        this.liveZeroTime = 0;
-        this.robotClockSkew = 0;
-        this.configState = initialState;
-        this.tunableKeysTypes = new Map<string, BasicVarType>();
-        this.connect(this.address!!, this.statusCallback!!, this.outputCallback!!);
-      }
-    }, this.RECONNECT_DELAY_MS);
   }
 
   private parseConfigState(state: ConfigVarState, timestamp: number, path = "/_Config") {
