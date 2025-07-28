@@ -32,9 +32,9 @@ export default interface Preferences {
 
 export const DEFAULT_PREFS: Preferences = {
   theme: "system",
-  robotAddress: "10.00.00.2",
+  robotAddress: "192.168.43.1",
   remotePath: "/U/logs",
-  liveMode: "nt4",
+  liveMode: "ftcdashboard",
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
   publishFilter: "",
@@ -53,7 +53,7 @@ export const DEFAULT_PREFS: Preferences = {
 
 // Phoenix not possible due to cross origin restrictions
 // PathPlanner and RLOG not possible because they use raw TCP
-export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit"];
+export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {

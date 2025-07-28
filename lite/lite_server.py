@@ -21,6 +21,7 @@ EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.pa
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
 ENABLE_LOG_DOWNLOADS = IS_SYSTEMCORE or "--enable-logs" in sys.argv
+WEBROOT = "/as"
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -49,11 +50,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         query = urllib.parse.parse_qs(request.query)
 
         # Don't serve directly since all assets are available under "/assets"
-        if request.path.startswith("/bundledAssets"):
+        if request.path.startswith(WEBROOT + "/bundledAssets"):
             self.send_error(404, "File not found.")
 
         # Serve list of asset files
-        elif request.path == "/assets" or request.path == "/assets/":
+        elif request.path == WEBROOT + "/assets" or request.path == WEBROOT + "/assets/":
             asset_file_list = {}
             for root in [BUNDLED_ASSETS_PATH, EXTRA_ASSETS_PATH]:
                 for dirpath, _, filenames in os.walk(root):
@@ -72,8 +73,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send_response_with_compression(200, "application/json", json_string.encode('utf-8'))
 
         # Serve asset files (bundled or extra)
-        elif request.path.startswith("/assets"):
-            asset_path = urllib.parse.unquote(self.path[len("/assets/"):])
+        elif request.path.startswith(WEBROOT + "/assets"):
+            asset_path = urllib.parse.unquote(self.path[len(WEBROOT + "/assets/"):])
             extra_asset_path = os.path.join(EXTRA_ASSETS_PATH, asset_path)
             bundled_asset_path = os.path.join(BUNDLED_ASSETS_PATH, asset_path)
             for path in [extra_asset_path, bundled_asset_path]:
@@ -91,7 +92,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404, "File not found")
 
         # Serve list of logs
-        elif request.path == "/logs" or request.path == "/logs/":
+        elif request.path == WEBROOT + "/logs" or request.path == WEBROOT + "/logs/":
             files = []
             if ENABLE_LOG_DOWNLOADS:
                 if "folder" in query and len(query["folder"]) > 0:
@@ -111,7 +112,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send_response_with_compression(200, "application/json", json_string.encode("utf-8"))
 
         # Serve log file
-        elif request.path.startswith("/logs"):
+        elif request.path.startswith(WEBROOT + "/logs"):
             if ENABLE_LOG_DOWNLOADS and "folder" in query and len(query["folder"]) > 0:
                 filename = urllib.parse.unquote(request.path[len("/logs/"):])
                 if any(filename.endswith(suffix) for suffix in ALLOWED_LOG_SUFFIXES):
@@ -128,7 +129,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Serve everything else
         else:
-            filepath = self.translate_path(self.path)
+            filepath = self.translate_path(self.path.removeprefix(WEBROOT))
             if os.path.isdir(filepath):
                 index_path = os.path.join(filepath, "index.html")
                 if os.path.exists(index_path):
