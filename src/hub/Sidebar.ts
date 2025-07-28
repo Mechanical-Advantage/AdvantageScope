@@ -614,71 +614,11 @@ export default class Sidebar {
     {
       label.addEventListener("contextmenu", (event) => {
         event.preventDefault();
-
-        // Remove any existing context menu
-        let existingMenu = document.querySelector(".field-context-menu");
-        if (existingMenu) {
-          existingMenu.remove();
-        }
-
-        // Create context menu
-        let contextMenu = document.createElement("div");
-        contextMenu.className = "field-context-menu";
-        contextMenu.style.position = "fixed";
-        contextMenu.style.left = event.clientX + "px";
-        contextMenu.style.top = event.clientY + "px";
-        contextMenu.style.background = window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "#2d2d2d"
-          : "#ffffff";
-        contextMenu.style.border =
-          "1px solid " + (window.matchMedia("(prefers-color-scheme: dark)").matches ? "#555" : "#ccc");
-        contextMenu.style.borderRadius = "4px";
-        contextMenu.style.padding = "4px 0";
-        contextMenu.style.zIndex = "10000";
-        contextMenu.style.minWidth = "200px";
-        contextMenu.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
-
-        let createCopyToClipboardMenuItem = (text: string, copyText: string) => {
-          let item = document.createElement("div");
-          item.className = "field-context-menu-item";
-          item.style.padding = "8px 16px";
-          item.style.cursor = "pointer";
-          item.style.fontSize = "13px";
-          item.innerText = text;
-          item.addEventListener("mouseenter", () => {
-            item.style.background = window.matchMedia("(prefers-color-scheme: dark)").matches
-              ? "rgba(255, 255, 255, 0.1)"
-              : "rgba(0, 0, 0, 0.05)";
-          });
-          item.addEventListener("mouseleave", () => {
-            item.style.background = "transparent";
-          });
-          item.addEventListener("click", () => {
-            navigator.clipboard.writeText(copyText).catch((error) => {
-              console.error("Failed to copy to clipboard:", error);
-            });
-            contextMenu.remove();
-          });
-          return item;
-        };
-
-        // Create menu items
-        contextMenu.appendChild(createCopyToClipboardMenuItem(`Copy "${title}" to clipboard`, title));
-        contextMenu.appendChild(createCopyToClipboardMenuItem(`Copy "${fullTitle}" to clipboard`, fullTitle));
-        document.body.appendChild(contextMenu);
-
-        // Close menu when clicking elsewhere
-        let closeMenu = (e: Event) => {
-          if (!contextMenu.contains(e.target as Node)) {
-            contextMenu.remove();
-            document.removeEventListener("click", closeMenu);
-            document.removeEventListener("contextmenu", closeMenu);
-          }
-        };
-        setTimeout(() => {
-          document.addEventListener("click", closeMenu);
-          document.addEventListener("contextmenu", closeMenu);
-        }, 0);
+        window.sendMainMessage("ask-open-sidebar-context-menu", {
+          title: title,
+          fullTitle: fullTitle,
+          position: [event.clientX, event.clientY]
+        });
       });
     }
 

@@ -550,6 +550,31 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       shell.openExternal(message.data);
       break;
 
+    case "ask-open-sidebar-context-menu":
+      const fieldCopyMenu = new Menu();
+      fieldCopyMenu.append(
+        new MenuItem({
+          label: `Copy "${message.data.title}" to clipboard`,
+          click() {
+            clipboard.writeText(message.data.title);
+          }
+        })
+      );
+      fieldCopyMenu.append(
+        new MenuItem({
+          label: `Copy "${message.data.fullTitle}" to clipboard`,
+          click() {
+            clipboard.writeText(message.data.fullTitle);
+          }
+        })
+      );
+      fieldCopyMenu.popup({
+        window: window,
+        x: Math.round(message.data.position[0]),
+        y: Math.round(message.data.position[1])
+      });
+      break;
+    
     case "open-app-menu":
     case "close-app-menu":
       {
