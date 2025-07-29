@@ -27,7 +27,7 @@ let messagePort: MessagePort | null = null;
 let platform: string = "";
 let preferences: Preferences | null = null;
 
-let address: string = DISTRIBUTION === Distribution.Lite ? window.location.hostname : "";
+let address: string = DISTRIBUTION === Distribution.Lite ? window.location.origin : "";
 let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;
@@ -263,7 +263,7 @@ function handleMainMessage(message: NamedMessage) {
             img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
             break;
           case "lite":
-            img.src = "/icons/" + extension + "-icon.png";
+            img.src = "icons/" + extension + "-icon.png";
             break;
         }
         let filenameSpan = document.createElement("span");
