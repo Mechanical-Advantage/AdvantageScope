@@ -17,6 +17,8 @@
 		8C28075D2D07CD35008F4721 /* ARManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C28075C2D07CD33008F4721 /* ARManager.swift */; };
 		8C362AC42C0B600400AD3091 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C362AC32C0B600400AD3091 /* Networking.swift */; };
 		8C6767DB2C11551C00277484 /* QRScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C6767DA2C11551C00277484 /* QRScanner.swift */; };
+		8C6FB4002E41588B00167EFB /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8C6FB3FF2E41588B00167EFB /* AppIcon.icon */; };
+		8C6FB4012E41588B00167EFB /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 8C6FB3FF2E41588B00167EFB /* AppIcon.icon */; };
 		8CBC9A722D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
 		8CBC9A732D140E6A000EFB70 /* AdvantageScopeXR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */; };
 		8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */; };
@@ -79,6 +81,7 @@
 		8C28075C2D07CD33008F4721 /* ARManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARManager.swift; sourceTree = "<group>"; };
 		8C362AC32C0B600400AD3091 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		8C6767DA2C11551C00277484 /* QRScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanner.swift; sourceTree = "<group>"; };
+		8C6FB3FF2E41588B00167EFB /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		8CBC9A712D140E68000EFB70 /* AdvantageScopeXR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvantageScopeXR.swift; sourceTree = "<group>"; };
 		8CBFA6D82BF8663D009AA8CD /* AdvantageScopeXR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AdvantageScopeXR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -153,6 +156,7 @@
 				8C103A842D093F9900FAE4C0 /* ARShaderTypes.h */,
 				8C2126142D05044700C92898 /* Info.plist */,
 				8C2126122D05014700C92898 /* WebOverlay.swift */,
+				8C6FB3FF2E41588B00167EFB /* AppIcon.icon */,
 				8CBFA6DF2BF8663E009AA8CD /* Assets.xcassets */,
 				8CBFA6DD2BF8663D009AA8CD /* ContentView.swift */,
 				8C2759A12C0995BD0067FD80 /* ControlsMenu.swift */,
@@ -249,7 +253,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1610;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					8CBFA6D72BF8663D009AA8CD = {
 						CreatedOnToolsVersion = 15.4;
@@ -287,6 +291,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CBFA6E02BF8663E009AA8CD /* Assets.xcassets in Resources */,
+				8C6FB4012E41588B00167EFB /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +300,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8CBC9A742D14B355000EFB70 /* Assets.xcassets in Resources */,
+				8C6FB4002E41588B00167EFB /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -385,6 +391,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 6S3UQC528P;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -408,6 +415,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -448,6 +456,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 6S3UQC528P;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -464,6 +473,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -477,7 +487,6 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6S3UQC528P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AdvantageScopeXR/Info.plist;
@@ -520,7 +529,6 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6S3UQC528P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AdvantageScopeXR/Info.plist;
@@ -563,7 +571,6 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6S3UQC528P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AdvantageScopeXRClip/Info.plist;
@@ -606,7 +613,6 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 6S3UQC528P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = AdvantageScopeXRClip/Info.plist;

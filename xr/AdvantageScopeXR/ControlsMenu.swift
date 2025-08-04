@@ -13,7 +13,7 @@ struct ControlsMenu: View {
     let requestCalibration: () -> Void
     
     var body: some View {
-        HStack {
+        HStack(spacing: 12) {
             #if !APPCLIP
             Button("Scan", systemImage: "qrcode") {
                 appState.scanningQR.toggle()
@@ -24,7 +24,7 @@ struct ControlsMenu: View {
             
             RecordButton()
             
-            Button("Recalibrate", systemImage: "scope") {
+            Button("Calibrate", systemImage: "scope") {
                 requestCalibration()
             }
         }
@@ -40,14 +40,21 @@ struct ControlButton : ButtonStyle {
     let highlight: Bool
     
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(10)
-            .foregroundStyle(highlight ? Color.white : Color.primary)
-            .background(highlight ? AnyShapeStyle(Color.red) : AnyShapeStyle(.thinMaterial))
-            .clipShape(Capsule())
-            .controlSize(.large)
-            .opacity(configuration.isPressed ? 0.75 : 1)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
-            .animation(.none, value: highlight)
+        if #available(iOS 26.0, *) {
+            configuration.label
+                .padding(10)
+                .foregroundStyle(highlight ? Color.white : Color.primary)
+                .glassEffect(highlight ? .regular.tint(.red).interactive() : .regular.interactive())
+        } else {
+            configuration.label
+                .padding(10)
+                .foregroundStyle(highlight ? Color.white : Color.primary)
+                .background(highlight ? AnyShapeStyle(Color.red) : AnyShapeStyle(.thinMaterial))
+                .clipShape(Capsule())
+                .controlSize(.large)
+                .opacity(configuration.isPressed ? 0.75 : 1)
+                .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
+                .animation(.none, value: highlight)
+        }
     }
 }
