@@ -616,6 +616,10 @@ export default class LineGraphController implements TabController {
     // Return command
     leftFieldsCommand.reverse();
     rightFieldsCommand.reverse();
+    let leftUnitsKey =
+      this.leftSourceList.getState().length > 0 ? window.log.getUnit(this.leftSourceList.getState()[0].logKey) : null;
+    let rightUnitsKey =
+      this.rightSourceList.getState().length > 0 ? window.log.getUnit(this.rightSourceList.getState()[0].logKey) : null;
     return {
       timeRange: timeRange,
       selectionMode: window.selection.getMode(),
@@ -627,6 +631,8 @@ export default class LineGraphController implements TabController {
       rightRange: rightRange,
       showLeftAxis: showLeftAxis,
       showRightAxis: showRightAxis,
+      leftUnits: leftUnitsKey !== null ? Units.ALL_UNITS[leftUnitsKey] : null,
+      rightUnits: rightUnitsKey !== null ? Units.ALL_UNITS[rightUnitsKey] : null,
       priorityAxis:
         (this.leftLockedRange === null && this.rightLockedRange !== null) ||
         (leftFieldsCommand.length === 0 && rightFieldsCommand.length > 0)

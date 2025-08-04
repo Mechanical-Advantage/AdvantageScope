@@ -907,15 +907,15 @@ export default class Sidebar {
         let metadata = window.log.getMetadataString(field.fullKey!);
         if (metadata === lastMetadata) return;
         lastMetadata = metadata;
-        try {
-          let metadataParsed = JSON.parse(metadata);
-          label.title = Object.keys(metadataParsed)
-            .sort()
-            .map((key) => key + ": " + metadataParsed[key])
-            .join("\n");
-        } catch {
-          label.title = metadata;
-        }
+        // try {
+        //   let metadataParsed = JSON.parse(metadata);
+        //   label.title = Object.keys(metadataParsed)
+        //     .sort()
+        //     .map((key) => key + ": " + metadataParsed[key])
+        //     .join("\n");
+        // } catch {
+        label.title = metadata;
+        // }
       };
       this.updateMetadataCallbacks.push(updateMetadata);
       updateMetadata();
