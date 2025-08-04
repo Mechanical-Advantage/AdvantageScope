@@ -107,7 +107,7 @@
     "files": [
       "www/**/*",
       "bundles/*",
-      "icons/**/*",
+      "icons/**/*.png",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
       "docs/build/**/*",
@@ -176,7 +176,9 @@
       "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
+      "notarize": false,
       "extendInfo": {
+        "CFBundleIconName": "AppIcon",
         "NSUpdateSecurityPolicy": {
           "AllowPackages": [
             "58SET3NSX7"
@@ -188,7 +190,12 @@
           }
         }
       },
-      "notarize": false
+      "extraResources": [
+        {
+          "from": "icons/macos-assets.car",
+          "to": "Assets.car"
+        }
+      ]
     },
     "linux": {
       "target": [
