@@ -14,7 +14,7 @@ export default class RRLOGDecoder {
   private SUPPORTED_LOG_REVISIONS = [0, 1];
   private STRING_DECODER = new TextDecoder("UTF-8");
 
-  private magic: string | null = null; //
+  private magic: string | null = null;
   private logRevision: number | null = null;
   private firstRRTimestamp: bigint | null = null;
   private lastTimestamp: number = 0;
