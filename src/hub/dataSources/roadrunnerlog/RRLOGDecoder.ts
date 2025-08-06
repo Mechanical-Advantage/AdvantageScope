@@ -161,86 +161,93 @@ export default class RRLOGDecoder {
         try {
           type = dataBuffer.getInt32(shiftOffset(4));
           if (type === undefined) break; // This was the last cycle, save the data
-        } catch (e) {
-          break;
-        }
 
-        let keyID: number;
-        switch (type) {
-          case 0: // New channel definition
-            keyID = Object.keys(this.keyIDs).length;
-            this.keyIDs[keyID] = readString();
-            let newSchema = readSchema();
-            this.keySchemas[keyID] = newSchema;
-            if (this.logRevision === 0) {
-              // Workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
-              // In v0, each ArraySchema in a definition adds 4 00 bytes to the end of the definition
-              shiftOffset(4 * arraySchemaCount(newSchema));
-            }
-            break;
-          case 1: // New message
-            keyID = dataBuffer.getInt32(shiftOffset(4));
-            let key = this.keyIDs[keyID];
-            let schema = this.keySchemas[keyID];
-            let msg = readMsg(schema);
-
-            // Find a timestamp
-
-            // Automatically added by log writer
-            if (
-              (key === "OPMODE_PRE_INIT" ||
-                key === "OPMODE_PRE_START" ||
-                key === "OPMODE_POST_STOP" ||
-                key === "TIMESTAMP") &&
-              typeof msg === "bigint"
-            ) {
-              this.lastTimestamp = rrTimestampToSeconds(msg);
-              if (key === "OPMODE_PRE_START") {
-                // Offset start time by 50ms to show the values returned by the first loop
-                log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
-              } else if (key === "OPMODE_POST_STOP") {
-                log.putBoolean("RUNNING", this.lastTimestamp, false);
+          let keyID: number;
+          switch (type) {
+            case 0: // New channel definition
+              keyID = Object.keys(this.keyIDs).length;
+              this.keyIDs[keyID] = readString();
+              let newSchema = readSchema();
+              this.keySchemas[keyID] = newSchema;
+              if (this.logRevision === 0) {
+                // Workaround for https://github.com/acmerobotics/road-runner-ftc/issues/22
+                // In v0, each ArraySchema in a definition adds 4 00 bytes to the end of the definition
+                shiftOffset(4 * arraySchemaCount(newSchema));
               }
+              break;
+            case 1: // New message
+              keyID = dataBuffer.getInt32(shiftOffset(4));
+              let key = this.keyIDs[keyID];
+              let schema = this.keySchemas[keyID];
+              let msg = readMsg(schema);
 
-              // Automatically parse timestamp fields of Roadrunner's built in message classes
-            } else if (msg instanceof Map && msg.has("timestamp")) {
-              let timestamp = msg.get("timestamp");
-              if (timestamp != undefined && typeof timestamp === "bigint") {
-                this.lastTimestamp = rrTimestampToSeconds(timestamp);
-              }
-            }
+              // Find a timestamp
 
-            let timestamp = this.lastTimestamp;
-            let type = typeof msg;
-            switch (type) {
-              case "boolean":
-                log.putBoolean(key, timestamp, <boolean>msg);
-                break;
-              case "number":
-                log.putNumber(key, timestamp, <number>msg);
-                break;
-              case "bigint":
-                log.putNumber(key, timestamp, Number(msg)); // unsafe??
-                break;
-              case "string":
-                log.putString(key, timestamp, <string>msg);
-                break;
-              default:
-                if (msg instanceof Map && msg.has("x") && msg.has("y") && msg.has("heading")) {
-                  log.putPose(key, timestamp, <Pose2d>{
-                    translation: [
-                      Units.convert(<number>msg.get("x"), "inches", "meters"),
-                      Units.convert(<number>msg.get("y"), "inches", "meters")
-                    ],
-                    rotation: msg.get("heading")
-                  });
-                } else {
-                  // struct or array
-                  log.putUnknownStruct(key, timestamp, msg);
+              // Automatically added by log writer
+              if (
+                (key === "OPMODE_PRE_INIT" ||
+                  key === "OPMODE_PRE_START" ||
+                  key === "OPMODE_POST_STOP" ||
+                  key === "TIMESTAMP") &&
+                typeof msg === "bigint"
+              ) {
+                this.lastTimestamp = rrTimestampToSeconds(msg);
+                if (key === "OPMODE_PRE_START") {
+                  // Offset start time by 50ms to show the values returned by the first loop
+                  log.putBoolean("RUNNING", this.lastTimestamp + 0.05, true);
+                } else if (key === "OPMODE_POST_STOP") {
+                  log.putBoolean("RUNNING", this.lastTimestamp, false);
                 }
-                break;
-            }
+
+                // Automatically parse timestamp fields of Roadrunner's built in message classes
+              } else if (msg instanceof Map && msg.has("timestamp")) {
+                let timestamp = msg.get("timestamp");
+                if (timestamp != undefined && typeof timestamp === "bigint") {
+                  this.lastTimestamp = rrTimestampToSeconds(timestamp);
+                }
+              }
+
+              let timestamp = this.lastTimestamp;
+              let type = typeof msg;
+              switch (type) {
+                case "boolean":
+                  log.putBoolean(key, timestamp, <boolean>msg);
+                  break;
+                case "number":
+                  log.putNumber(key, timestamp, <number>msg);
+                  break;
+                case "bigint":
+                  log.putNumber(key, timestamp, Number(msg)); // unsafe??
+                  break;
+                case "string":
+                  log.putString(key, timestamp, <string>msg);
+                  break;
+                default:
+                  if (msg instanceof Map && msg.has("x") && msg.has("y") && msg.has("heading")) {
+                    log.putPose(key, timestamp, <Pose2d>{
+                      translation: [
+                        Units.convert(<number>msg.get("x"), "inches", "meters"),
+                        Units.convert(<number>msg.get("y"), "inches", "meters")
+                      ],
+                      rotation: msg.get("heading")
+                    });
+                  } else {
+                    // struct or array
+                    log.putUnknownStruct(key, timestamp, msg);
+                  }
+                  break;
+              }
+              break;
+          }
+        } catch (e) {
+          // Catch file ending
+          // Usually files should end at message breaks, but this handles corrupted or incorrectly saved logs ending early
+          if (e instanceof RangeError && e.message === "Offset is outside the bounds of the DataView") {
             break;
+          } else {
+            console.error(e);
+            return false;
+          }
         }
 
         // Send progress update
@@ -253,7 +260,8 @@ export default class RRLOGDecoder {
         }
       }
       return true;
-    } catch {
+    } catch (e) {
+      console.error(e);
       return false;
     }
   }
