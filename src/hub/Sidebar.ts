@@ -611,16 +611,16 @@ export default class Sidebar {
     }
 
     // Right-click context menu for copying field paths
-    {
-      label.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
-        window.sendMainMessage("ask-open-sidebar-context-menu", {
-          title: title,
-          fullTitle: fullTitle,
-          position: [event.clientX, event.clientY]
-        });
+    let mouseDownInfo: [number, number, number, number] | null = null;
+    label.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      mouseDownInfo = null;
+      window.sendMainMessage("ask-open-sidebar-context-menu", {
+        title: title,
+        fullTitle: fullTitle,
+        position: [event.clientX, event.clientY]
       });
-    }
+    });
 
     // Full key fields
     if (field.fullKey !== null) {
@@ -651,7 +651,6 @@ export default class Sidebar {
             this.selectGroupClearCallbacks.forEach((callback) => callback());
           }
         };
-        let mouseDownInfo: [number, number, number, number] | null = null;
         label.addEventListener("mousedown", (event) => {
           mouseDownInfo = [event.clientX, event.clientY, event.offsetX, event.offsetY];
         });
