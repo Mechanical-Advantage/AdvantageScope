@@ -234,9 +234,10 @@ export default class RRLOGDecoder {
                     ],
                     rotation: msg.get("heading")
                   });
+                } else {
+                  // struct or array
+                  log.putUnknownStruct(key, timestamp, msg);
                 }
-                // struct or array
-                log.putUnknownStruct(key, timestamp, msg);
                 break;
             }
             break;
