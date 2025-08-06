@@ -574,7 +574,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         y: Math.round(message.data.position[1])
       });
       break;
-    
+
     case "open-app-menu":
     case "close-app-menu":
       {
