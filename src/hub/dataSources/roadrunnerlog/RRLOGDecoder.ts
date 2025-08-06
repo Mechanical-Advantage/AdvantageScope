@@ -7,6 +7,7 @@
 
 import { Pose2d } from "../../../shared/geometry";
 import Log from "../../../shared/log/Log";
+import { Units } from "../../../shared/units";
 import { ArraySchema, EnumSchema, MessageSchema, PrimitiveSchema, RRMessage, StructSchema } from "./RRLOGCommon";
 
 export default class RRLOGDecoder {
@@ -227,7 +228,10 @@ export default class RRLOGDecoder {
               default:
                 if (msg instanceof Map && msg.has("x") && msg.has("y") && msg.has("heading")) {
                   log.putPose(key, timestamp, <Pose2d>{
-                    translation: [<number>msg.get("x") / 39.37008, <number>msg.get("y") / 39.37008],
+                    translation: [
+                      Units.convert(<number>msg.get("x"), "inches", "meters"),
+                      Units.convert(<number>msg.get("y"), "inches", "meters")
+                    ],
                     rotation: msg.get("heading")
                   });
                 }
