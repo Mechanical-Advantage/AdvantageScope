@@ -8,7 +8,7 @@
 import { exec } from "child_process";
 import fs from "fs";
 
-const EMSCRIPTEN_VERSION = "3.1.74";
+const EMSCRIPTEN_VERSION = "4.0.12";
 
 try {
   await new Promise(async (resolve, reject) => {
@@ -51,7 +51,7 @@ try {
       outPath = "'bundles/hub$wpilogIndexer.js' ";
     }
     exec(
-      `emcc ${inPath} -o ${outPath} -sEXPORTED_FUNCTIONS=_run,_malloc -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
+      `emcc ${inPath} -o ${outPath} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
       (error, stdout, stderr) => {
         console.log(stdout);
         console.error(stderr);
