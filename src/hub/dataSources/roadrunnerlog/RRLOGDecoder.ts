@@ -199,7 +199,7 @@ export default class RRLOGDecoder {
                   log.putBoolean("RUNNING", this.lastTimestamp, false);
                 }
 
-                // Automatically parse timestamp fields of Roadrunner's built in message classes
+                // Automatically parse timestamp fields of Road Runner's built in message classes
               } else if (msg instanceof Map && msg.has("timestamp")) {
                 let timestamp = msg.get("timestamp");
                 if (timestamp != undefined && typeof timestamp === "bigint") {
