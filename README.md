@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Mechanical-Advantage/AdvantageScope/actions/workflows/build.yml)
 
-AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by Team 6328. It reads logs in WPILOG, DS log, Hoot (CTRE), RLOG, and Roadrunner file formats, plus live robot data viewing using NT4 or RLOG streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://docs.advantagekit.org) log replay framework. Note that **AdvantageKit is not required to use AdvantageScope**.
+AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by Team 6328. It reads logs in WPILOG, DS log, Hoot (CTRE), RLOG, and Road Runner file formats, plus live robot data viewing using NT4 or RLOG streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://docs.advantagekit.org) log replay framework. Note that **AdvantageKit is not required to use AdvantageScope**.
 
 AdvantageScope includes the following tools:
 
@@ -37,7 +37,7 @@ To install Node.js dependencies, run:
 npm install
 ```
 
-[Emscripten](https://emscripten.org) 3.1.74 also needs to be installed (instructions [here](https://emscripten.org/docs/getting_started/downloads.html)).
+[Emscripten](https://emscripten.org) 4.0.12 also needs to be installed (instructions [here](https://emscripten.org/docs/getting_started/downloads.html)).
 
 To build for the current platform, run:
 

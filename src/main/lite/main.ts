@@ -343,6 +343,10 @@ async function handleHubMessage(message: NamedMessage) {
       window.open(message.data, "_blank");
       break;
 
+    case "ask-open-sidebar-context-menu":
+      // Sidebar context menu is currently not implemented in the Lite version since the only current options require HTTPS APIs (navigator.clipboard APIs).
+      break;
+
     case "open-app-menu":
       {
         let menuItems: (MenuItem | Submenu | "-")[] = [];

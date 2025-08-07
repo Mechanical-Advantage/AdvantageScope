@@ -69,7 +69,7 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.74
+          version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
         env:
@@ -101,7 +101,7 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.74
+          version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
         env:
@@ -135,7 +135,7 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.74
+          version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
         env:

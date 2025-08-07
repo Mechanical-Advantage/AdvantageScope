@@ -72,8 +72,13 @@ void* run(void* buffer, int bufferSize) {
     // Expand output if necessary
     if (recordCount >= recordCapacity) {
       recordCapacity *= 2;
-      output = realloc(
+      void* newOutput = realloc(
           output, OUTPUT_HEADER_SIZE + OUTPUT_RECORD_SIZE * recordCapacity);
+      if (newOutput == NULL) {
+        // Maximum heap size has been reached, exit early
+        break;
+      }
+      output = newOutput;
     }
 
     // Write record to output
