@@ -84,9 +84,6 @@ self.onmessage = async (event) => {
 
     // Convert to requested format
     switch (options.format) {
-      case "csv-table":
-        resolve(generateCsvTable(log, fields, progress, timestamps));
-        break;
       case "csv-list":
         resolve(generateCsvList(log, fields, progress, timestamps));
         break;
@@ -102,49 +99,6 @@ self.onmessage = async (event) => {
     reject();
   }
 };
-
-function generateCsvTable(
-  log: Log,
-  fields: string[],
-  progress: (progress: number) => void,
-  timestamps?: number[]
-): string {
-  // Generate timestamps for changes
-  if (timestamps === undefined) {
-    timestamps = log.getTimestamps(fields);
-  }
-
-  // Record timestamps
-  let data: string[][] = [["Timestamp"]];
-  timestamps.forEach((timestamp) => {
-    data.push([timestamp.toString()]);
-  });
-
-  // Retrieve data
-  fields.forEach((field, fieldIndex) => {
-    data[0].push(field);
-    let fieldData = log.getRange(field, -Infinity, Infinity);
-    let fieldType = log.getType(field);
-
-    timestamps!.forEach((timestamp, timestampIndex) => {
-      if (fieldData === undefined || fieldType === null) return;
-      let nextIndex = fieldData.timestamps.findIndex((value) => value > timestamp);
-      if (nextIndex === -1) nextIndex = fieldData.timestamps.length;
-      let value: any = null;
-      if (nextIndex !== 0) {
-        value = fieldData.values[nextIndex - 1];
-      }
-      data[timestampIndex + 1].push(getLogValueText(value, fieldType).replaceAll(",", ";"));
-
-      // Send progress update
-      progress((fieldIndex + timestampIndex / timestamps!.length) / fields.length);
-    });
-  });
-
-  let text = data.map((x) => x.join(",")).join("\n");
-  progress(1);
-  return text;
-}
 
 function generateCsvList(
   log: Log,

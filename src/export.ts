@@ -44,8 +44,7 @@ window.addEventListener("message", (event) => {
 
     // Close function
     function confirm() {
-      let format: "csv-table" | "csv-list" | "wpilog" | "mcap" = "csv-table";
-      if (FORMAT.value === "csv-table") format = "csv-table";
+      let format: "csv-list" | "wpilog" | "mcap" = "csv-list";
       if (FORMAT.value === "csv-list") format = "csv-list";
       if (FORMAT.value === "wpilog") format = "wpilog";
       if (FORMAT.value === "mcap") format = "mcap";

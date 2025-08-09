@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 export default interface ExportOptions {
-  format: "csv-table" | "csv-list" | "wpilog" | "mcap";
+  format: "csv-list" | "wpilog" | "mcap";
   samplingMode: "changes" | "fixed" | "akit";
   samplingPeriod: number;
   prefixes: string;
