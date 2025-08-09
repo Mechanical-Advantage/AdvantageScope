@@ -107,7 +107,7 @@ export default class CSVDecoder {
     }
 
     rows.forEach((row, rowIndex) => {
-      if (rowIndex == 0) return;
+      if (rowIndex == 0 || row.length == 0) return;
 
       if (format == "list") {
         const columns = row.split(",");
