@@ -94,23 +94,47 @@ export default class CSVDecoder {
 
   decode(log: Log, data: string, progressCallback?: (progress: number) => void) {
     const rows = data.split("\n");
+
+    let format: "table" | "list";
+    let tableFormatKeys: string[];
+    if (rows[0] == ["Timestamp", "Key", "Value"].join(",")) {
+      format = "list";
+    } else if (rows[0].startsWith("Timestamp")) {
+      format = "table";
+      tableFormatKeys = rows[0].split(",");
+    } else {
+      throw `Could not recognize columns: ${rows[0]}`;
+    }
+
     rows.forEach((row, rowIndex) => {
-      if (rowIndex == 0) {
-        if (row != "Timestamp,Key,Value") {
-          throw `Could not recognize columns: ${row}`;
+      if (rowIndex == 0) return;
+
+      if (format == "list") {
+        const columns = row.split(",");
+        if (columns.length != 3) {
+          throw `Invalid number of columns (expected 3): ${columns.length}`;
         }
-        return;
+
+        const [timestampRaw, key, valueRaw] = columns;
+        const timestamp = Number.parseFloat(timestampRaw);
+
+        this.parseRaw(log, timestamp, key, valueRaw);
+      } else {
+        const columns = row.split(",");
+        if (columns.length != tableFormatKeys.length) {
+          throw `Invalid number of columns (expected ${tableFormatKeys.length}): ${columns.length}`;
+        }
+
+        const timestamp = Number.parseFloat(columns[0]);
+
+        columns.forEach((column, columnIndex) => {
+          if (columnIndex == 0) return;
+
+          const key = tableFormatKeys[columnIndex];
+          const valueRaw = column;
+          this.parseRaw(log, timestamp, key, valueRaw);
+        });
       }
-
-      const columns = row.split(",");
-      if (columns.length != 3) {
-        throw `Invalid number of columns (expected 3): ${columns.length}`;
-      }
-
-      const [timestampRaw, key, valueRaw] = columns;
-      const timestamp = Number.parseFloat(timestampRaw);
-
-      this.parseRaw(log, timestamp, key, valueRaw);
 
       if (progressCallback !== undefined) {
         progressCallback(rowIndex / rows.length);
