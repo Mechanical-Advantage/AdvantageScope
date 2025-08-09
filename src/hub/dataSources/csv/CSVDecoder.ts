@@ -8,7 +8,7 @@
 import Log from "../../../shared/log/Log";
 
 export default class CSVDecoder {
-  private parseRaw(log: Log, timestamp: number, key: string, valueRaw: string) {
+  private parseEntry(log: Log, timestamp: number, key: string, valueRaw: string) {
     // Try to parse empty raw
     if (valueRaw == "(empty)") {
       log.putRaw(key, timestamp, new Uint8Array());
@@ -118,7 +118,7 @@ export default class CSVDecoder {
         const [timestampRaw, key, valueRaw] = columns;
         const timestamp = Number.parseFloat(timestampRaw);
 
-        this.parseRaw(log, timestamp, key, valueRaw);
+        this.parseEntry(log, timestamp, key, valueRaw);
       } else {
         const columns = row.split(",");
         if (columns.length != tableFormatKeys.length) {
@@ -132,7 +132,7 @@ export default class CSVDecoder {
 
           const key = tableFormatKeys[columnIndex];
           const valueRaw = column;
-          this.parseRaw(log, timestamp, key, valueRaw);
+          this.parseEntry(log, timestamp, key, valueRaw);
         });
       }
 
