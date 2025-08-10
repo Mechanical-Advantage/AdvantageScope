@@ -13,6 +13,7 @@ import sys
 import json
 import urllib
 import gzip
+import zipfile
 
 from multipart import parse_options_header, MultipartParser
 
@@ -22,7 +23,8 @@ IS_SYSTEMCORE = os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
-ENABLE_LOG_DOWNLOADS = IS_SYSTEMCORE or "--enable-logs" in sys.argv
+# todo: is backwards compatibility important here?
+ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv or "--enable-logs" in sys.argv
 WEBROOT = "/as"
 
 
@@ -96,7 +98,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # Serve list of logs
         elif request.path == WEBROOT + "/logs" or request.path == WEBROOT + "/logs/":
             files = []
-            if ENABLE_LOG_DOWNLOADS:
+            if ENABLE_FILESYSTEM_ACCESS:
                 if "folder" in query and len(query["folder"]) > 0:
                     folder_path = query["folder"][0]
                     if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
@@ -115,7 +117,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Serve log file
         elif request.path.startswith(WEBROOT + "/logs"):
-            if ENABLE_LOG_DOWNLOADS and "folder" in query and len(query["folder"]) > 0:
+            if ENABLE_FILESYSTEM_ACCESS and "folder" in query and len(query["folder"]) > 0:
                 filename = urllib.parse.unquote(request.path[len("/logs/"):])
                 if any(filename.endswith(suffix) for suffix in ALLOWED_LOG_SUFFIXES):
                     full_path = os.path.join(query["folder"][0], filename)
@@ -155,7 +157,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         request = urllib.parse.urlparse(self.path)
-        if request.path.startswith(WEBROOT + "/uploadAsset"):
+        if request.path.startswith(WEBROOT + "/uploadAsset") & ENABLE_FILESYSTEM_ACCESS:
             content_type, options = parse_options_header(self.headers.get("Content-Type",""))
 
             if content_type == "multipart/form-data" and 'boundary' in options:
@@ -165,11 +167,31 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
                 for part in parser:
                     if part.filename:
-                        print(f"{part.name}: File upload ({part.size} bytes)")
-                        part.save_as(f"./{part.filename}")
+                        if part.filename.lower().endswith(".zip"):
+                            print(f"{part.name}: File upload ({part.size} bytes)")
+                            asset_zip= f"{EXTRA_ASSETS_PATH}/{part.filename}"
+                            part.save_as(asset_zip)
+                            asset_path = asset_zip[:-len(".zip")]  # remove .zip ending
 
-                self.send_response(200)
-                self.end_headers()
+                            with zipfile.ZipFile(asset_zip,"r") as zip_ref:
+                                zip_ref.extractall(asset_path)
+                                os.remove(asset_zip)
+
+
+                            for dirpath, _, filenames in os.walk(asset_path):
+                                for filename in filenames:
+                                    if filename.lower().endswith(".zip"):
+                                        with zipfile.ZipFile(f"{dirpath}/{filename}", "r") as zip_ref:
+                                            zip_ref.extractall(f"{dirpath}/{filename[:-len(".zip")]}")
+                                            os.remove(f"{dirpath}/{filename}")
+
+
+
+                            self.send_response(200)
+                            self.end_headers()
+                        else:
+                            self.send_response(400, "Uploaded asset must be a zip")
+                            self.end_headers()
 
                 # Free up resources after use
                 for part in parser.parts():
@@ -188,9 +210,9 @@ if __name__ == "__main__":
         os.mkdir(EXTRA_ASSETS_PATH)
         print(f"Created folder for extra assets: {EXTRA_ASSETS_PATH}")
 
-    # Warn if log downloads disabled
-    if not ENABLE_LOG_DOWNLOADS:
-        print("Log downloads are currently disabled. Pass \"--enable-logs\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem.\n")
+    # Warn if filesystem access disabled
+    if not ENABLE_FILESYSTEM_ACCESS:
+        print("Log downloads and custom asset uploads are currently disabled. Pass \"--enable-file-access\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem and upload access to the ascope_assets folder.\n")
 
     # Start server
     os.chdir(ROOT)
