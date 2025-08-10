@@ -14,6 +14,8 @@ import json
 import urllib
 import gzip
 
+from multipart import parse_options_header, MultipartParser
+
 PORT = 5808
 ROOT = os.path.abspath("static")
 IS_SYSTEMCORE = os.uname().nodename == "robot"
@@ -150,6 +152,34 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     self.send_error(500, f"Error serving file: {e}")
             else:
                 self.send_error(404, f"File not found: {self.path}")
+
+    def do_POST(self):
+
+        content_type, options = parse_options_header(self.headers.get("Content-Type",""))
+
+        if content_type == "multipart/form-data" and 'boundary' in options:
+            print("formdata")
+            stream = self.rfile
+            print("got stream")
+            boundary = options["boundary"]
+            print("got boundary")
+            parser = MultipartParser(stream, boundary,content_length=int(self.headers.get("Content-Length",-1)))
+            print("got parser")
+
+            for part in parser:
+                if part.filename:
+                    print(f"{part.name}: File upload ({part.size} bytes)")
+                    part.save_as(f"./{part.filename}")
+
+            self.send_response(200, "Upload succeeded")
+            self.end_headers()
+
+            # Free up resources after use
+            for part in parser.parts():
+                part.close()
+
+
+
 
 
 if __name__ == "__main__":
