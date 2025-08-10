@@ -68,7 +68,7 @@ struct ContentView : View {
             .onTapGesture(coordinateSpace: .global) { location in
                 if (!appState.calibrationText.isEmpty && location.y > 150) {
                     webOverlay.userTap()
-                } else {
+                } else if (!appState.showControls || location.y > 150) {
                     appState.showControls.toggle()
                 }
             }
