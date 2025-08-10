@@ -166,15 +166,12 @@ function updateFancyWindow() {
   } else {
     document.body.classList.remove("fancy-side-bar-mac");
   }
-
-  // Skip background material on Windows until https://github.com/electron/electron/issues/41824 is fixed
-  //
-  // if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
-  //   // Windows 11 22H2
-  //   document.body.classList.add("fancy-side-bar-win");
-  // } else {
-  //   document.body.classList.remove("fancy-side-bar-win");
-  // }
+  if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+    // Windows 11 22H2
+    document.body.classList.add("fancy-side-bar-win");
+  } else {
+    document.body.classList.remove("fancy-side-bar-win");
+  }
 }
 
 function setExporting(exporting: boolean) {
