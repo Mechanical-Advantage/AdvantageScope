@@ -154,29 +154,29 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.send_error(404, f"File not found: {self.path}")
 
     def do_POST(self):
+        request = urllib.parse.urlparse(self.path)
+        if request.path.startswith(WEBROOT + "/uploadAsset"):
+            content_type, options = parse_options_header(self.headers.get("Content-Type",""))
 
-        content_type, options = parse_options_header(self.headers.get("Content-Type",""))
+            if content_type == "multipart/form-data" and 'boundary' in options:
+                stream = self.rfile
+                boundary = options["boundary"]
+                parser = MultipartParser(stream, boundary,content_length=int(self.headers.get("Content-Length",-1)))
 
-        if content_type == "multipart/form-data" and 'boundary' in options:
-            print("formdata")
-            stream = self.rfile
-            print("got stream")
-            boundary = options["boundary"]
-            print("got boundary")
-            parser = MultipartParser(stream, boundary,content_length=int(self.headers.get("Content-Length",-1)))
-            print("got parser")
+                for part in parser:
+                    if part.filename:
+                        print(f"{part.name}: File upload ({part.size} bytes)")
+                        part.save_as(f"./{part.filename}")
 
-            for part in parser:
-                if part.filename:
-                    print(f"{part.name}: File upload ({part.size} bytes)")
-                    part.save_as(f"./{part.filename}")
+                self.send_response(200)
+                self.end_headers()
 
-            self.send_response(200, "Upload succeeded")
+                # Free up resources after use
+                for part in parser.parts():
+                    part.close()
+        else:
+            self.send_response(404)
             self.end_headers()
-
-            # Free up resources after use
-            for part in parser.parts():
-                part.close()
 
 
 
