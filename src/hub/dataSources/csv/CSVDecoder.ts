@@ -95,21 +95,10 @@ export default class CSVDecoder {
   decode(log: Log, data: string, progressCallback?: (progress: number) => void) {
     const rows = data.split("\n");
 
-    let format: "table" | "list";
-    let tableFormatKeys: string[];
     if (rows[0] == ["Timestamp", "Key", "Value"].join(",")) {
-      format = "list";
-    } else if (rows[0].startsWith("Timestamp")) {
-      format = "table";
-      tableFormatKeys = rows[0].split(",");
-    } else {
-      throw `Could not recognize columns: ${rows[0]}`;
-    }
+      rows.forEach((row, rowIndex) => {
+        if (rowIndex == 0 || row.length == 0) return;
 
-    rows.forEach((row, rowIndex) => {
-      if (rowIndex == 0 || row.length == 0) return;
-
-      if (format == "list") {
         const columns = row.split(",");
         if (columns.length != 3) {
           throw `Invalid number of columns (expected 3): ${columns.length}`;
@@ -119,10 +108,19 @@ export default class CSVDecoder {
         const timestamp = Number.parseFloat(timestampRaw);
 
         this.parseEntry(log, timestamp, key, valueRaw);
-      } else {
+
+        if (progressCallback !== undefined) {
+          progressCallback(rowIndex / rows.length);
+        }
+      });
+    } else if (rows[0].startsWith("Timestamp")) {
+      let keys = rows[0].split(",");
+      rows.forEach((row, rowIndex) => {
+        if (rowIndex == 0 || row.length == 0) return;
+
         const columns = row.split(",");
-        if (columns.length != tableFormatKeys.length) {
-          throw `Invalid number of columns (expected ${tableFormatKeys.length}): ${columns.length}`;
+        if (columns.length != keys.length) {
+          throw `Invalid number of columns (expected ${keys.length}): ${columns.length}`;
         }
 
         const timestamp = Number.parseFloat(columns[0]);
@@ -130,15 +128,15 @@ export default class CSVDecoder {
         columns.forEach((column, columnIndex) => {
           if (columnIndex == 0) return;
 
-          const key = tableFormatKeys[columnIndex];
-          const valueRaw = column;
-          this.parseEntry(log, timestamp, key, valueRaw);
+          this.parseEntry(log, timestamp, keys[columnIndex], column);
         });
-      }
 
-      if (progressCallback !== undefined) {
-        progressCallback(rowIndex / rows.length);
-      }
-    });
+        if (progressCallback !== undefined) {
+          progressCallback(rowIndex / rows.length);
+        }
+      });
+    } else {
+      throw `Could not recognize columns: ${rows[0]}`;
+    }
   }
 }
