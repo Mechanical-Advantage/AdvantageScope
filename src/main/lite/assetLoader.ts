@@ -47,7 +47,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       } else if (config === "invalid") {
         return;
       }
-      config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
+      config.path = currentPath + `assets/${encodeURIComponent(path)}/image.png`;
       if (`${path}/image.png` in assetIndex) {
         assets.field2ds.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
