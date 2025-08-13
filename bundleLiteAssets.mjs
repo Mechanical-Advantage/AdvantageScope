@@ -13,7 +13,7 @@ import path from "path";
 const bundledAssetsPath = "bundledAssets";
 const liteAssetsPath = path.join("lite", "static", "bundledAssets");
 const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
-const githubAssetsTag = "default-assets-v2";
+const githubAssetsTag = "archive-v1";
 const githubAssetNames = [
   "Field2d_2025FRCFieldWeldedV2",
   "Field2d_20242025FTCFieldV1",
