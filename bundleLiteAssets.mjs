@@ -18,7 +18,7 @@ const githubAssetNames = [
   "Field2d_2025FRCFieldWeldedV2",
   "Field2d_20242025FTCFieldV1",
   "Field3d_2025FRCFieldWeldedV2",
-  "Field3d_20242025FTCFieldV1",
+  "Field3d_20242025FTCFieldV2",
   "Joystick_LogitechF310V1",
   "Joystick_PS4ControllerV1",
   "Joystick_XboxControllerBlueV1",

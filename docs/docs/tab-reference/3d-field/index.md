@@ -39,6 +39,10 @@ To get started, drag a field to the "Poses" section. Delete an object using the 
 To see a full list of supported object types, click the `?` icon. This list also includes the supported data types and whether the objects must be added as children.
 :::
 
+:::info
+AdvantageScope supports several sizes of AprilTags for FTC fields. Sizes are measured as the **side length of the black section of the AprilTag**, not including the required white border.
+:::
+
 ## Data Format
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.

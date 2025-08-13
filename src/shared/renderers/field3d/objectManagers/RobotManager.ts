@@ -12,12 +12,12 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
-import { SwerveState } from "../../../geometry";
+import { rotationSequenceToQuaternion, SwerveState } from "../../../geometry";
 import { MechanismState } from "../../../log/LogUtil";
 import { Units } from "../../../units";
 import { transformPx } from "../../../util";
 import { Field3dRendererCommand_GhostObj, Field3dRendererCommand_RobotObj } from "../../Field3dRenderer";
-import { getQuaternionFromRotSeq, quaternionToRotation3d, rotation3dToQuaternion } from "../../Field3dRendererImpl";
+import { quaternionToRotation3d, rotation3dToQuaternion } from "../../Field3dRendererImpl";
 import ObjectManager from "../ObjectManager";
 import { FTC_MULTIPLIER, XR_MAX_RADIUS } from "../OptimizeGeometries";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
@@ -194,7 +194,7 @@ export default class RobotManager extends ObjectManager<
             for (let index = 0; index < gltfScenes.length; index++) {
               let scene = gltfScenes[index];
               if (index === 0) {
-                scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig.rotations));
+                scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(robotConfig.rotations));
                 scene.position.set(...robotConfig.position);
               }
 
@@ -368,7 +368,7 @@ export default class RobotManager extends ObjectManager<
               userPose === null ? robotConfig!.rotations : robotConfig!.components[i - 1].zeroedRotations;
             let configPosition =
               userPose === null ? robotConfig!.position : robotConfig!.components[i - 1].zeroedPosition;
-            this.dummyConfigPose.rotation.setFromQuaternion(getQuaternionFromRotSeq(configRotations));
+            this.dummyConfigPose.rotation.setFromQuaternion(rotationSequenceToQuaternion(configRotations));
             this.dummyConfigPose.position.set(...configPosition);
 
             return {
