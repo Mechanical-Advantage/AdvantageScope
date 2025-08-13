@@ -29,7 +29,8 @@ export class HistoricalDataSource {
     ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js",
-    ".log": "hub$roadRunnerWorker.js"
+    ".log": "hub$roadRunnerWorker.js",
+    ".csv": "hub$csvWorker.js"
   };
 
   private path = "";
