@@ -12,7 +12,7 @@ export default interface Preferences {
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
-  liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog";
+  liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog" | "ftcdashboard";
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
   publishFilter: string;
@@ -53,7 +53,7 @@ export const DEFAULT_PREFS: Preferences = {
 
 // Phoenix not possible due to cross origin restrictions
 // PathPlanner and RLOG not possible because they use raw TCP
-export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit"];
+export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
@@ -83,7 +83,8 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
       newPrefs.liveMode === "nt4-akit" ||
       newPrefs.liveMode === "phoenix" ||
       newPrefs.liveMode === "pathplanner" ||
-      newPrefs.liveMode === "rlog")
+      newPrefs.liveMode === "rlog" ||
+      newPrefs.liveMode === "ftcdashboard")
   ) {
     basePrefs.liveMode = newPrefs.liveMode;
   }
