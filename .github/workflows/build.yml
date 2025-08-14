@@ -166,6 +166,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Select Xcode version
+        uses: BoundfoxStudios/action-xcode-select@v1
+        with:
+          version: "16"
       - name: Build AdvantageScopeXR
         run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' build
       - name: Build AdvantageScopeXRClip
