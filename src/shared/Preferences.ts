@@ -32,9 +32,9 @@ export default interface Preferences {
 
 export const DEFAULT_PREFS: Preferences = {
   theme: "system",
-  robotAddress: "192.168.43.1",
-  remotePath: "/RoadRunner/logs",
-  liveMode: "ftcdashboard",
+  robotAddress: "10.00.00.2",
+  remotePath: "/U/logs",
+  liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",
   liveDiscard: 1200,
   publishFilter: "",

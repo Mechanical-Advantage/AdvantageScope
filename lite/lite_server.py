@@ -25,7 +25,7 @@ BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
 # todo: is backwards compatibility important here?
 ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv or "--enable-logs" in sys.argv
-WEBROOT = "/as"
+WEBROOT = ""
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
