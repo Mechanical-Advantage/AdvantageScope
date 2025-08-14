@@ -134,6 +134,7 @@ export type Field3dRendererCommand_AnyObj =
   | Field3dRendererCommand_TrajectoryObj
   | Field3dRendererCommand_HeatmapObj
   | Field3dRendererCommand_AprilTagObj
+  | Field3dRendererCommand_AprilTagBuiltInObj
   | Field3dRendererCommand_AxesObj
   | Field3dRendererCommand_ConeObj;
 
@@ -179,10 +180,22 @@ export type Field3dRendererCommand_HeatmapObj = {
   poses: AnnotatedPose3d[];
 };
 
+export type Field3dRendererCommand_AprilTagVariant =
+  | "frc-36h11"
+  | "frc-16h5"
+  | "ftc-2in"
+  | "ftc-3in"
+  | "ftc-4in"
+  | "ftc-5in";
+
 export type Field3dRendererCommand_AprilTagObj = {
   type: "aprilTag";
   poses: AnnotatedPose3d[];
-  family: "36h11" | "16h5";
+  variant: Field3dRendererCommand_AprilTagVariant;
+};
+
+export type Field3dRendererCommand_AprilTagBuiltInObj = Omit<Field3dRendererCommand_AprilTagObj, "type"> & {
+  type: "aprilTagBuiltIn";
 };
 
 export type Field3dRendererCommand_AxesObj = {

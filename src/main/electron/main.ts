@@ -413,22 +413,49 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "numeric-array-deprecation-warning":
-      let shouldForce: boolean = message.data.force;
-      let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-      if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-      if (!prefs.skipNumericArrayDeprecationWarning) {
-        prefs.skipNumericArrayDeprecationWarning = true;
-        jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-        sendAllPreferences();
+      {
+        let shouldForce: boolean = message.data.force;
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
+        if (!prefs.skipNumericArrayDeprecationWarning) {
+          prefs.skipNumericArrayDeprecationWarning = true;
+          jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+          sendAllPreferences();
+        }
+        dialog.showMessageBox(window, {
+          type: "info",
+          title: "Alert",
+          message: "Deprecated data format",
+          detail:
+            "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
+          icon: WINDOW_ICON
+        });
       }
-      dialog.showMessageBox(window, {
-        type: "info",
-        title: "Alert",
-        message: "Deprecated data format",
-        detail:
-          "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
-        icon: WINDOW_ICON
-      });
+      break;
+
+    case "ftc-experimental-warning":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        if (prefs.skipFTCExperimentalWarning) return;
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Experimental Feature",
+            detail:
+              "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page.",
+            buttons: ["OK"],
+            checkboxLabel: "Don't Show Again",
+            icon: WINDOW_ICON
+          })
+          .then((response) => {
+            if (response.checkboxChecked) {
+              prefs.skipFTCExperimentalWarning = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
+            }
+          });
+      }
       break;
 
     case "live-rlog-start":
@@ -548,6 +575,31 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "open-link":
       shell.openExternal(message.data);
+      break;
+
+    case "ask-open-sidebar-context-menu":
+      const fieldCopyMenu = new Menu();
+      fieldCopyMenu.append(
+        new MenuItem({
+          label: `Copy "${message.data.title}" to clipboard`,
+          click() {
+            clipboard.writeText(message.data.title);
+          }
+        })
+      );
+      fieldCopyMenu.append(
+        new MenuItem({
+          label: `Copy "${message.data.fullTitle}" to clipboard`,
+          click() {
+            clipboard.writeText(message.data.fullTitle);
+          }
+        })
+      );
+      fieldCopyMenu.popup({
+        window: window,
+        x: Math.round(message.data.position[0]),
+        y: Math.round(message.data.position[1])
+      });
       break;
 
     case "open-app-menu":
@@ -1757,7 +1809,7 @@ function setupMenu() {
                 title: "Select the robot log file(s) to open",
                 message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log"] }],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -1777,7 +1829,7 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select the robot log file(s) to add to the current log",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot"] }],
+                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log"] }],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -2270,13 +2322,11 @@ function createHubWindow(state?: WindowState) {
       if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
       break;
     case "win32":
-      // Skip background material on Windows until https://github.com/electron/electron/issues/46753 is fixed
-      //
-      // let releaseSplit = os.release().split(".");
-      // if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
-      //   // Windows 11 22H2
-      //   prefs.backgroundMaterial = "acrylic";
-      // }
+      let releaseSplit = os.release().split(".");
+      if (Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+        // Windows 11 22H2
+        prefs.backgroundMaterial = "acrylic";
+      }
 
       prefs.titleBarStyle = "hidden";
       let overlayOptions: TitleBarOverlay = {
@@ -3199,7 +3249,8 @@ app.whenReady().then(() => {
       x.endsWith(".rlog") ||
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents") ||
-      x.endsWith(".hoot")
+      x.endsWith(".hoot") ||
+      x.endsWith(".log")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];

@@ -25,8 +25,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
 
@@ -44,8 +42,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact
@@ -69,11 +65,9 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.74
+          version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -101,11 +95,9 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.74
+          version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -135,11 +127,9 @@ jobs:
       - name: Setup Emscripten
         uses: mymindstorm/setup-emsdk@v14
         with:
-          version: 3.1.74
+          version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
