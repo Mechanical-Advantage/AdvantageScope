@@ -168,7 +168,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 for part in parser:
                     if part.filename:
                         if part.filename.lower().endswith(".zip"):
-                            print(f"{part.name}: File upload ({part.size} bytes)")
                             asset_zip= f"{EXTRA_ASSETS_PATH}/{part.filename}"
                             part.save_as(asset_zip)
                             asset_path = asset_zip[:-len(".zip")]  # remove .zip ending
