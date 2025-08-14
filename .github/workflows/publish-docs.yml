@@ -34,8 +34,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact

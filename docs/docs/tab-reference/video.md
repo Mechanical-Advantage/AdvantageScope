@@ -22,6 +22,10 @@ After choosing a video, the timeline on the bottom right begins turning blue to 
 YouTube and TBA video download may failed unexpectedly due to changes on YouTube's servers. In case of issues, trying updating AdvantageScope or using a local video file instead.
 :::
 
+:::info
+AdvantageScope requires [FFmpeg](https://ffmpeg.org) to process video files. If a valid copy of FFmpeg is not found on your system's PATH, AdvantageScope will prompt to download FFmpeg from the internet when loading a video for the first time.
+:::
+
 ## Navigating the Video
 
 When a video is initially loaded and has not yet been synchronized with the log data, the playback controls for the video and log are still independent. Use the timeline and buttons on the bottom right to control the video playback. The following keyboard shortcuts are also supported:
