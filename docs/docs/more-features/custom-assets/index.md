@@ -186,7 +186,7 @@ An image must be included in the folder with the name "image.png". It should be 
 
 ## 3D Field Models
 
-A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array.
+A model must be included in the folder with the name "model.glb". After all rotations are applied, the field should be oriented with the red alliance on the left. CAD files must be converted to glTF; see [this page](gltf-convert) for details. Game piece models follow the naming convention "model_INDEX.glb" based on the order that they appear in the "gamePieces" array. AprilTags declared here are always positioned using a [center/red](/more-features/coordinate-systems#centerred-systemcore) coordinate system, regardless of any other configuration options.
 
 The config file must be in the following format:
 
@@ -215,6 +215,12 @@ The config file must be in the following format:
       "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied
     },
     ...
+  ],
+  "aprilTags": [ // List of supplemental AprilTag models (if not part of field model)
+    "variant": "frc-36h11" | "frc-16h5" | "ftc-2in" | "ftc-3in" | "ftc-4in" | "ftc-5in"
+    "id": number
+    "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
+    "position": [number, number, number] // Position offset in meters, applied after rotation
   ]
 }
 ```
