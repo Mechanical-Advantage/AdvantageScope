@@ -167,9 +167,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build -destination 'platform=iOS Simulator,name=iPhone 16'
       - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build -destination 'platform=iOS Simulator,name=iPhone 16'
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
