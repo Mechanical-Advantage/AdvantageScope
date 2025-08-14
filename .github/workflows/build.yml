@@ -171,9 +171,9 @@ jobs:
         with:
           version: "16"
       - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
       - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=18.0,name=iPhone 16' build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
