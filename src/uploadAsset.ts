@@ -11,59 +11,59 @@ window.addEventListener("message", (event) => {
   const CONFIRM_BUTTON = document.getElementById("confirm") as HTMLInputElement;
   const PROGRESS_TEXT = document.getElementById("progress") as HTMLTableCellElement;
 
-    let messagePort = event.ports[0];
-    messagePort.onmessage = (event) => {
-      // Update button focus
-      if (typeof event.data === "object" && "isFocused" in event.data) {
-        Array.from(document.getElementsByTagName("button")).forEach((button) => {
-          if (event.data.isFocused) {
-            button.classList.remove("blurred");
-          } else {
-            button.classList.add("blurred");
-          }
-        });
-        return;
-      }
-    }
-
-      ASSET_INPUT.addEventListener("change", event => {
-        const files = ASSET_INPUT.files ?? [];
-        for (const file of files) {
-          uploadFile(file);
+  let messagePort = event.ports[0];
+  messagePort.onmessage = (event) => {
+    // Update button focus
+    if (typeof event.data === "object" && "isFocused" in event.data) {
+      Array.from(document.getElementsByTagName("button")).forEach((button) => {
+        if (event.data.isFocused) {
+          button.classList.remove("blurred");
+        } else {
+          button.classList.add("blurred");
         }
       });
+      return;
+    }
+  };
 
-      const uploadFile = (file: File) => {
-        PROGRESS_TEXT.innerText = "Uploading file...";
-        const API_ENDPOINT = "../uploadAsset";
-        const request = new XMLHttpRequest();
-        const formData = new FormData();
+  ASSET_INPUT.addEventListener("change", (event) => {
+    const files = ASSET_INPUT.files ?? [];
+    for (const file of files) {
+      uploadFile(file);
+    }
+  });
 
-        request.open("POST", API_ENDPOINT, true);
-        request.onreadystatechange = () => {
-          if (request.readyState === 4) {
-            if (request.status === 200) {
-              PROGRESS_TEXT.innerText = "Upload succeeded";
-            } else {
-              PROGRESS_TEXT.innerText = `Upload failed: ${request.statusText}`;
-            }
-          }
-        };
-        formData.append("file", file);
-        request.send(formData);
-      };
+  const uploadFile = (file: File) => {
+    PROGRESS_TEXT.innerText = "Uploading file...";
+    const API_ENDPOINT = "../uploadAsset";
+    const request = new XMLHttpRequest();
+    const formData = new FormData();
 
-      // Close function
-      function confirm() {
-        messagePort.postMessage(null)
+    request.open("POST", API_ENDPOINT, true);
+    request.onreadystatechange = () => {
+      if (request.readyState === 4) {
+        if (request.status === 200) {
+          PROGRESS_TEXT.innerText = "Upload succeeded";
+        } else {
+          PROGRESS_TEXT.innerText = `Upload failed: ${request.statusText}`;
+        }
       }
+    };
+    formData.append("file", file);
+    request.send(formData);
+  };
 
-      // Set up exit triggers
-      EXIT_BUTTON.addEventListener("click", () => {
-        messagePort.postMessage(null)
-      });
-      CONFIRM_BUTTON.addEventListener("click", confirm);
-      window.addEventListener("keydown", (event) => {
-        if (event.code === "Enter") confirm();
-      });
+  // Close function
+  function confirm() {
+    messagePort.postMessage(null);
+  }
+
+  // Set up exit triggers
+  EXIT_BUTTON.addEventListener("click", () => {
+    messagePort.postMessage(null);
+  });
+  CONFIRM_BUTTON.addEventListener("click", confirm);
+  window.addEventListener("keydown", (event) => {
+    if (event.code === "Enter") confirm();
+  });
 });
