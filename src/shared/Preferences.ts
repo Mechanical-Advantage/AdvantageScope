@@ -25,6 +25,7 @@ export default interface Preferences {
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
   skipNumericArrayDeprecationWarning: boolean;
+  skipFTCExperimentalWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
   usb?: boolean;
@@ -48,6 +49,7 @@ export const DEFAULT_PREFS: Preferences = {
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
   skipNumericArrayDeprecationWarning: false,
+  skipFTCExperimentalWarning: false,
   ctreLicenseAccepted: false
 };
 

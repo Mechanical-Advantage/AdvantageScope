@@ -325,18 +325,37 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "numeric-array-deprecation-warning":
-      let shouldForce: boolean = message.data.force;
-      let prefs = DEFAULT_PREFS;
-      let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-      if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-      if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-      if (!prefs.skipNumericArrayDeprecationWarning) {
-        prefs.skipNumericArrayDeprecationWarning = true;
-        localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
+      {
+        let shouldForce: boolean = message.data.force;
+        let prefs = DEFAULT_PREFS;
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
+        if (!prefs.skipNumericArrayDeprecationWarning) {
+          prefs.skipNumericArrayDeprecationWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+        }
+        alert(
+          "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative."
+        );
       }
-      alert(
-        "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative."
-      );
+      break;
+
+    case "ftc-experimental-warning":
+      {
+        let prefs = DEFAULT_PREFS;
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (prefs.skipFTCExperimentalWarning) return;
+        if (
+          confirm(
+            "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page. Select OK to hide this message in the future."
+          )
+        ) {
+          prefs.skipFTCExperimentalWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+        }
+      }
       break;
 
     case "open-link":
