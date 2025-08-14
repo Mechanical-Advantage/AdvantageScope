@@ -166,10 +166,23 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Get SDKs and runtimes
+        run: |
+          xcrun xcodebuild -showsdks
+          xcrun simctl list runtimes
+      - name: Create new simulator
+        id: create-simulator
+        run: |
+          SIM_NAME="iPhone 16 (iOS 18.6)"
+          SIM_UUID=$(xcrun simctl create "$SIM_NAME" "iPhone 16" "com.apple.CoreSimulator.SimRuntime.iOS-18-6")
+          echo "SIM_UUID=$SIM_UUID" >> $GITHUB_ENV
+          xcrun simctl list devices
       - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=18.6,name=iPhone 16' build
+        run: |
+          xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator -destination "platform=iOS Simulator,id=$SIM_UUID" build
       - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator -destination 'platform=iOS Simulator,OS=18.6,name=iPhone 16' build
+        run: |
+          xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator -destination "platform=iOS Simulator,id=$SIM_UUID" build
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
