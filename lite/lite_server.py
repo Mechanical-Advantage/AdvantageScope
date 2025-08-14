@@ -219,7 +219,7 @@ if __name__ == "__main__":
     httpd = socketserver.ThreadingTCPServer(("", PORT), Handler, bind_and_activate=False)
     httpd.allow_reuse_address = True
     httpd.daemon_threads = True
-    print(f"Serving AdvantageScope Lite on port {PORT}")
+    print(f"Serving AdvantageScope Lite on http://localhost:{PORT}{WEBROOT}")
     try:
         httpd.server_bind()
         httpd.server_activate()

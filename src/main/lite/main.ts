@@ -219,6 +219,15 @@ function openDownload() {
   });
 }
 
+/** Opens a popup window for uploading assets. */
+async function openUploadAsset() {
+  let port = await openPopupWindow("www/uploadAsset.html", [35, 15], "percent", async (msg) => {
+    closePopupWindow();
+    sendMessage(hubPort, "set-assets", await loadAssets());
+  });
+  port.postMessage(null);
+}
+
 async function initHub() {
   // Create message ports
   const channel = new MessageChannel();
@@ -395,6 +404,12 @@ async function handleHubMessage(message: NamedMessage) {
                 content: `Connect Live (${modifier} K)`,
                 callback() {
                   sendMessage(hubPort, "start-live", false);
+                }
+              },
+              {
+                content: `Upload Asset`,
+                callback() {
+                  openUploadAsset();
                 }
               }
             ];
