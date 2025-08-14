@@ -170,6 +170,7 @@ jobs:
         uses: BoundfoxStudios/action-xcode-select@v1
         with:
           version: "26"
+          beta: true
       - name: Build AdvantageScopeXR
         run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
       - name: Build AdvantageScopeXRClip
