@@ -165,8 +165,9 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const rows = 6;
-  const height = rows * 27 + 54;
+  const optionRows = 6;
+  const titleRows = 2;
+  const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
     closePopupWindow();
     sendMessage(hubPort, "set-preferences", message);

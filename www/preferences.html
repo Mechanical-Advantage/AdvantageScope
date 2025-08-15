@@ -33,6 +33,30 @@
             </select>
           </td>
         </tr>
+        <tr>
+          <td class="label">Coordinate System</td>
+          <td class="input" tabindex="-1">
+            <select id="coordinateSystem">
+              <option value="automatic">Automatic</option>
+              <!-- <option value="center-red">Center/Red (SystemCore)</option> -->
+              <option value="wall-blue">Blue Wall (FRC 2023-2026)</option>
+              <option value="wall-alliance">Alliance Wall (FRC 2022)</option>
+              <option value="center-rotated">Center/Rotated (FTC Traditional)</option>
+            </select>
+          </td>
+        </tr>
+        <tr class="hide-lite">
+          <td class="label">TBA API Key</td>
+          <td class="input" tabindex="-1">
+            <input type="text" id="tbaApiKey" />
+          </td>
+        </tr>
+        <tr>
+          <td class="title" colspan="2">
+            <hr />
+            Networking Options
+          </td>
+        </tr>
         <tr class="hide-lite">
           <td class="label">Robot Address</td>
           <td class="input" tabindex="-1">
@@ -72,15 +96,9 @@
           </td>
         </tr>
         <tr>
-          <td class="label">Coordinate System</td>
-          <td class="input" tabindex="-1">
-            <select id="coordinateSystem">
-              <option value="automatic">Automatic</option>
-              <!-- <option value="center-red">Center/Red (SystemCore)</option> -->
-              <option value="wall-blue">Blue Wall (FRC 2023-2026)</option>
-              <option value="wall-alliance">Alliance Wall (FRC 2022)</option>
-              <option value="center-rotated">Center/Rotated (FTC Traditional)</option>
-            </select>
+          <td class="title" colspan="2">
+            <hr />
+            3D Rendering Options
           </td>
         </tr>
         <tr>
@@ -111,12 +129,6 @@
               <option value="true">On</option>
               <option value="false">Off</option>
             </select>
-          </td>
-        </tr>
-        <tr class="hide-lite">
-          <td class="label">TBA API Key</td>
-          <td class="input" tabindex="-1">
-            <input type="text" id="tbaApiKey" />
           </td>
         </tr>
       </tbody>
