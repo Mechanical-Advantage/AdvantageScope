@@ -71,7 +71,16 @@ import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
-import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
+import {
+  delayBetaSurvey,
+  isAlpha,
+  isBeta,
+  isBetaExpired,
+  isBetaWelcomeComplete,
+  openBetaSurvey,
+  saveBetaWelcomeComplete,
+  shouldPromptBetaSurvey
+} from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -2464,6 +2473,25 @@ function createHubWindow(state?: WindowState) {
           });
       } else if (!isBetaWelcomeComplete()) {
         openBetaWelcome(window);
+      } else if (shouldPromptBetaSurvey()) {
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Share feedback?",
+            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${
+              isAlpha() ? "alpha" : "beta"
+            }. We'll keep this quick.`,
+            buttons: ["Open", "Not Now"],
+            defaultId: 0
+          })
+          .then((result) => {
+            if (result.response === 0) {
+              openBetaSurvey();
+            } else {
+              delayBetaSurvey();
+            }
+          });
       }
     }
   });
@@ -3131,6 +3159,7 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
     port2.on("message", () => {
       betaWelcome.destroy();
       saveBetaWelcomeComplete();
+      shouldPromptBetaSurvey(); // Ensures survey is scheduled
     });
     port2.start();
     betaWelcome.show();
