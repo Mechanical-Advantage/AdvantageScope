@@ -167,6 +167,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   ) {
     basePrefs.skipNumericArrayDeprecationWarning = newPrefs.skipNumericArrayDeprecationWarning;
   }
+  if ("skipFTCExperimentalWarning" in newPrefs && typeof newPrefs.skipFTCExperimentalWarning === "boolean") {
+    basePrefs.skipFTCExperimentalWarning = newPrefs.skipFTCExperimentalWarning;
+  }
   if ("skipFrcLogFolderDefault" in newPrefs && typeof newPrefs.skipFrcLogFolderDefault === "boolean") {
     basePrefs.skipFrcLogFolderDefault = newPrefs.skipFrcLogFolderDefault;
   }
