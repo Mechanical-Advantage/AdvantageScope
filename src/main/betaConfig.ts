@@ -8,11 +8,13 @@
 export const BETA_CONFIG: BetaConfig | null = {
   year: "2027",
   isAlpha: true,
-  expiration: new Date(2027, 0, 9)
+  expiration: new Date(2027, 0, 9),
+  surveyUrl: null
 };
 
 export type BetaConfig = {
   year: string;
   isAlpha: boolean;
   expiration: Date;
+  surveyUrl: string | null;
 };

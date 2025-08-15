@@ -33,7 +33,8 @@ export const ENABLED_KEYS = [
   "/DSLog/Status/DSDisabled",
   "RobotEnable", // Phoenix
   "NT:/FMSInfo/FMSControlData",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // SystemCore
+  "NT:/Netcomm/Control/ControlData/ControlWord", // SystemCore
+  "RUNNING"
 ];
 export const AUTONOMOUS_KEYS = [
   "/DriverStation/Autonomous",

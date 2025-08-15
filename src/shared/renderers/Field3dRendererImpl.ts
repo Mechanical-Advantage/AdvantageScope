@@ -8,14 +8,8 @@
 import CameraControls from "camera-controls";
 import * as THREE from "three";
 import WorkerManager from "../../hub/WorkerManager";
-import {
-  AdvantageScopeAssets,
-  BuiltIn3dFields,
-  Config3dField,
-  Config3d_Rotation,
-  CoordinateSystem
-} from "../AdvantageScopeAssets";
-import { Rotation3d } from "../geometry";
+import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../AdvantageScopeAssets";
+import { Rotation3d, rotationSequenceToQuaternion } from "../geometry";
 import { Units } from "../units";
 import { checkArrayType, clampValue } from "../util";
 import {
@@ -66,7 +60,7 @@ export default class Field3dRendererImpl implements TabRenderer {
   ] as const;
   private SPOT_LIGHT_INTENSITY_FRC = 150;
   private SPOT_LIGHT_INTENSITY_FTC = 30;
-  private WPILIB_ROTATION = getQuaternionFromRotSeq([
+  private WPILIB_ROTATION = rotationSequenceToQuaternion([
     {
       axis: "x",
       degrees: -90
@@ -76,7 +70,7 @@ export default class Field3dRendererImpl implements TabRenderer {
       degrees: 180
     }
   ]);
-  private CAMERA_ROTATION = getQuaternionFromRotSeq([
+  private CAMERA_ROTATION = rotationSequenceToQuaternion([
     {
       axis: "z",
       degrees: -90
@@ -100,7 +94,7 @@ export default class Field3dRendererImpl implements TabRenderer {
   private camera: THREE.PerspectiveCamera;
   private controls: CameraControls;
   private wpilibCoordinateGroup: THREE.Group; // Rotated to match WPILib coordinates
-  private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
+  private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates using the selected coordinate system
   private field: THREE.Object3D | null = null;
   private fieldStagedPieces: THREE.Object3D | null = null;
   private fieldPieces: { [key: string]: THREE.Mesh } = {};
@@ -465,6 +459,17 @@ export default class Field3dRendererImpl implements TabRenderer {
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);
+        break;
+      case "aprilTagBuiltIn":
+        // Built-in AprilTags are unaffected by the selected coordinate system
+        manager = new AprilTagManager(
+          this.wpilibCoordinateGroup,
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          this.mode,
+          false,
+          () => (this.shouldRender = true)
+        );
         break;
       case "axes":
         manager = new AxesManager(...args);
@@ -926,7 +931,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         } else if (this.primaryRobotGroup.visible && cameraConfig !== undefined) {
           this.fixedCameraObj.position.set(...cameraConfig.position);
           this.fixedCameraObj.rotation.setFromQuaternion(
-            getQuaternionFromRotSeq(cameraConfig.rotations).multiply(this.CAMERA_ROTATION)
+            rotationSequenceToQuaternion(cameraConfig.rotations).multiply(this.CAMERA_ROTATION)
           );
           referenceObj = this.fixedCameraObj;
         }
@@ -1019,21 +1024,6 @@ enum CameraIndexEnum {
   DSR1 = -7,
   DSR2 = -8,
   DSR3 = -9
-}
-
-/** Converts a rotation sequence to a quaternion. */
-export function getQuaternionFromRotSeq(rotations: Config3d_Rotation[]): THREE.Quaternion {
-  let quaternion = new THREE.Quaternion();
-  rotations.forEach((rotation) => {
-    let axis = new THREE.Vector3(0, 0, 0);
-    if (rotation.axis === "x") axis.setX(1);
-    if (rotation.axis === "y") axis.setY(1);
-    if (rotation.axis === "z") axis.setZ(1);
-    quaternion.premultiply(
-      new THREE.Quaternion().setFromAxisAngle(axis, Units.convert(rotation.degrees, "degrees", "radians"))
-    );
-  });
-  return quaternion;
 }
 
 /** Disposes of all materials and geometries in object. */

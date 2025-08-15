@@ -23,7 +23,6 @@ import WorkerManager from "./WorkerManager";
 import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/HistoricalDataSource";
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
-import PathPlannerSource from "./dataSources/PathPlannerSource";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
@@ -165,15 +164,12 @@ function updateFancyWindow() {
   } else {
     document.body.classList.remove("fancy-side-bar-mac");
   }
-
-  // Skip background material on Windows until https://github.com/electron/electron/issues/41824 is fixed
-  //
-  // if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
-  //   // Windows 11 22H2
-  //   document.body.classList.add("fancy-side-bar-win");
-  // } else {
-  //   document.body.classList.remove("fancy-side-bar-win");
-  // }
+  if (window.platform === "win32" && Number(releaseSplit[releaseSplit.length - 1]) >= 22621) {
+    // Windows 11 22H2
+    document.body.classList.add("fancy-side-bar-win");
+  } else {
+    document.body.classList.remove("fancy-side-bar-win");
+  }
 }
 
 function setExporting(exporting: boolean) {
@@ -433,9 +429,6 @@ function startLive(isSim = false) {
       break;
     case "phoenix":
       liveSource = new PhoenixDiagnosticsSource();
-      break;
-    case "pathplanner":
-      liveSource = new PathPlannerSource();
       break;
     case "rlog":
       liveSource = new RLOGServerSource();

@@ -13,6 +13,12 @@ const configEmbed = Object.assign(config, {
     experimental_router: "hash"
   },
   themeConfig: Object.assign(config.themeConfig!, {
+    navbar: Object.assign(config.themeConfig!.navbar!, { items: undefined }),
+    footer: undefined,
+    colorMode: {
+      disableSwitch: true,
+      respectPrefersColorScheme: true
+    },
     announcementBar: isLite
       ? {
           id: "ascope_lite_warning",

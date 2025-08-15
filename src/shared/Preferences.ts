@@ -12,7 +12,7 @@ export default interface Preferences {
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
-  liveMode: "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "pathplanner" | "rlog";
+  liveMode: LiveMode;
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
   publishFilter: string;
@@ -24,6 +24,7 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
+  skipFTCExperimentalWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
 }
@@ -45,12 +46,30 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
+  skipFTCExperimentalWarning: false,
   ctreLicenseAccepted: false
 };
 
+export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog";
+
+export function getLiveModeName(mode: LiveMode): string {
+  switch (mode) {
+    case "nt4":
+      return "NetworkTables 4";
+    case "nt4-akit":
+      return "NetworkTables 4 (AdvantageKit)";
+    case "nt4-systemcore":
+      return "NetworkTables 4 (SystemCore)";
+    case "phoenix":
+      return "Phoenix Diagnostics";
+    case "rlog":
+      return "RLOG Server";
+  }
+}
+
 // Phoenix not possible due to cross origin restrictions
-// PathPlanner and RLOG not possible because they use raw TCP
-export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit", "nt4-systemcore"];
+// RLOG not possible because it uses raw TCP
+export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
@@ -80,7 +99,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
       newPrefs.liveMode === "nt4-akit" ||
       newPrefs.liveMode === "nt4-systemcore" ||
       newPrefs.liveMode === "phoenix" ||
-      newPrefs.liveMode === "pathplanner" ||
       newPrefs.liveMode === "rlog")
   ) {
     basePrefs.liveMode = newPrefs.liveMode;
@@ -157,6 +175,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
+  }
+  if ("skipFTCExperimentalWarning" in newPrefs && typeof newPrefs.skipFTCExperimentalWarning === "boolean") {
+    basePrefs.skipFTCExperimentalWarning = newPrefs.skipFTCExperimentalWarning;
   }
   if ("skipFrcLogFolderDefault" in newPrefs && typeof newPrefs.skipFrcLogFolderDefault === "boolean") {
     basePrefs.skipFrcLogFolderDefault = newPrefs.skipFrcLogFolderDefault;

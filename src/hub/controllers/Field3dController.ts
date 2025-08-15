@@ -15,7 +15,8 @@ import {
   SwerveState,
   grabHeatmapData,
   grabPosesAuto,
-  grabSwerveStates
+  grabSwerveStates,
+  rotationSequenceToQuaternion
 } from "../../shared/geometry";
 import {
   ALLIANCE_KEYS,
@@ -28,8 +29,11 @@ import {
   mergeMechanismStates
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
-import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
-import { Units } from "../../shared/units";
+import {
+  Field3dRendererCommand,
+  Field3dRendererCommand_AnyObj,
+  Field3dRendererCommand_AprilTagVariant
+} from "../../shared/renderers/Field3dRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
@@ -42,6 +46,7 @@ export default class Field3dController implements TabController {
   private FIELD_SELECT: HTMLSelectElement;
 
   private sourceList: SourceList;
+  private lastIsFTCField = false;
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -65,7 +70,16 @@ export default class Field3dController implements TabController {
     });
 
     // Set up game select
-    this.FIELD_SELECT.addEventListener("change", () => this.updateFieldDependentControls());
+    this.FIELD_SELECT.addEventListener("change", () => {
+      this.updateFieldDependentControls();
+      let fieldConfig = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
+        (field) => field.id === this.FIELD_SELECT.value
+      );
+      if (fieldConfig !== undefined) {
+        if (fieldConfig.isFTC && !this.lastIsFTCField) window.sendMainMessage("ftc-experimental-warning");
+        this.lastIsFTCField = fieldConfig.isFTC;
+      }
+    });
     this.updateFieldOptions();
     this.updateRobotOptions();
   }
@@ -129,13 +143,14 @@ export default class Field3dController implements TabController {
     this.sourceList.setOptionValues("ghost", "model", sourceListValues);
   }
 
-  /** Updates the robots, source button, and game pieces based on the selected value. */
+  /** Updates the robots, source button, and other options based on the selected value. */
   private updateFieldDependentControls() {
     if (window.assets === null) return;
     let fieldConfig = [...window.assets.field3ds, ...BuiltIn3dFields].find(
       (game) => game.id === this.FIELD_SELECT.value
     );
 
+    // Update game piece options
     let gamePieces: string[] = [];
     if (fieldConfig !== undefined) {
       gamePieces = fieldConfig.gamePieces.map((x) => x.name);
@@ -147,6 +162,21 @@ export default class Field3dController implements TabController {
       return { key: name, display: name };
     });
     this.sourceList.setOptionValues("gamePiece", "variant", sourceListValues);
+
+    // Update AprilTag variants
+    let aprilTagVariants: { key: Field3dRendererCommand_AprilTagVariant; display: string }[] = fieldConfig?.isFTC
+      ? [
+          { key: "ftc-2in", display: "2 in" },
+          { key: "ftc-3in", display: "3 in" },
+          { key: "ftc-4in", display: "4 in" },
+          { key: "ftc-5in", display: "5 in" }
+        ]
+      : [
+          { key: "frc-36h11", display: "36h11" },
+          { key: "frc-16h5", display: "16h5" }
+        ];
+    this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
+    this.sourceList.setOptionValues("aprilTagLegacy", "variant", aprilTagVariants);
 
     this.updateRobotOptions();
   }
@@ -169,6 +199,12 @@ export default class Field3dController implements TabController {
       this.FIELD_SELECT.value = state.game;
       if (this.FIELD_SELECT.value === "") {
         this.FIELD_SELECT.selectedIndex = 0;
+      }
+      let fieldConfig = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
+        (field) => field.id === this.FIELD_SELECT.value
+      );
+      if (fieldConfig !== undefined) {
+        this.lastIsFTCField = fieldConfig.isFTC;
       }
     }
     this.updateFieldDependentControls();
@@ -199,8 +235,6 @@ export default class Field3dController implements TabController {
     let fieldData = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
       (game) => game.id === this.FIELD_SELECT.value
     );
-    let fieldWidth = fieldData === undefined ? 0 : Units.convert(fieldData.widthInches, "inches", "meters");
-    let fieldHeight = fieldData === undefined ? 0 : Units.convert(fieldData.heightInches, "inches", "meters");
     let coordinateSystem =
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldData?.coordinateSystem
@@ -329,7 +363,7 @@ export default class Field3dController implements TabController {
                 [],
                 this.UUID
               );
-              let tagCount = source.options.family === "36h11" ? APRIL_TAG_36H11_COUNT : APRIL_TAG_16H5_COUNT;
+              let tagCount = source.options.variant === "16h5" ? APRIL_TAG_16H5_COUNT : APRIL_TAG_36H11_COUNT;
               values.forEach((id) => {
                 id = clampValue(Math.floor(id), 0, tagCount - 1);
                 let index = poses.findIndex((value) => value.annotation.aprilTagId === undefined);
@@ -400,12 +434,20 @@ export default class Field3dController implements TabController {
           });
           break;
         case "aprilTag":
-          let familyRaw = source.options.family;
-          let family: "36h11" | "16h5" = familyRaw === "36h11" || familyRaw === "16h5" ? familyRaw : "36h11";
+          let variantRaw = source.options.variant;
+          let variant: Field3dRendererCommand_AprilTagVariant =
+            variantRaw === "frc-36h11" ||
+            variantRaw === "frc-16h5" ||
+            variantRaw === "ftc-2in" ||
+            variantRaw === "ftc-3in" ||
+            variantRaw === "ftc-4in" ||
+            variantRaw === "ftc-5in"
+              ? variantRaw
+              : "frc-36h11";
           objects.push({
             type: "aprilTag",
             poses: poses,
-            family: family
+            variant: variant
           });
           break;
         case "axes":
@@ -431,6 +473,32 @@ export default class Field3dController implements TabController {
           }
           break;
       }
+    }
+
+    // Add built-in AprilTag objects
+    if (fieldData !== undefined) {
+      new Set(fieldData.aprilTags.map((x) => x.variant)).forEach((variant) => {
+        objects.push({
+          type: "aprilTagBuiltIn",
+          poses: fieldData.aprilTags
+            .filter((x) => x.variant === variant)
+            .map((aprilTag) => {
+              let quaternion = rotationSequenceToQuaternion(aprilTag.rotations);
+              let annotatedPose: AnnotatedPose3d = {
+                pose: {
+                  translation: aprilTag.position,
+                  rotation: [quaternion.w, quaternion.x, quaternion.y, quaternion.z]
+                },
+                annotation: {
+                  is2DSource: false,
+                  aprilTagId: aprilTag.id
+                }
+              };
+              return annotatedPose;
+            }),
+          variant: variant
+        });
+      });
     }
 
     // Get all robot models
