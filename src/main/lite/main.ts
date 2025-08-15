@@ -12,7 +12,13 @@ import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
+import {
+  DEFAULT_PREFS,
+  getLiveModeName,
+  LITE_ALLOWED_LIVE_MODES,
+  LiveMode,
+  mergePreferences
+} from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
   getAllTabTypes,
@@ -159,8 +165,9 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const rows = 7;
-  const height = rows * 27 + 54;
+  const optionRows = 6;
+  const titleRows = 2;
+  const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
     closePopupWindow();
     sendMessage(hubPort, "set-preferences", message);
@@ -403,6 +410,9 @@ async function handleHubMessage(message: NamedMessage) {
 
           case 1:
             // File menu
+            let prefs = DEFAULT_PREFS;
+            let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+            if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
             menuItems = [
               {
                 content: `Open Log (\u21e7 ${modifier} O)`,
@@ -415,6 +425,19 @@ async function handleHubMessage(message: NamedMessage) {
                 callback() {
                   sendMessage(hubPort, "start-live", false);
                 }
+              },
+              {
+                content: "Set Live Mode",
+                items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                  return {
+                    content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
+                    callback() {
+                      prefs.liveMode = liveMode;
+                      localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                      sendMessage(hubPort, "start-live", false);
+                    }
+                  };
+                })
               }
             ];
             break;

@@ -12,7 +12,7 @@ export default interface Preferences {
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
-  liveMode: "nt4" | "nt4-akit" | "phoenix" | "pathplanner" | "rlog";
+  liveMode: LiveMode;
   liveSubscribeMode: "low-bandwidth" | "logging";
   liveDiscard: number;
   publishFilter: string;
@@ -53,9 +53,24 @@ export const DEFAULT_PREFS: Preferences = {
   ctreLicenseAccepted: false
 };
 
+export type LiveMode = "nt4" | "nt4-akit" | "phoenix" | "rlog";
+
+export function getLiveModeName(mode: LiveMode): string {
+  switch (mode) {
+    case "nt4":
+      return "NetworkTables 4";
+    case "nt4-akit":
+      return "NetworkTables 4 (AdvantageKit)";
+    case "phoenix":
+      return "Phoenix Diagnostics";
+    case "rlog":
+      return "RLOG Server";
+  }
+}
+
 // Phoenix not possible due to cross origin restrictions
-// PathPlanner and RLOG not possible because they use raw TCP
-export const LITE_ALLOWED_LIVE_MODES: Preferences["liveMode"][] = ["nt4", "nt4-akit"];
+// RLOG not possible because it uses raw TCP
+export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
@@ -84,7 +99,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     (newPrefs.liveMode === "nt4" ||
       newPrefs.liveMode === "nt4-akit" ||
       newPrefs.liveMode === "phoenix" ||
-      newPrefs.liveMode === "pathplanner" ||
       newPrefs.liveMode === "rlog")
   ) {
     basePrefs.liveMode = newPrefs.liveMode;
@@ -167,6 +181,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     typeof newPrefs.skipNumericArrayDeprecationWarning === "boolean"
   ) {
     basePrefs.skipNumericArrayDeprecationWarning = newPrefs.skipNumericArrayDeprecationWarning;
+  }
+  if ("skipFTCExperimentalWarning" in newPrefs && typeof newPrefs.skipFTCExperimentalWarning === "boolean") {
+    basePrefs.skipFTCExperimentalWarning = newPrefs.skipFTCExperimentalWarning;
   }
   if ("skipFrcLogFolderDefault" in newPrefs && typeof newPrefs.skipFrcLogFolderDefault === "boolean") {
     basePrefs.skipFrcLogFolderDefault = newPrefs.skipFrcLogFolderDefault;

@@ -38,7 +38,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
@@ -55,17 +55,10 @@ import {
   FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
-  PATHPLANNER_CONNECT_TIMEOUT_MS,
-  PATHPLANNER_DATA_TIMEOUT_MS,
-  PATHPLANNER_PING_DELAY_MS,
-  PATHPLANNER_PING_TEXT,
-  PATHPLANNER_PORT,
   PREFS_FILENAME,
   RECENT_UNITS_FILENAME,
   RLOG_CONNECT_TIMEOUT_MS,
   RLOG_DATA_TIMEOUT_MS,
-  RLOG_HEARTBEAT_DATA,
-  RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
@@ -78,7 +71,16 @@ import { XRControls } from "./XRControls";
 import { XRServer } from "./XRServer";
 import { getAssetDownloadStatus, startAssetDownloadLoop } from "./assetDownloader";
 import { createAssetFolders, getUserAssetsPath, loadAssets } from "./assetLoader";
-import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
+import {
+  delayBetaSurvey,
+  isAlpha,
+  isBeta,
+  isBetaExpired,
+  isBetaWelcomeComplete,
+  openBetaSurvey,
+  saveBetaWelcomeComplete,
+  shouldPromptBetaSurvey
+} from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -92,6 +94,7 @@ let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 let hubExportingIds: Set<number> = new Set();
 let ctreLicensePrompt: Promise<void> | null = null;
+let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | null = null;
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
@@ -110,11 +113,6 @@ XRServer.assetsSupplier = () => advantageScopeAssets;
 let rlogSockets: { [id: number]: net.Socket } = {};
 let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 let rlogDataArrays: { [id: number]: Uint8Array } = {};
-
-// PathPlanner variables
-let pathPlannerSockets: { [id: number]: net.Socket } = {};
-let pathPlannerSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
-let pathPlannerDataStrings: { [id: number]: string } = {};
 
 // Download variables
 let downloadClient: FTPClient | null = null;
@@ -161,6 +159,19 @@ function sendAllPreferences() {
     });
   });
   if (downloadWindow !== null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
+  if (menuTemplate !== null) {
+    let autoString = "Default: " + getLiveModeName(data.liveMode);
+    (
+      (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[2]
+        .submenu as Electron.MenuItemConstructorOptions[]
+    )[0].label = autoString;
+    (
+      (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[3]
+        .submenu as Electron.MenuItemConstructorOptions[]
+    )[0].label = autoString;
+    let menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
+  }
 }
 
 /** Sends the current set of assets to all windows. */
@@ -522,55 +533,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "live-rlog-stop":
       rlogSockets[windowId]?.destroy();
-      break;
-
-    case "live-pathplanner-start":
-      pathPlannerSockets[windowId]?.destroy();
-      pathPlannerSockets[windowId] = net.createConnection({
-        host: message.data.address,
-        port: PATHPLANNER_PORT
-      });
-
-      pathPlannerSockets[windowId].setTimeout(PATHPLANNER_CONNECT_TIMEOUT_MS, () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, status: false });
-      });
-
-      const textDecoder = new TextDecoder();
-      pathPlannerDataStrings[windowId] = "";
-      pathPlannerSockets[windowId].on("data", (data) => {
-        pathPlannerDataStrings[windowId] += textDecoder.decode(data);
-        if (pathPlannerSocketTimeouts[windowId] !== null) clearTimeout(pathPlannerSocketTimeouts[windowId]);
-        pathPlannerSocketTimeouts[windowId] = setTimeout(() => {
-          pathPlannerSockets[windowId]?.destroy();
-        }, PATHPLANNER_DATA_TIMEOUT_MS);
-
-        while (pathPlannerDataStrings[windowId].includes("\n")) {
-          let newLineIndex = pathPlannerDataStrings[windowId].indexOf("\n");
-          let line = pathPlannerDataStrings[windowId].slice(0, newLineIndex);
-          pathPlannerDataStrings[windowId] = pathPlannerDataStrings[windowId].slice(newLineIndex + 1);
-
-          let success = sendMessage(window, "live-data", {
-            uuid: message.data.uuid,
-            success: true,
-            string: line
-          });
-          if (!success) {
-            pathPlannerSockets[windowId]?.destroy();
-          }
-        }
-      });
-
-      pathPlannerSockets[windowId].on("error", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-
-      pathPlannerSockets[windowId].on("close", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-      break;
-
-    case "live-pathplanner-stop":
-      pathPlannerSockets[windowId]?.destroy();
       break;
 
     case "open-link":
@@ -1151,7 +1113,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             title: "Warning",
             message: "Incomplete data for export",
             detail:
-              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected with NetworkTables, PathPlanner, or RLOG as the live source. Check the AdvantageScope documentation for details.',
+              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.',
             buttons: ["Continue", "Cancel"],
             icon: WINDOW_ICON
           })
@@ -1236,18 +1198,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
   }
 }
-
-// Send live RLOG heartbeats & PathPlanner pings
-setInterval(() => {
-  Object.values(rlogSockets).forEach((socket) => {
-    socket.write(RLOG_HEARTBEAT_DATA);
-  });
-}, RLOG_HEARTBEAT_DELAY_MS);
-setInterval(() => {
-  Object.values(pathPlannerSockets).forEach((socket) => {
-    socket.write(PATHPLANNER_PING_TEXT + "\n");
-  });
-}, PATHPLANNER_PING_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
@@ -1683,7 +1633,7 @@ function setupMenu() {
   const isMac = process.platform === "darwin";
   const prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
 
-  const template: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [
+  menuTemplate = [
     {
       role: isMac ? "appMenu" : undefined,
       label: isMac ? "" : "App",
@@ -1841,21 +1791,65 @@ function setupMenu() {
         },
         {
           label: "Connect to Robot",
-          accelerator: "CmdOrCtrl+K",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", false);
-          }
+          type: "submenu",
+          submenu: [
+            {
+              label: "Default",
+              accelerator: "CmdOrCtrl+K",
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "start-live", false);
+              }
+            },
+            { type: "separator" },
+            ...(["nt4", "nt4-akit", "phoenix", "rlog"] as const).map((liveMode: LiveMode) => {
+              let item: Electron.MenuItemConstructorOptions = {
+                label: getLiveModeName(liveMode),
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
+                  if (window === undefined || !hubWindows.includes(window)) return;
+                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                  prefs.liveMode = liveMode;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                  sendMessage(window, "start-live", false);
+                }
+              };
+              return item;
+            })
+          ]
         },
         {
           label: "Connect to Simulator",
-          accelerator: "CmdOrCtrl+Shift+K",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", true);
-          }
+          type: "submenu",
+          submenu: [
+            {
+              label: "Default",
+              accelerator: "CmdOrCtrl+Shift+K",
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "start-live", true);
+              }
+            },
+            { type: "separator" },
+            ...(["nt4", "nt4-akit", "phoenix", "rlog"] as const).map((liveMode: LiveMode) => {
+              let item: Electron.MenuItemConstructorOptions = {
+                label: getLiveModeName(liveMode),
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
+                  if (window === undefined || !hubWindows.includes(window)) return;
+                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                  prefs.liveMode = liveMode;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                  sendMessage(window, "start-live", true);
+                }
+              };
+              return item;
+            })
+          ]
         },
         {
           label: "Download Logs...",
@@ -2251,7 +2245,7 @@ function setupMenu() {
     }
   ];
 
-  const menu = Menu.buildFromTemplate(template);
+  const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 }
 
@@ -2479,6 +2473,25 @@ function createHubWindow(state?: WindowState) {
           });
       } else if (!isBetaWelcomeComplete()) {
         openBetaWelcome(window);
+      } else if (shouldPromptBetaSurvey()) {
+        dialog
+          .showMessageBox(window, {
+            type: "info",
+            title: "Alert",
+            message: "Share feedback?",
+            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${
+              isAlpha() ? "alpha" : "beta"
+            }. We'll keep this quick.`,
+            buttons: ["Open", "Not Now"],
+            defaultId: 0
+          })
+          .then((result) => {
+            if (result.response === 0) {
+              openBetaSurvey();
+            } else {
+              delayBetaSurvey();
+            }
+          });
       }
     }
   });
@@ -2942,8 +2955,9 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const rows = 12;
-  const height = rows * 27 + 54;
+  const optionRows = 11;
+  const titleRows = 2;
+  const height = optionRows * 27 + titleRows * 34 + 54;
   prefsWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -3146,6 +3160,7 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
     port2.on("message", () => {
       betaWelcome.destroy();
       saveBetaWelcomeComplete();
+      shouldPromptBetaSurvey(); // Ensures survey is scheduled
     });
     port2.start();
     betaWelcome.show();

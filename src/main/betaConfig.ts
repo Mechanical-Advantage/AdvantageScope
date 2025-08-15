@@ -11,4 +11,5 @@ export type BetaConfig = {
   year: string;
   isAlpha: boolean;
   expiration: Date;
+  surveyUrl: string | null;
 };
