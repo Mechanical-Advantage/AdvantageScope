@@ -55,17 +55,10 @@ import {
   FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
-  PATHPLANNER_CONNECT_TIMEOUT_MS,
-  PATHPLANNER_DATA_TIMEOUT_MS,
-  PATHPLANNER_PING_DELAY_MS,
-  PATHPLANNER_PING_TEXT,
-  PATHPLANNER_PORT,
   PREFS_FILENAME,
   RECENT_UNITS_FILENAME,
   RLOG_CONNECT_TIMEOUT_MS,
   RLOG_DATA_TIMEOUT_MS,
-  RLOG_HEARTBEAT_DATA,
-  RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
@@ -110,11 +103,6 @@ XRServer.assetsSupplier = () => advantageScopeAssets;
 let rlogSockets: { [id: number]: net.Socket } = {};
 let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 let rlogDataArrays: { [id: number]: Uint8Array } = {};
-
-// PathPlanner variables
-let pathPlannerSockets: { [id: number]: net.Socket } = {};
-let pathPlannerSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
-let pathPlannerDataStrings: { [id: number]: string } = {};
 
 // Download variables
 let downloadClient: FTPClient | null = null;
@@ -522,55 +510,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
     case "live-rlog-stop":
       rlogSockets[windowId]?.destroy();
-      break;
-
-    case "live-pathplanner-start":
-      pathPlannerSockets[windowId]?.destroy();
-      pathPlannerSockets[windowId] = net.createConnection({
-        host: message.data.address,
-        port: PATHPLANNER_PORT
-      });
-
-      pathPlannerSockets[windowId].setTimeout(PATHPLANNER_CONNECT_TIMEOUT_MS, () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, status: false });
-      });
-
-      const textDecoder = new TextDecoder();
-      pathPlannerDataStrings[windowId] = "";
-      pathPlannerSockets[windowId].on("data", (data) => {
-        pathPlannerDataStrings[windowId] += textDecoder.decode(data);
-        if (pathPlannerSocketTimeouts[windowId] !== null) clearTimeout(pathPlannerSocketTimeouts[windowId]);
-        pathPlannerSocketTimeouts[windowId] = setTimeout(() => {
-          pathPlannerSockets[windowId]?.destroy();
-        }, PATHPLANNER_DATA_TIMEOUT_MS);
-
-        while (pathPlannerDataStrings[windowId].includes("\n")) {
-          let newLineIndex = pathPlannerDataStrings[windowId].indexOf("\n");
-          let line = pathPlannerDataStrings[windowId].slice(0, newLineIndex);
-          pathPlannerDataStrings[windowId] = pathPlannerDataStrings[windowId].slice(newLineIndex + 1);
-
-          let success = sendMessage(window, "live-data", {
-            uuid: message.data.uuid,
-            success: true,
-            string: line
-          });
-          if (!success) {
-            pathPlannerSockets[windowId]?.destroy();
-          }
-        }
-      });
-
-      pathPlannerSockets[windowId].on("error", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-
-      pathPlannerSockets[windowId].on("close", () => {
-        sendMessage(window, "live-data", { uuid: message.data.uuid, success: false });
-      });
-      break;
-
-    case "live-pathplanner-stop":
-      pathPlannerSockets[windowId]?.destroy();
       break;
 
     case "open-link":
@@ -1151,7 +1090,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             title: "Warning",
             message: "Incomplete data for export",
             detail:
-              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected with NetworkTables, PathPlanner, or RLOG as the live source. Check the AdvantageScope documentation for details.',
+              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.',
             buttons: ["Continue", "Cancel"],
             icon: WINDOW_ICON
           })
@@ -1236,18 +1175,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
   }
 }
-
-// Send live RLOG heartbeats & PathPlanner pings
-setInterval(() => {
-  Object.values(rlogSockets).forEach((socket) => {
-    socket.write(RLOG_HEARTBEAT_DATA);
-  });
-}, RLOG_HEARTBEAT_DELAY_MS);
-setInterval(() => {
-  Object.values(pathPlannerSockets).forEach((socket) => {
-    socket.write(PATHPLANNER_PING_TEXT + "\n");
-  });
-}, PATHPLANNER_PING_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {

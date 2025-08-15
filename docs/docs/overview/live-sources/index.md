@@ -21,7 +21,6 @@ The following sources of live data are supported by AdvantageScope:
 - **NetworkTables 4:** This is WPILib's primary networking protocol. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details.
 - **NetworkTables 4 (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the `AdvantageKit` table in NetworkTables.
 - **Phoenix Diagnostics:** This mode uses HTTP to connect to a Phoenix [diagnostic server](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html), which allows for data streaming from CTRE CAN devices with [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). This is similar to the [plotting feature](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) in Phoenix Tuner. See [this page](/overview/live-sources/phoenix-diagnostics) for more information.
-- **PathPlanner 2023:** Legacy, this mode connects using the `PathPlannerServer` protocol used for telemetry by PathPlanner 2023. The connection is always initiated on port 5811. Note that PathPlanner 2024 and later publish telemetry data using NetworkTables, so the **NetworkTables 4** mode should be used.
 - **RLOG Server:** This protocol is supported by AdvantageKit as an alternative to NetworkTables. The connection is initiated on port 5800 by default.
 
 ### Live Mode
