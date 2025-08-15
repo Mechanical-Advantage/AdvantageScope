@@ -38,7 +38,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
@@ -85,6 +85,7 @@ let windowPorts: { [id: number]: MessagePortMain } = {};
 let hubTouchBarSliders: { [id: number]: TouchBarSlider } = {};
 let hubExportingIds: Set<number> = new Set();
 let ctreLicensePrompt: Promise<void> | null = null;
+let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | null = null;
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
@@ -149,6 +150,19 @@ function sendAllPreferences() {
     });
   });
   if (downloadWindow !== null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
+  if (menuTemplate !== null) {
+    let autoString = "Default: " + getLiveModeName(data.liveMode);
+    (
+      (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[2]
+        .submenu as Electron.MenuItemConstructorOptions[]
+    )[0].label = autoString;
+    (
+      (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[3]
+        .submenu as Electron.MenuItemConstructorOptions[]
+    )[0].label = autoString;
+    let menu = Menu.buildFromTemplate(menuTemplate);
+    Menu.setApplicationMenu(menu);
+  }
 }
 
 /** Sends the current set of assets to all windows. */
@@ -1610,7 +1624,7 @@ function setupMenu() {
   const isMac = process.platform === "darwin";
   const prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
 
-  const template: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] = [
+  menuTemplate = [
     {
       role: isMac ? "appMenu" : undefined,
       label: isMac ? "" : "App",
@@ -1768,21 +1782,65 @@ function setupMenu() {
         },
         {
           label: "Connect to Robot",
-          accelerator: "CmdOrCtrl+K",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", false);
-          }
+          type: "submenu",
+          submenu: [
+            {
+              label: "Default",
+              accelerator: "CmdOrCtrl+K",
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "start-live", false);
+              }
+            },
+            { type: "separator" },
+            ...(["nt4", "nt4-akit", "phoenix", "rlog"] as const).map((liveMode: LiveMode) => {
+              let item: Electron.MenuItemConstructorOptions = {
+                label: getLiveModeName(liveMode),
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
+                  if (window === undefined || !hubWindows.includes(window)) return;
+                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                  prefs.liveMode = liveMode;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                  sendMessage(window, "start-live", false);
+                }
+              };
+              return item;
+            })
+          ]
         },
         {
           label: "Connect to Simulator",
-          accelerator: "CmdOrCtrl+Shift+K",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "start-live", true);
-          }
+          type: "submenu",
+          submenu: [
+            {
+              label: "Default",
+              accelerator: "CmdOrCtrl+Shift+K",
+              click(_, baseWindow) {
+                const window = baseWindow as BrowserWindow | undefined;
+                if (window === undefined || !hubWindows.includes(window)) return;
+                sendMessage(window, "start-live", true);
+              }
+            },
+            { type: "separator" },
+            ...(["nt4", "nt4-akit", "phoenix", "rlog"] as const).map((liveMode: LiveMode) => {
+              let item: Electron.MenuItemConstructorOptions = {
+                label: getLiveModeName(liveMode),
+                click(_, baseWindow) {
+                  const window = baseWindow as BrowserWindow | undefined;
+                  if (window === undefined || !hubWindows.includes(window)) return;
+                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                  prefs.liveMode = liveMode;
+                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                  sendAllPreferences();
+                  sendMessage(window, "start-live", true);
+                }
+              };
+              return item;
+            })
+          ]
         },
         {
           label: "Download Logs...",
@@ -2178,7 +2236,7 @@ function setupMenu() {
     }
   ];
 
-  const menu = Menu.buildFromTemplate(template);
+  const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
 }
 
@@ -2869,7 +2927,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const rows = 12;
+  const rows = 11;
   const height = rows * 27 + 54;
   prefsWindow = new BrowserWindow({
     width: width,

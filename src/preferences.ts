@@ -6,12 +6,11 @@
 // at the root directory of this project.
 
 import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
-import Preferences, { LITE_ALLOWED_LIVE_MODES } from "./shared/Preferences";
+import Preferences from "./shared/Preferences";
 
 const THEME = document.getElementById("theme") as HTMLInputElement;
 const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElement;
 const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
-const LIVE_MODE = document.getElementById("liveMode") as HTMLInputElement;
 const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTMLInputElement;
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
@@ -55,21 +54,11 @@ window.addEventListener("message", (event) => {
         case "lite":
           document.body.classList.add("lite");
           FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
-          let i = 0;
-          while (i < LIVE_MODE.childElementCount) {
-            let option = LIVE_MODE.children[i] as HTMLOptionElement;
-            if ((LITE_ALLOWED_LIVE_MODES as string[]).includes(option.value)) {
-              i++;
-            } else {
-              LIVE_MODE.removeChild(option);
-            }
-          }
           break;
       }
       THEME.value = oldPrefs.theme;
       ROBOT_ADDRESS.value = oldPrefs.robotAddress;
       REMOTE_PATH.value = oldPrefs.remotePath;
-      LIVE_MODE.value = oldPrefs.liveMode;
       LIVE_SUBSCRIBE_MODE.value = oldPrefs.liveSubscribeMode;
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
@@ -86,12 +75,6 @@ window.addEventListener("message", (event) => {
           if (THEME.value === "light") theme = "light";
           if (THEME.value === "dark") theme = "dark";
           if (THEME.value === "system") theme = "system";
-
-          let liveMode: "nt4" | "nt4-akit" | "phoenix" | "rlog" = "nt4";
-          if (LIVE_MODE.value === "nt4") liveMode = "nt4";
-          if (LIVE_MODE.value === "nt4-akit") liveMode = "nt4-akit";
-          if (LIVE_MODE.value === "phoenix") liveMode = "phoenix";
-          if (LIVE_MODE.value === "rlog") liveMode = "rlog";
 
           let liveSubscribeMode: "low-bandwidth" | "logging" = "low-bandwidth";
           if (LIVE_SUBSCRIBE_MODE.value === "low-bandwidth") liveSubscribeMode = "low-bandwidth";
@@ -119,7 +102,7 @@ window.addEventListener("message", (event) => {
             theme: theme,
             robotAddress: ROBOT_ADDRESS.value,
             remotePath: REMOTE_PATH.value,
-            liveMode: liveMode,
+            liveMode: oldPrefs.liveMode,
             liveSubscribeMode: liveSubscribeMode,
             liveDiscard: Number(LIVE_DISCARD.value),
             publishFilter: PUBLISH_FILTER.value,
