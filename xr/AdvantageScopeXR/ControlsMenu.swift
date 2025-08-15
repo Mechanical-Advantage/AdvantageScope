@@ -13,44 +13,34 @@ struct ControlsMenu: View {
     let requestCalibration: () -> Void
     
     var body: some View {
-        if #available(iOS 26.0, *) {
-            GlassEffectContainer(spacing: 0) {
-                HStack(spacing: 14) {
-                    #if !APPCLIP
-                    Button("Scan", systemImage: "qrcode") {
-                        appState.scanningQR.toggle()
-                    }.buttonStyle(ControlButton(highlight: appState.scanningQR ? .blue : .none))
-                    #endif
-                    
-                    RecordButton()
-                    
-                    Button("Calibrate", systemImage: "scope") {
-                        requestCalibration()
-                    }.buttonStyle(ControlButton(highlight: .none))
+        Group {
+            if #available(iOS 26.0, *) {
+                GlassEffectContainer(spacing: 0) {
+                    buttonStack
                 }
+            } else {
+                buttonStack
             }
-            .padding()
-            .statusBarHidden(true)
-            .opacity(appState.showControls ? 1 : 0)
-            .animation(.easeInOut(duration: 0.25), value: appState.showControls)
-        } else {
-            HStack(spacing: 12) {
-                #if !APPCLIP
-                Button("Scan", systemImage: "qrcode") {
-                    appState.scanningQR.toggle()
-                }.buttonStyle(ControlButton(highlight: appState.scanningQR ? .blue : .none))
-                #endif
-                
-                RecordButton()
-                
-                Button("Calibrate", systemImage: "scope") {
-                    requestCalibration()
-                }.buttonStyle(ControlButton(highlight: .none))
-            }
-            .padding()
-            .statusBarHidden(true)
-            .opacity(appState.showControls ? 1 : 0)
-            .animation(.easeInOut(duration: 0.25), value: appState.showControls)
+        }
+        .padding()
+        .statusBarHidden(true)
+        .opacity(appState.showControls ? 1 : 0)
+        .animation(.easeInOut(duration: 0.25), value: appState.showControls)
+    }
+    
+    private var buttonStack: some View {
+        HStack(spacing: 14) {
+#if !APPCLIP
+            Button("Scan", systemImage: "qrcode") {
+                appState.scanningQR.toggle()
+            }.buttonStyle(ControlButton(highlight: appState.scanningQR ? .blue : .none))
+#endif
+            
+            RecordButton()
+            
+            Button("Calibrate", systemImage: "scope") {
+                requestCalibration()
+            }.buttonStyle(ControlButton(highlight: .none))
         }
     }
 }
@@ -62,8 +52,8 @@ struct ControlButton : ButtonStyle {
         if #available(iOS 26.0, *) {
             configuration.label
                 .padding(10)
-                .foregroundStyle(highlight == .none ? .primary : Color.white)
-                .glassEffect(highlight == .none ? .regular.tint(.none).interactive() : .regular.tint(highlight!).interactive())
+                .foregroundStyle(highlight == .none ? .secondary : Color.white)
+                .glassEffect(.regular.tint(highlight).interactive())
         } else {
             configuration.label
                 .padding(10)
