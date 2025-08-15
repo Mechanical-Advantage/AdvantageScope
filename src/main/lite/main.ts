@@ -118,6 +118,8 @@ function openPopupWindow(
         POPUP_FRAME.contentWindow?.addEventListener("keydown", (event) => {
           if (event.code === "Escape") {
             closePopupWindow();
+          } else {
+            processKeydown(event);
           }
         });
       }
@@ -272,6 +274,9 @@ async function initHub() {
     event.preventDefault();
   });
   HUB_FRAME.contentWindow?.addEventListener("mousemove", (event) => event.preventDefault());
+
+  // Add key handling event
+  HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event));
 }
 
 async function handleHubMessage(message: NamedMessage) {
@@ -1078,6 +1083,58 @@ async function handleHubMessage(message: NamedMessage) {
   }
 }
 
+/**
+ * Process keyboard shortcuts
+ * @param event The event
+ * @returns Whether a shortcut was triggered
+ */
+function processKeydown(event: KeyboardEvent): boolean {
+  let triggered = true;
+  let lowerKey = event.key.toLowerCase();
+  if (event.shiftKey && event.metaKey && lowerKey === "o") {
+    openDownload();
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
+    sendMessage(hubPort, "start-live", false);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
+    sendMessage(hubPort, "zoom-enabled");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
+    sendMessage(hubPort, "toggle-sidebar");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
+    sendMessage(hubPort, "toggle-controls");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
+    sendMessage(hubPort, "move-tab", -1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
+    sendMessage(hubPort, "move-tab", 1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
+    sendMessage(hubPort, "shift-tab", -1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
+    sendMessage(hubPort, "shift-tab", 1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
+    sendMessage(hubPort, "close-tab", false);
+  } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
+    openPreferences();
+  } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
+    triggered = false;
+    getAllTabTypes()
+      .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
+      .forEach((tabType) => {
+        let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
+        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
+          sendMessage(hubPort, "new-tab", tabType);
+          triggered = true;
+        }
+      });
+  } else if (event.code === "Escape") {
+    closePopupWindow();
+  } else {
+    triggered = false;
+  }
+  if (triggered) {
+    event.preventDefault();
+  }
+  return triggered;
+}
+
 // Get elements on page load
 window.addEventListener("load", () => {
   // Load assets
@@ -1111,61 +1168,23 @@ window.addEventListener("load", () => {
   document.addEventListener("mousemove", (event) => event.preventDefault());
 
   // Set up keyboard shortcuts
-  window.addEventListener("keydown", (event) => {
-    let triggered = true;
-    let lowerKey = event.key.toLowerCase();
-    if (event.shiftKey && event.metaKey && lowerKey === "o") {
-      openDownload();
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
-      sendMessage(hubPort, "start-live", false);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
-      sendMessage(hubPort, "zoom-enabled");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
-      sendMessage(hubPort, "toggle-sidebar");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
-      sendMessage(hubPort, "toggle-controls");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
-      sendMessage(hubPort, "move-tab", -1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
-      sendMessage(hubPort, "move-tab", 1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
-      sendMessage(hubPort, "shift-tab", -1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
-      sendMessage(hubPort, "shift-tab", 1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
-      sendMessage(hubPort, "close-tab", false);
-    } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
-      openPreferences();
-    } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
-      triggered = false;
-      getAllTabTypes()
-        .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-        .forEach((tabType) => {
-          let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-          if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
-            sendMessage(hubPort, "new-tab", tabType);
-            triggered = true;
-          }
-        });
-    } else if (event.code === "Escape") {
-      closePopupWindow();
-    } else {
-      triggered = false;
-    }
-    if (triggered) {
-      event.preventDefault();
-    } else {
-      HUB_FRAME.contentWindow?.dispatchEvent(
-        new KeyboardEvent("keydown", {
-          key: event.key,
-          code: event.code,
-          metaKey: event.metaKey,
-          ctrlKey: event.ctrlKey,
-          altKey: event.altKey
-        })
-      );
-    }
-  });
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (!processKeydown(event)) {
+        HUB_FRAME.contentWindow?.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: event.key,
+            code: event.code,
+            metaKey: event.metaKey,
+            ctrlKey: event.ctrlKey,
+            altKey: event.altKey
+          })
+        );
+      }
+    },
+    { capture: true }
+  );
   window.addEventListener("keyup", (event) => {
     HUB_FRAME.contentWindow?.dispatchEvent(
       new KeyboardEvent("keyup", {
