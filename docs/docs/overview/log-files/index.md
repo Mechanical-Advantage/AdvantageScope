@@ -9,6 +9,7 @@ import Image2 from './img/open-file-2.png';
 - **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope automatically searches for the corresponding log file when opening either log type.
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 - **Road Runner (.log)** - Produced by the [Road Runner](https://github.com/acmerobotics/road-runner) library for FTC.
+- **CSV (.csv)** - Comma separated values, matching the format [exported](/overview/log-files/export) by AdvantageScope in the "CSV (Table)" or "CSV (List)" modes. See [here](#csv-formatting) for details.
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.
 
 :::info
@@ -48,3 +49,15 @@ When downloading multiple files, AdvantageScope skips any that already exist in 
 :::
 
 <img src={Image2} alt="Downloading log files" height="350" />
+
+## CSV Formatting
+
+CSV column names must be either "Timestamp, Key, Value" or "Timestamp, (Key), (Key), etc". Timestamp values are in seconds. The list below shows the expected format of common value types. Note that exporting and reimporting log data as a CSV is _lossy_, since CSV does not support complex field types.
+
+- **Booleans:** `true` or `false`
+- **Strings:** `"(value)"`
+  - Example: `"Hello world"`
+- **Arrays:** `[(value);(value);(value)]`
+  - Example: `[1;2;3]`
+- **Bytes:** hexadecimal, separated by `-`
+  - Example: `4d-41-36-33-32-38`
