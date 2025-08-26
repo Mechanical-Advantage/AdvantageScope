@@ -7,6 +7,7 @@
 
 import ytdl from "@distube/ytdl-core";
 import { ChildProcess, spawn } from "child_process";
+import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
@@ -21,6 +22,15 @@ import { PREFS_FILENAME, VIDEO_CACHE, VIDEO_CACHE_FALLBACK, WINDOW_ICON } from "
 import getElectronPlatform from "./getElectronPlatform";
 
 export class VideoProcessor {
+  private static FFMPEG_DOWNLOAD_PATHS: { [key: string]: string } = {
+    "mac-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-x64",
+    "mac-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-arm64",
+    "linux-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64",
+    "linux-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm64",
+    "linux-armv7l": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm",
+    "win-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-x64",
+    "win-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-ia32"
+  };
   private static NUM_TESSERACT_WORKERS = 8;
   private static TIMER_RECTS = [
     // Small format - 2023 and older
@@ -109,6 +119,63 @@ export class VideoProcessor {
     }
   }
 
+  private static async getFFmpegPath(window: BrowserWindow): Promise<string> {
+    // Check for AdvantageScope install (user data folder)
+    let ffmpegPath: string;
+    if (process.platform === "win32") {
+      ffmpegPath = path.join(app.getPath("userData"), "ffmpeg.exe");
+    } else {
+      ffmpegPath = path.join(app.getPath("userData"), "ffmpeg");
+    }
+    if (fs.existsSync(ffmpegPath)) {
+      return ffmpegPath;
+    }
+
+    // Check for system install
+    let systemFFmpegValid = false;
+    try {
+      let testProcess = spawn("ffmpeg", ["-version"]);
+      await new Promise<void>((resolve) => {
+        testProcess.on("close", (code) => {
+          if (code === 0) {
+            systemFFmpegValid = true;
+          }
+          resolve();
+        });
+        testProcess.on("error", () => {
+          resolve();
+        });
+      });
+    } catch {}
+    if (systemFFmpegValid) {
+      return "ffmpeg";
+    }
+
+    // Download FFmpeg
+    let ffmpegDownloadResponse = await dialog.showMessageBox(window, {
+      type: "question",
+      title: "Alert",
+      message: "Download FFmpeg?",
+      detail:
+        'FFmpeg is required to process videos files. Select "Continue" to download automatically, or install FFmpeg manually and add to the PATH.',
+      buttons: ["Continue", "Stop"],
+      defaultId: 0,
+      icon: WINDOW_ICON
+    });
+    if (ffmpegDownloadResponse.response === 1) {
+      throw "Failed";
+    }
+
+    // Perform download
+    let folder = app.getPath("userData");
+    let filename = process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
+    await download(this.FFMPEG_DOWNLOAD_PATHS[getElectronPlatform()], folder, {
+      filename: filename
+    });
+    fs.chmodSync(path.join(folder, filename), 0o755);
+    return ffmpegPath;
+  }
+
   /** Loads a video based on a request from the hub window. */
   static prepare(
     window: BrowserWindow,
@@ -116,11 +183,20 @@ export class VideoProcessor {
     source: VideoSource,
     matchInfo: MatchInfo | null,
     menuCoordinates: null | [number, number],
-    callback: (data: any) => void
+    dataCallback: (data: any) => void
   ) {
-    let loadPath = (videoPath: string, videoCache: string) => {
+    let loadPath = async (videoPath: string, videoCache: string) => {
+      // Find FFmpeg path
+      let ffmpegPath: string;
+      try {
+        ffmpegPath = await this.getFFmpegPath(window);
+      } catch {
+        dataCallback({ uuid: uuid, error: true });
+        return;
+      }
+
       // Indicate download has started
-      callback({ uuid: uuid });
+      dataCallback({ uuid: uuid });
 
       // Create cache folder
       let cachePath = path.join(videoCache, createUUID()) + path.sep;
@@ -128,14 +204,6 @@ export class VideoProcessor {
         fs.rmSync(cachePath, { recursive: true });
       }
       fs.mkdirSync(cachePath, { recursive: true });
-
-      // Find ffmpeg path
-      let ffmpegPath: string;
-      if (app.isPackaged) {
-        ffmpegPath = path.join(__dirname, "..", "..", "ffmpeg-" + getElectronPlatform());
-      } else {
-        ffmpegPath = path.join(__dirname, "..", "ffmpeg", "ffmpeg-" + getElectronPlatform());
-      }
 
       // Start ffmpeg
       if (uuid in VideoProcessor.processes) VideoProcessor.processes[uuid].kill();
@@ -165,7 +233,7 @@ export class VideoProcessor {
       let sendError = () => {
         running = false;
         ffmpeg.kill();
-        callback({ uuid: uuid, error: true });
+        dataCallback({ uuid: uuid, error: true });
         dialog.showMessageBox(window, {
           type: "error",
           title: "Error",
@@ -291,7 +359,7 @@ export class VideoProcessor {
           }
 
           // Send status
-          callback({
+          dataCallback({
             uuid: uuid,
             imgFolder: cachePath,
             fps: fps,
@@ -306,7 +374,7 @@ export class VideoProcessor {
       ffmpeg.on("close", (code) => {
         if (!running) return;
         if (code === 0) {
-          callback({
+          dataCallback({
             uuid: uuid,
             imgFolder: cachePath,
             fps: fps,
@@ -335,7 +403,7 @@ export class VideoProcessor {
       case VideoSource.YouTube:
         let clipboardText = clipboard.readText();
         if (!clipboardText.includes("youtube.com") && !clipboardText.includes("youtu.be")) {
-          callback({ uuid: uuid, error: true });
+          dataCallback({ uuid: uuid, error: true });
           dialog.showMessageBox(window, {
             type: "error",
             title: "Error",
@@ -347,7 +415,7 @@ export class VideoProcessor {
           this.getDirectUrlFromYouTubeUrl(clipboardText)
             .then((path) => loadPath(path, VIDEO_CACHE))
             .catch(() => {
-              callback({ uuid: uuid, error: true });
+              dataCallback({ uuid: uuid, error: true });
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
@@ -365,7 +433,7 @@ export class VideoProcessor {
             this.getDirectUrlFromYouTubeUrl(url)
               .then((path) => loadPath(path, VIDEO_CACHE))
               .catch(() => {
-                callback({ uuid: uuid, error: true });
+                dataCallback({ uuid: uuid, error: true });
                 dialog.showMessageBox(window, {
                   type: "error",
                   title: "Error",
@@ -377,7 +445,7 @@ export class VideoProcessor {
               });
           })
           .catch((silent) => {
-            callback({ uuid: uuid, error: true });
+            dataCallback({ uuid: uuid, error: true });
             if (silent === true) return;
             dialog.showMessageBox(window, {
               type: "error",

@@ -16,8 +16,9 @@ import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../shared/AdvantageScopeAssets";
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
+import { rotationSequenceToQuaternion } from "../shared/geometry";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../shared/renderers/Field3dRenderer";
-import { disposeObject, getQuaternionFromRotSeq } from "../shared/renderers/Field3dRendererImpl";
+import { disposeObject } from "../shared/renderers/Field3dRendererImpl";
 import makeAxesField from "../shared/renderers/field3d/AxesField";
 import makeEvergreenField from "../shared/renderers/field3d/EvergreenField";
 import ObjectManager from "../shared/renderers/field3d/ObjectManager";
@@ -276,6 +277,17 @@ export default class XRRenderer {
         break;
       case "aprilTag":
         manager = new AprilTagManager(...args);
+        break;
+      case "aprilTagBuiltIn":
+        // Built-in AprilTags are unaffected by the selected coordinate system
+        manager = new AprilTagManager(
+          this.wpilibCoordinateGroup,
+          this.MATERIAL_SPECULAR,
+          this.MATERIAL_SHININESS,
+          "standard",
+          true,
+          () => {}
+        );
         break;
       case "axes":
         manager = new AxesManager(...args);
@@ -656,15 +668,15 @@ export default class XRRenderer {
               });
 
               // Save components
-              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-              carpet.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
-              stagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+              scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              carpet.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              stagedPieces.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
               this.field = scene;
               this.fieldCarpet = carpet;
               this.fieldStagedPieces = stagedPieces;
             } else {
               let gamePieceConfig = fieldConfig.gamePieces[index - 1];
-              scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
+              scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(gamePieceConfig.rotations));
               scene.position.set(...gamePieceConfig.position);
               let meshes = (
                 await optimizeGeometries(scene, "standard", this.MATERIAL_SPECULAR, this.MATERIAL_SHININESS, false)

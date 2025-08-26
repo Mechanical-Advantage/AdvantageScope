@@ -38,9 +38,32 @@ td {
   padding: 0px;
 }
 
+td.title {
+  white-space: nowrap;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 900;
+  height: 34px;
+}
+
+td.title > hr {
+  margin-top: 5px;
+  margin-bottom: 0px;
+}
+
+td.subtitle {
+  white-space: nowrap;
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  height: 20px;
+  line-height: 20px;
+  padding-bottom: 7px;
+}
+
 td.label {
   white-space: nowrap;
-  width: 1px;
+  width: 0px;
   text-align: right;
   font-size: 14px;
 }

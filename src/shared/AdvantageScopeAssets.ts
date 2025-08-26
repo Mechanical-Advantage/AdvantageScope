@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { Field3dRendererCommand_AprilTagVariant } from "./renderers/Field3dRenderer";
 import { Units } from "./units";
 
 export const FRC_STANDARD_FIELD_LENGTH = Units.convert(54, "feet", "meters");
@@ -70,6 +71,7 @@ export interface Config3dField {
   heightInches: number;
   driverStations: [number, number][];
   gamePieces: Config3dField_GamePiece[];
+  aprilTags: Config3dField_AprilTag[];
 }
 
 export interface Config3dField_GamePiece {
@@ -79,7 +81,9 @@ export interface Config3dField_GamePiece {
   stagedObjects: string[];
 }
 
-export interface Config3dField_GamePieceLocation {
+export interface Config3dField_AprilTag {
+  variant: Field3dRendererCommand_AprilTagVariant;
+  id: number;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
 }
@@ -164,7 +168,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
     heightInches: Units.convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FRC,
-    gamePieces: []
+    gamePieces: [],
+    aprilTags: []
   },
   {
     name: "Evergreen",
@@ -177,7 +182,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
     heightInches: Units.convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FTC,
-    gamePieces: []
+    gamePieces: [],
+    aprilTags: []
   },
   {
     name: "Axes",
@@ -190,7 +196,8 @@ export const BuiltIn3dFields: Config3dField[] = [
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
     heightInches: Units.convert(FRC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FRC,
-    gamePieces: []
+    gamePieces: [],
+    aprilTags: []
   },
   {
     name: "Axes",
@@ -203,6 +210,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
     heightInches: Units.convert(FTC_STANDARD_FIELD_WIDTH, "meters", "inches"),
     driverStations: DEFAULT_DRIVER_STATIONS_FTC,
-    gamePieces: []
+    gamePieces: [],
+    aprilTags: []
   }
 ];

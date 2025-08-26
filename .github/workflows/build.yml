@@ -25,8 +25,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Check formatting
         run: npm run check-format
 
@@ -44,8 +42,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact
@@ -72,8 +68,6 @@ jobs:
           version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -104,8 +98,6 @@ jobs:
           version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -138,8 +130,6 @@ jobs:
           version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          ASCOPE_NO_FFMPEG: true
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -176,6 +166,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Select Xcode version
+        uses: BoundfoxStudios/action-xcode-select@v1
+        with:
+          version: "16"
       - name: Build AdvantageScopeXR
         run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
       - name: Build AdvantageScopeXRClip
