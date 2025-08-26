@@ -385,7 +385,12 @@ function startHistorical(path: string, clear = true, merge = false) {
           setWindowTitle(logFriendlyName, "Error");
           sourceEntry.progress = null;
           updateLoading();
-          let message = "There was a problem while reading the log file. Please try again.";
+          let isCSV = path.endsWith(".csv");
+          let message =
+            "There was a problem while reading the log file. " +
+            (isCSV
+              ? "Please check the documentation for more information on the required format of CSV files."
+              : "Please try again.");
           if (source.getCustomError() !== null) {
             message = source.getCustomError()!;
           }
