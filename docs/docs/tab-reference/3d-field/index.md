@@ -22,9 +22,9 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 </details>
 
 :::warning
-**Why are there two 2025 field options?**
+**Why are there two 2025 FRC field options?**
 
-AdvantageScope includes two 2025 field models: "2025 Field (Welded)" and "2025 Field (AndyMark)". As explained in [Team Update 12](https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf), there are two versions of the Reefscape field with different dimensions and processor locations (see the Team Update for details on which field is used at each event). Teams should use the correct AprilTag layout and field dimensions in code and on any vision coprocessors, then **choose the matching field model in AdvantageScope to ensure that the visualization is accurate**. Documentation is available from [WPILib](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/apriltag/AprilTagFields.html), [Limelight](https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-map-specification), and [PhotonVision](https://docs.photonvision.org/en/latest/docs/apriltag-pipelines/multitag.html#updating-the-field-layout) about changing the AprilTag layout.
+AdvantageScope includes two 2025 FRC field models: "2025 Field (Welded)" and "2025 Field (AndyMark)". As explained in [Team Update 12](https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf), there are two versions of the Reefscape field with different dimensions and processor locations (see the Team Update for details on which field is used at each event). Teams should use the correct AprilTag layout and field dimensions in code and on any vision coprocessors, then **choose the matching field model in AdvantageScope to ensure that the visualization is accurate**. Documentation is available from [WPILib](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/apriltag/AprilTagFields.html), [Limelight](https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-map-specification), and [PhotonVision](https://docs.photonvision.org/en/latest/docs/apriltag-pipelines/multitag.html#updating-the-field-layout) about changing the AprilTag layout.
 
 _The 2025 field model used by AdvantageScope prior to Febuary 2025 is equivalent to the "2025 Field (Welded) option._
 :::
@@ -39,6 +39,10 @@ To get started, drag a field to the "Poses" section. Delete an object using the 
 To see a full list of supported object types, click the `?` icon. This list also includes the supported data types and whether the objects must be added as children.
 :::
 
+:::info
+AdvantageScope supports several sizes of AprilTags for FTC fields. Sizes are measured as the **side length of the black section of the AprilTag**, not including the required white border.
+:::
+
 ## Data Format
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
@@ -47,7 +51,7 @@ Geometry data should be published as a byte-encoded struct or protobuf. Various 
 The legacy number array format for geometry data is now deprecated. See [here](/legacy-formats) for details.
 :::
 
-Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
+Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -81,6 +85,22 @@ Pose3d poseB = new Pose3d();
 Logger.recordOutput("MyPose", poseA);
 Logger.recordOutput("MyPoseArray", poseA, poseB);
 Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="ftcdashboard" label="FTC Dashboard">
+
+```java
+// This protocol does not support the modern struct format, but pose
+// values can be published using separate fields that include the
+// suffixes "x", "y", and "heading" (as shown below):
+TelemetryPacket packet = new TelemetryPacket();
+packet.put("Pose x", 6.3); // Inches
+packet.put("Pose y", 2.8); // Inches
+packet.put("Pose heading", 3.14); // Radians
+
+// Alternatively, headings can be published in degrees
+packet.put("Pose heading (deg)", 180.0); // Degrees
 ```
 
 </TabItem>

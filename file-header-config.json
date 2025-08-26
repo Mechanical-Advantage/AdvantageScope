@@ -5,7 +5,9 @@
     "docs/build",
     "docs/.docusaurus",
     "runOwletDownload.js",
-    "src/hub/dataSources/schema/spark/*"
+    "src/hub/dataSources/schema/spark/*",
+    "src/hub/dataSources/ftcdashboard/configReducer.ts",
+    "src/hub/dataSources/ftcdashboard/configTypes.ts"
   ],
   "license": "file-header.txt",
   "licenseFormats": {

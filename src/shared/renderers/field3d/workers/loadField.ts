@@ -8,7 +8,7 @@
 import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dField } from "../../../AdvantageScopeAssets";
-import { getQuaternionFromRotSeq } from "../../Field3dRendererImpl";
+import { rotationSequenceToQuaternion } from "../../../geometry";
 import optimizeGeometries from "../OptimizeGeometries";
 import { prepareTransfer } from "./prepareTransfer";
 
@@ -65,7 +65,7 @@ self.onmessage = (event) => {
           });
         });
 
-        stagedPieces.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+        stagedPieces.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
         stagedPieces.position.set(...fieldConfig.position);
         let fieldStagedPiecesMeshes = await optimizeGeometries(
           stagedPieces,
@@ -81,7 +81,7 @@ self.onmessage = (event) => {
           fieldStagedPieces.add(fieldStagedPiecesMeshes.transparent[0]);
         if (fieldStagedPiecesMeshes.carpet.length > 0) fieldStagedPieces.add(fieldStagedPiecesMeshes.carpet[0]);
 
-        scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(fieldConfig.rotations));
+        scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
         scene.position.set(...fieldConfig.position);
         let fieldMeshes = await optimizeGeometries(
           scene,
@@ -99,7 +99,7 @@ self.onmessage = (event) => {
         [...fieldMeshes.normal, ...fieldMeshes.transparent, ...fieldMeshes.carpet].forEach((mesh) => field.add(mesh));
       } else {
         let gamePieceConfig = fieldConfig.gamePieces[index - 1];
-        scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(gamePieceConfig.rotations));
+        scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(gamePieceConfig.rotations));
         scene.position.set(...gamePieceConfig.position);
         let meshes = (
           await optimizeGeometries(scene, mode, materialSpecular, materialShininess, false, fieldConfig.isFTC)
