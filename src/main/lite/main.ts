@@ -12,7 +12,13 @@ import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import { DEFAULT_PREFS, mergePreferences } from "../../shared/Preferences";
+import {
+  DEFAULT_PREFS,
+  getLiveModeName,
+  LITE_ALLOWED_LIVE_MODES,
+  LiveMode,
+  mergePreferences
+} from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
   getAllTabTypes,
@@ -112,6 +118,8 @@ function openPopupWindow(
         POPUP_FRAME.contentWindow?.addEventListener("keydown", (event) => {
           if (event.code === "Escape") {
             closePopupWindow();
+          } else {
+            processKeydown(event);
           }
         });
       }
@@ -159,8 +167,9 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const rows = 7;
-  const height = rows * 27 + 54;
+  const optionRows = 7;
+  const titleRows = 2;
+  const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
     closePopupWindow();
     sendMessage(hubPort, "set-preferences", message);
@@ -274,6 +283,9 @@ async function initHub() {
     event.preventDefault();
   });
   HUB_FRAME.contentWindow?.addEventListener("mousemove", (event) => event.preventDefault());
+
+  // Add key handling event
+  HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event));
 }
 
 async function handleHubMessage(message: NamedMessage) {
@@ -334,18 +346,37 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "numeric-array-deprecation-warning":
-      let shouldForce: boolean = message.data.force;
-      let prefs = DEFAULT_PREFS;
-      let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-      if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-      if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-      if (!prefs.skipNumericArrayDeprecationWarning) {
-        prefs.skipNumericArrayDeprecationWarning = true;
-        localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
+      {
+        let shouldForce: boolean = message.data.force;
+        let prefs = DEFAULT_PREFS;
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
+        if (!prefs.skipNumericArrayDeprecationWarning) {
+          prefs.skipNumericArrayDeprecationWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+        }
+        alert(
+          "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative."
+        );
       }
-      alert(
-        "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative."
-      );
+      break;
+
+    case "ftc-experimental-warning":
+      {
+        let prefs = DEFAULT_PREFS;
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        if (prefs.skipFTCExperimentalWarning) return;
+        if (
+          confirm(
+            "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page. Select OK to hide this message in the future."
+          )
+        ) {
+          prefs.skipFTCExperimentalWarning = true;
+          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+        }
+      }
       break;
 
     case "open-link":
@@ -393,6 +424,9 @@ async function handleHubMessage(message: NamedMessage) {
 
           case 1:
             // File menu
+            let prefs = DEFAULT_PREFS;
+            let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+            if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
             menuItems = [
               {
                 content: `Open Log (\u21e7 ${modifier} O)`,
@@ -405,6 +439,19 @@ async function handleHubMessage(message: NamedMessage) {
                 callback() {
                   sendMessage(hubPort, "start-live", false);
                 }
+              },
+              {
+                content: "Set Live Mode",
+                items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                  return {
+                    content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
+                    callback() {
+                      prefs.liveMode = liveMode;
+                      localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                      sendMessage(hubPort, "start-live", false);
+                    }
+                  };
+                })
               },
               {
                 content: `Upload Asset`,
@@ -1051,6 +1098,58 @@ async function handleHubMessage(message: NamedMessage) {
   }
 }
 
+/**
+ * Process keyboard shortcuts
+ * @param event The event
+ * @returns Whether a shortcut was triggered
+ */
+function processKeydown(event: KeyboardEvent): boolean {
+  let triggered = true;
+  let lowerKey = event.key.toLowerCase();
+  if (event.shiftKey && event.metaKey && lowerKey === "o") {
+    openDownload();
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
+    sendMessage(hubPort, "start-live", false);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
+    sendMessage(hubPort, "zoom-enabled");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
+    sendMessage(hubPort, "toggle-sidebar");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
+    sendMessage(hubPort, "toggle-controls");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
+    sendMessage(hubPort, "move-tab", -1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
+    sendMessage(hubPort, "move-tab", 1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
+    sendMessage(hubPort, "shift-tab", -1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
+    sendMessage(hubPort, "shift-tab", 1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
+    sendMessage(hubPort, "close-tab", false);
+  } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
+    openPreferences();
+  } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
+    triggered = false;
+    getAllTabTypes()
+      .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
+      .forEach((tabType) => {
+        let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
+        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
+          sendMessage(hubPort, "new-tab", tabType);
+          triggered = true;
+        }
+      });
+  } else if (event.code === "Escape") {
+    closePopupWindow();
+  } else {
+    triggered = false;
+  }
+  if (triggered) {
+    event.preventDefault();
+  }
+  return triggered;
+}
+
 // Get elements on page load
 window.addEventListener("load", () => {
   // Load assets
@@ -1084,61 +1183,23 @@ window.addEventListener("load", () => {
   document.addEventListener("mousemove", (event) => event.preventDefault());
 
   // Set up keyboard shortcuts
-  window.addEventListener("keydown", (event) => {
-    let triggered = true;
-    let lowerKey = event.key.toLowerCase();
-    if (event.shiftKey && event.metaKey && lowerKey === "o") {
-      openDownload();
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
-      sendMessage(hubPort, "start-live", false);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
-      sendMessage(hubPort, "zoom-enabled");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
-      sendMessage(hubPort, "toggle-sidebar");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
-      sendMessage(hubPort, "toggle-controls");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
-      sendMessage(hubPort, "move-tab", -1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
-      sendMessage(hubPort, "move-tab", 1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
-      sendMessage(hubPort, "shift-tab", -1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
-      sendMessage(hubPort, "shift-tab", 1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
-      sendMessage(hubPort, "close-tab", false);
-    } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
-      openPreferences();
-    } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
-      triggered = false;
-      getAllTabTypes()
-        .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-        .forEach((tabType) => {
-          let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-          if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
-            sendMessage(hubPort, "new-tab", tabType);
-            triggered = true;
-          }
-        });
-    } else if (event.code === "Escape") {
-      closePopupWindow();
-    } else {
-      triggered = false;
-    }
-    if (triggered) {
-      event.preventDefault();
-    } else {
-      HUB_FRAME.contentWindow?.dispatchEvent(
-        new KeyboardEvent("keydown", {
-          key: event.key,
-          code: event.code,
-          metaKey: event.metaKey,
-          ctrlKey: event.ctrlKey,
-          altKey: event.altKey
-        })
-      );
-    }
-  });
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (!processKeydown(event)) {
+        HUB_FRAME.contentWindow?.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: event.key,
+            code: event.code,
+            metaKey: event.metaKey,
+            ctrlKey: event.ctrlKey,
+            altKey: event.altKey
+          })
+        );
+      }
+    },
+    { capture: true }
+  );
   window.addEventListener("keyup", (event) => {
     HUB_FRAME.contentWindow?.dispatchEvent(
       new KeyboardEvent("keyup", {

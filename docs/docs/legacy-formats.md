@@ -29,7 +29,7 @@ While the legacy format can still be used, additional information must be provid
 
 ## How Do I Update?
 
-Most major tools and libraries used in FRC already support the modern struct format (check the documentation of each library for details). Below, you can see how to upgrade to the modern format for several common libraries. The struct format supports both single objects and object arrays (such as `Pose2d[]`).
+Most major tools and libraries already support the modern struct format (check the documentation of each library for details). Below, you can see how to upgrade to the modern format for several common libraries. The struct format supports both single objects and object arrays (such as `Pose2d[]`).
 
 :::tip
 If you rely on a library that hasn't upgraded to the new format, reach out the developers for details.
