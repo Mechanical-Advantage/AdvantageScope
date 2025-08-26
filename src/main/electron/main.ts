@@ -1759,7 +1759,9 @@ function setupMenu() {
                 title: "Select the robot log file(s) to open",
                 message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }],
+                filters: [
+                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                ],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -1779,7 +1781,9 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select the robot log file(s) to add to the current log",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }],
+                filters: [
+                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                ],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
