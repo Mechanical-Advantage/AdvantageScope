@@ -57,7 +57,7 @@ CSV column names must be either "Timestamp, Key, Value" or "Timestamp, (Key), (K
 - **Booleans:** `true` or `false`
 - **Strings:** `"(value)"`
   - Example: `"Hello world"`
-- **Arrays:** `[(value);(value);(value)]`
-  - Example: `[1;2;3]`
+- **Arrays:** `[(value); (value); (value)]`
+  - Example: `[1; 2; 3]`
 - **Bytes:** hexadecimal, separated by `-`
   - Example: `4d-41-36-33-32-38`
