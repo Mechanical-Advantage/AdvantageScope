@@ -20,7 +20,6 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
   private tunableKeysTypes = new Map<string, BasicVarType>(); // key, type
 
   private socket: WebSocket | null = null;
-  private interval: ReturnType<typeof setInterval> | null = null;
 
   private robotClockSkew = 0;
   private running = false;
@@ -38,7 +37,7 @@ export default class FtcDashboardSource extends LiveDataSource implements LiveDa
       this.socket?.close();
       let url = "ws://" + address + ":" + this.FTCDASHBOARD_PORT;
       // Below lambda directly ported from FTC Dashboard frontend
-      this.interval = setInterval(() => {
+      setInterval(() => {
         if (this.socket === null || this.socket.readyState === WebSocket.CLOSED) {
           this.setStatus(LiveDataSourceStatus.Connecting);
 
