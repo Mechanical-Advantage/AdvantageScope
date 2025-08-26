@@ -57,8 +57,8 @@ function bundle(input, output, isMain, isXRClient, external = []) {
               presets: [["@babel/preset-env", { modules: false }]],
               compact: true,
               targets: "> 0.1%, not dead"
-            })
-            //terser({ mangle: { reserved: ["Module"] } })
+            }),
+            terser({ mangle: { reserved: ["Module"] } })
           ]
         : [cleanup()]),
       json(),
