@@ -7,6 +7,7 @@
 
 import { Pose2d } from "../../../shared/geometry";
 import Log from "../../../shared/log/Log";
+import { Units } from "../../../shared/units";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import LiveDataTuner from "../LiveDataTuner";
 import configReducer, { initialState } from "./configReducer";
@@ -165,7 +166,7 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
       let label = name.split(" ").slice(0, -1).join(" ") + " Pose";
       if (name.endsWith(" x") || name === "x") {
         if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [Number(data) / 39.37008, 0], rotation: 0 });
+          foundPoses.set(label, { translation: [Units.convert(Number(data), "inches", "meters"), 0], rotation: 0 });
         } else {
           let cur = foundPoses.get(label)!!;
           foundPoses.set(label, <Pose2d>{
@@ -176,11 +177,11 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
       }
       if (name.endsWith(" y") || name === "y") {
         if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, Number(data) / 39.37008], rotation: 0 });
+          foundPoses.set(label, { translation: [0, Units.convert(Number(data), "inches", "meters")], rotation: 0 });
         } else {
           let cur = foundPoses.get(label)!!;
           foundPoses.set(label, <Pose2d>{
-            translation: [cur.translation.at(0), Number(data) / 39.37008],
+            translation: [cur.translation.at(0), Units.convert(Number(data), "inches", "meters")],
             rotation: cur.rotation
           });
         }
@@ -195,10 +196,13 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
       }
       if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
         if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, 0], rotation: (Number(data) * 2 * Math.PI) / 360 });
+          foundPoses.set(label, { translation: [0, 0], rotation: Units.convert(Number(data), "degrees", "radians") });
         } else {
           let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: (Number(data) * 2 * Math.PI) / 360 });
+          foundPoses.set(label, <Pose2d>{
+            translation: cur.translation,
+            rotation: Units.convert(Number(data), "degrees", "radians")
+          });
         }
       }
     }
