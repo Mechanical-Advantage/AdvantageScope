@@ -26,7 +26,7 @@ import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSour
 import LiveDataTuner from "./dataSources/LiveDataTuner";
 import PathPlannerSource from "./dataSources/PathPlannerSource";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
-import FtcDashboardSource from "./dataSources/ftcdashboard/FtcDashboardSource";
+import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
@@ -440,7 +440,7 @@ function startLive(isSim = false) {
       liveSource = new RLOGServerSource();
       break;
     case "ftcdashboard":
-      liveSource = new FtcDashboardSource();
+      liveSource = new FTCDashboardSource();
       break;
   }
 

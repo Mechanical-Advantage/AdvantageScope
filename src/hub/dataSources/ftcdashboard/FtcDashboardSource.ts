@@ -12,7 +12,7 @@ import LiveDataTuner from "../LiveDataTuner";
 import configReducer, { initialState } from "./configReducer";
 import { BasicVarType, ConfigState, ConfigVar, ConfigVarState, SaveConfigAction } from "./configTypes";
 
-export default class FtcDashboardSource extends LiveDataSource implements LiveDataTuner {
+export default class FTCDashboardSource extends LiveDataSource implements LiveDataTuner {
   private FTCDASHBOARD_PORT = 8000;
   private FTCDASHBOARD_PING_TIMEOUT_MS = 1000; // How often to ping
   private liveZeroTime = 0;
