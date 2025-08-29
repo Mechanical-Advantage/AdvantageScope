@@ -27,7 +27,7 @@ let messagePort: MessagePort | null = null;
 let platform: string = "";
 let preferences: Preferences | null = null;
 
-let address: string = DISTRIBUTION === Distribution.Lite ? window.location.origin : "";
+let address: string = DISTRIBUTION === Distribution.Lite ? window.location.hostname : "";
 let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;

@@ -25,37 +25,28 @@ window.addEventListener("message", (event) => {
       return;
     }
   };
+  // Close function
+  function confirm() {
+    if (ASSET_INPUT.files != null) {
+      PROGRESS_TEXT.innerText = "Uploading file...";
+      const API_ENDPOINT = "../uploadAsset";
+      const request = new XMLHttpRequest();
+      const formData = new FormData();
 
-  ASSET_INPUT.addEventListener("change", (event) => {
-    const files = ASSET_INPUT.files ?? [];
-    for (const file of files) {
-      uploadFile(file);
-    }
-  });
-
-  const uploadFile = (file: File) => {
-    PROGRESS_TEXT.innerText = "Uploading file...";
-    const API_ENDPOINT = "../uploadAsset";
-    const request = new XMLHttpRequest();
-    const formData = new FormData();
-
-    request.open("POST", API_ENDPOINT, true);
-    request.onreadystatechange = () => {
-      if (request.readyState === 4) {
+      request.open("POST", API_ENDPOINT, true);
+      request.onloadend = () => {
         if (request.status === 200) {
-          PROGRESS_TEXT.innerText = "Upload succeeded";
+          messagePort.postMessage(null); // close window
         } else {
           PROGRESS_TEXT.innerText = `Upload failed: ${request.statusText}`;
         }
-      }
-    };
-    formData.append("file", file);
-    request.send(formData);
-  };
-
-  // Close function
-  function confirm() {
-    messagePort.postMessage(null);
+      };
+      // HTML prevents selecting multiple files
+      formData.append("file", ASSET_INPUT.files[0]);
+      request.send(formData);
+    } else {
+      messagePort.postMessage(null);
+    }
   }
 
   // Set up exit triggers

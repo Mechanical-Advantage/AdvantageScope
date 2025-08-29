@@ -23,8 +23,7 @@ IS_SYSTEMCORE = os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
-# todo: is backwards compatibility important here?
-ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv or "--enable-logs" in sys.argv
+ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv
 WEBROOT = ""
 
 
@@ -181,7 +180,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                                 for filename in filenames:
                                     if filename.lower().endswith(".zip"):
                                         with zipfile.ZipFile(f"{dirpath}/{filename}", "r") as zip_ref:
-                                            zip_ref.extractall(f"{dirpath}/{filename[:-len(".zip")]}")
+                                            filename_no_ext = filename[:-4] # remove .zip (4 char)
+                                            zip_ref.extractall(f"{dirpath}/{filename_no_ext}")
                                             os.remove(f"{dirpath}/{filename}")
 
 
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     httpd = socketserver.ThreadingTCPServer(("", PORT), Handler, bind_and_activate=False)
     httpd.allow_reuse_address = True
     httpd.daemon_threads = True
-    print(f"Serving AdvantageScope Lite on http://localhost:{PORT}{WEBROOT}")
+    print(f"Serving AdvantageScope Lite on port {PORT}: http://localhost:{PORT}{WEBROOT}")
     try:
         httpd.server_bind()
         httpd.server_activate()
