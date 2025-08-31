@@ -230,7 +230,7 @@ function openDownload() {
 
 /** Opens a popup window for uploading assets. */
 async function openUploadAsset() {
-  let port = await openPopupWindow("www/uploadAsset.html", [35, 15], "percent", async (msg) => {
+  let port = await openPopupWindow("www/uploadAsset.html", [400, 100], "pixels", async (msg) => {
     closePopupWindow();
     sendMessage(hubPort, "set-assets", await loadAssets());
   });

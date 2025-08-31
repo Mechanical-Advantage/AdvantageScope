@@ -76,6 +76,10 @@ select {
   width: calc(100% - 5px);
 }
 
+input[type="file"] {
+  text-align: center;
+}
+
 button,
 div.help-div {
   position: absolute;
