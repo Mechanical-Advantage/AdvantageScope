@@ -7,6 +7,7 @@
 
 import http.server
 import mimetypes
+import shutil
 import socketserver
 import os
 import sys
@@ -169,13 +170,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                         if part.filename.lower().endswith(".zip"):
                             asset_zip= f"{EXTRA_ASSETS_PATH}/{part.filename}"
                             part.save_as(asset_zip)
-                            asset_path = asset_zip[:-len(".zip")]  # remove .zip ending
+                            temp_path = EXTRA_ASSETS_PATH + "/AS_TEMP/"
+                            asset_path = temp_path + part.filename[:-len(".zip")]  # remove .zip ending
 
                             with zipfile.ZipFile(asset_zip,"r") as zip_ref:
                                 zip_ref.extractall(asset_path)
                                 os.remove(asset_zip)
 
-
+                            # recursively extract .zips
                             for dirpath, _, filenames in os.walk(asset_path):
                                 for filename in filenames:
                                     if filename.lower().endswith(".zip"):
@@ -183,6 +185,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                                             filename_no_ext = filename[:-4] # remove .zip (4 char)
                                             zip_ref.extractall(f"{dirpath}/{filename_no_ext}")
                                             os.remove(f"{dirpath}/{filename}")
+                            # find config folders
+                            for dirpath, _, filenames in os.walk(asset_path):
+                                for filename in filenames:
+                                    if filename == "config.json":
+                                        # recursively copy the parent directory to extra assets, overwriting existing files
+                                        dirname = os.path.basename(dirpath)
+                                        shutil.copytree(dirpath,f"{EXTRA_ASSETS_PATH}/{dirname}",dirs_exist_ok=True)
+                            shutil.rmtree(temp_path)
 
 
 
