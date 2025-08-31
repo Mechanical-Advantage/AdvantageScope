@@ -9,6 +9,7 @@ import {
   AdvantageScopeAssets,
   Config2d,
   Config3dField,
+  Config3dField_AprilTag,
   Config3dField_GamePiece,
   Config3dRobot,
   Config3dRobot_Camera,
@@ -105,7 +106,8 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
     widthInches: 0,
     heightInches: 0,
     driverStations: DEFAULT_DRIVER_STATIONS_FRC,
-    gamePieces: []
+    gamePieces: [],
+    aprilTags: []
   };
   if ("name" in configRaw && typeof configRaw.name === "string") {
     config.name = configRaw.name;
@@ -200,6 +202,56 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
       if ("stagedObjects" in gamePieceRaw && checkArrayType(gamePieceRaw.stagedObjects, "string")) {
         gamePiece.stagedObjects = gamePieceRaw.stagedObjects;
       }
+    });
+  }
+  if ("aprilTags" in configRaw && Array.isArray(configRaw.aprilTags)) {
+    configRaw.aprilTags.forEach((aprilTagRaw: any) => {
+      let aprilTag: Config3dField_AprilTag = {
+        variant: "frc-36h11",
+        id: 0,
+        rotations: [],
+        position: [0, 0, 0]
+      };
+      if (
+        "variant" in aprilTagRaw &&
+        typeof aprilTagRaw.variant === "string" &&
+        (aprilTagRaw.variant === "frc-36h11" ||
+          aprilTagRaw.variant === "frc-16h5" ||
+          aprilTagRaw.variant === "ftc-2in" ||
+          aprilTagRaw.variant === "ftc-3in" ||
+          aprilTagRaw.variant === "ftc-4in" ||
+          aprilTagRaw.variant === "ftc-5in")
+      ) {
+        aprilTag.variant = aprilTagRaw.variant;
+      } else {
+        // Unknown AprilTag variant, likely a newer variant that is not supported yet
+        return;
+      }
+      if ("id" in aprilTagRaw && typeof aprilTagRaw.id === "number") {
+        aprilTag.id = aprilTagRaw.id;
+      }
+      if (
+        "rotations" in aprilTagRaw &&
+        Array.isArray(aprilTagRaw.rotations) &&
+        aprilTagRaw.rotations.every(
+          (rotation: any) =>
+            typeof rotation === "object" &&
+            "axis" in rotation &&
+            (rotation.axis === "x" || rotation.axis === "y" || rotation.axis === "z") &&
+            "degrees" in rotation &&
+            typeof rotation.degrees === "number"
+        )
+      ) {
+        aprilTag.rotations = aprilTagRaw.rotations;
+      }
+      if (
+        "position" in aprilTagRaw &&
+        checkArrayType(aprilTagRaw.position, "number") &&
+        aprilTagRaw.position.length === 3
+      ) {
+        aprilTag.position = aprilTagRaw.position;
+      }
+      config.aprilTags.push(aprilTag);
     });
   }
   if (config.name.length > 0 && config.widthInches > 0 && config.heightInches > 0) {

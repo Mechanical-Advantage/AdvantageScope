@@ -25,7 +25,7 @@
     "docs:build-embed": "cd docs && npm run build-embed && cd ..",
     "docs:clear": "cd docs && npm run clear && cd ..",
     "docs:serve": "cd docs && npm run serve && cd ..",
-    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node ffmpegDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
+    "postinstall": "cd docs && npm install && cd .. && node getLicenses.mjs && node tesseractLangDownload.mjs && node bundleLiteAssets.mjs && npm run download-owlet"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
@@ -53,7 +53,7 @@
     "chart.js": "^4.4.0",
     "color-convert": "^2.0.1",
     "compare-versions": "^6.1.1",
-    "electron": "^32.0.2",
+    "electron": "^37.2.6",
     "electron-builder": "^26.0.0",
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
@@ -107,7 +107,7 @@
     "files": [
       "www/**/*",
       "bundles/*",
-      "icons/**/*",
+      "icons/**/*.png",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
       "docs/build/**/*",
@@ -119,12 +119,6 @@
       "!**/.*"
     ],
     "extraResources": [
-      {
-        "from": "ffmpeg",
-        "filter": [
-          "ffmpeg-${os}-${arch}*"
-        ]
-      },
       "LICENSE",
       "ThirdPartyLicenses.txt",
       "eng.traineddata.gz"
@@ -169,6 +163,13 @@
         "mimeType": "application/x-hoot",
         "role": "Viewer",
         "icon": "icons/app/hoot-icon"
+      },
+      {
+        "ext": "csv",
+        "name": "Comma-separated values",
+        "description": "Comma-separated values",
+        "mimeType": "text/csv",
+        "role": "Viewer"
       }
     ],
     "mac": {
@@ -176,7 +177,9 @@
       "icon": "icons/app/app-icon.icns",
       "entitlements": "entitlements.mac.plist",
       "entitlementsInherit": "entitlements.mac.plist",
+      "notarize": false,
       "extendInfo": {
+        "CFBundleIconName": "AppIcon",
         "NSUpdateSecurityPolicy": {
           "AllowPackages": [
             "58SET3NSX7"
@@ -188,7 +191,12 @@
           }
         }
       },
-      "notarize": false
+      "extraResources": [
+        {
+          "from": "icons/macos-assets.car",
+          "to": "Assets.car"
+        }
+      ]
     },
     "linux": {
       "target": [

@@ -5,7 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { CoordinateSystem } from "./AdvantageScopeAssets";
+import * as THREE from "three";
+import { Config3d_Rotation, CoordinateSystem } from "./AdvantageScopeAssets";
 import Log from "./log/Log";
 import { getOrDefault, getRobotStateRanges } from "./log/LogUtil";
 import LoggableType from "./log/LoggableType";
@@ -58,8 +59,15 @@ export type ChassisSpeeds = { vx: number; vy: number; omega: number };
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
-export const APRIL_TAG_36H11_SIZE = Units.convert(8.125, "inches", "meters");
-export const APRIL_TAG_16H5_SIZE = Units.convert(8, "inches", "meters");
+export const APRIL_TAG_FRC_36H11_SIZE = Units.convert(8.125, "inches", "meters");
+export const APRIL_TAG_FRC_16H5_SIZE = Units.convert(8, "inches", "meters");
+export const APRIL_TAG_FTC_SIZES = {
+  // Include size of white border
+  "ftc-2in": Units.convert(2 * (10 / 8), "inches", "meters"),
+  "ftc-3in": Units.convert(3 * (10 / 8), "inches", "meters"),
+  "ftc-4in": Units.convert(4 * (10 / 8), "inches", "meters"),
+  "ftc-5in": Units.convert(5 * (10 / 8), "inches", "meters")
+};
 export const HEATMAP_DT = 0.25;
 
 // FORMAT CONVERSION UTILITIES
@@ -123,6 +131,20 @@ export function rotation3dToRPY(input: Rotation3d): [number, number, number] {
     }
   }
   return [roll, pitch, yaw];
+}
+
+export function rotationSequenceToQuaternion(rotations: Config3d_Rotation[]): THREE.Quaternion {
+  let quaternion = new THREE.Quaternion();
+  rotations.forEach((rotation) => {
+    let axis = new THREE.Vector3(0, 0, 0);
+    if (rotation.axis === "x") axis.setX(1);
+    if (rotation.axis === "y") axis.setY(1);
+    if (rotation.axis === "z") axis.setZ(1);
+    quaternion.premultiply(
+      new THREE.Quaternion().setFromAxisAngle(axis, Units.convert(rotation.degrees, "degrees", "radians"))
+    );
+  });
+  return quaternion;
 }
 
 export function pose2dTo3d(input: Pose2d): Pose3d {

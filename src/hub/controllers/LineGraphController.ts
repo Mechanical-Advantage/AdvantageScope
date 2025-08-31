@@ -42,7 +42,8 @@ export default class LineGraphController implements TabController {
   private leftFilter = LineGraphFilter.None;
   private rightFilter = LineGraphFilter.None;
 
-  private numericCommandCache: { [key: string]: LineGraphRendererCommand_NumericField } = {};
+  private leftNumericCommandCache: { [key: string]: LineGraphRendererCommand_NumericField } = {};
+  private rightNumericCommandCache: { [key: string]: LineGraphRendererCommand_NumericField } = {};
 
   constructor(root: HTMLElement) {
     // Make source lists
@@ -60,7 +61,7 @@ export default class LineGraphController implements TabController {
           config: LineGraphController_NumericConfig
         });
       },
-      (key: string, time: number) => this.getPreview(key, time)
+      (key: string, time: number) => this.getPreview(key, time, this.leftNumericCommandCache)
     );
     this.leftSourceList.setTitle("Left Axis");
 
@@ -78,7 +79,7 @@ export default class LineGraphController implements TabController {
           config: LineGraphController_NumericConfig
         });
       },
-      (key: string, time: number) => this.getPreview(key, time)
+      (key: string, time: number) => this.getPreview(key, time, this.rightNumericCommandCache)
     );
     this.rightSourceList.setTitle("Right Axis");
 
@@ -278,9 +279,13 @@ export default class LineGraphController implements TabController {
     return false;
   }
 
-  private getPreview(key: string, time: number): number | null {
-    if (!(key in this.numericCommandCache)) return null;
-    let command = this.numericCommandCache[key];
+  private getPreview(
+    key: string,
+    time: number,
+    commandCache: { [key: string]: LineGraphRendererCommand_NumericField }
+  ): number | null {
+    if (!(key in commandCache)) return null;
+    let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
     if (index === -1) return null;
     return command.values[index];
@@ -295,7 +300,8 @@ export default class LineGraphController implements TabController {
     const timeRange = window.selection.getTimelineRange();
 
     // Add numeric fields
-    this.numericCommandCache = {};
+    this.leftNumericCommandCache = {};
+    this.rightNumericCommandCache = {};
     const akitTimestampField = window.log.getFieldKeys().find((key) => AKIT_TIMESTAMP_KEYS.includes(key));
     const akitTimestamps =
       akitTimestampField === undefined
@@ -306,7 +312,8 @@ export default class LineGraphController implements TabController {
       dataRange: [number, number],
       command: LineGraphRendererCommand_NumericField[],
       unitConversion: Units.UnitConversionPreset,
-      filter: LineGraphFilter
+      filter: LineGraphFilter,
+      commandCache: { [key: string]: LineGraphRendererCommand_NumericField }
     ) => {
       source.forEach((fieldItem) => {
         let data = window.log.getNumber(
@@ -466,7 +473,7 @@ export default class LineGraphController implements TabController {
           size: fieldItem.options.size as "normal" | "bold" | "verybold"
         };
         if (fieldItem.visible) command.push(itemCommand);
-        this.numericCommandCache[fieldItem.logKey] = itemCommand;
+        commandCache[fieldItem.logKey] = itemCommand;
       });
     };
     addNumeric(
@@ -474,14 +481,16 @@ export default class LineGraphController implements TabController {
       leftDataRange,
       leftFieldsCommand,
       this.leftUnitConversion,
-      this.leftFilter
+      this.leftFilter,
+      this.leftNumericCommandCache
     );
     addNumeric(
       this.rightSourceList.getState(),
       rightDataRange,
       rightFieldsCommand,
       this.rightUnitConversion,
-      this.rightFilter
+      this.rightFilter,
+      this.rightNumericCommandCache
     );
 
     // Add discrete fields

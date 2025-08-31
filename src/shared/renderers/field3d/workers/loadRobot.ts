@@ -8,7 +8,7 @@
 import * as THREE from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dRobot } from "../../../AdvantageScopeAssets";
-import { getQuaternionFromRotSeq } from "../../Field3dRendererImpl";
+import { rotationSequenceToQuaternion } from "../../../geometry";
 import optimizeGeometries from "../OptimizeGeometries";
 import { prepareTransfer } from "./prepareTransfer";
 
@@ -47,7 +47,7 @@ self.onmessage = (event) => {
     for (let index = 0; index < gltfScenes.length; index++) {
       let scene = gltfScenes[index];
       if (index === 0) {
-        scene.rotation.setFromQuaternion(getQuaternionFromRotSeq(robotConfig!.rotations));
+        scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(robotConfig!.rotations));
         scene.position.set(...robotConfig!.position);
       }
 

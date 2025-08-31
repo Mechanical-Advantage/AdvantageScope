@@ -145,7 +145,9 @@ const smallRendererBundles = [
   ...(isLite ? [] : [bundle("export.ts", "export.js", false, false)])
 ];
 const workerBundles = [
+  bundle("hub/dataSources/csv/csvWorker.ts", "hub$csvWorker.js", false, false),
   bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
+  bundle("hub/dataSources/roadrunnerlog/roadRunnerWorker.ts", "hub$roadRunnerWorker.js", false, false),
   bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
   bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
   ...(isLite ? [] : [bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false)]),

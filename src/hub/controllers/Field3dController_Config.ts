@@ -407,10 +407,7 @@ const Field3dController_Config: SourceListConfig = {
           key: "variant",
           display: "Variant",
           showInTypeName: true,
-          values: [
-            { key: "Note", display: "Note" },
-            { key: "High Note", display: "High Note" }
-          ]
+          values: []
         }
       ],
       initialSelectionOption: "variant",
@@ -429,10 +426,7 @@ const Field3dController_Config: SourceListConfig = {
           key: "variant",
           display: "Variant",
           showInTypeName: true,
-          values: [
-            { key: "Note", display: "Note" },
-            { key: "High Note", display: "High Note" }
-          ]
+          values: []
         },
         {
           key: "format",
@@ -612,17 +606,14 @@ const Field3dController_Config: SourceListConfig = {
       showDocs: true,
       options: [
         {
-          key: "family",
-          display: "Family",
+          key: "variant",
+          display: "Variant",
           showInTypeName: true,
-          values: [
-            { key: "36h11", display: "36h11" },
-            { key: "16h5", display: "16h5" }
-          ]
+          values: []
         }
       ],
       parentKey: "aprilTag",
-      initialSelectionOption: "family",
+      initialSelectionOption: "variant",
       previewType: "Pose3d"
     },
     {
@@ -636,18 +627,15 @@ const Field3dController_Config: SourceListConfig = {
       showDocs: false,
       options: [
         {
-          key: "family",
-          display: "Family",
+          key: "variant",
+          display: "Variant",
           showInTypeName: true,
-          values: [
-            { key: "36h11", display: "36h11" },
-            { key: "16h5", display: "16h5" }
-          ]
+          values: []
         }
       ],
       numberArrayDeprecated: true,
       parentKey: "aprilTag",
-      initialSelectionOption: "family",
+      initialSelectionOption: "variant",
       previewType: "Pose3d"
     },
     {
