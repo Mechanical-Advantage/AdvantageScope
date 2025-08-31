@@ -28,9 +28,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     .filter((path) => path.endsWith("config.json") && assetIndex[path] !== null)
     .sort((a, b) => (a < b ? 1 : a > b ? -1 : 0)); // Inverse order so newer versions take priority
   configPaths.forEach((configPath) => {
-    // Support assets in subfolders; attempt to get the name of the folder containing config.json
-    let name = configPath.split("/").at(-2) ?? configPath.split("/")[0];
-    let path = configPath.split("/").slice(0, -1).join("/");
+    let name = configPath.split("/")[0];
     let configRaw = assetIndex[configPath];
     assets.loadFailures.push(name); // Assume failure, remove if successful
     let isField2d = name.startsWith("Field2d_");
@@ -47,8 +45,8 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       } else if (config === "invalid") {
         return;
       }
-      config.path = currentPath + `assets/${encodeURIComponent(path)}/image.png`;
-      if (`${path}/image.png` in assetIndex) {
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
+      if (`${name}/image.png` in assetIndex) {
         assets.field2ds.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
       }
@@ -61,10 +59,10 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       } else if (config === "invalid") {
         return;
       }
-      config.path = currentPath + `assets/${encodeURIComponent(path)}/model.glb`;
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
       if (
-        `${path}/model.glb` in assetIndex &&
-        config.gamePieces.every((_, index) => `${path}/model_${index}.glb` in assetIndex)
+        `${name}/model.glb` in assetIndex &&
+        config.gamePieces.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
       ) {
         assets.field3ds.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
@@ -75,8 +73,8 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       if (config === "invalid") return;
       config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
       if (
-        `${path}/model.glb` in assetIndex &&
-        config.components.every((_, index) => `${path}/model_${index}.glb` in assetIndex)
+        `${name}/model.glb` in assetIndex &&
+        config.components.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
       ) {
         assets.robots.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
@@ -85,8 +83,8 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       // ***** JOYSTICK *****
       let config = parseJoystick(configRaw);
       if (config === "invalid") return;
-      config.path = currentPath + `assets/${encodeURIComponent(path)}/image.png`;
-      if (`${path}/image.png` in assetIndex) {
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
+      if (`${name}/image.png` in assetIndex) {
         assets.joysticks.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
       }
