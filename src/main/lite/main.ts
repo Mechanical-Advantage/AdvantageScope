@@ -439,6 +439,7 @@ async function handleHubMessage(message: NamedMessage) {
                     callback() {
                       prefs.liveMode = liveMode;
                       localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                      sendMessage(hubPort, "set-preferences", prefs);
                       sendMessage(hubPort, "start-live", false);
                     }
                   };
