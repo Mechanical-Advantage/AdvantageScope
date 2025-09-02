@@ -5,6 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import LineGraphFilter from "./LineGraphFilter";
+import { charIsCapital } from "./util";
+
 export namespace Units {
   export type UnitConfig = {
     value: number;
@@ -119,25 +122,56 @@ export namespace Units {
         value: 1,
         suffix: "rad/s",
         pluralizeSuffix: false,
-        names: ["radians per sec", "radians per second", "rad per sec", "rad per second"]
+        names: [
+          "radians per sec",
+          "radians per second",
+          "rad per sec",
+          "rad per second",
+          "rads per sec",
+          "rads per second"
+        ]
       },
       "degrees/second": {
         value: 180 / Math.PI,
         suffix: "°/s",
         pluralizeSuffix: false,
-        names: ["dps", "degrees per sec", "degrees per second", "deg per sec", "deg per second"]
+        names: [
+          "dps",
+          "degrees per sec",
+          "degrees per second",
+          "deg per sec",
+          "deg per second",
+          "degs per sec",
+          "degs per second"
+        ]
       },
       "rotations/second": {
         value: 1 / (Math.PI * 2),
         suffix: "rps",
         pluralizeSuffix: false,
-        names: ["rps", "rotations per sec", "rotations per second", "rot per sec", "rot per second"]
+        names: [
+          "rps",
+          "rotations per sec",
+          "rotations per second",
+          "rot per sec",
+          "rot per second",
+          "rots per sec",
+          "rots per second"
+        ]
       },
       "rotations/minute": {
         value: 60 / (Math.PI * 2),
         suffix: "rpm",
         pluralizeSuffix: false,
-        names: ["rpm", "rotations per min", "rotations per minute", "rot per min", "rot per minute"]
+        names: [
+          "rpm",
+          "rotations per min",
+          "rotations per minute",
+          "rot per min",
+          "rot per minute",
+          "rots per min",
+          "rots per minute"
+        ]
       }
     },
     acceleration: {
@@ -228,6 +262,10 @@ export namespace Units {
           "radians per sec2",
           "radians per sec²",
           "radians per sec squared",
+          "rad per sec 2",
+          "rad per sec2",
+          "rad per sec²",
+          "rad per sec squared",
           "rads per sec 2",
           "rads per sec2",
           "rads per sec²",
@@ -236,6 +274,10 @@ export namespace Units {
           "radians per second2",
           "radians per second²",
           "radians per second squared",
+          "rad per second 2",
+          "rad per second2",
+          "rad per second²",
+          "rad per second squared",
           "rads per second 2",
           "rads per second2",
           "rads per second²",
@@ -258,6 +300,10 @@ export namespace Units {
           "deg per sec2",
           "deg per sec²",
           "deg per sec squared",
+          "degs per sec 2",
+          "degs per sec2",
+          "degs per sec²",
+          "degs per sec squared",
           "degrees per second 2",
           "degrees per second2",
           "degrees per second²",
@@ -265,7 +311,11 @@ export namespace Units {
           "deg per second 2",
           "deg per second2",
           "deg per second²",
-          "deg per second squared"
+          "deg per second squared",
+          "degs per second 2",
+          "degs per second2",
+          "degs per second²",
+          "degs per second squared"
         ]
       },
       "rotations/second²": {
@@ -280,6 +330,10 @@ export namespace Units {
           "rotations per sec2",
           "rotations per sec²",
           "rotations per sec squared",
+          "rot per sec 2",
+          "rot per sec2",
+          "rot per sec²",
+          "rot per sec squared",
           "rots per sec 2",
           "rots per sec2",
           "rots per sec²",
@@ -288,6 +342,10 @@ export namespace Units {
           "rotations per second2",
           "rotations per second²",
           "rotations per second squared",
+          "rot per second 2",
+          "rot per second2",
+          "rot per second²",
+          "rot per second squared",
           "rots per second 2",
           "rots per second2",
           "rots per second²",
@@ -449,7 +507,7 @@ export namespace Units {
         names: ["v", "volts", "voltage"]
       },
       millivolts: {
-        value: 1,
+        value: 1000,
         suffix: "mV",
         pluralizeSuffix: false,
         names: ["mv", "millivolts"]
@@ -463,7 +521,7 @@ export namespace Units {
         names: ["amps", "amperage", "current"]
       },
       milliamps: {
-        value: 1,
+        value: 1000,
         suffix: "mA",
         pluralizeSuffix: false,
         names: ["ma", "milliamps"]
@@ -519,12 +577,41 @@ export namespace Units {
     }
   }
 
-  export interface UnitConversionPreset {
+  /** Returns a modified suffix for a differentiated or integrated unit type. */
+  export function getSuffixForFilter(suffix: string, filter: LineGraphFilter): string {
+    switch (filter) {
+      case LineGraphFilter.Differentiate:
+        if (suffix.endsWith("²")) {
+          return suffix.slice(0, -1) + "³";
+        } else if (suffix.endsWith("ps") || suffix.endsWith("/s")) {
+          return suffix + "²";
+        } else {
+          return suffix + "/s";
+        }
+      case LineGraphFilter.Integrate:
+        if (suffix.endsWith("²")) {
+          return suffix.slice(0, -1);
+        } else if (suffix.endsWith("/s")) {
+          return suffix.slice(0, -2);
+        } else {
+          return suffix + "·s";
+        }
+      default:
+        return suffix;
+    }
+  }
+
+  export type UIUnitOptions = {
+    autoTarget: string | null;
+    preset: Units.UnitConversionPreset | null;
+  };
+
+  export type UnitConversionPreset = {
     type: string | null;
     from?: string;
     to?: string;
     factor: number;
-  }
+  };
 
   export const NoopUnitConversion: UnitConversionPreset = {
     type: null,
@@ -533,11 +620,22 @@ export namespace Units {
 
   export const MAX_RECENT_UNITS = 5;
 
+  export const GROUP_BY_UNIT: { [id: string]: string } = (() => {
+    let output: { [id: string]: string } = {};
+    Object.entries(UNIT_GROUPS).forEach(([group, units]) => {
+      Object.keys(units).forEach((unit) => {
+        output[unit] = group;
+      });
+    });
+    return output;
+  })();
+
   export const UNIT_SUFFIXES: { [key: string]: string } = (() => {
     let suffixes: { [key: string]: string } = {};
     Object.entries(ALL_UNITS).forEach(([key, config]) => {
       [...config.names, ...config.names.filter((name) => name.endsWith("s")).map((name) => name.slice(0, -1))].forEach(
         (name) => {
+          if (name.length === 0) return;
           suffixes[name] = key;
           suffixes[" " + name] = key;
           suffixes["_" + name] = key;
@@ -555,10 +653,8 @@ export namespace Units {
     let fieldKeyLowercase = fieldKey.toLowerCase();
     let matchedSuffixes = Object.keys(UNIT_SUFFIXES).filter(
       (suffix) =>
-        suffix.length <= 2
-          ? fieldKey.endsWith(suffix.substring(0, 1).toUpperCase() + suffix.substring(1).toUpperCase()) ||
-            fieldKey.endsWith(suffix.substring(0, 1).toUpperCase() + suffix.substring(1).toLowerCase()) // Short suffixes must start with uppercase to avoid false positives
-          : fieldKeyLowercase.endsWith(suffix.toLowerCase()) // Multiple characters can be any case
+        fieldKeyLowercase.endsWith(suffix.toLowerCase()) &&
+        (suffix.startsWith("_") || suffix.startsWith(" ") || charIsCapital(fieldKey, fieldKey.length - suffix.length))
     );
     if (matchedSuffixes.length === 0) return null;
 

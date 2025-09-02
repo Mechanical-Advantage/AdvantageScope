@@ -52,7 +52,7 @@ export default class SourceList {
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
   private parentKeys: Map<string, string> = new Map(); // Map type key to parent key
   private supplementalStateSuppliers: (() => SourceListState)[];
-  private getNumberPreview: ((key: string, time: number) => number | null) | undefined;
+  private getNumberPreview: ((key: string, time: number) => string | null) | undefined;
   private mouseDownInfo: [number, number] | null = null;
 
   private refreshLastFields: Set<string> = new Set();
@@ -70,7 +70,7 @@ export default class SourceList {
     config: SourceListConfig,
     supplementalStateSuppliers: (() => SourceListState)[],
     editButtonCallback?: (rect: ButtonRect) => void,
-    getNumberPreview?: (key: string, time: number) => number | null
+    getNumberPreview?: (key: string, time: number) => string | null
   ) {
     this.config = jsonCopy(config);
     this.configStr = JSON.stringify(config);
@@ -1032,7 +1032,7 @@ export default class SourceList {
       if (logType !== null) {
         let value: any = null;
         if (logType === LoggableType.Number && this.getNumberPreview !== undefined) {
-          value = this.getNumberPreview(state.logKey, time);
+          text = this.getNumberPreview(state.logKey, time);
         } else if (logType !== LoggableType.Empty) {
           value = getOrDefault(window.log, state.logKey, logType, time, null);
         }
