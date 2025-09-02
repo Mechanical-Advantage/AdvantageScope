@@ -283,7 +283,16 @@ export default class Log {
       }
 
       // Parse from field key
-      return Units.getUnitForField(key);
+      let unit = Units.getUnitForField(key);
+      if (unit !== null) return unit;
+
+      // Parse from numeric array parent
+      if (key.endsWith("/length")) return null;
+      let parentKey = this.getGeneratedParent(key);
+      if (parentKey === null) return null;
+      let parentType = this.getType(parentKey);
+      if (parentType !== LoggableType.NumberArray) return null;
+      return Units.getUnitForField(parentKey);
     };
 
     // Apply cache
