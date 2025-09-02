@@ -53,7 +53,7 @@ export const DEFAULT_PREFS: Preferences = {
   ctreLicenseAccepted: false
 };
 
-export type LiveMode = "nt4" | "nt4-akit" | "phoenix" | "rlog";
+export type LiveMode = "nt4" | "nt4-akit" | "phoenix" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
@@ -65,6 +65,8 @@ export function getLiveModeName(mode: LiveMode): string {
       return "Phoenix Diagnostics";
     case "rlog":
       return "RLOG Server";
+    case "ftcdashboard":
+      return "FTC Dashboard";
   }
 }
 
@@ -99,7 +101,8 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     (newPrefs.liveMode === "nt4" ||
       newPrefs.liveMode === "nt4-akit" ||
       newPrefs.liveMode === "phoenix" ||
-      newPrefs.liveMode === "rlog")
+      newPrefs.liveMode === "rlog" ||
+      newPrefs.liveMode === "ftcdashboard")
   ) {
     basePrefs.liveMode = newPrefs.liveMode;
   }

@@ -41,7 +41,7 @@ function updateUnitOptions() {
     FROM_UNIT.disabled = false;
     TO_UNIT.disabled = false;
 
-    Object.keys(Units.GROUPED_UNITS[type]).forEach((unit, index) => {
+    Object.keys(Units.UNIT_GROUPS[type]).forEach((unit, index) => {
       let option = document.createElement("option");
       option.innerText = unit;
       FROM_UNIT.appendChild(option);
@@ -73,7 +73,7 @@ window.addEventListener("message", (event) => {
       let originalConversion: Units.UnitConversionPreset = event.data;
 
       // Add type options
-      ["none", ...Object.keys(Units.GROUPED_UNITS)].forEach((unitType) => {
+      ["none", ...Object.keys(Units.UNIT_GROUPS)].forEach((unitType) => {
         let option = document.createElement("option");
         option.innerText = unitType;
         UNIT_TYPE.appendChild(option);

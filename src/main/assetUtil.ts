@@ -212,7 +212,6 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
         rotations: [],
         position: [0, 0, 0]
       };
-      config.aprilTags.push(aprilTag);
       if (
         "variant" in aprilTagRaw &&
         typeof aprilTagRaw.variant === "string" &&
@@ -224,6 +223,9 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
           aprilTagRaw.variant === "ftc-5in")
       ) {
         aprilTag.variant = aprilTagRaw.variant;
+      } else {
+        // Unknown AprilTag variant, likely a newer variant that is not supported yet
+        return;
       }
       if ("id" in aprilTagRaw && typeof aprilTagRaw.id === "number") {
         aprilTag.id = aprilTagRaw.id;
@@ -249,6 +251,7 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
       ) {
         aprilTag.position = aprilTagRaw.position;
       }
+      config.aprilTags.push(aprilTag);
     });
   }
   if (config.name.length > 0 && config.widthInches > 0 && config.heightInches > 0) {

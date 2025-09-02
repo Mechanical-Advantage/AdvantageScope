@@ -25,6 +25,7 @@ import { HistoricalDataSource, HistoricalDataSourceStatus } from "./dataSources/
 import { LiveDataSource, LiveDataSourceStatus } from "./dataSources/LiveDataSource";
 import LiveDataTuner from "./dataSources/LiveDataTuner";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
+import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
 import NT4Source from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
@@ -384,7 +385,12 @@ function startHistorical(path: string, clear = true, merge = false) {
           setWindowTitle(logFriendlyName, "Error");
           sourceEntry.progress = null;
           updateLoading();
-          let message = "There was a problem while reading the log file. Please try again.";
+          let isCSV = path.endsWith(".csv");
+          let message =
+            "There was a problem while reading the log file. " +
+            (isCSV
+              ? "Please check the documentation for more information on the required format of CSV files."
+              : "Please try again.");
           if (source.getCustomError() !== null) {
             message = source.getCustomError()!;
           }
@@ -430,6 +436,9 @@ function startLive(isSim = false) {
       break;
     case "rlog":
       liveSource = new RLOGServerSource();
+      break;
+    case "ftcdashboard":
+      liveSource = new FTCDashboardSource();
       break;
   }
 

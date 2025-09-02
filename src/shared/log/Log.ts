@@ -7,6 +7,7 @@
 
 import { Decoder } from "@msgpack/msgpack";
 import { Pose2d, Translation2d } from "../geometry";
+import { Units } from "../units";
 import { arraysEqual, checkArrayType } from "../util";
 import LogField from "./LogField";
 import LogFieldTree from "./LogFieldTree";
@@ -40,6 +41,7 @@ export default class Log {
   private enableTimestampSetCache: boolean;
   private timestampSetCache: { [id: string]: { keys: string[]; timestamps: number[]; sourceCounts: number[] } } = {};
   private changedFields: Set<string> = new Set();
+  private fieldUnitCache: { [id: string]: string | null } = {};
 
   private queuedStructs: QueuedStructure[] = [];
   private queuedStructArrays: QueuedStructure[] = [];
@@ -60,6 +62,7 @@ export default class Log {
   deleteField(key: string) {
     if (key in this.fields) {
       delete this.fields[key];
+      delete this.fieldUnitCache[key];
       this.generatedParents.delete(key);
       this.changedFields.delete(key);
 
@@ -229,7 +232,65 @@ export default class Log {
     if (key in this.fields) {
       this.fields[key].metadataString = type;
       this.changedFields.add(key);
+      delete this.fieldUnitCache[key];
     }
+  }
+
+  /** Returns the unit detected for a numeric field based on the metadata and field key. */
+  getUnit(key: string): string | null {
+    let getUnitImpl = (): string | null => {
+      // Parse from structured type
+      let structType: string | null = null;
+      let structChildKey = "";
+      let parentLength = 0;
+      this.getFieldKeys().forEach((parentKey) => {
+        if (
+          parentKey.length > parentLength &&
+          key.startsWith(parentKey) &&
+          this.getStructuredType(parentKey) !== null
+        ) {
+          structType = this.getStructuredType(parentKey);
+          structChildKey = key.slice(parentKey.length + 1); // Remove leading slash
+          parentLength = parentKey.length;
+        }
+      });
+      if (structType !== null) {
+        let structUnitInfo = Units.STRUCT_UNITS[structType];
+        if (structUnitInfo !== undefined) {
+          return structUnitInfo[structChildKey];
+        }
+      }
+
+      // Parse from metadata JSON
+      try {
+        let metadataParsed = JSON.parse(this.fields[key].metadataString);
+        if (typeof metadataParsed === "object") {
+          let unitValue = "";
+          ["unit", "units", "Unit", "Units"].forEach((key) => {
+            if (key in metadataParsed) unitValue = metadataParsed[key];
+          });
+          if (unitValue !== "" && unitValue in Units.UNIT_SUFFIXES) return Units.UNIT_SUFFIXES[unitValue];
+        }
+      } catch {}
+
+      // Parse from metadata string (nonstandard, Hoot only)
+      let unitLines = this.fields[key].metadataString
+        .split("\n")
+        .filter((line) => line.toLowerCase().startsWith("unit"));
+      for (let i = 0; i < unitLines.length; i++) {
+        let unit = Units.getUnitForField(unitLines[i]);
+        if (unit !== null) return unit;
+      }
+
+      // Parse from field key
+      return Units.getUnitForField(key);
+    };
+
+    // Apply cache
+    if (!(key in this.fields)) return null;
+    if (this.fields[key].getType() !== LoggableType.Number) return null;
+    if (!(key in this.fieldUnitCache)) this.fieldUnitCache[key] = getUnitImpl();
+    return this.fieldUnitCache[key];
   }
 
   /** Returns whether there was an attempt to write a conflicting type to a field. */
