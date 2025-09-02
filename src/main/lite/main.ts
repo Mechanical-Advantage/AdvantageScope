@@ -790,7 +790,10 @@ async function handleHubMessage(message: NamedMessage) {
         } else {
           // Left and right controls
           let lockedRange: [number, number] | null = message.data.lockedRange;
-          let unitConversion: Units.UnitConversionPreset = message.data.unitConversion;
+          let autoUnitGroup: string | "none" | "inconsistent" = message.data.autoUnitGroup;
+          let autoUnitSelected: string | null = message.data.autoUnitSelected;
+          let autoUnitDefault: string | null = message.data.autoUnitDefault;
+          let unitConversion: Units.UIUnitOptions = message.data.unitConversion;
           let filter: LineGraphFilter = message.data.filter;
 
           menuItems.push({
@@ -834,62 +837,134 @@ async function handleHubMessage(message: NamedMessage) {
               localStorage.setItem(LocalStorageKeys.RECENT_UNITS, JSON.stringify(recentUnits));
             }
           };
-          menuItems.push({
-            content: "Edit Units",
-            async callback() {
-              let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
-                let newUnitConversion: Units.UnitConversionPreset = message;
-                closePopupWindow();
-                sendMessage(hubPort, "edit-axis", {
-                  legend: legend,
-                  lockedRange: lockedRange,
-                  unitConversion: newUnitConversion,
-                  filter: filter
-                });
-                updateRecents(newUnitConversion);
+          switch (autoUnitGroup) {
+            case "none":
+              menuItems.push({
+                content: "(No Unit Metadata)",
+                className: "disabled"
               });
-              port.postMessage(unitConversion);
-            }
-          });
+              break;
+
+            case "inconsistent":
+              menuItems.push({
+                content: "(Inconsistent Units)",
+                className: "disabled"
+              });
+              break;
+
+            default:
+              Object.keys(Units.UNIT_GROUPS[autoUnitGroup]).forEach((unit) => {
+                menuItems.push({
+                  content:
+                    (autoUnitSelected === unit ? "\u2714 " : "") +
+                    unit.charAt(0).toUpperCase() +
+                    unit.slice(1) +
+                    (unit === autoUnitDefault ? " [Default]" : ""),
+                  callback() {
+                    unitConversion.autoTarget = unit;
+                    unitConversion.preset = null;
+                    sendMessage(hubPort, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                  }
+                });
+              });
+              break;
+          }
           let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
           let recentUnits: Units.UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
           menuItems.push({
-            content: "Recent Presets",
-            className: recentUnits.length > 0 ? "" : "disabled",
-            items: recentUnits.map((preset) => {
-              let fromToText =
-                preset.from === undefined || preset.to === undefined
-                  ? ""
-                  : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                    " \u2192 " +
-                    preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
-              let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
-              let bothPresent = fromToText.length > 0 && factorText.length > 0;
-              return {
-                content: fromToText + (bothPresent ? ", " : "") + factorText,
+            content: "Manual Units",
+            items: [
+              {
+                content: "Edit Conversion",
+                async callback() {
+                  let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
+                    unitConversion.autoTarget = null;
+                    unitConversion.preset = message;
+                    closePopupWindow();
+                    sendMessage(hubPort, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                    updateRecents(unitConversion.preset!);
+                  });
+                  port.postMessage(unitConversion.preset ?? Units.NoopUnitConversion);
+                }
+              },
+              {
+                content: (unitConversion.preset !== null ? "\u2714 " : "") + "Disable Automatic Units",
                 callback() {
+                  unitConversion.autoTarget = null;
+                  if (unitConversion.preset === null) {
+                    unitConversion.preset = Units.NoopUnitConversion;
+                  } else {
+                    unitConversion.preset = null;
+                  }
                   sendMessage(hubPort, "edit-axis", {
                     legend: legend,
                     lockedRange: lockedRange,
-                    unitConversion: preset,
+                    unitConversion: unitConversion,
                     filter: filter
                   });
-                  updateRecents(preset);
                 }
-              };
-            })
-          });
-          menuItems.push({
-            content: "Reset Units",
-            className: JSON.stringify(unitConversion) !== JSON.stringify(Units.NoopUnitConversion) ? "" : "disabled",
-            callback() {
-              sendMessage(hubPort, "edit-axis", {
-                legend: legend,
-                lockedRange: lockedRange,
-                unitConversion: Units.NoopUnitConversion,
-                filter: filter
-              });
-            }
+              },
+              {
+                content: "Reset Units",
+                className:
+                  unitConversion.preset !== null &&
+                  JSON.stringify(unitConversion.preset) !== JSON.stringify(Units.NoopUnitConversion)
+                    ? ""
+                    : "disabled",
+                callback() {
+                  unitConversion.autoTarget = null;
+                  unitConversion.preset = Units.NoopUnitConversion;
+                  sendMessage(hubPort, "edit-axis", {
+                    legend: legend,
+                    lockedRange: lockedRange,
+                    unitConversion: unitConversion,
+                    filter: filter
+                  });
+                }
+              },
+              ...(recentUnits.length > 0
+                ? [
+                    {
+                      content: "\u2014 Recent Presets \u2014",
+                      className: "disabled"
+                    }
+                  ]
+                : []),
+              ...recentUnits.map((preset) => {
+                let fromToText =
+                  preset.from === undefined || preset.to === undefined
+                    ? ""
+                    : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                      " \u2192 " +
+                      preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
+                let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
+                let bothPresent = fromToText.length > 0 && factorText.length > 0;
+                return {
+                  content: fromToText + (bothPresent ? ", " : "") + factorText,
+                  callback() {
+                    unitConversion.autoTarget = null;
+                    unitConversion.preset = preset;
+                    sendMessage(hubPort, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                    updateRecents(preset);
+                  }
+                };
+              })
+            ]
           });
           menuItems.push("-");
           menuItems.push({
