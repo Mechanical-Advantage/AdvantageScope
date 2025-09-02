@@ -883,6 +883,7 @@ async function handleHubMessage(message: NamedMessage) {
                 content: "Edit Conversion",
                 async callback() {
                   let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
+                    if (message === null) return;
                     unitConversion.autoTarget = null;
                     unitConversion.preset = message;
                     closePopupWindow();

@@ -969,6 +969,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                       window,
                       unitConversion.preset ?? Units.NoopUnitConversion,
                       (newPreset) => {
+                        if (newPreset === null) return;
                         unitConversion.autoTarget = null;
                         unitConversion.preset = newPreset;
                         sendMessage(window, "edit-axis", {
@@ -2661,7 +2662,7 @@ function createEditRangeWindow(
 function createUnitConversionWindow(
   parentWindow: Electron.BrowserWindow,
   unitConversion: Units.UnitConversionPreset,
-  callback: (unitConversion: Units.UnitConversionPreset) => void
+  callback: (unitConversion: Units.UnitConversionPreset | null) => void
 ) {
   const unitConversionWindow = new BrowserWindow({
     width: 300,
