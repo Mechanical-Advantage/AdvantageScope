@@ -102,13 +102,13 @@ export namespace Units {
         value: 1 / 0.0254,
         suffix: "in/s",
         pluralizeSuffix: false,
-        names: ["ips", "inches per sec", "inches per second", "in per sec", "in per second"]
+        names: ["inches per sec", "inches per second", "in per sec", "in per second"]
       },
       "feet/second": {
         value: 1 / (0.0254 * 12),
         suffix: "ft/s",
         pluralizeSuffix: false,
-        names: ["fps", "feet per sec", "feet per second", "ft per sec", "ft per second"]
+        names: ["ftps", "feet per sec", "feet per second", "ft per sec", "ft per second"]
       },
       "miles/hour": {
         value: 3600 / (0.0254 * 12 * 3 * 1760),
@@ -546,6 +546,87 @@ export namespace Units {
         pluralizeSuffix: true,
         names: ["cal", "calories"]
       }
+    }
+  };
+
+  export const STRUCT_UNITS: { [key: string]: { [key: string]: string } } = {
+    Rotation2d: {
+      value: "radians"
+    },
+    Translation2d: {
+      x: "meters",
+      y: "meters"
+    },
+    Translation3d: {
+      x: "meters",
+      y: "meters",
+      z: "meters"
+    },
+    Twist2d: {
+      dx: "meters",
+      dy: "meters",
+      dtheta: "radians"
+    },
+    Twist3d: {
+      dx: "meters",
+      dy: "meters",
+      dz: "meters",
+      rx: "radians",
+      ry: "radians",
+      rz: "radians"
+    },
+    ChassisSpeeds: {
+      vx: "meters/second",
+      vy: "meters/second",
+      omega: "radians/second"
+    },
+    DifferentialDriveKinematics: {
+      track_width: "meters"
+    },
+    DifferentialDriveWheelPositions: {
+      left: "meters",
+      right: "meters"
+    },
+    DifferentialDriveWheelSpeeds: {
+      left: "meters/second",
+      right: "meters/second"
+    },
+    DifferentialDriveWheelVoltages: {
+      left: "volts",
+      right: "volts"
+    },
+    MecanumDriveWheelPositions: {
+      front_left: "meters",
+      front_right: "meters",
+      rear_left: "meters",
+      rear_right: "meters"
+    },
+    MecanumDriveWheelSpeeds: {
+      front_left: "meters/second",
+      front_right: "meters/second",
+      rear_left: "meters/second",
+      rear_right: "meters/second"
+    },
+    SwerveModulePositionStruct: {
+      distance: "meters"
+    },
+    SwerveModuleState: {
+      speed: "meters/second"
+    },
+    ArmFeedforward: {
+      dt: "seconds"
+    },
+    ElevatorFeedforward: {
+      dt: "seconds"
+    },
+    SimpleMotorFeedforward: {
+      dt: "seconds"
+    },
+    DCMotor: {
+      nominal_voltage: "volts",
+      stall_current: "amps",
+      free_current: "amps",
+      free_speed: "radians/second"
     }
   };
 

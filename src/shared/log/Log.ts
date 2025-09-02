@@ -239,6 +239,28 @@ export default class Log {
   /** Returns the unit detected for a numeric field based on the metadata and field key. */
   getUnit(key: string): string | null {
     let getUnitImpl = (): string | null => {
+      // Parse from structured type
+      let structType: string | null = null;
+      let structChildKey = "";
+      let parentLength = 0;
+      this.getFieldKeys().forEach((parentKey) => {
+        if (
+          parentKey.length > parentLength &&
+          key.startsWith(parentKey) &&
+          this.getStructuredType(parentKey) !== null
+        ) {
+          structType = this.getStructuredType(parentKey);
+          structChildKey = key.slice(parentKey.length + 1); // Remove leading slash
+          parentLength = parentKey.length;
+        }
+      });
+      if (structType !== null) {
+        let structUnitInfo = Units.STRUCT_UNITS[structType];
+        if (structUnitInfo !== undefined) {
+          return structUnitInfo[structChildKey];
+        }
+      }
+
       // Parse from metadata JSON
       try {
         let metadataParsed = JSON.parse(this.fields[key].metadataString);
