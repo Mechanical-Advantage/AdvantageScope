@@ -72,7 +72,7 @@ export function getLiveModeName(mode: LiveMode): string {
 
 // Phoenix not possible due to cross origin restrictions
 // RLOG not possible because it uses raw TCP
-export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit"];
+export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {

@@ -34,6 +34,6 @@ The WPILib installer includes a recent release of AdvantageScope, but may lag be
 
 Unofficial distributions of AdvantageScope are available from several sources, which are not officially supported by the AdvantageScope/WPILib developers. These distributions may lag behind the latest version of AdvantageScope available from official sources. Please contact the maintainers directly in case of issues.
 
-- [**AdvantageScope Lite on REV Control Hub:**](https://github.com/j5155/rrscopelite) A modification of [AdvantageScope Lite](/more-features/advantagescope-lite) for use on the REV control system.
+- [**AdvantageScope Lite for REV Control System:**](https://github.com/j5155/AdvantageScope-Lite-FTC) A modification of [AdvantageScope Lite](/more-features/advantagescope-lite) for use on the existing (pre-SystemCore) FTC control system.
 - [**Homebrew Installer:**](https://formulae.brew.sh/cask/advantagescope) A Homebrew cask for installing AdvantageScope from the command line on macOS.
 - [**Arch User Repository:**](https://aur.archlinux.org/packages/advantagescope) An alternative distribution method for use with the pacman package manager (an official Arch distribution of AdvantageScope is available [here](#6328-downloads)).

@@ -19,6 +19,17 @@ AdvantageScope Lite is an upcoming browser-based version of AdvantageScope acces
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Installation
+## Installation & Assets
 
-AdvantageScope Lite can be installed and updated by downloading the "SystemCore" version of AdvantageScope from the GitHub releases page. Additional assets (e.g. robot models) can be manually placed in the `/home/systemcore/ascope_assets` directory.
+AdvantageScope Lite can be installed and updated by downloading the "SystemCore" version of AdvantageScope from the GitHub releases page. Select the "Add Package" card on the SystemCore web interface to upload the package to the robot.
+
+Asset files (e.g. field/robot models) can be uploaded by choosing "File" > "Upload Asset". The selected file can either be a zip file for an individual asset, or a zip file containing a multiple asset zip files. See the [custom assets](/more-features/custom-assets/) page for more information on asset formats.
+
+:::info
+Zip files containing collections of common assets can be downloaded by clicking the links below:
+
+- [**Default FRC assets**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/default-assets-v2/AllAssetsDefaultFRC.zip): FRC fields, FRC example robots, and all joystick layouts.
+- [**Default FTC assets**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/default-assets-v2/AllAssetsDefaultFTC.zip): FTC fields, FTC example robots, and all joystick layouts.
+- [**FRC 6328 assets**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/frc-6328-assets-v2/AllAssetsFRC6328.zip): Assets exclusive to the [Team 6328 distribution](/overview/installation#team-6328) of AdvantageScope.
+
+:::

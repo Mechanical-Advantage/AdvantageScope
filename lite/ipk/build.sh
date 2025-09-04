@@ -11,6 +11,7 @@ fi
 
 PACKAGE_NAME=$(grep "^Package:" control/control | cut -d' ' -f2- | tr -d ' ')
 PACKAGE_VERSION=$(jq -r .version ../../package.json)
+PYTHON_SITE_PACKAGES="usr/lib/python3.11/site-packages"
 
 # Validate required fields
 if [ -z "$PACKAGE_NAME" ] || [ -z "$PACKAGE_VERSION" ]; then
@@ -41,6 +42,10 @@ mkdir -p "$BUILD_DIR/$PACKAGE_DIR"
 
 echo "Copying overlay structure..."
 cp -rL overlay/* "$BUILD_DIR/$PACKAGE_DIR/"
+
+echo "Installing Python dependencies..."
+mkdir -p "$BUILD_DIR/$PACKAGE_DIR/$PYTHON_SITE_PACKAGES"
+python3 -m pip install --target "$BUILD_DIR/$PACKAGE_DIR/$PYTHON_SITE_PACKAGES" -r ../requirements.txt
 
 echo "Copying CONTROL files..."
 mkdir -p "$BUILD_DIR/$PACKAGE_DIR/CONTROL"
@@ -81,16 +86,6 @@ cd ..
 echo ""
 echo "IPK package created."
 echo "Package: ${PACKAGE_NAME}_${PACKAGE_VERSION}.ipk"
-echo ""
-echo "Package structure:"
-echo "  CONTROL files:"
-find control -type f | sort | sed 's/^/    /'
-echo "  Overlay files (will be installed):"
-find overlay -type f | sort | sed 's/^overlay/    /' | head -15
-
-if [ $(find overlay -type f | wc -l) -gt 15 ]; then
-    echo "    ... and $(($(find overlay -type f | wc -l) - 15)) more files"
-fi
 
 rm -rf "$BUILD_DIR"
 

@@ -540,13 +540,7 @@ export default class LineGraphController implements TabController {
         if (autoTargetResult.status === "success") {
           let sourceUnit = window.log.getUnit(fieldItem.logKey);
           if (sourceUnit !== null && Units.GROUP_BY_UNIT[sourceUnit] === Units.GROUP_BY_UNIT[autoTargetResult.unit]) {
-            let preset: Units.UnitConversionPreset = {
-              type: Units.GROUP_BY_UNIT[sourceUnit],
-              from: sourceUnit,
-              to: autoTargetResult.unit,
-              factor: 1
-            };
-            data.values = data.values.map((value) => Units.convertWithPreset(value, preset));
+            data.values = data.values.map((value) => Units.convert(value, sourceUnit, autoTargetResult.unit));
             hasUnit = true;
           }
         } else if (unitConversion.preset !== undefined) {
