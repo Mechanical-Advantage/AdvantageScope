@@ -26,7 +26,7 @@ The 2026 version of AdvantageScope is now available in beta! This release includ
 **We value your feedback! Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
 :::warning
-**AdvantageScope 2026 is in beta**, which means that teams will encounter issues not presented in stable releases. Beta releases allow teams to experiment with upcoming features and provide feedback before the official release in January 2026. Users looking for a stable release should download AdvantageScope [v4.1.6](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v4.1.6), the latest 2025 release. For more information, check the [installation](/overview/installation) page.
+**AdvantageScope 2026 is in beta**, which means that teams will encounter issues not present in stable releases. Beta releases allow teams to experiment with upcoming features and provide feedback before the official release in January 2026. Users looking for a stable release should download AdvantageScope [v4.1.6](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v4.1.6), the latest 2025 release. For more information, check the [installation](/overview/installation) page.
 :::
 
 Check the [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v26.0.0-beta-1) for a complete list of changes. The most notable features in this release are documented below.
@@ -41,7 +41,7 @@ In preparation for full support with SystemCore in the 2027-2028 season, this re
 - Support for the [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) live streaming format
 
 :::tip
-FTC teams should excercise caution when using beta/experimental software during the official season. FTC support for AdvantageScope is still in active development.
+FTC teams should exercise caution when using beta/experimental software during the official season. FTC support for AdvantageScope is still in active development.
 :::
 
 <div className="image-gallery">
@@ -52,7 +52,7 @@ FTC teams should excercise caution when using beta/experimental software during 
   <img src={FTC5} />
 </div>
 
-Several third party FTC logging/telemetry libraries support other formats compatible with AdvantageScope, such as WPILOG and RLOG. Documentation of these libraries can be found in the respective projects; we do not endorse/recommend any particular FTC logging solution for use with AdvantageScope.
+Several third-party FTC logging/telemetry libraries support other formats compatible with AdvantageScope, such as WPILOG and RLOG. Documentation of these libraries can be found in the respective projects; we do not endorse/recommend any particular FTC logging solution for use with AdvantageScope.
 
 :::info
 AdvantageScope is designed to provide the best experience when used alongside the WPILib framework and associated logging tools. You may encounter compatibility issues or limited capabilities when using unofficial logging solutions.
@@ -69,7 +69,7 @@ The 📉 [Line Graph](/tab-reference/line-graph/) tab has been redesigned to be 
 - Implicit conversion of compatible unit types within a single axis
 - Accurate display of [integrated and differentiated](/tab-reference/line-graph/#integration--differentiation) units
 
-The screenshot belows show all of these features in action. Note that the left axis includes fields with different angular velocity units, and the right axis includes values that are differentiated and displayed in a non-native unit (degrees). Selecting units is also easier than ever before, with compatible unit options integrated directly in the control menu for each axis.
+The screenshot below shows all of these features in action. Note that the left axis includes fields with different angular velocity units, and the right axis includes values that are differentiated and displayed in a non-native unit (degrees). Selecting units is also easier than ever before, with compatible unit options integrated directly in the control menu for each axis.
 
 _More information about unit support can be found in the [documentation](/tab-reference/line-graph/units)._
 
@@ -89,10 +89,10 @@ The table below shows the measured transfer speed on the 2025 and 2026 releases 
 
 ## 🌈 New Visualization Options
 
-Several new visualizations options are supported on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field):
+Several new visualization options are supported on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field):
 
 - A wider variety of robot bumper colors are now available on the 2D field, and each object can be configured with its own color. This enables greater flexibility when combining ghosts with multiple robot objects.
-- When [visualizing 2D mechanisms on the 3D field](http://localhost:3000/tab-reference/3d-field/#2d-mechanisms), mechanisms can now be placed on the YZ plane in addition to the XZ plane. This enables easier visualization of complex mechanisms with movements in multiple axes.
+- When [visualizing 2D mechanisms on the 3D field](/tab-reference/3d-field/#2d-mechanisms), mechanisms can now be placed on the YZ plane in addition to the XZ plane. This enables easier visualization of complex mechanisms with movements in multiple axes.
 - The 3D field now supports optional anti-aliasing to improve the quality of rendered edges.
 
 ![New field visualizations](./img/whats-new/field-viz.jpg)
@@ -111,7 +111,7 @@ The AdvantageScope UI on Windows 11 has been updated to support a translucent si
 
 ## 📋 Streamlined Menus
 
-The menu bar and related controls have been streamlined and reorganized to make the controls more accessible and consistent across all platforms. Notable features includes:
+The menu bar and related controls have been streamlined and reorganized to make the controls more accessible and consistent across all platforms. Notable features include:
 
 - Faster switching between live sources (e.g. NetworkTables and [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics)), with no need to open the preferences window.
 - Right-click on the sidebar to quickly copy the name of a field (or the full field key).

@@ -2,7 +2,7 @@ import Image2 from './img/units-2.png';
 
 # Unit Support
 
-The line graph tab is unit-aware, which means that numeric values can be easily converted between compatible unit types. When unit information is available, all numeric values are also accurately labeled when displayed in the axes or legends. See [here](#supported-formats) more information on publishing unit information. AdvantageScope provides several tools to quickly convert between units:
+The line graph tab is unit-aware, which means that numeric values can be easily converted between compatible unit types. When unit information is available, all numeric values are also accurately labeled when displayed in the axes or legends. See [here](#supported-formats) for more information on publishing unit information. AdvantageScope provides several tools to quickly convert between units:
 
 - When adding **fields on the same axis with compatible unit types**, AdvantageScope automatically converts both fields to the same unit. This is reflected in the labeling of the Y axis and legend.
 - Click the three dots near the axis title to **quickly switch to alternative units**. This list includes the most common units that are compatible with the selected fields.
