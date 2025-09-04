@@ -61,6 +61,14 @@ td.subtitle {
   padding-bottom: 7px;
 }
 
+td.info {
+  font-size: 12px;
+  text-align: center;
+  font-style: italic;
+  line-height: 15px;
+  padding-top: 5px;
+}
+
 td.label {
   white-space: nowrap;
   width: 0px;
