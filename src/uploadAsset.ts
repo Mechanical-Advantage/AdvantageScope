@@ -27,7 +27,7 @@ window.addEventListener("message", (event) => {
   };
   // Close function
   function confirm() {
-    if (ASSET_INPUT.files != null) {
+    if (ASSET_INPUT.files != null && ASSET_INPUT.files.length > 0) {
       PROGRESS_TEXT.innerText = "Uploading file...";
       const API_ENDPOINT = "../uploadAsset";
       const request = new XMLHttpRequest();
@@ -38,7 +38,8 @@ window.addEventListener("message", (event) => {
         if (request.status === 200) {
           messagePort.postMessage(null); // close window
         } else {
-          PROGRESS_TEXT.innerText = `Upload failed: ${request.statusText}`;
+          PROGRESS_TEXT.innerText =
+            request.statusText.length > 0 ? `Upload failed: ${request.statusText}` : "Upload failed";
         }
       };
       // HTML prevents selecting multiple files
