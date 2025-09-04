@@ -1,9 +1,4 @@
----
-sidebar_position: 1
----
-
 import Image3 from './img/line-graph-3.png';
-import Image4 from './img/line-graph-4.png';
 
 # 📉 Line Graph
 
@@ -41,19 +36,9 @@ By default, each axis adjusts its range based on the visible data. To disable au
 
 <img src={Image3} alt="Editing axis range" height="250" />
 
-### Unit Conversion
-
-To adjust the units for an axis, click the three dots near the axis title and then `Unit Conversion...`. Select the type of unit and the required conversion. Each value is also multiplied by the "Extra Factor", allowing for custom conversions (like gear ratios, angular to linear conversions, or other units not provided by AdvantageScope). The factor can also be entered using a mathematical expression such as `1.5*pi`.
-
-:::tip
-To quickly enable or disable unit conversion, click the three dots near the axis title and choose `Recent Presets` or `Reset Units`.
-:::
-
-<img src={Image4} alt="Editing unit conversion" height="250" />
-
 ### Integration & Differentiation
 
-Values can be automatically integrated or differentiated by AdvantageScope. Click the three dots near the axis title and then select `Differentiate` or `Integrate`.
+Values can be automatically integrated or differentiated by AdvantageScope. Delta time is always measured in seconds. Click the three dots near the axis title and then select `Differentiate` or `Integrate`.
 
 :::info
 Derivates are calcaulated using the [finite difference](https://en.wikipedia.org/wiki/Finite_difference) of adjacent samples. Integrals are calculated using [trapezoidal integration](https://en.wikipedia.org/wiki/Trapezoidal_rule).
