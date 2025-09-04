@@ -21,7 +21,7 @@ AdvantageScope Lite is an upcoming browser-based version of AdvantageScope acces
 
 ## Installation & Assets
 
-AdvantageScope Lite can be installed and updated by downloading the "SystemCore" version of AdvantageScope from the GitHub releases page.
+AdvantageScope Lite can be installed and updated by downloading the "SystemCore" version of AdvantageScope from the GitHub releases page. Select the "Add Package" card on the SystemCore web interface to upload the package to the robot.
 
 Asset files (e.g. field/robot models) can be uploaded by choosing "File" > "Upload Asset". The selected file can either be a zip file for an individual asset, or a zip file containing a multiple asset zip files. See the [custom assets](/more-features/custom-assets/) page for more information on asset formats.
 
