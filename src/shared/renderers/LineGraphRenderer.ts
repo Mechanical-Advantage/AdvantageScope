@@ -7,7 +7,9 @@
 
 import ScrollSensor from "../../hub/ScrollSensor";
 import { ensureThemeContrast } from "../Colors";
+import LineGraphFilter from "../LineGraphFilter";
 import { SelectionMode } from "../Selection";
+import { Units } from "../units";
 import { calcAxisStepSize, clampValue, cleanFloat, scaleValue, shiftColor, ValueScaler } from "../util";
 import TabRenderer from "./TabRenderer";
 
@@ -100,6 +102,18 @@ export default class LineGraphRenderer implements TabRenderer {
     return null;
   }
 
+  private getAxisValueText(value: number, units: Units.UnitConfig | null, filter: LineGraphFilter): string {
+    let valueClean = Math.abs(value) < this.MAX_DECIMAL_VALUE ? cleanFloat(value) : Math.round(value);
+    let output = valueClean.toString();
+    if (units !== null) {
+      let suffix = Units.getSuffixForFilter(units.suffix, filter);
+      output += suffix.length > 1 ? " " : "";
+      output += suffix;
+      if (filter === LineGraphFilter.None && units.pluralizeSuffix && value !== 1) output += "s";
+    }
+    return output;
+  }
+
   render(command: LineGraphRendererCommand): void {
     this.scrollSensor.periodic();
 
@@ -126,6 +140,8 @@ export default class LineGraphRenderer implements TabRenderer {
       command.rightRange,
       command.showLeftAxis,
       command.showRightAxis,
+      command.leftUnits,
+      command.rightUnits,
       command.priorityAxis,
       this.lastCursorX,
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
@@ -159,17 +175,28 @@ export default class LineGraphRenderer implements TabRenderer {
     let rightStepSize = calcAxisStepSize(command.rightRange, graphHeightOpen, this.Y_STEP_TARGET_PX);
 
     // Calculate horizontal layout
-    let getTextWidth = (range: [number, number], stepSize: number): number => {
+    let getTextWidth = (
+      range: [number, number],
+      stepSize: number,
+      units: Units.UnitConfig | null,
+      filter: LineGraphFilter
+    ): number => {
       let length = 0;
       let value = Math.floor(range[1] / stepSize) * stepSize;
       while (value > range[0]) {
-        length = Math.max(length, context.measureText(cleanFloat(value).toString()).width);
+        length = Math.max(length, context.measureText(this.getAxisValueText(value, units, filter)).width);
         value -= stepSize;
       }
       return Math.ceil(length / 10) * 10;
     };
-    let graphLeft = 25 + (command.showLeftAxis ? getTextWidth(command.leftRange, leftStepSize) : 0);
-    let graphRight = 25 + (command.showRightAxis ? getTextWidth(command.rightRange, rightStepSize) : 0);
+    let graphLeft =
+      25 +
+      (command.showLeftAxis ? getTextWidth(command.leftRange, leftStepSize, command.leftUnits, command.leftFilter) : 0);
+    let graphRight =
+      25 +
+      (command.showRightAxis
+        ? getTextWidth(command.rightRange, rightStepSize, command.rightUnits, command.rightFilter)
+        : 0);
     let graphWidth = width - graphLeft - graphRight;
     if (graphWidth < 1) graphWidth = 1;
 
@@ -562,8 +589,7 @@ export default class LineGraphRenderer implements TabRenderer {
 
         context.globalAlpha = 1;
         if (Math.abs(stepPos) < this.MAX_DECIMAL_VALUE || stepPos % 1 === 0) {
-          let value = Math.abs(stepPos) < this.MAX_DECIMAL_VALUE ? cleanFloat(stepPos) : Math.round(stepPos);
-          context.fillText(value.toString(), graphLeft - 15, y);
+          context.fillText(this.getAxisValueText(stepPos, command.leftUnits, command.leftFilter), graphLeft - 15, y);
           context.beginPath();
           context.moveTo(graphLeft, y);
           context.lineTo(graphLeft - 5, y);
@@ -592,8 +618,11 @@ export default class LineGraphRenderer implements TabRenderer {
 
         context.globalAlpha = 1;
         if (Math.abs(stepPos) < this.MAX_DECIMAL_VALUE || stepPos % 1 === 0) {
-          let value = Math.abs(stepPos) < this.MAX_DECIMAL_VALUE ? cleanFloat(stepPos) : Math.round(stepPos);
-          context.fillText(value.toString(), graphLeft + graphWidth + 15, y);
+          context.fillText(
+            this.getAxisValueText(stepPos, command.rightUnits, command.rightFilter),
+            graphLeft + graphWidth + 15,
+            y
+          );
           context.beginPath();
           context.moveTo(graphLeft + graphWidth, y);
           context.lineTo(graphLeft + graphWidth + 5, y);
@@ -663,6 +692,10 @@ export type LineGraphRendererCommand = {
   rightRange: [number, number];
   showLeftAxis: boolean;
   showRightAxis: boolean;
+  leftUnits: Units.UnitConfig | null;
+  rightUnits: Units.UnitConfig | null;
+  leftFilter: LineGraphFilter;
+  rightFilter: LineGraphFilter;
   priorityAxis: "left" | "right";
   leftFields: LineGraphRendererCommand_NumericField[];
   rightFields: LineGraphRendererCommand_NumericField[];

@@ -51,6 +51,24 @@ td.title > hr {
   margin-bottom: 0px;
 }
 
+td.subtitle {
+  white-space: nowrap;
+  text-align: center;
+  font-size: 12px;
+  font-style: italic;
+  height: 20px;
+  line-height: 20px;
+  padding-bottom: 7px;
+}
+
+td.info {
+  font-size: 12px;
+  text-align: center;
+  font-style: italic;
+  line-height: 15px;
+  padding-top: 5px;
+}
+
 td.label {
   white-space: nowrap;
   width: 0px;
@@ -64,6 +82,10 @@ select {
   display: block;
   margin-left: 5px;
   width: calc(100% - 5px);
+}
+
+input[type="file"] {
+  text-align: center;
 }
 
 button,

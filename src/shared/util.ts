@@ -48,6 +48,12 @@ export function indexArray(length: number): number[] {
   return Array.from({ length: length }, (_, i) => i);
 }
 
+/** Returns whether the character at the specified index is capitalized. */
+export function charIsCapital(input: string, index: number): boolean {
+  let char = input.charAt(index);
+  return char === char.toUpperCase();
+}
+
 /** Calculates a mock progress value. */
 export function calcMockProgress(time: number, maxPercent = 0.6): number {
   // https://www.desmos.com/calculator/86u4rnu8ob

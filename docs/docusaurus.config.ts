@@ -56,8 +56,12 @@ const config: Config = {
             from: "/xr"
           },
           {
-            to: "/legacy-formats",
+            to: "/overview/legacy-formats",
             from: "/whats-new/legacy-formats"
+          },
+          {
+            to: "/overview/legacy-formats",
+            from: "/legacy-formats"
           },
           {
             to: "/overview/navigation",

@@ -834,7 +834,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else {
           // Left and right controls
           let lockedRange: [number, number] | null = message.data.lockedRange;
-          let unitConversion: Units.UnitConversionPreset = message.data.unitConversion;
+          let autoUnitGroup: string | "none" | "inconsistent" = message.data.autoUnitGroup;
+          let autoUnitSelected: string | null = message.data.autoUnitSelected;
+          let autoUnitDefault: string | null = message.data.autoUnitDefault;
+          let unitConversion: Units.UIUnitOptions = message.data.unitConversion;
           let filter: LineGraphFilter = message.data.filter;
 
           editAxisMenu.append(
@@ -873,6 +876,48 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               type: "separator"
             })
           );
+          switch (autoUnitGroup) {
+            case "none":
+              editAxisMenu.append(
+                new MenuItem({
+                  label: "(No Unit Metadata)",
+                  enabled: false
+                })
+              );
+              break;
+
+            case "inconsistent":
+              editAxisMenu.append(
+                new MenuItem({
+                  label: "(Inconsistent Units)",
+                  enabled: false
+                })
+              );
+              break;
+
+            default:
+              Object.keys(Units.UNIT_GROUPS[autoUnitGroup]).forEach((unit) => {
+                editAxisMenu.append(
+                  new MenuItem({
+                    label:
+                      unit.charAt(0).toUpperCase() + unit.slice(1) + (unit === autoUnitDefault ? " [Default]" : ""),
+                    type: "checkbox",
+                    checked: autoUnitSelected === unit,
+                    click() {
+                      unitConversion.autoTarget = unit;
+                      unitConversion.preset = null;
+                      sendMessage(window, "edit-axis", {
+                        legend: legend,
+                        lockedRange: lockedRange,
+                        unitConversion: unitConversion,
+                        filter: filter
+                      });
+                    }
+                  })
+                );
+              });
+              break;
+          }
           let updateRecents = (newUnitConversion: Units.UnitConversionPreset) => {
             let newUnitConversionStr = JSON.stringify(newUnitConversion);
             if (newUnitConversionStr !== JSON.stringify(Units.NoopUnitConversion)) {
@@ -887,66 +932,103 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               jsonfile.writeFileSync(RECENT_UNITS_FILENAME, recentUnits);
             }
           };
-          editAxisMenu.append(
-            new MenuItem({
-              label: "Edit Units...",
-              click() {
-                createUnitConversionWindow(window, unitConversion, (newUnitConversion) => {
-                  sendMessage(window, "edit-axis", {
-                    legend: legend,
-                    lockedRange: lockedRange,
-                    unitConversion: newUnitConversion,
-                    filter: filter
-                  });
-                  updateRecents(newUnitConversion);
-                });
-              }
-            })
-          );
           let recentUnits: Units.UnitConversionPreset[] = fs.existsSync(RECENT_UNITS_FILENAME)
             ? jsonfile.readFileSync(RECENT_UNITS_FILENAME)
             : [];
           editAxisMenu.append(
             new MenuItem({
-              label: "Recent Presets",
+              label: "Manual Units",
               type: "submenu",
-              enabled: recentUnits.length > 0,
-              submenu: recentUnits.map((preset) => {
-                let fromToText =
-                  preset.from === undefined || preset.to === undefined
-                    ? ""
-                    : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                      " \u2192 " +
-                      preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
-                let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
-                let bothPresent = fromToText.length > 0 && factorText.length > 0;
-                return {
-                  label: fromToText + (bothPresent ? ", " : "") + factorText,
+              submenu: [
+                {
+                  label: "Edit Conversion...",
                   click() {
+                    createUnitConversionWindow(
+                      window,
+                      unitConversion.preset ?? Units.NoopUnitConversion,
+                      (newPreset) => {
+                        if (newPreset === null) return;
+                        unitConversion.autoTarget = null;
+                        unitConversion.preset = newPreset;
+                        sendMessage(window, "edit-axis", {
+                          legend: legend,
+                          lockedRange: lockedRange,
+                          unitConversion: unitConversion,
+                          filter: filter
+                        });
+                        updateRecents(newPreset);
+                      }
+                    );
+                  }
+                },
+                {
+                  label: "Recent Presets",
+                  type: "submenu",
+                  enabled: recentUnits.length > 0,
+                  submenu: recentUnits.map((preset) => {
+                    let fromToText =
+                      preset.from === undefined || preset.to === undefined
+                        ? ""
+                        : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                          " \u2192 " +
+                          preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
+                    let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
+                    let bothPresent = fromToText.length > 0 && factorText.length > 0;
+                    return {
+                      label: fromToText + (bothPresent ? ", " : "") + factorText,
+                      click() {
+                        unitConversion.autoTarget = null;
+                        unitConversion.preset = preset;
+                        sendMessage(window, "edit-axis", {
+                          legend: legend,
+                          lockedRange: lockedRange,
+                          unitConversion: unitConversion,
+                          filter: filter
+                        });
+                        updateRecents(preset);
+                      }
+                    };
+                  })
+                },
+                {
+                  type: "separator"
+                },
+                {
+                  label: "Disable Automatic Units",
+                  type: "checkbox",
+                  checked: unitConversion.preset !== null,
+                  click() {
+                    unitConversion.autoTarget = null;
+                    if (unitConversion.preset === null) {
+                      unitConversion.preset = Units.NoopUnitConversion;
+                    } else {
+                      unitConversion.preset = null;
+                    }
                     sendMessage(window, "edit-axis", {
                       legend: legend,
                       lockedRange: lockedRange,
-                      unitConversion: preset,
+                      unitConversion: unitConversion,
                       filter: filter
                     });
-                    updateRecents(preset);
                   }
-                };
-              })
-            })
-          );
-          editAxisMenu.append(
-            new MenuItem({
-              label: "Reset Units",
-              enabled: JSON.stringify(unitConversion) !== JSON.stringify(Units.NoopUnitConversion),
-              click() {
-                sendMessage(window, "edit-axis", {
-                  legend: legend,
-                  lockedRange: lockedRange,
-                  unitConversion: Units.NoopUnitConversion,
-                  filter: filter
-                });
-              }
+                },
+                {
+                  label: "Reset Conversion",
+                  enabled:
+                    unitConversion.preset !== null &&
+                    JSON.stringify(unitConversion.preset) !== JSON.stringify(Units.NoopUnitConversion),
+                  click() {
+                    unitConversion.autoTarget = null;
+                    unitConversion.preset = Units.NoopUnitConversion;
+                    sendMessage(window, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                  }
+                }
+              ]
             })
           );
           editAxisMenu.append(
@@ -1786,7 +1868,9 @@ function setupMenu() {
                 title: "Select the robot log file(s) to open",
                 message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log"] }],
+                filters: [
+                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                ],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -1806,7 +1890,9 @@ function setupMenu() {
               .showOpenDialog(window, {
                 title: "Select the robot log file(s) to add to the current log",
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log"] }],
+                filters: [
+                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                ],
                 defaultPath: getDefaultLogPath()
               })
               .then((files) => {
@@ -1830,21 +1916,23 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", false);
-                }
-              };
-              return item;
-            })
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+              (liveMode: LiveMode) => {
+                let item: Electron.MenuItemConstructorOptions = {
+                  label: getLiveModeName(liveMode),
+                  click(_, baseWindow) {
+                    const window = baseWindow as BrowserWindow | undefined;
+                    if (window === undefined || !hubWindows.includes(window)) return;
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.liveMode = liveMode;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                    sendMessage(window, "start-live", false);
+                  }
+                };
+                return item;
+              }
+            )
           ]
         },
         {
@@ -1861,21 +1949,23 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", true);
-                }
-              };
-              return item;
-            })
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+              (liveMode: LiveMode) => {
+                let item: Electron.MenuItemConstructorOptions = {
+                  label: getLiveModeName(liveMode),
+                  click(_, baseWindow) {
+                    const window = baseWindow as BrowserWindow | undefined;
+                    if (window === undefined || !hubWindows.includes(window)) return;
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.liveMode = liveMode;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                    sendMessage(window, "start-live", true);
+                  }
+                };
+                return item;
+              }
+            )
           ]
         },
         {
@@ -2593,7 +2683,7 @@ function createEditRangeWindow(
 function createUnitConversionWindow(
   parentWindow: Electron.BrowserWindow,
   unitConversion: Units.UnitConversionPreset,
-  callback: (unitConversion: Units.UnitConversionPreset) => void
+  callback: (unitConversion: Units.UnitConversionPreset | null) => void
 ) {
   const unitConversionWindow = new BrowserWindow({
     width: 300,
@@ -2972,7 +3062,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const optionRows = 11;
+  const optionRows = 12;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   prefsWindow = new BrowserWindow({
@@ -3282,7 +3372,8 @@ app.whenReady().then(() => {
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents") ||
       x.endsWith(".hoot") ||
-      x.endsWith(".log")
+      x.endsWith(".log") ||
+      x.endsWith(".csv")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];

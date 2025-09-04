@@ -259,7 +259,7 @@ function handleMainMessage(message: NamedMessage) {
             img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
             break;
           case "lite":
-            img.src = "/icons/" + extension + "-icon.png";
+            img.src = "icons/" + extension + "-icon.png";
             break;
         }
         let filenameSpan = document.createElement("span");
