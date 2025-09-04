@@ -41,7 +41,7 @@ function updateUnitOptions() {
     FROM_UNIT.disabled = false;
     TO_UNIT.disabled = false;
 
-    Object.keys(Units.GROUPED_UNITS[type]).forEach((unit, index) => {
+    Object.keys(Units.UNIT_GROUPS[type]).forEach((unit, index) => {
       let option = document.createElement("option");
       option.innerText = unit;
       FROM_UNIT.appendChild(option);
@@ -70,10 +70,10 @@ window.addEventListener("message", (event) => {
       }
 
       // Normal message
-      let originalConversion: Units.UnitConversionPreset = event.data;
+      let preset: Units.UnitConversionPreset = event.data;
 
       // Add type options
-      ["none", ...Object.keys(Units.GROUPED_UNITS)].forEach((unitType) => {
+      ["none", ...Object.keys(Units.UNIT_GROUPS)].forEach((unitType) => {
         let option = document.createElement("option");
         option.innerText = unitType;
         UNIT_TYPE.appendChild(option);
@@ -81,16 +81,16 @@ window.addEventListener("message", (event) => {
       UNIT_TYPE.addEventListener("change", () => updateUnitOptions());
 
       // Update values
-      if (originalConversion.type === null) {
+      if (preset.type === null) {
         UNIT_TYPE.value = "none";
         updateUnitOptions();
       } else {
-        UNIT_TYPE.value = originalConversion.type;
+        UNIT_TYPE.value = preset.type;
         updateUnitOptions();
-        FROM_UNIT.value = originalConversion.from!;
-        TO_UNIT.value = originalConversion.to!;
+        FROM_UNIT.value = preset.from!;
+        TO_UNIT.value = preset.to!;
       }
-      EXTRA_FACTOR.value = originalConversion.factor.toString();
+      EXTRA_FACTOR.value = preset.factor.toString();
 
       // Close function
       function confirm() {
@@ -127,7 +127,7 @@ window.addEventListener("message", (event) => {
 
       // Set up exit triggers
       EXIT_BUTTON.addEventListener("click", () => {
-        messagePort.postMessage(originalConversion);
+        messagePort.postMessage(null);
       });
       CONFIRM_BUTTON.addEventListener("click", confirm);
       window.addEventListener("keydown", (event) => {
