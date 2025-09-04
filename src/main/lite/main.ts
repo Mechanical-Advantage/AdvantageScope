@@ -191,7 +191,7 @@ function openDownload() {
         let updateList = async () => {
           let response: Response;
           try {
-            response = await fetch(`/logs?folder=${encodeURIComponent(path)}`);
+            response = await fetch(`logs?folder=${encodeURIComponent(path)}`);
           } catch (e) {
             sendMessage(port, "show-error", "Fetch failed");
             return;
@@ -226,6 +226,15 @@ function openDownload() {
     sendMessage(port, "set-platform", "lite");
     sendMessage(port, "set-preferences", prefs);
   });
+}
+
+/** Opens a popup window for uploading assets. */
+async function openUploadAsset() {
+  let port = await openPopupWindow("www/uploadAsset.html", [360, 120], "pixels", async () => {
+    closePopupWindow();
+    sendMessage(hubPort, "set-assets", await loadAssets());
+  });
+  port.postMessage(null);
 }
 
 async function initHub() {
@@ -324,7 +333,7 @@ async function handleHubMessage(message: NamedMessage) {
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
 
-        let response = await fetch(`/logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
+        let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
         let buffer = await response.arrayBuffer();
         let array = new Uint8Array(buffer);
 
@@ -444,6 +453,12 @@ async function handleHubMessage(message: NamedMessage) {
                     }
                   };
                 })
+              },
+              {
+                content: `Upload Asset`,
+                callback() {
+                  openUploadAsset();
+                }
               }
             ];
             break;

@@ -7,12 +7,16 @@
 
 import http.server
 import mimetypes
+import shutil
 import socketserver
 import os
 import sys
 import json
 import urllib
 import gzip
+import zipfile
+
+from multipart import parse_options_header, MultipartParser
 
 PORT = 5808
 ROOT = os.path.abspath("static")
@@ -20,7 +24,8 @@ IS_SYSTEMCORE = os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
-ENABLE_LOG_DOWNLOADS = IS_SYSTEMCORE or "--enable-logs" in sys.argv
+ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv
+WEBROOT = ""
 
 
 class Handler(http.server.SimpleHTTPRequestHandler):
@@ -49,11 +54,11 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         query = urllib.parse.parse_qs(request.query)
 
         # Don't serve directly since all assets are available under "/assets"
-        if request.path.startswith("/bundledAssets"):
+        if request.path.startswith(WEBROOT + "/bundledAssets"):
             self.send_error(404, "File not found.")
 
         # Serve list of asset files
-        elif request.path == "/assets" or request.path == "/assets/":
+        elif request.path == WEBROOT + "/assets" or request.path == WEBROOT + "/assets/":
             asset_file_list = {}
             for root in [BUNDLED_ASSETS_PATH, EXTRA_ASSETS_PATH]:
                 for dirpath, _, filenames in os.walk(root):
@@ -72,8 +77,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send_response_with_compression(200, "application/json", json_string.encode('utf-8'))
 
         # Serve asset files (bundled or extra)
-        elif request.path.startswith("/assets"):
-            asset_path = urllib.parse.unquote(self.path[len("/assets/"):])
+        elif request.path.startswith(WEBROOT + "/assets"):
+            asset_path = urllib.parse.unquote(self.path[len(WEBROOT + "/assets/"):])
             extra_asset_path = os.path.join(EXTRA_ASSETS_PATH, asset_path)
             bundled_asset_path = os.path.join(BUNDLED_ASSETS_PATH, asset_path)
             for path in [extra_asset_path, bundled_asset_path]:
@@ -91,9 +96,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.send_error(404, "File not found")
 
         # Serve list of logs
-        elif request.path == "/logs" or request.path == "/logs/":
+        elif request.path == WEBROOT + "/logs" or request.path == WEBROOT + "/logs/":
             files = []
-            if ENABLE_LOG_DOWNLOADS:
+            if ENABLE_FILESYSTEM_ACCESS:
                 if "folder" in query and len(query["folder"]) > 0:
                     folder_path = query["folder"][0]
                     if not os.path.exists(folder_path) or not os.path.isdir(folder_path):
@@ -111,8 +116,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self._send_response_with_compression(200, "application/json", json_string.encode("utf-8"))
 
         # Serve log file
-        elif request.path.startswith("/logs"):
-            if ENABLE_LOG_DOWNLOADS and "folder" in query and len(query["folder"]) > 0:
+        elif request.path.startswith(WEBROOT + "/logs"):
+            if ENABLE_FILESYSTEM_ACCESS and "folder" in query and len(query["folder"]) > 0:
                 filename = urllib.parse.unquote(request.path[len("/logs/"):])
                 if any(filename.endswith(suffix) for suffix in ALLOWED_LOG_SUFFIXES):
                     full_path = os.path.join(query["folder"][0], filename)
@@ -128,7 +133,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Serve everything else
         else:
-            filepath = self.translate_path(self.path)
+            filepath = self.translate_path(self.path.removeprefix(WEBROOT))
             if os.path.isdir(filepath):
                 index_path = os.path.join(filepath, "index.html")
                 if os.path.exists(index_path):
@@ -150,6 +155,63 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             else:
                 self.send_error(404, f"File not found: {self.path}")
 
+    def do_POST(self):
+        request = urllib.parse.urlparse(self.path)
+        if request.path.startswith(WEBROOT + "/uploadAsset") & ENABLE_FILESYSTEM_ACCESS:
+            content_type, options = parse_options_header(self.headers.get("Content-Type",""))
+
+            if content_type == "multipart/form-data" and 'boundary' in options:
+                stream = self.rfile
+                boundary = options["boundary"]
+                parser = MultipartParser(stream, boundary,content_length=int(self.headers.get("Content-Length",-1)))
+
+                for part in parser:
+                    if part.filename:
+                        if part.filename.lower().endswith(".zip"):
+                            asset_zip= f"{EXTRA_ASSETS_PATH}/{part.filename}"
+                            part.save_as(asset_zip)
+                            temp_path = EXTRA_ASSETS_PATH + "/AS_TEMP/"
+                            asset_path = temp_path + part.filename[:-len(".zip")]  # remove .zip ending
+
+                            with zipfile.ZipFile(asset_zip,"r") as zip_ref:
+                                zip_ref.extractall(asset_path)
+                                os.remove(asset_zip)
+
+                            # recursively extract .zips
+                            for dirpath, _, filenames in os.walk(asset_path):
+                                for filename in filenames:
+                                    if filename.lower().endswith(".zip"):
+                                        with zipfile.ZipFile(f"{dirpath}/{filename}", "r") as zip_ref:
+                                            filename_no_ext = filename[:-4] # remove .zip (4 char)
+                                            zip_ref.extractall(f"{dirpath}/{filename_no_ext}")
+                                            os.remove(f"{dirpath}/{filename}")
+                            # find config folders
+                            for dirpath, _, filenames in os.walk(asset_path):
+                                for filename in filenames:
+                                    if filename == "config.json":
+                                        # recursively copy the parent directory to extra assets, overwriting existing files
+                                        dirname = os.path.basename(dirpath)
+                                        shutil.copytree(dirpath,f"{EXTRA_ASSETS_PATH}/{dirname}",dirs_exist_ok=True)
+                            shutil.rmtree(temp_path)
+
+
+
+                            self.send_response(200)
+                            self.end_headers()
+                        else:
+                            self.send_response(400, "Uploaded asset must be a zip")
+                            self.end_headers()
+
+                # Free up resources after use
+                for part in parser.parts():
+                    part.close()
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+
+
+
 
 if __name__ == "__main__":
     # Create extra assets folder
@@ -157,16 +219,16 @@ if __name__ == "__main__":
         os.mkdir(EXTRA_ASSETS_PATH)
         print(f"Created folder for extra assets: {EXTRA_ASSETS_PATH}")
 
-    # Warn if log downloads disabled
-    if not ENABLE_LOG_DOWNLOADS:
-        print("Log downloads are currently disabled. Pass \"--enable-logs\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem.\n")
+    # Warn if filesystem access disabled
+    if not ENABLE_FILESYSTEM_ACCESS:
+        print("Log downloads and custom asset uploads are currently disabled. Pass \"--enable-file-access\" to override.\nWARNING: When enabled, AdvantageScope Lite provides unrestricted access to all log files on the host filesystem and upload access to the ascope_assets folder.\n")
 
     # Start server
     os.chdir(ROOT)
     httpd = socketserver.ThreadingTCPServer(("", PORT), Handler, bind_and_activate=False)
     httpd.allow_reuse_address = True
     httpd.daemon_threads = True
-    print(f"Serving AdvantageScope Lite on port {PORT}")
+    print(f"Serving AdvantageScope Lite on port {PORT}: http://localhost:{PORT}{WEBROOT}")
     try:
         httpd.server_bind()
         httpd.server_activate()
