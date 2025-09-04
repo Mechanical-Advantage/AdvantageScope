@@ -14,7 +14,7 @@ AdvantageScope supports live-streaming of signals from Phoenix 6 devices with **
 - Hierarchical organization of signals, grouped by CAN bus, device, and signal type
 
 :::tip
-To connect, select "Phoenix Diagnostics" from the list of [live sources](/overview/live-sources#live-source) in the preferences menu. Then, click "Connect to Robot" or "Connect to Simulator" from the menu bar as normal.
+To connect, select "Phoenix Diagnostics" when connecting to the robot or simulator from the menu bar.
 :::
 
 ![Line graph screenshot](./img/phoenix-1.png)

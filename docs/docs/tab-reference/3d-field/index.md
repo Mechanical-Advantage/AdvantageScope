@@ -48,7 +48,7 @@ AdvantageScope supports several sizes of AprilTags for FTC fields. Sizes are mea
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
 :::warning
-The legacy number array format for geometry data is now deprecated. See [here](/legacy-formats) for details.
+The legacy number array format for geometry data is now deprecated. See [here](/overview/legacy-formats) for details.
 :::
 
 Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
