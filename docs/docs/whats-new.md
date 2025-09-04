@@ -73,7 +73,7 @@ The screenshot belows show all of these features in action. Note that the left a
 
 _More information about unit support can be found in the [documentation](/tab-reference/line-graph/units)._
 
-![Unit-aware graphing](./img/whats-new/units.png)
+![Unit-aware graphing](./tab-reference/line-graph/img/units-1.png)
 
 ## 🏁 Faster Log Downloads
 
