@@ -41,7 +41,7 @@ In preparation for full support with SystemCore in the 2027-2028 season, this re
 - Support for the [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) live streaming format
 
 :::tip
-FTC teams should excercise caution when using beta/experimental software during the official season. FTC support for AdvantageScope is still in early development.
+FTC teams should excercise caution when using beta/experimental software during the official season. FTC support for AdvantageScope is still in active development.
 :::
 
 <div className="image-gallery">
@@ -77,7 +77,7 @@ _More information about unit support can be found in the [documentation](/tab-re
 
 ## 🏁 Faster Log Downloads
 
-[Downloading logs from the roboRIO](/overview/log-files/#downloading-from-the-robot) is now **2-4x faster** than previous releases. This is accomplished by switching to a new protocol (FTP) that minimizes the CPU load on the roboRIO when downloading log data.
+[Downloading logs from the roboRIO](/overview/log-files/#downloading-from-the-robot) is now **2-4x faster** than previous releases. This is accomplished by switching to a new protocol (FTP) that allows the roboRIO to transfer log data with less CPU overhead.
 
 The table below shows the measured transfer speed on the 2025 and 2026 releases of AdvantageScope while tethered via Ethernet (max bandwidth of 100 Mb/s). Note that the performance of the 2025 release is severely impacted by the CPU load on the roboRIO.
 
@@ -91,9 +91,9 @@ The table below shows the measured transfer speed on the 2025 and 2026 releases 
 
 Several new visualizations options are supported on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field):
 
-- A wider variety of robot bumper colors are available on the 2D field, and each object can be configured with its own color. This enables greater flexibility when combining ghosts with multiple robot objects.
+- A wider variety of robot bumper colors are now available on the 2D field, and each object can be configured with its own color. This enables greater flexibility when combining ghosts with multiple robot objects.
 - When [visualizing 2D mechanisms on the 3D field](http://localhost:3000/tab-reference/3d-field/#2d-mechanisms), mechanisms can now be placed on the YZ plane in addition to the XZ plane. This enables easier visualization of complex mechanisms with movements in multiple axes.
-- The 3D field supports optional anti-aliasing to improve the quality of rendered edges.
+- The 3D field now supports optional anti-aliasing to improve the quality of rendered edges.
 
 ![New field visualizations](./img/whats-new/field-viz.jpg)
 
@@ -113,7 +113,7 @@ The AdvantageScope UI on Windows 11 has been updated to support a translucent si
 
 The menu bar and related controls have been streamlined and reorganized to make the controls more accessible and consistent across all platforms. Notable features includes:
 
-- Faster switching between live sources (e.g. NetworkTables and [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics)). There's no need to open the preferences window when switching between different sources of live data.
+- Faster switching between live sources (e.g. NetworkTables and [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics)), with no need to open the preferences window.
 - Right-click on the sidebar to quickly copy the name of a field (or the full field key).
 - Reorganization of the preferences window, making options easier to find quickly.
 
@@ -129,5 +129,5 @@ This release includes a variety of bug fixes and stability improvements across t
 
 - The performance of AdvantageScope when streaming data for long periods has been greatly improved, especially when using the line graph tab.
 - AdvantageScope is now more tolerant of unusual log data, including large log files and large field values.
-- Various visual glitches have been fixed when browsing log data, especially on the line graph tab.
-- The ordering of AdvantageKit log files in the download window has been fixed (logs without timestamps are now at the bottom of the list).
+- Various visual glitches have been fixed when browsing log data, especially when using filters on the line graph tab.
+- The ordering of AdvantageKit log files in the download window has been fixed; logs without timestamps are now at the bottom of the list, similar to other formats.

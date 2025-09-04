@@ -5,7 +5,7 @@ sidebar_position: 1
 # 💡 AdvantageScope Lite
 
 :::warning
-AdvantageScope Lite is only available in the 2027 (v27.x) releases of AdvantageScope on the SystemCore control system. An [unofficial distribution](/overview/installation#unofficial-distributions) is available for use on the REV Control Hub, but is not supported by the AdvantageScope/WPILib developers.
+AdvantageScope Lite is only available in the 2027 (v27.x) releases of AdvantageScope on the SystemCore control system. An [unofficial distribution](/overview/installation#unofficial-distributions) is available for use on the existing FTC control system, but is not supported by the AdvantageScope/WPILib developers.
 :::
 
 AdvantageScope Lite is an upcoming browser-based version of AdvantageScope accessible from the SystemCore web interface and intended for on-robot development. Most features of the AdvantageScope desktop app are included in AdvantageScope Lite, with the following **omissions**:
