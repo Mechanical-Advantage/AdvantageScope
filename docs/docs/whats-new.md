@@ -29,7 +29,7 @@ The 2026 version of AdvantageScope is now available in beta! This release includ
 **AdvantageScope 2026 is in beta**, which means that teams will encounter issues not present in stable releases. Beta releases allow teams to experiment with upcoming features and provide feedback before the official release in January 2026. Users looking for a stable release should download AdvantageScope [v4.1.6](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v4.1.6), the latest 2025 release. For more information, check the [installation](/overview/installation) page.
 :::
 
-To get started with the AdvantageScope 2026 beta, click the "Prelease" link in the [installation docs](/overview/installation#team-6328). Check the [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v26.0.0-beta-1) for a complete list of changes. The most notable features in this release are documented below.
+To get started with the AdvantageScope 2026 beta, click the "Prerelease" link in the [installation docs](/overview/installation#team-6328) and find the first release with version v26.0.0-beta-X. Check the [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v26.0.0-beta-1) for a complete list of changes. The most notable features in this release are documented below.
 
 ## ✴️ Experimental: FTC Support {#ftc-support}
 
