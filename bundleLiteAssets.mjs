@@ -16,9 +16,9 @@ const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
 const githubAssetsTag = "archive-v1";
 const githubAssetNames = [
   "Field2d_2025FRCFieldWeldedV2",
-  "Field2d_20242025FTCFieldV1",
+  "Field2d_20252026FTCFieldV1",
   "Field3d_2025FRCFieldWeldedV2",
-  "Field3d_20242025FTCFieldV2",
+  "Field3d_20252026FTCFieldV1",
   "Joystick_LogitechF310V1",
   "Joystick_PS4ControllerV1",
   "Joystick_XboxControllerBlueV1",
