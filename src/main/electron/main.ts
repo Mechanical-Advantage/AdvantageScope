@@ -1300,9 +1300,16 @@ function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
     });
   newTabMenu.popup({
     window: window,
-    x: rect.x + rect.width,
-    y: rect.y
+    x: window.getBounds().width - 12,
+    y: process.platform === "win32" ? 48 : 10
   });
+  console.log(rect);
+
+  // newTabMenu.popup({
+  //   window: window,
+  //   x: rect.x + rect.width,
+  //   y: rect.y
+  // });
 }
 
 function select3DCameraPopup(
