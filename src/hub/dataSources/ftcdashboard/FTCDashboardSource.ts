@@ -145,7 +145,14 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
       let key = path + name;
 
       // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
-      let label = name.split(" ").slice(0, -1).join(" ");
+      let label: string;
+      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
+        // Remove last 2 words of name
+        label = name.split(" ").slice(0, -2).join(" ") + " Pose";
+      } else {
+        // Remove last word of name
+        label = name.split(" ").slice(0, -1).join(" ") + " Pose";
+      }
 
       if (name.endsWith(" x") || name === "x") {
         if (!foundPoses.has(label)) {
