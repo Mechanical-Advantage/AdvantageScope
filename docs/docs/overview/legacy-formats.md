@@ -1,10 +1,10 @@
 ---
-sidebar_position: 2
+sidebar_position: 6
 ---
 
-# Legacy Format Deprecation
+# ⚠️ Legacy Format Deprecation
 
-WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](tab-reference/2d-field) and [👀 3D Field](tab-reference/3d-field) tabs with **no manual configuration** and **no unit errors**.
+WPILib supports the type-safe and unit-safe **struct format** for publishing complex data types such as geometry objects, swerve states, and more! AdvantageScope takes advantage of the struct format to streamline the process of configuring fields for visualization. For example, 2D and 3D poses can now be used side-by-side on the [🗺 2D Field](/tab-reference/2d-field) and [👀 3D Field](/tab-reference/3d-field) tabs with **no manual configuration** and **no unit errors**.
 
 Before 2025, AdvantageScope supported both structs and the legacy "number array" format for geometry types. The legacy format packed structured data into a format like `double[]` (e.g. a pose would be represented by the array `[x, y, rotation]`).
 
@@ -29,7 +29,7 @@ While the legacy format can still be used, additional information must be provid
 
 ## How Do I Update?
 
-Most major tools and libraries used in FRC already support the modern struct format (check the documentation of each library for details). Below, you can see how to upgrade to the modern format for several common libraries. The struct format supports both single objects and object arrays (such as `Pose2d[]`).
+Most major tools and libraries already support the modern struct format (check the documentation of each library for details). Below, you can see how to upgrade to the modern format for several common libraries. The struct format supports both single objects and object arrays (such as `Pose2d[]`).
 
 :::tip
 If you rely on a library that hasn't upgraded to the new format, reach out the developers for details.

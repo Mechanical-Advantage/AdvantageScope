@@ -19,8 +19,9 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
   };
 
   // Request asset index
-  let response = await fetch("/assets");
+  let response = await fetch("assets");
   let assetIndex = await response.json();
+  let currentPath = window.location.pathname;
 
   // Filter and sort index
   let configPaths = Object.keys(assetIndex)
@@ -44,7 +45,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       } else if (config === "invalid") {
         return;
       }
-      config.path = `/assets/${encodeURIComponent(name)}/image.png`;
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
       if (`${name}/image.png` in assetIndex) {
         assets.field2ds.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
@@ -58,7 +59,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       } else if (config === "invalid") {
         return;
       }
-      config.path = `/assets/${encodeURIComponent(name)}/model.glb`;
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
       if (
         `${name}/model.glb` in assetIndex &&
         config.gamePieces.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
@@ -70,7 +71,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       // ***** 3D ROBOT *****
       let config = parseRobot(configRaw);
       if (config === "invalid") return;
-      config.path = `/assets/${encodeURIComponent(name)}/model.glb`;
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
       if (
         `${name}/model.glb` in assetIndex &&
         config.components.every((_, index) => `${name}/model_${index}.glb` in assetIndex)
@@ -82,7 +83,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       // ***** JOYSTICK *****
       let config = parseJoystick(configRaw);
       if (config === "invalid") return;
-      config.path = `/assets/${encodeURIComponent(name)}/image.png`;
+      config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
       if (`${name}/image.png` in assetIndex) {
         assets.joysticks.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);

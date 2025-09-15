@@ -118,6 +118,8 @@ function openPopupWindow(
         POPUP_FRAME.contentWindow?.addEventListener("keydown", (event) => {
           if (event.code === "Escape") {
             closePopupWindow();
+          } else {
+            processKeydown(event);
           }
         });
       }
@@ -165,7 +167,7 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const optionRows = 6;
+  const optionRows = 7;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
@@ -189,7 +191,7 @@ function openDownload() {
         let updateList = async () => {
           let response: Response;
           try {
-            response = await fetch(`/logs?folder=${encodeURIComponent(path)}`);
+            response = await fetch(`logs?folder=${encodeURIComponent(path)}`);
           } catch (e) {
             sendMessage(port, "show-error", "Fetch failed");
             return;
@@ -224,6 +226,15 @@ function openDownload() {
     sendMessage(port, "set-platform", "lite");
     sendMessage(port, "set-preferences", prefs);
   });
+}
+
+/** Opens a popup window for uploading assets. */
+async function openUploadAsset() {
+  let port = await openPopupWindow("www/uploadAsset.html", [360, 120], "pixels", async () => {
+    closePopupWindow();
+    sendMessage(hubPort, "set-assets", await loadAssets());
+  });
+  port.postMessage(null);
 }
 
 async function initHub() {
@@ -272,6 +283,9 @@ async function initHub() {
     event.preventDefault();
   });
   HUB_FRAME.contentWindow?.addEventListener("mousemove", (event) => event.preventDefault());
+
+  // Add key handling event
+  HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event));
 }
 
 async function handleHubMessage(message: NamedMessage) {
@@ -319,7 +333,7 @@ async function handleHubMessage(message: NamedMessage) {
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
 
-        let response = await fetch(`/logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
+        let response = await fetch(`logs/${encodeURIComponent(path)}?folder=${encodeURIComponent(prefs.remotePath)}`);
         let buffer = await response.arrayBuffer();
         let array = new Uint8Array(buffer);
 
@@ -434,10 +448,17 @@ async function handleHubMessage(message: NamedMessage) {
                     callback() {
                       prefs.liveMode = liveMode;
                       localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                      sendMessage(hubPort, "set-preferences", prefs);
                       sendMessage(hubPort, "start-live", false);
                     }
                   };
                 })
+              },
+              {
+                content: `Upload Asset`,
+                callback() {
+                  openUploadAsset();
+                }
               }
             ];
             break;
@@ -784,7 +805,10 @@ async function handleHubMessage(message: NamedMessage) {
         } else {
           // Left and right controls
           let lockedRange: [number, number] | null = message.data.lockedRange;
-          let unitConversion: Units.UnitConversionPreset = message.data.unitConversion;
+          let autoUnitGroup: string | "none" | "inconsistent" = message.data.autoUnitGroup;
+          let autoUnitSelected: string | null = message.data.autoUnitSelected;
+          let autoUnitDefault: string | null = message.data.autoUnitDefault;
+          let unitConversion: Units.UIUnitOptions = message.data.unitConversion;
           let filter: LineGraphFilter = message.data.filter;
 
           menuItems.push({
@@ -828,62 +852,135 @@ async function handleHubMessage(message: NamedMessage) {
               localStorage.setItem(LocalStorageKeys.RECENT_UNITS, JSON.stringify(recentUnits));
             }
           };
-          menuItems.push({
-            content: "Edit Units",
-            async callback() {
-              let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
-                let newUnitConversion: Units.UnitConversionPreset = message;
-                closePopupWindow();
-                sendMessage(hubPort, "edit-axis", {
-                  legend: legend,
-                  lockedRange: lockedRange,
-                  unitConversion: newUnitConversion,
-                  filter: filter
-                });
-                updateRecents(newUnitConversion);
+          switch (autoUnitGroup) {
+            case "none":
+              menuItems.push({
+                content: "(No Unit Metadata)",
+                className: "disabled"
               });
-              port.postMessage(unitConversion);
-            }
-          });
+              break;
+
+            case "inconsistent":
+              menuItems.push({
+                content: "(Inconsistent Units)",
+                className: "disabled"
+              });
+              break;
+
+            default:
+              Object.keys(Units.UNIT_GROUPS[autoUnitGroup]).forEach((unit) => {
+                menuItems.push({
+                  content:
+                    (autoUnitSelected === unit ? "\u2714 " : "") +
+                    unit.charAt(0).toUpperCase() +
+                    unit.slice(1) +
+                    (unit === autoUnitDefault ? " [Default]" : ""),
+                  callback() {
+                    unitConversion.autoTarget = unit;
+                    unitConversion.preset = null;
+                    sendMessage(hubPort, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                  }
+                });
+              });
+              break;
+          }
           let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
           let recentUnits: Units.UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
           menuItems.push({
-            content: "Recent Presets",
-            className: recentUnits.length > 0 ? "" : "disabled",
-            items: recentUnits.map((preset) => {
-              let fromToText =
-                preset.from === undefined || preset.to === undefined
-                  ? ""
-                  : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                    " \u2192 " +
-                    preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
-              let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
-              let bothPresent = fromToText.length > 0 && factorText.length > 0;
-              return {
-                content: fromToText + (bothPresent ? ", " : "") + factorText,
+            content: "Manual Units",
+            items: [
+              {
+                content: "Edit Conversion",
+                async callback() {
+                  let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
+                    if (message === null) return;
+                    unitConversion.autoTarget = null;
+                    unitConversion.preset = message;
+                    closePopupWindow();
+                    sendMessage(hubPort, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                    updateRecents(unitConversion.preset!);
+                  });
+                  port.postMessage(unitConversion.preset ?? Units.NoopUnitConversion);
+                }
+              },
+              {
+                content: (unitConversion.preset !== null ? "\u2714 " : "") + "Disable Automatic Units",
                 callback() {
+                  unitConversion.autoTarget = null;
+                  if (unitConversion.preset === null) {
+                    unitConversion.preset = Units.NoopUnitConversion;
+                  } else {
+                    unitConversion.preset = null;
+                  }
                   sendMessage(hubPort, "edit-axis", {
                     legend: legend,
                     lockedRange: lockedRange,
-                    unitConversion: preset,
+                    unitConversion: unitConversion,
                     filter: filter
                   });
-                  updateRecents(preset);
                 }
-              };
-            })
-          });
-          menuItems.push({
-            content: "Reset Units",
-            className: JSON.stringify(unitConversion) !== JSON.stringify(Units.NoopUnitConversion) ? "" : "disabled",
-            callback() {
-              sendMessage(hubPort, "edit-axis", {
-                legend: legend,
-                lockedRange: lockedRange,
-                unitConversion: Units.NoopUnitConversion,
-                filter: filter
-              });
-            }
+              },
+              {
+                content: "Reset Units",
+                className:
+                  unitConversion.preset !== null &&
+                  JSON.stringify(unitConversion.preset) !== JSON.stringify(Units.NoopUnitConversion)
+                    ? ""
+                    : "disabled",
+                callback() {
+                  unitConversion.autoTarget = null;
+                  unitConversion.preset = Units.NoopUnitConversion;
+                  sendMessage(hubPort, "edit-axis", {
+                    legend: legend,
+                    lockedRange: lockedRange,
+                    unitConversion: unitConversion,
+                    filter: filter
+                  });
+                }
+              },
+              ...(recentUnits.length > 0
+                ? [
+                    {
+                      content: "\u2014 Recent Presets \u2014",
+                      className: "disabled"
+                    }
+                  ]
+                : []),
+              ...recentUnits.map((preset) => {
+                let fromToText =
+                  preset.from === undefined || preset.to === undefined
+                    ? ""
+                    : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
+                      " \u2192 " +
+                      preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
+                let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
+                let bothPresent = fromToText.length > 0 && factorText.length > 0;
+                return {
+                  content: fromToText + (bothPresent ? ", " : "") + factorText,
+                  callback() {
+                    unitConversion.autoTarget = null;
+                    unitConversion.preset = preset;
+                    sendMessage(hubPort, "edit-axis", {
+                      legend: legend,
+                      lockedRange: lockedRange,
+                      unitConversion: unitConversion,
+                      filter: filter
+                    });
+                    updateRecents(preset);
+                  }
+                };
+              })
+            ]
           });
           menuItems.push("-");
           menuItems.push({
@@ -1078,6 +1175,58 @@ async function handleHubMessage(message: NamedMessage) {
   }
 }
 
+/**
+ * Process keyboard shortcuts
+ * @param event The event
+ * @returns Whether a shortcut was triggered
+ */
+function processKeydown(event: KeyboardEvent): boolean {
+  let triggered = true;
+  let lowerKey = event.key.toLowerCase();
+  if (event.shiftKey && event.metaKey && lowerKey === "o") {
+    openDownload();
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
+    sendMessage(hubPort, "start-live", false);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
+    sendMessage(hubPort, "zoom-enabled");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
+    sendMessage(hubPort, "toggle-sidebar");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
+    sendMessage(hubPort, "toggle-controls");
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
+    sendMessage(hubPort, "move-tab", -1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
+    sendMessage(hubPort, "move-tab", 1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
+    sendMessage(hubPort, "shift-tab", -1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
+    sendMessage(hubPort, "shift-tab", 1);
+  } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
+    sendMessage(hubPort, "close-tab", false);
+  } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
+    openPreferences();
+  } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
+    triggered = false;
+    getAllTabTypes()
+      .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
+      .forEach((tabType) => {
+        let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
+        if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
+          sendMessage(hubPort, "new-tab", tabType);
+          triggered = true;
+        }
+      });
+  } else if (event.code === "Escape") {
+    closePopupWindow();
+  } else {
+    triggered = false;
+  }
+  if (triggered) {
+    event.preventDefault();
+  }
+  return triggered;
+}
+
 // Get elements on page load
 window.addEventListener("load", () => {
   // Load assets
@@ -1111,61 +1260,23 @@ window.addEventListener("load", () => {
   document.addEventListener("mousemove", (event) => event.preventDefault());
 
   // Set up keyboard shortcuts
-  window.addEventListener("keydown", (event) => {
-    let triggered = true;
-    let lowerKey = event.key.toLowerCase();
-    if (event.shiftKey && event.metaKey && lowerKey === "o") {
-      openDownload();
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
-      sendMessage(hubPort, "start-live", false);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
-      sendMessage(hubPort, "zoom-enabled");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
-      sendMessage(hubPort, "toggle-sidebar");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
-      sendMessage(hubPort, "toggle-controls");
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
-      sendMessage(hubPort, "move-tab", -1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
-      sendMessage(hubPort, "move-tab", 1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
-      sendMessage(hubPort, "shift-tab", -1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
-      sendMessage(hubPort, "shift-tab", 1);
-    } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
-      sendMessage(hubPort, "close-tab", false);
-    } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
-      openPreferences();
-    } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
-      triggered = false;
-      getAllTabTypes()
-        .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
-        .forEach((tabType) => {
-          let accelerator = getTabAccelerator(tabType).replace("Alt+", "").toLowerCase();
-          if (accelerator.length > 0 && event.code.slice(-1).toLowerCase() === accelerator) {
-            sendMessage(hubPort, "new-tab", tabType);
-            triggered = true;
-          }
-        });
-    } else if (event.code === "Escape") {
-      closePopupWindow();
-    } else {
-      triggered = false;
-    }
-    if (triggered) {
-      event.preventDefault();
-    } else {
-      HUB_FRAME.contentWindow?.dispatchEvent(
-        new KeyboardEvent("keydown", {
-          key: event.key,
-          code: event.code,
-          metaKey: event.metaKey,
-          ctrlKey: event.ctrlKey,
-          altKey: event.altKey
-        })
-      );
-    }
-  });
+  window.addEventListener(
+    "keydown",
+    (event) => {
+      if (!processKeydown(event)) {
+        HUB_FRAME.contentWindow?.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: event.key,
+            code: event.code,
+            metaKey: event.metaKey,
+            ctrlKey: event.ctrlKey,
+            altKey: event.altKey
+          })
+        );
+      }
+    },
+    { capture: true }
+  );
   window.addEventListener("keyup", (event) => {
     HUB_FRAME.contentWindow?.dispatchEvent(
       new KeyboardEvent("keyup", {

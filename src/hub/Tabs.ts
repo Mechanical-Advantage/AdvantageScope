@@ -666,7 +666,7 @@ export default class Tabs {
   editAxis(
     legend: string,
     lockedRange: [number, number] | null,
-    unitConversion: Units.UnitConversionPreset,
+    unitConversion: Units.UIUnitOptions,
     filter: LineGraphFilter
   ) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {

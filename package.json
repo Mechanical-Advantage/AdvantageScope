@@ -1,7 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "26.0.0-dev",
+  "version": "26.0.0-beta-1",
   "description": "Robot telemetry application",
   "author": {
     "name": "Littleton Robotics",
@@ -163,6 +163,13 @@
         "mimeType": "application/x-hoot",
         "role": "Viewer",
         "icon": "icons/app/hoot-icon"
+      },
+      {
+        "ext": "csv",
+        "name": "Comma-separated values",
+        "description": "Comma-separated values",
+        "mimeType": "text/csv",
+        "role": "Viewer"
       }
     ],
     "mac": {

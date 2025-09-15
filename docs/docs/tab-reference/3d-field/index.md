@@ -48,10 +48,10 @@ AdvantageScope supports several sizes of AprilTags for FTC fields. Sizes are mea
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
 :::warning
-The legacy number array format for geometry data is now deprecated. See [here](/legacy-formats) for details.
+The legacy number array format for geometry data is now deprecated. See [here](/overview/legacy-formats) for details.
 :::
 
-Many FRC libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
+Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 3D pose data in Java.
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
@@ -85,6 +85,22 @@ Pose3d poseB = new Pose3d();
 Logger.recordOutput("MyPose", poseA);
 Logger.recordOutput("MyPoseArray", poseA, poseB);
 Logger.recordOutput("MyPoseArray", new Pose3d[] {poseA, poseB});
+```
+
+</TabItem>
+<TabItem value="ftcdashboard" label="FTC Dashboard">
+
+```java
+// This protocol does not support the modern struct format, but pose
+// values can be published using separate fields that include the
+// suffixes "x", "y", and "heading" (as shown below):
+TelemetryPacket packet = new TelemetryPacket();
+packet.put("Pose x", 6.3); // Inches
+packet.put("Pose y", 2.8); // Inches
+packet.put("Pose heading", 3.14); // Radians
+
+// Alternatively, headings can be published in degrees
+packet.put("Pose heading (deg)", 180.0); // Degrees
 ```
 
 </TabItem>
