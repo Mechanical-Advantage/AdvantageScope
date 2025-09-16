@@ -618,8 +618,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       const rect: ButtonRect = message.data.rect;
       playbackOptionsMenu.popup({
         window: window,
-        x: rect.x + rect.width,
-        y: rect.y
+        x: Math.round(rect.x + rect.width),
+        y: Math.round(rect.y)
       });
       break;
 
@@ -1300,8 +1300,8 @@ function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
     });
   newTabMenu.popup({
     window: window,
-    x: rect.x + rect.width,
-    y: rect.y
+    x: Math.round(rect.x + rect.width),
+    y: Math.round(rect.y)
   });
 }
 
