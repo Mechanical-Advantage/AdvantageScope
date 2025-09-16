@@ -161,21 +161,21 @@ jobs:
 
   build-ios:
     name: Build for iOS
-    runs-on: macos-26
+    runs-on: macos-15
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      # - name: Select Xcode version
-      #   uses: BoundfoxStudios/action-xcode-select@v1
-      #   with:
-      #     version: "26"
-      # - name: Install Metal toolchain
-      #   run: xcodebuild -downloadComponent MetalToolchain
+      - name: Select Xcode version
+        uses: BoundfoxStudios/action-xcode-select@v1
+        with:
+          version: "26"
+      - name: Install Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
       - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator26.0 build
       - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator26.0 build
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
