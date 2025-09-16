@@ -59,6 +59,8 @@ import {
   RECENT_UNITS_FILENAME,
   RLOG_CONNECT_TIMEOUT_MS,
   RLOG_DATA_TIMEOUT_MS,
+  RLOG_HEARTBEAT_DATA,
+  RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
@@ -1280,6 +1282,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
   }
 }
+
+// Send live RLOG heartbeats & PathPlanner pings
+setInterval(() => {
+  Object.values(rlogSockets).forEach((socket) => {
+    socket.write(RLOG_HEARTBEAT_DATA);
+  });
+}, RLOG_HEARTBEAT_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
