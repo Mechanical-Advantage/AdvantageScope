@@ -169,9 +169,9 @@ jobs:
       - name: Install Metal toolchain
         run: xcodebuild -downloadComponent MetalToolchain
       - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
       - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
