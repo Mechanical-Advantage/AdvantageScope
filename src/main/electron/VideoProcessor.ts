@@ -11,6 +11,7 @@ import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
+import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
 import MatchInfo from "../../shared/MatchInfo";
@@ -22,14 +23,35 @@ import { PREFS_FILENAME, VIDEO_CACHE, VIDEO_CACHE_FALLBACK, WINDOW_ICON } from "
 import getElectronPlatform from "./getElectronPlatform";
 
 export class VideoProcessor {
-  private static FFMPEG_DOWNLOAD_PATHS: { [key: string]: string } = {
-    "mac-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-x64",
-    "mac-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-arm64",
-    "linux-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64",
-    "linux-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm64",
-    "linux-armv7l": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm",
-    "win-x64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-x64",
-    "win-arm64": "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-ia32"
+  private static FFMPEG_DOWNLOAD_INFO: { [key: string]: { url: string; sha256: string } } = {
+    "mac-x64": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-x64",
+      sha256: "cfe20936c83ecf5d68e424b87e8cc45b24dd6be81787810123bb964a0df686f9"
+    },
+    "mac-arm64": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-arm64",
+      sha256: "a90e3db6a3fd35f6074b013f948b1aa45b31c6375489d39e572bea3f18336584"
+    },
+    "linux-x64": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64",
+      sha256: "ed652b2f32e0851d1946894fb8333f5b677c1b2ce6b9d187910a67f8b99da028"
+    },
+    "linux-arm64": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm64",
+      sha256: "237800b37bb65a81ad47871c6c8b7c45c0a3ca62a5b3f9d2a7a9a2dd9a338271"
+    },
+    "linux-armv7l": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm",
+      sha256: "1a9ddc19d0e071b6e1ff6f8f34dc05ec6dd4d8f3e79a649f5a9ec0e8c929c4cb"
+    },
+    "win-x64": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-x64",
+      sha256: "e9fd5e711debab9d680955fc1e38a2c1160fd280b144476cc3f62bc43ef49db1"
+    },
+    "win-arm64": {
+      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-ia32",
+      sha256: "fb3766af5cc193ca863e15cd4554a33732973209dad5e3c1433b5e291bceb16c"
+    }
   };
   private static NUM_TESSERACT_WORKERS = 8;
   private static TIMER_RECTS = [
@@ -168,10 +190,26 @@ export class VideoProcessor {
 
     // Perform download
     let folder = app.getPath("userData");
+    let filenameTemp = "ffmpeg-download";
     let filename = process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg";
-    await download(this.FFMPEG_DOWNLOAD_PATHS[getElectronPlatform()], folder, {
-      filename: filename
+    let downloadInfo = this.FFMPEG_DOWNLOAD_INFO[getElectronPlatform()];
+    await download(downloadInfo.url, folder, {
+      filename: filenameTemp
     });
+
+    // Verify hash
+    let hash = crypto
+      .createHash("sha256")
+      .update(fs.readFileSync(path.join(folder, filenameTemp)))
+      .digest("hex");
+    if (hash !== downloadInfo.sha256) {
+      console.warn("FFmpeg hash violation!");
+      console.warn("\tFound: " + hash);
+      console.warn("\tExpected: " + downloadInfo.sha256);
+      fs.rmSync(path.join(folder, filenameTemp));
+      throw "Failed";
+    }
+    fs.renameSync(path.join(folder, filenameTemp), path.join(folder, filename));
     fs.chmodSync(path.join(folder, filename), 0o755);
     return ffmpegPath;
   }
