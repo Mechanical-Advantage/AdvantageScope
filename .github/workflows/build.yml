@@ -168,10 +168,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Install Metal toolchain
         run: xcodebuild -downloadComponent MetalToolchain
+      - name: Download iOS simulator
+        run: xcodebuild -downloadPlatform iOS
       - name: Build AdvantageScopeXR
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
       - name: Build AdvantageScopeXRClip
-        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16 Pro' build
+        run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXRClip -sdk iphonesimulator build
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
