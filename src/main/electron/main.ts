@@ -1283,7 +1283,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   }
 }
 
-// Send live RLOG heartbeats & PathPlanner pings
+// Send live RLOG heartbeats
 setInterval(() => {
   Object.values(rlogSockets).forEach((socket) => {
     socket.write(RLOG_HEARTBEAT_DATA);
