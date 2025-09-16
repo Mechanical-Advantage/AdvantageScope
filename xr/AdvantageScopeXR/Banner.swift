@@ -13,21 +13,23 @@ struct Banner: View {
     var body: some View {
         let text = Text(text())
             .multilineTextAlignment(.center)
-            .opacity(show() ? 1 : 0)
-            .persistentSystemOverlays(show() ? .visible : .hidden)
-            .animation(.easeInOut(duration: 0.25), value: show())
 
         if #available(iOS 26.0, *) {
             text
                 .padding(15)
-                .foregroundStyle(.secondary)
                 .glassEffect(.regular, in: .rect(cornerRadius: 32))
                 .padding(10)
+                .opacity(show() ? 1 : 0)
+                .persistentSystemOverlays(show() ? .visible : .hidden)
+                .animation(.easeInOut(duration: 0.25), value: show())
         } else {
             text
                 .padding(10)
                 .frame(maxWidth: .infinity)
                 .background(.thinMaterial)
+                .opacity(show() ? 1 : 0)
+                .persistentSystemOverlays(show() ? .visible : .hidden)
+                .animation(.easeInOut(duration: 0.25), value: show())
         }
     }
     

@@ -52,15 +52,16 @@ struct ControlButton : ButtonStyle {
         if #available(iOS 26.0, *) {
             configuration.label
                 .padding(10)
-                .foregroundStyle(highlight == .none ? .secondary : Color.white)
-                .glassEffect(.regular.tint(highlight).interactive())
+                .glassEffect(.regular.interactive())
+                .contentShape(Rectangle())
+                .foregroundStyle(highlight ?? .primary)
         } else {
             configuration.label
                 .padding(10)
-                .foregroundStyle(highlight == .none ? .primary : Color.white)
-                .background(highlight == .none ? AnyShapeStyle(.thinMaterial) : AnyShapeStyle(highlight!))
-                .clipShape(Capsule())
                 .controlSize(.large)
+                .background(highlight == .none ? AnyShapeStyle(.thinMaterial) : AnyShapeStyle(highlight!))
+                .foregroundStyle(highlight == .none ? .primary : Color.white)
+                .clipShape(Capsule())
                 .opacity(configuration.isPressed ? 0.75 : 1)
                 .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
                 .animation(.none, value: highlight)
