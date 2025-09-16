@@ -161,15 +161,15 @@ jobs:
 
   build-ios:
     name: Build for iOS
-    runs-on: macos-15
+    runs-on: macos-26
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Select Xcode version
-        uses: BoundfoxStudios/action-xcode-select@v1
-        with:
-          version: "16"
+      - name: Install Metal toolchain
+        run: xcodebuild -downloadComponent MetalToolchain
+      - name: Download iOS simulator
+        run: xcodebuild -downloadPlatform iOS
       - name: Build AdvantageScopeXR
         run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
       - name: Build AdvantageScopeXRClip
