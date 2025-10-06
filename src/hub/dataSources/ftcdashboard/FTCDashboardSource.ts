@@ -146,7 +146,6 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
 
       // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
       let label = name.split(" ").slice(0, -1).join(" ");
-
       if (name.endsWith(" x") || name === "x") {
         if (!foundPoses.has(label)) {
           foundPoses.set(label, { translation: [Units.convert(Number(data), "inches", "meters"), 0], rotation: 0 });
@@ -158,9 +157,8 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
           });
         }
 
-        continue;
+        return;
       }
-
       if (name.endsWith(" y") || name === "y") {
         if (!foundPoses.has(label)) {
           foundPoses.set(label, { translation: [0, Units.convert(Number(data), "inches", "meters")], rotation: 0 });
@@ -172,9 +170,8 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
           });
         }
 
-        continue;
+        return;
       }
-
       if (name.endsWith(" heading") || name === "heading") {
         if (!foundPoses.has(label)) {
           foundPoses.set(label, { translation: [0, 0], rotation: Number(data) });
@@ -183,9 +180,8 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
           foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
         }
 
-        continue;
+        return;
       }
-      
       if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
         if (!foundPoses.has(label)) {
           foundPoses.set(label, { translation: [0, 0], rotation: Units.convert(Number(data), "degrees", "radians") });
@@ -197,7 +193,7 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
           });
         }
 
-        continue;
+        return;
       }
 
       switch (typeof data) {
