@@ -1,0 +1,26 @@
+{
+  "id": "getting-started/navigation",
+  "title": "App Navigation",
+  "description": "The screenshot below shows the important elements of the main AdvantageScope window. The exact appearance differs between operating systems.",
+  "source": "@site/docs/getting-started/navigation.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/navigation",
+  "permalink": "/getting-started/navigation",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "Getting Started",
+    "permalink": "/category/getting-started"
+  },
+  "next": {
+    "title": "Managing Log Files",
+    "permalink": "/getting-started/manage-files"
+  }
+}

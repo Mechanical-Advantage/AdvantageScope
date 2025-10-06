@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/swerve",
+  "title": "🦀 Swerve",
+  "description": "The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, robot rotation, and chassis speeds.",
+  "source": "@site/docs/tab-reference/swerve.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/swerve",
+  "permalink": "/tab-reference/swerve",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 9,
+  "frontMatter": {
+    "sidebar_position": 9
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "🎮 Joysticks",
+    "permalink": "/tab-reference/joysticks"
+  },
+  "next": {
+    "title": "⚙️ Mechanism",
+    "permalink": "/tab-reference/mechanism"
+  }
+}

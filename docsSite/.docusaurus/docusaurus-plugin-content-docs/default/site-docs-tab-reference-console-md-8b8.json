@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/console",
+  "title": "💬 Console",
+  "description": "The console view is designed to view a single string field with console data. Some suggested fields are listed below.",
+  "source": "@site/docs/tab-reference/console.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/console",
+  "permalink": "/tab-reference/console",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 5,
+  "frontMatter": {
+    "sidebar_position": 5
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "🔢 Table",
+    "permalink": "/tab-reference/table"
+  },
+  "next": {
+    "title": "📊 Statistics",
+    "permalink": "/tab-reference/statistics"
+  }
+}

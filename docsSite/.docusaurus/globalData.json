@@ -1,0 +1,208 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/",
+          "mainDocId": "index",
+          "docs": [
+            {
+              "id": "getting-started/connect-live",
+              "path": "/getting-started/connect-live",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "getting-started/keyboard",
+              "path": "/getting-started/keyboard",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "getting-started/manage-files",
+              "path": "/getting-started/manage-files",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "getting-started/navigation",
+              "path": "/getting-started/navigation",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "index",
+              "path": "/",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "legal/nondiscrimination",
+              "path": "/legal/nondiscrimination",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "legal/open-source-license",
+              "path": "/legal/open-source-license",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "legal/privacy-policy",
+              "path": "/legal/privacy-policy",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "legal/support",
+              "path": "/legal/support",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/advantagescope-xr",
+              "path": "/more-features/advantagescope-xr",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/custom-assets",
+              "path": "/more-features/custom-assets",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/export",
+              "path": "/more-features/export",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/gltf-convert",
+              "path": "/more-features/gltf-convert",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/nt-publishing",
+              "path": "/more-features/nt-publishing",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/phoenix-diagnostics",
+              "path": "/more-features/phoenix-diagnostics",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/urcl",
+              "path": "/more-features/urcl",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "more-features/zebra",
+              "path": "/more-features/zebra",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/3d-field",
+              "path": "/tab-reference/3d-field",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/console",
+              "path": "/tab-reference/console",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/joysticks",
+              "path": "/tab-reference/joysticks",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/line-graph",
+              "path": "/tab-reference/line-graph",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/mechanism",
+              "path": "/tab-reference/mechanism",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/metadata",
+              "path": "/tab-reference/metadata",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/odometry",
+              "path": "/tab-reference/odometry",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/points",
+              "path": "/tab-reference/points",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/statistics",
+              "path": "/tab-reference/statistics",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/swerve",
+              "path": "/tab-reference/swerve",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/table",
+              "path": "/tab-reference/table",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "tab-reference/video",
+              "path": "/tab-reference/video",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "whats-new/full-changelog",
+              "path": "/whats-new/full-changelog",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "whats-new/index",
+              "path": "/whats-new/",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "whats-new/legacy-formats",
+              "path": "/whats-new/legacy-formats",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "/category/getting-started",
+              "path": "/category/getting-started",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "/category/tab-reference",
+              "path": "/category/tab-reference",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "/category/more-features",
+              "path": "/category/more-features",
+              "sidebar": "sidebar"
+            },
+            {
+              "id": "/category/legal",
+              "path": "/category/legal",
+              "sidebar": "sidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "sidebar": {
+              "link": {
+                "path": "/",
+                "label": "index"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}

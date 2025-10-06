@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/line-graph",
+  "title": "📉 Line Graph",
+  "description": "The line graph is the default view in AdvantageScope. It supports both continuous (numerical) and discrete fields.",
+  "source": "@site/docs/tab-reference/line-graph.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/line-graph",
+  "permalink": "/tab-reference/line-graph",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "Tab Reference",
+    "permalink": "/category/tab-reference"
+  },
+  "next": {
+    "title": "🗺 Odometry",
+    "permalink": "/tab-reference/odometry"
+  }
+}

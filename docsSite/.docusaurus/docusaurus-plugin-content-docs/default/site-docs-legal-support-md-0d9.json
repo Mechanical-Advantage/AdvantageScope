@@ -1,0 +1,26 @@
+{
+  "id": "legal/support",
+  "title": "Support",
+  "description": "To receive support for AdvantageScope or AdvantageScope XR, please use one of the contact methods below.",
+  "source": "@site/docs/legal/support.md",
+  "sourceDirName": "legal",
+  "slug": "/legal/support",
+  "permalink": "/legal/support",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "Privacy Policy",
+    "permalink": "/legal/privacy-policy"
+  },
+  "next": {
+    "title": "Nondiscrimination",
+    "permalink": "/legal/nondiscrimination"
+  }
+}

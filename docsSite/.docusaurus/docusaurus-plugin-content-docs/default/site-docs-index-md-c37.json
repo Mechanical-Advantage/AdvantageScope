@@ -1,0 +1,24 @@
+{
+  "id": "index",
+  "title": "Welcome",
+  "description": "AdvantageScope",
+  "source": "@site/docs/index.md",
+  "sourceDirName": ".",
+  "slug": "/",
+  "permalink": "/",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 1,
+  "frontMatter": {
+    "sidebar_position": 1,
+    "title": "Welcome",
+    "slug": "/"
+  },
+  "sidebar": "sidebar",
+  "next": {
+    "title": "What's New in 2025?",
+    "permalink": "/whats-new/"
+  }
+}

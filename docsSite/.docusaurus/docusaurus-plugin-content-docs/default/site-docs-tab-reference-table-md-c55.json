@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/table",
+  "title": "🔢 Table",
+  "description": "The table view is designed to show the specific value changes for a set of fields in detail. To add a field, drag it to the main view. To delete a field, click the \"X\" button next to its name. Fields can be rearranged by clicking and dragging.",
+  "source": "@site/docs/tab-reference/table.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/table",
+  "permalink": "/tab-reference/table",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "👀 3D Field",
+    "permalink": "/tab-reference/3d-field"
+  },
+  "next": {
+    "title": "💬 Console",
+    "permalink": "/tab-reference/console"
+  }
+}

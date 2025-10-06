@@ -1,0 +1,26 @@
+{
+  "id": "more-features/zebra",
+  "title": "Loading Zebra MotionWorks™ Data",
+  "description": "This feature is powered by The Blue Alliance.",
+  "source": "@site/docs/more-features/zebra.md",
+  "sourceDirName": "more-features",
+  "slug": "/more-features/zebra",
+  "permalink": "/more-features/zebra",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 7,
+  "frontMatter": {
+    "sidebar_position": 7
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "Converting Onshape & STEP Files to glTF",
+    "permalink": "/more-features/gltf-convert"
+  },
+  "next": {
+    "title": "Publishing NetworkTables Data",
+    "permalink": "/more-features/nt-publishing"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "getting-started/connect-live",
+  "title": "Connecting to Live Sources",
+  "description": "All visualizations in AdvantageScope are designed to receive live data from a robot or simulator in addition to log files. This section describes how to connect to real time data sources.",
+  "source": "@site/docs/getting-started/connect-live.md",
+  "sourceDirName": "getting-started",
+  "slug": "/getting-started/connect-live",
+  "permalink": "/getting-started/connect-live",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "Managing Log Files",
+    "permalink": "/getting-started/manage-files"
+  },
+  "next": {
+    "title": "Keyboard Shortcuts",
+    "permalink": "/getting-started/keyboard"
+  }
+}

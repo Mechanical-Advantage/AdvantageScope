@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/metadata",
+  "title": "🔍 Metadata",
+  "description": "The metadata tab shows values published to the hidden \"/Metadata\" table or through AdvantageKit. The metadata keys are displayed to the left, and the columns separate data from different sources (e.g. real and replay when using AdvantageKit).",
+  "source": "@site/docs/tab-reference/metadata.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/metadata",
+  "permalink": "/tab-reference/metadata",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 12,
+  "frontMatter": {
+    "sidebar_position": 12
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "📍 Points",
+    "permalink": "/tab-reference/points"
+  },
+  "next": {
+    "title": "More Features",
+    "permalink": "/category/more-features"
+  }
+}

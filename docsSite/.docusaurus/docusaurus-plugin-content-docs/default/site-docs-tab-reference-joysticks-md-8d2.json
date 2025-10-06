@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/joysticks",
+  "title": "🎮 Joysticks",
+  "description": "The joysticks tab shows the state of up to six connected controllers. The image below shows an example layout, with two Xbox controller and a generic joystick. Each button highlights when it is pressed, and the states of joysticks and other axes are displayed.",
+  "source": "@site/docs/tab-reference/joysticks.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/joysticks",
+  "permalink": "/tab-reference/joysticks",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 8,
+  "frontMatter": {
+    "sidebar_position": 8
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "🎬 Video",
+    "permalink": "/tab-reference/video"
+  },
+  "next": {
+    "title": "🦀 Swerve",
+    "permalink": "/tab-reference/swerve"
+  }
+}

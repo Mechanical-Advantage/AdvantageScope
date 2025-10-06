@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/points",
+  "title": "📍 Points",
+  "description": "The points tab shows a 2D visualization of arbitrary points. This is a very flexible tool, allowing for custom visualizations of vision data/pipelines, mechanism states, etc.",
+  "source": "@site/docs/tab-reference/points.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/points",
+  "permalink": "/tab-reference/points",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 11,
+  "frontMatter": {
+    "sidebar_position": 11
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "⚙️ Mechanism",
+    "permalink": "/tab-reference/mechanism"
+  },
+  "next": {
+    "title": "🔍 Metadata",
+    "permalink": "/tab-reference/metadata"
+  }
+}

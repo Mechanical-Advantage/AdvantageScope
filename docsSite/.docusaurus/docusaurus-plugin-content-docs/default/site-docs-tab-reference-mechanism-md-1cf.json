@@ -1,0 +1,26 @@
+{
+  "id": "tab-reference/mechanism",
+  "title": "⚙️ Mechanism",
+  "description": "The mechanism tab displays a a jointed mechanism created with one or more Mechanism2d objects.",
+  "source": "@site/docs/tab-reference/mechanism.md",
+  "sourceDirName": "tab-reference",
+  "slug": "/tab-reference/mechanism",
+  "permalink": "/tab-reference/mechanism",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 10,
+  "frontMatter": {
+    "sidebar_position": 10
+  },
+  "sidebar": "sidebar",
+  "previous": {
+    "title": "🦀 Swerve",
+    "permalink": "/tab-reference/swerve"
+  },
+  "next": {
+    "title": "📍 Points",
+    "permalink": "/tab-reference/points"
+  }
+}
