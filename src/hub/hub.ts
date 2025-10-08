@@ -431,7 +431,7 @@ function startLive(isSim = false) {
       liveSource = new NT4Source(NT4Mode.AdvantageKit);
       break;
     case "nt4-systemcore":
-      liveSource = new NT4Source(NT4Mode.SystemCore);
+      liveSource = new NT4Source(NT4Mode.Systemcore);
       break;
     case "phoenix":
       liveSource = new PhoenixDiagnosticsSource();

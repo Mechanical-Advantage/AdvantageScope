@@ -25,7 +25,7 @@ export default class NT4Tuner implements LiveDataTuner {
         return true;
       case NT4Mode.AdvantageKit:
         return !window.log.getFieldKeys().every((key) => !key.startsWith(AKIT_TUNING_PREFIX));
-      case NT4Mode.SystemCore:
+      case NT4Mode.Systemcore:
         return false;
     }
   }

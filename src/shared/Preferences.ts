@@ -59,7 +59,7 @@ export function getLiveModeName(mode: LiveMode): string {
     case "nt4-akit":
       return "NetworkTables 4 (AdvantageKit)";
     case "nt4-systemcore":
-      return "NetworkTables 4 (SystemCore)";
+      return "NetworkTables 4 (Systemcore)";
     case "phoenix":
       return "Phoenix Diagnostics";
     case "rlog":

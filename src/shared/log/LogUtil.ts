@@ -33,7 +33,7 @@ export const ENABLED_KEYS = [
   "/DSLog/Status/DSDisabled",
   "RobotEnable", // Phoenix
   "NT:/FMSInfo/FMSControlData",
-  "NT:/Netcomm/Control/ControlData/ControlWord", // SystemCore
+  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
   "RUNNING"
 ];
 export const AUTONOMOUS_KEYS = [
@@ -43,25 +43,25 @@ export const AUTONOMOUS_KEYS = [
   "/DSLog/Status/DSTeleop",
   "RobotMode", // Phoenix
   "NT:/FMSInfo/FMSControlData",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // SystemCore
+  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/IsRedAlliance",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // SystemCore
+  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
 ];
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/StationNumber",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // SystemCore
+  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
 ];
 export const JOYSTICK_KEYS = [
   "/DriverStation/Joystick",
   "NT:/AdvantageKit/DriverStation/Joystick",
   "DS:joystick",
-  "NT:/Netcomm/Control/ControlData/Joysticks/" // SystemCore
+  "NT:/Netcomm/Control/ControlData/Joysticks/" // Systemcore
 ];
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros",
@@ -81,19 +81,19 @@ export const EVENT_KEYS = [
   "/DriverStation/EventName",
   "NT:/AdvantageKit/DriverStation/EventName",
   "NT:/FMSInfo/EventName",
-  "NT:/Netcomm/Control/MatchInfo/EventName" // SystemCore
+  "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType",
   "NT:/AdvantageKit/DriverStation/MatchType",
   "NT:/FMSInfo/MatchType",
-  "NT:/Netcomm/Control/MatchInfo/MatchType" // SystemCore
+  "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber",
   "NT:/AdvantageKit/DriverStation/MatchNumber",
   "NT:/FMSInfo/MatchNumber",
-  "NT:/Netcomm/Control/MatchInfo/MatchNumber" // SystemCore
+  "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
 
 /** Returns the version of the key without the merge prefix. */
@@ -415,7 +415,7 @@ export function getDriverStation(log: Log, time: number): number {
         }
       }
     } else {
-      // AdvantageKit or SystemCore, alliance station ID
+      // AdvantageKit or Systemcore, alliance station ID
       switch (value) {
         case 1:
           return 3; // Red 1

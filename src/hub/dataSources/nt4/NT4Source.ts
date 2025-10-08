@@ -23,7 +23,7 @@ export const AKIT_TUNING_PREFIX = "/Tuning";
 export enum NT4Mode {
   Default,
   AdvantageKit,
-  SystemCore
+  Systemcore
 }
 
 export default class NT4Source extends LiveDataSource {
@@ -203,7 +203,7 @@ export default class NT4Source extends LiveDataSource {
       this.log = new Log();
       this.client = new NT4_Client(
         address,
-        this.mode === NT4Mode.SystemCore ? NT4_PORTS_SYSTEMCORE : NT4_PORTS_DEFAULT,
+        this.mode === NT4Mode.Systemcore ? NT4_PORTS_SYSTEMCORE : NT4_PORTS_DEFAULT,
         DISTRIBUTION === Distribution.Lite ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce
