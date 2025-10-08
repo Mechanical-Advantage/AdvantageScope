@@ -175,7 +175,7 @@ An image must be included in the folder with the name "image.png". It should be 
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
-      "center-red"       // SystemCore
+      "center-red"       // Systemcore
   "sourceUrl": string // Link to the original file, optional
   "topLeft": [number, number] // Pixel coordinate (origin at upper left)
   "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
@@ -198,7 +198,7 @@ The config file must be in the following format:
       "wall-alliance" |  // FRC 2022
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
-      "center-red"       // SystemCore
+      "center-red"       // Systemcore
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)

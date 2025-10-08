@@ -151,9 +151,9 @@ jobs:
         with:
           name: advantagescopelite-desktop
           path: advantagescopelite-desktop/
-      - name: Build IPK (SystemCore)
+      - name: Build IPK (Systemcore)
         run: cd lite/ipk && ./build.sh
-      - name: Upload development artifact (SystemCore)
+      - name: Upload development artifact (Systemcore)
         uses: actions/upload-artifact@v4
         with:
           name: advantagescopelite-systemcore

@@ -21,7 +21,7 @@ import Menus3 from "./img/prefs.png";
 <img src={BannerLight} className="light-only" />
 <img src={BannerDark} className="dark-only" />
 
-The 2026 version of AdvantageScope is now available in beta! This release includes several major new features and numerous enhancements across the application. Many of the features in this release are designed to improve the experience on existing control systems while setting up a smooth transition to [SystemCore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in future seasons.
+The 2026 version of AdvantageScope is now available in beta! This release includes several major new features and numerous enhancements across the application. Many of the features in this release are designed to improve the experience on existing control systems while setting up a smooth transition to [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in future seasons.
 
 **We value your feedback! Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
@@ -33,7 +33,7 @@ To get started with the AdvantageScope 2026 beta, click the "Prerelease" link in
 
 ## ✴️ Experimental: FTC Support {#ftc-support}
 
-In preparation for full support with SystemCore in the 2027-2028 season, this release adds several features to improve compatibility with the existing FIRST Tech Challenge control system:
+In preparation for full support with Systemcore in the 2027-2028 season, this release adds several features to improve compatibility with the existing FIRST Tech Challenge control system:
 
 - FTC fields and robot models on the 🗺️ [2D Field](/tab-reference/2d-field) and 👀 [3D Field](/tab-reference/3d-field)
 - New [coordinate system](/more-features/coordinate-systems) options for compatibility with [standard FTC coordinates](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
@@ -57,7 +57,7 @@ Several third-party FTC logging/telemetry libraries support other formats compat
 :::info
 AdvantageScope is designed to provide the best experience when used alongside the WPILib framework and associated logging tools. You may encounter compatibility issues or limited capabilities when using unofficial logging solutions.
 
-All features of AdvantageScope will be officially supported in FTC after the transition to SystemCore for the 2027-2028 season.
+All features of AdvantageScope will be officially supported in FTC after the transition to Systemcore for the 2027-2028 season.
 :::
 
 ## 🧮 Unit-Aware Graphing {#unit-aware-graphing}

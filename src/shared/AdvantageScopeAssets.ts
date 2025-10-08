@@ -42,7 +42,7 @@ export type CoordinateSystem =
   | "wall-alliance" // FRC 2022
   | "wall-blue" // FRC 2023-2026
   | "center-rotated" // FTC traditional
-  | "center-red"; // SystemCore
+  | "center-red"; // Systemcore
 
 export interface Config2d {
   name: string;
