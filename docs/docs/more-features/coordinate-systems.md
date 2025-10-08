@@ -35,7 +35,7 @@ The origin is in the center of the field with the +X axis facing to the right fr
 
 <img src={CenterRotatedDiagram} alt="Center/rotated coordinate system" height="400" />
 
-## Center/Red (SystemCore)
+## Center/Red (Systemcore)
 
 The origin is in the center of the field with the +X axis facing away from the red alliance wall, as shown below. **This is the default coordinate system for FRC fields starting in 2027 and FTC fields starting in 2027-2028.**
 

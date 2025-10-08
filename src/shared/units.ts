@@ -485,6 +485,26 @@ export namespace Units {
         names: ["TBps", "terabytes per second"]
       }
     },
+    frequency: {
+      hertz: {
+        value: 1,
+        suffix: "Hz",
+        pluralizeSuffix: false,
+        names: ["hz", "hertz", "frequency"]
+      },
+      kilohertz: {
+        value: 1e-3,
+        suffix: "kHz",
+        pluralizeSuffix: false,
+        names: ["khz", "kilohertz"]
+      },
+      megahertz: {
+        value: 1e-6,
+        suffix: "MHz",
+        pluralizeSuffix: false,
+        names: ["mhz", "megahertz"]
+      }
+    },
     temperature: {
       celsius: {
         value: 1,

@@ -26,11 +26,11 @@ struct WebOverlay: UIViewRepresentable {
         webView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         
         // Enable remote inspection with Safari for debug builds
-        #if DEBUG
+#if DEBUG
         if webView.responds(to: Selector(("setInspectable:"))) {
             webView.perform(Selector(("setInspectable:")), with: true)
         }
-        #endif
+#endif
     }
     
     func makeUIView(context: Context) -> WKWebView  {

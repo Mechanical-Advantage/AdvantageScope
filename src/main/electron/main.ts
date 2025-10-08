@@ -61,6 +61,8 @@ import {
   RECENT_UNITS_FILENAME,
   RLOG_CONNECT_TIMEOUT_MS,
   RLOG_DATA_TIMEOUT_MS,
+  RLOG_HEARTBEAT_DATA,
+  RLOG_HEARTBEAT_DELAY_MS,
   SATELLITE_DEFAULT_HEIGHT,
   SATELLITE_DEFAULT_WIDTH,
   TYPE_MEMORY_FILENAME,
@@ -596,8 +598,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       const rect: ButtonRect = message.data.rect;
       playbackOptionsMenu.popup({
         window: window,
-        x: rect.x + rect.width,
-        y: rect.y
+        x: Math.round(rect.x + rect.width),
+        y: Math.round(rect.y)
       });
       break;
 
@@ -1259,6 +1261,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
   }
 }
 
+// Send live RLOG heartbeats
+setInterval(() => {
+  Object.values(rlogSockets).forEach((socket) => {
+    socket.write(RLOG_HEARTBEAT_DATA);
+  });
+}, RLOG_HEARTBEAT_DELAY_MS);
+
 /** Shows a popup to create a new tab on a hub window. */
 function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
   if (!hubWindows.includes(window)) return;
@@ -1278,8 +1287,8 @@ function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
     });
   newTabMenu.popup({
     window: window,
-    x: rect.x + rect.width,
-    y: rect.y
+    x: Math.round(rect.x + rect.width),
+    y: Math.round(rect.y)
   });
 }
 

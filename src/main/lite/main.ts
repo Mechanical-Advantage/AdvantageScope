@@ -1291,7 +1291,7 @@ window.addEventListener("load", () => {
           } is complete. Please follow the instructions in the documentation to update to the latest stable release.`
         )
       ) {
-        // Redirect to SystemCore home page
+        // Redirect to Systemcore home page
         location.href = "http://" + location.hostname;
       }
     } else if (!isBetaWelcomeComplete()) {

@@ -43,7 +43,7 @@ struct RecordButton: View {
                 }
             }
         }
-        .buttonStyle(ControlButton(highlight: recording))
+        .buttonStyle(ControlButton(highlight: recording ? .red : .none))
         .animation(.none, value: recording)
     }
     

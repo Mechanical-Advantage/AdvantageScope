@@ -11,7 +11,7 @@ import { AKIT_TIMESTAMP_KEYS } from "../shared/log/LogUtil";
 
 export default class SelectionImpl implements Selection {
   private STEP_SIZE = 0.02; // When using left-right arrows keys on non-AdvantageKit logs
-  private TIMELINE_MIN_ZOOM_TIME = 0.05;
+  private TIMELINE_MIN_ZOOM_TIME = 0.001;
   private TIMELINE_ZOOM_BASE = 1.001;
 
   private PLAY_BUTTON = document.getElementsByClassName("play")[0] as HTMLElement;
