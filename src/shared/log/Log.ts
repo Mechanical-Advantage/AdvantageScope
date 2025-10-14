@@ -267,7 +267,7 @@ export default class Log {
         if (typeof metadataParsed === "object") {
           let unitValue = "";
           ["unit", "units", "Unit", "Units"].forEach((key) => {
-            if (key in metadataParsed) unitValue = metadataParsed[key];
+            if (key in metadataParsed) unitValue = metadataParsed[key].toLowerCase();
           });
           if (unitValue !== "" && unitValue in Units.UNIT_SUFFIXES) return Units.UNIT_SUFFIXES[unitValue];
         }
