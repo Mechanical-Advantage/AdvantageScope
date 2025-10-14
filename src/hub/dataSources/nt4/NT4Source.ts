@@ -223,6 +223,10 @@ export default class NT4Source extends LiveDataSource {
           this.log.createBlankField(modifiedKey, this.getLogType(topic.type));
           this.log.setWpilibType(modifiedKey, topic.type);
           this.log.setStructuredType(modifiedKey, structuredType);
+          this.log.setMetadataString(
+            modifiedKey,
+            Object.keys(topic.properties).length > 0 ? JSON.stringify(topic.properties) : ""
+          );
           this.shouldRunOutputCallback = true;
         },
         (topic: NT4_Topic) => {
