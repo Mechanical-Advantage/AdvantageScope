@@ -171,6 +171,7 @@ function sendAllPreferences() {
       (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[3]
         .submenu as Electron.MenuItemConstructorOptions[]
     )[0].label = autoString;
+    (menuTemplate[0].submenu as Electron.MenuItemConstructorOptions[])[7].checked = data.userAssetsFolder !== null;
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
   }
@@ -1773,7 +1774,6 @@ function setupMenu() {
         {
           label: "Use Custom Assets Folder",
           type: "checkbox",
-          checked: prefs.userAssetsFolder !== null,
           async click(item) {
             const isCustom = item.checked;
             let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
@@ -1789,7 +1789,6 @@ function setupMenu() {
             } else {
               prefs.userAssetsFolder = null;
             }
-            item.checked = prefs.userAssetsFolder !== null;
             jsonfile.writeFileSync(PREFS_FILENAME, prefs);
             advantageScopeAssets = loadAssets();
             sendAllPreferences();
