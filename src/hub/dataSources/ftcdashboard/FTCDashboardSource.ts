@@ -143,6 +143,63 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
     for (const name of Object.getOwnPropertyNames(obj)) {
       let data = obj[name];
       let key = path + name;
+
+      // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
+      let label = name.split(" ").slice(0, -1).join(" ");
+
+      if (name.endsWith(" x") || name === "x") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [Units.convert(Number(data), "inches", "meters"), 0], rotation: 0 });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: [Number(data) / 39.37008, cur.translation.at(1)],
+            rotation: cur.rotation
+          });
+        }
+
+        continue;
+      }
+
+      if (name.endsWith(" y") || name === "y") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, Units.convert(Number(data), "inches", "meters")], rotation: 0 });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: [cur.translation.at(0), Units.convert(Number(data), "inches", "meters")],
+            rotation: cur.rotation
+          });
+        }
+
+        continue;
+      }
+
+      if (name.endsWith(" heading") || name === "heading") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, 0], rotation: Number(data) });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
+        }
+
+        continue;
+      }
+
+      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, 0], rotation: Units.convert(Number(data), "degrees", "radians") });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: cur.translation,
+            rotation: Units.convert(Number(data), "degrees", "radians")
+          });
+        }
+
+        continue;
+      }
+
       switch (typeof data) {
         case "string":
           if (!isNaN(Number(data)) && !isNaN(parseFloat(data))) {
@@ -161,49 +218,6 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
         case "bigint":
           this.log.putNumber(key, timestamp, Number(data));
           break;
-      }
-      // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
-      let label = name.split(" ").slice(0, -1).join(" ") + " Pose";
-      if (name.endsWith(" x") || name === "x") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [Units.convert(Number(data), "inches", "meters"), 0], rotation: 0 });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{
-            translation: [Number(data) / 39.37008, cur.translation.at(1)],
-            rotation: cur.rotation
-          });
-        }
-      }
-      if (name.endsWith(" y") || name === "y") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, Units.convert(Number(data), "inches", "meters")], rotation: 0 });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{
-            translation: [cur.translation.at(0), Units.convert(Number(data), "inches", "meters")],
-            rotation: cur.rotation
-          });
-        }
-      }
-      if (name.endsWith(" heading") || name === "heading") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, 0], rotation: Number(data) });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
-        }
-      }
-      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, 0], rotation: Units.convert(Number(data), "degrees", "radians") });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{
-            translation: cur.translation,
-            rotation: Units.convert(Number(data), "degrees", "radians")
-          });
-        }
       }
     }
 
