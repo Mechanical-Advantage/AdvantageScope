@@ -82,6 +82,7 @@ struct ContentView : View {
             }
             .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) {activity in
                 if (activity.webpageURL != nil) {
+                    qrScanner.start(appState)
                     qrScanner.parseURL(activity.webpageURL!)
                 }
             }
