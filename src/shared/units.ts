@@ -493,6 +493,12 @@ export namespace Units {
         pluralizeSuffix: false,
         names: ["us", "usec", "usecs", "micro", "micros", "microsecond", "microseconds"]
       },
+      nanoseconds: {
+        value: 1000000000,
+        suffix: "ns",
+        pluralizeSuffix: false,
+        names: ["ns", "nsec", "nsecs", "nano", "nanos", "nanosecond", "nanoseconds"]
+      },
       minutes: {
         value: 1 / 60,
         suffix: "min",
