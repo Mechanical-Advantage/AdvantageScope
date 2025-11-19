@@ -10,6 +10,8 @@ export async function run(
   timestampRangeCallback: (min: number, max: number) => void,
   recordCallback: (entry: number, position: number) => void
 ) {
+  let Module: any;
+
   // Detect environment
   const isNode =
     typeof process !== 'undefined' &&
@@ -29,15 +31,18 @@ export async function run(
     );
 
     Module = await createModule();
-    // @ts-expect-error
     await Module.ready; // ensure runtime initialized
   } else {
-    self.importScripts("./hub$wpilogIndexer.js");
-    await new Promise<void>((resolve) => {
+    console.log("Not Node")
+    // --- Browser / Web Worker ---
+    self.importScripts('./hub$wpilogIndexer.js');
+    await new Promise((resolve) => {
       Module.onRuntimeInitialized = resolve;
     });
   }
-
+  // await new Promise<void>((resolve) => {
+  //   Module.onRuntimeInitialized = resolve;
+  // });
 
   const bufferIn = Module._malloc(data.length);
   Module.HEAPU8.set(data, bufferIn);
@@ -48,7 +53,6 @@ export async function run(
   timestampRangeCallback(minTimestamp, maxTimestamp);
 
   const recordCount = Module.HEAPU32[bufferOut / 4 + 4];
-  console.log("Total Record Count: " + recordCount)
   for (let i = 0; i < recordCount; i++) {
     let entry = Module.HEAPU32[bufferOut / 4 + 5 + i * 2];
     let position = Module.HEAPU32[bufferOut / 4 + 5 + i * 2 + 1];
