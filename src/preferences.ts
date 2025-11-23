@@ -98,13 +98,20 @@ window.addEventListener("message", (event) => {
           if (FIELD_3D_MODE_BATTERY.value === "standard") field3dModeBattery = "standard";
           if (FIELD_3D_MODE_BATTERY.value === "low-power") field3dModeBattery = "low-power";
 
+          // Validate liveDiscard: must be -1 or >= 0
+          let liveDiscardValue = Number(LIVE_DISCARD.value);
+          if (isNaN(liveDiscardValue) || (liveDiscardValue !== -1 && liveDiscardValue < 0)) {
+            alert("Live discard time must be -1 (never) or greater than or equal to 0");
+            return;
+          }
+
           let newPrefs: Preferences = {
             theme: theme,
             robotAddress: ROBOT_ADDRESS.value,
             remotePath: REMOTE_PATH.value,
             liveMode: oldPrefs.liveMode,
             liveSubscribeMode: liveSubscribeMode,
-            liveDiscard: Number(LIVE_DISCARD.value),
+            liveDiscard: liveDiscardValue,
             publishFilter: PUBLISH_FILTER.value,
             rlogPort: oldPrefs.rlogPort,
             coordinateSystem: coordinateSystem,
