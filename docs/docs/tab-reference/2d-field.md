@@ -107,7 +107,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 
 FtcDashboard.getInstance().sendTelemetryPacket(packet)
 
-// Alternately, use MultipleTelemetry and the standard SDK telemetry: 
+// Alternately, use MultipleTelemetry and the standard SDK telemetry:
 // During OpMode Init:
 telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
 
