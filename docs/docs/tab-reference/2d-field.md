@@ -102,6 +102,25 @@ packet.put("Pose heading", 3.14); // Radians
 
 // Alternatively, headings can be published in degrees
 packet.put("Pose heading (deg)", 180.0); // Degrees
+
+// Add other telemetry values here...
+
+FtcDashboard.getInstance().sendTelemetryPacket(packet)
+
+// Alternately, use MultipleTelemetry and the standard SDK telemetry: 
+// During OpMode Init:
+telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
+
+// During Loop:
+telemetry.addData("Pose x", 6.3); // Inches
+telemetry.addData("Pose y", 2.8); // Inches
+telemetry.addData("Pose heading", 3.14); // Radians
+
+// or...
+telemetry.addData("Pose heading (deg)", 180.0); // Degrees
+
+// Add other telemetry values here...
+telemetry.update();
 ```
 
 </TabItem>
