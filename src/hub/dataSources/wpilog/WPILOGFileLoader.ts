@@ -8,11 +8,7 @@
 import Log from "../../../shared/log/Log";
 import { getEnabledKey, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
-import {
-  HistoricalDataSource_WorkerFieldResponse,
-  HistoricalDataSource_WorkerRequest,
-  HistoricalDataSource_WorkerResponse
-} from "../HistoricalDataSource";
+import { HistoricalDataSource_WorkerFieldResponse } from "../HistoricalDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
 import { WPILOGDecoder } from "./WPILOGDecoder";
 import { CONTROL_ENTRY } from "./WPILOGShared";
@@ -25,14 +21,12 @@ export default class WPILOGLoader {
   entryTypes: { [id: string]: string } = {};
   entryStartTimes: { [id: number]: number } = {};
   dataRecordPositions: { [id: string]: number[] } = {};
-  sendResponse: (resp: any) => void = () => { }
+  sendResponse: (resp: any) => void = () => {};
   constructor(sendResponse: (resp: any) => void) {
-    this.sendResponse = sendResponse
+    this.sendResponse = sendResponse;
   }
 
-  async loadFile(data: Uint8Array
-  ): Promise<any> {
-
+  async loadFile(data: Uint8Array): Promise<any> {
     this.entryTypes = {};
     let lastProgressValue = 0;
     let shortLivedFieldNames: Set<string> = new Set();
@@ -51,7 +45,10 @@ export default class WPILOGLoader {
             if (record !== null && record !== undefined) {
               if (record.isStart()) {
                 const startData = record.getStartData();
-                if (!(startData.name in this.dataRecordPositions) || this.entryTypes[startData.name] !== startData.type) {
+                if (
+                  !(startData.name in this.dataRecordPositions) ||
+                  this.entryTypes[startData.name] !== startData.type
+                ) {
                   // If the entry was previously declared with a different type, clear
                   // the old data to avoid a conflict (use the last declared type)
                   this.dataRecordPositions[startData.name] = [];
@@ -137,7 +134,7 @@ export default class WPILOGLoader {
         }
       );
     } catch (exception) {
-      console.log(exception)
+      console.log(exception);
       console.error(exception);
       this.sendResponse({
         type: "failed"
@@ -158,16 +155,17 @@ export default class WPILOGLoader {
 
     // Send message
     this.log.getChangedFields(); // Reset changed fields
+    let serializedLog = this.log.toSerialized();
+    this.sendResponse({
+      type: "initial",
+      log: serializedLog,
+      isPartial: true
+    });
     return {
-      serializedLog: this.log.toSerialized(),
+      serializedLog: serializedLog,
       log: this.log
-    }
+    };
     // return this.log.toSerialized();
-    // this.sendResponse({
-    //   type: "initial",
-    //   log: this.log.toSerialized(),
-    //   isPartial: true
-    // });
   }
 
   parseField(key: string, skipMessage = false) {
@@ -294,5 +292,4 @@ export default class WPILOGLoader {
       });
     }
   }
-
 }
