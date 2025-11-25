@@ -23,7 +23,7 @@ ROOT = os.path.abspath("static")
 IS_SYSTEMCORE = os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
-ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog"]  # Hoot not supported
+ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog", ".log"]  # Hoot not supported
 ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv
 WEBROOT = ""
 
@@ -118,7 +118,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         # Serve log file
         elif request.path.startswith(WEBROOT + "/logs"):
             if ENABLE_FILESYSTEM_ACCESS and "folder" in query and len(query["folder"]) > 0:
-                filename = urllib.parse.unquote(request.path[len("/logs/"):])
+                filename = urllib.parse.unquote(request.path[len(WEBROOT + "/logs/"):])
                 if any(filename.endswith(suffix) for suffix in ALLOWED_LOG_SUFFIXES):
                     full_path = os.path.join(query["folder"][0], filename)
                     if os.path.exists(full_path):
