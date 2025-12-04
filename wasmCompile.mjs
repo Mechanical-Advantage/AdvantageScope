@@ -42,16 +42,27 @@ try {
     }
 
     // Compile wasm
-    let inPath, outPath;
+    let inPath, outPath,outPathNode;
     if (process.platform === "win32") {
       inPath = "src\\hub\\dataSources\\wpilog\\indexer\\wpilogIndexer.c";
       outPath = "bundles\\hub$wpilogIndexer.js";
+      outPathNode = "bundles\\hub$wpilogIndexerNode.js";
     } else {
       inPath = "'src/hub/dataSources/wpilog/indexer/wpilogIndexer.c'";
       outPath = "'bundles/hub$wpilogIndexer.js' ";
+      outPathNode = "'bundles/hub$wpilogIndexerNode.js' ";
     }
     exec(
-      `emcc ${inPath} -o ${outPath} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
+      // `emcc ${inPath} -o ${outPath} \\
+            `emcc ${inPath} -o ${outPath} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
+
+// -O3 \\
+//   -s MODULARIZE=1 \\
+//   -s EXPORT_ES6=1 \\
+//   -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU8","HEAPU32","HEAPF64"]' \\
+//   -s ENVIRONMENT='web,node,worker' \\
+//   -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 \\
+//   -s EXPORTED_FUNCTIONS="['_run','_malloc','_free']"`,
       (error, stdout, stderr) => {
         console.log(stdout);
         console.error(stderr);
@@ -59,6 +70,32 @@ try {
           // Copy to Lite bundles
           fs.copyFileSync("bundles/hub$wpilogIndexer.js", "lite/static/bundles/hub$wpilogIndexer.js");
           fs.copyFileSync("bundles/hub$wpilogIndexer.wasm", "lite/static/bundles/hub$wpilogIndexer.wasm");
+
+          // Exit successfully
+          resolve();
+        } else {
+          reject();
+        }
+      }
+    );
+    exec(
+      // `emcc ${inPath} -o ${outPath} \\
+            `emcc ${inPath} -o ${outPathNode} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -sMODULARIZE=1 -O3`,
+
+// -O3 \\
+//   -s MODULARIZE=1 \\
+//   -s EXPORT_ES6=1 \\
+//   -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","HEAPU8","HEAPU32","HEAPF64"]' \\
+//   -s ENVIRONMENT='web,node,worker' \\
+//   -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 \\
+//   -s EXPORTED_FUNCTIONS="['_run','_malloc','_free']"`,
+      (error, stdout, stderr) => {
+        console.log(stdout);
+        console.error(stderr);
+        if (error === null) {
+          // Copy to Lite bundles
+          fs.copyFileSync("bundles/hub$wpilogIndexerNode.js", "lite/static/bundles/hub$wpilogIndexerNode.js");
+          fs.copyFileSync("bundles/hub$wpilogIndexerNode.wasm", "lite/static/bundles/hub$wpilogIndexerNode.wasm");
 
           // Exit successfully
           resolve();

@@ -44,6 +44,7 @@ import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabI
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
+import CommandLineHandler from "../CommandLineHandler";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
@@ -124,6 +125,9 @@ let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
 let downloadClientIsSaving = false;
+
+let cliHandler = new CommandLineHandler();
+cliHandler.parseArgs();
 
 // WINDOW MESSAGE HANDLING
 
@@ -282,7 +286,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
         app.addRecentDocument(path);
-        fs.writeFile(AKIT_PATH_OUTPUT, path, () => {});
+        fs.writeFile(AKIT_PATH_OUTPUT, path, () => { });
 
         // Send data if all file reads finished
         let completedCount = 0;
@@ -735,51 +739,51 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   optionConfig === undefined
                     ? undefined
                     : optionConfig.values.map((optionValue) => {
-                        return {
-                          label: optionValue.display,
-                          icon: getIcon(optionValue.key),
-                          click() {
-                            state.type = typeConfig.key;
-                            let newOptions: { [key: string]: string } = {};
-                            typeConfig.options.forEach((optionConfig) => {
-                              if (
-                                optionConfig.key in state.options &&
-                                optionConfig.values
-                                  .map((valueConfig) => valueConfig.key)
-                                  .includes(state.options[optionConfig.key])
-                              ) {
-                                newOptions[optionConfig.key] = state.options[optionConfig.key];
-                              } else {
-                                newOptions[optionConfig.key] = optionConfig.values[0].key;
-                              }
-                            });
-                            state.options = newOptions;
-                            state.options[typeConfig.initialSelectionOption!] = optionValue.key;
-                            respond();
-                          }
-                        };
-                      }),
+                      return {
+                        label: optionValue.display,
+                        icon: getIcon(optionValue.key),
+                        click() {
+                          state.type = typeConfig.key;
+                          let newOptions: { [key: string]: string } = {};
+                          typeConfig.options.forEach((optionConfig) => {
+                            if (
+                              optionConfig.key in state.options &&
+                              optionConfig.values
+                                .map((valueConfig) => valueConfig.key)
+                                .includes(state.options[optionConfig.key])
+                            ) {
+                              newOptions[optionConfig.key] = state.options[optionConfig.key];
+                            } else {
+                              newOptions[optionConfig.key] = optionConfig.values[0].key;
+                            }
+                          });
+                          state.options = newOptions;
+                          state.options[typeConfig.initialSelectionOption!] = optionValue.key;
+                          respond();
+                        }
+                      };
+                    }),
                 click:
                   optionConfig !== undefined
                     ? undefined
                     : () => {
-                        state.type = typeConfig.key;
-                        let newOptions: { [key: string]: string } = {};
-                        typeConfig.options.forEach((optionConfig) => {
-                          if (
-                            optionConfig.key in state.options &&
-                            optionConfig.values
-                              .map((valueConfig) => valueConfig.key)
-                              .includes(state.options[optionConfig.key])
-                          ) {
-                            newOptions[optionConfig.key] = state.options[optionConfig.key];
-                          } else {
-                            newOptions[optionConfig.key] = optionConfig.values[0].key;
-                          }
-                        });
-                        state.options = newOptions;
-                        respond();
-                      }
+                      state.type = typeConfig.key;
+                      let newOptions: { [key: string]: string } = {};
+                      typeConfig.options.forEach((optionConfig) => {
+                        if (
+                          optionConfig.key in state.options &&
+                          optionConfig.values
+                            .map((valueConfig) => valueConfig.key)
+                            .includes(state.options[optionConfig.key])
+                        ) {
+                          newOptions[optionConfig.key] = state.options[optionConfig.key];
+                        } else {
+                          newOptions[optionConfig.key] = optionConfig.values[0].key;
+                        }
+                      });
+                      state.options = newOptions;
+                      respond();
+                    }
               })
             );
           });
@@ -995,8 +999,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                       preset.from === undefined || preset.to === undefined
                         ? ""
                         : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                          " \u2192 " +
-                          preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
+                        " \u2192 " +
+                        preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
                     let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
                     let bothPresent = fromToText.length > 0 && factorText.length > 0;
                     return {
@@ -1349,97 +1353,97 @@ function select3DCameraPopup(
       label: isFTC ? "Driver View" : "Driver Station",
       submenu: isFTC
         ? [
-            {
-              label: "Blue Left",
-              type: "checkbox",
-              checked: selectedIndex === -4,
-              click() {
-                sendMessage(window, "set-3d-camera", -4);
-              }
-            },
-            {
-              label: "Blue Right",
-              type: "checkbox",
-              checked: selectedIndex === -5,
-              click() {
-                sendMessage(window, "set-3d-camera", -5);
-              }
-            },
-            {
-              label: "Red Left",
-              type: "checkbox",
-              checked: selectedIndex === -6,
-              click() {
-                sendMessage(window, "set-3d-camera", -6);
-              }
-            },
-            {
-              label: "Red Right",
-              type: "checkbox",
-              checked: selectedIndex === -7,
-              click() {
-                sendMessage(window, "set-3d-camera", -7);
-              }
+          {
+            label: "Blue Left",
+            type: "checkbox",
+            checked: selectedIndex === -4,
+            click() {
+              sendMessage(window, "set-3d-camera", -4);
             }
-          ]
+          },
+          {
+            label: "Blue Right",
+            type: "checkbox",
+            checked: selectedIndex === -5,
+            click() {
+              sendMessage(window, "set-3d-camera", -5);
+            }
+          },
+          {
+            label: "Red Left",
+            type: "checkbox",
+            checked: selectedIndex === -6,
+            click() {
+              sendMessage(window, "set-3d-camera", -6);
+            }
+          },
+          {
+            label: "Red Right",
+            type: "checkbox",
+            checked: selectedIndex === -7,
+            click() {
+              sendMessage(window, "set-3d-camera", -7);
+            }
+          }
+        ]
         : [
-            {
-              label: "Auto",
-              type: "checkbox",
-              checked: selectedIndex === -3,
-              click() {
-                sendMessage(window, "set-3d-camera", -3);
-              }
-            },
-            {
-              label: "Blue 1",
-              type: "checkbox",
-              checked: selectedIndex === -4,
-              click() {
-                sendMessage(window, "set-3d-camera", -4);
-              }
-            },
-            {
-              label: "Blue 2",
-              type: "checkbox",
-              checked: selectedIndex === -5,
-              click() {
-                sendMessage(window, "set-3d-camera", -5);
-              }
-            },
-            {
-              label: "Blue 3",
-              type: "checkbox",
-              checked: selectedIndex === -6,
-              click() {
-                sendMessage(window, "set-3d-camera", -6);
-              }
-            },
-            {
-              label: "Red 1",
-              type: "checkbox",
-              checked: selectedIndex === -7,
-              click() {
-                sendMessage(window, "set-3d-camera", -7);
-              }
-            },
-            {
-              label: "Red 2",
-              type: "checkbox",
-              checked: selectedIndex === -8,
-              click() {
-                sendMessage(window, "set-3d-camera", -8);
-              }
-            },
-            {
-              label: "Red 3",
-              type: "checkbox",
-              checked: selectedIndex === -9,
-              click() {
-                sendMessage(window, "set-3d-camera", -9);
-              }
+          {
+            label: "Auto",
+            type: "checkbox",
+            checked: selectedIndex === -3,
+            click() {
+              sendMessage(window, "set-3d-camera", -3);
             }
-          ]
+          },
+          {
+            label: "Blue 1",
+            type: "checkbox",
+            checked: selectedIndex === -4,
+            click() {
+              sendMessage(window, "set-3d-camera", -4);
+            }
+          },
+          {
+            label: "Blue 2",
+            type: "checkbox",
+            checked: selectedIndex === -5,
+            click() {
+              sendMessage(window, "set-3d-camera", -5);
+            }
+          },
+          {
+            label: "Blue 3",
+            type: "checkbox",
+            checked: selectedIndex === -6,
+            click() {
+              sendMessage(window, "set-3d-camera", -6);
+            }
+          },
+          {
+            label: "Red 1",
+            type: "checkbox",
+            checked: selectedIndex === -7,
+            click() {
+              sendMessage(window, "set-3d-camera", -7);
+            }
+          },
+          {
+            label: "Red 2",
+            type: "checkbox",
+            checked: selectedIndex === -8,
+            click() {
+              sendMessage(window, "set-3d-camera", -8);
+            }
+          },
+          {
+            label: "Red 3",
+            type: "checkbox",
+            checked: selectedIndex === -9,
+            click() {
+              sendMessage(window, "set-3d-camera", -9);
+            }
+          }
+        ]
     })
   );
   cameraMenu.append(
@@ -1701,9 +1705,8 @@ function downloadSave(files: string[]) {
           // Send message
           let message: string;
           if (remoteFiles.length < files.length) {
-            message = `Saved ${remoteFiles.length} new log${remoteFiles.length === 1 ? "" : "s"} (${
-              files.length - remoteFiles.length
-            } skipped) to <u>${savePath}</u>`;
+            message = `Saved ${remoteFiles.length} new log${remoteFiles.length === 1 ? "" : "s"} (${files.length - remoteFiles.length
+              } skipped) to <u>${savePath}</u>`;
           } else {
             message = `Saved ${remoteFiles.length} new log${remoteFiles.length === 1 ? "" : "s"} to <u>${savePath}</u>`;
           }
@@ -1748,13 +1751,13 @@ function setupMenu() {
         },
         ...(DISTRIBUTION === Distribution.FRC6328
           ? [
-              {
-                label: "Check for Updates...",
-                click() {
-                  checkForUpdate(true);
-                }
+            {
+              label: "Check for Updates...",
+              click() {
+                checkForUpdate(true);
               }
-            ]
+            }
+          ]
           : []),
         {
           label: "Show Licenses...",
@@ -1823,15 +1826,15 @@ function setupMenu() {
         },
         ...(isMac
           ? ([
-              { type: "separator" },
-              { role: "services" },
-              { type: "separator" },
-              { role: "hide" },
-              { role: "hideOthers" },
-              { role: "unhide" },
-              { type: "separator" },
-              { role: "quit" }
-            ] as const)
+            { type: "separator" },
+            { role: "services" },
+            { type: "separator" },
+            { role: "hide" },
+            { role: "hideOthers" },
+            { role: "unhide" },
+            { type: "separator" },
+            { role: "quit" }
+          ] as const)
           : [])
       ]
     },
@@ -2274,34 +2277,34 @@ function setupMenu() {
     isMac
       ? { role: "windowMenu" }
       : {
-          label: "Window",
-          submenu: [
-            { role: "minimize" },
-            {
-              label: "Bring All to Front",
-              accelerator: "Ctrl+B",
-              click(_, window) {
-                hubWindows.forEach((window) => {
+        label: "Window",
+        submenu: [
+          { role: "minimize" },
+          {
+            label: "Bring All to Front",
+            accelerator: "Ctrl+B",
+            click(_, window) {
+              hubWindows.forEach((window) => {
+                if (!window.isDestroyed()) {
+                  window.moveTop();
+                }
+              });
+              if (downloadWindow && !downloadWindow.isDestroyed()) downloadWindow.moveTop();
+              if (prefsWindow && !prefsWindow.isDestroyed()) prefsWindow?.moveTop();
+              if (licensesWindow && !licensesWindow.isDestroyed()) licensesWindow?.moveTop();
+              Object.values(satelliteWindows).forEach((windows) =>
+                windows.forEach((window) => {
                   if (!window.isDestroyed()) {
                     window.moveTop();
                   }
-                });
-                if (downloadWindow && !downloadWindow.isDestroyed()) downloadWindow.moveTop();
-                if (prefsWindow && !prefsWindow.isDestroyed()) prefsWindow?.moveTop();
-                if (licensesWindow && !licensesWindow.isDestroyed()) licensesWindow?.moveTop();
-                Object.values(satelliteWindows).forEach((windows) =>
-                  windows.forEach((window) => {
-                    if (!window.isDestroyed()) {
-                      window.moveTop();
-                    }
-                  })
-                );
-                window?.moveTop();
-              }
-            },
-            { type: "separator" }
-          ]
-        },
+                })
+              );
+              window?.moveTop();
+            }
+          },
+          { type: "separator" }
+        ]
+      },
     {
       role: "help",
       submenu: [
@@ -2573,9 +2576,8 @@ function createHubWindow(state?: WindowState) {
             type: "info",
             title: "Alert",
             message: "Share feedback?",
-            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${
-              isAlpha() ? "alpha" : "beta"
-            }. We'll keep this quick.`,
+            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${isAlpha() ? "alpha" : "beta"
+              }. We'll keep this quick.`,
             buttons: ["Open", "Not Now"],
             defaultId: 0
           })
@@ -2890,20 +2892,20 @@ function createExportWindow(
 function createSatellite(
   config:
     | {
-        parentWindow: Electron.BrowserWindow;
-        uuid: string;
-        type: TabType;
-      }
+      parentWindow: Electron.BrowserWindow;
+      uuid: string;
+      type: TabType;
+    }
     | {
-        state: SatelliteWindowState;
-      }
+      state: SatelliteWindowState;
+    }
 ) {
   const configData = !("state" in config)
     ? (config as {
-        parentWindow: Electron.BrowserWindow;
-        uuid: string;
-        type: TabType;
-      })
+      parentWindow: Electron.BrowserWindow;
+      uuid: string;
+      type: TabType;
+    })
     : undefined;
   const state = "state" in config ? config.state : undefined;
   const uuid = configData !== undefined ? configData.uuid : state!.uuid;
@@ -3290,7 +3292,7 @@ function getDefaultLogPath(): string | undefined {
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
 // Silence unhandled promise rejections
-process.on("unhandledRejection", () => {});
+process.on("unhandledRejection", () => { });
 
 // Set WM_CLASS for Linux
 if (process.platform === "linux") {
@@ -3421,6 +3423,6 @@ setInterval(() => {
 
 // Clean up files on quit
 app.on("quit", () => {
-  fs.unlink(AKIT_PATH_OUTPUT, () => {});
+  fs.unlink(AKIT_PATH_OUTPUT, () => { });
   VideoProcessor.cleanup();
 });
