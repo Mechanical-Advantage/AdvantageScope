@@ -76,26 +76,6 @@ public class MyClass {
 </details>
 
 <details>
-<summary>Monologue</summary>
-
-To publish struct data using Monologue, simply return a supported object type from a method tagged with `@Log`:
-
-```java
-@Log
-public Pose2d getPose() {
-  return new Pose2d();
-}
-```
-
-Objects can also be logged imperatively:
-
-```java
-log("MyPose", new Pose2d());
-```
-
-</details>
-
-<details>
 <summary>AdvantageKit</summary>
 
 To log and replay struct data using AdvantageKit, simply pass a supported object type to the `recordOutput` method, return it from a method/field tagged with `@AutoLogOutput`, or include it in an inputs class tagged with `@AutoLog`.
@@ -125,6 +105,17 @@ public class Inputs {
 </details>
 
 <details>
+<summary>DogLog</summary>
+
+To publish struct data using DogLog, simply pass a supported object type to the `log` method:
+
+```java
+DogLog.log("MyPose", new Pose2d());
+```
+
+</details>
+
+<details>
 <summary>DataLog</summary>
 
 To append struct data to a raw `DataLog`, create a `StructLogEntry` with the desired type and call `set()` as shown below.
@@ -140,10 +131,10 @@ logEntry.append(new Pose2d());
 <details>
 <summary>Phoenix Signal Logger (Hoot)</summary>
 
-The Phoenix signal logger does not support the modern struct format. Consider publishing geometry data using one of the logging libraries shown above instead of using custom signals in Phoenix.
+To write struct data to a Hoot file, pass a supported object to the `writeStruct` method along with the associated struct object.
 
-:::tip
-AdvantageScope can automatically merge log files from multiple sources, such as Hoot and WPILOG files. See [here](/overview/log-files) for details.
-:::
+```java
+SignalLogger.writeStruct("MyPose", Pose2d.struct, new Pose2d());
+```
 
 </details>
