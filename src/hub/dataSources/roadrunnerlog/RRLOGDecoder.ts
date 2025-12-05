@@ -233,7 +233,12 @@ export default class RRLOGDecoder {
                     });
                   } else {
                     // struct or array
-                    log.putUnknownStruct(key, timestamp, msg);
+                    // "allowRootWrite" enabled here to allow for direct array parsing
+                    // Writing to the root field is OK because we don't have any
+                    // serialized data that it would conflict with (different from
+                    // other structured data sources).
+                    // https://github.com/Mechanical-Advantage/AdvantageScope/issues/427
+                    log.putUnknownStruct(key, timestamp, msg, true);
                   }
                   break;
               }
