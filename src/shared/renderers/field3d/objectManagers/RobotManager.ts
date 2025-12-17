@@ -506,7 +506,7 @@ export default class RobotManager extends ObjectManager<
               .map((x) => x.pose)
               .map((robotPose) => {
                 this.dummyRobotPose.rotation.setFromQuaternion(rotation3dToQuaternion(robotPose.rotation));
-                if (plane == "yz") this.dummyRobotPose.rotateZ(Math.PI / 2);
+                if (plane === "yz") this.dummyRobotPose.rotateZ(Math.PI / 2);
                 this.dummyRobotPose.position.set(...robotPose.translation);
 
                 this.dummyUserPose.position.set(line.start[0] - state.dimensions[0] / 2, 0, line.start[1]);
