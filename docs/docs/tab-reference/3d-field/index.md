@@ -124,7 +124,7 @@ Setting up 3D components can be complex and time-consuming. Consider utilizing A
 
 Mechanisms can be visualized with articulated components by logging a set of 3D poses that represent the robot-relative locations of each component. Add the poses to an existing robot or ghost object and set the object type to "Component".
 
-Each component can be moved independently (like an elevator carriage, arm, or end effector). For more information on configuring robots with components, see [Custom Assets](/more-features/custom-assets).
+Each component can be moved independently (like an elevator carriage, arm, or end effector). AdvantageKit users should consider using the [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) method to convert a Mechanism2d to an array of Pose3d objects. For more information on configuring robots with components, see [Custom Assets](/more-features/custom-assets).
 
 ![3D mechanism](./img/3d-field-3.png)
 
