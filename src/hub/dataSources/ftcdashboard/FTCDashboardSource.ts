@@ -266,7 +266,7 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
     return this.configState !== initialState;
   }
   isTunable(key: string): boolean {
-    return this.tunableKeysTypes.get(key) != undefined;
+    return this.tunableKeysTypes.get(key) !== undefined;
   }
   publish(key: string, value: number | boolean): void {
     if (!this.isTunable(key)) {
