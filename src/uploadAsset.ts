@@ -27,7 +27,7 @@ window.addEventListener("message", (event) => {
   };
   // Close function
   function confirm() {
-    if (ASSET_INPUT.files != null && ASSET_INPUT.files.length > 0) {
+    if (ASSET_INPUT.files !== null && ASSET_INPUT.files.length > 0) {
       PROGRESS_TEXT.innerText = "Uploading file...";
       const API_ENDPOINT = "../uploadAsset";
       const request = new XMLHttpRequest();
