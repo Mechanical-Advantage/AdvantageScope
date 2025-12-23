@@ -253,6 +253,7 @@ function handleMainMessage(message: NamedMessage) {
         item.appendChild(img);
         let filenameComponents = file.name.split(".");
         let extension = filenameComponents[filenameComponents.length - 1];
+        if (extension === "wpilogxz") extension = "wpilog";
         switch (platform) {
           case "darwin":
             img.src = "../icons/download/" + extension + "-icon-mac.png";

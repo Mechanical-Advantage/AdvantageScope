@@ -23,7 +23,7 @@ ROOT = os.path.abspath("static")
 IS_SYSTEMCORE = os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
-ALLOWED_LOG_SUFFIXES = [".wpilog", ".rlog", ".log"]  # Hoot not supported
+ALLOWED_LOG_SUFFIXES = [".wpilog", ".wpilogxz", ".rlog", ".log"]  # Hoot not supported
 ENABLE_FILESYSTEM_ACCESS = IS_SYSTEMCORE or "--enable-file-access" in sys.argv
 WEBROOT = ""
 
