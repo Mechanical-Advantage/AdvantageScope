@@ -28,10 +28,12 @@ import {
 } from "electron";
 import fs from "fs";
 import jsonfile from "jsonfile";
+import lzma from "lzma-native";
 import net from "net";
 import os from "os";
 import path from "path";
 import { PNG } from "pngjs";
+import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
@@ -418,6 +420,41 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   });
               });
           }
+        } else if (path.endsWith(".wpilogxz")) {
+          // Externally compressed WPILOG, decompress
+          targetCount += 1;
+          fs.open(path, "r", (error, file) => {
+            if (error) {
+              completedCount++;
+              sendIfReady();
+              return;
+            }
+            fs.readFile(file, (error, compressedBuffer) => {
+              if (error) {
+                completedCount++;
+                sendIfReady();
+              }
+              const inputStream = Readable.from(compressedBuffer);
+              const decompressor = lzma.createDecompressor();
+              const chunks: any[] = [];
+              let totalLength = 0;
+              inputStream.pipe(decompressor);
+              decompressor.on("data", (chunk) => {
+                chunks.push(chunk);
+                totalLength += chunk.length;
+              });
+              decompressor.on("error", () => {
+                results[0] = Buffer.concat(chunks, totalLength);
+                completedCount++;
+                sendIfReady();
+              });
+              decompressor.on("end", () => {
+                results[0] = Buffer.concat(chunks, totalLength);
+                completedCount++;
+                sendIfReady();
+              });
+            });
+          });
         } else {
           // Normal log, open normally
           targetCount += 1;
@@ -1549,7 +1586,10 @@ async function downloadStart() {
               .filter(
                 (file) =>
                   !file.name.startsWith(".") &&
-                  (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog") || file.name.endsWith(".hoot"))
+                  (file.name.endsWith(".rlog") ||
+                    file.name.endsWith(".wpilog") ||
+                    file.name.endsWith(".wpilogxz") ||
+                    file.name.endsWith(".hoot"))
               )
               .map((file) => {
                 return {
@@ -1607,6 +1647,9 @@ function downloadSave(files: string[]) {
     switch (extension) {
       case "wpilog":
         name = "WPILib robot log";
+        break;
+      case "wpilogxz":
+        name = "Compressed WPILib robot log";
         break;
       case "rlog":
         name = "Robot log";
@@ -1850,7 +1893,10 @@ function setupMenu() {
                 message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
                 filters: [
-                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                  {
+                    name: "Robot logs",
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv"]
+                  }
                 ],
                 defaultPath: getDefaultLogPath()
               })
@@ -1872,7 +1918,10 @@ function setupMenu() {
                 title: "Select the robot log file(s) to add to the current log",
                 properties: ["openFile", "multiSelections"],
                 filters: [
-                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                  {
+                    name: "Robot logs",
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv"]
+                  }
                 ],
                 defaultPath: getDefaultLogPath()
               })
@@ -3355,6 +3404,7 @@ app.whenReady().then(() => {
   let fileArgs = process.argv.filter(
     (x) =>
       x.endsWith(".wpilog") ||
+      x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents") ||

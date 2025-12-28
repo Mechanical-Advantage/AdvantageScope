@@ -124,7 +124,8 @@ const mainBundles = isLite
         "basic-ftp",
         "download",
         "ytdl-core",
-        "tesseract.js"
+        "tesseract.js",
+        "lzma-native"
       ]),
       bundle("preload.ts", "preload.js", true, false, ["electron"])
     ];

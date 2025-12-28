@@ -26,6 +26,7 @@ export class HistoricalDataSource {
   private WORKER_NAMES = {
     ".rlog": "hub$rlogWorker.js",
     ".wpilog": "hub$wpilogWorker.js",
+    ".wpilogxz": "hub$wpilogWorker.js", // Decompressed by main process
     ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
     ".dslog": "hub$dsLogWorker.js",
     ".dsevents": "hub$dsLogWorker.js",
