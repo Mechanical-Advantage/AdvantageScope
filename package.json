@@ -140,7 +140,7 @@
         "description": "Compressed WPILib robot log",
         "mimeType": "application/x-wpilogxz",
         "role": "Viewer",
-        "icon": "icons/app/wpilog-icon"
+        "icon": "icons/app/wpilogxz-icon"
       },
       {
         "ext": "rlog",
