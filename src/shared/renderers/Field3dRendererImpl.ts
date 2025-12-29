@@ -936,22 +936,8 @@ export default class Field3dRendererImpl implements TabRenderer {
           referenceObj = this.fixedCameraObj;
         }
         if (referenceObj) {
-          let referencePosition = referenceObj.getWorldPosition(new THREE.Vector3());
-          if (referenceObj.children.length === 0) {
-            referenceObj.add(new THREE.Object3D());
-          }
-          let referenceChild = referenceObj.children[0];
-          referenceChild.position.set(0, 0, -1);
-          let referenceTarget = referenceChild.getWorldPosition(new THREE.Vector3());
-          this.controls.setLookAt(
-            referencePosition.x,
-            referencePosition.y,
-            referencePosition.z,
-            referenceTarget.x,
-            referenceTarget.y,
-            referenceTarget.z
-          );
-          this.controls.update(0);
+          this.camera.position.copy(referenceObj.getWorldPosition(new THREE.Vector3()));
+          this.camera.quaternion.copy(referenceObj.getWorldQuaternion(new THREE.Quaternion()));
         }
       }
 

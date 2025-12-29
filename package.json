@@ -45,6 +45,7 @@
     "@types/download": "^8.0.2",
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
+    "@types/lzma-native": "^4.0.4",
     "@types/pngjs": "^6.0.5",
     "@types/three": "^0.168.0",
     "bignumber.js": "^9.1.2",
@@ -84,6 +85,7 @@
     "download": "^8.0.0",
     "electron-fetch": "^1.9.1",
     "jsonfile": "^6.1.0",
+    "lzma-native": "^8.0.6",
     "pngjs": "^7.0.0",
     "tesseract.js": "^6.0.0",
     "ws": "^8.18.0"
@@ -131,6 +133,14 @@
         "mimeType": "application/x-wpilog",
         "role": "Viewer",
         "icon": "icons/app/wpilog-icon"
+      },
+      {
+        "ext": "wpilogxz",
+        "name": "Compressed WPILib robot log",
+        "description": "Compressed WPILib robot log",
+        "mimeType": "application/x-wpilogxz",
+        "role": "Viewer",
+        "icon": "icons/app/wpilogxz-icon"
       },
       {
         "ext": "rlog",
