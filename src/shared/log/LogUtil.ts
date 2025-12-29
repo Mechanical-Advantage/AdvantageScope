@@ -613,7 +613,7 @@ export function mergeMechanismStates(states: MechanismState[]): MechanismState {
 const SEARCH_FUSE = new Fuse([] as string[], { findAllMatches: true, ignoreLocation: true });
 
 export function searchFields(log: Log, query: string): string[] {
-  if (query.length == 0) return [];
+  if (query.length === 0) return [];
   SEARCH_FUSE.setCollection(log.getFieldKeys());
   return SEARCH_FUSE.search(query)
     .slice(0, MAX_SEARCH_RESULTS)
