@@ -33,7 +33,7 @@ export function getCanSignalValue(signal: Signal, frameBitString: BitString): Bi
   const signalAsUint = bitStringToUint(signalBitString);
 
   if (signal.type === "boolean") {
-    if (signal.lengthBits !== 1) {
+    if (signal.lengthBits != 1) {
       throw new Error(`boolean signal ${signal.name} does not have a length of 1 bit`);
     }
     return signalAsUint === 1n;
@@ -72,13 +72,13 @@ export function getCanSignalValue(signal: Signal, frameBitString: BitString): Bi
     typeof unadjustedValue === "number" ? BigNumber(unadjustedValue) : BigNumber(unadjustedValue.toString());
   let result = unadjustedValueAsBigNumber.times(signal.decodeScaleFactor).plus(signal.offset);
 
-  if (signal.decodedMin !== undefined && result.lt(signal.decodedMin)) {
+  if (signal.decodedMin != undefined && result.lt(signal.decodedMin)) {
     console.warn(
       `Received "${signal.name}" signal with a decoded value of ${result}, which is lower than the minimum of ${signal.decodedMin}`
     );
     result = signal.decodedMin;
   }
-  if (signal.decodedMax !== undefined && result.gt(signal.decodedMax)) {
+  if (signal.decodedMax != undefined && result.gt(signal.decodedMax)) {
     console.warn(
       `Received "${signal.name}" signal with a decoded value of ${result}, which is higher than the maximum of ${signal.decodedMax}`
     );
@@ -137,7 +137,7 @@ export function buildCanFramePayload<Frame extends NonPeriodicFrame>(
     let decodedValue = signalValues[signalKey] as BigNumber;
     const decodedMin = signalSpec.decodedMin;
     const decodedMax = signalSpec.decodedMax;
-    if (decodedMin !== undefined && decodedValue.lt(decodedMin)) {
+    if (decodedMin != undefined && decodedValue.lt(decodedMin)) {
       decodedValue = decodedMin;
       console.warn(
         `Signal "${signalSpec.name}" from frame "${
@@ -145,7 +145,7 @@ export function buildCanFramePayload<Frame extends NonPeriodicFrame>(
         }" was given a value of ${decodedValue.toFixed()} when the min is ${decodedMin.toFixed()}. Setting to ${decodedMin.toFixed()}`
       );
     }
-    if (decodedMax !== undefined && decodedValue.gt(decodedMax)) {
+    if (decodedMax != undefined && decodedValue.gt(decodedMax)) {
       decodedValue = decodedMax;
       console.warn(
         `Signal "${signalSpec.name}" from frame "${
