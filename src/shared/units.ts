@@ -887,7 +887,9 @@ export namespace Units {
     let matchedSuffixes = Object.keys(UNIT_SUFFIXES).filter(
       (suffix) =>
         !suffix.includes("/") &&
+        fieldKey.length > suffix.length &&
         fieldKeyLowercase.endsWith(suffix.toLowerCase()) &&
+        !fieldKeyLowercase.endsWith("/" + suffix.toLowerCase()) &&
         (suffix.startsWith("_") || suffix.startsWith(" ") || charIsCapital(fieldKey, fieldKey.length - suffix.length))
     );
     if (matchedSuffixes.length === 0) return null;
