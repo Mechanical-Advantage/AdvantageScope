@@ -168,11 +168,14 @@ export default class Field3dRendererImpl implements TabRenderer {
 
     // Change camera menu
     let startPx: [number, number] | null = null;
-    canvas.addEventListener("contextmenu", (event) => {
-      startPx = [event.x, event.y];
+    canvas.addEventListener("mousedown", (event) => {
+      if (event.button === 2) {
+        // Right-click
+        startPx = [event.clientX, event.clientY];
+      }
     });
     canvas.addEventListener("mouseup", (event) => {
-      if (startPx && event.x === startPx[0] && event.y === startPx[1]) {
+      if (startPx && event.clientX === startPx[0] && event.clientY === startPx[1]) {
         let robotConfig = window.assets?.robots.find((robotData) => robotData.name === this.primaryRobotModel);
         let cameraList = robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => camera.name);
         window.sendMainMessage("ask-3d-camera", {
