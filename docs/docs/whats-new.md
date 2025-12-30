@@ -21,15 +21,9 @@ import Menus3 from "./img/prefs.png";
 <img src={BannerLight} className="light-only" />
 <img src={BannerDark} className="dark-only" />
 
-The 2026 version of AdvantageScope is now available in beta! This release includes several major new features and numerous enhancements across the application. Many of the features in this release are designed to improve the experience on existing control systems while setting up a smooth transition to [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in future seasons.
+The 2026 version of AdvantageScope is now available! Check the [installation docs](/overview/installation) and [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases) for details. This release includes several major new features and numerous enhancements across the application. Many of the features in this release are designed to improve the experience on existing control systems while setting up a smooth transition to [Systemcore](https://community.firstinspires.org/march-updates-on-the-future-robot-controller) in future seasons.
 
 **We value your feedback! Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
-
-:::warning
-**AdvantageScope 2026 is in beta**, which means that teams will encounter issues not present in stable releases. Beta releases allow teams to experiment with upcoming features and provide feedback before the official release in January 2026. Users looking for a stable release should download AdvantageScope [v4.1.6](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v4.1.6), the latest 2025 release. For more information, check the [installation](/overview/installation) page.
-:::
-
-To get started with the AdvantageScope 2026 beta, click the "Prerelease" link in the [installation docs](/overview/installation#team-6328) and find the first release with version v26.0.0-beta-X. Check the [full changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v26.0.0-beta-1) for a complete list of changes. The most notable features in this release are documented below.
 
 ## ✴️ Experimental: FTC Support {#ftc-support}
 
@@ -41,7 +35,7 @@ In preparation for full support with Systemcore in the 2027-2028 season, this re
 - Support for the [FTC Dashboard](https://github.com/acmerobotics/ftc-dashboard) live streaming format
 
 :::tip
-FTC teams should exercise caution when using beta/experimental software during the official season. FTC support for AdvantageScope is still in active development.
+FTC teams should exercise caution when using experimental software during the official season. FTC support for AdvantageScope is still in active development.
 :::
 
 <div className="image-gallery">
@@ -125,7 +119,7 @@ The menu bar and related controls have been streamlined and reorganized to make 
 
 ## 🐛 Stability Improvements {#stability-improvements}
 
-This release includes a variety of bug fixes and stability improvements across the application. The full list can be found in the release [changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases/tag/v26.0.0-beta-1), but some notable fixes are listed below:
+This release includes a variety of bug fixes and stability improvements across the application. The full list can be found in the release [changelog](https://github.com/Mechanical-Advantage/AdvantageScope/releases), but some notable fixes are listed below:
 
 - The performance of AdvantageScope when streaming data for long periods has been greatly improved, especially when using the line graph tab.
 - AdvantageScope is now more tolerant of unusual log data, including large log files and large field values.
