@@ -2188,7 +2188,13 @@ function setupMenu() {
             createHubWindow();
           }
         },
-        { role: "close", accelerator: "Shift+CmdOrCtrl+W" }
+        {
+          label: "Close Window",
+          accelerator: "Shift+CmdOrCtrl+W",
+          click(_, window) {
+            window?.close();
+          }
+        }
       ]
     },
     { role: "editMenu" },
