@@ -54,7 +54,7 @@
     "chart.js": "^4.4.0",
     "color-convert": "^2.0.1",
     "compare-versions": "^6.1.1",
-    "electron": "^37.9.0",
+    "electron": "^39.2.7",
     "electron-builder": "^26.0.0",
     "fuse.js": "^7.0.0",
     "gunzip-file": "^0.1.1",
