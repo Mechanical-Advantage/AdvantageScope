@@ -6,9 +6,9 @@
 // at the root directory of this project.
 
 import * as THREE from "three";
-import { APRIL_TAG_FRC_16H5_SIZE, APRIL_TAG_FRC_36H11_SIZE, APRIL_TAG_FTC_SIZES } from "../../../geometry";
+import { Units } from "../../../units";
 import { zfill } from "../../../util";
-import { Field3dRendererCommand_AprilTagObj, Field3dRendererCommand_AprilTagVariant } from "../../Field3dRenderer";
+import { Field3dRendererCommand_AprilTagObj } from "../../Field3dRenderer";
 import { rotation3dToQuaternion } from "../../Field3dRendererImpl";
 import ObjectManager from "../ObjectManager";
 
@@ -16,7 +16,7 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
   private tags: { idStr: string; active: boolean; object: THREE.Mesh }[] = [];
 
   private textureLoader = new THREE.TextureLoader();
-  private geometry: Map<Field3dRendererCommand_AprilTagVariant, THREE.BoxGeometry> = new Map();
+  private geometry: Map<string, THREE.BoxGeometry> = new Map();
 
   private whiteMaterial = new THREE.MeshPhongMaterial({
     color: 0xffffff,
@@ -34,26 +34,6 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
     requestRender: () => void
   ) {
     super(root, materialSpecular, materialShininess, mode, isXR, requestRender);
-    const aprilTagThickness = 0.01;
-    const aprilTagOffset = -0.005 + 1e-6; // Align to front face with small shift to ensure visibility when overlapping with the field
-    this.geometry.set(
-      "frc-36h11",
-      new THREE.BoxGeometry(aprilTagThickness, APRIL_TAG_FRC_36H11_SIZE, APRIL_TAG_FRC_36H11_SIZE)
-        .translate(aprilTagOffset, 0, 0)
-        .rotateX(Math.PI / 2)
-    );
-    this.geometry.set(
-      "frc-16h5",
-      new THREE.BoxGeometry(aprilTagThickness, APRIL_TAG_FRC_16H5_SIZE, APRIL_TAG_FRC_16H5_SIZE)
-        .translate(aprilTagOffset, 0, 0)
-        .rotateX(Math.PI / 2)
-    );
-    Object.entries(APRIL_TAG_FTC_SIZES).forEach(([variant, size]) => {
-      this.geometry.set(
-        variant as Field3dRendererCommand_AprilTagVariant,
-        new THREE.BoxGeometry(aprilTagThickness, size, size).translate(aprilTagOffset, 0, 0).rotateX(Math.PI / 2)
-      );
-    });
   }
 
   dispose(): void {
@@ -68,9 +48,26 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
   setObjectData(object: Field3dRendererCommand_AprilTagObj): void {
     this.tags.forEach((entry) => (entry.active = false));
 
+    const geometryKey = object.variant.family + "_" + object.variant.inches.toString();
+    if (!this.geometry.has(geometryKey)) {
+      const aprilTagThickness = 0.01;
+      const aprilTagOffset = -0.005 + 1e-6; // Align to front face with small shift to ensure visibility when overlapping with the field
+      let size = Units.convert(object.variant.inches, "inches", "meters");
+      if (object.variant.family === "36h11") {
+        size *= 10 / 8;
+      } else {
+        size *= 8 / 6;
+      }
+      this.geometry.set(
+        geometryKey,
+        new THREE.BoxGeometry(aprilTagThickness, size, size).translate(aprilTagOffset, 0, 0).rotateX(Math.PI / 2)
+      );
+    }
+
     object.poses.forEach((annotatedPose) => {
       let idStr =
-        object.variant +
+        geometryKey +
+        "_" +
         (annotatedPose.annotation.aprilTagId === undefined ? "" : annotatedPose.annotation.aprilTagId.toString());
 
       // Find tag object
@@ -80,7 +77,7 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
         entry = {
           idStr: idStr,
           active: true,
-          object: new THREE.Mesh(this.geometry.get(object.variant), [
+          object: new THREE.Mesh(this.geometry.get(geometryKey), [
             this.whiteMaterial, // Front face, temporary until texture is loaded
             this.whiteMaterial,
             this.whiteMaterial,
@@ -97,8 +94,8 @@ export default class AprilTagManager extends ObjectManager<Field3dRendererComman
             : zfill(annotatedPose.annotation.aprilTagId.toString(), 3);
         this.textureLoader.load(
           this.isXR
-            ? `/apriltag?family=${object.variant === "frc-16h5" ? "16h5" : "36h11"}&name=${textureName}`
-            : `../www/textures/apriltag-${object.variant === "frc-16h5" ? "16h5" : "36h11"}/${textureName}.png`,
+            ? `/apriltag?family=${object.variant.family}&name=${textureName}`
+            : `../www/textures/apriltag-${object.variant.family}/${textureName}.png`,
           (texture) => {
             texture.minFilter = THREE.NearestFilter;
             texture.magFilter = THREE.NearestFilter;

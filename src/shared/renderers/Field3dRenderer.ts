@@ -180,13 +180,10 @@ export type Field3dRendererCommand_HeatmapObj = {
   poses: AnnotatedPose3d[];
 };
 
-export type Field3dRendererCommand_AprilTagVariant =
-  | "frc-36h11"
-  | "frc-16h5"
-  | "ftc-2in"
-  | "ftc-3in"
-  | "ftc-4in"
-  | "ftc-5in";
+export type Field3dRendererCommand_AprilTagVariant = {
+  family: "36h11" | "16h5";
+  inches: number;
+};
 
 export type Field3dRendererCommand_AprilTagObj = {
   type: "aprilTag";

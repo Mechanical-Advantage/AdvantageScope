@@ -59,15 +59,6 @@ export type ChassisSpeeds = { vx: number; vy: number; omega: number };
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
-export const APRIL_TAG_FRC_36H11_SIZE = Units.convert(8.125, "inches", "meters");
-export const APRIL_TAG_FRC_16H5_SIZE = Units.convert(8, "inches", "meters");
-export const APRIL_TAG_FTC_SIZES = {
-  // Include size of white border
-  "ftc-2in": Units.convert(2 * (10 / 8), "inches", "meters"),
-  "ftc-3in": Units.convert(3 * (10 / 8), "inches", "meters"),
-  "ftc-4in": Units.convert(4 * (10 / 8), "inches", "meters"),
-  "ftc-5in": Units.convert(5 * (10 / 8), "inches", "meters")
-};
 export const HEATMAP_DT = 0.25;
 
 // FORMAT CONVERSION UTILITIES

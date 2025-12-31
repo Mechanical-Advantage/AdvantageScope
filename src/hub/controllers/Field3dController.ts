@@ -29,11 +29,7 @@ import {
   mergeMechanismStates
 } from "../../shared/log/LogUtil";
 import LoggableType from "../../shared/log/LoggableType";
-import {
-  Field3dRendererCommand,
-  Field3dRendererCommand_AnyObj,
-  Field3dRendererCommand_AprilTagVariant
-} from "../../shared/renderers/Field3dRenderer";
+import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../shared/renderers/Field3dRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
@@ -167,16 +163,17 @@ export default class Field3dController implements TabController {
     this.sourceList.setOptionValues("gamePieceLegacy", "variant", sourceListValues);
 
     // Update AprilTag variants
-    let aprilTagVariants: { key: Field3dRendererCommand_AprilTagVariant; display: string }[] = fieldConfig?.isFTC
+    let aprilTagVariants: { key: string; display: string }[] = fieldConfig?.isFTC
       ? [
-          { key: "ftc-2in", display: "2 in" },
-          { key: "ftc-3in", display: "3 in" },
-          { key: "ftc-4in", display: "4 in" },
-          { key: "ftc-5in", display: "5 in" }
+          { key: "36h11-2in", display: "2 in" },
+          { key: "36h11-3in", display: "3 in" },
+          { key: "36h11-4in", display: "4 in" },
+          { key: "36h11-5in", display: "5 in" },
+          { key: "36h11-6.5in", display: "6.5 in" }
         ]
       : [
-          { key: "frc-36h11", display: "36h11" },
-          { key: "frc-16h5", display: "16h5" }
+          { key: "36h11-6.5in", display: "36h11" },
+          { key: "16h5-6in", display: "16h5" }
         ];
     this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
     this.sourceList.setOptionValues("aprilTagLegacy", "variant", aprilTagVariants);
@@ -511,20 +508,14 @@ export default class Field3dController implements TabController {
           break;
         case "aprilTag":
         case "aprilTagLegacy":
-          let variantRaw = source.options.variant;
-          let variant: Field3dRendererCommand_AprilTagVariant =
-            variantRaw === "frc-36h11" ||
-            variantRaw === "frc-16h5" ||
-            variantRaw === "ftc-2in" ||
-            variantRaw === "ftc-3in" ||
-            variantRaw === "ftc-4in" ||
-            variantRaw === "ftc-5in"
-              ? variantRaw
-              : "frc-36h11";
+          const variantRaw = source.options.variant as string;
+          const parts = variantRaw.split("-");
+          const family = parts[0] as "36h11" | "16h5";
+          const inches = parseFloat(parts[1]);
           objects.push({
             type: "aprilTag",
             poses: poses,
-            variant: variant
+            variant: { family, inches }
           });
           break;
         case "axes":
@@ -558,6 +549,10 @@ export default class Field3dController implements TabController {
     // Add built-in AprilTag objects
     if (fieldData !== undefined) {
       new Set(fieldData.aprilTags.map((x) => x.variant)).forEach((variant) => {
+        const parts = variant.split("-");
+        const family = parts[0] as "36h11" | "16h5";
+        const inches = parseFloat(parts[1]);
+
         objects.push({
           type: "aprilTagBuiltIn",
           poses: fieldData.aprilTags
@@ -576,7 +571,7 @@ export default class Field3dController implements TabController {
               };
               return annotatedPose;
             }),
-          variant: variant
+          variant: { family, inches }
         });
       });
     }

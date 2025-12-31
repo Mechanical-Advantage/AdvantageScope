@@ -217,7 +217,7 @@ The config file must be in the following format:
     ...
   ],
   "aprilTags": [ // List of supplemental AprilTag models (if not part of field model)
-    "variant": "frc-36h11" | "frc-16h5" | "ftc-2in" | "ftc-3in" | "ftc-4in" | "ftc-5in"
+    "variant": string // Format as "FAMILY-SIZEin" where "FAMILY" is "36h11" or "16h5" and "SIZE" is the length of the black section
     "id": number
     "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
     "position": [number, number, number] // Position offset in meters, applied after rotation
