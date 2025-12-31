@@ -44,6 +44,10 @@ Open the preferences window by clicking `App` > `Show Preferences...` (Windows/L
 
 Click `File` > `Download Logs...` to open the download window. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
 
+:::info
+CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) uses a nonstandard format that groups logs in subfolders. Select one or more folders in the list to download the log files as a group.
+:::
+
 :::tip
 When downloading multiple files, AdvantageScope skips any that already exist in the destination folder.
 :::
