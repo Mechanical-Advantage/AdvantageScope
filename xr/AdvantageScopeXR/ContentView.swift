@@ -28,6 +28,7 @@ struct ContentView : View {
     @StateObject private var appState = AppState()
     @StateObject private var recordingPreviewState = RecordingPreviewState()
     @State private var arManager = ARManager()
+    @Environment(\.scenePhase) var scenePhase
 
     private let networking = Networking()
     private let qrScanner = QRScanner()
@@ -79,6 +80,17 @@ struct ContentView : View {
                 arManager.addFrameCallback(qrScanner.processFrame)
                 webOverlay.messageHandler.arManager = arManager
                 qrScanner.start(appState)
+                arManager.start()
+            }
+            .onChange(of: scenePhase) { newPhase in
+                switch newPhase {
+                case .active:
+                    arManager.start()
+                case .background, .inactive:
+                    arManager.stop()
+                @unknown default:
+                    break
+                }
             }
             .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) {activity in
                 if (activity.webpageURL != nil) {

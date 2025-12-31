@@ -30,7 +30,6 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         session.delegate = self
         arConfig.worldAlignment = .gravity
         arConfig.planeDetection = .horizontal
-        session.run(arConfig)
         
         // Initialize view
         view.device = MTLCreateSystemDefaultDevice()
@@ -45,6 +44,14 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         // Start renderer
         renderer = ARRenderer(session: session, metalDevice: view.device!, renderDestination: view)
         renderer.drawRectResized(size: view.bounds.size)
+    }
+    
+    func start() {
+        session.run(arConfig)
+    }
+    
+    func stop() {
+        session.pause()
     }
     
     func addFrameCallback(_ callback: @escaping (_ frame: ARFrame) -> Void) {
