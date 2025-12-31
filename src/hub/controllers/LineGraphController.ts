@@ -349,7 +349,7 @@ export default class LineGraphController implements TabController {
     if (!(key in commandCache)) return null;
     let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
-    if (index === -1) return null;
+    if (index === -1 || index >= command.values.length - 1) return null;
     let output = this.PREVIEW_FORMAT.format(command.values[index]);
     if (unitCache !== null && command.hasUnit) {
       let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
