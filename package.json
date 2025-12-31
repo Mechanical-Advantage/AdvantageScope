@@ -104,7 +104,9 @@
     "publish": [],
     "afterSign": "notarize.js",
     "electronFuses": {
-      "runAsNode": false
+      "runAsNode": false,
+      "enableEmbeddedAsarIntegrityValidation": true,
+      "onlyLoadAppFromAsar": true
     },
     "files": [
       "www/**/*",
