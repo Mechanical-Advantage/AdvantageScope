@@ -10,7 +10,8 @@ import Log from "../../../shared/log/Log";
 import { getOrDefault } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { parseCanFrame } from "./spark/can-spec-util";
-import { sparkFramesSpec } from "./spark/spark-frames";
+import { sparkFramesSpec as sparkFramesSpec2025 } from "./spark/spark-frames-2025";
+import { sparkFramesSpec as sparkFramesSpec2026 } from "./spark/spark-frames-2026";
 
 type FirmwareVersion = {
   major: number;
@@ -20,19 +21,30 @@ type FirmwareVersion = {
 
 const PERSISTENT_SIZE = 8;
 const PERIODIC_SIZE = 14;
-const PERIODIC_API_CLASS = sparkFramesSpec.periodicFrames.STATUS_0.apiClass;
-const PERIODIC_FRAME_SPECS = [
-  sparkFramesSpec.periodicFrames.STATUS_0,
-  sparkFramesSpec.periodicFrames.STATUS_1,
-  sparkFramesSpec.periodicFrames.STATUS_2,
-  sparkFramesSpec.periodicFrames.STATUS_3,
-  sparkFramesSpec.periodicFrames.STATUS_4,
-  sparkFramesSpec.periodicFrames.STATUS_5,
-  sparkFramesSpec.periodicFrames.STATUS_6,
-  sparkFramesSpec.periodicFrames.STATUS_7
+const PERIODIC_API_CLASS = sparkFramesSpec2026.periodicFrames.STATUS_0.apiClass;
+const PERIODIC_FRAME_SPECS_2025 = [
+  sparkFramesSpec2025.periodicFrames.STATUS_0,
+  sparkFramesSpec2025.periodicFrames.STATUS_1,
+  sparkFramesSpec2025.periodicFrames.STATUS_2,
+  sparkFramesSpec2025.periodicFrames.STATUS_3,
+  sparkFramesSpec2025.periodicFrames.STATUS_4,
+  sparkFramesSpec2025.periodicFrames.STATUS_5,
+  sparkFramesSpec2025.periodicFrames.STATUS_6,
+  sparkFramesSpec2025.periodicFrames.STATUS_7
 ];
-const FIRMWARE_FRAME_SPEC = sparkFramesSpec.nonPeriodicFrames.GET_FIRMWARE_VERSION;
+const PERIODIC_FRAME_SPECS_2026 = [
+  sparkFramesSpec2026.periodicFrames.STATUS_0,
+  sparkFramesSpec2026.periodicFrames.STATUS_1,
+  sparkFramesSpec2026.periodicFrames.STATUS_2,
+  sparkFramesSpec2026.periodicFrames.STATUS_3,
+  sparkFramesSpec2026.periodicFrames.STATUS_4,
+  sparkFramesSpec2026.periodicFrames.STATUS_5,
+  sparkFramesSpec2026.periodicFrames.STATUS_6,
+  sparkFramesSpec2026.periodicFrames.STATUS_7
+];
+const FIRMWARE_FRAME_SPEC = sparkFramesSpec2026.nonPeriodicFrames.GET_FIRMWARE_VERSION;
 const FIRMWARE_API = (FIRMWARE_FRAME_SPEC.apiClass << 4) | FIRMWARE_FRAME_SPEC.apiIndex;
+const MIN_FIRMWARE_MAJOR_2026 = 26;
 
 const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
 const TEXT_DECODER = new TextDecoder("UTF-8");
@@ -122,9 +134,13 @@ export default class URCLSchema {
         let frameIndex = (messageId >> 6) & 0xf;
         let deviceKey = rootKey + getName(deviceId.toString());
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
+        let periodicFrameSpecs =
+          devices[deviceId].firmware.major >= MIN_FIRMWARE_MAJOR_2026
+            ? PERIODIC_FRAME_SPECS_2026
+            : PERIODIC_FRAME_SPECS_2025;
         log.putRaw(frameKey, messageTimestamp, messageValue);
-        if (frameIndex >= 0 && frameIndex < PERIODIC_FRAME_SPECS.length) {
-          let frameSpec = PERIODIC_FRAME_SPECS[frameIndex];
+        if (frameIndex >= 0 && frameIndex < periodicFrameSpecs.length) {
+          let frameSpec = periodicFrameSpecs[frameIndex];
           let frameValues = parseCanFrame(frameSpec, { data: messageValue }) as { [key: string]: BigNumber | boolean };
 
           // Variables for calculating derived values
