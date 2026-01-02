@@ -17,48 +17,6 @@ AdvantageScope includes the following tools:
 
 **View the [online documentation](https://docs.advantagescope.org) or find it offline by clicking the 📖 icon in the tab bar.**
 
-Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). For non-public inquiries, please send a message to software@team6328.org.
+Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). See the [contribution page](CONTRIBUTING.md) for more information on contributing to AdvantageScope. For non-public inquiries, please send a message to software@team6328.org.
 
 ![Example screenshot](/docs/docs/img/screenshot-light.png)
-
-## Building
-
-To install Node.js dependencies, run:
-
-```bash
-npm install
-```
-
-[Emscripten](https://emscripten.org) 4.0.12 also needs to be installed (instructions [here](https://emscripten.org/docs/getting_started/downloads.html)).
-
-To build for the current platform, run:
-
-```bash
-npm run build
-```
-
-To build for another platform, run:
-
-```bash
-npm run build -- --win --x64 # For full list of options, run "npx electron-builder help"
-```
-
-To build the WPILib or Lite distributions, set the environment variable `ASCOPE_DISTRIBUTION` before building:
-
-```bash
-export ASCOPE_DISTRIBUTION=WPILIB
-export ASCOPE_DISTRIBUTION=LITE
-```
-
-For development, run:
-
-```bash
-npm run watch
-npm start
-```
-
-## Assets
-
-For details on adding custom assets, see [Custom Assets](https://docs.advantagescope.org/more-features/custom-assets).
-
-Bundled assets are stored under [`bundledAssets`](/bundledAssets/). Larger assets are downloaded automatically by AdvantageScope from the [AdvantageScopeAssets](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) repository.
