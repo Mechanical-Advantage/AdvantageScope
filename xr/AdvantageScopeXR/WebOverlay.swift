@@ -8,9 +8,23 @@
 import SwiftUI
 import WebKit
 
-struct WebOverlay: UIViewRepresentable {
-    @EnvironmentObject var appState: AppState
-    private var webView: WKWebView!
+// MARK: - View (Struct)
+struct WebOverlayView: UIViewRepresentable {
+    @ObservedObject var overlay: WebOverlay
+
+    func makeUIView(context: Context) -> WKWebView  {
+        return overlay.webView
+    }
+    
+    func updateUIView(_ uiView: WKWebView, context: Context) {}
+}
+
+// MARK: - Controller (Class)
+class WebOverlay: ObservableObject {
+    var appState: AppState? {
+        didSet { messageHandler.appState = appState }
+    }
+    var webView: WKWebView!
     let messageHandler = ScriptMessageHandler()
     
     init() {
@@ -32,13 +46,6 @@ struct WebOverlay: UIViewRepresentable {
         }
 #endif
     }
-    
-    func makeUIView(context: Context) -> WKWebView  {
-        messageHandler.appState = appState
-        return webView;
-    }
-    
-    func updateUIView(_ uiView: WKWebView, context: Context) {}
     
     func load(_ serverAddress: String) {
         let url = URL(string: "http://" + serverAddress + ":" + String(Constants.serverPort))
