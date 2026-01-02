@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import ytdl from "@distube/ytdl-core";
 import { ChildProcess, spawn } from "child_process";
 import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
@@ -14,6 +13,7 @@ import jsonfile from "jsonfile";
 import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
+import { Innertube, Platform, UniversalCache } from "youtubei.js";
 import MatchInfo from "../../shared/MatchInfo";
 import Preferences from "../../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
@@ -122,8 +122,10 @@ export class VideoProcessor {
 
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
   private static tesseractScheduler = Tesseract.createScheduler();
+  private static innertube: Innertube | null = null;
 
   static {
+    // Initialize Tesseract
     let langPath: string;
     if (app.isPackaged) {
       langPath = path.join(__dirname, "..", "..");
@@ -139,6 +141,33 @@ export class VideoProcessor {
         this.tesseractScheduler.addWorker(worker);
       });
     }
+
+    // Initialize YouTube.js shim for Electron/Node environment
+    // This allows the library to decipher signatures using 'new Function'
+    Platform.shim.eval = async (data: any, env: any) => {
+      const properties = [];
+      if (env.n) {
+        properties.push(`n: exportedVars.nFunction("${env.n}")`);
+      }
+      if (env.sig) {
+        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`);
+      }
+      const code = `${data.output}\nreturn { ${properties.join(", ")} }`;
+      return new Function(code)();
+    };
+  }
+
+  private static async getInnertube(): Promise<Innertube> {
+    if (!this.innertube) {
+      this.innertube = await Innertube.create({ cache: new UniversalCache(false) });
+    }
+    return this.innertube;
+  }
+
+  private static getVideoId(url: string): string | null {
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
   }
 
   private static async getFFmpegPath(window: BrowserWindow): Promise<string> {
@@ -536,18 +565,51 @@ export class VideoProcessor {
 
   /** Gets the direct download URL based on a YouTube URL */
   private static getDirectUrlFromYouTubeUrl(youTubeUrl: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      ytdl
-        .getInfo(youTubeUrl)
-        .then((info) => {
-          let format = ytdl.chooseFormat(info.formats, { quality: "highestvideo", filter: "videoonly" });
-          if (format.url) {
-            resolve(format.url);
-          } else {
-            reject();
+    return new Promise(async (resolve, reject) => {
+      try {
+        const innertube = await VideoProcessor.getInnertube();
+        const videoId = VideoProcessor.getVideoId(youTubeUrl);
+        if (!videoId) {
+          reject();
+          return;
+        }
+
+        const info = await innertube.getInfo(videoId);
+
+        // internal usage of youtubei.js usually separates 'formats' (progressive)
+        // and 'adaptive_formats' (DASH/no audio). We want to check all of them.
+        let formats = [...(info.streaming_data?.formats || []), ...(info.streaming_data?.adaptive_formats || [])];
+
+        // Filter for formats that actually have video content
+        formats = formats.filter((f) => f.has_video);
+
+        // Sort by quality (height/resolution) descending
+        formats.sort((a, b) => (b.height || 0) - (a.height || 0));
+
+        // Iterate through formats until we find one that works
+        for (const format of formats) {
+          console.log("Height: " + format.height + ", QualityLabel: " + format.quality_label);
+          try {
+            // Check if URL exists, or attempt to decipher it
+            // This try/catch block is critical: if a specific format (like OTF)
+            // throws "No valid URL to decipher", we simply skip it and try the next one.
+            const url = format.url || (await format.decipher(innertube.session.player));
+            if (url) {
+              resolve(url);
+              return;
+            }
+          } catch (e) {
+            // Decipher failed for this specific format; continue to the next best one
+            continue;
           }
-        })
-        .catch(reject);
+        }
+
+        // If no formats worked
+        reject();
+      } catch (e) {
+        console.error(e);
+        reject();
+      }
     });
   }
 
@@ -577,9 +639,18 @@ export class VideoProcessor {
     } else {
       // Get titles of videos
       let titles: string[] = [];
+      const innertube = await VideoProcessor.getInnertube();
       for (let i = 0; i < videoKeys.length; i++) {
-        let info = await ytdl.getBasicInfo("https://youtube.com/watch?v=" + videoKeys[i]);
-        titles.push(info.videoDetails.author.name + " (" + info.videoDetails.title + ")");
+        try {
+          let info = await innertube.getBasicInfo(videoKeys[i]);
+          if (info.basic_info.author && info.basic_info.title) {
+            titles.push(info.basic_info.author + " (" + info.basic_info.title + ")");
+          } else {
+            titles.push("Unknown Video");
+          }
+        } catch {
+          titles.push("Unknown Video");
+        }
       }
 
       return new Promise((resolve, reject) => {

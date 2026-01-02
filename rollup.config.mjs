@@ -123,7 +123,7 @@ const mainBundles = isLite
         "path",
         "basic-ftp",
         "download",
-        "ytdl-core",
+        "youtubei.js",
         "tesseract.js",
         "lzma-native"
       ]),
