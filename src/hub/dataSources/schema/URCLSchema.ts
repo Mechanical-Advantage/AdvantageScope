@@ -13,12 +13,6 @@ import { parseCanFrame } from "./spark/can-spec-util";
 import { sparkFramesSpec as sparkFramesSpec2025 } from "./spark/spark-frames-2025";
 import { sparkFramesSpec as sparkFramesSpec2026 } from "./spark/spark-frames-2026";
 
-type FirmwareVersion = {
-  major: number;
-  minor: number;
-  build: number;
-};
-
 const PERSISTENT_SIZE = 8;
 const PERIODIC_SIZE = 14;
 const PERIODIC_API_CLASS = sparkFramesSpec2026.periodicFrames.STATUS_0.apiClass;
@@ -44,7 +38,6 @@ const PERIODIC_FRAME_SPECS_2026 = [
 ];
 const FIRMWARE_FRAME_SPEC = sparkFramesSpec2026.nonPeriodicFrames.GET_FIRMWARE_VERSION;
 const FIRMWARE_API = (FIRMWARE_FRAME_SPEC.apiClass << 4) | FIRMWARE_FRAME_SPEC.apiIndex;
-const MIN_FIRMWARE_MAJOR_2026 = 26;
 
 const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
 const TEXT_DECODER = new TextDecoder("UTF-8");
@@ -56,7 +49,7 @@ export default class URCLSchema {
    * Parses a set of frames recorded by URCL using revision 3.
    */
   static parseURCLr3(log: Log, key: string, timestamp: number, value: Uint8Array) {
-    let devices: { [key: string]: { alias?: string; firmware?: FirmwareVersion } } = {};
+    let devices: { [key: string]: { alias?: string; majorFirmware?: number } } = {};
     if (!key.endsWith("Raw/Periodic")) return;
     const rootKey = key.slice(0, key.length - "Raw/Periodic".length);
     const aliasKey = rootKey + "Raw/Aliases";
@@ -93,27 +86,17 @@ export default class URCLSchema {
         let fullMessageValue = new Uint8Array(8);
         fullMessageValue.set(messageValue, 0);
         let firmwareValues = parseCanFrame(FIRMWARE_FRAME_SPEC, { data: fullMessageValue });
-        devices[deviceId].firmware = {
-          major: Number(firmwareValues.MAJOR),
-          minor: Number(firmwareValues.MINOR),
-          build: Number(firmwareValues.FIX)
-        };
+        devices[deviceId].majorFirmware = Number(firmwareValues.MAJOR);
       }
     }
 
     // Write firmware versions to log
     Object.keys(devices).forEach((deviceId) => {
-      if (devices[deviceId].firmware === undefined) {
+      if (devices[deviceId].majorFirmware === undefined) {
         return;
       }
-      let firmwareString =
-        devices[deviceId].firmware?.major.toString() +
-        "." +
-        devices[deviceId].firmware?.minor.toString() +
-        "." +
-        devices[deviceId].firmware?.build.toString();
       let firmwareKey = rootKey + getName(deviceId) + "/Firmware";
-      log.putString(firmwareKey, timestamp, firmwareString);
+      log.putString(firmwareKey, timestamp, devices[deviceId].majorFirmware.toString());
       log.createBlankField(rootKey + getName(deviceId), LoggableType.Empty);
       log.setGeneratedParent(rootKey + getName(deviceId));
     });
@@ -125,7 +108,11 @@ export default class URCLSchema {
       let messageId = periodicDataView.getUint16(position + 4, true);
       let messageValue = value.slice(position + 6, position + 14);
       let deviceId = messageId & 0x3f;
-      if (!(deviceId in devices) || devices[deviceId].firmware === undefined || devices[deviceId].firmware.major < 25) {
+      if (
+        !(deviceId in devices) ||
+        devices[deviceId].majorFirmware === undefined ||
+        devices[deviceId].majorFirmware < 25
+      ) {
         continue;
       }
 
@@ -135,9 +122,10 @@ export default class URCLSchema {
         let deviceKey = rootKey + getName(deviceId.toString());
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         let periodicFrameSpecs =
-          devices[deviceId].firmware.major >= MIN_FIRMWARE_MAJOR_2026
-            ? PERIODIC_FRAME_SPECS_2026
-            : PERIODIC_FRAME_SPECS_2025;
+          devices[deviceId].majorFirmware >= 26 ? PERIODIC_FRAME_SPECS_2026 : PERIODIC_FRAME_SPECS_2025;
+        console.log(
+          "Spark " + deviceId.toString() + " decoded as " + (devices[deviceId].majorFirmware >= 26 ? "2026" : "2025")
+        );
         log.putRaw(frameKey, messageTimestamp, messageValue);
         if (frameIndex >= 0 && frameIndex < periodicFrameSpecs.length) {
           let frameSpec = periodicFrameSpecs[frameIndex];
