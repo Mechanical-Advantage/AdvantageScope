@@ -25,6 +25,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Check formatting
         run: npm run check-format
 
@@ -42,6 +44,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact
@@ -68,6 +72,8 @@ jobs:
           version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -98,6 +104,8 @@ jobs:
           version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -130,6 +138,8 @@ jobs:
           version: 4.0.12
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles
@@ -195,6 +205,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
@@ -252,6 +264,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -329,6 +343,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Linux packages
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapd
@@ -397,6 +413,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
@@ -458,6 +476,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -532,6 +552,8 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:

@@ -88,7 +88,7 @@
     "pngjs": "^7.0.0",
     "tesseract.js": "^6.0.0",
     "ws": "^8.18.0",
-    "youtube-dl-exec": "^3.0.28"
+    "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#0fcfa3bc738d280d51fe73785490a681f8029875"
   },
   "prettier": {
     "printWidth": 120,
