@@ -13,7 +13,7 @@ import jsonfile from "jsonfile";
 import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
-import { Innertube, Platform, UniversalCache } from "youtubei.js";
+import youtubedl from "youtube-dl-exec";
 import MatchInfo from "../../shared/MatchInfo";
 import Preferences from "../../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
@@ -122,7 +122,6 @@ export class VideoProcessor {
 
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
   private static tesseractScheduler = Tesseract.createScheduler();
-  private static innertube: Innertube | null = null;
 
   static {
     // Initialize Tesseract
@@ -141,27 +140,38 @@ export class VideoProcessor {
         this.tesseractScheduler.addWorker(worker);
       });
     }
-
-    // Initialize YouTube.js shim for Electron/Node environment
-    // This allows the library to decipher signatures using 'new Function'
-    Platform.shim.eval = async (data: any, env: any) => {
-      const properties = [];
-      if (env.n) {
-        properties.push(`n: exportedVars.nFunction("${env.n}")`);
-      }
-      if (env.sig) {
-        properties.push(`sig: exportedVars.sigFunction("${env.sig}")`);
-      }
-      const code = `${data.output}\nreturn { ${properties.join(", ")} }`;
-      return new Function(code)();
-    };
   }
 
-  private static async getInnertube(): Promise<Innertube> {
-    if (!this.innertube) {
-      this.innertube = await Innertube.create({ cache: new UniversalCache(false) });
+  /**
+   * Helper to run youtube-dl-exec.
+   * Catches errors regarding missing Python and displays a dialog to the user.
+   */
+  private static async runYoutubeDl(url: string, flags: any, window?: BrowserWindow): Promise<any> {
+    try {
+      return await youtubedl(url, flags);
+    } catch (e: any) {
+      const errorStr = String(e);
+      // Check for common error indicators that Python is missing or invalid
+      if (
+        errorStr.includes("python3") ||
+        errorStr.includes("Python") ||
+        errorStr.includes("ENOENT") ||
+        (e.code && e.code === "ENOENT")
+      ) {
+        if (window && !window.isDestroyed()) {
+          dialog.showMessageBox(window, {
+            type: "error",
+            title: "Error",
+            message: "Python Installation Required",
+            detail:
+              "This feature requires Python 3.9 or above available in your system as python3. Please install Python and try again.",
+            icon: WINDOW_ICON
+          });
+        }
+        throw new Error("Python missing");
+      }
+      throw e;
     }
-    return this.innertube;
   }
 
   private static getVideoId(url: string): string | null {
@@ -479,10 +489,11 @@ export class VideoProcessor {
             icon: WINDOW_ICON
           });
         } else {
-          this.getDirectUrlFromYouTubeUrl(clipboardText)
+          this.getDirectUrlFromYouTubeUrl(clipboardText, window)
             .then((path) => loadPath(path, VIDEO_CACHE))
-            .catch(() => {
+            .catch((silent) => {
               dataCallback({ uuid: uuid, error: true });
+              if (silent === true) return;
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
@@ -497,18 +508,11 @@ export class VideoProcessor {
       case VideoSource.TheBlueAlliance:
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
-            this.getDirectUrlFromYouTubeUrl(url)
+            this.getDirectUrlFromYouTubeUrl(url, window)
               .then((path) => loadPath(path, VIDEO_CACHE))
-              .catch(() => {
+              .catch((silent) => {
                 dataCallback({ uuid: uuid, error: true });
-                dialog.showMessageBox(window, {
-                  type: "error",
-                  title: "Error",
-                  message: "YouTube download failed",
-                  detail:
-                    "There was an error while trying to open the match video from YouTube. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
-                  icon: WINDOW_ICON
-                });
+                if (silent === true) return;
               });
           })
           .catch((silent) => {
@@ -563,52 +567,49 @@ export class VideoProcessor {
       });
   }
 
-  /** Gets the direct download URL based on a YouTube URL */
-  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string): Promise<string> {
+  /** Gets the direct download URL based on a YouTube URL using youtube-dl-exec */
+  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string, window: BrowserWindow): Promise<string> {
     return new Promise(async (resolve, reject) => {
       try {
-        const innertube = await VideoProcessor.getInnertube();
         const videoId = VideoProcessor.getVideoId(youTubeUrl);
         if (!videoId) {
           reject();
           return;
         }
+        const cleanUrl = "https://youtube.com/watch?v=" + videoId;
 
-        const info = await innertube.getInfo(videoId);
+        // Get video info
+        const output = await this.runYoutubeDl(
+          cleanUrl,
+          {
+            dumpSingleJson: true,
+            noWarnings: true,
+            noCheckCertificates: true,
+            preferFreeFormats: true,
+            youtubeSkipDashManifest: true
+          },
+          window
+        );
 
-        // internal usage of youtubei.js usually separates 'formats' (progressive)
-        // and 'adaptive_formats' (DASH/no audio). We want to check all of them.
-        let formats = [...(info.streaming_data?.formats || []), ...(info.streaming_data?.adaptive_formats || [])];
-
-        // Filter for formats that actually have video content
-        formats = formats.filter((f) => f.has_video);
-
+        // Filter formats
+        let formats = output.formats || [];
+        // Filter for formats that have video codec (not 'none')
+        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none");
         // Sort by quality (height/resolution) descending
-        formats.sort((a, b) => (b.height || 0) - (a.height || 0));
+        formats.sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
 
-        // Iterate through formats until we find one that works
-        for (const format of formats) {
-          console.log("Height: " + format.height + ", QualityLabel: " + format.quality_label);
-          try {
-            // Check if URL exists, or attempt to decipher it
-            // This try/catch block is critical: if a specific format (like OTF)
-            // throws "No valid URL to decipher", we simply skip it and try the next one.
-            const url = format.url || (await format.decipher(innertube.session.player));
-            if (url) {
-              resolve(url);
-              return;
-            }
-          } catch (e) {
-            // Decipher failed for this specific format; continue to the next best one
-            continue;
-          }
+        // Find best url
+        if (formats.length > 0) {
+          resolve(formats[0].url);
+        } else {
+          reject();
         }
-
-        // If no formats worked
-        reject();
       } catch (e) {
-        console.error(e);
-        reject();
+        // If it's not the "Python missing" error (which already showed a dialog), log it
+        if (String(e) !== "Error: Python missing") {
+          console.error(e);
+        }
+        reject(true); // Silent reject to avoid double dialogs if the caller also has a catch block
       }
     });
   }
@@ -637,20 +638,31 @@ export class VideoProcessor {
     } else if (videoKeys.length === 1) {
       return "https://youtube.com/watch?v=" + videoKeys[0];
     } else {
-      // Get titles of videos
+      // Get titles of videos using youtube-dl-exec
       let titles: string[] = [];
-      const innertube = await VideoProcessor.getInnertube();
-      for (let i = 0; i < videoKeys.length; i++) {
+      const titlePromises = videoKeys.map(async (key) => {
         try {
-          let info = await innertube.getBasicInfo(videoKeys[i]);
-          if (info.basic_info.author && info.basic_info.title) {
-            titles.push(info.basic_info.author + " (" + info.basic_info.title + ")");
-          } else {
-            titles.push("Unknown Video");
-          }
-        } catch {
-          titles.push("Unknown Video");
+          const url = "https://youtube.com/watch?v=" + key;
+          const output = await this.runYoutubeDl(
+            url,
+            {
+              getTitle: true,
+              noWarnings: true,
+              noCheckCertificates: true
+            },
+            window
+          );
+          return (output as string).trim() || "Unknown Video";
+        } catch (e) {
+          if (String(e) === "Error: Python missing") throw e; // Stop immediately if python is missing
+          return "Unknown Video";
         }
+      });
+
+      try {
+        titles = await Promise.all(titlePromises);
+      } catch (e) {
+        throw true; // Silent reject
       }
 
       return new Promise((resolve, reject) => {
