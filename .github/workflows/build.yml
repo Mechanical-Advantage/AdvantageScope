@@ -209,6 +209,8 @@ jobs:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Download "yt-dlp" binary
         run: node node_modules/youtube-dl-exec/scripts/postinstall.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
@@ -270,6 +272,8 @@ jobs:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Download "yt-dlp" binary
         run: node node_modules/youtube-dl-exec/scripts/postinstall.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -351,6 +355,8 @@ jobs:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Download "yt-dlp" binary
         run: node node_modules/youtube-dl-exec/scripts/postinstall.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Linux packages
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapd
@@ -423,6 +429,8 @@ jobs:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Download "yt-dlp" binary
         run: node node_modules/youtube-dl-exec/scripts/postinstall.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
@@ -488,6 +496,8 @@ jobs:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Download "yt-dlp" binary
         run: node node_modules/youtube-dl-exec/scripts/postinstall.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -566,6 +576,8 @@ jobs:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
       - name: Download "yt-dlp" binary
         run: node node_modules/youtube-dl-exec/scripts/postinstall.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
