@@ -123,9 +123,6 @@ export default class URCLSchema {
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
         let periodicFrameSpecs =
           devices[deviceId].majorFirmware >= 26 ? PERIODIC_FRAME_SPECS_2026 : PERIODIC_FRAME_SPECS_2025;
-        console.log(
-          "Spark " + deviceId.toString() + " decoded as " + (devices[deviceId].majorFirmware >= 26 ? "2026" : "2025")
-        );
         log.putRaw(frameKey, messageTimestamp, messageValue);
         if (frameIndex >= 0 && frameIndex < periodicFrameSpecs.length) {
           let frameSpec = periodicFrameSpecs[frameIndex];
