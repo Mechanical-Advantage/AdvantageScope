@@ -206,10 +206,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Download "yt-dlp" binary
-        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
@@ -268,10 +264,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Download "yt-dlp" binary
-        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
@@ -352,10 +344,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Download "yt-dlp" binary
-        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install Linux packages
         run: |
@@ -426,10 +414,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Download "yt-dlp" binary
-        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
-        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
         uses: actions/download-artifact@v4
@@ -492,10 +476,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Download "yt-dlp" binary
-        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
@@ -572,10 +552,6 @@ jobs:
           cache: "npm"
       - name: Install Node.js dependencies
         run: npm ci
-        env:
-          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
-      - name: Download "yt-dlp" binary
-        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
