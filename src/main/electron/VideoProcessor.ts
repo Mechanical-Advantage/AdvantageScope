@@ -151,6 +151,7 @@ export class VideoProcessor {
       return await youtubedl(url, flags);
     } catch (e: any) {
       const errorStr = String(e);
+      console.error(e);
       // Check for common error indicators that Python is missing or invalid
       if (
         errorStr.includes("python3") ||
