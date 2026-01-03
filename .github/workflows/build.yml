@@ -187,7 +187,7 @@ jobs:
 
   build-win:
     name: Build for Windows (${{ matrix.arch }})
-    # needs: compile-frc6328
+    needs: compile-frc6328
     runs-on: windows-latest
 
     strategy:
@@ -246,7 +246,7 @@ jobs:
 
   build-mac:
     name: Build for macOS (${{ matrix.arch }})
-    # needs: compile-frc6328
+    needs: compile-frc6328
     runs-on: macos-latest
 
     strategy:
@@ -316,7 +316,7 @@ jobs:
 
   build-linux:
     name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
-    # needs: compile-frc6328
+    needs: compile-frc6328
     runs-on: ubuntu-latest
 
     strategy:
@@ -395,7 +395,7 @@ jobs:
 
   build-wpilib-win:
     name: "WPILib: Build for Windows (${{ matrix.arch }})"
-    # needs: compile-wpilib
+    needs: compile-wpilib
     runs-on: windows-latest
 
     strategy:
@@ -458,7 +458,7 @@ jobs:
 
   build-wpilib-mac:
     name: "WPILib: Build for macOS (${{ matrix.arch }})"
-    # needs: compile-wpilib
+    needs: compile-wpilib
     runs-on: macos-latest
 
     strategy:
@@ -534,7 +534,7 @@ jobs:
 
   build-wpilib-linux:
     name: "WPILib: Build for Linux (${{ matrix.arch }})"
-    # needs: compile-wpilib
+    needs: compile-wpilib
     runs-on: ubuntu-latest
 
     strategy:
