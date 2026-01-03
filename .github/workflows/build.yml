@@ -206,7 +206,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Download "yt-dlp" binary
+        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
@@ -265,7 +267,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Download "yt-dlp" binary
+        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -344,7 +348,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Download "yt-dlp" binary
+        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
       - name: Install Linux packages
         run: |
           sudo apt-get update; sudo apt-get install --no-install-recommends -y libarchive-tools snapd
@@ -414,7 +420,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Download "yt-dlp" binary
+        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
@@ -477,7 +485,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Download "yt-dlp" binary
+        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
       - name: Load macOS certificate
         if: github.event_name != 'pull_request'
         run: |
@@ -553,7 +563,9 @@ jobs:
       - name: Install Node.js dependencies
         run: npm ci
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Download "yt-dlp" binary
+        run: node node_modules/youtube-dl-exec/scripts/postinstall.js
       - name: Download bundles
         uses: actions/download-artifact@v4
         with:
