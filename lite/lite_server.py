@@ -1,4 +1,4 @@
-# Copyright (c) 2021-2025 Littleton Robotics
+# Copyright (c) 2021-2026 Littleton Robotics
 # http://github.com/Mechanical-Advantage
 #
 # Use of this source code is governed by a BSD
@@ -158,22 +158,22 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_POST(self):
         request = urllib.parse.urlparse(self.path)
         if request.path.startswith(WEBROOT + "/uploadAsset") & ENABLE_FILESYSTEM_ACCESS:
-            content_type, options = parse_options_header(self.headers.get("Content-Type",""))
+            content_type, options = parse_options_header(self.headers.get("Content-Type", ""))
 
             if content_type == "multipart/form-data" and 'boundary' in options:
                 stream = self.rfile
                 boundary = options["boundary"]
-                parser = MultipartParser(stream, boundary,content_length=int(self.headers.get("Content-Length",-1)))
+                parser = MultipartParser(stream, boundary, content_length=int(self.headers.get("Content-Length", -1)))
 
                 for part in parser:
                     if part.filename:
                         if part.filename.lower().endswith(".zip"):
-                            asset_zip= f"{EXTRA_ASSETS_PATH}/{part.filename}"
+                            asset_zip = f"{EXTRA_ASSETS_PATH}/{part.filename}"
                             part.save_as(asset_zip)
                             temp_path = EXTRA_ASSETS_PATH + "/AS_TEMP/"
                             asset_path = temp_path + part.filename[:-len(".zip")]  # remove .zip ending
 
-                            with zipfile.ZipFile(asset_zip,"r") as zip_ref:
+                            with zipfile.ZipFile(asset_zip, "r") as zip_ref:
                                 zip_ref.extractall(asset_path)
                                 os.remove(asset_zip)
 
@@ -182,7 +182,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                                 for filename in filenames:
                                     if filename.lower().endswith(".zip"):
                                         with zipfile.ZipFile(f"{dirpath}/{filename}", "r") as zip_ref:
-                                            filename_no_ext = filename[:-4] # remove .zip (4 char)
+                                            filename_no_ext = filename[:-4]  # remove .zip (4 char)
                                             zip_ref.extractall(f"{dirpath}/{filename_no_ext}")
                                             os.remove(f"{dirpath}/{filename}")
                             # find config folders
@@ -191,10 +191,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                                     if filename == "config.json":
                                         # recursively copy the parent directory to extra assets, overwriting existing files
                                         dirname = os.path.basename(dirpath)
-                                        shutil.copytree(dirpath,f"{EXTRA_ASSETS_PATH}/{dirname}",dirs_exist_ok=True)
+                                        shutil.copytree(dirpath, f"{EXTRA_ASSETS_PATH}/{dirname}", dirs_exist_ok=True)
                             shutil.rmtree(temp_path)
-
-
 
                             self.send_response(200)
                             self.end_headers()
@@ -208,9 +206,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         else:
             self.send_response(404)
             self.end_headers()
-
-
-
 
 
 if __name__ == "__main__":

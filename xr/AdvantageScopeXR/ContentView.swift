@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -32,7 +32,7 @@ struct ContentView : View {
 
     private let networking = Networking()
     private let qrScanner = QRScanner()
-    private let webOverlay = WebOverlay()
+    @StateObject private var webOverlay = WebOverlay()
     
     var body: some View {
         ARViewContainer(arManager: $arManager)
@@ -40,7 +40,7 @@ struct ContentView : View {
         
             // Web overlay
             .overlay(
-                webOverlay
+                WebOverlayView(overlay: webOverlay)
                     .ignoresSafeArea(.all)
                     .allowsHitTesting(false)
                     .opacity(showWebOverlay() ? 1 : 0)
@@ -74,6 +74,7 @@ struct ContentView : View {
                 }
             }
             .onAppear() {
+                webOverlay.appState = appState
                 networking.start(appState, webOverlay)
                 arManager.appState = appState
                 arManager.webOverlay = webOverlay

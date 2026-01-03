@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -20,6 +20,7 @@ export namespace XRServer {
   let httpServer: http.Server | null = null;
   let wsServer: WebSocketServer | null = null;
   let xrSettings: XRSettings | null = null;
+  let periodicInterval: NodeJS.Timeout | null = null;
   const msgpackEncoder = new Encoder();
   export let assetsSupplier: () => AdvantageScopeAssets;
 
@@ -138,7 +139,7 @@ export namespace XRServer {
 
     // Create WebSocket server
     wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
-    wsServer.on("connection", (socket) => {
+    periodicInterval = setInterval(() => {
       // Send current settings
       if (xrSettings !== null) {
         let packet: XRPacket = {
@@ -146,7 +147,10 @@ export namespace XRServer {
           time: new Date().getTime(),
           value: xrSettings
         };
-        socket.send(msgpackEncoder.encode(packet));
+        let message = msgpackEncoder.encode(packet);
+        wsServer?.clients.forEach((client) => {
+          client.send(message);
+        });
       }
 
       // Send assets
@@ -155,14 +159,21 @@ export namespace XRServer {
         time: new Date().getTime(),
         value: assetsSupplier()
       };
-      socket.send(msgpackEncoder.encode(packet));
-    });
+      let message = msgpackEncoder.encode(packet);
+      wsServer?.clients.forEach((client) => {
+        client.send(message);
+      });
+    }, 500);
   }
 
   export function stop() {
     httpServer?.close();
     wsServer?.close();
     xrSettings = null;
+    if (periodicInterval !== null) {
+      clearInterval(periodicInterval);
+      periodicInterval = null;
+    }
   }
 
   export function setXRSettings(settings: XRSettings) {
