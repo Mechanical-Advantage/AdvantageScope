@@ -5,7 +5,6 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import ytdl from "@distube/ytdl-core";
 import { ChildProcess, spawn } from "child_process";
 import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
@@ -14,6 +13,7 @@ import jsonfile from "jsonfile";
 import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
+import youtubedl from "youtube-dl-exec";
 import MatchInfo from "../../shared/MatchInfo";
 import Preferences from "../../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
@@ -124,6 +124,7 @@ export class VideoProcessor {
   private static tesseractScheduler = Tesseract.createScheduler();
 
   static {
+    // Initialize Tesseract
     let langPath: string;
     if (app.isPackaged) {
       langPath = path.join(__dirname, "..", "..");
@@ -139,6 +140,44 @@ export class VideoProcessor {
         this.tesseractScheduler.addWorker(worker);
       });
     }
+  }
+
+  /**
+   * Helper to run youtube-dl-exec.
+   * Catches errors regarding missing Python and displays a dialog to the user.
+   */
+  private static async runYoutubeDl(url: string, flags: any, window?: BrowserWindow): Promise<any> {
+    try {
+      return await youtubedl(url, flags);
+    } catch (e: any) {
+      const errorStr = String(e);
+      // Check for common error indicators that Python is missing or invalid
+      if (
+        errorStr.includes("python3") ||
+        errorStr.includes("Python") ||
+        errorStr.includes("ENOENT") ||
+        (e.code && e.code === "ENOENT")
+      ) {
+        if (window && !window.isDestroyed()) {
+          dialog.showMessageBox(window, {
+            type: "error",
+            title: "Error",
+            message: "Python Installation Required",
+            detail:
+              "This feature requires Python 3.9 or above available in your system as python3. Please install Python and try again.",
+            icon: WINDOW_ICON
+          });
+        }
+        throw new Error("Python missing");
+      }
+      throw e;
+    }
+  }
+
+  private static getVideoId(url: string): string | null {
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
   }
 
   private static async getFFmpegPath(window: BrowserWindow): Promise<string> {
@@ -450,10 +489,11 @@ export class VideoProcessor {
             icon: WINDOW_ICON
           });
         } else {
-          this.getDirectUrlFromYouTubeUrl(clipboardText)
+          this.getDirectUrlFromYouTubeUrl(clipboardText, window)
             .then((path) => loadPath(path, VIDEO_CACHE))
-            .catch(() => {
+            .catch((silent) => {
               dataCallback({ uuid: uuid, error: true });
+              if (silent === true) return;
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
@@ -468,18 +508,11 @@ export class VideoProcessor {
       case VideoSource.TheBlueAlliance:
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
-            this.getDirectUrlFromYouTubeUrl(url)
+            this.getDirectUrlFromYouTubeUrl(url, window)
               .then((path) => loadPath(path, VIDEO_CACHE))
-              .catch(() => {
+              .catch((silent) => {
                 dataCallback({ uuid: uuid, error: true });
-                dialog.showMessageBox(window, {
-                  type: "error",
-                  title: "Error",
-                  message: "YouTube download failed",
-                  detail:
-                    "There was an error while trying to open the match video from YouTube. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
-                  icon: WINDOW_ICON
-                });
+                if (silent === true) return;
               });
           })
           .catch((silent) => {
@@ -534,20 +567,50 @@ export class VideoProcessor {
       });
   }
 
-  /** Gets the direct download URL based on a YouTube URL */
-  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      ytdl
-        .getInfo(youTubeUrl)
-        .then((info) => {
-          let format = ytdl.chooseFormat(info.formats, { quality: "highestvideo", filter: "videoonly" });
-          if (format.url) {
-            resolve(format.url);
-          } else {
-            reject();
-          }
-        })
-        .catch(reject);
+  /** Gets the direct download URL based on a YouTube URL using youtube-dl-exec */
+  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string, window: BrowserWindow): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const videoId = VideoProcessor.getVideoId(youTubeUrl);
+        if (!videoId) {
+          reject();
+          return;
+        }
+        const cleanUrl = "https://youtube.com/watch?v=" + videoId;
+
+        // Get video info
+        const output = await this.runYoutubeDl(
+          cleanUrl,
+          {
+            dumpSingleJson: true,
+            noWarnings: true,
+            noCheckCertificates: true,
+            preferFreeFormats: true,
+            youtubeSkipDashManifest: true
+          },
+          window
+        );
+
+        // Filter formats
+        let formats = output.formats || [];
+        // Filter for formats that have video codec (not 'none')
+        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none");
+        // Sort by quality (height/resolution) descending
+        formats.sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
+
+        // Find best url
+        if (formats.length > 0) {
+          resolve(formats[0].url);
+        } else {
+          reject();
+        }
+      } catch (e) {
+        // If it's not the "Python missing" error (which already showed a dialog), log it
+        if (String(e) !== "Error: Python missing") {
+          console.error(e);
+        }
+        reject(true); // Silent reject to avoid double dialogs if the caller also has a catch block
+      }
     });
   }
 
@@ -575,11 +638,31 @@ export class VideoProcessor {
     } else if (videoKeys.length === 1) {
       return "https://youtube.com/watch?v=" + videoKeys[0];
     } else {
-      // Get titles of videos
+      // Get titles of videos using youtube-dl-exec
       let titles: string[] = [];
-      for (let i = 0; i < videoKeys.length; i++) {
-        let info = await ytdl.getBasicInfo("https://youtube.com/watch?v=" + videoKeys[i]);
-        titles.push(info.videoDetails.author.name + " (" + info.videoDetails.title + ")");
+      const titlePromises = videoKeys.map(async (key) => {
+        try {
+          const url = "https://youtube.com/watch?v=" + key;
+          const output = await this.runYoutubeDl(
+            url,
+            {
+              getTitle: true,
+              noWarnings: true,
+              noCheckCertificates: true
+            },
+            window
+          );
+          return (output as string).trim() || "Unknown Video";
+        } catch (e) {
+          if (String(e) === "Error: Python missing") throw e; // Stop immediately if python is missing
+          return "Unknown Video";
+        }
+      });
+
+      try {
+        titles = await Promise.all(titlePromises);
+      } catch (e) {
+        throw true; // Silent reject
       }
 
       return new Promise((resolve, reject) => {

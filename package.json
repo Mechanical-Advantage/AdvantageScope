@@ -77,7 +77,6 @@
     "typescript": "5.6.3"
   },
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.12",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "basic-ftp": "^5.0.5",
@@ -88,7 +87,8 @@
     "lzma-native": "^8.0.6",
     "pngjs": "^7.0.0",
     "tesseract.js": "^6.0.0",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "youtube-dl-exec": "^3.0.28"
   },
   "prettier": {
     "printWidth": 120,
