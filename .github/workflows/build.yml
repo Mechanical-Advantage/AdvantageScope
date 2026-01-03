@@ -179,7 +179,21 @@ jobs:
       - name: Install Metal toolchain
         run: xcodebuild -downloadComponent MetalToolchain
       - name: Download iOS simulator
-        run: xcodebuild -downloadPlatform iOS
+        run: |
+          n=0
+          until [ "$n" -ge 5 ]
+          do
+            echo "Attempting download (Try $((n+1)))..."
+            xcodebuild -downloadPlatform iOS && break
+            n=$((n+1))
+            echo "Download failed. Sleeping 10 seconds before retry..."
+            sleep 10
+          done
+
+          if [ "$n" -ge 5 ]; then
+            echo "Failed to download iOS simulator after 5 attempts."
+            exit 1
+          fi
       - name: Build AdvantageScopeXR
         run: xcodebuild -project xr/AdvantageScopeXR.xcodeproj -scheme AdvantageScopeXR -sdk iphonesimulator build
       - name: Build AdvantageScopeXRClip
