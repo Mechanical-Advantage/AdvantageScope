@@ -148,6 +148,17 @@ export class VideoProcessor {
    */
   private static async runYoutubeDl(url: string, flags: any, window?: BrowserWindow): Promise<any> {
     try {
+      if (app.isPackaged) {
+        process.env.YOUTUBE_DL_DIR = path.join(
+          __dirname,
+          "..",
+          "..",
+          "app.asar.unpacked",
+          "node_modules",
+          "youtube-dl-exec",
+          "bin"
+        );
+      }
       return await youtubedl(url, flags);
     } catch (e: any) {
       const errorStr = String(e);
@@ -165,7 +176,7 @@ export class VideoProcessor {
             title: "Error",
             message: "Python Installation Required",
             detail:
-              "This feature requires Python 3.9 or above available in your system as python3. Please install Python and try again.",
+              "This feature requires Python 3.9 or above available in your system. Please install Python and try again.",
             icon: WINDOW_ICON
           });
         }
