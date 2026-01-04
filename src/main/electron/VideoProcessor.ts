@@ -13,7 +13,7 @@ import jsonfile from "jsonfile";
 import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
-import youtubedl from "youtube-dl-exec";
+import youtubedl, { Exec, Payload } from "youtube-dl-exec";
 import MatchInfo from "../../shared/MatchInfo";
 import Preferences from "../../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
@@ -122,6 +122,7 @@ export class VideoProcessor {
 
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
   private static tesseractScheduler = Tesseract.createScheduler();
+  private static ytInst: (...args: Parameters<Exec>) => Promise<Payload | string>;
 
   static {
     // Initialize Tesseract
@@ -140,6 +141,24 @@ export class VideoProcessor {
         this.tesseractScheduler.addWorker(worker);
       });
     }
+
+    // Initialize youtube-dl-exec
+    if (app.isPackaged) {
+      this.ytInst = youtubedl.create(
+        path.join(
+          __dirname,
+          "..",
+          "..",
+          "app.asar.unpacked",
+          "node_modules",
+          "youtube-dl-exec",
+          "bin",
+          process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp"
+        )
+      );
+    } else {
+      this.ytInst = youtubedl;
+    }
   }
 
   /**
@@ -148,7 +167,7 @@ export class VideoProcessor {
    */
   private static async runYoutubeDl(url: string, flags: any, window?: BrowserWindow): Promise<any> {
     try {
-      return await youtubedl(url, flags);
+      return await VideoProcessor.ytInst(url, flags);
     } catch (e: any) {
       const errorStr = String(e);
       // Check for common error indicators that Python is missing or invalid
@@ -164,7 +183,7 @@ export class VideoProcessor {
             title: "Error",
             message: "Python Installation Required",
             detail:
-              "This feature requires Python 3.9 or above available in your system as python3. Please install Python and try again.",
+              "This feature requires Python 3.9 or above available in your system. Please install Python and try again.",
             icon: WINDOW_ICON
           });
         }
