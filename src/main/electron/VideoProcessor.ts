@@ -13,7 +13,7 @@ import jsonfile from "jsonfile";
 import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
-import youtubedl from "youtube-dl-exec";
+import youtubedl, { Exec, Payload } from "youtube-dl-exec";
 import MatchInfo from "../../shared/MatchInfo";
 import Preferences from "../../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
@@ -122,6 +122,7 @@ export class VideoProcessor {
 
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
   private static tesseractScheduler = Tesseract.createScheduler();
+  private static ytInst: (...args: Parameters<Exec>) => Promise<Payload | string>;
 
   static {
     // Initialize Tesseract
@@ -140,6 +141,24 @@ export class VideoProcessor {
         this.tesseractScheduler.addWorker(worker);
       });
     }
+
+    // Initialize youtube-dl-exec
+    if (app.isPackaged) {
+      this.ytInst = youtubedl.create(
+        path.join(
+          __dirname,
+          "..",
+          "..",
+          "app.asar.unpacked",
+          "node_modules",
+          "youtube-dl-exec",
+          "bin",
+          process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp"
+        )
+      );
+    } else {
+      this.ytInst = youtubedl;
+    }
   }
 
   /**
@@ -148,18 +167,7 @@ export class VideoProcessor {
    */
   private static async runYoutubeDl(url: string, flags: any, window?: BrowserWindow): Promise<any> {
     try {
-      if (app.isPackaged) {
-        process.env.YOUTUBE_DL_DIR = path.join(
-          __dirname,
-          "..",
-          "..",
-          "app.asar.unpacked",
-          "node_modules",
-          "youtube-dl-exec",
-          "bin"
-        );
-      }
-      return await youtubedl(url, flags);
+      return await VideoProcessor.ytInst(url, flags);
     } catch (e: any) {
       const errorStr = String(e);
       console.error(e);
