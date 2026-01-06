@@ -77,6 +77,7 @@
     "typescript": "5.6.3"
   },
   "dependencies": {
+    "@rev-robotics/revlog-converter": "^1.0.2",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
     "basic-ftp": "^5.0.5",
@@ -120,6 +121,7 @@
           "owlet/${os}-${arch}/*"
         ]
       },
+      "@rev-robotics/revlog-converter/**/*",
       "!**/.*"
     ],
     "extraResources": [
@@ -181,6 +183,13 @@
         "name": "Comma-separated values",
         "description": "Comma-separated values",
         "mimeType": "text/csv",
+        "role": "Viewer"
+      },
+      {
+        "ext": "revlog",
+        "name": "REV log",
+        "description": "REV Robotics CAN log",
+        "mimeType": "application/x-revlog",
         "role": "Viewer"
       }
     ],

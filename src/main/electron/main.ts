@@ -32,6 +32,7 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { PNG } from "pngjs";
+import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
@@ -425,6 +426,21 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   });
               });
           }
+        } else if (path.endsWith(".revlog")) {
+          // REVLOG, convert to WPILOG
+          targetCount += 1;
+
+          parseREVLOG(path)
+            .then((wpilogBuffer) => {
+              results[0] = wpilogBuffer;
+              completedCount++;
+              sendIfReady();
+            })
+            .catch((err) => {
+              errorMessage = err.message;
+              completedCount++;
+              sendIfReady();
+            });
         } else if (path.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
@@ -1594,7 +1610,8 @@ async function downloadStart() {
                 file.name.endsWith(".rlog") ||
                 file.name.endsWith(".wpilog") ||
                 file.name.endsWith(".wpilogxz") ||
-                file.name.endsWith(".hoot"))
+                file.name.endsWith(".hoot") ||
+                file.name.endsWith(".revlog"))
           );
           const listData: { name: string; size: number; isFolder: boolean }[] = [];
           for (const file of filesAndFolders) {
@@ -1673,6 +1690,9 @@ function downloadSave(files: string[]) {
         break;
       case "hoot":
         name = "Hoot robot log";
+        break;
+      case "revlog":
+        name = "REV LOG";
         break;
     }
     selectPromise = dialog.showSaveDialog(downloadWindow, {
@@ -1949,7 +1969,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv", "revlog"]
                   }
                 ],
                 defaultPath: getDefaultLogPath()
@@ -1974,7 +1994,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv", "revlog"]
                   }
                 ],
                 defaultPath: getDefaultLogPath()
@@ -3470,7 +3490,8 @@ app.whenReady().then(() => {
       x.endsWith(".dsevents") ||
       x.endsWith(".hoot") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv")
+      x.endsWith(".csv") ||
+      x.endsWith(".revlog")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];
