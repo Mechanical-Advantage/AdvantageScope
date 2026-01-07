@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { FileInfo, Client as FTPClient, FTPError } from "basic-ftp";
 import { hex } from "color-convert";
 import {
@@ -32,7 +33,6 @@ import net from "net";
 import os from "os";
 import path from "path";
 import { PNG } from "pngjs";
-import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
@@ -1692,7 +1692,7 @@ function downloadSave(files: string[]) {
         name = "Hoot robot log";
         break;
       case "revlog":
-        name = "REV LOG";
+        name = "REV Robotics CAN log";
         break;
     }
     selectPromise = dialog.showSaveDialog(downloadWindow, {
@@ -1969,7 +1969,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv", "revlog"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
                 ],
                 defaultPath: getDefaultLogPath()
@@ -1994,7 +1994,7 @@ function setupMenu() {
                 filters: [
                   {
                     name: "Robot logs",
-                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "log", "csv", "revlog"]
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
                 ],
                 defaultPath: getDefaultLogPath()
@@ -3489,9 +3489,9 @@ app.whenReady().then(() => {
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents") ||
       x.endsWith(".hoot") ||
+      x.endsWith(".revlog") ||
       x.endsWith(".log") ||
-      x.endsWith(".csv") ||
-      x.endsWith(".revlog")
+      x.endsWith(".csv")
   );
   if (fileArgs.length > 0) {
     firstOpenPath = fileArgs[0];
