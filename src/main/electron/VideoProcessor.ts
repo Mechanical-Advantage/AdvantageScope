@@ -613,8 +613,8 @@ export class VideoProcessor {
 
         // Filter formats
         let formats = output.formats || [];
-        // Filter for formats that have video codec (not 'none')
-        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none");
+        // Filter for formats that have a video codec and are not too large
+        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none" && f.height <= 1080);
         // Sort by quality (height/resolution) descending
         formats.sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
 
