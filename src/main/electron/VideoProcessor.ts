@@ -605,8 +605,7 @@ export class VideoProcessor {
             dumpSingleJson: true,
             noWarnings: true,
             noCheckCertificates: true,
-            preferFreeFormats: true,
-            youtubeSkipDashManifest: true
+            forceIpv4: true
           },
           window
         );
