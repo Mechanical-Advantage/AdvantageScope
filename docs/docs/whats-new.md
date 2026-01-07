@@ -97,7 +97,7 @@ Several new visualization options are supported on the 🗺️ [2D Field](/tab-r
 
 ![New field visualizations](./img/whats-new/field-viz.jpg)
 
-## 🪵 REV Robotics CAN Log Support
+## 🪵 REV Robotics CAN Log Support {#rev-robotics-can-log-support}
 
 You can now open `.revlog` files produced by REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) directly in AdvantageScope. These files record CAN signals from Spark Max and Spark Flex devices, offering an official alternative to AdvantageScope's [URCL](/more-features/urcl) library.
 
