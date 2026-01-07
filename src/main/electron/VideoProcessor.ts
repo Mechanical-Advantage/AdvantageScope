@@ -153,7 +153,7 @@ export class VideoProcessor {
           "node_modules",
           "youtube-dl-exec",
           "bin",
-          process.platform === "win32" ? "yt-dlp.exe" : "yt-dlp"
+          process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
         )
       );
     } else {
@@ -177,13 +177,14 @@ export class VideoProcessor {
         errorStr.includes("ENOENT") ||
         (e.code && e.code === "ENOENT")
       ) {
+        console.error(e);
         if (window && !window.isDestroyed()) {
           dialog.showMessageBox(window, {
             type: "error",
             title: "Error",
             message: "Python Installation Required",
             detail:
-              "This feature requires Python 3.9 or above available in your system. Please install Python and try again.",
+              "This feature requires Python 3.10 or above available in your system. Please install Python and try again.",
             icon: WINDOW_ICON
           });
         }
