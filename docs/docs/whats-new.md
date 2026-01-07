@@ -139,3 +139,5 @@ This release includes a variety of bug fixes and stability improvements across t
 - AdvantageScope is now more tolerant of unusual log data, including large log files and large field values.
 - Various visual glitches have been fixed when browsing log data, especially when using filters on the line graph tab.
 - The ordering of AdvantageKit log files in the download window has been fixed; logs without timestamps are now at the bottom of the list, similar to other formats.
+- On the 3D field tab, robot cameras with a nonzero rotation in the roll axis are now visualized correctly.
+- The stability of AdvantageScope XR has been improved, especially when running on iOS/iPadOS 26. For offline installations, check the App Store for available updates.
