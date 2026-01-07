@@ -11,7 +11,7 @@ AdvantageScope Lite is only available in the 2027 (v27.x) releases of AdvantageS
 AdvantageScope Lite is an upcoming browser-based version of AdvantageScope accessible from the Systemcore web interface and intended for on-robot development. Most features of the AdvantageScope desktop app are included in AdvantageScope Lite, with the following **omissions**:
 
 - Downloading and viewing local log files: log files can be opened _directly_ from Systemcore and accessed in the browser, but they cannot be saved for offline use.
-- Support for some logging formats, including [Hoot](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) and [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics).
+- Support for some logging formats, including [Hoot](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html), REVLOG, and [Phoenix Diagnostics](/overview/live-sources/phoenix-diagnostics).
 - Pop-out visualization windows (viewing multiple tabs at once).
 - Exporting and importing tab layouts from a JSON file.
 - All features of the [video tab](/tab-reference/video).

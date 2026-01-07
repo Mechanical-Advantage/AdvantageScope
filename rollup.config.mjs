@@ -125,7 +125,8 @@ const mainBundles = isLite
         "download",
         "youtube-dl-exec",
         "tesseract.js",
-        "lzma-native"
+        "lzma-native",
+        "@rev-robotics/revlog-converter"
       ]),
       bundle("preload.ts", "preload.js", true, false, ["electron"])
     ];
