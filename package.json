@@ -179,17 +179,18 @@
         "icon": "icons/app/hoot-icon"
       },
       {
+        "ext": "revlog",
+        "name": "REV Robotics CAN log",
+        "description": "REV Robotics CAN log",
+        "mimeType": "application/x-revlog",
+        "role": "Viewer",
+        "icon": "icons/app/revlog-icon"
+      },
+      {
         "ext": "csv",
         "name": "Comma-separated values",
         "description": "Comma-separated values",
         "mimeType": "text/csv",
-        "role": "Viewer"
-      },
-      {
-        "ext": "revlog",
-        "name": "REV log",
-        "description": "REV Robotics CAN log",
-        "mimeType": "application/x-revlog",
         "role": "Viewer"
       }
     ],
