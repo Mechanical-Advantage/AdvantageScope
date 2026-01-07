@@ -861,23 +861,21 @@ export namespace Units {
   export const UNIT_SUFFIXES: { [key: string]: string } = (() => {
     let suffixes: { [key: string]: string } = {};
     Object.entries(ALL_UNITS).forEach(([key, config]) => {
-      [...config.names, ...config.names.filter((name) => name.endsWith("s")).map((name) => name.slice(0, -1))].forEach(
-        (name) => {
-          if (name.length === 0) return;
-          suffixes[name] = key;
-          suffixes[" " + name] = key;
-          suffixes["_" + name] = key;
-          if (name.includes(" ")) {
-            suffixes[name.replaceAll(" ", "")] = key;
-            suffixes[name.replaceAll(" ", "_")] = key;
-          }
-          if (name.includes(" per ")) {
-            suffixes[name.replaceAll(" per ", "/")] = key;
-            suffixes[name.replaceAll(" per ", "/").replaceAll(" ", "")] = key;
-            suffixes[name.replaceAll(" per ", "/").replaceAll(" ", "_")] = key;
-          }
+      config.names.forEach((name) => {
+        if (name.length === 0) return;
+        suffixes[name] = key;
+        suffixes[" " + name] = key;
+        suffixes["_" + name] = key;
+        if (name.includes(" ")) {
+          suffixes[name.replaceAll(" ", "")] = key;
+          suffixes[name.replaceAll(" ", "_")] = key;
         }
-      );
+        if (name.includes(" per ")) {
+          suffixes[name.replaceAll(" per ", "/")] = key;
+          suffixes[name.replaceAll(" per ", "/").replaceAll(" ", "")] = key;
+          suffixes[name.replaceAll(" per ", "/").replaceAll(" ", "_")] = key;
+        }
+      });
     });
     return suffixes;
   })();
