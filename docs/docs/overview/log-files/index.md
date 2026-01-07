@@ -8,7 +8,7 @@ import Image2 from './img/open-file-2.png';
 - **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit. [URCL](/more-features/urcl) can be used to capture signals from REV motor controllers to a WPILOG file.
 - **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope automatically searches for the corresponding log file when opening either log type.
 - **Hoot (.hoot)** - Produced by CTRE's Phoenix 6 [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
-- **REVLOG (.revlog)** - Produced by REV Robotics' StatusLogger
+- **REVLOG (.revlog)** - Produced by REV Robotics' [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger).
 - **Road Runner (.log)** - Produced by the [Road Runner](https://github.com/acmerobotics/road-runner) library for FTC.
 - **CSV (.csv)** - Comma separated values, matching the format [exported](/overview/log-files/export) by AdvantageScope in the "CSV (Table)" or "CSV (List)" modes. See [here](#csv-formatting) for details.
 - **RLOG (.rlog)** - Legacy, produced by AdvantageKit 2022.
