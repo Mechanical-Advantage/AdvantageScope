@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 # 📝 Unofficial REV-Compatible Logger
 
 :::info
-New in 2026, REVLib includes an official logging solution for saving data from the Spark Max and Spark Flex to a REV binary log (`.revlog`). See [here](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) for details.
+New in 2026, REVLib includes an official logging solution for saving data from the Spark Max and Spark Flex to a REV CAN log (`.revlog`). See [here](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) for details. These files can be opened directly in AdvantageScope, but cannot be precisely synchronized to other data sources.
 
 AdvantageScope's _Unofficial_ REV-Compatible Logger (URCL) will also remain available to teams in 2026 to ensure a smooth transition and provide feature parity with previous seasons. We will have more details to share about logging options in 2027 and beyond at a later date.
 :::
