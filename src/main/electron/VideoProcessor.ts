@@ -132,18 +132,17 @@ export class VideoProcessor {
 
     // Initialize youtube-dl-exec
     if (app.isPackaged) {
-      this.ytInst = youtubedl.create(
-        path.join(
-          __dirname,
-          "..",
-          "..",
-          "app.asar.unpacked",
-          "node_modules",
-          "youtube-dl-exec",
-          "bin",
-          process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
-        )
+      const binaryPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "app.asar.unpacked",
+        "node_modules",
+        "youtube-dl-exec",
+        "bin",
+        process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
       );
+      this.ytInst = youtubedl.create(`"${binaryPath}"`);
     } else {
       this.ytInst = youtubedl;
     }
