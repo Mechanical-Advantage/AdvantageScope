@@ -32,18 +32,6 @@ export class VideoProcessor {
       url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-arm64",
       sha256: "a90e3db6a3fd35f6074b013f948b1aa45b31c6375489d39e572bea3f18336584"
     },
-    "linux-x64": {
-      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64",
-      sha256: "ed652b2f32e0851d1946894fb8333f5b677c1b2ce6b9d187910a67f8b99da028"
-    },
-    "linux-arm64": {
-      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm64",
-      sha256: "237800b37bb65a81ad47871c6c8b7c45c0a3ca62a5b3f9d2a7a9a2dd9a338271"
-    },
-    "linux-armv7l": {
-      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm",
-      sha256: "1a9ddc19d0e071b6e1ff6f8f34dc05ec6dd4d8f3e79a649f5a9ec0e8c929c4cb"
-    },
     "win-x64": {
       url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-x64",
       sha256: "e9fd5e711debab9d680955fc1e38a2c1160fd280b144476cc3f62bc43ef49db1"
@@ -202,13 +190,14 @@ export class VideoProcessor {
 
   private static async getFFmpegPath(window: BrowserWindow): Promise<string> {
     // Check for AdvantageScope install (user data folder)
+    // Not compatible with Linux due to DNS issues, force a system install
     let ffmpegPath: string;
     if (process.platform === "win32") {
       ffmpegPath = path.join(app.getPath("userData"), "ffmpeg.exe");
     } else {
       ffmpegPath = path.join(app.getPath("userData"), "ffmpeg");
     }
-    if (fs.existsSync(ffmpegPath)) {
+    if (process.platform !== "linux" && fs.existsSync(ffmpegPath)) {
       return ffmpegPath;
     }
 
@@ -232,7 +221,21 @@ export class VideoProcessor {
       return "ffmpeg";
     }
 
-    // Download FFmpeg
+    // Exit immediately on Linux
+    if (process.platform === "linux") {
+      await dialog.showMessageBox(window, {
+        type: "question",
+        title: "Alert",
+        message: "FFmpeg Installation Required",
+        detail: "FFmpeg is required to process videos files. Please install FFmpeg and add to the PATH.",
+        buttons: ["OK"],
+        defaultId: 0,
+        icon: WINDOW_ICON
+      });
+      throw "Failed";
+    }
+
+    // Download FFmpeg on Windows and macOS
     let ffmpegDownloadResponse = await dialog.showMessageBox(window, {
       type: "question",
       title: "Alert",
@@ -282,7 +285,7 @@ export class VideoProcessor {
     menuCoordinates: null | [number, number],
     dataCallback: (data: any) => void
   ) {
-    let loadPath = async (videoPath: string, videoCache: string) => {
+    let loadPath = async (videoPath: string, videoCache: string, httpHeaders?: any) => {
       // Find FFmpeg path
       let ffmpegPath: string;
       try {
@@ -304,7 +307,17 @@ export class VideoProcessor {
 
       // Start ffmpeg
       if (uuid in VideoProcessor.processes) VideoProcessor.processes[uuid].kill();
-      let ffmpeg = spawn(ffmpegPath, [
+
+      const ffmpegArgs: string[] = [];
+      ffmpegArgs.push("-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5");
+      if (httpHeaders) {
+        let headersStr = "";
+        for (const [key, value] of Object.entries(httpHeaders)) {
+          headersStr += `${key}: ${value}\r\n`;
+        }
+        ffmpegArgs.push("-headers", headersStr);
+      }
+      ffmpegArgs.push(
         "-i",
         videoPath,
         "-vf",
@@ -312,7 +325,9 @@ export class VideoProcessor {
         "-q:v",
         "2",
         path.join(cachePath, "%08d.jpg")
-      ]);
+      );
+
+      let ffmpeg = spawn(ffmpegPath, ffmpegArgs);
       VideoProcessor.processes[uuid] = ffmpeg;
       let running = true;
       let fullOutput = "";
@@ -482,7 +497,7 @@ export class VideoProcessor {
         } else if (code === 1) {
           if (videoCache === VIDEO_CACHE && fullOutput.includes("No space left on device")) {
             fs.rmSync(cachePath, { recursive: true });
-            loadPath(videoPath, VIDEO_CACHE_FALLBACK);
+            loadPath(videoPath, VIDEO_CACHE_FALLBACK, httpHeaders);
           } else {
             sendError();
           }
@@ -510,7 +525,7 @@ export class VideoProcessor {
           });
         } else {
           this.getDirectUrlFromYouTubeUrl(clipboardText, window)
-            .then((path) => loadPath(path, VIDEO_CACHE))
+            .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
             .catch((silent) => {
               dataCallback({ uuid: uuid, error: true });
               if (silent === true) return;
@@ -529,7 +544,7 @@ export class VideoProcessor {
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
             this.getDirectUrlFromYouTubeUrl(url, window)
-              .then((path) => loadPath(path, VIDEO_CACHE))
+              .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
               .catch((silent) => {
                 dataCallback({ uuid: uuid, error: true });
                 if (silent === true) return;
@@ -587,8 +602,11 @@ export class VideoProcessor {
       });
   }
 
-  /** Gets the direct download URL based on a YouTube URL using youtube-dl-exec */
-  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string, window: BrowserWindow): Promise<string> {
+  /** Gets the direct download URL and User Agent based on a YouTube URL using youtube-dl-exec */
+  private static getDirectUrlFromYouTubeUrl(
+    youTubeUrl: string,
+    window: BrowserWindow
+  ): Promise<{ url: string; httpHeaders: any }> {
     return new Promise(async (resolve, reject) => {
       try {
         const videoId = VideoProcessor.getVideoId(youTubeUrl);
@@ -605,22 +623,23 @@ export class VideoProcessor {
             dumpSingleJson: true,
             noWarnings: true,
             noCheckCertificates: true,
-            preferFreeFormats: true,
-            youtubeSkipDashManifest: true
+            forceIpv4: true,
+            format: "best",
+            extractorArgs: "youtube:player_client=android"
           },
           window
         );
 
         // Filter formats
         let formats = output.formats || [];
-        // Filter for formats that have video codec (not 'none')
-        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none");
+        // Filter for formats that have a video codec and are not too large
+        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none" && f.height <= 1080);
         // Sort by quality (height/resolution) descending
         formats.sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
 
-        // Find best url
+        // Find best url and User Agent
         if (formats.length > 0) {
-          resolve(formats[0].url);
+          resolve({ url: formats[0].url, httpHeaders: output.http_headers });
         } else {
           reject();
         }
