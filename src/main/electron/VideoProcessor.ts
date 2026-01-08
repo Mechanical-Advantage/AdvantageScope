@@ -282,7 +282,8 @@ export class VideoProcessor {
     menuCoordinates: null | [number, number],
     dataCallback: (data: any) => void
   ) {
-    let loadPath = async (videoPath: string, videoCache: string) => {
+    // UPDATED: Now accepts optional userAgent
+    let loadPath = async (videoPath: string, videoCache: string, userAgent?: string) => {
       // Find FFmpeg path
       let ffmpegPath: string;
       try {
@@ -304,7 +305,13 @@ export class VideoProcessor {
 
       // Start ffmpeg
       if (uuid in VideoProcessor.processes) VideoProcessor.processes[uuid].kill();
-      let ffmpeg = spawn(ffmpegPath, [
+
+      // UPDATED: Construct arguments to include User-Agent if present
+      const ffmpegArgs: string[] = [];
+      if (userAgent) {
+        ffmpegArgs.push("-user_agent", userAgent);
+      }
+      ffmpegArgs.push(
         "-i",
         videoPath,
         "-vf",
@@ -312,7 +319,9 @@ export class VideoProcessor {
         "-q:v",
         "2",
         path.join(cachePath, "%08d.jpg")
-      ]);
+      );
+
+      let ffmpeg = spawn(ffmpegPath, ffmpegArgs);
       VideoProcessor.processes[uuid] = ffmpeg;
       let running = true;
       let fullOutput = "";
@@ -482,7 +491,7 @@ export class VideoProcessor {
         } else if (code === 1) {
           if (videoCache === VIDEO_CACHE && fullOutput.includes("No space left on device")) {
             fs.rmSync(cachePath, { recursive: true });
-            loadPath(videoPath, VIDEO_CACHE_FALLBACK);
+            loadPath(videoPath, VIDEO_CACHE_FALLBACK, userAgent);
           } else {
             sendError();
           }
@@ -510,7 +519,7 @@ export class VideoProcessor {
           });
         } else {
           this.getDirectUrlFromYouTubeUrl(clipboardText, window)
-            .then((path) => loadPath(path, VIDEO_CACHE))
+            .then((result) => loadPath(result.url, VIDEO_CACHE, result.userAgent))
             .catch((silent) => {
               dataCallback({ uuid: uuid, error: true });
               if (silent === true) return;
@@ -529,7 +538,7 @@ export class VideoProcessor {
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
             this.getDirectUrlFromYouTubeUrl(url, window)
-              .then((path) => loadPath(path, VIDEO_CACHE))
+              .then((result) => loadPath(result.url, VIDEO_CACHE, result.userAgent))
               .catch((silent) => {
                 dataCallback({ uuid: uuid, error: true });
                 if (silent === true) return;
@@ -587,8 +596,11 @@ export class VideoProcessor {
       });
   }
 
-  /** Gets the direct download URL based on a YouTube URL using youtube-dl-exec */
-  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string, window: BrowserWindow): Promise<string> {
+  /** Gets the direct download URL and User Agent based on a YouTube URL using youtube-dl-exec */
+  private static getDirectUrlFromYouTubeUrl(
+    youTubeUrl: string,
+    window: BrowserWindow
+  ): Promise<{ url: string; userAgent: string }> {
     return new Promise(async (resolve, reject) => {
       try {
         const videoId = VideoProcessor.getVideoId(youTubeUrl);
@@ -605,7 +617,9 @@ export class VideoProcessor {
             dumpSingleJson: true,
             noWarnings: true,
             noCheckCertificates: true,
-            forceIpv4: true
+            forceIpv4: true,
+            format: "best",
+            extractorArgs: "youtube:player_client=android"
           },
           window
         );
@@ -617,9 +631,10 @@ export class VideoProcessor {
         // Sort by quality (height/resolution) descending
         formats.sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
 
-        // Find best url
+        // Find best url and User Agent
         if (formats.length > 0) {
-          resolve(formats[0].url);
+          const userAgent = output.http_headers ? output.http_headers["User-Agent"] : undefined;
+          resolve({ url: formats[0].url, userAgent: userAgent });
         } else {
           reject();
         }
