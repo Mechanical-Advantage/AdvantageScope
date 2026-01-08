@@ -378,7 +378,7 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Build app
-        run: npx electron-builder build --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
+        run: npx electron-builder build -c.electronVersion=37.10.3 --${{ matrix.arch.electronArch }} -l ${{ matrix.format }} --publish never
         env:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
@@ -576,7 +576,7 @@ jobs:
       - name: Build documentation
         run: npm run docs:build-embed
       - name: Build app
-        run: npx electron-builder build --publish never --${{ matrix.arch }} -l dir
+        run: npx electron-builder build -c.electronVersion=37.10.3 --publish never --${{ matrix.arch }} -l dir
         env:
           ASCOPE_DISTRIBUTION: WPILIB
           NODE_OPTIONS: --max-old-space-size=4096

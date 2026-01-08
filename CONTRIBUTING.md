@@ -70,6 +70,7 @@ The following tasks are defined in `package.json` to assist with development:
 
 - `npm start`: Runs the application in development mode.
 - `npm run build`: Full production build. Compiles code, builds WebAssembly, builds documentation, and packages the Electron app.
+- `npm run build-linux`: Full production build for Linux. Runs an alternative version of Electron that works correctly on Wayland (to be fixed in the future).
 - `npm run fast-build`: Compiles and packages the application into a directory (unpacked) rather than an installer. Useful for quick local testing of the production build.
 - `npm run compile`: Runs Rollup to compile the TypeScript source bundles.
 - `npm run wasm:compile`: Compiles the C++ logic to WebAssembly (requires Emscripten).

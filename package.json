@@ -14,6 +14,7 @@
     "start": "electron bundles/main.js",
     "compile": "rollup -c --configMain && rollup -c --configLargeRenderers && rollup -c --configSmallRenderers && rollup -c --configWorkers && rollup -c --configXR",
     "build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build",
+    "build-linux": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build -c.electronVersion=37.10.3",
     "fast-build": "npm run compile && npm run wasm:compile && npm run docs:build-embed && electron-builder build --dir",
     "watch": "rollup -c -w",
     "download-owlet": "rollup -c --configRunOwletDownload && node runOwletDownload.js",
