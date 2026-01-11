@@ -21,6 +21,10 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
+:::warning
+The 2026 FRC field model is consistent with the AprilTag layout for the **welded** field. The differences between the welded and AndyMark fields are very minor, but there may be small (~0.5 inch) misalignments when visualizing AprilTag poses based on the AndyMark field layout.
+:::
+
 ## Adding Objects
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
