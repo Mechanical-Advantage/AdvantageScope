@@ -246,6 +246,7 @@ export default class SelectionImpl implements Selection {
   unlock() {
     if (this.mode === SelectionMode.Locked) {
       let selectedTime = this.getSelectedTime();
+      this.applyTimelineScroll(0, 0, 0);
       this.setMode(SelectionMode.Static);
       this.staticTime = selectedTime !== null ? selectedTime : 0;
     }

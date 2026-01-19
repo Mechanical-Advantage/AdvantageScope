@@ -348,9 +348,15 @@ export default class LineGraphController implements TabController {
     filter: LineGraphFilter
   ): string | null {
     if (!(key in commandCache)) return null;
+    if (
+      time < window.selection.getTimelineRange()[0] ||
+      (time > window.selection.getTimelineRange()[1] && window.selection.getMode() !== SelectionMode.Locked)
+    ) {
+      return null;
+    }
     let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
-    if (index === -1 || (index >= command.values.length - 1 && window.selection.getMode() !== SelectionMode.Locked)) {
+    if (index === -1) {
       return null;
     }
     let output = this.PREVIEW_FORMAT.format(command.values[index]);
