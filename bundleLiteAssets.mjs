@@ -15,9 +15,9 @@ const liteAssetsPath = path.join("lite", "static", "bundledAssets");
 const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
 const githubAssetsTag = "archive-v1";
 const githubAssetNames = [
-  "Field2d_2025FRCFieldWeldedV2",
+  "Field2d_2026FRCFieldV1",
   "Field2d_20252026FTCFieldV1",
-  "Field3d_2025FRCFieldWeldedV2",
+  "Field3d_2026FRCFieldV1",
   "Field3d_20252026FTCFieldV1",
   "Joystick_LogitechF310V1",
   "Joystick_PS4ControllerV1",
