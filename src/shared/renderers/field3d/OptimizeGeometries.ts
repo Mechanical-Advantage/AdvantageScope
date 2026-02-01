@@ -246,7 +246,7 @@ function getGeometries(
             transparent.push([]);
           }
           transparent[outputIndex].push(geometry);
-        } else if (mesh.name.toLowerCase().includes("bumper")) {
+        } else if (mesh.name.includes("BUMPERCOLOR")) {
           while (bumper.length < outputIndex + 1) {
             bumper.push([]);
           }
