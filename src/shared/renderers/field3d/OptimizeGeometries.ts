@@ -164,7 +164,6 @@ function getGeometries(
       let geometry = mesh.geometry.clone();
       mesh.updateWorldMatrix(true, false);
       geometry.applyMatrix4(mesh.matrixWorld);
-      geometry.name = mesh.name;
 
       // Remove unused attributes (interferes with merge)
       let attributeNames = Object.keys(geometry.attributes);
