@@ -49,6 +49,7 @@ export default class RobotManager extends ObjectManager<
     specular: this.materialSpecular,
     shininess: this.materialShininess
   });
+  private bumperMaterial = new THREE.MeshStandardMaterial();
   private visionLines: Line2[] = [];
   private mechanismLinesXZ: MechanismLineData[] = [];
   private mechanismLinesYZ: MechanismLineData[] = [];
@@ -68,6 +69,7 @@ export default class RobotManager extends ObjectManager<
   private hasNewAssets = false;
   private lastModel = "";
   private lastColor = "";
+  private lastBumperColor = "";
   private lastHadSwerveStates = false;
   private lastHideRobotModels = false;
 
@@ -247,6 +249,13 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
+                if (mesh.name.includes("BUMPERCOLOR")) {
+                  if (!Array.isArray(mesh.material)) {
+                    mesh.material.dispose();
+                  }
+                  mesh.material = this.bumperMaterial;
+                }
+
                 if (object.type === "ghost") {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
@@ -297,6 +306,13 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
+                if (mesh.name.includes("BUMPERCOLOR")) {
+                  if (!Array.isArray(mesh.material)) {
+                    mesh.material.dispose();
+                  }
+                  mesh.material = this.bumperMaterial;
+                }
+
                 if (object.type === "ghost") {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
@@ -343,6 +359,12 @@ export default class RobotManager extends ObjectManager<
     // Update primary model
     if (this.meshes.length > 0) {
       this.meshes[0].setPoses(object.poses.map((x) => x.pose));
+    }
+
+    // Update bumper color
+    if (object.type === "robot" && object.bumperColor !== this.lastBumperColor) {
+      this.lastBumperColor = object.bumperColor;
+      this.bumperMaterial.color = new THREE.Color(object.bumperColor);
     }
 
     // Update components

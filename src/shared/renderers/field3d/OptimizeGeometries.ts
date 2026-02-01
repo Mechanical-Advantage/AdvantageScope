@@ -36,8 +36,7 @@ export default async function optimizeGeometries(
     let transparentMeshes: THREE.Mesh[] = [];
     let carpetMeshes: THREE.Mesh[] = [];
     geometries.normal.forEach((group) => {
-      if (group.length > 0) {
-        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+      group.forEach((geometry) => {
         if (geometry !== null) {
           let mesh = new THREE.Mesh(
             geometry,
@@ -53,9 +52,9 @@ export default async function optimizeGeometries(
             mesh.castShadow = true;
             mesh.receiveShadow = false;
           }
-          mesh.name = "normal";
+          mesh.name = geometry.name + " (normal)";
         }
-      }
+      })
     });
     geometries.transparent.forEach((group) => {
       if (group.length > 0) {
@@ -77,7 +76,7 @@ export default async function optimizeGeometries(
             mesh.castShadow = true;
             mesh.receiveShadow = false;
           }
-          mesh.name = "transparent";
+          mesh.name = geometry.name + " (transparent)";
         }
       }
     });
@@ -99,7 +98,7 @@ export default async function optimizeGeometries(
             mesh.castShadow = false;
             mesh.receiveShadow = true;
           }
-          mesh.name = "carpet";
+          mesh.name = geometry.name + " (carpet)";
         }
       }
     });
@@ -132,6 +131,7 @@ function getGeometries(
       let geometry = mesh.geometry.clone();
       mesh.updateWorldMatrix(true, false);
       geometry.applyMatrix4(mesh.matrixWorld);
+      geometry.name = mesh.name;
 
       // Remove unused attributes (interferes with merge)
       let attributeNames = Object.keys(geometry.attributes);
