@@ -249,7 +249,7 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
-                if (mesh.name.includes("BUMPERCOLOR")) {
+                if (mesh.name.toLowerCase().includes("bumper")) {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
                   }
@@ -306,7 +306,7 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
-                if (mesh.name.includes("BUMPERCOLOR")) {
+                if (mesh.name === "bumper") {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
                   }

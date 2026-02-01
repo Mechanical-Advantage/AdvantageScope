@@ -28,6 +28,7 @@ export default async function optimizeGeometries(
   normal: THREE.Mesh[];
   transparent: THREE.Mesh[];
   carpet: THREE.Mesh[];
+  bumper: THREE.Mesh[];
 }> {
   return new Promise(async (resolve) => {
     let geometries = getGeometries(object, mode, enableSimplification, isFTC, slicingSize);
@@ -35,8 +36,11 @@ export default async function optimizeGeometries(
     let normalMeshes: THREE.Mesh[] = [];
     let transparentMeshes: THREE.Mesh[] = [];
     let carpetMeshes: THREE.Mesh[] = [];
+    let bumperMeshes: THREE.Mesh[] = [];
+
     geometries.normal.forEach((group) => {
-      group.forEach((geometry) => {
+      if (group.length > 0) {
+        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
         if (geometry !== null) {
           let mesh = new THREE.Mesh(
             geometry,
@@ -52,9 +56,9 @@ export default async function optimizeGeometries(
             mesh.castShadow = true;
             mesh.receiveShadow = false;
           }
-          mesh.name = geometry.name + " (normal)";
+          mesh.name = "normal";
         }
-      })
+      }
     });
     geometries.transparent.forEach((group) => {
       if (group.length > 0) {
@@ -76,7 +80,7 @@ export default async function optimizeGeometries(
             mesh.castShadow = true;
             mesh.receiveShadow = false;
           }
-          mesh.name = geometry.name + " (transparent)";
+          mesh.name = "transparent";
         }
       }
     });
@@ -98,7 +102,29 @@ export default async function optimizeGeometries(
             mesh.castShadow = false;
             mesh.receiveShadow = true;
           }
-          mesh.name = geometry.name + " (carpet)";
+          mesh.name = "carpet";
+        }
+      }
+    });
+    geometries.bumper.forEach((group) => {
+      if (group.length > 0) {
+        let geometry = BufferGeometryUtils.mergeGeometries(group, false);
+        if (geometry !== null) {
+          let mesh = new THREE.Mesh(
+            geometry,
+            new THREE.MeshPhongMaterial({
+              vertexColors: true,
+              side: THREE.DoubleSide,
+              specular: materialSpecular,
+              shininess: materialShininess
+            })
+          );
+          bumperMeshes.push(mesh);
+          if (mode === "cinematic") {
+            mesh.castShadow = true;
+            mesh.receiveShadow = false;
+          }
+          mesh.name = "bumper";
         }
       }
     });
@@ -106,7 +132,8 @@ export default async function optimizeGeometries(
     resolve({
       normal: normalMeshes,
       transparent: transparentMeshes,
-      carpet: carpetMeshes
+      carpet: carpetMeshes,
+      bumper: bumperMeshes
     });
   });
 }
@@ -117,10 +144,16 @@ function getGeometries(
   enableSimplification: boolean,
   isFTC: boolean,
   slicingSize?: number
-): { normal: THREE.BufferGeometry[][]; transparent: THREE.BufferGeometry[][]; carpet: THREE.BufferGeometry[][] } {
+): {
+  normal: THREE.BufferGeometry[][];
+  transparent: THREE.BufferGeometry[][];
+  carpet: THREE.BufferGeometry[][];
+  bumper: THREE.BufferGeometry[][];
+} {
   let normal: THREE.BufferGeometry[][] = [];
   let transparent: THREE.BufferGeometry[][] = [];
   let carpet: THREE.BufferGeometry[][] = [];
+  let bumper: THREE.BufferGeometry[][] = [];
 
   let totalCount = 0;
   object.traverse((object) => {
@@ -214,6 +247,11 @@ function getGeometries(
             transparent.push([]);
           }
           transparent[outputIndex].push(geometry);
+        } else if (mesh.name.toLowerCase().includes("bumper")) {
+          while (bumper.length < outputIndex + 1) {
+            bumper.push([]);
+          }
+          bumper[outputIndex].push(geometry);
         } else {
           while (normal.length < outputIndex + 1) {
             normal.push([]);
@@ -227,6 +265,7 @@ function getGeometries(
   return {
     normal: normal,
     transparent: transparent,
-    carpet: carpet
+    carpet: carpet,
+    bumper: bumper
   };
 }
