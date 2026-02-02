@@ -748,7 +748,7 @@ export default class XRRenderer {
             mechanisms: { xz: null, yz: null },
             visionTargets: [],
             swerveStates: [],
-            bumperColor: command.isRedAlliance ? "red" : "blue"
+            bumperColor: "#000000"
           });
         }
       }
