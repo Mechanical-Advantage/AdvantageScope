@@ -45,7 +45,10 @@ const Field3dController_Config: SourceListConfig = {
           showInTypeName: false,
           values: NeonColors_RedStart.toReversed()
             .concat({
-              // Puts the alliance option at the top
+              // Puts these options at the top
+              key: "#000000",
+              display: "Black"
+            }, {
               key: "auto",
               display: "Auto"
             })
@@ -97,7 +100,10 @@ const Field3dController_Config: SourceListConfig = {
           showInTypeName: false,
           values: NeonColors_RedStart.toReversed()
             .concat({
-              // Puts the alliance option at the top
+              // Puts these options at the top
+              key: "#000000",
+              display: "Black"
+            }, {
               key: "auto",
               display: "Auto"
             })

@@ -249,7 +249,7 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
-                if (mesh.name.includes("BUMPERCOLOR")) {
+                if (mesh.name.includes("BUMPERCOLOR") && robotConfig.dynamicColoring) {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
                   }
@@ -306,7 +306,7 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
-                if (mesh.name === "bumper") {
+                if (mesh.name === "bumper" && robotConfig.dynamicColoring) {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
                   }
@@ -364,7 +364,7 @@ export default class RobotManager extends ObjectManager<
     // Update bumper color
     if (object.type === "robot" && object.bumperColor !== this.lastBumperColor) {
       this.lastBumperColor = object.bumperColor;
-      this.bumperMaterial.color = new THREE.Color(object.bumperColor);
+      this.bumperMaterial.color = new THREE.Color(object.bumperColor).offsetHSL(0.0, -0.1, 0.0);
     }
 
     // Update components
