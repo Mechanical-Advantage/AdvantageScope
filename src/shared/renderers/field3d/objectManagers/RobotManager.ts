@@ -365,6 +365,13 @@ export default class RobotManager extends ObjectManager<
     if (object.type === "robot" && object.bumperColor !== this.lastBumperColor) {
       this.lastBumperColor = object.bumperColor;
       this.bumperMaterial.color = new THREE.Color(object.bumperColor).offsetHSL(0.0, -0.1, 0.0);
+
+      if (!robotConfig?.dynamicColoring) {
+        window.sendMainMessage("error", {
+          title: "Cannot display dynamic color.",
+          content: "This robot model is not configured for displaying dynamic colors and your selection will not have any effect. See the documentation for details."
+        });
+      }
     }
 
     // Update components
