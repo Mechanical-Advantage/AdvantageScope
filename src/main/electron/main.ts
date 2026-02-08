@@ -2739,6 +2739,12 @@ function createHubWindow(state?: WindowState) {
     hubWindows.splice(hubWindows.indexOf(window), 1);
     hubWindows.splice(0, 0, window);
   });
+  window.once("closed", () => {
+    let index = hubWindows.indexOf(window);
+    if (index !== -1) {
+      hubWindows.splice(index, 1);
+    }
+  });
   powerMonitor.on("on-ac", () => sendMessage(window, "set-battery", false));
   powerMonitor.on("on-battery", () => sendMessage(window, "set-battery", true));
   window.loadFile(path.join(__dirname, "../www/hub.html"));
