@@ -796,6 +796,16 @@ export default class Log {
     if (this.fields[key].getType() === LoggableType.Raw) {
       this.setGeneratedParent(key);
       this.setStructuredType(key, schemaType + (isArray ? "[]" : ""));
+
+      if (
+        (schemaType === "Translation3d" || schemaType === "Pose3d" || schemaType === "Transform3d") &&
+        value.length > 1000
+      ) {
+        // Special case: skip full decoding for large arrays of game piece poses (#477 workaround)
+        return;
+      }
+
+      // Decode data
       let decodedData: { data: unknown; schemaTypes: { [key: string]: string } } | null = null;
       try {
         decodedData = isArray
