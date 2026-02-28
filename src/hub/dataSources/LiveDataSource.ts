@@ -46,9 +46,10 @@ export abstract class LiveDataSource {
     if (enableClearData) {
       this.clearDataCallback = setInterval(() => {
         if (this.log && this.timeSupplier) {
-          let liveDiscardSecs = window.preferences?.liveDiscard;
-          if (liveDiscardSecs !== undefined && liveDiscardSecs !== -1) {
-            let minTime = this.timeSupplier() - liveDiscardSecs;
+          let liveDiscardMins = window.preferences?.liveDiscard;
+          if (liveDiscardMins !== undefined && liveDiscardMins !== -1) {
+            // clear old data based on time window
+            let minTime = this.timeSupplier() - liveDiscardMins * 60;
             this.log.clearBeforeTime(Math.max(0, minTime));
           }
         }
