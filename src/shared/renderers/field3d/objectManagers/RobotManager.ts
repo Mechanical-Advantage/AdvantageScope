@@ -47,7 +47,8 @@ export default class RobotManager extends ObjectManager<
     transparent: true,
     opacity: 0.35,
     specular: this.materialSpecular,
-    shininess: this.materialShininess
+    shininess: this.materialShininess,
+    depthWrite: false
   });
   private visionLines: Line2[] = [];
   private mechanismLinesXZ: MechanismLineData[] = [];

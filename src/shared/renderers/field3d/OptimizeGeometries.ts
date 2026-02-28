@@ -69,7 +69,8 @@ export default async function optimizeGeometries(
               specular: materialSpecular,
               shininess: materialShininess,
               transparent: true,
-              opacity: 0.2
+              opacity: 0.2,
+              depthWrite: false
             })
           );
           transparentMeshes.push(mesh);
