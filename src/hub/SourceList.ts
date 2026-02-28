@@ -925,14 +925,15 @@ export default class SourceList {
     }
     let color: string;
     const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    let optionColor = typeConfig.color.startsWith("#") ? undefined : state.options[typeConfig.color];
     if (typeConfig.color.startsWith("#")) {
       if (isDark && typeConfig.darkColor !== undefined) {
         color = typeConfig.darkColor;
       } else {
         color = typeConfig.color;
       }
-    } else if (state.options[typeConfig.color].startsWith("#")) {
-      color = state.options[typeConfig.color];
+    } else if (optionColor !== undefined && optionColor.startsWith("#")) {
+      color = optionColor;
     } else {
       if (isDark) {
         color = "#ffffff";
