@@ -841,11 +841,27 @@ export default class SourceList {
       this.state[index].visible = newVisible;
       this.updateItem(item, this.state[index]);
       if (!isChild) {
-        while (index < this.state.length) {
-          index++;
-          if (!this.isChild(index)) break;
-          this.state[index].visible = newVisible;
-          this.updateItem(this.LIST.children[index] as HTMLElement, this.state[index]);
+        // Parent toggles its children to match
+        let searchIndex = index + 1;
+        while (searchIndex < this.state.length) {
+          if (!this.isChild(searchIndex)) break;
+          this.state[searchIndex].visible = newVisible;
+          this.updateItem(this.LIST.children[searchIndex] as HTMLElement, this.state[searchIndex]);
+          searchIndex++;
+        }
+      } else if (newVisible) {
+        // Making a child visible forces the parent to be visible
+        let parentIndex = index - 1;
+
+        // Traverse upwards until we find the non-child item (the parent)
+        while (parentIndex >= 0 && this.isChild(parentIndex)) {
+          parentIndex--;
+        }
+
+        // If the parent exists and is currently hidden, make it visible
+        if (parentIndex >= 0 && !this.state[parentIndex].visible) {
+          this.state[parentIndex].visible = true;
+          this.updateItem(this.LIST.children[parentIndex] as HTMLElement, this.state[parentIndex]);
         }
       }
     };
