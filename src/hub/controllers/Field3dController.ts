@@ -463,7 +463,9 @@ export default class Field3dController implements TabController {
               yz: mechanismYZ
             },
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveStates: swerveStates,
+            bumperColor:
+              source.options.bumper === "auto" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumper
           });
           break;
         case "ghost":

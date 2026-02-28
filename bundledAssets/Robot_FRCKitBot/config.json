@@ -1,6 +1,7 @@
 {
   "name": "KitBot",
   "isFTC": false,
+  "dynamicColoring": true,
   "rotations": [
     {
       "axis": "z",

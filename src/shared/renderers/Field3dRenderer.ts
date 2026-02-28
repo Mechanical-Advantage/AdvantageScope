@@ -155,6 +155,7 @@ export type Field3dRendererCommand_GenericRobotObj = {
 
 export type Field3dRendererCommand_RobotObj = Field3dRendererCommand_GenericRobotObj & {
   type: "robot";
+  bumperColor: string;
 };
 
 export type Field3dRendererCommand_GhostObj = Field3dRendererCommand_GenericRobotObj & {
