@@ -799,7 +799,7 @@ export default class Log {
 
       if (
         (schemaType === "Translation3d" || schemaType === "Pose3d" || schemaType === "Transform3d") &&
-        value.length > 1000
+        value.length > 5000
       ) {
         // Special case: skip full decoding for large arrays of game piece poses (#477 workaround)
         return;
