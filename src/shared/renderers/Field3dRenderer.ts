@@ -71,19 +71,17 @@ export default class Field3dRenderer implements TabRenderer {
     }
 
     // Recreate visualizer if necessary
-    if ((mode !== this.lastMode || useAA != this.lastUseAA) && mode !== null) {
+    if ((mode !== this.lastMode || useAA !== this.lastUseAA) && mode !== null) {
       this.lastMode = mode;
       this.lastUseAA = useAA;
-      let state: any = null;
+      let state: unknown = null;
       if (this.implementation !== null) {
         state = this.implementation.saveState();
         this.implementation.stop();
       }
       {
         let newCanvas = document.createElement("canvas");
-        this.CANVAS.classList.forEach((className) => {
-          newCanvas.classList.add(className);
-        });
+        this.CANVAS.classList.forEach((cls) => newCanvas.classList.add(cls));
         newCanvas.id = this.CANVAS.id;
         this.CANVAS.replaceWith(newCanvas);
         this.CANVAS = newCanvas;
