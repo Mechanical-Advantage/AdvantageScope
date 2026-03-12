@@ -644,6 +644,12 @@ export namespace Units {
         suffix: "°F",
         pluralizeSuffix: false,
         names: ["f", "°f", "\u2109", "fahrenheit"]
+      },
+      kelvin: {
+        value: 1, // Requires custom conversion
+        suffix: "K",
+        pluralizeSuffix: false,
+        names: ["k", "\u212A", "kelvin"]
       }
     },
     voltage: {
@@ -783,13 +789,19 @@ export namespace Units {
     if (!(from in ALL_UNITS && to in ALL_UNITS)) throw "Invalid unit provided";
 
     let standardValue;
+
     if (from === "fahrenheit") {
       standardValue = (value - 32) / 1.8;
+    } else if (from == "kelvin") {
+      standardValue = value - 273.15;
     } else {
       standardValue = value / ALL_UNITS[from].value;
     }
+
     if (to === "fahrenheit") {
       return standardValue * 1.8 + 32;
+    } else if (to === "kelvin") {
+      return standardValue + 273.15;
     } else {
       return standardValue * ALL_UNITS[to].value;
     }
