@@ -102,6 +102,7 @@ export class NT4_Client {
   private appName: string;
   private onTopicAnnounce: (topic: NT4_Topic) => void;
   private onTopicUnannounce: (topic: NT4_Topic) => void;
+  private onTopicPropertiesUpdate: (topic: NT4_Topic) => void;
   private onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void;
   private onConnect: () => void;
   private onDisconnect: () => void;
@@ -142,6 +143,7 @@ export class NT4_Client {
     appName: string,
     onTopicAnnounce: (topic: NT4_Topic) => void,
     onTopicUnannounce: (topic: NT4_Topic) => void,
+    onTopicPropertiesUpdate: (topic: NT4_Topic) => void,
     onNewTopicData: (topic: NT4_Topic, timestamp_us: number, value: unknown) => void,
     onConnect: () => void,
     onDisconnect: () => void
@@ -151,6 +153,7 @@ export class NT4_Client {
     this.appName = appName;
     this.onTopicAnnounce = onTopicAnnounce;
     this.onTopicUnannounce = onTopicUnannounce;
+    this.onTopicPropertiesUpdate = onTopicPropertiesUpdate;
     this.onNewTopicData = onNewTopicData;
     this.onConnect = onConnect;
     this.onDisconnect = onDisconnect;
@@ -603,6 +606,7 @@ export class NT4_Client {
               topic.properties[key] = value;
             }
           }
+          this.onTopicPropertiesUpdate(topic);
         } else {
           console.warn("[NT4] Ignoring text message - unknown method " + method);
           return;

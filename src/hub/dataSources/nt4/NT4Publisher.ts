@@ -44,6 +44,7 @@ export class NT4Publisher {
       () => {},
       () => {},
       () => {},
+      () => {},
       () => {
         if (!this.stopped) {
           statusCallback(NT4PublisherStatus.Active);

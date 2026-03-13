@@ -777,7 +777,7 @@ async function handleMainMessage(message: NamedMessage) {
       if (liveActive) {
         window.sendMainMessage("error", {
           title: "Cannot publish",
-          content: "Publishing is is not allowed from a live source."
+          content: "Publishing is not allowed from a live source."
         });
       } else if (!("NT" in window.log.getFieldTree())) {
         window.sendMainMessage("error", {

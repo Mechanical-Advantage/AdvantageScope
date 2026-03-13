@@ -47,7 +47,8 @@ export default class RobotManager extends ObjectManager<
     transparent: true,
     opacity: 0.35,
     specular: this.materialSpecular,
-    shininess: this.materialShininess
+    shininess: this.materialShininess,
+    depthWrite: false
   });
   private bumperMaterial = new THREE.MeshStandardMaterial();
   private visionLines: Line2[] = [];

@@ -313,8 +313,8 @@ export class VideoProcessor {
       if (uuid in VideoProcessor.processes) VideoProcessor.processes[uuid].kill();
 
       const ffmpegArgs: string[] = [];
-      ffmpegArgs.push("-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5");
       if (httpHeaders) {
+        ffmpegArgs.push("-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5");
         let headersStr = "";
         for (const [key, value] of Object.entries(httpHeaders)) {
           headersStr += `${key}: ${value}\r\n`;
