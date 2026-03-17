@@ -340,7 +340,7 @@ export class VideoProcessor {
       let height = 0;
       let durationSecs = 0;
       let completedFrames = 0;
-      let matchStartFrame = -1;
+      let autoEndFrame = -1;
       let timerSample = 0;
       let timerValues: { frame: number; text: string }[] = [];
       let timerStartFound = false;
@@ -462,10 +462,10 @@ export class VideoProcessor {
                   }
                   const results = await Promise.all(jobs);
                   results.forEach((timerText, index) => {
-                    if (matchStartFrame > 0) return;
+                    if (autoEndFrame > 0) return;
                     if (timerText.includes("12")) {
                       let secs12Frame = secs13Frame! + index;
-                      matchStartFrame = Math.round(secs12Frame - fps * 3);
+                      autoEndFrame = Math.round(secs12Frame + fps * 12);
                     }
                   });
                 }
@@ -481,7 +481,7 @@ export class VideoProcessor {
             fps: fps,
             totalFrames: Math.round(durationSecs * fps),
             completedFrames: completedFrames,
-            matchStartFrame: matchStartFrame
+            autoEndFrame: autoEndFrame
           });
         }
       });
@@ -496,7 +496,7 @@ export class VideoProcessor {
             fps: fps,
             totalFrames: completedFrames, // In case original value was inaccurate
             completedFrames: completedFrames,
-            matchStartFrame: matchStartFrame
+            autoEndFrame: autoEndFrame
           });
         } else if (code === 1) {
           if (videoCache === VIDEO_CACHE && fullOutput.includes("No space left on device")) {
