@@ -331,7 +331,7 @@ export default class VideoController implements TabController {
       if (this.autoEndFrame <= 0 && data.autoEndFrame > 0 && !this.locked) {
         let autoEndTime: number | null = null;
         let enabledData = getEnabledData(window.log);
-        if (enabledData && enabledData) {
+        if (enabledData) {
           let wasEnabledLastCycle: boolean = false;
           for (let i = 0; i < enabledData.timestamps.length; i++) {
             if (wasEnabledLastCycle && !enabledData.values[i]) {
