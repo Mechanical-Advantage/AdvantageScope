@@ -440,32 +440,32 @@ export class VideoProcessor {
                   timerValues.push({ frame: sampleFrame, text: timerText });
                   timerValues.sort((a, b) => a.frame - b.frame);
 
-                  // Search for 13 -> 12 transition
-                  let lastIs13 = false;
-                  let secs13Frame: number | null = null;
+                  // Search for 4 -> 3 transition
+                  let lastIs4 = false;
+                  let secs4Frame: number | null = null;
                   for (let i = 0; i < timerValues.length; i++) {
-                    let is13 = timerValues[i].text.includes("13");
-                    let is12 = !is13 && timerValues[i].text.includes("12");
-                    if (lastIs13 && is12) {
-                      secs13Frame = timerValues[i - 1].frame;
+                    let is4 = timerValues[i].text.includes("04");
+                    let is3 = !is4 && timerValues[i].text.includes("03");
+                    if (lastIs4 && is3) {
+                      secs4Frame = timerValues[i - 1].frame;
                       break;
                     }
-                    lastIs13 = is13;
+                    lastIs4 = is4;
                   }
-                  if (secs13Frame === null) return;
+                  if (secs4Frame === null) return;
                   timerStartFound = true;
 
                   // Find exact frame
                   let jobs: Promise<string>[] = [];
-                  for (let frame = secs13Frame; frame < secs13Frame + fps; frame++) {
+                  for (let frame = secs4Frame; frame < secs4Frame + fps; frame++) {
                     jobs.push(this.readTimerText(cachePath + zfill(frame.toString(), 8) + ".jpg", width, height));
                   }
                   const results = await Promise.all(jobs);
                   results.forEach((timerText, index) => {
                     if (autoEndFrame > 0) return;
-                    if (timerText.includes("12")) {
-                      let secs12Frame = secs13Frame! + index;
-                      autoEndFrame = Math.round(secs12Frame + fps * 12);
+                    if (timerText.includes("03")) {
+                      let secs3Frame = secs4Frame! + index;
+                      autoEndFrame = Math.round(secs3Frame + fps * 3);
                     }
                   });
                 }
