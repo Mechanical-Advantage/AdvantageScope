@@ -209,7 +209,8 @@ const Field3dController_Config: SourceListConfig = {
           showInTypeName: false,
           values: [
             { key: "xz", display: "XZ Plane" },
-            { key: "yz", display: "YZ Plane" }
+            { key: "yz", display: "YZ Plane" },
+            { key: "xy", display: "XY Plane" }
           ]
         }
       ],

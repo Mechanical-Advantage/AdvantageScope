@@ -53,6 +53,7 @@ export default class RobotManager extends ObjectManager<
   private visionLines: Line2[] = [];
   private mechanismLinesXZ: MechanismLineData[] = [];
   private mechanismLinesYZ: MechanismLineData[] = [];
+  private mechanismLinesXY: MechanismLineData[] = [];
 
   private swerveContainer: HTMLElement | null = null;
   private swerveCanvas: HTMLCanvasElement | null = null;
@@ -107,6 +108,7 @@ export default class RobotManager extends ObjectManager<
     });
     this.mechanismLinesXZ.forEach((entry) => entry.mesh.dispose());
     this.mechanismLinesYZ.forEach((entry) => entry.mesh.dispose());
+    this.mechanismLinesXY.forEach((entry) => entry.mesh.dispose());
     while (this.visionLines.length > 0) {
       this.visionLines[0].geometry.dispose();
       this.visionLines[0].material.dispose();
@@ -435,7 +437,7 @@ export default class RobotManager extends ObjectManager<
     }
 
     // Update mechanism
-    let updateMechanism = (state: MechanismState | null, lines: MechanismLineData[], plane: "xz" | "yz") => {
+    let updateMechanism = (state: MechanismState | null, lines: MechanismLineData[], plane: "xz" | "yz" | "xy") => {
       if (state === null) {
         // No mechanism data, remove all meshes
         while (lines.length > 0) {
@@ -507,7 +509,9 @@ export default class RobotManager extends ObjectManager<
               .map((x) => x.pose)
               .map((robotPose) => {
                 this.dummyRobotPose.rotation.setFromQuaternion(rotation3dToQuaternion(robotPose.rotation));
+                // default plane is xz
                 if (plane === "yz") this.dummyRobotPose.rotateZ(Math.PI / 2);
+                if (plane === "xy") this.dummyRobotPose.rotateX(Math.PI / -2);
                 this.dummyRobotPose.position.set(...robotPose.translation);
 
                 this.dummyUserPose.position.set(line.start[0] - state.dimensions[0] / 2, 0, line.start[1]);
@@ -523,6 +527,7 @@ export default class RobotManager extends ObjectManager<
     };
     updateMechanism(object.mechanisms.xz, this.mechanismLinesXZ, "xz");
     updateMechanism(object.mechanisms.yz, this.mechanismLinesYZ, "yz");
+    updateMechanism(object.mechanisms.xy, this.mechanismLinesXY, "xy");
 
     // Update swerve canvas (disabled in XR)
     if (!this.isXR) {
