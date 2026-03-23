@@ -514,7 +514,11 @@ export default class RobotManager extends ObjectManager<
                 if (plane === "xy") this.dummyRobotPose.rotateX(Math.PI / -2);
                 this.dummyRobotPose.position.set(...robotPose.translation);
 
-                this.dummyUserPose.position.set(line.start[0] - state.dimensions[0] / 2, 0, line.start[1]);
+                this.dummyUserPose.position.set(
+                  line.start[0] - (plane === "xy" ? 0 : state.dimensions[0] / 2),
+                  0,
+                  line.start[1]
+                );
                 this.dummyUserPose.rotation.set(0, -angle, 0);
                 return {
                   translation: this.dummyUserPose.getWorldPosition(new THREE.Vector3()).toArray(),
