@@ -430,11 +430,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // REVLOG, convert to WPILOG
           targetCount += 1;
 
-          parseREVLOG(path)
-            .then((wpilogBuffer) => {
-              results[0] = wpilogBuffer;
-              completedCount++;
-              sendIfReady();
+          // put new WPILOG beside original REVLOG
+          let wpilogPath = path.replace(/\.revlog$/i, ".wpilog");
+          parseREVLOG(path, wpilogPath)
+            .then(() => {
+              openPath(wpilogPath, (buffer) => {
+                results[0] = buffer;
+              });
             })
             .catch((err) => {
               errorMessage = err.message;
