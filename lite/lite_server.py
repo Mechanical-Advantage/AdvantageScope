@@ -20,7 +20,7 @@ from multipart import parse_options_header, MultipartParser
 
 PORT = 5808
 ROOT = os.path.abspath("static")
-IS_SYSTEMCORE = os.uname().nodename == "robot"
+IS_SYSTEMCORE = hasattr(os, "uname") and os.uname().nodename == "robot"
 EXTRA_ASSETS_PATH = "/home/systemcore/ascope_assets" if IS_SYSTEMCORE else os.path.abspath("ascope_assets")
 BUNDLED_ASSETS_PATH = os.path.join(ROOT, "bundledAssets")
 ALLOWED_LOG_SUFFIXES = [".wpilog", ".wpilogxz", ".rlog", ".log"]  # Hoot not supported
