@@ -104,6 +104,7 @@ export default class Log {
     });
   }
 
+  
   /** Adjusts the timestamp range based on a known timestamp. */
   updateRangeWithTimestamp(timestamp: number) {
     if (this.timestampRange === null) {
