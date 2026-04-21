@@ -6,13 +6,10 @@
 // at the root directory of this project.
 
 import { getBabelOutputPlugin } from "@rollup/plugin-babel";
-import commonjs from "@rollup/plugin-commonjs";
-import json from "@rollup/plugin-json";
-import nodeResolve from "@rollup/plugin-node-resolve";
-import replace from "@rollup/plugin-replace";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
+import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
 import replaceRegEx from "rollup-plugin-re";
 
@@ -38,10 +35,6 @@ function bundle(input, output, isMain, isXRClient, external = []) {
     external: external,
     plugins: [
       typescript(),
-      nodeResolve({
-        preferBuiltins: true
-      }),
-      commonjs(),
       ...(isXRClient
         ? [
             getBabelOutputPlugin({
@@ -61,10 +54,8 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             terser({ mangle: { reserved: ["Module"] } })
           ]
         : [cleanup()]),
-      json(),
-      replace({
-        preventAssignment: true,
-        values: {
+      replacePlugin(
+        {
           __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : "FRC6328",
           __version__: packageJson.version,
           __build_date__: new Date().toLocaleString("en-US", {
@@ -79,8 +70,11 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             timeZoneName: "short"
           }),
           __copyright__: packageJson.build.copyright
+        },
+        {
+          preventAssignment: true
         }
-      }),
+      ),
       replaceRegEx({
         patterns: [
           // Remove unused eval in protobufjs
@@ -170,14 +164,7 @@ const runOwletDownload = {
   },
   context: "this",
   external: ["download"],
-  plugins: [
-    typescript(),
-    nodeResolve({
-      preferBuiltins: true
-    }),
-    commonjs(),
-    json()
-  ],
+  plugins: [typescript()],
   onwarn() {}
 };
 

@@ -199,7 +199,7 @@ export default class StatisticsRenderer implements TabRenderer {
           return "";
         }
         const item = items[0];
-        const x = item.parsed.x;
+        const x = item.parsed.x!;
         const min = x - command.stepSize / 2;
         const max = x + command.stepSize / 2;
         return cleanFloat(min).toString() + " to " + cleanFloat(max).toString();
