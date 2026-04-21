@@ -1326,4 +1326,9 @@ window.addEventListener("load", () => {
       });
     }
   }
+
+  // Alert for DS
+  alert(
+    "AdvantageScope Lite support for the FIRST Driver Station is still in development. Many features may not work correctly."
+  );
 });
