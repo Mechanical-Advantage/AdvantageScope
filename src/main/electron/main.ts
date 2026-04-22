@@ -556,7 +556,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
       rlogDataArrays[windowId] = new Uint8Array();
       rlogSockets[windowId].on("data", (data) => {
-        appendArray(data);
+          appendArray(data);
         if (rlogSocketTimeouts[windowId] !== null) clearTimeout(rlogSocketTimeouts[windowId]);
         rlogSocketTimeouts[windowId] = setTimeout(() => {
           rlogSockets[windowId]?.destroy();
@@ -734,41 +734,63 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
         // Add options
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
+        let addLogsOptionConfig = currentTypeConfig.options.find((optionConfig) => optionConfig.key === "AddFromLogs");
+        if (addLogsOptionConfig !== undefined && addLogsOptionConfig.values.length > 0) {
+          menu.append(
+            new MenuItem({
+              label: "Add from all logs",
+              click() {
+                respond();
+              }
+            })
+          );
+          menu.append(
+            new MenuItem({
+              type: "separator"
+            })
+          );
+        }
+        let appendOptionItem = (optionConfig: SourceListConfig["types"][number]["options"][number]) => {
+          if (optionConfig.key === "AddFromLogs") {
+            return;
+          }
+          menu.append(
+            new MenuItem({
+              label: optionConfig.display,
+              submenu: optionConfig.values.map((optionValue) => {
+                return {
+                  label: optionValue.display,
+                  type: "checkbox",
+                  checked: optionValue.key === state.options[optionConfig.key],
+                  icon: getIcon(optionValue.key),
+                  click() {
+                    state.options[optionConfig.key] = optionValue.key;
+                    respond();
+                  }
+                };
+              })
+            })
+          );
+        };
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
-          optionConfig.values.forEach((optionValue) => {
-            menu.append(
-              new MenuItem({
-                label: optionValue.display,
-                type: "checkbox",
-                checked: optionValue.key === state.options[optionConfig.key],
-                icon: getIcon(optionValue.key),
-                click() {
-                  state.options[optionConfig.key] = optionValue.key;
-                  respond();
-                }
-              })
-            );
-          });
+            optionConfig.values.forEach((optionValue) => {
+              menu.append(
+                new MenuItem({
+                  label: optionValue.display,
+                  type: "checkbox",
+                  checked: optionValue.key === state.options[optionConfig.key],
+                  icon: getIcon(optionValue.key),
+                  click() {
+                    state.options[optionConfig.key] = optionValue.key;
+                    respond();
+                  }
+                })
+              );
+            });
         } else {
           currentTypeConfig.options.forEach((optionConfig) => {
-            menu.append(
-              new MenuItem({
-                label: optionConfig.display,
-                submenu: optionConfig.values.map((optionValue) => {
-                  return {
-                    label: optionValue.display,
-                    type: "checkbox",
-                    checked: optionValue.key === state.options[optionConfig.key],
-                    icon: getIcon(optionValue.key),
-                    click() {
-                      state.options[optionConfig.key] = optionValue.key;
-                      respond();
-                    }
-                  };
-                })
-              })
-            );
+            appendOptionItem(optionConfig);
           });
         }
 
