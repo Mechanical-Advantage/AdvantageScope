@@ -740,7 +740,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             new MenuItem({
               label: "Add from all logs",
               click() {
-                sendMessage(window, "add-from-all-logs",state.logKey);
+                // console.log("legend:",message);
+                sendMessage(window, "add-from-all-logs", {
+                  logKey: state.logKey,
+                  uuid:message.data.uuid
+                 });
                 respond();
               }
             })

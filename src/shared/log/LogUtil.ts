@@ -113,10 +113,10 @@ export function findKey(log: Log, search: string[]): string | undefined {
 }
 
 export function keyPresent(log: Log, search: string[]): boolean {
-  console.log("search",search);
+  // console.log("search",search);
   
   let fieldKeys = log.getFieldKeys();
-  console.log("fieldKeys",fieldKeys);
+  // console.log("fieldKeys",fieldKeys);
   let found = false;
   for (const key of search) {
     found = fieldKeys.includes(key);

@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { string } from "mathjs";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
@@ -342,16 +343,39 @@ export default class LineGraphController implements TabController {
 
   /** Temporary handler for the "Add from all logs" action. */
   addFromAllLogs(data?: any) {
-    let logKey = typeof data === "string" ? data : "";  
+    let uuid = typeof data.uuid === "string" ? data.uuid as string : "";
+    let sourceList: SourceList;
+    console.log("UUID/org",uuid);
+    console.log("UUID/right",this.rightSourceList.getUUID());
+    console.log("UUID/left",this.leftSourceList.getUUID());
+    
+    if (uuid.match(this.rightSourceList.getUUID())) {
+      sourceList = this.rightSourceList;
+      console.log("right"); 
+    }
+    else if(uuid.match(this.leftSourceList.getUUID())){ 
+      sourceList = this.leftSourceList;
+      console.log("left");
+    }
+    else if(uuid.match(this.discreteSourceList.getUUID())){ 
+      sourceList = this.discreteSourceList;
+      console.log("middle");
+    }
+    else {
+      console.log("nooo")
+      return;
+    }
+
+    let logKey = typeof data.logKey === "string" ? data.logKey : "";  
     logKey = logKey.replace(/^\/Log[^/]+/, "");
     let newLogKey = logKey;
-    let existingKeys = this.rightSourceList.getState().filter((source) => source.logKey.includes(logKey)).map((source)=> source.logKey);
+    let existingKeys = sourceList.getState().filter((source) => source.logKey.includes(logKey)).map((source)=> source.logKey);
     let logNum = 1;
     newLogKey = "/Log" + logNum + logKey;
     while (keyPresent(window.log, [newLogKey])) {
-      console.log("data:", newLogKey);
+      // console.log("data:", newLogKey);
       if(!existingKeys.includes(newLogKey))
-      this.rightSourceList.addField(newLogKey);
+      sourceList.addField(newLogKey);
       logNum++;
       newLogKey = "/Log" + logNum + logKey;
     }
