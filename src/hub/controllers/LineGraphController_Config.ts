@@ -144,8 +144,17 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: GraphColors
+        },
+             {
+          key: "AddFromLogs",
+          display: "Add from all logs ",
+          showInTypeName: false,
+          values: [
+            { key: "off", display: "Off" },
+            { key: "on", display: "On" }
+          ]
         }
-      ]
+      ],
     },
     {
       key: "graph",
@@ -161,6 +170,15 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
           display: "Color",
           showInTypeName: false,
           values: GraphColors
+        },
+             {
+          key: "AddFromLogs",
+          display: "Add from all logs ",
+          showInTypeName: false,
+          values: [
+            { key: "off", display: "Off" },
+            { key: "on", display: "On" }
+          ]
         }
       ]
     },
