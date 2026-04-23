@@ -882,6 +882,10 @@ async function handleMainMessage(message: NamedMessage) {
       window.tabs.addDiscreteEnabled();
       break;
 
+    case "add-from-all-logs":
+      window.tabs.addFromAllLogs();
+      break;
+
     case "edit-axis":
       window.tabs.editAxis(
         message.data.legend,

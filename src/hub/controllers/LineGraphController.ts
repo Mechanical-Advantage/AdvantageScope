@@ -340,6 +340,11 @@ export default class LineGraphController implements TabController {
     return false;
   }
 
+  /** Temporary handler for the "Add from all logs" action. */
+  addFromAllLogs() {
+    console.log("hello world");
+  }
+
   private getPreview(
     key: string,
     time: number,

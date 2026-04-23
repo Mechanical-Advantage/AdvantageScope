@@ -655,6 +655,17 @@ async function handleHubMessage(message: NamedMessage) {
 
         // Add options
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
+        let addLogsOptionConfig = currentTypeConfig.options.find((optionConfig) => optionConfig.key === "AddFromLogs");
+        if (addLogsOptionConfig !== undefined && addLogsOptionConfig.values.length > 0) {
+          menuItems.push({
+            content: "Add from all logs",
+            callback() {
+              sendMessage(hubPort, "add-from-all-logs");
+              respond();
+            }
+          });
+          menuItems.push("-");
+        }
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
           optionConfig.values.forEach((optionValue) => {
@@ -669,6 +680,9 @@ async function handleHubMessage(message: NamedMessage) {
           });
         } else {
           currentTypeConfig.options.forEach((optionConfig) => {
+            if (optionConfig.key === "AddFromLogs") {
+              return;
+            }
             menuItems.push({
               content: optionConfig.display,
               items: optionConfig.values.map((optionValue) => {
