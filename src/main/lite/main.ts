@@ -416,7 +416,7 @@ async function handleHubMessage(message: NamedMessage) {
               {
                 content: `Show Licenses`,
                 callback() {
-                  openPopupWindow("../www/licenses.html", [50, 75], "percent");
+                  openPopupWindow("www/licenses.html", [50, 75], "percent");
                 }
               }
             ];
