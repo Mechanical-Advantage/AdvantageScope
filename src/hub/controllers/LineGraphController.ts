@@ -5,12 +5,11 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { string } from "mathjs";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText, findKey, keyPresent } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText, keyPresent } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import {
   LineGraphRendererCommand,
@@ -341,7 +340,6 @@ export default class LineGraphController implements TabController {
     return false;
   }
 
-  /** Temporary handler for the "Add from all logs" action. */
   addFromAllLogs(data?: any) {
     let uuid = typeof data.uuid === "string" ? data.uuid as string : "";
     let sourceList: SourceList;
