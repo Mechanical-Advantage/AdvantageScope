@@ -883,7 +883,7 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "add-from-all-logs":
-      window.tabs.addFromAllLogs();
+      window.tabs.addFromAllLogs(message.data);
       break;
 
     case "edit-axis":
