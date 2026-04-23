@@ -9,7 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText, findKey, keyPresent } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import {
   LineGraphRendererCommand,
@@ -342,7 +342,17 @@ export default class LineGraphController implements TabController {
 
   /** Temporary handler for the "Add from all logs" action. */
   addFromAllLogs(data?: any) {
-    console.log("data:",data);
+    let logKey = typeof data === "string" ? data : "";  
+    let newLogKey = logKey;
+    let logNum = 1;
+    newLogKey = "/Log" + logNum + logKey;
+    console.log("keyPresent",keyPresent(window.log, [newLogKey]));
+    while (keyPresent(window.log, [newLogKey])) {
+      console.log("data:", newLogKey);
+      this.rightSourceList.addField(newLogKey);
+      logNum++;
+      newLogKey = "/Log" + logNum + logKey;
+    }
   }
 
   private getPreview(
