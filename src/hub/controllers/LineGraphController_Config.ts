@@ -37,7 +37,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
             { key: "bold", display: "Bold" },
             { key: "verybold", display: "Very Bold" }
           ]
-        }, 
+        },
         {
           key: "AddFromLogs",
           display: "Add from all logs ",
@@ -74,8 +74,8 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
             { key: "verybold", display: "Very Bold" }
           ]
         },
-  
-       {
+
+        {
           key: "AddFromLogs",
           display: "Add from all logs ",
           showInTypeName: false,
@@ -110,8 +110,8 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
             { key: "bold", display: "Large" }
           ]
         },
-  
-       {
+
+        {
           key: "AddFromLogs",
           display: "Add from all logs ",
           showInTypeName: false,
@@ -145,7 +145,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
           showInTypeName: false,
           values: GraphColors
         },
-             {
+        {
           key: "AddFromLogs",
           display: "Add from all logs ",
           showInTypeName: false,
@@ -154,7 +154,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
             { key: "on", display: "On" }
           ]
         }
-      ],
+      ]
     },
     {
       key: "graph",
@@ -171,7 +171,7 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
           showInTypeName: false,
           values: GraphColors
         },
-             {
+        {
           key: "AddFromLogs",
           display: "Add from all logs ",
           showInTypeName: false,

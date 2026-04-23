@@ -699,7 +699,6 @@ export default class Tabs {
       (this.tabList[this.selectedTab].controller as LineGraphController).addFromAllLogs(data);
     }
   }
-    
 
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {

@@ -556,7 +556,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
       rlogDataArrays[windowId] = new Uint8Array();
       rlogSockets[windowId].on("data", (data) => {
-          appendArray(data);
+        appendArray(data);
         if (rlogSocketTimeouts[windowId] !== null) clearTimeout(rlogSocketTimeouts[windowId]);
         rlogSocketTimeouts[windowId] = setTimeout(() => {
           rlogSockets[windowId]?.destroy();
@@ -742,8 +742,8 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               click() {
                 sendMessage(window, "add-from-all-logs", {
                   logKey: state.logKey,
-                  uuid:message.data.uuid
-                 });
+                  uuid: message.data.uuid
+                });
                 respond();
               }
             })
@@ -778,20 +778,20 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         };
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
-            optionConfig.values.forEach((optionValue) => {
-              menu.append(
-                new MenuItem({
-                  label: optionValue.display,
-                  type: "checkbox",
-                  checked: optionValue.key === state.options[optionConfig.key],
-                  icon: getIcon(optionValue.key),
-                  click() {
-                    state.options[optionConfig.key] = optionValue.key;
-                    respond();
-                  }
-                })
-              );
-            });
+          optionConfig.values.forEach((optionValue) => {
+            menu.append(
+              new MenuItem({
+                label: optionValue.display,
+                type: "checkbox",
+                checked: optionValue.key === state.options[optionConfig.key],
+                icon: getIcon(optionValue.key),
+                click() {
+                  state.options[optionConfig.key] = optionValue.key;
+                  respond();
+                }
+              })
+            );
+          });
         } else {
           currentTypeConfig.options.forEach((optionConfig) => {
             appendOptionItem(optionConfig);

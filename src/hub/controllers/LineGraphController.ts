@@ -341,30 +341,29 @@ export default class LineGraphController implements TabController {
   }
 
   addFromAllLogs(data?: any) {
-    let uuid = typeof data.uuid === "string" ? data.uuid as string : "";
+    let uuid = typeof data.uuid === "string" ? (data.uuid as string) : "";
     let sourceList: SourceList;
     if (uuid.match(this.rightSourceList.getUUID())) {
       sourceList = this.rightSourceList;
-    }
-    else if(uuid.match(this.leftSourceList.getUUID())){ 
+    } else if (uuid.match(this.leftSourceList.getUUID())) {
       sourceList = this.leftSourceList;
-    }
-    else if(uuid.match(this.discreteSourceList.getUUID())){ 
+    } else if (uuid.match(this.discreteSourceList.getUUID())) {
       sourceList = this.discreteSourceList;
-    }
-    else {
+    } else {
       return;
     }
 
-    let logKey = typeof data.logKey === "string" ? data.logKey : "";  
+    let logKey = typeof data.logKey === "string" ? data.logKey : "";
     logKey = logKey.replace(/^\/Log[^/]+/, "");
     let newLogKey = logKey;
-    let existingKeys = sourceList.getState().filter((source) => source.logKey.includes(logKey)).map((source)=> source.logKey);
+    let existingKeys = sourceList
+      .getState()
+      .filter((source) => source.logKey.includes(logKey))
+      .map((source) => source.logKey);
     let logNum = 1;
     newLogKey = "/Log" + logNum + logKey;
     while (keyPresent(window.log, [newLogKey])) {
-      if(!existingKeys.includes(newLogKey))
-      sourceList.addField(newLogKey);
+      if (!existingKeys.includes(newLogKey)) sourceList.addField(newLogKey);
       logNum++;
       newLogKey = "/Log" + logNum + logKey;
     }
