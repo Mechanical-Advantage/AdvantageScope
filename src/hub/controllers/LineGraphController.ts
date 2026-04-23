@@ -343,12 +343,14 @@ export default class LineGraphController implements TabController {
   /** Temporary handler for the "Add from all logs" action. */
   addFromAllLogs(data?: any) {
     let logKey = typeof data === "string" ? data : "";  
+    logKey = logKey.replace(/^\/Log[^/]+/, "");
     let newLogKey = logKey;
+    let existingKeys = this.rightSourceList.getState().filter((source) => source.logKey.includes(logKey)).map((source)=> source.logKey);
     let logNum = 1;
     newLogKey = "/Log" + logNum + logKey;
-    console.log("keyPresent",keyPresent(window.log, [newLogKey]));
     while (keyPresent(window.log, [newLogKey])) {
       console.log("data:", newLogKey);
+      if(!existingKeys.includes(newLogKey))
       this.rightSourceList.addField(newLogKey);
       logNum++;
       newLogKey = "/Log" + logNum + logKey;
