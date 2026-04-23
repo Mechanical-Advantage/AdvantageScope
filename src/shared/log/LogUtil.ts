@@ -113,25 +113,14 @@ export function findKey(log: Log, search: string[]): string | undefined {
 }
 
 export function keyPresent(log: Log, search: string[]): boolean {
-  // console.log("search",search);
   
   let fieldKeys = log.getFieldKeys();
-  // console.log("fieldKeys",fieldKeys);
   let found = false;
   for (const key of search) {
     found = fieldKeys.includes(key);
     if (found)
       break;
   }
-  // for (let i = 0; i < fieldKeys.length && found != true; i++) {
-  //   let unmerged = removeMergePrefix(fieldKeys[i]);
-  //   let searchIndex: number;
-  //   if ((searchIndex = search.indexOf(unmerged)) !== -1) {
-  //     found = true;
-  //   } else if (unmerged.startsWith("/") && (searchIndex = search.indexOf(unmerged.slice(1))) !== -1) {
-  //     found = true;
-  //   }
-  // }
   return found;
 }
 

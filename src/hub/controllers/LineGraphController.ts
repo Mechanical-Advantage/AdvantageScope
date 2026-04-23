@@ -345,24 +345,16 @@ export default class LineGraphController implements TabController {
   addFromAllLogs(data?: any) {
     let uuid = typeof data.uuid === "string" ? data.uuid as string : "";
     let sourceList: SourceList;
-    console.log("UUID/org",uuid);
-    console.log("UUID/right",this.rightSourceList.getUUID());
-    console.log("UUID/left",this.leftSourceList.getUUID());
-    
     if (uuid.match(this.rightSourceList.getUUID())) {
       sourceList = this.rightSourceList;
-      console.log("right"); 
     }
     else if(uuid.match(this.leftSourceList.getUUID())){ 
       sourceList = this.leftSourceList;
-      console.log("left");
     }
     else if(uuid.match(this.discreteSourceList.getUUID())){ 
       sourceList = this.discreteSourceList;
-      console.log("middle");
     }
     else {
-      console.log("nooo")
       return;
     }
 
@@ -373,7 +365,6 @@ export default class LineGraphController implements TabController {
     let logNum = 1;
     newLogKey = "/Log" + logNum + logKey;
     while (keyPresent(window.log, [newLogKey])) {
-      // console.log("data:", newLogKey);
       if(!existingKeys.includes(newLogKey))
       sourceList.addField(newLogKey);
       logNum++;
