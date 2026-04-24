@@ -9,7 +9,8 @@ import * as THREE from "three";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
+import createGLTFLoader from "../shared/renderers/createGLTFLoader";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { FilmPass } from "three/examples/jsm/postprocessing/FilmPass.js";
 import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
@@ -580,7 +581,7 @@ export default class XRRenderer {
         newFieldReady();
       } else {
         this.isFieldLoading = true;
-        const loader = new GLTFLoader();
+        const loader = createGLTFLoader();
         const urlTransformer: (path: string) => string = (url) => "/asset?path=" + encodeURIComponent(url);
         Promise.all([
           new Promise((resolve) => {
