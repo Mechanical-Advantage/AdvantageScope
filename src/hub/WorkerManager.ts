@@ -7,6 +7,8 @@
 
 /** Manages communication with worker scripts using a promise interface. */
 export default abstract class WorkerManager {
+  private static HEARTBEAT_TIMEOUT_MS = 30_000;
+
   private static globalRequestId: number = 0;
   private static workers: {
     [id: number]: {
@@ -14,8 +16,30 @@ export default abstract class WorkerManager {
       resolve: (value: any) => void;
       reject: (value: any) => void;
       progress?: (progress: number) => void;
+      heartbeatTimer: ReturnType<typeof setTimeout> | null;
     };
   } = {};
+
+  private static cleanupWorker(requestId: number) {
+    let entry = this.workers[requestId];
+    if (entry === undefined) return;
+    if (entry.heartbeatTimer !== null) clearTimeout(entry.heartbeatTimer);
+    entry.worker.terminate();
+    delete this.workers[requestId];
+  }
+
+  private static resetHeartbeat(requestId: number) {
+    let entry = this.workers[requestId];
+    if (entry === undefined) return;
+    if (entry.heartbeatTimer !== null) clearTimeout(entry.heartbeatTimer);
+    entry.heartbeatTimer = setTimeout(() => {
+      if (WorkerManager.workers[requestId] !== undefined) {
+        let reject = WorkerManager.workers[requestId].reject;
+        WorkerManager.cleanupWorker(requestId);
+        reject(null);
+      }
+    }, this.HEARTBEAT_TIMEOUT_MS);
+  }
 
   static request(script: string, payload: any, progressCallback?: (progress: number) => void): Promise<any> {
     const requestId = this.globalRequestId++;
@@ -25,9 +49,18 @@ export default abstract class WorkerManager {
         worker: worker,
         resolve: resolve,
         reject: reject,
-        progress: progressCallback
+        progress: progressCallback,
+        heartbeatTimer: null
       };
       worker.onmessage = this.handleResponse;
+      worker.onerror = () => {
+        if (WorkerManager.workers[requestId] !== undefined) {
+          let reject = WorkerManager.workers[requestId].reject;
+          WorkerManager.cleanupWorker(requestId);
+          reject(null);
+        }
+      };
+      WorkerManager.resetHeartbeat(requestId);
       worker.postMessage({
         id: requestId,
         payload: payload
@@ -37,23 +70,20 @@ export default abstract class WorkerManager {
 
   private static handleResponse(event: any) {
     let message = event.data;
-    let deleteWorker = () => {
-      WorkerManager.workers[message.id].worker.terminate();
-      delete WorkerManager.workers[message.id];
-    };
     if (message.id in WorkerManager.workers) {
       if ("payload" in message) {
         let resolve = WorkerManager.workers[message.id].resolve;
-        deleteWorker();
+        WorkerManager.cleanupWorker(message.id);
         resolve(message.payload);
       } else if ("progress" in message) {
+        WorkerManager.resetHeartbeat(message.id);
         let progress = WorkerManager.workers[message.id].progress;
         if (progress !== undefined) {
           progress(message.progress as number);
         }
       } else {
         let reject = WorkerManager.workers[message.id].reject;
-        deleteWorker();
+        WorkerManager.cleanupWorker(message.id);
         reject(null);
       }
     }
