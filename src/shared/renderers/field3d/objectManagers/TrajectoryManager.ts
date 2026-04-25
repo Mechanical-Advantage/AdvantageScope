@@ -15,6 +15,8 @@ import ObjectManager from "../ObjectManager";
 export default class TrajectoryManager extends ObjectManager<Field3dRendererCommand_TrajectoryObj> {
   private line: Line2;
   private length = 0;
+  private positionBuffer = new Float32Array(0);
+  private lastColorStr = "";
 
   constructor(
     root: THREE.Object3D,
@@ -47,26 +49,38 @@ export default class TrajectoryManager extends ObjectManager<Field3dRendererComm
   setObjectData(object: Field3dRendererCommand_TrajectoryObj): void {
     if (object.poses.length <= 1) {
       this.line.visible = false;
-    } else {
-      this.line.visible = true;
-      this.line.material.color = new THREE.Color(object.color);
-      this.line.material.linewidth = object.size === "bold" ? 6 : 2;
-      if (object.poses.length !== this.length) {
-        this.line.geometry.dispose();
-        this.line.geometry = new LineGeometry();
-        this.length = object.poses.length;
-      }
-      let positionData: number[] = [];
-      object.poses.forEach((annotatedPose) => {
-        let translation = annotatedPose.pose.translation;
-        if (annotatedPose.annotation.is2DSource) {
-          // 2D trajectories should be moved just above the carpet for cleaner rendering
-          translation[2] = 0.02;
-        }
-        positionData = positionData.concat(translation);
-      });
-      this.line.geometry.setPositions(positionData);
-      this.line.geometry.attributes.position.needsUpdate = true;
+      return;
     }
+
+    this.line.visible = true;
+    if (object.color !== this.lastColorStr) {
+      this.lastColorStr = object.color;
+      this.line.material.color.set(object.color);
+    }
+    this.line.material.linewidth = object.size === "bold" ? 6 : 2;
+
+    if (object.poses.length !== this.length) {
+      this.line.geometry.dispose();
+      this.line.geometry = new LineGeometry();
+      this.length = object.poses.length;
+    }
+
+    const required = object.poses.length * 3;
+    if (this.positionBuffer.length < required) {
+      this.positionBuffer = new Float32Array(required * 2);
+    }
+
+    const buf = this.positionBuffer;
+    const poses = object.poses;
+    for (let i = 0, off = 0; i < poses.length; i++, off += 3) {
+      const t = poses[i].pose.translation;
+      buf[off] = t[0];
+      buf[off + 1] = t[1];
+      // 2D trajectories should be moved just above the carpet for cleaner rendering
+      buf[off + 2] = poses[i].annotation.is2DSource ? 0.02 : t[2];
+    }
+
+    this.line.geometry.setPositions(buf.subarray(0, required));
+    this.line.geometry.attributes.position.needsUpdate = true;
   }
 }
