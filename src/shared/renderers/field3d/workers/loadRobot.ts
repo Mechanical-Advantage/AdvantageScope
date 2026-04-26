@@ -62,6 +62,7 @@ self.onmessage = (event) => {
       let sceneMeshes: THREE.Mesh[] = [];
       if (optimized.normal.length > 0) sceneMeshes.push(optimized.normal[0]);
       if (optimized.transparent.length > 0) sceneMeshes.push(optimized.transparent[0]);
+      if (optimized.bumper.length > 0) sceneMeshes.push(optimized.bumper[0]);
       meshes.push(sceneMeshes.map((mesh) => mesh.toJSON()));
     }
 

@@ -298,7 +298,8 @@ export function parseRobot(configRaw: unknown): Config3dRobot | "invalid" {
     position: [0, 0, 0],
     cameras: [],
     components: [],
-    disableSimplification: false
+    disableSimplification: false,
+    dynamicColoring: false
   };
   if ("name" in configRaw && typeof configRaw.name === "string") {
     config.name = configRaw.name;
@@ -308,6 +309,10 @@ export function parseRobot(configRaw: unknown): Config3dRobot | "invalid" {
   }
   if ("disableSimplification" in configRaw && typeof configRaw.disableSimplification === "boolean") {
     config.disableSimplification = configRaw.disableSimplification;
+  }
+  if ("dynamicColoring" in configRaw && typeof configRaw.dynamicColoring === "boolean"
+  ) {
+    config.dynamicColoring = configRaw.dynamicColoring;
   }
   if (
     "rotations" in configRaw &&

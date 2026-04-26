@@ -747,7 +747,8 @@ export default class XRRenderer {
             components: [],
             mechanisms: { xz: null, yz: null },
             visionTargets: [],
-            swerveStates: []
+            swerveStates: [],
+            bumperColor: "#000000"
           });
         }
       }

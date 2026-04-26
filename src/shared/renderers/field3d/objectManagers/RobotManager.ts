@@ -50,6 +50,7 @@ export default class RobotManager extends ObjectManager<
     shininess: this.materialShininess,
     depthWrite: false
   });
+  private bumperMaterial = new THREE.MeshStandardMaterial();
   private visionLines: Line2[] = [];
   private mechanismLinesXZ: MechanismLineData[] = [];
   private mechanismLinesYZ: MechanismLineData[] = [];
@@ -69,6 +70,7 @@ export default class RobotManager extends ObjectManager<
   private hasNewAssets = false;
   private lastModel = "";
   private lastColor = "";
+  private lastBumperColor = "";
   private lastHadSwerveStates = false;
   private lastHideRobotModels = false;
 
@@ -248,6 +250,13 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
+                if (mesh.name.includes("BUMPERCOLOR") && robotConfig.dynamicColoring) {
+                  if (!Array.isArray(mesh.material)) {
+                    mesh.material.dispose();
+                  }
+                  mesh.material = this.bumperMaterial;
+                }
+
                 if (object.type === "ghost") {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
@@ -298,6 +307,13 @@ export default class RobotManager extends ObjectManager<
                   }
                 }
 
+                if (mesh.name === "bumper" && robotConfig.dynamicColoring) {
+                  if (!Array.isArray(mesh.material)) {
+                    mesh.material.dispose();
+                  }
+                  mesh.material = this.bumperMaterial;
+                }
+
                 if (object.type === "ghost") {
                   if (!Array.isArray(mesh.material)) {
                     mesh.material.dispose();
@@ -344,6 +360,19 @@ export default class RobotManager extends ObjectManager<
     // Update primary model
     if (this.meshes.length > 0) {
       this.meshes[0].setPoses(object.poses.map((x) => x.pose));
+    }
+
+    // Update bumper color
+    if (object.type === "robot" && object.bumperColor !== this.lastBumperColor) {
+      this.lastBumperColor = object.bumperColor;
+      this.bumperMaterial.color = new THREE.Color(object.bumperColor).offsetHSL(0.0, -0.1, 0.0);
+
+      if (!robotConfig?.dynamicColoring) {
+        window.sendMainMessage("error", {
+          title: "Cannot display dynamic color.",
+          content: "This robot model is not configured for displaying dynamic colors and your selection will not have any effect. See the documentation for details."
+        });
+      }
     }
 
     // Update components
