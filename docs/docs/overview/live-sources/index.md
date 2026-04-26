@@ -48,4 +48,4 @@ When NetworkTables is used as the live source, the following live modes can be s
 
 ### Discard Live Data
 
-During a live connection, data is stored locally to allow for replay of past data (see "Viewing Live Data" below). To avoid very high memory usage, data is discarded after 20 minutes by default. A shorter period can be selected to reduce memory usage, or "Never" can be selected to store live data indefinitely.
+During a live connection, data is stored locally to allow for replay of past data (see "Viewing Live Data" below). To avoid very high memory usage, data is discarded after 20 minutes by default. Any custom time period (in minutes) can be entered to reduce memory usage, including decimal values for sub-minute precision. Special value: "-1" stores live data indefinitely (never discard).
