@@ -132,6 +132,7 @@ const mainBundles = isLite
     ];
 const largeRendererBundles = [
   bundle("hub/hub.ts", "hub.js", false, false),
+  bundle("hub/controllers/LineGraphController.ts", "LineGraphController.js", false, false),
   ...(isLite ? [] : [bundle("satellite.ts", "satellite.js", false, false)])
 ];
 const smallRendererBundles = [
@@ -182,17 +183,44 @@ const runOwletDownload = {
 };
 
 export default (cliArgs) => {
-  if (cliArgs.configMain === true) return mainBundles;
-  if (cliArgs.configLargeRenderers === true) return largeRendererBundles;
-  if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
-  if (cliArgs.configWorkers === true) return workerBundles;
-  if (cliArgs.configXR === true) {
-    if (isLite) process.exit();
-    return xrBundles;
-  }
-  if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
+  let bundles = [];
 
-  return isLite
-    ? [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
-    : [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
+  if (cliArgs.configMain) {
+    bundles.push(...mainBundles);
+  }
+
+  if (cliArgs.oren) {
+    bundles.push(...oren);
+  }
+
+  if (cliArgs.configLargeRenderers) {
+    bundles.push(...largeRendererBundles);
+  }
+
+  if (cliArgs.configSmallRenderers) {
+    bundles.push(...smallRendererBundles);
+  }
+
+  if (cliArgs.configWorkers) {
+    bundles.push(...workerBundles);
+  }
+
+  if (cliArgs.configXR) {
+    if (!isLite) {
+      bundles.push(...xrBundles);
+    }
+  }
+
+  if (cliArgs.configRunOwletDownload) {
+    return runOwletDownload; // assuming this should stay exclusive
+  }
+
+  // If no flags were passed, return default behavior
+  if (bundles.length === 0) {
+    return isLite
+      ? [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
+      : [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
+  }
+
+  return bundles;
 };
