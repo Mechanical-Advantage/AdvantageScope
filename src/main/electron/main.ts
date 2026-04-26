@@ -45,6 +45,7 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
+import { createUUID } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
@@ -288,9 +289,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       {
         // Record opened files
         const uuid: string = message.data.uuid;
-        const path: string = message.data.path;
-        app.addRecentDocument(path);
-        fs.writeFile(AKIT_PATH_OUTPUT, path, () => {});
+        const logPath: string = message.data.path;
+        app.addRecentDocument(logPath);
+        fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
 
         // Send data if all file reads finished
         let completedCount = 0;
@@ -347,13 +348,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             });
           });
         };
-        if (path.endsWith(".dslog")) {
+        if (logPath.endsWith(".dslog")) {
           // DSLog, open DSEvents too
           results = [null, null];
           targetCount += 2;
-          openPath(path, (buffer) => (results[0] = buffer));
-          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
-        } else if (path.endsWith(".hoot")) {
+          openPath(logPath, (buffer) => (results[0] = buffer));
+          openPath(logPath.slice(0, logPath.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
+        } else if (logPath.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
 
@@ -403,12 +404,12 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             completedCount++;
             sendIfReady();
           } else {
-            checkHootIsPro(path)
+            checkHootIsPro(logPath)
               .then((isPro) => {
                 hasHootNonPro = hasHootNonPro || !isPro;
               })
               .finally(() => {
-                convertHoot(path)
+                convertHoot(logPath)
                   .then((wpilogPath) => {
                     openPath(wpilogPath, (buffer) => {
                       results[0] = buffer;
@@ -426,22 +427,25 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   });
               });
           }
-        } else if (path.endsWith(".revlog")) {
+        } else if (logPath.endsWith(".revlog")) {
           // REVLOG, convert to WPILOG
           targetCount += 1;
 
-          parseREVLOG(path)
-            .then((wpilogBuffer) => {
-              results[0] = wpilogBuffer;
-              completedCount++;
-              sendIfReady();
+          // Save WPILOG in temporary folder
+          let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
+          parseREVLOG(logPath, wpilogPath)
+            .then(() => {
+              openPath(wpilogPath, (buffer) => {
+                results[0] = buffer;
+                fs.rmSync(wpilogPath);
+              });
             })
             .catch((err) => {
               errorMessage = err.message;
               completedCount++;
               sendIfReady();
             });
-        } else if (path.endsWith(".wpilogxz")) {
+        } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
           if (lzma === null) {
@@ -449,7 +453,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             completedCount++;
             sendIfReady();
           } else {
-            fs.open(path, "r", (error, file) => {
+            fs.open(logPath, "r", (error, file) => {
               if (error) {
                 completedCount++;
                 sendIfReady();
@@ -485,7 +489,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         } else {
           // Normal log, open normally
           targetCount += 1;
-          openPath(path, (buffer) => (results[0] = buffer));
+          openPath(logPath, (buffer) => (results[0] = buffer));
         }
       }
       break;
