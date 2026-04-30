@@ -698,6 +698,12 @@ export namespace Units {
         suffix: "cal",
         pluralizeSuffix: true,
         names: ["cal", "calorie", "calories"]
+      },
+      potato: {
+        value: 1 / 460.24,
+        suffix: "pot",
+        pluralizeSuffix: false,
+        names: ["pot", "potato", "potatoes"]
       }
     }
   };
