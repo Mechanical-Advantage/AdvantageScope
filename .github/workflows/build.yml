@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+env:
+  VERSION_SUFFIX: ${{ case(startsWith(github.ref, 'refs/tags/v'), github.ref_name, 'dev') }}
+
 jobs:
   check-formatting:
     name: Check Formatting
@@ -233,29 +236,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-dev.exe"
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: advantagescope-win-${{ matrix.arch }}-dev.exe
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          path: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-win-${{ matrix.arch }}-dev.exe
-          asset_name: advantagescope-win-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.exe
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
 
   build-mac:
     name: Build for macOS (${{ matrix.arch }})
@@ -303,29 +295,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-dev.dmg
+          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          path: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-          asset_name: advantagescope-mac-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.dmg
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
 
   build-linux:
     name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
@@ -382,29 +363,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
+          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
       - name: Upload development artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.format }}
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
 
   build-wpilib-win:
     name: "WPILib: Build for Windows (${{ matrix.arch }})"
@@ -452,22 +422,11 @@ jobs:
         with:
           archive: false
           path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-win-${{ matrix.arch }}.zip
 
   build-wpilib-mac:
     name: "WPILib: Build for macOS (${{ matrix.arch }})"
@@ -528,22 +487,11 @@ jobs:
         with:
           archive: false
           path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
 
   build-wpilib-linux:
     name: "WPILib: Build for Linux (${{ matrix.arch }})"
@@ -591,22 +539,11 @@ jobs:
         with:
           archive: false
           path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
 
   finalize-release:
     name: Finalize Release
@@ -623,14 +560,9 @@ jobs:
         with:
           token: ${{ github.token }}
       - name: Publish AppArmor profile
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope.AppArmor
-          asset_name: advantagescope.AppArmor
-          asset_content_type: "text/plain"
+          files: advantagescope.AppArmor
       - name: Edit release
         uses: irongut/EditRelease@v1.2.0
         with:
