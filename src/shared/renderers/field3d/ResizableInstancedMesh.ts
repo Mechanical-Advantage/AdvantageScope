@@ -7,7 +7,6 @@
 
 import * as THREE from "three";
 import { Pose3d } from "../../geometry";
-import { rotation3dToQuaternion } from "../Field3dRendererImpl";
 
 export default class ResizableInstancedMesh {
   private parent: THREE.Object3D;
@@ -15,8 +14,12 @@ export default class ResizableInstancedMesh {
   private castShadow: boolean[];
 
   private count = 0;
-  private dummy = new THREE.Object3D();
   private meshes: (THREE.InstancedMesh | null)[] = [];
+
+  private static readonly _scratchQ = new THREE.Quaternion();
+  private static readonly _unitScale = new THREE.Vector3(1, 1, 1);
+  private readonly _scratchPos = new THREE.Vector3();
+  private readonly _scratchMat = new THREE.Matrix4();
 
   constructor(
     parent: THREE.Object3D,
@@ -28,11 +31,7 @@ export default class ResizableInstancedMesh {
     sources.forEach((source, index) => {
       this.sources.push({ geometry: source.geometry, material: source.material });
       this.meshes.push(null);
-      if (castShadow !== undefined && index < castShadow.length) {
-        this.castShadow.push(castShadow[index]);
-      } else {
-        this.castShadow.push(true);
-      }
+      this.castShadow.push(castShadow !== undefined && index < castShadow.length ? castShadow[index] : true);
     });
   }
 
@@ -58,47 +57,53 @@ export default class ResizableInstancedMesh {
     });
   }
 
-  setPoses(poses: Pose3d[]): void {
+  setPoses(poses: Pose3d[], count = poses.length): void {
     // Resize instanced mesh
-    if (poses.length > this.count) {
+    if (count > this.count) {
       if (this.count === 0) this.count = 1;
-      while (this.count < poses.length) {
-        this.count *= 2;
-      }
+      while (this.count < count) this.count *= 2;
 
       this.meshes.forEach((mesh, i) => {
         if (mesh !== null) {
           this.parent.remove(mesh);
           mesh.dispose();
         }
-
-        this.meshes[i] = new THREE.InstancedMesh(this.sources[i].geometry, this.sources[i].material, this.count);
-        this.meshes[i]!.castShadow = this.castShadow[i];
-        this.meshes[i]!.frustumCulled = false;
-        this.parent.add(this.meshes[i]!);
+        const newMesh = new THREE.InstancedMesh(this.sources[i].geometry, this.sources[i].material, this.count);
+        newMesh.castShadow = this.castShadow[i];
+        newMesh.frustumCulled = false;
+        newMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        this.parent.add(newMesh);
+        this.meshes[i] = newMesh;
       });
     }
 
-    // Update all poses
-    for (let i = 0; i < this.count; i++) {
-      if (i < poses.length) {
-        this.dummy.position.set(...poses[i].translation);
-        this.dummy.rotation.setFromQuaternion(rotation3dToQuaternion(poses[i].rotation));
-      } else {
-        this.dummy.position.set(1e6, 1e6, 1e6);
+    // Update poses
+    if (count > 0) {
+      const scratchQ = ResizableInstancedMesh._scratchQ;
+      const unitScale = ResizableInstancedMesh._unitScale;
+      const scratchPos = this._scratchPos;
+      const scratchMat = this._scratchMat;
+      const meshCount = this.meshes.length;
+
+      for (let i = 0; i < count; i++) {
+        const t = poses[i].translation;
+        const r = poses[i].rotation; // layout: [w, x, y, z]
+        scratchPos.set(t[0], t[1], t[2]);
+        scratchQ.set(r[1], r[2], r[3], r[0]); // (x, y, z, w) expected
+        scratchMat.compose(scratchPos, scratchQ, unitScale);
+        for (let m = 0; m < meshCount; m++) {
+          this.meshes[m]!.setMatrixAt(i, scratchMat);
+        }
       }
-      this.dummy.updateMatrix();
-      this.meshes.forEach((mesh) => {
-        mesh?.setMatrixAt(i, this.dummy.matrix);
-      });
     }
 
     // Trigger instanced mesh update
-    this.meshes.forEach((mesh) => {
+    for (let m = 0; m < this.meshes.length; m++) {
+      const mesh = this.meshes[m];
       if (mesh !== null) {
+        mesh.count = count;
         mesh.instanceMatrix.needsUpdate = true;
-        mesh.computeBoundingBox();
       }
-    });
+    }
   }
 }

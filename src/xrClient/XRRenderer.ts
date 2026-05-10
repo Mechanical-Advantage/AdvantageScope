@@ -80,7 +80,26 @@ export default class XRRenderer {
   private lastFieldId: string = "";
   private lastIsFTC: boolean | null = null;
   private lastCoordinateSystem: CoordinateSystem | null = null;
-  private lastAssetsString: string = "";
+  private lastAssetsRef: AdvantageScopeAssets | null = null;
+
+  private static readonly _Z_AXIS = new THREE.Vector3(0, 0, 1);
+
+  private _lastAppliedCoordSys: CoordinateSystem | null = null;
+  private _lastAppliedAlliance: boolean | null = null;
+  private _lastAppliedFieldForCoord = "";
+
+  private _cachedFieldLengthM = 0;
+  private _cachedFieldWidthM = 0;
+  private _cachedFieldDimId = "";
+
+  private _cachedLightColor = new THREE.Color();
+  private _lastTemperature = -1;
+
+  private _fcCacheId = "";
+  private _fcCacheAssets: AdvantageScopeAssets | null = null;
+  private _fcCacheResult: Config3dField | null = null;
+
+  private _lastAppliedPixelRatio = -1;
 
   constructor() {
     this.canvas = document.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
@@ -226,18 +245,20 @@ export default class XRRenderer {
     }
     let centerX = allianceReference1.x + Math.sin(yaw + Math.PI / 2) * (fieldLength / 2) - Math.sin(yaw) * yShift;
     let centerZ = allianceReference1.z + Math.cos(yaw + Math.PI / 2) * (fieldLength / 2) - Math.cos(yaw) * yShift;
-
     this.fieldRoot.position.set(centerX, height, centerZ);
     this.fieldRoot.rotation.set(0, yaw + (isRed ? 0 : Math.PI), 0);
   }
-
   private getFieldConfig(command: Field3dRendererCommand, assets: AdvantageScopeAssets | null): Config3dField | null {
     if (assets === null) return null;
-    let fieldConfig = [...assets.field3ds, ...BuiltIn3dFields].find((fieldData) => fieldData.id === command.field);
-    if (fieldConfig === undefined) return null;
-    return fieldConfig;
+    if (command.field === this._fcCacheId && assets === this._fcCacheAssets) {
+      return this._fcCacheResult;
+    }
+    const result = [...assets.field3ds, ...BuiltIn3dFields].find((fieldData) => fieldData.id === command.field) ?? null;
+    this._fcCacheId = command.field;
+    this._fcCacheAssets = assets;
+    this._fcCacheResult = result;
+    return result;
   }
-
   /** Make a new object manager for the provided type. */
   private makeObjectManager(type: Field3dRendererCommand_AnyObj["type"]): ObjectManager<Field3dRendererCommand_AnyObj> {
     let args = [
@@ -299,7 +320,6 @@ export default class XRRenderer {
     manager.setResolution(this.resolution);
     return manager;
   }
-
   /** Draws a new frame based on an updated camera position. */
   render(
     renderState: XRFrameState,
@@ -312,7 +332,6 @@ export default class XRRenderer {
       this.lastCalibrationMode = settings.calibration;
       this.resetCalibration();
     }
-
     // Update anchors
     Object.entries(renderState.anchors).forEach(([anchorId, translation]) => {
       if (!(anchorId in this.anchors)) {
@@ -325,9 +344,9 @@ export default class XRRenderer {
     // Update raycast status
     this.lastRaycastResult = renderState.raycast;
     if (!renderState.raycast.isValid) {
-      this.lastInvalidRaycast = new Date().getTime();
+      this.lastInvalidRaycast = Date.now();
     }
-    const raycastUnreliable = new Date().getTime() - this.lastInvalidRaycast < 500;
+    const raycastUnreliable = Date.now() - this.lastInvalidRaycast < 500;
 
     // Get field config
     let fieldId = command.field;
@@ -354,8 +373,13 @@ export default class XRRenderer {
     this.lastCoordinateSystem = command.coordinateSystem;
 
     // Update field reference size
-    const fieldLength = Units.convert(fieldConfig.widthInches, "inches", "meters");
-    const fieldWidth = Units.convert(fieldConfig.heightInches, "inches", "meters");
+    if (fieldId !== this._cachedFieldDimId) {
+      this._cachedFieldDimId = fieldId;
+      this._cachedFieldLengthM = Units.convert(fieldConfig.widthInches, "inches", "meters");
+      this._cachedFieldWidthM = Units.convert(fieldConfig.heightInches, "inches", "meters");
+    }
+    const fieldLength = this._cachedFieldLengthM;
+    const fieldWidth = this._cachedFieldWidthM;
     this.fieldSizingReference.scale.set(fieldLength, fieldWidth, 0);
 
     // Update calibration
@@ -415,7 +439,7 @@ export default class XRRenderer {
               let position2 = new THREE.Vector3(...renderState.raycast.position).add(
                 new THREE.Vector3(...renderState.anchors[renderState.raycast.anchorId])
               );
-              this.fieldRoot.visible = position1.distanceTo(position2) > Units.convert(6, "inches", "meters");
+              this.fieldRoot.visible = position1.distanceTo(position2) > 0.1524;
               if (this.fieldRoot.visible) {
                 this.updateFieldRootFullSize(isRed, fieldLength, fieldWidth, position1, position2);
               }
@@ -479,43 +503,48 @@ export default class XRRenderer {
     this.wpilibCoordinateGroup.visible = !isCalibrating;
 
     // Update field coordinates
-    switch (command.coordinateSystem) {
-      case "wall-alliance":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(
-          new THREE.Vector3(0, 0, 1),
-          command.isRedAlliance ? 0 : Math.PI
-        );
-        this.wpilibFieldCoordinateGroup.position.set(
-          Units.convert(fieldConfig.widthInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          Units.convert(fieldConfig.heightInches / 2, "inches", "meters") * (command.isRedAlliance ? -1.0 : 1.0),
-          0
-        );
-        break;
-      case "wall-blue":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI);
-        this.wpilibFieldCoordinateGroup.position.set(
-          Units.convert(fieldConfig.widthInches / 2, "inches", "meters"),
-          Units.convert(fieldConfig.heightInches / 2, "inches", "meters"),
-          0
-        );
-        break;
-      case "center-rotated":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
-        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-        break;
-      case "center-red":
-        this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(new THREE.Vector3(0, 0, 1), 0);
-        this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
-        break;
+    if (
+      command.coordinateSystem !== this._lastAppliedCoordSys ||
+      command.isRedAlliance !== this._lastAppliedAlliance ||
+      fieldId !== this._lastAppliedFieldForCoord
+    ) {
+      this._lastAppliedCoordSys = command.coordinateSystem;
+      this._lastAppliedAlliance = command.isRedAlliance;
+      this._lastAppliedFieldForCoord = fieldId;
+      const halfW = fieldLength / 2;
+      const halfH = fieldWidth / 2;
+      const Z = XRRenderer._Z_AXIS;
+      switch (command.coordinateSystem) {
+        case "wall-alliance":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(Z, command.isRedAlliance ? 0 : Math.PI);
+          this.wpilibFieldCoordinateGroup.position.set(
+            halfW * (command.isRedAlliance ? -1.0 : 1.0),
+            halfH * (command.isRedAlliance ? -1.0 : 1.0),
+            0
+          );
+          break;
+        case "wall-blue":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(Z, Math.PI);
+          this.wpilibFieldCoordinateGroup.position.set(halfW, halfH, 0);
+          break;
+        case "center-rotated":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(Z, -Math.PI / 2);
+          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+          break;
+        case "center-red":
+          this.wpilibFieldCoordinateGroup.setRotationFromAxisAngle(Z, 0);
+          this.wpilibFieldCoordinateGroup.position.set(0, 0, 0);
+          break;
+      }
     }
 
     // Update field
-    let assetsString = JSON.stringify(assets);
-    let newAssets = assetsString !== this.lastAssetsString;
+    const newAssets = assets !== this.lastAssetsRef;
+    if (newAssets) this.lastAssetsRef = assets;
+
     if (fieldId !== this.lastFieldId || newAssets) {
       this.shouldLoadNewField = true;
       this.lastFieldId = fieldId;
-      this.lastAssetsString = assetsString;
     }
     if (this.shouldLoadNewField && !this.isFieldLoading) {
       this.shouldLoadNewField = false;
@@ -543,7 +572,6 @@ export default class XRRenderer {
           if (this.fieldCarpet !== null) this.wpilibCoordinateGroup.add(this.fieldCarpet);
           if (this.fieldStagedPieces !== null) this.wpilibCoordinateGroup.add(this.fieldStagedPieces);
         }
-
         // Reset game piece objects
         this.objectManagers.filter((entry) => entry.type === "gamePiece").forEach((entry) => entry.manager.dispose());
         this.objectManagers = this.objectManagers.filter((entry) => entry.type !== "gamePiece");
@@ -701,19 +729,39 @@ export default class XRRenderer {
     }
 
     // Update object managers
-    this.objectManagers.forEach((entry) => (entry.active = false));
+    type ManagerEntry = (typeof this.objectManagers)[number];
+    const inactivePool = new Map<Field3dRendererCommand_AnyObj["type"], ManagerEntry[]>();
+    this.objectManagers.forEach((entry) => {
+      entry.active = false;
+      if (!inactivePool.has(entry.type)) inactivePool.set(entry.type, []);
+      inactivePool.get(entry.type)!.push(entry);
+    });
+
     command.objects.forEach((object) => {
       if (object.type === "heatmap") return; // Heatmap disabled in XR
-      let entry = this.objectManagers.find(
-        (entry) =>
-          !entry.active &&
-          entry.type === object.type &&
-          ((object.type !== "robot" && object.type !== "ghost") ||
-            object.model === (entry.manager as RobotManager).getModel())
-      );
-      if (entry === undefined) {
-        entry = this.objectManagers.find((entry) => !entry.active && entry.type === object.type);
+
+      const pool = inactivePool.get(object.type);
+      let entry: ManagerEntry | undefined;
+
+      if (pool) {
+        if (object.type === "robot" || object.type === "ghost") {
+          for (const e of pool) {
+            if (!e.active && (e.manager as RobotManager).getModel() === object.model) {
+              entry = e;
+              break;
+            }
+          }
+        }
+        if (entry === undefined) {
+          for (const e of pool) {
+            if (!e.active) {
+              entry = e;
+              break;
+            }
+          }
+        }
       }
+
       if (entry === undefined) {
         entry = {
           type: object.type,
@@ -721,9 +769,12 @@ export default class XRRenderer {
           active: true
         };
         this.objectManagers.push(entry);
+        if (!inactivePool.has(object.type)) inactivePool.set(object.type, []);
+        inactivePool.get(object.type)!.push(entry);
       } else {
         entry.active = true;
       }
+
       if (entry.type === "robot" || entry.type === "ghost") {
         let robotManager = entry.manager as RobotManager;
         robotManager.setAssetsOverride(assets);
@@ -734,6 +785,7 @@ export default class XRRenderer {
       }
       entry.manager.setObjectData(object);
     });
+
     this.objectManagers.forEach((entry) => {
       if (!entry.active && (entry.type === "robot" || entry.type === "ghost")) {
         let model = (entry.manager as RobotManager).getModel();
@@ -752,12 +804,16 @@ export default class XRRenderer {
         }
       }
     });
-    this.objectManagers
-      .filter((entry) => !entry.active)
-      .forEach((entry) => {
+    let writeIdx = 0;
+    for (let i = 0; i < this.objectManagers.length; i++) {
+      const entry = this.objectManagers[i];
+      if (entry.active) {
+        this.objectManagers[writeIdx++] = entry;
+      } else {
         entry.manager.dispose();
-      });
-    this.objectManagers = this.objectManagers.filter((entry) => entry.active);
+      }
+    }
+    this.objectManagers.length = writeIdx;
 
     // Update spinner
     if ((this.robotLoadingCount > 0 || this.isFieldLoading) && !isCalibrating) {
@@ -781,51 +837,39 @@ export default class XRRenderer {
     this.ambientLight.color = lightColor;
     this.spotLight.color = lightColor;
 
-    // Calculate effective device pixel ratio
+    // Render frame
     const viewWidthPx = this.canvas.parentElement!.clientWidth;
     const viewHeightPx = this.canvas.parentElement!.clientHeight;
-    const devicePixelRatio = window.devicePixelRatio;
+    const devicePixelRatio = Math.min(window.devicePixelRatio, 2);
 
-    // Render frame
     if (
       this.canvas.width / devicePixelRatio !== viewWidthPx ||
       this.canvas.height / devicePixelRatio !== viewHeightPx
     ) {
-      this.renderer.setPixelRatio(devicePixelRatio);
-      this.composer.setPixelRatio(devicePixelRatio);
+      if (devicePixelRatio !== this._lastAppliedPixelRatio) {
+        this._lastAppliedPixelRatio = devicePixelRatio;
+        this.renderer.setPixelRatio(devicePixelRatio);
+        this.composer.setPixelRatio(devicePixelRatio);
+      }
       this.renderer.setSize(viewWidthPx, viewHeightPx, true);
       this.composer.setSize(viewWidthPx, viewHeightPx);
       this.resolution.set(viewWidthPx, viewHeightPx);
     }
     this.composer.render(1 / 60);
   }
-
   private temperatureToColor(temperature: number): THREE.Color {
     // https://tannerhelland.com/2012/09/18/convert-temperature-rgb-algorithm-code.html
+    if (temperature === this._lastTemperature) return this._cachedLightColor;
+    this._lastTemperature = temperature;
     let red, green, blue;
-    temperature /= 100;
-    if (temperature <= 66) {
-      red = 255;
-    } else {
-      red = 329.698727446 * Math.pow(temperature - 60, -0.1332047592);
-    }
-    if (temperature <= 66) {
-      green = 99.4708025861 * Math.log(temperature) - 161.1195681661;
-    } else {
-      green = 288.1221695283 * Math.pow(temperature - 60, -0.0755148492);
-    }
-    if (temperature >= 66) {
-      blue = 255;
-    } else {
-      if (temperature <= 19) {
-        blue = 0;
-      } else {
-        blue = 138.5177312231 * Math.log(temperature - 10) - 305.0447927307;
-      }
-    }
+    const t = temperature / 100;
+    red = t <= 66 ? 255 : 329.698727446 * Math.pow(t - 60, -0.1332047592);
+    green = t <= 66 ? 99.4708025861 * Math.log(t) - 161.1195681661 : 288.1221695283 * Math.pow(t - 60, -0.0755148492);
+    blue = t >= 66 ? 255 : t <= 19 ? 0 : 138.5177312231 * Math.log(t - 10) - 305.0447927307;
     red = clampValue(red, 0, 255);
     green = clampValue(green, 0, 255);
     blue = clampValue(blue, 0, 255);
-    return new THREE.Color(red / 255, green / 255, blue / 255);
+    this._cachedLightColor.setRGB(red / 255, green / 255, blue / 255);
+    return this._cachedLightColor;
   }
 }

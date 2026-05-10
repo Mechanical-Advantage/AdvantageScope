@@ -19,8 +19,10 @@ let renderer: XRRenderer;
 let settings: XRSettings | null = null;
 let command: Field3dRendererCommand | null = null;
 let assets: AdvantageScopeAssets | null = null;
-let isRendering = false;
+let isRafPending = false;
+let latestRenderState: XRRenderState | null = null;
 let serverTimeOffset: number | null = null;
+let lastAssetsJson = "";
 
 window.addEventListener("load", () => {
   renderer = new XRRenderer();
@@ -28,44 +30,51 @@ window.addEventListener("load", () => {
 
 // @ts-expect-error
 window.setCommand = (commandRaw: string, isQueued: boolean) => {
-  let commandBuffer = Uint8Array.from(atob(commandRaw), (c) => c.charCodeAt(0));
-  let packet = msgpackDecoder.decode(commandBuffer) as XRPacket;
+  const commandBuffer = Uint8Array.from(atob(commandRaw), (c) => c.charCodeAt(0));
+  const packet = msgpackDecoder.decode(commandBuffer) as XRPacket;
   switch (packet.type) {
     case "settings":
       settings = packet.value;
       break;
-    case "command":
+    case "command": {
       if (!isQueued && serverTimeOffset === null) {
-        serverTimeOffset = packet.time - new Date().getTime();
+        serverTimeOffset = packet.time - Date.now();
       }
       const isBuffered = settings === null || settings.streaming === XRStreamingMode.Smooth;
-      const timeout = packet.time + (isBuffered ? bufferLengthMs : 0) - new Date().getTime() + (serverTimeOffset ?? 0);
-      if (timeout < 0 || !isBuffered) {
+      const timeout = packet.time + (isBuffered ? bufferLengthMs : 0) - Date.now() + (serverTimeOffset ?? 0);
+      if (timeout <= 0 || !isBuffered) {
         command = packet.value;
       } else {
         setTimeout(() => {
-          const isBuffered = settings === null || settings.streaming === XRStreamingMode.Smooth;
-          if (isBuffered) {
+          if (settings === null || settings.streaming === XRStreamingMode.Smooth) {
             command = packet.value;
           }
         }, timeout);
       }
       break;
-    case "assets":
-      assets = packet.value;
+    }
+    case "assets": {
+      const json = JSON.stringify(packet.value);
+      if (json !== lastAssetsJson) {
+        lastAssetsJson = json;
+        assets = packet.value;
+      }
       break;
+    }
   }
 };
 
 // @ts-expect-error
 window.render = (renderState: XRRenderState) => {
-  if (!isRendering) {
-    isRendering = true;
+  latestRenderState = renderState;
+  if (!isRafPending) {
+    isRafPending = true;
     window.requestAnimationFrame(() => {
-      if (settings !== null && command !== null) {
-        renderer.render(renderState, settings, command, assets);
+      isRafPending = false;
+      const state = latestRenderState;
+      if (settings !== null && command !== null && state !== null) {
+        renderer.render(state, settings, command, assets);
       }
-      isRendering = false;
     });
   }
 };
@@ -81,7 +90,7 @@ window.userTap = () => {
 };
 
 export function sendHostMessage(name: string, data?: any) {
-  let message: NamedMessage = { name: name, data: data };
+  const message: NamedMessage = { name, data };
   try {
     // @ts-expect-error
     window.webkit.messageHandlers.asxr.postMessage(message);

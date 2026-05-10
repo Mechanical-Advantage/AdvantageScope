@@ -23,6 +23,8 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
   private canvas: HTMLCanvasElement | null = null;
   private mesh: THREE.Mesh | null = null;
   private isRedAlliance = false;
+  private lastPoseCount = -1;
+  private lastPoseHash = 0;
 
   constructor(
     root: THREE.Object3D,
@@ -50,27 +52,48 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
   }
 
   setIsRedAlliance(isRedAlliance: boolean) {
-    this.isRedAlliance = isRedAlliance;
+    if (isRedAlliance !== this.isRedAlliance) {
+      this.isRedAlliance = isRedAlliance;
+      this.lastPoseCount = -1;
+      this.lastPoseHash = 0;
+    }
+  }
+
+  private static hashPoses(poses: Field3dRendererCommand_HeatmapObj["poses"]): number {
+    let h = poses.length;
+    for (let i = 0; i < poses.length; i++) {
+      const t = poses[i].pose.translation;
+      h = Math.imul(h, 31) ^ ((t[0] * 1000) | 0);
+      h = Math.imul(h, 31) ^ ((t[1] * 1000) | 0);
+      h = Math.imul(h, 31) ^ ((t[2] * 1000) | 0);
+    }
+    return h;
   }
 
   setObjectData(object: Field3dRendererCommand_HeatmapObj): void {
-    let fieldConfig = this.getFieldConfig();
+    const fieldConfig = this.getFieldConfig();
     if (fieldConfig === null) return;
 
+    const newCount = object.poses.length;
+    const newHash = HeatmapManager.hashPoses(object.poses);
+    if (newCount === this.lastPoseCount && newHash === this.lastPoseHash && this.mesh !== null) return;
+    this.lastPoseCount = newCount;
+    this.lastPoseHash = newHash;
+
     // Update heatmap
-    let fieldDimensions: [number, number] = [
+    const fieldDimensions: [number, number] = [
       Units.convert(fieldConfig.widthInches, "inches", "meters"),
       Units.convert(fieldConfig.heightInches, "inches", "meters")
     ];
-    let pixelDimensions: [number, number] = [
+    const pixelDimensions: [number, number] = [
       Math.round(this.HEIGHT_PIXELS * (fieldDimensions[0] / fieldDimensions[1])),
       this.HEIGHT_PIXELS
     ];
-    let coordinateSystem =
+    const coordinateSystem =
       (window.preferences?.coordinateSystem === "automatic"
         ? fieldConfig.coordinateSystem
         : window.preferences?.coordinateSystem) ?? "center-red";
-    let translations = object.poses.map(
+    const translations = object.poses.map(
       (x) =>
         convertFromCoordinateSystem(
           annotatedPose3dTo2d(x),
@@ -83,7 +106,7 @@ export default class HeatmapManager extends ObjectManager<Field3dRendererCommand
     this.heatmap.update(translations, pixelDimensions, fieldDimensions);
 
     // Update texture
-    let newCanvas = this.heatmap.getCanvas();
+    const newCanvas = this.heatmap.getCanvas();
     if (newCanvas !== this.canvas && newCanvas !== null) {
       this.canvas = newCanvas;
 

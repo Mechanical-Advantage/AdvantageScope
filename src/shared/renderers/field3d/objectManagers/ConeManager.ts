@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import * as THREE from "three";
+import { Rotation3d } from "../../../geometry";
 import { Field3dRendererCommand_ConeObj } from "../../Field3dRenderer";
 import ObjectManager from "../ObjectManager";
 import ResizableInstancedMesh from "../ResizableInstancedMesh";
@@ -13,6 +14,7 @@ import ResizableInstancedMesh from "../ResizableInstancedMesh";
 export default class ConeManager extends ObjectManager<Field3dRendererCommand_ConeObj> {
   private instances: ResizableInstancedMesh;
 
+  private coneGroup: THREE.Group;
   private geometry: THREE.ConeGeometry;
   private mainMaterial: THREE.MeshPhongMaterial;
   private baseMaterial: THREE.MeshPhongMaterial;
@@ -23,6 +25,10 @@ export default class ConeManager extends ObjectManager<Field3dRendererCommand_Co
 
   private lastPosition: "center" | "back" | "front" = "center";
   private lastColor = "";
+
+  private cachedColor = new THREE.Color();
+  private poseBuffer: { translation: [number, number, number]; rotation: Rotation3d }[] = [];
+  private poseActiveCount = 0;
 
   constructor(
     root: THREE.Object3D,
@@ -64,6 +70,8 @@ export default class ConeManager extends ObjectManager<Field3dRendererCommand_Co
         material: [this.mainMaterial, secondMaterial, this.baseMaterial]
       }
     ]);
+
+    this.coneGroup = new THREE.Group();
   }
 
   dispose(): void {
@@ -73,13 +81,8 @@ export default class ConeManager extends ObjectManager<Field3dRendererCommand_Co
   }
 
   setObjectData(object: Field3dRendererCommand_ConeObj): void {
-    if (object.position !== this.lastPosition) {
-      let delta = this.getOffset(object.position) - this.getOffset(this.lastPosition);
-      this.geometry.translate(delta, 0, 0);
-      this.lastPosition = object.position;
-    }
-
     if (object.color !== this.lastColor) {
+      this.lastColor = object.color;
       this.mainContext.fillStyle = object.color;
       this.baseContext.fillStyle = object.color;
       this.mainContext.fillRect(0, 0, 100, 100);
@@ -88,10 +91,25 @@ export default class ConeManager extends ObjectManager<Field3dRendererCommand_Co
       this.mainContext.fillRect(20, 0, 10, 100);
       this.mainTexture.needsUpdate = true;
       this.baseTexture.needsUpdate = true;
-      this.lastColor = object.color;
     }
 
-    this.instances.setPoses(object.poses.map((x) => x.pose));
+    const offset = this.getOffset(object.position);
+    const n = object.poses.length;
+
+    while (this.poseBuffer.length < n) {
+      this.poseBuffer.push({ translation: [0, 0, 0], rotation: [1, 0, 0, 0] });
+    }
+    this.poseActiveCount = n;
+
+    for (let i = 0; i < n; i++) {
+      const t = object.poses[i].pose.translation;
+      this.poseBuffer[i].translation[0] = t[0] + offset;
+      this.poseBuffer[i].translation[1] = t[1];
+      this.poseBuffer[i].translation[2] = t[2];
+      this.poseBuffer[i].rotation = object.poses[i].pose.rotation;
+    }
+
+    this.instances.setPoses(this.poseBuffer as any, this.poseActiveCount);
   }
 
   private getOffset(position: "center" | "front" | "back"): number {
