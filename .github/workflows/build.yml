@@ -169,6 +169,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           archive: false
+          name: advantagescopelite-systemcore
           path: lite/ipk/advantagescope-lite_*.ipk
 
   build-ios:
