@@ -165,12 +165,13 @@ jobs:
           path: advantagescopelite-desktop/
       - name: Build IPK (Systemcore)
         run: cd lite/ipk && ./build.sh
+      - name: Prepare artifact (Systemcore)
+        run: mv lite/ipk/advantagescope-lite_*.ipk lite/ipk/advantagescopelite-systemcore.ipk
       - name: Upload development artifact (Systemcore)
         uses: actions/upload-artifact@v7
         with:
           archive: false
-          name: advantagescopelite-systemcore
-          path: lite/ipk/advantagescope-lite_*.ipk
+          path: lite/ipk/advantagescopelite-systemcore.ipk
 
   build-ios:
     name: Build for iOS
