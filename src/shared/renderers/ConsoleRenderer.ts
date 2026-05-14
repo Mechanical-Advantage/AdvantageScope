@@ -52,9 +52,11 @@ export default class ConsoleRenderer implements TabRenderer {
       "highlight-button"
     )[0] as HTMLButtonElement;
     this.FILTER_INPUT = this.TABLE_BODY.firstElementChild?.lastElementChild?.lastElementChild as HTMLInputElement;
+
     this.FIELD_CELL = this.TABLE_BODY.firstElementChild?.lastElementChild as HTMLElement;
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild?.firstElementChild as HTMLElement;
     this.FIELD_DELETE = this.FIELD_CELL.firstElementChild?.lastElementChild as HTMLButtonElement;
+    
     this.HAND_ICON = root.getElementsByClassName("large-table-hand-icon")[0] as HTMLElement;
 
     // Hide export button for Lite
@@ -343,15 +345,14 @@ export default class ConsoleRenderer implements TabRenderer {
 
   /** Updates highlighted times (selected & hovered). */
   private updateHighlights() {
-    if (this.timestamps.length === 0) return;
+    if (this.renderedTimestamps.length === 0) return;
     let highlight = (time: number | null, className: string) => {
       Array.from(this.TABLE_BODY.children).forEach((row) => row.classList.remove(className));
       if (time) {
         let target = this.renderedTimestamps.findIndex((value) => value > time);
-        if (target === -1) target = this.renderedTimestamps.length;
-        if (target < 1) target = 1;
-        target -= 1;
-        this.TABLE_BODY.children[target + 1].classList.add(className);
+        if (target === -1) target = this.renderedTimestamps.length; // Use the last timestamp
+        if (target < 1) target = 1; //. Use the first timestamp (0 is the header cell, so the indexes of console cells start at 1)
+        this.TABLE_BODY.children[target].classList.add(className);
       }
     };
     switch (this.selectionMode) {
