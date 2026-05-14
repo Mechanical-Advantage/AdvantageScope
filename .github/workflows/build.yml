@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+env:
+  VERSION_SUFFIX: ${{ case(startsWith(github.ref, 'refs/tags/v'), github.ref_name, 'dev') }}
+
 jobs:
   check-formatting:
     name: Check Formatting
@@ -17,9 +20,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -36,9 +39,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -49,7 +52,7 @@ jobs:
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docs
           path: docs/build/
@@ -60,14 +63,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
       - name: Install Node.js dependencies
@@ -79,7 +82,7 @@ jobs:
       - name: Compile bundles
         run: npm run compile
       - name: Upload bundles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bundles
           path: |
@@ -92,14 +95,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
       - name: Install Node.js dependencies
@@ -113,7 +116,7 @@ jobs:
         env:
           ASCOPE_DISTRIBUTION: WPILIB
       - name: Upload bundles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bundles-wpilib
           path: |
@@ -126,14 +129,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
       - name: Install Node.js dependencies
@@ -155,19 +158,20 @@ jobs:
           mkdir advantagescopelite-desktop
           cp lite/lite_server.py advantagescopelite-desktop/lite_server.py
           cp -rL lite/static advantagescopelite-desktop/static
-          zip -r advantagescopelite-desktop.zip advantagescopelite-desktop/
       - name: Upload development artifact (desktop)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: advantagescopelite-desktop
           path: advantagescopelite-desktop/
       - name: Build IPK (Systemcore)
         run: cd lite/ipk && ./build.sh
+      - name: Prepare artifact (Systemcore)
+        run: mv lite/ipk/advantagescope-lite_*.ipk lite/ipk/advantagescopelite-systemcore.ipk
       - name: Upload development artifact (Systemcore)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescopelite-systemcore
-          path: lite/ipk/advantagescope-lite_*.ipk
+          archive: false
+          path: lite/ipk/advantagescopelite-systemcore.ipk
 
   build-ios:
     name: Build for iOS
@@ -175,7 +179,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Metal toolchain
         run: xcodebuild -downloadComponent MetalToolchain
       - name: Download iOS simulator
@@ -211,9 +215,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -222,7 +226,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles
           path: bundles
@@ -234,29 +238,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-dev.exe"
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-win-${{ matrix.arch }}-dev.exe
-          path: advantagescope-win-${{ matrix.arch }}-dev.exe
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          archive: false
+          path: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-win-${{ matrix.arch }}-dev.exe
-          asset_name: advantagescope-win-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.exe
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
 
   build-mac:
     name: Build for macOS (${{ matrix.arch }})
@@ -270,9 +263,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -292,7 +285,7 @@ jobs:
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles
           path: bundles
@@ -304,29 +297,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-dev.dmg
+          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-          path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          archive: false
+          path: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-          asset_name: advantagescope-mac-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.dmg
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
 
   build-linux:
     name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
@@ -349,9 +331,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -371,7 +353,7 @@ jobs:
           sudo flatpak install flathub org.freedesktop.Sdk/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
           sudo flatpak install flathub org.electronjs.Electron2.BaseApp/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles
           path: bundles
@@ -383,29 +365,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
+          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          archive: false
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.format }}
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
 
   build-wpilib-win:
     name: "WPILib: Build for Windows (${{ matrix.arch }})"
@@ -419,9 +390,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -430,7 +401,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles-wpilib
           path: bundles
@@ -449,26 +420,15 @@ jobs:
           Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          archive: false
           path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-win-${{ matrix.arch }}.zip
 
   build-wpilib-mac:
     name: "WPILib: Build for macOS (${{ matrix.arch }})"
@@ -482,9 +442,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -504,7 +464,7 @@ jobs:
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles-wpilib
           path: bundles
@@ -525,26 +485,15 @@ jobs:
           tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "AdvantageScope (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
+          archive: false
           path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
 
   build-wpilib-linux:
     name: "WPILib: Build for Linux (${{ matrix.arch }})"
@@ -558,9 +507,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -569,7 +518,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles-wpilib
           path: bundles
@@ -588,26 +537,15 @@ jobs:
           cd ../..
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          archive: false
           path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
 
   finalize-release:
     name: Finalize Release
@@ -617,21 +555,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Get release info
         id: get_release_info
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
       - name: Publish AppArmor profile
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope.AppArmor
-          asset_name: advantagescope.AppArmor
-          asset_content_type: "text/plain"
+          files: advantagescope.AppArmor
       - name: Edit release
         uses: irongut/EditRelease@v1.2.0
         with:
