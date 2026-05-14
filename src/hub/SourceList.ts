@@ -1267,4 +1267,8 @@ export default class SourceList {
       valueText.innerText = text;
     }
   }
+
+  public getUUID() {
+    return this.UUID;
+  }
 }

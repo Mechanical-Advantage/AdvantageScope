@@ -112,6 +112,16 @@ export function findKey(log: Log, search: string[]): string | undefined {
   return bestKey;
 }
 
+export function keyPresent(log: Log, search: string[]): boolean {
+  let fieldKeys = log.getFieldKeys();
+  let found = false;
+  for (const key of search) {
+    found = fieldKeys.includes(key);
+    if (found) break;
+  }
+  return found;
+}
+
 /** Adds a prefix to a log key. */
 export function applyKeyPrefix(prefix: string, key: string): string {
   if (prefix.length === 0) {

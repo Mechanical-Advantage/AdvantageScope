@@ -9,7 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText, keyPresent } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import {
   LineGraphRendererCommand,
@@ -338,6 +338,35 @@ export default class LineGraphController implements TabController {
 
   showTimeline(): boolean {
     return false;
+  }
+
+  addFromAllLogs(data?: any) {
+    let uuid = typeof data.uuid === "string" ? (data.uuid as string) : "";
+    let sourceList: SourceList;
+    if (uuid.match(this.rightSourceList.getUUID())) {
+      sourceList = this.rightSourceList;
+    } else if (uuid.match(this.leftSourceList.getUUID())) {
+      sourceList = this.leftSourceList;
+    } else if (uuid.match(this.discreteSourceList.getUUID())) {
+      sourceList = this.discreteSourceList;
+    } else {
+      return;
+    }
+
+    let logKey = typeof data.logKey === "string" ? data.logKey : "";
+    logKey = logKey.replace(/^\/Log[^/]+/, "");
+    let newLogKey = logKey;
+    let existingKeys = sourceList
+      .getState()
+      .filter((source) => source.logKey.includes(logKey))
+      .map((source) => source.logKey);
+    let logNum = 1;
+    newLogKey = "/Log" + logNum + logKey;
+    while (keyPresent(window.log, [newLogKey])) {
+      if (!existingKeys.includes(newLogKey)) sourceList.addField(newLogKey);
+      logNum++;
+      newLogKey = "/Log" + logNum + logKey;
+    }
   }
 
   private getPreview(

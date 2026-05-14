@@ -693,6 +693,13 @@ export default class Tabs {
     }
   }
 
+  /** Runs the "Add from all logs" action on the selected line graph. */
+  addFromAllLogs(data?: any) {
+    if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
+      (this.tabList[this.selectedTab].controller as LineGraphController).addFromAllLogs(data);
+    }
+  }
+
   /** Switches the selected camera for the selected 3D field. */
   set3DCamera(index: number) {
     if (this.tabList[this.selectedTab].type === TabType.Field3d) {
