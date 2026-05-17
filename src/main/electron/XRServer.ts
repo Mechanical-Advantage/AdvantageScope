@@ -34,7 +34,7 @@ export namespace XRServer {
     if (selectedIp == "legacy-ios") {
       return XR_APPCLIP_DOMAIN + XR_URL_ARGS + Array.from(ipAddresses).join("_");
     }
-    return "http://" + selectedIp + ":" + XR_SERVER_PORT + XR_URL_ARGS + Array.from(ipAddresses).join("_");
+    return "http://" + selectedIp + ":" + XR_SERVER_PORT + XR_URL_ARGS + selectedIp;
   }
 
   export async function start() {
