@@ -18,7 +18,6 @@ AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to li
 AdvantageScope XR is supported on many devices, but is more stable for devices with a **LiDAR sensor**. This includes the iPhone Pro (starting with the iPhone 12 Pro) and iPad Pro (spring 2020 or later).
 :::
 
-
 ## Setup
 
 1. On the host system, **click the "XR" button** on any 3D field tab. Only one XR host session may be active at the same time, so clicking this button will interrupt any other active sessions.
@@ -26,12 +25,12 @@ AdvantageScope XR is supported on many devices, but is more stable for devices w
 <img src={Image1} alt="XR button" height="450" />
 
 2. The **XR controls window** will open, with a QR code and [options](#options) to customize the AR experience. Ensure that the 'Host IP' option is set to the correct IP for your network. To cancel the XR session and disconnect any clients, close the controls window.
-<!-- TODO: Retake on a light mode Mac (I can't get light mode to work on Linux) -->
-<img src={Image2} alt="XR window" height="350" />
+   <!-- TODO: Retake on a light mode Mac (I can't get light mode to work on Linux) -->
+   <img src={Image2} alt="XR window" height="350" />
 
 3. Scan the QR code using the **built-in camera app** on the client device, or press the Send to Meta Quest button. (For other VR headsets, manually type the displayed Host IP into the web browser, making sure to include the "http://" at the start.) No app installation is required.
 4. For iOS, tap "Open iOS App Clip", then tap "AdvantageScope XR" and then "Open" to **start the experience** and connect to the host. For Android, tap "Open Android App" and install the app if prompted, then click "Start XR" within the app. On other devices, select the "Self-signed page" option, then "Advanced" on the red warning screen. Then click "Proceed to ... (unsafe)", followed by "Start XR". <details><summary>Why the warning?</summary> Browser manufacturers only allow WebXR to be used on HTTPS encrypted websites, which is only possible for websites on public domains with servers directly exposed to the Internet. Since your computer is not, AdvantageScope generates a self-signed certificate which your browser considers untrustworthy. Because the connection is only across your local network, and because there is no need for secure encryption under these circumstances, manually trusting the certificate is perfectly acceptable. (If this warning appears while accessing a regular website, do not bypass it like this.)</details> If prompted, allow AdvantageScope XR to access the **camera and local network**.
-5. Follow the instructions on the device to **calibrate and position the field model**. 
+5. Follow the instructions on the device to **calibrate and position the field model**.
 6. Control the field model as normal using the host device, including **log playback and live streaming**. The state of the field model is displayed live on the client device.
 7. To quickly **record a video** on iOS, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
 
