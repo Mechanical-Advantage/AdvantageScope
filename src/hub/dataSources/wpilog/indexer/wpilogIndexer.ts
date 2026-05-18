@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 // Prevent TypeScript and Rolldown from trying to analyze this import
-const indexerName = "./hub$wpilogIndexer.js";
+const indexerName = "./wpilogIndexer.js";
 export async function run(
   data: Uint8Array,
   timestampRangeCallback: (min: number, max: number) => void,
