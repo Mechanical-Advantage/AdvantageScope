@@ -56,7 +56,7 @@ export default class ConsoleRenderer implements TabRenderer {
     this.FIELD_CELL = this.TABLE_BODY.firstElementChild?.lastElementChild as HTMLElement;
     this.FIELD_TEXT = this.FIELD_CELL.firstElementChild?.firstElementChild as HTMLElement;
     this.FIELD_DELETE = this.FIELD_CELL.firstElementChild?.lastElementChild as HTMLButtonElement;
-    
+
     this.HAND_ICON = root.getElementsByClassName("large-table-hand-icon")[0] as HTMLElement;
 
     // Hide export button for Lite
