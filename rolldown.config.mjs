@@ -28,7 +28,7 @@ function bundle(input, isMain, isXRClient, external = []) {
     input: input.map((input) => "src/" + input),
     output: {
       dir: (isLite ? "lite/static/" : "") + "bundles/",
-      chunkFileNames: "chunk/[name].js",
+      chunkFileNames: "[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader
     },
