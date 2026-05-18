@@ -274,7 +274,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
-        if: github.event_name != 'pull_request'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
@@ -453,7 +455,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
-        if: github.event_name != 'pull_request'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
