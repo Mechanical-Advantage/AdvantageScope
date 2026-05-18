@@ -86,8 +86,8 @@ jobs:
         with:
           name: bundles
           path: |
-            bundles/*.js
-            bundles/*.wasm
+            bundles/**/*.js
+            bundles/**/*.wasm
 
   compile-wpilib:
     name: Compile for WPILib
@@ -120,8 +120,8 @@ jobs:
         with:
           name: bundles-wpilib
           path: |
-            bundles/*.js
-            bundles/*.wasm
+            bundles/**/*.js
+            bundles/**/*.wasm
 
   compile-lite:
     name: Compile for Lite
