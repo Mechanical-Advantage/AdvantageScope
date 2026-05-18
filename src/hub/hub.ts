@@ -955,7 +955,7 @@ async function handleMainMessage(message: NamedMessage) {
 
       // Convert to export format
       WorkerManager.request(
-        "../bundles/hub$exportWorker.js",
+        "../bundles/exportWorker.js",
         {
           options: message.data.options,
           log: window.log.toSerialized()
