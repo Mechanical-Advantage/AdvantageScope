@@ -28,12 +28,15 @@ function bundle(input, isMain, isXRClient, external = []) {
     input: input.map((input) => "src/" + input),
     output: {
       dir: (isLite ? "lite/static/" : "") + "bundles/",
-      chunkFileNames: "[name].js",
+      chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader
     },
     context: "this",
     external: external,
+    checks: {
+      pluginTimings: false
+    },
     plugins: [
       typescript(),
       ...(isXRClient
@@ -103,79 +106,82 @@ function bundle(input, isMain, isXRClient, external = []) {
   };
 }
 
-const mainBundles = isLite
-  ? [bundle(["main/lite/main.ts"], false, false)]
-  : [
-      bundle(["main/electron/main.ts"], true, false, [
-        "electron",
-        "electron-fetch",
-        "fs",
-        "jsonfile",
-        "net",
-        "os",
-        "ws",
-        "http",
-        "path",
-        "basic-ftp",
-        "download",
-        "youtube-dl-exec",
-        "tesseract.js",
-        "lzma-native",
-        "@rev-robotics/revlog-converter"
-      ]),
-      bundle(["preload.ts"], true, false, ["electron"])
-    ];
-const appBundles = [
-  bundle(
-    [
-      "hub/hub.ts",
-      ...(isLite ? [] : ["satellite.ts"]),
-
-      "editRange.ts",
-      "unitConversion.ts",
-      "renameTab.ts",
-      "editFov.ts",
-      "sourceListHelp.ts",
-      "betaWelcome.ts",
-      "preferences.ts",
-      "licenses.ts",
-      "download.ts",
-      isLite ? "uploadAsset.ts" : "export.ts",
-
-      "hub/dataSources/csv/csvWorker.ts",
-      "hub/dataSources/rlog/rlogWorker.ts",
-      "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
-      "hub/dataSources/wpilog/wpilogWorker.ts",
-      "hub/dataSources/dslog/dsLogWorker.ts",
-      ...(isLite ? [] : ["hub/exportWorker.ts"]),
-      "shared/renderers/field3d/workers/loadField.ts",
-      "shared/renderers/field3d/workers/loadRobot.ts"
-    ],
-    false,
-    false
-  )
-];
-const xrBundles = [bundle(["xrClient/xrClient.ts"], false, true), bundle(["xrControls.ts"], false, false)];
-const runOwletDownload = {
-  input: "src/runOwletDownload.ts",
-  output: {
-    file: "runOwletDownload.js",
-    format: "cjs"
-  },
-  context: "this",
-  external: ["download"],
-  plugins: [typescript()],
-  onwarn() {}
-};
-
 export default (cliArgs) => {
-  if (cliArgs.configMain === true) return mainBundles;
-  if (cliArgs.configApp === true) return appBundles;
-  if (cliArgs.configXR === true) {
-    if (isLite) process.exit();
-    return xrBundles;
+  // Owlet download
+  if (cliArgs.configRunOwletDownload === true) {
+    return [
+      {
+        input: "src/runOwletDownload.ts",
+        output: {
+          file: "runOwletDownload.js",
+          format: "cjs"
+        },
+        context: "this",
+        external: ["download"],
+        plugins: [typescript()],
+        onwarn() {}
+      }
+    ];
   }
-  if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
-  return isLite ? [...mainBundles, ...appBundles] : [...mainBundles, ...appBundles, ...xrBundles];
+  return [
+    // Main bundles
+    ...(isLite
+      ? [bundle(["main/lite/main.ts"], false, false)]
+      : [
+          bundle(["main/electron/main.ts"], true, false, [
+            "electron",
+            "electron-fetch",
+            "fs",
+            "jsonfile",
+            "net",
+            "os",
+            "ws",
+            "http",
+            "path",
+            "basic-ftp",
+            "download",
+            "youtube-dl-exec",
+            "tesseract.js",
+            "lzma-native",
+            "@rev-robotics/revlog-converter"
+          ]),
+          bundle(["preload.ts"], true, false, ["electron"])
+        ]),
+
+    // App bundles
+    bundle(
+      [
+        "hub/hub.ts",
+        ...(isLite ? [] : ["satellite.ts"]),
+
+        "editRange.ts",
+        "unitConversion.ts",
+        "renameTab.ts",
+        "editFov.ts",
+        "sourceListHelp.ts",
+        "betaWelcome.ts",
+        "preferences.ts",
+        "licenses.ts",
+        "download.ts",
+        ...(isLite ? ["uploadAsset.ts"] : []),
+        ...(isLite ? [] : ["export.ts"]),
+        ...(isLite ? [] : ["xrControls.ts"]),
+
+        "hub/dataSources/csv/csvWorker.ts",
+        "hub/dataSources/rlog/rlogWorker.ts",
+        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
+        "hub/dataSources/wpilog/wpilogWorker.ts",
+        "hub/dataSources/dslog/dsLogWorker.ts",
+        ...(isLite ? [] : ["hub/exportWorker.ts"]),
+        "shared/renderers/field3d/workers/loadField.ts",
+        "shared/renderers/field3d/workers/loadRobot.ts"
+      ],
+      false,
+      false
+    ),
+
+    // XR client
+    ...(isLite ? [] : [bundle(["xrClient/xrClient.ts"], false, true)])
+  ];
 };
