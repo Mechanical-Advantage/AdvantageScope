@@ -1007,8 +1007,13 @@ export default class XRRenderer {
       this.composer.setSize(viewWidthPx, viewHeightPx);
       this.resolution.set(viewWidthPx, viewHeightPx);
     }
-    //this.composer.render(); // computes its own deltatime
-    this.renderer.render(this.scene, this.camera);
+    if (!this.webxrEnabled) {
+      // Render with film grain
+      // For some reason this breaks webxr
+      this.composer.render(1 / 60);
+    } else {
+      this.renderer.render(this.scene, this.camera);
+    }
   }
 
   private temperatureToColor(temperature: number): THREE.Color {
