@@ -267,7 +267,7 @@ export default class RobotManager extends ObjectManager<
           });
         } else {
           // Desktop, load models with worker and mesh merging
-          WorkerManager.request("../bundles/shared$loadRobot.js", {
+          WorkerManager.request("../bundles/loadRobot.js", {
             robotConfig: robotConfig!,
             isFTC: robotConfig.isFTC,
             mode: this.mode,

@@ -24,15 +24,15 @@ import { calcMockProgress, createUUID, scaleValue, setsEqual } from "../../share
 export class HistoricalDataSource {
   private UUID = createUUID();
   private WORKER_NAMES = {
-    ".rlog": "hub$rlogWorker.js",
-    ".wpilog": "hub$wpilogWorker.js",
-    ".wpilogxz": "hub$wpilogWorker.js", // Decompressed by main process
-    ".hoot": "hub$wpilogWorker.js", // Converted to WPILOG by main process
-    ".revlog": "hub$wpilogWorker.js", // Converted to WPILOG by main process
-    ".dslog": "hub$dsLogWorker.js",
-    ".dsevents": "hub$dsLogWorker.js",
-    ".log": "hub$roadRunnerWorker.js",
-    ".csv": "hub$csvWorker.js"
+    ".rlog": "rlogWorker.js",
+    ".wpilog": "wpilogWorker.js",
+    ".wpilogxz": "wpilogWorker.js", // Decompressed by main process
+    ".hoot": "wpilogWorker.js", // Converted to WPILOG by main process
+    ".revlog": "wpilogWorker.js", // Converted to WPILOG by main process
+    ".dslog": "dsLogWorker.js",
+    ".dsevents": "dsLogWorker.js",
+    ".log": "roadRunnerWorker.js",
+    ".csv": "csvWorker.js"
   };
 
   private path = "";
@@ -142,7 +142,7 @@ export class HistoricalDataSource {
       this.setStatus(HistoricalDataSourceStatus.Error);
       return;
     }
-    this.worker = new Worker("../bundles/" + selectedWorkerName);
+    this.worker = new Worker("../bundles/" + selectedWorkerName, { type: "module" });
     let request: HistoricalDataSource_WorkerRequest = {
       type: "start",
       data: fileContents as Uint8Array[]

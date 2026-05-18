@@ -20,7 +20,7 @@ export default abstract class WorkerManager {
   static request(script: string, payload: any, progressCallback?: (progress: number) => void): Promise<any> {
     const requestId = this.globalRequestId++;
     return new Promise<any>((resolve, reject) => {
-      const worker = new Worker(script);
+      const worker = new Worker(script, { type: "module" });
       this.workers[requestId] = {
         worker: worker,
         resolve: resolve,
