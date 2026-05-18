@@ -351,7 +351,7 @@ export default class ConsoleRenderer implements TabRenderer {
       if (time) {
         let target = this.renderedTimestamps.findIndex((value) => value > time);
         if (target === -1) target = this.renderedTimestamps.length; // Use the last timestamp
-        if (target < 1) target = 1; //. Use the first timestamp (0 is the header cell, so the indexes of console cells start at 1)
+        if (target < 1) target = 1; // Use the first timestamp (0 is the header cell, so the indexes of console cells start at 1)
         this.TABLE_BODY.children[target].classList.add(className);
       }
     };
