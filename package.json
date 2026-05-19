@@ -108,7 +108,7 @@
     },
     "files": [
       "www/**/*",
-      "bundles/*",
+      "bundles/**/*",
       "icons/**/*.png",
       "!icons/**/*.iconset",
       "bundledAssets/**/*",
