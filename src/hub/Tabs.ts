@@ -8,6 +8,7 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
 import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
@@ -290,11 +291,19 @@ export default class Tabs {
     });
 
     // Add default tabs
-    this.addTab(TabType.Documentation);
-    this.addTab(TabType.LineGraph);
-    this.addTab(TabType.Field2d);
-    this.addTab(TabType.Field3d);
-    this.setSelected(1);
+    if (DISTRIBUTION === Distribution.LiteDS) {
+      this.addTab(TabType.Documentation);
+      this.addTab(TabType.LineGraph);
+      this.addTab(TabType.Console);
+      this.addTab(TabType.Joysticks);
+      this.setSelected(1);
+    } else {
+      this.addTab(TabType.Documentation);
+      this.addTab(TabType.LineGraph);
+      this.addTab(TabType.Field2d);
+      this.addTab(TabType.Field3d);
+      this.setSelected(1);
+    }
 
     // Scroll management
     this.tabsScrollSensor = new ScrollSensor(

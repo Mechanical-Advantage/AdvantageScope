@@ -53,6 +53,10 @@ export const DEFAULT_PREFS: Preferences = {
   ctreLicenseAccepted: false
 };
 
+export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
+  liveSubscribeMode: "logging"
+});
+
 export type LiveMode = "nt4" | "nt4-akit" | "phoenix" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {

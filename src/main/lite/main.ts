@@ -7,13 +7,14 @@
 
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
-import { BUILD_DATE, COPYRIGHT, LITE_VERSION } from "../../shared/buildConstants";
+import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
 import {
   DEFAULT_PREFS,
+  DEFAULT_PREFS_LITEDS,
   getLiveModeName,
   LITE_ALLOWED_LIVE_MODES,
   LiveMode,
@@ -254,7 +255,7 @@ async function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
-  let prefs = DEFAULT_PREFS;
+  let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
   let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
   sendMessage(hubPort, "set-preferences", prefs);
@@ -400,19 +401,23 @@ async function handleHubMessage(message: NamedMessage) {
                 callback() {
                   let detailLines: string[] = [];
                   detailLines.push("Version: " + LITE_VERSION);
-                  detailLines.push("Distribution: Lite");
+                  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (DS)"));
                   detailLines.push("Build Date: " + BUILD_DATE);
                   detailLines.push("User Agent: " + navigator.userAgent);
                   let detail = detailLines.join("\n");
                   window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
                 }
               },
-              {
-                content: `Show Preferences (\u21e7 ${modifier} ,)`,
-                callback() {
-                  openPreferences();
-                }
-              },
+              ...(DISTRIBUTION === Distribution.LiteDS
+                ? []
+                : [
+                    {
+                      content: `Show Preferences (\u21e7 ${modifier} ,)`,
+                      callback() {
+                        openPreferences();
+                      }
+                    }
+                  ]),
               {
                 content: `Show Licenses`,
                 callback() {
@@ -440,26 +445,30 @@ async function handleHubMessage(message: NamedMessage) {
                   sendMessage(hubPort, "start-live", false);
                 }
               },
-              {
-                content: "Set Live Mode",
-                items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
-                  return {
-                    content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
-                    callback() {
-                      prefs.liveMode = liveMode;
-                      localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-                      sendMessage(hubPort, "set-preferences", prefs);
-                      sendMessage(hubPort, "start-live", false);
+              ...(DISTRIBUTION === Distribution.LiteDS
+                ? []
+                : [
+                    {
+                      content: "Set Live Mode",
+                      items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                        return {
+                          content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
+                          callback() {
+                            prefs.liveMode = liveMode;
+                            localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                            sendMessage(hubPort, "set-preferences", prefs);
+                            sendMessage(hubPort, "start-live", false);
+                          }
+                        };
+                      })
+                    },
+                    {
+                      content: `Upload Asset`,
+                      callback() {
+                        openUploadAsset();
+                      }
                     }
-                  };
-                })
-              },
-              {
-                content: `Upload Asset`,
-                callback() {
-                  openUploadAsset();
-                }
-              }
+                  ])
             ];
             break;
 
@@ -1203,7 +1212,7 @@ function processKeydown(event: KeyboardEvent): boolean {
     sendMessage(hubPort, "shift-tab", 1);
   } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
     sendMessage(hubPort, "close-tab", false);
-  } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
+  } else if (event.shiftKey && event.metaKey && lowerKey === "," && DISTRIBUTION !== Distribution.LiteDS) {
     openPreferences();
   } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;

@@ -18,6 +18,7 @@ import replaceRegEx from "rollup-plugin-re";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+const isLiteDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
@@ -30,7 +31,7 @@ function bundle(input, output, isMain, isXRClient, external = []) {
   return {
     input: "src/" + input,
     output: {
-      file: (isLite ? "lite/static/" : "") + "bundles/" + output,
+      file: (isLite || isLiteDS ? "lite/static/" : "") + "bundles/" + output,
       format: isMain ? "cjs" : "es",
       banner: licenseHeader
     },
@@ -51,7 +52,7 @@ function bundle(input, output, isMain, isXRClient, external = []) {
             }),
             terser()
           ]
-        : isLite
+        : isLite || isLiteDS
         ? [
             getBabelOutputPlugin({
               presets: [["@babel/preset-env", { modules: false }]],
@@ -65,7 +66,7 @@ function bundle(input, output, isMain, isXRClient, external = []) {
       replace({
         preventAssignment: true,
         values: {
-          __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : "FRC6328",
+          __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : isLiteDS ? "LiteDS" : "FRC6328",
           __version__: packageJson.version,
           __build_date__: new Date().toLocaleString("en-US", {
             timeZone: "UTC",
@@ -108,56 +109,59 @@ function bundle(input, output, isMain, isXRClient, external = []) {
   };
 }
 
-const mainBundles = isLite
-  ? [bundle("main/lite/main.ts", "main.js", false, false)]
-  : [
-      bundle("main/electron/main.ts", "main.js", true, false, [
-        "electron",
-        "electron-fetch",
-        "fs",
-        "jsonfile",
-        "net",
-        "os",
-        "ws",
-        "http",
-        "path",
-        "basic-ftp",
-        "download",
-        "youtube-dl-exec",
-        "tesseract.js",
-        "lzma-native",
-        "@rev-robotics/revlog-converter"
-      ]),
-      bundle("preload.ts", "preload.js", true, false, ["electron"])
-    ];
+const mainBundles =
+  isLite || isLiteDS
+    ? [bundle("main/lite/main.ts", "main.js", false, false)]
+    : [
+        bundle("main/electron/main.ts", "main.js", true, false, [
+          "electron",
+          "electron-fetch",
+          "fs",
+          "jsonfile",
+          "net",
+          "os",
+          "ws",
+          "http",
+          "path",
+          "basic-ftp",
+          "download",
+          "youtube-dl-exec",
+          "tesseract.js",
+          "lzma-native",
+          "@rev-robotics/revlog-converter"
+        ]),
+        bundle("preload.ts", "preload.js", true, false, ["electron"])
+      ];
 const largeRendererBundles = [
   bundle("hub/hub.ts", "hub.js", false, false),
-  ...(isLite ? [] : [bundle("satellite.ts", "satellite.js", false, false)])
+  ...(isLite || isLiteDS ? [] : [bundle("satellite.ts", "satellite.js", false, false)])
 ];
 const smallRendererBundles = [
   bundle("editRange.ts", "editRange.js", false, false),
   bundle("unitConversion.ts", "unitConversion.js", false, false),
   bundle("renameTab.ts", "renameTab.js", false, false),
-  bundle("editFov.ts", "editFov.js", false, false),
+  ...(isLiteDS ? [] : [bundle("editFov.ts", "editFov.js", false, false)]),
   bundle("sourceListHelp.ts", "sourceListHelp.js", false, false),
   bundle("betaWelcome.ts", "betaWelcome.js", false, false),
-  bundle("preferences.ts", "preferences.js", false, false),
+  ...(isLiteDS ? [] : [bundle("preferences.ts", "preferences.js", false, false)]),
   bundle("licenses.ts", "licenses.js", false, false),
   bundle("download.ts", "download.js", false, false),
-  ...(isLite
+  ...(isLite || isLiteDS
     ? [bundle("uploadAsset.ts", "uploadAsset.js", false, false)]
     : [bundle("export.ts", "export.js", false, false)])
 ];
-const workerBundles = [
-  bundle("hub/dataSources/csv/csvWorker.ts", "hub$csvWorker.js", false, false),
-  bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
-  bundle("hub/dataSources/roadrunnerlog/roadRunnerWorker.ts", "hub$roadRunnerWorker.js", false, false),
-  bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
-  bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
-  ...(isLite ? [] : [bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false)]),
-  bundle("shared/renderers/field3d/workers/loadField.ts", "shared$loadField.js", false, false),
-  bundle("shared/renderers/field3d/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
-];
+const workerBundles = isLiteDS
+  ? [bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false)]
+  : [
+      bundle("hub/dataSources/csv/csvWorker.ts", "hub$csvWorker.js", false, false),
+      bundle("hub/dataSources/rlog/rlogWorker.ts", "hub$rlogWorker.js", false, false),
+      bundle("hub/dataSources/roadrunnerlog/roadRunnerWorker.ts", "hub$roadRunnerWorker.js", false, false),
+      bundle("hub/dataSources/wpilog/wpilogWorker.ts", "hub$wpilogWorker.js", false, false),
+      bundle("hub/dataSources/dslog/dsLogWorker.ts", "hub$dsLogWorker.js", false, false),
+      ...(isLite ? [] : [bundle("hub/exportWorker.ts", "hub$exportWorker.js", false, false)]),
+      bundle("shared/renderers/field3d/workers/loadField.ts", "shared$loadField.js", false, false),
+      bundle("shared/renderers/field3d/workers/loadRobot.ts", "shared$loadRobot.js", false, false)
+    ];
 const xrBundles = [
   bundle("xrClient/xrClient.ts", "xrClient.js", false, true),
   bundle("xrControls.ts", "xrControls.js", false, false)
@@ -187,12 +191,12 @@ export default (cliArgs) => {
   if (cliArgs.configSmallRenderers === true) return smallRendererBundles;
   if (cliArgs.configWorkers === true) return workerBundles;
   if (cliArgs.configXR === true) {
-    if (isLite) process.exit();
+    if (isLite || isLiteDS) process.exit();
     return xrBundles;
   }
   if (cliArgs.configRunOwletDownload === true) return runOwletDownload;
 
-  return isLite
+  return isLite || isLiteDS
     ? [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles]
     : [...mainBundles, ...largeRendererBundles, ...smallRendererBundles, ...workerBundles, ...xrBundles];
 };

@@ -62,6 +62,12 @@ export ASCOPE_DISTRIBUTION=WPILIB
 export ASCOPE_DISTRIBUTION=LITE
 ```
 
+- **Lite (Driver Station) Distribution:**
+
+```bash
+export ASCOPE_DISTRIBUTION=LITEDS
+```
+
 ## Available NPM Tasks
 
 The following tasks are defined in `package.json` to assist with development:

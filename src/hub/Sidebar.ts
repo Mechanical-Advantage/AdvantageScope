@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
+import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
@@ -136,7 +136,7 @@ export default class Sidebar {
     Array.from(menuBar.getElementsByTagName("button")).forEach((button, index) => {
       let active = false;
       button.addEventListener("click", () => {
-        if (active && DISTRIBUTION !== Distribution.Lite) {
+        if (active && !IS_LITE) {
           active = false;
           window.sendMainMessage("close-app-menu", {
             index: index
@@ -432,10 +432,17 @@ export default class Sidebar {
 
       // Add new list
       let tree = window.log.getFieldTree();
-      let rootKeys = Object.keys(tree);
+      let rootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
       if (rootKeys.length === 1 && tree[rootKeys[0]].fullKey === null) {
         // If only one table, use it as the root
         tree = tree[rootKeys[0]].children;
+      }
+      if (DISTRIBUTION === Distribution.LiteDS) {
+        // Repeat for DS to use "NT:/Dscomm/" as the root
+        let rootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
+        if (rootKeys.length === 1 && tree[rootKeys[0]].fullKey === null) {
+          tree = tree[rootKeys[0]].children;
+        }
       }
       Object.keys(tree)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))

@@ -12,7 +12,7 @@ import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
-import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
+import { IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData, MERGE_PREFIX } from "../shared/log/LogUtil";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
@@ -286,7 +286,7 @@ window.requestAnimationFrame(periodic);
 // DATA SOURCE HANDLING
 
 function checkLiveAutoStart() {
-  if (DISTRIBUTION == Distribution.Lite && window.preferences !== null && !liveAutoStartComplete) {
+  if (IS_LITE && window.preferences !== null && !liveAutoStartComplete) {
     startLive();
     liveAutoStartComplete = true;
   }
@@ -443,7 +443,7 @@ function startLive(isSim = false) {
   }
 
   let address = "";
-  if (DISTRIBUTION === Distribution.Lite) {
+  if (IS_LITE) {
     address = window.location.hostname;
   } else if (isSim) {
     address = SIM_ADDRESS;

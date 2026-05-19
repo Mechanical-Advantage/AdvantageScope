@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { SelectionMode } from "../Selection";
-import { Distribution, DISTRIBUTION } from "../buildConstants";
+import { IS_LITE } from "../buildConstants";
 import LogField from "../log/LogField";
 import { arraysEqual, formatTimeWithMS, htmlEncode } from "../util";
 import TabRenderer from "./TabRenderer";
@@ -58,7 +58,7 @@ export default class ConsoleRenderer implements TabRenderer {
     this.HAND_ICON = root.getElementsByClassName("large-table-hand-icon")[0] as HTMLElement;
 
     // Hide export button for Lite
-    if (DISTRIBUTION === Distribution.Lite && this.EXPORT_BUTTON !== null) {
+    if (IS_LITE && this.EXPORT_BUTTON !== null) {
       this.EXPORT_BUTTON.hidden = true;
     }
 

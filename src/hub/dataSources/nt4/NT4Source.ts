@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION } from "../../../shared/buildConstants";
+import { Distribution, DISTRIBUTION, IS_LITE } from "../../../shared/buildConstants";
 import Log from "../../../shared/log/Log";
 import { getEnabledKey, getURCLKeys, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
@@ -13,7 +13,7 @@ import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
-import { NT4_Client, NT4_PORTS_DEFAULT, NT4_Topic } from "./NT4";
+import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_DS, NT4_Topic } from "./NT4";
 import NT4Tuner from "./NT4Tuner";
 
 export const WPILOG_PREFIX = "NT:";
@@ -197,8 +197,8 @@ export default class NT4Source extends LiveDataSource {
       this.log = new Log();
       this.client = new NT4_Client(
         address,
-        NT4_PORTS_DEFAULT,
-        DISTRIBUTION === Distribution.Lite ? "AdvantageScopeLite" : "AdvantageScope",
+        DISTRIBUTION === Distribution.LiteDS ? NT4_PORTS_DS : NT4_PORTS_DEFAULT,
+        IS_LITE ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce
           if (!this.log) return;
