@@ -264,7 +264,7 @@ export default class Field2dRenderer implements TabRenderer {
       context.beginPath();
 
       context.strokeStyle = `rgb(0 0 0 / 30%`;
-      context.lineWidth = 3;
+      context.lineWidth = 0.5 * pixelsPerInch;
 
       for (let i = 1; i <= 5; i++) {
         const lineDistance = (canvasFieldHeight / 6) * i;
