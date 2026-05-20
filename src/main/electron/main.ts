@@ -32,7 +32,6 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
-import { PNG } from "pngjs";
 import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
@@ -722,18 +721,18 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Make icon with color
           const size = 15;
           const color = hex.rgb(ensureThemeContrast(value, nativeTheme.shouldUseDarkColors));
-          const png = new PNG({ width: size, height: size });
+          const buf = Buffer.alloc(size * size * 4);
           for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
               const idx = (y * size + x) * 4;
-              png.data[idx + 0] = color[0];
-              png.data[idx + 1] = color[1];
-              png.data[idx + 2] = color[2];
-              png.data[idx + 3] = 255;
+              // Bitmaps are in BGR format, so reverse the directions
+              buf[idx + 0] = color[2];
+              buf[idx + 1] = color[1];
+              buf[idx + 2] = color[0];
+              buf[idx + 3] = 255;
             }
           }
-          const data = PNG.sync.write(png).toString("base64");
-          return nativeImage.createFromDataURL("data:image/png;base64," + data);
+          return nativeImage.createFromBitmap(buf, { height: size, width: size });
         };
 
         // Add options
