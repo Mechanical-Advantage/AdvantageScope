@@ -401,7 +401,9 @@ async function handleHubMessage(message: NamedMessage) {
                 callback() {
                   let detailLines: string[] = [];
                   detailLines.push("Version: " + LITE_VERSION);
-                  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (DS)"));
+                  detailLines.push(
+                    "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "FIRST Driver Station (Lite)")
+                  );
                   detailLines.push("Build Date: " + BUILD_DATE);
                   detailLines.push("User Agent: " + navigator.userAgent);
                   let detail = detailLines.join("\n");
@@ -1335,9 +1337,4 @@ window.addEventListener("load", () => {
       });
     }
   }
-
-  // Alert for DS
-  alert(
-    "AdvantageScope Lite support for the FIRST Driver Station is still in development. Many features may not work correctly."
-  );
 });
