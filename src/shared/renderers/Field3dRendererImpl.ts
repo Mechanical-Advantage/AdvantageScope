@@ -734,7 +734,7 @@ export default class Field3dRendererImpl implements TabRenderer {
         newFieldReady();
       } else {
         this.isFieldLoading = true;
-        WorkerManager.request("../bundles/shared$loadField.js", {
+        WorkerManager.request("../bundles/loadField.js", {
           fieldConfig: fieldConfig,
           mode: this.mode,
           materialSpecular: this.MATERIAL_SPECULAR.toArray(),

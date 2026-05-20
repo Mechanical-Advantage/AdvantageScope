@@ -80,6 +80,7 @@ The following tasks are defined in `package.json` to assist with development:
 - `npm run fast-build`: Compiles and packages the application into a directory (unpacked) rather than an installer. Useful for quick local testing of the production build.
 - `npm run compile`: Runs Rollup to compile the TypeScript source bundles.
 - `npm run wasm:compile`: Compiles the C++ logic to WebAssembly (requires Emscripten).
+- `npm run watch`: Automatically recompiles bundles when files change.
 
 ### Documentation
 
@@ -90,34 +91,6 @@ The following tasks are defined in `package.json` to assist with development:
 
 - `npm run format`: Automatically fixes formatting issues using Prettier and adds license headers.
 - `npm run check-format`: Checks code for formatting errors without modifying files.
-
-## Developing in Watch Mode
-
-When developing, you can use `npm run watch` to automatically recompile bundles when files change. However, recompiling the entire application is often unnecessary and slow.
-
-To speed up development, we recommend building only the subset of bundles you are actively working on by passing flags to the watch command.
-
-**Usage:**
-
-```bash
-npm run watch -- [flags]
-```
-
-**Available Flags:**
-Refer to `rollup.config.mjs` for the specific bundle configurations:
-
-- `-- --configMain`: Rebuilds the main process and preload scripts.
-- `-- --configLargeRenderers`: Rebuilds the Hub and Satellite renderers (the main UI).
-- `-- --configSmallRenderers`: Rebuilds smaller pop-up windows (Preferences, Export, Unit Conversion, etc.).
-- `-- --configWorkers`: Rebuilds web workers (Log parsers, export workers, etc.).
-- `-- --configXR`: Rebuilds XR client scripts.
-
-**Example:**
-If you are only working on the main UI logic, run:
-
-```bash
-npm run watch -- --configLargeRenderers
-```
 
 ## Building for Multiple Platforms
 

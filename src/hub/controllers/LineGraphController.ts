@@ -477,31 +477,26 @@ export default class LineGraphController implements TabController {
 
         // Add AdvantageKit samples
         if (akitTimestamps !== undefined) {
-          switch (fieldItem.type) {
-            case "stepped":
-              // Extra samples wouldn't affect rendering
-              break;
-            case "smooth":
-            case "points":
-              let newData: LogValueSetNumber = { timestamps: [], values: [] };
-              let sourceIndex = 0;
-              let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+          // Only if its needed for rendering intermediate points, or for a filter.
+          if (fieldItem.type !== "stepped" || filter !== LineGraphFilter.None) {
+            let newData: LogValueSetNumber = { timestamps: [], values: [] };
+            let sourceIndex = 0;
+            let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+            while (
+              akitIndex < akitTimestamps.length &&
+              akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]
+            ) {
               while (
-                akitIndex < akitTimestamps.length &&
-                akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]
+                sourceIndex < data!.timestamps.length - 1 &&
+                akitTimestamps[akitIndex] >= data!.timestamps[sourceIndex + 1]
               ) {
-                while (
-                  sourceIndex < data!.timestamps.length - 1 &&
-                  akitTimestamps[akitIndex] >= data!.timestamps[sourceIndex + 1]
-                ) {
-                  sourceIndex++;
-                }
-                newData.timestamps.push(akitTimestamps[akitIndex]);
-                newData.values.push(data!.values[sourceIndex]);
-                akitIndex++;
+                sourceIndex++;
               }
-              data = newData;
-              break;
+              newData.timestamps.push(akitTimestamps[akitIndex]);
+              newData.values.push(data!.values[sourceIndex]);
+              akitIndex++;
+            }
+            data = newData;
           }
         }
 
