@@ -10,6 +10,7 @@ import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
+import { HubState } from "../../shared/HubState";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
 import {
@@ -32,6 +33,7 @@ import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
+import DEFAULT_DS_LAYOUT from "./dsLayout";
 import { LocalStorageKeys } from "./localStorageKeys";
 
 let HUB_FRAME: HTMLIFrameElement;
@@ -262,8 +264,14 @@ async function initHub() {
   sendMessage(hubPort, "set-assets", await assetsPromise);
   let typeMemory = localStorage.getItem(LocalStorageKeys.TYPE_MEMORY);
   if (typeMemory !== null) sendMessage(hubPort, "restore-type-memory", JSON.parse(typeMemory));
-  let state = localStorage.getItem(LocalStorageKeys.STATE);
-  if (state !== null) sendMessage(hubPort, "restore-state", JSON.parse(state));
+  let state: HubState | null = null;
+  let stateStr = localStorage.getItem(LocalStorageKeys.STATE);
+  if (stateStr !== null) {
+    state = JSON.parse(stateStr);
+  } else if (DISTRIBUTION === Distribution.LiteDS) {
+    state = DEFAULT_DS_LAYOUT;
+  }
+  if (state !== null) sendMessage(hubPort, "restore-state", state);
   sendMessage(hubPort, "show-when-ready");
 
   // Add cursor event handlers
@@ -518,6 +526,16 @@ async function handleHubMessage(message: NamedMessage) {
                     };
                   })
               },
+              ...((DISTRIBUTION === Distribution.LiteDS
+                ? [
+                    {
+                      content: "Reset Layout",
+                      callback() {
+                        sendMessage(hubPort, "restore-state", DEFAULT_DS_LAYOUT);
+                      }
+                    }
+                  ]
+                : []) as (MenuItem | Submenu | "-")[]),
               "-",
               {
                 content: `Previous Tab (${modifier} \u2190 )`,
