@@ -158,7 +158,7 @@ export default class Tabs {
             tabIndex = index;
           }
         });
-        if (tabIndex === 0) return;
+        if (tabIndex === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
 
         // Trigger drag event
         while (this.DRAG_ITEM.firstChild) {
@@ -186,7 +186,7 @@ export default class Tabs {
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
       mouseDownInfo = null;
       this.tabList.forEach((tab, index) => {
-        if (index === 0) return;
+        if (index === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
         let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
@@ -265,6 +265,10 @@ export default class Tabs {
 
       let closestDist = Infinity;
       let closestIndex = 0;
+      if (DISTRIBUTION === Distribution.LiteDS && this.tabList.length > 0) {
+        closestDist = Math.abs(x - this.tabList[0].titleElement.getBoundingClientRect().left);
+        closestIndex = -1;
+      }
       this.tabList.forEach((tab, index) => {
         let dist = Math.abs(x - tab.titleElement.getBoundingClientRect().right);
         if (dist < closestDist) {
@@ -282,21 +286,28 @@ export default class Tabs {
         }
       } else {
         this.DRAG_HIGHLIGHT.hidden = false;
-        let highlightX =
-          this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
-          this.SCROLL_OVERLAY.getBoundingClientRect().left +
-          10;
+        let highlightX = 0;
+        if (closestIndex === -1) {
+          highlightX =
+            this.tabList[0].titleElement.getBoundingClientRect().left -
+            this.SCROLL_OVERLAY.getBoundingClientRect().left +
+            10;
+        } else {
+          highlightX =
+            this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
+            this.SCROLL_OVERLAY.getBoundingClientRect().left +
+            10;
+        }
         this.DRAG_HIGHLIGHT.style.left = highlightX.toString() + "px";
       }
     });
 
     // Add default tabs
     if (DISTRIBUTION === Distribution.LiteDS) {
-      this.addTab(TabType.Documentation);
       this.addTab(TabType.LineGraph);
       this.addTab(TabType.Console);
       this.addTab(TabType.Joysticks);
-      this.setSelected(1);
+      this.setSelected(0);
     } else {
       this.addTab(TabType.Documentation);
       this.addTab(TabType.LineGraph);
@@ -589,7 +600,8 @@ export default class Tabs {
 
   /** Closes the specified tab. */
   close(index: number, force = false) {
-    if (index < 1 || index > this.tabList.length - 1) return;
+    let minIndex = DISTRIBUTION === Distribution.LiteDS ? (this.tabList.length > 1 ? 0 : 1) : 1;
+    if (index < minIndex || index > this.tabList.length - 1) return;
 
     // If active XR, confirm before closing
     if (!force && this.tabList[index].controller.UUID === this.activeXRUUID) {
@@ -623,8 +635,9 @@ export default class Tabs {
 
   /** Moves the specified tab left or right. */
   shift(index: number, shift: number) {
-    if (index === 0) return;
-    if (index + shift < 1) shift = 1 - index;
+    let minIndex = DISTRIBUTION === Distribution.LiteDS ? 0 : 1;
+    if (index < minIndex) return;
+    if (index + shift < minIndex) shift = minIndex - index;
     if (index + shift > this.tabList.length - 1) shift = this.tabList.length - 1 - index;
     if (this.selectedTab === index) {
       this.selectedTab += shift;

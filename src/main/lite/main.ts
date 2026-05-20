@@ -575,12 +575,31 @@ async function handleHubMessage(message: NamedMessage) {
                   window.open("https://github.com/" + GITHUB_REPOSITORY, "_blank");
                 }
               },
+              ...((DISTRIBUTION === Distribution.LiteDS
+                ? [
+                    // Add additional documentation links for the DS distribution (AdvantageScope docs are not bundled)
+                    "-",
+                    {
+                      content: "AdvantageScope Documentation",
+                      callback() {
+                        window.open("https://docs.advantagescope.org", "_blank");
+                      }
+                    },
+                    {
+                      content: "Driver Station Documentation",
+                      callback() {
+                        window.open("https://github.com/wpilibsuite/FirstDriverStation-Public", "_blank");
+                      }
+                    }
+                  ]
+                : []) as (MenuItem | Submenu | "-")[]),
               {
                 content: "WPILib Documentation",
                 callback() {
                   window.open("https://docs.wpilib.org", "_blank");
                 }
               },
+              ...((DISTRIBUTION === Distribution.LiteDS ? ["-"] : []) as (MenuItem | Submenu | "-")[]),
               {
                 content: "Littleton Robotics",
                 callback() {

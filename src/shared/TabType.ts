@@ -46,7 +46,7 @@ export const LITE_COMPATIBLE_TABS =
         TabType.Metadata
       ]
     : // Lite DS
-      [TabType.Documentation, TabType.LineGraph, TabType.Table, TabType.Console, TabType.Statistics, TabType.Joysticks];
+      [TabType.LineGraph, TabType.Table, TabType.Console, TabType.Statistics, TabType.Joysticks];
 
 export function getDefaultTabTitle(type: TabType): string {
   switch (type) {
