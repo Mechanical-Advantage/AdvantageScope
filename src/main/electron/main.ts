@@ -2769,6 +2769,7 @@ function createEditRangeWindow(
     show: false,
     parent: parentWindow,
     modal: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -2813,6 +2814,7 @@ function createUnitConversionWindow(
     show: false,
     parent: parentWindow,
     modal: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -2857,6 +2859,7 @@ function createRenameTabWindow(
     show: false,
     parent: parentWindow,
     modal: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -2897,6 +2900,7 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
     show: false,
     parent: parentWindow,
     modal: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -2941,6 +2945,7 @@ function createExportWindow(
     show: false,
     parent: parentWindow,
     modal: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3060,6 +3065,7 @@ function createSatellite(
     resizable: true,
     icon: WINDOW_ICON,
     show: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3195,6 +3201,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
     icon: WINDOW_ICON,
     show: false,
     fullscreenable: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3244,6 +3251,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
     icon: WINDOW_ICON,
     show: false,
     fullscreenable: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3296,6 +3304,7 @@ function openLicenses(parentWindow: Electron.BrowserWindow) {
     icon: WINDOW_ICON,
     show: false,
     fullscreenable: false,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3328,6 +3337,7 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
     show: false,
     fullscreenable: false,
     alwaysOnTop: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3368,6 +3378,7 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
     show: false,
     parent: parentWindow,
     modal: true,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }

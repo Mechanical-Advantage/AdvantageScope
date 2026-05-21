@@ -63,6 +63,7 @@ export namespace XRControls {
       icon: WINDOW_ICON,
       show: false,
       fullscreenable: false,
+      autoHideMenuBar: true,
       webPreferences: {
         preload: path.join(__dirname, "preload.js")
       }
