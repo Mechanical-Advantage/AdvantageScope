@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import download from "download";
-import fs from "fs-extra";
+import fs from "fs";
 import path from "path";
 
 // Constants
@@ -58,7 +58,7 @@ if (fs.existsSync(liteAssetsPath)) {
 }
 
 // Copy basic bundled assets
-fs.copySync(bundledAssetsPath, liteAssetsPath);
+fs.cpSync(bundledAssetsPath, liteAssetsPath, { recursive: true });
 
 // Download GitHub assets
 githubAssetNames.forEach((asset) => {
