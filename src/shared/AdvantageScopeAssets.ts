@@ -50,6 +50,7 @@ export interface Config2d {
 
   isFTC: boolean;
   coordinateSystem: CoordinateSystem;
+  useGrid: boolean;
   sourceUrl?: string;
   topLeft: [number, number];
   bottomRight: [number, number];

@@ -260,7 +260,7 @@ export default class Field2dRenderer implements TabRenderer {
     };
 
     // Draw FTC Grid
-    if (fieldData.isFTC) {
+    if (fieldData.isFTC && fieldData.useGrid) {
       context.beginPath();
 
       context.strokeStyle = `rgb(0 0 0 / 30%`;

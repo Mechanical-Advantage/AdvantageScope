@@ -176,6 +176,7 @@ An image must be included in the folder with the name "image.png". It should be 
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
       "center-red"       // Systemcore
+  "useGrid": boolean // Whether to render 6x6 grid lines onto FTC fields
   "sourceUrl": string // Link to the original file, optional
   "topLeft": [number, number] // Pixel coordinate (origin at upper left)
   "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
