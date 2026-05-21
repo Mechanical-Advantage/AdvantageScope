@@ -29,6 +29,8 @@ import HeatmapManager from "./field3d/objectManagers/HeatmapManager";
 import RobotManager from "./field3d/objectManagers/RobotManager";
 import TrajectoryManager from "./field3d/objectManagers/TrajectoryManager";
 
+export const FTC_GRID_COLOR = "#888";
+
 export default class Field3dRendererImpl implements TabRenderer {
   private LOWER_POWER_MAX_FPS = 30;
   private MAX_ORBIT_FOV = 160;
@@ -48,7 +50,6 @@ export default class Field3dRendererImpl implements TabRenderer {
   private CONTROLS_MIN_DISTANCE_FTC = 0.5;
   private MATERIAL_SPECULAR: THREE.Color = new THREE.Color(0x666666); // Overridden if not cinematic
   private MATERIAL_SHININESS: number = 100; // Overridden if not cinematic
-  private FTC_GRID_COLOR = "#888";
   private SPOT_LIGHT_POSITIONS_FRC = [
     [0, 1, 8, 0, -2, 0],
     [6, -3, 8, 6, 2, 0],
@@ -695,8 +696,8 @@ export default class Field3dRendererImpl implements TabRenderer {
         this.FTCGrid = new THREE.GridHelper(
           Units.convert(fieldConfig.widthInches, "inches", "meters"), // Size of field
           6, // Six divisions to a standard FTC field
-          this.FTC_GRID_COLOR,
-          this.FTC_GRID_COLOR
+          FTC_GRID_COLOR,
+          FTC_GRID_COLOR
         );
         this.FTCGrid.rotateX(Math.PI / 2);
 
