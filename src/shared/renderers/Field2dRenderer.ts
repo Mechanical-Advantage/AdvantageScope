@@ -263,8 +263,8 @@ export default class Field2dRenderer implements TabRenderer {
     if (fieldData.isFTC && fieldData.useGrid) {
       context.beginPath();
 
-      context.strokeStyle = `rgb(0 0 0 / 30%`;
-      context.lineWidth = 0.5 * pixelsPerInch;
+      context.strokeStyle = `rgb(0 0 0 / 10%`;
+      context.lineWidth = 0.3 * pixelsPerInch;
 
       for (let i = 1; i <= 5; i++) {
         const lineDistance = (canvasFieldHeight / 6) * i;
