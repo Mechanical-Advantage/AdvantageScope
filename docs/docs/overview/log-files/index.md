@@ -37,7 +37,7 @@ In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more 
 <details>
 <summary>Configuration</summary>
 
-Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder. Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
+Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder.
 
 <img src={PrefsImage} alt="Diagram of preferences" height="350" />
 </details>

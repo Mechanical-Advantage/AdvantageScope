@@ -38,7 +38,7 @@ Open the preferences window by clicking `App` > `Show Preferences...` (Windows/L
 
 ### Robot Address
 
-Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
+Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation).
 
 ### Live Mode
 
