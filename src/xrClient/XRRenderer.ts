@@ -699,8 +699,8 @@ export default class XRRenderer {
       this.grid.dispose();
     }
 
-    // Create a new grid and render it if switching to an FTC field
-    if (fieldConfig.isFTC && fieldConfig.useGrid) {
+    // Create a new grid and render it if switching to an FTC field and the floor is visible.
+    if (fieldConfig.isFTC && fieldConfig.useGrid && settings.showCarpet) {
       // Create new grid.
       this.grid = new THREE.GridHelper(
         Units.convert(fieldConfig.widthInches, "inches", "meters"), // Size of field
