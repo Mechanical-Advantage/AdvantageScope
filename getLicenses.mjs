@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import fs from "fs";
-import fetch from "node-fetch";
 import path from "path";
 
 let licenses = [];

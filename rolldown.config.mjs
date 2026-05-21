@@ -11,7 +11,6 @@ import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
-import replaceRegEx from "rollup-plugin-re";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
@@ -85,24 +84,7 @@ function bundle(input, isMain, isXRClient, external = []) {
         {
           preventAssignment: true
         }
-      ),
-      replaceRegEx({
-        patterns: [
-          // Remove unused eval in protobufjs
-          // https://github.com/protobufjs/protobuf.js/issues/593
-          {
-            test: /eval.*\(moduleName\);/g,
-            replace: "undefined;"
-          },
-
-          // Remove dependency on node:sqlite (not actually
-          // used, so just replace with stand-in dependency)
-          {
-            test: /node:sqlite/g,
-            replace: "fs"
-          }
-        ]
-      })
+      )
     ],
     onwarn(message, warn) {
       // Hide warnings about protobufjs circular dependencies
@@ -138,7 +120,6 @@ export default (cliArgs) => {
       : [
           bundle(["main/electron/main.ts"], true, false, [
             "electron",
-            "electron-fetch",
             "fs",
             "jsonfile",
             "net",
