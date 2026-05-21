@@ -48,6 +48,7 @@ export default class Field3dRendererImpl implements TabRenderer {
   private CONTROLS_MIN_DISTANCE_FTC = 0.5;
   private MATERIAL_SPECULAR: THREE.Color = new THREE.Color(0x666666); // Overridden if not cinematic
   private MATERIAL_SHININESS: number = 100; // Overridden if not cinematic
+  private FTC_GRID_COLOR = "#888";
   private SPOT_LIGHT_POSITIONS_FRC = [
     [0, 1, 8, 0, -2, 0],
     [6, -3, 8, 6, 2, 0],
@@ -104,6 +105,7 @@ export default class Field3dRendererImpl implements TabRenderer {
   private dsCameraGroup: THREE.Group;
   private dsCameraObj: THREE.Object3D;
   private spotLights: THREE.SpotLight[] = [];
+  private FTCGrid: THREE.GridHelper | null = null;
 
   private objectManagers: {
     type: Field3dRendererCommand_AnyObj["type"];
@@ -680,6 +682,27 @@ export default class Field3dRendererImpl implements TabRenderer {
           }
         );
       }
+
+      // Reset the FTC grid.
+      if (this.FTCGrid !== null) {
+        this.wpilibCoordinateGroup.remove(this.FTCGrid);
+        this.FTCGrid.dispose();
+      }
+
+      // Create a new grid and render it if switching to an FTC field
+      if (fieldConfig.isFTC && fieldConfig.useGrid) {
+        // Create new grid.
+        this.FTCGrid = new THREE.GridHelper(
+          Units.convert(fieldConfig.widthInches, "inches", "meters"), // Size of field
+          6, // Six divisions to a standard FTC field
+          this.FTC_GRID_COLOR,
+          this.FTC_GRID_COLOR
+        );
+        this.FTCGrid.rotateX(Math.PI / 2);
+
+        this.wpilibCoordinateGroup.add(this.FTCGrid);
+      }
+
       this.lastIsFTC = fieldConfig.isFTC;
     }
     if (this.shouldLoadNewField && !this.isFieldLoading) {

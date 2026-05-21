@@ -176,7 +176,7 @@ An image must be included in the folder with the name "image.png". It should be 
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
       "center-red"       // Systemcore
-  "useGrid": boolean // Whether to render 6x6 grid lines if this field is an FTC one (default "true")
+  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
   "sourceUrl": string // Link to the original file, optional
   "topLeft": [number, number] // Pixel coordinate (origin at upper left)
   "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
@@ -200,6 +200,7 @@ The config file must be in the following format:
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
       "center-red"       // Systemcore
+  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)

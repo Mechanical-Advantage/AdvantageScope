@@ -105,6 +105,7 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
     id: "",
     isFTC: false,
     coordinateSystem: "center-red",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: 0,
@@ -134,6 +135,9 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
       configRaw.coordinateSystem === "center-red")
   ) {
     config.coordinateSystem = configRaw.coordinateSystem;
+  }
+  if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
+    config.useGrid = configRaw.useGrid;
   }
   if (
     "rotations" in configRaw &&
