@@ -703,7 +703,7 @@ export default class XRRenderer {
     if (fieldConfig.isFTC && fieldConfig.useGrid && settings.showCarpet) {
       // Create new grid.
       this.grid = new THREE.GridHelper(
-        Units.convert(fieldConfig.widthInches, "inches", "meters"), // Size of field
+        fieldWidth, // Size of field
         6, // Six divisions to a standard FTC field
         FTC_GRID_COLOR,
         FTC_GRID_COLOR
