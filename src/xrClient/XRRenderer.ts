@@ -6,7 +6,9 @@
 // at the root directory of this project.
 
 import * as THREE from "three";
+import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
 import { XREstimatedLight } from "three/addons/webxr/XREstimatedLight.js";
+import { XRHandModelFactory } from "three/addons/webxr/XRHandModelFactory.js";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
@@ -159,8 +161,40 @@ export default class XRRenderer {
         this.fieldRoot.add(this.spotLight);
         this.scene.remove(this.xrLight!);
       });
+
+      // Controller/hand model rendering
+      // Models downloaded dynamically by the client from public CDN
+      // (to avoid adding 200mb to the size of AdvantageScope)
+      // Fallback to no models when offline
+
+      const controllerModelFactory = new XRControllerModelFactory();
+      const handModelFactory = new XRHandModelFactory();
+
+      // Hand 1
+
+      let controllerGrip1 = this.renderer.xr.getControllerGrip(0);
+      controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+      this.scene.add(controllerGrip1);
+
+      let hand1 = this.renderer.xr.getHand(0);
+      this.scene.add(hand1);
+
+      let leftHandModel = handModelFactory.createHandModel(hand1, "mesh");
+      hand1.add(leftHandModel);
+
+      // Hand 2
+
+      let controllerGrip2 = this.renderer.xr.getControllerGrip(1);
+      controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+      this.scene.add(controllerGrip2);
+
+      let hand2 = this.renderer.xr.getHand(1);
+      this.scene.add(hand2);
+
+      let rightHandModel = handModelFactory.createHandModel(hand2, "mesh");
+      hand2.add(rightHandModel);
     } else {
-      // ios
+      // iOS app
       this.camera = new XRCamera();
     }
 

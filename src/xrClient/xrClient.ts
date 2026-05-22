@@ -91,7 +91,7 @@ window.addEventListener("load", () => {
 
     // Make custom button instead of using the three.js one so it can be styled
     let xrButton = document.getElementById("start-xr") as HTMLButtonElement;
-    const optionalFeatures = ["local-floor", "bounded-floor", "layers", "hit-test", "light-estimation"];
+    const optionalFeatures = ["local-floor", "bounded-floor", "layers", "hit-test", "light-estimation", "hand-tracking"];
     xrButton.hidden = false;
     xrButton.onclick = () => {
       navigator.xr?.isSessionSupported("immersive-ar").then((ar) => {
