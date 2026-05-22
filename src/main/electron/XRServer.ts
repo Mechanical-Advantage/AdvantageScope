@@ -64,6 +64,10 @@ export namespace XRServer {
               response.writeHead(200, { "Content-Type": "text/javascript" });
               response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" }));
               return;
+            case "/xrClient.js.map":
+              response.writeHead(200, { "Content-Type": "text/javascript" });
+              response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js.map"), { encoding: "utf-8" }));
+              return;
             case "/apriltag":
               let family = url.searchParams.get("family");
               let name = url.searchParams.get("name");
