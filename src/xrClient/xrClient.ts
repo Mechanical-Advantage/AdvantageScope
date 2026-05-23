@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
-import { XRButton } from "three/addons/webxr/XRButton.js";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
 import { Field3dRendererCommand } from "../shared/renderers/Field3dRenderer";
@@ -91,31 +90,34 @@ window.addEventListener("load", () => {
 
     // Make custom button instead of using the three.js one so it can be styled
     let xrButton = document.getElementById("start-xr") as HTMLButtonElement;
-    const optionalFeatures = ["local-floor", "bounded-floor", "layers", "hit-test", "light-estimation", "hand-tracking"];
-    xrButton.hidden = false;
-    xrButton.onclick = () => {
-      navigator.xr?.isSessionSupported("immersive-ar").then((ar) => {
-        if (ar) {
-          navigator.xr?.requestSession("immersive-ar", { optionalFeatures: optionalFeatures }).then((session) => {
-            session.addEventListener("end", () => {
-              document.location.reload();
-            });
-            renderer.renderer.xr.setSession(session);
-          });
-        } else {
-          // Device supports WebXR but not AR passthrough, such as Apple Vision Pro
-          navigator.xr?.requestSession("immersive-vr", { optionalFeatures: optionalFeatures }).then((session) => {
-            session.addEventListener("end", () => {
-              document.location.reload();
-            });
-            renderer.renderer.xr.setSession(session);
-          });
-        }
-      });
+    const sessionConfig = {
+      optionalFeatures: ["local-floor", "bounded-floor", "layers", "hit-test", "light-estimation", "hand-tracking"]
     };
-    // Create a three.js button and do nothing with it, so Meta Browser adds an open xr button to the tab bar
-    // I think it's hardcoded to look for the three.js one specifically...
-    XRButton.createButton(renderer.renderer, { optionalFeatures: optionalFeatures });
+    let onSessionStart = (session: XRSession): void => {
+      session.addEventListener("end", () => {
+        document.location.reload();
+      });
+      renderer.renderer.xr.setSession(session);
+    };
+
+    xrButton.hidden = false;
+    navigator.xr?.isSessionSupported("immersive-ar").then((ar) => {
+      xrButton.onclick = () => {
+        // Some devices support WebXR but not AR passthrough, such as Apple Vision Pro
+        navigator.xr?.requestSession(ar ? "immersive-ar" : "immersive-vr", sessionConfig).then(onSessionStart);
+      };
+      if ("offerSession" in navigator.xr!!) {
+        // Another API that's not in the types that three.js just uses without explanation
+        // Adds a nice fancy button to the URL bar on Quest, and lets us detect if estimated light is unsupported
+        // @ts-expect-error
+        navigator.xr
+          .offerSession(ar ? "immersive-ar" : "immersive-vr", sessionConfig)
+          .then(onSessionStart)
+          .catch((error: any) => {
+            console.warn(error);
+          });
+      }
+    });
   }
 });
 
