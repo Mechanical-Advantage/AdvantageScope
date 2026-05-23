@@ -74,6 +74,7 @@ export default class XRRenderer {
   private readonly controller0: THREE.XRTargetRaySpace | null = null;
   private readonly controller1: THREE.XRTargetRaySpace | null = null;
   private activeController: THREE.XRTargetRaySpace | null = null;
+  private offsetControllerTarget = new THREE.Object3D();
   private text3d: THREE.Object3D | null = null;
   private lastCalibrationText: string = "";
 
@@ -350,13 +351,11 @@ export default class XRRenderer {
         xrSession?.inputSources[0].targetRayMode === "tracked-pointer"
       ) {
         this.cursorPlane.visible = false;
+        // Offset the target slightly to not clip into controller/hand models
+        let targetWorldPosition = this.activeController.localToWorld(new THREE.Vector3(0.0, 0.0, -0.03));
         raycast = {
           isValid: true,
-          position: [
-            this.activeController.position.x,
-            this.activeController.position.y,
-            this.activeController.position.z
-          ],
+          position: [targetWorldPosition.x, targetWorldPosition.y, targetWorldPosition.z],
           anchorId: "zero"
         };
       } else {
@@ -1041,12 +1040,12 @@ export default class XRRenderer {
       this.composer.setSize(viewWidthPx, viewHeightPx);
       this.resolution.set(viewWidthPx, viewHeightPx);
     }
-    if (!this.webxrEnabled) {
+    if (this.webxrEnabled) {
+      this.renderer.render(this.scene, this.camera);
+    } else {
       // Render with film grain
       // For some reason this breaks webxr
       this.composer.render(1 / 60);
-    } else {
-      this.renderer.render(this.scene, this.camera);
     }
   }
 
