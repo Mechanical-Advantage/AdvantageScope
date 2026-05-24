@@ -74,7 +74,6 @@ export default class XRRenderer {
   private readonly controller0: THREE.XRTargetRaySpace | null = null;
   private readonly controller1: THREE.XRTargetRaySpace | null = null;
   private activeController: THREE.XRTargetRaySpace | null = null;
-  private offsetControllerTarget = new THREE.Object3D();
   private text3d: THREE.Object3D | null = null;
   private lastCalibrationText: string = "";
 
