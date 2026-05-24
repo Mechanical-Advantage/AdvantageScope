@@ -598,11 +598,11 @@ export default class XRRenderer {
         isCalibrating = this.markedPoints.length < 2;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to place the ${isFTC ? "wall near the red alliance area" : "red alliance wall"}.`;
+            calibrationText = "Tap to place the red alliance wall.";
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to place the ${isFTC ? "wall near the blue alliance area" : "blue alliance wall"}.`;
+            calibrationText = "Tap to place the blue alliance wall.";
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootMiniature(
@@ -632,15 +632,13 @@ export default class XRRenderer {
         let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to place the base of the ${
-              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
-            }.`;
+            calibrationText = `Tap to place the base of the ${colorText} alliance wall.`;
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to select another point on the base of the ${
-              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
-            }, at least ${isFTC ? "3" : "6"} feet away from the previous point.`;
+            calibrationText = `Tap to select another point on the base of the ${colorText} alliance wall, at least ${
+              isFTC ? "3" : "6"
+            } feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               let position1 = this.markedPoints[0].getWorldPosition(new THREE.Vector3());
