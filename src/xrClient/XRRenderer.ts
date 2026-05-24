@@ -630,13 +630,16 @@ export default class XRRenderer {
         isCalibrating = this.markedPoints.length < 3;
         let colorText = settings.calibration === XRCalibrationMode.FullSizeBlue ? "blue" : "red";
         let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
+        // In WebXR, text is rendered to a canvas instead of being auto laid out, so add our own newlines
+        // In iOS let the app handle it
+        const nl = this.webxrEnabled ? "\n" : "";
         switch (this.markedPoints.length) {
           case 0:
             calibrationText = `Tap to place the base of the ${colorText} alliance wall.`;
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to select another point \n on the base of the ${colorText} alliance wall, \n at least ${
+            calibrationText = `Tap to select another point${nl} on the base of the ${colorText} alliance wall,${nl} at least ${
               isFTC ? "3" : "6"
             } feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
@@ -652,7 +655,7 @@ export default class XRRenderer {
             }
             break;
           case 2:
-            calibrationText = `Tap to select the base of \n one of the ${
+            calibrationText = `Tap to select the base of${nl} one of the ${
               isFTC ? "perpendicular" : "long"
             } field barriers.`;
             this.fieldRoot.visible = !raycastUnreliable;
