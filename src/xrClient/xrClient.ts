@@ -192,8 +192,8 @@ export function sendHostMessage(name: string, data?: any) {
   }
 }
 
-function renderWebXR(_: DOMHighResTimeStamp, frame: XRFrame) {
-  if (settings !== null && command !== null) {
+function renderWebXR(_: DOMHighResTimeStamp, frame?: XRFrame | undefined) {
+  if (settings !== null && command !== null && frame !== undefined) {
     renderer.render(renderer.webXrStateToXRFrameState(frame), settings, command, assets);
   }
 }

@@ -1013,7 +1013,6 @@ export default class XRRenderer {
     // Update rendering options from AR state
     this.camera.matrixWorldInverse.fromArray(renderState.camera.worldInverse);
     this.camera.projectionMatrix.fromArray(renderState.camera.projection);
-    (this.filmPass.uniforms as any).intensity.value = renderState.lighting.grain;
     this.ambientLight.intensity = renderState.lighting.intensity;
     this.spotLight.intensity =
       (1 - (1 - renderState.lighting.intensity) * 0.5) * // Lower intensity of lighting changes
