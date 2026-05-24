@@ -100,7 +100,7 @@ export default class XRRenderer {
     this.webxrEnabled = webxrEnabled;
     this.canvas = document.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
     this.spinner = document.getElementsByClassName("spinner-cubes-container")[0] as HTMLElement;
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
     this.renderer.xr.enabled = this.webxrEnabled;
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -293,7 +293,7 @@ export default class XRRenderer {
       if (text === "") return; // empty text deletes object
       const textsize_px = 40;
       const font = textsize_px + "px bold sans-serif";
-      const textBaseScale = 0.001;
+      const textBaseScale = 0.00075;
       let ctx = document.createElement("canvas").getContext("2d");
       if (ctx === null) return;
 
@@ -332,7 +332,7 @@ export default class XRRenderer {
       // Set position hand-tuned to look reasonably fine on Android and VR
       // Pinning UI elements to the camera is slightly weird in VR, but it's much easier than the alternatives
       this.camera.add(this.text3d);
-      this.text3d.position.set(0.0, -0.4, -1.0);
+      this.text3d.position.set(0.0, 0.2, -1.0);
     }
   }
 
@@ -636,7 +636,7 @@ export default class XRRenderer {
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to select another point on the base of the ${colorText} alliance wall, at least ${
+            calibrationText = `Tap to select another point \n on the base of the ${colorText} alliance wall, \n at least ${
               isFTC ? "3" : "6"
             } feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
@@ -652,7 +652,7 @@ export default class XRRenderer {
             }
             break;
           case 2:
-            calibrationText = `Tap to select the base of one of the ${
+            calibrationText = `Tap to select the base of \n one of the ${
               isFTC ? "perpendicular" : "long"
             } field barriers.`;
             this.fieldRoot.visible = !raycastUnreliable;
