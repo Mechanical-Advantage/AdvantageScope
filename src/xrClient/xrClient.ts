@@ -36,6 +36,8 @@ const HTTPS_XR_SERVER_PORT = 56329;
 const ANDROID_APP_ID = "org.advantagescope.advantagescopexr";
 const PLAY_STORE_LINK = "https://play.google.com/store/apps/details?id=" + ANDROID_APP_ID;
 
+const PING_TIMEOUT_MS = 2000;
+
 window.addEventListener("load", () => {
   let iosApp = true;
   try {
@@ -77,13 +79,7 @@ window.addEventListener("load", () => {
     renderer = new XRRenderer(true);
     renderer.renderer.setAnimationLoop(renderWebXR);
     let url = window.location.href.replace("http://", "ws://").replace("https://", "wss://").concat("ws");
-    socket = new WebSocket(url);
-    socket.onmessage = async (event) => {
-      if (event.data instanceof Blob) {
-        let packet = msgpackDecoder.decode(await event.data.arrayBuffer()) as XRPacket;
-        setCommand(packet, false);
-      }
-    };
+    startSocket(url);
 
     document.getElementById("spinner-cubes-container")!!.hidden = true;
     document.getElementById("container")!!.hidden = true;
@@ -128,6 +124,30 @@ window.addEventListener("load", () => {
     });
   }
 });
+
+// Typescript timeouts are extremely annoying to type
+// https://stackoverflow.com/questions/45802988/typescript-use-correct-version-of-settimeout-node-vs-window
+let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+// The desktop app sends command data every 500ms
+// So if it hasn't sent any data for 2 seconds, reconnect
+function startSocket(url: string) {
+  function resetTimeout() {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      startSocket(url);
+    }, PING_TIMEOUT_MS);
+  }
+  socket = new WebSocket(url);
+  resetTimeout();
+  socket.onmessage = async (event) => {
+    if (event.data instanceof Blob) {
+      let packet = msgpackDecoder.decode(await event.data.arrayBuffer()) as XRPacket;
+      setCommand(packet, false);
+    }
+    resetTimeout();
+  };
+}
 
 // @ts-expect-error
 window.setCommand = (commandRaw: string, isQueued: boolean) => {
