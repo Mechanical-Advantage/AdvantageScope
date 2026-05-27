@@ -8,15 +8,22 @@
 import { Encoder } from "@msgpack/msgpack";
 import fs from "fs";
 import http from "http";
+import jsonfile from "jsonfile";
 import * as https from "node:https";
 import { networkInterfaces } from "os";
 import path from "path";
-import selfsigned, { SubjectAltNameEntry } from "selfsigned";
+import selfsigned from "selfsigned";
 import { WebSocketServer } from "ws";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { Field3dRendererCommand } from "../../shared/renderers/Field3dRenderer";
 import { XRPacket, XRSettings } from "../../shared/XRTypes";
-import { HTTPS_XR_SERVER_PORT, XR_APPCLIP_DOMAIN, XR_SERVER_PORT, XR_URL_ARGS } from "./ElectronConstants";
+import {
+  HTTPS_CERT_FILENAME,
+  HTTPS_XR_SERVER_PORT,
+  XR_APPCLIP_DOMAIN,
+  XR_SERVER_PORT,
+  XR_URL_ARGS
+} from "./ElectronConstants";
 
 export namespace XRServer {
   let httpServer: http.Server | null = null;
@@ -166,27 +173,29 @@ export namespace XRServer {
 
     httpServer = http.createServer(requestListener).listen(XR_SERVER_PORT);
 
-    let ipAltNames: SubjectAltNameEntry[] = [];
-    ipAltNames.push({ type: 7, value: "127.0.0.1" });
-    ipAddresses.forEach((ip) => {
-      ipAltNames.push({ type: 7, value: ip } as SubjectAltNameEntry);
-    });
-    // Regenerate certificate every startup
-    // Saving and reusing a certificate would prevent the user from having to trust multiple times,
-    // but would only work while on the same network, so it isn't worth it.
-    const pems = await selfsigned.generate([{ name: "commonName", value: "localhost" }], {
-      extensions: [
-        {
-          name: "subjectAltName",
-          altNames: ipAltNames
-        }
-      ],
-      notAfterDate: new Date("2038-01-01")
-    });
-    const options = {
-      key: pems.private,
-      cert: pems.cert
-    };
+    // The IPs in this certificate don't matter since you have to bypass the red warning to use self-signed regardless
+    // Generate on first launch and store on each device
+    // This could be replaced with one hardcoded one for all installs, but that might lead to revocation issues?
+    if (!fs.existsSync(HTTPS_CERT_FILENAME)) {
+      const pems = await selfsigned.generate([{ name: "commonName", value: "localhost" }], {
+        extensions: [
+          {
+            name: "subjectAltName",
+            altNames: [{ type: 7, value: "127.0.0.1" }]
+          }
+        ],
+        // default expiry is a year; extend to 2037 so we never have to worry about it
+        // (without triggering any potential 2038 bugs)
+        notAfterDate: new Date("2037-01-01")
+      });
+      const options = {
+        key: pems.private,
+        cert: pems.cert
+      };
+      jsonfile.writeFileSync(HTTPS_CERT_FILENAME, options);
+    }
+
+    const options = jsonfile.readFileSync(HTTPS_CERT_FILENAME);
 
     httpsServer = https.createServer(options, requestListener).listen(HTTPS_XR_SERVER_PORT);
 
