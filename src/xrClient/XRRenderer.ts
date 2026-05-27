@@ -34,7 +34,7 @@ import HeatmapManager from "../shared/renderers/field3d/objectManagers/HeatmapMa
 import RobotManager from "../shared/renderers/field3d/objectManagers/RobotManager";
 import TrajectoryManager from "../shared/renderers/field3d/objectManagers/TrajectoryManager";
 import { Units } from "../shared/units";
-import { clampValue, wrapRadians } from "../shared/util";
+import { clampValue, createUUID, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
 import { sendHostMessage } from "./xrClient";
 export default class XRRenderer {
@@ -60,6 +60,7 @@ export default class XRRenderer {
   private readonly ambientLight: THREE.AmbientLight;
   private readonly spotLight: THREE.SpotLight;
   private anchors: { [key: string]: THREE.Object3D } = {};
+  private webXrAnchors: { [key: string]: XRAnchor | null } = {};
   private markedPoints: THREE.Object3D[] = [];
   private readonly cursor: THREE.Object3D;
   private readonly cursorPlane: THREE.Object3D;
@@ -256,7 +257,11 @@ export default class XRRenderer {
     Object.values(this.anchors).forEach((anchor) => {
       this.scene.remove(anchor);
     });
+    Object.values(this.webXrAnchors).forEach((anchor) => {
+      anchor?.delete();
+    });
     this.anchors = {};
+    this.webXrAnchors = {};
     this.markedPoints = [];
     sendHostMessage("recalibrate");
   }
@@ -277,9 +282,24 @@ export default class XRRenderer {
     // Add a new marked point
     if (this.lastRaycastResult.isValid) {
       let markedPoint = new THREE.Object3D();
-      markedPoint.position.set(...this.lastRaycastResult.position);
+
+      if (this.webxrEnabled) {
+        // Manually create a fake anchor
+        // Will be updated and have a native one created next frame
+        let anchorId = createUUID();
+        this.anchors[anchorId] = new THREE.Group();
+
+        // Create it at the exact position in the result, since webxr results are relative to the global reference frame
+        this.anchors[anchorId].position.set(...this.lastRaycastResult.position);
+        // Don't offset the marked point at all
+        this.anchors[anchorId].add(markedPoint);
+      } else {
+        // The raycast result is relative to the anchor
+        // Set the offset then attach it to the anchor
+        markedPoint.position.set(...this.lastRaycastResult.position);
+        this.anchors[this.lastRaycastResult.anchorId].add(markedPoint);
+      }
       this.markedPoints.push(markedPoint);
-      this.anchors[this.lastRaycastResult.anchorId].add(markedPoint);
     }
   }
 
@@ -383,7 +403,8 @@ export default class XRRenderer {
 
           if (this.hitTestSource) {
             const hitTestResults = frame.getHitTestResults(this.hitTestSource);
-            // sorted by distance, 0 is closest
+            // Sorted by distance, first is closest
+            // (Multiple results mean multiple surfaces, i.e. raycast hit desk and floor, etc)
             if (hitTestResults.length > 0) {
               let pose = hitTestResults[0].getPose(referenceSpace);
               if (pose) {
@@ -394,6 +415,50 @@ export default class XRRenderer {
                 };
               }
             }
+          }
+        }
+      }
+    }
+    // Convert the fake anchors created in userTap into real anchors
+    // Just use frame.createAnchor for simplicity here, so we can create the anchor with an arbitrary pose
+    // including the one from the previous frame safely
+    // The spec suggests creating anchors based directly on hit test results to allow for tracking of moving objects,
+    // but has a comment stating that no devices even support that and it probably shouldn't be in the spec
+    // which certainly fills me with confidence in this API
+    // https://immersive-web.github.io/anchors/#issue-8bf9de01
+    if (frame.createAnchor !== undefined) {
+      // Performance doesn't matter since there will never be more then 3 elements in this list
+      for (let anchorId in this.anchors) {
+        if (!(anchorId in this.webXrAnchors)) {
+          let startingPosition = new THREE.Vector3();
+          this.anchors[anchorId].getWorldPosition(startingPosition);
+
+          this.webXrAnchors[anchorId] = null;
+          frame
+            .createAnchor(
+              new XRRigidTransform(new DOMPoint(...startingPosition)),
+              this.renderer.xr.getReferenceSpace()!!
+            )
+            .then((anchor: XRAnchor) => {
+              this.webXrAnchors[anchorId] = anchor;
+            });
+        }
+      }
+    }
+
+    if (frame.trackedAnchors != null) {
+      for (let id in this.webXrAnchors) {
+        let anchor = this.webXrAnchors[id];
+        // if the anchor is null/the anchor creation promise hasn't returned, just leave the poses as is
+        if (anchor) {
+          let pose = frame.getPose(anchor.anchorSpace, this.renderer.xr.getReferenceSpace()!!);
+          if (pose) {
+            let position = new THREE.Vector3(
+              pose.transform.position.x,
+              pose.transform.position.y,
+              pose.transform.position.z
+            );
+            this.anchors[id].position.copy(position);
           }
         }
       }

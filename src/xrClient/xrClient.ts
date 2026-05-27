@@ -91,7 +91,15 @@ window.addEventListener("load", () => {
     // Make custom button instead of using the three.js one so it can be styled
     let xrButton = document.getElementById("start-xr") as HTMLButtonElement;
     const sessionConfig = {
-      optionalFeatures: ["local-floor", "bounded-floor", "layers", "hit-test", "light-estimation", "hand-tracking"]
+      optionalFeatures: [
+        "local-floor",
+        "bounded-floor",
+        "layers",
+        "hit-test",
+        "light-estimation",
+        "hand-tracking",
+        "anchors"
+      ]
     };
     let onSessionStart = (session: XRSession): void => {
       session.addEventListener("end", () => {
@@ -107,8 +115,8 @@ window.addEventListener("load", () => {
         navigator.xr?.requestSession(ar ? "immersive-ar" : "immersive-vr", sessionConfig).then(onSessionStart);
       };
       if ("offerSession" in navigator.xr!!) {
-        // Another API that's not in the types that three.js just uses without explanation
-        // Adds a nice fancy button to the URL bar on Quest, and lets us detect if estimated light is unsupported
+        // Another API not in the types that three.js just uses without explanation
+        // Adds a nice fancy button to the URL bar on Quest
         // @ts-expect-error
         navigator.xr
           .offerSession(ar ? "immersive-ar" : "immersive-vr", sessionConfig)
