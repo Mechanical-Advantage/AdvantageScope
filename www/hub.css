@@ -1938,3 +1938,24 @@ div.points-settings {
     border-left: 1px solid black;
   }
 }
+
+.mermaid-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  background-color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mermaid-container {
+    background-color: #222;
+  }
+}
+
+.mermaid-sources {
+  width: 100%;
+  height: 100%;
+}

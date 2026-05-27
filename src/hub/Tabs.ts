@@ -16,6 +16,7 @@ import Field3dRenderer from "../shared/renderers/Field3dRenderer";
 import JoysticksRenderer from "../shared/renderers/JoysticksRenderer";
 import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MechanismRenderer from "../shared/renderers/MechanismRenderer";
+import MermaidRenderer from "../shared/renderers/MermaidRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
@@ -33,6 +34,7 @@ import Field3dController from "./controllers/Field3dController";
 import JoysticksController from "./controllers/JoysticksController";
 import LineGraphController from "./controllers/LineGraphController";
 import MechanismController from "./controllers/MechanismController";
+import MermaidController from "./controllers/MermaidController";
 import MetadataController from "./controllers/MetadataController";
 import PointsController from "./controllers/PointsController";
 import StatisticsController from "./controllers/StatisticsController";
@@ -535,6 +537,10 @@ export default class Tabs {
       case TabType.Metadata:
         controller = new MetadataController();
         renderer = new MetadataRenderer(rendererElement);
+        break;
+      case TabType.Mermaid:
+        controller = new MermaidController(controlsElement);
+        renderer = new MermaidRenderer(rendererElement);
         break;
       default:
         controller = new NoopController();
