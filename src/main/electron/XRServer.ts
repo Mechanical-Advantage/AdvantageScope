@@ -188,14 +188,13 @@ export namespace XRServer {
         // (without triggering any potential 2038 bugs)
         notAfterDate: new Date("2037-01-01")
       });
-      const options = {
+      const options: https.ServerOptions = {
         key: pems.private,
         cert: pems.cert
       };
       jsonfile.writeFileSync(HTTPS_CERT_FILENAME, options);
     }
-
-    const options = jsonfile.readFileSync(HTTPS_CERT_FILENAME);
+    const options: https.ServerOptions = jsonfile.readFileSync(HTTPS_CERT_FILENAME);
 
     httpsServer = https.createServer(options, requestListener).listen(HTTPS_XR_SERVER_PORT);
 
