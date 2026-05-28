@@ -38,7 +38,6 @@ AdvantageScope XR is supported on many devices, but is more stable for devices w
 Heatmaps and swerve states are not available yet in XR. All other object types are supported.
 :::
 
-
 :::tip
 AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
 :::
