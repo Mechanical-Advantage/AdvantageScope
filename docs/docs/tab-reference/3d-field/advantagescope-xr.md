@@ -9,7 +9,7 @@ AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to li
 
 ## Requirements
 
-- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall), or properly configured to whitelist ports 56328 and 56329.
 - **Client:** An iPhone or iPad running iOS/iPadOS 16 or later, an Android device running Chrome for Android 79+, a Meta Quest headset, or any VR device. No app installation is required.
 - **Network:** Both devices must be connected to the same network (Wi-Fi, USB tethering, etc). Subject to the requirement below, this network does not need to be connected to the internet.
 - **Internet:** If AdvantageScope XR has not been used recently, the mobile device must have an internet connection (e.g. cellular data). To eliminate this requirement, check the [offline usage](#offline-usage) section below.
@@ -38,9 +38,6 @@ AdvantageScope XR is supported on many devices, but is more stable for devices w
 Heatmaps and swerve states are not available yet in XR. All other object types are supported.
 :::
 
-:::warning
-The most common cause of XR not connecting is a misconfigured firewall. If you run into issues, whitelist ports 56328 and 56329, or disable the firewall entirely.
-:::
 
 :::tip
 AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
