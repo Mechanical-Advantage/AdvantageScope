@@ -38,6 +38,10 @@ AdvantageScope XR is supported on many devices, but is more stable for devices w
 Heatmaps and swerve states are not available yet in XR. All other object types are supported.
 :::
 
+:::warning
+The most common cause of XR not connecting is a misconfigured firewall. If you run into issues, whitelist ports 56328 and 56329, or disable the firewall entirely.
+:::
+
 :::tip
 AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
 :::
