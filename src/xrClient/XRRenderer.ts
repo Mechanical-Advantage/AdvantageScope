@@ -245,7 +245,13 @@ export default class XRRenderer {
     );
     this.cursorPlane = new THREE.Mesh(
       new THREE.CircleGeometry(0.05, 64),
-      new THREE.MeshPhongMaterial({ color: "yellow", transparent: true, opacity: 0.1, side: THREE.DoubleSide })
+      // Opacity is weirdly platform dependent?
+      new THREE.MeshPhongMaterial({
+        color: "yellow",
+        transparent: true,
+        opacity: webxrEnabled ? 0.1 : 0.02,
+        side: THREE.DoubleSide
+      })
     ).rotateX(Math.PI / 2);
     this.cursor.add(this.cursorPlane);
     this.cursor.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2));
