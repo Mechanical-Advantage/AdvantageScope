@@ -63,8 +63,8 @@ export default class XRRenderer {
   private anchors: { [key: string]: THREE.Object3D } = {};
   private webXrAnchors: { [key: string]: XRAnchor | null } = {};
   private webXrAnchorNum = 0;
-  private persistentAnchorNum = 0;
   private persistentAnchorPending = false;
+  private persistentAnchorsRestoring = true;
   private markedPoints: THREE.Object3D[] = [];
   private readonly cursor: THREE.Object3D;
   private readonly cursorPlane: THREE.Object3D;
@@ -153,6 +153,9 @@ export default class XRRenderer {
           this.userTap();
         }
       });
+      this.controller0.addEventListener("squeeze", () => {
+        this.resetPersistentAnchors();
+      });
       this.activeController = this.controller0;
 
       this.xrLight = new XREstimatedLight(this.renderer);
@@ -214,7 +217,12 @@ export default class XRRenderer {
         default: // null, or something else entirely
           break;
       }
-      this.persistentAnchorNum = parseInt(localStorage.getItem("persistentAnchorNum") ?? "0");
+      // Anchors, and especially persistent anchors, are supposed to always stay in one place forever
+      // But for some reason on Meta Quest sleeping and resuming moves around non persistent anchors
+      // Even though when you delete them and restore them again from the API they work fine
+      // Ideally they would only get reset after resuming from sleep but that's hard to detect reliably
+      // and just pulling them from the API every second works fine
+      setInterval(() => this.resetPersistentAnchors(), 1000.0);
     } else {
       // iOS app
       this.camera = new XRCamera();
@@ -298,7 +306,6 @@ export default class XRRenderer {
     localStorage.clear();
     this.markedPoints = [];
     this.webXrAnchorNum = 0;
-    this.persistentAnchorNum = 0;
     sendHostMessage("recalibrate");
   }
 
@@ -392,6 +399,15 @@ export default class XRRenderer {
       this.text3d.position.set(0.0, 0.2, -1.0);
     }
   }
+  // Clear the known persistent anchors and trigger the render code to start getting them again
+  private resetPersistentAnchors() {
+    // if there's at least one persistent anchor stored in localstorage
+    if (localStorage.getItem("1") != null && !this.persistentAnchorsRestoring) {
+      this.webXrAnchors = {};
+      this.webXrAnchorNum = 0;
+      this.persistentAnchorsRestoring = true;
+    }
+  }
 
   public webXrStateToXRFrameState(frame: XRFrame): XRFrameState {
     let cameraPos: Translation3d = [this.camera.position.x, this.camera.position.y, this.camera.position.z];
@@ -463,7 +479,7 @@ export default class XRRenderer {
     // but has a comment stating that no devices even support that and it probably shouldn't be in the spec
     // which certainly fills me with confidence in this API
     // https://immersive-web.github.io/anchors/#issue-8bf9de01
-    if (frame.createAnchor !== undefined) {
+    if (frame.createAnchor !== undefined && !this.persistentAnchorsRestoring) {
       // Performance doesn't matter since there will never be more then 3 elements in this list
       for (let anchorId in this.anchors) {
         if (anchorId != "zero" && !(anchorId in this.webXrAnchors)) {
@@ -481,8 +497,6 @@ export default class XRRenderer {
               if (anchor.requestPersistentHandle) {
                 anchor.requestPersistentHandle().then((id) => {
                   localStorage.setItem(this.webXrAnchorNum.toString(), id);
-                  // keep track of how many anchors are stored
-                  localStorage.setItem("persistentAnchorNum", this.webXrAnchorNum.toString());
                   console.log(id);
                 });
               }
@@ -495,18 +509,26 @@ export default class XRRenderer {
     if (frame.trackedAnchors != null) {
       for (let id in this.webXrAnchors) {
         let anchor = this.webXrAnchors[id];
-        // if the anchor is null/the anchor creation promise hasn't returned, just leave the poses as is
+        // only change the poses if the anchor isn't null, meaning the anchor promise has returned
         if (anchor) {
           let pose = frame.getPose(anchor.anchorSpace, this.renderer.xr.getReferenceSpace()!!);
+          if (pose === null) {
+            console.log("pose null id", id);
+          }
           if (pose) {
             let position = new THREE.Vector3(
               pose.transform.position.x,
               pose.transform.position.y,
               pose.transform.position.z
             );
-
             let distance = this.anchors[id].position.distanceTo(position);
-            if (distance > 0.1) this.anchors[id].position.copy(position);
+            if (distance > 0.001 || Math.random() < 0.001) {
+              console.log("id", id);
+              console.log("initial", this.anchors[id].position);
+              console.log("anchor", position);
+              console.log("distance", distance);
+            }
+            this.anchors[id].position.copy(position);
           }
         }
       }
@@ -658,7 +680,7 @@ export default class XRRenderer {
       this.lastCalibrationMode = settings.calibration;
       this.resetCalibration();
       localStorage.setItem("calibrationMode", JSON.stringify(settings.calibration));
-    } else if (this.webxrEnabled && this.webXrAnchorNum < this.persistentAnchorNum && !this.persistentAnchorPending) {
+    } else if (this.webxrEnabled && this.persistentAnchorsRestoring && !this.persistentAnchorPending) {
       // The calibration mode in the local storage matched and there more anchors available to restore
       // so try to restore one persistent anchor from this session
       // Meta Browser only lets you restore one persistent anchor at a time...for some reason...
@@ -667,17 +689,24 @@ export default class XRRenderer {
       let persistentuuid = localStorage.getItem(anchorid);
       if (persistentuuid) {
         this.persistentAnchorPending = true;
+        this.persistentAnchorsRestoring = true;
         this.renderer.xr.getSession()!!.restorePersistentAnchor!!(persistentuuid).then((anchor: XRAnchor) => {
-          let markedPoint = new THREE.Object3D();
           this.webXrAnchors[anchorid] = anchor;
-          this.anchors[anchorid] = new THREE.Group();
+          // If there aren't any anchors at all create them (startup)
+          // Otherwise the existing anchors will be moved to the new webxranchor positions on frame (resume from sleep)
+          if (!this.anchors[anchorid]) {
+            this.anchors[anchorid] = new THREE.Group();
+            let markedPoint = new THREE.Object3D();
+            // Don't set the position of the anchor here; it'll be set in the per-frame data
+            this.anchors[anchorid].add(markedPoint);
+            this.markedPoints.push(markedPoint);
+          }
 
-          // Don't set the position of the anchor here; it'll be set in the per-frame data
-          this.anchors[anchorid].add(markedPoint);
-          this.markedPoints.push(markedPoint);
           this.webXrAnchorNum = parseInt(anchorid);
           this.persistentAnchorPending = false;
         });
+      } else {
+        this.persistentAnchorsRestoring = false;
       }
     }
 
