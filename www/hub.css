@@ -1942,10 +1942,9 @@ div.points-settings {
 .mermaid-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: auto;
+  position: absolute;
+  top: 2.5px;
+  left: 2.5px;
   background-color: white;
 }
 
@@ -1953,6 +1952,31 @@ div.points-settings {
   .mermaid-container {
     background-color: #222;
   }
+
+  /*.mermaid-container svg {
+    background: #222;
+    border: 0px;
+  }
+
+  .mermaid-container svg polygon,
+  .mermaid-container svg ellipse,
+  .mermaid-container svg path {
+    stroke: white;
+  }
+
+  .mermaid-container svg polygon {
+    fill: #222;
+    outline: #222;
+  }
+
+  .mermaid-container svg text {
+    fill: white;
+  }
+
+  .mermaid-container svg .edge polygon {
+    fill: white;
+    stroke: white;
+  } */
 }
 
 .mermaid-sources {
