@@ -34,9 +34,10 @@ import HeatmapManager from "../shared/renderers/field3d/objectManagers/HeatmapMa
 import RobotManager from "../shared/renderers/field3d/objectManagers/RobotManager";
 import TrajectoryManager from "../shared/renderers/field3d/objectManagers/TrajectoryManager";
 import { Units } from "../shared/units";
-import { clampValue, createUUID, wrapRadians } from "../shared/util";
+import { clampValue, wrapRadians } from "../shared/util";
 import XRCamera from "./XRCamera";
 import { sendHostMessage } from "./xrClient";
+
 export default class XRRenderer {
   private MATERIAL_SPECULAR: THREE.Color = new THREE.Color(0x000000);
   private MATERIAL_SHININESS = 0;
@@ -61,6 +62,9 @@ export default class XRRenderer {
   private readonly spotLight: THREE.SpotLight;
   private anchors: { [key: string]: THREE.Object3D } = {};
   private webXrAnchors: { [key: string]: XRAnchor | null } = {};
+  private webXrAnchorNum = 0;
+  private persistentAnchorNum = 0;
+  private persistentAnchorPending = false;
   private markedPoints: THREE.Object3D[] = [];
   private readonly cursor: THREE.Object3D;
   private readonly cursorPlane: THREE.Object3D;
@@ -194,6 +198,23 @@ export default class XRRenderer {
 
       let rightHandModel = handModelFactory.createHandModel(hand2, "mesh");
       hand2.add(rightHandModel);
+
+      // Session restoration
+      let sessionCalibrationMode = localStorage.getItem("calibrationMode");
+      switch (sessionCalibrationMode) {
+        case "0":
+          this.lastCalibrationMode = XRCalibrationMode.Miniature;
+          break;
+        case "1":
+          this.lastCalibrationMode = XRCalibrationMode.FullSizeBlue;
+          break;
+        case "2":
+          this.lastCalibrationMode = XRCalibrationMode.FullSizeRed;
+          break;
+        default: // null, or something else entirely
+          break;
+      }
+      this.persistentAnchorNum = parseInt(localStorage.getItem("persistentAnchorNum") ?? "0");
     } else {
       // iOS app
       this.camera = new XRCamera();
@@ -254,15 +275,30 @@ export default class XRRenderer {
   }
 
   resetCalibration() {
+    // Meta Browser hates it when you delete an anchor twice, and you can only have 8 persistent anchors
+    if (this.renderer.xr.getSession()?.persistentAnchors) {
+      for (let persistentuuid of this.renderer.xr.getSession()!!.persistentAnchors!!) {
+        if (this.renderer.xr.getSession()!!.deletePersistentAnchor !== undefined) {
+          this.renderer.xr.getSession()!!.deletePersistentAnchor!!(persistentuuid).catch((e) => {
+            console.warn(e);
+          });
+        }
+      }
+    } else {
+      Object.values(this.webXrAnchors).forEach((anchor) => {
+        anchor?.delete();
+      });
+    }
     Object.values(this.anchors).forEach((anchor) => {
       this.scene.remove(anchor);
     });
-    Object.values(this.webXrAnchors).forEach((anchor) => {
-      anchor?.delete();
-    });
     this.anchors = {};
     this.webXrAnchors = {};
+
+    localStorage.clear();
     this.markedPoints = [];
+    this.webXrAnchorNum = 0;
+    this.persistentAnchorNum = 0;
     sendHostMessage("recalibrate");
   }
 
@@ -286,7 +322,8 @@ export default class XRRenderer {
       if (this.webxrEnabled) {
         // Manually create a fake anchor
         // Will be updated and have a native one created next frame
-        let anchorId = createUUID();
+        this.webXrAnchorNum++;
+        let anchorId = this.webXrAnchorNum.toString();
         this.anchors[anchorId] = new THREE.Group();
 
         // Create it at the exact position in the result, since webxr results are relative to the global reference frame
@@ -429,7 +466,7 @@ export default class XRRenderer {
     if (frame.createAnchor !== undefined) {
       // Performance doesn't matter since there will never be more then 3 elements in this list
       for (let anchorId in this.anchors) {
-        if (!(anchorId in this.webXrAnchors)) {
+        if (anchorId != "zero" && !(anchorId in this.webXrAnchors)) {
           let startingPosition = new THREE.Vector3();
           this.anchors[anchorId].getWorldPosition(startingPosition);
 
@@ -441,6 +478,15 @@ export default class XRRenderer {
             )
             .then((anchor: XRAnchor) => {
               this.webXrAnchors[anchorId] = anchor;
+              if (anchor.requestPersistentHandle) {
+                anchor.requestPersistentHandle().then((id) => {
+                  localStorage.setItem(this.webXrAnchorNum.toString(), id);
+                  // keep track of how many anchors are stored
+                  localStorage.setItem("persistentAnchorNum", this.webXrAnchorNum.toString());
+                  console.log(id);
+                });
+              }
+              console.log(anchor);
             });
         }
       }
@@ -458,7 +504,9 @@ export default class XRRenderer {
               pose.transform.position.y,
               pose.transform.position.z
             );
-            this.anchors[id].position.copy(position);
+
+            let distance = this.anchors[id].position.distanceTo(position);
+            if (distance > 0.1) this.anchors[id].position.copy(position);
           }
         }
       }
@@ -606,8 +654,31 @@ export default class XRRenderer {
   ) {
     // Reset calibration when changing calibration mode
     if (settings.calibration !== this.lastCalibrationMode) {
+      // Store the last calibration mode to only restore sessions of the same calibration
       this.lastCalibrationMode = settings.calibration;
       this.resetCalibration();
+      localStorage.setItem("calibrationMode", JSON.stringify(settings.calibration));
+    } else if (this.webxrEnabled && this.webXrAnchorNum < this.persistentAnchorNum && !this.persistentAnchorPending) {
+      // The calibration mode in the local storage matched and there more anchors available to restore
+      // so try to restore one persistent anchor from this session
+      // Meta Browser only lets you restore one persistent anchor at a time...for some reason...
+      // so use webXrAnchorNum and pending anchor to track whether the promise completed
+      let anchorid = (this.webXrAnchorNum + 1).toString();
+      let persistentuuid = localStorage.getItem(anchorid);
+      if (persistentuuid) {
+        this.persistentAnchorPending = true;
+        this.renderer.xr.getSession()!!.restorePersistentAnchor!!(persistentuuid).then((anchor: XRAnchor) => {
+          let markedPoint = new THREE.Object3D();
+          this.webXrAnchors[anchorid] = anchor;
+          this.anchors[anchorid] = new THREE.Group();
+
+          // Don't set the position of the anchor here; it'll be set in the per-frame data
+          this.anchors[anchorid].add(markedPoint);
+          this.markedPoints.push(markedPoint);
+          this.webXrAnchorNum = parseInt(anchorid);
+          this.persistentAnchorPending = false;
+        });
+      }
     }
 
     // Update anchors
