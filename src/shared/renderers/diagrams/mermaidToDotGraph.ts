@@ -1,29 +1,87 @@
 /**
- * Converts a Mermaid diagram into a Graphviz DOT string.
+ * Converts a Mermaid diagram string into a Graphviz DOT string.
  *
- * Supported diagram types:
- *   - stateDiagram-v2  (primary focus)
- *   - graph / flowchart (legacy support retained)
+ * Supports `stateDiagram-v2` (primary) and `graph`/`flowchart` diagrams.
+ * Fully resolves `classDef` / `class` styling into DOT attributes.
  *
- * stateDiagram-v2 features handled:
- *   - Simple states:            StateId : Label
- *   - Start / end pseudo-nodes: [*]
- *   - Transitions:              A --> B  /  A --> B : label
- *   - Composite states:         state "Label" as Id { ... }  /  state Id { ... }
- *   - Concurrent regions:       -- (fork divider inside composite)
- *   - Notes:                    note left/right of State \n ... \n end note
- *   - Choice pseudo-state:      state Id <<choice>>
- *   - Fork / join:              state Id <<fork>>  /  state Id <<join>>
- *   - classDef + class:         full CSS-property-to-DOT-attribute mapping
- *
- * graph / flowchart features retained:
- *   - All node shapes, edge styles, edge labels, subgraphs
- *   - classDef + class styling
+ * @param widthPx The width of the graph in pixels.
+ * @param heightPx The height of the graph in pixels.
+ * @param mermaid - Raw Mermaid source text.
+ * @param darkMode - Whether to use dark mode styling.
+ * @returns A string containing the resulting Graphviz DOT graph.
  */
+export function mermaidToDotGraph(widthPx: number, heightPx: number, mermaid: string, darkMode: boolean): string {
+  const graph = parseMermaid(mermaid, darkMode);
+  resolveNodeStyles(graph);
 
-// ---------------------------------------------------------------------------
-// Shared types
-// ---------------------------------------------------------------------------
+  const lines: string[] = [];
+  const edgeOp = graph.directed ? "->" : "--";
+
+  const widthInches = Math.max(1, widthPx) / 96.0;
+  const heightInches = Math.max(1, heightPx) / 72.0;
+
+  lines.push(`digraph G {`);
+  lines.push(`  size="${widthInches},${heightInches}";`);
+  lines.push(`  ratio="fill"; `)
+  lines.push(`  rankdir="${graph.rankdir}";`);
+  lines.push(`  bgcolor="transparent";`);
+  const textColor = darkMode ? "white" : "black";
+  lines.push(`  node [fontname="Helvetica", fontsize="100", fontcolor="${textColor}", color="${textColor}", penwidth=5.0];`);
+  lines.push(`  edge [fontname="Helvetica", fontsize="60", fontcolor="${textColor}", color="${textColor}", penwidth=5.0];`);
+  if (graph.isStateDiagram) {
+    lines.push(`  nodesep="0.5";`);
+    lines.push(`  ranksep="0.6";`);
+  }
+  lines.push("");
+
+  const subgraphNodeIds = new Set(graph.subgraphs.flatMap((sg) => sg.nodeIds));
+
+  for (const node of graph.nodes.values()) {
+    if (subgraphNodeIds.has(node.id)) continue;
+    const attrs: Record<string, string> = {
+      label: node.label,
+      ...shapeToGraphvizAttrs(node.shape, darkMode, node.stereotype),
+      ...node.styleAttrs,
+    };
+    lines.push(`  ${node.id}${attrsToString(attrs)};`);
+  }
+
+  if (graph.nodes.size > 0) lines.push("");
+
+  for (const sg of graph.subgraphs) {
+    lines.push(`  subgraph ${sg.id} {`);
+    lines.push(`    label=${dotQuote(sg.label)};`);
+    lines.push(`    style="rounded";`);
+    const subgraphColor = darkMode ? "gray70" : "gray50";
+    lines.push(`    color="${subgraphColor}";`);
+    lines.push(`    fontcolor="${subgraphColor}";`);
+    if (sg.concurrent) {
+      // Rank concurrent regions side-by-side
+      lines.push(`    rankdir="LR";`);
+    }
+    for (const nodeId of sg.nodeIds) {
+      const node = graph.nodes.get(nodeId);
+      if (!node) continue;
+      const attrs: Record<string, string> = {
+        label: node.label,
+        ...shapeToGraphvizAttrs(node.shape, darkMode, node.stereotype),
+        ...node.styleAttrs,
+      };
+      lines.push(`    ${node.id}${attrsToString(attrs)};`);
+    }
+    lines.push("  }");
+    lines.push("");
+  }
+
+  for (const edge of graph.edges) {
+    const attrs: Record<string, string> = { ...edgeStyleToAttrs(edge.style) };
+    if (edge.label) attrs.label = edge.label;
+    lines.push(`  ${edge.from} ${edgeOp} ${edge.to}${attrsToString(attrs)};`);
+  }
+
+  lines.push("}");
+  return lines.join("\n");
+}
 
 type GraphvizShape =
   | "box"
@@ -32,8 +90,8 @@ type GraphvizShape =
   | "stadium"
   | "hexagon"
   | "circle"
-  | "point"       // [*] start/end
-  | "doublecircle" // final state
+  | "point"
+  | "doublecircle"
   | "rectangle";
 
 type EdgeStyle = "solid" | "dashed" | "bold";
@@ -85,9 +143,10 @@ interface ParsedGraph {
   isStateDiagram: boolean;
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
+interface ShapeMatch {
+  label: string;
+  shape: GraphvizShape;
+}
 
 /** Produce a safe DOT identifier. */
 function sanitizeId(raw: string): string {
@@ -106,10 +165,6 @@ function attrsToString(attrs: Record<string, string>): string {
   const parts = Object.entries(attrs).map(([k, v]) => `${k}=${dotQuote(v)}`);
   return parts.length > 0 ? ` [${parts.join(", ")}]` : "";
 }
-
-// ---------------------------------------------------------------------------
-// CSS → DOT attribute mapping
-// ---------------------------------------------------------------------------
 
 /**
  * Translates Mermaid classDef CSS-like properties into Graphviz node attributes.
@@ -200,15 +255,6 @@ function parseClassDefProperties(raw: string): Record<string, string> {
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// Node shape helpers (flowchart)
-// ---------------------------------------------------------------------------
-
-interface ShapeMatch {
-  label: string;
-  shape: GraphvizShape;
-}
-
 function parseNodeShape(raw: string): ShapeMatch | null {
   const t = raw.trim();
 
@@ -236,10 +282,6 @@ function parseNodeShape(raw: string): ShapeMatch | null {
   return null;
 }
 
-// ---------------------------------------------------------------------------
-// Edge connector parser (flowchart + state diagram)
-// ---------------------------------------------------------------------------
-
 interface EdgeMatch {
   style: EdgeStyle;
   label?: string;
@@ -257,10 +299,6 @@ function parseEdgeConnector(connector: string): EdgeMatch {
 
   return { style, label };
 }
-
-// ---------------------------------------------------------------------------
-// stateDiagram-v2 parser
-// ---------------------------------------------------------------------------
 
 function parseStateDiagram(lines: string[], darkMode: boolean): ParsedGraph {
   const result: ParsedGraph = {
@@ -438,27 +476,24 @@ function parseStateDiagram(lines: string[], darkMode: boolean): ParsedGraph {
       continue;
     }
 
-    // ── state label declaration: state "Label" as Id ────────────────────────
+    // State label declaration: state "Label" as Id
     const stateLabelMatch = line.match(/^state\s+"([^"]+)"\s+as\s+(\S+)\s*$/);
     if (stateLabelMatch) {
       getOrCreateState(stateLabelMatch[2], stateLabelMatch[1]);
       continue;
     }
 
-    // ── subgraph end ─────────────────────────────────────────────────────────
     if (line === "}") {
       subgraphStack.pop();
       continue;
     }
 
-    // ── concurrent region separator ──────────────────────────────────────────
     if (line === "--") {
       if (subgraphStack.length > 0) subgraphStack[subgraphStack.length - 1].concurrent = true;
       continue;
     }
 
-    // ── inline state label:  StateId : Label ────────────────────────────────
-    // Must not match a transition line (which contains -->)
+    // Inline state label; must not match a transition line (which contains -->)
     if (!line.includes("-->")) {
       const labelDeclMatch = line.match(/^(\S+)\s*:\s*(.+)$/);
       if (labelDeclMatch) {
@@ -472,7 +507,7 @@ function parseStateDiagram(lines: string[], darkMode: boolean): ParsedGraph {
       }
     }
 
-    // ── transition: A --> B  /  A --> B : label ──────────────────────────────
+    // ── transition: A --> B  /  A --> B : label
     const transMatch = line.match(/^(\S+)\s*-->\s*(\S+)(?:\s*:\s*(.+))?$/);
     if (transMatch) {
       const [, fromRaw, toRaw, edgeLabel] = transMatch;
@@ -552,10 +587,6 @@ function parseStateDiagram(lines: string[], darkMode: boolean): ParsedGraph {
 
   return result;
 }
-
-// ---------------------------------------------------------------------------
-// flowchart / graph parser (retained from v1, extended with classDef support)
-// ---------------------------------------------------------------------------
 
 function parseFlowchart(lines: string[], darkMode: boolean): ParsedGraph {
   const result: ParsedGraph = {
@@ -683,10 +714,6 @@ function parseFlowchart(lines: string[], darkMode: boolean): ParsedGraph {
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// Unified parser entry point
-// ---------------------------------------------------------------------------
-
 function parseMermaid(mermaid: string, darkMode: boolean): ParsedGraph {
   const lines = mermaid
     .split("\n")
@@ -699,10 +726,6 @@ function parseMermaid(mermaid: string, darkMode: boolean): ParsedGraph {
   }
   return parseFlowchart(lines, darkMode);
 }
-
-// ---------------------------------------------------------------------------
-// Style resolution: merge classDef styles onto nodes
-// ---------------------------------------------------------------------------
 
 function resolveNodeStyles(graph: ParsedGraph): void {
   for (const [nodeId, classNames] of graph.nodeClasses) {
@@ -720,10 +743,6 @@ function resolveNodeStyles(graph: ParsedGraph): void {
     node.styleAttrs = { ...merged, ...node.styleAttrs };
   }
 }
-
-// ---------------------------------------------------------------------------
-// DOT attribute helpers
-// ---------------------------------------------------------------------------
 
 function shapeToGraphvizAttrs(shape: GraphvizShape, darkMode: boolean, stereotype?: string): Record<string, string> {
   const fillcolor = darkMode ? "white" : "black";
@@ -752,108 +771,4 @@ function edgeStyleToAttrs(style: EdgeStyle): Record<string, string> {
     case "bold":   return { style: "bold", penwidth: "2.5" };
     default:       return {};
   }
-}
-
-// ---------------------------------------------------------------------------
-// DOT emitter
-// ---------------------------------------------------------------------------
-
-/**
- * Converts a Mermaid diagram string into a Graphviz DOT string.
- *
- * Supports `stateDiagram-v2` (primary) and `graph`/`flowchart` diagrams.
- * Fully resolves `classDef` / `class` styling into DOT attributes.
- *
- * @param mermaid - Raw Mermaid source text.
- * @param darkMode - Whether to use dark mode styling.
- * @returns         Graphviz DOT string ready to pass to `dot`, `neato`, etc.
- *
- * @example
- * ```ts
- * const dot = mermaidToDotGraph(800, 600, `
- *   stateDiagram-v2
- *     classDef highlight fill:#ff9,stroke:#333,stroke-width:2px
- *     [*] --> Idle
- *     Idle --> Processing : start
- *     Processing --> Done : complete
- *     Done --> [*]
- *     class Processing highlight
- * `, true);
- * ```
- */
-export function mermaidToDotGraph(widthPx: number, heightPx: number, mermaid: string, darkMode: boolean): string {
-  const graph = parseMermaid(mermaid, darkMode);
-  resolveNodeStyles(graph);
-
-  const lines: string[] = [];
-  const edgeOp = graph.directed ? "->" : "--";
-
-  const widthInches = Math.max(1, widthPx) / 96.0;
-  const heightInches = Math.max(1, heightPx) / 72.0;
-
-  lines.push(`digraph G {`);
-  lines.push(`  size="${widthInches},${heightInches}";`);
-  lines.push(`  ratio="fill"; `)
-  lines.push(`  rankdir="${graph.rankdir}";`);
-  lines.push(`  bgcolor="transparent";`);
-  const textColor = darkMode ? "white" : "black";
-  lines.push(`  node [fontname="Helvetica", fontsize="100", fontcolor="${textColor}", color="${textColor}", penwidth=5.0];`);
-  lines.push(`  edge [fontname="Helvetica", fontsize="60", fontcolor="${textColor}", color="${textColor}", penwidth=5.0];`);
-  if (graph.isStateDiagram) {
-    // Improves state diagram layout aesthetics
-    lines.push(`  nodesep="0.5";`);
-    lines.push(`  ranksep="0.6";`);
-  }
-  lines.push("");
-
-  const subgraphNodeIds = new Set(graph.subgraphs.flatMap((sg) => sg.nodeIds));
-
-  // Top-level nodes
-  for (const node of graph.nodes.values()) {
-    if (subgraphNodeIds.has(node.id)) continue;
-    const attrs: Record<string, string> = {
-      label: node.label,
-      ...shapeToGraphvizAttrs(node.shape, darkMode, node.stereotype),
-      ...node.styleAttrs,
-    };
-    lines.push(`  ${node.id}${attrsToString(attrs)};`);
-  }
-
-  if (graph.nodes.size > 0) lines.push("");
-
-  // Subgraphs (composite states / flowchart subgraphs)
-  for (const sg of graph.subgraphs) {
-    lines.push(`  subgraph ${sg.id} {`);
-    lines.push(`    label=${dotQuote(sg.label)};`);
-    lines.push(`    style="rounded";`);
-    const subgraphColor = darkMode ? "gray70" : "gray50";
-    lines.push(`    color="${subgraphColor}";`);
-    lines.push(`    fontcolor="${subgraphColor}";`);
-    if (sg.concurrent) {
-      // Rank concurrent regions side-by-side
-      lines.push(`    rankdir="LR";`);
-    }
-    for (const nodeId of sg.nodeIds) {
-      const node = graph.nodes.get(nodeId);
-      if (!node) continue;
-      const attrs: Record<string, string> = {
-        label: node.label,
-        ...shapeToGraphvizAttrs(node.shape, darkMode, node.stereotype),
-        ...node.styleAttrs,
-      };
-      lines.push(`    ${node.id}${attrsToString(attrs)};`);
-    }
-    lines.push("  }");
-    lines.push("");
-  }
-
-  // Edges
-  for (const edge of graph.edges) {
-    const attrs: Record<string, string> = { ...edgeStyleToAttrs(edge.style) };
-    if (edge.label) attrs.label = edge.label;
-    lines.push(`  ${edge.from} ${edgeOp} ${edge.to}${attrsToString(attrs)};`);
-  }
-
-  lines.push("}");
-  return lines.join("\n");
 }

@@ -7,7 +7,7 @@
 
 import { Graphviz } from "@hpcc-js/wasm-graphviz";
 import TabRenderer from "./TabRenderer";
-import { mermaidToDotGraph } from "./mermaid/mermaidToDotGraph";
+import { mermaidToDotGraph } from "./diagrams/mermaidToDotGraph";
 
 let graphVizImpl: Graphviz | null = null;
 async function loadGraphViz(): Promise<Graphviz> {
