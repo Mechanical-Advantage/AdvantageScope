@@ -153,9 +153,6 @@ export default class XRRenderer {
           this.userTap();
         }
       });
-      this.controller0.addEventListener("squeeze", () => {
-        this.resetPersistentAnchors();
-      });
       this.activeController = this.controller0;
 
       this.xrLight = new XREstimatedLight(this.renderer);
@@ -294,6 +291,8 @@ export default class XRRenderer {
       for (let persistentuuid of this.renderer.xr.getSession()!!.persistentAnchors!!) {
         if (this.renderer.xr.getSession()!!.deletePersistentAnchor !== undefined) {
           this.renderer.xr.getSession()!!.deletePersistentAnchor!!(persistentuuid).catch((e) => {
+            // This just randomly fails for no reason sometimes
+            // Meta Browser is evil
             console.warn(e);
           });
         }
@@ -503,10 +502,8 @@ export default class XRRenderer {
               if (anchor.requestPersistentHandle) {
                 anchor.requestPersistentHandle().then((id) => {
                   localStorage.setItem(this.webXrAnchorNum.toString(), id);
-                  console.log(id);
                 });
               }
-              console.log(anchor);
             });
         }
       }
@@ -518,22 +515,12 @@ export default class XRRenderer {
         // only change the poses if the anchor isn't null, meaning the anchor promise has returned
         if (anchor) {
           let pose = frame.getPose(anchor.anchorSpace, this.renderer.xr.getReferenceSpace()!!);
-          if (pose === null) {
-            console.log("pose null id", id);
-          }
           if (pose) {
             let position = new THREE.Vector3(
               pose.transform.position.x,
               pose.transform.position.y,
               pose.transform.position.z
             );
-            let distance = this.anchors[id].position.distanceTo(position);
-            if (distance > 0.001 || Math.random() < 0.001) {
-              console.log("id", id);
-              console.log("initial", this.anchors[id].position);
-              console.log("anchor", position);
-              console.log("distance", distance);
-            }
             this.anchors[id].position.copy(position);
           }
         }
