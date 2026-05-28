@@ -789,7 +789,7 @@ export function mermaidToDotGraph(widthPx: number, heightPx: number, mermaid: st
   const edgeOp = graph.directed ? "->" : "--";
 
   const widthInches = Math.max(1, widthPx) / 96.0;
-  const heightInches = Math.max(1, heightPx) / 70.0;
+  const heightInches = Math.max(1, heightPx) / 72.0;
 
   lines.push(`digraph G {`);
   lines.push(`  size="${widthInches},${heightInches}";`);
@@ -797,8 +797,8 @@ export function mermaidToDotGraph(widthPx: number, heightPx: number, mermaid: st
   lines.push(`  rankdir="${graph.rankdir}";`);
   lines.push(`  bgcolor="transparent";`);
   const textColor = darkMode ? "white" : "black";
-  lines.push(`  node [fontname="Helvetica", fontsize="36", fontcolor="${textColor}", color="${textColor}"];`);
-  lines.push(`  edge [fontname="Helvetica", fontsize="36", fontcolor="${textColor}", color="${textColor}"];`);
+  lines.push(`  node [fontname="Helvetica", fontsize="100", fontcolor="${textColor}", color="${textColor}", penwidth=5.0];`);
+  lines.push(`  edge [fontname="Helvetica", fontsize="60", fontcolor="${textColor}", color="${textColor}", penwidth=5.0];`);
   if (graph.isStateDiagram) {
     // Improves state diagram layout aesthetics
     lines.push(`  nodesep="0.5";`);
