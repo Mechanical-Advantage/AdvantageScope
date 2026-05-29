@@ -1948,8 +1948,8 @@ div.points-settings {
 }
 
 .mermaid-container svg {
-  all: unset;
   height: 100% !important;
+  box-sizing: content-box !important;
 }
 
 .mermaid-sources {
