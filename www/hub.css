@@ -1945,38 +1945,11 @@ div.points-settings {
   position: absolute;
   top: 2.5px;
   left: 2.5px;
-  background-color: white;
 }
 
-@media (prefers-color-scheme: dark) {
-  .mermaid-container {
-    background-color: #222;
-  }
-
-  /*.mermaid-container svg {
-    background: #222;
-    border: 0px;
-  }
-
-  .mermaid-container svg polygon,
-  .mermaid-container svg ellipse,
-  .mermaid-container svg path {
-    stroke: white;
-  }
-
-  .mermaid-container svg polygon {
-    fill: #222;
-    outline: #222;
-  }
-
-  .mermaid-container svg text {
-    fill: white;
-  }
-
-  .mermaid-container svg .edge polygon {
-    fill: white;
-    stroke: white;
-  } */
+.mermaid-container svg {
+  all: unset;
+  height: 100% !important;
 }
 
 .mermaid-sources {

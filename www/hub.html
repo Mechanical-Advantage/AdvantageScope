@@ -13,11 +13,11 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'unsafe-inline' 'self'; connect-src ws: http: file: blob:"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'unsafe-inline' 'self'; connect-src ws: http: file: blob:"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
@@ -656,7 +656,7 @@
 
       <!-- Mermaid -->
       <div id="renderer13">
-        <div class="mermaid-container"></div>
+        <div class="mermaid-container mermaid"></div>
       </div>
     </span>
 

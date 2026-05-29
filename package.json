@@ -62,7 +62,6 @@
     "protobufjs": "^8.3.0",
     "qr-code-styling": "^1.8.4",
     "rolldown": "1.0.0",
-    "rollup-plugin-cleanup": "^3.2.1",
     "simple-statistics": "^7.8.7",
     "three": "^0.168.0",
     "tiny-popup-menu": "^1.0.10",
@@ -80,6 +79,7 @@
     "download": "^8.0.0",
     "jsonfile": "^6.1.0",
     "lzma-native": "^8.0.6",
+    "mermaid": "^11.15.0",
     "tesseract.js": "^6.0.0",
     "ws": "^8.18.0",
     "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#708fe6410c4c9fa22cf09ab424b15546b178bdbe"

@@ -5,28 +5,50 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Graphviz } from "@hpcc-js/wasm-graphviz";
+import mermaid from "mermaid";
 import TabRenderer from "./TabRenderer";
-import { mermaidToDotGraph } from "./diagrams/mermaidToDotGraph";
+import { createUUID } from "../util";
 
-let graphVizImpl: Graphviz | null = null;
-async function loadGraphViz(): Promise<Graphviz> {
-  if (graphVizImpl === null) {
-    graphVizImpl = await Graphviz.load();
-  }
-  return graphVizImpl;
+function initMermaid() {
+  const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  console.log("Dark theme: " + isDarkTheme);
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: "loose",
+    theme: 'base', // You must set this to 'base' to allow overrides
+    themeVariables: {
+      // Node Background and Border Colors
+      primaryColor: isDarkTheme ? '#ffffff' : '#000000',       // Default node fill
+      primaryBorderColor: isDarkTheme ? '#ffffff' : '#000000', // Default node border
+      primaryTextColor: isDarkTheme ? '#000000' : '#ffffff',   // Default node text
+
+      // Edge / Line Colors
+      lineColor: isDarkTheme ? '#ffffff' : '#000000',          // Changes color of connecting lines
+      edgeLabelBackground: isDarkTheme ? '#ffffff' : '#000000',   // Changes color of edge labels
+    },
+    themeCSS: `
+      /* Make all node text larger */
+      .node .nodeLabel { 
+        font-size: 22px !important; 
+      }
+      
+      /* Make all edge label text smaller */
+      .edgeLabel, .edgeLabel rect, .edgeLabel span { 
+        font-size: 11px !important; 
+      }
+    `
+  });
 }
 
 export default class MermaidRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
-  private lastDiagram: string | null = null;
+  private lastRenderedDiagram: string | null = null;
   private lastWidth: number | null = null;
   private lastHeight: number | null = null;
-  private lastDarkMode: boolean | null = null;
+  private isRunning: boolean = false;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("mermaid-container")[0] as HTMLElement;
-    loadGraphViz()
   }
 
   saveState(): unknown {
@@ -40,31 +62,26 @@ export default class MermaidRenderer implements TabRenderer {
   }
 
   async render(command: MermaidRendererCommand) {
-    const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (
-      command.diagram === this.lastDiagram &&
-      this.lastWidth === this.CONTAINER.clientWidth &&
-      this.lastHeight === this.CONTAINER.clientHeight &&
-      this.lastDarkMode === darkMode
-    ) return;
-    this.lastDiagram = command.diagram;
-
+    if (command.diagram === this.lastRenderedDiagram) return;
+    this.lastWidth = this.CONTAINER.clientWidth;
+    this.lastHeight = this.CONTAINER.clientHeight;
     if (command.diagram === null || command.diagram.trim() === "") {
-      this.CONTAINER.innerHTML = "";
+      this.lastRenderedDiagram = null;
     } else {
-      console.log("WIDTH: " + this.CONTAINER.clientWidth + " HEIGHT: " + this.CONTAINER.clientHeight);
+      console.log("Rendering!")
+      this.lastRenderedDiagram = command.diagram;
       try {
-        const width = this.CONTAINER.clientWidth - 5;
-        const height = this.CONTAINER.clientHeight - 5;
-        const darkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const dotGraph = mermaidToDotGraph(width, height, command.diagram, darkMode);
-        const svg = (await loadGraphViz()).dot(dotGraph, "svg");
+        if (this.isRunning) return;
+        this.isRunning = true;
+        initMermaid();
+        const { svg, bindFunctions } = await mermaid.render(createUUID(), command.diagram);
+        console.log("Rendered!  ")
         this.CONTAINER.innerHTML = svg;
-        this.lastWidth = this.CONTAINER.clientWidth;
-        this.lastHeight = this.CONTAINER.clientHeight;
-        this.lastDarkMode = darkMode;
+        bindFunctions?.(this.CONTAINER);
+        this.isRunning = false;
       } catch (e) {
-        this.CONTAINER.innerText = "Error rendering Mermaid diagram: " + (e as Error).message;
+        this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
+        throw e
       }
     }
   }
