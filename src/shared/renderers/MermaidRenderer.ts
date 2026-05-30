@@ -8,6 +8,7 @@
 import { renderMermaidSVGAsync, type RenderOptions } from "beautiful-mermaid";
 import TabRenderer from "./TabRenderer";
 import { parse } from 'yaml';
+import svgPanZoom from "svg-pan-zoom";
 
 export default class MermaidRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
@@ -77,6 +78,7 @@ export default class MermaidRenderer implements TabRenderer {
           const history = data.history.slice(data.history.length - command.historyLength);
           this.displayHistory(history, command.colorHex);
         }
+        svgPanZoom(this.CONTAINER.querySelector("svg")!)
         this.isRunning = false;
       } catch (e) {
         this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
