@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { SourceListConfig } from "../../shared/SourceListConfig";
+import { GraphColors } from "../../shared/Colors";
 
 const MermaidController_Config: SourceListConfig = {
   title: "Sources",
@@ -16,13 +17,20 @@ const MermaidController_Config: SourceListConfig = {
     {
       key: "diagram",
       display: "Diagram",
-      symbol: "point.3.connected.trianglepath.dotted",
+      symbol: "square.stack.3d.forward.dottedline.fill",
       showInTypeName: false,
-      color: "#000000",
-      darkColor: "#ffffff",
+      color: "color",
       sourceTypes: ["String"],
       showDocs: true,
-      options: [],
+      options: [
+        {
+          key: "color",
+          display: "Color",
+          showInTypeName: true,
+          values: GraphColors
+        }
+      ],
+      initialSelectionOption: "color:blue",
       previewType: null
     }
   ]
