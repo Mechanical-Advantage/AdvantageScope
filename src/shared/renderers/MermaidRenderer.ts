@@ -7,10 +7,15 @@
 
 import { renderMermaidSVGAsync, type RenderOptions } from "beautiful-mermaid";
 import TabRenderer from "./TabRenderer";
+import { parse } from 'yaml';
 
 export default class MermaidRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
-  private lastRenderedDiagram: string | null = null;
+  private lastCmd: MermaidRendererCommand = {
+    diagram: null,
+    historyLength: 1,
+    colorHex: "#000000"
+  };
   private isRunning: boolean = false;
   private renderOptions: RenderOptions = {};
 
@@ -35,21 +40,40 @@ export default class MermaidRenderer implements TabRenderer {
   }
 
   async render(command: MermaidRendererCommand) {
-    if (command.diagram === this.lastRenderedDiagram) return;
+    if (
+      this.lastCmd.colorHex === command.colorHex &&
+      this.lastCmd.diagram === command.diagram &&
+      this.lastCmd.historyLength === command.historyLength
+    ) {
+      return;
+    }
+    this.lastCmd = command;
     if (command.diagram === null || command.diagram.trim() === "") {
-      this.lastRenderedDiagram = null;
+      this.lastCmd.diagram = null;
     } else {
       console.log("Rendering!")
-      this.lastRenderedDiagram = command.diagram;
+      this.lastCmd.diagram = command.diagram;
       try {
         if (this.isRunning) return;
         this.isRunning = true;
         let diagram = command.diagram;
-        const frontmatterPos = command.diagram.lastIndexOf("---");
-        if (frontmatterPos !== -1 ) diagram = diagram.substring(frontmatterPos + 3);
-        diagram = `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n` + diagram;
-        const svg = await renderMermaidSVGAsync(diagram, this.renderOptions);
+        const dataStart = diagram.indexOf("---");
+        const dataEnd = diagram.lastIndexOf("---");
+        console.log(dataEnd);
+        if (dataEnd > 1000) {
+          console.log(diagram);
+        }
+        let data: Frontmatter | null = null;
+        if (dataStart !== -1) {
+          data = parse(diagram.substring(dataStart + 3, dataEnd)) as Frontmatter;
+          diagram = diagram.substring(dataEnd + 3);
+        }
+        const svg = await renderMermaidSVGAsync(
+          `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n` + diagram,
+          this.renderOptions
+        );
         this.CONTAINER.innerHTML = svg;
+        if (data != null) this.displayHistory(data.history, command.colorHex);
         this.isRunning = false;
       } catch (e) {
         this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
@@ -57,10 +81,104 @@ export default class MermaidRenderer implements TabRenderer {
       }
     }
   }
+
+  private displayHistory(history: string[], colorHex: string) {
+    for (const node of this.CONTAINER.querySelectorAll(".node")) {
+      const textEl = node.querySelector("text");
+      if (textEl == null) continue;
+      const historyPos = history.lastIndexOf(textEl.innerHTML);
+      if (historyPos === -1) continue;
+      let colorRank: number;
+      if (window.matchMedia("(prefers-color-scheme: dark)")) {
+        colorRank = MAX_HISTORY_SIZE - (history.length - historyPos);
+      } else {
+        colorRank = history.length - historyPos - 1;
+      }
+      textEl.setAttribute("fill", scaleColor(colorRank, colorHex))
+    }
+  }
 }
 
-export type MermaidRendererCommand = {
+export interface MermaidRendererCommand {
   diagram: string | null;
   historyLength: number;
-  color: string;
+  colorHex: string;
 };
+
+interface Frontmatter {
+  history: string[]
+}
+
+const MAX_HISTORY_SIZE = 5
+
+function scaleColor(rank: number, colorHex: string): string {
+  if (rank === 2) return colorHex;
+  const { h, s, l } = hexToHsl(colorHex);
+  const smallestLDist = Math.min(100 - l, l);
+  const adjustedL = l + (rank - 2) / 3 * smallestLDist;
+  return hslToHex(h, s, adjustedL);
+}
+
+/**
+ * Converts an RGB hex color string to HSL values.
+ * @param {string} hex - e.g. "#ff5733" or "ff5733"
+ * @returns {{ h: number, s: number, l: number }} h: 0–360, s: 0–100, l: 0–100
+ */
+function hexToHsl(hex: string) {
+  hex = hex.replace(/^#/, "");
+  if (hex.length === 3)
+    hex = hex.split("").map((c) => c + c).join("");
+
+  const r = parseInt(hex.slice(0, 2), 16) / 255;
+  const g = parseInt(hex.slice(2, 4), 16) / 255;
+  const b = parseInt(hex.slice(4, 6), 16) / 255;
+
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const delta = max - min;
+
+  let h = 0;
+  if (delta !== 0) {
+    if (max === r)      h = ((g - b) / delta) % 6;
+    else if (max === g) h = (b - r) / delta + 2;
+    else                h = (r - g) / delta + 4;
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+  }
+
+  const l = (max + min) / 2;
+  const s = delta === 0 ? 0 : delta / (1 - Math.abs(2 * l - 1));
+
+  return {
+    h,
+    s: Math.round(s * 100),
+    l: Math.round(l * 100),
+  };
+}
+
+/**
+ * Converts HSL values to an RGB hex color string.
+ * @param {number} h - Hue, 0–360
+ * @param {number} s - Saturation, 0–100
+ * @param {number} l - Lightness, 0–100
+ * @returns {string} e.g. "#ff5733"
+ */
+function hslToHex(h: number, s: number, l: number) {
+  s /= 100;
+  l /= 100;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+
+  let r = 0, g = 0, b = 0;
+  if      (h <  60) { r = c; g = x; b = 0; }
+  else if (h < 120) { r = x; g = c; b = 0; }
+  else if (h < 180) { r = 0; g = c; b = x; }
+  else if (h < 240) { r = 0; g = x; b = c; }
+  else if (h < 300) { r = x; g = 0; b = c; }
+  else              { r = c; g = 0; b = x; }
+
+  const toHex = (n: number) => Math.round((n + m) * 255).toString(16).padStart(2, "0");
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+}
