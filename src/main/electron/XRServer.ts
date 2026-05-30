@@ -82,18 +82,40 @@ export namespace XRServer {
           response.end("Bad request");
           return;
         }
+
+        if (url.pathname.startsWith("/symbols/")) {
+          const symbolPath = path.join(__dirname, "../www/" + url.pathname);
+          if (fs.existsSync(symbolPath)) {
+            response.writeHead(200, { "Content-Type": "image/svg+xml" });
+            response.end(fs.readFileSync(symbolPath, { encoding: "utf-8" }));
+            return;
+          } else {
+            response.writeHead(404, { "Content-Type": "text/html" });
+            response.end("Not found");
+            return;
+          }
+        }
+
         switch (url.pathname) {
           case "/":
             response.writeHead(200, { "Content-Type": "text/html" });
             response.end(fs.readFileSync(path.join(__dirname, "../www/xrClient.html"), { encoding: "utf-8" }));
             return;
-          case "/index.css":
+          case "/xrClient.css":
             response.writeHead(200, { "Content-Type": "text/css" });
             response.end(fs.readFileSync(path.join(__dirname, "../www/xrClient.css"), { encoding: "utf-8" }));
             return;
-          case "/index.js":
+          case "/global.css":
+            response.writeHead(200, { "Content-Type": "text/css" });
+            response.end(fs.readFileSync(path.join(__dirname, "../www/global.css"), { encoding: "utf-8" }));
+            return;
+          case "/xrClient.js":
             response.writeHead(200, { "Content-Type": "text/javascript" });
             response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" }));
+            return;
+          case "/img/xr-logo.png":
+            response.writeHead(200, { "Content-Type": "image/png" });
+            response.end(fs.readFileSync(path.join(__dirname, "../www/img/xr-logo.png")));
             return;
           case "/xrClient.js.map":
             response.writeHead(200, { "Content-Type": "text/javascript" });

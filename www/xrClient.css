@@ -10,7 +10,37 @@
 body {
   margin: 0;
   overflow: hidden;
-  background-color: transparent;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #222;
+  }
+}
+
+img.banner {
+  display: block;
+  margin: auto;
+  margin-top: 5vh;
+  padding-left: 5vh;
+  padding-right: 5vh;
+  height: 10vh;
+}
+
+/* Desktop / Widescreen tweaks */
+@media screen and (max-width: 1500px) {
+  img.banner {
+    height: auto;
+    width: 90vw;
+    margin-top: 5vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
+  }
 }
 
 div.container {
@@ -29,8 +59,25 @@ canvas {
   transform: translate(-50%, -50%);
 }
 
+#app-selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex: 1;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+/* Make different direction in wide screen */
+@media screen and (min-width: 900px) {
+  #app-selection {
+    flex-direction: row;
+  }
+}
+
 .button {
-  padding: 10px 10px;
+  padding: 30px;
   border: none;
   border-radius: 16px;
   background: royalblue;
@@ -41,19 +88,30 @@ canvas {
   left: 50%;
   transform: translate(-50%, 0%);
   text-decoration: none;
-  font-family: sans-serif;
   font-size: 40px;
+}
+
+.button:hover {
+  background: rgb(48, 89, 211);
 }
 
 .button:not(.button[hidden]) {
   display: inline-block;
 }
 
+.button > img {
+  width: 10vh;
+}
+
 #start-xr {
   position: absolute;
   left: 50%;
-  bottom: 50%;
+  top: 50%;
   transform: translate(-50%, -50%);
+}
+
+#start-xr > img {
+  filter: invert(99%) sepia(1%) saturate(2582%) hue-rotate(301deg) brightness(117%) contrast(87%);
 }
 
 /* Source: https://freecodez.com/post/7pt17rk */
