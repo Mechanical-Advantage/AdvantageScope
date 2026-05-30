@@ -1995,7 +1995,7 @@ div.points-settings {
   height: 100%;
   left: 0%;
   width: 60%;
-  min-width: calc(100% - 200px);
+  min-width: calc(100% - 220px);
 }
 
 div.mermaid-settings {

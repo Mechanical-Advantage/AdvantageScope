@@ -73,7 +73,10 @@ export default class MermaidRenderer implements TabRenderer {
           this.renderOptions
         );
         this.CONTAINER.innerHTML = svg;
-        if (data != null) this.displayHistory(data.history, command.colorHex);
+        if (data != null) {
+          const history = data.history.slice(data.history.length - command.historyLength);
+          this.displayHistory(history, command.colorHex);
+        }
         this.isRunning = false;
       } catch (e) {
         this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
@@ -85,16 +88,27 @@ export default class MermaidRenderer implements TabRenderer {
   private displayHistory(history: string[], colorHex: string) {
     for (const node of this.CONTAINER.querySelectorAll(".node")) {
       const textEl = node.querySelector("text");
-      if (textEl == null) continue;
+      const rectEl = node.querySelector("rect");
+      if (textEl == null || rectEl == null) continue;
       const historyPos = history.lastIndexOf(textEl.innerHTML);
       if (historyPos === -1) continue;
-      let colorRank: number;
-      if (window.matchMedia("(prefers-color-scheme: dark)")) {
-        colorRank = MAX_HISTORY_SIZE - (history.length - historyPos);
+      const baseColor = scaleColor(colorHex, -0.1);
+      rectEl.setAttribute("stroke-width", "2.5");
+      rectEl.setAttribute("stroke", baseColor);
+      const rank = history.length - historyPos - 1;
+      if (rank === 0) {
+        rectEl.setAttribute("fill", baseColor);
+        textEl.setAttribute("fill", "white");
+      } else if (rank === 1) {
+        rectEl.setAttribute("fill", scaleColor(colorHex, 0.35));
+        textEl.setAttribute("fill", "white");
+      } else if (rank === 2) {
+        rectEl.setAttribute("fill", scaleColor(colorHex, 0.8));
+        textEl.setAttribute("fill", colorHex);
       } else {
-        colorRank = history.length - historyPos - 1;
+        rectEl.setAttribute("fill", "#F1EFE8");
+        textEl.setAttribute("fill", "#222222")
       }
-      textEl.setAttribute("fill", scaleColor(colorRank, colorHex))
     }
   }
 }
@@ -109,13 +123,9 @@ interface Frontmatter {
   history: string[]
 }
 
-const MAX_HISTORY_SIZE = 5
-
-function scaleColor(rank: number, colorHex: string): string {
-  if (rank === 2) return colorHex;
+function scaleColor(colorHex: string, lightnessAdjustment: number): string {
   const { h, s, l } = hexToHsl(colorHex);
-  const smallestLDist = Math.min(100 - l, l);
-  const adjustedL = l + (rank - 2) / 3 * smallestLDist;
+  const adjustedL = Math.max(0, l + (100 - l) * lightnessAdjustment);
   return hslToHex(h, s, adjustedL);
 }
 
