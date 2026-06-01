@@ -6,9 +6,9 @@
 // at the root directory of this project.
 
 import { renderMermaidSVGAsync, type RenderOptions } from "beautiful-mermaid";
-import TabRenderer from "./TabRenderer";
-import { parse } from 'yaml';
 import svgPanZoom from "svg-pan-zoom";
+import { parse } from "yaml";
+import TabRenderer from "./TabRenderer";
 
 export default class MermaidRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
@@ -26,7 +26,7 @@ export default class MermaidRenderer implements TabRenderer {
       this.renderOptions = {
         bg: "#222",
         fg: "white"
-      }
+      };
     }
   }
 
@@ -52,7 +52,7 @@ export default class MermaidRenderer implements TabRenderer {
     if (command.diagram === null || command.diagram.trim() === "") {
       this.lastCmd.diagram = null;
     } else {
-      console.log("Rendering!")
+      console.log("Rendering!");
       this.lastCmd.diagram = command.diagram;
       try {
         if (this.isRunning) return;
@@ -78,11 +78,11 @@ export default class MermaidRenderer implements TabRenderer {
           const history = data.history.slice(data.history.length - command.historyLength);
           this.displayHistory(history, command.colorHex);
         }
-        svgPanZoom(this.CONTAINER.querySelector("svg")!)
+        svgPanZoom(this.CONTAINER.querySelector("svg")!);
         this.isRunning = false;
       } catch (e) {
         this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
-        throw e
+        throw e;
       }
     }
   }
@@ -109,7 +109,7 @@ export default class MermaidRenderer implements TabRenderer {
         textEl.setAttribute("fill", colorHex);
       } else {
         rectEl.setAttribute("fill", "#F1EFE8");
-        textEl.setAttribute("fill", "#222222")
+        textEl.setAttribute("fill", "#222222");
       }
     }
   }
@@ -119,10 +119,10 @@ export interface MermaidRendererCommand {
   diagram: string | null;
   historyLength: number;
   colorHex: string;
-};
+}
 
 interface Frontmatter {
-  history: string[]
+  history: string[];
 }
 
 function scaleColor(colorHex: string, lightnessAdjustment: number): string {
@@ -139,7 +139,10 @@ function scaleColor(colorHex: string, lightnessAdjustment: number): string {
 function hexToHsl(hex: string) {
   hex = hex.replace(/^#/, "");
   if (hex.length === 3)
-    hex = hex.split("").map((c) => c + c).join("");
+    hex = hex
+      .split("")
+      .map((c) => c + c)
+      .join("");
 
   const r = parseInt(hex.slice(0, 2), 16) / 255;
   const g = parseInt(hex.slice(2, 4), 16) / 255;
@@ -151,9 +154,9 @@ function hexToHsl(hex: string) {
 
   let h = 0;
   if (delta !== 0) {
-    if (max === r)      h = ((g - b) / delta) % 6;
+    if (max === r) h = ((g - b) / delta) % 6;
     else if (max === g) h = (b - r) / delta + 2;
-    else                h = (r - g) / delta + 4;
+    else h = (r - g) / delta + 4;
     h = Math.round(h * 60);
     if (h < 0) h += 360;
   }
@@ -164,7 +167,7 @@ function hexToHsl(hex: string) {
   return {
     h,
     s: Math.round(s * 100),
-    l: Math.round(l * 100),
+    l: Math.round(l * 100)
   };
 }
 
@@ -183,14 +186,38 @@ function hslToHex(h: number, s: number, l: number) {
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
   const m = l - c / 2;
 
-  let r = 0, g = 0, b = 0;
-  if      (h <  60) { r = c; g = x; b = 0; }
-  else if (h < 120) { r = x; g = c; b = 0; }
-  else if (h < 180) { r = 0; g = c; b = x; }
-  else if (h < 240) { r = 0; g = x; b = c; }
-  else if (h < 300) { r = x; g = 0; b = c; }
-  else              { r = c; g = 0; b = x; }
+  let r = 0,
+    g = 0,
+    b = 0;
+  if (h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else {
+    r = c;
+    g = 0;
+    b = x;
+  }
 
-  const toHex = (n: number) => Math.round((n + m) * 255).toString(16).padStart(2, "0");
+  const toHex = (n: number) =>
+    Math.round((n + m) * 255)
+      .toString(16)
+      .padStart(2, "0");
   return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }

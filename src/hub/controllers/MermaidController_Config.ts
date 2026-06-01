@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { SourceListConfig } from "../../shared/SourceListConfig";
 import { GraphColors } from "../../shared/Colors";
+import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const MermaidController_Config: SourceListConfig = {
   title: "Sources",

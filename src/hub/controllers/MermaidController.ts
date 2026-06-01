@@ -18,7 +18,11 @@ export default class MermaidController implements TabController {
   private historyInput: HTMLSelectElement;
 
   constructor(root: HTMLElement) {
-    this.sourceList = new SourceList(root.getElementsByClassName("mermaid-sources")[0] as HTMLElement, MermaidController_Config, []);
+    this.sourceList = new SourceList(
+      root.getElementsByClassName("mermaid-sources")[0] as HTMLElement,
+      MermaidController_Config,
+      []
+    );
     this.historyInput = root.getElementsByClassName("history-length")[0] as HTMLSelectElement;
   }
 
@@ -68,7 +72,7 @@ export default class MermaidController implements TabController {
 
       let logData = window.log.getString(sources[0].logKey, time, time, this.UUID, -(historyLength - 1));
       if (logData && logData.values.length > 0) {
-        diagram = logData.values[logData.values.length - 1]
+        diagram = logData.values[logData.values.length - 1];
       }
     }
 
