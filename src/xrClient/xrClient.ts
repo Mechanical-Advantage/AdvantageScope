@@ -56,6 +56,7 @@ window.addEventListener("load", () => {
     document.getElementById("container")!!.hidden = true;
     document.getElementById("spinner-cubes-container")!!.hidden = true;
     document.getElementById("app-selection")!!.hidden = false;
+    document.getElementById("app-selection")!!.style.display = "flex";
     document.getElementById("select-prompt")!!.hidden = false;
 
     const selfSignedUri = "https://" + location.hostname + ":" + HTTPS_XR_SERVER_PORT;

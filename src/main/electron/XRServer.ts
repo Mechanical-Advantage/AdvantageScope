@@ -117,17 +117,23 @@ export namespace XRServer {
             response.writeHead(200, { "Content-Type": "image/png" });
             response.end(fs.readFileSync(path.join(__dirname, "../www/img/xr-logo.png")));
             return;
-          case "/symbols/android-logo.svg":
-            response.writeHead(200, { "Content-Type": "image/svg" });
-            response.end(fs.readFileSync(path.join(__dirname, "../www/symbols/android-logo.svg")));
+          case "/symbols/android-icon.svg":
+            response.writeHead(200, { "Content-Type": "image/svg+xml" });
+            response.end(
+              fs.readFileSync(path.join(__dirname, "../www/symbols/android-icon.svg"), { encoding: "utf-8" })
+            );
             return;
-          case "/symbols/ios-logo.svg":
-            response.writeHead(200, { "Content-Type": "image/svg" });
-            response.end(fs.readFileSync(path.join(__dirname, "../www/symbols/ios-logo.svg")));
+          case "/symbols/ios-icon.svg":
+            response.writeHead(200, { "Content-Type": "image/svg+xml" });
+            response.end(fs.readFileSync(path.join(__dirname, "../www/symbols/ios-icon.svg"), { encoding: "utf-8" }));
             return;
-          case "/symbols/vr-logo.svg":
-            response.writeHead(200, { "Content-Type": "image/svg" });
-            response.end(fs.readFileSync(path.join(__dirname, "../www/symbols/vr-logo.svg")));
+          case "/symbols/vr-icon.svg":
+            response.writeHead(200, { "Content-Type": "image/svg+xml" });
+            response.end(fs.readFileSync(path.join(__dirname, "../www/symbols/vr-icon.svg"), { encoding: "utf-8" }));
+            return;
+          case "/symbols/play.fill.svg":
+            response.writeHead(200, { "Content-Type": "image/svg+xml" });
+            response.end(fs.readFileSync(path.join(__dirname, "../www/symbols/play.fill.svg"), { encoding: "utf-8" }));
             return;
           case "/xrClient.js.map":
             response.writeHead(200, { "Content-Type": "text/javascript" });
