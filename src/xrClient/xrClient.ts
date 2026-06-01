@@ -72,9 +72,6 @@ window.addEventListener("load", () => {
     document.getElementById("app-button-android")!!.setAttribute("href", androidIntentUri);
     const iosAppClipUri = XR_URL_PREFIX + location.hostname;
     document.getElementById("app-button-ios")!!.setAttribute("href", iosAppClipUri);
-    // https://developers.meta.com/horizon/documentation/web/web-launch/
-    const oculusUri = "https://oculus.com/open_url/?url=" + encodeURI(selfSignedUri);
-    document.getElementById("app-button-oculus")!!.setAttribute("href", oculusUri);
   } else {
     webxrEnabled = true;
     renderer = new XRRenderer(true);
