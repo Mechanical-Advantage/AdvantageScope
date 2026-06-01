@@ -85,17 +85,18 @@ export namespace XRServer {
         }
 
         // If in dev mode, host the raw TS source so that sourcemaps can be used from other devices (like VR headsets)
-          if ((!app.isPackaged && url.pathname.startsWith("/src")) || url.pathname.startsWith("/node_modules")) {
-            // Try to sanitize/prevent obvious path escapes using path.normalize here
-            let filePath = path.join(__dirname, "../" + path.normalize(url.pathname));
-            if (fs.existsSync(filePath)) {
-              response.writeHead(200, { "Content-Type": "text" });
-              response.end(fs.readFileSync(filePath));
-            } else {
-              response.writeHead(404);
-              response.end("File not found");
-            }
-          }switch (url.pathname) {
+        if ((!app.isPackaged && url.pathname.startsWith("/src")) || url.pathname.startsWith("/node_modules")) {
+          // Try to sanitize/prevent obvious path escapes using path.normalize here
+          let filePath = path.join(__dirname, "../" + path.normalize(url.pathname));
+          if (fs.existsSync(filePath)) {
+            response.writeHead(200, { "Content-Type": "text" });
+            response.end(fs.readFileSync(filePath));
+          } else {
+            response.writeHead(404);
+            response.end("File not found");
+          }
+        }
+        switch (url.pathname) {
           case "/":
             response.writeHead(200, { "Content-Type": "text/html" });
             response.end(fs.readFileSync(path.join(__dirname, "../www/xrClient.html"), { encoding: "utf-8" }));
