@@ -68,9 +68,9 @@ export default class StateDiagramRenderer implements TabRenderer {
         `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n` + diagram,
         renderOptions
       );
-      this.CONTAINER.innerHTML = svg;
+      this.CONTAINER.innerHTML = stripFontImport(svg);
       if (data != null) {
-        const history = data.history.slice(data.history.length - command.historyLength);
+        const history = data.history.slice(Math.max(0, data.history.length - command.historyLength));
         this.displayHistory(history, command.colorHex);
       }
       svgPanZoom(this.CONTAINER.querySelector("svg")!);
@@ -117,6 +117,10 @@ export interface StateDiagramRendererCommand {
 
 interface Frontmatter {
   history: string[];
+}
+
+function stripFontImport(svgString: string): string {
+  return svgString.replace(/@import\s+url\(.*?\);/, ``)
 }
 
 function scaleColor(colorHex: string, lightnessAdjustment: number): string {

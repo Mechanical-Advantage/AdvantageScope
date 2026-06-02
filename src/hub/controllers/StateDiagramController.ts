@@ -8,7 +8,7 @@
 import { StateDiagramRendererCommand } from "../../shared/renderers/StateDiagramRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
-import MermaidController_Config from "./MermaidController_Config";
+import StateDiagramController_Config from "./StateDiagramController_Config";
 import TabController from "./TabController";
 
 export default class StateDiagramController implements TabController {
@@ -20,7 +20,7 @@ export default class StateDiagramController implements TabController {
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
       root.getElementsByClassName("mermaid-sources")[0] as HTMLElement,
-      MermaidController_Config,
+      StateDiagramController_Config,
       []
     );
     this.historyInput = root.getElementsByClassName("history-length")[0] as HTMLSelectElement;

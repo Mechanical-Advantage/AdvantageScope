@@ -8,7 +8,7 @@
 import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
-const MermaidController_Config: SourceListConfig = {
+const StateDiagramController_Config: SourceListConfig = {
   title: "Sources",
   autoAdvance: true,
   allowChildrenFromDrag: false,
@@ -36,4 +36,4 @@ const MermaidController_Config: SourceListConfig = {
   ]
 };
 
-export default MermaidController_Config;
+export default StateDiagramController_Config;
