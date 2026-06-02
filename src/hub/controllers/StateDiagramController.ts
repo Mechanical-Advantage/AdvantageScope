@@ -5,13 +5,13 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { MermaidRendererCommand } from "../../shared/renderers/MermaidRenderer";
+import { StateDiagramRendererCommand } from "../../shared/renderers/StateDiagramRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import MermaidController_Config from "./MermaidController_Config";
 import TabController from "./TabController";
 
-export default class MermaidController implements TabController {
+export default class StateDiagramController implements TabController {
   UUID = createUUID();
 
   private sourceList: SourceList;
@@ -57,7 +57,7 @@ export default class MermaidController implements TabController {
     return true;
   }
 
-  getCommand(): MermaidRendererCommand {
+  getCommand(): StateDiagramRendererCommand {
     let time = window.selection.getRenderTime();
     if (time === null) time = window.log.getTimestampRange()[1];
 

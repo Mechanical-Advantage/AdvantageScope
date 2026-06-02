@@ -19,7 +19,7 @@ enum TabType {
   Mechanism,
   Points,
   Metadata,
-  Mermaid
+  StateDiagram
 }
 
 export default TabType;
@@ -41,7 +41,7 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Mechanism,
   TabType.Points,
   TabType.Metadata,
-  TabType.Mermaid
+  TabType.StateDiagram
 ];
 
 export function getDefaultTabTitle(type: TabType): string {
@@ -72,8 +72,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Points";
     case TabType.Metadata:
       return "Metadata";
-    case TabType.Mermaid:
-      return "Mermaid";
+    case TabType.StateDiagram:
+      return "State Diagram";
     default:
       return "";
   }
@@ -107,7 +107,7 @@ export function getTabIcon(type: TabType): string {
       return "📍";
     case TabType.Metadata:
       return "🔍";
-    case TabType.Mermaid:
+    case TabType.StateDiagram:
       return "🧜‍♀️";
     default:
       return "";
@@ -144,7 +144,7 @@ export function getTabAccelerator(type: TabType): string {
           return "P";
         case TabType.Metadata:
           return "I";
-        case TabType.Mermaid:
+        case TabType.StateDiagram:
           return "E";
         default:
           return "";

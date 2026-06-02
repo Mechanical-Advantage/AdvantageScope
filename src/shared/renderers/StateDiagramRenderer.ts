@@ -5,29 +5,23 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { renderMermaidSVGAsync, type RenderOptions } from "beautiful-mermaid";
+import { renderMermaidSVGAsync } from "beautiful-mermaid";
 import svgPanZoom from "svg-pan-zoom";
 import { parse } from "yaml";
 import TabRenderer from "./TabRenderer";
 
-export default class MermaidRenderer implements TabRenderer {
+export default class StateDiagramRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
-  private lastCmd: MermaidRendererCommand = {
+  private lastCmd: StateDiagramRendererCommand = {
     diagram: null,
     historyLength: 1,
     colorHex: "#000000"
   };
-  private isRunning: boolean = false;
-  private renderOptions: RenderOptions = {};
+  private wasDarkTheme = false;
+  private isRunning = false;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("mermaid-container")[0] as HTMLElement;
-    if (window.matchMedia("(prefers-color-scheme: dark)")) {
-      this.renderOptions = {
-        bg: "#222",
-        fg: "white"
-      };
-    }
   }
 
   saveState(): unknown {
@@ -40,50 +34,50 @@ export default class MermaidRenderer implements TabRenderer {
     return null;
   }
 
-  async render(command: MermaidRendererCommand) {
+  async render(command: StateDiagramRendererCommand) {
+    const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (
       this.lastCmd.colorHex === command.colorHex &&
       this.lastCmd.diagram === command.diagram &&
-      this.lastCmd.historyLength === command.historyLength
+      this.lastCmd.historyLength === command.historyLength &&
+      this.wasDarkTheme === isDarkTheme
     ) {
       return;
     }
     this.lastCmd = command;
+    this.wasDarkTheme = isDarkTheme;
     if (command.diagram === null || command.diagram.trim() === "") {
       this.lastCmd.diagram = null;
-    } else {
-      console.log("Rendering!");
-      this.lastCmd.diagram = command.diagram;
-      try {
-        if (this.isRunning) return;
-        this.isRunning = true;
-        let diagram = command.diagram;
-        const dataStart = diagram.indexOf("---");
-        const dataEnd = diagram.lastIndexOf("---");
-        console.log(dataEnd);
-        if (dataEnd > 1000) {
-          console.log(diagram);
-        }
-        let data: Frontmatter | null = null;
-        if (dataStart !== -1) {
-          data = parse(diagram.substring(dataStart + 3, dataEnd)) as Frontmatter;
-          diagram = diagram.substring(dataEnd + 3);
-        }
-        const svg = await renderMermaidSVGAsync(
-          `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n` + diagram,
-          this.renderOptions
-        );
-        this.CONTAINER.innerHTML = svg;
-        if (data != null) {
-          const history = data.history.slice(data.history.length - command.historyLength);
-          this.displayHistory(history, command.colorHex);
-        }
-        svgPanZoom(this.CONTAINER.querySelector("svg")!);
-        this.isRunning = false;
-      } catch (e) {
-        this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
-        throw e;
+      this.CONTAINER.innerHTML = "";
+      return;
+    }
+    const renderOptions = isDarkTheme ? { bg: "#222", fg: "white" } : {};
+    if (this.isRunning) return;
+    this.isRunning = true;
+    this.lastCmd.diagram = command.diagram;
+    let diagram = command.diagram;
+    const dataStart = diagram.indexOf("---");
+    const dataEnd = diagram.lastIndexOf("---");
+    try {
+      let data: Frontmatter | null = null;
+      if (dataStart !== -1) {
+        data = parse(diagram.substring(dataStart + 3, dataEnd)) as Frontmatter;
+        diagram = diagram.substring(dataEnd + 3);
       }
+      const svg = await renderMermaidSVGAsync(
+        `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n` + diagram,
+        renderOptions
+      );
+      this.CONTAINER.innerHTML = svg;
+      if (data != null) {
+        const history = data.history.slice(data.history.length - command.historyLength);
+        this.displayHistory(history, command.colorHex);
+      }
+      svgPanZoom(this.CONTAINER.querySelector("svg")!);
+      this.isRunning = false;
+    } catch (e) {
+      this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
+      throw e;
     }
   }
 
@@ -115,7 +109,7 @@ export default class MermaidRenderer implements TabRenderer {
   }
 }
 
-export interface MermaidRendererCommand {
+export interface StateDiagramRendererCommand {
   diagram: string | null;
   historyLength: number;
   colorHex: string;
