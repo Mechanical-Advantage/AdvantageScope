@@ -191,6 +191,21 @@ export function calcAxisStepSize(dataRange: [number, number], pixelRange: number
   return roundBase * multiplierLookup[Math.round(stepValueApprox / roundBase)];
 }
 
+/** Returns the index of the first element in a sorted array that is greater than the target, or the array length if none. */
+export function upperBound(sortedArray: number[], target: number): number {
+  let lo = 0;
+  let hi = sortedArray.length;
+  while (lo < hi) {
+    let mid = (lo + hi) >>> 1;
+    if (sortedArray[mid] > target) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  return lo;
+}
+
 export function getSpiralIndex(x: number, y: number): number {
   // https://stackoverflow.com/questions/9970134/get-spiral-index-from-location
 
