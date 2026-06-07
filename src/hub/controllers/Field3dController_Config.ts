@@ -20,8 +20,7 @@ const Field3dController_Config: SourceListConfig = {
       display: "Robot",
       symbol: "location.fill",
       showInTypeName: false,
-      color: "#000000",
-      darkColor: "#ffffff",
+      color: "bumper",
       sourceTypes: [
         "Pose2d",
         "Pose3d",
@@ -39,6 +38,21 @@ const Field3dController_Config: SourceListConfig = {
           display: "Model",
           showInTypeName: true,
           values: []
+        },
+        {
+          key: "bumper",
+          display: "Bumper",
+          showInTypeName: false,
+          values: NeonColors_RedStart.toReversed()
+            .concat({
+              // Puts these options at the top
+              key: "#000000",
+              display: "Black"
+            }, {
+              key: "auto",
+              display: "Auto"
+            })
+            .toReversed()
         }
       ],
       initialSelectionOption: "model",
@@ -50,8 +64,7 @@ const Field3dController_Config: SourceListConfig = {
       display: "Robot",
       symbol: "location.fill",
       showInTypeName: false,
-      color: "#000000",
-      darkColor: "#ffffff",
+      color: "bumper",
       sourceTypes: ["NumberArray"],
       showDocs: false,
       options: [
@@ -80,6 +93,21 @@ const Field3dController_Config: SourceListConfig = {
             { key: "radians", display: "Radians" },
             { key: "degrees", display: "Degrees" }
           ]
+        },
+        {
+          key: "bumper",
+          display: "Bumper",
+          showInTypeName: false,
+          values: NeonColors_RedStart.toReversed()
+            .concat({
+              // Puts these options at the top
+              key: "#000000",
+              display: "Black"
+            }, {
+              key: "auto",
+              display: "Auto"
+            })
+            .toReversed()
         }
       ],
       initialSelectionOption: "model",

@@ -93,6 +93,7 @@ export interface Config3dRobot {
 
   isFTC: boolean;
   disableSimplification: boolean;
+  dynamicColoring: boolean;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   cameras: Config3dRobot_Camera[];
