@@ -14,6 +14,7 @@ import cleanup from "rollup-plugin-cleanup";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+const enableSourcemap = process.env.ENABLE_SOURCEMAP === "true";
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
@@ -29,7 +30,8 @@ function bundle(input, isMain, isXRClient, external = []) {
       dir: (isLite ? "lite/static/" : "") + "bundles/",
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
-      banner: licenseHeader
+      banner: licenseHeader,
+      sourcemap: enableSourcemap
     },
     context: "this",
     external: external,
@@ -37,24 +39,29 @@ function bundle(input, isMain, isXRClient, external = []) {
       pluginTimings: false
     },
     plugins: [
-      typescript(),
+      typescript({
+        compilerOptions: {
+          sourceMap: enableSourcemap,
+          removeComments: !enableSourcemap
+        }
+      }),
       ...(isXRClient
         ? [
             getBabelOutputPlugin({
               presets: [["@babel/preset-env", { modules: false }]],
-              compact: true,
+              compact: !enableSourcemap,
               targets: "iOS 16" // AdvantageScope XR is built for iOS 16
             }),
-            terser()
+            enableSourcemap ? false : terser()
           ]
         : isLite
         ? [
             getBabelOutputPlugin({
               presets: [["@babel/preset-env", { modules: false }]],
-              compact: true,
+              compact: !enableSourcemap,
               targets: "> 0.1%, not dead"
             }),
-            terser({ mangle: { reserved: ["Module"] } })
+            enableSourcemap ? false : terser({ mangle: { reserved: ["Module"] } })
           ]
         : [cleanup()]),
       replacePlugin(
