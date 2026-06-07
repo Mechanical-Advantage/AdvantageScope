@@ -247,6 +247,9 @@ export default class NT4Source extends LiveDataSource {
           // Data
           if (!this.log || !this.client || topic.name === "") return;
 
+          // Skip data recording if instantaneous discard (optimization)
+          if (window.preferences?.liveDiscard === 0) return;
+
           let key = this.getKeyFromTopic(topic);
           let timestamp = Math.max(timestamp_us, this.log.getTimestampRange()[0]) / 1000000;
 

@@ -37,7 +37,7 @@ export const DEFAULT_PREFS: Preferences = {
   remotePath: "/U/logs",
   liveMode: "nt4",
   liveSubscribeMode: "low-bandwidth",
-  liveDiscard: 1200,
+  liveDiscard: 20,
   publishFilter: "",
   rlogPort: 5800,
   coordinateSystem: "automatic",
