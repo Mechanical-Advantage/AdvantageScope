@@ -145,6 +145,7 @@ export type Field3dRendererCommand_GenericRobotObj = {
   mechanisms: {
     xz: MechanismState | null;
     yz: MechanismState | null;
+    xy: MechanismState | null;
   };
   visionTargets: AnnotatedPose3d[];
   swerveStates: {
