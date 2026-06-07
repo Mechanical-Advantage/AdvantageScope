@@ -30,6 +30,7 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
     path: "",
     id: "",
     isFTC: false,
+    useGrid: true,
     coordinateSystem: "center-red",
     topLeft: [-1, -1],
     bottomRight: [-1, -1],
@@ -54,6 +55,9 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
       configRaw.coordinateSystem === "center-red")
   ) {
     config.coordinateSystem = configRaw.coordinateSystem;
+  }
+  if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
+    config.useGrid = configRaw.useGrid;
   }
   if ("sourceUrl" in configRaw && typeof configRaw.sourceUrl === "string") {
     config.sourceUrl = configRaw.sourceUrl;
@@ -101,6 +105,7 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
     id: "",
     isFTC: false,
     coordinateSystem: "center-red",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: 0,
@@ -130,6 +135,9 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
       configRaw.coordinateSystem === "center-red")
   ) {
     config.coordinateSystem = configRaw.coordinateSystem;
+  }
+  if ("useGrid" in configRaw && typeof configRaw.useGrid === "boolean") {
+    config.useGrid = configRaw.useGrid;
   }
   if (
     "rotations" in configRaw &&

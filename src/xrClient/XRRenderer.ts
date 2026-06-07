@@ -18,7 +18,7 @@ import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem 
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
 import { rotationSequenceToQuaternion } from "../shared/geometry";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../shared/renderers/Field3dRenderer";
-import { disposeObject } from "../shared/renderers/Field3dRendererImpl";
+import { disposeObject, FTC_GRID_COLOR } from "../shared/renderers/Field3dRendererImpl";
 import makeAxesField from "../shared/renderers/field3d/AxesField";
 import makeEvergreenField from "../shared/renderers/field3d/EvergreenField";
 import ObjectManager from "../shared/renderers/field3d/ObjectManager";
@@ -58,6 +58,7 @@ export default class XRRenderer {
   private anchors: { [key: string]: THREE.Object3D } = {};
   private markedPoints: THREE.Object3D[] = [];
   private cursor: THREE.Object3D;
+  private grid: THREE.GridHelper | null = null;
   private fieldRoot: THREE.Object3D;
   private fieldSizingReference: THREE.Object3D;
   private wpilibCoordinateGroup: THREE.Object3D;
@@ -690,6 +691,26 @@ export default class XRRenderer {
           this.isFieldLoading = false;
         });
       }
+    }
+
+    // Reset the FTC grid.
+    if (this.grid !== null) {
+      this.wpilibCoordinateGroup.remove(this.grid);
+      this.grid.dispose();
+    }
+
+    // Create a new grid and render it if switching to an FTC field and the floor is visible.
+    if (fieldConfig.isFTC && fieldConfig.useGrid && settings.showCarpet) {
+      // Create new grid.
+      this.grid = new THREE.GridHelper(
+        fieldWidth, // Size of field
+        6, // Six divisions to a standard FTC field
+        FTC_GRID_COLOR,
+        FTC_GRID_COLOR
+      );
+      this.grid.rotateX(Math.PI / 2);
+
+      this.wpilibCoordinateGroup.add(this.grid);
     }
 
     // Update visible field elements
