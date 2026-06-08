@@ -6,11 +6,13 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
+import { XRServer } from "../main/electron/XRServer";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
 import { Field3dRendererCommand } from "../shared/renderers/Field3dRenderer";
 import { XRPacket, XRFrameState as XRRenderState, XRSettings, XRStreamingMode } from "../shared/XRTypes";
 import XRRenderer from "./XRRenderer";
+import start = XRServer.start;
 
 const bufferLengthMs = 250;
 const msgpackDecoder = new Decoder();
@@ -127,24 +129,31 @@ window.addEventListener("load", () => {
 // Typescript timeouts are extremely annoying to type
 // https://stackoverflow.com/questions/45802988/typescript-use-correct-version-of-settimeout-node-vs-window
 let timeoutId: ReturnType<typeof setTimeout> | null = null;
+let timeoutRuns = 0;
 
 // The desktop app sends command data every 500ms
 // So if it hasn't sent any data for 2 seconds, reconnect
 function startSocket(url: string) {
-  function resetTimeout() {
-    if (timeoutId) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
-      startSocket(url);
-    }, PING_TIMEOUT_MS);
-  }
   socket = new WebSocket(url);
-  resetTimeout();
+  if (timeoutId) clearInterval(timeoutId);
+  // Originally set a new timeout every frame, but that had a measurable performance impact
+  timeoutId = setInterval(() => {
+    switch (timeoutRuns) {
+      case 0:
+        timeoutRuns = 1;
+        break;
+      case 1:
+        startSocket(url);
+        break;
+    }
+  }, PING_TIMEOUT_MS / 2);
+  timeoutRuns = 0;
   socket.onmessage = async (event) => {
     if (event.data instanceof Blob) {
       let packet = msgpackDecoder.decode(await event.data.arrayBuffer()) as XRPacket;
       setCommand(packet, false);
     }
-    resetTimeout();
+    timeoutRuns = 0;
   };
 }
 
