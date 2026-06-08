@@ -239,8 +239,8 @@ export namespace XRServer {
     httpsServer = https.createServer(options, requestListener).listen(HTTPS_XR_SERVER_PORT);
 
     // Create WebSocket server
-    wsServer = new WebSocketServer({ server: httpServer, path: "/ws" });
-    wssServer = new WebSocketServer({ server: httpsServer, path: "/ws" });
+    wsServer = new WebSocketServer({ server: httpServer, path: "/ws", backlog: 2, perMessageDeflate: true });
+    wssServer = new WebSocketServer({ server: httpsServer, path: "/ws", backlog: 2, perMessageDeflate: true });
     periodicInterval = setInterval(() => {
       // Send current settings
       if (xrSettings !== null) {
@@ -259,6 +259,7 @@ export namespace XRServer {
         value: assetsSupplier()
       };
       sendMessage(msgpackEncoder.encode(packet));
+      lastHubCommand = null;
     }, 500);
   }
 
@@ -286,8 +287,11 @@ export namespace XRServer {
     };
     sendMessage(msgpackEncoder.encode(packet));
   }
-
+  let lastHubCommand: Field3dRendererCommand | null = null;
+  // Ran every frame
   export function setHubCommand(command: Field3dRendererCommand) {
+    if (lastHubCommand === command) return; // don't spam the same command
+    lastHubCommand = command;
     // Broadcast to all clients
     let packet: XRPacket = {
       type: "command",

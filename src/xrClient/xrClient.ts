@@ -6,13 +6,11 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
-import { XRServer } from "../main/electron/XRServer";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
 import { Field3dRendererCommand } from "../shared/renderers/Field3dRenderer";
 import { XRPacket, XRFrameState as XRRenderState, XRSettings, XRStreamingMode } from "../shared/XRTypes";
 import XRRenderer from "./XRRenderer";
-import start = XRServer.start;
 
 const bufferLengthMs = 250;
 const msgpackDecoder = new Decoder();
@@ -150,7 +148,7 @@ function startSocket(url: string) {
   timeoutRuns = 0;
   socket.onmessage = async (event) => {
     if (event.data instanceof Blob) {
-      let packet = msgpackDecoder.decode(await event.data.arrayBuffer()) as XRPacket;
+      let packet = (await msgpackDecoder.decodeAsync(event.data.stream())) as XRPacket;
       setCommand(packet, false);
     }
     timeoutRuns = 0;
