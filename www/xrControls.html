@@ -8,7 +8,7 @@
 -->
 
 <!doctype html>
-<html>
+<html lang="en-US">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
@@ -26,27 +26,43 @@
     <div class="controls">
       <div class="title">Scan the code to start AdvantageScope XR</div>
       <div class="details">
-        <u>No app installation is needed.</u> Requires an iPhone or iPad connected to the same Wi-Fi network. Check the
+        <u>No app installation is needed.</u> Requires a device connected to the same Wi-Fi network. Check the
         documentation for details.
+        <br />
+        <button class="button" id="send-to-meta-quest">Send to Meta Quest</button>
       </div>
       <table>
         <tr>
           <td class="right">Calibration</td>
           <td colspan="2">
-            <select name="calibration-mode">
-              <option value="0">Miniature</option>
-              <option value="1">Full-Size (Blue Alliance)</option>
-              <option value="2">Full-Size (Red Alliance)</option>
-            </select>
+            <label>
+              <select name="calibration-mode">
+                <option value="0">Miniature</option>
+                <option value="1">Full-Size (Blue Alliance)</option>
+                <option value="2">Full-Size (Red Alliance)</option>
+              </select>
+            </label>
           </td>
         </tr>
         <tr>
           <td class="right">Streaming</td>
           <td colspan="2">
-            <select name="streaming-mode">
-              <option value="0">Smooth</option>
-              <option value="1">Low Latency</option>
-            </select>
+            <label>
+              <select name="streaming-mode">
+                <option value="0">Smooth</option>
+                <option value="1">Low Latency</option>
+              </select>
+            </label>
+          </td>
+        </tr>
+        <tr>
+          <td class="right">Host IP</td>
+          <td colspan="2">
+            <label>
+              <select name="host-ip">
+                <option value="legacy-ios">Legacy iOS App (todo remove)</option>
+              </select>
+            </label>
           </td>
         </tr>
         <tr>
@@ -55,9 +71,21 @@
           <td>Show Robots</td>
         </tr>
         <tr>
-          <td><input name="show-floor" type="checkbox" /></td>
-          <td><input name="show-field" type="checkbox" checked /></td>
-          <td><input name="show-robots" type="checkbox" checked /></td>
+          <td>
+            <label>
+              <input name="show-floor" type="checkbox" />
+            </label>
+          </td>
+          <td>
+            <label>
+              <input name="show-field" type="checkbox" checked />
+            </label>
+          </td>
+          <td>
+            <label>
+              <input name="show-robots" type="checkbox" checked />
+            </label>
+          </td>
         </tr>
       </table>
     </div>

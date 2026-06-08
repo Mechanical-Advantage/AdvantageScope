@@ -6,6 +6,9 @@
 // at the root directory of this project.
 
 import * as THREE from "three";
+import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
+import { XREstimatedLight } from "three/addons/webxr/XREstimatedLight.js";
+import { XRHandModelFactory } from "three/addons/webxr/XRHandModelFactory.js";
 import { Line2 } from "three/examples/jsm/lines/Line2.js";
 import { LineGeometry } from "three/examples/jsm/lines/LineGeometry.js";
 import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
@@ -16,7 +19,7 @@ import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../shared/AdvantageScopeAssets";
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
-import { rotationSequenceToQuaternion } from "../shared/geometry";
+import { rotationSequenceToQuaternion, Translation3d } from "../shared/geometry";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../shared/renderers/Field3dRenderer";
 import { disposeObject } from "../shared/renderers/Field3dRendererImpl";
 import makeAxesField from "../shared/renderers/field3d/AxesField";
@@ -39,11 +42,13 @@ export default class XRRenderer {
   private MATERIAL_SPECULAR: THREE.Color = new THREE.Color(0x000000);
   private MATERIAL_SHININESS = 0;
 
-  private canvas: HTMLCanvasElement;
+  private readonly webxrEnabled: boolean = false;
+
+  private readonly canvas: HTMLCanvasElement;
   private spinner: HTMLElement;
-  private renderer: THREE.WebGLRenderer;
+  public renderer: THREE.WebGLRenderer;
   private composer: EffectComposer;
-  private flimPass: FilmPass;
+  private readonly filmPass: FilmPass;
   private resolution = new THREE.Vector2();
 
   private lastCalibrationMode: XRCalibrationMode | null = null;
@@ -51,21 +56,31 @@ export default class XRRenderer {
   private lastRaycastResult: RaycastResult = { isValid: false };
   private lastIsCalibrating = false;
 
-  private scene: THREE.Scene;
-  private camera: XRCamera;
-  private ambientLight: THREE.AmbientLight;
-  private spotLight: THREE.SpotLight;
+  private readonly scene: THREE.Scene;
+  private readonly camera: THREE.Camera;
+  private readonly ambientLight: THREE.AmbientLight;
+  private readonly spotLight: THREE.SpotLight;
   private anchors: { [key: string]: THREE.Object3D } = {};
+  private webXrAnchors: { [key: string]: XRAnchor | null } = {};
+  private webXrAnchorNum = 0;
+  private persistentAnchorPending = false;
+  private persistentAnchorsRestoring = true;
   private markedPoints: THREE.Object3D[] = [];
-  private cursor: THREE.Object3D;
-  private fieldRoot: THREE.Object3D;
-  private fieldSizingReference: THREE.Object3D;
-  private wpilibCoordinateGroup: THREE.Object3D;
-  private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
+  private readonly cursor: THREE.Object3D;
+  private readonly cursorPlane: THREE.Object3D;
+  private readonly fieldRoot: THREE.Object3D;
+  private readonly fieldSizingReference: THREE.Object3D;
+  private readonly wpilibCoordinateGroup: THREE.Object3D;
+  private readonly wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
   private fieldCarpet: THREE.Object3D | null = null;
   private fieldStagedPieces: THREE.Object3D | null = null;
   private fieldPieces: { [key: string]: THREE.Mesh } = {};
+  private readonly controller0: THREE.XRTargetRaySpace | null = null;
+  private readonly controller1: THREE.XRTargetRaySpace | null = null;
+  private activeController: THREE.XRTargetRaySpace | null = null;
+  private text3d: THREE.Object3D | null = null;
+  private lastCalibrationText: string = "";
 
   private objectManagers: {
     type: Field3dRendererCommand_AnyObj["type"];
@@ -81,18 +96,22 @@ export default class XRRenderer {
   private lastIsFTC: boolean | null = null;
   private lastCoordinateSystem: CoordinateSystem | null = null;
   private lastAssetsString: string = "";
+  private hitTestSourceRequested = false;
+  private hitTestSource: XRHitTestSource | null = null;
+  private taps = 0;
+  private readonly xrLight: XREstimatedLight | null = null;
 
-  constructor() {
+  constructor(webxrEnabled: boolean) {
+    this.webxrEnabled = webxrEnabled;
     this.canvas = document.getElementsByTagName("canvas")[0] as HTMLCanvasElement;
     this.spinner = document.getElementsByClassName("spinner-cubes-container")[0] as HTMLElement;
-    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true });
+    this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, alpha: true, antialias: true });
+    this.renderer.xr.enabled = this.webxrEnabled;
+    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setClearAlpha(1.0);
+    this.renderer.setClearColor(new THREE.Color(0), 0);
     this.scene = new THREE.Scene();
-    this.camera = new XRCamera();
-    this.composer = new EffectComposer(this.renderer);
-    this.composer.addPass(new RenderPass(this.scene, this.camera));
-    this.flimPass = new FilmPass(1, false);
-    this.composer.addPass(this.flimPass);
-    this.composer.addPass(new OutputPass());
 
     // Create coordinate groups
     this.fieldRoot = new THREE.Group();
@@ -111,6 +130,107 @@ export default class XRRenderer {
     this.spotLight.target.position.set(0, 0, 0);
     this.fieldRoot.add(this.spotLight, this.spotLight.target);
 
+    if (this.webxrEnabled) {
+      this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+      this.camera.position.set(0, 1.6, 0);
+      this.scene.add(this.camera); // camera only shown on non-IOS, so text display/gui attached to it is too
+
+      this.controller0 = this.renderer.xr.getController(0);
+      this.controller1 = this.renderer.xr.getController(1);
+      this.scene.add(this.controller0);
+      this.scene.add(this.controller1);
+      this.controller0.addEventListener("selectstart", () => {
+        if (this.activeController != this.controller0) {
+          this.activeController = this.controller0;
+        } else {
+          this.userTap();
+        }
+      });
+      this.controller1.addEventListener("selectstart", () => {
+        if (this.activeController != this.controller1) {
+          this.activeController = this.controller1;
+        } else {
+          this.userTap();
+        }
+      });
+      this.activeController = this.controller0;
+
+      this.xrLight = new XREstimatedLight(this.renderer);
+      this.xrLight.addEventListener("estimationstart", () => {
+        this.scene.add(this.xrLight!);
+        this.fieldRoot.remove(this.ambientLight);
+        this.fieldRoot.remove(this.spotLight);
+      });
+      this.xrLight.addEventListener("estimationend", () => {
+        this.fieldRoot.add(this.ambientLight);
+        this.fieldRoot.add(this.spotLight);
+        this.scene.remove(this.xrLight!);
+      });
+
+      // Controller/hand model rendering
+      // Models downloaded dynamically by the client from public CDN
+      // (to avoid adding 200mb to the size of AdvantageScope)
+      // Fallback to no models when offline
+
+      const controllerModelFactory = new XRControllerModelFactory();
+      const handModelFactory = new XRHandModelFactory();
+
+      // Hand 1
+
+      let controllerGrip1 = this.renderer.xr.getControllerGrip(0);
+      controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+      this.scene.add(controllerGrip1);
+
+      let hand1 = this.renderer.xr.getHand(0);
+      this.scene.add(hand1);
+
+      let leftHandModel = handModelFactory.createHandModel(hand1, "mesh");
+      hand1.add(leftHandModel);
+
+      // Hand 2
+
+      let controllerGrip2 = this.renderer.xr.getControllerGrip(1);
+      controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+      this.scene.add(controllerGrip2);
+
+      let hand2 = this.renderer.xr.getHand(1);
+      this.scene.add(hand2);
+
+      let rightHandModel = handModelFactory.createHandModel(hand2, "mesh");
+      hand2.add(rightHandModel);
+
+      // Session restoration
+      let sessionCalibrationMode = localStorage.getItem("calibrationMode");
+      switch (sessionCalibrationMode) {
+        case "0":
+          this.lastCalibrationMode = XRCalibrationMode.Miniature;
+          break;
+        case "1":
+          this.lastCalibrationMode = XRCalibrationMode.FullSizeBlue;
+          break;
+        case "2":
+          this.lastCalibrationMode = XRCalibrationMode.FullSizeRed;
+          break;
+        default: // null, or something else entirely
+          break;
+      }
+      // Anchors, and especially persistent anchors, are supposed to always stay in one place forever
+      // But for some reason on Meta Quest sleeping and resuming moves around non persistent anchors
+      // Even though when you delete them and restore them again from the API they work fine
+      // Ideally they would only get reset after resuming from sleep but that's hard to detect reliably
+      // and just pulling them from the API every second works fine
+      setInterval(() => this.resetPersistentAnchors(), 1000.0);
+    } else {
+      // iOS app
+      this.camera = new XRCamera();
+    }
+
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    this.filmPass = new FilmPass(1, false);
+    this.composer.addPass(this.filmPass);
+    this.composer.addPass(new OutputPass());
+
     // Create cursor
     this.cursor = new THREE.Group();
     this.scene.add(this.cursor);
@@ -120,12 +240,17 @@ export default class XRRenderer {
         new THREE.MeshPhongMaterial({ color: "yellow" })
       )
     );
-    this.cursor.add(
-      new THREE.Mesh(
-        new THREE.CircleGeometry(0.05, 64),
-        new THREE.MeshPhongMaterial({ color: "yellow", transparent: true, opacity: 0.02, side: THREE.DoubleSide })
-      ).rotateX(Math.PI / 2)
-    );
+    this.cursorPlane = new THREE.Mesh(
+      new THREE.CircleGeometry(0.05, 64),
+      // Opacity is weirdly platform dependent?
+      new THREE.MeshPhongMaterial({
+        color: "yellow",
+        transparent: true,
+        opacity: webxrEnabled ? 0.1 : 0.02,
+        side: THREE.DoubleSide
+      })
+    ).rotateX(Math.PI / 2);
+    this.cursor.add(this.cursorPlane);
     this.cursor.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2));
 
     // Create field sizing reference
@@ -161,22 +286,257 @@ export default class XRRenderer {
   }
 
   resetCalibration() {
+    // Meta Browser hates it when you delete an anchor twice, and you can only have 8 persistent anchors
+    if (this.renderer.xr.getSession()?.persistentAnchors) {
+      for (let persistentuuid of this.renderer.xr.getSession()!!.persistentAnchors!!) {
+        if (this.renderer.xr.getSession()!!.deletePersistentAnchor !== undefined) {
+          this.renderer.xr.getSession()!!.deletePersistentAnchor!!(persistentuuid).catch((e) => {
+            // This just randomly fails for no reason sometimes
+            // Meta Browser is evil
+            console.warn(e);
+          });
+        }
+      }
+    } else {
+      Object.values(this.webXrAnchors).forEach((anchor) => {
+        anchor?.delete();
+      });
+    }
     Object.values(this.anchors).forEach((anchor) => {
       this.scene.remove(anchor);
     });
     this.anchors = {};
+    this.webXrAnchors = {};
+
+    localStorage.clear();
     this.markedPoints = [];
+    this.webXrAnchorNum = 0;
     sendHostMessage("recalibrate");
   }
 
   userTap() {
+    if (this.webxrEnabled && !this.lastIsCalibrating) {
+      if (this.taps === 0) {
+        setTimeout(() => {
+          this.taps = 0;
+        }, 1000);
+      }
+      this.taps += 1;
+      if (this.taps == 2) {
+        this.resetCalibration();
+      }
+      return;
+    }
     // Add a new marked point
     if (this.lastRaycastResult.isValid) {
       let markedPoint = new THREE.Object3D();
-      markedPoint.position.set(...this.lastRaycastResult.position);
+
+      if (this.webxrEnabled) {
+        // Manually create a fake anchor
+        // Will be updated and have a native one created next frame
+        this.webXrAnchorNum++;
+        let anchorId = this.webXrAnchorNum.toString();
+        this.anchors[anchorId] = new THREE.Group();
+
+        // Create it at the exact position in the result, since webxr results are relative to the global reference frame
+        this.anchors[anchorId].position.set(...this.lastRaycastResult.position);
+        // Don't offset the marked point at all
+        this.anchors[anchorId].add(markedPoint);
+      } else {
+        // The raycast result is relative to the anchor
+        // Set the offset then attach it to the anchor
+        markedPoint.position.set(...this.lastRaycastResult.position);
+        this.anchors[this.lastRaycastResult.anchorId].add(markedPoint);
+      }
       this.markedPoints.push(markedPoint);
-      this.anchors[this.lastRaycastResult.anchorId].add(markedPoint);
     }
+  }
+
+  setCalibrationText(text: string) {
+    if (!this.webxrEnabled) {
+      sendHostMessage("setCalibrationText", text);
+    } else if (text != this.lastCalibrationText) {
+      this.lastCalibrationText = text;
+      this.text3d?.removeFromParent();
+      this.text3d = null;
+      if (text === "") return; // empty text deletes object
+      const textsize_px = 40;
+      const font = textsize_px + "px bold sans-serif";
+      const textBaseScale = 0.00075;
+      let ctx = document.createElement("canvas").getContext("2d");
+      if (ctx === null) return;
+
+      ctx.font = font;
+      let lines = text.split("\n");
+
+      // measure how long the text will be
+      const width = lines.map((text) => ctx.measureText(text).width).reduce((a, b) => Math.max(a, b));
+      const height = textsize_px * lines.length + 5 * lines.length; // arbitrary spacing
+      ctx.canvas.width = width;
+      ctx.canvas.height = height;
+
+      // need to set font again after resizing canvas
+      ctx.font = font;
+      ctx.textBaseline = "top";
+      ctx.textAlign = "center";
+
+      ctx.fillStyle = "white";
+      lines.forEach((text, index) => ctx.fillText(text, width / 2, textsize_px * index + 5 * index));
+
+      let texture = new THREE.CanvasTexture(ctx.canvas);
+      texture.minFilter = THREE.LinearFilter;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      let material = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true
+      });
+
+      this.text3d = new THREE.Sprite(material);
+
+      this.text3d.scale.x = ctx.canvas.width * textBaseScale;
+      this.text3d.scale.y = ctx.canvas.height * textBaseScale;
+      // Pin to camera
+      // Camera not added to scene on iOS, so doesn't display anything
+      // Set position hand-tuned to look reasonably fine on Android and VR
+      // Pinning UI elements to the camera is slightly weird in VR, but it's much easier than the alternatives
+      this.camera.add(this.text3d);
+      this.text3d.position.set(0.0, 0.2, -1.0);
+    }
+  }
+  // Clear the known persistent anchors and trigger the render code to start getting them again
+  private resetPersistentAnchors() {
+    // if there's at least one persistent anchor stored in localstorage
+    if (localStorage.getItem("1") != null && !this.persistentAnchorsRestoring) {
+      this.webXrAnchors = {};
+      this.webXrAnchorNum = 0;
+      this.persistentAnchorsRestoring = true;
+    }
+  }
+
+  public webXrStateToXRFrameState(frame: XRFrame): XRFrameState {
+    let cameraPos: Translation3d = [this.camera.position.x, this.camera.position.y, this.camera.position.z];
+
+    let raycast: RaycastResult = { isValid: false };
+    const xrSession = this.renderer.xr.getSession();
+    if (this.activeController) {
+      // if the first controller is 3D tracked, make the target at the controller's position
+      // (VR headset)
+      if (
+        xrSession?.inputSources.length &&
+        xrSession?.inputSources.length > 0 &&
+        xrSession?.inputSources[0].targetRayMode === "tracked-pointer"
+      ) {
+        this.cursorPlane.visible = false;
+        // Offset the target slightly to not clip into controller/hand models
+        let targetWorldPosition = this.activeController.localToWorld(new THREE.Vector3(0.0, 0.0, -0.03));
+        raycast = {
+          isValid: true,
+          position: [targetWorldPosition.x, targetWorldPosition.y, targetWorldPosition.z],
+          anchorId: "zero"
+        };
+      } else {
+        // actually do a raycast from the controller
+        // (phone)
+        this.cursorPlane.visible = true;
+        const referenceSpace = this.renderer.xr.getReferenceSpace();
+        if (xrSession && referenceSpace) {
+          if (!this.hitTestSourceRequested) {
+            xrSession.requestReferenceSpace("viewer").then((referenceSpace) => {
+              if (xrSession.requestHitTestSource) {
+                // ensure the function exists and isn't undefined
+                xrSession.requestHitTestSource({ space: referenceSpace })?.then((source) => {
+                  this.hitTestSource = source;
+                });
+              }
+            });
+
+            xrSession.addEventListener("end", () => {
+              this.hitTestSourceRequested = false;
+              this.hitTestSource = null;
+            });
+
+            this.hitTestSourceRequested = true;
+          }
+
+          if (this.hitTestSource) {
+            const hitTestResults = frame.getHitTestResults(this.hitTestSource);
+            // Sorted by distance, first is closest
+            // (Multiple results mean multiple surfaces, i.e. raycast hit desk and floor, etc)
+            if (hitTestResults.length > 0) {
+              let pose = hitTestResults[0].getPose(referenceSpace);
+              if (pose) {
+                raycast = {
+                  isValid: true,
+                  position: [pose.transform.position.x, pose.transform.position.y, pose.transform.position.z],
+                  anchorId: "zero"
+                };
+              }
+            }
+          }
+        }
+      }
+    }
+    // Convert the fake anchors created in userTap into real anchors
+    // Just use frame.createAnchor for simplicity here, so we can create the anchor with an arbitrary pose
+    // including the one from the previous frame safely
+    // The spec suggests creating anchors based directly on hit test results to allow for tracking of moving objects,
+    // but has a comment stating that no devices even support that and it probably shouldn't be in the spec
+    // which certainly fills me with confidence in this API
+    // https://immersive-web.github.io/anchors/#issue-8bf9de01
+    if (frame.createAnchor !== undefined && !this.persistentAnchorsRestoring) {
+      // Performance doesn't matter since there will never be more then 3 elements in this list
+      for (let anchorId in this.anchors) {
+        if (anchorId != "zero" && !(anchorId in this.webXrAnchors)) {
+          let startingPosition = new THREE.Vector3();
+          this.anchors[anchorId].getWorldPosition(startingPosition);
+
+          this.webXrAnchors[anchorId] = null;
+          frame
+            .createAnchor(
+              new XRRigidTransform(new DOMPoint(...startingPosition)),
+              this.renderer.xr.getReferenceSpace()!!
+            )
+            .then((anchor: XRAnchor) => {
+              this.webXrAnchors[anchorId] = anchor;
+              if (anchor.requestPersistentHandle) {
+                anchor.requestPersistentHandle().then((id) => {
+                  localStorage.setItem(this.webXrAnchorNum.toString(), id);
+                });
+              }
+            });
+        }
+      }
+    }
+
+    if (frame.trackedAnchors != null) {
+      for (let id in this.webXrAnchors) {
+        let anchor = this.webXrAnchors[id];
+        // only change the poses if the anchor isn't null, meaning the anchor promise has returned
+        if (anchor) {
+          let pose = frame.getPose(anchor.anchorSpace, this.renderer.xr.getReferenceSpace()!!);
+          if (pose) {
+            let position = new THREE.Vector3(
+              pose.transform.position.x,
+              pose.transform.position.y,
+              pose.transform.position.z
+            );
+            this.anchors[id].position.copy(position);
+          }
+        }
+      }
+    }
+    return {
+      camera: {
+        position: cameraPos,
+        projection: this.camera.projectionMatrix.elements,
+        worldInverse: this.camera.matrixWorldInverse.elements
+      },
+      anchors: { zero: [0.0, 0.0, 0.0] },
+      frameSize: [window.innerWidth, window.innerHeight],
+      lighting: { intensity: 1.0, temperature: 4500.0, grain: 0.0 },
+      raycast: raycast
+    };
   }
 
   /** Updates the field position based on reference points. */
@@ -309,8 +669,38 @@ export default class XRRenderer {
   ) {
     // Reset calibration when changing calibration mode
     if (settings.calibration !== this.lastCalibrationMode) {
+      // Store the last calibration mode to only restore sessions of the same calibration
       this.lastCalibrationMode = settings.calibration;
       this.resetCalibration();
+      localStorage.setItem("calibrationMode", JSON.stringify(settings.calibration));
+    } else if (this.webxrEnabled && this.persistentAnchorsRestoring && !this.persistentAnchorPending) {
+      // The calibration mode in the local storage matched and there more anchors available to restore
+      // so try to restore one persistent anchor from this session
+      // Meta Browser only lets you restore one persistent anchor at a time...for some reason...
+      // so use webXrAnchorNum and pending anchor to track whether the promise completed
+      let anchorid = (this.webXrAnchorNum + 1).toString();
+      let persistentuuid = localStorage.getItem(anchorid);
+      if (persistentuuid) {
+        this.persistentAnchorPending = true;
+        this.persistentAnchorsRestoring = true;
+        this.renderer.xr.getSession()!!.restorePersistentAnchor!!(persistentuuid).then((anchor: XRAnchor) => {
+          this.webXrAnchors[anchorid] = anchor;
+          // If there aren't any anchors at all create them (startup)
+          // Otherwise the existing anchors will be moved to the new webxranchor positions on frame (resume from sleep)
+          if (!this.anchors[anchorid]) {
+            this.anchors[anchorid] = new THREE.Group();
+            let markedPoint = new THREE.Object3D();
+            // Don't set the position of the anchor here; it'll be set in the per-frame data
+            this.anchors[anchorid].add(markedPoint);
+            this.markedPoints.push(markedPoint);
+          }
+
+          this.webXrAnchorNum = parseInt(anchorid);
+          this.persistentAnchorPending = false;
+        });
+      } else {
+        this.persistentAnchorsRestoring = false;
+      }
     }
 
     // Update anchors
@@ -366,11 +756,11 @@ export default class XRRenderer {
         isCalibrating = this.markedPoints.length < 2;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to place the ${isFTC ? "wall near the red alliance area" : "red alliance wall"}.`;
+            calibrationText = "Tap to place the red alliance wall.";
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to place the ${isFTC ? "wall near the blue alliance area" : "blue alliance wall"}.`;
+            calibrationText = "Tap to place the blue alliance wall.";
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootMiniature(
@@ -398,17 +788,18 @@ export default class XRRenderer {
         isCalibrating = this.markedPoints.length < 3;
         let colorText = settings.calibration === XRCalibrationMode.FullSizeBlue ? "blue" : "red";
         let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
+        // In WebXR, text is rendered to a canvas instead of being auto laid out, so add our own newlines
+        // In iOS let the app handle it
+        const nl = this.webxrEnabled ? "\n" : "";
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to place the base of the ${
-              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
-            }.`;
+            calibrationText = `Tap to place the base of the ${colorText} alliance wall.`;
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to select another point on the base of the ${
-              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
-            }, at least ${isFTC ? "3" : "6"} feet away from the previous point.`;
+            calibrationText = `Tap to select another point${nl} on the base of the ${colorText} alliance wall,${nl} at least ${
+              isFTC ? "3" : "6"
+            } feet away from the previous point.`;
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               let position1 = this.markedPoints[0].getWorldPosition(new THREE.Vector3());
@@ -422,7 +813,7 @@ export default class XRRenderer {
             }
             break;
           case 2:
-            calibrationText = `Tap to select the base of one of the ${
+            calibrationText = `Tap to select the base of${nl} one of the ${
               isFTC ? "perpendicular" : "long"
             } field barriers.`;
             this.fieldRoot.visible = !raycastUnreliable;
@@ -454,9 +845,16 @@ export default class XRRenderer {
         break;
     }
     if (isCalibrating && raycastUnreliable) {
-      calibrationText = "$TRACKING_WARNING"; // Special indicator to display warning about poor tracking
+      if (this.webxrEnabled) {
+        calibrationText = "Move phone to detect environment.";
+      } else {
+        calibrationText = "$TRACKING_WARNING"; // iOS: Special indicator to display warning about poor tracking
+      }
     }
-    sendHostMessage("setCalibrationText", calibrationText);
+    if (isCalibrating && this.webxrEnabled) {
+      calibrationText += "\nDouble tap to reset calibration.";
+    }
+    this.setCalibrationText(calibrationText);
     if (!isCalibrating && this.lastIsCalibrating) {
       sendHostMessage("showControls", false);
     }
@@ -763,15 +1161,16 @@ export default class XRRenderer {
     if ((this.robotLoadingCount > 0 || this.isFieldLoading) && !isCalibrating) {
       this.spinner.classList.add("visible");
       this.spinner.classList.add("animating");
+      if (this.webxrEnabled) this.setCalibrationText("Downloading models...");
     } else if (this.spinner.classList.contains("visible")) {
       this.spinner.classList.remove("visible");
       window.setTimeout(() => this.spinner.classList.remove("animating"), 250);
+      if (this.webxrEnabled) this.setCalibrationText("");
     }
 
     // Update rendering options from AR state
     this.camera.matrixWorldInverse.fromArray(renderState.camera.worldInverse);
     this.camera.projectionMatrix.fromArray(renderState.camera.projection);
-    (this.flimPass.uniforms as any).intensity.value = renderState.lighting.grain;
     this.ambientLight.intensity = renderState.lighting.intensity;
     this.spotLight.intensity =
       (1 - (1 - renderState.lighting.intensity) * 0.5) * // Lower intensity of lighting changes
@@ -788,8 +1187,9 @@ export default class XRRenderer {
 
     // Render frame
     if (
-      this.canvas.width / devicePixelRatio !== viewWidthPx ||
-      this.canvas.height / devicePixelRatio !== viewHeightPx
+      (this.canvas.width / devicePixelRatio !== viewWidthPx ||
+        this.canvas.height / devicePixelRatio !== viewHeightPx) &&
+      !this.renderer.xr.isPresenting // can't adjust resolution in xr mode
     ) {
       this.renderer.setPixelRatio(devicePixelRatio);
       this.composer.setPixelRatio(devicePixelRatio);
@@ -797,7 +1197,13 @@ export default class XRRenderer {
       this.composer.setSize(viewWidthPx, viewHeightPx);
       this.resolution.set(viewWidthPx, viewHeightPx);
     }
-    this.composer.render(1 / 60);
+    if (this.webxrEnabled) {
+      this.renderer.render(this.scene, this.camera);
+    } else {
+      // Render with film grain
+      // For some reason this breaks webxr
+      this.composer.render(1 / 60);
+    }
   }
 
   private temperatureToColor(temperature: number): THREE.Color {
