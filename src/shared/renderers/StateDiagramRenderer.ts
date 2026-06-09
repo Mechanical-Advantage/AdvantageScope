@@ -5,23 +5,30 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { renderMermaidSVGAsync } from "beautiful-mermaid";
+import { renderMermaidSVGAsync, RenderOptions } from "beautiful-mermaid";
 import svgPanZoom from "svg-pan-zoom";
-import { parse } from "yaml";
 import TabRenderer from "./TabRenderer";
+import { StateMachineGraphState } from "../log/LogUtil";
+import { arraysEqual } from "../util";
 
 export default class StateDiagramRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
   private lastCmd: StateDiagramRendererCommand = {
     diagram: null,
-    historyLength: 1,
+    historyLengthToDisplay: 1,
     colorHex: "#000000"
   };
   private wasDarkTheme = false;
   private isRunning = false;
+  private zoomHandler: SvgPanZoom.Instance | null = null;
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("mermaid-container")[0] as HTMLElement;
+    window.addEventListener('resize', () => {
+      this.zoomHandler?.resize();
+      this.zoomHandler?.fit(); 
+      this.zoomHandler?.center(); 
+    });
   }
 
   saveState(): unknown {
@@ -38,47 +45,33 @@ export default class StateDiagramRenderer implements TabRenderer {
     const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
     if (
       this.lastCmd.colorHex === command.colorHex &&
-      this.lastCmd.diagram === command.diagram &&
-      this.lastCmd.historyLength === command.historyLength &&
-      this.wasDarkTheme === isDarkTheme
+      this.lastCmd.historyLengthToDisplay === command.historyLengthToDisplay &&
+      this.wasDarkTheme === isDarkTheme && 
+      this.lastCmd.diagram?.graphJson === command.diagram?.graphJson &&
+      arraysEqual(this.lastCmd.diagram?.history ?? [], command.diagram?.history ?? [])
     ) {
       return;
     }
     this.lastCmd = command;
     this.wasDarkTheme = isDarkTheme;
-    if (command.diagram === null || command.diagram.trim() === "") {
+    if (command.diagram == null) {
       this.lastCmd.diagram = null;
-      this.CONTAINER.innerHTML = "";
+      this.CONTAINER.innerHTML = "Drag a state machine graph into the 'State Graph' section to get started.";
+      this.zoomHandler = null;
       return;
     }
-    const renderOptions = isDarkTheme ? { bg: "#222", fg: "white" } : {};
     if (this.isRunning) return;
     this.isRunning = true;
-    this.lastCmd.diagram = command.diagram;
-    let diagram = command.diagram;
-    const dataStart = diagram.indexOf("---");
-    const dataEnd = diagram.lastIndexOf("---");
-    try {
-      let data: Frontmatter | null = null;
-      if (dataStart !== -1) {
-        data = parse(diagram.substring(dataStart + 3, dataEnd)) as Frontmatter;
-        diagram = diagram.substring(dataEnd + 3);
-      }
-      const svg = await renderMermaidSVGAsync(
-        `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n` + diagram,
-        renderOptions
-      );
-      this.CONTAINER.innerHTML = stripFontImport(svg);
-      if (data != null) {
-        const history = data.history.slice(Math.max(0, data.history.length - command.historyLength));
-        this.displayHistory(history, command.colorHex);
-      }
-      svgPanZoom(this.CONTAINER.querySelector("svg")!);
-      this.isRunning = false;
-    } catch (e) {
-      this.CONTAINER.innerHTML = "Error rendering Mermaid diagram: " + (e as Error).message;
-      throw e;
+    const renderOptions = isDarkTheme ? { bg: "#222", fg: "white" } : {};
+    this.CONTAINER.innerHTML = await renderMermaidFromJson(command.diagram.graphJson, renderOptions);
+    let history = command.diagram.history;
+    if (history.length > 0) {
+      history = history.slice(Math.max(0, history.length - command.historyLengthToDisplay));
+      this.displayHistory(history, command.colorHex);
     }
+    const svgElement = this.CONTAINER.querySelector("svg");
+    this.zoomHandler = svgElement == null ? null : svgPanZoom(svgElement);
+    this.isRunning = false;
   }
 
   private displayHistory(history: string[], colorHex: string) {
@@ -103,24 +96,42 @@ export default class StateDiagramRenderer implements TabRenderer {
         textEl.setAttribute("fill", colorHex);
       } else {
         rectEl.setAttribute("fill", "#F1EFE8");
-        textEl.setAttribute("fill", "#222222");
+        textEl.setAttribute("fill", "#222");
       }
     }
   }
 }
 
-export interface StateDiagramRendererCommand {
-  diagram: string | null;
-  historyLength: number;
+export type StateDiagramRendererCommand = {
+  diagram: StateMachineGraphState | null;
+  historyLengthToDisplay: number;
   colorHex: string;
 }
 
-interface Frontmatter {
-  history: string[];
-}
-
-function stripFontImport(svgString: string): string {
-  return svgString.replace(/@import\s+url\(.*?\);/, ``)
+async function renderMermaidFromJson(graphJsonStr: string, renderOptions?: RenderOptions): Promise<string> {
+  try {
+    const transitions = JSON.parse(graphJsonStr);
+    if (!Array.isArray(transitions)) {
+      return "Error: Invalid graph format for state machine";
+    }
+    let hasTransitions = false;
+    let result = `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n`;
+    result += `stateDiagram-v2\n  direction LR\n`;
+    for (const transition of (transitions as any[])) {
+      if ("condition" in transition && "target" in transition && "origin" in transition) {
+        result += `  ${transition.origin} --> ${transition.target} : ${transition.condition}\n`;
+        hasTransitions = true;
+      }
+    }
+    if (!hasTransitions) {
+      return "Your graph seems to have no nodes or edges.";
+    }
+    const svgString = await renderMermaidSVGAsync(result, renderOptions);
+    // strips out font import to avoid CORS issues since the font won't load in the renderer's sandboxed iframe
+    return svgString.replace(/@import\s+url\(.*?\);/, ``);
+  } catch (error) {
+    return "Error Rendering Mermaid Diagram: " + (error as Error).message;
+  }
 }
 
 function scaleColor(colorHex: string, lightnessAdjustment: number): string {

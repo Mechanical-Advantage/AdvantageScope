@@ -9,7 +9,7 @@ import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const StateDiagramController_Config: SourceListConfig = {
-  title: "Sources",
+  title: "State Graph",
   autoAdvance: true,
   allowChildrenFromDrag: false,
   typeMemoryId: "mermaid",
@@ -20,7 +20,7 @@ const StateDiagramController_Config: SourceListConfig = {
       symbol: "square.stack.3d.forward.dottedline.fill",
       showInTypeName: false,
       color: "color",
-      sourceTypes: ["String"],
+      sourceTypes: ["StateMachineGraph"],
       showDocs: true,
       options: [
         {

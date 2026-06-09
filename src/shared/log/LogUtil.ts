@@ -531,6 +531,35 @@ export type MechanismLine = {
   weight: number;
 };
 
+export type StateMachineGraphState = {
+  history: string[];
+  graphJson: string;
+};
+
+export type StateMachineTransition = {
+  origin: string;
+  target: string;
+  condition: string;
+}
+
+export function getStateMachineGraph(log: Log, key: string, time: number): StateMachineGraphState | null {
+  const typeKey = key + "/.type";
+  const typeValue = getOrDefault(log, typeKey, LoggableType.String, time, null);
+  const hasStateMachineGraphType =
+    log.getStructuredType(key) === "StateMachineGraph" || typeValue === "StateMachineGraph";
+
+  if (!hasStateMachineGraphType) {
+    return null;
+  }
+
+  const history = getOrDefault(log, key + "/history", LoggableType.StringArray, time, []);
+  const graph = getOrDefault(log, key + "/graph", LoggableType.String, time, null);
+  return {
+    history: Array.isArray(history) ? history : [],
+    graphJson: typeof graph === "string" ? graph : "[]"
+  };
+}
+
 export function getMechanismState(log: Log, key: string, time: number): MechanismState | null {
   // Get general config
   let backgroundColor = getOrDefault(log, key + "/backgroundColor", LoggableType.String, time, null);

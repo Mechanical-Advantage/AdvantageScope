@@ -82,7 +82,6 @@
     "svg-pan-zoom": "^3.6.2",
     "tesseract.js": "^6.0.0",
     "ws": "^8.18.0",
-    "yaml": "^2.9.0",
     "youtube-dl-exec": "github:jwbonner/youtube-dl-exec#708fe6410c4c9fa22cf09ab424b15546b178bdbe"
   },
   "prettier": {

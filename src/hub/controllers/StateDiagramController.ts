@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { StateDiagramRendererCommand } from "../../shared/renderers/StateDiagramRenderer";
+import { getStateMachineGraph } from "../../shared/log/LogUtil";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import StateDiagramController_Config from "./StateDiagramController_Config";
@@ -61,25 +62,16 @@ export default class StateDiagramController implements TabController {
     let time = window.selection.getRenderTime();
     if (time === null) time = window.log.getTimestampRange()[1];
 
-    let diagram: string | null = null;
-    let historyLength = Number(this.historyInput.value);
-    let color = "blue";
+    let historyLengthToDisplay = Number(this.historyInput.value);
+    let colorHex = "blue";
     let sources = this.sourceList.getState(true);
-    if (sources.length > 0) {
-      if ("color" in sources[0].options) {
-        color = sources[0].options["color"];
-      }
-
-      let logData = window.log.getString(sources[0].logKey, time, time, this.UUID, -(historyLength - 1));
-      if (logData && logData.values.length > 0) {
-        diagram = logData.values[logData.values.length - 1];
-      }
+    if (sources.length > 0 && "color" in sources[0].options) {
+      colorHex = sources[0].options["color"];
     }
-
-    return {
-      diagram: diagram,
-      historyLength: historyLength,
-      colorHex: color
-    };
+    let diagram = sources.length > 0
+      ? getStateMachineGraph(window.log, sources[0].logKey, time)
+      : null;
+    
+    return { diagram, historyLengthToDisplay, colorHex };
   }
 }
