@@ -7,9 +7,9 @@
 
 import { renderMermaidSVGAsync, RenderOptions } from "beautiful-mermaid";
 import svgPanZoom from "svg-pan-zoom";
-import TabRenderer from "./TabRenderer";
 import { StateMachineGraphState } from "../log/LogUtil";
 import { arraysEqual } from "../util";
+import TabRenderer from "./TabRenderer";
 
 export default class StateDiagramRenderer implements TabRenderer {
   private CONTAINER: HTMLElement;
@@ -24,10 +24,10 @@ export default class StateDiagramRenderer implements TabRenderer {
 
   constructor(root: HTMLElement) {
     this.CONTAINER = root.getElementsByClassName("mermaid-container")[0] as HTMLElement;
-    window.addEventListener('resize', () => {
+    window.addEventListener("resize", () => {
       this.zoomHandler?.resize();
-      this.zoomHandler?.fit(); 
-      this.zoomHandler?.center(); 
+      this.zoomHandler?.fit();
+      this.zoomHandler?.center();
     });
   }
 
@@ -42,10 +42,9 @@ export default class StateDiagramRenderer implements TabRenderer {
   }
 
   async render(command: StateDiagramRendererCommand) {
-    const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;  
+    const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const shouldRerenderDiagram =
-      this.lastCmd.diagram?.graphJson !== command.diagram?.graphJson ||
-      this.wasDarkTheme !== isDarkTheme;
+      this.lastCmd.diagram?.graphJson !== command.diagram?.graphJson || this.wasDarkTheme !== isDarkTheme;
     if (
       arraysEqual(this.lastCmd.diagram?.history ?? [], command.diagram?.history ?? []) &&
       this.lastCmd.historyLengthToDisplay === command.historyLengthToDisplay &&
@@ -121,7 +120,7 @@ export type StateDiagramRendererCommand = {
   diagram: StateMachineGraphState | null;
   historyLengthToDisplay: number;
   colorHex: string;
-}
+};
 
 async function renderMermaidFromJson(graphJsonStr: string, renderOptions?: RenderOptions): Promise<string> {
   try {
@@ -132,7 +131,7 @@ async function renderMermaidFromJson(graphJsonStr: string, renderOptions?: Rende
     let hasTransitions = false;
     let result = `%%{init: {"state": {"defaultRenderer": "elk"}}}%%\n`;
     result += `stateDiagram-v2\n  direction LR\n`;
-    for (const transition of (transitions as any[])) {
+    for (const transition of transitions as any[]) {
       if ("condition" in transition && "target" in transition && "origin" in transition) {
         result += `  ${transition.origin} --> ${transition.target} : ${transition.condition}\n`;
         hasTransitions = true;

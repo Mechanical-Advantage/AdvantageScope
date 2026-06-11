@@ -5,8 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { StateDiagramRendererCommand } from "../../shared/renderers/StateDiagramRenderer";
 import { getStateMachineGraph } from "../../shared/log/LogUtil";
+import { StateDiagramRendererCommand } from "../../shared/renderers/StateDiagramRenderer";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import StateDiagramController_Config from "./StateDiagramController_Config";
@@ -68,10 +68,8 @@ export default class StateDiagramController implements TabController {
     if (sources.length > 0 && "color" in sources[0].options) {
       colorHex = sources[0].options["color"];
     }
-    let diagram = sources.length > 0
-      ? getStateMachineGraph(window.log, sources[0].logKey, time)
-      : null;
-    
+    let diagram = sources.length > 0 ? getStateMachineGraph(window.log, sources[0].logKey, time) : null;
+
     return { diagram, historyLengthToDisplay, colorHex };
   }
 }

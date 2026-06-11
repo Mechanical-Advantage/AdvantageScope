@@ -536,12 +536,6 @@ export type StateMachineGraphState = {
   graphJson: string;
 };
 
-export type StateMachineTransition = {
-  origin: string;
-  target: string;
-  condition: string;
-}
-
 export function getStateMachineGraph(log: Log, key: string, time: number): StateMachineGraphState | null {
   const typeKey = key + "/.type";
   const typeValue = getOrDefault(log, typeKey, LoggableType.String, time, null);
