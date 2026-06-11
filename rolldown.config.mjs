@@ -10,7 +10,6 @@ import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
-import cleanup from "rollup-plugin-cleanup";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
@@ -56,7 +55,7 @@ function bundle(input, isMain, isXRClient, external = []) {
             }),
             terser({ mangle: { reserved: ["Module"] } })
           ]
-        : [cleanup()]),
+        : []),
       replacePlugin(
         {
           __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : "FRC6328",

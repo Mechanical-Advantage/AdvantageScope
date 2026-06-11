@@ -12,6 +12,7 @@
 /eng.traineddata.gz
 /runOwletDownload.js
 /owlet
+/lite/.venv/
 
 ### Docs ###
 

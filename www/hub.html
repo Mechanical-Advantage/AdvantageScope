@@ -13,11 +13,11 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src ws: http: file: blob:"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-eval'; connect-src ws: http: file: blob:"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src ws: http: file: blob:"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="global.css" />
@@ -466,6 +466,26 @@
 
       <!-- Metadata -->
       <div id="controller12"></div>
+
+      <!-- State Diagrams -->
+      <div id="controller13">
+        <div class="mermaid-sources"></div>
+        <div class="mermaid-settings setting-blocks fix-first">
+          <div class="title">
+            <div class="full">History</div>
+          </div>
+          <div class="input">
+            <div>
+              <select class="history-length">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
     </span>
 
     <span id="rendererTemplates" hidden>
@@ -647,6 +667,11 @@
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- Mermaid -->
+      <div id="renderer13">
+        <div class="mermaid-container"></div>
       </div>
     </span>
 

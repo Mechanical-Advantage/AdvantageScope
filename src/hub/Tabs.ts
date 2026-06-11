@@ -18,6 +18,7 @@ import LineGraphRenderer from "../shared/renderers/LineGraphRenderer";
 import MechanismRenderer from "../shared/renderers/MechanismRenderer";
 import MetadataRenderer from "../shared/renderers/MetadataRenderer";
 import PointsRenderer from "../shared/renderers/PointsRenderer";
+import StateDiagramRenderer from "../shared/renderers/StateDiagramRenderer";
 import StatisticsRenderer from "../shared/renderers/StatisticsRenderer";
 import SwerveRenderer from "../shared/renderers/SwerveRenderer";
 import TabRenderer, { NoopRenderer } from "../shared/renderers/TabRenderer";
@@ -35,6 +36,7 @@ import LineGraphController from "./controllers/LineGraphController";
 import MechanismController from "./controllers/MechanismController";
 import MetadataController from "./controllers/MetadataController";
 import PointsController from "./controllers/PointsController";
+import StateDiagramController from "./controllers/StateDiagramController";
 import StatisticsController from "./controllers/StatisticsController";
 import SwerveController from "./controllers/SwerveController";
 import TabController, { NoopController } from "./controllers/TabController";
@@ -535,6 +537,10 @@ export default class Tabs {
       case TabType.Metadata:
         controller = new MetadataController();
         renderer = new MetadataRenderer(rendererElement);
+        break;
+      case TabType.StateDiagram:
+        controller = new StateDiagramController(controlsElement);
+        renderer = new StateDiagramRenderer(rendererElement);
         break;
       default:
         controller = new NoopController();

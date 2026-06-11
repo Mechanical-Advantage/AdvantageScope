@@ -18,7 +18,8 @@ enum TabType {
   Swerve,
   Mechanism,
   Points,
-  Metadata
+  Metadata,
+  StateDiagram
 }
 
 export default TabType;
@@ -39,7 +40,8 @@ export const LITE_COMPATIBLE_TABS = [
   TabType.Swerve,
   TabType.Mechanism,
   TabType.Points,
-  TabType.Metadata
+  TabType.Metadata,
+  TabType.StateDiagram
 ];
 
 export function getDefaultTabTitle(type: TabType): string {
@@ -70,6 +72,8 @@ export function getDefaultTabTitle(type: TabType): string {
       return "Points";
     case TabType.Metadata:
       return "Metadata";
+    case TabType.StateDiagram:
+      return "State Diagram";
     default:
       return "";
   }
@@ -103,6 +107,8 @@ export function getTabIcon(type: TabType): string {
       return "📍";
     case TabType.Metadata:
       return "🔍";
+    case TabType.StateDiagram:
+      return "🧜‍♀️";
     default:
       return "";
   }
@@ -138,6 +144,8 @@ export function getTabAccelerator(type: TabType): string {
           return "P";
         case TabType.Metadata:
           return "I";
+        case TabType.StateDiagram:
+          return "E";
         default:
           return "";
       }
