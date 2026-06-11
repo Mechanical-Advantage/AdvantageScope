@@ -42,13 +42,15 @@ export default class StateDiagramRenderer implements TabRenderer {
   }
 
   async render(command: StateDiagramRendererCommand) {
-    const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDarkTheme = window.matchMedia("(prefers-color-scheme: dark)").matches;  
+    const shouldRerenderDiagram =
+      this.lastCmd.diagram?.graphJson !== command.diagram?.graphJson ||
+      this.wasDarkTheme !== isDarkTheme;
     if (
-      this.lastCmd.colorHex === command.colorHex &&
+      arraysEqual(this.lastCmd.diagram?.history ?? [], command.diagram?.history ?? []) &&
       this.lastCmd.historyLengthToDisplay === command.historyLengthToDisplay &&
-      this.wasDarkTheme === isDarkTheme && 
-      this.lastCmd.diagram?.graphJson === command.diagram?.graphJson &&
-      arraysEqual(this.lastCmd.diagram?.history ?? [], command.diagram?.history ?? [])
+      this.lastCmd.colorHex === command.colorHex &&
+      !shouldRerenderDiagram
     ) {
       return;
     }
@@ -62,8 +64,11 @@ export default class StateDiagramRenderer implements TabRenderer {
     }
     if (this.isRunning) return;
     this.isRunning = true;
-    const renderOptions = isDarkTheme ? { bg: "#222", fg: "white" } : {};
-    this.CONTAINER.innerHTML = await renderMermaidFromJson(command.diagram.graphJson, renderOptions);
+    if (shouldRerenderDiagram) {
+      console.log("Rere rendering diagram with options:", { isDarkTheme });
+      const renderOptions = isDarkTheme ? { bg: "#222", fg: "white" } : {};
+      this.CONTAINER.innerHTML = await renderMermaidFromJson(command.diagram.graphJson, renderOptions);
+    }
     let history = command.diagram.history;
     if (history.length > 0) {
       history = history.slice(Math.max(0, history.length - command.historyLengthToDisplay));
@@ -80,7 +85,17 @@ export default class StateDiagramRenderer implements TabRenderer {
       const rectEl = node.querySelector("rect");
       if (textEl == null || rectEl == null) continue;
       const historyPos = history.lastIndexOf(textEl.innerHTML);
-      if (historyPos === -1) continue;
+      if (historyPos === -1) {
+        if (node.hasAttribute("data-ascope-modified")) {
+          node.removeAttribute("data-ascope-modified");
+          rectEl.setAttribute("fill", "var(--_node-fill)");
+          rectEl.setAttribute("stroke", "var(--_inner-stroke)");
+          rectEl.setAttribute("stroke-width", "1");
+          textEl.setAttribute("fill", "var(--_text)");
+        }
+        continue;
+      }
+      node.setAttribute("data-ascope-modified", "true");
       const baseColor = scaleColor(colorHex, -0.1);
       rectEl.setAttribute("stroke-width", "2.5");
       rectEl.setAttribute("stroke", baseColor);
