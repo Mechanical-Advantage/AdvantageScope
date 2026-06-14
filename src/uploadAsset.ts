@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -27,7 +27,7 @@ window.addEventListener("message", (event) => {
   };
   // Close function
   function confirm() {
-    if (ASSET_INPUT.files != null && ASSET_INPUT.files.length > 0) {
+    if (ASSET_INPUT.files !== null && ASSET_INPUT.files.length > 0) {
       PROGRESS_TEXT.innerText = "Uploading file...";
       const API_ENDPOINT = "../uploadAsset";
       const request = new XMLHttpRequest();

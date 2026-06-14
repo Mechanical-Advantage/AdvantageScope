@@ -1,10 +1,11 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { parseREVLOG } from "@rev-robotics/revlog-converter";
 import { hex } from "color-convert";
 import {
   app,
@@ -30,8 +31,8 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
-import { PNG } from "pngjs";
 import { Client, Stats } from "ssh2";
+import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
@@ -43,6 +44,7 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
+import { createUUID } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
@@ -87,6 +89,12 @@ import {
 } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
+
+// Dynamically load lzma-native to handle platforms without prebuilt binaries
+let lzma: typeof import("lzma-native") | null = null;
+try {
+  lzma = require("lzma-native");
+} catch (e) {}
 
 // Global variables
 let hubWindows: BrowserWindow[] = []; // Ordered by last focus time (recent first)
@@ -170,6 +178,7 @@ function sendAllPreferences() {
       (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[3]
         .submenu as Electron.MenuItemConstructorOptions[]
     )[0].label = autoString;
+    (menuTemplate[0].submenu as Electron.MenuItemConstructorOptions[])[7].checked = data.userAssetsFolder !== null;
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
   }
@@ -278,9 +287,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       {
         // Record opened files
         const uuid: string = message.data.uuid;
-        const path: string = message.data.path;
-        app.addRecentDocument(path);
-        fs.writeFile(AKIT_PATH_OUTPUT, path, () => {});
+        const logPath: string = message.data.path;
+        app.addRecentDocument(logPath);
+        fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
 
         // Send data if all file reads finished
         let completedCount = 0;
@@ -337,13 +346,13 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             });
           });
         };
-        if (path.endsWith(".dslog")) {
+        if (logPath.endsWith(".dslog")) {
           // DSLog, open DSEvents too
           results = [null, null];
           targetCount += 2;
-          openPath(path, (buffer) => (results[0] = buffer));
-          openPath(path.slice(0, path.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
-        } else if (path.endsWith(".hoot")) {
+          openPath(logPath, (buffer) => (results[0] = buffer));
+          openPath(logPath.slice(0, logPath.length - 5) + "dsevents", (buffer) => (results[1] = buffer));
+        } else if (logPath.endsWith(".hoot")) {
           // Hoot, convert to WPILOG
           targetCount += 1;
 
@@ -393,12 +402,12 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             completedCount++;
             sendIfReady();
           } else {
-            checkHootIsPro(path)
+            checkHootIsPro(logPath)
               .then((isPro) => {
                 hasHootNonPro = hasHootNonPro || !isPro;
               })
               .finally(() => {
-                convertHoot(path)
+                convertHoot(logPath)
                   .then((wpilogPath) => {
                     openPath(wpilogPath, (buffer) => {
                       results[0] = buffer;
@@ -416,10 +425,69 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   });
               });
           }
+        } else if (logPath.endsWith(".revlog")) {
+          // REVLOG, convert to WPILOG
+          targetCount += 1;
+
+          // Save WPILOG in temporary folder
+          let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
+          parseREVLOG(logPath, wpilogPath)
+            .then(() => {
+              openPath(wpilogPath, (buffer) => {
+                results[0] = buffer;
+                fs.rmSync(wpilogPath);
+              });
+            })
+            .catch((err) => {
+              errorMessage = err.message;
+              completedCount++;
+              sendIfReady();
+            });
+        } else if (logPath.endsWith(".wpilogxz")) {
+          // Externally compressed WPILOG, decompress
+          targetCount += 1;
+          if (lzma === null) {
+            errorMessage = "Compressed WPILOG files (.wpilogxz) are not supported on this platform.";
+            completedCount++;
+            sendIfReady();
+          } else {
+            fs.open(logPath, "r", (error, file) => {
+              if (error) {
+                completedCount++;
+                sendIfReady();
+                return;
+              }
+              fs.readFile(file, (error, compressedBuffer) => {
+                if (error) {
+                  completedCount++;
+                  sendIfReady();
+                }
+                const inputStream = Readable.from(compressedBuffer);
+                const decompressor = lzma.createDecompressor();
+                const chunks: any[] = [];
+                let totalLength = 0;
+                inputStream.pipe(decompressor);
+                decompressor.on("data", (chunk) => {
+                  chunks.push(chunk);
+                  totalLength += chunk.length;
+                });
+                decompressor.on("error", () => {
+                  results[0] = Buffer.concat(chunks, totalLength);
+                  completedCount++;
+                  sendIfReady();
+                });
+                decompressor.on("end", () => {
+                  results[0] = Buffer.concat(chunks, totalLength);
+                  completedCount++;
+                  sendIfReady();
+                });
+              });
+            });
+          }
         } else {
           // Normal log, open normally
           targetCount += 1;
-          openPath(path, (buffer) => (results[0] = buffer));
+          openPath(logPath, (buffer) => (results[0] = buffer));
         }
       }
       break;
@@ -631,18 +699,18 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Make icon with color
           const size = 15;
           const color = hex.rgb(ensureThemeContrast(value, nativeTheme.shouldUseDarkColors));
-          const png = new PNG({ width: size, height: size });
+          const buf = Buffer.alloc(size * size * 4);
           for (let y = 0; y < size; y++) {
             for (let x = 0; x < size; x++) {
               const idx = (y * size + x) * 4;
-              png.data[idx + 0] = color[0];
-              png.data[idx + 1] = color[1];
-              png.data[idx + 2] = color[2];
-              png.data[idx + 3] = 255;
+              // Bitmaps are in BGR format, so reverse the directions
+              buf[idx + 0] = color[2];
+              buf[idx + 1] = color[1];
+              buf[idx + 2] = color[0];
+              buf[idx + 3] = 255;
             }
           }
-          const data = PNG.sync.write(png).toString("base64");
-          return nativeImage.createFromDataURL("data:image/png;base64," + data);
+          return nativeImage.createFromBitmap(buf, { height: size, width: size });
         };
 
         // Add options
@@ -1515,7 +1583,11 @@ function downloadStart() {
                       .filter(
                         (file) =>
                           !file.name.startsWith(".") &&
-                          (file.name.endsWith(".rlog") || file.name.endsWith(".wpilog") || file.name.endsWith(".hoot"))
+                          (file.name.endsWith(".rlog") ||
+                            file.name.endsWith(".wpilog") ||
+                            file.name.endsWith(".wpilogxz") ||
+                            file.name.endsWith(".revlog") ||
+                            file.name.endsWith(".hoot"))
                       )
                       .map((file) => {
                         return {
@@ -1573,7 +1645,8 @@ function downloadError(errorMessage: string) {
 function downloadSave(files: string[]) {
   if (!downloadWindow) return;
   let selectPromise;
-  if (files.length > 1) {
+  let firstExtension = path.extname(files[0]);
+  if (files.length > 1 || firstExtension === "") {
     selectPromise = dialog.showOpenDialog(downloadWindow, {
       title: "Select save location for robot logs",
       buttonLabel: "Save",
@@ -1581,17 +1654,23 @@ function downloadSave(files: string[]) {
       defaultPath: getDefaultLogPath()
     });
   } else {
-    let extension = path.extname(files[0]).slice(1);
+    let extension = firstExtension.slice(1);
     let name = "";
     switch (extension) {
       case "wpilog":
         name = "WPILib robot log";
+        break;
+      case "wpilogxz":
+        name = "Compressed WPILib robot log";
         break;
       case "rlog":
         name = "Robot log";
         break;
       case "hoot":
         name = "Hoot robot log";
+        break;
+      case "revlog":
+        name = "REV Robotics CAN log";
         break;
     }
     selectPromise = dialog.showSaveDialog(downloadWindow, {
@@ -1606,7 +1685,7 @@ function downloadSave(files: string[]) {
   selectPromise.then((response) => {
     if (response.canceled) return;
     let savePath: string = "";
-    if (files.length > 1) {
+    if (files.length > 1 || firstExtension === "") {
       savePath = (response as Electron.OpenDialogReturnValue).filePaths[0];
     } else {
       savePath = (response as Electron.SaveDialogReturnValue).filePath as string;
@@ -1800,7 +1879,6 @@ function setupMenu() {
         {
           label: "Use Custom Assets Folder",
           type: "checkbox",
-          checked: prefs.userAssetsFolder !== null,
           async click(item) {
             const isCustom = item.checked;
             let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
@@ -1816,7 +1894,6 @@ function setupMenu() {
             } else {
               prefs.userAssetsFolder = null;
             }
-            item.checked = prefs.userAssetsFolder !== null;
             jsonfile.writeFileSync(PREFS_FILENAME, prefs);
             advantageScopeAssets = loadAssets();
             sendAllPreferences();
@@ -1878,7 +1955,10 @@ function setupMenu() {
                 message: "If multiple files are selected, timestamps will be aligned automatically",
                 properties: ["openFile", "multiSelections"],
                 filters: [
-                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                  {
+                    name: "Robot logs",
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
+                  }
                 ],
                 defaultPath: getDefaultLogPath()
               })
@@ -1900,7 +1980,10 @@ function setupMenu() {
                 title: "Select the robot log file(s) to add to the current log",
                 properties: ["openFile", "multiSelections"],
                 filters: [
-                  { name: "Robot logs", extensions: ["rlog", "wpilog", "dslog", "dsevents", "hoot", "log", "csv"] }
+                  {
+                    name: "Robot logs",
+                    extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
+                  }
                 ],
                 defaultPath: getDefaultLogPath()
               })
@@ -2150,7 +2233,13 @@ function setupMenu() {
             createHubWindow();
           }
         },
-        { role: "close", accelerator: "Shift+CmdOrCtrl+W" }
+        {
+          label: "Close Window",
+          accelerator: "Shift+CmdOrCtrl+W",
+          click(_, window) {
+            window?.close();
+          }
+        }
       ]
     },
     { role: "editMenu" },
@@ -3377,10 +3466,12 @@ app.whenReady().then(() => {
   let fileArgs = process.argv.filter(
     (x) =>
       x.endsWith(".wpilog") ||
+      x.endsWith(".wpilogxz") ||
       x.endsWith(".rlog") ||
       x.endsWith(".dslog") ||
       x.endsWith(".dsevents") ||
       x.endsWith(".hoot") ||
+      x.endsWith(".revlog") ||
       x.endsWith(".log") ||
       x.endsWith(".csv")
   );

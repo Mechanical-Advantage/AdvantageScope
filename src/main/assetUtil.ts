@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -207,24 +207,51 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
   if ("aprilTags" in configRaw && Array.isArray(configRaw.aprilTags)) {
     configRaw.aprilTags.forEach((aprilTagRaw: any) => {
       let aprilTag: Config3dField_AprilTag = {
-        variant: "frc-36h11",
+        variant: "36h11-6.5in",
         id: 0,
         rotations: [],
         position: [0, 0, 0]
       };
-      if (
-        "variant" in aprilTagRaw &&
-        typeof aprilTagRaw.variant === "string" &&
-        (aprilTagRaw.variant === "frc-36h11" ||
-          aprilTagRaw.variant === "frc-16h5" ||
-          aprilTagRaw.variant === "ftc-2in" ||
-          aprilTagRaw.variant === "ftc-3in" ||
-          aprilTagRaw.variant === "ftc-4in" ||
-          aprilTagRaw.variant === "ftc-5in")
-      ) {
-        aprilTag.variant = aprilTagRaw.variant;
+      if ("variant" in aprilTagRaw && typeof aprilTagRaw.variant === "string") {
+        let variant = aprilTagRaw.variant;
+
+        // Backwards compatibility
+        switch (variant) {
+          case "frc-36h11":
+            variant = "36h11-6.5in";
+            break;
+          case "frc-16h5":
+            variant = "16h5-6in";
+            break;
+          case "ftc-2in":
+            variant = "36h11-2in";
+            break;
+          case "ftc-3in":
+            variant = "36h11-3in";
+            break;
+          case "ftc-4in":
+            variant = "36h11-4in";
+            break;
+          case "ftc-5in":
+            variant = "36h11-5in";
+            break;
+        }
+
+        // Validate format
+        const parts = variant.split("-");
+        if (
+          parts.length === 2 &&
+          (parts[0] === "36h11" || parts[0] === "16h5") &&
+          parts[1].endsWith("in") &&
+          !isNaN(parseFloat(parts[1].slice(0, -2)))
+        ) {
+          aprilTag.variant = variant;
+        } else {
+          // Unknown AprilTag variant
+          return;
+        }
       } else {
-        // Unknown AprilTag variant, likely a newer variant that is not supported yet
+        // No variant provided, skip
         return;
       }
       if ("id" in aprilTagRaw && typeof aprilTagRaw.id === "number") {

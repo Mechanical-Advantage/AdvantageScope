@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -30,7 +30,6 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         session.delegate = self
         arConfig.worldAlignment = .gravity
         arConfig.planeDetection = .horizontal
-        session.run(arConfig)
         
         // Initialize view
         view.device = MTLCreateSystemDefaultDevice()
@@ -45,6 +44,14 @@ class ARManager: NSObject, ARSessionDelegate, MTKViewDelegate {
         // Start renderer
         renderer = ARRenderer(session: session, metalDevice: view.device!, renderDestination: view)
         renderer.drawRectResized(size: view.bounds.size)
+    }
+    
+    func start() {
+        session.run(arConfig)
+    }
+    
+    func stop() {
+        session.pause()
     }
     
     func addFrameCallback(_ callback: @escaping (_ frame: ARFrame) -> Void) {

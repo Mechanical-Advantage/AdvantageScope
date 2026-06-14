@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import download from "download";
-import fs from "fs-extra";
+import fs from "fs";
 import path from "path";
 
 // Constants
@@ -15,9 +15,9 @@ const liteAssetsPath = path.join("lite", "static", "bundledAssets");
 const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
 const githubAssetsTag = "archive-v1";
 const githubAssetNames = [
-  "Field2d_2025FRCFieldWeldedV2",
+  "Field2d_2026FRCFieldV1",
   "Field2d_20252026FTCFieldV1",
-  "Field3d_2025FRCFieldWeldedV2",
+  "Field3d_2026FRCFieldV1",
   "Field3d_20252026FTCFieldV1",
   "Joystick_LogitechF310V1",
   "Joystick_PS4ControllerV1",
@@ -58,7 +58,7 @@ if (fs.existsSync(liteAssetsPath)) {
 }
 
 // Copy basic bundled assets
-fs.copySync(bundledAssetsPath, liteAssetsPath);
+fs.cpSync(bundledAssetsPath, liteAssetsPath, { recursive: true });
 
 // Download GitHub assets
 githubAssetNames.forEach((asset) => {

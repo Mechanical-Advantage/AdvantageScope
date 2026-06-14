@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -190,7 +190,7 @@ function handleMainMessage(message: NamedMessage) {
       }
 
       // Get and sort filenames
-      let fileData: { name: string; size: number }[] = message.data;
+      let fileData: { name: string; size: number; isFolder: boolean }[] = message.data;
       let isRandomized = (name: string): boolean =>
         name.includes("TBD") || // WPILib DataLogManager
         ((name.startsWith("Log_") || name.startsWith("akit_")) && !name.includes("-")); // AdvantageKit
@@ -247,20 +247,26 @@ function handleMainMessage(message: NamedMessage) {
 
         let img = document.createElement("img");
         item.appendChild(img);
-        let filenameComponents = file.name.split(".");
-        let extension = filenameComponents[filenameComponents.length - 1];
-        switch (platform) {
-          case "darwin":
-            img.src = "../icons/download/" + extension + "-icon-mac.png";
-            img.classList.add("mac");
-            break;
-          case "linux":
-          case "win32":
-            img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
-            break;
-          case "lite":
-            img.src = "icons/" + extension + "-icon.png";
-            break;
+        if (file.isFolder) {
+          img.src = "../icons/download/folder-icon.png";
+          img.classList.add("folder");
+        } else {
+          let filenameComponents = file.name.split(".");
+          let extension = filenameComponents[filenameComponents.length - 1];
+          if (extension === "wpilogxz") extension = "wpilog";
+          switch (platform) {
+            case "darwin":
+              img.src = "../icons/download/" + extension + "-icon-mac.png";
+              img.classList.add("mac");
+              break;
+            case "linux":
+            case "win32":
+              img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
+              break;
+            case "lite":
+              img.src = "../icons/" + extension + "-icon.png";
+              break;
+          }
         }
         let filenameSpan = document.createElement("span");
         item.appendChild(filenameSpan);

@@ -7,7 +7,13 @@ import TabItem from '@theme/TabItem';
 
 # 📝 Unofficial REV-Compatible Logger
 
-Since REV does not provide an official method of automatically recording data from the Spark Max and Spark Flex, we have provided an unofficial alternative for Java and C++ called [URCL](https://github.com/Mechanical-Advantage/URCL) (**U**nofficial **R**EV-**C**ompatible **L**ogger). This enables live plotting and logging of all devices similar to CTRE's [Tuner X plotting feature](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) and [Phoenix 6 signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
+:::info
+New in 2026, REVLib includes an official logging solution for saving data from the Spark Max and Spark Flex to a REV CAN log (`.revlog`). See [here](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) for details. These files can be opened directly in AdvantageScope, but cannot be precisely synchronized to other data sources.
+
+AdvantageScope's _Unofficial_ REV-Compatible Logger (URCL) will also remain available to teams in 2026 to ensure a smooth transition and provide feature parity with previous seasons. We will have more details to share about logging options in 2027 and beyond at a later date.
+:::
+
+URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) is a logging library available for Java, C++, and Python which automatically records data from the Spark Max and Spark Flex. This enables live plotting and logging of all devices similar to CTRE's [Tuner X plotting feature](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) and [Phoenix 6 signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 
 After setup, periodic CAN frames from all Spark Max and Spark Flex devices are published to NetworkTables or DataLog. When using NetworkTables, WPILib's [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) can be used to capture the data to a log file. These frames are viewable in AdvantageScope (see [Managing Log Files](/overview/log-files) and [Connecting to Live Sources](/overview/live-sources)).
 
@@ -32,7 +38,7 @@ https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
 URCL publishes to NetworkTables by default, where data can be saved to a log file by enabling WPILib's DataLogManager. Alternatively, URCL can log directly to a DataLog. The logger should be started in `robotInit`, as shown below.
 
 <Tabs>
-<TabItem value="java" label="WPILib (Java)" default>
+<TabItem value="java" label="Java" default>
 
 ```java
 public Robot() {
@@ -46,7 +52,7 @@ public Robot() {
 ```
 
 </TabItem>
-<TabItem value="cpp" label="WPILib (C++)">
+<TabItem value="cpp" label="C++">
 
 ```cpp
 #include "frc/DataLogManager.h"

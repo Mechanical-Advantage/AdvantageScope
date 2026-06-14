@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -49,13 +49,15 @@ export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/IsRedAlliance",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
+  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
+  "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/StationNumber",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
+  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
+  "AllianceStation" // Phoenix
 ];
 export const JOYSTICK_KEYS = [
   "/DriverStation/Joystick",
@@ -363,7 +365,7 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
       let value = tempAllianceData.values[tempAllianceData.values.length - 1];
       return ((value >> 7) & 63) <= 2;
     }
-  } else if (allianceKey.endsWith("AllianceStation")) {
+  } else if (allianceKey.endsWith("DriverStation/AllianceStation")) {
     // Integer value (station) from AdvantageKit
     let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
@@ -371,6 +373,12 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
         tempAllianceData.values[tempAllianceData.values.length - 1] <= 3 &&
         tempAllianceData.values[tempAllianceData.values.length - 1] > 0
       );
+    }
+  } else if (allianceKey.endsWith("AllianceStation")) {
+    // String value (station) from Phoenix
+    let tempAllianceData = log.getString(allianceKey, time, time);
+    if (tempAllianceData && tempAllianceData.values.length > 0) {
+      return tempAllianceData.values[tempAllianceData.values.length - 1].startsWith("Red");
     }
   } else {
     // Boolean value from NT
@@ -386,15 +394,52 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
 export function getDriverStation(log: Log, time: number): number {
   let dsKey = findKey(log, DRIVER_STATION_KEYS);
   if (!dsKey) return -1;
-  let tempDSData = log.getNumber(dsKey, time, time);
-  if (tempDSData && tempDSData.values.length > 0) {
-    let value = tempDSData.values[tempDSData.values.length - 1];
-    if (dsKey.endsWith("ControlWord")) {
-      // Extract from control word struct
+  if (dsKey.endsWith("ControlWord")) {
+    // Systemcore, extract from control word struct
+    let tempDSData = log.getNumber(dsKey, time, time);
+    if (tempDSData && tempDSData.values.length > 0) {
+      let value = tempDSData.values[tempDSData.values.length - 1];
       value = ((value >> 7) & 63) + 1;
+      switch (value) {
+        case 1:
+          return 3; // Red 1
+        case 2:
+          return 4; // Red 2
+        case 3:
+          return 5; // Red 3
+        case 4:
+          return 0; // Blue 1
+        case 5:
+          return 1; // Blue 2
+        case 6:
+          return 2; // Blue 3
+      }
     }
-    if (dsKey.endsWith("StationNumber")) {
-      // WPILib, station number
+  } else if (dsKey.endsWith("DriverStation/AllianceStation")) {
+    // AdvantageKit, alliance station ID
+    let tempDSData = log.getNumber(dsKey, time, time);
+    if (tempDSData && tempDSData.values.length > 0) {
+      let value = tempDSData.values[tempDSData.values.length - 1];
+      switch (value) {
+        case 1:
+          return 3; // Red 1
+        case 2:
+          return 4; // Red 2
+        case 3:
+          return 5; // Red 3
+        case 4:
+          return 0; // Blue 1
+        case 5:
+          return 1; // Blue 2
+        case 6:
+          return 2; // Blue 3
+      }
+    }
+  } else if (dsKey.endsWith("StationNumber")) {
+    // WPILib, station number
+    let tempDSData = log.getNumber(dsKey, time, time);
+    if (tempDSData && tempDSData.values.length > 0) {
+      let value = tempDSData.values[tempDSData.values.length - 1];
       if (getIsRedAlliance(log, time)) {
         switch (value) {
           case 1:
@@ -414,21 +459,25 @@ export function getDriverStation(log: Log, time: number): number {
             return 2;
         }
       }
-    } else {
-      // AdvantageKit or Systemcore, alliance station ID
+    }
+  } else if (dsKey.endsWith("AllianceStation")) {
+    // Phoenix, string value
+    let tempDSData = log.getString(dsKey, time, time);
+    if (tempDSData && tempDSData.values.length > 0) {
+      let value = tempDSData.values[tempDSData.values.length - 1];
       switch (value) {
-        case 1:
-          return 3; // Red 1
-        case 2:
-          return 4; // Red 2
-        case 3:
-          return 5; // Red 3
-        case 4:
-          return 0; // Blue 1
-        case 5:
-          return 1; // Blue 2
-        case 6:
-          return 2; // Blue 3
+        case "Blue 1":
+          return 0;
+        case "Blue 2":
+          return 1;
+        case "Blue 3":
+          return 2;
+        case "Red 1":
+          return 3;
+        case "Red 2":
+          return 4;
+        case "Red 3":
+          return 5;
       }
     }
   }
@@ -694,7 +743,7 @@ export function mergeMechanismStates(states: MechanismState[]): MechanismState {
 const SEARCH_FUSE = new Fuse([] as string[], { findAllMatches: true, ignoreLocation: true });
 
 export function searchFields(log: Log, query: string): string[] {
-  if (query.length == 0) return [];
+  if (query.length === 0) return [];
   SEARCH_FUSE.setCollection(log.getFieldKeys());
   return SEARCH_FUSE.search(query)
     .slice(0, MAX_SEARCH_RESULTS)

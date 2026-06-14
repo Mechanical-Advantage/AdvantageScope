@@ -23,7 +23,7 @@ YouTube and TBA video download may failed unexpectedly due to changes on YouTube
 :::
 
 :::info
-AdvantageScope requires [FFmpeg](https://ffmpeg.org) to process video files. If a valid copy of FFmpeg is not found on your system's PATH, AdvantageScope will prompt to download FFmpeg from the internet when loading a video for the first time.
+AdvantageScope requires [FFmpeg](https://ffmpeg.org) to process video files. If a valid copy of FFmpeg is not found on your system's PATH, AdvantageScope will prompt to download FFmpeg from the internet when loading a video for the first time. Automatic FFmpeg installation is only supported on Windows and macOS; Linux users may need to manually install FFmpeg and add it to the system PATH.
 :::
 
 ## Navigating the Video

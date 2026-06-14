@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -47,7 +47,8 @@ export default class RobotManager extends ObjectManager<
     transparent: true,
     opacity: 0.35,
     specular: this.materialSpecular,
-    shininess: this.materialShininess
+    shininess: this.materialShininess,
+    depthWrite: false
   });
   private visionLines: Line2[] = [];
   private mechanismLinesXZ: MechanismLineData[] = [];
@@ -266,7 +267,7 @@ export default class RobotManager extends ObjectManager<
           });
         } else {
           // Desktop, load models with worker and mesh merging
-          WorkerManager.request("../bundles/shared$loadRobot.js", {
+          WorkerManager.request("../bundles/loadRobot.js", {
             robotConfig: robotConfig!,
             isFTC: robotConfig.isFTC,
             mode: this.mode,
@@ -506,7 +507,7 @@ export default class RobotManager extends ObjectManager<
               .map((x) => x.pose)
               .map((robotPose) => {
                 this.dummyRobotPose.rotation.setFromQuaternion(rotation3dToQuaternion(robotPose.rotation));
-                if (plane == "yz") this.dummyRobotPose.rotateZ(Math.PI / 2);
+                if (plane === "yz") this.dummyRobotPose.rotateZ(Math.PI / 2);
                 this.dummyRobotPose.position.set(...robotPose.translation);
 
                 this.dummyUserPose.position.set(line.start[0] - state.dimensions[0] / 2, 0, line.start[1]);

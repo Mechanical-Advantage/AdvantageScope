@@ -1,12 +1,11 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { app, dialog, shell } from "electron";
-import fetch from "electron-fetch";
+import { app, dialog, net, shell } from "electron";
 import { GITHUB_REPOSITORY } from "../github";
 import { isBeta } from "./betaUtil";
 import { WINDOW_ICON } from "./ElectronConstants";
@@ -36,8 +35,7 @@ export default class UpdateChecker {
     // Read release data from GitHub
     let releaseData;
     try {
-      // @ts-ignore
-      let response = await fetch.default("https://api.github.com/repos/" + GITHUB_REPOSITORY + "/releases", {
+      let response = await net.fetch("https://api.github.com/repos/" + GITHUB_REPOSITORY + "/releases", {
         method: "GET",
         headers: {
           pragma: "no-cache",

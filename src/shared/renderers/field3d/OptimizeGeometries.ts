@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -69,7 +69,8 @@ export default async function optimizeGeometries(
               specular: materialSpecular,
               shininess: materialShininess,
               transparent: true,
-              opacity: 0.2
+              opacity: 0.2,
+              depthWrite: false
             })
           );
           transparentMeshes.push(mesh);

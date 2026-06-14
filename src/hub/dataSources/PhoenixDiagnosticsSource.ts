@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -329,7 +329,7 @@ interface Response_Point {
   Signals: { [key: string]: number };
 }
 
-// Valid as of Phoenix 25.2.0
+// Valid as of Phoenix 26.0.0-beta-1
 const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   AppliedRotorPolarity: {
     0: "PositiveIsCounterClockwise",
@@ -358,7 +358,8 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     7: "Brushed_BC",
     8: "NEO_JST",
     9: "NEO550_JST",
-    10: "VORTEX_JST"
+    10: "VORTEX_JST",
+    11: "CustomBrushless"
   },
   ControlMode: {
     0: "DisabledOutput",
@@ -430,7 +431,19 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
     22: "MotionMagicTorqueCurrentFOC",
     23: "Follower",
     24: "Reserved",
-    25: "CoastOut"
+    25: "CoastOut",
+    26: "UnauthorizedDevice",
+    27: "MusicTone",
+    28: "MotionMagicVelocityDutyCycle",
+    29: "MotionMagicVelocityDutyCycleFOC",
+    30: "MotionMagicVelocityVoltage",
+    31: "MotionMagicVelocityVoltageFOC",
+    32: "MotionMagicVelocityTorqueCurrentFOC",
+    33: "MotionMagicExpoDutyCycle",
+    34: "MotionMagicExpoDutyCycleFOC",
+    35: "MotionMagicExpoVoltage",
+    36: "MotionMagicExpoVoltageFOC",
+    37: "MotionMagicExpoTorqueCurrentFOC"
   },
   ExternalMotorTempStatus: {
     0: "Collecting",
@@ -479,5 +492,9 @@ const PhoenixEnums: { [key: string]: { [key: number]: string } } = {
   ReverseLimit: {
     0: "ClosedToGround",
     1: "Open"
+  },
+  RobotEnable: {
+    0: "Disabled",
+    1: "Enabled"
   }
 };

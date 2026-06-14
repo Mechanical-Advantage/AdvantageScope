@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -96,15 +96,28 @@ export async function downloadOwletInternal(target: string, platform: string, st
         tempFilename += ".exe";
       }
 
-      // Download if local copy doesn't exist
-      if (
-        owletPlatform in downloadVersion.Urls &&
-        owletPlatform + "-sha1" in downloadVersion.Urls &&
-        !fs.existsSync(path.join(target, filename))
-      ) {
+      // Check if remote copy should be downloaded
+      let shouldDownload = false;
+      if (owletPlatform in downloadVersion.Urls && owletPlatform + "-sha1" in downloadVersion.Urls) {
+        const localPath = path.join(target, filename);
+        if (!fs.existsSync(localPath)) {
+          shouldDownload = true;
+        } else {
+          const hash = crypto.createHash("sha1");
+          hash.update(fs.readFileSync(localPath));
+          if (hash.digest("hex") !== downloadVersion.Urls[owletPlatform + "-sha1"]) {
+            shouldDownload = true;
+          }
+        }
+      }
+
+      // Download if necessary
+      if (shouldDownload) {
         // Get list of existing files to delete
-        let existingFiles = await new Promise<string[]>((resolve) => fs.readdir(target, (_, files) => resolve(files)));
-        let toDelete = existingFiles.filter((filename) =>
+        const existingFiles = await new Promise<string[]>((resolve) =>
+          fs.readdir(target, (_, files) => resolve(files))
+        );
+        const toDelete = existingFiles.filter((filename) =>
           filename.includes("-C" + downloadVersion.Compliancy.toString())
         );
 
@@ -112,9 +125,9 @@ export async function downloadOwletInternal(target: string, platform: string, st
         await download(downloadVersion.Urls[owletPlatform], target, { filename: tempFilename });
 
         // Verify hash
-        let hash = crypto.createHash("sha1");
+        const hash = crypto.createHash("sha1");
         hash.update(fs.readFileSync(path.join(target, tempFilename)));
-        let hex = hash.digest("hex");
+        const hex = hash.digest("hex");
         if (hex === downloadVersion.Urls[owletPlatform + "-sha1"]) {
           fs.chmodSync(path.join(target, tempFilename), 0o755);
 
@@ -123,6 +136,9 @@ export async function downloadOwletInternal(target: string, platform: string, st
 
           // Move to final location
           fs.renameSync(path.join(target, tempFilename), path.join(target, filename));
+        } else {
+          // Delete temporary file
+          fs.unlinkSync(path.join(target, tempFilename));
         }
       }
     }

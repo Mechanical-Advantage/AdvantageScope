@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -45,20 +45,20 @@ try {
     let inPath, outPath;
     if (process.platform === "win32") {
       inPath = "src\\hub\\dataSources\\wpilog\\indexer\\wpilogIndexer.c";
-      outPath = "bundles\\hub$wpilogIndexer.js";
+      outPath = "bundles\\wpilogIndexer.js";
     } else {
       inPath = "'src/hub/dataSources/wpilog/indexer/wpilogIndexer.c'";
-      outPath = "'bundles/hub$wpilogIndexer.js' ";
+      outPath = "'bundles/wpilogIndexer.js' ";
     }
     exec(
-      `emcc ${inPath} -o ${outPath} -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
+      `emcc ${inPath} -o ${outPath} -sEXPORT_ES6 -sEXPORTED_FUNCTIONS=_run,_malloc -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAPF64,HEAPU32 -sALLOW_MEMORY_GROWTH -sMAXIMUM_MEMORY=4294967296 -O3`,
       (error, stdout, stderr) => {
         console.log(stdout);
         console.error(stderr);
         if (error === null) {
           // Copy to Lite bundles
-          fs.copyFileSync("bundles/hub$wpilogIndexer.js", "lite/static/bundles/hub$wpilogIndexer.js");
-          fs.copyFileSync("bundles/hub$wpilogIndexer.wasm", "lite/static/bundles/hub$wpilogIndexer.wasm");
+          fs.copyFileSync("bundles/wpilogIndexer.js", "lite/static/bundles/wpilogIndexer.js");
+          fs.copyFileSync("bundles/wpilogIndexer.wasm", "lite/static/bundles/wpilogIndexer.wasm");
 
           // Exit successfully
           resolve();

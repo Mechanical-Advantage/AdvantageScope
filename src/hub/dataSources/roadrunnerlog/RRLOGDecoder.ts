@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -202,7 +202,7 @@ export default class RRLOGDecoder {
                 // Automatically parse timestamp fields of Road Runner's built in message classes
               } else if (msg instanceof Map && msg.has("timestamp")) {
                 let timestamp = msg.get("timestamp");
-                if (timestamp != undefined && typeof timestamp === "bigint") {
+                if (timestamp !== undefined && typeof timestamp === "bigint") {
                   this.lastTimestamp = rrTimestampToSeconds(timestamp);
                 }
               }
@@ -233,7 +233,12 @@ export default class RRLOGDecoder {
                     });
                   } else {
                     // struct or array
-                    log.putUnknownStruct(key, timestamp, msg);
+                    // "allowRootWrite" enabled here to allow for direct array parsing
+                    // Writing to the root field is OK because we don't have any
+                    // serialized data that it would conflict with (different from
+                    // other structured data sources).
+                    // https://github.com/Mechanical-Advantage/AdvantageScope/issues/427
+                    log.putUnknownStruct(key, timestamp, msg, true);
                   }
                   break;
               }

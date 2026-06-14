@@ -24,14 +24,6 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-:::warning
-**Why are there two 2025 FRC field options?**
-
-AdvantageScope includes two 2025 FRC field images: "2025 Field (Welded)" and "2025 Field (AndyMark)". As explained in [Team Update 12](https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf), there are two versions of the Reefscape field with different dimensions and processor locations (see the Team Update for details on which field is used at each event). Teams should use the correct AprilTag layout and field dimensions in code and on any vision coprocessors, then **choose the matching field image in AdvantageScope to ensure that the visualization is accurat**e. Documentation is available from [WPILib](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/apriltag/AprilTagFields.html), [Limelight](https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-map-specification), and [PhotonVision](https://docs.photonvision.org/en/latest/docs/apriltag-pipelines/multitag.html#updating-the-field-layout) about changing the AprilTag layout.
-
-_The 2025 field image used by AdvantageScope prior to Febuary 2025 is equivalent to the "2025 Field (Welded) option._
-:::
-
 ## Adding Objects
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
@@ -98,6 +90,25 @@ packet.put("Pose heading", 3.14); // Radians
 
 // Alternatively, headings can be published in degrees
 packet.put("Pose heading (deg)", 180.0); // Degrees
+
+// Add other telemetry values here...
+
+FtcDashboard.getInstance().sendTelemetryPacket(packet)
+
+// Alternately, use MultipleTelemetry and the standard SDK telemetry:
+// During OpMode Init:
+telemetry = new MultipleTelemetry(telemetry,FtcDashboard.getInstance().getTelemetry());
+
+// During Loop:
+telemetry.addData("Pose x", 6.3); // Inches
+telemetry.addData("Pose y", 2.8); // Inches
+telemetry.addData("Pose heading", 3.14); // Radians
+
+// or...
+telemetry.addData("Pose heading (deg)", 180.0); // Degrees
+
+// Add other telemetry values here...
+telemetry.update();
 ```
 
 </TabItem>

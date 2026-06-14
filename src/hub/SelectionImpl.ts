@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -246,6 +246,7 @@ export default class SelectionImpl implements Selection {
   unlock() {
     if (this.mode === SelectionMode.Locked) {
       let selectedTime = this.getSelectedTime();
+      this.applyTimelineScroll(0, 0, 0);
       this.setMode(SelectionMode.Static);
       this.staticTime = selectedTime !== null ? selectedTime : 0;
     }

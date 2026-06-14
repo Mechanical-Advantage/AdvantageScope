@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -6,50 +6,55 @@
 // at the root directory of this project.
 
 //
-//  Header containing types and enum constants shared between Metal shaders and C/ObjC source
+//  Header containing types and enum constants shared between Metal shaders and
+//  C/ObjC source
 //
 #ifndef ShaderTypes_h
 #define ShaderTypes_h
 
 #include <simd/simd.h>
 
-// Buffer index values shared between shader and C code to ensure Metal shader buffer inputs match
+// Buffer index values shared between shader and C code to ensure Metal shader
+// buffer inputs match
 //   Metal API buffer set calls
 typedef enum BufferIndices {
-    kBufferIndexMeshPositions    = 0,
-    kBufferIndexMeshGenerics     = 1,
-    kBufferIndexInstanceUniforms = 2,
-    kBufferIndexSharedUniforms   = 3
+  kBufferIndexMeshPositions = 0,
+  kBufferIndexMeshGenerics = 1,
+  kBufferIndexInstanceUniforms = 2,
+  kBufferIndexSharedUniforms = 3
 } BufferIndices;
 
-// Attribute index values shared between shader and C code to ensure Metal shader vertex
+// Attribute index values shared between shader and C code to ensure Metal
+// shader vertex
 //   attribute indices match the Metal API vertex descriptor attribute indices
 typedef enum VertexAttributes {
-    kVertexAttributePosition  = 0,
-    kVertexAttributeTexcoord  = 1,
-    kVertexAttributeNormal    = 2
+  kVertexAttributePosition = 0,
+  kVertexAttributeTexcoord = 1,
+  kVertexAttributeNormal = 2
 } VertexAttributes;
 
-// Texture index values shared between shader and C code to ensure Metal shader texture indices
+// Texture index values shared between shader and C code to ensure Metal shader
+// texture indices
 //   match indices of Metal API texture set calls
 typedef enum TextureIndices {
-    kTextureIndexColor    = 0,
-    kTextureIndexY        = 1,
-    kTextureIndexCbCr     = 2
+  kTextureIndexColor = 0,
+  kTextureIndexY = 1,
+  kTextureIndexCbCr = 2
 } TextureIndices;
 
-// Structure shared between shader and C code to ensure the layout of shared uniform data accessed in
+// Structure shared between shader and C code to ensure the layout of shared
+// uniform data accessed in
 //    Metal shaders matches the layout of uniform data set in C code
 typedef struct {
-    // Camera Uniforms
-    matrix_float4x4 projectionMatrix;
-    matrix_float4x4 viewMatrix;
-    
-    // Lighting Properties
-    vector_float3 ambientLightColor;
-    vector_float3 directionalLightDirection;
-    vector_float3 directionalLightColor;
-    float materialShininess;
+  // Camera Uniforms
+  matrix_float4x4 projectionMatrix;
+  matrix_float4x4 viewMatrix;
+
+  // Lighting Properties
+  vector_float3 ambientLightColor;
+  vector_float3 directionalLightDirection;
+  vector_float3 directionalLightColor;
+  float materialShininess;
 } SharedUniforms;
 
 #endif /* ShaderTypes_h */

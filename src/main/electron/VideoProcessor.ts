@@ -1,11 +1,10 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import ytdl from "@distube/ytdl-core";
 import { ChildProcess, spawn } from "child_process";
 import download from "download";
 import { BrowserWindow, Menu, MenuItem, app, clipboard, dialog } from "electron";
@@ -14,6 +13,7 @@ import jsonfile from "jsonfile";
 import crypto from "node:crypto";
 import path from "path";
 import Tesseract, { createWorker } from "tesseract.js";
+import youtubedl, { Exec, Payload } from "youtube-dl-exec";
 import MatchInfo from "../../shared/MatchInfo";
 import Preferences from "../../shared/Preferences";
 import { getTBAMatchInfo, getTBAMatchKey } from "../../shared/TBAUtil";
@@ -31,18 +31,6 @@ export class VideoProcessor {
     "mac-arm64": {
       url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-darwin-arm64",
       sha256: "a90e3db6a3fd35f6074b013f948b1aa45b31c6375489d39e572bea3f18336584"
-    },
-    "linux-x64": {
-      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-x64",
-      sha256: "ed652b2f32e0851d1946894fb8333f5b677c1b2ce6b9d187910a67f8b99da028"
-    },
-    "linux-arm64": {
-      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm64",
-      sha256: "237800b37bb65a81ad47871c6c8b7c45c0a3ca62a5b3f9d2a7a9a2dd9a338271"
-    },
-    "linux-armv7l": {
-      url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-linux-arm",
-      sha256: "1a9ddc19d0e071b6e1ff6f8f34dc05ec6dd4d8f3e79a649f5a9ec0e8c929c4cb"
     },
     "win-x64": {
       url: "https://github.com/eugeneware/ffmpeg-static/releases/download/b6.0/ffmpeg-win32-x64",
@@ -122,8 +110,10 @@ export class VideoProcessor {
 
   private static processes: { [id: string]: ChildProcess } = {}; // Key is tab UUID
   private static tesseractScheduler = Tesseract.createScheduler();
+  private static ytInst: (...args: Parameters<Exec>) => Promise<Payload | string>;
 
   static {
+    // Initialize Tesseract
     let langPath: string;
     if (app.isPackaged) {
       langPath = path.join(__dirname, "..", "..");
@@ -139,17 +129,79 @@ export class VideoProcessor {
         this.tesseractScheduler.addWorker(worker);
       });
     }
+
+    // Initialize youtube-dl-exec
+    if (app.isPackaged) {
+      const fullBinaryPath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "app.asar.unpacked",
+        "node_modules",
+        "youtube-dl-exec",
+        "bin",
+        process.platform === "win32" ? "yt-dlp.exe" : process.platform === "darwin" ? "yt-dlp_macos" : "yt-dlp"
+      );
+      const binaryDir = path.dirname(fullBinaryPath);
+      const binaryName = `.${path.sep}${path.basename(fullBinaryPath)}`;
+      const rawYt = youtubedl.create(binaryName);
+      this.ytInst = (url, flags, options) => {
+        return rawYt(url, flags, { cwd: binaryDir, ...options });
+      };
+    } else {
+      this.ytInst = youtubedl;
+    }
+  }
+
+  /**
+   * Helper to run youtube-dl-exec.
+   * Catches errors regarding missing Python and displays a dialog to the user.
+   */
+  private static async runYoutubeDl(url: string, flags: any, window?: BrowserWindow): Promise<any> {
+    try {
+      return await VideoProcessor.ytInst(url, flags);
+    } catch (e: any) {
+      const errorStr = String(e);
+      // Check for common error indicators that Python is missing or invalid
+      if (
+        errorStr.includes("python3") ||
+        errorStr.includes("Python") ||
+        errorStr.includes("ENOENT") ||
+        (e.code && e.code === "ENOENT")
+      ) {
+        console.error(e);
+        if (window && !window.isDestroyed()) {
+          dialog.showMessageBox(window, {
+            type: "error",
+            title: "Error",
+            message: "Python Installation Required",
+            detail:
+              "This feature requires Python 3.10 or above available in your system. Please install Python and try again.",
+            icon: WINDOW_ICON
+          });
+        }
+        throw new Error("Python missing");
+      }
+      throw e;
+    }
+  }
+
+  private static getVideoId(url: string): string | null {
+    const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
   }
 
   private static async getFFmpegPath(window: BrowserWindow): Promise<string> {
     // Check for AdvantageScope install (user data folder)
+    // Not compatible with Linux due to DNS issues, force a system install
     let ffmpegPath: string;
     if (process.platform === "win32") {
       ffmpegPath = path.join(app.getPath("userData"), "ffmpeg.exe");
     } else {
       ffmpegPath = path.join(app.getPath("userData"), "ffmpeg");
     }
-    if (fs.existsSync(ffmpegPath)) {
+    if (process.platform !== "linux" && fs.existsSync(ffmpegPath)) {
       return ffmpegPath;
     }
 
@@ -173,7 +225,21 @@ export class VideoProcessor {
       return "ffmpeg";
     }
 
-    // Download FFmpeg
+    // Exit immediately on Linux
+    if (process.platform === "linux") {
+      await dialog.showMessageBox(window, {
+        type: "question",
+        title: "Alert",
+        message: "FFmpeg Installation Required",
+        detail: "FFmpeg is required to process videos files. Please install FFmpeg and add to the PATH.",
+        buttons: ["OK"],
+        defaultId: 0,
+        icon: WINDOW_ICON
+      });
+      throw "Failed";
+    }
+
+    // Download FFmpeg on Windows and macOS
     let ffmpegDownloadResponse = await dialog.showMessageBox(window, {
       type: "question",
       title: "Alert",
@@ -223,7 +289,7 @@ export class VideoProcessor {
     menuCoordinates: null | [number, number],
     dataCallback: (data: any) => void
   ) {
-    let loadPath = async (videoPath: string, videoCache: string) => {
+    let loadPath = async (videoPath: string, videoCache: string, httpHeaders?: any) => {
       // Find FFmpeg path
       let ffmpegPath: string;
       try {
@@ -245,7 +311,17 @@ export class VideoProcessor {
 
       // Start ffmpeg
       if (uuid in VideoProcessor.processes) VideoProcessor.processes[uuid].kill();
-      let ffmpeg = spawn(ffmpegPath, [
+
+      const ffmpegArgs: string[] = [];
+      if (httpHeaders) {
+        ffmpegArgs.push("-reconnect", "1", "-reconnect_streamed", "1", "-reconnect_delay_max", "5");
+        let headersStr = "";
+        for (const [key, value] of Object.entries(httpHeaders)) {
+          headersStr += `${key}: ${value}\r\n`;
+        }
+        ffmpegArgs.push("-headers", headersStr);
+      }
+      ffmpegArgs.push(
         "-i",
         videoPath,
         "-vf",
@@ -253,7 +329,9 @@ export class VideoProcessor {
         "-q:v",
         "2",
         path.join(cachePath, "%08d.jpg")
-      ]);
+      );
+
+      let ffmpeg = spawn(ffmpegPath, ffmpegArgs);
       VideoProcessor.processes[uuid] = ffmpeg;
       let running = true;
       let fullOutput = "";
@@ -262,7 +340,7 @@ export class VideoProcessor {
       let height = 0;
       let durationSecs = 0;
       let completedFrames = 0;
-      let matchStartFrame = -1;
+      let autoEndFrame = -1;
       let timerSample = 0;
       let timerValues: { frame: number; text: string }[] = [];
       let timerStartFound = false;
@@ -362,32 +440,32 @@ export class VideoProcessor {
                   timerValues.push({ frame: sampleFrame, text: timerText });
                   timerValues.sort((a, b) => a.frame - b.frame);
 
-                  // Search for 13 -> 12 transition
-                  let lastIs13 = false;
-                  let secs13Frame: number | null = null;
+                  // Search for 4 -> 3 transition
+                  let lastIs4 = false;
+                  let secs4Frame: number | null = null;
                   for (let i = 0; i < timerValues.length; i++) {
-                    let is13 = timerValues[i].text.includes("13");
-                    let is12 = !is13 && timerValues[i].text.includes("12");
-                    if (lastIs13 && is12) {
-                      secs13Frame = timerValues[i - 1].frame;
+                    let is4 = timerValues[i].text.includes("04");
+                    let is3 = !is4 && timerValues[i].text.includes("03");
+                    if (lastIs4 && is3) {
+                      secs4Frame = timerValues[i - 1].frame;
                       break;
                     }
-                    lastIs13 = is13;
+                    lastIs4 = is4;
                   }
-                  if (secs13Frame === null) return;
+                  if (secs4Frame === null) return;
                   timerStartFound = true;
 
                   // Find exact frame
                   let jobs: Promise<string>[] = [];
-                  for (let frame = secs13Frame; frame < secs13Frame + fps; frame++) {
+                  for (let frame = secs4Frame; frame < secs4Frame + fps; frame++) {
                     jobs.push(this.readTimerText(cachePath + zfill(frame.toString(), 8) + ".jpg", width, height));
                   }
                   const results = await Promise.all(jobs);
                   results.forEach((timerText, index) => {
-                    if (matchStartFrame > 0) return;
-                    if (timerText.includes("12")) {
-                      let secs12Frame = secs13Frame! + index;
-                      matchStartFrame = Math.round(secs12Frame - fps * 3);
+                    if (autoEndFrame > 0) return;
+                    if (timerText.includes("03")) {
+                      let secs3Frame = secs4Frame! + index;
+                      autoEndFrame = Math.round(secs3Frame + fps * 3);
                     }
                   });
                 }
@@ -403,7 +481,7 @@ export class VideoProcessor {
             fps: fps,
             totalFrames: Math.round(durationSecs * fps),
             completedFrames: completedFrames,
-            matchStartFrame: matchStartFrame
+            autoEndFrame: autoEndFrame
           });
         }
       });
@@ -418,12 +496,12 @@ export class VideoProcessor {
             fps: fps,
             totalFrames: completedFrames, // In case original value was inaccurate
             completedFrames: completedFrames,
-            matchStartFrame: matchStartFrame
+            autoEndFrame: autoEndFrame
           });
         } else if (code === 1) {
           if (videoCache === VIDEO_CACHE && fullOutput.includes("No space left on device")) {
             fs.rmSync(cachePath, { recursive: true });
-            loadPath(videoPath, VIDEO_CACHE_FALLBACK);
+            loadPath(videoPath, VIDEO_CACHE_FALLBACK, httpHeaders);
           } else {
             sendError();
           }
@@ -450,10 +528,11 @@ export class VideoProcessor {
             icon: WINDOW_ICON
           });
         } else {
-          this.getDirectUrlFromYouTubeUrl(clipboardText)
-            .then((path) => loadPath(path, VIDEO_CACHE))
-            .catch(() => {
+          this.getDirectUrlFromYouTubeUrl(clipboardText, window)
+            .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
+            .catch((silent) => {
               dataCallback({ uuid: uuid, error: true });
+              if (silent === true) return;
               dialog.showMessageBox(window, {
                 type: "error",
                 title: "Error",
@@ -468,18 +547,11 @@ export class VideoProcessor {
       case VideoSource.TheBlueAlliance:
         this.getYouTubeUrlFromMatchInfo(matchInfo!, window, menuCoordinates!)
           .then((url) => {
-            this.getDirectUrlFromYouTubeUrl(url)
-              .then((path) => loadPath(path, VIDEO_CACHE))
-              .catch(() => {
+            this.getDirectUrlFromYouTubeUrl(url, window)
+              .then((result) => loadPath(result.url, VIDEO_CACHE, result.httpHeaders))
+              .catch((silent) => {
                 dataCallback({ uuid: uuid, error: true });
-                dialog.showMessageBox(window, {
-                  type: "error",
-                  title: "Error",
-                  message: "YouTube download failed",
-                  detail:
-                    "There was an error while trying to open the match video from YouTube. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead.",
-                  icon: WINDOW_ICON
-                });
+                if (silent === true) return;
               });
           })
           .catch((silent) => {
@@ -534,20 +606,54 @@ export class VideoProcessor {
       });
   }
 
-  /** Gets the direct download URL based on a YouTube URL */
-  private static getDirectUrlFromYouTubeUrl(youTubeUrl: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      ytdl
-        .getInfo(youTubeUrl)
-        .then((info) => {
-          let format = ytdl.chooseFormat(info.formats, { quality: "highestvideo", filter: "videoonly" });
-          if (format.url) {
-            resolve(format.url);
-          } else {
-            reject();
-          }
-        })
-        .catch(reject);
+  /** Gets the direct download URL and User Agent based on a YouTube URL using youtube-dl-exec */
+  private static getDirectUrlFromYouTubeUrl(
+    youTubeUrl: string,
+    window: BrowserWindow
+  ): Promise<{ url: string; httpHeaders: any }> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const videoId = VideoProcessor.getVideoId(youTubeUrl);
+        if (!videoId) {
+          reject();
+          return;
+        }
+        const cleanUrl = "https://youtube.com/watch?v=" + videoId;
+
+        // Get video info
+        const output = await this.runYoutubeDl(
+          cleanUrl,
+          {
+            dumpSingleJson: true,
+            noWarnings: true,
+            noCheckCertificates: true,
+            forceIpv4: true,
+            format: "best",
+            extractorArgs: "youtube:player_client=android"
+          },
+          window
+        );
+
+        // Filter formats
+        let formats = output.formats || [];
+        // Filter for formats that have a video codec and are not too large
+        formats = formats.filter((f: any) => f.vcodec && f.vcodec !== "none" && f.height <= 1080);
+        // Sort by quality (height/resolution) descending
+        formats.sort((a: any, b: any) => (b.height || 0) - (a.height || 0));
+
+        // Find best url and User Agent
+        if (formats.length > 0) {
+          resolve({ url: formats[0].url, httpHeaders: output.http_headers });
+        } else {
+          reject();
+        }
+      } catch (e) {
+        // If it's not the "Python missing" error (which already showed a dialog), log it
+        if (String(e) !== "Error: Python missing") {
+          console.error(e);
+        }
+        reject(true); // Silent reject to avoid double dialogs if the caller also has a catch block
+      }
     });
   }
 
@@ -575,11 +681,31 @@ export class VideoProcessor {
     } else if (videoKeys.length === 1) {
       return "https://youtube.com/watch?v=" + videoKeys[0];
     } else {
-      // Get titles of videos
+      // Get titles of videos using youtube-dl-exec
       let titles: string[] = [];
-      for (let i = 0; i < videoKeys.length; i++) {
-        let info = await ytdl.getBasicInfo("https://youtube.com/watch?v=" + videoKeys[i]);
-        titles.push(info.videoDetails.author.name + " (" + info.videoDetails.title + ")");
+      const titlePromises = videoKeys.map(async (key) => {
+        try {
+          const url = "https://youtube.com/watch?v=" + key;
+          const output = await this.runYoutubeDl(
+            url,
+            {
+              getTitle: true,
+              noWarnings: true,
+              noCheckCertificates: true
+            },
+            window
+          );
+          return (output as string).trim() || "Unknown Video";
+        } catch (e) {
+          if (String(e) === "Error: Python missing") throw e; // Stop immediately if python is missing
+          return "Unknown Video";
+        }
+      });
+
+      try {
+        titles = await Promise.all(titlePromises);
+      } catch (e) {
+        throw true; // Silent reject
       }
 
       return new Promise((resolve, reject) => {

@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -219,16 +219,16 @@ export function getSpiralIndex(x: number, y: number): number {
   let interiorCount = interior(current);
   let start = startPoint(current);
 
-  if (current.x == a && current.y >= start.y) {
+  if (current.x === a && current.y >= start.y) {
     offset = offsetFirstRow(start, current);
     return offset + interiorCount;
-  } else if (current.y == a) {
+  } else if (current.y === a) {
     let start2 = { x: a, y: a };
     let off1 = offsetFirstRow(start, start2);
     let off2 = start2.x - current.x;
     offset = off1 + off2;
     return offset + interiorCount;
-  } else if (current.x == -a) {
+  } else if (current.x === -a) {
     let start2 = { x: a, y: a };
     let off1 = offsetFirstRow(start, start2);
     let start3 = { x: -a, y: a };

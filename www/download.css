@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2021-2025 Littleton Robotics
+  Copyright (c) 2021-2026 Littleton Robotics
   http://github.com/Mechanical-Advantage
 
   Use of this source code is governed by a BSD
@@ -94,6 +94,10 @@ div.file-item.selected > span:last-child {
 
   div.file-item img {
     filter: drop-shadow(0px 0.5px 4px #000);
+  }
+
+  div.file-item img.folder {
+    filter: invert(1) drop-shadow(0px 0.5px 4px #000);
   }
 
   div.file-item.selected > span:last-child {

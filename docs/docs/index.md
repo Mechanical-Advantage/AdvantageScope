@@ -12,7 +12,7 @@ import ScreenshotDark from "./img/screenshot-dark.png";
 
 ![AdvantageScope](./img/banner.png)
 
-AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by [Team 6328](https://littletonrobotics.org). It reads logs in WPILOG, DS log, Hoot (CTRE), Road Runner, CSV, and RLOG file formats, plus live robot data viewing using NT4, Phoenix, RLOG, or FTC Dashboard streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://docs.advantagekit.org) log replay framework. Note that **AdvantageKit is not required to use AdvantageScope**.
+AdvantageScope is a robot diagnostics, log review/analysis, and data visualization application for FIRST teams developed by [Team 6328](https://littletonrobotics.org). It reads logs in WPILOG, DS log, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV, and RLOG file formats, plus live robot data viewing using NT4, Phoenix, RLOG, or FTC Dashboard streaming. AdvantageScope can be used with any WPILib project, but is also optimized for use with our [AdvantageKit](https://docs.advantagekit.org) log replay framework. Note that **AdvantageKit is not required to use AdvantageScope**.
 
 <DocCardList
 items={[
@@ -59,7 +59,7 @@ block
 style={{ marginBottom: "15px" }}
 />
 
-Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). For non-public inquiries, please send a message to software@team6328.org.
+Feedback, feature requests, and bug reports are welcome on the [issues page](https://github.com/Mechanical-Advantage/AdvantageScope/issues). See the [contribution page](https://github.com/Mechanical-Advantage/AdvantageScope/blob/main/CONTRIBUTING.md) for more information on contributing to AdvantageScope. For non-public inquiries, please send a message to software@team6328.org.
 
 <img src={ScreenshotLight} className="light-only" />
 <img src={ScreenshotDark} className="dark-only" />

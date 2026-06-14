@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -10,28 +10,33 @@ import Log from "../../../shared/log/Log";
 import { getOrDefault } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { parseCanFrame } from "./spark/can-spec-util";
-import { sparkFramesSpec } from "./spark/spark-frames";
-
-type FirmwareVersion = {
-  major: number;
-  minor: number;
-  build: number;
-};
+import { sparkFramesSpec as sparkFramesSpec2025 } from "./spark/spark-frames-2025";
+import { sparkFramesSpec as sparkFramesSpec2026 } from "./spark/spark-frames-2026";
 
 const PERSISTENT_SIZE = 8;
 const PERIODIC_SIZE = 14;
-const PERIODIC_API_CLASS = sparkFramesSpec.periodicFrames.STATUS_0.apiClass;
-const PERIODIC_FRAME_SPECS = [
-  sparkFramesSpec.periodicFrames.STATUS_0,
-  sparkFramesSpec.periodicFrames.STATUS_1,
-  sparkFramesSpec.periodicFrames.STATUS_2,
-  sparkFramesSpec.periodicFrames.STATUS_3,
-  sparkFramesSpec.periodicFrames.STATUS_4,
-  sparkFramesSpec.periodicFrames.STATUS_5,
-  sparkFramesSpec.periodicFrames.STATUS_6,
-  sparkFramesSpec.periodicFrames.STATUS_7
+const PERIODIC_API_CLASS = sparkFramesSpec2026.periodicFrames.STATUS_0.apiClass;
+const PERIODIC_FRAME_SPECS_2025 = [
+  sparkFramesSpec2025.periodicFrames.STATUS_0,
+  sparkFramesSpec2025.periodicFrames.STATUS_1,
+  sparkFramesSpec2025.periodicFrames.STATUS_2,
+  sparkFramesSpec2025.periodicFrames.STATUS_3,
+  sparkFramesSpec2025.periodicFrames.STATUS_4,
+  sparkFramesSpec2025.periodicFrames.STATUS_5,
+  sparkFramesSpec2025.periodicFrames.STATUS_6,
+  sparkFramesSpec2025.periodicFrames.STATUS_7
 ];
-const FIRMWARE_FRAME_SPEC = sparkFramesSpec.nonPeriodicFrames.GET_FIRMWARE_VERSION;
+const PERIODIC_FRAME_SPECS_2026 = [
+  sparkFramesSpec2026.periodicFrames.STATUS_0,
+  sparkFramesSpec2026.periodicFrames.STATUS_1,
+  sparkFramesSpec2026.periodicFrames.STATUS_2,
+  sparkFramesSpec2026.periodicFrames.STATUS_3,
+  sparkFramesSpec2026.periodicFrames.STATUS_4,
+  sparkFramesSpec2026.periodicFrames.STATUS_5,
+  sparkFramesSpec2026.periodicFrames.STATUS_6,
+  sparkFramesSpec2026.periodicFrames.STATUS_7
+];
+const FIRMWARE_FRAME_SPEC = sparkFramesSpec2026.nonPeriodicFrames.GET_FIRMWARE_VERSION;
 const FIRMWARE_API = (FIRMWARE_FRAME_SPEC.apiClass << 4) | FIRMWARE_FRAME_SPEC.apiIndex;
 
 const DEFAULT_ALIASES = Uint8Array.of(0x7b, 0x7d);
@@ -44,7 +49,7 @@ export default class URCLSchema {
    * Parses a set of frames recorded by URCL using revision 3.
    */
   static parseURCLr3(log: Log, key: string, timestamp: number, value: Uint8Array) {
-    let devices: { [key: string]: { alias?: string; firmware?: FirmwareVersion } } = {};
+    let devices: { [key: string]: { alias?: string; majorFirmware?: number } } = {};
     if (!key.endsWith("Raw/Periodic")) return;
     const rootKey = key.slice(0, key.length - "Raw/Periodic".length);
     const aliasKey = rootKey + "Raw/Aliases";
@@ -81,27 +86,17 @@ export default class URCLSchema {
         let fullMessageValue = new Uint8Array(8);
         fullMessageValue.set(messageValue, 0);
         let firmwareValues = parseCanFrame(FIRMWARE_FRAME_SPEC, { data: fullMessageValue });
-        devices[deviceId].firmware = {
-          major: Number(firmwareValues.MAJOR),
-          minor: Number(firmwareValues.MINOR),
-          build: Number(firmwareValues.FIX)
-        };
+        devices[deviceId].majorFirmware = Number(firmwareValues.MAJOR);
       }
     }
 
     // Write firmware versions to log
     Object.keys(devices).forEach((deviceId) => {
-      if (devices[deviceId].firmware === undefined) {
+      if (devices[deviceId].majorFirmware === undefined) {
         return;
       }
-      let firmwareString =
-        devices[deviceId].firmware?.major.toString() +
-        "." +
-        devices[deviceId].firmware?.minor.toString() +
-        "." +
-        devices[deviceId].firmware?.build.toString();
       let firmwareKey = rootKey + getName(deviceId) + "/Firmware";
-      log.putString(firmwareKey, timestamp, firmwareString);
+      log.putString(firmwareKey, timestamp, devices[deviceId].majorFirmware.toString());
       log.createBlankField(rootKey + getName(deviceId), LoggableType.Empty);
       log.setGeneratedParent(rootKey + getName(deviceId));
     });
@@ -113,7 +108,11 @@ export default class URCLSchema {
       let messageId = periodicDataView.getUint16(position + 4, true);
       let messageValue = value.slice(position + 6, position + 14);
       let deviceId = messageId & 0x3f;
-      if (!(deviceId in devices) || devices[deviceId].firmware === undefined || devices[deviceId].firmware.major < 25) {
+      if (
+        !(deviceId in devices) ||
+        devices[deviceId].majorFirmware === undefined ||
+        devices[deviceId].majorFirmware < 25
+      ) {
         continue;
       }
 
@@ -122,9 +121,11 @@ export default class URCLSchema {
         let frameIndex = (messageId >> 6) & 0xf;
         let deviceKey = rootKey + getName(deviceId.toString());
         let frameKey = deviceKey + "/PeriodicFrame/" + frameIndex.toFixed();
+        let periodicFrameSpecs =
+          devices[deviceId].majorFirmware >= 26 ? PERIODIC_FRAME_SPECS_2026 : PERIODIC_FRAME_SPECS_2025;
         log.putRaw(frameKey, messageTimestamp, messageValue);
-        if (frameIndex >= 0 && frameIndex < PERIODIC_FRAME_SPECS.length) {
-          let frameSpec = PERIODIC_FRAME_SPECS[frameIndex];
+        if (frameIndex >= 0 && frameIndex < periodicFrameSpecs.length) {
+          let frameSpec = periodicFrameSpecs[frameIndex];
           let frameValues = parseCanFrame(frameSpec, { data: messageValue }) as { [key: string]: BigNumber | boolean };
 
           // Variables for calculating derived values

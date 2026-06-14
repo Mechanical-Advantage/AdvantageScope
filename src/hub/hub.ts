@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -777,7 +777,7 @@ async function handleMainMessage(message: NamedMessage) {
       if (liveActive) {
         window.sendMainMessage("error", {
           title: "Cannot publish",
-          content: "Publishing is is not allowed from a live source."
+          content: "Publishing is not allowed from a live source."
         });
       } else if (!("NT" in window.log.getFieldTree())) {
         window.sendMainMessage("error", {
@@ -955,7 +955,7 @@ async function handleMainMessage(message: NamedMessage) {
 
       // Convert to export format
       WorkerManager.request(
-        "../bundles/hub$exportWorker.js",
+        "../bundles/exportWorker.js",
         {
           options: message.data.options,
           log: window.log.toSerialized()

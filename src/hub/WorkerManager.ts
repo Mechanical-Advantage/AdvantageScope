@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -20,7 +20,7 @@ export default abstract class WorkerManager {
   static request(script: string, payload: any, progressCallback?: (progress: number) => void): Promise<any> {
     const requestId = this.globalRequestId++;
     return new Promise<any>((resolve, reject) => {
-      const worker = new Worker(script);
+      const worker = new Worker(script, { type: "module" });
       this.workers[requestId] = {
         worker: worker,
         resolve: resolve,

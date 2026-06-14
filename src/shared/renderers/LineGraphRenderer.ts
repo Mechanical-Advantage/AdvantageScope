@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -146,7 +146,8 @@ export default class LineGraphRenderer implements TabRenderer {
       this.lastCursorX,
       command.leftFields.map((field) => [field.values.length, field.color, field.type, field.size]),
       command.discreteFields.map((field) => [field.values.length, field.color, field.type, field.toggleReference]),
-      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size])
+      command.rightFields.map((field) => [field.values.length, field.color, field.type, field.size]),
+      command.alerts.map((row) => row.map((alert) => [alert.type, alert.text, alert.range]))
     ];
     let renderStateString = JSON.stringify(renderState);
     if (renderStateString === this.lastRenderState) {

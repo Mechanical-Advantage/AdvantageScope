@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -143,6 +143,70 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
     for (const name of Object.getOwnPropertyNames(obj)) {
       let data = obj[name];
       let key = path + name;
+
+      // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
+      let label: string;
+      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
+        // Remove last 2 words of name
+        label = name.split(" ").slice(0, -2).join(" ") + " Pose";
+      } else {
+        // Remove last word of name
+        label = name.split(" ").slice(0, -1).join(" ") + " Pose";
+      }
+
+      if (name.endsWith(" x") || name === "x") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [Units.convert(Number(data), "inches", "meters"), 0], rotation: 0 });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: [Number(data) / 39.37008, cur.translation.at(1)],
+            rotation: cur.rotation
+          });
+        }
+
+        continue;
+      }
+
+      if (name.endsWith(" y") || name === "y") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, Units.convert(Number(data), "inches", "meters")], rotation: 0 });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: [cur.translation.at(0), Units.convert(Number(data), "inches", "meters")],
+            rotation: cur.rotation
+          });
+        }
+
+        continue;
+      }
+
+      if (name.endsWith(" heading") || name === "heading") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, 0], rotation: Number(data) });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
+        }
+
+        continue;
+      }
+
+      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
+        if (!foundPoses.has(label)) {
+          foundPoses.set(label, { translation: [0, 0], rotation: Units.convert(Number(data), "degrees", "radians") });
+        } else {
+          let cur = foundPoses.get(label)!!;
+          foundPoses.set(label, <Pose2d>{
+            translation: cur.translation,
+            rotation: Units.convert(Number(data), "degrees", "radians")
+          });
+        }
+
+        continue;
+      }
+
       switch (typeof data) {
         case "string":
           if (!isNaN(Number(data)) && !isNaN(parseFloat(data))) {
@@ -161,49 +225,6 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
         case "bigint":
           this.log.putNumber(key, timestamp, Number(data));
           break;
-      }
-      // Search for poses in the telemetry by parsing lines ending with x, y, heading, and heading (deg)
-      let label = name.split(" ").slice(0, -1).join(" ") + " Pose";
-      if (name.endsWith(" x") || name === "x") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [Units.convert(Number(data), "inches", "meters"), 0], rotation: 0 });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{
-            translation: [Number(data) / 39.37008, cur.translation.at(1)],
-            rotation: cur.rotation
-          });
-        }
-      }
-      if (name.endsWith(" y") || name === "y") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, Units.convert(Number(data), "inches", "meters")], rotation: 0 });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{
-            translation: [cur.translation.at(0), Units.convert(Number(data), "inches", "meters")],
-            rotation: cur.rotation
-          });
-        }
-      }
-      if (name.endsWith(" heading") || name === "heading") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, 0], rotation: Number(data) });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{ translation: cur.translation, rotation: Number(data) });
-        }
-      }
-      if (name.endsWith(" heading (deg)") || name === "heading (deg)") {
-        if (!foundPoses.has(label)) {
-          foundPoses.set(label, { translation: [0, 0], rotation: Units.convert(Number(data), "degrees", "radians") });
-        } else {
-          let cur = foundPoses.get(label)!!;
-          foundPoses.set(label, <Pose2d>{
-            translation: cur.translation,
-            rotation: Units.convert(Number(data), "degrees", "radians")
-          });
-        }
       }
     }
 
@@ -245,7 +266,7 @@ export default class FTCDashboardSource extends LiveDataSource implements LiveDa
     return this.configState !== initialState;
   }
   isTunable(key: string): boolean {
-    return this.tunableKeysTypes.get(key) != undefined;
+    return this.tunableKeysTypes.get(key) !== undefined;
   }
   publish(key: string, value: number | boolean): void {
     if (!this.isTunable(key)) {

@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -28,10 +28,11 @@ struct ContentView : View {
     @StateObject private var appState = AppState()
     @StateObject private var recordingPreviewState = RecordingPreviewState()
     @State private var arManager = ARManager()
+    @Environment(\.scenePhase) var scenePhase
 
     private let networking = Networking()
     private let qrScanner = QRScanner()
-    private let webOverlay = WebOverlay()
+    @StateObject private var webOverlay = WebOverlay()
     
     var body: some View {
         ARViewContainer(arManager: $arManager)
@@ -39,7 +40,7 @@ struct ContentView : View {
         
             // Web overlay
             .overlay(
-                webOverlay
+                WebOverlayView(overlay: webOverlay)
                     .ignoresSafeArea(.all)
                     .allowsHitTesting(false)
                     .opacity(showWebOverlay() ? 1 : 0)
@@ -73,15 +74,28 @@ struct ContentView : View {
                 }
             }
             .onAppear() {
+                webOverlay.appState = appState
                 networking.start(appState, webOverlay)
                 arManager.appState = appState
                 arManager.webOverlay = webOverlay
                 arManager.addFrameCallback(qrScanner.processFrame)
                 webOverlay.messageHandler.arManager = arManager
                 qrScanner.start(appState)
+                arManager.start()
+            }
+            .onChange(of: scenePhase) { newPhase in
+                switch newPhase {
+                case .active:
+                    arManager.start()
+                case .background, .inactive:
+                    arManager.stop()
+                @unknown default:
+                    break
+                }
             }
             .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) {activity in
                 if (activity.webpageURL != nil) {
+                    qrScanner.start(appState)
                     qrScanner.parseURL(activity.webpageURL!)
                 }
             }

@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -7,6 +7,7 @@
 
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
 import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
@@ -347,9 +348,17 @@ export default class LineGraphController implements TabController {
     filter: LineGraphFilter
   ): string | null {
     if (!(key in commandCache)) return null;
+    if (
+      time < window.selection.getTimelineRange()[0] ||
+      (time > window.selection.getTimelineRange()[1] && window.selection.getMode() !== SelectionMode.Locked)
+    ) {
+      return null;
+    }
     let command = commandCache[key];
     let index = command.timestamps.findLastIndex((sample) => sample <= time);
-    if (index === -1) return null;
+    if (index === -1) {
+      return null;
+    }
     let output = this.PREVIEW_FORMAT.format(command.values[index]);
     if (unitCache !== null && command.hasUnit) {
       let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
@@ -468,31 +477,26 @@ export default class LineGraphController implements TabController {
 
         // Add AdvantageKit samples
         if (akitTimestamps !== undefined) {
-          switch (fieldItem.type) {
-            case "stepped":
-              // Extra samples wouldn't affect rendering
-              break;
-            case "smooth":
-            case "points":
-              let newData: LogValueSetNumber = { timestamps: [], values: [] };
-              let sourceIndex = 0;
-              let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+          // Only if its needed for rendering intermediate points, or for a filter.
+          if (fieldItem.type !== "stepped" || filter !== LineGraphFilter.None) {
+            let newData: LogValueSetNumber = { timestamps: [], values: [] };
+            let sourceIndex = 0;
+            let akitIndex = akitTimestamps.findIndex((akitTime) => akitTime >= data!.timestamps[0]);
+            while (
+              akitIndex < akitTimestamps.length &&
+              akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]
+            ) {
               while (
-                akitIndex < akitTimestamps.length &&
-                akitTimestamps[akitIndex] <= data!.timestamps[data!.timestamps.length - 1]
+                sourceIndex < data!.timestamps.length - 1 &&
+                akitTimestamps[akitIndex] >= data!.timestamps[sourceIndex + 1]
               ) {
-                while (
-                  sourceIndex < data!.timestamps.length - 1 &&
-                  akitTimestamps[akitIndex] >= data!.timestamps[sourceIndex + 1]
-                ) {
-                  sourceIndex++;
-                }
-                newData.timestamps.push(akitTimestamps[akitIndex]);
-                newData.values.push(data!.values[sourceIndex]);
-                akitIndex++;
+                sourceIndex++;
               }
-              data = newData;
-              break;
+              newData.timestamps.push(akitTimestamps[akitIndex]);
+              newData.values.push(data!.values[sourceIndex]);
+              akitIndex++;
+            }
+            data = newData;
           }
         }
 

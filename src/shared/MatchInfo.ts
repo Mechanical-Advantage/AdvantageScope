@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -89,7 +89,7 @@ export function getElimMatchString(playoffType: PlayoffType, matchNumber: number
 }
 
 function getElimCompLevel(playoffType: PlayoffType, matchNumber: number): CompLevel {
-  if (playoffType == PlayoffType.AVG_SCORE_8_TEAM) {
+  if (playoffType === PlayoffType.AVG_SCORE_8_TEAM) {
     if (matchNumber <= 8) {
       return CompLevel.QF;
     } else if (matchNumber <= 14) {
@@ -97,24 +97,24 @@ function getElimCompLevel(playoffType: PlayoffType, matchNumber: number): CompLe
     } else {
       return CompLevel.F;
     }
-  } else if (playoffType == PlayoffType.ROUND_ROBIN_6_TEAM) {
+  } else if (playoffType === PlayoffType.ROUND_ROBIN_6_TEAM) {
     // Einstein 2017 for example. 15 round robin matches, then finals
     return matchNumber <= 15 ? CompLevel.SF : CompLevel.F;
-  } else if (playoffType == PlayoffType.DOUBLE_ELIM_8_TEAM) {
+  } else if (playoffType === PlayoffType.DOUBLE_ELIM_8_TEAM) {
     return DOUBLE_ELIM_MAPPING[matchNumber][0];
-  } else if (playoffType == PlayoffType.DOUBLE_ELIM_4_TEAM) {
+  } else if (playoffType === PlayoffType.DOUBLE_ELIM_4_TEAM) {
     return DOUBLE_ELIM_4_MAPPING[matchNumber][0];
-  } else if (playoffType == PlayoffType.LEGACY_DOUBLE_ELIM_8_TEAM) {
+  } else if (playoffType === PlayoffType.LEGACY_DOUBLE_ELIM_8_TEAM) {
     return LEGACY_DOUBLE_ELIM_MAPPING[matchNumber][0];
-  } else if (playoffType == PlayoffType.BO3_FINALS || playoffType == PlayoffType.BO5_FINALS) {
+  } else if (playoffType === PlayoffType.BO3_FINALS || playoffType === PlayoffType.BO5_FINALS) {
     return CompLevel.F;
   } else {
-    if (playoffType == PlayoffType.BRACKET_16_TEAM) {
+    if (playoffType === PlayoffType.BRACKET_16_TEAM) {
       return getElimCompLevelOcto(matchNumber);
-    } else if (playoffType == PlayoffType.BRACKET_4_TEAM && matchNumber <= 12) {
+    } else if (playoffType === PlayoffType.BRACKET_4_TEAM && matchNumber <= 12) {
       // Account for a 4 team bracket where numbering starts at 1
       matchNumber += 12;
-    } else if (playoffType == PlayoffType.BRACKET_2_TEAM && matchNumber <= 18) {
+    } else if (playoffType === PlayoffType.BRACKET_2_TEAM && matchNumber <= 18) {
       // Account for a 2 team bracket where numbering starts at 1
       matchNumber += 18;
     }
@@ -143,40 +143,40 @@ function getElimCompLevelOcto(matchNumber: number): CompLevel {
 }
 
 function getElimMatchNumbers(playoffType: PlayoffType, compLevel: CompLevel, matchNumber: number): [number, number] {
-  if (playoffType == PlayoffType.AVG_SCORE_8_TEAM) {
-    if (compLevel == CompLevel.SF) {
+  if (playoffType === PlayoffType.AVG_SCORE_8_TEAM) {
+    if (compLevel === CompLevel.SF) {
       return [1, matchNumber - 8];
-    } else if (compLevel == CompLevel.F) {
+    } else if (compLevel === CompLevel.F) {
       return [1, matchNumber - 14];
     } else {
       // qf
       return [1, matchNumber];
     }
   }
-  if (playoffType == PlayoffType.ROUND_ROBIN_6_TEAM) {
+  if (playoffType === PlayoffType.ROUND_ROBIN_6_TEAM) {
     // Einstein 2017 for example. 15 round robin matches from sf1 - 1 to sf1 - 15, then finals
     matchNumber = matchNumber <= 15 ? matchNumber : matchNumber - 15;
-    if (compLevel == CompLevel.F) {
+    if (compLevel === CompLevel.F) {
       return [1, matchNumber];
     } else {
       return [1, matchNumber];
     }
-  } else if (playoffType == PlayoffType.DOUBLE_ELIM_8_TEAM) {
+  } else if (playoffType === PlayoffType.DOUBLE_ELIM_8_TEAM) {
     return DOUBLE_ELIM_MAPPING[matchNumber].slice(1) as [number, number];
-  } else if (playoffType == PlayoffType.DOUBLE_ELIM_4_TEAM) {
+  } else if (playoffType === PlayoffType.DOUBLE_ELIM_4_TEAM) {
     return DOUBLE_ELIM_4_MAPPING[matchNumber].slice(1) as [number, number];
-  } else if (playoffType == PlayoffType.LEGACY_DOUBLE_ELIM_8_TEAM) {
+  } else if (playoffType === PlayoffType.LEGACY_DOUBLE_ELIM_8_TEAM) {
     return LEGACY_DOUBLE_ELIM_MAPPING[matchNumber].slice(1) as [number, number];
-  } else if (playoffType == PlayoffType.BO3_FINALS || playoffType == PlayoffType.BO5_FINALS) {
+  } else if (playoffType === PlayoffType.BO3_FINALS || playoffType === PlayoffType.BO5_FINALS) {
     return [1, matchNumber];
   } else {
-    if (playoffType == PlayoffType.BRACKET_4_TEAM && matchNumber <= 12) {
+    if (playoffType === PlayoffType.BRACKET_4_TEAM && matchNumber <= 12) {
       matchNumber += 12;
-    } else if (playoffType == PlayoffType.BRACKET_2_TEAM && matchNumber <= 18) {
+    } else if (playoffType === PlayoffType.BRACKET_2_TEAM && matchNumber <= 18) {
       matchNumber += 18;
     }
 
-    return playoffType == PlayoffType.BRACKET_16_TEAM
+    return playoffType === PlayoffType.BRACKET_16_TEAM
       ? BRACKET_OCTO_ELIM_MAPPING[matchNumber]
       : BRACKET_ELIM_MAPPING[matchNumber];
   }

@@ -22,11 +22,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 </details>
 
 :::warning
-**Why are there two 2025 FRC field options?**
-
-AdvantageScope includes two 2025 FRC field models: "2025 Field (Welded)" and "2025 Field (AndyMark)". As explained in [Team Update 12](https://firstfrc.blob.core.windows.net/frc2025/Manual/TeamUpdates/TeamUpdate12.pdf), there are two versions of the Reefscape field with different dimensions and processor locations (see the Team Update for details on which field is used at each event). Teams should use the correct AprilTag layout and field dimensions in code and on any vision coprocessors, then **choose the matching field model in AdvantageScope to ensure that the visualization is accurate**. Documentation is available from [WPILib](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/apriltag/AprilTagFields.html), [Limelight](https://docs.limelightvision.io/docs/docs-limelight/pipeline-apriltag/apriltag-map-specification), and [PhotonVision](https://docs.photonvision.org/en/latest/docs/apriltag-pipelines/multitag.html#updating-the-field-layout) about changing the AprilTag layout.
-
-_The 2025 field model used by AdvantageScope prior to Febuary 2025 is equivalent to the "2025 Field (Welded) option._
+The 2026 FRC field model is consistent with the AprilTag layout for the **welded** field. The differences between the welded and AndyMark fields are very minor, but there may be small (~0.5 inch) misalignments when visualizing AprilTag poses based on the AndyMark field layout.
 :::
 
 ## Adding Objects
@@ -120,7 +116,7 @@ Setting up 3D components can be complex and time-consuming. Consider utilizing A
 
 Mechanisms can be visualized with articulated components by logging a set of 3D poses that represent the robot-relative locations of each component. Add the poses to an existing robot or ghost object and set the object type to "Component".
 
-Each component can be moved independently (like an elevator carriage, arm, or end effector). For more information on configuring robots with components, see [Custom Assets](/more-features/custom-assets).
+Each component can be moved independently (like an elevator carriage, arm, or end effector). AdvantageKit users should consider using the [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) method to convert a Mechanism2d to an array of Pose3d objects. For more information on configuring robots with components, see [Custom Assets](/more-features/custom-assets).
 
 ![3D mechanism](./img/3d-field-3.png)
 

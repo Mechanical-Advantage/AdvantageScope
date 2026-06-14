@@ -1,4 +1,4 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
@@ -199,7 +199,7 @@ export default class StatisticsRenderer implements TabRenderer {
           return "";
         }
         const item = items[0];
-        const x = item.parsed.x;
+        const x = item.parsed.x!;
         const min = x - command.stepSize / 2;
         const max = x + command.stepSize / 2;
         return cleanFloat(min).toString() + " to " + cleanFloat(max).toString();

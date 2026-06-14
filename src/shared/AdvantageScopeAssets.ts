@@ -1,11 +1,10 @@
-// Copyright (c) 2021-2025 Littleton Robotics
+// Copyright (c) 2021-2026 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
 // Use of this source code is governed by a BSD
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Field3dRendererCommand_AprilTagVariant } from "./renderers/Field3dRenderer";
 import { Units } from "./units";
 
 export const FRC_STANDARD_FIELD_LENGTH = Units.convert(54, "feet", "meters");
@@ -82,7 +81,7 @@ export interface Config3dField_GamePiece {
 }
 
 export interface Config3dField_AprilTag {
-  variant: Field3dRendererCommand_AprilTagVariant;
+  variant: string;
   id: number;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
