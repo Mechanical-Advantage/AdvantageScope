@@ -162,6 +162,13 @@ function updateFancyWindow() {
   // Using fancy sidebar?
   if (window.platform === "darwin") {
     document.body.classList.add("fancy-side-bar-mac");
+
+    // macOS Golden Gate switched to a different sidebar style
+    if (Number(releaseSplit[0]) >= 27) {
+      document.body.classList.add("fancy-side-bar-mac-27");
+    } else {
+      document.body.classList.remove("fancy-side-bar-mac-27");
+    }
   } else {
     document.body.classList.remove("fancy-side-bar-mac");
   }

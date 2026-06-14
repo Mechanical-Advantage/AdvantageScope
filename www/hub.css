@@ -297,6 +297,11 @@ div.viewer-background {
   }
 }
 
+/** macOS Golden Gate uses a flat sidebar style, so removing the shadow blends in better with native apps. **/
+body.fancy-side-bar-mac-27 div.viewer-background {
+  box-shadow: none;
+}
+
 div.viewer {
   position: absolute;
   left: var(--side-bar-width);
