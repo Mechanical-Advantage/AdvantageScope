@@ -118,7 +118,7 @@ telemetry.update();
 
 - **Field:** The field image to use. All recent FRC and FTC games are supported. To add a custom field image, see [Custom Assets](/more-features/custom-assets).
 - **Orientation:** The orientation of the field image in the viewer pane.
-- **Size:** The side length of the robot (30 inches, 27 inches, or 24 inches).
+- **Size:** The side length of the robot (30/27/24 inches for FRC, 18/16/14 inches for FTC).
 
 :::info
 The coordinate system used on the this tab is customizable. See the [coordinate system](/more-features/coordinate-systems) page for details.
