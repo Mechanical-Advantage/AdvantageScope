@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { parseREVLOG } from "@rev-robotics/revlog-converter";
-import { FileInfo, Client as FTPClient, FTPError } from "basic-ftp";
 import { hex } from "color-convert";
 import {
   app,
@@ -32,6 +31,7 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
+import { Client, Stats } from "ssh2";
 import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
@@ -51,9 +51,11 @@ import {
   AKIT_PATH_INPUT_PERIOD,
   AKIT_PATH_OUTPUT,
   APP_VERSION,
+  DOWNLOAD_CONNECT_TIMEOUT_MS,
+  DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
-  DOWNLOAD_TIMEOUT_MS,
+  DOWNLOAD_USERNAME,
   FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
@@ -108,7 +110,6 @@ let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | 
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
-let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
@@ -125,13 +126,12 @@ let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 let rlogDataArrays: { [id: number]: Uint8Array } = {};
 
 // Download variables
-let downloadClient: FTPClient | null = null;
+let downloadClient: Client | null = null;
 let downloadRetryTimeout: NodeJS.Timeout | null = null;
 let downloadRefreshInterval: NodeJS.Timeout | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
-let downloadClientIsSaving = false;
 
 // WINDOW MESSAGE HANDLING
 
@@ -154,7 +154,6 @@ function sendMessage(window: BrowserWindow, name: string, data?: any): boolean {
 /** Sends the current preferences to all windows (including USB menu bar setting) */
 function sendAllPreferences() {
   let data: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  data.usb = usingUsb;
   nativeTheme.themeSource = data.theme;
   hubWindows.forEach((window) => {
     if (!window.isDestroyed()) {
@@ -490,27 +489,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           targetCount += 1;
           openPath(logPath, (buffer) => (results[0] = buffer));
         }
-      }
-      break;
-
-    case "numeric-array-deprecation-warning":
-      {
-        let shouldForce: boolean = message.data.force;
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-        if (!prefs.skipNumericArrayDeprecationWarning) {
-          prefs.skipNumericArrayDeprecationWarning = true;
-          jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-          sendAllPreferences();
-        }
-        dialog.showMessageBox(window, {
-          type: "info",
-          title: "Alert",
-          message: "Deprecated data format",
-          detail:
-            "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
-          icon: WINDOW_ICON
-        });
       }
       break;
 
@@ -1572,86 +1550,85 @@ function handleDownloadMessage(message: NamedMessage) {
   }
 }
 
-/** Starts a new FTP connection. */
-async function downloadStart() {
+/** Starts a new SSH connection. */
+function downloadStart() {
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-  downloadClient?.trackProgress();
-  downloadClient?.close();
-  downloadClientIsSaving = false;
+  downloadClient?.end();
   downloadFileSizeCache = {};
-
-  // Connect to server
-  try {
-    downloadClient = await new FTPClient(DOWNLOAD_TIMEOUT_MS);
-    await downloadClient.access({
-      host: downloadAddress
-    });
-  } catch (error) {
-    downloadError((error as FTPError).message);
-  }
-
-  // Start periodic read
-  let readFiles = async () => {
-    if (downloadClientIsSaving) return;
-    let list: FileInfo[] | undefined = undefined;
-    try {
-      list = await downloadClient?.list(downloadPath);
-    } catch (error) {
-      downloadError((error as FTPError).message);
-    }
-    if (list !== undefined) {
-      // Send file list to window
-      if (downloadWindow) {
-        if (list.length === 0) {
-          downloadError("No files");
+  downloadClient = new Client()
+    .once("ready", () => {
+      // Successful SSH connection
+      downloadClient?.sftp((error, sftp) => {
+        if (error) {
+          // Failed to start SFTP
+          downloadError(error.message);
         } else {
-          const filesAndFolders = list.filter(
-            (file) =>
-              !file.name.startsWith(".") &&
-              (file.isDirectory ||
-                file.name.endsWith(".rlog") ||
-                file.name.endsWith(".wpilog") ||
-                file.name.endsWith(".wpilogxz") ||
-                file.name.endsWith(".hoot") ||
-                file.name.endsWith(".revlog"))
-          );
-          const listData: { name: string; size: number; isFolder: boolean }[] = [];
-          for (const file of filesAndFolders) {
-            if (file.isDirectory) {
-              let totalSize = 0;
-              try {
-                const subFiles = await downloadClient?.list(downloadPath + file.name);
-                if (subFiles) {
-                  subFiles.forEach((subFile) => {
-                    if (subFile.isFile) totalSize += subFile.size;
-                  });
+          // Successful SFTP connection
+          let readFiles = () => {
+            sftp.readdir(downloadPath, (error, list) => {
+              if (error) {
+                // Failed to read directory (not found?)
+                downloadError(error.message);
+              } else {
+                // Return list of files
+                if (downloadWindow) {
+                  sendMessage(
+                    downloadWindow,
+                    "set-list",
+                    list
+                      .map((file) => {
+                        return { name: file.filename, size: file.attrs.size };
+                      })
+                      .filter(
+                        (file) =>
+                          !file.name.startsWith(".") &&
+                          (file.name.endsWith(".rlog") ||
+                            file.name.endsWith(".wpilog") ||
+                            file.name.endsWith(".wpilogxz") ||
+                            file.name.endsWith(".revlog") ||
+                            file.name.endsWith(".hoot"))
+                      )
+                      .map((file) => {
+                        return {
+                          name: file.name,
+                          size: file.size
+                        };
+                      })
+                  );
                 }
-              } catch (e) {}
-              listData.push({ name: file.name, size: totalSize, isFolder: true });
-            } else {
-              listData.push({ name: file.name, size: file.size, isFolder: false });
-            }
-          }
-          sendMessage(downloadWindow, "set-list", listData);
-        }
-      }
 
-      // Save cache of file sizes
-      list.forEach((file) => {
-        downloadFileSizeCache[file.name] = file.size;
+                // Save cache of file sizes
+                list.forEach((file) => {
+                  downloadFileSizeCache[file.filename] = file.attrs.size;
+                });
+              }
+            });
+          };
+
+          // Start periodic read
+          downloadRefreshInterval = setInterval(readFiles, DOWNLOAD_REFRESH_INTERVAL_MS);
+          readFiles();
+        }
       });
-    }
-  };
-  downloadRefreshInterval = setInterval(readFiles, DOWNLOAD_REFRESH_INTERVAL_MS);
-  readFiles();
+    })
+    .on("error", (error) => {
+      // Failed SSH connection
+      downloadError(error.message);
+    })
+    .connect({
+      // Start connection
+      host: downloadAddress,
+      port: 22,
+      readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
+      username: DOWNLOAD_USERNAME,
+      password: DOWNLOAD_PASSWORD
+    });
 }
 
 /** Closes the FTP connection. */
 function downloadStop() {
-  downloadClient?.trackProgress();
-  downloadClient?.close();
-  downloadClientIsSaving = false;
+  downloadClient?.end();
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
 }
@@ -1662,13 +1639,11 @@ function downloadError(errorMessage: string) {
   sendMessage(downloadWindow, "show-error", errorMessage);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
   downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
-  downloadClientIsSaving = false;
 }
 
 /** Guides the user through saving a set of files. */
 function downloadSave(files: string[]) {
   if (!downloadWindow) return;
-  downloadClientIsSaving = true;
   let selectPromise;
   let firstExtension = path.extname(files[0]);
   if (files.length > 1 || firstExtension === "") {
@@ -1707,7 +1682,7 @@ function downloadSave(files: string[]) {
   }
 
   // Handle selected save location
-  selectPromise.then(async (response) => {
+  selectPromise.then((response) => {
     if (response.canceled) return;
     let savePath: string = "";
     if (files.length > 1 || firstExtension === "") {
@@ -1716,124 +1691,134 @@ function downloadSave(files: string[]) {
       savePath = (response as Electron.SaveDialogReturnValue).filePath as string;
     }
     if (savePath !== "") {
-      // Set up transfer progress
-      if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
-      let sizeTotal = 0;
-      downloadClient?.trackProgress((info) => {
-        if (!downloadWindow) return;
-        sendMessage(downloadWindow, "set-progress", { current: info.bytesOverall, total: sizeTotal });
-      });
-
       // Start saving
-      if (files.length === 1 && firstExtension !== "") {
-        // Single file
-        if (files[0] in downloadFileSizeCache) {
-          sizeTotal = downloadFileSizeCache[files[0]];
-        }
-        try {
-          await downloadClient?.downloadTo(savePath, downloadPath + files[0]);
-          if (!downloadWindow) return;
-          sendMessage(downloadWindow, "set-progress", 1);
-
-          // Ask if the log should be opened
-          dialog
-            .showMessageBox(downloadWindow, {
-              type: "question",
-              message: "Open log?",
-              detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
-              icon: WINDOW_ICON,
-              buttons: ["Open", "Skip"],
-              defaultId: 0
-            })
-            .then((result) => {
-              if (result.response === 0) {
-                downloadWindow?.destroy();
-                downloadStop();
-                hubWindows[0].focus();
-                sendMessage(hubWindows[0], "open-files", { files: [savePath], merge: false });
-              }
-            });
-        } catch (error) {
-          downloadError((error as FTPError).message);
-        }
-      } else {
-        // Multiple files
-        let downloadTasks: { remote: string; local: string; size: number }[] = [];
-        for (const file of files) {
-          if (path.extname(file) === "") {
-            // Folder
-            try {
-              const subFiles = await downloadClient?.list(downloadPath + file);
-              if (subFiles) {
-                const localFolderPath = path.join(savePath, file);
-                if (!fs.existsSync(localFolderPath)) {
-                  fs.mkdirSync(localFolderPath);
+      downloadClient?.sftp((error, sftp) => {
+        if (error) {
+          downloadError(error.message);
+        } else {
+          if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
+          if (files.length === 1) {
+            // Single file
+            sftp.fastGet(
+              downloadPath + files[0],
+              savePath,
+              {
+                step: (sizeTransferred, _, sizeTotal) => {
+                  if (!downloadWindow) return;
+                  sendMessage(downloadWindow, "set-progress", { current: sizeTransferred, total: sizeTotal });
                 }
-                for (const subFile of subFiles) {
-                  if (subFile.isFile) {
-                    downloadTasks.push({
-                      remote: downloadPath + file + "/" + subFile.name,
-                      local: path.join(localFolderPath, subFile.name),
-                      size: subFile.size
+              },
+              (error) => {
+                if (error) {
+                  downloadError(error.message);
+                } else {
+                  if (!downloadWindow) return;
+                  sendMessage(downloadWindow, "set-progress", 1);
+
+                  // Ask if the log should be opened
+                  dialog
+                    .showMessageBox(downloadWindow, {
+                      type: "question",
+                      message: "Open log?",
+                      detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
+                      icon: WINDOW_ICON,
+                      buttons: ["Open", "Skip"],
+                      defaultId: 0
+                    })
+                    .then((result) => {
+                      if (result.response === 0) {
+                        downloadWindow?.destroy();
+                        downloadStop();
+                        hubWindows[0].focus();
+                        sendMessage(hubWindows[0], "open-files", { files: [savePath], merge: false });
+                      }
                     });
-                  }
                 }
               }
-            } catch (e) {
-              console.error(e);
-            }
+            );
           } else {
-            // File
-            let remoteSize = 0;
-            if (file in downloadFileSizeCache) remoteSize = downloadFileSizeCache[file];
-            downloadTasks.push({
-              remote: downloadPath + file,
-              local: path.join(savePath, file),
-              size: remoteSize
+            // Multiple files
+            let completeCount = 0;
+            let skipCount = 0;
+            let allSizesTransferred: number[] = new Array(files.length).fill(0);
+            let allSizesTotal = 0;
+            files.forEach((file, index) => {
+              let fileSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
+              allSizesTotal += fileSize;
+              fs.stat(savePath + "/" + file, async (statErr, stats) => {
+                let remoteStats = await new Promise<Stats>((resolve) => {
+                  sftp.stat(downloadPath + file, (_, stats) => {
+                    resolve(stats);
+                  });
+                });
+                if (statErr === null && stats.size >= remoteStats.size) {
+                  // File already downloaded, skip
+                  completeCount++;
+                  skipCount++;
+                  allSizesTotal -= fileSize; // Remove from total size of files
+                  if (skipCount === files.length) {
+                    // All files skipped
+                    if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
+                  }
+                } else {
+                  // File not downloaded or out of date, download
+                  sftp.fastGet(
+                    downloadPath + file,
+                    savePath + "/" + file,
+                    {
+                      step: (sizeTransferred) => {
+                        allSizesTransferred[index] = sizeTransferred;
+                        if (!downloadWindow) return;
+                        let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
+                        sendMessage(downloadWindow, "set-progress", {
+                          current: sumSizeTransferred,
+                          total: allSizesTotal
+                        });
+                      }
+                    },
+                    (error) => {
+                      if (error) {
+                        downloadError(error.message);
+                      } else {
+                        completeCount++;
+
+                        if (completeCount >= files.length) {
+                          let message: string;
+                          if (skipCount > 0) {
+                            let newCount = completeCount - skipCount;
+                            message =
+                              "Saved " +
+                              newCount.toString() +
+                              " new log" +
+                              (newCount === 1 ? "" : "s") +
+                              " (" +
+                              skipCount.toString() +
+                              " skipped) to <u>" +
+                              savePath +
+                              "</u>";
+                          } else {
+                            message =
+                              "Saved " +
+                              completeCount.toString() +
+                              " log" +
+                              (completeCount === 1 ? "" : "s") +
+                              " to <u>" +
+                              savePath +
+                              "</u>";
+                          }
+                          if (!downloadWindow) return;
+                          sendMessage(downloadWindow, "set-progress", 1);
+                          sendMessage(downloadWindow, "show-alert", message);
+                        }
+                      }
+                    }
+                  );
+                }
+              });
             });
           }
         }
-
-        // Filter existing
-        let totalCount = downloadTasks.length;
-        downloadTasks = downloadTasks.filter((task) => {
-          if (!fs.existsSync(task.local) || fs.statSync(task.local).size < task.size) {
-            sizeTotal += task.size;
-            return true;
-          }
-          return false;
-        });
-
-        if (downloadTasks.length === 0) {
-          // All files skipped
-          if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
-          return;
-        }
-        try {
-          for (const task of downloadTasks) {
-            await downloadClient?.downloadTo(task.local, task.remote);
-          }
-          if (!downloadWindow) return;
-          sendMessage(downloadWindow, "set-progress", 1);
-
-          // Send message
-          let message: string;
-          if (totalCount > downloadTasks.length) {
-            message = `Saved ${downloadTasks.length} new file${downloadTasks.length === 1 ? "" : "s"} (${
-              totalCount - downloadTasks.length
-            } skipped) to <u>${savePath}</u>`;
-          } else {
-            message = `Saved ${downloadTasks.length} new file${
-              downloadTasks.length === 1 ? "" : "s"
-            } to <u>${savePath}</u>`;
-          }
-          if (!downloadWindow) return;
-          sendMessage(downloadWindow, "set-progress", 1);
-          sendMessage(downloadWindow, "show-alert", message);
-        } catch (error) {
-          downloadError((error as FTPError).message);
-        }
-      }
+      });
     }
   });
 }
@@ -2023,21 +2008,23 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "phoenix", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", false);
-                }
-              };
-              return item;
-            })
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+              (liveMode: LiveMode) => {
+                let item: Electron.MenuItemConstructorOptions = {
+                  label: getLiveModeName(liveMode),
+                  click(_, baseWindow) {
+                    const window = baseWindow as BrowserWindow | undefined;
+                    if (window === undefined || !hubWindows.includes(window)) return;
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.liveMode = liveMode;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                    sendMessage(window, "start-live", false);
+                  }
+                };
+                return item;
+              }
+            )
           ]
         },
         {
@@ -2054,21 +2041,23 @@ function setupMenu() {
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "phoenix", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", true);
-                }
-              };
-              return item;
-            })
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+              (liveMode: LiveMode) => {
+                let item: Electron.MenuItemConstructorOptions = {
+                  label: getLiveModeName(liveMode),
+                  click(_, baseWindow) {
+                    const window = baseWindow as BrowserWindow | undefined;
+                    if (window === undefined || !hubWindows.includes(window)) return;
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.liveMode = liveMode;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                    sendMessage(window, "start-live", true);
+                  }
+                };
+                return item;
+              }
+            )
           ]
         },
         {
@@ -2078,16 +2067,6 @@ function setupMenu() {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             openDownload(window);
-          }
-        },
-        { type: "separator" },
-        {
-          label: "Use USB roboRIO Address",
-          type: "checkbox",
-          checked: false,
-          click(item) {
-            usingUsb = item.checked;
-            sendAllPreferences();
           }
         },
         { type: "separator" },

@@ -7,7 +7,6 @@
 
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
-import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import NamedMessage from "../shared/NamedMessage";
 import Preferences from "../shared/Preferences";
 import Selection from "../shared/Selection";
@@ -27,7 +26,7 @@ import LiveDataTuner from "./dataSources/LiveDataTuner";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
-import NT4Source from "./dataSources/nt4/NT4Source";
+import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 
 // Constants
@@ -426,10 +425,13 @@ function startLive(isSim = false) {
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
     case "nt4":
-      liveSource = new NT4Source(false);
+      liveSource = new NT4Source(NT4Mode.Default);
       break;
     case "nt4-akit":
-      liveSource = new NT4Source(true);
+      liveSource = new NT4Source(NT4Mode.AdvantageKit);
+      break;
+    case "nt4-systemcore":
+      liveSource = new NT4Source(NT4Mode.Systemcore);
       break;
     case "phoenix":
       liveSource = new PhoenixDiagnosticsSource();
@@ -446,9 +448,7 @@ function startLive(isSim = false) {
   if (DISTRIBUTION === Distribution.Lite) {
     address = window.location.hostname;
   } else if (isSim) {
-    address = SIM_ADDRESS;
-  } else if (window.preferences?.usb) {
-    address = USB_ADDRESS;
+    address = "127.0.0.1";
   } else {
     if (window.preferences) {
       address = window.preferences.robotAddress;

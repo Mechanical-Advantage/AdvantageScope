@@ -120,7 +120,7 @@ export default (cliArgs) => {
             "ws",
             "http",
             "path",
-            "basic-ftp",
+            "ssh2",
             "download",
             "youtube-dl-exec",
             "tesseract.js",

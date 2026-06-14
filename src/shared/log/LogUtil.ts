@@ -33,6 +33,7 @@ export const ENABLED_KEYS = [
   "/DSLog/Status/DSDisabled",
   "RobotEnable", // Phoenix
   "NT:/FMSInfo/FMSControlData",
+  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
   "RUNNING"
 ];
 export const AUTONOMOUS_KEYS = [
@@ -41,21 +42,29 @@ export const AUTONOMOUS_KEYS = [
   "DS:autonomous",
   "/DSLog/Status/DSTeleop",
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/FMSControlData"
+  "NT:/FMSInfo/FMSControlData",
+  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/IsRedAlliance",
+  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
   "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation",
   "NT:/AdvantageKit/DriverStation/AllianceStation",
   "NT:/FMSInfo/StationNumber",
+  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
   "AllianceStation" // Phoenix
 ];
-export const JOYSTICK_KEYS = ["/DriverStation/Joystick", "NT:/AdvantageKit/DriverStation/Joystick", "DS:joystick"];
+export const JOYSTICK_KEYS = [
+  "/DriverStation/Joystick",
+  "NT:/AdvantageKit/DriverStation/Joystick",
+  "DS:joystick",
+  "NT:/Netcomm/Control/ControlData/Joysticks/" // Systemcore
+];
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros",
   "NT:/AdvantageKit/SystemStats/EpochTimeMicros",
@@ -73,17 +82,20 @@ export const METADATA_KEYS = [
 export const EVENT_KEYS = [
   "/DriverStation/EventName",
   "NT:/AdvantageKit/DriverStation/EventName",
-  "NT:/FMSInfo/EventName"
+  "NT:/FMSInfo/EventName",
+  "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType",
   "NT:/AdvantageKit/DriverStation/MatchType",
-  "NT:/FMSInfo/MatchType"
+  "NT:/FMSInfo/MatchType",
+  "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber",
   "NT:/AdvantageKit/DriverStation/MatchNumber",
-  "NT:/FMSInfo/MatchNumber"
+  "NT:/FMSInfo/MatchNumber",
+  "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
 
 /** Returns the version of the key without the merge prefix. */
@@ -228,7 +240,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey.endsWith("FMSControlData")) {
+  if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
@@ -258,7 +270,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
   let autonomousKey = getAutonomousKey(log);
   if (!autonomousKey) return null;
   let autonomousData: LogValueSetBoolean | null = null;
-  if (autonomousKey.endsWith("FMSControlData")) {
+  if (autonomousKey.endsWith("FMSControlData") || autonomousKey.endsWith("ControlWord")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
     if (tempAutoData) {
       autonomousData = {
@@ -346,7 +358,14 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
   let allianceKey = findKey(log, ALLIANCE_KEYS);
   if (!allianceKey) return false;
 
-  if (allianceKey.endsWith("DriverStation/AllianceStation")) {
+  if (allianceKey.endsWith("ControlWord")) {
+    // Integer value (station) from control word
+    let tempAllianceData = log.getNumber(allianceKey, time, time);
+    if (tempAllianceData && tempAllianceData.values.length > 0) {
+      let value = tempAllianceData.values[tempAllianceData.values.length - 1];
+      return ((value >> 7) & 63) <= 2;
+    }
+  } else if (allianceKey.endsWith("DriverStation/AllianceStation")) {
     // Integer value (station) from AdvantageKit
     let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
@@ -375,7 +394,28 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
 export function getDriverStation(log: Log, time: number): number {
   let dsKey = findKey(log, DRIVER_STATION_KEYS);
   if (!dsKey) return -1;
-  if (dsKey.endsWith("DriverStation/AllianceStation")) {
+  if (dsKey.endsWith("ControlWord")) {
+    // Systemcore, extract from control word struct
+    let tempDSData = log.getNumber(dsKey, time, time);
+    if (tempDSData && tempDSData.values.length > 0) {
+      let value = tempDSData.values[tempDSData.values.length - 1];
+      value = ((value >> 7) & 63) + 1;
+      switch (value) {
+        case 1:
+          return 3; // Red 1
+        case 2:
+          return 4; // Red 2
+        case 3:
+          return 5; // Red 3
+        case 4:
+          return 0; // Blue 1
+        case 5:
+          return 1; // Blue 2
+        case 6:
+          return 2; // Blue 3
+      }
+    }
+  } else if (dsKey.endsWith("DriverStation/AllianceStation")) {
     // AdvantageKit, alliance station ID
     let tempDSData = log.getNumber(dsKey, time, time);
     if (tempDSData && tempDSData.values.length > 0) {
@@ -462,14 +502,20 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
 
   // Find joystick table
   let tablePrefix = "";
+  let isSystemcore = false;
   let isAkit = false;
   log.getFieldKeys().forEach((key) => {
     if (tablePrefix !== "") return;
     JOYSTICK_KEYS.forEach((joystickKey) => {
       if (tablePrefix !== "") return;
       if (removeMergePrefix(key).startsWith(joystickKey + joystickId.toString())) {
-        tablePrefix = key.slice(0, key.indexOf(joystickKey)) + joystickKey + joystickId.toString() + "/";
+        isSystemcore = joystickKey.endsWith("/Netcomm/Control/ControlData/Joysticks/");
         isAkit = joystickKey.endsWith("/DriverStation/Joystick");
+        if (isSystemcore) {
+          let joystickCount = getOrDefault(log, joystickKey + "length", LoggableType.Number, time, 0);
+          if (joystickId >= joystickCount) return;
+        }
+        tablePrefix = key.slice(0, key.indexOf(joystickKey)) + joystickKey + joystickId.toString() + "/";
       }
     });
   });
@@ -479,7 +525,59 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
   }
 
   // Read values
-  if (isAkit) {
+  if (isSystemcore) {
+    let buttonCount = 0;
+    let buttonCountData = log.getNumber(tablePrefix + "AvailableButtons", time, time);
+    if (buttonCountData && buttonCountData.timestamps[0] <= time) {
+      buttonCount = Math.floor(Math.log2(buttonCountData.values[0] + 1));
+    }
+    let buttonValueData = log.getNumber(tablePrefix + "Buttons", time, time);
+    state.buttons = [];
+    if (buttonValueData && buttonValueData.timestamps[0] <= time) {
+      for (let i = 0; i < buttonCount; i++) {
+        state.buttons.push(((1 << i) & buttonValueData.values[0]) !== 0);
+      }
+    }
+    let axisData = log.getNumberArray(tablePrefix + "Axes", time, time);
+    if (axisData && axisData.timestamps[0] <= time) {
+      state.axes = axisData.values[0].map((x) => x / (1 << 15));
+    }
+    let povCount = 0;
+    let povCountData = log.getNumber(tablePrefix + "POVCount", time, time);
+    if (povCountData && povCountData.timestamps[0] <= time) {
+      povCount = povCountData.values[0];
+    }
+    let povData = log.getNumber(tablePrefix + "POVs", time, time);
+    state.povs = [];
+    if (povData && povData.timestamps[0] <= time) {
+      for (let i = 0; i < povCount; i++) {
+        let value = (povData.values[0] >> (4 * i)) & 15;
+        let upValue = (value & 1) !== 0;
+        let rightValue = (value & 2) !== 0;
+        let downValue = (value & 4) !== 0;
+        let leftValue = (value & 8) !== 0;
+        if (upValue && rightValue) {
+          state.povs.push(45);
+        } else if (rightValue && downValue) {
+          state.povs.push(135);
+        } else if (downValue && leftValue) {
+          state.povs.push(225);
+        } else if (leftValue && upValue) {
+          state.povs.push(315);
+        } else if (upValue) {
+          state.povs.push(0);
+        } else if (rightValue) {
+          state.povs.push(90);
+        } else if (downValue) {
+          state.povs.push(180);
+        } else if (leftValue) {
+          state.povs.push(270);
+        } else {
+          state.povs.push(-1);
+        }
+      }
+    }
+  } else if (isAkit) {
     let buttonCount = 0;
     let buttonCountData = log.getNumber(tablePrefix + "ButtonCount", time, time);
     if (buttonCountData && buttonCountData.timestamps[0] <= time) {

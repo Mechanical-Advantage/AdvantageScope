@@ -115,7 +115,6 @@ window.addEventListener("message", (event) => {
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
             skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault,
-            skipNumericArrayDeprecationWarning: oldPrefs.skipNumericArrayDeprecationWarning,
             skipFTCExperimentalWarning: oldPrefs.skipFTCExperimentalWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted
           };

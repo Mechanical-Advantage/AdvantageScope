@@ -24,11 +24,9 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
-  skipNumericArrayDeprecationWarning: boolean;
   skipFTCExperimentalWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
-  usb?: boolean;
 }
 
 export const DEFAULT_PREFS: Preferences = {
@@ -48,12 +46,11 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
-  skipNumericArrayDeprecationWarning: false,
   skipFTCExperimentalWarning: false,
   ctreLicenseAccepted: false
 };
 
-export type LiveMode = "nt4" | "nt4-akit" | "phoenix" | "rlog" | "ftcdashboard";
+export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
@@ -61,6 +58,8 @@ export function getLiveModeName(mode: LiveMode): string {
       return "NetworkTables 4";
     case "nt4-akit":
       return "NetworkTables 4 (AdvantageKit)";
+    case "nt4-systemcore":
+      return "Systemcore Diagnostics";
     case "phoenix":
       return "Phoenix Diagnostics";
     case "rlog":
@@ -72,7 +71,7 @@ export function getLiveModeName(mode: LiveMode): string {
 
 // Phoenix not possible due to cross origin restrictions
 // RLOG not possible because it uses raw TCP
-export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "ftcdashboard"];
+export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
@@ -100,6 +99,7 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     "liveMode" in newPrefs &&
     (newPrefs.liveMode === "nt4" ||
       newPrefs.liveMode === "nt4-akit" ||
+      newPrefs.liveMode === "nt4-systemcore" ||
       newPrefs.liveMode === "phoenix" ||
       newPrefs.liveMode === "rlog" ||
       newPrefs.liveMode === "ftcdashboard")
@@ -178,12 +178,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
-  }
-  if (
-    "skipNumericArrayDeprecationWarning" in newPrefs &&
-    typeof newPrefs.skipNumericArrayDeprecationWarning === "boolean"
-  ) {
-    basePrefs.skipNumericArrayDeprecationWarning = newPrefs.skipNumericArrayDeprecationWarning;
   }
   if ("skipFTCExperimentalWarning" in newPrefs && typeof newPrefs.skipFTCExperimentalWarning === "boolean") {
     basePrefs.skipFTCExperimentalWarning = newPrefs.skipFTCExperimentalWarning;
