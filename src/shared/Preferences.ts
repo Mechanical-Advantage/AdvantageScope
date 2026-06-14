@@ -55,9 +55,9 @@ export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
     case "nt4":
-      return "NetworkTables 4";
+      return "NetworkTables";
     case "nt4-akit":
-      return "NetworkTables 4 (AdvantageKit)";
+      return "NetworkTables (AdvantageKit)";
     case "nt4-systemcore":
       return "Systemcore Diagnostics";
     case "phoenix":
