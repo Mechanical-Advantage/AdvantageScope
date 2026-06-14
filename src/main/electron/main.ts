@@ -2518,7 +2518,7 @@ function createHubWindow(state?: WindowState) {
   switch (process.platform) {
     case "darwin":
       prefs.vibrancy = "sidebar";
-      if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
+      prefs.titleBarStyle = "hiddenInset";
       break;
     case "win32":
       let releaseSplit = os.release().split(".");

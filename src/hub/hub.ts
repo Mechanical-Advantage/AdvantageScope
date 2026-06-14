@@ -134,11 +134,7 @@ function setLoading(progress: number | null) {
 function updateFancyWindow() {
   // Using fancy title bar?
   let releaseSplit = window.platformRelease.split(".");
-  if (
-    window.platform === "darwin" &&
-    Number(releaseSplit[0]) >= 20 && // macOS Big Sur
-    !window.isFullscreen
-  ) {
+  if (window.platform === "darwin" && !window.isFullscreen) {
     document.body.classList.add("fancy-title-bar-mac");
   } else {
     document.body.classList.remove("fancy-title-bar-mac");
