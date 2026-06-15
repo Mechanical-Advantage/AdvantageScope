@@ -46,7 +46,6 @@ export default class Field2dController implements TabController {
 
   private orientationSetting = Orientation.DEG_0;
   private sizeSetting: "large" | "medium" | "small" = "large";
-  private lastIsFTCField = false;
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -63,11 +62,6 @@ export default class Field2dController implements TabController {
     // Set up field select
     this.FIELD_SELECT.addEventListener("change", () => {
       this.updateFieldDependentControls();
-      let fieldConfig = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value);
-      if (fieldConfig !== undefined) {
-        if (fieldConfig.isFTC && !this.lastIsFTCField) window.sendMainMessage("ftc-experimental-warning");
-        this.lastIsFTCField = fieldConfig.isFTC;
-      }
     });
     this.FIELD_SOURCE.addEventListener("click", () => {
       window.sendMainMessage(
@@ -173,10 +167,6 @@ export default class Field2dController implements TabController {
       this.FIELD_SELECT.value = state.field;
       if (this.FIELD_SELECT.value === "") {
         this.FIELD_SELECT.selectedIndex = 0;
-      }
-      let fieldConfig = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value);
-      if (fieldConfig !== undefined) {
-        this.lastIsFTCField = fieldConfig.isFTC;
       }
     }
     if (

@@ -42,7 +42,6 @@ export default class Field3dController implements TabController {
   private FIELD_SELECT: HTMLSelectElement;
 
   private sourceList: SourceList;
-  private lastIsFTCField = false;
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -68,13 +67,6 @@ export default class Field3dController implements TabController {
     // Set up game select
     this.FIELD_SELECT.addEventListener("change", () => {
       this.updateFieldDependentControls();
-      let fieldConfig = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
-        (field) => field.id === this.FIELD_SELECT.value
-      );
-      if (fieldConfig !== undefined) {
-        if (fieldConfig.isFTC && !this.lastIsFTCField) window.sendMainMessage("ftc-experimental-warning");
-        this.lastIsFTCField = fieldConfig.isFTC;
-      }
     });
     this.updateFieldOptions();
     this.updateRobotOptions();
@@ -196,12 +188,6 @@ export default class Field3dController implements TabController {
       this.FIELD_SELECT.value = state.game;
       if (this.FIELD_SELECT.value === "") {
         this.FIELD_SELECT.selectedIndex = 0;
-      }
-      let fieldConfig = [...(window.assets === null ? [] : window.assets.field3ds), ...BuiltIn3dFields].find(
-        (field) => field.id === this.FIELD_SELECT.value
-      );
-      if (fieldConfig !== undefined) {
-        this.lastIsFTCField = fieldConfig.isFTC;
       }
     }
     this.updateFieldDependentControls();

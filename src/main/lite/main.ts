@@ -353,23 +353,6 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
-    case "ftc-experimental-warning":
-      {
-        let prefs = DEFAULT_PREFS;
-        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-        if (prefs.skipFTCExperimentalWarning) return;
-        if (
-          confirm(
-            "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page. Select OK to hide this message in the future."
-          )
-        ) {
-          prefs.skipFTCExperimentalWarning = true;
-          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-        }
-      }
-      break;
-
     case "open-link":
       window.open(message.data, "_blank");
       break;

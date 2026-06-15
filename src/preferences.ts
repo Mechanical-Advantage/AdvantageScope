@@ -115,7 +115,6 @@ window.addEventListener("message", (event) => {
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
             skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault,
-            skipFTCExperimentalWarning: oldPrefs.skipFTCExperimentalWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted
           };
           messagePort.postMessage(newPrefs);

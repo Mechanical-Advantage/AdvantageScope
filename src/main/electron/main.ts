@@ -492,31 +492,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
-    case "ftc-experimental-warning":
-      {
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (prefs.skipFTCExperimentalWarning) return;
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Experimental Feature",
-            detail:
-              "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page.",
-            buttons: ["OK"],
-            checkboxLabel: "Don't Show Again",
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.checkboxChecked) {
-              prefs.skipFTCExperimentalWarning = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
-          });
-      }
-      break;
-
     case "live-rlog-start":
       rlogSockets[windowId]?.destroy();
       rlogSockets[windowId] = net.createConnection({
