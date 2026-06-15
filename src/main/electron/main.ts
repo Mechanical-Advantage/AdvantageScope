@@ -56,7 +56,6 @@ import {
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
   DOWNLOAD_USERNAME,
-  FRC_LOG_FOLDER,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
@@ -1625,8 +1624,7 @@ function downloadSave(files: string[]) {
     selectPromise = dialog.showOpenDialog(downloadWindow, {
       title: "Select save location for robot logs",
       buttonLabel: "Save",
-      properties: ["openDirectory", "createDirectory", "dontAddToRecent"],
-      defaultPath: getDefaultLogPath()
+      properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
     });
   } else {
     let extension = firstExtension.slice(1);
@@ -1934,8 +1932,7 @@ function setupMenu() {
                     name: "Robot logs",
                     extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
-                ],
-                defaultPath: getDefaultLogPath()
+                ]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -1959,8 +1956,7 @@ function setupMenu() {
                     name: "Robot logs",
                     extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
-                ],
-                defaultPath: getDefaultLogPath()
+                ]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -3359,17 +3355,6 @@ function checkForUpdate(alwaysPrompt: boolean) {
       updateChecker.showPrompt();
     }
   });
-}
-
-/** Returns the default path to use for storing log files. */
-function getDefaultLogPath(): string | undefined {
-  if (process.platform !== "win32") return undefined;
-  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  if (prefs.skipFrcLogFolderDefault) return undefined;
-  prefs.skipFrcLogFolderDefault = true;
-  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-  sendAllPreferences();
-  return FRC_LOG_FOLDER;
 }
 
 // "unsafe-eval" is required in the hub for protobufjs

@@ -25,7 +25,6 @@ export const AKIT_PATH_INPUT = path.join(app.getPath("temp"), "ascope-log-path.t
 export const AKIT_PATH_INPUT_PERIOD = 250;
 export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantagescope-video-cache");
 export const VIDEO_CACHE_FALLBACK = path.join(app.getPath("userData"), "video-cache");
-export const FRC_LOG_FOLDER = "C:\\Users\\Public\\Documents\\FRC\\Log Files";
 export const WINDOW_ICON = process.platform === "darwin" ? undefined : path.join(__dirname, "../icons/window-icon.png");
 export const HUB_DEFAULT_WIDTH = 1100;
 export const HUB_DEFAULT_HEIGHT = 650;
