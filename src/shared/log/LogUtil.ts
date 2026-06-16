@@ -390,12 +390,8 @@ export function getRobotStateRanges(
   // Get ranges
   let ranges: { start: number; end?: number; mode: "disabled" | "auto" | "teleop" | "utility" }[] = [];
   combined.forEach((sample, index) => {
-    let end: number | undefined = undefined;
+    let mode: "disabled" | "auto" | "teleop" | "utility" = "disabled";
     if (sample.enabled) {
-      if (index < combined.length - 1) {
-        end = combined[index + 1].timestamp;
-      }
-      let mode: "disabled" | "auto" | "teleop" | "utility";
       if (sample.auto) {
         mode = "auto";
       } else if (sample.utility) {
@@ -403,18 +399,20 @@ export function getRobotStateRanges(
       } else {
         mode = "teleop";
       }
+    }
+
+    let end: number | undefined = undefined;
+    if (index < combined.length - 1) {
+      end = combined[index + 1].timestamp;
+    }
+
+    if (ranges.length > 0 && ranges[ranges.length - 1].mode === mode) {
+      ranges[ranges.length - 1].end = end;
+    } else {
       ranges.push({
         start: sample.timestamp,
         end: end,
         mode: mode
-      });
-    } else {
-      let endSample = combined.find((endSample) => endSample.timestamp > sample.timestamp && endSample.enabled);
-      if (endSample) end = endSample.timestamp;
-      ranges.push({
-        start: sample.timestamp,
-        end: end,
-        mode: "disabled"
       });
     }
   });

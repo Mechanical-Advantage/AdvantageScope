@@ -769,11 +769,12 @@ async function handleHubMessage(message: NamedMessage) {
         const menuItems: (MenuItem | Submenu | "-")[] = [];
 
         if (legend === "discrete") {
+          let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           menuItems.push({
-            content: "Add Enabled State",
+            content: (showRobotMode ? "\u2714 " : "") + "Show Robot Mode",
             callback() {
-              sendMessage(hubPort, "add-discrete-enabled");
+              sendMessage(hubPort, "edit-discrete-axis", { showRobotMode: !showRobotMode });
             }
           });
         } else {

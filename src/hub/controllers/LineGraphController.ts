@@ -9,7 +9,7 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import { SelectionMode } from "../../shared/Selection";
 import { SourceListState } from "../../shared/SourceListConfig";
-import { AKIT_TIMESTAMP_KEYS, getEnabledKey, getLogValueText } from "../../shared/log/LogUtil";
+import { AKIT_TIMESTAMP_KEYS, getLogValueText, getRobotStateRanges } from "../../shared/log/LogUtil";
 import { LogValueSetNumber } from "../../shared/log/LogValueSets";
 import {
   LineGraphRendererCommand,
@@ -53,6 +53,7 @@ export default class LineGraphController implements TabController {
   private rightNumericCommandCache: { [key: string]: NumericCommandCacheValue } = {};
   private leftUnitCache: Units.UnitConfig | null = null;
   private rightUnitCache: Units.UnitConfig | null = null;
+  private showRobotMode = false;
 
   constructor(root: HTMLElement) {
     // Make source lists
@@ -144,6 +145,7 @@ export default class LineGraphController implements TabController {
         window.sendMainMessage("ask-edit-axis", {
           rect: rect,
           legend: "discrete",
+          showRobotMode: this.showRobotMode,
           config: LineGraphController_DiscreteConfig
         });
       }
@@ -163,7 +165,8 @@ export default class LineGraphController implements TabController {
       rightUnitConversion: this.rightUnitConversion,
 
       leftFilter: this.leftFilter,
-      rightFilter: this.rightFilter
+      rightFilter: this.rightFilter,
+      showRobotMode: this.showRobotMode
     };
   }
 
@@ -187,6 +190,9 @@ export default class LineGraphController implements TabController {
     }
     if ("rightFilter" in state) {
       this.rightFilter = state.rightFilter as LineGraphFilter;
+    }
+    if ("showRobotMode" in state) {
+      this.showRobotMode = state.showRobotMode as boolean;
     }
     this.updateAxisLabels();
 
@@ -304,20 +310,10 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  /** Adds the enabled field to the discrete axis. */
-  addDiscreteEnabled() {
-    let enabledKey = getEnabledKey(window.log);
-    if (enabledKey !== undefined) {
-      this.discreteSourceList.addField(enabledKey);
-    } else {
-      window.sendMainMessage("error", {
-        title: "No enabled state",
-        content:
-          window.log.getFieldCount() === 0
-            ? "Please open a log file or connect to a live source, then try again."
-            : "Please open a different log file or a live source, then try again."
-      });
-    }
+  /** Toggles the 'Show Robot Mode' display. */
+  editDiscreteAxis(showRobotMode: boolean) {
+    this.showRobotMode = showRobotMode;
+    window.requestAnimationFrame(() => this.refresh());
   }
 
   refresh(): void {
@@ -658,6 +654,52 @@ export default class LineGraphController implements TabController {
     );
 
     // Add discrete fields
+    if (this.showRobotMode) {
+      let ranges = getRobotStateRanges(window.log);
+
+      // Filter out ranges outside the time range
+      let relevantRanges = ranges.filter(
+        (range) => range.start <= timeRange[1] && (range.end === undefined || range.end >= timeRange[0])
+      );
+
+      if (relevantRanges.length > 0) {
+        let timestamps: number[] = [];
+        let values: string[] = [];
+
+        relevantRanges.forEach((range) => {
+          let start = Math.max(range.start, timeRange[0]);
+          if (timestamps.length === 0 || start > timestamps[timestamps.length - 1]) {
+            timestamps.push(start);
+            values.push(range.mode.charAt(0).toUpperCase() + range.mode.slice(1));
+          }
+        });
+
+        // Add final point to cap the range if needed
+        let lastEnd = relevantRanges[relevantRanges.length - 1].end;
+        if (lastEnd !== undefined && lastEnd <= timeRange[1]) {
+          timestamps.push(lastEnd);
+          values.push(""); // Terminate visual block
+        }
+
+        let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
+        let colorMap: { [key: string]: string } = {
+          Disabled: light ? "#dddddd" : "#444444",
+          Teleop: light ? "#5a83ff" : "#3957dd",
+          Auto: light ? "#efab28" : "#c38615",
+          Utility: light ? "#888888" : "#777777"
+        };
+
+        discreteFieldsCommand.push({
+          timestamps: timestamps,
+          values: values,
+          color: colorMap["Disabled"], // fallback color
+          colorMap: colorMap,
+          type: "stripes",
+          toggleReference: false
+        });
+      }
+    }
+
     this.discreteSourceList.getState().forEach((fieldItem) => {
       if (!fieldItem.visible || fieldItem.type === "alerts") return;
 

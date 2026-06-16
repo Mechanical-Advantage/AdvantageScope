@@ -687,9 +687,9 @@ export default class Tabs {
   }
 
   /** Adds the enabled field to the discrete legend on the selected line graph. */
-  addDiscreteEnabled() {
+  editDiscreteAxis(showRobotMode: boolean) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
+      (this.tabList[this.selectedTab].controller as LineGraphController).editDiscreteAxis(showRobotMode);
     }
   }
 
