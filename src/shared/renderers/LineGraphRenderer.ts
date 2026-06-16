@@ -248,8 +248,15 @@ export default class LineGraphRenderer implements TabRenderer {
         // Draw shape
         toggle = !toggle;
         if (field.type === "stripes") {
-          let baseColor = field.colorMap && field.colorMap[field.values[i + skippedSamples]] ? field.colorMap[field.values[i + skippedSamples]] : field.color;
-          context.fillStyle = field.colorMap ? baseColor : (toggle ? shiftColor(baseColor, -30) : shiftColor(baseColor, 30));
+          let baseColor =
+            field.colorMap && field.colorMap[field.values[i + skippedSamples]]
+              ? field.colorMap[field.values[i + skippedSamples]]
+              : field.color;
+          context.fillStyle = field.colorMap
+            ? baseColor
+            : toggle
+            ? shiftColor(baseColor, -30)
+            : shiftColor(baseColor, 30);
           context.fillRect(startX, topY, endX - startX, 15);
         } else {
           let startY = toggle ? topY + 15 : topY;
@@ -262,9 +269,16 @@ export default class LineGraphRenderer implements TabRenderer {
         // Draw text
         let adjustedStartX = startX < graphLeft ? graphLeft : startX;
         if (endX - adjustedStartX > 10) {
-          let baseColor = field.colorMap && field.colorMap[field.values[i + skippedSamples]] ? field.colorMap[field.values[i + skippedSamples]] : field.color;
+          let baseColor =
+            field.colorMap && field.colorMap[field.values[i + skippedSamples]]
+              ? field.colorMap[field.values[i + skippedSamples]]
+              : field.color;
           if (field.type === "stripes") {
-            context.fillStyle = field.colorMap ? shiftColor(baseColor, light ? -130 : 130) : (toggle ? shiftColor(baseColor, 130) : shiftColor(baseColor, -130));
+            context.fillStyle = field.colorMap
+              ? shiftColor(baseColor, light ? -130 : 130)
+              : toggle
+              ? shiftColor(baseColor, 130)
+              : shiftColor(baseColor, -130);
           } else {
             context.fillStyle = baseColor;
           }
