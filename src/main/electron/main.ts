@@ -875,7 +875,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               type: "checkbox",
               checked: showRobotMode,
               click() {
-                sendMessage(window, "edit-discrete-axis", { showRobotMode: !showRobotMode });
+                sendMessage(window, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
               }
             })
           );

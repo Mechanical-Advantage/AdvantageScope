@@ -310,8 +310,8 @@ export default class LineGraphController implements TabController {
     }
   }
 
-  /** Toggles the 'Show Robot Mode' display. */
-  editDiscreteAxis(showRobotMode: boolean) {
+  /** Sets the state of the robot mode visualization. */
+  setRobotModeVisible(showRobotMode: boolean) {
     this.showRobotMode = showRobotMode;
     window.requestAnimationFrame(() => this.refresh());
   }

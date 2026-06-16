@@ -774,7 +774,7 @@ async function handleHubMessage(message: NamedMessage) {
           menuItems.push({
             content: (showRobotMode ? "\u2714 " : "") + "Show Robot Mode",
             callback() {
-              sendMessage(hubPort, "edit-discrete-axis", { showRobotMode: !showRobotMode });
+              sendMessage(hubPort, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
             }
           });
         } else {
