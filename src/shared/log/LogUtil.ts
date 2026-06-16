@@ -33,8 +33,8 @@ export const ENABLED_KEYS = [
   "DS:enabled", // DataLog, pre-2027
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
+  "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
   "NT:/FMSInfo/FMSControlData", // NT, pre-2027
-  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore diagnostics
   "RUNNING" // Roadrunner
 ];
 export const AUTONOMOUS_KEYS = [
@@ -46,8 +46,8 @@ export const AUTONOMOUS_KEYS = [
   "DS:autonomous", // DataLog, pre-2027
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/FMSControlData", // NT, pre-2027
-  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore diagnostics
+  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const UTILITY_KEYS = [
   "/DriverStation/RobotMode", // AdvantageKit, post-2027
@@ -57,8 +57,8 @@ export const UTILITY_KEYS = [
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:test", // DataLog, pre-2027
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/FMSControlData", // NT, pre-2027
-  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore diagnostics
+  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
@@ -255,7 +255,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
+  if (enabledKey.endsWith("FMSControlData")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
@@ -285,7 +285,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
   let autonomousKey = getAutonomousKey(log);
   if (!autonomousKey) return null;
   let autonomousData: LogValueSetBoolean | null = null;
-  if (autonomousKey.endsWith("FMSControlData") || autonomousKey.endsWith("ControlWord")) {
+  if (autonomousKey.endsWith("FMSControlData")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
     if (tempAutoData) {
       autonomousData = {
@@ -323,7 +323,7 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
   let utilityKey = getUtilityKey(log);
   if (!utilityKey) return null;
   let utilityData: LogValueSetBoolean | null = null;
-  if (utilityKey.endsWith("FMSControlData") || utilityKey.endsWith("ControlWord")) {
+  if (utilityKey.endsWith("FMSControlData")) {
     let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
     if (tempUtilityData) {
       utilityData = {
