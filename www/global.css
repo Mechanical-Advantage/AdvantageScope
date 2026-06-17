@@ -104,3 +104,7 @@ button:not(:disabled):active {
     background-color: #444;
   }
 }
+
+canvas {
+  direction: ltr;
+}

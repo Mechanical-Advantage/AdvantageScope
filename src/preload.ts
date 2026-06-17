@@ -7,6 +7,28 @@
 
 import { contextBridge, ipcRenderer, webUtils } from "electron";
 
+// Detect language direction
+let isRtl = false;
+try {
+  const locale = new Intl.Locale(navigator.language) as any;
+  const direction = locale.textInfo
+    ? locale.textInfo.direction
+    : locale.getTextInfo
+    ? locale.getTextInfo().direction
+    : undefined;
+  if (direction === "rtl") {
+    isRtl = true;
+  }
+} catch (e) {
+  // Ignore
+}
+
+if (isRtl) {
+  window.addEventListener("DOMContentLoaded", () => {
+    document.documentElement.dir = "rtl";
+  });
+}
+
 const windowLoaded = new Promise((resolve) => {
   window.onload = resolve;
 });

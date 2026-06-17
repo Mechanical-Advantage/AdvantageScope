@@ -100,7 +100,7 @@ export default class Sidebar {
     });
     window.addEventListener("mousemove", (event) => {
       if (this.sidebarHandleActive) {
-        let width = event.clientX;
+        let width = document.documentElement.dir === "rtl" ? window.innerWidth - event.clientX : event.clientX;
         if (width > 500) width = 500;
         if (width >= 80 && width < 160) width = 160;
         if (width < 80) {
@@ -352,6 +352,7 @@ export default class Sidebar {
         runtimeUnit = "h";
       }
       title =
+        "\u200E" +
         this.fieldCount.toString() +
         " field" +
         (this.fieldCount === 1 ? "" : "s") +
@@ -593,7 +594,11 @@ export default class Sidebar {
         let typeLabel = document.createElement("span");
         typeLabel.classList.add("field-item-type-label");
         label.appendChild(typeLabel);
-        typeLabel.innerHTML = " &ndash; " + htmlEncode(structuredType);
+        if (document.documentElement.dir === "rtl") {
+          typeLabel.innerHTML = htmlEncode(structuredType) + " &ndash; ";
+        } else {
+          typeLabel.innerHTML = " &ndash; " + htmlEncode(structuredType);
+        }
       }
     } else {
       if (title.startsWith(this.MERGED_KEY) && indent === 0) {
@@ -605,7 +610,11 @@ export default class Sidebar {
           let typeLabel = document.createElement("span");
           typeLabel.classList.add("field-item-type-label");
           label.appendChild(typeLabel);
-          typeLabel.innerHTML = " &ndash; " + htmlEncode(filename);
+          if (document.documentElement.dir === "rtl") {
+            typeLabel.innerHTML = htmlEncode(filename) + " &ndash; ";
+          } else {
+            typeLabel.innerHTML = " &ndash; " + htmlEncode(filename);
+          }
         }
       }
     }

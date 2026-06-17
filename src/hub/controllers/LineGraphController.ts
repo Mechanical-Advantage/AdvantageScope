@@ -436,6 +436,7 @@ export default class LineGraphController implements TabController {
     let rightFieldsCommand: LineGraphRendererCommand_NumericField[] = [];
     let discreteFieldsCommand: LineGraphRendererCommand_DiscreteField[] = [];
     const timeRange = window.selection.getTimelineRange();
+    const isRtl = document.documentElement.dir === "rtl";
 
     // Add numeric fields
     this.leftNumericCommandCache = {};
@@ -783,7 +784,27 @@ export default class LineGraphController implements TabController {
     let showLeftAxis = this.leftLockedRange !== null || leftFieldsCommand.length > 0;
     let showRightAxis = this.rightLockedRange !== null || rightFieldsCommand.length > 0;
     if (!showLeftAxis && !showRightAxis) {
-      showLeftAxis = true;
+      if (isRtl) {
+        showRightAxis = true;
+      } else {
+        showLeftAxis = true;
+      }
+    }
+
+    // Get priority axis
+    let priorityAxis: "left" | "right";
+    if (isRtl) {
+      priorityAxis =
+        (this.rightLockedRange === null && this.leftLockedRange !== null) ||
+        (rightFieldsCommand.length === 0 && leftFieldsCommand.length > 0)
+          ? "left"
+          : "right";
+    } else {
+      priorityAxis =
+        (this.leftLockedRange === null && this.rightLockedRange !== null) ||
+        (leftFieldsCommand.length === 0 && rightFieldsCommand.length > 0)
+          ? "right"
+          : "left";
     }
 
     // Return command
@@ -804,11 +825,7 @@ export default class LineGraphController implements TabController {
       rightUnits: this.rightUnitCache,
       leftFilter: this.leftFilter,
       rightFilter: this.rightFilter,
-      priorityAxis:
-        (this.leftLockedRange === null && this.rightLockedRange !== null) ||
-        (leftFieldsCommand.length === 0 && rightFieldsCommand.length > 0)
-          ? "right"
-          : "left",
+      priorityAxis: priorityAxis,
       leftFields: leftFieldsCommand,
       rightFields: rightFieldsCommand,
       discreteFields: discreteFieldsCommand,

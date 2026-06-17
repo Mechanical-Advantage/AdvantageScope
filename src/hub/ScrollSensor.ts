@@ -95,9 +95,11 @@ export default class ScrollSensor {
   /** Moves the scroll position to the center. */
   private reset() {
     let middle = this.SIZE_PX / 2;
-    this.container.scrollLeft = middle;
+    let isRtl = this.container.ownerDocument ? this.container.ownerDocument.documentElement.dir === "rtl" : false;
+    let targetScrollLeft = isRtl ? -middle : middle;
+    this.container.scrollLeft = targetScrollLeft;
     this.container.scrollTop = middle;
-    this.lastScrollLeft = middle;
+    this.lastScrollLeft = targetScrollLeft;
     this.lastScrollTop = middle;
   }
 }

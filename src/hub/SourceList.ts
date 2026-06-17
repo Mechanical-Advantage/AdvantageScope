@@ -219,6 +219,7 @@ export default class SourceList {
         dragContainer.style.width = element.clientWidth.toString() + "px";
         dragContainer.style.height = "30px";
         dragContainer.style.left = "0px";
+        dragContainer.style.right = "auto";
         dragContainer.style.top = "0px";
         dragContainer.style.pointerEvents = "none";
         dragContainer.style.margin = "none";
@@ -965,7 +966,11 @@ export default class SourceList {
       }
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
+    if (document.documentElement.dir === "rtl") {
+      typeNameElement.innerText = (typeNameComponents.length > 0 ? ":" : "") + typeNameComponents.join("/");
+    } else {
+      typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
+    }
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;

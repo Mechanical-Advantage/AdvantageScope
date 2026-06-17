@@ -262,29 +262,59 @@ export default class Tabs {
         return;
       }
 
-      let closestDist = Infinity;
-      let closestIndex = 0;
-      this.tabList.forEach((tab, index) => {
-        let dist = Math.abs(x - tab.titleElement.getBoundingClientRect().right);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closestIndex = index;
+      let isRtl = this.SCROLL_OVERLAY.ownerDocument.documentElement.dir === "rtl";
+      let insertIndex = 0;
+      if (isRtl) {
+        let found = false;
+        for (let i = this.tabList.length - 1; i >= 0; i--) {
+          let rect = this.tabList[i].titleElement.getBoundingClientRect();
+          let center = (rect.left + rect.right) / 2;
+          if (x < center) {
+            insertIndex = i + 1;
+            found = true;
+            break;
+          }
         }
-      });
+        if (!found) {
+          insertIndex = 0;
+        }
+      } else {
+        let found = false;
+        for (let i = 0; i < this.tabList.length; i++) {
+          let rect = this.tabList[i].titleElement.getBoundingClientRect();
+          let center = (rect.left + rect.right) / 2;
+          if (x < center) {
+            insertIndex = i;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          insertIndex = this.tabList.length;
+        }
+      }
+
+      let clampedInsertIndex = Math.max(1, insertIndex);
 
       if (end) {
         this.DRAG_HIGHLIGHT.hidden = true;
-        if (closestIndex >= tabIndex) {
-          this.shift(tabIndex, closestIndex - tabIndex);
+        if (clampedInsertIndex > tabIndex) {
+          this.shift(tabIndex, clampedInsertIndex - 1 - tabIndex);
         } else {
-          this.shift(tabIndex, closestIndex - tabIndex + 1);
+          this.shift(tabIndex, clampedInsertIndex - tabIndex);
         }
       } else {
         this.DRAG_HIGHLIGHT.hidden = false;
-        let highlightX =
-          this.tabList[closestIndex].titleElement.getBoundingClientRect().right -
-          this.SCROLL_OVERLAY.getBoundingClientRect().left +
-          10;
+        let boundaryX = 0;
+        if (isRtl) {
+          boundaryX = this.tabList[clampedInsertIndex - 1].titleElement.getBoundingClientRect().left;
+        } else {
+          boundaryX = this.tabList[clampedInsertIndex - 1].titleElement.getBoundingClientRect().right;
+        }
+        let viewerRect = this.SCROLL_OVERLAY.parentElement
+          ? this.SCROLL_OVERLAY.parentElement.getBoundingClientRect()
+          : { left: 0 };
+        let highlightX = boundaryX - viewerRect.left;
         this.DRAG_HIGHLIGHT.style.left = highlightX.toString() + "px";
       }
     });
@@ -311,9 +341,16 @@ export default class Tabs {
     // Periodic function
     let periodic = () => {
       // Update tab bar
-      this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
-      this.SHADOW_RIGHT.style.opacity =
-        Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
+      let isRtl = document.documentElement.dir === "rtl";
+      if (isRtl) {
+        this.SHADOW_LEFT.style.opacity = Math.ceil(this.TAB_BAR.scrollLeft) >= 0 ? "0" : "1";
+        this.SHADOW_RIGHT.style.opacity =
+          Math.floor(this.TAB_BAR.scrollLeft) <= -(this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth) ? "0" : "1";
+      } else {
+        this.SHADOW_LEFT.style.opacity = Math.floor(this.TAB_BAR.scrollLeft) <= 0 ? "0" : "1";
+        this.SHADOW_RIGHT.style.opacity =
+          Math.ceil(this.TAB_BAR.scrollLeft) >= this.TAB_BAR.scrollWidth - this.TAB_BAR.clientWidth ? "0" : "1";
+      }
       this.tabsScrollSensor.periodic();
 
       // Update timeline and controls

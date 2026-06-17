@@ -17,8 +17,8 @@ body {
   text-align: center;
   user-select: text;
 
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-inline-start: 15px;
+  padding-inline-end: 15px;
 }
 
 h1 {
@@ -47,9 +47,9 @@ td {
   font-size: 14px;
   padding-top: 10px;
   padding-bottom: 10px;
-  padding-left: 5px;
+  padding-inline-start: 5px;
   font-style: italic;
-  text-align: left;
+  text-align: start;
 }
 
 input {

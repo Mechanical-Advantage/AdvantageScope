@@ -24,7 +24,7 @@ body.lite .hide-lite {
 table {
   position: absolute;
   top: 10px;
-  left: 10px;
+  inset-inline-start: 10px;
   width: calc(100% - 20px);
   border-spacing: 0px;
 }
@@ -72,7 +72,7 @@ td.info {
 td.label {
   white-space: nowrap;
   width: 0px;
-  text-align: right;
+  text-align: end;
   font-size: 14px;
 }
 
@@ -80,7 +80,7 @@ input,
 select {
   box-sizing: border-box;
   display: block;
-  margin-left: 5px;
+  margin-inline-start: 5px;
   width: calc(100% - 5px);
 }
 
@@ -97,15 +97,15 @@ div.help-div {
 }
 
 #exit {
-  right: 43px;
+  inset-inline-end: 43px;
 }
 
 #confirm {
-  right: 8px;
+  inset-inline-end: 8px;
 }
 
 div.help-div {
-  right: 78px;
+  inset-inline-end: 78px;
   width: 50px;
 }
 

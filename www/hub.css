@@ -25,8 +25,8 @@
 
 div.title-bar {
   position: absolute;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   top: 0px;
   height: 38px;
 
@@ -50,7 +50,7 @@ div.title-bar-text {
   top: 0px;
   bottom: 0px;
 
-  text-align: left;
+  text-align: start;
   line-height: 38px;
   font-weight: 600;
   white-space: nowrap;
@@ -59,20 +59,20 @@ div.title-bar-text {
 }
 
 body.fancy-title-bar-mac div.title-bar-text {
-  left: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
-  right: calc(
+  inset-inline-start: calc(var(--side-bar-width) + 20px + ((1 - var(--show-side-bar)) * 60px));
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
   );
 }
 
 body.fancy-title-bar-win div.title-bar-text {
-  left: calc(var(--side-bar-width) + 20px);
-  right: 140px;
+  inset-inline-start: calc(var(--side-bar-width) + 20px);
+  inset-inline-end: 140px;
 }
 
 div.title-bar-menu {
   position: absolute;
-  left: calc(var(--side-bar-width) * 0.5);
+  inset-inline-start: calc(var(--side-bar-width) * 0.5);
   width: calc(var(--side-bar-width) - 20px);
   max-width: 250px;
   top: 19px;
@@ -84,6 +84,10 @@ div.title-bar-menu {
   -webkit-app-region: no-drag;
   overflow-x: auto;
   scrollbar-width: none; /* Required for Firefox */
+}
+
+[dir="rtl"] div.title-bar-menu {
+  transform: translate(50%, -50%);
 }
 
 div.title-bar-menu::-webkit-scrollbar {
@@ -119,8 +123,8 @@ div.title-bar-menu button {
   width: 100%;
   height: 28px; /* Firefox doesn't support using "100%" here */
   font-size: 12px;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-inline-start: 3px;
+  padding-inline-end: 3px;
 }
 
 div.title-bar-menu button:hover {
@@ -150,7 +154,7 @@ div.title-bar-menu button:active {
 div.loading-glow {
   position: absolute;
   z-index: 7;
-  left: var(--side-bar-width);
+  inset-inline-start: var(--side-bar-width);
   width: calc((100% - var(--side-bar-width)) * var(--loading-glow-progress));
   top: 0px;
   height: 4px;
@@ -176,7 +180,7 @@ div.loading-glow {
 div.side-bar-background {
   position: absolute;
   z-index: 1;
-  left: 0px;
+  inset-inline-start: 0px;
   width: var(--side-bar-width);
   top: 0px;
   bottom: 0px;
@@ -201,7 +205,7 @@ body.fancy-side-bar-win div.side-bar-background {
 div.side-bar-shadow {
   position: absolute;
   z-index: 2;
-  left: 0px;
+  inset-inline-start: 0px;
   width: var(--side-bar-width);
   top: 0px;
   height: 38px;
@@ -227,7 +231,7 @@ body.fancy-title-bar-lite div.side-bar-shadow {
 
 div.side-bar {
   position: absolute;
-  left: 0px;
+  inset-inline-start: 0px;
   width: var(--side-bar-width);
   top: 0px;
   bottom: 0px;
@@ -253,7 +257,7 @@ div.side-bar-handle {
   position: absolute;
   top: 0px;
   bottom: 0px;
-  left: calc(var(--side-bar-width) - 5px);
+  inset-inline-start: calc(var(--side-bar-width) - 5px);
   width: calc(20px - (var(--show-side-bar) * 10px));
 
   z-index: 8;
@@ -264,7 +268,7 @@ div.side-bar-handle {
 
 div.fps {
   position: absolute;
-  right: 10px;
+  inset-inline-end: 10px;
   bottom: 7px;
   z-index: 13;
   pointer-events: none;
@@ -281,8 +285,8 @@ div.fps {
 div.viewer-background {
   position: absolute;
   z-index: 3;
-  left: var(--side-bar-width);
-  right: 0px;
+  inset-inline-start: var(--side-bar-width);
+  inset-inline-end: 0px;
   top: 0px;
   bottom: 0px;
 
@@ -304,8 +308,8 @@ body.fancy-side-bar-mac-27 div.viewer-background {
 
 div.viewer {
   position: absolute;
-  left: var(--side-bar-width);
-  right: 0px;
+  inset-inline-start: var(--side-bar-width);
+  inset-inline-end: 0px;
   top: 0px;
   bottom: 0px;
   z-index: 4;
@@ -323,8 +327,8 @@ div.side-bar-title {
   position: relative;
   margin-top: 5px;
   margin-bottom: 5px;
-  margin-left: 18px;
-  margin-right: 18px;
+  margin-inline-start: 18px;
+  margin-inline-end: 18px;
   height: 20px;
 
   font-size: 12px;
@@ -346,7 +350,7 @@ input.side-bar-search {
   position: relative;
   margin-top: 5px;
   margin-bottom: 5px;
-  left: 16px;
+  inset-inline-start: 16px;
   height: 29px;
   width: calc(100% - 16px - 16px - var(--show-tuning-button) * 26px);
 
@@ -357,7 +361,7 @@ input.side-bar-search {
     -apple-system,
     BlinkMacSystemFont;
   padding: 5px;
-  padding-left: 28px;
+  padding-inline-start: 28px;
   border-radius: 6px;
   outline: none;
 
@@ -380,7 +384,7 @@ input.side-bar-search::-webkit-search-cancel-button {
 
 img.side-bar-search-icon {
   position: absolute;
-  left: 23px;
+  inset-inline-start: 23px;
   top: 50%;
   height: 13px;
   transform: translateY(-50%);
@@ -390,7 +394,7 @@ button.side-bar-tuning-button {
   position: absolute;
   margin-top: 5px;
   margin-bottom: 5px;
-  right: 8px;
+  inset-inline-end: 8px;
   width: 29px;
   height: 29px;
 }
@@ -434,8 +438,8 @@ div.field-item-container {
 
 div.field-item {
   position: absolute;
-  left: 0px;
-  right: calc(var(--value-width));
+  inset-inline-start: 0px;
+  inset-inline-end: calc(var(--value-width));
   top: 0px;
   height: 100%;
   mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) calc(100% - 10px - 20px), rgba(0, 0, 0, 0) calc(100% - 10px));
@@ -446,16 +450,25 @@ div.field-item {
   );
 }
 
+[dir="rtl"] div.field-item {
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 1) calc(100% - 10px - 20px), rgba(0, 0, 0, 0) calc(100% - 10px));
+  -webkit-mask-image: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 1) calc(100% - 10px - 20px),
+    rgba(0, 0, 0, 0) calc(100% - 10px)
+  );
+}
+
 div.field-value {
   position: absolute;
-  right: 12px;
+  inset-inline-end: 12px;
   top: 0px;
   height: 100%;
   line-height: 30px;
   font-size: 15px;
 
   font-family: Courier, monospace;
-  text-align: right;
+  text-align: end;
   white-space: nowrap;
 }
 
@@ -505,7 +518,7 @@ div.field-item-container.highlight {
 
 svg.field-item-icon {
   position: absolute;
-  left: calc(17px + var(--indent, 0px));
+  inset-inline-start: calc(17px + var(--indent, 0px));
   top: 9px;
   fill: #222;
 }
@@ -516,15 +529,33 @@ svg.field-item-icon {
   }
 }
 
+[dir="rtl"] svg.field-item-icon:nth-child(1) {
+  transform: scaleX(-1);
+}
+
 div.field-item-label {
   position: absolute;
-  left: calc(35px + var(--indent, 0px));
+  inset-inline-start: calc(35px + var(--indent, 0px));
   max-width: calc(100% - 35px - var(--indent, 0px) - 10px);
   top: 5px;
   height: 20px;
 
   font-size: 15px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+
+  display: flex;
+  align-items: center;
+}
+
+div.field-item-label > span {
+  flex-shrink: 0;
+  unicode-bidi: plaintext;
+}
+
+div.field-item-label > span:first-child {
+  flex-shrink: 1;
   overflow: hidden;
   text-overflow: clip;
 }
@@ -548,6 +579,7 @@ span.field-item-type-label {
   font-style: normal;
   font-weight: normal;
   opacity: 0.3;
+  margin-inline-start: 4px;
 }
 
 div.field-item.generated span.field-item-type-label {
@@ -559,7 +591,7 @@ div.field-item.generated span.field-item-type-label {
 
 div.search-results {
   position: absolute;
-  left: 16px;
+  inset-inline-start: 16px;
   top: 0px;
   max-width: 700px;
   min-width: 0px; /* Updated by JS based on width of search input */
@@ -578,8 +610,8 @@ div.search-results-item {
   height: 25px;
   font-size: 12px;
   line-height: 25px;
-  padding-left: 8px;
-  padding-right: 20px;
+  padding-inline-start: 8px;
+  padding-inline-end: 20px;
 
   white-space: nowrap;
   overflow: hidden;
@@ -637,8 +669,8 @@ div.search-results-item.hovered {
 
 div.tab-bar {
   position: absolute;
-  left: 10px;
-  right: calc(
+  inset-inline-start: 10px;
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
   );
   top: 0px;
@@ -650,14 +682,14 @@ div.tab-bar {
 }
 
 body.fancy-title-bar-lite div.tab-bar {
-  right: calc(
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
       33px
   );
 }
 
 body.fancy-title-bar-mac div.tab-bar {
-  right: 10px;
+  inset-inline-end: 10px;
 }
 
 div.tab-bar::-webkit-scrollbar {
@@ -675,26 +707,26 @@ div.tab-bar-shadow-right {
 }
 
 div.tab-bar-shadow-left {
-  left: 10px;
+  inset-inline-start: 10px;
   background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
 div.tab-bar-shadow-right {
-  right: calc(
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
   );
   background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
 }
 
 body.fancy-title-bar-lite div.tab-bar-shadow-right {
-  right: calc(
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
       33px
   );
 }
 
 body.fancy-title-bar-mac div.tab-bar-shadow-right {
-  right: 10px;
+  inset-inline-end: 10px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -704,6 +736,24 @@ body.fancy-title-bar-mac div.tab-bar-shadow-right {
 
   div.tab-bar-shadow-right {
     background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
+  }
+}
+
+[dir="rtl"] div.tab-bar-shadow-left {
+  background-image: linear-gradient(to left, white, rgba(255, 255, 255, 0.75), transparent);
+}
+
+[dir="rtl"] div.tab-bar-shadow-right {
+  background-image: linear-gradient(to right, white, rgba(255, 255, 255, 0.75), transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  [dir="rtl"] div.tab-bar-shadow-left {
+    background-image: linear-gradient(to left, #222, rgba(34, 34, 34, 0.75), transparent);
+  }
+
+  [dir="rtl"] div.tab-bar-shadow-right {
+    background-image: linear-gradient(to right, #222, rgba(34, 34, 34, 0.75), transparent);
   }
 }
 
@@ -722,8 +772,8 @@ div.tab-bar-drag-highlight {
 
 div.tab-bar-scroll {
   position: absolute;
-  left: 10px;
-  right: calc(
+  inset-inline-start: 10px;
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px
   );
   top: 0px;
@@ -733,14 +783,14 @@ div.tab-bar-scroll {
 }
 
 body.fancy-title-bar-lite div.tab-bar-scroll {
-  right: calc(
+  inset-inline-end: calc(
     154px + var(--show-lock-buttons) * 28px + var(--show-update-button) * 38px + var(--show-feedback-button) * 38px -
       33px
   );
 }
 
 body.fancy-title-bar-mac div.tab-bar-scroll {
-  right: 10px;
+  inset-inline-end: 10px;
 }
 
 div.tab-bar-scroll::-webkit-scrollbar {
@@ -757,8 +807,8 @@ div.tab {
   height: 30px;
 
   margin-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-inline-start: 10px;
+  padding-inline-end: 10px;
 
   text-align: center;
   line-height: 30px;
@@ -772,13 +822,13 @@ div.tab {
 }
 
 div.tab:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-start-start-radius: 10px;
+  border-end-start-radius: 10px;
 }
 
 div.tab:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-start-end-radius: 10px;
+  border-end-end-radius: 10px;
 }
 
 div.tab.tab-hovered {
@@ -826,11 +876,11 @@ body.fancy-title-bar-win button.tab-control {
 }
 
 button.update {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px);
+  inset-inline-end: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px);
 }
 
 body.fancy-title-bar-lite button.update {
-  right: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px - 33px);
+  inset-inline-end: calc(154px + var(--show-lock-buttons) * 28px + var(--show-feedback-button) * 38px - 33px);
 }
 
 button.update > img {
@@ -844,11 +894,11 @@ button.update.blurred > img {
 }
 
 button.feedback {
-  right: calc(154px + var(--show-lock-buttons) * 28px);
+  inset-inline-end: calc(154px + var(--show-lock-buttons) * 28px);
 }
 
 body.fancy-title-bar-lite button.feedback {
-  right: calc(154px + var(--show-lock-buttons) * 28px - 33px);
+  inset-inline-end: calc(154px + var(--show-lock-buttons) * 28px - 33px);
 }
 
 button.feedback > img {
@@ -867,22 +917,22 @@ button.feedback.blurred > img {
 
 button.play,
 button.pause {
-  right: calc(116px + var(--show-lock-buttons) * 28px);
+  inset-inline-end: calc(116px + var(--show-lock-buttons) * 28px);
 }
 
 body.fancy-title-bar-lite button.play,
 body.fancy-title-bar-lite button.pause {
-  right: calc(116px + var(--show-lock-buttons) * 28px - 33px);
+  inset-inline-end: calc(116px + var(--show-lock-buttons) * 28px - 33px);
 }
 
 button.lock,
 button.unlock {
-  right: 116px;
+  inset-inline-end: 116px;
 }
 
 body.fancy-title-bar-lite button.lock,
 body.fancy-title-bar-lite button.unlock {
-  right: calc(116px - 33px);
+  inset-inline-end: calc(116px - 33px);
 }
 
 button.unlock > img {
@@ -918,15 +968,15 @@ button.unlock.blurred > img {
 }
 
 button.close {
-  right: 78px;
+  inset-inline-end: 78px;
 }
 
 body.fancy-title-bar-lite button.close {
-  right: calc(78px - 33px);
+  inset-inline-end: calc(78px - 33px);
 }
 
 button.popup {
-  right: 45px;
+  inset-inline-end: 45px;
 }
 
 body.fancy-title-bar-lite button.popup {
@@ -938,7 +988,7 @@ button.close img {
 }
 
 button.add-tab {
-  right: 12px;
+  inset-inline-end: 12px;
 }
 
 /* Timeline */
@@ -947,14 +997,14 @@ div.timeline {
   position: absolute;
   top: 50px;
   height: calc(32px * var(--show-timeline));
-  left: 10px;
-  right: 10px;
+  inset-inline-start: 10px;
+  inset-inline-end: 10px;
   z-index: 5;
 }
 
 canvas.timeline-canvas {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 100%;
@@ -974,7 +1024,7 @@ canvas.timeline-canvas {
 
 div.timeline-scroll {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 100%;
@@ -996,7 +1046,7 @@ div.timeline-scroll-content {
 
 div.renderer-content {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   top: calc(50px + var(--show-timeline) * 42px);
   bottom: var(--tab-controls-height);
@@ -1004,7 +1054,7 @@ div.renderer-content {
 
 div.controls-content {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   bottom: 0%;
   height: var(--tab-controls-height);
@@ -1021,7 +1071,7 @@ div.controls-content {
 
 div.controls-handle {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 100%;
   bottom: calc(var(--tab-controls-height) - 5px);
   height: calc(20px - (var(--show-tab-controls) * 10px));
@@ -1035,7 +1085,7 @@ div.controls-handle {
 div.source-list {
   position: absolute;
   top: 10px;
-  left: 10px;
+  inset-inline-start: 10px;
   width: 50%;
   height: 50%;
 }
@@ -1044,8 +1094,8 @@ div.source-list div.title {
   position: absolute;
   top: 0px;
   height: 30px;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
 
   text-align: center;
   font-size: 16px;
@@ -1061,23 +1111,29 @@ div.source-list button.clear,
 div.source-list button.help {
   position: absolute;
   top: 15px;
-  right: 15px;
+  inset-inline-end: 15px;
   transform: translate(50%, -50%);
 
   width: 25px;
   height: 25px;
 }
 
+[dir="rtl"] div.source-list button.edit,
+[dir="rtl"] div.source-list button.clear,
+[dir="rtl"] div.source-list button.help {
+  transform: translate(-50%, -50%);
+}
+
 div.source-list button.help {
-  right: 40px;
+  inset-inline-end: 40px;
 }
 
 div.source-list div.list {
   position: absolute;
   top: 30px;
   bottom: 0px;
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -1128,12 +1184,16 @@ div.source-list button {
 
 div.source-list button.type {
   top: 15px;
-  left: 15px;
+  inset-inline-start: 15px;
   transform: translate(-50%, -50%);
 }
 
+[dir="rtl"] div.source-list button.type {
+  transform: translate(50%, -50%);
+}
+
 div.source-list div.item.child button.type {
-  left: 40px;
+  inset-inline-start: 40px;
 }
 
 div.source-list button.type object.hidden {
@@ -1152,7 +1212,7 @@ div.source-list div.type-name {
   position: absolute;
   top: 0px;
   height: 30px;
-  left: 30px;
+  inset-inline-start: 30px;
   max-width: calc(100% - 30px - 55px);
 
   font-weight: bold;
@@ -1164,7 +1224,7 @@ div.source-list div.type-name {
 }
 
 div.source-list div.item.child div.type-name {
-  left: 55px;
+  inset-inline-start: 55px;
 }
 
 div.source-list div.key-container {
@@ -1172,9 +1232,9 @@ div.source-list div.key-container {
   top: 0px;
   height: 30px;
   left: calc(30px + var(--type-width));
-  max-width: calc(100% - 31px - var(--type-width) - 55px);
+  right: 55px;
 
-  text-align: right;
+  text-align: left;
   direction: rtl;
   font-size: 14px;
   line-height: 30px;
@@ -1186,29 +1246,49 @@ div.source-list div.key-container {
 
 div.source-list div.item.child div.key-container {
   left: calc(55px + var(--type-width));
-  max-width: calc(100% - 31px - 25px - var(--type-width) - 55px);
+  right: 55px;
 }
 
+[dir="rtl"] div.source-list div.key-container {
+  left: 55px;
+  right: calc(30px + var(--type-width));
+  text-align: right;
+}
+
+[dir="rtl"] div.source-list div.item.child div.key-container {
+  left: 55px;
+  right: calc(55px + var(--type-width));
+}
+
+div.source-list div.type-name,
 div.source-list div.key-container span {
   unicode-bidi: plaintext;
 }
 
 div.source-list button.remove {
   top: 15px;
-  right: 15px;
+  inset-inline-end: 15px;
   transform: translate(50%, -50%);
+}
+
+[dir="rtl"] div.source-list button.remove {
+  transform: translate(-50%, -50%);
 }
 
 div.source-list button.hide {
   top: 15px;
-  right: 40px;
+  inset-inline-end: 40px;
   transform: translate(50%, -50%);
+}
+
+[dir="rtl"] div.source-list button.hide {
+  transform: translate(-50%, -50%);
 }
 
 div.source-list img.value-symbol {
   position: absolute;
   top: 32px;
-  left: 32px;
+  inset-inline-start: 32px;
   height: 11px;
   width: 11px;
 
@@ -1217,15 +1297,19 @@ div.source-list img.value-symbol {
 }
 
 div.source-list div.item.child img.value-symbol {
-  left: 57px;
+  inset-inline-start: 57px;
+}
+
+[dir="rtl"] div.source-list img.value-symbol {
+  transform: scaleX(-1);
 }
 
 div.source-list div.value {
   position: absolute;
   top: 30px;
   height: 15px;
-  left: 45px;
-  right: 0px;
+  inset-inline-start: 45px;
+  inset-inline-end: 0px;
 
   color: #777;
   user-select: text;
@@ -1239,7 +1323,7 @@ div.source-list div.value {
 }
 
 div.source-list div.item.child div.value {
-  left: 70px;
+  inset-inline-start: 70px;
 }
 
 div.source-list div.drag-highlight {
@@ -1275,7 +1359,7 @@ div.setting-blocks div {
 div.setting-blocks div.title {
   height: 20px;
   width: 100%;
-  text-align: left;
+  text-align: start;
   font-size: 0px;
   line-height: 20px;
   font-weight: bold;
@@ -1290,6 +1374,12 @@ div.setting-blocks div.input {
   min-height: 40px;
   text-align: center;
   font-size: 0px;
+}
+
+div.setting-blocks div.title:has(> div.half, > div.percent-30, > div.percent-70),
+div.setting-blocks div.input:has(> div.half, > div.percent-30, > div.percent-70) {
+  display: flex;
+  flex-direction: row;
 }
 
 div.setting-blocks.fix-first div.input:nth-child(2) {
@@ -1355,12 +1445,13 @@ div.setting-blocks div.percent-30 {
 
 div.setting-blocks div.split {
   position: relative;
-  left: 50%;
+  margin-left: auto;
+  margin-right: auto;
   top: 8px;
   height: 65%;
   width: 80%;
-  transform: translateX(-50%);
   font-size: 0px;
+  text-align: center;
 }
 
 div.setting-blocks div.split div {
@@ -1369,6 +1460,7 @@ div.setting-blocks div.split div {
   height: 100%;
   box-sizing: border-box;
   vertical-align: top;
+  text-align: center;
 
   transition:
     background-color 0.2s ease-in-out,
@@ -1399,13 +1491,13 @@ div.setting-blocks div.split div img {
 }
 
 div.setting-blocks div.split div:first-child {
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-start-start-radius: 10px;
+  border-end-start-radius: 10px;
 }
 
 div.setting-blocks div.split div:last-child {
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-start-end-radius: 10px;
+  border-end-end-radius: 10px;
 }
 
 div.setting-blocks div.split div:hover {
@@ -1514,14 +1606,17 @@ div.line-graph-axis {
 
 div.line-graph-left {
   left: 0%;
+  right: auto;
 }
 
 div.line-graph-right {
   left: calc(100% / 3 * 2);
+  right: auto;
 }
 
 div.line-graph-discrete {
   left: calc(100% / 3);
+  right: auto;
   box-sizing: border-box;
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
@@ -1540,7 +1635,7 @@ div.field-2d-sources {
   position: absolute;
   top: 0%;
   height: 100%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 60%;
   min-width: calc(100% - 250px);
 }
@@ -1549,10 +1644,10 @@ div.field-2d-settings {
   position: absolute;
   top: 0%;
   height: 100%;
-  right: 0%;
+  inset-inline-end: 0%;
   width: 40%;
   max-width: 250px;
-  border-left: 1px solid #ddd;
+  border-inline-start: 1px solid #ddd;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -1560,7 +1655,7 @@ div.field-2d-settings {
 
 @media (prefers-color-scheme: dark) {
   div.field-2d-settings {
-    border-left: 1px solid black;
+    border-inline-start: 1px solid black;
   }
 }
 
@@ -1570,7 +1665,7 @@ div.field-3d-sources {
   position: absolute;
   top: 0%;
   height: 100%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 60%;
   min-width: calc(100% - 200px);
 }
@@ -1579,10 +1674,10 @@ div.field-3d-settings {
   position: absolute;
   top: 0%;
   height: 100%;
-  right: 0%;
+  inset-inline-end: 0%;
   width: 40%;
   max-width: 200px;
-  border-left: 1px solid #ddd;
+  border-inline-start: 1px solid #ddd;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -1590,7 +1685,7 @@ div.field-3d-settings {
 
 @media (prefers-color-scheme: dark) {
   div.field-3d-settings {
-    border-left: 1px solid black;
+    border-inline-start: 1px solid black;
   }
 }
 div.setting-blocks div.split div.xr-button img {
@@ -1627,7 +1722,7 @@ div.stats-sources {
   position: absolute;
   top: 0%;
   height: 100%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 60%;
   min-width: calc(100% - 200px);
 }
@@ -1636,10 +1731,10 @@ div.stats-settings {
   position: absolute;
   top: 0%;
   height: 100%;
-  right: 0%;
+  inset-inline-end: 0%;
   width: 40%;
   max-width: 200px;
-  border-left: 1px solid #ddd;
+  border-inline-start: 1px solid #ddd;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -1647,7 +1742,7 @@ div.stats-settings {
 
 @media (prefers-color-scheme: dark) {
   div.stats-settings {
-    border-left: 1px solid black;
+    border-inline-start: 1px solid black;
   }
 }
 
@@ -1655,16 +1750,16 @@ div.stats-settings {
 
 div.video-source {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 30%;
   height: 100%;
-  border-right: 1px solid #ddd;
+  border-inline-end: 1px solid #ddd;
 }
 
 div.video-synchronization {
   position: absolute;
-  left: 30%;
+  inset-inline-start: 30%;
   top: 0%;
   width: 70%;
   height: 100%;
@@ -1672,7 +1767,7 @@ div.video-synchronization {
 
 @media (prefers-color-scheme: dark) {
   div.video-source {
-    border-right: 1px solid black;
+    border-inline-end: 1px solid black;
   }
 }
 
@@ -1710,17 +1805,17 @@ div.video-source > button:nth-child(3) > svg > path {
 }
 
 div.video-source > button:nth-child(1) {
-  left: 5%;
+  inset-inline-start: 5%;
   background-color: #666666;
 }
 
 div.video-source > button:nth-child(2) {
-  left: calc(5% + 80% / 3 + 5%);
+  inset-inline-start: calc(5% + 80% / 3 + 5%);
   background-color: #ff0000;
 }
 
 div.video-source > button:nth-child(3) {
-  left: calc(5% + 80% / 3 + 5% + 80% / 3 + 5%);
+  inset-inline-start: calc(5% + 80% / 3 + 5% + 80% / 3 + 5%);
   background-color: #4556a5;
 }
 
@@ -1750,24 +1845,25 @@ div.video-source > button:nth-child(3):active {
 
 div.video-timeline-section {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 50%;
+  direction: ltr;
 }
 
 div.video-timeline-section button {
   height: 30px;
   width: 30px;
-  left: 5px;
+  inset-inline-start: 5px;
   top: 50%;
   transform: translateY(-50%);
 }
 
 div.video-timeline-container {
   position: absolute;
-  right: 5px;
-  left: 40px;
+  inset-inline-end: 5px;
+  inset-inline-start: 40px;
   top: 5px;
   height: calc(100% - 10px);
 
@@ -1778,7 +1874,7 @@ div.video-timeline-container {
 input.video-timeline-slider {
   position: absolute;
   margin: 0px;
-  left: 0px;
+  inset-inline-start: 0px;
   width: 100%;
   top: 0px;
   height: 25px;
@@ -1805,8 +1901,8 @@ div.video-timeline-marker-container {
   position: absolute;
   bottom: 0px;
   height: calc(100% - 25px);
-  left: 0px;
-  right: 0px;
+  inset-inline-start: 0px;
+  inset-inline-end: 0px;
   background-color: #888;
 }
 
@@ -1818,11 +1914,12 @@ div.video-timeline-marker-container div {
 
 div.video-timeline-controls {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 50%;
   width: 100%;
   height: 50%;
   text-align: center;
+  direction: ltr;
 }
 
 div.video-timeline-controls button {
@@ -1836,7 +1933,7 @@ div.video-timeline-controls button {
 
 table.joystick-selector {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 100%;
@@ -1857,7 +1954,7 @@ div.swerve-sources {
   position: absolute;
   top: 0%;
   height: 100%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 60%;
   min-width: calc(100% - 200px);
 }
@@ -1866,10 +1963,10 @@ div.swerve-settings {
   position: absolute;
   top: 0%;
   height: 100%;
-  right: 0%;
+  inset-inline-end: 0%;
   width: 40%;
   max-width: 200px;
-  border-left: 1px solid #ddd;
+  border-inline-start: 1px solid #ddd;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -1877,7 +1974,7 @@ div.swerve-settings {
 
 @media (prefers-color-scheme: dark) {
   div.swerve-settings {
-    border-left: 1px solid black;
+    border-inline-start: 1px solid black;
   }
 }
 
@@ -1885,7 +1982,7 @@ div.swerve-settings {
 
 div.mechanism-sources {
   position: absolute;
-  left: 0%;
+  inset-inline-start: 0%;
   top: 0%;
   width: 100%;
   height: 100%;
@@ -1897,7 +1994,7 @@ div.points-sources {
   position: absolute;
   top: 0%;
   height: 100%;
-  left: 0%;
+  inset-inline-start: 0%;
   width: 60%;
   min-width: calc(100% - 200px);
 }
@@ -1906,10 +2003,10 @@ div.points-settings {
   position: absolute;
   top: 0%;
   height: 100%;
-  right: 0%;
+  inset-inline-end: 0%;
   width: 40%;
   max-width: 200px;
-  border-left: 1px solid #ddd;
+  border-inline-start: 1px solid #ddd;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -1917,6 +2014,6 @@ div.points-settings {
 
 @media (prefers-color-scheme: dark) {
   div.points-settings {
-    border-left: 1px solid black;
+    border-inline-start: 1px solid black;
   }
 }
