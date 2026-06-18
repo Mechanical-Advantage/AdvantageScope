@@ -104,6 +104,9 @@
       "enableEmbeddedAsarIntegrityValidation": true,
       "onlyLoadAppFromAsar": true
     },
+    "electronLanguages": [
+      "en-US"
+    ],
     "files": [
       "www/**/*",
       "bundles/**/*",
@@ -197,6 +200,9 @@
       "notarize": false,
       "extendInfo": {
         "CFBundleIconName": "AppIcon",
+        "CFBundleLocalizations": [
+          "en"
+        ],
         "NSLocalNetworkUsageDescription": "AdvantageScope uses the local network to communicate with robots.",
         "NSUpdateSecurityPolicy": {
           "AllowPackages": [
