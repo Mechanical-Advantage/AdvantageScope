@@ -8,7 +8,7 @@
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
-import Preferences from "../shared/Preferences";
+import Preferences, { getRobotAddress } from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
@@ -454,7 +454,7 @@ function startLive(isSim = false) {
     address = "127.0.0.1";
   } else {
     if (window.preferences) {
-      address = window.preferences.robotAddress;
+      address = getRobotAddress(window.preferences, window.platform);
     }
   }
 

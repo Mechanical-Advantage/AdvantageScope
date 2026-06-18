@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { getRobotAddress } from "../../../shared/Preferences";
 import { filterFieldByPrefixes, getOrDefault, logValuesEqual } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
 import { NT4_Client, NT4_PORTS_DEFAULT } from "./NT4";
@@ -28,7 +29,7 @@ export class NT4Publisher {
       address = "127.0.0.1";
     } else {
       if (window.preferences) {
-        address = window.preferences.robotAddress;
+        address = getRobotAddress(window.preferences, window.platform);
       }
     }
 
