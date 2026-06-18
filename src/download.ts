@@ -6,9 +6,8 @@
 // at the root directory of this project.
 
 import { DISTRIBUTION, Distribution } from "./shared/buildConstants";
-import { USB_ADDRESS } from "./shared/IPAddresses";
 import NamedMessage from "./shared/NamedMessage";
-import Preferences from "./shared/Preferences";
+import Preferences, { getRobotAddress } from "./shared/Preferences";
 import { zfill } from "./shared/util";
 
 const FILE_LIST: HTMLElement = document.getElementsByClassName("file-list")[0] as HTMLElement;
@@ -64,9 +63,8 @@ function handleMainMessage(message: NamedMessage) {
       let path = "";
       if (preferences) {
         if (DISTRIBUTION !== Distribution.Lite) {
-          address = preferences.usb ? USB_ADDRESS : preferences.robotAddress;
           // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
-          address = address
+          address = getRobotAddress(preferences, platform)
             .split(".")
             .map((part) => part.replace(/^0+/, "") || "0")
             .join(".");
@@ -107,17 +105,15 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No such file") {
-        friendlyText = `Failed to open log folder at <u>${preferences?.remotePath}</u>`;
-      } else if (message.data === "No files") {
-        friendlyText = `No files found in folder <u>${preferences?.remotePath}</u> (check path)`;
-      } else if (
-        message.data.includes("ENETUNREACH") ||
-        message.data.includes("EHOSTDOWN") ||
-        message.data.includes("ENOTFOUND") ||
-        message.data.toLowerCase().includes("timeout") ||
-        message.data === "Fetch failed"
-      ) {
-        friendlyText = `Robot not found at <u>${address}</u> (check connection)`;
+        friendlyText = "Failed to open log folder at <u>" + preferences?.remotePath + "</u>";
+      } else if (message.data === "Timed out while waiting for handshake" || message.data === "Fetch failed") {
+        friendlyText = "Robot not found at <u>" + address + "</u> (check connection)";
+      } else if (message.data.includes("ENOTFOUND")) {
+        friendlyText = "Unknown address <u>" + address + "</u>";
+      } else if (message.data === "All configured authentication methods failed") {
+        friendlyText = "Failed to authenticate to robot at <u>" + address + "</u>";
+      } else if (message.data === "Not connected") {
+        friendlyText = "Lost connection to robot";
       } else {
         friendlyText = "Unknown error: " + message.data;
       }
@@ -268,7 +264,7 @@ function handleMainMessage(message: NamedMessage) {
               img.src = "../icons/download/" + extension + "-icon-linuxwin.png";
               break;
             case "lite":
-              img.src = "icons/" + extension + "-icon.png";
+              img.src = "../icons/" + extension + "-icon.png";
               break;
           }
         }

@@ -28,25 +28,21 @@ export default class ProtoDecoder {
     }
     if (fileDescriptor.messageType) {
       for (let i = 0; i < fileDescriptor.messageType.length; i++) {
-        // @ts-expect-error
         filePackage.add(protobuf.Type.fromDescriptor(fileDescriptor.messageType[i], fileDescriptor.syntax));
       }
     }
     if (fileDescriptor.enumType) {
       for (let i = 0; i < fileDescriptor.enumType.length; i++) {
-        // @ts-expect-error
         filePackage.add(protobuf.Enum.fromDescriptor(fileDescriptor.enumType[i]));
       }
     }
     if (fileDescriptor.extension) {
       for (let i = 0; i < fileDescriptor.extension.length; i++) {
-        // @ts-expect-error
         filePackage.add(protobuf.Field.fromDescriptor(fileDescriptor.extension[i]));
       }
     }
     if (fileDescriptor.service) {
       for (let i = 0; i < fileDescriptor.service.length; i++) {
-        // @ts-expect-error
         filePackage.add(protobuf.Service.fromDescriptor(fileDescriptor.service[i]));
       }
     }

@@ -115,14 +115,19 @@ function openPopupWindow(
       // Close events
       if (!requireForceClose) {
         window.onclick = () => closePopupWindow();
-        POPUP_FRAME.contentWindow?.addEventListener("keydown", (event) => {
-          if (event.code === "Escape") {
-            closePopupWindow();
-          } else {
-            processKeydown(event);
-          }
-        });
+        POPUP_FRAME.contentWindow?.addEventListener(
+          "keydown",
+          (event) => {
+            if (event.code === "Escape") {
+              closePopupWindow();
+            } else {
+              processKeydown(event as KeyboardEvent);
+            }
+          },
+          { capture: true }
+        );
       }
+      POPUP_FRAME.contentWindow?.focus();
     };
     POPUP_FRAME.src = path;
   });
@@ -136,6 +141,7 @@ function closePopupWindow(forceClose = false) {
   POPUP_FRAME.hidden = true;
   POPUP_FRAME.src = "";
   HUB_FRAME.classList.remove("background");
+  window.focus();
   if (downloadInterval !== null) {
     window.clearInterval(downloadInterval);
   }
@@ -285,7 +291,9 @@ async function initHub() {
   HUB_FRAME.contentWindow?.addEventListener("mousemove", (event) => event.preventDefault());
 
   // Add key handling event
-  HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event));
+  HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event as KeyboardEvent), {
+    capture: true
+  });
 }
 
 async function handleHubMessage(message: NamedMessage) {
@@ -345,40 +353,6 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
-    case "numeric-array-deprecation-warning":
-      {
-        let shouldForce: boolean = message.data.force;
-        let prefs = DEFAULT_PREFS;
-        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-        if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-        if (!prefs.skipNumericArrayDeprecationWarning) {
-          prefs.skipNumericArrayDeprecationWarning = true;
-          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-        }
-        alert(
-          "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative."
-        );
-      }
-      break;
-
-    case "ftc-experimental-warning":
-      {
-        let prefs = DEFAULT_PREFS;
-        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-        if (prefs.skipFTCExperimentalWarning) return;
-        if (
-          confirm(
-            "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page. Select OK to hide this message in the future."
-          )
-        ) {
-          prefs.skipFTCExperimentalWarning = true;
-          localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-        }
-      }
-      break;
-
     case "open-link":
       window.open(message.data, "_blank");
       break;
@@ -416,7 +390,7 @@ async function handleHubMessage(message: NamedMessage) {
               {
                 content: `Show Licenses`,
                 callback() {
-                  openPopupWindow("../www/licenses.html", [50, 75], "percent");
+                  openPopupWindow("www/licenses.html", [50, 75], "percent");
                 }
               }
             ];
@@ -795,11 +769,12 @@ async function handleHubMessage(message: NamedMessage) {
         const menuItems: (MenuItem | Submenu | "-")[] = [];
 
         if (legend === "discrete") {
+          let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           menuItems.push({
-            content: "Add Enabled State",
+            content: (showRobotMode ? "\u2714 " : "") + "Show Robot Mode",
             callback() {
-              sendMessage(hubPort, "add-discrete-enabled");
+              sendMessage(hubPort, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
             }
           });
         } else {
@@ -1182,30 +1157,31 @@ async function handleHubMessage(message: NamedMessage) {
  */
 function processKeydown(event: KeyboardEvent): boolean {
   let triggered = true;
+  let modifier = event.metaKey || event.ctrlKey;
   let lowerKey = event.key.toLowerCase();
-  if (event.shiftKey && event.metaKey && lowerKey === "o") {
+  if (event.shiftKey && modifier && lowerKey === "o") {
     openDownload();
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "k") {
+  } else if (!event.shiftKey && modifier && lowerKey === "k") {
     sendMessage(hubPort, "start-live", false);
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "\\") {
+  } else if (!event.shiftKey && modifier && lowerKey === "\\") {
     sendMessage(hubPort, "zoom-enabled");
-  } else if (!event.shiftKey && event.metaKey && lowerKey === ".") {
+  } else if (!event.shiftKey && modifier && lowerKey === ".") {
     sendMessage(hubPort, "toggle-sidebar");
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "/") {
+  } else if (!event.shiftKey && modifier && lowerKey === "/") {
     sendMessage(hubPort, "toggle-controls");
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowleft") {
+  } else if (!event.shiftKey && modifier && lowerKey === "arrowleft") {
     sendMessage(hubPort, "move-tab", -1);
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "arrowright") {
+  } else if (!event.shiftKey && modifier && lowerKey === "arrowright") {
     sendMessage(hubPort, "move-tab", 1);
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "[") {
+  } else if (!event.shiftKey && modifier && lowerKey === "[") {
     sendMessage(hubPort, "shift-tab", -1);
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "]") {
+  } else if (!event.shiftKey && modifier && lowerKey === "]") {
     sendMessage(hubPort, "shift-tab", 1);
-  } else if (!event.shiftKey && event.metaKey && lowerKey === "e") {
+  } else if (!event.shiftKey && modifier && lowerKey === "e") {
     sendMessage(hubPort, "close-tab", false);
-  } else if (event.shiftKey && event.metaKey && lowerKey === ",") {
+  } else if (event.shiftKey && modifier && lowerKey === ",") {
     openPreferences();
-  } else if (!event.shiftKey && !event.metaKey && event.altKey && !event.code.startsWith("Alt")) {
+  } else if (!event.shiftKey && !modifier && event.altKey && !event.code.startsWith("Alt")) {
     triggered = false;
     getAllTabTypes()
       .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
@@ -1270,24 +1246,30 @@ window.addEventListener("load", () => {
             code: event.code,
             metaKey: event.metaKey,
             ctrlKey: event.ctrlKey,
-            altKey: event.altKey
+            altKey: event.altKey,
+            shiftKey: event.shiftKey
           })
         );
       }
     },
     { capture: true }
   );
-  window.addEventListener("keyup", (event) => {
-    HUB_FRAME.contentWindow?.dispatchEvent(
-      new KeyboardEvent("keyup", {
-        key: event.key,
-        code: event.code,
-        metaKey: event.metaKey,
-        ctrlKey: event.ctrlKey,
-        altKey: event.altKey
-      })
-    );
-  });
+  window.addEventListener(
+    "keyup",
+    (event) => {
+      HUB_FRAME.contentWindow?.dispatchEvent(
+        new KeyboardEvent("keyup", {
+          key: event.key,
+          code: event.code,
+          metaKey: event.metaKey,
+          ctrlKey: event.ctrlKey,
+          altKey: event.altKey,
+          shiftKey: event.shiftKey
+        })
+      );
+    },
+    { capture: true }
+  );
 
   // Handle hub loading
   if (HUB_FRAME.contentWindow?.document.readyState === "complete") {

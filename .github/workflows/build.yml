@@ -10,6 +10,9 @@ on:
   release:
     types: [published]
 
+env:
+  VERSION_SUFFIX: ${{ case(startsWith(github.ref, 'refs/tags/v'), github.ref_name, 'dev') }}
+
 jobs:
   check-formatting:
     name: Check Formatting
@@ -17,9 +20,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -36,9 +39,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -49,7 +52,7 @@ jobs:
       - name: Build docs
         run: npm run docs:build
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: docs
           path: docs/build/
@@ -60,14 +63,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
       - name: Install Node.js dependencies
@@ -79,12 +82,12 @@ jobs:
       - name: Compile bundles
         run: npm run compile
       - name: Upload bundles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bundles
           path: |
-            bundles/*.js
-            bundles/*.wasm
+            bundles/**/*.js
+            bundles/**/*.wasm
 
   compile-wpilib:
     name: Compile for WPILib
@@ -92,14 +95,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
       - name: Install Node.js dependencies
@@ -113,12 +116,12 @@ jobs:
         env:
           ASCOPE_DISTRIBUTION: WPILIB
       - name: Upload bundles
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: bundles-wpilib
           path: |
-            bundles/*.js
-            bundles/*.wasm
+            bundles/**/*.js
+            bundles/**/*.wasm
 
   compile-lite:
     name: Compile for Lite
@@ -126,14 +129,14 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
       - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: emscripten-core/setup-emsdk@v16
         with:
           version: 4.0.12
       - name: Install Node.js dependencies
@@ -155,19 +158,38 @@ jobs:
           mkdir advantagescopelite-desktop
           cp lite/lite_server.py advantagescopelite-desktop/lite_server.py
           cp -rL lite/static advantagescopelite-desktop/static
-          zip -r advantagescopelite-desktop.zip advantagescopelite-desktop/
       - name: Upload development artifact (desktop)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: advantagescopelite-desktop
           path: advantagescopelite-desktop/
       - name: Build IPK (Systemcore)
         run: cd lite/ipk && ./build.sh
+      - name: Prepare artifact (Systemcore)
+        run: mv lite/ipk/advantagescope-lite_*.ipk lite/ipk/advantagescopelite-systemcore.ipk
       - name: Upload development artifact (Systemcore)
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescopelite-systemcore
-          path: lite/ipk/advantagescope-lite_*.ipk
+          archive: false
+          path: lite/ipk/advantagescopelite-systemcore.ipk
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Prepare artifact (Systemcore)"
+        run: mv lite/ipk/advantagescopelite-systemcore.ipk temp.ipk
+      - name: "Release: Upload artifact (Systemcore)"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: temp.ipk
+          asset_name: advantagescope-lite-${{ steps.get_release_info.outputs.tag_name }}.ipk
+          asset_content_type: "application/octet-stream"
 
   build-ios:
     name: Build for iOS
@@ -175,7 +197,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Install Metal toolchain
         run: xcodebuild -downloadComponent MetalToolchain
       - name: Download iOS simulator
@@ -211,9 +233,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -222,7 +244,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles
           path: bundles
@@ -234,29 +256,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-dev.exe"
+          Move-Item -Path "dist\AdvantageScope*.exe" -Destination "advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe"
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-win-${{ matrix.arch }}-dev.exe
-          path: advantagescope-win-${{ matrix.arch }}-dev.exe
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          archive: false
+          path: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-win-${{ matrix.arch }}-dev.exe
-          asset_name: advantagescope-win-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.exe
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-win-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.exe
 
   build-mac:
     name: Build for macOS (${{ matrix.arch }})
@@ -270,9 +281,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -281,7 +292,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
-        if: github.event_name != 'pull_request'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
@@ -292,7 +305,7 @@ jobs:
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles
           path: bundles
@@ -304,29 +317,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-dev.dmg
+          mv dist/AdvantageScope-*.dmg advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-          path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          archive: false
+          path: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-mac-${{ matrix.arch }}-dev.dmg
-          asset_name: advantagescope-mac-${{ matrix.arch }}-${{ steps.get_release_info.outputs.tag_name }}.dmg
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-mac-${{ matrix.arch }}-${{ env.VERSION_SUFFIX }}.dmg
 
   build-linux:
     name: Build for Linux/${{ matrix.format }} (${{ matrix.arch.electronArch }})
@@ -349,9 +351,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -371,7 +373,7 @@ jobs:
           sudo flatpak install flathub org.freedesktop.Sdk/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
           sudo flatpak install flathub org.electronjs.Electron2.BaseApp/${{ matrix.arch.flatpakArch }}/22.08 --assumeyes
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles
           path: bundles
@@ -383,29 +385,18 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
       - name: Prepare artifact
         run: |
-          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
+          mv dist/*.${{ matrix.format }} advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-          path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
+          archive: false
+          path: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-linux-${{ matrix.arch.electronArch }}-dev.${{ matrix.format }}
-          asset_name: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ steps.get_release_info.outputs.tag_name }}.${{ matrix.format }}
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-linux-${{ matrix.arch.electronArch }}-${{ env.VERSION_SUFFIX }}.${{ matrix.format }}
 
   build-wpilib-win:
     name: "WPILib: Build for Windows (${{ matrix.arch }})"
@@ -419,9 +410,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -430,7 +421,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles-wpilib
           path: bundles
@@ -449,26 +440,15 @@ jobs:
           Compress-Archive -Path "dist\win*\*" -DestinationPath "advantagescope-wpilib-win-${{ matrix.arch }}.zip"
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
+          archive: false
           path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-win-${{ matrix.arch }}.zip
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-win-${{ matrix.arch }}.zip
 
   build-wpilib-mac:
     name: "WPILib: Build for macOS (${{ matrix.arch }})"
@@ -482,9 +462,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -493,7 +473,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Load macOS certificate
-        if: github.event_name != 'pull_request'
+        if: |
+          github.repository == 'Mechanical-Advantage/AdvantageScope' &&
+          (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
         run: |
           echo "CSC_LINK=${{ secrets.MACOS_CERTIFICATE }}" >> $GITHUB_ENV
           echo "CSC_KEY_PASSWORD=${{ secrets.MACOS_CERTIFICATE_PWD }}" >> $GITHUB_ENV
@@ -504,7 +486,7 @@ jobs:
           echo "APPLE_ID_PWD=${{ secrets.MACOS_APPLE_ID_PWD }}" >> $GITHUB_ENV
           echo "APPLE_ID_TEAM=${{ secrets.MACOS_APPLE_ID_TEAM }}" >> $GITHUB_ENV
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles-wpilib
           path: bundles
@@ -525,26 +507,15 @@ jobs:
           tar -zcvf advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz "AdvantageScope (WPILib).app"
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
+          archive: false
           path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-          asset_name: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-mac-${{ matrix.arch }}.tar.gz
 
   build-wpilib-linux:
     name: "WPILib: Build for Linux (${{ matrix.arch }})"
@@ -558,9 +529,9 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "20.x"
           cache: "npm"
@@ -569,7 +540,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Download bundles
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: bundles-wpilib
           path: bundles
@@ -588,26 +559,15 @@ jobs:
           cd ../..
       - name: Upload development artifact
         if: github.event_name != 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
+          archive: false
           path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-      - name: "Release: Get release info"
-        if: github.event_name == 'release'
-        id: get_release_info
-        uses: kaliber5/action-get-release@v1
-        with:
-          token: ${{ github.token }}
       - name: "Release: Upload artifact"
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-          asset_name: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
-          asset_content_type: "application/octet-stream"
+          files: advantagescope-wpilib-linux-${{ matrix.arch }}.zip
 
   finalize-release:
     name: Finalize Release
@@ -617,21 +577,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Get release info
         id: get_release_info
         uses: kaliber5/action-get-release@v1
         with:
           token: ${{ github.token }}
       - name: Publish AppArmor profile
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: softprops/action-gh-release@v3
         with:
-          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: advantagescope.AppArmor
-          asset_name: advantagescope.AppArmor
-          asset_content_type: "text/plain"
+          files: advantagescope.AppArmor
       - name: Edit release
         uses: irongut/EditRelease@v1.2.0
         with:
@@ -639,4 +594,4 @@ jobs:
           id: ${{ github.event.release.id }}
           prerelease: false
           replacebody: false
-          body: '<table><tr><th colspan="4">Common Downloads</th></tr><tr><td colspan="4">🪟 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">Windows x64</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Apple Silicon</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Intel</a></td></tr><tr><td colspan="4">🐧 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">Linux x86 Deb</a></td></tr><tr><th colspan="4">All Downloads</th></tr><tr><td>Windows</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-arm64-${{ steps.get_release_info.outputs.tag_name }}.exe">arm64</a></td><td></td></tr><tr><td>macOS</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">arm64</a></td><td></td></tr><tr><td>Linux/deb</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.deb">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.deb">arm32</a></td></tr><tr><td>Linux/rpm</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.rpm">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm32</a></td></tr><tr><td>Linux/pacman</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.pacman">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm32</a></td></tr><tr><td>Linux/AppImage</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm32</a></td></tr><tr><td>Linux/snap</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.snap">x64</a></td><td></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.snap">arm32</a></td></tr><tr><td>Linux/flatpak</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">arm64</a></td><td></td></tr></table>'
+          body: '<table><tr><th colspan="4">Common Downloads</th></tr><tr><td colspan="4">🪟 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">Windows x64</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Apple Silicon</a></td></tr><tr><td colspan="4">🍎 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">macOS Intel</a></td></tr><tr><td colspan="4">🐧 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">Linux x86 Deb</a></td></tr><tr><td colspan="4">🍋‍🟩 <a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-lite-${{ steps.get_release_info.outputs.tag_name }}.ipk">Systemcore (Lite)</a></td></tr><tr><th colspan="4">All Downloads</th></tr><tr><td>Windows</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-x64-${{ steps.get_release_info.outputs.tag_name }}.exe">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-win-arm64-${{ steps.get_release_info.outputs.tag_name }}.exe">arm64</a></td><td></td></tr><tr><td>macOS</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-x64-${{ steps.get_release_info.outputs.tag_name }}.dmg">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-mac-arm64-${{ steps.get_release_info.outputs.tag_name }}.dmg">arm64</a></td><td></td></tr><tr><td>Linux/deb</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.deb">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.deb">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.deb">arm32</a></td></tr><tr><td>Linux/rpm</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.rpm">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.rpm">arm32</a></td></tr><tr><td>Linux/pacman</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.pacman">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.pacman">arm32</a></td></tr><tr><td>Linux/AppImage</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.AppImage">arm32</a></td></tr><tr><td>Linux/snap</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.snap">x64</a></td><td></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-armv7l-${{ steps.get_release_info.outputs.tag_name }}.snap">arm32</a></td></tr><tr><td>Linux/flatpak</td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-x64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">x64</a></td><td><a href="https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/${{ steps.get_release_info.outputs.tag_name }}/advantagescope-linux-arm64-${{ steps.get_release_info.outputs.tag_name }}.flatpak">arm64</a></td><td></td></tr></table>'

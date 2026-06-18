@@ -7,9 +7,8 @@
 
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
-import { SIM_ADDRESS, USB_ADDRESS } from "../shared/IPAddresses";
 import NamedMessage from "../shared/NamedMessage";
-import Preferences from "../shared/Preferences";
+import Preferences, { getRobotAddress } from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
 import { DISTRIBUTION, Distribution } from "../shared/buildConstants";
@@ -27,7 +26,7 @@ import LiveDataTuner from "./dataSources/LiveDataTuner";
 import PhoenixDiagnosticsSource from "./dataSources/PhoenixDiagnosticsSource";
 import FTCDashboardSource from "./dataSources/ftcdashboard/FTCDashboardSource";
 import { NT4Publisher, NT4PublisherStatus } from "./dataSources/nt4/NT4Publisher";
-import NT4Source from "./dataSources/nt4/NT4Source";
+import NT4Source, { NT4Mode } from "./dataSources/nt4/NT4Source";
 import RLOGServerSource from "./dataSources/rlog/RLOGServerSource";
 
 // Constants
@@ -135,11 +134,7 @@ function setLoading(progress: number | null) {
 function updateFancyWindow() {
   // Using fancy title bar?
   let releaseSplit = window.platformRelease.split(".");
-  if (
-    window.platform === "darwin" &&
-    Number(releaseSplit[0]) >= 20 && // macOS Big Sur
-    !window.isFullscreen
-  ) {
+  if (window.platform === "darwin" && !window.isFullscreen) {
     document.body.classList.add("fancy-title-bar-mac");
   } else {
     document.body.classList.remove("fancy-title-bar-mac");
@@ -163,6 +158,13 @@ function updateFancyWindow() {
   // Using fancy sidebar?
   if (window.platform === "darwin") {
     document.body.classList.add("fancy-side-bar-mac");
+
+    // macOS Golden Gate switched to a different sidebar style
+    if (Number(releaseSplit[0]) >= 27) {
+      document.body.classList.add("fancy-side-bar-mac-27");
+    } else {
+      document.body.classList.remove("fancy-side-bar-mac-27");
+    }
   } else {
     document.body.classList.remove("fancy-side-bar-mac");
   }
@@ -426,10 +428,13 @@ function startLive(isSim = false) {
   if (!window.preferences) return;
   switch (window.preferences.liveMode) {
     case "nt4":
-      liveSource = new NT4Source(false);
+      liveSource = new NT4Source(NT4Mode.Default);
       break;
     case "nt4-akit":
-      liveSource = new NT4Source(true);
+      liveSource = new NT4Source(NT4Mode.AdvantageKit);
+      break;
+    case "nt4-systemcore":
+      liveSource = new NT4Source(NT4Mode.Systemcore);
       break;
     case "phoenix":
       liveSource = new PhoenixDiagnosticsSource();
@@ -446,12 +451,10 @@ function startLive(isSim = false) {
   if (DISTRIBUTION === Distribution.Lite) {
     address = window.location.hostname;
   } else if (isSim) {
-    address = SIM_ADDRESS;
-  } else if (window.preferences?.usb) {
-    address = USB_ADDRESS;
+    address = "127.0.0.1";
   } else {
     if (window.preferences) {
-      address = window.preferences.robotAddress;
+      address = getRobotAddress(window.preferences, window.platform);
     }
   }
 
@@ -878,8 +881,8 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "add-discrete-enabled":
-      window.tabs.addDiscreteEnabled();
+    case "set-robot-mode-visible":
+      window.tabs.setRobotModeVisible(message.data.showRobotMode);
       break;
 
     case "edit-axis":
@@ -955,7 +958,7 @@ async function handleMainMessage(message: NamedMessage) {
 
       // Convert to export format
       WorkerManager.request(
-        "../bundles/hub$exportWorker.js",
+        "../bundles/exportWorker.js",
         {
           options: message.data.options,
           log: window.log.toSerialized()
