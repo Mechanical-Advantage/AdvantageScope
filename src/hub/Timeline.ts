@@ -122,10 +122,16 @@ export default class Timeline {
       let endTime = range.end === undefined ? timeRange[1] : range.end;
       let isAuto = range.mode === "auto";
 
-      if (isAuto) {
-        context.fillStyle = light ? "#00cc00" : "#00bb00";
-      } else {
-        context.fillStyle = light ? "#00aaff" : "#0000bb";
+      switch (range.mode) {
+        case "teleop":
+          context.fillStyle = light ? "#5a83ff" : "#3957dd";
+          break;
+        case "auto":
+          context.fillStyle = light ? "#efab28" : "#c38615";
+          break;
+        case "utility":
+          context.fillStyle = light ? "#888888" : "#777777";
+          break;
       }
       let startX = clampValue(scaleValue(startTime, timeRange, [0, width]), 0, width);
       let endX = clampValue(scaleValue(endTime, timeRange, [0, width]), 0, width);

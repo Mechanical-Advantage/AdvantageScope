@@ -866,12 +866,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const editAxisMenu = new Menu();
 
         if (legend === "discrete") {
+          let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           editAxisMenu.append(
             new MenuItem({
-              label: "Add Enabled State",
+              label: "Show Robot Mode",
+              type: "checkbox",
+              checked: showRobotMode,
               click() {
-                sendMessage(window, "add-discrete-enabled");
+                sendMessage(window, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
               }
             })
           );

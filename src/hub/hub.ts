@@ -881,8 +881,8 @@ async function handleMainMessage(message: NamedMessage) {
       }
       break;
 
-    case "add-discrete-enabled":
-      window.tabs.addDiscreteEnabled();
+    case "set-robot-mode-visible":
+      window.tabs.setRobotModeVisible(message.data.showRobotMode);
       break;
 
     case "edit-axis":

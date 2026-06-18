@@ -27,23 +27,38 @@ export const SEPARATOR_REGEX = new RegExp(/\/|:/);
 export const SEPARATOR_REGEX_PHOENIX = new RegExp(/\/|:|_/);
 export const PHOENIX_PREFIX = "Phoenix6";
 export const ENABLED_KEYS = [
-  "/DriverStation/Enabled",
-  "NT:/AdvantageKit/DriverStation/Enabled",
-  "DS:enabled",
-  "/DSLog/Status/DSDisabled",
+  "/DriverStation/Enabled", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
+  "DS:controlWord/enabled", // DataLog, post-2027
+  "DS:enabled", // DataLog, pre-2027
+  "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
-  "NT:/FMSInfo/FMSControlData",
-  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
-  "RUNNING"
+  "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
+  "NT:/FMSInfo/FMSControlData", // NT, pre-2027
+  "RUNNING" // Roadrunner
 ];
 export const AUTONOMOUS_KEYS = [
-  "/DriverStation/Autonomous",
-  "NT:/AdvantageKit/DriverStation/Autonomous",
-  "DS:autonomous",
-  "/DSLog/Status/DSTeleop",
+  "/DriverStation/RobotMode", // AdvantageKit, post-2027
+  "NT:/AdvantageKit/DriverStation/RobotMode", // AdvantageKit, post-2027
+  "/DriverStation/Autonomous", // AdvantageKit, pre-2027
+  "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
+  "DS:controlWord/robotMode", // DataLog, post-2027
+  "DS:autonomous", // DataLog, pre-2027
+  "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/FMSControlData",
-  "NT:/Netcomm/Control/ControlData/ControlWord" // Systemcore
+  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/FMSInfo/FMSControlData" // NT, pre-2027
+];
+export const UTILITY_KEYS = [
+  "/DriverStation/RobotMode", // AdvantageKit, post-2027
+  "NT:/AdvantageKit/DriverStation/RobotMode", // AdvantageKit, post-2027
+  "/DriverStation/Test", // AdvantageKit, pre-2027
+  "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
+  "DS:controlWord/robotMode", // DataLog, post-2027
+  "DS:test", // DataLog, pre-2027
+  "RobotMode", // Phoenix
+  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation",
@@ -240,7 +255,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
+  if (enabledKey.endsWith("FMSControlData")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
@@ -270,7 +285,7 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
   let autonomousKey = getAutonomousKey(log);
   if (!autonomousKey) return null;
   let autonomousData: LogValueSetBoolean | null = null;
-  if (autonomousKey.endsWith("FMSControlData") || autonomousKey.endsWith("ControlWord")) {
+  if (autonomousKey.endsWith("FMSControlData")) {
     let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
     if (tempAutoData) {
       autonomousData = {
@@ -278,12 +293,12 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
       };
     }
-  } else if (autonomousKey.endsWith("RobotMode")) {
+  } else if (autonomousKey.toLowerCase().endsWith("robotmode")) {
     let tempAutoData = log.getString(autonomousKey, -Infinity, Infinity);
     if (tempAutoData) {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
-        values: tempAutoData.values.map((text) => text === "Autonomous")
+        values: tempAutoData.values.map((text) => text.toLowerCase() === "autonomous")
       };
     }
   } else {
@@ -300,9 +315,44 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
   return autonomousData;
 }
 
-export function getRobotStateRanges(log: Log): { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] {
+export function getUtilityKey(log: Log): string | undefined {
+  return findKey(log, UTILITY_KEYS);
+}
+
+export function getUtilityData(log: Log): LogValueSetBoolean | null {
+  let utilityKey = getUtilityKey(log);
+  if (!utilityKey) return null;
+  let utilityData: LogValueSetBoolean | null = null;
+  if (utilityKey.endsWith("FMSControlData")) {
+    let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
+    if (tempUtilityData) {
+      utilityData = {
+        timestamps: tempUtilityData.timestamps,
+        values: tempUtilityData.values.map((controlWord) => ((controlWord >> 2) & 1) !== 0)
+      };
+    }
+  } else if (utilityKey.toLowerCase().endsWith("robotmode")) {
+    let tempUtilityData = log.getString(utilityKey, -Infinity, Infinity);
+    if (tempUtilityData) {
+      utilityData = {
+        timestamps: tempUtilityData.timestamps,
+        values: tempUtilityData.values.map((text) => text.toLowerCase() === "utility" || text.toLowerCase() === "test")
+      };
+    }
+  } else {
+    let tempUtilityData = log.getBoolean(utilityKey, -Infinity, Infinity);
+    if (!tempUtilityData) return null;
+    utilityData = tempUtilityData;
+  }
+  return utilityData;
+}
+
+export function getRobotStateRanges(
+  log: Log
+): { start: number; end?: number; mode: "disabled" | "auto" | "teleop" | "utility" }[] {
   let enabledData = getEnabledData(log);
   let autoData = getAutonomousData(log);
+  let utilityData = getUtilityData(log);
   if (enabledData === null) return [];
   if (autoData === null) {
     autoData = {
@@ -310,44 +360,59 @@ export function getRobotStateRanges(log: Log): { start: number; end?: number; mo
       values: []
     };
   }
+  if (utilityData === null) {
+    utilityData = {
+      timestamps: [],
+      values: []
+    };
+  }
 
-  // Combine enabled and auto data
-  let allTimestamps = [...enabledData.timestamps, ...autoData.timestamps];
+  // Combine enabled, auto, and utility data
+  let allTimestamps = [...enabledData.timestamps, ...autoData.timestamps, ...utilityData.timestamps];
   allTimestamps = [...new Set(allTimestamps)];
   allTimestamps.sort((a, b) => Number(a) - Number(b));
-  let combined: { timestamp: number; enabled: boolean; auto: boolean }[] = [];
+  let combined: { timestamp: number; enabled: boolean; auto: boolean; utility: boolean }[] = [];
   allTimestamps.forEach((timestamp) => {
     let enabled = enabledData!.values.findLast((_, index) => enabledData!.timestamps[index] <= timestamp);
     let auto = autoData!.values.findLast((_, index) => autoData!.timestamps[index] <= timestamp);
+    let utility = utilityData!.values.findLast((_, index) => utilityData!.timestamps[index] <= timestamp);
     if (enabled === undefined) enabled = false;
     if (auto === undefined) auto = false;
+    if (utility === undefined) utility = false;
     combined.push({
       timestamp: timestamp,
       enabled: enabled,
-      auto: auto
+      auto: auto,
+      utility: utility
     });
   });
 
   // Get ranges
-  let ranges: { start: number; end?: number; mode: "disabled" | "auto" | "teleop" }[] = [];
+  let ranges: { start: number; end?: number; mode: "disabled" | "auto" | "teleop" | "utility" }[] = [];
   combined.forEach((sample, index) => {
-    let end: number | undefined = undefined;
+    let mode: "disabled" | "auto" | "teleop" | "utility" = "disabled";
     if (sample.enabled) {
-      if (index < combined.length - 1) {
-        end = combined[index + 1].timestamp;
+      if (sample.auto) {
+        mode = "auto";
+      } else if (sample.utility) {
+        mode = "utility";
+      } else {
+        mode = "teleop";
       }
-      ranges.push({
-        start: sample.timestamp,
-        end: end,
-        mode: sample.auto ? "auto" : "teleop"
-      });
+    }
+
+    let end: number | undefined = undefined;
+    if (index < combined.length - 1) {
+      end = combined[index + 1].timestamp;
+    }
+
+    if (ranges.length > 0 && ranges[ranges.length - 1].mode === mode) {
+      ranges[ranges.length - 1].end = end;
     } else {
-      let endSample = combined.find((endSample) => endSample.timestamp > sample.timestamp && endSample.enabled);
-      if (endSample) end = endSample.timestamp;
       ranges.push({
         start: sample.timestamp,
         end: end,
-        mode: "disabled"
+        mode: mode
       });
     }
   });
