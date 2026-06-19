@@ -218,7 +218,9 @@ jobs:
         env:
           ASCOPE_DISTRIBUTION: LITEDS
       - name: Prepare artifact
-        run: cp -rL lite/static advantagescopelite-ds
+        run: |
+          mkdir docs/build
+          cp -rL lite/static advantagescopelite-ds
       - name: Upload development artifact
         uses: actions/upload-artifact@v7
         with:
