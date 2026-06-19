@@ -120,16 +120,8 @@ export default class SwerveController implements TabController {
         units = source.options.units === "degrees" ? "degrees" : "radians";
       }
 
-      if (source.type === "states" || source.type === "statesLegacy") {
-        let states = grabSwerveStates(
-          window.log,
-          source.logKey,
-          source.logType,
-          time,
-          source.options.arrangement,
-          units,
-          this.UUID
-        );
+      if (source.type === "states") {
+        let states = grabSwerveStates(window.log, source.logKey, time, source.options.arrangement, this.UUID);
         states.forEach((state) => {
           // Normalize
           state.speed = clampValue(state.speed / Number(this.MAX_SPEED.value), -1, 1);
@@ -150,7 +142,7 @@ export default class SwerveController implements TabController {
           color: source.options.color
         });
       } else {
-        let poses = grabPosesAuto(window.log, source.logKey, source.logType, time, this.UUID, undefined, units);
+        let poses = grabPosesAuto(window.log, source.logKey, source.logType, time, this.UUID, units);
         if (poses.length > 0) {
           rotation = rotation3dTo2d(poses[0].pose.rotation);
         }

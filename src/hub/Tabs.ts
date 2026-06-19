@@ -708,10 +708,10 @@ export default class Tabs {
     }
   }
 
-  /** Adds the enabled field to the discrete legend on the selected line graph. */
-  addDiscreteEnabled() {
+  /** Sets the state of the robot mode visualization  on the selected line graph. */
+  setRobotModeVisible(showRobotMode: boolean) {
     if (this.tabList[this.selectedTab].type === TabType.LineGraph) {
-      (this.tabList[this.selectedTab].controller as LineGraphController).addDiscreteEnabled();
+      (this.tabList[this.selectedTab].controller as LineGraphController).setRobotModeVisible(showRobotMode);
     }
   }
 

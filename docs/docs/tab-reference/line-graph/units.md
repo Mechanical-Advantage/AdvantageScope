@@ -22,7 +22,7 @@ Not sure whether units are being parsed correctly? Check whether a unit type is 
 
 ### 🥇 Struct Units
 
-AdvantageScope automatically uses the native units for common structured data types like `Rotation2d` and `Translation3d`. Publishing applicable values using these formats is **always the best way to publish data** and ensures maximum compatibility when visualizing geometry data (see [here](/overview/legacy-formats) for details).
+AdvantageScope automatically uses the native units for common structured data types like `Rotation2d` and `Translation3d`. Publishing applicable values using these formats is **always the best way to publish data** and ensures maximum compatibility when visualizing geometry data.
 
 ### 🥈 Field Metadata
 
