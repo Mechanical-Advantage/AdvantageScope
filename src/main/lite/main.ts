@@ -1253,6 +1253,11 @@ function processKeydown(event: KeyboardEvent): boolean {
 
 // Get elements on page load
 window.addEventListener("load", () => {
+  // Set tab title
+  if (DISTRIBUTION === Distribution.LiteDS) {
+    document.title = "AdvantageScope Lite (DS)";
+  }
+
   // Load assets
   assetsPromise = loadAssets();
 
