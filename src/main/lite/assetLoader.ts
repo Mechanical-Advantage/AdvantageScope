@@ -25,23 +25,24 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
 
   // Filter and sort index
   let configPaths = Object.keys(assetIndex)
-    .filter((path) => path.endsWith("config.json") && assetIndex[path] !== null)
+    .filter((path) => path.endsWith("config.json"))
     .sort((a, b) => (a < b ? 1 : a > b ? -1 : 0)); // Inverse order so newer versions take priority
   for (let configPath of configPaths) {
     let name = configPath.split("/")[0];
     let configRaw = assetIndex[configPath];
-    if (typeof configRaw === "string") {
+    assets.loadFailures.push(name); // Assume failure, remove if successful
+
+    if (configRaw === null) {
       // We need to load configRaw from the path
       // We need to make sure this doesn't error, and instead continues.
       try {
-        let configResponse = await fetch(configRaw);
+        let configResponse = await fetch(configPath);
         configRaw = await configResponse.json();
       } catch (e) {
-        assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
         continue;
       }
     }
-    assets.loadFailures.push(name); // Assume failure, remove if successful
+
     let isField2d = name.startsWith("Field2d_");
     let isField3d = name.startsWith("Field3d_");
     let isRobot = name.startsWith("Robot_");
