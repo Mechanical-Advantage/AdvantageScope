@@ -146,45 +146,24 @@ export default class TableController implements TabController {
     let selectedX: number | null = null;
     if (dragData.y > tableBox.y) {
       let isRtl = document.documentElement.dir === "rtl";
-      if (this.fields.length > 0) {
-        if (isRtl) {
-          let found = false;
-          for (let i = this.fields.length; i >= 1; i--) {
-            let rect = this.HEADER.children[i].getBoundingClientRect();
-            let center = (rect.left + rect.right) / 2;
-            if (dragData.x < center) {
-              selected = i;
-              selectedX = rect.left;
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            selected = 0;
-            selectedX = this.HEADER.children[1].getBoundingClientRect().right;
-          }
+      let closestDist = Infinity;
+      for (let i = 0; i < this.HEADER.childElementCount; i++) {
+        let targetX = 0;
+        if (i === 0 && this.fields.length > 0) {
+          targetX = isRtl ? this.HEADER.children[1].getBoundingClientRect().right : this.HEADER.children[1].getBoundingClientRect().left;
         } else {
-          let found = false;
-          for (let i = 1; i <= this.fields.length; i++) {
-            let rect = this.HEADER.children[i].getBoundingClientRect();
-            let center = (rect.left + rect.right) / 2;
-            if (dragData.x < center) {
-              selected = i - 1;
-              selectedX = rect.left;
-              found = true;
-              break;
-            }
-          }
-          if (!found) {
-            selected = this.fields.length;
-            selectedX = this.HEADER.children[this.fields.length].getBoundingClientRect().right;
-          }
+          targetX = isRtl ? this.HEADER.children[i].getBoundingClientRect().left : this.HEADER.children[i].getBoundingClientRect().right;
         }
-      } else {
-        selected = 0;
-        selectedX = isRtl
-          ? this.HEADER.children[0].getBoundingClientRect().left
-          : this.HEADER.children[0].getBoundingClientRect().right;
+
+        let firstElemRect = (this.HEADER.firstElementChild as HTMLElement).getBoundingClientRect();
+        if (isRtl ? targetX > firstElemRect.left : targetX < firstElemRect.right) continue;
+
+        let dist = Math.abs(dragData.x - targetX);
+        if (dist < closestDist) {
+          closestDist = dist;
+          selected = i;
+          selectedX = targetX;
+        }
       }
     }
 

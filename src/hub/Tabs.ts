@@ -264,54 +264,30 @@ export default class Tabs {
       }
 
       let isRtl = this.SCROLL_OVERLAY.ownerDocument.documentElement.dir === "rtl";
-      let insertIndex = 0;
-      if (isRtl) {
-        let found = false;
-        for (let i = this.tabList.length - 1; i >= 0; i--) {
-          let rect = this.tabList[i].titleElement.getBoundingClientRect();
-          let center = (rect.left + rect.right) / 2;
-          if (x < center) {
-            insertIndex = i + 1;
-            found = true;
-            break;
-          }
+      let closestDist = Infinity;
+      let closestIndex = 0;
+      this.tabList.forEach((tab, index) => {
+        let rect = tab.titleElement.getBoundingClientRect();
+        let boundaryX = isRtl ? rect.left : rect.right;
+        let dist = Math.abs(x - boundaryX);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestIndex = index;
         }
-        if (!found) {
-          insertIndex = 0;
-        }
-      } else {
-        let found = false;
-        for (let i = 0; i < this.tabList.length; i++) {
-          let rect = this.tabList[i].titleElement.getBoundingClientRect();
-          let center = (rect.left + rect.right) / 2;
-          if (x < center) {
-            insertIndex = i;
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          insertIndex = this.tabList.length;
-        }
-      }
-
-      let clampedInsertIndex = Math.max(1, insertIndex);
+      });
 
       if (end) {
         this.DRAG_HIGHLIGHT.hidden = true;
-        if (clampedInsertIndex > tabIndex) {
-          this.shift(tabIndex, clampedInsertIndex - 1 - tabIndex);
+        if (closestIndex >= tabIndex) {
+          this.shift(tabIndex, closestIndex - tabIndex);
         } else {
-          this.shift(tabIndex, clampedInsertIndex - tabIndex);
+          this.shift(tabIndex, closestIndex - tabIndex + 1);
         }
       } else {
         this.DRAG_HIGHLIGHT.hidden = false;
-        let boundaryX = 0;
-        if (isRtl) {
-          boundaryX = this.tabList[clampedInsertIndex - 1].titleElement.getBoundingClientRect().left;
-        } else {
-          boundaryX = this.tabList[clampedInsertIndex - 1].titleElement.getBoundingClientRect().right;
-        }
+        let boundaryX = isRtl
+          ? this.tabList[closestIndex].titleElement.getBoundingClientRect().left
+          : this.tabList[closestIndex].titleElement.getBoundingClientRect().right;
         let viewerRect = this.SCROLL_OVERLAY.parentElement
           ? this.SCROLL_OVERLAY.parentElement.getBoundingClientRect()
           : { left: 0 };
