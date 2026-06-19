@@ -288,6 +288,7 @@ export default class Sidebar {
         if (field.startsWith("/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
+        if (field.startsWith("DS:/" + hiddenKey)) show = false;
       });
       return show;
     });

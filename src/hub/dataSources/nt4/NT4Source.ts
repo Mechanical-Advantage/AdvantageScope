@@ -17,6 +17,7 @@ import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_DS, NT4_PORTS_SYSTEMCORE, NT4_
 import NT4Tuner from "./NT4Tuner";
 
 export const WPILOG_PREFIX = "NT:";
+export const DS_PREFIX = "DS:";
 export const AKIT_PREFIX = "/AdvantageKit";
 export const AKIT_TUNING_PREFIX = "/Tuning";
 
@@ -103,14 +104,24 @@ export default class NT4Source extends LiveDataSource {
         if (window.log === this.log) {
           let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
           let enabledKey = getEnabledKey(this.log);
+          let initialKeys: string[];
+          switch (this.mode) {
+            case NT4Mode.AdvantageKit:
+              initialKeys = ["/.schema", "/Timestamp"];
+              break;
+            case NT4Mode.DriverStation:
+              initialKeys = [DS_PREFIX + "/.schema"];
+              break;
+            default:
+              initialKeys = [
+                WPILOG_PREFIX + "/.schema",
+                WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
+                WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
+              ];
+              break;
+          }
           [
-            ...(this.mode === NT4Mode.AdvantageKit
-              ? ["/.schema", "/Timestamp"]
-              : [
-                  WPILOG_PREFIX + "/.schema",
-                  WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
-                  WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
-                ]),
+            ...initialKeys,
             ...(enabledKey === undefined ? [] : [enabledKey]),
             ...window.tabs.getActiveFields(),
             ...window.sidebar.getActiveFields(),
@@ -132,7 +143,7 @@ export default class NT4Source extends LiveDataSource {
                     activeFields.add(AKIT_PREFIX + subscribeKey);
                   }
                 } else {
-                  activeFields.add(subscribeKey.slice(WPILOG_PREFIX.length));
+                  activeFields.add(subscribeKey.slice(this.getLogPrefix().length));
                 }
               }
             });
@@ -421,6 +432,10 @@ export default class NT4Source extends LiveDataSource {
     }
   }
 
+  private getLogPrefix(): string {
+    return this.mode === NT4Mode.DriverStation ? DS_PREFIX : WPILOG_PREFIX;
+  }
+
   /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */
   private getKeyFromTopic(topic: NT4_Topic): string {
     if (this.mode === NT4Mode.AdvantageKit) {
@@ -430,7 +445,7 @@ export default class NT4Source extends LiveDataSource {
         return topic.name;
       }
     } else {
-      return WPILOG_PREFIX + topic.name;
+      return this.getLogPrefix() + topic.name;
     }
   }
 
