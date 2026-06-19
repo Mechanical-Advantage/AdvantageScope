@@ -9,6 +9,7 @@ import { Decoder, Encoder } from "@msgpack/msgpack";
 
 export const NT4_PORTS_DEFAULT = [5810];
 export const NT4_PORTS_SYSTEMCORE = [6810];
+export const NT4_PORTS_DRIVERSTATION = [6767];
 
 const typestrIdxLookup: { [id: string]: number } = {
   boolean: 0,

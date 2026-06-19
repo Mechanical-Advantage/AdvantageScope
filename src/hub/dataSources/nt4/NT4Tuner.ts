@@ -27,6 +27,8 @@ export default class NT4Tuner implements LiveDataTuner {
         return !window.log.getFieldKeys().every((key) => !key.startsWith(AKIT_TUNING_PREFIX));
       case NT4Mode.Systemcore:
         return false;
+      case NT4Mode.DriverStation:
+        return false;
     }
   }
 

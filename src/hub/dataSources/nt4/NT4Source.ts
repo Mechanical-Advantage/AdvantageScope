@@ -13,7 +13,7 @@ import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
-import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_SYSTEMCORE, NT4_Topic } from "./NT4";
+import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_DRIVERSTATION, NT4_PORTS_SYSTEMCORE, NT4_Topic } from "./NT4";
 import NT4Tuner from "./NT4Tuner";
 
 export const WPILOG_PREFIX = "NT:";
@@ -23,7 +23,8 @@ export const AKIT_TUNING_PREFIX = "/Tuning";
 export enum NT4Mode {
   Default,
   AdvantageKit,
-  Systemcore
+  Systemcore,
+  DriverStation
 }
 
 export default class NT4Source extends LiveDataSource {
@@ -203,7 +204,7 @@ export default class NT4Source extends LiveDataSource {
       this.log = new Log();
       this.client = new NT4_Client(
         address,
-        this.mode === NT4Mode.Systemcore ? NT4_PORTS_SYSTEMCORE : NT4_PORTS_DEFAULT,
+        this.mode === NT4Mode.Systemcore ? NT4_PORTS_SYSTEMCORE : this.mode === NT4Mode.DriverStation ? NT4_PORTS_DRIVERSTATION : NT4_PORTS_DEFAULT,
         DISTRIBUTION === Distribution.Lite ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce

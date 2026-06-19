@@ -50,7 +50,7 @@ export const DEFAULT_PREFS: Preferences = {
   systemcoreStaticAddress: ""
 };
 
-export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
+export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "nt4-driverstation" | "phoenix" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
@@ -60,6 +60,8 @@ export function getLiveModeName(mode: LiveMode): string {
       return "NetworkTables (AdvantageKit)";
     case "nt4-systemcore":
       return "Systemcore Diagnostics";
+    case "nt4-driverstation":
+      return "Driver Station";
     case "phoenix":
       return "Phoenix Diagnostics";
     case "rlog":
@@ -100,6 +102,7 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
     (newPrefs.liveMode === "nt4" ||
       newPrefs.liveMode === "nt4-akit" ||
       newPrefs.liveMode === "nt4-systemcore" ||
+      newPrefs.liveMode === "nt4-driverstation" ||
       newPrefs.liveMode === "phoenix" ||
       newPrefs.liveMode === "rlog" ||
       newPrefs.liveMode === "ftcdashboard")
