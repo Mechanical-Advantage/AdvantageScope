@@ -12,7 +12,7 @@ import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import {
+import Preferences, {
   DEFAULT_PREFS,
   getLiveModeName,
   LITE_ALLOWED_LIVE_MODES,
@@ -33,6 +33,9 @@ import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
 import { LocalStorageKeys } from "./localStorageKeys";
 
+let CURRENT_DEFAULT_PREFS: Preferences = DEFAULT_PREFS;
+let CURRENT_ALLOWED_LIVE_MODES: LiveMode[] = LITE_ALLOWED_LIVE_MODES;
+
 let HUB_FRAME: HTMLIFrameElement;
 let POPUP_FRAME: HTMLIFrameElement;
 let POINTER_BLOCK: HTMLElement;
@@ -43,6 +46,7 @@ let MENU_ANCHOR: HTMLElement;
 let hubPort: MessagePort | null = null;
 let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
+let isDriverStationPromise: Promise<boolean>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
 
@@ -181,7 +185,7 @@ function openPreferences() {
     sendMessage(hubPort, "set-preferences", message);
     localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
   }).then((port) => {
-    let prefs = DEFAULT_PREFS;
+    let prefs = CURRENT_DEFAULT_PREFS;
     let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
     if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
     port.postMessage({ platform: "lite", prefs: prefs });
@@ -226,7 +230,7 @@ function openDownload() {
         break;
     }
   }).then((port) => {
-    let prefs = DEFAULT_PREFS;
+    let prefs = CURRENT_DEFAULT_PREFS;
     let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
     if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
     sendMessage(port, "set-platform", "lite");
@@ -244,6 +248,12 @@ async function openUploadAsset() {
 }
 
 async function initHub() {
+  const isDriverStation = await isDriverStationPromise;
+  if (isDriverStation) {
+    CURRENT_DEFAULT_PREFS.liveMode = "nt4-driverstation";
+    CURRENT_ALLOWED_LIVE_MODES = ["nt4-driverstation"];
+  }
+
   // Create message ports
   const channel = new MessageChannel();
   HUB_FRAME.contentWindow?.postMessage("port", "*", [channel.port1]);
@@ -260,9 +270,13 @@ async function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
-  let prefs = DEFAULT_PREFS;
+  let prefs = CURRENT_DEFAULT_PREFS;
   let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+  if (isDriverStation) {
+    // Force the mode in prefs to ds
+    prefs.liveMode = "nt4-driverstation";
+  }
   sendMessage(hubPort, "set-preferences", prefs);
   sendMessage(hubPort, "set-assets", await assetsPromise);
   let typeMemory = localStorage.getItem(LocalStorageKeys.TYPE_MEMORY);
@@ -337,7 +351,7 @@ async function handleHubMessage(message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const path: string = message.data.path;
 
-        let prefs = DEFAULT_PREFS;
+        let prefs = CURRENT_DEFAULT_PREFS;
         let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
         if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
 
@@ -398,7 +412,7 @@ async function handleHubMessage(message: NamedMessage) {
 
           case 1:
             // File menu
-            let prefs = DEFAULT_PREFS;
+            let prefs = CURRENT_DEFAULT_PREFS;
             let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
             if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
             menuItems = [
@@ -416,7 +430,7 @@ async function handleHubMessage(message: NamedMessage) {
               },
               {
                 content: "Set Live Mode",
-                items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                items: CURRENT_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
                   return {
                     content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
                     callback() {
@@ -1203,10 +1217,21 @@ function processKeydown(event: KeyboardEvent): boolean {
   return triggered;
 }
 
+async function getIsDriverStation(): Promise<boolean> {
+  try {
+    await fetch("isDriverStation");
+    return true;
+  }
+  catch (error) {
+    return false;
+  }
+}
+
 // Get elements on page load
 window.addEventListener("load", () => {
   // Load assets
   assetsPromise = loadAssets();
+  isDriverStationPromise = getIsDriverStation();
 
   // Get HTML elements
   HUB_FRAME = document.getElementsByClassName("hub-frame")[0] as HTMLIFrameElement;
