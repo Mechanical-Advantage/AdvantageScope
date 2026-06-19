@@ -191,6 +191,61 @@ jobs:
           asset_name: advantagescope-lite-${{ steps.get_release_info.outputs.tag_name }}.ipk
           asset_content_type: "application/octet-stream"
 
+  compile-lite-ds:
+    name: Compile for Lite (DS)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20.x"
+          cache: "npm"
+      - name: Setup Emscripten
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          version: 4.0.12
+      - name: Install Node.js dependencies
+        run: npm ci
+        env:
+          YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+      - name: Compile WebAssembly
+        run: npm run wasm:compile
+      - name: Compile bundles
+        run: npm run compile
+        env:
+          ASCOPE_DISTRIBUTION: LITEDS
+      - name: Prepare artifact
+        run: cp -rL lite/static advantagescopelite-ds
+      - name: Upload development artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: advantagescopelite-ds
+          path: advantagescopelite-ds/
+      - name: "Release: Get release info"
+        if: github.event_name == 'release'
+        id: get_release_info
+        uses: kaliber5/action-get-release@v1
+        with:
+          token: ${{ github.token }}
+      - name: "Release: Prepare artifact"
+        run: |
+          cd advantagescopelite-ds
+          zip -r ../advantagescopelite-ds.zip ./*
+          cd ..
+      - name: "Release: Upload artifact"
+        if: github.event_name == 'release'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release_info.outputs.upload_url }}
+          asset_path: advantagescopelite-ds.zip
+          asset_name: advantagescope-lite-ds-${{ steps.get_release_info.outputs.tag_name }}.zip
+          asset_content_type: "application/octet-stream"
+
   build-ios:
     name: Build for iOS
     runs-on: macos-26
