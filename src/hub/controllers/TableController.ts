@@ -86,13 +86,17 @@ export default class TableController implements TabController {
         }
         let element = this.HEADER.children[index];
         let keyContainer = element.firstElementChild as HTMLElement;
+        let dragContainerWidth = Math.min(
+          keyContainer.clientWidth,
+          (keyContainer.firstElementChild as HTMLElement).offsetWidth
+        );
         let dragContainer = document.createElement("div");
         dragContainer.style.position = "absolute";
-        dragContainer.style.width =
-          Math.min(keyContainer.clientWidth, (keyContainer.firstElementChild as HTMLElement).offsetWidth).toString() +
-          "px";
+        dragContainer.style.width = dragContainerWidth.toString() + "px";
         dragContainer.style.height = "30px";
-        dragContainer.style.left = "0px";
+        let isRtl = document.documentElement.dir === "rtl";
+        let itemRect = element.getBoundingClientRect();
+        dragContainer.style.left = isRtl ? (itemRect.width - dragContainerWidth).toString() + "px" : "0px";
         dragContainer.style.top = "0px";
         dragContainer.style.margin = "none";
         dragContainer.style.padding = "none";
@@ -104,7 +108,6 @@ export default class TableController implements TabController {
         this.DRAG_ITEM.appendChild(dragContainer);
 
         // Start drag
-        let itemRect = element.getBoundingClientRect();
         window.startDrag(event.clientX, event.clientY, event.clientX - itemRect.left, event.clientY - itemRect.top, {
           tableIndex: index - 1
         });
@@ -142,23 +145,46 @@ export default class TableController implements TabController {
     let selected: number | null = null;
     let selectedX: number | null = null;
     if (dragData.y > tableBox.y) {
-      for (let i = 0; i < this.HEADER.childElementCount; i++) {
-        let targetX = 0;
-        if (i === 0 && this.fields.length > 0) {
-          targetX = this.HEADER.children[1].getBoundingClientRect().left;
+      let isRtl = document.documentElement.dir === "rtl";
+      if (this.fields.length > 0) {
+        if (isRtl) {
+          let found = false;
+          for (let i = this.fields.length; i >= 1; i--) {
+            let rect = this.HEADER.children[i].getBoundingClientRect();
+            let center = (rect.left + rect.right) / 2;
+            if (dragData.x < center) {
+              selected = i;
+              selectedX = rect.left;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            selected = 0;
+            selectedX = this.HEADER.children[1].getBoundingClientRect().right;
+          }
         } else {
-          targetX = this.HEADER.children[i].getBoundingClientRect().right;
+          let found = false;
+          for (let i = 1; i <= this.fields.length; i++) {
+            let rect = this.HEADER.children[i].getBoundingClientRect();
+            let center = (rect.left + rect.right) / 2;
+            if (dragData.x < center) {
+              selected = i - 1;
+              selectedX = rect.left;
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            selected = this.fields.length;
+            selectedX = this.HEADER.children[this.fields.length].getBoundingClientRect().right;
+          }
         }
-        if (targetX < (this.HEADER.firstElementChild as HTMLElement).getBoundingClientRect().right) continue;
-        let leftBound = i === 0 ? tableBox.x : targetX - this.HEADER.children[i].getBoundingClientRect().width / 2;
-        let rightBound =
-          i === this.HEADER.childElementCount - 1
-            ? Infinity
-            : targetX + this.HEADER.children[i + 1].getBoundingClientRect().width / 2;
-        if (leftBound < dragData.x && rightBound > dragData.x) {
-          selected = i;
-          selectedX = targetX;
-        }
+      } else {
+        selected = 0;
+        selectedX = isRtl
+          ? this.HEADER.children[0].getBoundingClientRect().left
+          : this.HEADER.children[0].getBoundingClientRect().right;
       }
     }
 

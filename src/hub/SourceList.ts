@@ -158,7 +158,8 @@ export default class SourceList {
           y: rect.y,
           width: rect.width,
           height: rect.height
-        }
+        },
+        isRtl: document.documentElement.dir === "rtl"
       });
       SourceList.clearPromptCallbacks[this.UUID] = () => {
         delete SourceList.clearPromptCallbacks[this.UUID];
@@ -772,7 +773,8 @@ export default class SourceList {
         uuid: this.UUID,
         config: this.config,
         state: this.state[index],
-        rect: rect
+        rect: rect,
+        isRtl: document.documentElement.dir === "rtl"
       });
       let originalType = this.state[index].type;
       SourceList.typePromptCallbacks[this.UUID] = (newState) => {
@@ -1165,13 +1167,13 @@ export default class SourceList {
               } else if (poseStrings.length === 0) {
                 text = "No values";
               } else {
-                text = text =
-                  poseStrings.length.toString() +
-                  " value" +
-                  (poseStrings.length === 1 ? "" : "s") +
-                  " \u2014 [" +
-                  poseStrings.map((str) => "(" + str + ")").join(", ") +
-                  "]";
+                let countText = poseStrings.length.toString() + " value" + (poseStrings.length === 1 ? "" : "s");
+                let arrayText = "[" + poseStrings.map((str) => "(" + str + ")").join(", ") + "]";
+                if (document.documentElement.dir === "rtl") {
+                  text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
+                } else {
+                  text = countText + " \u2014 " + arrayText;
+                }
               }
             }
           } else if (structuredType === "Mechanism2d") {
@@ -1219,12 +1221,13 @@ export default class SourceList {
             logType === LoggableType.NumberArray ||
             logType === LoggableType.StringArray
           ) {
-            text =
-              value.length.toString() +
-              " value" +
-              (value.length === 1 ? "" : "s") +
-              " \u2014 " +
-              getLogValueText(value, logType);
+            let countText = value.length.toString() + " value" + (value.length === 1 ? "" : "s");
+            let arrayText = getLogValueText(value, logType);
+            if (document.documentElement.dir === "rtl") {
+              text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
+            } else {
+              text = countText + " \u2014 " + arrayText;
+            }
           } else {
             text = getLogValueText(value, logType);
           }

@@ -344,6 +344,7 @@ div.side-bar-title {
 
 div.side-bar-search-container {
   position: relative;
+  direction: ltr;
 }
 
 input.side-bar-search {
@@ -616,6 +617,13 @@ div.search-results-item {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+[dir="rtl"] div.search-results-item {
+  direction: ltr;
+  text-align: right;
+  padding-left: 20px;
+  padding-right: 8px;
 }
 
 div.search-results-item:last-child {
@@ -1441,6 +1449,10 @@ div.setting-blocks div.percent-70 {
 
 div.setting-blocks div.percent-30 {
   width: 30%;
+}
+
+div.orientation-switcher {
+  direction: ltr;
 }
 
 div.setting-blocks div.split {

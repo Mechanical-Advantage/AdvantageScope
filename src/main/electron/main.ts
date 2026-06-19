@@ -601,9 +601,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         if (submenu === undefined) return;
         if (message.name === "open-app-menu") {
           const rect: ButtonRect = message.data.rect;
+          const isRtl: boolean = message.data.isRtl;
           submenu.popup({
             window: window,
-            x: Math.round(rect.x),
+            x: Math.round(isRtl ? rect.x + rect.width : rect.x),
             y: Math.ceil(rect.y + rect.height)
           });
         } else {
@@ -644,7 +645,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       const rect: ButtonRect = message.data.rect;
       playbackOptionsMenu.popup({
         window: window,
-        x: Math.round(rect.x + rect.width),
+        x: Math.round(message.data.isRtl ? rect.x : rect.x + rect.width),
         y: Math.round(rect.y)
       });
       break;
@@ -832,7 +833,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         );
         menu.popup({
           window: window,
-          x: Math.round(rect.x + rect.width),
+          x: Math.round(message.data.isRtl ? rect.x : rect.x + rect.width),
           y: Math.round(rect.y)
         });
       }
@@ -854,7 +855,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const rect: ButtonRect = message.data.rect;
         clearMenu.popup({
           window: window,
-          x: Math.round(rect.x + rect.width),
+          x: Math.round(message.data.isRtl ? rect.x : rect.x + rect.width),
           y: Math.round(rect.y)
         });
       }
@@ -1145,7 +1146,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const rect: ButtonRect = message.data.rect;
         editAxisMenu.popup({
           window: window,
-          x: Math.round(rect.x + rect.width),
+          x: Math.round(message.data.isRtl ? rect.x : rect.x + rect.width),
           y: Math.round(rect.y)
         });
       }
@@ -1318,7 +1319,7 @@ setInterval(() => {
 }, RLOG_HEARTBEAT_DELAY_MS);
 
 /** Shows a popup to create a new tab on a hub window. */
-function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
+function newTabPopup(window: BrowserWindow, rect: ButtonRect & { isRtl?: boolean }) {
   if (!hubWindows.includes(window)) return;
   const newTabMenu = new Menu();
   getAllTabTypes()
@@ -1336,7 +1337,7 @@ function newTabPopup(window: BrowserWindow, rect: ButtonRect) {
     });
   newTabMenu.popup({
     window: window,
-    x: Math.round(rect.x + rect.width),
+    x: Math.round(rect.isRtl ? rect.x : rect.x + rect.width),
     y: Math.round(rect.y)
   });
 }

@@ -382,12 +382,23 @@ export default class JoysticksRenderer implements TabRenderer {
           }
         });
       } else {
+        const isRtl = document.documentElement.dir === "rtl";
+        const columnCount = Math.max(
+          Math.min(joystick.state.buttons.length, 6),
+          Math.min(joystick.state.axes.length, 6),
+          Math.min(joystick.state.povs.length, 6)
+        );
+        const getCol = (colIndex: number) => {
+          let col = colIndex % 6;
+          return isRtl ? (columnCount - 1) - col : col;
+        };
+
         // Draw buttons
         joystick.state.buttons.forEach((buttonValue, index) => {
           let buttonLayout = drawButton(
             false,
             false,
-            [70 + (index % 6) * 100, 70 + Math.floor(index / 6) * 100],
+            [70 + getCol(index) * 100, 70 + Math.floor(index / 6) * 100],
             [60, 60],
             buttonValue
           );
@@ -402,7 +413,7 @@ export default class JoysticksRenderer implements TabRenderer {
         joystick.state.axes.forEach((axisValue, index) => {
           let axisLayout = drawAxis(
             false,
-            [95 + (index % 6) * 100, 70 + (Math.floor(index / 6) + Math.ceil(joystick.state.buttons.length / 6)) * 100],
+            [(isRtl ? 45 : 95) + getCol(index) * 100, 70 + (Math.floor(index / 6) + Math.ceil(joystick.state.buttons.length / 6)) * 100],
             [30, 80],
             scaleValue(axisValue, [-1, 1], [0, 1])
           );
@@ -410,14 +421,18 @@ export default class JoysticksRenderer implements TabRenderer {
           context.textAlign = "center";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-          context.fillText(index.toString(), axisLayout[0] - axisLayout[2], axisLayout[1] + axisLayout[3] / 2);
+          context.fillText(
+            index.toString(),
+            isRtl ? axisLayout[0] + axisLayout[2] * 2 : axisLayout[0] - axisLayout[2],
+            axisLayout[1] + axisLayout[3] / 2
+          );
         });
 
         // Draw POVs
         joystick.state.povs.forEach((povValue, index) => {
           // Draw POV buttons
           let povCenter = [
-            70 + (index % 6) * 100,
+            70 + getCol(index) * 100,
             70 +
               (Math.floor(index / 6) +
                 Math.ceil(joystick.state.buttons.length / 6) +

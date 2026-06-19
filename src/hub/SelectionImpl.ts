@@ -47,6 +47,7 @@ export default class SelectionImpl implements Selection {
         window.sendMainMessage("ask-playback-options", {
           speed: this.playbackSpeed,
           looping: this.playbackLooping,
+          isRtl: document.documentElement.dir === "rtl",
           rect: {
             x: rect.x,
             y: rect.y,

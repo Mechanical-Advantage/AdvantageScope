@@ -122,7 +122,7 @@ export default class VideoController implements TabController {
         uuid: this.UUID,
         source: VideoSource.TheBlueAlliance,
         matchInfo: matchInfo,
-        menuCoordinates: [rect.right, rect.top]
+        menuCoordinates: [document.documentElement.dir === "rtl" ? rect.left : rect.right, rect.top]
       });
     });
 

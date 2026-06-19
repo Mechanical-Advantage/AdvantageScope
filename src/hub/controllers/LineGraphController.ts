@@ -89,7 +89,8 @@ export default class LineGraphController implements TabController {
           autoUnitDefault: sourceVisible.length === 1 ? window.log.getUnit(sourceVisible[0].logKey) : null,
           unitConversion: this.leftUnitConversion,
           filter: this.leftFilter,
-          config: LineGraphController_NumericConfig
+          config: LineGraphController_NumericConfig,
+          isRtl: document.documentElement.dir === "rtl"
         });
       },
       (key: string, time: number) =>
@@ -129,7 +130,8 @@ export default class LineGraphController implements TabController {
           autoUnitSelected: autoUnitSelected,
           autoUnitDefault: sourceVisible.length === 1 ? window.log.getUnit(sourceVisible[0].logKey) : null,
           filter: this.rightFilter,
-          config: LineGraphController_NumericConfig
+          config: LineGraphController_NumericConfig,
+          isRtl: document.documentElement.dir === "rtl"
         });
       },
       (key: string, time: number) =>
@@ -146,7 +148,8 @@ export default class LineGraphController implements TabController {
           rect: rect,
           legend: "discrete",
           showRobotMode: this.showRobotMode,
-          config: LineGraphController_DiscreteConfig
+          config: LineGraphController_DiscreteConfig,
+          isRtl: document.documentElement.dir === "rtl"
         });
       }
     );

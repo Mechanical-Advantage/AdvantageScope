@@ -146,6 +146,7 @@ export default class Sidebar {
           let rect = button.getBoundingClientRect();
           window.sendMainMessage("open-app-menu", {
             index: index,
+            isRtl: document.documentElement.dir === "rtl",
             rect: {
               x: rect.x,
               y: rect.y,

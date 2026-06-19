@@ -302,19 +302,32 @@ table.data-table th:not(:first-child) {
 
 div.data-table-key-container {
   position: absolute;
-  inset-inline-start: 6px;
-  inset-inline-end: 6px;
+  left: 6px;
+  right: 6px;
   top: 0px;
   height: 30px;
   line-height: 30px;
 
+  text-align: left;
   direction: rtl;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[dir="rtl"] div.data-table-key-container {
+  left: 6px;
+  right: 6px;
+  text-align: right;
 }
 
 div.data-table-key-container.has-close-button {
-  inset-inline-end: 30px;
+  right: 30px;
+}
+
+[dir="rtl"] div.data-table-key-container.has-close-button {
+  left: 30px;
+  right: 6px;
 }
 
 div.data-table-key-container span {
@@ -326,7 +339,12 @@ button.data-table-key-delete {
   height: 25px;
   width: 25px;
   top: 2.5px;
-  inset-inline-end: 2px;
+  right: 2px;
+}
+
+[dir="rtl"] button.data-table-key-delete {
+  left: 2px;
+  right: auto;
 }
 
 table.data-table th:last-child {
@@ -496,6 +514,11 @@ table.console-table th:not(:first-child) div {
   white-space: nowrap;
 }
 
+[dir="rtl"] table.console-table th:not(:first-child) div span {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
 table.console-table th:not(:first-child) div.wide {
   inset-inline-end: 218px;
 }
@@ -571,6 +594,7 @@ table.console-table td:first-child {
 
 table.console-table td:last-child {
   border-inline-end: none;
+  direction: ltr;
 }
 
 table.console-table tr.hovered td {
@@ -842,6 +866,7 @@ table.metadata-table th {
   top: 0px;
   border-bottom: 1px solid #222;
   background-color: #fff;
+  text-align: start;
 }
 
 table.metadata-table td:first-child {

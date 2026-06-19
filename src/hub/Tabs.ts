@@ -243,7 +243,8 @@ export default class Tabs {
         x: rect.x,
         y: rect.y,
         width: rect.width,
-        height: rect.height
+        height: rect.height,
+        isRtl: document.documentElement.dir === "rtl"
       });
     });
 
