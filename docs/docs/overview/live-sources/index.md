@@ -38,7 +38,7 @@ Open the preferences window by clicking `App` > `Show Preferences...` (Windows/L
 
 ### Robot Address
 
-Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation).
+Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). When connecting to Systemcore via USB or the built-in Wi-Fi access point, click `File` > `Use Systemcore USB Address`/`Use Systemcore Wi-Fi Address` to temporarily use the correct static IP address.
 
 ### Live Mode
 

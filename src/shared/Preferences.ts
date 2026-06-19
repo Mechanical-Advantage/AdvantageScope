@@ -26,6 +26,7 @@ export default interface Preferences {
   skipHootNonProWarning: boolean;
   skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
+  systemcoreStaticAddress: "" | "usb" | "wifi";
 }
 
 export const DEFAULT_PREFS: Preferences = {
@@ -45,7 +46,8 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   skipFrcLogFolderDefault: false,
-  ctreLicenseAccepted: false
+  ctreLicenseAccepted: false,
+  systemcoreStaticAddress: ""
 };
 
 export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
@@ -183,4 +185,22 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
     basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;
   }
+  if (
+    "systemcoreStaticAddress" in newPrefs &&
+    (newPrefs.systemcoreStaticAddress === "" ||
+      newPrefs.systemcoreStaticAddress === "usb" ||
+      newPrefs.systemcoreStaticAddress === "wifi")
+  ) {
+    basePrefs.systemcoreStaticAddress = newPrefs.systemcoreStaticAddress;
+  }
+}
+
+export function getRobotAddress(preferences: Preferences, platform: string): string {
+  if (preferences.systemcoreStaticAddress === "usb") {
+    return platform === "win32" ? "172.26.0.1" : "172.27.0.1";
+  }
+  if (preferences.systemcoreStaticAddress === "wifi") {
+    return "172.30.0.1";
+  }
+  return preferences.robotAddress;
 }

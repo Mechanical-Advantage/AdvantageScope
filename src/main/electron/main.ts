@@ -178,6 +178,10 @@ function sendAllPreferences() {
         .submenu as Electron.MenuItemConstructorOptions[]
     )[0].label = autoString;
     (menuTemplate[0].submenu as Electron.MenuItemConstructorOptions[])[7].checked = data.userAssetsFolder !== null;
+    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[6].checked =
+      data.systemcoreStaticAddress === "usb";
+    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[7].checked =
+      data.systemcoreStaticAddress === "wifi";
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
   }
@@ -866,12 +870,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const editAxisMenu = new Menu();
 
         if (legend === "discrete") {
+          let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           editAxisMenu.append(
             new MenuItem({
-              label: "Add Enabled State",
+              label: "Show Robot Mode",
+              type: "checkbox",
+              checked: showRobotMode,
               click() {
-                sendMessage(window, "add-discrete-enabled");
+                sendMessage(window, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
               }
             })
           );
@@ -2038,6 +2045,29 @@ function setupMenu() {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
             openDownload(window);
+          }
+        },
+        { type: "separator" },
+        {
+          label: "Use Systemcore USB Address",
+          type: "checkbox",
+          checked: prefs.systemcoreStaticAddress === "usb",
+          click(item) {
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            prefs.systemcoreStaticAddress = item.checked ? "usb" : "";
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
+          }
+        },
+        {
+          label: "Use Systemcore Wi-Fi Address",
+          type: "checkbox",
+          checked: prefs.systemcoreStaticAddress === "wifi",
+          click(item) {
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            prefs.systemcoreStaticAddress = item.checked ? "wifi" : "";
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
           }
         },
         { type: "separator" },
