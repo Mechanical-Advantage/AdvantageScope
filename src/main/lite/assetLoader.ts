@@ -32,8 +32,14 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     let configRaw = assetIndex[configPath];
     if (typeof configRaw === "string") {
       // We need to load configRaw from the path
+      // We need to make sure this doesn't error, and instead continues.
+      try {
       let configResponse = await fetch(configRaw);
       configRaw = await configResponse.json();
+      } catch (e) {
+        assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
+        continue;
+      }
     }
     assets.loadFailures.push(name); // Assume failure, remove if successful
     let isField2d = name.startsWith("Field2d_");
