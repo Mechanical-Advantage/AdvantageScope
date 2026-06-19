@@ -178,9 +178,9 @@ function sendAllPreferences() {
         .submenu as Electron.MenuItemConstructorOptions[]
     )[0].label = autoString;
     (menuTemplate[0].submenu as Electron.MenuItemConstructorOptions[])[7].checked = data.userAssetsFolder !== null;
-    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[6].checked =
-      data.systemcoreStaticAddress === "usb";
     (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[7].checked =
+      data.systemcoreStaticAddress === "usb";
+    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[8].checked =
       data.systemcoreStaticAddress === "wifi";
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
@@ -1982,7 +1982,7 @@ function setupMenu() {
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", false);
+                sendMessage(window, "start-live", "robot");
               }
             },
             { type: "separator" },
@@ -1997,7 +1997,7 @@ function setupMenu() {
                     prefs.liveMode = liveMode;
                     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
                     sendAllPreferences();
-                    sendMessage(window, "start-live", false);
+                    sendMessage(window, "start-live", "robot");
                   }
                 };
                 return item;
@@ -2015,7 +2015,7 @@ function setupMenu() {
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", true);
+                sendMessage(window, "start-live", "sim");
               }
             },
             { type: "separator" },
@@ -2030,13 +2030,21 @@ function setupMenu() {
                     prefs.liveMode = liveMode;
                     jsonfile.writeFileSync(PREFS_FILENAME, prefs);
                     sendAllPreferences();
-                    sendMessage(window, "start-live", true);
+                    sendMessage(window, "start-live", "sim");
                   }
                 };
                 return item;
               }
             )
           ]
+        },
+        {
+          label: "Connect to Driver Station",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "start-live", "ds");
+          }
         },
         {
           label: "Download Logs...",

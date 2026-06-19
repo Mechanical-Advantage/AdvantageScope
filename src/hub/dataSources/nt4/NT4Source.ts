@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION, IS_LITE } from "../../../shared/buildConstants";
+import { IS_LITE } from "../../../shared/buildConstants";
 import Log from "../../../shared/log/Log";
 import { getEnabledKey, getURCLKeys, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
@@ -23,7 +23,8 @@ export const AKIT_TUNING_PREFIX = "/Tuning";
 export enum NT4Mode {
   Default,
   AdvantageKit,
-  Systemcore
+  Systemcore,
+  DriverStation
 }
 
 export default class NT4Source extends LiveDataSource {
@@ -201,13 +202,21 @@ export default class NT4Source extends LiveDataSource {
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
       this.log = new Log();
+      let ports: number[];
+      switch (this.mode) {
+        case NT4Mode.Systemcore:
+          ports = NT4_PORTS_SYSTEMCORE;
+          break;
+        case NT4Mode.DriverStation:
+          ports = NT4_PORTS_DS;
+          break;
+        default:
+          ports = NT4_PORTS_DEFAULT;
+          break;
+      }
       this.client = new NT4_Client(
         address,
-        DISTRIBUTION === Distribution.LiteDS
-          ? NT4_PORTS_DS
-          : this.mode === NT4Mode.Systemcore
-          ? NT4_PORTS_SYSTEMCORE
-          : NT4_PORTS_DEFAULT,
+        ports,
         IS_LITE ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce

@@ -11,7 +11,7 @@ import NamedMessage from "../shared/NamedMessage";
 import Preferences, { getRobotAddress } from "../shared/Preferences";
 import Selection from "../shared/Selection";
 import { SourceListItemState, SourceListTypeMemory } from "../shared/SourceListConfig";
-import { IS_LITE } from "../shared/buildConstants";
+import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
 import Log from "../shared/log/Log";
 import { AKIT_TIMESTAMP_KEYS, getEnabledData, MERGE_PREFIX } from "../shared/log/LogUtil";
 import { calcMockProgress, clampValue, htmlEncode, scaleValue } from "../shared/util";
@@ -289,7 +289,7 @@ window.requestAnimationFrame(periodic);
 
 function checkLiveAutoStart() {
   if (IS_LITE && window.preferences !== null && !liveAutoStartComplete) {
-    startLive();
+    startLive(DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
     liveAutoStartComplete = true;
   }
 }
@@ -417,7 +417,7 @@ function startHistorical(path: string, clear = true, merge = false) {
 }
 
 /** Connects to a live data source. */
-function startLive(isSim = false) {
+function startLive(sourceType: "robot" | "sim" | "ds") {
   historicalSources.forEach((entry) => entry.source.stop());
   historicalSources = [];
   liveSource?.stop();
@@ -426,31 +426,35 @@ function startLive(isSim = false) {
   setLoading(null);
 
   if (!window.preferences) return;
-  switch (window.preferences.liveMode) {
-    case "nt4":
-      liveSource = new NT4Source(NT4Mode.Default);
-      break;
-    case "nt4-akit":
-      liveSource = new NT4Source(NT4Mode.AdvantageKit);
-      break;
-    case "nt4-systemcore":
-      liveSource = new NT4Source(NT4Mode.Systemcore);
-      break;
-    case "phoenix":
-      liveSource = new PhoenixDiagnosticsSource();
-      break;
-    case "rlog":
-      liveSource = new RLOGServerSource();
-      break;
-    case "ftcdashboard":
-      liveSource = new FTCDashboardSource();
-      break;
+  if (sourceType === "ds") {
+    liveSource = new NT4Source(NT4Mode.DriverStation);
+  } else {
+    switch (window.preferences.liveMode) {
+      case "nt4":
+        liveSource = new NT4Source(NT4Mode.Default);
+        break;
+      case "nt4-akit":
+        liveSource = new NT4Source(NT4Mode.AdvantageKit);
+        break;
+      case "nt4-systemcore":
+        liveSource = new NT4Source(NT4Mode.Systemcore);
+        break;
+      case "phoenix":
+        liveSource = new PhoenixDiagnosticsSource();
+        break;
+      case "rlog":
+        liveSource = new RLOGServerSource();
+        break;
+      case "ftcdashboard":
+        liveSource = new FTCDashboardSource();
+        break;
+    }
   }
 
   let address = "";
   if (IS_LITE) {
     address = window.location.hostname;
-  } else if (isSim) {
+  } else if (sourceType === "sim" || sourceType === "ds") {
     address = "127.0.0.1";
   } else {
     if (window.preferences) {

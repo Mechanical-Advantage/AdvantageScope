@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION, IS_LITE } from "../shared/buildConstants";
+import { IS_LITE } from "../shared/buildConstants";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
@@ -437,12 +437,14 @@ export default class Sidebar {
         // If only one table, use it as the root
         tree = tree[rootKeys[0]].children;
       }
-      if (DISTRIBUTION === Distribution.LiteDS) {
-        // Repeat for DS to use "NT:/Dscomm/" as the root
-        let rootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
-        if (rootKeys.length === 1 && tree[rootKeys[0]].fullKey === null) {
-          tree = tree[rootKeys[0]].children;
-        }
+      // Repeat to use "NT:/Dscomm/" as the root if available
+      let secondaryRootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
+      if (
+        secondaryRootKeys.length === 1 &&
+        secondaryRootKeys[0] === "Dscomm" &&
+        tree[secondaryRootKeys[0]].fullKey === null
+      ) {
+        tree = tree[secondaryRootKeys[0]].children;
       }
       Object.keys(tree)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))

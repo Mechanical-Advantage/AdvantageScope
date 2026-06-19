@@ -426,7 +426,7 @@ async function handleHubMessage(message: NamedMessage) {
               {
                 content: `Connect Live (${modifier} K)`,
                 callback() {
-                  sendMessage(hubPort, "start-live", false);
+                  sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
                 }
               },
               ...(DISTRIBUTION === Distribution.LiteDS
@@ -441,7 +441,7 @@ async function handleHubMessage(message: NamedMessage) {
                             prefs.liveMode = liveMode;
                             localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
                             sendMessage(hubPort, "set-preferences", prefs);
-                            sendMessage(hubPort, "start-live", false);
+                            sendMessage(hubPort, "start-live", "robot");
                           }
                         };
                       })
