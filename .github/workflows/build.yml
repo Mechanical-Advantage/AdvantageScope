@@ -211,6 +211,7 @@ jobs:
         run: npm ci
         env:
           YOUTUBE_DL_SKIP_DOWNLOAD: "true"
+          ASCOPE_DISTRIBUTION: LITEDS
       - name: Compile WebAssembly
         run: npm run wasm:compile
       - name: Compile bundles

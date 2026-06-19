@@ -10,22 +10,28 @@ import fs from "fs";
 import path from "path";
 
 // Constants
+const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const bundledAssetsPath = "bundledAssets";
 const liteAssetsPath = path.join("lite", "static", "bundledAssets");
 const githubAssetsRepository = "Mechanical-Advantage/AdvantageScopeAssets";
 const githubAssetsTag = "archive-v1";
-const githubAssetNames = [
-  "Field2d_2026FRCFieldV1",
-  "Field2d_20252026FTCFieldV1",
-  "Field3d_2026FRCFieldV1",
-  "Field3d_20252026FTCFieldV1",
+let githubAssetNames = [
   "Joystick_LogitechF310V1",
   "Joystick_PS4ControllerV1",
   "Joystick_XboxControllerBlueV1",
-  "Joystick_XboxControllerWhiteV1",
-  "Robot_2025FRCKitBotV2",
-  "Robot_FTCDriveBaseV1"
+  "Joystick_XboxControllerWhiteV1"
 ];
+if (!isDS) {
+  // Only include fields and robots in non-DS distribution
+  githubAssetNames = githubAssetNames.concat([
+    "Field2d_2026FRCFieldV1",
+    "Field2d_20252026FTCFieldV1",
+    "Field3d_2026FRCFieldV1",
+    "Field3d_20252026FTCFieldV1",
+    "Robot_2025FRCKitBotV2",
+    "Robot_FTCDriveBaseV1"
+  ]);
+}
 
 // Check if up-to-date
 let shouldExitEarly = false;
@@ -34,7 +40,7 @@ if (fs.existsSync(liteAssetsPath)) {
 
   // Sort both arrays for reliable comparison
   existingAssetNames.sort();
-  const targetAssetNames = [...githubAssetNames, ...fs.readdirSync(bundledAssetsPath)].sort();
+  const targetAssetNames = [...githubAssetNames, ...(isDS ? [] : fs.readdirSync(bundledAssetsPath))].sort();
 
   // Check if lengths are the same and all elements match
   if (existingAssetNames.length === targetAssetNames.length) {
@@ -58,7 +64,9 @@ if (fs.existsSync(liteAssetsPath)) {
 }
 
 // Copy basic bundled assets
-fs.cpSync(bundledAssetsPath, liteAssetsPath, { recursive: true });
+if (!isDS) {
+  fs.cpSync(bundledAssetsPath, liteAssetsPath, { recursive: true });
+}
 
 // Download GitHub assets
 githubAssetNames.forEach((asset) => {
