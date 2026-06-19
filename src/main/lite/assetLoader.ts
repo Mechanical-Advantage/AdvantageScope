@@ -27,9 +27,14 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
   let configPaths = Object.keys(assetIndex)
     .filter((path) => path.endsWith("config.json") && assetIndex[path] !== null)
     .sort((a, b) => (a < b ? 1 : a > b ? -1 : 0)); // Inverse order so newer versions take priority
-  configPaths.forEach((configPath) => {
+  for (let configPath of configPaths) {
     let name = configPath.split("/")[0];
     let configRaw = assetIndex[configPath];
+    if (typeof configRaw === "string") {
+      // We need to load configRaw from the path
+      let configResponse = await fetch(configRaw);
+      configRaw = await configResponse.json();
+    }
     assets.loadFailures.push(name); // Assume failure, remove if successful
     let isField2d = name.startsWith("Field2d_");
     let isField3d = name.startsWith("Field3d_");
@@ -41,9 +46,9 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       let config = parseField2d(configRaw);
       if (config === "skip") {
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
-        return;
+        continue;
       } else if (config === "invalid") {
-        return;
+        continue;
       }
       config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
       if (`${name}/image.png` in assetIndex) {
@@ -55,9 +60,9 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       let config = parseField3d(configRaw);
       if (config === "skip") {
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
-        return;
+        continue;
       } else if (config === "invalid") {
-        return;
+        continue;
       }
       config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
       if (
@@ -70,7 +75,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     } else if (isRobot) {
       // ***** 3D ROBOT *****
       let config = parseRobot(configRaw);
-      if (config === "invalid") return;
+      if (config === "invalid") continue;
       config.path = currentPath + `assets/${encodeURIComponent(name)}/model.glb`;
       if (
         `${name}/model.glb` in assetIndex &&
@@ -82,14 +87,14 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
     } else if (isJoystick) {
       // ***** JOYSTICK *****
       let config = parseJoystick(configRaw);
-      if (config === "invalid") return;
+      if (config === "invalid") continue;
       config.path = currentPath + `assets/${encodeURIComponent(name)}/image.png`;
       if (`${name}/image.png` in assetIndex) {
         assets.joysticks.push(config);
         assets.loadFailures.splice(assets.loadFailures.indexOf(name), 1);
       }
     }
-  });
+  }
 
   return filterAndSortAssets(assets);
 }
