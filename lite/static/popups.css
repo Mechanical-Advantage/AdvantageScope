@@ -9,6 +9,8 @@
 
 /* https://github.com/GastonZalba/tiny-popup-menu/blob/v1.0.10/lib/style/css/tiny-popup-menu.css */
 
+/* MODIFIED TO ADD SUPPORT FOR RTL LAYOUTS. */
+
 .popup-menu {
   width: -moz-max-content;
   width: -webkit-max-content;
@@ -75,17 +77,34 @@
   fill: #4e4e4e;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-arrow {
-  margin-left: -12px;
-  margin-right: -8px;
+  margin-inline-start: -12px;
+  margin-inline-end: -8px;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-content {
   left: 100%;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-arrow {
-  margin-left: -12px;
+  margin-inline-start: -12px;
   order: -1;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-content {
+  right: 100%;
+}
+
+[dir="rtl"] .popup-menu {
+  right: auto;
+}
+
+[dir="rtl"] .popup-menu .popup-menu--submenu-arrow svg {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"]
+  .popup-menu
+  .popup-menu--container
+  .popup-menu--submenu.popup-menu--submenu-right
+  .popup-menu--submenu-content {
+  left: auto;
   right: 100%;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu:hover .popup-menu--submenu-content,

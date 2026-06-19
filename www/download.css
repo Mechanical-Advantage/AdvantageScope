@@ -31,6 +31,8 @@ div.file-list {
 }
 
 div.file-item {
+  display: flex;
+  align-items: center;
   height: 25px;
   margin-inline-start: 6px;
   margin-inline-end: 6px;
@@ -41,8 +43,21 @@ div.file-item {
   font-size: 14px;
   line-height: 25px;
   white-space: nowrap;
+}
+
+div.file-item span:first-of-type {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
+  margin-inline-end: 4px;
+}
+
+div.file-item span:last-of-type {
+  flex-shrink: 0;
+  white-space: nowrap;
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 div.file-item:first-child {
@@ -196,4 +211,8 @@ button {
 
 #download {
   inset-inline-end: 8px;
+}
+
+[dir="rtl"] #download img {
+  transform: translate(-50%, -50%) scale(75%) scaleX(-1);
 }

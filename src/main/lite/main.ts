@@ -40,11 +40,30 @@ let TOO_SMALL_WARNING: HTMLElement;
 let MOBILE_WARNING: HTMLElement;
 let MENU_ANCHOR: HTMLElement;
 
+let isRtl = false;
 let hubPort: MessagePort | null = null;
 let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
+
+// Check for RTL layout
+try {
+  const locale = new Intl.Locale(navigator.language) as any;
+  const direction = locale.textInfo
+    ? locale.textInfo.direction
+    : locale.getTextInfo
+    ? locale.getTextInfo().direction
+    : undefined;
+  if (direction === "rtl") {
+    isRtl = true;
+  }
+} catch (e) {
+  // Ignore
+}
+if (isRtl) {
+  document.documentElement.dir = "rtl";
+}
 
 /**
  * Open a new popup menu
@@ -98,6 +117,9 @@ function openPopupWindow(
     POPUP_FRAME.style.width = size[0].toString() + (type === "pixels" ? "px" : "%");
     POPUP_FRAME.style.height = size[1].toString() + (type === "pixels" ? "px" : "%");
     POPUP_FRAME.onload = () => {
+      if (isRtl && POPUP_FRAME.contentDocument?.documentElement) {
+        POPUP_FRAME.contentDocument.documentElement.dir = "rtl";
+      }
       POPUP_FRAME.hidden = false;
       HUB_FRAME.classList.add("background");
 
@@ -294,6 +316,11 @@ async function initHub() {
   HUB_FRAME.contentWindow?.addEventListener("keydown", (event) => processKeydown(event as KeyboardEvent), {
     capture: true
   });
+
+  // Set up RTL layout
+  if (isRtl && HUB_FRAME.contentDocument?.documentElement) {
+    HUB_FRAME.contentDocument.documentElement.dir = "rtl";
+  }
 }
 
 async function handleHubMessage(message: NamedMessage) {
