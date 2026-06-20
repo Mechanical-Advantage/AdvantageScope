@@ -438,7 +438,7 @@ export default class Sidebar {
         // If only one table, use it as the root
         tree = tree[rootKeys[0]].children;
       }
-      // Repeat to use "NT:/Dscomm/" as the root if available
+      // Repeat to use "DS:/Dscomm/" as the root if available
       let secondaryRootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
       if (
         secondaryRootKeys.length === 1 &&
