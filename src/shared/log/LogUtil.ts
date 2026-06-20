@@ -99,21 +99,21 @@ export const METADATA_KEYS = [
 export const EVENT_KEYS = [
   "/DriverStation/EventName", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/event_name", // FIRST DS
+  "DS:/Dscomm/Control/MatchInfo/EventName", // FIRST DS
   "NT:/FMSInfo/EventName", // NT
   "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/match_type", // FIRST DS
+  "DS:/Dscomm/Control/MatchInfo/MatchType", // FIRST DS
   "NT:/FMSInfo/MatchType", // NT
   "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/match_number", // FIRST DS
+  "DS:/Dscomm/Control/MatchInfo/MatchNumber", // FIRST DS
   "NT:/FMSInfo/MatchNumber", // NT
   "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
