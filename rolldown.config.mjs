@@ -135,7 +135,7 @@ export default (cliArgs) => {
     bundle(
       [
         "hub/hub.ts",
-        ...(isLite ? [] : ["satellite.ts"]),
+        ...(!isLite ? ["satellite.ts"] : []),
 
         "editRange.ts",
         "unitConversion.ts",
@@ -144,7 +144,8 @@ export default (cliArgs) => {
         "betaWelcome.ts",
         "licenses.ts",
         "download.ts",
-        ...(!isLite ? ["editFov.ts", "preferences.ts", "export.ts", "xrControls.ts"] : []),
+        ...(!isLite ? ["export.ts", "xrControls.ts"] : []),
+        ...(!isDS ? ["preferences.ts", "editFov.ts"] : []),
         ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
 
         "hub/dataSources/wpilog/wpilogWorker.ts",
