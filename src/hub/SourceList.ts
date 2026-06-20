@@ -749,8 +749,8 @@ export default class SourceList {
   private addListItem(state: SourceListItemState, insertIndex?: number) {
     let item = this.ITEM_TEMPLATE.cloneNode(true) as HTMLElement;
     Array.from(item.getElementsByTagName("object")).forEach((objElement) => {
-      // Add a persistent load listener to re-apply the correct color. 
-      // This is necessary because Safari may unload and reload the SVG when 
+      // Add a persistent load listener to re-apply the correct color.
+      // This is necessary because Safari may unload and reload the SVG when
       // the element is detached or hidden (e.g. switching tabs).
       objElement.addEventListener("load", () => {
         let color = objElement.getAttribute("type-color");
