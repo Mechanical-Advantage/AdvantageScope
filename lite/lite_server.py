@@ -55,7 +55,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         # Don't serve directly since all assets are available under "/assets"
         if request.path.startswith(WEBROOT + "/bundledAssets"):
-            self.send_error(404, "File not found.")
+            self.send_error(404, f"File not found: {request.path}")
 
         # Serve list of asset files
         elif request.path == WEBROOT + "/assets" or request.path == WEBROOT + "/assets/":
@@ -93,7 +93,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     except Exception as e:
                         self.send_error(500, f"Error serving file: {e}")
                     return
-            self.send_error(404, "File not found")
+            self.send_error(404, f"File not found: {request.path}")
 
         # Serve list of logs
         elif request.path == WEBROOT + "/logs" or request.path == WEBROOT + "/logs/":
@@ -129,7 +129,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                         except Exception as e:
                             self.send_error(500, f"Error serving file: {e}")
                         return
-            self.send_error(404, "File not found")
+            self.send_error(404, f"File not found: {request.path}")
 
         # Serve everything else
         else:

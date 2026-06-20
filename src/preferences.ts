@@ -114,7 +114,6 @@ window.addEventListener("message", (event) => {
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
-            skipFrcLogFolderDefault: oldPrefs.skipFrcLogFolderDefault,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,
             systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress
           };
