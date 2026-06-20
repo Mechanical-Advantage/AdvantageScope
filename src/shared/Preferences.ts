@@ -51,6 +51,7 @@ export const DEFAULT_PREFS: Preferences = {
 };
 
 export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
+  remotePath: "",
   liveSubscribeMode: "logging"
 });
 
