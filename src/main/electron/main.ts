@@ -2040,6 +2040,7 @@ function setupMenu() {
         },
         {
           label: "Connect to Driver Station",
+          accelerator: "CmdOrCtrl+Alt+Shift+K",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
