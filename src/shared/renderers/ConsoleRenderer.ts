@@ -7,14 +7,10 @@
 
 import { SelectionMode } from "../Selection";
 import { IS_LITE } from "../buildConstants";
-import LogField from "../log/LogField";
-import { arraysEqual, formatTimeWithMS, htmlEncode } from "../util";
+import { formatTimeWithMS, htmlEncode } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class ConsoleRenderer implements TabRenderer {
-  private ERROR_TEXT = "error";
-  private WARNING_TEXT = "warning";
-
   private TABLE_CONTAINER: HTMLElement;
   private TABLE_BODY: HTMLElement;
   private JUMP_INPUT: HTMLInputElement;
@@ -30,8 +26,7 @@ export default class ConsoleRenderer implements TabRenderer {
   private hasController: boolean;
   private key: string | null = null;
   private keyAvailable = false;
-  private timestamps: number[] = [];
-  private values: string[] = [];
+  private lines: { timestamp: number; value: string; isError: boolean; isWarning: boolean }[] = [];
   private renderedTimestamps: number[] = [];
   private renderedValues: string[] = [];
   private lastScrollPosition: number | null = null;
@@ -77,8 +72,8 @@ export default class ConsoleRenderer implements TabRenderer {
       }
 
       // Find target row
-      let targetRow = this.timestamps.findIndex((value) => value > targetTime);
-      if (targetRow === -1) targetRow = this.timestamps.length;
+      let targetRow = this.lines.findIndex((l) => l.timestamp > targetTime);
+      if (targetRow === -1) targetRow = this.lines.length;
       if (targetRow < 1) targetRow = 1;
       targetRow -= 1;
       this.TABLE_CONTAINER.scrollTop = Array.from(this.TABLE_BODY.children).reduce((totalHeight, row, rowIndex) => {
@@ -98,13 +93,13 @@ export default class ConsoleRenderer implements TabRenderer {
     // Export button
     if (this.EXPORT_BUTTON !== null) {
       this.EXPORT_BUTTON.addEventListener("click", () => {
-        if (this.values.length === 0) {
+        if (this.lines.length === 0) {
           window.sendMainMessage("error", {
             title: "Cannot export console log",
             content: "Please add a field with console data, then try again."
           });
         } else {
-          window.sendMainMessage("export-console", this.values.join("\n"));
+          window.sendMainMessage("export-console", this.lines.map((l) => l.value).join("\n"));
         }
       });
     }
@@ -160,23 +155,27 @@ export default class ConsoleRenderer implements TabRenderer {
     this.selectedTime = command.selectedTime;
     this.hoveredTime = command.hoveredTime;
 
-    // Get data from field
-    let field = command.keyAvailable ? LogField.fromSerialized(command.serialized) : null;
-    let fieldData = field === null ? undefined : field.getString(-Infinity, Infinity);
-    let newTimestamps = fieldData === undefined ? [] : fieldData.timestamps;
-    let newValues = fieldData === undefined ? [] : fieldData.values;
+    // Check if data changed
+    let dataChanged = command.lines.length !== this.lines.length;
+    if (!dataChanged) {
+      for (let i = 0; i < command.lines.length; i++) {
+        if (
+          command.lines[i].timestamp !== this.lines[i].timestamp ||
+          command.lines[i].value !== this.lines[i].value ||
+          command.lines[i].isError !== this.lines[i].isError ||
+          command.lines[i].isWarning !== this.lines[i].isWarning
+        ) {
+          dataChanged = true;
+          break;
+        }
+      }
+    }
 
     // Update values
-    if (
-      command.key !== this.key ||
-      command.keyAvailable !== this.keyAvailable ||
-      !arraysEqual(newTimestamps, this.timestamps) ||
-      !arraysEqual(newValues, this.values)
-    ) {
+    if (command.key !== this.key || command.keyAvailable !== this.keyAvailable || dataChanged) {
       this.key = command.key;
       this.keyAvailable = command.keyAvailable;
-      this.timestamps = newTimestamps;
-      this.values = newValues;
+      this.lines = command.lines;
       this.updateData();
     }
 
@@ -222,34 +221,30 @@ export default class ConsoleRenderer implements TabRenderer {
     this.HAND_ICON.style.opacity = showHand ? "0.15" : "0";
 
     // Get data
-    let timestamps = this.timestamps;
-    let values = this.values;
+    let lines = this.lines;
     const filter = this.FILTER_INPUT.value.toLowerCase();
     if (filter.startsWith("!") ? filter.length > 1 : filter.length > 0) {
-      let filteredTimestamps: number[] = [];
-      let filteredValues: string[] = [];
-      for (let i = 0; i < timestamps.length; i++) {
-        let value = values[i];
+      let filteredLines: typeof this.lines = [];
+      for (let i = 0; i < lines.length; i++) {
+        let value = lines[i].value;
         if (
           filter.startsWith("!")
             ? !value.toLowerCase().includes(filter.slice(1).toLowerCase())
             : value.toLowerCase().includes(filter.toLowerCase())
         ) {
-          filteredTimestamps.push(timestamps[i]);
-          filteredValues.push(value);
+          filteredLines.push(lines[i]);
         }
       }
-      timestamps = filteredTimestamps;
-      values = filteredValues;
+      lines = filteredLines;
     }
 
     // Clear extra rows
-    while (this.TABLE_BODY.children.length - 1 > timestamps.length) {
+    while (this.TABLE_BODY.children.length - 1 > lines.length) {
       this.TABLE_BODY.removeChild(this.TABLE_BODY.lastElementChild!);
     }
 
     // Add new rows
-    while (this.TABLE_BODY.children.length - 1 < timestamps.length) {
+    while (this.TABLE_BODY.children.length - 1 < lines.length) {
       let row = document.createElement("tr");
       this.TABLE_BODY.appendChild(row);
       let timestampCell = document.createElement("td");
@@ -275,46 +270,47 @@ export default class ConsoleRenderer implements TabRenderer {
     }
 
     // Update values
-    for (let i = 0; i < values.length; i++) {
+    for (let i = 0; i < lines.length; i++) {
+      let value = lines[i].value;
+      let timestamp = lines[i].timestamp;
+
       // Format value
       let valueFormatted = "";
       if (filter.length > 0 && !filter.startsWith("!")) {
         let lastPosition = -1;
         let position = -1;
         while (
-          position + filter.length < values[i].length &&
-          (position = values[i]
+          position + filter.length < value.length &&
+          (position = value
             .toLowerCase()
             .indexOf(filter.toLowerCase(), position === -1 ? 0 : position + filter.length)) > -1
         ) {
           if (lastPosition === -1) {
-            valueFormatted += htmlEncode(values[i].substring(0, position));
+            valueFormatted += htmlEncode(value.substring(0, position));
           } else {
-            valueFormatted += htmlEncode(values[i].substring(lastPosition + filter.length, position));
+            valueFormatted += htmlEncode(value.substring(lastPosition + filter.length, position));
           }
           valueFormatted +=
-            '<span class="highlight">' +
-            htmlEncode(values[i].substring(position, position + filter.length)) +
-            "</span>";
+            '<span class="highlight">' + htmlEncode(value.substring(position, position + filter.length)) + "</span>";
           lastPosition = position;
         }
         if (lastPosition !== -1) {
-          valueFormatted += values[i].substring(lastPosition + filter.length);
+          valueFormatted += value.substring(lastPosition + filter.length);
         }
       } else {
-        valueFormatted = htmlEncode(values[i]);
+        valueFormatted = htmlEncode(value);
       }
       valueFormatted = valueFormatted.replaceAll("\n", "<br />");
 
       // Update highlight
       let row = this.TABLE_BODY.children[i + 1];
       if (this.HIGHLIGHT_BUTTON.classList.contains("active")) {
-        if (values[i].toLowerCase().includes(this.ERROR_TEXT)) {
+        if (lines[i].isError) {
           row.classList.add("error");
         } else {
           row.classList.remove("error");
         }
-        if (values[i].toLowerCase().includes(this.WARNING_TEXT)) {
+        if (lines[i].isWarning) {
           row.classList.add("warning");
         } else {
           row.classList.remove("warning");
@@ -329,18 +325,18 @@ export default class ConsoleRenderer implements TabRenderer {
       if (i > this.renderedTimestamps.length) {
         hasChanged = true; // New row
         this.renderedValues.push(valueFormatted);
-      } else if (this.renderedTimestamps[i] !== timestamps[i] || this.renderedValues[i] !== valueFormatted) {
+      } else if (this.renderedTimestamps[i] !== timestamp || this.renderedValues[i] !== valueFormatted) {
         hasChanged = true; // Data has changed
         this.renderedValues[i] = valueFormatted;
       }
 
       // Update cell contents
       if (hasChanged) {
-        (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamps[i]);
+        (row.children[0] as HTMLElement).innerText = formatTimeWithMS(timestamp);
         (row.children[1] as HTMLElement).innerHTML = valueFormatted;
       }
     }
-    this.renderedTimestamps = timestamps;
+    this.renderedTimestamps = lines.map((l) => l.timestamp);
   }
 
   /** Updates highlighted times (selected & hovered). */
@@ -376,7 +372,12 @@ export default class ConsoleRenderer implements TabRenderer {
 export type ConsoleRendererCommand = {
   key: string | null;
   keyAvailable: boolean;
-  serialized: any;
+  lines: {
+    timestamp: number;
+    value: string;
+    isError: boolean;
+    isWarning: boolean;
+  }[];
 
   selectionMode: SelectionMode;
   selectedTime: number | null;

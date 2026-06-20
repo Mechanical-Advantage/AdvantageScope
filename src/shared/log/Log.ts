@@ -56,6 +56,33 @@ export default class Log {
     if (key in this.fields) return;
     this.fields[key] = new LogField(type);
     this.changedFields.add(key);
+    this.checkDSConsoleField(key);
+  }
+
+  /** Special case for DS console info so that the top-level console table can be dragged to the console tab. */
+  private checkDSConsoleField(key: string) {
+    if (
+      key === "DS:/Dscomm/Console/ConsoleLine" ||
+      key === "DS:/Dscomm/Console/ErrorInfo" ||
+      key === "DS:/Dscomm/Console/ProgramCrashInfo" ||
+      key.endsWith("/DS:/Dscomm/Console/ConsoleLine") ||
+      key.endsWith("/DS:/Dscomm/Console/ErrorInfo") ||
+      key.endsWith("/DS:/Dscomm/Console/ProgramCrashInfo")
+    ) {
+      let suffixLength = 0;
+      if (key.endsWith("ConsoleLine")) {
+        suffixLength = "ConsoleLine".length;
+      } else if (key.endsWith("ErrorInfo")) {
+        suffixLength = "ErrorInfo".length;
+      } else if (key.endsWith("ProgramCrashInfo")) {
+        suffixLength = "ProgramCrashInfo".length;
+      }
+      const consoleKey = key.slice(0, -(suffixLength + 1));
+      if (!(consoleKey in this.fields)) {
+        this.createBlankField(consoleKey, LoggableType.Empty);
+        this.setStructuredType(consoleKey, "Console");
+      }
+    }
   }
 
   /** Removes all data for a field. */
@@ -164,6 +191,7 @@ export default class Log {
   setField(key: string, field: LogField) {
     this.fields[key] = field;
     this.changedFields.add(key);
+    this.checkDSConsoleField(key);
   }
 
   /** Returns the constant field type. */

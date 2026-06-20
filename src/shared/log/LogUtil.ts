@@ -880,3 +880,23 @@ export function getMatchInfo(log: Log): MatchInfo | null {
   info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, enabledTime, info.matchNumber);
   return info;
 }
+
+/**
+ * Iterates over the values of a log field efficiently for monotonic time lookups.
+ * Useful when sampling multiple subfields synchronously using a parent timeline.
+ */
+export class LogFieldIterator<T> {
+  private idx = 0;
+  constructor(private data: { timestamps: number[]; values: T[] } | undefined) {}
+
+  getAtTime(time: number): T | undefined {
+    if (!this.data) return undefined;
+    while (this.idx + 1 < this.data.timestamps.length && this.data.timestamps[this.idx + 1] <= time) {
+      this.idx++;
+    }
+    if (this.idx < this.data.timestamps.length && this.data.timestamps[this.idx] <= time) {
+      return this.data.values[this.idx];
+    }
+    return undefined;
+  }
+}
