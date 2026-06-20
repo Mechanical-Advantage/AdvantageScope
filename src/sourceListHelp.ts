@@ -140,10 +140,8 @@ function addItem(
       typeIcon.contentDocument.getElementsByTagName("svg")[0].style.color = isDark() ? darkColor : lightColor;
     }
   };
-  typeIcon.addEventListener("load", () => {
-    updateColor();
-    themeCallbacks.push(updateColor);
-  });
+  typeIcon.addEventListener("load", updateColor);
+  themeCallbacks.push(updateColor);
 
   let typeTitle = document.createElement("div");
   typeTitle.classList.add("type-title");
