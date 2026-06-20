@@ -48,6 +48,11 @@ export const DEFAULT_PREFS: Preferences = {
   systemcoreStaticAddress: ""
 };
 
+export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
+  remotePath: "",
+  liveSubscribeMode: "logging"
+});
+
 export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
 
 export function getLiveModeName(mode: LiveMode): string {

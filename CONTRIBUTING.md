@@ -62,6 +62,14 @@ export ASCOPE_DISTRIBUTION=WPILIB
 export ASCOPE_DISTRIBUTION=LITE
 ```
 
+- **Lite (Driver Station) Distribution:**
+
+```bash
+export ASCOPE_DISTRIBUTION=LITEDS
+```
+
+_For the Lite DS distribution, set the environment variable before running `npm install` to download the correct set of bundled assets._
+
 ## Available NPM Tasks
 
 The following tasks are defined in `package.json` to assist with development:

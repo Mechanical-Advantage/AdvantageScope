@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { DISTRIBUTION, Distribution } from "./shared/buildConstants";
+import { IS_LITE } from "./shared/buildConstants";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences, { getRobotAddress } from "./shared/Preferences";
 import { zfill } from "./shared/util";
@@ -26,7 +26,7 @@ let messagePort: MessagePort | null = null;
 let platform: string = "";
 let preferences: Preferences | null = null;
 
-let address: string = DISTRIBUTION === Distribution.Lite ? window.location.hostname : "";
+let address: string = IS_LITE ? window.location.hostname : "";
 let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;
@@ -62,7 +62,7 @@ function handleMainMessage(message: NamedMessage) {
       preferences = message.data;
       let path = "";
       if (preferences) {
-        if (DISTRIBUTION !== Distribution.Lite) {
+        if (!IS_LITE) {
           // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
           address = getRobotAddress(preferences, platform)
             .split(".")
@@ -330,11 +330,7 @@ DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     save();
-  } else if (
-    DISTRIBUTION !== Distribution.Lite &&
-    event.key === "a" &&
-    (platform === "darwin" ? event.metaKey : event.ctrlKey)
-  ) {
+  } else if (!IS_LITE && event.key === "a" && (platform === "darwin" ? event.metaKey : event.ctrlKey)) {
     if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];
@@ -353,6 +349,6 @@ window.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("load", () => {
-  (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = DISTRIBUTION === Distribution.Lite;
-  (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = DISTRIBUTION !== Distribution.Lite;
+  (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = IS_LITE;
+  (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = !IS_LITE;
 });

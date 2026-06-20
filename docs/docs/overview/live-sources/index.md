@@ -11,14 +11,19 @@ All visualizations in AdvantageScope are designed to receive live data from a ro
 - **RLOG Server:** This protocol is supported by AdvantageKit as an alternative to NetworkTables. The connection is initiated on port 5800 by default.
 - **FTC Dashboard:** This mode integrates with FTC robots publishing data to [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
 
+:::info
+AdvantageScope can connect to the FIRST Driver Station to view diagnostic data when running on the same device as the DS application. No configuration is required (see the instructions below).
+:::
+
 ## Starting the Connection
 
-To start the connection to a robot (using the configured "Robot Address") or a simulator (using "127.0.0.1"), follow these steps:
+To start the live connection, follow these steps:
 
 - **Robot:** Click `File` > `Connect to Robot` > `Default` or a specific live source
 - **Simulator:** Click `File` > `Connect to Simulator` > `Default` or a specific live source
+- **Driver Station:** Click `File` > `Connect to Driver Station`
 
-The window title displays the IP address and the text "Searching" until the robot/sim is connected. It attempts to reconnect automatically using the same settings after a disconnect.
+The window title displays the IP address and the text "Searching" until the target is connected. AdvantageScope attempts to reconnect automatically using the same settings after a disconnect.
 
 ## Viewing Live Data
 
