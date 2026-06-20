@@ -33,7 +33,7 @@ import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../../sha
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field3dController_Config from "./Field3dController_Config";
-import TabController from "./TabController";
+import TabController, { setupKeyboardControls } from "./TabController";
 
 export default class Field3dController implements TabController {
   UUID = createUUID();
@@ -60,6 +60,7 @@ export default class Field3dController implements TabController {
         htmlElement.parentElement?.removeChild(htmlElement);
       });
     }
+    setupKeyboardControls(this.XR_BUTTON);
     this.XR_BUTTON.addEventListener("click", () => {
       window.sendMainMessage("open-xr", this.UUID);
     });

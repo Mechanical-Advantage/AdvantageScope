@@ -42,31 +42,31 @@
       </table>
     </div>
 
-    <button class="tab-control update" tabindex="-1" hidden>
+    <button class="tab-control update" hidden>
       <img src="symbols/exclamationmark.arrow.triangle.2.circlepath.svg" />
     </button>
-    <button class="tab-control feedback" tabindex="-1" hidden>
+    <button class="tab-control feedback" hidden>
       <img src="symbols/exclamationmark.bubble.svg" />
     </button>
-    <button class="tab-control play" tabindex="-1">
+    <button class="tab-control play">
       <img src="symbols/play.fill.svg" />
     </button>
-    <button class="tab-control pause" tabindex="-1" hidden>
+    <button class="tab-control pause" hidden>
       <img src="symbols/pause.svg" />
     </button>
-    <button class="tab-control lock" tabindex="-1" hidden>
+    <button class="tab-control lock" hidden>
       <img src="symbols/forward.circle.svg" />
     </button>
-    <button class="tab-control unlock" tabindex="-1" hidden>
+    <button class="tab-control unlock" hidden>
       <img src="symbols/forward.circle.svg" />
     </button>
-    <button class="tab-control close" tabindex="-1">
+    <button class="tab-control close">
       <img src="symbols/xmark.octagon.svg" />
     </button>
-    <button class="tab-control popup" tabindex="-1">
+    <button class="tab-control popup">
       <img src="symbols/plus.rectangle.on.rectangle.svg" />
     </button>
-    <button class="tab-control add-tab" tabindex="-1">
+    <button class="tab-control add-tab">
       <img src="symbols/plus.svg" />
     </button>
 
@@ -87,7 +87,7 @@
       <div class="side-bar-search-container">
         <input class="side-bar-search" type="search" placeholder="Search" />
         <img class="side-bar-search-icon" src="symbols/magnifyingglass.svg" />
-        <button class="side-bar-tuning-button" tabindex="-1" hidden>
+        <button class="side-bar-tuning-button" hidden>
           <img src="symbols/slider.horizontal.3.svg" />
         </button>
       </div>
@@ -112,13 +112,13 @@
       <div class="tab-bar-shadow-left"></div>
       <div class="tab-bar-shadow-right"></div>
       <div class="tab-bar-drag-highlight" hidden></div>
-      <div class="tab-bar-scroll">
+      <div class="tab-bar-scroll" tabindex="-1">
         <div class="tab-bar-scroll-content"></div>
       </div>
 
       <div class="timeline">
         <canvas class="timeline-canvas"></canvas>
-        <div class="timeline-scroll">
+        <div class="timeline-scroll" tabindex="-1">
           <div class="timeline-scroll-content"></div>
         </div>
       </div>
@@ -150,11 +150,11 @@
           </div>
           <div class="field input">
             <div>
-              <select class="field-select" tabindex="-1">
+              <select class="field-select">
                 <optgroup label="FRC Fields"></optgroup>
                 <optgroup label="FTC Fields"></optgroup>
               </select>
-              <a class="field-source" href="#" tabindex="-1">Source</a>
+              <a class="field-source" href="#">Source</a>
             </div>
           </div>
 
@@ -165,25 +165,25 @@
           <div class="orientation input tall">
             <div class="half">
               <div class="orientation-switcher split split-2">
-                <div>
+                <div tabindex="0">
                   <img class="invertable" src="symbols/rotate.right.svg" />
                 </div>
-                <div>
+                <div tabindex="0">
                   <img class="invertable" src="symbols/rotate.left.svg" />
                 </div>
               </div>
             </div>
             <div class="half">
               <div class="size-switcher split split-3">
-                <div>
+                <div tabindex="0">
                   <img class="invertable frc-only" src="symbols/30.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/18.square.fill.svg" />
                 </div>
-                <div>
+                <div tabindex="0">
                   <img class="invertable frc-only" src="symbols/27.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/16.square.fill.svg" />
                 </div>
-                <div>
+                <div tabindex="0">
                   <img class="invertable frc-only" src="symbols/24.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/14.square.fill.svg" />
                 </div>
@@ -202,7 +202,7 @@
           </div>
           <div class="field input">
             <div>
-              <select class="field-select" tabindex="-1">
+              <select class="field-select">
                 <optgroup label="FRC Fields"></optgroup>
                 <optgroup label="FTC Fields"></optgroup>
               </select>
@@ -215,7 +215,7 @@
           <div class="xr-control input tall">
             <div class="full">
               <div class="split split-1">
-                <div class="xr-button">
+                <div class="xr-button" tabindex="0">
                   <img src="symbols/sparkles.square.filled.on.square.svg" />
                 </div>
               </div>
@@ -277,59 +277,50 @@
       <!-- Video -->
       <div id="controller7">
         <div class="video-source">
-          <button tabindex="-1">
+          <button>
             <img src="symbols/doc.fill.svg" />
           </button>
-          <button tabindex="-1">
+          <button>
             <img src="symbols/list.clipboard.fill.svg" />
             <svg><path /></svg>
           </button>
-          <button tabindex="-1">
+          <button>
             <img src="symbols/tba_lamp.svg" />
             <svg><path /></svg>
           </button>
         </div>
         <div class="video-synchronization">
           <div class="video-timeline-section">
-            <button tabindex="-1">
+            <button>
               <img src="symbols/lock.open.svg" />
             </button>
-            <button tabindex="-1" hidden>
+            <button hidden>
               <img src="symbols/lock.svg" />
             </button>
             <div class="video-timeline-container">
-              <input
-                class="video-timeline-slider"
-                id="timeline"
-                type="range"
-                value="0"
-                min="1"
-                max="1"
-                step="1"
-                tabindex="-1"
-              />
+              <input class="video-timeline-slider" id="timeline" type="range" value="0" min="1" max="1" step="1" />
               <div class="video-timeline-marker-container">
                 <div></div>
               </div>
             </div>
           </div>
           <div class="video-timeline-controls">
-            <button tabindex="-1">
+            <button>
               <img src="symbols/gobackward.5.svg" />
             </button>
-            <button tabindex="-1">
+            <button>
               <img src="symbols/backward.frame.svg" />
             </button>
-            <button tabindex="-1">
+            <button>
               <img src="symbols/play.fill.svg" />
             </button>
-            <button tabindex="-1" hidden>
+            <button hidden>
               <img src="symbols/pause.svg" />
             </button>
-            <button tabindex="-1">
+            <button>
               <img src="symbols/forward.frame.svg" />
             </button>
-            <button tabindex="-1">
+            <button>
               <img src="symbols/goforward.5.svg" />
             </button>
           </div>
@@ -343,29 +334,29 @@
             <tr>
               <td>
                 0:
-                <select tabindex="-1"></select>
+                <select></select>
               </td>
               <td>
                 1:
-                <select tabindex="-1"></select>
+                <select></select>
               </td>
               <td>
                 2:
-                <select tabindex="-1"></select>
+                <select></select>
               </td>
             </tr>
             <tr>
               <td>
                 3:
-                <select tabindex="-1"></select>
+                <select></select>
               </td>
               <td>
                 4:
-                <select tabindex="-1"></select>
+                <select></select>
               </td>
               <td>
                 5:
-                <select tabindex="-1"></select>
+                <select></select>
               </td>
             </tr>
           </tbody>
@@ -402,10 +393,10 @@
           </div>
           <div class="input">
             <div class="orientation-switcher split split-2">
-              <div>
+              <div tabindex="0">
                 <img class="invertable" src="symbols/rotate.right.svg" />
               </div>
-              <div>
+              <div tabindex="0">
                 <img class="invertable" src="symbols/rotate.left.svg" />
               </div>
             </div>
@@ -479,7 +470,7 @@
       <!-- Line Graph -->
       <div id="renderer1">
         <canvas class="line-graph-canvas"></canvas>
-        <div class="line-graph-scroll">
+        <div class="line-graph-scroll" tabindex="-1">
           <div class="line-graph-scroll-content"></div>
         </div>
       </div>
@@ -518,7 +509,7 @@
           <div class="data-table-key-container">
             <span></span>
           </div>
-          <button class="data-table-key-delete" tabindex="-1">
+          <button class="data-table-key-delete">
             <img src="symbols/xmark.svg" />
           </button>
         </span>
@@ -528,8 +519,8 @@
             <tbody>
               <tr>
                 <th>
-                  <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                  <button class="data-table-jump-button" tabindex="-1">
+                  <input class="data-table-jump-input" type="number" placeholder="0.000" />
+                  <button class="data-table-jump-button">
                     <img src="symbols/arrow.down.to.line.svg" />
                   </button>
                 </th>
@@ -550,22 +541,22 @@
             <tbody>
               <tr>
                 <th>
-                  <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                  <button class="console-table-jump-button" tabindex="-1">
+                  <input class="console-table-jump-input" type="number" placeholder="0.000" />
+                  <button class="console-table-jump-button">
                     <img src="symbols/arrow.down.to.line.svg" />
                   </button>
                 </th>
                 <th>
                   <div>
                     <span></span>
-                    <button class="console-table-key-delete" tabindex="-1">
+                    <button class="console-table-key-delete">
                       <img src="symbols/xmark.svg" />
                     </button>
                   </div>
-                  <button class="export-button" tabindex="-1">
+                  <button class="export-button">
                     <img src="symbols/square.and.arrow.down.svg" />
                   </button>
-                  <button class="highlight-button" tabindex="-1">
+                  <button class="highlight-button">
                     <img src="symbols/paintpalette.fill.svg" />
                   </button>
                   <input class="filter" type="search" placeholder="Filter" />
@@ -578,7 +569,7 @@
 
       <!-- Statistics -->
       <div id="renderer6">
-        <div class="stats-values-container">
+        <div class="stats-values-container" tabindex="-1">
           <table class="stats-values">
             <tbody></tbody>
           </table>
@@ -652,18 +643,18 @@
 
     <span id="sourceListItemTemplate" hidden>
       <div class="item">
-        <button class="type" tabindex="-1">
-          <object data="" type="image/svg+xml"></object>
-          <object data="" type="image/svg+xml" class="hidden"></object>
+        <button class="type">
+          <object data="" type="image/svg+xml" tabindex="-1"></object>
+          <object data="" type="image/svg+xml" class="hidden" tabindex="-1"></object>
         </button>
         <div class="type-name"></div>
         <div class="key-container">
           <span></span>
         </div>
-        <button class="hide" tabindex="-1">
+        <button class="hide">
           <img src="symbols/eye.svg" />
         </button>
-        <button class="remove" tabindex="-1">
+        <button class="remove">
           <img src="symbols/xmark.svg" />
         </button>
         <img class="value-symbol" src="symbols/arrow.turn.down.right.svg" hidden />

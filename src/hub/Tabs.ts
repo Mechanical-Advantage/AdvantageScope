@@ -566,6 +566,16 @@ export default class Tabs {
     let titleElement = document.createElement("div");
     titleElement.classList.add("tab");
     titleElement.innerText = getTabIcon(type) + " " + getDefaultTabTitle(type);
+    titleElement.tabIndex = 0;
+    titleElement.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        let index = this.tabList.findIndex((t) => t.titleElement === titleElement);
+        if (index !== -1) {
+          this.setSelected(index);
+        }
+      }
+    });
 
     // Save to tab list
     if (this.tabList.length === 0) {

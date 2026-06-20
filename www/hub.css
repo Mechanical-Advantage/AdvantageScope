@@ -76,7 +76,9 @@ div.title-bar-menu {
   width: calc(var(--side-bar-width) - 20px);
   max-width: 250px;
   top: 19px;
-  height: 28px;
+  height: 36px;
+  padding: 4px;
+  box-sizing: border-box;
   transform: translate(-50%, -50%);
 
   z-index: 6;
@@ -121,6 +123,12 @@ div.title-bar-menu button {
   font-size: 12px;
   padding-left: 3px;
   padding-right: 3px;
+}
+
+div.title-bar-menu button:focus-visible,
+div.title-bar-menu button:focus {
+  position: relative;
+  z-index: 10;
 }
 
 div.title-bar-menu button:hover {
@@ -769,6 +777,14 @@ div.tab {
     border 0.2s ease-in-out;
   background-color: #eee;
   border: 1px solid #aaa;
+}
+
+div.tab:focus-visible,
+div.tab:focus,
+div.setting-blocks div.split div:focus-visible,
+div.setting-blocks div.split div:focus {
+  position: relative;
+  z-index: 10;
 }
 
 div.tab:first-child {
