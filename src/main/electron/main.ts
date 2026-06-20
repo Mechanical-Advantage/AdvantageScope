@@ -184,6 +184,9 @@ function sendAllPreferences() {
       data.systemcoreStaticAddress === "wifi";
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
+    BrowserWindow.getAllWindows().forEach((w) => {
+      if (!hubWindows.includes(w)) w.setMenu(null);
+    });
   }
 }
 
@@ -2462,6 +2465,9 @@ function setupMenu() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
+  BrowserWindow.getAllWindows().forEach((w) => {
+    if (!hubWindows.includes(w)) w.setMenu(null);
+  });
 }
 
 /** Creates the "About AdvantageScope" window. */
@@ -2756,6 +2762,7 @@ function createEditRangeWindow(
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
+
     parent: parentWindow,
     modal: true,
     webPreferences: {
@@ -2765,7 +2772,8 @@ function createEditRangeWindow(
 
   // Finish setup
   editWindow.setMenu(null);
-  editWindow.once("ready-to-show", parentWindow.show);
+  editWindow.setMenuBarVisibility(false);
+  editWindow.once("ready-to-show", editWindow.show);
   editWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2809,7 +2817,8 @@ function createUnitConversionWindow(
 
   // Finish setup
   unitConversionWindow.setMenu(null);
-  unitConversionWindow.once("ready-to-show", parentWindow.show);
+  unitConversionWindow.setMenuBarVisibility(false);
+  unitConversionWindow.once("ready-to-show", unitConversionWindow.show);
   unitConversionWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2853,7 +2862,8 @@ function createRenameTabWindow(
 
   // Finish setup
   renameTabWindow.setMenu(null);
-  renameTabWindow.once("ready-to-show", parentWindow.show);
+  renameTabWindow.setMenuBarVisibility(false);
+  renameTabWindow.once("ready-to-show", renameTabWindow.show);
   renameTabWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2884,6 +2894,7 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
+
     parent: parentWindow,
     modal: true,
     webPreferences: {
@@ -2893,7 +2904,8 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
 
   // Finish setup
   editFovWindow.setMenu(null);
-  editFovWindow.once("ready-to-show", parentWindow.show);
+  editFovWindow.setMenuBarVisibility(false);
+  editFovWindow.once("ready-to-show", editFovWindow.show);
   editFovWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2928,6 +2940,7 @@ function createExportWindow(
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
+
     parent: parentWindow,
     modal: true,
     webPreferences: {
@@ -2937,7 +2950,8 @@ function createExportWindow(
 
   // Finish setup
   exportWindow.setMenu(null);
-  exportWindow.once("ready-to-show", parentWindow.show);
+  exportWindow.setMenuBarVisibility(false);
+  exportWindow.once("ready-to-show", exportWindow.show);
   let isPreparingExport = false;
   exportWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
@@ -3049,11 +3063,13 @@ function createSatellite(
     resizable: true,
     icon: WINDOW_ICON,
     show: false,
+
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
   });
   satellite.setMenu(null);
+  satellite.setMenuBarVisibility(false);
   satellite.once("ready-to-show", satellite.show);
   satellite.loadFile(path.join(__dirname, "../www/satellite.html"));
   let firstLoad = true;
@@ -3191,6 +3207,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   prefsWindow.setMenu(null);
+  prefsWindow.setMenuBarVisibility(false);
   prefsWindow.once("ready-to-show", prefsWindow.show);
   prefsWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
@@ -3240,6 +3257,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   downloadWindow.setMenu(null);
+  downloadWindow.setMenuBarVisibility(false);
   downloadWindow.once("ready-to-show", downloadWindow.show);
   downloadWindow.once("close", downloadStop);
   downloadWindow.webContents.on("dom-ready", () => {
@@ -3292,6 +3310,7 @@ function openLicenses(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   licensesWindow.setMenu(null);
+  licensesWindow.setMenuBarVisibility(false);
   licensesWindow.once("ready-to-show", licensesWindow.show);
   licensesWindow.once("close", downloadStop);
   licensesWindow.loadFile(path.join(__dirname, "../www/licenses.html"));
@@ -3324,6 +3343,7 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
 
   // Finish setup
   helpWindow.setMenu(null);
+  helpWindow.setMenuBarVisibility(false);
   helpWindow.once("ready-to-show", helpWindow.show);
   helpWindow.once("close", downloadStop);
   helpWindow.webContents.on("dom-ready", () => {
@@ -3363,6 +3383,7 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   });
   // Finish setup
   betaWelcome.setMenu(null);
+  betaWelcome.setMenuBarVisibility(false);
   betaWelcome.on("close", () => {
     app.quit();
   });

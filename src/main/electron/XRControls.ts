@@ -93,6 +93,7 @@ export namespace XRControls {
 
     // Finish setup
     window.setMenu(null);
+    window.setMenuBarVisibility(false);
     window.once("ready-to-show", window.show);
     hasConfirmedClose = false;
     window.on("close", (event) => {
