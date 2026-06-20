@@ -137,7 +137,10 @@ function addItem(
   typeIconContainer.appendChild(typeIcon);
   let updateColor = () => {
     if (typeIcon.contentDocument !== null) {
-      typeIcon.contentDocument.getElementsByTagName("svg")[0].style.color = isDark() ? darkColor : lightColor;
+      let svg = typeIcon.contentDocument.getElementsByTagName("svg")[0];
+      if (svg !== undefined) {
+        svg.style.color = isDark() ? darkColor : lightColor;
+      }
     }
   };
   typeIcon.addEventListener("load", updateColor);
@@ -178,9 +181,11 @@ function addItem(
       Array.from(valuesCell.getElementsByTagName("span")).forEach((span, index) => {
         let valueKey = option.values[index].key;
         if (valueKey.startsWith("#")) {
-          themeCallbacks.push(() => {
+          let updateSpanColor = () => {
             span.style.color = ensureThemeContrast(valueKey);
-          });
+          };
+          updateSpanColor();
+          themeCallbacks.push(updateSpanColor);
         }
       });
     });
