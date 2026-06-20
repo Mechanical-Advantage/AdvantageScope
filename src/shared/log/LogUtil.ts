@@ -31,6 +31,7 @@ export const ENABLED_KEYS = [
   "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
   "DS:controlWord/enabled", // DataLog, post-2027
   "DS:enabled", // DataLog, pre-2027
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
   "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
@@ -44,6 +45,7 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:autonomous", // DataLog, pre-2027
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
   "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
@@ -56,6 +58,7 @@ export const UTILITY_KEYS = [
   "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:test", // DataLog, pre-2027
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
   "RobotMode", // Phoenix
   "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
@@ -255,7 +258,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey.endsWith("FMSControlData")) {
+  if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
@@ -291,6 +294,14 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
+      };
+    }
+  } else if (autonomousKey.endsWith("ControlWord")) {
+    let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
+    if (tempAutoData) {
+      autonomousData = {
+        timestamps: tempAutoData.timestamps,
+        values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 3) === 1)
       };
     }
   } else if (autonomousKey.toLowerCase().endsWith("robotmode")) {
@@ -329,6 +340,14 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 2) & 1) !== 0)
+      };
+    }
+  } else if (utilityKey.endsWith("ControlWord")) {
+    let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
+    if (tempUtilityData) {
+      utilityData = {
+        timestamps: tempUtilityData.timestamps,
+        values: tempUtilityData.values.map((controlWord) => ((controlWord >> 1) & 3) === 3)
       };
     }
   } else if (utilityKey.toLowerCase().endsWith("robotmode")) {
