@@ -384,7 +384,7 @@ async function handleHubMessage(message: NamedMessage) {
                   let detailLines: string[] = [];
                   detailLines.push("Version: " + LITE_VERSION);
                   detailLines.push(
-                    "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (FIRST Driver Station)")
+                    "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
                   );
                   detailLines.push("Build Date: " + BUILD_DATE);
                   detailLines.push("User Agent: " + navigator.userAgent);
