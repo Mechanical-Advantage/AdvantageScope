@@ -7,9 +7,7 @@
   at the root directory of this project.
 */
 
-/* https://github.com/GastonZalba/tiny-popup-menu/blob/v1.0.10/lib/style/css/tiny-popup-menu.css */
-
-/* MODIFIED TO ADD SUPPORT FOR RTL LAYOUTS. */
+/* https://github.com/jwbonner/tiny-popup-menu/blob/main/lib/style/css/tiny-popup-menu.css */
 
 .popup-menu {
   width: -moz-max-content;
@@ -31,26 +29,44 @@
   z-index: 9998;
   padding: 10px 0;
 }
+.popup-menu .popup-menu--align-center .popup-menu--submenu,
+.popup-menu .popup-menu--align-center .popup-menu--item {
+  justify-content: center;
+}
+.popup-menu .popup-menu--align-left .popup-menu--submenu,
+.popup-menu .popup-menu--align-left .popup-menu--item {
+  justify-content: left;
+}
+.popup-menu .popup-menu--align-right .popup-menu--submenu,
+.popup-menu .popup-menu--align-right .popup-menu--item {
+  justify-content: right;
+}
 .popup-menu .popup-menu--container {
   position: relative;
   color: #4e4e4e;
   font-size: 13px;
   letter-spacing: 0;
   text-transform: none;
-  text-align: center;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu,
 .popup-menu .popup-menu--container .popup-menu--item {
-  font-weight: 100;
   padding: 6px 16px;
+  display: -webkit-flex;
+  display: flex;
+}
+.popup-menu .popup-menu--container .popup-menu--submenu,
+.popup-menu .popup-menu--container .popup-menu--item.popup-menu--item-clickleable {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu:focus,
 .popup-menu .popup-menu--container .popup-menu--submenu:active,
 .popup-menu .popup-menu--container .popup-menu--submenu:hover,
-.popup-menu .popup-menu--container .popup-menu--item:focus,
-.popup-menu .popup-menu--container .popup-menu--item:active,
-.popup-menu .popup-menu--container .popup-menu--item:hover {
-  background: #ebebeb;
+.popup-menu .popup-menu--container .popup-menu--item.popup-menu--item-clickleable:focus,
+.popup-menu .popup-menu--container .popup-menu--item.popup-menu--item-clickleable:active,
+.popup-menu .popup-menu--container .popup-menu--item.popup-menu--item-clickleable:hover {
+  background: rgb(234.6, 234.6, 234.6);
 }
 .popup-menu .popup-menu--container .popup-menu--submenu {
   display: -webkit-flex;
@@ -60,7 +76,6 @@
 }
 .popup-menu .popup-menu--container .popup-menu--submenu > span {
   cursor: default;
-  margin: auto;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu .popup-menu--submenu-content {
   position: absolute;
@@ -71,40 +86,31 @@
   min-width: -webkit-max-content;
   min-width: max-content;
 }
+.popup-menu .popup-menu--container .popup-menu--submenu .popup-menu--submenu-arrow {
+  position: absolute;
+}
 .popup-menu .popup-menu--container .popup-menu--submenu .popup-menu--submenu-arrow svg {
   width: 20px;
   height: 20px;
   fill: #4e4e4e;
 }
+.popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right > span {
+  padding-right: 15px;
+}
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-arrow {
-  margin-inline-start: -12px;
-  margin-inline-end: -8px;
+  right: 8px;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-content {
   left: 100%;
 }
+.popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left > span {
+  padding-left: 15px;
+}
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-arrow {
-  margin-inline-start: -12px;
+  left: 8px;
   order: -1;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-content {
-  right: 100%;
-}
-
-[dir="rtl"] .popup-menu {
-  right: auto;
-}
-
-[dir="rtl"] .popup-menu .popup-menu--submenu-arrow svg {
-  transform: scaleX(-1);
-}
-
-[dir="rtl"]
-  .popup-menu
-  .popup-menu--container
-  .popup-menu--submenu.popup-menu--submenu-right
-  .popup-menu--submenu-content {
-  left: auto;
   right: 100%;
 }
 .popup-menu .popup-menu--container .popup-menu--submenu:hover .popup-menu--submenu-content,
@@ -112,7 +118,7 @@
   opacity: 1;
   visibility: visible;
 }
-.popup-menu .popup-menu--container .popup-menu--item {
+.popup-menu .popup-menu--container .popup-menu--item-clickleable {
   cursor: pointer;
 }
 .popup-menu .popup-menu--container .popup-menu--item-separator {
@@ -120,7 +126,7 @@
   height: 1px;
   display: block;
   margin: 6px 0;
-  background-color: #d4d4d4;
+  background-color: rgb(212.3, 212.3, 212.3);
 }
 .popup-menu.popup-menu--show-arrow:after {
   content: "";
@@ -167,4 +173,43 @@
   border-left: 8px solid transparent;
   left: calc(50% - var(--ofx));
   bottom: -14px;
+}
+.popup-menu[dir="rtl"],
+[dir="rtl"] .popup-menu {
+  right: auto;
+  direction: rtl;
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu-arrow svg,
+[dir="rtl"] .popup-menu .popup-menu--submenu-arrow svg {
+  transform: scaleX(-1);
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu.popup-menu--submenu-right > span,
+[dir="rtl"] .popup-menu .popup-menu--submenu.popup-menu--submenu-right > span {
+  padding-right: 0;
+  padding-left: 15px;
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-arrow,
+[dir="rtl"] .popup-menu .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-arrow {
+  right: auto;
+  left: 8px;
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-content,
+[dir="rtl"] .popup-menu .popup-menu--submenu.popup-menu--submenu-right .popup-menu--submenu-content {
+  left: auto;
+  right: 100%;
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu.popup-menu--submenu-left > span,
+[dir="rtl"] .popup-menu .popup-menu--submenu.popup-menu--submenu-left > span {
+  padding-left: 0;
+  padding-right: 15px;
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-arrow,
+[dir="rtl"] .popup-menu .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-arrow {
+  left: auto;
+  right: 8px;
+}
+.popup-menu[dir="rtl"] .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-content,
+[dir="rtl"] .popup-menu .popup-menu--submenu.popup-menu--submenu-left .popup-menu--submenu-content {
+  right: auto;
+  left: 100%;
 }
