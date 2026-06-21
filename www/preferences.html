@@ -83,7 +83,12 @@
         <tr class="hide-lite">
           <td class="label">Robot Address</td>
           <td class="input">
-            <input type="text" id="robotAddress" title="Enter the IP address or hostname of the robot" />
+            <input
+              type="text"
+              id="robotAddress"
+              placeholder="10.00.00.2"
+              title="Enter the IP address or hostname of the robot"
+            />
           </td>
         </tr>
         <tr>
@@ -105,9 +110,9 @@
           <td class="label">Discard Live Data</td>
           <td class="input">
             <select id="liveDiscard" title="Select how long to retain live data before discarding">
-              <option value="60">After 1 minute</option>
-              <option value="300">After 5 minutes</option>
-              <option value="1200">After 20 minutes</option>
+              <option value="60">After 1 Minute</option>
+              <option value="300">After 5 Minutes</option>
+              <option value="1200">After 20 Minutes</option>
               <option value="-1">Never</option>
             </select>
           </td>

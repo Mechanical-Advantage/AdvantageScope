@@ -52,7 +52,7 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
-import { createUUID } from "../../shared/util";
+import { createUUID, formatDate } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
@@ -1220,7 +1220,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       dialog
         .showSaveDialog(window, {
           title: "Select export location for console log",
-          defaultPath: "Console " + new Date().toLocaleDateString().replaceAll("/", "-") + ".txt",
+          defaultPath: "Console " + formatDate() + ".txt",
           properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
           filters: [{ name: "Text files", extensions: ["txt"] }]
         })
@@ -2145,7 +2145,7 @@ function setupMenu() {
             dialog
               .showSaveDialog({
                 title: "Select export location for layout file",
-                defaultPath: "AdvantageScope " + new Date().toLocaleDateString().replaceAll("/", "-") + ".json",
+                defaultPath: "AdvantageScope " + formatDate() + ".json",
                 properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
                 filters: [{ name: "JSON files", extensions: ["json"] }]
               })

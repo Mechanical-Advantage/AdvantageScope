@@ -14,7 +14,7 @@ The line graph tab is unit-aware, which means that numeric values can be easily 
 
 AdvantageScope supports several methods to provide unit information about each field. Most common units are supported; for a complete list, check the popup menu when configuring [manual conversion](#manual-conversion).
 
-For (2) and (3), unit types are parsed using strings. AdvantageScope supports a wide variety of common names for each unit, including multiple variations (e.g. `ft` and `feet` are both OK). If a unit name is not being parsed as expected, please [open an issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues) to let us know.
+For (2) and (3), unit types are parsed using strings. AdvantageScope supports a wide variety of common names for each unit, including multiple variations (e.g. `ft` and `feet` are both OK). If a unit name is not being parsed as expected, please [open an issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 Not sure whether units are being parsed correctly? Check whether a unit type is displayed on the Y axis when adding a field to the line graph.

@@ -341,7 +341,7 @@ export default class Sidebar {
     }
     let title: string;
     if (this.fieldCount === 0) {
-      title = "No data available";
+      title = "Open a log or connect to view data";
     } else {
       let runtime = range[1] - range[0];
       let runtimeUnit = "s";

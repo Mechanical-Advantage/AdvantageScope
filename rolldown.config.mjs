@@ -64,17 +64,7 @@ function bundle(input, isMain, isXRClient, external = []) {
         {
           __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",
           __version__: packageJson.version,
-          __build_date__: new Date().toLocaleString("en-US", {
-            timeZone: "UTC",
-            hour12: false,
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            timeZoneName: "short"
-          }),
+          __build_date__: new Date().toISOString(),
           __copyright__: packageJson.build.copyright
         },
         {
