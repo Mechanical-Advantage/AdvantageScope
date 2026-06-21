@@ -196,7 +196,10 @@ export default class Tabs {
         ) {
           window.sendMainMessage("ask-rename-tab", {
             index: index,
-            name: this.tabList[index].title,
+            name:
+              this.tabList[index].title === ""
+                ? getDefaultTabTitle(this.tabList[index].type)
+                : this.tabList[index].title,
             rect: {
               x: rect.x,
               y: rect.y,
@@ -358,7 +361,12 @@ export default class Tabs {
             tab.renderer.render(command);
           }
           if (activeSatellite) {
-            let title = tab.type === TabType.Documentation ? "Documentation" : tab.title;
+            let title =
+              tab.type === TabType.Documentation
+                ? "Documentation"
+                : tab.title === ""
+                ? getDefaultTabTitle(tab.type)
+                : tab.title;
             window.sendMainMessage("update-satellite", {
               uuid: tab.controller.UUID,
               command: command,
@@ -584,7 +592,7 @@ export default class Tabs {
     let controlsHeightConfig = this.FIXED_CONTROL_HEIGHTS.get(type);
     this.tabList.splice(this.selectedTab + 1, 0, {
       type: type,
-      title: getDefaultTabTitle(type),
+      title: "",
       titleElement: titleElement,
       controlsElement: controlsElement,
       rendererElement: rendererElement,
@@ -691,7 +699,7 @@ export default class Tabs {
   renameTab(index: number, name: string) {
     let tab = this.tabList[index];
     tab.title = name;
-    tab.titleElement.innerText = getTabIcon(tab.type) + " " + name;
+    tab.titleElement.innerText = getTabIcon(tab.type) + " " + (name === "" ? getDefaultTabTitle(tab.type) : name);
   }
 
   /** Adjusts the locked range and unit conversion for an axis on the selected line graph. */
