@@ -1,6 +1,12 @@
+// Copyright (c) 2021-2026 Littleton Robotics
+// http://github.com/Mechanical-Advantage
+//
+// Use of this source code is governed by a BSD
+// license that can be found in the LICENSE file
+// at the root directory of this project.
+
 import i18next, { TFunction } from "i18next";
 import enUSTranslations from "./locales/en-US.yaml";
-import es419Translations from "./locales/es-419.yaml";
 
 /**
  * Initializes i18next with the specified language and returns the bound translation function.
@@ -10,8 +16,7 @@ export function setupI18n(lang: string): TFunction {
     lng: lang,
     fallbackLng: "en-US",
     resources: {
-      "en-US": { translation: enUSTranslations },
-      "es-419": { translation: es419Translations }
+      "en-US": { translation: enUSTranslations }
     }
   });
   return i18next.t.bind(i18next);

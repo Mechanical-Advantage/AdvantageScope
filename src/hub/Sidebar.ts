@@ -341,7 +341,7 @@ export default class Sidebar {
     }
     let title: string;
     if (this.fieldCount === 0) {
-      title = "Open a log or connect to view data";
+      title = t("hub.sidebarTitleDefault");
     } else {
       let runtime = range[1] - range[0];
       let runtimeUnit = "s";
@@ -353,15 +353,12 @@ export default class Sidebar {
         runtime /= 60;
         runtimeUnit = "h";
       }
-      title =
-        "\u200E" +
-        this.fieldCount.toLocaleString(undefined, { useGrouping: false }) +
-        " field" +
-        (this.fieldCount === 1 ? "" : "s") +
-        ", " +
-        formatNumberAuto(Math.floor(runtime)) +
-        runtimeUnit +
-        " runtime";
+      let fieldsText = t("hub.sidebar.fields", { count: this.fieldCount });
+      title = t("hub.sidebar.title", {
+        fields: fieldsText,
+        runtime: formatNumberAuto(Math.floor(runtime)),
+        unit: runtimeUnit
+      });
     }
     if (title !== this.SIDEBAR_TITLE.innerText) {
       this.SIDEBAR_TITLE.innerText = title;
@@ -580,11 +577,10 @@ export default class Sidebar {
         label.appendChild(typeWarningSpan);
         typeWarningSpan.innerHTML = " &#x26A0;";
         typeWarningSpan.style.cursor = "help";
-        const warningText =
-          "Values with conflicting types have been written to this field. Only values compatible with the initial type can be viewed and exported.";
+        const warningText = t("hub.sidebar.conflictMessage");
         typeWarningSpan.addEventListener("click", () => {
           window.sendMainMessage("alert", {
-            title: "Conflicting types",
+            title: t("hub.sidebar.conflictTitle"),
             content: warningText
           });
         });

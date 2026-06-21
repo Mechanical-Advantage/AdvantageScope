@@ -96,7 +96,7 @@ export default class LineGraphController implements TabController {
       (key: string, time: number) =>
         this.getPreview(key, time, this.leftNumericCommandCache, this.leftUnitCache, this.leftFilter)
     );
-    this.leftSourceList.setTitle("Left Axis");
+    this.leftSourceList.setTitle(t("sourceList.leftAxis"));
 
     this.rightSourceList = new SourceList(
       root.getElementsByClassName("line-graph-right")[0] as HTMLElement,
@@ -137,7 +137,7 @@ export default class LineGraphController implements TabController {
       (key: string, time: number) =>
         this.getPreview(key, time, this.rightNumericCommandCache, this.rightUnitCache, this.rightFilter)
     );
-    this.rightSourceList.setTitle("Right Axis");
+    this.rightSourceList.setTitle(t("sourceList.rightAxis"));
 
     this.discreteSourceList = new SourceList(
       root.getElementsByClassName("line-graph-discrete")[0] as HTMLElement,
@@ -214,52 +214,52 @@ export default class LineGraphController implements TabController {
   private updateAxisLabels() {
     let leftLabels: string[] = [];
     if (this.leftLockedRange !== null) {
-      leftLabels.push("Locked");
+      leftLabels.push(t("sourceList.locked"));
     }
     if (this.leftUnitConversion.preset !== null) {
       if (this.leftUnitConversion.preset.type !== null || this.leftUnitConversion.preset.factor !== 1) {
-        leftLabels.push("Converted");
+        leftLabels.push(t("sourceList.converted"));
       } else {
-        leftLabels.push("No Units");
+        leftLabels.push(t("sourceList.noUnits"));
       }
     }
     switch (this.leftFilter) {
       case LineGraphFilter.Differentiate:
-        leftLabels.push("Differentiated");
+        leftLabels.push(t("sourceList.differentiated"));
         break;
       case LineGraphFilter.Integrate:
-        leftLabels.push("Integrated");
+        leftLabels.push(t("sourceList.integrated"));
         break;
     }
     if (leftLabels.length > 0) {
-      this.leftSourceList.setTitle("Left Axis [" + leftLabels.join(", ") + "]");
+      this.leftSourceList.setTitle(t("sourceList.leftAxisWithModifiers", { modifiers: leftLabels.join(", ") }));
     } else {
-      this.leftSourceList.setTitle("Left Axis");
+      this.leftSourceList.setTitle(t("sourceList.leftAxis"));
     }
 
     let rightLabels: string[] = [];
     if (this.rightLockedRange !== null) {
-      rightLabels.push("Locked");
+      rightLabels.push(t("sourceList.locked"));
     }
     if (this.rightUnitConversion.preset !== null) {
       if (this.rightUnitConversion.preset.type !== null || this.rightUnitConversion.preset.factor !== 1) {
-        rightLabels.push("Converted");
+        rightLabels.push(t("sourceList.converted"));
       } else {
-        rightLabels.push("No Units");
+        rightLabels.push(t("sourceList.noUnits"));
       }
     }
     switch (this.rightFilter) {
       case LineGraphFilter.Differentiate:
-        rightLabels.push("Differentiated");
+        rightLabels.push(t("sourceList.differentiated"));
         break;
       case LineGraphFilter.Integrate:
-        rightLabels.push("Integrated");
+        rightLabels.push(t("sourceList.integrated"));
         break;
     }
     if (rightLabels.length > 0) {
-      this.rightSourceList.setTitle("Right Axis [" + rightLabels.join(", ") + "]");
+      this.rightSourceList.setTitle(t("sourceList.rightAxisWithModifiers", { modifiers: rightLabels.join(", ") }));
     } else {
-      this.rightSourceList.setTitle("Right Axis");
+      this.rightSourceList.setTitle(t("sourceList.rightAxis"));
     }
   }
 

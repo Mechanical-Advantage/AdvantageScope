@@ -114,7 +114,6 @@ export default (cliArgs) => {
             "http",
             "path",
             "ssh2",
-            "i18next",
             "download",
             "youtube-dl-exec",
             "tesseract.js",

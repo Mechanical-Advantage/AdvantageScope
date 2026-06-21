@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="prompts.css" />
     <script type="module" src="../bundles/uploadAsset.js"></script>
-    <title>Upload Asset &mdash; AdvantageScope</title>
+    <title data-i18n="uploadAsset.title"></title>
   </head>
 
   <body>
@@ -30,22 +30,19 @@
               id="asset"
               accept=".zip, application/zip"
               multiple
-              title="Choose zip file containing assets"
+              data-i18n="[title]uploadAsset.inputTitle"
             />
           </td>
         </tr>
         <tr>
-          <td class="info" id="progress">
-            Choose a zip file containing AdvantageScope assets.<br />Check the AdvantageScope Lite documentation for
-            more information about supported file formats.
-          </td>
+          <td class="info" id="progress" data-i18n="uploadAsset.progressDefault"></td>
         </tr>
       </tbody>
     </table>
-    <button id="exit" title="Cancel">
+    <button id="exit" data-i18n="[title]uploadAsset.cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm" title="Upload">
+    <button id="confirm" data-i18n="[title]uploadAsset.upload">
       <img src="symbols/checkmark.svg" />
     </button>
   </body>

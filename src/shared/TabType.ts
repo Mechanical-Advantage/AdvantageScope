@@ -53,29 +53,29 @@ export function getDefaultTabTitle(type: TabType): string {
     case TabType.Documentation:
       return "";
     case TabType.LineGraph:
-      return "Line Graph";
+      return t("tabs.lineGraph");
     case TabType.Field2d:
-      return "2D Field";
+      return t("tabs.field2d");
     case TabType.Field3d:
-      return "3D Field";
+      return t("tabs.field3d");
     case TabType.Table:
-      return "Table";
+      return t("tabs.table");
     case TabType.Console:
-      return "Console";
+      return t("tabs.console");
     case TabType.Statistics:
-      return "Statistics";
+      return t("tabs.statistics");
     case TabType.Video:
-      return "Video";
+      return t("tabs.video");
     case TabType.Joysticks:
-      return "Joysticks";
+      return t("tabs.joysticks");
     case TabType.Swerve:
-      return "Swerve";
+      return t("tabs.swerve");
     case TabType.Mechanism:
-      return "Mechanism";
+      return t("tabs.mechanism");
     case TabType.Points:
-      return "Points";
+      return t("tabs.points");
     case TabType.Metadata:
-      return "Metadata";
+      return t("tabs.metadata");
     default:
       return "";
   }

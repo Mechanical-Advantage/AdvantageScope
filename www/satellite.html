@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="satellite.css" />
     <link rel="stylesheet" href="renderers.css" />
     <script type="module" src="../bundles/satellite.js"></script>
-    <title>AdvantageScope</title>
+    <title data-i18n="satellite.title"></title>
   </head>
 
   <body class="satellite">
@@ -77,7 +77,7 @@
         <div class="data-table-key-container">
           <span></span>
         </div>
-        <button class="data-table-key-delete" title="Remove from view">
+        <button class="data-table-key-delete" data-i18n="[title]satellite.tableDelete">
           <img src="symbols/xmark.svg" />
         </button>
       </span>
@@ -87,8 +87,12 @@
           <tbody>
             <tr>
               <th>
-                <input class="data-table-jump-input" type="number" placeholder="0.000" title="Go to timestamp" />
-                <button class="data-table-jump-button" title="Go to timestamp">
+                <input
+                  class="data-table-jump-input"
+                  type="number"
+                  data-i18n="[placeholder]satellite.tableJumpPlaceholder;[title]satellite.tableJumpTitle"
+                />
+                <button class="data-table-jump-button" data-i18n="[title]satellite.tableJumpTitle">
                   <img src="symbols/arrow.down.to.line.svg" />
                 </button>
               </th>
@@ -109,22 +113,30 @@
           <tbody>
             <tr>
               <th>
-                <input class="console-table-jump-input" type="number" placeholder="0.000" title="Go to timestamp" />
-                <button class="console-table-jump-button" title="Go to timestamp">
+                <input
+                  class="console-table-jump-input"
+                  type="number"
+                  data-i18n="[placeholder]satellite.tableJumpPlaceholder;[title]satellite.tableJumpTitle"
+                />
+                <button class="console-table-jump-button" data-i18n="[title]satellite.tableJumpTitle">
                   <img src="symbols/arrow.down.to.line.svg" />
                 </button>
               </th>
               <th>
                 <div class="wide">
                   <span></span>
-                  <button class="console-table-key-delete" title="Remove from view">
+                  <button class="console-table-key-delete" data-i18n="[title]satellite.tableDelete">
                     <img src="symbols/xmark.svg" />
                   </button>
                 </div>
-                <button class="highlight-button" title="Highlight warning/error messages">
+                <button class="highlight-button" data-i18n="[title]satellite.consoleHighlight">
                   <img src="symbols/paintpalette.fill.svg" />
                 </button>
-                <input class="filter" type="search" placeholder="Filter" title="Filter console log" />
+                <input
+                  class="filter"
+                  type="search"
+                  data-i18n="[placeholder]satellite.consoleFilterPlaceholder;[title]satellite.consoleFilterTitle"
+                />
               </th>
             </tr>
           </tbody>
@@ -193,7 +205,7 @@
 
     <!-- Metadata -->
     <div id="renderer12" hidden>
-      <div class="tab-centered">No metadata found. Check the documentation for details on metadata publishing.</div>
+      <div class="tab-centered" data-i18n="satellite.metadataNone"></div>
       <div class="metadata-table-container" hidden>
         <table class="metadata-table">
           <tbody>

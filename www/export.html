@@ -17,64 +17,64 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="prompts.css" />
     <script type="module" src="../bundles/export.js"></script>
-    <title>Export &mdash; AdvantageScope</title>
+    <title data-i18n="export.title"></title>
   </head>
 
   <body>
     <table>
       <tbody>
         <tr>
-          <td class="label">Format</td>
+          <td class="label" data-i18n="export.format"></td>
           <td class="input">
-            <select id="format" title="Select export format">
-              <option value="csv-table">CSV (Table)</option>
-              <option value="csv-list">CSV (List)</option>
-              <option value="wpilog">WPILOG</option>
-              <option value="mcap">MCAP</option>
+            <select id="format" data-i18n="[title]export.formatSelectTitle">
+              <option value="csv-table" data-i18n="export.formatCsvTable"></option>
+              <option value="csv-list" data-i18n="export.formatCsvList"></option>
+              <option value="wpilog" data-i18n="export.formatWpilog"></option>
+              <option value="mcap" data-i18n="export.formatMcap"></option>
             </select>
           </td>
         </tr>
         <tr>
-          <td class="label">Timestamps</td>
+          <td class="label" data-i18n="export.timestamps"></td>
           <td class="input">
-            <select id="samplingMode" title="Select timestamp sampling mode">
-              <option value="changes">All Changes</option>
-              <option value="fixed">Fixed Period</option>
-              <option value="akit">AdvantageKit Cycles</option>
+            <select id="samplingMode" data-i18n="[title]export.samplingSelectTitle">
+              <option value="changes" data-i18n="export.samplingAllChanges"></option>
+              <option value="fixed" data-i18n="export.samplingFixedPeriod"></option>
+              <option value="akit" data-i18n="export.samplingAkit"></option>
             </select>
           </td>
         </tr>
         <tr>
-          <td class="label">Period (ms)</td>
+          <td class="label" data-i18n="export.period"></td>
           <td class="input">
-            <input type="number" id="samplingPeriod" value="20" title="Enter sampling period in milliseconds" />
+            <input type="number" id="samplingPeriod" value="20" data-i18n="[title]export.periodInputTitle" />
           </td>
         </tr>
         <tr>
-          <td class="label">Prefixes</td>
+          <td class="label" data-i18n="export.prefixes"></td>
           <td class="input">
-            <input type="text" id="prefixes" title="Enter field prefixes to export, separated by commas (optional)" />
+            <input type="text" id="prefixes" data-i18n="[title]export.prefixesInputTitle" />
           </td>
         </tr>
         <tr>
-          <td class="label">Field Set</td>
+          <td class="label" data-i18n="export.fieldSet"></td>
           <td class="input">
-            <select id="includeGenerated" title="Select whether to include generated fields in the export">
-              <option value="true">Include Generated</option>
-              <option value="false">Original Only</option>
+            <select id="includeGenerated" data-i18n="[title]export.fieldSetSelectTitle">
+              <option value="true" data-i18n="export.fieldSetIncludeGenerated"></option>
+              <option value="false" data-i18n="export.fieldSetOriginalOnly"></option>
             </select>
           </td>
         </tr>
       </tbody>
     </table>
-    <button id="exit" title="Cancel">
+    <button id="exit" data-i18n="[title]export.cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm" title="Export">
+    <button id="confirm" data-i18n="[title]export.export">
       <img src="symbols/arrow.down.svg" />
     </button>
     <div class="help-div">
-      <a href="#" title="Open export documentation">Help</a>
+      <a href="#" data-i18n="[title]export.helpTitle;sourceList.help"></a>
     </div>
   </body>
 </html>

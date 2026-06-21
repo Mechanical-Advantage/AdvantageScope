@@ -255,7 +255,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "alert":
       dialog.showMessageBox(window, {
         type: "info",
-        title: "Alert",
+        title: t("main.alert"),
         message: message.data.title,
         detail: message.data.content,
         icon: WINDOW_ICON
@@ -265,7 +265,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "error":
       dialog.showMessageBox(window, {
         type: "error",
-        title: "Error",
+        title: t("main.error"),
         message: message.data.title,
         detail: message.data.content,
         icon: WINDOW_ICON
@@ -328,11 +328,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 dialog
                   .showMessageBox(window, {
                     type: "info",
-                    title: "Alert",
-                    message: "Limited Signals Available",
-                    detail:
-                      "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details.",
-                    checkboxLabel: "Don't Show Again",
+                    title: t("main.alert"),
+                    message: t("main.limitedSignals"),
+                    detail: t("main.limitedSignalsDetail"),
+                    checkboxLabel: t("main.dontShowAgain"),
                     icon: WINDOW_ICON
                   })
                   .then((response) => {
@@ -385,12 +384,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                     dialog
                       .showMessageBox(window, {
                         type: "question",
-                        title: "Alert",
-                        message: "CTRE License Agreement",
-                        detail:
-                          "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
-                        checkboxLabel: "I Agree",
-                        buttons: ["View License", "OK"],
+                        title: t("main.alert"),
+                        message: t("main.ctreLicense"),
+                        detail: t("main.ctreLicenseDetail"),
+                        checkboxLabel: t("main.iAgree"),
+                        buttons: [t("main.viewLicense"), t("main.ok")],
                         defaultId: 1,
                         icon: WINDOW_ICON
                       })
@@ -417,7 +415,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Check for license and open file
           prefs = jsonfile.readFileSync(PREFS_FILENAME);
           if (!prefs.ctreLicenseAccepted) {
-            errorMessage = "Hoot log files cannot be decoded without agreeing to CTRE's end user license agreement.";
+            errorMessage = t("main.ctreLicenseRequired");
             completedCount++;
             sendIfReady();
           } else {
@@ -650,7 +648,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       playbackOptionsMenu.append(
         new MenuItem({
-          label: "Loop Visible Range",
+          label: t("menu.loopVisible"),
           type: "checkbox",
           checked: message.data.looping,
           click() {
@@ -828,7 +826,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         if (menu.items.length === 0) {
           menu.append(
             new MenuItem({
-              label: "No Options",
+              label: t("menu.noOptions"),
               enabled: false
             })
           );
@@ -841,7 +839,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         );
         menu.append(
           new MenuItem({
-            label: "Help",
+            label: t("menu.help"),
             click() {
               openSourceListHelp(window, config);
             }
@@ -860,7 +858,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const clearMenu = new Menu();
         clearMenu.append(
           new MenuItem({
-            label: "Clear All",
+            label: t("menu.clearAll"),
             click() {
               sendMessage(window, "source-list-clear-response", {
                 uuid: message.data.uuid
@@ -891,7 +889,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           // Discrete controls
           editAxisMenu.append(
             new MenuItem({
-              label: "Show Robot Mode",
+              label: t("menu.showRobotMode"),
               type: "checkbox",
               checked: showRobotMode,
               click() {
@@ -910,7 +908,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
           editAxisMenu.append(
             new MenuItem({
-              label: "Lock Axis",
+              label: t("menu.lockAxis"),
               type: "checkbox",
               checked: lockedRange !== null,
               click() {
@@ -925,7 +923,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           );
           editAxisMenu.append(
             new MenuItem({
-              label: "Edit Range...",
+              label: t("menu.editRange"),
               enabled: lockedRange !== null,
               click() {
                 createEditRangeWindow(window, lockedRange as [number, number], (newLockedRange) => {
@@ -948,7 +946,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             case "none":
               editAxisMenu.append(
                 new MenuItem({
-                  label: "(No Unit Metadata)",
+                  label: t("menu.noUnitMetadata"),
                   enabled: false
                 })
               );
@@ -957,7 +955,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             case "inconsistent":
               editAxisMenu.append(
                 new MenuItem({
-                  label: "(Inconsistent Units)",
+                  label: t("menu.inconsistentUnits"),
                   enabled: false
                 })
               );
@@ -1005,11 +1003,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             : [];
           editAxisMenu.append(
             new MenuItem({
-              label: "Manual Units",
+              label: t("menu.manualUnits"),
               type: "submenu",
               submenu: [
                 {
-                  label: "Edit Conversion...",
+                  label: t("menu.editConversion"),
                   click() {
                     createUnitConversionWindow(
                       window,
@@ -1030,7 +1028,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   }
                 },
                 {
-                  label: "Recent Presets",
+                  label: t("menu.recentPresets"),
                   type: "submenu",
                   enabled: recentUnits.length > 0,
                   submenu: recentUnits.map((preset) => {
@@ -1062,7 +1060,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   type: "separator"
                 },
                 {
-                  label: "Disable Automatic Units",
+                  label: t("menu.disableAutoUnits"),
                   type: "checkbox",
                   checked: unitConversion.preset !== null,
                   click() {
@@ -1081,7 +1079,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   }
                 },
                 {
-                  label: "Reset Conversion",
+                  label: t("menu.resetUnits"),
                   enabled:
                     unitConversion.preset !== null &&
                     JSON.stringify(unitConversion.preset) !== JSON.stringify(Units.NoopUnitConversion),
@@ -1106,7 +1104,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           );
           editAxisMenu.append(
             new MenuItem({
-              label: "Differentiate",
+              label: t("menu.differentiate"),
               type: "checkbox",
               checked: filter === LineGraphFilter.Differentiate,
               click() {
@@ -1122,7 +1120,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           );
           editAxisMenu.append(
             new MenuItem({
-              label: "Integrate",
+              label: t("menu.integrate"),
               type: "checkbox",
               checked: filter === LineGraphFilter.Integrate,
               click() {
@@ -1145,7 +1143,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         // Always include help and clear buttons
         editAxisMenu.append(
           new MenuItem({
-            label: "Help",
+            label: t("menu.help"),
             click() {
               openSourceListHelp(window, message.data.config);
             }
@@ -1153,7 +1151,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         );
         editAxisMenu.append(
           new MenuItem({
-            label: "Clear All",
+            label: t("menu.clearAll"),
             click() {
               sendMessage(window, "clear-axis", legend);
             }
@@ -1172,7 +1170,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       const renameTabMenu = new Menu();
       renameTabMenu.append(
         new MenuItem({
-          label: "Rename...",
+          label: t("menu.renameTab"),
           click() {
             createRenameTabWindow(window, message.data.name, (newName) => {
               sendMessage(window, "rename-tab", {
@@ -1219,10 +1217,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
     case "export-console":
       dialog
         .showSaveDialog(window, {
-          title: "Select export location for console log",
+          title: t("main.selectSaveConsole"),
           defaultPath: "Console " + formatDate() + ".txt",
           properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-          filters: [{ name: "Text files", extensions: ["txt"] }]
+          filters: [{ name: t("main.textFiles"), extensions: ["txt"] }]
         })
         .then((response) => {
           if (!response.canceled) {
@@ -1238,11 +1236,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         dialog
           .showMessageBox(window, {
             type: "info",
-            title: "Warning",
-            message: "Incomplete data for export",
-            detail:
-              'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.',
-            buttons: ["Continue", "Cancel"],
+            title: t("main.warning"),
+            message: t("main.incompleteExport"),
+            detail: t("main.incompleteExportDetail"),
+            buttons: [t("main.continue"), t("main.cancel")],
             icon: WINDOW_ICON
           })
           .then((value) => {
@@ -1301,10 +1298,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         dialog
           .showMessageBox(window, {
             type: "question",
-            title: "Alert",
-            message: "Stop XR Server?",
-            detail: "Closing this tab will stop the XR server and disconnect all devices.",
-            buttons: ["Don't Close", "Close"],
+            title: t("main.alert"),
+            message: t("main.stopXrServer"),
+            detail: t("main.stopXrServerTabDetail"),
+            buttons: [t("main.dontClose"), t("main.close")],
             defaultId: 1,
             icon: WINDOW_ICON
           })
@@ -1369,7 +1366,7 @@ function select3DCameraPopup(
   const cameraMenu = new Menu();
   cameraMenu.append(
     new MenuItem({
-      label: "Orbit Field",
+      label: t("menu.orbitField"),
       type: "checkbox",
       checked: selectedIndex === -1,
       click() {
@@ -1379,7 +1376,7 @@ function select3DCameraPopup(
   );
   cameraMenu.append(
     new MenuItem({
-      label: "Orbit Robot",
+      label: t("menu.orbitRobot"),
       type: "checkbox",
       checked: selectedIndex === -2,
       click() {
@@ -1389,11 +1386,11 @@ function select3DCameraPopup(
   );
   cameraMenu.append(
     new MenuItem({
-      label: isFTC ? "Driver View" : "Driver Station",
+      label: isFTC ? t("menu.driverView") : t("menu.driverStation"),
       submenu: isFTC
         ? [
             {
-              label: "Blue Left",
+              label: t("menu.blueLeft"),
               type: "checkbox",
               checked: selectedIndex === -4,
               click() {
@@ -1401,7 +1398,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Blue Right",
+              label: t("menu.blueRight"),
               type: "checkbox",
               checked: selectedIndex === -5,
               click() {
@@ -1409,7 +1406,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Red Left",
+              label: t("menu.redLeft"),
               type: "checkbox",
               checked: selectedIndex === -6,
               click() {
@@ -1417,7 +1414,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Red Right",
+              label: t("menu.redRight"),
               type: "checkbox",
               checked: selectedIndex === -7,
               click() {
@@ -1427,7 +1424,7 @@ function select3DCameraPopup(
           ]
         : [
             {
-              label: "Auto",
+              label: t("menu.auto"),
               type: "checkbox",
               checked: selectedIndex === -3,
               click() {
@@ -1435,7 +1432,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Blue 1",
+              label: t("menu.blue1"),
               type: "checkbox",
               checked: selectedIndex === -4,
               click() {
@@ -1443,7 +1440,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Blue 2",
+              label: t("menu.blue2"),
               type: "checkbox",
               checked: selectedIndex === -5,
               click() {
@@ -1451,7 +1448,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Blue 3",
+              label: t("menu.blue3"),
               type: "checkbox",
               checked: selectedIndex === -6,
               click() {
@@ -1459,7 +1456,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Red 1",
+              label: t("menu.red1"),
               type: "checkbox",
               checked: selectedIndex === -7,
               click() {
@@ -1467,7 +1464,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Red 2",
+              label: t("menu.red2"),
               type: "checkbox",
               checked: selectedIndex === -8,
               click() {
@@ -1475,7 +1472,7 @@ function select3DCameraPopup(
               }
             },
             {
-              label: "Red 3",
+              label: t("menu.red3"),
               type: "checkbox",
               checked: selectedIndex === -9,
               click() {
@@ -1487,7 +1484,7 @@ function select3DCameraPopup(
   );
   cameraMenu.append(
     new MenuItem({
-      label: "Set FOV...",
+      label: t("menu.setFov"),
       click() {
         createEditFovWindow(window, fov, (newFov) => {
           sendMessage(window, "edit-fov", newFov);
@@ -1646,8 +1643,8 @@ function downloadSave(files: string[]) {
   let firstExtension = path.extname(files[0]);
   if (files.length > 1 || firstExtension === "") {
     selectPromise = dialog.showOpenDialog(downloadWindow, {
-      title: "Select save location for robot logs",
-      buttonLabel: "Save",
+      title: t("main.selectSaveLogs"),
+      buttonLabel: t("main.save"),
       properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
     });
   } else {
@@ -1655,23 +1652,23 @@ function downloadSave(files: string[]) {
     let name = "";
     switch (extension) {
       case "wpilog":
-        name = "WPILib robot log";
+        name = t("main.extensionWpilog");
         break;
       case "wpilogxz":
-        name = "Compressed WPILib robot log";
+        name = t("main.extensionWpilogxz");
         break;
       case "rlog":
-        name = "Robot log";
+        name = t("main.extensionRlog");
         break;
       case "hoot":
-        name = "Hoot robot log";
+        name = t("main.extensionHoot");
         break;
       case "revlog":
-        name = "REV Robotics CAN log";
+        name = t("main.extensionRevlog");
         break;
     }
     selectPromise = dialog.showSaveDialog(downloadWindow, {
-      title: "Select save location for robot log",
+      title: t("main.selectSaveLog"),
       defaultPath: files[0],
       properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
       filters: [{ name: name, extensions: [extension] }]
@@ -1716,10 +1713,10 @@ function downloadSave(files: string[]) {
                   dialog
                     .showMessageBox(downloadWindow, {
                       type: "question",
-                      message: "Open log?",
-                      detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
+                      message: t("main.openLogQuery"),
+                      detail: t("main.openLogDetail", { name: path.basename(savePath) }),
                       icon: WINDOW_ICON,
-                      buttons: ["Open", "Skip"],
+                      buttons: [t("main.open"), t("main.skip")],
                       defaultId: 0
                     })
                     .then((result) => {
@@ -1833,14 +1830,14 @@ function setupMenu() {
       label: isMac ? "" : "App",
       submenu: [
         {
-          label: "About AdvantageScope",
+          label: t("menu.about"),
           click() {
             createAboutWindow();
           }
         },
         ...(isMac ? [{ type: "separator" as const }] : []),
         {
-          label: isMac ? "Settings..." : "Show Preferences...",
+          label: isMac ? t("menu.settings") : t("menu.preferencesEllipsis"),
           accelerator: "CmdOrCtrl+,",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -1851,7 +1848,7 @@ function setupMenu() {
         ...(DISTRIBUTION === Distribution.FRC6328
           ? [
               {
-                label: "Check for Updates...",
+                label: t("menu.updates"),
                 click() {
                   checkForUpdate(true);
                 }
@@ -1859,7 +1856,7 @@ function setupMenu() {
             ]
           : []),
         {
-          label: "Show Licenses...",
+          label: t("menu.licenses"),
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined) return;
@@ -1868,21 +1865,21 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Show Assets Folder",
+          label: t("menu.assetsFolder"),
           click() {
             shell.openPath(getUserAssetsPath());
           }
         },
         {
-          label: "Use Custom Assets Folder",
+          label: t("menu.customAssetsFolder"),
           type: "checkbox",
           async click(item) {
             const isCustom = item.checked;
             let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
             if (isCustom) {
               let result = await dialog.showOpenDialog({
-                title: "Select folder containing custom AdvantageScope assets",
-                buttonLabel: "Open",
+                title: t("main.selectAssetsFolder"),
+                buttonLabel: t("main.open"),
                 properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
               });
               if (result.filePaths.length >= 1) {
@@ -1898,27 +1895,27 @@ function setupMenu() {
           }
         },
         {
-          label: "Asset Download Status...",
+          label: t("menu.assetDownloadStatus"),
           click() {
             dialog.showMessageBox({
               type: "info",
-              title: "About",
-              message: "Asset Download Status",
+              title: t("main.about"),
+              message: t("main.assetDownloadStatusTitle"),
               detail: getAssetDownloadStatus(),
-              buttons: ["Close"],
+              buttons: [t("main.close")],
               icon: WINDOW_ICON
             });
           }
         },
         {
-          label: "Owlet Download Status...",
+          label: t("menu.owletDownloadStatus"),
           click() {
             dialog.showMessageBox({
               type: "info",
-              title: "About",
-              message: "Owlet Download Status",
+              title: t("main.about"),
+              message: t("main.owletDownloadStatusTitle"),
               detail: getOwletDownloadStatus(),
-              buttons: ["Close"],
+              buttons: [t("main.close")],
               icon: WINDOW_ICON
             });
           }
@@ -1938,22 +1935,22 @@ function setupMenu() {
       ]
     },
     {
-      label: "File",
+      label: t("menu.file"),
       submenu: [
         {
-          label: "Open Log(s)...",
+          label: t("menu.openLogs"),
           accelerator: "CmdOrCtrl+O",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
-                title: "Select the robot log file(s) to open",
-                message: "If multiple files are selected, timestamps will be aligned automatically",
+                title: t("main.selectOpenLogs"),
+                message: t("main.selectOpenLogsMessage"),
                 properties: ["openFile", "multiSelections"],
                 filters: [
                   {
-                    name: "Robot logs",
+                    name: t("main.robotLogs"),
                     extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
                 ]
@@ -1966,18 +1963,18 @@ function setupMenu() {
           }
         },
         {
-          label: "Add New Log(s)...",
+          label: t("menu.addNewLogs"),
           accelerator: "CmdOrCtrl+Shift+O",
           async click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
             if (window === undefined || !hubWindows.includes(window)) return;
             dialog
               .showOpenDialog(window, {
-                title: "Select the robot log file(s) to add to the current log",
+                title: t("main.selectAddLogs"),
                 properties: ["openFile", "multiSelections"],
                 filters: [
                   {
-                    name: "Robot logs",
+                    name: t("main.robotLogs"),
                     extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
                 ]
@@ -1990,11 +1987,11 @@ function setupMenu() {
           }
         },
         {
-          label: "Connect to Robot",
+          label: t("menu.connectRobot"),
           type: "submenu",
           submenu: [
             {
-              label: "Default",
+              label: t("menu.default"),
               accelerator: "CmdOrCtrl+K",
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
@@ -2023,11 +2020,11 @@ function setupMenu() {
           ]
         },
         {
-          label: "Connect to Simulator",
+          label: t("menu.connectSim"),
           type: "submenu",
           submenu: [
             {
-              label: "Default",
+              label: t("menu.default"),
               accelerator: "CmdOrCtrl+Shift+K",
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
@@ -2056,7 +2053,7 @@ function setupMenu() {
           ]
         },
         {
-          label: "Connect to Driver Station",
+          label: t("menu.connectDs"),
           accelerator: "CmdOrCtrl+Alt+Shift+K",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2065,7 +2062,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Download Logs...",
+          label: t("menu.downloadLogs"),
           accelerator: "CmdOrCtrl+D",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2075,7 +2072,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Use Systemcore USB Address",
+          label: t("menu.usbAddress"),
           type: "checkbox",
           checked: prefs.systemcoreStaticAddress === "usb",
           click(item) {
@@ -2086,7 +2083,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Use Systemcore Wi-Fi Address",
+          label: t("menu.wifiAddress"),
           type: "checkbox",
           checked: prefs.systemcoreStaticAddress === "wifi",
           click(item) {
@@ -2098,7 +2095,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Export Data...",
+          label: t("menu.exportData"),
           accelerator: "CmdOrCtrl+E",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2107,10 +2104,10 @@ function setupMenu() {
           }
         },
         {
-          label: "Publish NT Data",
+          label: t("menu.publishNt"),
           submenu: [
             {
-              label: "Connect to Robot",
+              label: t("menu.connectRobot"),
               accelerator: "CmdOrCtrl+P",
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
@@ -2119,7 +2116,7 @@ function setupMenu() {
               }
             },
             {
-              label: "Connect to Simulator",
+              label: t("menu.connectSim"),
               accelerator: "CmdOrCtrl+Shift+P",
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
@@ -2128,7 +2125,7 @@ function setupMenu() {
               }
             },
             {
-              label: "Stop Publishing",
+              label: t("menu.stopPublish"),
               accelerator: "CmdOrCtrl+Alt+P",
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
@@ -2140,14 +2137,14 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Export Layout...",
+          label: t("menu.exportLayout"),
           click() {
             dialog
               .showSaveDialog({
-                title: "Select export location for layout file",
+                title: t("main.selectExportLayout"),
                 defaultPath: "AdvantageScope " + formatDate() + ".json",
                 properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
-                filters: [{ name: "JSON files", extensions: ["json"] }]
+                filters: [{ name: t("main.jsonFiles"), extensions: ["json"] }]
               })
               .then((response) => {
                 if (!response.canceled) {
@@ -2159,13 +2156,13 @@ function setupMenu() {
           }
         },
         {
-          label: "Import Layout...",
+          label: t("menu.importLayout"),
           click() {
             dialog
               .showOpenDialog({
-                title: "Select one or more layout files to import",
+                title: t("main.selectImportLayout"),
                 properties: ["openFile", "multiSelections"],
-                filters: [{ name: "JSON files", extensions: ["json"] }]
+                filters: [{ name: t("main.jsonFiles"), extensions: ["json"] }]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -2184,11 +2181,9 @@ function setupMenu() {
                     const oldLayout = "layout" in data && Array.isArray(data.layout);
                     dialog.showMessageBox({
                       type: "error",
-                      title: "Error",
-                      message: "Failed to import layout",
-                      detail: oldLayout
-                        ? "The selected layout file uses an older format which is not compatible with the current version of AdvantageScope."
-                        : "The selected layout file was not a recognized format.",
+                      title: t("main.error"),
+                      message: t("main.failedImportLayout"),
+                      detail: oldLayout ? t("main.oldLayoutDetail") : t("main.invalidLayoutDetail"),
                       icon: WINDOW_ICON
                     });
                     return;
@@ -2216,11 +2211,10 @@ function setupMenu() {
                   if (app.isPackaged && data.version !== APP_VERSION) {
                     let result = dialog.showMessageBoxSync({
                       type: "warning",
-                      title: "Warning",
-                      message: "Version mismatch",
-                      detail:
-                        "The layout file was generated by a different version of AdvantageScope. Compatibility is not guaranteed.",
-                      buttons: ["Continue", "Cancel"],
+                      title: t("main.warning"),
+                      message: t("main.versionMismatch"),
+                      detail: t("main.versionMismatchDetail"),
+                      buttons: [t("main.continue"), t("main.cancel")],
                       icon: WINDOW_ICON
                     });
                     if (result !== 0) return;
@@ -2254,14 +2248,14 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "New Window",
+          label: t("menu.newWindow"),
           accelerator: "CommandOrControl+N",
           click() {
             createHubWindow();
           }
         },
         {
-          label: "Close Window",
+          label: t("menu.closeWindow"),
           accelerator: "Shift+CmdOrCtrl+W",
           click(_, window) {
             window?.close();
@@ -2282,7 +2276,7 @@ function setupMenu() {
         { role: "zoomOut" },
         { type: "separator" },
         {
-          label: "Zoom to Enabled Range",
+          label: t("menu.zoomEnabled"),
           accelerator: "CmdOrCtrl+\\",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2292,7 +2286,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Toggle Sidebar",
+          label: t("menu.toggleSidebar"),
           accelerator: "CmdOrCtrl+.",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2301,7 +2295,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Toggle Controls",
+          label: t("menu.toggleControls"),
           accelerator: "CmdOrCtrl+/",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2313,10 +2307,10 @@ function setupMenu() {
       ]
     },
     {
-      label: "Tabs",
+      label: t("menu.tabs"),
       submenu: [
         {
-          label: "New Tab",
+          label: t("menu.newTab"),
           submenu: getAllTabTypes()
             .slice(1)
             .map((tabType) => {
@@ -2332,7 +2326,7 @@ function setupMenu() {
             })
         },
         {
-          label: "New Tab (Shortcut)", // Hidden item to add keyboard shortcut
+          label: t("menu.newTabShortcut"), // Hidden item to add keyboard shortcut
           visible: false,
           accelerator: "CmdOrCtrl+T",
           click(_, baseWindow) {
@@ -2347,7 +2341,7 @@ function setupMenu() {
           }
         },
         {
-          label: "New Pop-Out",
+          label: t("menu.newPopOut"),
           accelerator: "CmdOrCtrl+Shift+T",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2357,7 +2351,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Previous Tab",
+          label: t("menu.prevTab"),
           accelerator: "CmdOrCtrl+Left",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2366,7 +2360,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Next Tab",
+          label: t("menu.nextTab"),
           accelerator: "CmdOrCtrl+Right",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2376,7 +2370,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Shift Left",
+          label: t("menu.shiftLeft"),
           accelerator: "CmdOrCtrl+[",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2385,7 +2379,7 @@ function setupMenu() {
           }
         },
         {
-          label: "Shift Right",
+          label: t("menu.shiftRight"),
           accelerator: "CmdOrCtrl+]",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2395,7 +2389,7 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Close Tab",
+          label: t("menu.closeTab"),
           accelerator: "CmdOrCtrl+W",
           click(_, baseWindow) {
             const window = baseWindow as BrowserWindow | undefined;
@@ -2412,11 +2406,11 @@ function setupMenu() {
     isMac
       ? { role: "windowMenu" }
       : {
-          label: "Window",
+          label: t("menu.window"),
           submenu: [
             { role: "minimize" },
             {
-              label: "Bring All to Front",
+              label: t("menu.bringFront"),
               accelerator: "Ctrl+B",
               click(_, window) {
                 hubWindows.forEach((window) => {
@@ -2444,31 +2438,31 @@ function setupMenu() {
       role: "help",
       submenu: [
         {
-          label: "Report a Problem",
+          label: t("menu.reportProblem"),
           click() {
             shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues");
           }
         },
         {
-          label: "Contact Us",
+          label: t("menu.contactUs"),
           click() {
             shell.openExternal("mailto:software@team6328.org");
           }
         },
         {
-          label: "GitHub Repository",
+          label: t("menu.githubRepo"),
           click() {
             shell.openExternal("https://github.com/" + GITHUB_REPOSITORY);
           }
         },
         {
-          label: "WPILib Documentation",
+          label: t("menu.wpilibDocs"),
           click() {
             shell.openExternal("https://docs.wpilib.org");
           }
         },
         {
-          label: "Littleton Robotics",
+          label: t("menu.littletonRobotics"),
           click() {
             shell.openExternal("https://littletonrobotics.org");
           }
@@ -2487,21 +2481,21 @@ function setupMenu() {
 /** Creates the "About AdvantageScope" window. */
 function createAboutWindow() {
   let detailLines: string[] = [];
-  detailLines.push("Version: " + (app.isPackaged ? app.getVersion() : "Development"));
-  detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328"));
-  detailLines.push("Platform: " + process.platform + "-" + process.arch);
-  detailLines.push("Build Date: " + BUILD_DATE);
-  detailLines.push("Electron: " + process.versions.electron);
-  detailLines.push("Chromium: " + process.versions.chrome);
-  detailLines.push("Node: " + process.versions.node);
+  detailLines.push(t("main.version") + ": " + (app.isPackaged ? app.getVersion() : "Development"));
+  detailLines.push(t("main.distribution") + ": " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328"));
+  detailLines.push(t("main.platform") + ": " + process.platform + "-" + process.arch);
+  detailLines.push(t("main.buildDate") + ": " + BUILD_DATE);
+  detailLines.push(t("main.electron") + ": " + process.versions.electron);
+  detailLines.push(t("main.chromium") + ": " + process.versions.chrome);
+  detailLines.push(t("main.node") + ": " + process.versions.node);
   let detail = detailLines.join("\n");
   dialog
     .showMessageBox({
       type: "info",
-      title: "About",
-      message: "AdvantageScope",
+      title: t("main.about"),
+      message: t("main.aboutMessage"),
       detail: COPYRIGHT + "\n\n" + detail,
-      buttons: ["Close", process.platform === "win32" ? "Copy and Close" : "Copy & Close"],
+      buttons: [t("main.close"), process.platform === "win32" ? t("main.copyCloseWin") : t("main.copyCloseMac")],
       defaultId: 0,
       icon: WINDOW_ICON
     })
@@ -2688,19 +2682,21 @@ function createHubWindow(state?: WindowState) {
     // Beta init
     if (isBeta()) {
       if (isBetaExpired()) {
+        let expiredDetail = "";
+        if (isAlpha()) {
+          expiredDetail =
+            DISTRIBUTION === Distribution.WPILib ? t("main.betaExpiredAlphaWpilib") : t("main.betaExpiredAlphaGithub");
+        } else {
+          expiredDetail =
+            DISTRIBUTION === Distribution.WPILib ? t("main.betaExpiredBetaWpilib") : t("main.betaExpiredBetaGithub");
+        }
         dialog
           .showMessageBox(window, {
             type: "info",
-            title: "Alert",
-            message: (isAlpha() ? "Alpha" : "Beta") + " is complete",
-            detail:
-              "The AdvantageScope " +
-              (isAlpha() ? "alpha" : "beta") +
-              " is complete. " +
-              (DISTRIBUTION === Distribution.WPILib
-                ? "Please update to the latest stable release of WPILib."
-                : "Please download the latest stable release of AdvantageScope from GitHub."),
-            buttons: ["Quit", "Ignore"],
+            title: t("main.alert"),
+            message: isAlpha() ? t("main.alphaComplete") : t("main.betaComplete"),
+            detail: expiredDetail,
+            buttons: [t("main.quit"), t("main.ignore")],
             defaultId: 0
           })
           .then((result) => {
@@ -2712,12 +2708,10 @@ function createHubWindow(state?: WindowState) {
         dialog
           .showMessageBox(window, {
             type: "info",
-            title: "Alert",
-            message: "Share feedback?",
-            detail: `Please take 30 seconds to share your experience using the AdvantageScope ${
-              isAlpha() ? "alpha" : "beta"
-            }. We'll keep this quick.`,
-            buttons: ["Open", "Not Now"],
+            title: t("main.alert"),
+            message: t("main.shareFeedbackQuery"),
+            detail: isAlpha() ? t("main.shareFeedbackAlphaDetail") : t("main.shareFeedbackBetaDetail"),
+            buttons: [t("main.open"), t("main.notNow")],
             defaultId: 0
           })
           .then((result) => {
@@ -2734,10 +2728,10 @@ function createHubWindow(state?: WindowState) {
     if (hubExportingIds.has(window.id)) {
       const choice = dialog.showMessageBoxSync(window, {
         type: "info",
-        title: "Warning",
-        message: "Export in progress",
-        detail: "Are you sure you want to close the window while an export is in progress? Data will NOT be saved.",
-        buttons: ["Don't Close", "Close"],
+        title: t("main.warning"),
+        message: t("main.exportInProgress"),
+        detail: t("main.exportInProgressDetail"),
+        buttons: [t("main.dontClose"), t("main.close")],
         defaultId: 0
       });
       if (choice === 0) event.preventDefault();
@@ -2992,18 +2986,18 @@ function createExportWindow(
         let fileFilters: FileFilter[] = [];
         switch (extension) {
           case "csv":
-            fileFilters = [{ name: "Comma-separated values", extensions: ["csv"] }];
+            fileFilters = [{ name: t("main.csvFiles"), extensions: ["csv"] }];
             break;
           case "wpilog":
-            fileFilters = [{ name: "WPILib robot log", extensions: ["wpilog"] }];
+            fileFilters = [{ name: t("main.extensionWpilog"), extensions: ["wpilog"] }];
             break;
           case "mcap":
-            fileFilters = [{ name: "MCAP log", extensions: ["mcap"] }];
+            fileFilters = [{ name: t("main.mcapFiles"), extensions: ["mcap"] }];
             break;
         }
         dialog
           .showSaveDialog(exportWindow, {
-            title: "Select export location for robot log",
+            title: t("main.selectSaveLog"),
             defaultPath: defaultPath,
             properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
             filters: fileFilters
@@ -3236,10 +3230,13 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
       if (newLang !== oldLang) {
         let result = dialog.showMessageBoxSync(prefsWindow!, {
           type: "info",
-          title: "Warning",
-          message: "Restart AdvantageScope?",
-          detail: "AdvantageScope needs to restart to switch languages.",
-          buttons: ["Cancel", "Restart"],
+          title: t("main.warning", { lng: newLang }) + " / " + t("main.warning"),
+          message: t("main.restartTitle", { lng: newLang }) + " / " + t("main.restartTitle"),
+          detail: t("main.restartLanguage", { lng: newLang }) + "\n\n" + t("main.restartLanguage"),
+          buttons: [
+            t("main.cancel", { lng: newLang }) + " / " + t("main.cancel"),
+            t("main.restart", { lng: newLang }) + " / " + t("main.restart")
+          ],
           defaultId: 1
         });
         if (result === 0) {
@@ -3508,7 +3505,7 @@ if (process.platform === "linux") {
 }
 
 app.whenReady().then(async () => {
-  global.t = setupI18n(app.getLocale());
+  t = setupI18n(app.getLocale());
 
   // Check preferences and set theme
   let prefs = DEFAULT_PREFS;

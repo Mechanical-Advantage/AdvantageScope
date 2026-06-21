@@ -17,24 +17,24 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="prompts.css" />
     <script type="module" src="../bundles/editFov.js"></script>
-    <title>Edit FOV &mdash; AdvantageScope</title>
+    <title data-i18n="editFov.title"></title>
   </head>
 
   <body>
     <table>
       <tbody>
         <tr>
-          <td class="label">Camera FOV</td>
+          <td class="label" data-i18n="editFov.label"></td>
           <td class="input">
-            <input type="number" id="fov" title="Set camera field of view (degrees)" />
+            <input type="number" id="fov" data-i18n="[title]editFov.inputTitle" />
           </td>
         </tr>
       </tbody>
     </table>
-    <button id="exit" title="Cancel">
+    <button id="exit" data-i18n="[title]editFov.cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm" title="Confirm">
+    <button id="confirm" data-i18n="[title]editFov.confirm">
       <img src="symbols/checkmark.svg" />
     </button>
   </body>

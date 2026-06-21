@@ -62,17 +62,17 @@ export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog
 export function getLiveModeName(mode: LiveMode): string {
   switch (mode) {
     case "nt4":
-      return "NetworkTables";
+      return t("liveModeName.nt4");
     case "nt4-akit":
-      return "NetworkTables (AdvantageKit)";
+      return t("liveModeName.nt4Akit");
     case "nt4-systemcore":
-      return "Systemcore Diagnostics";
+      return t("liveModeName.nt4Systemcore");
     case "phoenix":
-      return "Phoenix Diagnostics";
+      return t("liveModeName.phoenix");
     case "rlog":
-      return "RLOG Server";
+      return t("liveModeName.rlog");
     case "ftcdashboard":
-      return "FTC Dashboard";
+      return t("liveModeName.ftcdashboard");
   }
 }
 

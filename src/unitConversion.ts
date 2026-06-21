@@ -32,10 +32,10 @@ function updateUnitOptions() {
     TO_UNIT.disabled = true;
 
     let option = document.createElement("option");
-    option.innerText = "NA";
+    option.innerText = t("unitConversion.notAvailable");
     FROM_UNIT.appendChild(option);
     option = document.createElement("option");
-    option.innerText = "NA";
+    option.innerText = t("unitConversion.notAvailable");
     TO_UNIT.appendChild(option);
   } else {
     FROM_UNIT.disabled = false;
@@ -75,7 +75,7 @@ window.addEventListener("message", (event) => {
       // Add type options
       ["none", ...Object.keys(Units.UNIT_GROUPS)].forEach((unitType) => {
         let option = document.createElement("option");
-        option.innerText = unitType;
+        option.innerText = unitType === "none" ? t("unitConversion.none") : unitType;
         UNIT_TYPE.appendChild(option);
       });
       UNIT_TYPE.addEventListener("change", () => updateUnitOptions());
@@ -108,7 +108,7 @@ window.addEventListener("message", (event) => {
           factorSuccess = false;
         }
         if (!factorSuccess) {
-          alert("Failed to parse extra factor.");
+          alert(t("unitConversion.alertError"));
           return;
         }
 

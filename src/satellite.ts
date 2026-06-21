@@ -146,8 +146,12 @@ window.addEventListener("message", (event) => {
           let titleElement = document.getElementsByTagName("title")[0] as HTMLElement;
           let newTitle = message.data.title;
           if (newTitle !== title) {
+            const windowTitleSuffix = t("satellite.title");
             titleElement.innerHTML =
-              (type !== null ? getTabIcon(type) + " " : "") + htmlEncode(newTitle) + " &mdash; AdvantageScope";
+              (type !== null ? getTabIcon(type) + " " : "") +
+              htmlEncode(newTitle) +
+              " &mdash; " +
+              htmlEncode(windowTitleSuffix);
             title = newTitle;
           }
 

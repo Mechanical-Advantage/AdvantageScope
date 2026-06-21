@@ -48,13 +48,13 @@ window.addEventListener("message", (event) => {
       switch (platform) {
         case "linux":
           (THEME.children[0] as HTMLElement).hidden = true;
-          (THEME.children[1] as HTMLElement).innerText = "Light";
-          (THEME.children[2] as HTMLElement).innerText = "Dark";
+          (THEME.children[1] as HTMLElement).innerText = t("preferences.themeLightSimple");
+          (THEME.children[2] as HTMLElement).innerText = t("preferences.themeDarkSimple");
           break;
 
         case "lite":
           document.body.classList.add("lite");
-          FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
+          FIELD_3D_MODE_AC_LABEL.innerText = t("preferences.mode3dSimple");
           break;
       }
       LANGUAGE.value = oldPrefs.language;

@@ -14,8 +14,8 @@ import { WINDOW_ICON } from "./ElectronConstants";
 /** Checks for updates from GitHub and prompts the user when requested. */
 export default class UpdateChecker {
   private shouldPrompt = false;
-  private alertMessage = "Update check not complete";
-  private alertDetail = "Checking for update information. Please try again.";
+  private alertMessage = "";
+  private alertDetail = "";
   private alertOptions: string[] | null = null;
   private alertCancelId: number | null = null;
   private latestVersion = "";
@@ -28,8 +28,8 @@ export default class UpdateChecker {
       this.alertOptions = null;
       this.alertCancelId = null;
       this.alertDownloadUrl = null;
-      this.alertMessage = "Cannot check for updates";
-      this.alertDetail = "This app is running in a development environment.";
+      this.alertMessage = t("main.cannotCheckUpdates");
+      this.alertDetail = t("main.devEnvDetail");
       return;
     }
 
@@ -50,9 +50,8 @@ export default class UpdateChecker {
       this.alertOptions = null;
       this.alertCancelId = null;
       this.alertDownloadUrl = null;
-      this.alertMessage = "Cannot check for updates";
-      this.alertDetail =
-        "Failed to retrieve update information from GitHub. Please check your internet connection and try again.";
+      this.alertMessage = t("main.cannotCheckUpdates");
+      this.alertDetail = t("main.fetchUpdateFailedDetail");
       return;
     }
 
@@ -72,9 +71,8 @@ export default class UpdateChecker {
       this.alertOptions = null;
       this.alertCancelId = null;
       this.alertDownloadUrl = null;
-      this.alertMessage = "No update data available";
-      this.alertDetail =
-        "No update information was found for the installed version of AdvantageScope. Please check the AdvantageScope GitHub repository to download the latest release.";
+      this.alertMessage = t("main.noUpdateData");
+      this.alertDetail = t("main.noUpdateDataDetail");
       return;
     }
 
@@ -88,41 +86,36 @@ export default class UpdateChecker {
     // Update alert settings
     this.shouldPrompt = true;
     this.alertOptions =
-      process.platform === "darwin" ? ["Download", "Later", "View Changelog"] : ["Download", "View Changelog", "Later"];
+      process.platform === "darwin"
+        ? [t("main.download"), t("main.later"), t("main.viewChangelog")]
+        : [t("main.download"), t("main.viewChangelog"), t("main.later")];
     this.alertCancelId = process.platform === "darwin" ? 1 : 2;
     this.alertDownloadUrl = null;
 
     // Set appropriate prompt
     if (currentVersion !== this.latestVersion && translated) {
-      this.alertMessage = "Download latest native version?";
-      this.alertDetail =
-        "Version " +
-        this.latestVersion +
-        " is available (released " +
-        latestDateText +
-        "). You're currently running the x86 build of version " +
-        currentVersion +
-        " on an arm64 platform. Would you like to download the latest native version?";
+      this.alertMessage = t("main.downloadLatestNativeQuery");
+      this.alertDetail = t("main.downloadLatestNativeDetail", {
+        latestVersion: this.latestVersion,
+        latestDate: latestDateText,
+        currentVersion: currentVersion
+      });
     } else if (currentVersion !== this.latestVersion) {
-      this.alertMessage = "Download latest version?";
-      this.alertDetail =
-        "Version " +
-        this.latestVersion +
-        " is available (released " +
-        latestDateText +
-        "). You're currently running version " +
-        currentVersion +
-        ". Would you like to download the latest version?";
+      this.alertMessage = t("main.downloadLatestQuery");
+      this.alertDetail = t("main.downloadLatestDetail", {
+        latestVersion: this.latestVersion,
+        latestDate: latestDateText,
+        currentVersion: currentVersion
+      });
     } else if (translated) {
-      this.alertMessage = "Download native version?";
-      this.alertDetail =
-        "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?";
+      this.alertMessage = t("main.downloadNativeQuery");
+      this.alertDetail = t("main.downloadNativeDetail");
     } else {
       this.shouldPrompt = false;
       this.alertOptions = null;
       this.alertCancelId = null;
-      this.alertMessage = "No updates available";
-      this.alertDetail = "You're currently running version " + currentVersion + " (released " + latestDateText + ").";
+      this.alertMessage = t("main.noUpdatesAvailable");
+      this.alertDetail = t("main.upToDateDetail", { currentVersion: currentVersion, latestDate: latestDateText });
       return;
     }
 
@@ -159,9 +152,9 @@ export default class UpdateChecker {
     if (this.alertOptions === null || this.alertCancelId === null) {
       await dialog.showMessageBox({
         type: "info",
-        title: "Update Checker",
-        message: this.alertMessage,
-        detail: this.alertDetail,
+        title: t("main.updateChecker"),
+        message: this.alertMessage || t("main.updateCheckNotComplete"),
+        detail: this.alertDetail || t("main.updateCheckNotCompleteDetail"),
         icon: WINDOW_ICON
       });
       return;
@@ -170,7 +163,7 @@ export default class UpdateChecker {
     // Update prompt (question)
     let result = await dialog.showMessageBox({
       type: "question",
-      title: "Update Checker",
+      title: t("main.updateChecker"),
       message: this.alertMessage,
       detail: this.alertDetail,
       icon: WINDOW_ICON,
@@ -179,12 +172,12 @@ export default class UpdateChecker {
       cancelId: this.alertCancelId
     });
     let responseString = this.alertOptions[result.response];
-    if (responseString === "Download") {
+    if (responseString === t("main.download")) {
       if (this.alertDownloadUrl === null) {
         this.alertDownloadUrl = `https://github.com/${GITHUB_REPOSITORY}/releases/v${this.latestVersion}`;
       }
       await shell.openExternal(this.alertDownloadUrl);
-    } else if (responseString === "View Changelog") {
+    } else if (responseString === t("main.viewChangelog")) {
       await shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/releases");
     }
   }

@@ -1,1 +1,568 @@
-test: Welcome!
+betaWelcome:
+  title: "Welcome" # Window title of the welcome screen shown on first run
+  header: "Welcome 👋" # Welcome message header
+  betaRelease: "THIS IS A BETA RELEASE" # Warning shown only in beta releases
+  alphaRelease: "THIS IS AN ALPHA RELEASE" # Warning shown only in alpha releases
+  descDesktop: "Thanks for helping test and improve upcoming features in AdvantageScope! Please check the boxes below to acknowledge each statement before continuing." # Description shown to desktop users explaining the purpose of beta testing
+  descLite: "Thanks for helping test and improve AdvantageScope Lite! Please check the boxes below to acknowledge each statement before continuing." # Description shown to web/lite users explaining the purpose of beta testing
+  checkUnstable: "I understand that this is an unstable release, and I will encounter issues not present in stable releases." # Acknowledge instability
+  checkReport: "I agree to report any issues I encounter to the developers, which will help to improve future releases." # Acknowledge reporting agreement
+  checkFeedback: "I agree to provide feedback to the developers if asked about my experience using this release." # Acknowledge feedback agreement
+  helpDesktop: 'At any time, click the <span class="purple">purple icon</span> in the title bar to report an issue, request a feature, or ask a question.' # Desktop-specific instructions on how to report issues
+  helpLite: "You can report an issue, request a feature, or ask a question on the issues page of the AdvantageScope GitHub repository." # Lite-specific instructions on how to report issues
+  continue: "Continue" # Continue button text
+
+download:
+  title: "Download Logs" # Window title for the log downloader dialog
+  cancel: "Cancel" # Cancel download button tooltip
+  download: "Download" # Download button tooltip
+  errorNoFolder: "Failed to open log folder at <u>{{path}}</u>" # Error shown when the log folder does not exist on the robot
+  errorNotFound: "Robot not found at <u>{{address}}</u> (check connection)" # Error shown when connecting to the robot address fails
+  errorUnknownAddress: "Unknown address <u>{{address}}</u>" # Error shown when the robot hostname cannot be resolved
+  errorAuthFailed: "Failed to authenticate to robot at <u>{{address}}</u>" # Error shown when authentication to the robot fails
+  errorNotConnected: "Lost connection to robot" # Error shown when connection drops during download
+  errorUnknown: "Unknown error: {{error}}" # Fallback error message with raw error detail
+  statusPreparing: "Preparing" # Progress status when preparation is starting
+  statusFinished: "Finished" # Progress status when download finishes successfully
+  progressSimple: "{{current}}MB / {{total}}MB" # Log download progress detail simple
+  progressDetailed: "{{current}}MB / {{total}}MB ({{speed}}Mb/s, {{minutes}}m{{seconds}}s)" # Log download progress details with speed and time remaining
+  sizeLessThanMinimum: " (<0.1 MB)" # Size label for files under 0.1 MB
+  sizeValue: " ({{size}} MB)" # Size label for files with their size in MB
+  alertSelectLog: "Please select a log to download." # Dialog alert when clicking download without selecting files
+
+editFov:
+  title: "Edit FOV" # Window title for camera FOV configuration
+  label: "Camera FOV" # Field label for camera field of view input
+  inputTitle: "Set camera field of view (degrees)" # Input field tooltip for FOV
+  cancel: "Cancel" # Cancel button tooltip
+  confirm: "Confirm" # Confirm button tooltip
+
+editRange:
+  title: "Edit Range" # Window title for line graph axis range configuration
+  labelMax: "Maximum Value" # Field label for maximum range value
+  inputMaxTitle: "Maximum value" # Input field tooltip for maximum value
+  labelMin: "Minimum Value" # Field label for minimum range value
+  inputMinTitle: "Minimum value" # Input field tooltip for minimum value
+  cancel: "Cancel" # Cancel button tooltip
+  confirm: "Confirm" # Confirm button tooltip
+  alertError: "Maximum must be greater than minimum." # Dialog alert when minimum value is greater than or equal to maximum
+
+export:
+  title: "Export" # Window title for exporting logs
+  format: "Format" # Field label for export format
+  formatSelectTitle: "Select export format" # Dropdown tooltip for export format
+  formatCsvTable: "CSV (Table)" # Dropdown option for exporting as CSV table
+  formatCsvList: "CSV (List)" # Dropdown option for exporting as CSV list
+  formatWpilog: "WPILOG" # Dropdown option for exporting as WPILOG
+  formatMcap: "MCAP" # Dropdown option for exporting as MCAP
+  timestamps: "Timestamps" # Field label for timestamps sampling mode
+  samplingSelectTitle: "Select timestamp sampling mode" # Dropdown tooltip for timestamps sampling
+  samplingAllChanges: "All Changes" # Dropdown option for timestamp sampling on all changes
+  samplingFixedPeriod: "Fixed Period" # Dropdown option for timestamp sampling on fixed period
+  samplingAkit: "AdvantageKit Cycles" # Dropdown option for timestamp sampling matching AdvantageKit cycles
+  period: "Period (ms)" # Field label for sampling period in milliseconds
+  periodInputTitle: "Enter sampling period in milliseconds" # Input tooltip for sampling period
+  prefixes: "Prefixes" # Field label for prefixes input
+  prefixesInputTitle: "Enter field prefixes to export, separated by commas (optional)" # Input tooltip for prefixes
+  fieldSet: "Field Set" # Field label for field set inclusion
+  fieldSetSelectTitle: "Select whether to include generated fields in the export" # Dropdown tooltip for generated fields set
+  fieldSetIncludeGenerated: "Include Generated" # Dropdown option to include generated fields
+  fieldSetOriginalOnly: "Original Only" # Dropdown option to only export original fields
+  cancel: "Cancel" # Cancel button tooltip
+  export: "Export" # Export button tooltip
+  helpTitle: "Open export documentation" # Help link tooltip
+
+preferences:
+  title: "Preferences" # Window title for preferences window
+  language: "Language 🌐" # Field label for language selector
+  languageSelectTitle: "Select the application language" # Dropdown tooltip for language selector
+  languageSystemDefault: "System Default" # Dropdown option to use the system default language
+  theme: "Application Theme" # Field label for theme
+  themeSelectTitle: "Select the application theme" # Dropdown tooltip for theme
+  themeSystem: "Match System" # Dropdown option to match system theme
+  themeLight: "Always Light" # Dropdown option to always use light theme
+  themeDark: "Always Dark" # Dropdown option to always use dark theme
+  themeLightSimple: "Light" # Simple theme name for light (used in Linux options)
+  themeDarkSimple: "Dark" # Simple theme name for dark (used in Linux options)
+  coordinateSystem: "Coordinate System" # Field label for 3D coordinate system
+  coordinateSystemSelectTitle: "Select the 3D coordinate system origin and orientation" # Dropdown tooltip for coordinate system
+  coordinateSystemAutomatic: "Automatic" # Dropdown option for automatic coordinate system
+  coordinateSystemCenterRed: "Center/Red (Systemcore)" # Dropdown option for center/red coordinate system
+  coordinateSystemWallBlue: "Blue Wall (FRC 2023-2026)" # Dropdown option for blue wall coordinate system
+  coordinateSystemWallAlliance: "Alliance Wall (FRC 2022)" # Dropdown option for alliance wall coordinate system
+  coordinateSystemCenterRotated: "Center/Rotated (FTC Traditional)" # Dropdown option for center/rotated coordinate system
+  tbaApiKey: "TBA API Key" # Field label for The Blue Alliance API Key
+  tbaApiKeyInputTitle: "Enter your API key for The Blue Alliance" # Input tooltip for TBA API key
+  networkingTitle: "Networking Options" # Section heading for network preferences
+  networkingSubtitle: 'The live source can be changed in the "File" menu.' # Subtitle description for networking options
+  robotAddress: "Robot Address" # Field label for robot IP/hostname
+  robotAddressInputTitle: "Enter the IP address or hostname of the robot" # Input tooltip for robot address
+  robotLogPath: "Robot Log Path" # Field label for remote log file directory
+  robotLogPathInputTitle: "Enter the path to log files on the robot" # Input tooltip for robot log path
+  liveMode: "Live Mode" # Field label for live data subscription mode
+  liveModeSelectTitle: "Select live data subscription mode" # Dropdown tooltip for live mode
+  liveModeLowBandwidth: "Low Bandwidth" # Dropdown option for low bandwidth live mode
+  liveModeLogging: "Logging" # Dropdown option for logging live mode
+  discardLive: "Discard Live Data" # Field label for live data discard policy
+  discardLiveSelectTitle: "Select how long to retain live data before discarding" # Dropdown tooltip for live discard
+  discardLive1Min: "After 1 Minute" # Dropdown option for 1 minute live discard
+  discardLive5Min: "After 5 Minutes" # Dropdown option for 5 minutes live discard
+  discardLive20Min: "After 20 Minutes" # Dropdown option for 20 minutes live discard
+  discardLiveNever: "Never" # Dropdown option to never discard live data
+  ntPublish: "NT Publish Prefixes" # Field label for networktables publishing prefixes
+  ntPublishInputTitle: "Enter prefixes for NetworkTables publishing, separated by commas" # Input tooltip for NT publish prefixes
+  renderingTitle: "3D Rendering Options" # Section heading for 3D preferences
+  mode3dDefault: "3D Mode (Default)" # Field label for default 3D mode
+  mode3dDefaultSelectTitle: "Select the default 3D rendering mode" # Dropdown tooltip for default 3D mode
+  mode3dCinematic: "Cinematic" # Dropdown option for cinematic 3D rendering mode
+  mode3dStandard: "Standard" # Dropdown option for standard 3D rendering mode
+  mode3dLowPower: "Low Power" # Dropdown option for low power 3D rendering mode
+  mode3dBattery: "3D Mode (Battery)" # Field label for 3D mode on battery
+  mode3dBatterySelectTitle: "Select the 3D rendering mode when running on battery" # Dropdown tooltip for battery 3D mode
+  mode3dBatteryDefault: "Default" # Dropdown option to use default 3D mode on battery
+  mode3dSimple: "3D Mode" # Simple field label for 3D Mode (used in Lite)
+  antialiasing: "3D Antialiasing" # Field label for 3D antialiasing
+  antialiasingSelectTitle: "Toggle 3D antialiasing" # Dropdown tooltip for antialiasing
+  antialiasingOn: "On" # Dropdown option to turn antialiasing on
+  antialiasingOff: "Off" # Dropdown option to turn antialiasing off
+  cancel: "Cancel" # Cancel button tooltip
+  confirm: "Confirm" # Confirm button tooltip
+
+renameTab:
+  title: "Rename Tab" # Window title for renaming a tab
+  label: "Tab Name" # Field label for tab name
+  inputTitle: "Enter tab name" # Input tooltip for tab name
+  cancel: "Cancel" # Cancel button tooltip
+  confirm: "Confirm" # Confirm button tooltip
+
+satellite:
+  title: "AdvantageScope" # Default window title for satellite visualizer
+  metadataNone: "No metadata found. Check the documentation for details on metadata publishing." # Message shown when no metadata is present
+  tableDelete: "Remove from view" # Tooltip for table column delete button
+  tableJumpPlaceholder: "0.000" # Placeholder for table time jump input
+  tableJumpTitle: "Go to timestamp" # Tooltip for table time jump input and button
+  consoleFilterPlaceholder: "Filter" # Placeholder for console log filter input
+  consoleFilterTitle: "Filter console log" # Tooltip for console log filter input
+  consoleHighlight: "Highlight warning/error messages" # Tooltip for console log highlight button
+
+sourceListHelp:
+  title: "{{name}} Help — AdvantageScope" # Title template for help window
+  parentWarning: "Add to existing {{items}} item." # Instruction warning when parent field is required
+  or: "or" # Conjunction used when lists are formatted with commas
+  sources_one: "Source: {{list}}" # Singular label for field source type
+  sources_other: "Sources: {{list}}" # Plural label for field source types
+
+unitConversion:
+  title: "Unit Conversion" # Window title for unit conversion settings
+  unitType: "Unit Type" # Field label for unit type
+  unitTypeSelectTitle: "Select unit dimension type" # Dropdown tooltip for unit type
+  fromUnit: "From Unit" # Field label for source unit
+  fromUnitSelectTitle: "Select unit to convert from" # Dropdown tooltip for from unit
+  toUnit: "To Unit" # Field label for destination unit
+  toUnitSelectTitle: "Select unit to convert to" # Dropdown tooltip for to unit
+  extraFactor: "Extra Factor" # Field label for custom scale multiplier
+  extraFactorInputTitle: "Enter custom scale factor (multiplier)" # Input tooltip for custom factor
+  cancel: "Cancel" # Cancel button tooltip
+  confirm: "Confirm" # Confirm button tooltip
+  none: "None" # Dropdown choice name for no unit type
+  notAvailable: "NA" # Text option meaning not available
+  alertError: "Failed to parse extra factor." # Dialog alert when custom scale factor formula is invalid
+
+uploadAsset:
+  title: "Upload Asset" # Window title for asset uploader
+  inputTitle: "Choose zip file containing assets" # File input tooltip
+  progressDefault: "Choose a zip file containing AdvantageScope assets.<br />Check the AdvantageScope Lite documentation for more information about supported file formats." # Default instruction description on uploader screen
+  cancel: "Cancel" # Cancel button tooltip
+  upload: "Upload" # Upload button tooltip
+  progressUploading: "Uploading file..." # Progress status when file upload starts
+  progressFailed: "Upload failed" # Progress status when upload fails without status
+  progressFailedWithStatus: "Upload failed: {{status}}" # Progress status when upload fails with status
+
+xrControls:
+  title: "Scan the code to start AdvantageScope XR" # Section title on screen
+  scanInstructions: "No app installation is needed." # Information text for XR app
+  requirements: "Requires an iPhone or iPad connected to the same Wi-Fi network. Check the documentation for details." # Information description for XR app requirements
+  calibration: "Calibration" # Field label for calibration mode
+  calibrationSelectTitle: "Select calibration scale/mode" # Dropdown tooltip for calibration
+  calibrationMiniature: "Miniature" # Dropdown option for miniature scale
+  calibrationFullSizeBlue: "Full-Size (Blue Alliance)" # Dropdown option for full size blue alliance
+  calibrationFullSizeRed: "Full-Size (Red Alliance)" # Dropdown option for full size red alliance
+  streaming: "Streaming" # Field label for streaming mode
+  streamingSelectTitle: "Select streaming mode" # Dropdown tooltip for streaming
+  streamingSmooth: "Smooth" # Dropdown option for smooth streaming
+  streamingLowLatency: "Low Latency" # Dropdown option for low latency streaming
+  showFloor: "Show Floor" # Field label for floor carpet checkbox
+  showFloorTitle: "Toggle floor carpet visibility" # Tooltip for floor carpet checkbox
+  showField: "Show Field" # Field label for field model checkbox
+  showFieldTitle: "Toggle field visibility" # Tooltip for field model checkbox
+  showRobots: "Show Robots" # Field label for robots model checkbox
+  showRobotsTitle: "Toggle robot model visibility" # Tooltip for robots model checkbox
+
+tabs:
+  console: "Console" # Console tab name
+  joysticks: "Joysticks" # Joysticks tab name
+  lineGraph: "Line Graph" # Line Graph tab name
+  field2d: "2D Field" # 2D Field tab name
+  field3d: "3D Field" # 3D Field tab name
+  table: "Table" # Table tab name
+  statistics: "Statistics" # Statistics tab name
+  video: "Video" # Video tab name
+  swerve: "Swerve" # Swerve tab name
+  mechanism: "Mechanism" # Mechanism tab name
+  points: "Points" # Points tab name
+  metadata: "Metadata" # Metadata tab name
+
+  # Default layout for Driver Station distribution
+  communication: "Communication" # Communication tab name
+  power: "Power" # Power tab name
+  cpu: "CPU" # CPU tab name
+
+sourceList:
+  editSettings: "Edit settings" # Tooltip for sidebar source list edit settings button
+  clearFields: "Clear all fields" # Tooltip for sidebar source list trash button
+  help: "Help" # Tooltip for sidebar source list help button
+  editConfig: "Edit field configuration" # Tooltip for source list item configuration editor
+  removeField: "Remove field" # Tooltip for source list item delete button
+  noValues: "No values" # Fallback value description when no array values exist
+  segments_one: "1 segment" # Singular description for mechanism segments
+  segments_other: "{{count}} segments" # Plural description for mechanism segments
+  errors_one: "1 error" # Singular errors description
+  errors_other: "{{count}} errors" # Plural errors description
+  warnings_one: "1 warning" # Singular warnings description
+  warnings_other: "{{count}} warnings" # Plural warnings description
+  infos_one: "1 info" # Singular infos description
+  infos_other: "{{count}} infos" # Plural infos description
+  alerts: "{{errors}}, {{warnings}}, {{infos}}" # Combined alerts list description
+  values_one: "1 value" # Singular description for array values
+  values_other: "{{count}} values" # Plural description for array values
+  toggleVisibility: "Toggle field visibility" # Tooltip to hide/show a field
+  hideField: "Hide field" # Tooltip to hide a field
+  showField: "Show field" # Tooltip to show a field
+  leftAxis: "Left Axis" # Title for the left axis source list in the line graph
+  rightAxis: "Right Axis" # Title for the right axis source list in the line graph
+  leftAxisWithModifiers: "Left Axis [{{modifiers}}]" # Left axis title when modifiers like Locked/Converted are active
+  rightAxisWithModifiers: "Right Axis [{{modifiers}}]" # Right axis title when modifiers like Locked/Converted are active
+  locked: "Locked" # Modifier label shown when an axis range is locked
+  converted: "Converted" # Modifier label shown when unit conversion is active
+  noUnits: "No Units" # Modifier label shown when units are disabled
+  differentiated: "Differentiated" # Modifier label shown when differentiate filter is active
+  integrated: "Integrated" # Modifier label shown when integrate filter is active
+
+hub:
+  title: "AdvantageScope" # Main application window title
+  menuApp: "App" # App menu button
+  menuFile: "File" # File menu button
+  menuView: "View" # View menu button
+  menuTabs: "Tabs" # Tabs menu button
+  menuWindow: "Window" # Window menu button
+  menuHelp: "Help" # Help menu button
+  menuAppTitle: "App menu" # App menu button tooltip
+  menuFileTitle: "File menu" # File menu button tooltip
+  menuViewTitle: "View menu" # View menu button tooltip
+  menuTabsTitle: "Tabs menu" # Tabs menu button tooltip
+  menuWindowTitle: "Window menu" # Window menu button tooltip
+  menuHelpTitle: "Help menu" # Help menu button tooltip
+  updateAvailable: "Update available" # Tooltip for app update button
+  shareFeedback: "Share feedback" # Tooltip for developer feedback button
+  play: "Play" # Tooltip for playback play button
+  pause: "Pause" # Tooltip for playback pause button
+  lock: "Lock playback to real-time" # Tooltip for locking playback
+  unlock: "Unlock playback" # Tooltip for unlocking playback
+  close: "Close tab" # Tooltip for closing tab
+  popout: "Pop out tab" # Tooltip for popping out tab
+  addTab: "Add tab" # Tooltip for add tab button
+  sidebarTitleDefault: "Open a log or connect to view data" # Default sidebar title text
+  searchPlaceholder: "Search" # Sidebar search field placeholder
+  searchTitle: "Search fields" # Sidebar search field tooltip
+  tuningTitle: "Toggle tuning mode" # Sidebar tuning button tooltip
+  fieldLabel: "Field" # Field label for 2D/3D field select section
+  fieldSelectTitle: "Select field image" # Tooltip for 2D field selector dropdown
+  fieldFRC: "FRC Fields" # Optgroup label for FRC fields
+  fieldFTC: "FTC Fields" # Optgroup label for FTC fields
+  fieldSourceTitle: "Open field image source URL" # Field image source link tooltip
+  orientationLabel: "Orientation" # Label for 2D field orientation switcher
+  sizeLabel: "Size" # Label for 2D field robot size switcher
+  rotateClockwise: "Rotate field clockwise" # Tooltip for rotate clockwise button
+  rotateCounterClockwise: "Rotate field counter-clockwise" # Tooltip for rotate counter-clockwise button
+  sizeLarge: "Large robot size" # Tooltip for large size button
+  sizeMedium: "Medium robot size" # Tooltip for medium size button
+  sizeSmall: "Small robot size" # Tooltip for small size button
+  fieldSelectTitle3d: "Select field model" # Tooltip for 3D field selector dropdown
+  xrTitle: "XR" # Heading for XR options
+  xrStart: "Start XR streaming" # Tooltip for start XR button
+  timeRange: "Time Range" # Label for statistics time range dropdown
+  timeRangeSelectTitle: "Select time range" # Tooltip for statistics time range dropdown
+  timeRangeVisible: "Visible Range" # Dropdown option for visible time range
+  timeRangeFull: "Full Log" # Dropdown option for full log time range
+  timeRangeEnabled: "Enabled" # Dropdown option for robot enabled state time range
+  timeRangeAuto: "Auto" # Dropdown option for Autonomous mode time range
+  timeRangeTeleop: "Teleop" # Dropdown option for Teleoperated mode time range
+  timeRangeLive30: "Live: 30 Seconds" # Dropdown option for last 30s live data
+  timeRangeLive10: "Live: 10 Seconds" # Dropdown option for last 10s live data
+  dataRange: "Data Range" # Label for statistics histogram range inputs
+  dataRangeMin: "Minimum histogram value" # Tooltip for histogram min input
+  dataRangeMax: "Maximum histogram value" # Tooltip for histogram max input
+  stepSize: "Step Size" # Label for statistics step size input
+  stepSizeTitle: "Histogram step size" # Tooltip for histogram step size input
+  videoLocal: "Open local video file" # Tooltip for open local video file button
+  videoClipboard: "Paste YouTube video URL" # Tooltip for paste YouTube video URL button
+  videoTba: "Download match video from The Blue Alliance" # Tooltip for download from TBA button
+  videoSyncLock: "Lock video timeline synchronization" # Tooltip for locking video sync
+  videoSyncUnlock: "Unlock video timeline synchronization" # Tooltip for unlocking video sync
+  videoSliderTitle: "Video timeline" # Tooltip for video timeline range slider
+  videoGoBack5s: "Go back 5 seconds" # Tooltip for go back 5 seconds button
+  videoPrevFrame: "Previous frame" # Tooltip for previous frame button
+  videoPlay: "Play video" # Tooltip for play video button
+  videoPause: "Pause video" # Tooltip for pause video button
+  videoNextFrame: "Next frame" # Tooltip for next frame button
+  videoGoForward5s: "Go forward 5 seconds" # Tooltip for go forward 5 seconds button
+  joystickSelectTitle: "Select joystick data source" # Tooltip for joystick data source dropdown
+  maxSpeed: "Max Speed (m/s)" # Label for max speed setting
+  maxSpeedTitle: "Maximum speed (meters per second)" # Tooltip for max speed setting
+  frameSize: "Frame Size (m)" # Label for frame size settings
+  frameLengthTitle: "Robot frame length (meters)" # Tooltip for robot frame length input
+  frameWidthTitle: "Robot frame width (meters)" # Tooltip for robot frame width input
+  rotateModuleClockwise: "Rotate swerve module layout clockwise" # Tooltip for rotate module clockwise button
+  rotateModuleCounterClockwise: "Rotate swerve module layout counter-clockwise" # Tooltip for rotate module counter-clockwise button
+  pointsWidth: "Coordinate system width (pixels)" # Tooltip for points width input
+  pointsHeight: "Coordinate system height (pixels)" # Tooltip for points height input
+  pointsOrientation: "Coordinate system orientation" # Tooltip for points orientation dropdown
+  pointsOrigin: "Coordinate system origin" # Tooltip for points origin dropdown
+  metadataNone: "No metadata found. Check the documentation for details on metadata publishing." # Message shown when no metadata is present
+  source: "Source" # Label for video or field data source
+  dimensions: "Dimensions" # Heading for 2D points dimensions
+  exportConsoleLog: "Export console log" # Tooltip for exporting console logs
+  sidebar:
+    fields_one: "1 field" # Singular field count
+    fields_other: "{{count}} fields" # Plural fields count
+    title: "{{fields}}, {{runtime}}{{unit}} runtime" # Pluralized sidebar title format
+    conflictTitle: "Conflicting types" # Title for conflicting types alert
+    conflictMessage: "Values with conflicting types have been written to this field. Only values compatible with the initial type can be viewed and exported." # Description for conflicting types alert
+
+liveModeName:
+  nt4: "NetworkTables" # Name for NetworkTables live mode
+  nt4Akit: "NetworkTables (AdvantageKit)" # Name for AdvantageKit NetworkTables live mode
+  nt4Systemcore: "Systemcore Diagnostics" # Name for Systemcore Diagnostics live mode
+  phoenix: "Phoenix Diagnostics" # Name for Phoenix Diagnostics live mode
+  rlog: "RLOG Server" # Name for RLOG Server live mode
+  ftcdashboard: "FTC Dashboard" # Name for FTC Dashboard live mode
+
+menu:
+  about: "About AdvantageScope" # Menu option for about screen
+  aboutLite: "About AdvantageScope Lite" # Menu option for about screen in Lite
+  preferences: "Preferences" # Menu option for preferences
+  preferencesEllipsis: "Show Preferences..." # Menu option for preferences with ellipsis
+  preferencesShortcut: "Show Preferences ({{shortcut}})" # Menu option with shortcut in Lite
+  updates: "Check for Updates..." # Menu option to check for updates
+  licenses: "Show Licenses..." # Menu option to show open source licenses
+  assetsFolder: "Show Assets Folder" # Menu option to open assets folder
+  customAssetsFolder: "Use Custom Assets Folder" # Checkbox menu option to use custom assets folder
+  assetDownloadStatus: "Asset Download Status..." # Menu option for asset download status
+  owletDownloadStatus: "Owlet Download Status..." # Menu option for owlet download status
+  file: "File" # File menu heading
+  openLog: "Open Log ({{shortcut}})" # Open log menu item with shortcut in Lite
+  openLogs: "Open Log(s)..." # Menu option to open log files
+  addNewLogs: "Add New Log(s)..." # Menu option to merge additional log files
+  connectRobot: "Connect to Robot" # Menu option to connect live to robot
+  connectRobotShortcut: "Connect Live ({{shortcut}})" # Connect live menu option with shortcut in Lite
+  default: "Default" # Default sub-option name
+  connectSim: "Connect to Simulator" # Menu option to connect live to simulator
+  connectDs: "Connect to Driver Station" # Menu option to connect live to driver station
+  downloadLogs: "Download Logs..." # Menu option to download log files from robot
+  usbAddress: "Use Systemcore USB Address" # Checkbox menu option for systemcore USB address
+  wifiAddress: "Use Systemcore Wi-Fi Address" # Checkbox menu option for systemcore Wi-Fi address
+  exportData: "Export Data..." # Menu option to export log data
+  publishNt: "Publish NT Data" # Menu option for NetworkTables publishing submenu
+  stopPublish: "Stop Publishing" # Menu option to stop NT data publishing
+  exportLayout: "Export Layout..." # Menu option to export window layout
+  importLayout: "Import Layout..." # Menu option to import window layout
+  newWindow: "New Window" # Menu option to open a new window
+  closeWindow: "Close Window" # Menu option to close window
+  window: "Window" # Window menu heading
+  bringFront: "Bring All to Front" # Menu option to bring all windows to front
+  tabs: "Tabs" # Tabs menu heading
+  newTab: "New Tab" # Menu option to open a new tab
+  newPopOut: "New Pop-Out" # Menu option to pop out current tab
+  resetLayout: "Reset Layout" # Menu option to reset DS layout in Lite
+  prevTab: "Previous Tab" # Menu option to switch to previous tab
+  prevTabShortcut: "Previous Tab ({{shortcut}})" # Previous tab menu item with shortcut in Lite
+  nextTab: "Next Tab" # Menu option to switch to next tab
+  nextTabShortcut: "Next Tab ({{shortcut}})" # Next tab menu item with shortcut in Lite
+  shiftLeft: "Shift Left" # Menu option to shift tab left
+  shiftLeftShortcut: "Shift Left ({{shortcut}})" # Shift tab left menu item with shortcut in Lite
+  shiftRight: "Shift Right" # Menu option to shift tab right
+  shiftRightShortcut: "Shift Right ({{shortcut}})" # Shift tab right menu item with shortcut in Lite
+  closeTab: "Close Tab" # Menu option to close current tab
+  closeTabShortcut: "Close Tab ({{shortcut}})" # Close tab menu item with shortcut in Lite
+  reportProblem: "Report a Problem" # Menu option to report an issue
+  contactUs: "Contact Us" # Menu option to email support
+  githubRepo: "GitHub Repository" # Menu option to visit GitHub repo
+  advantagescopeDocs: "AdvantageScope Documentation" # Menu option to visit AdvantageScope docs
+  dsDocs: "Driver Station Documentation" # Menu option to visit Driver Station docs
+  wpilibDocs: "WPILib Documentation" # Menu option to visit WPILib docs
+  littletonRobotics: "Littleton Robotics" # Menu option to visit Littleton Robotics site
+  loopVisible: "Loop Visible Range" # Checkbox menu option to loop playback range
+  showRobotMode: "Show Robot Mode" # Checkbox menu option to show robot mode overlay
+  lockAxis: "Lock Axis" # Checkbox menu option to lock graph axis
+  editRange: "Edit Range" # Menu option to configure graph range
+  noUnitMetadata: "(No Unit Metadata)" # Description when no unit metadata is found
+  inconsistentUnits: "(Inconsistent Units)" # Description when merged fields have different units
+  manualUnits: "Manual Units" # Submenu option for custom unit conversion
+  editConversion: "Edit Conversion" # Menu option to configure custom unit conversion
+  disableAutoUnits: "Disable Automatic Units" # Menu option to disable auto unit conversion
+  resetUnits: "Reset Units" # Menu option to clear unit configuration
+  noOptions: "No Options" # Fallback menu option when no options are available
+  help: "Help" # Help menu option or button label
+  clearAll: "Clear All" # Menu option to clear all items in source list
+  defaultMode: "Default: {{mode}}" # Format template for default live mode submenu
+  setLanguage: "Set Language 🌐" # Set language menu option in Lite
+  setLiveMode: "Set Live Mode" # Set live mode menu option in Lite
+  zoomEnabled: "Zoom to Enabled Range" # Menu option to zoom graph to enabled range
+  toggleSidebar: "Toggle Sidebar" # Menu option to show/hide sidebar
+  toggleControls: "Toggle Controls" # Menu option to show/hide playback controls
+  settings: "Settings..." # Menu option for application settings
+  newTabShortcut: "New Tab (Shortcut)" # Hidden menu option for new tab shortcut
+  recentPresets: "— Recent Presets —" # Heading for recent presets list
+  differentiate: "Differentiate" # Menu option to differentiate graph data
+  integrate: "Integrate" # Menu option to integrate graph data
+  renameTab: "Rename Tab" # Menu option to rename tab
+  orbitField: "Orbit Field" # Menu option for 3D camera orbiting the field
+  orbitRobot: "Orbit Robot" # Menu option for 3D camera orbiting the robot
+  driverView: "Driver View" # Menu option for 3D camera driver view
+  driverStation: "Driver Station" # Menu option for 3D camera driver station view
+  blueLeft: "Blue Left" # Menu option for 3D camera blue left position
+  blueRight: "Blue Right" # Menu option for 3D camera blue right position
+  redLeft: "Red Left" # Menu option for 3D camera red left position
+  redRight: "Red Right" # Menu option for 3D camera red right position
+  auto: "Auto" # Menu option for automatic selection
+  blue1: "Blue 1" # Menu option for 3D camera blue 1 station
+  blue2: "Blue 2" # Menu option for 3D camera blue 2 station
+  blue3: "Blue 3" # Menu option for 3D camera blue 3 station
+  red1: "Red 1" # Menu option for 3D camera red 1 station
+  red2: "Red 2" # Menu option for 3D camera red 2 station
+  red3: "Red 3" # Menu option for 3D camera red 3 station
+  setFov: "Set FOV" # Menu option to edit camera FOV
+
+main:
+  reloadLanguageLite: "AdvantageScope Lite needs to reload to switch languages. Continue?" # Lite reload language message
+  reloadResetLanguageLite: "AdvantageScope Lite needs to reload and reset to switch languages. Continue?" # Lite reset layout and reload language message
+  restartLanguage: "AdvantageScope needs to restart to switch languages." # Restart language message
+  restartTitle: "Restart AdvantageScope?" # Title for restart confirmation dialog
+  cancel: "Cancel" # Cancel button label
+  restart: "Restart" # Restart button label
+  quit: "Quit" # Quit button label
+  ignore: "Ignore" # Ignore button label
+  selectAssetsFolder: "Select folder containing custom AdvantageScope assets" # File dialog title for custom assets
+  open: "Open" # Open button label
+  about: "About" # About dialog title
+  assetDownloadStatusTitle: "Asset Download Status" # Asset download status dialog title
+  owletDownloadStatusTitle: "Owlet Download Status" # Owlet download status dialog title
+  close: "Close" # Close button label
+  selectOpenLogs: "Select the robot log file(s) to open" # File dialog title for opening logs
+  selectOpenLogsMessage: "If multiple files are selected, timestamps will be aligned automatically" # File dialog message for opening logs
+  robotLogs: "Robot logs" # File extension filter name for robot logs
+  selectAddLogs: "Select the robot log file(s) to add to the current log" # File dialog title for merging logs
+  selectExportLayout: "Select export location for layout file" # Save dialog title for exporting layouts
+  jsonFiles: "JSON files" # File extension filter name for JSON layouts
+  selectImportLayout: "Select one or more layout files to import" # Open dialog title for importing layouts
+  error: "Error" # Error dialog title
+  failedImportLayout: "Failed to import layout" # Error message when layout import fails
+  oldLayoutDetail: "The selected layout file uses an older format which is not compatible with the current version of AdvantageScope." # Detail error for incompatible layout versions
+  invalidLayoutDetail: "The selected layout file was not a recognized format." # Detail error for unrecognized layouts
+  warning: "Warning" # Warning dialog title
+  versionMismatch: "Version mismatch" # Warning message when layout version differs from app version
+  versionMismatchDetail: "The layout file was generated by a different version of AdvantageScope. Compatibility is not guaranteed." # Detail warning for version mismatch
+  continue: "Continue" # Continue button label
+  exportInProgress: "Export in progress" # Warning message when closing while exporting
+  exportInProgressDetail: "Are you sure you want to close the window while an export is in progress? Data will NOT be saved." # Detail warning for closing while exporting
+  dontClose: "Don't Close" # Button label to keep window open
+  copyCloseWin: "Copy and Close" # Button label on Windows to copy details to clipboard and close
+  copyCloseMac: "Copy & Close" # Button label on macOS to copy details to clipboard and close
+  selectSaveLogs: "Select save location for robot logs" # Open dialog title for download save folder
+  save: "Save" # Save button label
+  extensionWpilog: "WPILib robot log" # File filter name for WPILib logs
+  extensionWpilogxz: "Compressed WPILib robot log" # File filter name for compressed WPILib logs
+  extensionRlog: "Robot log" # File filter name for RLOG logs
+  extensionHoot: "Hoot robot log" # File filter name for Hoot logs
+  extensionRevlog: "REV Robotics CAN log" # File filter name for REV CAN logs
+  csvFiles: "Comma-separated values" # File filter name for CSV export
+  mcapFiles: "MCAP log" # File filter name for MCAP export
+  selectSaveLog: "Select save location for robot log" # Save dialog title for download save file
+  alert: "Alert" # Alert dialog title
+  limitedSignals: "Limited Signals Available" # Warning message for limited Phoenix signals in a log file
+  limitedSignalsDetail: "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details." # Detail warning for Phoenix signals
+  dontShowAgain: "Don't Show Again" # Checkbox label to suppress future warnings
+  ctreLicense: "CTRE License Agreement" # CTRE License dialog message
+  ctreLicenseDetail: "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms." # CTRE License dialog detail explanation
+  iAgree: "I Agree" # Checkbox label to accept license agreement
+  viewLicense: "View License" # Button label to open the license page
+  ok: "OK" # Standard OK button label
+  stop: "Stop" # Stop button label (used in FFmpeg download dialog)
+  ctreLicenseRequired: "Hoot log files cannot be decoded without agreeing to CTRE's end user license agreement." # Error message when CTRE license is not accepted
+  selectSaveConsole: "Select export location for console log" # Save dialog title for exporting console log
+  textFiles: "Text files" # File extension filter name for text files
+  incompleteExport: "Incomplete data for export" # Warning title when exporting live data without Logging mode
+  incompleteExportDetail: 'Some fields will not be available in the exported data. To save all fields from the server, the "Logging" live mode must be selected. Check the AdvantageScope documentation for details.' # Warning detail for incomplete export
+  stopXrServer: "Stop XR Server?" # Question title for stopping the XR server
+  stopXrServerTabDetail: "Closing this tab will stop the XR server and disconnect all devices." # Detail warning when closing XR tab
+  stopXrServerWindowDetail: "Closing this window will stop the XR server and disconnect all devices." # Detail warning when closing XR window
+  openLogQuery: "Open log?" # Question title when download finishes
+  openLogDetail: 'Would you like to open the log file "{{name}}"?' # Question detail with downloaded filename
+  skip: "Skip" # Skip button label
+  aboutMessage: "AdvantageScope" # App name in About dialog
+  version: "Version" # Version field label in About details
+  distribution: "Distribution" # Distribution field label in About details
+  platform: "Platform" # Platform field label in About details
+  buildDate: "Build Date" # Build date field label in About details
+  electron: "Electron" # Electron version field label in About details
+  chromium: "Chromium" # Chromium version field label in About details
+  node: "Node" # Node version field label in About details
+  userAgent: "User Agent" # User Agent field label in About details
+  alphaComplete: "Alpha is complete" # Alpha expired warning message
+  betaComplete: "Beta is complete" # Beta expired warning message
+  betaExpiredAlphaWpilib: "The AdvantageScope alpha is complete. Please update to the latest stable release of WPILib." # Alpha expired detail for WPILib distribution
+  betaExpiredBetaWpilib: "The AdvantageScope beta is complete. Please update to the latest stable release of WPILib." # Beta expired detail for WPILib distribution
+  betaExpiredAlphaGithub: "The AdvantageScope alpha is complete. Please download the latest stable release of AdvantageScope from GitHub." # Alpha expired detail for GitHub distribution
+  betaExpiredBetaGithub: "The AdvantageScope beta is complete. Please download the latest stable release of AdvantageScope from GitHub." # Beta expired detail for GitHub distribution
+  shareFeedbackQuery: "Share feedback?" # Feedback survey prompt message
+  shareFeedbackAlphaDetail: "Please take 30 seconds to share your experience using the AdvantageScope alpha. We'll keep this quick." # Feedback details for alpha
+  shareFeedbackBetaDetail: "Please take 30 seconds to share your experience using the AdvantageScope beta. We'll keep this quick." # Feedback details for beta
+  notNow: "Not Now" # Dismiss button label for feedback prompt
+  betaExpiredLiteAlpha: "The AdvantageScope Lite alpha is complete. Please follow the instructions in the documentation to update to the latest stable release." # Lite alpha expired message
+  betaExpiredLiteBeta: "The AdvantageScope Lite beta is complete. Please follow the instructions in the documentation to update to the latest stable release." # Lite beta expired message
+  updateChecker: "Update Checker" # Title for the update checker dialog
+  download: "Download" # Download button label for update checker
+  updateCheckNotComplete: "Update check not complete" # Message when checking updates before completion
+  updateCheckNotCompleteDetail: "Checking for update information. Please try again." # Details for incomplete update check
+  cannotCheckUpdates: "Cannot check for updates" # Error message when update checker fails
+  devEnvDetail: "This app is running in a development environment." # Detail explanation for dev env update fail
+  fetchUpdateFailedDetail: "Failed to retrieve update information from GitHub. Please check your internet connection and try again." # Detail explanation for net fetch update fail
+  noUpdateData: "No update data available" # Error message when no release info is found
+  noUpdateDataDetail: "No update information was found for the installed version of AdvantageScope. Please check the AdvantageScope GitHub repository to download the latest release." # Detail explanation for no update data
+  later: "Later" # Later button label for update checker
+  viewChangelog: "View Changelog" # View Changelog button label for update checker
+  downloadLatestNativeQuery: "Download latest native version?" # Question for latest native version update
+  downloadLatestNativeDetail: "Version {{latestVersion}} is available (released {{latestDate}}). You're currently running the x86 build of version {{currentVersion}} on an arm64 platform. Would you like to download the latest native version?" # Detail for latest native version update
+  downloadLatestQuery: "Download latest version?" # Question for latest version update
+  downloadLatestDetail: "Version {{latestVersion}} is available (released {{latestDate}}). You're currently running version {{currentVersion}}. Would you like to download the latest version?" # Detail for latest version update
+  downloadNativeQuery: "Download native version?" # Question for native version update
+  downloadNativeDetail: "It looks like you're running the x86 version of this app on an arm64 platform. Would you like to download the native version?" # Detail for native version update
+  noUpdatesAvailable: "No updates available" # Message when app is up to date
+  upToDateDetail: "You're currently running version {{currentVersion}} (released {{latestDate}})." # Details when app is up to date
+  pythonRequired: "Python Installation Required" # Error title for Python missing
+  pythonRequiredDetail: "This feature requires Python 3.10 or above available in your system. Please install Python and try again." # Error detail for Python missing
+  ffmpegRequired: "FFmpeg Installation Required" # Error title for FFmpeg missing on Linux
+  ffmpegRequiredDetail: "FFmpeg is required to process videos files. Please install FFmpeg and add to the PATH." # Error detail for FFmpeg missing on Linux
+  downloadFfmpeg: "Download FFmpeg?" # Question title for downloading FFmpeg
+  downloadFfmpegDetail: 'FFmpeg is required to process videos files. Select "Continue" to download automatically, or install FFmpeg manually and add to the PATH.' # Question detail for downloading FFmpeg
+  failedProcessVideo: "Failed to process video" # Error title for FFmpeg processing failure
+  failedProcessVideoDetail: "There was a problem while processing the video. Please try again." # Error detail for FFmpeg processing failure
+  copyUrlToClipboard: "Copy URL to clipboard" # Error title for missing clipboard YouTube URL
+  copyUrlToClipboardDetail: "Please copy a YouTube URL to the clipboard, then try again." # Error detail for missing clipboard YouTube URL
+  youtubeDownloadFailed: "YouTube download failed" # Error title for YouTube download error
+  youtubeDownloadFailedDetail: "There was an error while trying to open the YouTube video. Note that this feature may fail unexpectedly due to changes on YouTube's servers. Please check for updates or choose a local video file instead." # Error detail for YouTube download error
+  tbaDownloadFailed: "TBA download failed" # Error title for TBA download error
+  tbaDownloadFailedDetail: "There was a problem finding the match video on The Blue Alliance. Please check your API key, or load the video using a YouTube URL or local file instead." # Error detail for TBA download error
+  selectVideoOpen: "Select a video to open" # Open dialog title for videos
+  videos: "Videos" # File filter name for videos
+

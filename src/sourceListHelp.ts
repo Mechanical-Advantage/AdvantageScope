@@ -25,7 +25,7 @@ window.addEventListener("message", (event) => {
       let config: SourceListConfig = message.data;
 
       // Update title
-      document.title = config.title + " Help \u2014 AdvantageScope";
+      document.title = t("sourceListHelp.title", { name: config.title });
 
       // Add items
       let usedColors: string[] = [];
@@ -155,7 +155,9 @@ function addItem(
     let parentWarning = document.createElement("div");
     parentWarning.classList.add("parent-warning");
     document.body.appendChild(parentWarning);
-    parentWarning.innerText = "Add to existing " + makeCommaList(parentTypes.map((str) => '"' + str + '"')) + " item.";
+    parentWarning.innerText = t("sourceListHelp.parentWarning", {
+      items: makeCommaList(parentTypes.map((str) => '"' + str + '"'))
+    });
   }
 
   if (options.length > 0) {
@@ -194,7 +196,10 @@ function addItem(
   let sourceTypesDiv = document.createElement("div");
   sourceTypesDiv.classList.add("source-types");
   document.body.appendChild(sourceTypesDiv);
-  sourceTypesDiv.innerText = "Source" + (sourceTypes.length === 1 ? "" : "s") + ": " + makeCommaList(sourceTypes);
+  sourceTypesDiv.innerText = t("sourceListHelp.sources", {
+    count: sourceTypes.length,
+    list: makeCommaList(sourceTypes)
+  });
 }
 
 function makeCommaList(values: string[]): string {
@@ -204,8 +209,8 @@ function makeCommaList(values: string[]): string {
     case 1:
       return values[0];
     case 2:
-      return values[0] + " or " + values[1];
+      return values[0] + " " + t("sourceListHelp.or") + " " + values[1];
     default:
-      return [...values.slice(0, -1), "or " + values[values.length - 1]].join(", ");
+      return [...values.slice(0, -1), t("sourceListHelp.or") + " " + values[values.length - 1]].join(", ");
   }
 }

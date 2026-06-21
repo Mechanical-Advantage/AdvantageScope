@@ -36,7 +36,7 @@ import { Units } from "../../shared/units";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
-import DEFAULT_DS_LAYOUT from "./dsLayout";
+import { getDefaultDsLayout } from "./dsLayout";
 import { LocalStorageKeys } from "./localStorageKeys";
 
 let HUB_FRAME: HTMLIFrameElement;
@@ -96,8 +96,8 @@ function getLocale(prefs: Preferences | null = null): string {
   return "en-US";
 }
 
-window.t = setupI18n(lang);
-translateHTML(document, window.t);
+t = setupI18n(lang);
+translateHTML(document, t);
 
 // Set up RTL layout
 try {
@@ -371,7 +371,7 @@ async function initHub() {
   if (stateStr !== null) {
     state = JSON.parse(stateStr);
   } else if (DISTRIBUTION === Distribution.LiteDS) {
-    state = DEFAULT_DS_LAYOUT;
+    state = getDefaultDsLayout();
   }
   if (state !== null) sendMessage(hubPort, "restore-state", state);
   sendMessage(hubPort, "show-when-ready");
@@ -487,15 +487,17 @@ async function handleHubMessage(message: NamedMessage) {
               if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
               menuItems = [
                 {
-                  content: "About AdvantageScope Lite",
+                  content: t("menu.aboutLite"),
                   callback() {
                     let detailLines: string[] = [];
-                    detailLines.push("Version: " + LITE_VERSION);
+                    detailLines.push(t("main.version") + ": " + LITE_VERSION);
                     detailLines.push(
-                      "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
+                      t("main.distribution") +
+                        ": " +
+                        (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
                     );
-                    detailLines.push("Build Date: " + BUILD_DATE);
-                    detailLines.push("User Agent: " + navigator.userAgent);
+                    detailLines.push(t("main.buildDate") + ": " + BUILD_DATE);
+                    detailLines.push(t("main.userAgent") + ": " + navigator.userAgent);
                     let detail = detailLines.join("\n");
                     window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
                   }
@@ -503,7 +505,7 @@ async function handleHubMessage(message: NamedMessage) {
                 ...(DISTRIBUTION === Distribution.LiteDS
                   ? [
                       {
-                        content: "Set Language 🌐",
+                        content: t("menu.setLanguage"),
                         items: [
                           { name: "System Default", value: "" },
                           { name: "English (US)", value: "en-US" },
@@ -528,11 +530,7 @@ async function handleHubMessage(message: NamedMessage) {
                               let newLang = getLocale(newPrefs);
                               let reload = false;
                               if (newLang !== lang) {
-                                if (
-                                  confirm(
-                                    "AdvantageScope Lite needs to reload and reset to switch languages. Continue?"
-                                  )
-                                ) {
+                                if (confirm(t("main.reloadResetLanguageLite"))) {
                                   reload = true;
                                 } else {
                                   return;
@@ -541,7 +539,7 @@ async function handleHubMessage(message: NamedMessage) {
                               localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(newPrefs));
                               sendMessage(hubPort, "set-preferences", newPrefs);
                               if (reload) {
-                                localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(DEFAULT_DS_LAYOUT));
+                                localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(getDefaultDsLayout()));
                                 location.reload();
                               }
                             }
@@ -551,14 +549,14 @@ async function handleHubMessage(message: NamedMessage) {
                     ]
                   : [
                       {
-                        content: `Show Preferences (\u21e7 ${modifier} ,)`,
+                        content: t("menu.preferencesShortcut", { shortcut: `\u21e7 ${modifier} ,` }),
                         callback() {
                           openPreferences();
                         }
                       }
                     ]),
                 {
-                  content: `Show Licenses`,
+                  content: t("menu.licenses"),
                   callback() {
                     openPopupWindow("www/licenses.html", [50, 75], "percent");
                   }
@@ -578,13 +576,13 @@ async function handleHubMessage(message: NamedMessage) {
               if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
               menuItems = [
                 {
-                  content: `Open Log (\u21e7 ${modifier} O)`,
+                  content: t("menu.openLog", { shortcut: `\u21e7 ${modifier} O` }),
                   callback() {
                     openDownload();
                   }
                 },
                 {
-                  content: `Connect Live (${modifier} K)`,
+                  content: t("menu.connectRobotShortcut", { shortcut: `${modifier} K` }),
                   callback() {
                     sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
                   }
@@ -593,7 +591,7 @@ async function handleHubMessage(message: NamedMessage) {
                   ? []
                   : [
                       {
-                        content: "Set Live Mode",
+                        content: t("menu.setLiveMode"),
                         items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
                           return {
                             content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
@@ -607,7 +605,7 @@ async function handleHubMessage(message: NamedMessage) {
                         })
                       },
                       {
-                        content: `Upload Asset`,
+                        content: t("uploadAsset.title"),
                         callback() {
                           openUploadAsset();
                         }
@@ -621,20 +619,20 @@ async function handleHubMessage(message: NamedMessage) {
             // View menu
             menuItems = [
               {
-                content: `Zoom to Enabled Range (${modifier} \\ )`,
+                content: t("menu.zoomEnabled") + ` (${modifier} \\ )`,
                 callback() {
                   sendMessage(hubPort, "zoom-enabled");
                 }
               },
               "-",
               {
-                content: `Toggle Sidebar (${modifier} . )`,
+                content: t("menu.toggleSidebar") + ` (${modifier} . )`,
                 callback() {
                   sendMessage(hubPort, "toggle-sidebar");
                 }
               },
               {
-                content: `Toggle Controls (${modifier} / )`,
+                content: t("menu.toggleControls") + ` (${modifier} / )`,
                 callback() {
                   sendMessage(hubPort, "toggle-controls");
                 }
@@ -646,7 +644,7 @@ async function handleHubMessage(message: NamedMessage) {
             // Tabs menu
             menuItems = [
               {
-                content: "New Tab",
+                content: t("menu.newTab"),
                 items: getAllTabTypes()
                   .slice(1)
                   .filter((tabType) => LITE_COMPATIBLE_TABS.includes(tabType))
@@ -664,42 +662,42 @@ async function handleHubMessage(message: NamedMessage) {
               ...((DISTRIBUTION === Distribution.LiteDS
                 ? [
                     {
-                      content: "Reset Layout",
+                      content: t("menu.resetLayout"),
                       callback() {
-                        sendMessage(hubPort, "restore-state", DEFAULT_DS_LAYOUT);
+                        sendMessage(hubPort, "restore-state", getDefaultDsLayout());
                       }
                     }
                   ]
                 : []) as (MenuItem | Submenu | "-")[]),
               "-",
               {
-                content: `Previous Tab (${modifier} \u2190 )`,
+                content: t("menu.prevTabShortcut", { shortcut: `${modifier} \u2190` }),
                 callback() {
                   sendMessage(hubPort, "move-tab", -1);
                 }
               },
               {
-                content: `Next Tab (${modifier} \u2192 )`,
+                content: t("menu.nextTabShortcut", { shortcut: `${modifier} \u2192` }),
                 callback() {
                   sendMessage(hubPort, "move-tab", 1);
                 }
               },
               "-",
               {
-                content: `Shift Left (${modifier} [ )`,
+                content: t("menu.shiftLeftShortcut", { shortcut: `${modifier} [` }),
                 callback() {
                   sendMessage(hubPort, "shift-tab", -1);
                 }
               },
               {
-                content: `Shift Right (${modifier} ] )`,
+                content: t("menu.shiftRightShortcut", { shortcut: `${modifier} ]` }),
                 callback() {
                   sendMessage(hubPort, "shift-tab", 1);
                 }
               },
               "-",
               {
-                content: `Close Tab (${modifier} E)`,
+                content: t("menu.closeTabShortcut", { shortcut: `${modifier} E` }),
                 callback() {
                   sendMessage(hubPort, "close-tab", false);
                 }
@@ -711,19 +709,19 @@ async function handleHubMessage(message: NamedMessage) {
             // Help menu
             menuItems = [
               {
-                content: "Report a Problem",
+                content: t("menu.reportProblem"),
                 callback() {
                   window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues", "_blank");
                 }
               },
               {
-                content: "Contact Us",
+                content: t("menu.contactUs"),
                 callback() {
                   window.open("mailto:software@team6328.org");
                 }
               },
               {
-                content: "GitHub Repository",
+                content: t("menu.githubRepo"),
                 callback() {
                   window.open("https://github.com/" + GITHUB_REPOSITORY, "_blank");
                 }
@@ -733,13 +731,13 @@ async function handleHubMessage(message: NamedMessage) {
                     // Add additional documentation links for the DS distribution (AdvantageScope docs are not bundled)
                     "-",
                     {
-                      content: "AdvantageScope Documentation",
+                      content: t("menu.advantagescopeDocs"),
                       callback() {
                         window.open("https://docs.advantagescope.org", "_blank");
                       }
                     },
                     {
-                      content: "Driver Station Documentation",
+                      content: t("menu.dsDocs"),
                       callback() {
                         window.open("https://github.com/wpilibsuite/FirstDriverStation-Public", "_blank");
                       }
@@ -747,14 +745,14 @@ async function handleHubMessage(message: NamedMessage) {
                   ]
                 : []) as (MenuItem | Submenu | "-")[]),
               {
-                content: "WPILib Documentation",
+                content: t("menu.wpilibDocs"),
                 callback() {
                   window.open("https://docs.wpilib.org", "_blank");
                 }
               },
               ...((DISTRIBUTION === Distribution.LiteDS ? ["-"] : []) as (MenuItem | Submenu | "-")[]),
               {
-                content: "Littleton Robotics",
+                content: t("menu.littletonRobotics"),
                 callback() {
                   window.open("https://littletonrobotics.org", "_blank");
                 }
@@ -783,7 +781,7 @@ async function handleHubMessage(message: NamedMessage) {
       });
       menuItems.push("-");
       menuItems.push({
-        content: (message.data.looping ? "\u2714 " : "") + "Loop Visible Range",
+        content: (message.data.looping ? "\u2714 " : "") + t("menu.loopVisible"),
         callback() {
           sendMessage(hubPort, "set-playback-options", { speed: message.data.speed, looping: !message.data.looping });
         }
@@ -939,14 +937,14 @@ async function handleHubMessage(message: NamedMessage) {
 
         if (menuItems.length === 0) {
           menuItems.push({
-            content: "No Options",
+            content: t("menu.noOptions"),
             className: "disabled"
           });
         }
 
         menuItems.push("-");
         menuItems.push({
-          content: "Help",
+          content: t("menu.help"),
           callback() {
             openSourceListHelp(config);
           }
@@ -958,7 +956,7 @@ async function handleHubMessage(message: NamedMessage) {
     case "source-list-clear-prompt":
       openMenu(message.data.rect, [
         {
-          content: "Clear All",
+          content: t("menu.clearAll"),
           callback() {
             sendMessage(hubPort, "source-list-clear-response", {
               uuid: message.data.uuid
@@ -966,6 +964,7 @@ async function handleHubMessage(message: NamedMessage) {
           }
         }
       ]);
+
       break;
 
     case "source-list-help":
@@ -981,7 +980,7 @@ async function handleHubMessage(message: NamedMessage) {
           let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           menuItems.push({
-            content: (showRobotMode ? "\u2714 " : "") + "Show Robot Mode",
+            content: (showRobotMode ? "\u2714 " : "") + t("menu.showRobotMode"),
             callback() {
               sendMessage(hubPort, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
             }
@@ -996,7 +995,7 @@ async function handleHubMessage(message: NamedMessage) {
           let filter: LineGraphFilter = message.data.filter;
 
           menuItems.push({
-            content: (lockedRange !== null ? "\u2714 " : "") + "Lock Axis",
+            content: (lockedRange !== null ? "\u2714 " : "") + t("menu.lockAxis"),
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
@@ -1007,7 +1006,7 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
           menuItems.push({
-            content: "Edit Range",
+            content: t("menu.editRange"),
             className: lockedRange !== null ? "" : "disabled",
             async callback() {
               let port = await openPopupWindow("www/editRange.html", [300, 108], "pixels", (message) => {
@@ -1039,14 +1038,14 @@ async function handleHubMessage(message: NamedMessage) {
           switch (autoUnitGroup) {
             case "none":
               menuItems.push({
-                content: "(No Unit Metadata)",
+                content: t("menu.noUnitMetadata"),
                 className: "disabled"
               });
               break;
 
             case "inconsistent":
               menuItems.push({
-                content: "(Inconsistent Units)",
+                content: t("menu.inconsistentUnits"),
                 className: "disabled"
               });
               break;
@@ -1058,7 +1057,7 @@ async function handleHubMessage(message: NamedMessage) {
                     (autoUnitSelected === unit ? "\u2714 " : "") +
                     unit.charAt(0).toUpperCase() +
                     unit.slice(1) +
-                    (unit === autoUnitDefault ? " [Default]" : ""),
+                    (unit === autoUnitDefault ? " [" + t("menu.default") + "]" : ""),
                   callback() {
                     unitConversion.autoTarget = unit;
                     unitConversion.preset = null;
@@ -1076,10 +1075,10 @@ async function handleHubMessage(message: NamedMessage) {
           let recentUnitsRaw = localStorage.getItem(LocalStorageKeys.RECENT_UNITS);
           let recentUnits: Units.UnitConversionPreset[] = recentUnitsRaw === null ? [] : JSON.parse(recentUnitsRaw);
           menuItems.push({
-            content: "Manual Units",
+            content: t("menu.manualUnits"),
             items: [
               {
-                content: "Edit Conversion",
+                content: t("menu.editConversion"),
                 async callback() {
                   let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
                     if (message === null) return;
@@ -1097,8 +1096,9 @@ async function handleHubMessage(message: NamedMessage) {
                   port.postMessage(unitConversion.preset ?? Units.NoopUnitConversion);
                 }
               },
+
               {
-                content: (unitConversion.preset !== null ? "\u2714 " : "") + "Disable Automatic Units",
+                content: (unitConversion.preset !== null ? "\u2714 " : "") + t("menu.disableAutoUnits"),
                 callback() {
                   unitConversion.autoTarget = null;
                   if (unitConversion.preset === null) {
@@ -1115,7 +1115,7 @@ async function handleHubMessage(message: NamedMessage) {
                 }
               },
               {
-                content: "Reset Units",
+                content: t("menu.resetUnits"),
                 className:
                   unitConversion.preset !== null &&
                   JSON.stringify(unitConversion.preset) !== JSON.stringify(Units.NoopUnitConversion)
@@ -1135,7 +1135,7 @@ async function handleHubMessage(message: NamedMessage) {
               ...(recentUnits.length > 0
                 ? [
                     {
-                      content: "\u2014 Recent Presets \u2014",
+                      content: t("menu.recentPresets"),
                       className: "disabled"
                     }
                   ]
@@ -1168,7 +1168,7 @@ async function handleHubMessage(message: NamedMessage) {
           });
           menuItems.push("-");
           menuItems.push({
-            content: (filter === LineGraphFilter.Differentiate ? "\u2714 " : "") + "Differentiate",
+            content: (filter === LineGraphFilter.Differentiate ? "\u2714 " : "") + t("menu.differentiate"),
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
@@ -1179,7 +1179,7 @@ async function handleHubMessage(message: NamedMessage) {
             }
           });
           menuItems.push({
-            content: (filter === LineGraphFilter.Integrate ? "\u2714 " : "") + "Integrate",
+            content: (filter === LineGraphFilter.Integrate ? "\u2714 " : "") + t("menu.integrate"),
             callback() {
               sendMessage(hubPort, "edit-axis", {
                 legend: legend,
@@ -1194,13 +1194,13 @@ async function handleHubMessage(message: NamedMessage) {
 
         // Always include help and clear buttons
         menuItems.push({
-          content: "Help",
+          content: t("menu.help"),
           callback() {
             openSourceListHelp(message.data.config);
           }
         });
         menuItems.push({
-          content: "Clear All",
+          content: t("menu.clearAll"),
           callback() {
             sendMessage(hubPort, "clear-axis", legend);
           }
@@ -1215,7 +1215,8 @@ async function handleHubMessage(message: NamedMessage) {
         const rect = message.data.rect;
         openMenu(rect, [
           {
-            content: "Rename Tab",
+            content: t("menu.renameTab"),
+
             async callback() {
               let port = await openPopupWindow("www/renameTab.html", [300, 81], "pixels", (renameMessage) => {
                 closePopupWindow();
@@ -1242,41 +1243,41 @@ async function handleHubMessage(message: NamedMessage) {
 
         let menuItems: (MenuItem | Submenu | "-")[] = [
           {
-            content: (selectedIndex === -1 ? "\u2714 " : "") + "Orbit Field",
+            content: (selectedIndex === -1 ? "\u2714 " : "") + t("menu.orbitField"),
             callback() {
               sendMessage(hubPort, "set-3d-camera", -1);
             }
           },
           {
-            content: (selectedIndex === -2 ? "\u2714 " : "") + "Orbit Robot",
+            content: (selectedIndex === -2 ? "\u2714 " : "") + t("menu.orbitRobot"),
             callback() {
               sendMessage(hubPort, "set-3d-camera", -2);
             }
           },
           {
-            content: isFTC ? "Driver View" : "Driver Station",
+            content: isFTC ? t("menu.driverView") : t("menu.driverStation"),
             items: isFTC
               ? [
                   {
-                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue Left",
+                    content: (selectedIndex === -4 ? "\u2714 " : "") + t("menu.blueLeft"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -4);
                     }
                   },
                   {
-                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue Right",
+                    content: (selectedIndex === -5 ? "\u2714 " : "") + t("menu.blueRight"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -5);
                     }
                   },
                   {
-                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Red Left",
+                    content: (selectedIndex === -6 ? "\u2714 " : "") + t("menu.redLeft"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -6);
                     }
                   },
                   {
-                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red Right",
+                    content: (selectedIndex === -7 ? "\u2714 " : "") + t("menu.redRight"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -7);
                     }
@@ -1284,43 +1285,43 @@ async function handleHubMessage(message: NamedMessage) {
                 ]
               : [
                   {
-                    content: (selectedIndex === -3 ? "\u2714 " : "") + "Auto",
+                    content: (selectedIndex === -3 ? "\u2714 " : "") + t("menu.auto"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -3);
                     }
                   },
                   {
-                    content: (selectedIndex === -4 ? "\u2714 " : "") + "Blue 1",
+                    content: (selectedIndex === -4 ? "\u2714 " : "") + t("menu.blue1"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -4);
                     }
                   },
                   {
-                    content: (selectedIndex === -5 ? "\u2714 " : "") + "Blue 2",
+                    content: (selectedIndex === -5 ? "\u2714 " : "") + t("menu.blue2"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -5);
                     }
                   },
                   {
-                    content: (selectedIndex === -6 ? "\u2714 " : "") + "Blue 3",
+                    content: (selectedIndex === -6 ? "\u2714 " : "") + t("menu.blue3"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -6);
                     }
                   },
                   {
-                    content: (selectedIndex === -7 ? "\u2714 " : "") + "Red 1",
+                    content: (selectedIndex === -7 ? "\u2714 " : "") + t("menu.red1"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -7);
                     }
                   },
                   {
-                    content: (selectedIndex === -8 ? "\u2714 " : "") + "Red 2",
+                    content: (selectedIndex === -8 ? "\u2714 " : "") + t("menu.red2"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -8);
                     }
                   },
                   {
-                    content: (selectedIndex === -9 ? "\u2714 " : "") + "Red 3",
+                    content: (selectedIndex === -9 ? "\u2714 " : "") + t("menu.red3"),
                     callback() {
                       sendMessage(hubPort, "set-3d-camera", -9);
                     }
@@ -1328,7 +1329,7 @@ async function handleHubMessage(message: NamedMessage) {
                 ]
           },
           {
-            content: "Set FOV",
+            content: t("menu.setFov"),
             async callback() {
               let port = await openPopupWindow("www/editFov.html", [300, 81], "pixels", (message) => {
                 closePopupWindow();
@@ -1497,13 +1498,7 @@ window.addEventListener("load", () => {
   // Beta init
   if (isBeta()) {
     if (isBetaExpired()) {
-      if (
-        confirm(
-          `The AdvantageScope Lite ${
-            isAlpha() ? "alpha" : "beta"
-          } is complete. Please follow the instructions in the documentation to update to the latest stable release.`
-        )
-      ) {
+      if (confirm(isAlpha() ? t("main.betaExpiredLiteAlpha") : t("main.betaExpiredLiteBeta"))) {
         // Redirect to Systemcore home page
         location.href = "http://" + location.hostname;
       }

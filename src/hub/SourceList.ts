@@ -89,7 +89,7 @@ export default class SourceList {
     this.EDIT_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.EDIT_BUTTON);
     this.EDIT_BUTTON.classList.add("edit");
-    this.EDIT_BUTTON.title = "Edit settings";
+    this.EDIT_BUTTON.title = t("sourceList.editSettings");
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
     editIcon.src = "symbols/ellipsis.svg";
@@ -98,7 +98,7 @@ export default class SourceList {
     this.CLEAR_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.CLEAR_BUTTON);
     this.CLEAR_BUTTON.classList.add("clear");
-    this.CLEAR_BUTTON.title = "Clear all fields";
+    this.CLEAR_BUTTON.title = t("sourceList.clearFields");
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
     clearButton.src = "symbols/trash.fill.svg";
@@ -107,7 +107,7 @@ export default class SourceList {
     this.HELP_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.HELP_BUTTON);
     this.HELP_BUTTON.classList.add("help");
-    this.HELP_BUTTON.title = "Help";
+    this.HELP_BUTTON.title = t("sourceList.help");
     let helpIcon = document.createElement("img");
     this.HELP_BUTTON.appendChild(helpIcon);
     helpIcon.src = "symbols/questionmark.circle.svg";
@@ -784,7 +784,7 @@ export default class SourceList {
 
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
-    typeButton.title = "Edit field configuration";
+    typeButton.title = t("sourceList.editConfig");
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     let promptType = (rect: ButtonRect) => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -899,7 +899,7 @@ export default class SourceList {
 
     // Remove button
     let removeButton = item.getElementsByClassName("remove")[0] as HTMLButtonElement;
-    removeButton.title = "Remove field";
+    removeButton.title = t("sourceList.removeField");
     let removeIcon = removeButton.firstElementChild as HTMLElement;
     removeButton.addEventListener("click", () => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -1020,7 +1020,7 @@ export default class SourceList {
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
     hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
-    let titleText = state.visible ? "Hide field" : "Show field";
+    let titleText = state.visible ? t("sourceList.hideField") : t("sourceList.showField");
     hideButton.title = titleText;
     if (state.visible) {
       item.classList.remove("hidden");
@@ -1196,12 +1196,9 @@ export default class SourceList {
               if (poseStrings.length === 1) {
                 text = poseStrings[0];
               } else if (poseStrings.length === 0) {
-                text = "No values";
+                text = t("sourceList.noValues");
               } else {
-                let countText =
-                  poseStrings.length.toLocaleString(undefined, { useGrouping: false }) +
-                  " value" +
-                  (poseStrings.length === 1 ? "" : "s");
+                let countText = t("sourceList.values", { count: poseStrings.length });
                 let arrayText = "[" + poseStrings.map((str) => "(" + str + ")").join(", ") + "]";
                 if (document.documentElement.dir === "rtl") {
                   text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
@@ -1214,7 +1211,7 @@ export default class SourceList {
             let mechanismState = getMechanismState(window.log, state.logKey, time);
             if (mechanismState !== null) {
               let count = mechanismState.lines.length;
-              text = count.toLocaleString(undefined, { useGrouping: false }) + " segment" + (count === 1 ? "" : "s");
+              text = t("sourceList.segments", { count: count });
             }
           } else if (structuredType === "Alerts") {
             let errorCount: number = getOrDefault(
@@ -1238,27 +1235,20 @@ export default class SourceList {
               time,
               []
             ).length;
-            text =
-              errorCount.toLocaleString(undefined, { useGrouping: false }) +
-              " error" +
-              (errorCount === 1 ? "" : "s") +
-              ", " +
-              warningCount.toLocaleString(undefined, { useGrouping: false }) +
-              " warning" +
-              (warningCount === 1 ? "" : "s") +
-              ", " +
-              infoCount.toLocaleString(undefined, { useGrouping: false }) +
-              " info" +
-              (infoCount === 1 ? "" : "s");
+            let errorsText = t("sourceList.errors", { count: errorCount });
+            let warningsText = t("sourceList.warnings", { count: warningCount });
+            let infosText = t("sourceList.infos", { count: infoCount });
+            text = t("sourceList.alerts", {
+              errors: errorsText,
+              warnings: warningsText,
+              infos: infosText
+            });
           } else if (
             logType === LoggableType.BooleanArray ||
             logType === LoggableType.NumberArray ||
             logType === LoggableType.StringArray
           ) {
-            let countText =
-              value.length.toLocaleString(undefined, { useGrouping: false }) +
-              " value" +
-              (value.length === 1 ? "" : "s");
+            let countText = t("sourceList.values", { count: value.length });
             let arrayText = getLogValueText(value, logType, true);
             if (document.documentElement.dir === "rtl") {
               text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";

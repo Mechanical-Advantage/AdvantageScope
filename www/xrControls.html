@@ -17,47 +17,46 @@
     <link rel="stylesheet" href="global.css" />
     <link rel="stylesheet" href="xrControls.css" />
     <script type="module" src="../bundles/xrControls.js"></script>
-    <title>XR Controls &mdash; AdvantageScope</title>
+    <title data-i18n="xrControls.title"></title>
   </head>
   <body>
     <div class="qr-container">
       <div class="qr"></div>
     </div>
     <div class="controls">
-      <div class="title">Scan the code to start AdvantageScope XR</div>
+      <div class="title" data-i18n="xrControls.title"></div>
       <div class="details">
-        <u>No app installation is needed.</u> Requires an iPhone or iPad connected to the same Wi-Fi network. Check the
-        documentation for details.
+        <u data-i18n="xrControls.scanInstructions"></u> <span data-i18n="xrControls.requirements"></span>
       </div>
       <table>
         <tr>
-          <td class="right">Calibration</td>
+          <td class="right" data-i18n="xrControls.calibration"></td>
           <td colspan="2">
-            <select name="calibration-mode" title="Select calibration scale/mode">
-              <option value="0">Miniature</option>
-              <option value="1">Full-Size (Blue Alliance)</option>
-              <option value="2">Full-Size (Red Alliance)</option>
+            <select name="calibration-mode" data-i18n="[title]xrControls.calibrationSelectTitle">
+              <option value="0" data-i18n="xrControls.calibrationMiniature"></option>
+              <option value="1" data-i18n="xrControls.calibrationFullSizeBlue"></option>
+              <option value="2" data-i18n="xrControls.calibrationFullSizeRed"></option>
             </select>
           </td>
         </tr>
         <tr>
-          <td class="right">Streaming</td>
+          <td class="right" data-i18n="xrControls.streaming"></td>
           <td colspan="2">
-            <select name="streaming-mode" title="Select streaming mode">
-              <option value="0">Smooth</option>
-              <option value="1">Low Latency</option>
+            <select name="streaming-mode" data-i18n="[title]xrControls.streamingSelectTitle">
+              <option value="0" data-i18n="xrControls.streamingSmooth"></option>
+              <option value="1" data-i18n="xrControls.streamingLowLatency"></option>
             </select>
           </td>
         </tr>
         <tr>
-          <td>Show Floor</td>
-          <td>Show Field</td>
-          <td>Show Robots</td>
+          <td data-i18n="xrControls.showFloor"></td>
+          <td data-i18n="xrControls.showField"></td>
+          <td data-i18n="xrControls.showRobots"></td>
         </tr>
         <tr>
-          <td><input name="show-floor" type="checkbox" title="Toggle floor carpet visibility" /></td>
-          <td><input name="show-field" type="checkbox" checked title="Toggle field visibility" /></td>
-          <td><input name="show-robots" type="checkbox" checked title="Toggle robot model visibility" /></td>
+          <td><input name="show-floor" type="checkbox" data-i18n="[title]xrControls.showFloorTitle" /></td>
+          <td><input name="show-field" type="checkbox" checked data-i18n="[title]xrControls.showFieldTitle" /></td>
+          <td><input name="show-robots" type="checkbox" checked data-i18n="[title]xrControls.showRobotsTitle" /></td>
         </tr>
       </table>
     </div>
