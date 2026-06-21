@@ -6,8 +6,16 @@
 // at the root directory of this project.
 
 import { contextBridge, ipcRenderer, webUtils } from "electron";
+import { setupI18n, translateHTML } from "./i18n/i18n";
 
-// Detect language direction
+// Set up locale
+const t = setupI18n(navigator.language);
+contextBridge.exposeInMainWorld("t", t);
+window.addEventListener("DOMContentLoaded", () => {
+  translateHTML(document, t);
+});
+
+// Set up RTL layout
 let isRtl = false;
 try {
   const locale = new Intl.Locale(navigator.language) as any;
@@ -22,7 +30,6 @@ try {
 } catch (e) {
   // Ignore
 }
-
 if (isRtl) {
   window.addEventListener("DOMContentLoaded", () => {
     document.documentElement.dir = "rtl";

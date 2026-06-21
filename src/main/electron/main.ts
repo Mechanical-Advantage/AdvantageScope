@@ -27,12 +27,14 @@ import {
   TouchBarSlider
 } from "electron";
 import fs from "fs";
+import { TFunction } from "i18next";
 import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
 import { Client, Stats } from "ssh2";
 import { Readable } from "stream";
+import { setupI18n } from "../../i18n/i18n";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
@@ -94,6 +96,11 @@ import {
 } from "./betaUtil";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
+
+// Global variables
+declare global {
+  var t: TFunction;
+}
 
 // Dynamically load lzma-native to handle platforms without prebuilt binaries
 let lzma: typeof import("lzma-native") | null = null;
@@ -3500,7 +3507,9 @@ if (process.platform === "linux") {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  global.t = setupI18n(app.getLocale());
+
   // Check preferences and set theme
   let prefs = DEFAULT_PREFS;
   if (process.platform === "linux") {

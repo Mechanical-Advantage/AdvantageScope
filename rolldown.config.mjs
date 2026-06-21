@@ -8,6 +8,7 @@
 import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
+import yaml from "@rollup/plugin-yaml";
 import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
@@ -39,6 +40,7 @@ function bundle(input, isMain, isXRClient, external = []) {
     },
     plugins: [
       typescript(),
+      yaml(),
       ...(isXRClient
         ? [
             getBabelOutputPlugin({
@@ -122,6 +124,7 @@ export default (cliArgs) => {
             "http",
             "path",
             "ssh2",
+            "i18next",
             "download",
             "youtube-dl-exec",
             "tesseract.js",

@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { TFunction } from "i18next";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import { HubState } from "../shared/HubState";
 import NamedMessage from "../shared/NamedMessage";
@@ -39,6 +40,7 @@ const FEEDBACK_BUTTON = document.getElementsByClassName("feedback")[0] as HTMLEl
 // Global variables
 declare global {
   interface Window {
+    t: TFunction;
     log: Log;
     preferences: Preferences | null;
     assets: AdvantageScopeAssets | null;

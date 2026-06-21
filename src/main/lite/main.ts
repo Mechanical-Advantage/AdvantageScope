@@ -5,7 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { TFunction } from "i18next";
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
+import { setupI18n, translateHTML } from "../../i18n/i18n";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
@@ -47,14 +49,20 @@ let MENU_ANCHOR: HTMLElement;
 let lang = getLocale();
 let isRtl = false;
 let hubPort: MessagePort | null = null;
+
+// Global variables
+declare global {
+  interface Window {
+    t: TFunction;
+  }
+}
+
 let popupMenu = new TinyPopupMenu();
 let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
 
-console.log(lang);
-
-// Check locale
+// Set up locale
 function getLocale(prefs: Preferences | null = null): string {
   if (prefs === null) {
     prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
@@ -88,7 +96,10 @@ function getLocale(prefs: Preferences | null = null): string {
   return "en-US";
 }
 
-// Check for RTL layout
+window.t = setupI18n(lang);
+translateHTML(document, window.t);
+
+// Set up RTL layout
 try {
   const locale = new Intl.Locale(lang) as any;
   const direction = locale.textInfo
@@ -161,6 +172,10 @@ function openPopupWindow(
       }
       POPUP_FRAME.hidden = false;
       HUB_FRAME.classList.add("background");
+      if (POPUP_FRAME.contentWindow) {
+        (POPUP_FRAME.contentWindow as any).t = window.t;
+        translateHTML(POPUP_FRAME.contentWindow.document, window.t);
+      }
 
       // Set up message ports
       const channel = new MessageChannel();
@@ -330,6 +345,12 @@ async function initHub() {
     handleHubMessage(event.data);
   });
   hubPort.start();
+
+  // Set up locale
+  if (HUB_FRAME.contentWindow) {
+    (HUB_FRAME.contentWindow as any).t = window.t;
+    translateHTML(HUB_FRAME.contentWindow.document, window.t);
+  }
 
   // Init messages
   sendMessage(hubPort, "set-version", {
