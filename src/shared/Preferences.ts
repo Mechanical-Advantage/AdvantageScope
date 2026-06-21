@@ -9,6 +9,7 @@ import { CoordinateSystem } from "./AdvantageScopeAssets";
 
 /** A set of application preferences. */
 export default interface Preferences {
+  language: string;
   theme: "light" | "dark" | "system";
   robotAddress: string;
   remotePath: string;
@@ -28,7 +29,10 @@ export default interface Preferences {
   systemcoreStaticAddress: "" | "usb" | "wifi";
 }
 
+export const SUPPORTED_LANGS = ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"];
+
 export const DEFAULT_PREFS: Preferences = {
+  language: "",
   theme: "system",
   robotAddress: "10.00.00.2",
   remotePath: "/U/logs",
@@ -77,6 +81,9 @@ export function getLiveModeName(mode: LiveMode): string {
 export const LITE_ALLOWED_LIVE_MODES: LiveMode[] = ["nt4", "nt4-akit", "nt4-systemcore", "ftcdashboard"];
 
 export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
+  if ("language" in newPrefs && typeof newPrefs.language === "string" && SUPPORTED_LANGS.includes(newPrefs.language)) {
+    basePrefs.language = newPrefs.language;
+  }
   if ("theme" in newPrefs && (newPrefs.theme === "light" || newPrefs.theme === "dark" || newPrefs.theme === "system")) {
     basePrefs.theme = newPrefs.theme;
   }

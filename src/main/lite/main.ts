@@ -13,13 +13,14 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import { HubState } from "../../shared/HubState";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import {
+import Preferences, {
   DEFAULT_PREFS,
   DEFAULT_PREFS_LITEDS,
   getLiveModeName,
   LITE_ALLOWED_LIVE_MODES,
   LiveMode,
-  mergePreferences
+  mergePreferences,
+  SUPPORTED_LANGS
 } from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import {
@@ -43,6 +44,7 @@ let TOO_SMALL_WARNING: HTMLElement;
 let MOBILE_WARNING: HTMLElement;
 let MENU_ANCHOR: HTMLElement;
 
+let lang = getLocale();
 let isRtl = false;
 let hubPort: MessagePort | null = null;
 let popupMenu = new TinyPopupMenu();
@@ -50,9 +52,45 @@ let assetsPromise: Promise<AdvantageScopeAssets>;
 let downloadInterval: number | null = null;
 let popupRequiresForceClose = false;
 
+console.log(lang);
+
+// Check locale
+function getLocale(prefs: Preferences | null = null): string {
+  if (prefs === null) {
+    prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
+    let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+    if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+  }
+  if (prefs !== null && prefs.language !== "") {
+    return prefs.language;
+  }
+
+  let preferredLangs = navigator.languages;
+  for (const lang of preferredLangs) {
+    if (SUPPORTED_LANGS.includes(lang)) {
+      return lang;
+    }
+    const primaryLang = lang.split("-")[0];
+    if (SUPPORTED_LANGS.includes(primaryLang)) {
+      return primaryLang;
+    }
+    switch (primaryLang) {
+      case "en":
+        return "en-US";
+      case "es":
+        return "es-419";
+      case "pt":
+        return "pt-BR";
+      case "zh":
+        return "zh-CN";
+    }
+  }
+  return "en-US";
+}
+
 // Check for RTL layout
 try {
-  const locale = new Intl.Locale(navigator.language) as any;
+  const locale = new Intl.Locale(lang) as any;
   const direction = locale.textInfo
     ? locale.textInfo.direction
     : locale.getTextInfo
@@ -61,9 +99,7 @@ try {
   if (direction === "rtl") {
     isRtl = true;
   }
-} catch (e) {
-  // Ignore
-}
+} catch (e) {}
 if (isRtl) {
   document.documentElement.dir = "rtl";
 }
@@ -198,13 +234,30 @@ function openSourceListHelp(config: SourceListConfig) {
 /** Opens a popup window for preferences. */
 function openPreferences() {
   const width = 400;
-  const optionRows = 7;
+  const optionRows = 8;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   openPopupWindow("www/preferences.html", [width, height], "pixels", (message) => {
+    // Check if language has changed
+    let newLang = getLocale(message);
+    let reload = false;
+    if (newLang !== lang) {
+      if (confirm("AdvantageScope Lite needs to reload to switch languages. Continue?")) {
+        reload = true;
+      } else {
+        return;
+      }
+    }
+
+    // Update preferences
     closePopupWindow();
     sendMessage(hubPort, "set-preferences", message);
     localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(message));
+
+    // Reload if needed
+    if (reload) {
+      location.reload();
+    }
   }).then((port) => {
     let prefs = DEFAULT_PREFS;
     let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
@@ -403,84 +456,144 @@ async function handleHubMessage(message: NamedMessage) {
         const modifier = navigator.userAgent.includes("Macintosh") ? "\u2318" : "Ctrl";
         switch (message.data.index) {
           case 0:
-            // App menu
-            menuItems = [
-              {
-                content: "About AdvantageScope Lite",
-                callback() {
-                  let detailLines: string[] = [];
-                  detailLines.push("Version: " + LITE_VERSION);
-                  detailLines.push(
-                    "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
-                  );
-                  detailLines.push("Build Date: " + BUILD_DATE);
-                  detailLines.push("User Agent: " + navigator.userAgent);
-                  let detail = detailLines.join("\n");
-                  window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
-                }
-              },
-              ...(DISTRIBUTION === Distribution.LiteDS
-                ? []
-                : [
-                    {
-                      content: `Show Preferences (\u21e7 ${modifier} ,)`,
-                      callback() {
-                        openPreferences();
+            {
+              // App menu
+              let prefs = Object.assign(
+                {},
+                DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS
+              );
+              let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+              if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+              menuItems = [
+                {
+                  content: "About AdvantageScope Lite",
+                  callback() {
+                    let detailLines: string[] = [];
+                    detailLines.push("Version: " + LITE_VERSION);
+                    detailLines.push(
+                      "Distribution: " + (DISTRIBUTION === Distribution.Lite ? "Lite" : "Lite (Driver Station)")
+                    );
+                    detailLines.push("Build Date: " + BUILD_DATE);
+                    detailLines.push("User Agent: " + navigator.userAgent);
+                    let detail = detailLines.join("\n");
+                    window.alert("======= AdvantageScope Lite =======\n" + COPYRIGHT + "\n\n" + detail);
+                  }
+                },
+                ...(DISTRIBUTION === Distribution.LiteDS
+                  ? [
+                      {
+                        content: "Set Language 🌐",
+                        items: [
+                          { name: "System Default", value: "" },
+                          { name: "English (US)", value: "en-US" },
+                          { name: "Español (Latinoamérica)", value: "es-419" },
+                          { name: "Français", value: "fr" },
+                          { name: "Português (Brasil)", value: "pt-BR" },
+                          { name: "Türkçe", value: "tr" },
+                          { name: "Românǎ", value: "ro" },
+                          { name: "עִברִית", value: "he" },
+                          { name: "Қазақша", value: "kk" },
+                          { name: "Русский", value: "ru" },
+                          { name: "العربية", value: "ar" },
+                          { name: "简体中文", value: "zh-CN" },
+                          { name: "繁體中文", value: "zh-TW" }
+                        ].map((langOpt) => {
+                          let isSelected = prefs.language === langOpt.value;
+                          return {
+                            content: (isSelected ? "\u2714 " : "") + langOpt.name,
+                            callback() {
+                              let newPrefs = Object.assign({}, prefs);
+                              newPrefs.language = langOpt.value;
+                              let newLang = getLocale(newPrefs);
+                              let reload = false;
+                              if (newLang !== lang) {
+                                if (
+                                  confirm(
+                                    "AdvantageScope Lite needs to reload and reset to switch languages. Continue?"
+                                  )
+                                ) {
+                                  reload = true;
+                                } else {
+                                  return;
+                                }
+                              }
+                              localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(newPrefs));
+                              sendMessage(hubPort, "set-preferences", newPrefs);
+                              if (reload) {
+                                localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(DEFAULT_DS_LAYOUT));
+                                location.reload();
+                              }
+                            }
+                          };
+                        })
                       }
-                    }
-                  ]),
-              {
-                content: `Show Licenses`,
-                callback() {
-                  openPopupWindow("www/licenses.html", [50, 75], "percent");
+                    ]
+                  : [
+                      {
+                        content: `Show Preferences (\u21e7 ${modifier} ,)`,
+                        callback() {
+                          openPreferences();
+                        }
+                      }
+                    ]),
+                {
+                  content: `Show Licenses`,
+                  callback() {
+                    openPopupWindow("www/licenses.html", [50, 75], "percent");
+                  }
                 }
-              }
-            ];
+              ];
+            }
             break;
 
           case 1:
-            // File menu
-            let prefs = DEFAULT_PREFS;
-            let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
-            if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
-            menuItems = [
-              {
-                content: `Open Log (\u21e7 ${modifier} O)`,
-                callback() {
-                  openDownload();
-                }
-              },
-              {
-                content: `Connect Live (${modifier} K)`,
-                callback() {
-                  sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
-                }
-              },
-              ...(DISTRIBUTION === Distribution.LiteDS
-                ? []
-                : [
-                    {
-                      content: "Set Live Mode",
-                      items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
-                        return {
-                          content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
-                          callback() {
-                            prefs.liveMode = liveMode;
-                            localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
-                            sendMessage(hubPort, "set-preferences", prefs);
-                            sendMessage(hubPort, "start-live", "robot");
-                          }
-                        };
-                      })
-                    },
-                    {
-                      content: `Upload Asset`,
-                      callback() {
-                        openUploadAsset();
+            {
+              // File menu
+              let prefs = Object.assign(
+                {},
+                DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS
+              );
+              let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+              if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+              menuItems = [
+                {
+                  content: `Open Log (\u21e7 ${modifier} O)`,
+                  callback() {
+                    openDownload();
+                  }
+                },
+                {
+                  content: `Connect Live (${modifier} K)`,
+                  callback() {
+                    sendMessage(hubPort, "start-live", DISTRIBUTION === Distribution.LiteDS ? "ds" : "robot");
+                  }
+                },
+                ...(DISTRIBUTION === Distribution.LiteDS
+                  ? []
+                  : [
+                      {
+                        content: "Set Live Mode",
+                        items: LITE_ALLOWED_LIVE_MODES.map((liveMode: LiveMode) => {
+                          return {
+                            content: (prefs.liveMode === liveMode ? "\u2714 " : "") + getLiveModeName(liveMode),
+                            callback() {
+                              prefs.liveMode = liveMode;
+                              localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+                              sendMessage(hubPort, "set-preferences", prefs);
+                              sendMessage(hubPort, "start-live", "robot");
+                            }
+                          };
+                        })
+                      },
+                      {
+                        content: `Upload Asset`,
+                        callback() {
+                          openUploadAsset();
+                        }
                       }
-                    }
-                  ])
-            ];
+                    ])
+              ];
+            }
             break;
 
           case 2:

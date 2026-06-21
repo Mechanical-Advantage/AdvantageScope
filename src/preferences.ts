@@ -8,6 +8,7 @@
 import { CoordinateSystem } from "./shared/AdvantageScopeAssets";
 import Preferences from "./shared/Preferences";
 
+const LANGUAGE = document.getElementById("language") as HTMLInputElement;
 const THEME = document.getElementById("theme") as HTMLInputElement;
 const ROBOT_ADDRESS = document.getElementById("robotAddress") as HTMLInputElement;
 const REMOTE_PATH = document.getElementById("remotePath") as HTMLInputElement;
@@ -56,6 +57,7 @@ window.addEventListener("message", (event) => {
           FIELD_3D_MODE_AC_LABEL.innerText = "3D Mode";
           break;
       }
+      LANGUAGE.value = oldPrefs.language;
       THEME.value = oldPrefs.theme;
       ROBOT_ADDRESS.value = oldPrefs.robotAddress;
       REMOTE_PATH.value = oldPrefs.remotePath;
@@ -99,6 +101,7 @@ window.addEventListener("message", (event) => {
           if (FIELD_3D_MODE_BATTERY.value === "low-power") field3dModeBattery = "low-power";
 
           let newPrefs: Preferences = {
+            language: LANGUAGE.value,
             theme: theme,
             robotAddress: ROBOT_ADDRESS.value,
             remotePath: REMOTE_PATH.value,

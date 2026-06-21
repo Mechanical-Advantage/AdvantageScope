@@ -39,7 +39,13 @@ import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
+import Preferences, {
+  DEFAULT_PREFS,
+  getLiveModeName,
+  LiveMode,
+  mergePreferences,
+  SUPPORTED_LANGS
+} from "../../shared/Preferences";
 import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
@@ -3187,7 +3193,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
   }
 
   const width = 400;
-  const optionRows = 12;
+  const optionRows = 13;
   const titleRows = 2;
   const height = optionRows * 27 + titleRows * 34 + 54;
   prefsWindow = new BrowserWindow({
@@ -3216,9 +3222,36 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
     prefsWindow?.webContents.postMessage("port", null, [port1]);
     port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
     port2.on("message", (event) => {
+      // Check if language has changed
+      let oldLang = app.getLocale();
+      let newLang = getLocale(event.data);
+      let restart = false;
+      if (newLang !== oldLang) {
+        let result = dialog.showMessageBoxSync(prefsWindow!, {
+          type: "info",
+          title: "Warning",
+          message: "Restart AdvantageScope?",
+          detail: "AdvantageScope needs to restart to switch languages.",
+          buttons: ["Cancel", "Restart"],
+          defaultId: 1
+        });
+        if (result === 0) {
+          return;
+        } else {
+          restart = true;
+        }
+      }
+
+      // Update preferences
       prefsWindow?.destroy();
       jsonfile.writeFileSync(PREFS_FILENAME, event.data);
       sendAllPreferences();
+
+      // Restart if needed
+      if (restart) {
+        app.relaunch();
+        app.quit();
+      }
     });
     prefsWindow?.on("blur", () => port2.postMessage({ isFocused: false }));
     prefsWindow?.on("focus", () => port2.postMessage({ isFocused: true }));
@@ -3417,6 +3450,40 @@ function checkForUpdate(alwaysPrompt: boolean) {
     }
   });
 }
+
+// Set locale
+function getLocale(prefs: Preferences | null = null): string {
+  if (prefs === null && fs.existsSync(PREFS_FILENAME)) {
+    prefs = DEFAULT_PREFS;
+    mergePreferences(prefs, jsonfile.readFileSync(PREFS_FILENAME));
+  }
+  if (prefs !== null && prefs.language !== "") {
+    return prefs.language;
+  }
+
+  let preferredLangs = app.getPreferredSystemLanguages();
+  for (const lang of preferredLangs) {
+    if (SUPPORTED_LANGS.includes(lang)) {
+      return lang;
+    }
+    const primaryLang = lang.split("-")[0];
+    if (SUPPORTED_LANGS.includes(primaryLang)) {
+      return primaryLang;
+    }
+    switch (primaryLang) {
+      case "en":
+        return "en-US";
+      case "es":
+        return "es-419";
+      case "pt":
+        return "pt-BR";
+      case "zh":
+        return "zh-CN";
+    }
+  }
+  return "en-US";
+}
+app.commandLine.appendSwitch("lang", getLocale());
 
 // "unsafe-eval" is required in the hub for protobufjs
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
