@@ -155,7 +155,7 @@ export function applyKeyPrefix(prefix: string, key: string): string {
   }
 }
 
-export function getLogValueText(value: any, type: LoggableType): string {
+export function getLogValueText(value: any, type: LoggableType, localized: boolean = false): string {
   if (value === null) {
     return "null";
   } else if (type === LoggableType.Raw) {
@@ -172,7 +172,20 @@ export function getLogValueText(value: any, type: LoggableType): string {
     if (limitedArray.length < value.length) {
       limitedArray.push("...");
     }
-    return "[" + limitedArray.map((x) => JSON.stringify(x)).join(", ") + "]";
+    return (
+      "[" +
+      limitedArray
+        .map((x) => {
+          if (localized && typeof x === "number") {
+            return x.toLocaleString(undefined, { useGrouping: false });
+          }
+          return JSON.stringify(x);
+        })
+        .join(", ") +
+      "]"
+    );
+  } else if (localized && typeof value === "number") {
+    return value.toLocaleString(undefined, { useGrouping: false });
   } else {
     return JSON.stringify(value);
   }

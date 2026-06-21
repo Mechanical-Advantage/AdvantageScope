@@ -92,9 +92,48 @@ export function cleanFloat(float: number) {
 
 /** Formats a time with milliseconds using three decimal places. */
 export function formatTimeWithMS(time: number): string {
-  let seconds = Math.floor(time);
-  let milliseconds = Math.floor((time - seconds) * 1000);
-  return seconds.toString() + "." + milliseconds.toString().padStart(3, "0");
+  return time.toLocaleString(undefined, {
+    useGrouping: false,
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3
+  });
+}
+
+/** Formats a number according to the current locale. */
+export function formatNumber(value: number, fractionDigits?: number): string {
+  if (fractionDigits === undefined) {
+    return value.toLocaleString(undefined, { useGrouping: false });
+  } else {
+    return value.toLocaleString(undefined, {
+      useGrouping: false,
+      minimumFractionDigits: fractionDigits,
+      maximumFractionDigits: fractionDigits
+    });
+  }
+}
+
+/** Formats a number for general display, choosing scientific or fixed notation based on magnitude. */
+export function formatNumberAuto(value: number): string {
+  if (Math.abs(value) < 1e-9) {
+    return (0).toLocaleString(undefined, { useGrouping: false });
+  } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
+    return value
+      .toLocaleString(undefined, {
+        useGrouping: false,
+        notation: "scientific",
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1
+      })
+      .toLowerCase();
+  } else if (value % 1 === 0) {
+    return value.toLocaleString(undefined, { useGrouping: false });
+  } else {
+    return value.toLocaleString(undefined, {
+      useGrouping: false,
+      minimumFractionDigits: 3,
+      maximumFractionDigits: 3
+    });
+  }
 }
 
 /** Converts a value between two ranges. */

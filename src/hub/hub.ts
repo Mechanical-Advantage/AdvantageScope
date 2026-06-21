@@ -279,7 +279,9 @@ let periodic = () => {
   }
   fpsDiv.hidden = !window.fps;
   if (window.fps) {
-    fpsDiv.innerText = "FPS: " + fps.toFixed(1);
+    fpsDiv.innerText =
+      "FPS: " +
+      fps.toLocaleString(undefined, { useGrouping: false, minimumFractionDigits: 1, maximumFractionDigits: 1 });
   }
   window.requestAnimationFrame(periodic);
 };
@@ -360,7 +362,7 @@ function startHistorical(path: string, clear = true, merge = false) {
         let components = historicalSources[0].path.split(window.platform === "win32" ? "\\" : "/");
         logFriendlyName = components[components.length - 1];
       } else {
-        logFriendlyName = historicalSources.length.toString() + " Log Files";
+        logFriendlyName = historicalSources.length.toLocaleString(undefined, { useGrouping: false }) + " Log Files";
       }
       switch (status) {
         case HistoricalDataSourceStatus.Reading:

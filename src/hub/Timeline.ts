@@ -225,7 +225,7 @@ export default class Timeline {
         break;
       }
 
-      let text = cleanFloat(stepPos).toString() + "s";
+      let text = cleanFloat(stepPos).toLocaleString(undefined, { useGrouping: false }) + "s";
       let textWidth = context.measureText(text).width;
       let textX = clampValue(x, textWidth / 2 + 3, width - textWidth / 2 - 3);
       let textXRange = [textX - textWidth / 2, textX + textWidth / 2];

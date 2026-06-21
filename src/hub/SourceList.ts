@@ -25,7 +25,7 @@ import {
 import { getLogValueText, getMechanismState, getOrDefault } from "../shared/log/LogUtil";
 import LoggableType from "../shared/log/LoggableType";
 import { Units } from "../shared/units";
-import { createUUID, jsonCopy } from "../shared/util";
+import { createUUID, formatNumber, jsonCopy } from "../shared/util";
 
 export default class SourceList {
   private DRAG_THRESHOLD_PX = 5;
@@ -1086,9 +1086,9 @@ export default class SourceList {
                 swerveStates.forEach((state) => {
                   poseStrings.push(
                     "\u03bd: " +
-                      state.speed.toFixed(2) +
+                      formatNumber(state.speed, 2) +
                       "m/s, \u03b8: " +
-                      Units.convert(state.angle, "radians", "degrees").toFixed(2) +
+                      formatNumber(Units.convert(state.angle, "radians", "degrees"), 2) +
                       "\u00b0"
                   );
                 });
@@ -1096,11 +1096,11 @@ export default class SourceList {
                 let chassisSpeeds = grabChassisSpeeds(window.log, state.logKey, time, this.UUID);
                 poseStrings.push(
                   "\u03bdx: " +
-                    chassisSpeeds.vx.toFixed(2) +
+                    formatNumber(chassisSpeeds.vx, 2) +
                     "m/s, \u03bdy: " +
-                    chassisSpeeds.vy.toFixed(2) +
+                    formatNumber(chassisSpeeds.vy, 2) +
                     "m/s, \u03a9: " +
-                    Units.convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
+                    formatNumber(Units.convert(chassisSpeeds.omega, "radians", "degrees"), 2) +
                     "\u00b0/s"
                 );
               } else {
@@ -1116,16 +1116,18 @@ export default class SourceList {
                   switch (typeConfig?.previewType) {
                     case "Rotation2d": {
                       return (
-                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
-                        "\u00b0"
+                        formatNumber(
+                          Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
+                          2
+                        ) + "\u00b0"
                       );
                     }
                     case "Translation2d": {
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[0], 3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[1], 3) +
                         "m"
                       );
                     }
@@ -1133,11 +1135,14 @@ export default class SourceList {
                     case "Transform2d": {
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[0], 3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[1], 3) +
                         "m, \u03b8: " +
-                        Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees").toFixed(2) +
+                        formatNumber(
+                          Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
+                          2
+                        ) +
                         "\u00b0"
                       );
                     }
@@ -1145,22 +1150,22 @@ export default class SourceList {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return (
                         "Roll: " +
-                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2) +
                         "\u00b0, Pitch: " +
-                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2) +
                         "\u00b0, Yaw: " +
-                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2) +
                         "\u00b0"
                       );
                     }
                     case "Translation3d": {
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[0], 3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[1], 3) +
                         "m, Z: " +
-                        annotatedPose.pose.translation[2].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[2], 3) +
                         "m"
                       );
                     }
@@ -1168,17 +1173,17 @@ export default class SourceList {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return (
                         "X: " +
-                        annotatedPose.pose.translation[0].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[0], 3) +
                         "m, Y: " +
-                        annotatedPose.pose.translation[1].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[1], 3) +
                         "m, Z: " +
-                        annotatedPose.pose.translation[2].toFixed(3) +
+                        formatNumber(annotatedPose.pose.translation[2], 3) +
                         "m, Roll: " +
-                        Units.convert(rpy[0], "radians", "degrees").toFixed(2) +
+                        formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2) +
                         "\u00b0, Pitch: " +
-                        Units.convert(rpy[1], "radians", "degrees").toFixed(2) +
+                        formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2) +
                         "\u00b0, Yaw: " +
-                        Units.convert(rpy[2], "radians", "degrees").toFixed(2) +
+                        formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2) +
                         "\u00b0"
                       );
                     }
@@ -1193,7 +1198,10 @@ export default class SourceList {
               } else if (poseStrings.length === 0) {
                 text = "No values";
               } else {
-                let countText = poseStrings.length.toString() + " value" + (poseStrings.length === 1 ? "" : "s");
+                let countText =
+                  poseStrings.length.toLocaleString(undefined, { useGrouping: false }) +
+                  " value" +
+                  (poseStrings.length === 1 ? "" : "s");
                 let arrayText = "[" + poseStrings.map((str) => "(" + str + ")").join(", ") + "]";
                 if (document.documentElement.dir === "rtl") {
                   text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
@@ -1206,7 +1214,7 @@ export default class SourceList {
             let mechanismState = getMechanismState(window.log, state.logKey, time);
             if (mechanismState !== null) {
               let count = mechanismState.lines.length;
-              text = count.toString() + " segment" + (count === 1 ? "" : "s");
+              text = count.toLocaleString(undefined, { useGrouping: false }) + " segment" + (count === 1 ? "" : "s");
             }
           } else if (structuredType === "Alerts") {
             let errorCount: number = getOrDefault(
@@ -1231,15 +1239,15 @@ export default class SourceList {
               []
             ).length;
             text =
-              errorCount.toString() +
+              errorCount.toLocaleString(undefined, { useGrouping: false }) +
               " error" +
               (errorCount === 1 ? "" : "s") +
               ", " +
-              warningCount.toString() +
+              warningCount.toLocaleString(undefined, { useGrouping: false }) +
               " warning" +
               (warningCount === 1 ? "" : "s") +
               ", " +
-              infoCount.toString() +
+              infoCount.toLocaleString(undefined, { useGrouping: false }) +
               " info" +
               (infoCount === 1 ? "" : "s");
           } else if (
@@ -1247,8 +1255,11 @@ export default class SourceList {
             logType === LoggableType.NumberArray ||
             logType === LoggableType.StringArray
           ) {
-            let countText = value.length.toString() + " value" + (value.length === 1 ? "" : "s");
-            let arrayText = getLogValueText(value, logType);
+            let countText =
+              value.length.toLocaleString(undefined, { useGrouping: false }) +
+              " value" +
+              (value.length === 1 ? "" : "s");
+            let arrayText = getLogValueText(value, logType, true);
             if (document.documentElement.dir === "rtl") {
               text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
             } else {

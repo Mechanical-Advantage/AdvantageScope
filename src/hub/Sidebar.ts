@@ -11,7 +11,7 @@ import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
 import { getOrDefault, searchFields, TYPE_KEY } from "../shared/log/LogUtil";
 import { SelectionMode } from "../shared/Selection";
-import { arraysEqual, htmlEncode, setsEqual } from "../shared/util";
+import { arraysEqual, formatNumberAuto, htmlEncode, setsEqual } from "../shared/util";
 import CustomSchemas from "./dataSources/schema/CustomSchemas";
 
 export default class Sidebar {
@@ -355,11 +355,11 @@ export default class Sidebar {
       }
       title =
         "\u200E" +
-        this.fieldCount.toString() +
+        this.fieldCount.toLocaleString(undefined, { useGrouping: false }) +
         " field" +
         (this.fieldCount === 1 ? "" : "s") +
         ", " +
-        Math.floor(runtime).toString() +
+        formatNumberAuto(Math.floor(runtime)) +
         runtimeUnit +
         " runtime";
     }
@@ -823,18 +823,7 @@ export default class Sidebar {
           firstUpdate = false;
           lastValue = value;
 
-          let valueStr = "";
-          if (value !== null) {
-            if (Math.abs(value) < 1e-9) {
-              valueStr = "0";
-            } else if (Math.abs(value) >= 1e5 || Math.abs(value) < 1e-3) {
-              valueStr = value.toExponential(1).replace("+", "");
-            } else if (value % 1 === 0) {
-              valueStr = value.toString();
-            } else {
-              valueStr = value.toFixed(3);
-            }
-          }
+          let valueStr = value !== null ? formatNumberAuto(value) : "";
           numValueInput!.placeholder = valueStr;
           numValueSpan!.innerText = valueStr;
           let charCount = valueStr.length;

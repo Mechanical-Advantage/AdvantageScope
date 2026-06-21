@@ -7,7 +7,7 @@
 
 import { Chart, ChartDataset, LegendOptions, LinearScaleOptions, TooltipCallbacks, registerables } from "chart.js";
 import { ensureThemeContrast } from "../Colors";
-import { cleanFloat } from "../util";
+import { cleanFloat, formatNumber } from "../util";
 import TabRenderer from "./TabRenderer";
 
 export default class StatisticsRenderer implements TabRenderer {
@@ -142,7 +142,7 @@ export default class StatisticsRenderer implements TabRenderer {
           if (isNaN(value)) {
             valueCell.innerText = "-";
           } else {
-            valueCell.innerText = value.toFixed(digits);
+            valueCell.innerText = formatNumber(value, digits);
           }
           valueCell.style.color = color;
         });
@@ -202,7 +202,7 @@ export default class StatisticsRenderer implements TabRenderer {
         const x = item.parsed.x!;
         const min = x - command.stepSize / 2;
         const max = x + command.stepSize / 2;
-        return cleanFloat(min).toString() + " to " + cleanFloat(max).toString();
+        return formatNumber(cleanFloat(min)) + " to " + formatNumber(cleanFloat(max));
       };
       this.histogram.update();
     }

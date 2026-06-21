@@ -150,7 +150,10 @@ function handleMainMessage(message: NamedMessage) {
         if (startTime === null) startTime = new Date().getTime() / 1000;
 
         let detailsText =
-          Math.floor(currentSize / 1e6).toString() + "MB / " + Math.floor(totalSize / 1e6).toString() + "MB";
+          Math.floor(currentSize / 1e6).toLocaleString(undefined, { useGrouping: false }) +
+          "MB / " +
+          Math.floor(totalSize / 1e6).toLocaleString(undefined, { useGrouping: false }) +
+          "MB";
         if (new Date().getTime() / 1000 - startTime > 0.5 && currentSize > 1e6) {
           // Wait to establish speed
           let speed = Math.round((currentSize / (new Date().getTime() / 1000 - startTime) / 1e6) * 8);
@@ -161,9 +164,9 @@ function handleMainMessage(message: NamedMessage) {
           remainingSeconds -= remainingMinutes * 60;
           detailsText +=
             " (" +
-            speed.toString() +
+            speed.toLocaleString(undefined, { useGrouping: false }) +
             "Mb/s, " +
-            remainingMinutes.toString() +
+            remainingMinutes.toLocaleString(undefined, { useGrouping: false }) +
             "m" +
             zfill(remainingSeconds.toString(), 2) +
             "s)";

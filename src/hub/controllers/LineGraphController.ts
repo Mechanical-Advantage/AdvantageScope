@@ -33,7 +33,7 @@ export default class LineGraphController implements TabController {
   private MIN_AXIS_RANGE = 1e-5;
   private MAX_AXIS_RANGE = 1e20;
   private MAX_VALUE = 1e20;
-  private PREVIEW_FORMAT = new Intl.NumberFormat("en-US", {
+  private PREVIEW_FORMAT = new Intl.NumberFormat(undefined, {
     maximumFractionDigits: 6,
     useGrouping: false
   });
@@ -729,7 +729,7 @@ export default class LineGraphController implements TabController {
       // Convert to text
       let logType = window.log.getType(fieldItem.logKey);
       if (logType === null) return;
-      data.values = data.values.map((value) => getLogValueText(value, logType!));
+      data.values = data.values.map((value) => getLogValueText(value, logType!, true));
 
       // Add field command
       discreteFieldsCommand.push({

@@ -317,7 +317,7 @@ export default class TableRenderer implements TabRenderer {
             cellText[i - dataRowStart].push("null");
           } else {
             let value = field.data!.values[nextIndex - 1];
-            let text = getLogValueText(value, field.type);
+            let text = getLogValueText(value, field.type, true);
             if (field.type === LoggableType.Boolean) {
               text = (value ? "🟩" : "🟥") + " " + text;
             }
