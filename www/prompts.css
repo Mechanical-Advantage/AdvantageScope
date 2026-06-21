@@ -71,17 +71,21 @@ td.info {
 
 td.label {
   white-space: nowrap;
-  width: 0px;
   text-align: end;
   font-size: 14px;
+}
+
+td.input {
+  width: 100%;
+  padding-inline-start: 5px;
 }
 
 input,
 select {
   box-sizing: border-box;
   display: block;
-  margin-inline-start: 5px;
-  width: calc(100% - 5px);
+  margin: 0px;
+  width: 100%;
 }
 
 input[type="file"] {
@@ -114,4 +118,20 @@ div.help-div > a {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+}
+
+#tbaApiKey,
+#remotePath,
+#robotAddress,
+#publishFilter,
+#prefixes {
+  direction: ltr;
+}
+
+html[dir="rtl"] #tbaApiKey,
+html[dir="rtl"] #remotePath,
+html[dir="rtl"] #robotAddress,
+html[dir="rtl"] #publishFilter,
+html[dir="rtl"] #prefixes {
+  text-align: right;
 }
