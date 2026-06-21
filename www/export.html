@@ -26,7 +26,7 @@
         <tr>
           <td class="label">Format</td>
           <td class="input">
-            <select id="format">
+            <select id="format" title="Select export format">
               <option value="csv-table">CSV (Table)</option>
               <option value="csv-list">CSV (List)</option>
               <option value="wpilog">WPILOG</option>
@@ -37,7 +37,7 @@
         <tr>
           <td class="label">Timestamps</td>
           <td class="input">
-            <select id="samplingMode">
+            <select id="samplingMode" title="Select timestamp sampling mode">
               <option value="changes">All Changes</option>
               <option value="fixed">Fixed Period</option>
               <option value="akit">AdvantageKit Cycles</option>
@@ -47,19 +47,19 @@
         <tr>
           <td class="label">Period (ms)</td>
           <td class="input">
-            <input type="number" id="samplingPeriod" value="20" />
+            <input type="number" id="samplingPeriod" value="20" title="Enter sampling period in milliseconds" />
           </td>
         </tr>
         <tr>
           <td class="label">Prefixes</td>
           <td class="input">
-            <input type="text" id="prefixes" />
+            <input type="text" id="prefixes" title="Enter field prefixes to export, separated by commas (optional)" />
           </td>
         </tr>
         <tr>
           <td class="label">Field Set</td>
           <td class="input">
-            <select id="includeGenerated">
+            <select id="includeGenerated" title="Select whether to include generated fields in the export">
               <option value="true">Include Generated</option>
               <option value="false">Original Only</option>
             </select>
@@ -67,14 +67,14 @@
         </tr>
       </tbody>
     </table>
-    <button id="exit">
+    <button id="exit" title="Cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm">
+    <button id="confirm" title="Export">
       <img src="symbols/arrow.down.svg" />
     </button>
     <div class="help-div">
-      <a href="#">Help</a>
+      <a href="#" title="Open export documentation">Help</a>
     </div>
   </body>
 </html>

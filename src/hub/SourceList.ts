@@ -89,6 +89,7 @@ export default class SourceList {
     this.EDIT_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.EDIT_BUTTON);
     this.EDIT_BUTTON.classList.add("edit");
+    this.EDIT_BUTTON.title = "Edit settings";
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
     editIcon.src = "symbols/ellipsis.svg";
@@ -97,6 +98,7 @@ export default class SourceList {
     this.CLEAR_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.CLEAR_BUTTON);
     this.CLEAR_BUTTON.classList.add("clear");
+    this.CLEAR_BUTTON.title = "Clear all fields";
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
     clearButton.src = "symbols/trash.fill.svg";
@@ -105,6 +107,7 @@ export default class SourceList {
     this.HELP_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.HELP_BUTTON);
     this.HELP_BUTTON.classList.add("help");
+    this.HELP_BUTTON.title = "Help";
     let helpIcon = document.createElement("img");
     this.HELP_BUTTON.appendChild(helpIcon);
     helpIcon.src = "symbols/questionmark.circle.svg";
@@ -779,6 +782,7 @@ export default class SourceList {
 
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
+    typeButton.title = "Edit field configuration";
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     let promptType = (rect: ButtonRect) => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -892,6 +896,8 @@ export default class SourceList {
 
     // Remove button
     let removeButton = item.getElementsByClassName("remove")[0] as HTMLButtonElement;
+    removeButton.title = "Remove field";
+    let removeIcon = removeButton.firstElementChild as HTMLElement;
     removeButton.addEventListener("click", () => {
       let index = Array.from(this.LIST.children).indexOf(item);
       let removeCount = 0;
@@ -1007,6 +1013,8 @@ export default class SourceList {
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
     hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
+    let titleText = state.visible ? "Hide field" : "Show field";
+    hideButton.title = titleText;
     if (state.visible) {
       item.classList.remove("hidden");
     } else {

@@ -26,7 +26,7 @@
         <tr class="hide-lite">
           <td class="label">Application Theme</td>
           <td class="input">
-            <select id="theme">
+            <select id="theme" title="Select the application theme">
               <option value="system">Match System</option>
               <option value="light">Always Light</option>
               <option value="dark">Always Dark</option>
@@ -36,7 +36,7 @@
         <tr>
           <td class="label">Coordinate System</td>
           <td class="input">
-            <select id="coordinateSystem">
+            <select id="coordinateSystem" title="Select the 3D coordinate system origin and orientation">
               <option value="automatic">Automatic</option>
               <option value="center-red">Center/Red (Systemcore)</option>
               <option value="wall-blue">Blue Wall (FRC 2023-2026)</option>
@@ -48,7 +48,7 @@
         <tr class="hide-lite">
           <td class="label">TBA API Key</td>
           <td class="input">
-            <input type="text" id="tbaApiKey" />
+            <input type="text" id="tbaApiKey" title="Enter your API key for The Blue Alliance" />
           </td>
         </tr>
         <tr>
@@ -63,19 +63,19 @@
         <tr class="hide-lite">
           <td class="label">Robot Address</td>
           <td class="input">
-            <input type="text" id="robotAddress" />
+            <input type="text" id="robotAddress" title="Enter the IP address or hostname of the robot" />
           </td>
         </tr>
         <tr>
           <td class="label">Robot Log Path</td>
           <td class="input">
-            <input type="text" id="remotePath" />
+            <input type="text" id="remotePath" title="Enter the path to log files on the robot" />
           </td>
         </tr>
         <tr>
           <td class="label">Live Mode</td>
           <td class="input">
-            <select id="liveSubscribeMode">
+            <select id="liveSubscribeMode" title="Select live data subscription mode">
               <option value="low-bandwidth">Low Bandwidth</option>
               <option value="logging">Logging</option>
             </select>
@@ -84,7 +84,7 @@
         <tr>
           <td class="label">Discard Live Data</td>
           <td class="input">
-            <select id="liveDiscard">
+            <select id="liveDiscard" title="Select how long to retain live data before discarding">
               <option value="60">After 1 minute</option>
               <option value="300">After 5 minutes</option>
               <option value="1200">After 20 minutes</option>
@@ -95,7 +95,11 @@
         <tr class="hide-lite">
           <td class="label">NT Publish Prefixes</td>
           <td class="input">
-            <input type="text" id="publishFilter" />
+            <input
+              type="text"
+              id="publishFilter"
+              title="Enter prefixes for NetworkTables publishing, separated by commas"
+            />
           </td>
         </tr>
         <tr>
@@ -107,7 +111,7 @@
         <tr>
           <td class="label" id="field3dModeAcLabel">3D Mode (Default)</td>
           <td class="input">
-            <select id="field3dModeAc">
+            <select id="field3dModeAc" title="Select the default 3D rendering mode">
               <option value="cinematic">Cinematic</option>
               <option value="standard">Standard</option>
               <option value="low-power">Low Power</option>
@@ -117,7 +121,7 @@
         <tr class="hide-lite">
           <td class="label">3D Mode (Battery)</td>
           <td class="input">
-            <select id="field3dModeBattery">
+            <select id="field3dModeBattery" title="Select the 3D rendering mode when running on battery">
               <option value="">Default</option>
               <option value="cinematic">Cinematic</option>
               <option value="standard">Standard</option>
@@ -128,7 +132,7 @@
         <tr>
           <td class="label">3D Antialiasing</td>
           <td class="input">
-            <select id="field3dAntialiasing">
+            <select id="field3dAntialiasing" title="Toggle 3D antialiasing">
               <option value="true">On</option>
               <option value="false">Off</option>
             </select>
@@ -136,10 +140,10 @@
         </tr>
       </tbody>
     </table>
-    <button id="exit">
+    <button id="exit" title="Cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm">
+    <button id="confirm" title="Confirm">
       <img src="symbols/checkmark.svg" />
     </button>
   </body>

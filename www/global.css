@@ -64,6 +64,8 @@ button > img {
   top: 50%;
   transform: translate(-50%, -50%) scale(75%);
 
+  pointer-events: none;
+
   /* https://codepen.io/sosuke/pen/Pjoqqp */
   filter: invert(32%) sepia(0%) saturate(60%) hue-rotate(224deg) brightness(100%) contrast(95%);
 }

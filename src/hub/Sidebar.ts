@@ -792,6 +792,7 @@ export default class Sidebar {
         numValueInput = document.createElement("input");
         numValueInput.hidden = true;
         numValueInput.type = "number";
+        numValueInput.title = "Set value";
         valueElement.appendChild(numValueInput);
         numValueSpan = document.createElement("span");
         valueElement.appendChild(numValueSpan);
