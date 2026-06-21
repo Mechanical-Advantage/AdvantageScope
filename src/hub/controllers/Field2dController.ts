@@ -28,7 +28,7 @@ import { Units } from "../../shared/units";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field2dController_Config from "./Field2dController_Config";
-import TabController from "./TabController";
+import TabController, { setupKeyboardControls } from "./TabController";
 
 export default class Field2dController implements TabController {
   UUID = createUUID();
@@ -72,15 +72,18 @@ export default class Field2dController implements TabController {
     this.updateFieldOptions();
 
     // Set up switchers
+    setupKeyboardControls(this.ORIENTATION_SWITCHER.children[0] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
       this.orientationSetting--;
       if (this.orientationSetting < 0) this.orientationSetting = 3;
     });
+    setupKeyboardControls(this.ORIENTATION_SWITCHER.children[1] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[1].addEventListener("click", () => {
       this.orientationSetting++;
       if (this.orientationSetting > 3) this.orientationSetting = 0;
     });
     (["large", "medium", "small"] as const).forEach((value, index) => {
+      setupKeyboardControls(this.SIZE_SWITCHER.children[index] as HTMLElement);
       this.SIZE_SWITCHER.children[index].addEventListener("click", () => {
         this.sizeSetting = value;
         this.updateSwitchers();

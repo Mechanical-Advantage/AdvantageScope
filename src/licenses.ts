@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import licenses from "./licenses.json";
-import { Distribution, DISTRIBUTION } from "./shared/buildConstants";
+import { IS_LITE } from "./shared/buildConstants";
 
 window.addEventListener("load", () => {
   document.body.innerHTML = "";
@@ -14,7 +14,7 @@ window.addEventListener("load", () => {
     let moduleElement = document.createElement("div");
     moduleElement.classList.add("module-text");
     let moduleText = license.module;
-    if (DISTRIBUTION === Distribution.Lite && moduleText === "AdvantageScope") {
+    if (IS_LITE && moduleText === "AdvantageScope") {
       moduleText = "AdvantageScope Lite";
     }
     moduleElement.innerText = moduleText;

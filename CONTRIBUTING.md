@@ -62,6 +62,14 @@ export ASCOPE_DISTRIBUTION=WPILIB
 export ASCOPE_DISTRIBUTION=LITE
 ```
 
+- **Lite (Driver Station) Distribution:**
+
+```bash
+export ASCOPE_DISTRIBUTION=LITEDS
+```
+
+_For the Lite DS distribution, set the environment variable before running `npm install` to download the correct set of bundled assets._
+
 ## Available NPM Tasks
 
 The following tasks are defined in `package.json` to assist with development:
@@ -116,7 +124,7 @@ AdvantageScope assets are stored in multiple locations:
 
 - The `bundledAssets` folder includes assets bundled in all versions of AdvantageScope, for both desktop and web distributions.
 - The [`AdvantageScopeAssets`](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) repository includes additional assets downloaded by the desktop version of AdvantageScope. Bundled assets are also available, which can be added to AdvantageScope Lite after installation.
-- The `bundleLiteAssets.mjs` script defines specific assets from the remote repository (2) to be bundled in AdvantageScope Lite for offline use.
+- The `bundleLiteAssets.mjs` script defines specific assets from the `AdvantageScopeAssets` repository to be bundled in AdvantageScope Lite for offline use.
 
 Please contact us at software@team6328.org if you are interested in contributing to the set of built-in AdvantageScope assets, including the files stored in the `AdvantageScopeAssets` repository.
 

@@ -12,7 +12,7 @@ import { SwerveRendererCommand } from "../../shared/renderers/SwerveRenderer";
 import { clampValue, createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import SwerveController_Config from "./SwerveController_Config";
-import TabController from "./TabController";
+import TabController, { setupKeyboardControls } from "./TabController";
 
 export default class SwerveController implements TabController {
   UUID = createUUID();
@@ -45,10 +45,12 @@ export default class SwerveController implements TabController {
     });
 
     // Orientation controls
+    setupKeyboardControls(this.ORIENTATION_SWITCHER.children[0] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
       this.orientation--;
       if (this.orientation < 0) this.orientation = 3;
     });
+    setupKeyboardControls(this.ORIENTATION_SWITCHER.children[1] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[1].addEventListener("click", () => {
       this.orientation++;
       if (this.orientation > 3) this.orientation = 0;

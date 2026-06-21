@@ -31,6 +31,7 @@ export const ENABLED_KEYS = [
   "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
   "DS:controlWord/enabled", // DataLog, post-2027
   "DS:enabled", // DataLog, pre-2027
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
   "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
@@ -44,6 +45,7 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:autonomous", // DataLog, pre-2027
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
   "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
@@ -56,34 +58,34 @@ export const UTILITY_KEYS = [
   "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:test", // DataLog, pre-2027
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
   "RobotMode", // Phoenix
   "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const ALLIANCE_KEYS = [
-  "/DriverStation/AllianceStation",
-  "NT:/AdvantageKit/DriverStation/AllianceStation",
-  "NT:/FMSInfo/IsRedAlliance",
-  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
+  "/DriverStation/AllianceStation", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "NT:/FMSInfo/IsRedAlliance", // NT
   "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
-  "/DriverStation/AllianceStation",
-  "NT:/AdvantageKit/DriverStation/AllianceStation",
-  "NT:/FMSInfo/StationNumber",
-  "NT:/Netcomm/Control/ControlData/ControlWord", // Systemcore
+  "/DriverStation/AllianceStation", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
+  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "NT:/FMSInfo/StationNumber", // NT
   "AllianceStation" // Phoenix
 ];
 export const JOYSTICK_KEYS = [
-  "/DriverStation/Joystick",
-  "NT:/AdvantageKit/DriverStation/Joystick",
-  "DS:joystick",
-  "NT:/Netcomm/Control/ControlData/Joysticks/" // Systemcore
+  "/DriverStation/Joystick", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/Joystick", // AdvantageKit
+  "DS:joystick" // DataLog
 ];
 export const SYSTEM_TIME_KEYS = [
-  "/SystemStats/EpochTimeMicros",
-  "NT:/AdvantageKit/SystemStats/EpochTimeMicros",
-  "systemTime"
+  "/SystemStats/EpochTimeMicros", // AdvantageKit
+  "NT:/AdvantageKit/SystemStats/EpochTimeMicros", // AdvantageKit
+  "systemTime" // DataLog
 ];
 export const AKIT_TIMESTAMP_KEYS = ["/Timestamp", "NT:/AdvantageKit/Timestamp"];
 export const METADATA_KEYS = [
@@ -95,21 +97,24 @@ export const METADATA_KEYS = [
   "NT:/AdvantageKit/ReplayMetadata"
 ];
 export const EVENT_KEYS = [
-  "/DriverStation/EventName",
-  "NT:/AdvantageKit/DriverStation/EventName",
-  "NT:/FMSInfo/EventName",
+  "/DriverStation/EventName", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
+  "DS:/Dscomm/Control/MatchInfo/EventName", // FIRST DS
+  "NT:/FMSInfo/EventName", // NT
   "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
-  "/DriverStation/MatchType",
-  "NT:/AdvantageKit/DriverStation/MatchType",
-  "NT:/FMSInfo/MatchType",
+  "/DriverStation/MatchType", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
+  "DS:/Dscomm/Control/MatchInfo/MatchType", // FIRST DS
+  "NT:/FMSInfo/MatchType", // NT
   "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
-  "/DriverStation/MatchNumber",
-  "NT:/AdvantageKit/DriverStation/MatchNumber",
-  "NT:/FMSInfo/MatchNumber",
+  "/DriverStation/MatchNumber", // AdvantageKit
+  "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
+  "DS:/Dscomm/Control/MatchInfo/MatchNumber", // FIRST DS
+  "NT:/FMSInfo/MatchNumber", // NT
   "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
 
@@ -255,7 +260,7 @@ export function getEnabledData(log: Log): LogValueSetBoolean | null {
   let enabledKey = getEnabledKey(log);
   if (!enabledKey) return null;
   let enabledData: LogValueSetBoolean | null = null;
-  if (enabledKey.endsWith("FMSControlData")) {
+  if (enabledKey.endsWith("FMSControlData") || enabledKey.endsWith("ControlWord")) {
     let tempEnabledData = log.getNumber(enabledKey, -Infinity, Infinity);
     if (tempEnabledData) {
       enabledData = {
@@ -291,6 +296,14 @@ export function getAutonomousData(log: Log): LogValueSetBoolean | null {
       autonomousData = {
         timestamps: tempAutoData.timestamps,
         values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 1) !== 0)
+      };
+    }
+  } else if (autonomousKey.endsWith("ControlWord")) {
+    let tempAutoData = log.getNumber(autonomousKey, -Infinity, Infinity);
+    if (tempAutoData) {
+      autonomousData = {
+        timestamps: tempAutoData.timestamps,
+        values: tempAutoData.values.map((controlWord) => ((controlWord >> 1) & 3) === 1)
       };
     }
   } else if (autonomousKey.toLowerCase().endsWith("robotmode")) {
@@ -329,6 +342,14 @@ export function getUtilityData(log: Log): LogValueSetBoolean | null {
       utilityData = {
         timestamps: tempUtilityData.timestamps,
         values: tempUtilityData.values.map((controlWord) => ((controlWord >> 2) & 1) !== 0)
+      };
+    }
+  } else if (utilityKey.endsWith("ControlWord")) {
+    let tempUtilityData = log.getNumber(utilityKey, -Infinity, Infinity);
+    if (tempUtilityData) {
+      utilityData = {
+        timestamps: tempUtilityData.timestamps,
+        values: tempUtilityData.values.map((controlWord) => ((controlWord >> 1) & 3) === 3)
       };
     }
   } else if (utilityKey.toLowerCase().endsWith("robotmode")) {
@@ -428,7 +449,7 @@ export function getIsRedAlliance(log: Log, time: number): boolean {
     let tempAllianceData = log.getNumber(allianceKey, time, time);
     if (tempAllianceData && tempAllianceData.values.length > 0) {
       let value = tempAllianceData.values[tempAllianceData.values.length - 1];
-      return ((value >> 7) & 63) <= 2;
+      return ((value >> 8) & 15) <= 2;
     }
   } else if (allianceKey.endsWith("DriverStation/AllianceStation")) {
     // Integer value (station) from AdvantageKit
@@ -460,23 +481,23 @@ export function getDriverStation(log: Log, time: number): number {
   let dsKey = findKey(log, DRIVER_STATION_KEYS);
   if (!dsKey) return -1;
   if (dsKey.endsWith("ControlWord")) {
-    // Systemcore, extract from control word struct
+    // Integer value (station) from control word
     let tempDSData = log.getNumber(dsKey, time, time);
     if (tempDSData && tempDSData.values.length > 0) {
       let value = tempDSData.values[tempDSData.values.length - 1];
-      value = ((value >> 7) & 63) + 1;
+      value = (value >> 8) & 15;
       switch (value) {
-        case 1:
+        case 0:
           return 3; // Red 1
-        case 2:
+        case 1:
           return 4; // Red 2
-        case 3:
+        case 2:
           return 5; // Red 3
-        case 4:
+        case 3:
           return 0; // Blue 1
-        case 5:
+        case 4:
           return 1; // Blue 2
-        case 6:
+        case 5:
           return 2; // Blue 3
       }
     }
@@ -858,4 +879,24 @@ export function getMatchInfo(log: Log): MatchInfo | null {
   }
   info.matchNumber = getOrDefault(log, matchNumberKeys, LoggableType.Number, enabledTime, info.matchNumber);
   return info;
+}
+
+/**
+ * Iterates over the values of a log field efficiently for monotonic time lookups.
+ * Useful when sampling multiple subfields synchronously using a parent timeline.
+ */
+export class LogFieldIterator<T> {
+  private idx = 0;
+  constructor(private data: { timestamps: number[]; values: T[] } | undefined) {}
+
+  getAtTime(time: number): T | undefined {
+    if (!this.data) return undefined;
+    while (this.idx + 1 < this.data.timestamps.length && this.data.timestamps[this.idx + 1] <= time) {
+      this.idx++;
+    }
+    if (this.idx < this.data.timestamps.length && this.data.timestamps[this.idx] <= time) {
+      return this.data.values[this.idx];
+    }
+    return undefined;
+  }
 }

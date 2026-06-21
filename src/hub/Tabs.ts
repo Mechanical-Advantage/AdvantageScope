@@ -8,6 +8,7 @@
 import { TabsState } from "../shared/HubState";
 import LineGraphFilter from "../shared/LineGraphFilter";
 import TabType, { getDefaultTabTitle, getTabIcon } from "../shared/TabType";
+import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
 import { getAutonomousKey, getEnabledKey } from "../shared/log/LogUtil";
 import ConsoleRenderer from "../shared/renderers/ConsoleRenderer";
 import DocumentationRenderer from "../shared/renderers/DocumentationRenderer";
@@ -157,7 +158,7 @@ export default class Tabs {
             tabIndex = index;
           }
         });
-        if (tabIndex === 0) return;
+        if (tabIndex === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
 
         // Trigger drag event
         while (this.DRAG_ITEM.firstChild) {
@@ -185,7 +186,7 @@ export default class Tabs {
     this.SCROLL_OVERLAY.addEventListener("contextmenu", (event) => {
       mouseDownInfo = null;
       this.tabList.forEach((tab, index) => {
-        if (index === 0) return;
+        if (index === 0 && DISTRIBUTION !== Distribution.LiteDS) return;
         let rect = tab.titleElement.getBoundingClientRect();
         if (
           event.clientX >= rect.left &&
@@ -266,6 +267,13 @@ export default class Tabs {
       let isRtl = this.SCROLL_OVERLAY.ownerDocument.documentElement.dir === "rtl";
       let closestDist = Infinity;
       let closestIndex = 0;
+      if (DISTRIBUTION === Distribution.LiteDS && this.tabList.length > 0) {
+        let boundaryX = isRtl
+          ? this.tabList[0].titleElement.getBoundingClientRect().right
+          : this.tabList[0].titleElement.getBoundingClientRect().left;
+        closestDist = Math.abs(x - boundaryX);
+        closestIndex = -1;
+      }
       this.tabList.forEach((tab, index) => {
         let rect = tab.titleElement.getBoundingClientRect();
         let boundaryX = isRtl ? rect.left : rect.right;
@@ -285,9 +293,16 @@ export default class Tabs {
         }
       } else {
         this.DRAG_HIGHLIGHT.hidden = false;
-        let boundaryX = isRtl
-          ? this.tabList[closestIndex].titleElement.getBoundingClientRect().left
-          : this.tabList[closestIndex].titleElement.getBoundingClientRect().right;
+        let boundaryX = 0;
+        if (closestIndex === -1) {
+          boundaryX = isRtl
+            ? this.tabList[0].titleElement.getBoundingClientRect().right
+            : this.tabList[0].titleElement.getBoundingClientRect().left;
+        } else {
+          boundaryX = isRtl
+            ? this.tabList[closestIndex].titleElement.getBoundingClientRect().left
+            : this.tabList[closestIndex].titleElement.getBoundingClientRect().right;
+        }
         let viewerRect = this.SCROLL_OVERLAY.parentElement
           ? this.SCROLL_OVERLAY.parentElement.getBoundingClientRect()
           : { left: 0 };
@@ -297,11 +312,18 @@ export default class Tabs {
     });
 
     // Add default tabs
-    this.addTab(TabType.Documentation);
-    this.addTab(TabType.LineGraph);
-    this.addTab(TabType.Field2d);
-    this.addTab(TabType.Field3d);
-    this.setSelected(1);
+    if (DISTRIBUTION === Distribution.LiteDS) {
+      this.addTab(TabType.LineGraph);
+      this.addTab(TabType.Console);
+      this.addTab(TabType.Joysticks);
+      this.setSelected(0);
+    } else {
+      this.addTab(TabType.Documentation);
+      this.addTab(TabType.LineGraph);
+      this.addTab(TabType.Field2d);
+      this.addTab(TabType.Field3d);
+      this.setSelected(1);
+    }
 
     // Scroll management
     this.tabsScrollSensor = new ScrollSensor(
@@ -560,6 +582,16 @@ export default class Tabs {
     let titleElement = document.createElement("div");
     titleElement.classList.add("tab");
     titleElement.innerText = getTabIcon(type) + " " + getDefaultTabTitle(type);
+    titleElement.tabIndex = 0;
+    titleElement.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        let index = this.tabList.findIndex((t) => t.titleElement === titleElement);
+        if (index !== -1) {
+          this.setSelected(index);
+        }
+      }
+    });
 
     // Save to tab list
     if (this.tabList.length === 0) {
@@ -594,7 +626,8 @@ export default class Tabs {
 
   /** Closes the specified tab. */
   close(index: number, force = false) {
-    if (index < 1 || index > this.tabList.length - 1) return;
+    let minIndex = DISTRIBUTION === Distribution.LiteDS ? (this.tabList.length > 1 ? 0 : 1) : 1;
+    if (index < minIndex || index > this.tabList.length - 1) return;
 
     // If active XR, confirm before closing
     if (!force && this.tabList[index].controller.UUID === this.activeXRUUID) {
@@ -628,8 +661,9 @@ export default class Tabs {
 
   /** Moves the specified tab left or right. */
   shift(index: number, shift: number) {
-    if (index === 0) return;
-    if (index + shift < 1) shift = 1 - index;
+    let minIndex = DISTRIBUTION === Distribution.LiteDS ? 0 : 1;
+    if (index < minIndex) return;
+    if (index + shift < minIndex) shift = minIndex - index;
     if (index + shift > this.tabList.length - 1) shift = this.tabList.length - 1 - index;
     if (this.selectedTab === index) {
       this.selectedTab += shift;

@@ -9,6 +9,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <tr><td>`Ctrl+Shift+O`</td><td>Add one or more log files to the current visualization</td></tr>
 <tr><td>`Ctrl+K`</td><td>Connect to robot as a live source</td></tr>
 <tr><td>`Ctrl+Shift+K`</td><td>Connect to simulator as a live source</td></tr>
+<tr><td>`Ctrl+Option+Shift+K`</td><td>Connect to Driver Station as a live source</td></tr>
 <tr><td>`Ctrl+D`</td><td>Download log files from the robot</td></tr>
 </table>
 

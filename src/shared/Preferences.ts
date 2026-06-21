@@ -24,7 +24,6 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
-  skipFrcLogFolderDefault: boolean;
   ctreLicenseAccepted: boolean;
   systemcoreStaticAddress: "" | "usb" | "wifi";
 }
@@ -45,10 +44,14 @@ export const DEFAULT_PREFS: Preferences = {
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,
-  skipFrcLogFolderDefault: false,
   ctreLicenseAccepted: false,
   systemcoreStaticAddress: ""
 };
+
+export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
+  remotePath: "",
+  liveSubscribeMode: "logging"
+});
 
 export type LiveMode = "nt4" | "nt4-akit" | "nt4-systemcore" | "phoenix" | "rlog" | "ftcdashboard";
 
@@ -178,9 +181,6 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
-  }
-  if ("skipFrcLogFolderDefault" in newPrefs && typeof newPrefs.skipFrcLogFolderDefault === "boolean") {
-    basePrefs.skipFrcLogFolderDefault = newPrefs.skipFrcLogFolderDefault;
   }
   if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
     basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;

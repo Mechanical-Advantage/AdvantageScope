@@ -390,7 +390,7 @@ export default class JoysticksRenderer implements TabRenderer {
         );
         const getCol = (colIndex: number) => {
           let col = colIndex % 6;
-          return isRtl ? (columnCount - 1) - col : col;
+          return isRtl ? columnCount - 1 - col : col;
         };
 
         // Draw buttons
@@ -413,7 +413,10 @@ export default class JoysticksRenderer implements TabRenderer {
         joystick.state.axes.forEach((axisValue, index) => {
           let axisLayout = drawAxis(
             false,
-            [(isRtl ? 45 : 95) + getCol(index) * 100, 70 + (Math.floor(index / 6) + Math.ceil(joystick.state.buttons.length / 6)) * 100],
+            [
+              (isRtl ? 45 : 95) + getCol(index) * 100,
+              70 + (Math.floor(index / 6) + Math.ceil(joystick.state.buttons.length / 6)) * 100
+            ],
             [30, 80],
             scaleValue(axisValue, [-1, 1], [0, 1])
           );

@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION } from "../shared/buildConstants";
+import { IS_LITE } from "../shared/buildConstants";
 import { SidebarState } from "../shared/HubState";
 import LogFieldTree from "../shared/log/LogFieldTree";
 import LoggableType from "../shared/log/LoggableType";
@@ -136,7 +136,7 @@ export default class Sidebar {
     Array.from(menuBar.getElementsByTagName("button")).forEach((button, index) => {
       let active = false;
       button.addEventListener("click", () => {
-        if (active && DISTRIBUTION !== Distribution.Lite) {
+        if (active && !IS_LITE) {
           active = false;
           window.sendMainMessage("close-app-menu", {
             index: index
@@ -289,6 +289,7 @@ export default class Sidebar {
         if (field.startsWith("/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/" + hiddenKey)) show = false;
         if (field.startsWith("NT:/AdvantageKit/" + hiddenKey)) show = false;
+        if (field.startsWith("DS:/" + hiddenKey)) show = false;
       });
       return show;
     });
@@ -434,10 +435,19 @@ export default class Sidebar {
 
       // Add new list
       let tree = window.log.getFieldTree();
-      let rootKeys = Object.keys(tree);
+      let rootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
       if (rootKeys.length === 1 && tree[rootKeys[0]].fullKey === null) {
         // If only one table, use it as the root
         tree = tree[rootKeys[0]].children;
+      }
+      // Repeat to use "DS:/Dscomm/" as the root if available
+      let secondaryRootKeys = Object.keys(tree).filter((x) => !x.startsWith("."));
+      if (
+        secondaryRootKeys.length === 1 &&
+        secondaryRootKeys[0] === "Dscomm" &&
+        tree[secondaryRootKeys[0]].fullKey === null
+      ) {
+        tree = tree[secondaryRootKeys[0]].children;
       }
       Object.keys(tree)
         .filter((key) => !this.HIDDEN_KEYS.includes(key))
@@ -792,6 +802,7 @@ export default class Sidebar {
         numValueInput = document.createElement("input");
         numValueInput.hidden = true;
         numValueInput.type = "number";
+        numValueInput.title = "Set value";
         valueElement.appendChild(numValueInput);
         numValueSpan = document.createElement("span");
         valueElement.appendChild(numValueSpan);

@@ -150,9 +150,13 @@ export default class TableController implements TabController {
       for (let i = 0; i < this.HEADER.childElementCount; i++) {
         let targetX = 0;
         if (i === 0 && this.fields.length > 0) {
-          targetX = isRtl ? this.HEADER.children[1].getBoundingClientRect().right : this.HEADER.children[1].getBoundingClientRect().left;
+          targetX = isRtl
+            ? this.HEADER.children[1].getBoundingClientRect().right
+            : this.HEADER.children[1].getBoundingClientRect().left;
         } else {
-          targetX = isRtl ? this.HEADER.children[i].getBoundingClientRect().left : this.HEADER.children[i].getBoundingClientRect().right;
+          targetX = isRtl
+            ? this.HEADER.children[i].getBoundingClientRect().left
+            : this.HEADER.children[i].getBoundingClientRect().right;
         }
 
         let firstElemRect = (this.HEADER.firstElementChild as HTMLElement).getBoundingClientRect();

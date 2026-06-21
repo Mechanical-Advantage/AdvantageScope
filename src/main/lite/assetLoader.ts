@@ -36,7 +36,7 @@ export async function loadAssets(): Promise<AdvantageScopeAssets> {
       // We need to load configRaw from the path
       // We need to make sure this doesn't error, and instead continues.
       try {
-        let configResponse = await fetch(configPath);
+        let configResponse = await fetch(`assets/${configPath}`);
         configRaw = await configResponse.json();
       } catch (e) {
         continue;
