@@ -76,7 +76,9 @@ div.title-bar-menu {
   width: calc(var(--side-bar-width) - 20px);
   max-width: 250px;
   top: 19px;
-  height: 28px;
+  height: 36px;
+  padding: 4px;
+  box-sizing: border-box;
   transform: translate(-50%, -50%);
 
   z-index: 6;
@@ -121,6 +123,12 @@ div.title-bar-menu button {
   font-size: 12px;
   padding-left: 3px;
   padding-right: 3px;
+}
+
+div.title-bar-menu button:focus-visible,
+div.title-bar-menu button:focus {
+  position: relative;
+  z-index: 10;
 }
 
 div.title-bar-menu button:hover {
@@ -295,6 +303,11 @@ div.viewer-background {
     box-shadow: 0px 0px 0px 1px #000;
     background-color: #222;
   }
+}
+
+/** macOS Golden Gate uses a flat sidebar style, so removing the shadow blends in better with native apps. **/
+body.fancy-side-bar-mac-27 div.viewer-background {
+  box-shadow: none;
 }
 
 div.viewer {
@@ -766,6 +779,14 @@ div.tab {
   border: 1px solid #aaa;
 }
 
+div.tab:focus-visible,
+div.tab:focus,
+div.setting-blocks div.split div:focus-visible,
+div.setting-blocks div.split div:focus {
+  position: relative;
+  z-index: 10;
+}
+
 div.tab:first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
@@ -1167,7 +1188,7 @@ div.source-list div.key-container {
   top: 0px;
   height: 30px;
   left: calc(30px + var(--type-width));
-  max-width: calc(100% - 31px - var(--type-width) - 55px - (var(--has-warning) * 25px));
+  max-width: calc(100% - 31px - var(--type-width) - 55px);
 
   text-align: right;
   direction: rtl;
@@ -1181,7 +1202,7 @@ div.source-list div.key-container {
 
 div.source-list div.item.child div.key-container {
   left: calc(55px + var(--type-width));
-  max-width: calc(100% - 31px - 25px - var(--type-width) - 55px - (var(--has-warning) * 25px));
+  max-width: calc(100% - 31px - 25px - var(--type-width) - 55px);
 }
 
 div.source-list div.key-container span {
@@ -1198,29 +1219,6 @@ div.source-list button.hide {
   top: 15px;
   right: 40px;
   transform: translate(50%, -50%);
-}
-
-div.source-list button.warning {
-  top: 15px;
-  right: 65px;
-  transform: translate(50%, -50%);
-}
-
-div.source-list button.warning > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(60%) sepia(41%) saturate(3324%) hue-rotate(356deg) brightness(96%) contrast(112%);
-}
-
-div.source-list button.warning.blurred > img {
-  /* https://codepen.io/sosuke/pen/Pjoqqp */
-  filter: invert(85%) sepia(44%) saturate(1384%) hue-rotate(314deg) brightness(114%) contrast(101%);
-}
-
-@media (prefers-color-scheme: dark) {
-  div.source-list button.warning.blurred > img {
-    /* https://codepen.io/sosuke/pen/Pjoqqp */
-    filter: invert(30%) sepia(37%) saturate(3821%) hue-rotate(26deg) brightness(97%) contrast(101%);
-  }
 }
 
 div.source-list img.value-symbol {

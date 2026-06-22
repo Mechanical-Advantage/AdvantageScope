@@ -464,7 +464,7 @@ export default class JoysticksRenderer implements TabRenderer {
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-      context.fillText("No joysticks selected.", canvasWidth / 2, canvasHeight / 2);
+      context.fillText("Select a joystick layout to view data.", canvasWidth / 2, canvasHeight / 2);
     }
   }
 }

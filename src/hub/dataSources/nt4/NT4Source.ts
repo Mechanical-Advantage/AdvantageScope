@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION } from "../../../shared/buildConstants";
+import { IS_LITE } from "../../../shared/buildConstants";
 import Log from "../../../shared/log/Log";
 import { getEnabledKey, getURCLKeys, PHOTON_PREFIX, PROTO_PREFIX, STRUCT_PREFIX } from "../../../shared/log/LogUtil";
 import LoggableType from "../../../shared/log/LoggableType";
@@ -13,15 +13,23 @@ import ProtoDecoder from "../../../shared/log/ProtoDecoder";
 import { checkArrayType } from "../../../shared/util";
 import { LiveDataSource, LiveDataSourceStatus } from "../LiveDataSource";
 import CustomSchemas from "../schema/CustomSchemas";
-import { NT4_Client, NT4_PORTS_DEFAULT, NT4_Topic } from "./NT4";
+import { NT4_Client, NT4_PORTS_DEFAULT, NT4_PORTS_DS, NT4_PORTS_SYSTEMCORE, NT4_Topic } from "./NT4";
 import NT4Tuner from "./NT4Tuner";
 
 export const WPILOG_PREFIX = "NT:";
+export const DS_PREFIX = "DS:";
 export const AKIT_PREFIX = "/AdvantageKit";
 export const AKIT_TUNING_PREFIX = "/Tuning";
 
+export enum NT4Mode {
+  Default,
+  AdvantageKit,
+  Systemcore,
+  DriverStation
+}
+
 export default class NT4Source extends LiveDataSource {
-  private akitMode: boolean;
+  private mode: NT4Mode;
   private client: NT4_Client | null = null;
 
   private shouldRunOutputCallback = false;
@@ -32,9 +40,9 @@ export default class NT4Source extends LiveDataSource {
   private lowBandwidthTopicSubscription: number | null = null;
   private lowBandwidthDataSubscriptions: { [id: string]: number } = {};
 
-  constructor(akitMode: boolean) {
+  constructor(mode: NT4Mode) {
     super();
-    this.akitMode = akitMode;
+    this.mode = mode;
 
     if (window.requestIdleCallback !== undefined) {
       let periodic = () => {
@@ -72,7 +80,7 @@ export default class NT4Source extends LiveDataSource {
         }
         if (this.loggingSubscription === null) {
           this.loggingSubscription = this.client.subscribe(
-            this.akitMode ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
+            this.mode === NT4Mode.AdvantageKit ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
             true,
             true,
             0.02
@@ -86,7 +94,7 @@ export default class NT4Source extends LiveDataSource {
         }
         if (this.lowBandwidthTopicSubscription === null) {
           this.lowBandwidthTopicSubscription = this.client.subscribeTopicsOnly(
-            this.akitMode ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
+            this.mode === NT4Mode.AdvantageKit ? [AKIT_PREFIX + "/", AKIT_TUNING_PREFIX + "/"] : [""],
             true
           );
         }
@@ -96,14 +104,24 @@ export default class NT4Source extends LiveDataSource {
         if (window.log === this.log) {
           let announcedKeys = this.log.getFieldKeys().filter((key) => this.log?.getType(key) !== LoggableType.Empty);
           let enabledKey = getEnabledKey(this.log);
+          let initialKeys: string[];
+          switch (this.mode) {
+            case NT4Mode.AdvantageKit:
+              initialKeys = ["/.schema", "/Timestamp"];
+              break;
+            case NT4Mode.DriverStation:
+              initialKeys = [DS_PREFIX + "/.schema"];
+              break;
+            default:
+              initialKeys = [
+                WPILOG_PREFIX + "/.schema",
+                WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
+                WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
+              ];
+              break;
+          }
           [
-            ...(this.akitMode
-              ? ["/.schema", "/Timestamp"]
-              : [
-                  WPILOG_PREFIX + "/.schema",
-                  WPILOG_PREFIX + AKIT_PREFIX + "/.schema",
-                  WPILOG_PREFIX + AKIT_PREFIX + "/Timestamp"
-                ]),
+            ...initialKeys,
             ...(enabledKey === undefined ? [] : [enabledKey]),
             ...window.tabs.getActiveFields(),
             ...window.sidebar.getActiveFields(),
@@ -118,14 +136,14 @@ export default class NT4Source extends LiveDataSource {
                 subscribeKey = announcedKey;
               }
               if (subscribeKey !== null) {
-                if (this.akitMode) {
+                if (this.mode === NT4Mode.AdvantageKit) {
                   if (subscribeKey.startsWith(AKIT_TUNING_PREFIX)) {
                     activeFields.add(subscribeKey);
                   } else {
                     activeFields.add(AKIT_PREFIX + subscribeKey);
                   }
                 } else {
-                  activeFields.add(subscribeKey.slice(WPILOG_PREFIX.length));
+                  activeFields.add(subscribeKey.slice(this.getLogPrefix().length));
                 }
               }
             });
@@ -195,10 +213,22 @@ export default class NT4Source extends LiveDataSource {
       this.setStatus(LiveDataSourceStatus.Error);
     } else {
       this.log = new Log();
+      let ports: number[];
+      switch (this.mode) {
+        case NT4Mode.Systemcore:
+          ports = NT4_PORTS_SYSTEMCORE;
+          break;
+        case NT4Mode.DriverStation:
+          ports = NT4_PORTS_DS;
+          break;
+        default:
+          ports = NT4_PORTS_DEFAULT;
+          break;
+      }
       this.client = new NT4_Client(
         address,
-        NT4_PORTS_DEFAULT,
-        DISTRIBUTION === Distribution.Lite ? "AdvantageScopeLite" : "AdvantageScope",
+        ports,
+        IS_LITE ? "AdvantageScopeLite" : "AdvantageScope",
         (topic: NT4_Topic) => {
           // Announce
           if (!this.log) return;
@@ -364,7 +394,7 @@ export default class NT4Source extends LiveDataSource {
           if (!this.connectTime && this.client !== null) {
             this.connectTime = this.client.getClientTime_us();
           }
-          if (this.akitMode) {
+          if (this.mode === NT4Mode.AdvantageKit) {
             this.noFieldsTimeout = setTimeout(() => {
               window.sendMainMessage("error", {
                 title: "Problem with NT4 connection",
@@ -398,20 +428,24 @@ export default class NT4Source extends LiveDataSource {
     if (this.client === null || this.log === null) {
       throw "Cannot create NT4 tuner before starting connection";
     } else {
-      return new NT4Tuner(this.client, this.akitMode);
+      return new NT4Tuner(this.client, this.mode);
     }
+  }
+
+  private getLogPrefix(): string {
+    return this.mode === NT4Mode.DriverStation ? DS_PREFIX : WPILOG_PREFIX;
   }
 
   /** Gets the name of the topic, depending on whether we're running in AdvantageKit mode. */
   private getKeyFromTopic(topic: NT4_Topic): string {
-    if (this.akitMode) {
+    if (this.mode === NT4Mode.AdvantageKit) {
       if (topic.name.startsWith(AKIT_PREFIX)) {
         return topic.name.slice(AKIT_PREFIX.length);
       } else {
         return topic.name;
       }
     } else {
-      return WPILOG_PREFIX + topic.name;
+      return this.getLogPrefix() + topic.name;
     }
   }
 

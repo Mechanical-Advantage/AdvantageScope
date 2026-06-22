@@ -5,10 +5,11 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { Distribution, DISTRIBUTION } from "../../shared/buildConstants";
 import { BETA_CONFIG } from "../betaConfig";
 
 export namespace LocalStorageKeys {
-  const PREFIX = "AdvantageScopeLite/";
+  const PREFIX = DISTRIBUTION === Distribution.LiteDS ? "AdvantageScopeLiteDS/" : "AdvantageScopeLite/";
   export const STATE = PREFIX + "state";
   export const PREFS = PREFIX + "prefs";
   export const TYPE_MEMORY = PREFIX + "type-memory";

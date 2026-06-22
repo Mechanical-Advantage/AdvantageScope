@@ -17,6 +17,12 @@ By default, the coordinate system is automatically selected based on the chosen 
 All coordinate system options are compatible with both FRC and FTC fields.
 :::
 
+## Center/Red (Systemcore)
+
+The origin is in the center of the field with the +X axis facing away from the red alliance wall, as shown below. **This is the default coordinate system for FRC fields starting in 2027 and FTC fields starting in 2027-2028.**
+
+![Center/red coordinate system](./img/coordinate-system-center-red.png)
+
 ## Blue Wall
 
 The origin is in the rightmost corner of the blue alliance wall with the +X axis facing the red alliance wall, as shown below. **This is the default coordinate system for FRC fields from 2023 to 2026.**
@@ -34,13 +40,3 @@ The origin is in the rightmost corner of the alliance wall for the _robot's curr
 The origin is in the center of the field with the +X axis facing to the right from the perspective of the red alliance wall, as shown below. **This is the default coordinate system for FTC fields from 2024-2025 to 2026-2027.**
 
 <img src={CenterRotatedDiagram} alt="Center/rotated coordinate system" height="400" />
-
-## Center/Red (Systemcore)
-
-The origin is in the center of the field with the +X axis facing away from the red alliance wall, as shown below. **This is the default coordinate system for FRC fields starting in 2027 and FTC fields starting in 2027-2028.**
-
-:::warning
-This coordinate system is only available in the 2027 (v27.x) releases of AdvantageScope.
-:::
-
-![Center/red coordinate system](./img/coordinate-system-center-red.png)

@@ -13,7 +13,8 @@ import { replacePlugin } from "rolldown/plugins";
 import cleanup from "rollup-plugin-cleanup";
 
 const isWpilib = process.env.ASCOPE_DISTRIBUTION === "WPILIB";
-const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
+const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
 const enableSourcemap = process.env.ENABLE_SOURCEMAP === "true";
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
@@ -66,19 +67,9 @@ function bundle(input, isMain, isXRClient, external = []) {
         : [cleanup()]),
       replacePlugin(
         {
-          __distribution__: isWpilib ? "WPILib" : isLite ? "Lite" : "FRC6328",
+          __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",
           __version__: packageJson.version,
-          __build_date__: new Date().toLocaleString("en-US", {
-            timeZone: "UTC",
-            hour12: false,
-            year: "numeric",
-            month: "numeric",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-            timeZoneName: "short"
-          }),
+          __build_date__: new Date().toISOString(),
           __copyright__: packageJson.build.copyright
         },
         {
@@ -127,7 +118,7 @@ export default (cliArgs) => {
             "ws",
             "http",
             "path",
-            "basic-ftp",
+            "ssh2",
             "download",
             "youtube-dl-exec",
             "tesseract.js",
@@ -141,35 +132,37 @@ export default (cliArgs) => {
     bundle(
       [
         "hub/hub.ts",
-        ...(isLite ? [] : ["satellite.ts"]),
+        ...(!isLite ? ["satellite.ts"] : []),
 
         "editRange.ts",
         "unitConversion.ts",
         "renameTab.ts",
-        "editFov.ts",
         "sourceListHelp.ts",
         "betaWelcome.ts",
-        "preferences.ts",
         "licenses.ts",
         "download.ts",
-        ...(isLite ? ["uploadAsset.ts"] : []),
-        ...(isLite ? [] : ["export.ts"]),
-        ...(isLite ? [] : ["xrControls.ts"]),
+        ...(!isLite ? ["export.ts", "xrControls.ts"] : []),
+        ...(!isDS ? ["preferences.ts", "editFov.ts"] : []),
+        ...(isLite && !isDS ? ["uploadAsset.ts"] : []),
 
-        "hub/dataSources/csv/csvWorker.ts",
-        "hub/dataSources/rlog/rlogWorker.ts",
-        "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
         "hub/dataSources/wpilog/wpilogWorker.ts",
-        "hub/dataSources/dslog/dsLogWorker.ts",
-        ...(isLite ? [] : ["hub/exportWorker.ts"]),
-        "shared/renderers/field3d/workers/loadField.ts",
-        "shared/renderers/field3d/workers/loadRobot.ts"
+        ...(!isLite ? ["hub/exportWorker.ts"] : []),
+        ...(!isDS
+          ? [
+              "hub/dataSources/csv/csvWorker.ts",
+              "hub/dataSources/rlog/rlogWorker.ts",
+              "hub/dataSources/roadrunnerlog/roadRunnerWorker.ts",
+              "hub/dataSources/dslog/dsLogWorker.ts",
+              "shared/renderers/field3d/workers/loadField.ts",
+              "shared/renderers/field3d/workers/loadRobot.ts"
+            ]
+          : [])
       ],
       false,
       false
     ),
 
     // XR client
-    ...(isLite ? [] : [bundle(["xrClient/xrClient.ts"], false, true)])
+    ...(!isLite ? [bundle(["xrClient/xrClient.ts"], false, true)] : [])
   ];
 };

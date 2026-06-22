@@ -5,6 +5,8 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { Distribution, DISTRIBUTION } from "./buildConstants";
+
 enum TabType {
   Documentation,
   LineGraph,
@@ -27,20 +29,24 @@ export function getAllTabTypes(): TabType[] {
   return Object.values(TabType).filter((tabType) => typeof tabType === "number") as TabType[];
 }
 
-export const LITE_COMPATIBLE_TABS = [
-  TabType.Documentation,
-  TabType.LineGraph,
-  TabType.Field2d,
-  TabType.Field3d,
-  TabType.Table,
-  TabType.Console,
-  TabType.Statistics,
-  TabType.Joysticks,
-  TabType.Swerve,
-  TabType.Mechanism,
-  TabType.Points,
-  TabType.Metadata
-];
+export const LITE_COMPATIBLE_TABS =
+  DISTRIBUTION === Distribution.Lite
+    ? [
+        TabType.Documentation,
+        TabType.LineGraph,
+        TabType.Field2d,
+        TabType.Field3d,
+        TabType.Table,
+        TabType.Console,
+        TabType.Statistics,
+        TabType.Joysticks,
+        TabType.Swerve,
+        TabType.Mechanism,
+        TabType.Points,
+        TabType.Metadata
+      ]
+    : // Lite DS
+      [TabType.LineGraph, TabType.Table, TabType.Console, TabType.Statistics, TabType.Joysticks];
 
 export function getDefaultTabTitle(type: TabType): string {
   switch (type) {

@@ -24,8 +24,14 @@
     <table>
       <tbody>
         <tr>
-          <td class="input" tabindex="-1">
-            <input type="file" id="asset" accept=".zip, application/zip" multiple />
+          <td class="input">
+            <input
+              type="file"
+              id="asset"
+              accept=".zip, application/zip"
+              multiple
+              title="Choose zip file containing assets"
+            />
           </td>
         </tr>
         <tr>
@@ -36,10 +42,10 @@
         </tr>
       </tbody>
     </table>
-    <button id="exit" tabindex="-1">
+    <button id="exit" title="Cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm" tabindex="-1">
+    <button id="confirm" title="Upload">
       <img src="symbols/checkmark.svg" />
     </button>
   </body>

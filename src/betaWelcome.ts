@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { Distribution, DISTRIBUTION } from "./shared/buildConstants";
+import { IS_LITE } from "./shared/buildConstants";
 
 const CHECKBOXES = Array.from(document.getElementsByTagName("input")) as HTMLInputElement[];
 const CONTINUE_BUTTON = document.getElementsByTagName("button")[0] as HTMLButtonElement;
@@ -43,9 +43,9 @@ window.addEventListener("message", (event) => {
 
 window.addEventListener("load", () => {
   Array.from(document.getElementsByClassName("desktop-only")).forEach((element) => {
-    (element as HTMLElement).hidden = DISTRIBUTION === Distribution.Lite;
+    (element as HTMLElement).hidden = IS_LITE;
   });
   Array.from(document.getElementsByClassName("lite-only")).forEach((element) => {
-    (element as HTMLElement).hidden = DISTRIBUTION !== Distribution.Lite;
+    (element as HTMLElement).hidden = !IS_LITE;
   });
 });
