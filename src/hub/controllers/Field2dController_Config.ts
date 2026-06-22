@@ -10,7 +10,7 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 import { SwerveArrangementValues } from "./SwerveController_Config";
 
 const Field2dController_Config: SourceListConfig = {
-  title: "Poses",
+  title: "hub.field.poses",
   autoAdvance: true,
   allowChildrenFromDrag: false,
   typeMemoryId: "field2d",

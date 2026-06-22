@@ -25,7 +25,7 @@ window.addEventListener("message", (event) => {
       let config: SourceListConfig = message.data;
 
       // Update title
-      document.title = t("sourceListHelp.title", { name: config.title });
+      document.title = t("sourceListHelp.title", { name: t(config.title) });
 
       // Add items
       let usedColors: string[] = [];
@@ -156,7 +156,7 @@ function addItem(
     parentWarning.classList.add("parent-warning");
     document.body.appendChild(parentWarning);
     parentWarning.innerText = t("sourceListHelp.parentWarning", {
-      items: makeCommaList(parentTypes.map((str) => '"' + str + '"'))
+      items: parentTypes.map((str) => '"' + str + '"')
     });
   }
 
@@ -179,7 +179,7 @@ function addItem(
       let valuesCell = document.createElement("td");
       row.appendChild(valuesCell);
       let valueStrings = option.values.map((optionConfig) => "<span>" + optionConfig.display + "</span>");
-      valuesCell.innerHTML = makeCommaList(valueStrings);
+      valuesCell.innerHTML = t("sourceListHelp.listOr", { list: valueStrings });
       Array.from(valuesCell.getElementsByTagName("span")).forEach((span, index) => {
         let valueKey = option.values[index].key;
         if (valueKey.startsWith("#")) {
@@ -198,19 +198,6 @@ function addItem(
   document.body.appendChild(sourceTypesDiv);
   sourceTypesDiv.innerText = t("sourceListHelp.sources", {
     count: sourceTypes.length,
-    list: makeCommaList(sourceTypes)
+    list: sourceTypes
   });
-}
-
-function makeCommaList(values: string[]): string {
-  switch (values.length) {
-    case 0:
-      return "";
-    case 1:
-      return values[0];
-    case 2:
-      return values[0] + " " + t("sourceListHelp.or") + " " + values[1];
-    default:
-      return [...values.slice(0, -1), t("sourceListHelp.or") + " " + values[values.length - 1]].join(", ");
-  }
 }

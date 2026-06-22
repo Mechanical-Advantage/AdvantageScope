@@ -9,7 +9,7 @@ import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const StatisticsController_Config: SourceListConfig = {
-  title: "Measurements",
+  title: "hub.statistics.measurements",
   autoAdvance: "color",
   allowChildrenFromDrag: false,
   typeMemoryId: "statistics",

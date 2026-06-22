@@ -18,7 +18,7 @@ export const SwerveArrangementValues: SourceListOptionValueConfig[] = [
 ];
 
 const SwerveController_Config: SourceListConfig = {
-  title: "Sources",
+  title: "hub.swerve.sources",
   autoAdvance: "color",
   allowChildrenFromDrag: false,
   typeMemoryId: "swerve",

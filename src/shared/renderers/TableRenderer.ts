@@ -95,6 +95,9 @@ export default class TableRenderer implements TabRenderer {
       this.hoverCursorY = null;
     });
 
+    // Set initial placeholder
+    this.INPUT_FIELD.placeholder = formatTimeWithMS(0);
+
     // Initialize columns
     this.updateFields([]);
   }

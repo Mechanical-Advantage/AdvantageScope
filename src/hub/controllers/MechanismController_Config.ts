@@ -8,7 +8,7 @@
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 const MechanismController_Config: SourceListConfig = {
-  title: "Sources",
+  title: "hub.mechanism.sources",
   autoAdvance: false,
   allowChildrenFromDrag: false,
   types: [

@@ -9,7 +9,7 @@ import { GraphColors } from "../../shared/Colors";
 import { SourceListConfig } from "../../shared/SourceListConfig";
 
 export const LineGraphController_NumericConfig: SourceListConfig = {
-  title: "Numeric Axis",
+  title: "hub.lineGraph.numericAxis",
   autoAdvance: "color",
   allowChildrenFromDrag: true,
   types: [
@@ -97,7 +97,7 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
 };
 
 export const LineGraphController_DiscreteConfig: SourceListConfig = {
-  title: "Discrete Fields",
+  title: "hub.lineGraph.discreteFields",
   autoAdvance: "color",
   allowChildrenFromDrag: false,
   types: [

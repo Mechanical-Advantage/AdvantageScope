@@ -279,9 +279,10 @@ function handleMainMessage(message: NamedMessage) {
         let sizeSpan = document.createElement("span");
         item.appendChild(sizeSpan);
         sizeSpan.innerText =
-          file.size < 1e5
+          " " +
+          (file.size < 1e5
             ? t("download.sizeLessThanMinimum")
-            : t("download.sizeValue", { size: (Math.round(file.size / 1e5) / 10).toString() });
+            : t("download.sizeValue", { size: (Math.round(file.size / 1e5) / 10).toString() }));
       });
 
       updateFiller();

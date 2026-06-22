@@ -28,8 +28,8 @@ export default class UpdateChecker {
       this.alertOptions = null;
       this.alertCancelId = null;
       this.alertDownloadUrl = null;
-      this.alertMessage = t("main.cannotCheckUpdates");
-      this.alertDetail = t("main.devEnvDetail");
+      this.alertMessage = t("main.updates.cannotCheck");
+      this.alertDetail = t("main.updates.devEnvDetail");
       return;
     }
 
@@ -50,8 +50,8 @@ export default class UpdateChecker {
       this.alertOptions = null;
       this.alertCancelId = null;
       this.alertDownloadUrl = null;
-      this.alertMessage = t("main.cannotCheckUpdates");
-      this.alertDetail = t("main.fetchUpdateFailedDetail");
+      this.alertMessage = t("main.updates.cannotCheck");
+      this.alertDetail = t("main.updates.fetchFailedDetail");
       return;
     }
 
@@ -71,8 +71,8 @@ export default class UpdateChecker {
       this.alertOptions = null;
       this.alertCancelId = null;
       this.alertDownloadUrl = null;
-      this.alertMessage = t("main.noUpdateData");
-      this.alertDetail = t("main.noUpdateDataDetail");
+      this.alertMessage = t("main.updates.noData");
+      this.alertDetail = t("main.updates.noDataDetail");
       return;
     }
 
@@ -87,35 +87,38 @@ export default class UpdateChecker {
     this.shouldPrompt = true;
     this.alertOptions =
       process.platform === "darwin"
-        ? [t("main.download"), t("main.later"), t("main.viewChangelog")]
-        : [t("main.download"), t("main.viewChangelog"), t("main.later")];
+        ? [t("main.updates.download"), t("main.updates.later"), t("main.updates.viewChangelog")]
+        : [t("main.updates.download"), t("main.updates.viewChangelog"), t("main.updates.later")];
     this.alertCancelId = process.platform === "darwin" ? 1 : 2;
     this.alertDownloadUrl = null;
 
     // Set appropriate prompt
     if (currentVersion !== this.latestVersion && translated) {
-      this.alertMessage = t("main.downloadLatestNativeQuery");
-      this.alertDetail = t("main.downloadLatestNativeDetail", {
+      this.alertMessage = t("main.updates.downloadLatestNativeQuery");
+      this.alertDetail = t("main.updates.downloadLatestNativeDetail", {
         latestVersion: this.latestVersion,
         latestDate: latestDateText,
         currentVersion: currentVersion
       });
     } else if (currentVersion !== this.latestVersion) {
-      this.alertMessage = t("main.downloadLatestQuery");
-      this.alertDetail = t("main.downloadLatestDetail", {
+      this.alertMessage = t("main.updates.downloadLatestQuery");
+      this.alertDetail = t("main.updates.downloadLatestDetail", {
         latestVersion: this.latestVersion,
         latestDate: latestDateText,
         currentVersion: currentVersion
       });
     } else if (translated) {
-      this.alertMessage = t("main.downloadNativeQuery");
-      this.alertDetail = t("main.downloadNativeDetail");
+      this.alertMessage = t("main.updates.downloadNativeQuery");
+      this.alertDetail = t("main.updates.downloadNativeDetail");
     } else {
       this.shouldPrompt = false;
       this.alertOptions = null;
       this.alertCancelId = null;
-      this.alertMessage = t("main.noUpdatesAvailable");
-      this.alertDetail = t("main.upToDateDetail", { currentVersion: currentVersion, latestDate: latestDateText });
+      this.alertMessage = t("main.updates.noUpdates");
+      this.alertDetail = t("main.updates.upToDateDetail", {
+        currentVersion: currentVersion,
+        latestDate: latestDateText
+      });
       return;
     }
 
@@ -152,9 +155,9 @@ export default class UpdateChecker {
     if (this.alertOptions === null || this.alertCancelId === null) {
       await dialog.showMessageBox({
         type: "info",
-        title: t("main.updateChecker"),
-        message: this.alertMessage || t("main.updateCheckNotComplete"),
-        detail: this.alertDetail || t("main.updateCheckNotCompleteDetail"),
+        title: t("main.updates.title"),
+        message: this.alertMessage || t("main.updates.incomplete"),
+        detail: this.alertDetail || t("main.updates.incompleteDetail"),
         icon: WINDOW_ICON
       });
       return;
@@ -163,7 +166,7 @@ export default class UpdateChecker {
     // Update prompt (question)
     let result = await dialog.showMessageBox({
       type: "question",
-      title: t("main.updateChecker"),
+      title: t("main.updates.title"),
       message: this.alertMessage,
       detail: this.alertDetail,
       icon: WINDOW_ICON,
@@ -172,12 +175,12 @@ export default class UpdateChecker {
       cancelId: this.alertCancelId
     });
     let responseString = this.alertOptions[result.response];
-    if (responseString === t("main.download")) {
+    if (responseString === t("main.updates.download")) {
       if (this.alertDownloadUrl === null) {
         this.alertDownloadUrl = `https://github.com/${GITHUB_REPOSITORY}/releases/v${this.latestVersion}`;
       }
       await shell.openExternal(this.alertDownloadUrl);
-    } else if (responseString === t("main.viewChangelog")) {
+    } else if (responseString === t("main.updates.viewChangelog")) {
       await shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/releases");
     }
   }

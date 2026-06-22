@@ -33,12 +33,12 @@
     </div>
     <div class="title-bar-menu">
       <table>
-        <td><button data-i18n="[title]hub.menuAppTitle;hub.menuApp"></button></td>
-        <td><button data-i18n="[title]hub.menuFileTitle;hub.menuFile"></button></td>
-        <td><button data-i18n="[title]hub.menuViewTitle;hub.menuView"></button></td>
-        <td><button data-i18n="[title]hub.menuTabsTitle;hub.menuTabs"></button></td>
-        <td class="hide-lite"><button data-i18n="[title]hub.menuWindowTitle;hub.menuWindow"></button></td>
-        <td><button data-i18n="[title]hub.menuHelpTitle;hub.menuHelp"></button></td>
+        <td><button data-i18n="[title]menu.titles.appTooltip;menu.titles.app"></button></td>
+        <td><button data-i18n="[title]menu.titles.fileTooltip;menu.titles.file"></button></td>
+        <td><button data-i18n="[title]menu.titles.viewTooltip;menu.titles.view"></button></td>
+        <td><button data-i18n="[title]menu.titles.tabsTooltip;menu.titles.tabs"></button></td>
+        <td class="hide-lite"><button data-i18n="[title]menu.titles.windowTooltip;menu.titles.window"></button></td>
+        <td><button data-i18n="[title]menu.titles.helpTooltip;menu.titles.help"></button></td>
       </table>
     </div>
 
@@ -48,25 +48,25 @@
     <button class="tab-control feedback" data-i18n="[title]hub.shareFeedback" hidden>
       <img src="symbols/exclamationmark.bubble.svg" />
     </button>
-    <button class="tab-control play" data-i18n="[title]hub.play">
+    <button class="tab-control play" data-i18n="[title]hub.playback.play">
       <img src="symbols/play.fill.svg" />
     </button>
-    <button class="tab-control pause" data-i18n="[title]hub.pause" hidden>
+    <button class="tab-control pause" data-i18n="[title]hub.playback.pause" hidden>
       <img src="symbols/pause.svg" />
     </button>
-    <button class="tab-control lock" data-i18n="[title]hub.lock" hidden>
+    <button class="tab-control lock" data-i18n="[title]hub.playback.lock" hidden>
       <img src="symbols/forward.circle.svg" />
     </button>
-    <button class="tab-control unlock" data-i18n="[title]hub.unlock" hidden>
+    <button class="tab-control unlock" data-i18n="[title]hub.playback.unlock" hidden>
       <img src="symbols/forward.circle.svg" />
     </button>
-    <button class="tab-control close" data-i18n="[title]hub.close">
+    <button class="tab-control close" data-i18n="[title]hub.tabs.close">
       <img src="symbols/xmark.octagon.svg" />
     </button>
-    <button class="tab-control popup" data-i18n="[title]hub.popout">
+    <button class="tab-control popup" data-i18n="[title]hub.tabs.popout">
       <img src="symbols/plus.rectangle.on.rectangle.svg" />
     </button>
-    <button class="tab-control add-tab" data-i18n="[title]hub.addTab">
+    <button class="tab-control add-tab" data-i18n="[title]hub.tabs.add">
       <img src="symbols/plus.svg" />
     </button>
 
@@ -88,10 +88,10 @@
         <input
           class="side-bar-search"
           type="search"
-          data-i18n="[placeholder]hub.searchPlaceholder;[title]hub.searchTitle"
+          data-i18n="[placeholder]hub.sidebar.searchPlaceholder;[title]hub.sidebar.searchTitle"
         />
         <img class="side-bar-search-icon" src="symbols/magnifyingglass.svg" />
-        <button class="side-bar-tuning-button" data-i18n="[title]hub.tuningTitle" hidden>
+        <button class="side-bar-tuning-button" data-i18n="[title]hub.sidebar.tuningTitle" hidden>
           <img src="symbols/slider.horizontal.3.svg" />
         </button>
       </div>
@@ -154,11 +154,11 @@
           </div>
           <div class="field input">
             <div>
-              <select class="field-select" data-i18n="[title]hub.fieldSelectTitle">
-                <optgroup data-i18n="[label]hub.fieldFRC"></optgroup>
-                <optgroup data-i18n="[label]hub.fieldFTC"></optgroup>
+              <select class="field-select" data-i18n="[title]hub.field.selectTitle2d">
+                <optgroup data-i18n="[label]hub.field.frc"></optgroup>
+                <optgroup data-i18n="[label]hub.field.ftc"></optgroup>
               </select>
-              <a class="field-source" href="#" data-i18n="[title]hub.fieldSourceTitle;hub.source"></a>
+              <a class="field-source" href="#" data-i18n="[title]hub.field.sourceTitle;hub.field.source"></a>
             </div>
           </div>
 
@@ -169,25 +169,25 @@
           <div class="orientation input tall">
             <div class="half">
               <div class="orientation-switcher split split-2">
-                <div tabindex="0" data-i18n="[title]hub.rotateClockwise">
+                <div tabindex="0" data-i18n="[title]hub.field.rotateClockwise">
                   <img class="invertable" src="symbols/rotate.right.svg" />
                 </div>
-                <div tabindex="0" data-i18n="[title]hub.rotateCounterClockwise">
+                <div tabindex="0" data-i18n="[title]hub.field.rotateCounterClockwise">
                   <img class="invertable" src="symbols/rotate.left.svg" />
                 </div>
               </div>
             </div>
             <div class="half">
               <div class="size-switcher split split-3">
-                <div tabindex="0" data-i18n="[title]hub.sizeLarge">
+                <div tabindex="0" data-i18n="[title]hub.field.sizeLarge">
                   <img class="invertable frc-only" src="symbols/30.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/18.square.fill.svg" />
                 </div>
-                <div tabindex="0" data-i18n="[title]hub.sizeMedium">
+                <div tabindex="0" data-i18n="[title]hub.field.sizeMedium">
                   <img class="invertable frc-only" src="symbols/27.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/16.square.fill.svg" />
                 </div>
-                <div tabindex="0" data-i18n="[title]hub.sizeSmall">
+                <div tabindex="0" data-i18n="[title]hub.field.sizeSmall">
                   <img class="invertable frc-only" src="symbols/24.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/14.square.fill.svg" />
                 </div>
@@ -206,9 +206,9 @@
           </div>
           <div class="field input">
             <div>
-              <select class="field-select" data-i18n="[title]hub.fieldSelectTitle3d">
-                <optgroup data-i18n="[label]hub.fieldFRC"></optgroup>
-                <optgroup data-i18n="[label]hub.fieldFTC"></optgroup>
+              <select class="field-select" data-i18n="[title]hub.field.selectTitle3d">
+                <optgroup data-i18n="[label]hub.field.frc"></optgroup>
+                <optgroup data-i18n="[label]hub.field.ftc"></optgroup>
               </select>
             </div>
           </div>
@@ -219,7 +219,7 @@
           <div class="xr-control input tall">
             <div class="full">
               <div class="split split-1">
-                <div class="xr-button" tabindex="0" data-i18n="[title]hub.xrStart">
+                <div class="xr-button" tabindex="0" data-i18n="[title]hub.field.xrStart">
                   <img src="symbols/sparkles.square.filled.on.square.svg" />
                 </div>
               </div>
@@ -243,7 +243,7 @@
           </div>
           <div class="input">
             <div>
-              <select class="time-range" data-i18n="[title]hub.timeRangeSelectTitle">
+              <select class="time-range" data-i18n="[title]hub.statistics.timeRangeSelectTitle">
                 <option value="visible" data-i18n="hub.timeRangeVisible"></option>
                 <option value="full" data-i18n="hub.timeRangeFull"></option>
                 <option value="enabled" data-i18n="hub.timeRangeEnabled"></option>
@@ -260,10 +260,10 @@
           </div>
           <div class="input">
             <div class="half">
-              <input class="range-min" type="number" data-i18n="[title]hub.dataRangeMin" />
+              <input class="range-min" type="number" data-i18n="[title]hub.statistics.dataRangeMin" />
             </div>
             <div class="half">
-              <input class="range-max" type="number" data-i18n="[title]hub.dataRangeMax" />
+              <input class="range-max" type="number" data-i18n="[title]hub.statistics.dataRangeMax" />
             </div>
           </div>
 
@@ -272,7 +272,7 @@
           </div>
           <div class="input">
             <div>
-              <input class="step-size" type="number" data-i18n="[title]hub.stepSizeTitle" />
+              <input class="step-size" type="number" data-i18n="[title]hub.statistics.stepSizeTitle" />
             </div>
           </div>
         </div>
@@ -281,24 +281,24 @@
       <!-- Video -->
       <div id="controller7">
         <div class="video-source">
-          <button data-i18n="[title]hub.videoLocal">
+          <button data-i18n="[title]hub.video.local">
             <img src="symbols/doc.fill.svg" />
           </button>
-          <button data-i18n="[title]hub.videoClipboard">
+          <button data-i18n="[title]hub.video.clipboard">
             <img src="symbols/list.clipboard.fill.svg" />
             <svg><path /></svg>
           </button>
-          <button data-i18n="[title]hub.videoTba">
+          <button data-i18n="[title]hub.video.tba">
             <img src="symbols/tba_lamp.svg" />
             <svg><path /></svg>
           </button>
         </div>
         <div class="video-synchronization">
           <div class="video-timeline-section">
-            <button data-i18n="[title]hub.videoSyncLock">
+            <button data-i18n="[title]hub.video.syncLock">
               <img src="symbols/lock.open.svg" />
             </button>
-            <button data-i18n="[title]hub.videoSyncUnlock" hidden>
+            <button data-i18n="[title]hub.video.syncUnlock" hidden>
               <img src="symbols/lock.svg" />
             </button>
             <div class="video-timeline-container">
@@ -310,7 +310,7 @@
                 min="1"
                 max="1"
                 step="1"
-                data-i18n="[title]hub.videoSliderTitle"
+                data-i18n="[title]hub.video.sliderTitle"
               />
               <div class="video-timeline-marker-container">
                 <div></div>
@@ -318,22 +318,22 @@
             </div>
           </div>
           <div class="video-timeline-controls">
-            <button data-i18n="[title]hub.videoGoBack5s">
+            <button data-i18n="[title]hub.video.goBack5s">
               <img src="symbols/gobackward.5.svg" />
             </button>
-            <button data-i18n="[title]hub.videoPrevFrame">
+            <button data-i18n="[title]hub.video.prevFrame">
               <img src="symbols/backward.frame.svg" />
             </button>
-            <button data-i18n="[title]hub.videoPlay">
+            <button data-i18n="[title]hub.video.play">
               <img src="symbols/play.fill.svg" />
             </button>
-            <button data-i18n="[title]hub.videoPause" hidden>
+            <button data-i18n="[title]hub.video.pause" hidden>
               <img src="symbols/pause.svg" />
             </button>
-            <button data-i18n="[title]hub.videoNextFrame">
+            <button data-i18n="[title]hub.video.nextFrame">
               <img src="symbols/forward.frame.svg" />
             </button>
-            <button data-i18n="[title]hub.videoGoForward5s">
+            <button data-i18n="[title]hub.video.goForward5s">
               <img src="symbols/goforward.5.svg" />
             </button>
           </div>
@@ -347,29 +347,29 @@
             <tr>
               <td>
                 0:
-                <select data-i18n="[title]hub.joystickSelectTitle"></select>
+                <select data-i18n="[title]hub.joysticks.selectTitle"></select>
               </td>
               <td>
                 1:
-                <select data-i18n="[title]hub.joystickSelectTitle"></select>
+                <select data-i18n="[title]hub.joysticks.selectTitle"></select>
               </td>
               <td>
                 2:
-                <select data-i18n="[title]hub.joystickSelectTitle"></select>
+                <select data-i18n="[title]hub.joysticks.selectTitle"></select>
               </td>
             </tr>
             <tr>
               <td>
                 3:
-                <select data-i18n="[title]hub.joystickSelectTitle"></select>
+                <select data-i18n="[title]hub.joysticks.selectTitle"></select>
               </td>
               <td>
                 4:
-                <select data-i18n="[title]hub.joystickSelectTitle"></select>
+                <select data-i18n="[title]hub.joysticks.selectTitle"></select>
               </td>
               <td>
                 5:
-                <select data-i18n="[title]hub.joystickSelectTitle"></select>
+                <select data-i18n="[title]hub.joysticks.selectTitle"></select>
               </td>
             </tr>
           </tbody>
@@ -385,7 +385,7 @@
           </div>
           <div class="input">
             <div>
-              <input class="max-speed" type="number" value="5" data-i18n="[title]hub.maxSpeedTitle" />
+              <input class="max-speed" type="number" value="5" data-i18n="[title]hub.swerve.maxSpeedTitle" />
             </div>
           </div>
 
@@ -394,10 +394,22 @@
           </div>
           <div class="input">
             <div class="half">
-              <input class="size-x" type="number" value="0.65" step="0.01" data-i18n="[title]hub.frameLengthTitle" />
+              <input
+                class="size-x"
+                type="number"
+                value="0.65"
+                step="0.01"
+                data-i18n="[title]hub.swerve.frameLengthTitle"
+              />
             </div>
             <div class="half">
-              <input class="size-y" type="number" value="0.65" step="0.01" data-i18n="[title]hub.frameWidthTitle" />
+              <input
+                class="size-y"
+                type="number"
+                value="0.65"
+                step="0.01"
+                data-i18n="[title]hub.swerve.frameWidthTitle"
+              />
             </div>
           </div>
 
@@ -406,10 +418,10 @@
           </div>
           <div class="input">
             <div class="orientation-switcher split split-2">
-              <div tabindex="0" data-i18n="[title]hub.rotateModuleClockwise">
+              <div tabindex="0" data-i18n="[title]hub.swerve.rotateModuleClockwise">
                 <img class="invertable" src="symbols/rotate.right.svg" />
               </div>
-              <div tabindex="0" data-i18n="[title]hub.rotateModuleCounterClockwise">
+              <div tabindex="0" data-i18n="[title]hub.swerve.rotateModuleCounterClockwise">
                 <img class="invertable" src="symbols/rotate.left.svg" />
               </div>
             </div>
@@ -431,10 +443,16 @@
           </div>
           <div class="input">
             <div class="half">
-              <input class="dimensions-width" type="number" value="960" step="1" data-i18n="[title]hub.pointsWidth" />
+              <input class="dimensions-width" type="number" value="960" step="1" data-i18n="[title]hub.points.width" />
             </div>
             <div class="half">
-              <input class="dimensions-height" type="number" value="720" step="1" data-i18n="[title]hub.pointsHeight" />
+              <input
+                class="dimensions-height"
+                type="number"
+                value="720"
+                step="1"
+                data-i18n="[title]hub.points.height"
+              />
             </div>
           </div>
 
@@ -443,7 +461,7 @@
           </div>
           <div class="input">
             <div>
-              <select class="orientation" data-i18n="[title]hub.pointsOrientation">
+              <select class="orientation" data-i18n="[title]hub.points.orientation">
                 <option value="xr,yd">+X right, +Y down</option>
                 <option value="xr,yu">+X right, +Y up</option>
                 <option value="xu,yl">+X up, +Y left</option>
@@ -456,7 +474,7 @@
           </div>
           <div class="input">
             <div>
-              <select class="origin" data-i18n="[title]hub.pointsOrigin">
+              <select class="origin" data-i18n="[title]hub.points.origin">
                 <option value="ul">upper left</option>
                 <option value="ur">upper right</option>
                 <option value="ll">lower left</option>
@@ -532,11 +550,7 @@
             <tbody>
               <tr>
                 <th>
-                  <input
-                    class="data-table-jump-input"
-                    type="number"
-                    data-i18n="[placeholder]satellite.tableJumpPlaceholder;[title]satellite.tableJumpTitle"
-                  />
+                  <input class="data-table-jump-input" type="number" data-i18n="[title]satellite.tableJumpTitle" />
                   <button class="data-table-jump-button" data-i18n="[title]satellite.tableJumpTitle">
                     <img src="symbols/arrow.down.to.line.svg" />
                   </button>
@@ -558,11 +572,7 @@
             <tbody>
               <tr>
                 <th>
-                  <input
-                    class="console-table-jump-input"
-                    type="number"
-                    data-i18n="[placeholder]satellite.tableJumpPlaceholder;[title]satellite.tableJumpTitle"
-                  />
+                  <input class="console-table-jump-input" type="number" data-i18n="[title]satellite.tableJumpTitle" />
                   <button class="console-table-jump-button" data-i18n="[title]satellite.tableJumpTitle">
                     <img src="symbols/arrow.down.to.line.svg" />
                   </button>
@@ -574,7 +584,7 @@
                       <img src="symbols/xmark.svg" />
                     </button>
                   </div>
-                  <button class="export-button" data-i18n="[title]hub.exportConsoleLog">
+                  <button class="export-button" data-i18n="[title]hub.console.exportLog">
                     <img src="symbols/square.and.arrow.down.svg" />
                   </button>
                   <button class="highlight-button" data-i18n="[title]satellite.consoleHighlight">

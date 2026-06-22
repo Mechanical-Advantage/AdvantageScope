@@ -173,9 +173,9 @@ export class VideoProcessor {
         if (window && !window.isDestroyed()) {
           dialog.showMessageBox(window, {
             type: "error",
-            title: t("main.error"),
-            message: t("main.pythonRequired"),
-            detail: t("main.pythonRequiredDetail"),
+            title: t("main.warnings.error"),
+            message: t("main.video.pythonRequired"),
+            detail: t("main.video.pythonRequiredDetail"),
             icon: WINDOW_ICON
           });
         }
@@ -228,10 +228,10 @@ export class VideoProcessor {
     if (process.platform === "linux") {
       await dialog.showMessageBox(window, {
         type: "question",
-        title: t("main.alert"),
-        message: t("main.ffmpegRequired"),
-        detail: t("main.ffmpegRequiredDetail"),
-        buttons: [t("main.ok")],
+        title: t("main.warnings.alert"),
+        message: t("main.video.ffmpegRequired"),
+        detail: t("main.video.ffmpegRequiredDetail"),
+        buttons: [t("main.buttons.ok")],
         defaultId: 0,
         icon: WINDOW_ICON
       });
@@ -241,10 +241,10 @@ export class VideoProcessor {
     // Download FFmpeg on Windows and macOS
     let ffmpegDownloadResponse = await dialog.showMessageBox(window, {
       type: "question",
-      title: t("main.alert"),
-      message: t("main.downloadFfmpeg"),
-      detail: t("main.downloadFfmpegDetail"),
-      buttons: [t("main.continue"), t("main.stop")],
+      title: t("main.warnings.alert"),
+      message: t("main.video.downloadFfmpeg"),
+      detail: t("main.video.downloadFfmpegDetail"),
+      buttons: [t("main.buttons.continue"), t("main.buttons.stop")],
       defaultId: 0,
       icon: WINDOW_ICON
     });
@@ -350,9 +350,9 @@ export class VideoProcessor {
         dataCallback({ uuid: uuid, error: true });
         dialog.showMessageBox(window, {
           type: "error",
-          title: t("main.error"),
-          message: t("main.failedProcessVideo"),
-          detail: t("main.failedProcessVideoDetail"),
+          title: t("main.warnings.error"),
+          message: t("main.video.failedProcess"),
+          detail: t("main.video.failedProcessDetail"),
           icon: WINDOW_ICON
         });
         console.log("*** START FFMPEG OUTPUT ***");
@@ -520,9 +520,9 @@ export class VideoProcessor {
           dataCallback({ uuid: uuid, error: true });
           dialog.showMessageBox(window, {
             type: "error",
-            title: t("main.error"),
-            message: t("main.copyUrlToClipboard"),
-            detail: t("main.copyUrlToClipboardDetail"),
+            title: t("main.warnings.error"),
+            message: t("main.video.copyUrl"),
+            detail: t("main.video.copyUrlDetail"),
             icon: WINDOW_ICON
           });
         } else {
@@ -533,9 +533,9 @@ export class VideoProcessor {
               if (silent === true) return;
               dialog.showMessageBox(window, {
                 type: "error",
-                title: t("main.error"),
-                message: t("main.youtubeDownloadFailed"),
-                detail: t("main.youtubeDownloadFailedDetail"),
+                title: t("main.warnings.error"),
+                message: t("main.video.youtubeFailed"),
+                detail: t("main.video.youtubeFailedDetail"),
                 icon: WINDOW_ICON
               });
             });
@@ -556,9 +556,9 @@ export class VideoProcessor {
             if (silent === true) return;
             dialog.showMessageBox(window, {
               type: "error",
-              title: t("main.error"),
-              message: t("main.tbaDownloadFailed"),
-              detail: t("main.tbaDownloadFailedDetail"),
+              title: t("main.warnings.error"),
+              message: t("main.video.tbaFailed"),
+              detail: t("main.video.tbaFailedDetail"),
               icon: WINDOW_ICON
             });
           });
@@ -590,9 +590,9 @@ export class VideoProcessor {
   private static getLocalPath(window: BrowserWindow): Promise<string> {
     return dialog
       .showOpenDialog(window, {
-        title: t("main.selectVideoOpen"),
+        title: t("main.video.openTitle"),
         properties: ["openFile"],
-        filters: [{ name: t("main.videos"), extensions: VideoProcessor.extensions }]
+        filters: [{ name: t("main.video.filter"), extensions: VideoProcessor.extensions }]
       })
       .then((result) => {
         if (result.canceled || result.filePaths.length === 0) {

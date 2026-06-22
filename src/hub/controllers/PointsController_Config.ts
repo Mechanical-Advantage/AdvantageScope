@@ -9,7 +9,7 @@ import { SourceListConfig } from "../../shared/SourceListConfig";
 import { indexArray } from "../../shared/util";
 
 const PointsController_Config: SourceListConfig = {
-  title: "Sources",
+  title: "hub.points.sources",
   autoAdvance: false,
   allowChildrenFromDrag: false,
   typeMemoryId: "points",

@@ -123,6 +123,9 @@ export default class ConsoleRenderer implements TabRenderer {
       }
     });
 
+    // Set initial placeholder
+    this.JUMP_INPUT.placeholder = formatTimeWithMS(0);
+
     // Update field text
     this.updateData();
   }

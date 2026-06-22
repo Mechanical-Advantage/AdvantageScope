@@ -232,7 +232,7 @@ export default class LineGraphController implements TabController {
         break;
     }
     if (leftLabels.length > 0) {
-      this.leftSourceList.setTitle(t("sourceList.leftAxisWithModifiers", { modifiers: leftLabels.join(", ") }));
+      this.leftSourceList.setTitle(t("sourceList.leftAxisWithModifiers", { modifiers: leftLabels }));
     } else {
       this.leftSourceList.setTitle(t("sourceList.leftAxis"));
     }
@@ -257,7 +257,7 @@ export default class LineGraphController implements TabController {
         break;
     }
     if (rightLabels.length > 0) {
-      this.rightSourceList.setTitle(t("sourceList.rightAxisWithModifiers", { modifiers: rightLabels.join(", ") }));
+      this.rightSourceList.setTitle(t("sourceList.rightAxisWithModifiers", { modifiers: rightLabels }));
     } else {
       this.rightSourceList.setTitle(t("sourceList.rightAxis"));
     }

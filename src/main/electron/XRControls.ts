@@ -101,10 +101,10 @@ export namespace XRControls {
       event.preventDefault();
       let response = dialog.showMessageBoxSync(window, {
         type: "question",
-        title: t("main.alert"),
-        message: t("main.stopXrServer"),
-        detail: t("main.stopXrServerWindowDetail"),
-        buttons: [t("main.dontClose"), t("main.close")],
+        title: t("main.warnings.alert"),
+        message: t("main.xr.stopServerQuery"),
+        detail: t("main.xr.stopServerWindowDetail"),
+        buttons: [t("main.buttons.dontClose"), t("main.buttons.close")],
         defaultId: 1,
         icon: WINDOW_ICON
       });

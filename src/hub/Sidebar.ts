@@ -341,7 +341,7 @@ export default class Sidebar {
     }
     let title: string;
     if (this.fieldCount === 0) {
-      title = t("hub.sidebarTitleDefault");
+      title = t("hub.sidebar.titleDefault");
     } else {
       let runtime = range[1] - range[0];
       let runtimeUnit = "s";

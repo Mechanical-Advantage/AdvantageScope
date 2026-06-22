@@ -82,7 +82,7 @@ export default class SourceList {
     this.TITLE = document.createElement("div");
     this.ROOT.appendChild(this.TITLE);
     this.TITLE.classList.add("title");
-    this.TITLE.innerText = config.title;
+    this.TITLE.innerText = t(config.title);
     this.TITLE.style.left = editButtonCallback === undefined ? "55px" : "30px";
     this.TITLE.style.right = editButtonCallback === undefined ? "55px" : "30px";
 
