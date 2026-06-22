@@ -57,6 +57,71 @@ div.line-graph-scroll-content {
   height: 1000000px;
 }
 
+div.line-graph-help {
+  position: absolute;
+  z-index: 10;
+  left: 0px;
+  right: 0px;
+  top: 8px;
+  bottom: 35px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+div.line-graph-help-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  opacity: 0.45;
+  transition: opacity 0.4s ease-out;
+  animation: help-fade-in 0.4s ease-out;
+}
+
+div.line-graph-help.fading-out div.line-graph-help-container {
+  opacity: 0;
+}
+
+div.line-graph-help-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  div.line-graph-help-row {
+    color: #fff;
+  }
+}
+
+img.line-graph-help-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+@media (prefers-color-scheme: dark) {
+  img.line-graph-help-icon {
+    filter: invert(1);
+  }
+}
+
+@keyframes help-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.45;
+  }
+}
+
 /* 2D Field */
 
 div.field-2d-canvas-container {
