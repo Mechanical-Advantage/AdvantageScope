@@ -700,7 +700,7 @@ export namespace Units {
         names: ["cal", "calorie", "calories"]
       },
       potato: {
-        value: 1 / 460.24,
+        value: 1 / 4.184 / 1000 / 110,
         suffix: "pot",
         pluralizeSuffix: false,
         names: ["pot", "potato", "potatoes"]
