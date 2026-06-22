@@ -16,7 +16,7 @@ The 2D field tab shows a 2D visualization of the robot overlayed on a map of the
 
 The timeline is used to control playback and visualization. Clicking on the timeline selects a time, and right-clicking deselects it. The selected time is synchronized across all tabs, making it easy to quickly find this location in other views.
 
-The green sections of the timeline indicate when the robot is autonomous, and the blue sections indicate when the robot is teleoperated.
+Yellow sections indicate when the robot is autonomous, blue sections indicate when the robot is teleoperated, and gray sections indicate when the robot is in utility mode.
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
@@ -39,10 +39,6 @@ To see a full list of supported object types, click the `?` icon. This list also
 ## Data Format
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
-
-:::warning
-The legacy number array format for geometry data is now deprecated. See [here](/overview/legacy-formats) for details.
-:::
 
 Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log 2D pose data in Java.
 
@@ -122,7 +118,7 @@ telemetry.update();
 
 - **Field:** The field image to use. All recent FRC and FTC games are supported. To add a custom field image, see [Custom Assets](/more-features/custom-assets).
 - **Orientation:** The orientation of the field image in the viewer pane.
-- **Size:** The side length of the robot (30 inches, 27 inches, or 24 inches).
+- **Size:** The side length of the robot (30/27/24 inches for FRC, 18/16/14 inches for FTC).
 
 :::info
 The coordinate system used on the this tab is customizable. See the [coordinate system](/more-features/coordinate-systems) page for details.

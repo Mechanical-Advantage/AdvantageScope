@@ -5,10 +5,9 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { DISTRIBUTION, Distribution } from "./shared/buildConstants";
-import { USB_ADDRESS } from "./shared/IPAddresses";
+import { IS_LITE } from "./shared/buildConstants";
 import NamedMessage from "./shared/NamedMessage";
-import Preferences from "./shared/Preferences";
+import Preferences, { getRobotAddress } from "./shared/Preferences";
 import { zfill } from "./shared/util";
 
 const FILE_LIST: HTMLElement = document.getElementsByClassName("file-list")[0] as HTMLElement;
@@ -27,7 +26,7 @@ let messagePort: MessagePort | null = null;
 let platform: string = "";
 let preferences: Preferences | null = null;
 
-let address: string = DISTRIBUTION === Distribution.Lite ? window.location.hostname : "";
+let address: string = IS_LITE ? window.location.hostname : "";
 let loading = true;
 let startTime: number | null = null;
 let alertIsError = false;
@@ -63,10 +62,9 @@ function handleMainMessage(message: NamedMessage) {
       preferences = message.data;
       let path = "";
       if (preferences) {
-        if (DISTRIBUTION !== Distribution.Lite) {
-          address = preferences.usb ? USB_ADDRESS : preferences.robotAddress;
+        if (!IS_LITE) {
           // https://github.com/Mechanical-Advantage/AdvantageScope/issues/167
-          address = address
+          address = getRobotAddress(preferences, platform)
             .split(".")
             .map((part) => part.replace(/^0+/, "") || "0")
             .join(".");
@@ -107,17 +105,15 @@ function handleMainMessage(message: NamedMessage) {
       console.warn(message.data);
       let friendlyText = "";
       if (message.data === "No such file") {
-        friendlyText = `Failed to open log folder at <u>${preferences?.remotePath}</u>`;
-      } else if (message.data === "No files") {
-        friendlyText = `No files found in folder <u>${preferences?.remotePath}</u> (check path)`;
-      } else if (
-        message.data.includes("ENETUNREACH") ||
-        message.data.includes("EHOSTDOWN") ||
-        message.data.includes("ENOTFOUND") ||
-        message.data.toLowerCase().includes("timeout") ||
-        message.data === "Fetch failed"
-      ) {
-        friendlyText = `Robot not found at <u>${address}</u> (check connection)`;
+        friendlyText = "Failed to open log folder at <u>" + preferences?.remotePath + "</u>";
+      } else if (message.data === "Timed out while waiting for handshake" || message.data === "Fetch failed") {
+        friendlyText = "Robot not found at <u>" + address + "</u> (check connection)";
+      } else if (message.data.includes("ENOTFOUND")) {
+        friendlyText = "Unknown address <u>" + address + "</u>";
+      } else if (message.data === "All configured authentication methods failed") {
+        friendlyText = "Failed to authenticate to robot at <u>" + address + "</u>";
+      } else if (message.data === "Not connected") {
+        friendlyText = "Lost connection to robot";
       } else {
         friendlyText = "Unknown error: " + message.data;
       }
@@ -334,11 +330,7 @@ DOWNLOAD_BUTTON.addEventListener("click", save);
 window.addEventListener("keydown", (event) => {
   if (event.code === "Enter") {
     save();
-  } else if (
-    DISTRIBUTION !== Distribution.Lite &&
-    event.key === "a" &&
-    (platform === "darwin" ? event.metaKey : event.ctrlKey)
-  ) {
+  } else if (!IS_LITE && event.key === "a" && (platform === "darwin" ? event.metaKey : event.ctrlKey)) {
     if (filenames.length === selectedFiles.length) {
       // Deselect all
       selectedFiles = [];
@@ -357,6 +349,6 @@ window.addEventListener("keydown", (event) => {
   }
 });
 window.addEventListener("load", () => {
-  (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = DISTRIBUTION === Distribution.Lite;
-  (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = DISTRIBUTION !== Distribution.Lite;
+  (DOWNLOAD_BUTTON.children[0] as HTMLElement).hidden = IS_LITE;
+  (DOWNLOAD_BUTTON.children[1] as HTMLElement).hidden = !IS_LITE;
 });

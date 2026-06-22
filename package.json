@@ -1,7 +1,7 @@
 {
   "name": "advantagescope",
   "productName": "AdvantageScope",
-  "version": "26.0.2",
+  "version": "27.0.0-dev",
   "description": "Robot telemetry application",
   "author": {
     "name": "Littleton Robotics",
@@ -42,6 +42,8 @@
     "@types/download": "^8.0.2",
     "@types/heatmap.js": "2.0.38",
     "@types/jsonfile": "^6.1.2",
+    "@types/pngjs": "^6.0.5",
+    "@types/ssh2": "^1.11.13",
     "@types/lzma-native": "^4.0.4",
     "@types/three": "^0.184.1",
     "@types/webxr": "^0.5.24",
@@ -75,10 +77,11 @@
     "@rev-robotics/revlog-converter": "^1.0.5",
     "@types/emscripten": "^1.39.13",
     "@types/ws": "^8.5.13",
-    "basic-ftp": "^5.0.5",
     "check-disk-space": "^3.4.0",
     "download": "^8.0.0",
     "jsonfile": "^6.1.0",
+    "pngjs": "^7.0.0",
+    "ssh2": "^1.14.0",
     "lzma-native": "^8.0.6",
     "selfsigned": "^5.5.0",
     "tesseract.js": "^6.0.0",
@@ -103,6 +106,9 @@
       "enableEmbeddedAsarIntegrityValidation": true,
       "onlyLoadAppFromAsar": true
     },
+    "electronLanguages": [
+      "en-US"
+    ],
     "files": [
       "www/**/*",
       "bundles/**/*",
@@ -196,6 +202,10 @@
       "notarize": false,
       "extendInfo": {
         "CFBundleIconName": "AppIcon",
+        "CFBundleLocalizations": [
+          "en"
+        ],
+        "NSLocalNetworkUsageDescription": "AdvantageScope uses the local network to communicate with robots.",
         "NSUpdateSecurityPolicy": {
           "AllowPackages": [
             "58SET3NSX7"

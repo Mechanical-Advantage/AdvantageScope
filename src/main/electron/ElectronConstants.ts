@@ -25,7 +25,6 @@ export const AKIT_PATH_INPUT = path.join(app.getPath("temp"), "ascope-log-path.t
 export const AKIT_PATH_INPUT_PERIOD = 250;
 export const VIDEO_CACHE = path.join(app.getPath("temp"), "advantagescope-video-cache");
 export const VIDEO_CACHE_FALLBACK = path.join(app.getPath("userData"), "video-cache");
-export const FRC_LOG_FOLDER = "C:\\Users\\Public\\Documents\\FRC\\Log Files";
 export const WINDOW_ICON = process.platform === "darwin" ? undefined : path.join(__dirname, "../icons/window-icon.png");
 export const HUB_DEFAULT_WIDTH = 1100;
 export const HUB_DEFAULT_HEIGHT = 650;
@@ -47,6 +46,8 @@ export const RLOG_HEARTBEAT_DELAY_MS = 500; // How long to wait between heartbea
 export const RLOG_HEARTBEAT_DATA = new Uint8Array([6, 3, 2, 8]);
 
 // Download
-export const DOWNLOAD_TIMEOUT_MS = 2000; // Timeout for FTP operations
-export const DOWNLOAD_RETRY_DELAY_MS = 2000; // How long to wait between connection attempts
-export const DOWNLOAD_REFRESH_INTERVAL_MS = 3000; // How often to refresh file list when connected
+export const DOWNLOAD_USERNAME = "systemcore";
+export const DOWNLOAD_PASSWORD = "systemcore";
+export const DOWNLOAD_CONNECT_TIMEOUT_MS = 3000; // How long to wait when connecting
+export const DOWNLOAD_RETRY_DELAY_MS = 1000; // How long to wait between connection attempts
+export const DOWNLOAD_REFRESH_INTERVAL_MS = 5000; // How often to refresh file list when connected
