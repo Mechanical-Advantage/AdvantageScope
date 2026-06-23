@@ -107,7 +107,7 @@ export default (cliArgs) => {
     ...(isLite
       ? [bundle(["main/lite/main.ts"], false, false)]
       : [
-          bundle(["main/electron/main.ts", "preload.ts"], true, false, [
+          bundle(["main/electron/main.ts"], true, false, [
             "electron",
             "fs",
             "jsonfile",
@@ -122,7 +122,8 @@ export default (cliArgs) => {
             "tesseract.js",
             "lzma-native",
             "@rev-robotics/revlog-converter"
-          ])
+          ]),
+          bundle(["preload.ts"], true, false, ["electron"])
         ]),
 
     // App bundles
