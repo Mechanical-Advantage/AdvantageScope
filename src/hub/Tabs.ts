@@ -714,6 +714,9 @@ export default class Tabs {
   /** Renames a single tab. */
   renameTab(index: number, name: string) {
     let tab = this.tabList[index];
+    if (name === getDefaultTabTitle(tab.type)) {
+      name = "";
+    }
     tab.title = name;
     tab.titleElement.innerText = getTabIcon(tab.type) + " " + (name === "" ? getDefaultTabTitle(tab.type) : name);
   }

@@ -364,6 +364,17 @@ async function handleHubMessage(message: NamedMessage) {
       }
       break;
 
+    case "update-preferences":
+      {
+        let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        mergePreferences(prefs, message.data);
+        localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+        sendMessage(hubPort, "set-preferences", prefs);
+      }
+      break;
+
     case "open-feedback":
       window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
       break;
