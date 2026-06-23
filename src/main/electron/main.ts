@@ -281,6 +281,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       }
       break;
 
+    case "update-preferences":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        mergePreferences(prefs, message.data);
+        jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+        sendAllPreferences();
+      }
+      break;
+
     case "prompt-update":
       updateChecker.showPrompt();
       break;
@@ -3118,6 +3127,15 @@ function createSatellite(
 
         case "save-state":
           stateTracker.saveRendererState(satellite, message.data);
+          break;
+
+        case "update-preferences":
+          {
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            mergePreferences(prefs, message.data);
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
+          }
           break;
 
         case "call-selection-setter":
