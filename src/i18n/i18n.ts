@@ -17,6 +17,9 @@ export function setupI18n(lang: string): TFunction {
     fallbackLng: "en-US",
     resources: {
       "en-US": { translation: enUSTranslations }
+    },
+    interpolation: {
+      escapeValue: false
     }
   });
   return i18next.t.bind(i18next);
