@@ -12,6 +12,9 @@ export async function run(
   timestampRangeCallback: (min: number, max: number) => void,
   recordCallback: (entry: number, position: number) => void
 ) {
+  if (!(data instanceof Uint8Array)) {
+    throw new TypeError("Expected Uint8Array for data parameter");
+  }
   const { default: init } = await import(indexerName);
   const Module: {
     _malloc(size: number): number;
