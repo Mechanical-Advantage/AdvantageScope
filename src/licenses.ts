@@ -23,12 +23,10 @@ window.addEventListener("load", () => {
     let textElement = document.createElement("div");
     textElement.classList.add("license-text");
     let cleanText = license.text
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
       .replaceAll("\t", "")
       .replaceAll("\r\n", "\n")
       .replaceAll("\n\n", "<br><br>")
-      .replaceAll("\n&gt;", "<br>&gt;")
+      .replaceAll("\n>", "<br>>")
       .replaceAll("\n-", "<br>-")
       .replaceAll("\n", " ");
     while (cleanText.includes("  ")) {
@@ -38,7 +36,13 @@ window.addEventListener("load", () => {
       cleanText = cleanText.slice(1);
     }
     cleanText = cleanText.replaceAll("<br> ", "<br>");
-    textElement.innerHTML = cleanText;
+    const parts = cleanText.split("<br>");
+    parts.forEach((part, index) => {
+      if (index > 0) {
+        textElement.appendChild(document.createElement("br"));
+      }
+      textElement.appendChild(document.createTextNode(part));
+    });
     document.body.appendChild(textElement);
   });
 });
