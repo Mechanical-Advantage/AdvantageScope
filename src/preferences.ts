@@ -118,7 +118,9 @@ window.addEventListener("message", (event) => {
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,
-            systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress
+            systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
+            hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
+            hasScrolledTimeline: oldPrefs.hasScrolledTimeline
           };
           messagePort.postMessage(newPrefs);
         } else {

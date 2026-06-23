@@ -27,6 +27,8 @@ export default interface Preferences {
   skipHootNonProWarning: boolean;
   ctreLicenseAccepted: boolean;
   systemcoreStaticAddress: "" | "usb" | "wifi";
+  hasScrolledLineGraph: boolean;
+  hasScrolledTimeline: boolean;
 }
 
 export const SUPPORTED_LANGS = ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"];
@@ -49,7 +51,9 @@ export const DEFAULT_PREFS: Preferences = {
   userAssetsFolder: null,
   skipHootNonProWarning: false,
   ctreLicenseAccepted: false,
-  systemcoreStaticAddress: ""
+  systemcoreStaticAddress: "",
+  hasScrolledLineGraph: false,
+  hasScrolledTimeline: false
 };
 
 export const DEFAULT_PREFS_LITEDS: Preferences = Object.assign({}, DEFAULT_PREFS, {
@@ -199,6 +203,12 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
       newPrefs.systemcoreStaticAddress === "wifi")
   ) {
     basePrefs.systemcoreStaticAddress = newPrefs.systemcoreStaticAddress;
+  }
+  if ("hasScrolledLineGraph" in newPrefs && typeof newPrefs.hasScrolledLineGraph === "boolean") {
+    basePrefs.hasScrolledLineGraph = newPrefs.hasScrolledLineGraph;
+  }
+  if ("hasScrolledTimeline" in newPrefs && typeof newPrefs.hasScrolledTimeline === "boolean") {
+    basePrefs.hasScrolledTimeline = newPrefs.hasScrolledTimeline;
   }
 }
 

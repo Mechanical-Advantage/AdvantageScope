@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { getBabelOutputPlugin } from "@rollup/plugin-babel";
-import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import yaml from "@rollup/plugin-yaml";
 import fs from "fs";
@@ -19,6 +18,14 @@ const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
+/**
+ * @import { RolldownOptions } from "rolldown"
+ * @param input {string[]}
+ * @param isMain {boolean}
+ * @param isXRClient {boolean}
+ * @param external {string[]}
+ * @returns {RolldownOptions}
+ */
 function bundle(input, isMain, isXRClient, external = []) {
   const packageJson = JSON.parse(
     fs.readFileSync("package.json", {
@@ -31,7 +38,9 @@ function bundle(input, isMain, isXRClient, external = []) {
       dir: (isLite ? "lite/static/" : "") + "bundles/",
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
-      banner: licenseHeader
+      banner: licenseHeader,
+      minify: isXRClient || isLite || "dce-only",
+      minifyInternalExports: isXRClient || isLite
     },
     context: "this",
     external: external,
@@ -41,25 +50,19 @@ function bundle(input, isMain, isXRClient, external = []) {
     plugins: [
       typescript(),
       yaml(),
-      ...(isXRClient
-        ? [
-            getBabelOutputPlugin({
-              presets: [["@babel/preset-env", { modules: false }]],
-              compact: true,
-              targets: "iOS 16" // AdvantageScope XR is built for iOS 16
-            }),
-            terser()
-          ]
+      isXRClient
+        ? getBabelOutputPlugin({
+            presets: [["@babel/preset-env", { modules: false }]],
+            compact: true,
+            targets: "iOS 16" // AdvantageScope XR is built for iOS 16
+          })
         : isLite
-        ? [
-            getBabelOutputPlugin({
-              presets: [["@babel/preset-env", { modules: false }]],
-              compact: true,
-              targets: "> 0.1%, not dead"
-            }),
-            terser({ mangle: { reserved: ["Module"] } })
-          ]
-        : [cleanup()]),
+        ? getBabelOutputPlugin({
+            presets: [["@babel/preset-env", { modules: false }]],
+            compact: true,
+            targets: "> 0.1%, not dead"
+          })
+        : cleanup(),
       replacePlugin(
         {
           __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",
