@@ -553,6 +553,9 @@ hub:
 
   metadata:
     none: "No metadata found. Check the documentation for details on metadata publishing." # Message shown when no metadata is present
+    value: "Value" # Column header for generic metadata value
+    real: "Real" # Column header for metadata values produced on the real robot
+    replay: "Replay" # Column header for metadata values produced when replaying a log file in simulation
 
   console:
     exportLog: "Export console log" # Tooltip for exporting console logs
