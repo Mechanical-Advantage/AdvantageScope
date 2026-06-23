@@ -270,6 +270,7 @@ hub:
   title: "AdvantageScope" # Main application window title
   updateAvailable: "Update available" # Tooltip for app update button
   shareFeedback: "Share feedback" # Tooltip for developer feedback button
+  timelineScrollToZoom: "Scroll timeline to zoom" # Help text explaining that the user should scroll up and down to zoom in on the timeline
 
   logs:
     openErrorTitle: "Failed to open log" # Error title when log file open fails
@@ -411,6 +412,8 @@ hub:
     noUnits: "No Units" # Modifier label shown when unit handling are disabled
     differentiated: "Differentiated" # Modifier label shown when differentiate filter is active (the derivatives of the fields are being calculated and displayed)
     integrated: "Integrated" # Modifier label shown when integrate filter is active (the integrals of the fields are being calculated and displayed)
+    helpScrollToZoom: "Scroll to zoom" # Help text explaining that the user should scroll up and down to zoom in on the line graph
+    helpDragToPan: "Drag to pan" # Help text explaining that the user should drag left and right to pan the line graph
     types:
       stepped: "Stepped" # Stepped line graph type
       smooth: "Smooth" # Smooth line graph type

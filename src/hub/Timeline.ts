@@ -227,7 +227,7 @@ export default class Timeline {
     if (selectedTime !== null) markTime(selectedTime, 1);
 
     // Draw tick marks
-    let helpText = "Scroll timeline to zoom";
+    let helpText = t("hub.timelineScrollToZoom");
     context.font = helpFont;
     let helpTextWidth = context.measureText(helpText).width;
 
