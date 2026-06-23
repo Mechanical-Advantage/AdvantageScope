@@ -237,17 +237,8 @@ sourceList:
   toggleVisibility: "Toggle field visibility" # Tooltip to hide/show a field
   hideField: "Hide field" # Tooltip to hide a field
   showField: "Show field" # Tooltip to show a field
-  leftAxis: "Left Axis" # Title for the left axis source list in the line graph
-  rightAxis: "Right Axis" # Title for the right axis source list in the line graph
-  leftAxisWithModifiers: "Left Axis [{{modifiers, list(type: unit)}}]" # Left axis title when modifiers like Locked/Converted are active
-  rightAxisWithModifiers: "Right Axis [{{modifiers, list(type: unit)}}]" # Right axis title when modifiers like Locked/Converted are active
-  locked: "Locked" # Modifier label shown when an axis range is locked
-  converted: "Converted" # Modifier label shown when unit conversion is active
-  noUnits: "No Units" # Modifier label shown when unit handling are disabled
-  differentiated: "Differentiated" # Modifier label shown when differentiate filter is active (the derivatives of the fields are being calculated and displayed)
-  integrated: "Integrated" # Modifier label shown when integrate filter is active (the integrals of the fields are being calculated and displayed)
   optionValues:
-    # Common colors (NeonColors / NeonColors_RedStart)
+    # Neon colors
     "#00ff00": "Green" # Green neon color option
     "#ff0000": "Red" # Red neon color option
     "#0000ff": "Blue" # Blue neon color option
@@ -255,7 +246,7 @@ sourceList:
     "#00ffff": "Cyan" # Cyan neon color option
     "#ffff00": "Yellow" # Yellow neon color option
     "#ff00ff": "Magenta" # Magenta neon color option
-    # GraphColors
+    # Graph colors
     "#2b66a2": "Blue" # Blue graph color option
     "#e5b31b": "Gold" # Gold graph color option
     "#af2437": "Red" # Red graph color option
@@ -269,18 +260,11 @@ sourceList:
     # Sizes
     normal: "Normal" # Normal thickness/size option
     bold: "Bold" # Bold thickness/size option
-    verybold: "Very Bold" # Very Bold thickness/size option
+    verybold: "Very Bold" # Very bold thickness/size option
     thin: "Thin" # Thin thickness/size option
     medium: "Medium" # Medium thickness/size option
     large: "Large" # Large thickness/size option
     small: "Small" # Small thickness/size option
-    # Swerve Arrangement
-    "0,1,2,3": "FL/FR/BL/BR" # Swerve module layout FL/FR/BL/BR
-    "1,0,3,2": "FR/FL/BR/BL" # Swerve module layout FR/FL/BR/BL
-    "0,1,3,2": "FL/FR/BR/BL" # Swerve module layout FL/FR/BR/BL
-    "0,3,1,2": "FL/BL/BR/FR" # Swerve module layout FL/BL/BR/FR
-    "3,0,2,1": "FR/BR/BL/FL" # Swerve module layout FR/BR/BL/FL
-    "1,0,2,3": "FR/FL/BL/BR" # Swerve module layout FR/FL/BL/BR
 
 hub:
   title: "AdvantageScope" # Main application window title
@@ -418,13 +402,25 @@ hub:
   lineGraph:
     numericAxis: "Numeric Axis" # Title for the numeric axis source list in the line graph
     discreteFields: "Discrete Fields" # Title for the discrete fields source list in the line graph
+    leftAxis: "Left Axis" # Title for the left axis source list in the line graph
+    rightAxis: "Right Axis" # Title for the right axis source list in the line graph
+    leftAxisWithModifiers: "Left Axis [{{modifiers, list(type: unit)}}]" # Left axis title when modifiers like Locked/Converted are active
+    rightAxisWithModifiers: "Right Axis [{{modifiers, list(type: unit)}}]" # Right axis title when modifiers like Locked/Converted are active
+    locked: "Locked" # Modifier label shown when an axis range is locked
+    converted: "Converted" # Modifier label shown when unit conversion is active
+    noUnits: "No Units" # Modifier label shown when unit handling are disabled
+    differentiated: "Differentiated" # Modifier label shown when differentiate filter is active (the derivatives of the fields are being calculated and displayed)
+    integrated: "Integrated" # Modifier label shown when integrate filter is active (the integrals of the fields are being calculated and displayed)
     types:
-      stepped: "Stepped Line" # Stepped line graph type
-      smooth: "Smooth Line" # Smooth line graph type
+      stepped: "Stepped" # Stepped line graph type
+      smooth: "Smooth" # Smooth line graph type
       points: "Points" # Points graph type
       stripes: "Stripes" # Stripes graph type
       graph: "Graph" # Graph type
       alerts: "Alerts" # Alerts graph type
+    options:
+      color: "Color" # Line color option label
+      size: "Thickness" # Line thickness option label
 
   statistics:
     measurements: "Measurements" # Title for the measurements source list in statistics view
@@ -512,6 +508,13 @@ hub:
       color: "Color" # Color option label
       arrangement: "Arrangement" # Arrangement option label
       units: "Rotation Units" # Rotation units option label
+    optionValues:
+      "0,1,2,3": "FL/FR/BL/BR" # Swerve module layout FL/FR/BL/BR
+      "1,0,3,2": "FR/FL/BR/BL" # Swerve module layout FR/FL/BR/BL
+      "0,1,3,2": "FL/FR/BR/BL" # Swerve module layout FL/FR/BR/BL
+      "0,3,1,2": "FL/BL/BR/FR" # Swerve module layout FL/BL/BR/FR
+      "3,0,2,1": "FR/BR/BL/FL" # Swerve module layout FR/BR/BL/FL
+      "1,0,2,3": "FR/FL/BL/BR" # Swerve module layout FR/FL/BL/BR
     maxSpeed: "Max Speed (m/s)" # Label for max speed setting
     maxSpeedTitle: "Maximum speed (meters per second)" # Tooltip for max speed setting
     frameSize: "Frame Size (m)" # Label for frame size settings
@@ -531,12 +534,17 @@ hub:
       plus: "Plus" # Plus points type
       cross: "Cross" # Cross points type
       circle: "Circle" # Circle points type
-      semiCircle: "Semi-Circle" # Semi-Circle points type
-      square: "Square" # Square points type
-      triangle: "Triangle" # Triangle points type
+      plusSplit: "Plus" # Plus points type
+      crossSplit: "Cross" # Cross points type
+      circleSplit: "Circle" # Circle points type
+      component: "Component" # Component points type
     options:
       size: "Size" # Size option label
       groupSize: "Group Size" # Group size option label
+      component: "Component" # Component option label
+    optionValues:
+      component_x: "X" # Option value label for X component
+      component_y: "Y" # Option value label for Y component
     width: "Coordinate system width (pixels)" # Tooltip for points width input
     height: "Coordinate system height (pixels)" # Tooltip for points height input
     orientation: "Coordinate system orientation" # Tooltip for points orientation dropdown
