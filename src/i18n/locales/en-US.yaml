@@ -598,7 +598,7 @@ menu:
     default: "Default" # Default sub-option name
     defaultWithMode: "Default: {{mode}}" # Label showing default option and current default live mode
     connectSim: "Connect to Simulator" # Menu option to connect live to simulator
-    connectDs: "Connect to Driver Station" # Menu option to connect live to driver station
+    connectDs: "Connect to Driver Station" # Menu option to connect live to driver station software
     downloadLogs: "Download Logs..." # Menu option to download log files from robot
     usbAddress: "Use Systemcore USB Address" # Checkbox menu option for Systemcore USB address
     wifiAddress: "Use Systemcore Wi-Fi Address" # Checkbox menu option for Systemcore Wi-Fi address
@@ -650,7 +650,7 @@ menu:
     contactUs: "Contact Us" # Menu option to email support
     githubRepo: "GitHub Repository" # Menu option to visit GitHub repo
     advantagescopeDocs: "AdvantageScope Documentation" # Menu option to visit AdvantageScope docs
-    dsDocs: "Driver Station Documentation" # Menu option to visit Driver Station docs
+    dsDocs: "Driver Station Documentation" # Menu option to visit Driver Station software docs
     wpilibDocs: "WPILib Documentation" # Menu option to visit WPILib docs
     littletonRobotics: "Littleton Robotics" # Menu option to visit Littleton Robotics site
     noOptions: "No Options" # Fallback menu option when no options are available
@@ -672,18 +672,18 @@ menu:
     orbitField: "Orbit Field" # Menu option for 3D camera orbiting the field
     orbitRobot: "Orbit Robot" # Menu option for 3D camera orbiting the robot
     driverView: "Driver View" # Menu option for 3D camera driver view
-    driverStation: "Driver Station" # Menu option for 3D camera driver station view
+    driverStation: "Driver Station" # Menu option for 3D camera driver station position view
     blueLeft: "Blue Left" # Menu option for 3D camera blue left position
     blueRight: "Blue Right" # Menu option for 3D camera blue right position
     redLeft: "Red Left" # Menu option for 3D camera red left position
     redRight: "Red Right" # Menu option for 3D camera red right position
     auto: "Auto" # Menu option for automatic selection
-    blue1: "Blue 1" # Menu option for 3D camera blue 1 station
-    blue2: "Blue 2" # Menu option for 3D camera blue 2 station
-    blue3: "Blue 3" # Menu option for 3D camera blue 3 station
-    red1: "Red 1" # Menu option for 3D camera red 1 station
-    red2: "Red 2" # Menu option for 3D camera red 2 station
-    red3: "Red 3" # Menu option for 3D camera red 3 station
+    blue1: "Blue 1" # Menu option for 3D camera blue 1 station position
+    blue2: "Blue 2" # Menu option for 3D camera blue 2 station position
+    blue3: "Blue 3" # Menu option for 3D camera blue 3 station position
+    red1: "Red 1" # Menu option for 3D camera red 1 station position
+    red2: "Red 2" # Menu option for 3D camera red 2 station position
+    red3: "Red 3" # Menu option for 3D camera red 3 station position
     setFov: "Set FOV" # Menu option to edit camera FOV
 
 main:
