@@ -204,12 +204,12 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   ) {
     basePrefs.systemcoreStaticAddress = newPrefs.systemcoreStaticAddress;
   }
-  // if ("hasScrolledLineGraph" in newPrefs && typeof newPrefs.hasScrolledLineGraph === "boolean") {
-  //   basePrefs.hasScrolledLineGraph = newPrefs.hasScrolledLineGraph;
-  // }
-  // if ("hasScrolledTimeline" in newPrefs && typeof newPrefs.hasScrolledTimeline === "boolean") {
-  //   basePrefs.hasScrolledTimeline = newPrefs.hasScrolledTimeline;
-  // }
+  if ("hasScrolledLineGraph" in newPrefs && typeof newPrefs.hasScrolledLineGraph === "boolean") {
+    basePrefs.hasScrolledLineGraph = newPrefs.hasScrolledLineGraph;
+  }
+  if ("hasScrolledTimeline" in newPrefs && typeof newPrefs.hasScrolledTimeline === "boolean") {
+    basePrefs.hasScrolledTimeline = newPrefs.hasScrolledTimeline;
+  }
 }
 
 export function getRobotAddress(preferences: Preferences, platform: string): string {
