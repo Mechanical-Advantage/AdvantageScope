@@ -29,28 +29,25 @@ export function startAssetDownloadLoop(updateCallback: () => void) {
         }
         getAssetInfo()
           .then((assetInfo) => {
-            statusText =
-              "Download started at " +
-              new Date().toLocaleTimeString() +
-              ". Please wait a few minutes for the download to complete.";
+            statusText = t("main.assets.downloadStarted", { time: new Date().toLocaleTimeString() });
             updateLocalAssets(assetInfo)
               .then(() => {
-                statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
+                statusText = t("main.assets.downloadFinished");
                 updateCallback();
                 setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
               })
               .catch(() => {
-                statusText = "Cannot connect to GitHub. Trying again soon.";
+                statusText = t("main.assets.connectFailed");
                 setTimeout(() => check(), FAILURE_TIMEOUT_MS);
               });
           })
           .catch(() => {
-            statusText = "Cannot connect to GitHub. Trying again soon.";
+            statusText = t("main.assets.connectFailed");
             setTimeout(() => check(), FAILURE_TIMEOUT_MS);
           });
       })
       .catch(() => {
-        statusText = "Not enough disk space. Trying again soon.";
+        statusText = t("main.assets.noDiskSpace");
         setTimeout(() => check(), FAILURE_TIMEOUT_MS);
       });
   };

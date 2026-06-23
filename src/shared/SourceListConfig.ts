@@ -18,7 +18,6 @@ export type SourceListConfig = {
 
 export type SourceListTypeConfig = {
   key: string;
-  display: string;
   symbol: string;
   showInTypeName: boolean;
   /** Option key or hex (starting with #) */
@@ -48,15 +47,46 @@ export type SourceListTypeConfig = {
 
 export type SourceListOptionConfig = {
   key: string;
-  display: string;
   showInTypeName: boolean;
-  values: SourceListOptionValueConfig[];
+  values: string[];
 };
 
-export type SourceListOptionValueConfig = {
-  key: string;
-  display: string;
-};
+export function getSourceListPrefix(titleKey: string): string {
+  let parts = titleKey.split(".");
+  if (parts.length >= 2) {
+    return parts[0] + "." + parts[1];
+  }
+  return "sourceList";
+}
+
+export function tType(prefix: string, typeKey: string): string {
+  let key = `${prefix}.types.${typeKey}`;
+  let res = t(key);
+  return res !== key ? res : typeKey;
+}
+
+export function tOption(prefix: string, typeKey: string, optionKey: string): string {
+  let specificKey = `${prefix}.options.${typeKey}_${optionKey}`;
+  let genericKey = `${prefix}.options.${optionKey}`;
+  let res = t(specificKey);
+  if (res !== specificKey) return res;
+  res = t(genericKey);
+  return res !== genericKey ? res : optionKey;
+}
+
+export function tValue(prefix: string, typeKey: string, optionKey: string, valueKey: string): string {
+  let keys = [
+    `${prefix}.optionValues.${typeKey}_${optionKey}_${valueKey}`,
+    `${prefix}.optionValues.${optionKey}_${valueKey}`,
+    `${prefix}.optionValues.${valueKey}`,
+    `sourceList.optionValues.${valueKey}`
+  ];
+  for (let key of keys) {
+    let res = t(key);
+    if (res !== key) return res;
+  }
+  return valueKey;
+}
 
 export type SourceListState = SourceListItemState[];
 

@@ -17,7 +17,6 @@ const Field3dController_Config: SourceListConfig = {
   types: [
     {
       key: "robot",
-      display: "Robot",
       symbol: "location.fill",
       showInTypeName: false,
       color: "#000000",
@@ -36,7 +35,6 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "model",
-          display: "Model",
           showInTypeName: true,
           values: []
         }
@@ -47,7 +45,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "ghost",
-      display: "Ghost",
       symbol: "location.fill.viewfinder",
       showInTypeName: true,
       color: "color",
@@ -65,13 +62,11 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "model",
-          display: "Model",
           showInTypeName: true,
           values: []
         },
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         }
@@ -82,7 +77,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "component",
-      display: "Component",
       symbol: "puzzlepiece.extension.fill",
       showInTypeName: true,
       color: "#9370db",
@@ -94,7 +88,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "mechanism",
-      display: "Mechanism",
       symbol: "gearshape.fill",
       showInTypeName: true,
       color: "#888888",
@@ -103,19 +96,14 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "plane",
-          display: "Plane",
           showInTypeName: false,
-          values: [
-            { key: "xz", display: "XZ Plane" },
-            { key: "yz", display: "YZ Plane" }
-          ]
+          values: ["xz", "yz"]
         }
       ],
       childOf: "robot"
     },
     {
       key: "vision",
-      display: "Vision Target",
       symbol: "scope",
       showInTypeName: true,
       color: "color",
@@ -137,18 +125,13 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" }
-          ]
+          values: ["normal", "bold"]
         }
       ],
       childOf: "robot",
@@ -156,7 +139,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "swerveStates",
-      display: "Swerve States",
       symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
       showInTypeName: true,
       color: "color",
@@ -165,13 +147,11 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors_RedStart
         },
         {
           key: "arrangement",
-          display: "Arrangement",
           showInTypeName: false,
           values: SwerveArrangementValues
         }
@@ -182,7 +162,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "rotationOverride",
-      display: "Rotation Override",
       symbol: "angle",
       showInTypeName: true,
       color: "#000000",
@@ -195,7 +174,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "rotationOverrideLegacy",
-      display: "Rotation Override",
       symbol: "angle",
       showInTypeName: true,
       color: "#000000",
@@ -205,12 +183,8 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "units",
-          display: "Rotation Units",
           showInTypeName: false,
-          values: [
-            { key: "radians", display: "Radians" },
-            { key: "degrees", display: "Degrees" }
-          ]
+          values: ["radians", "degrees"]
         }
       ],
       childOf: "robot",
@@ -218,7 +192,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "gamePiece",
-      display: "Game Piece",
       symbol: "star.fill",
       showInTypeName: false,
       color: "#ffd700",
@@ -227,7 +200,6 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "variant",
-          display: "Variant",
           showInTypeName: true,
           values: []
         }
@@ -237,7 +209,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "trajectory",
-      display: "Trajectory",
       symbol: "point.bottomleft.forward.to.point.topright.scurvepath.fill",
       showInTypeName: true,
       color: "color",
@@ -256,25 +227,19 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" }
-          ]
+          values: ["normal", "bold"]
         }
       ],
       previewType: "Translation3d"
     },
     {
       key: "heatmap",
-      display: "Heatmap",
       symbol: "map.fill",
       showInTypeName: true,
       color: "#ff0000",
@@ -296,16 +261,8 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "timeRange",
-          display: "Time Range",
           showInTypeName: false,
-          values: [
-            { key: "enabled", display: "Enabled" },
-            { key: "auto", display: "Auto" },
-            { key: "teleop", display: "Teleop" },
-            { key: "teleop-no-endgame", display: "Teleop (No Endgame)" },
-            { key: "full", display: "Full Log" },
-            { key: "visible", display: "Visible Range" }
-          ]
+          values: ["enabled", "auto", "teleop", "teleop-no-endgame", "full", "visible"]
         }
       ],
       initialSelectionOption: "timeRange",
@@ -313,7 +270,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "aprilTag",
-      display: "AprilTag",
       symbol: "qrcode",
       showInTypeName: true,
       color: "#000000",
@@ -323,7 +279,6 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "variant",
-          display: "Variant",
           showInTypeName: true,
           values: []
         }
@@ -334,7 +289,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "aprilTagIDs",
-      display: "AprilTag IDs",
       symbol: "number",
       showInTypeName: true,
       color: "#000000",
@@ -347,7 +301,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "axes",
-      display: "Axes",
       symbol: "move.3d",
       showInTypeName: true,
       color: "#000000",
@@ -359,7 +312,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "cone",
-      display: "Cone",
       symbol: "cone.fill",
       showInTypeName: true,
       color: "color",
@@ -378,19 +330,13 @@ const Field3dController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: NeonColors
         },
         {
           key: "position",
-          display: "Position",
           showInTypeName: true,
-          values: [
-            { key: "center", display: "Center" },
-            { key: "back", display: "Back" },
-            { key: "front", display: "Front" }
-          ]
+          values: ["center", "back", "front"]
         }
       ],
       initialSelectionOption: "color",
@@ -398,7 +344,6 @@ const Field3dController_Config: SourceListConfig = {
     },
     {
       key: "cameraOverride",
-      display: "Camera Override",
       symbol: "camera.fill",
       showInTypeName: true,
       color: "#888888",

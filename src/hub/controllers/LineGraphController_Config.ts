@@ -15,7 +15,6 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
   types: [
     {
       key: "stepped",
-      display: "Stepped",
       symbol: "stairs",
       showInTypeName: false,
       color: "color",
@@ -24,25 +23,18 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" },
-            { key: "verybold", display: "Very Bold" }
-          ]
+          values: ["normal", "bold", "verybold"]
         }
       ]
     },
     {
       key: "smooth",
-      display: "Smooth",
       symbol: "scribble.variable",
       showInTypeName: false,
       color: "color",
@@ -51,25 +43,18 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         },
         {
           key: "size",
-          display: "Thickness",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Bold" },
-            { key: "verybold", display: "Very Bold" }
-          ]
+          values: ["normal", "bold", "verybold"]
         }
       ]
     },
     {
       key: "points",
-      display: "Points",
       symbol: "smallcircle.filled.circle",
       showInTypeName: false,
       color: "color",
@@ -78,18 +63,13 @@ export const LineGraphController_NumericConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         },
         {
           key: "size",
-          display: "Size",
           showInTypeName: false,
-          values: [
-            { key: "normal", display: "Normal" },
-            { key: "bold", display: "Large" }
-          ]
+          values: ["normal", "bold"]
         }
       ]
     }
@@ -103,7 +83,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
   types: [
     {
       key: "stripes",
-      display: "Stripes",
       symbol: "square.stack.3d.forward.dottedline.fill",
       showInTypeName: false,
       color: "color",
@@ -112,7 +91,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -120,7 +98,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
     },
     {
       key: "graph",
-      display: "Graph",
       symbol: "chart.xyaxis.line",
       showInTypeName: false,
       color: "color",
@@ -129,7 +106,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -137,7 +113,6 @@ export const LineGraphController_DiscreteConfig: SourceListConfig = {
     },
     {
       key: "alerts",
-      display: "Alerts",
       symbol: "list.bullet",
       showInTypeName: false,
       color: "#ffaa00",

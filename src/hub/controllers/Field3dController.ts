@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
-import { SourceListItemState, SourceListOptionValueConfig, SourceListState } from "../../shared/SourceListConfig";
+import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import { IS_LITE } from "../../shared/buildConstants";
 import {
   APRIL_TAG_16H5_COUNT,
@@ -125,11 +125,8 @@ export default class Field3dController implements TabController {
     if (robotList.length === 0) {
       robotList.push("KitBot");
     }
-    let sourceListValues: SourceListOptionValueConfig[] = robotList.map((name) => {
-      return { key: name, display: name };
-    });
-    this.sourceList.setOptionValues("robot", "model", sourceListValues);
-    this.sourceList.setOptionValues("ghost", "model", sourceListValues);
+    this.sourceList.setOptionValues("robot", "model", robotList);
+    this.sourceList.setOptionValues("ghost", "model", robotList);
   }
 
   /** Updates the robots, source button, and other options based on the selected value. */
@@ -147,24 +144,12 @@ export default class Field3dController implements TabController {
     if (gamePieces.length === 0) {
       gamePieces.push("None");
     }
-    let sourceListValues: SourceListOptionValueConfig[] = gamePieces.map((name) => {
-      return { key: name, display: name };
-    });
-    this.sourceList.setOptionValues("gamePiece", "variant", sourceListValues);
+    this.sourceList.setOptionValues("gamePiece", "variant", gamePieces);
 
     // Update AprilTag variants
-    let aprilTagVariants: { key: string; display: string }[] = fieldConfig?.isFTC
-      ? [
-          { key: "36h11-2in", display: "2 in" },
-          { key: "36h11-3in", display: "3 in" },
-          { key: "36h11-4in", display: "4 in" },
-          { key: "36h11-5in", display: "5 in" },
-          { key: "36h11-6.5in", display: "6.5 in" }
-        ]
-      : [
-          { key: "36h11-6.5in", display: "36h11" },
-          { key: "16h5-6in", display: "16h5" }
-        ];
+    let aprilTagVariants: string[] = fieldConfig?.isFTC
+      ? ["36h11-2in", "36h11-3in", "36h11-4in", "36h11-5in", "36h11-6.5in"]
+      : ["36h11-6.5in", "16h5-6in"];
     this.sourceList.setOptionValues("aprilTag", "variant", aprilTagVariants);
     this.sourceList.setOptionValues("aprilTagLegacy", "variant", aprilTagVariants);
 

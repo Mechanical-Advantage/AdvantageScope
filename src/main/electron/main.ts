@@ -48,7 +48,15 @@ import Preferences, {
   mergePreferences,
   SUPPORTED_LANGS
 } from "../../shared/Preferences";
-import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
+import {
+  getSourceListPrefix,
+  SourceListConfig,
+  SourceListItemState,
+  SourceListTypeMemory,
+  tOption,
+  tType,
+  tValue
+} from "../../shared/SourceListConfig";
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
@@ -181,7 +189,7 @@ function sendAllPreferences() {
   });
   if (downloadWindow !== null && !downloadWindow.isDestroyed()) sendMessage(downloadWindow, "set-preferences", data);
   if (menuTemplate !== null) {
-    let autoString = "Default: " + getLiveModeName(data.liveMode);
+    let autoString = t("menu.file.defaultWithMode", { mode: getLiveModeName(data.liveMode) });
     (
       (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[2]
         .submenu as Electron.MenuItemConstructorOptions[]
@@ -583,7 +591,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       const fieldCopyMenu = new Menu();
       fieldCopyMenu.append(
         new MenuItem({
-          label: `Copy "${message.data.title}" to clipboard`,
+          label: t("menu.sidebar.copyToClipboard", { title: message.data.title }),
           click() {
             clipboard.writeText(message.data.title);
           }
@@ -591,7 +599,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       );
       fieldCopyMenu.append(
         new MenuItem({
-          label: `Copy "${message.data.fullTitle}" to clipboard`,
+          label: t("menu.sidebar.copyToClipboard", { title: message.data.fullTitle }),
           click() {
             clipboard.writeText(message.data.fullTitle);
           }
@@ -706,19 +714,21 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           return nativeImage.createFromBitmap(buf, { height: size, width: size });
         };
 
+        let prefix = getSourceListPrefix(config.title);
+
         // Add options
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
-          optionConfig.values.forEach((optionValue) => {
+          optionConfig.values.forEach((valueKey) => {
             menu.append(
               new MenuItem({
-                label: optionValue.display,
+                label: tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
                 type: "checkbox",
-                checked: optionValue.key === state.options[optionConfig.key],
-                icon: getIcon(optionValue.key),
+                checked: valueKey === state.options[optionConfig.key],
+                icon: getIcon(valueKey),
                 click() {
-                  state.options[optionConfig.key] = optionValue.key;
+                  state.options[optionConfig.key] = valueKey;
                   respond();
                 }
               })
@@ -728,15 +738,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           currentTypeConfig.options.forEach((optionConfig) => {
             menu.append(
               new MenuItem({
-                label: optionConfig.display,
-                submenu: optionConfig.values.map((optionValue) => {
+                label: tOption(prefix, currentTypeConfig.key, optionConfig.key),
+                submenu: optionConfig.values.map((valueKey) => {
                   return {
-                    label: optionValue.display,
+                    label: tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
                     type: "checkbox",
-                    checked: optionValue.key === state.options[optionConfig.key],
-                    icon: getIcon(optionValue.key),
+                    checked: valueKey === state.options[optionConfig.key],
+                    icon: getIcon(valueKey),
                     click() {
-                      state.options[optionConfig.key] = optionValue.key;
+                      state.options[optionConfig.key] = valueKey;
                       respond();
                     }
                   };
@@ -766,33 +776,31 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
               : typeConfig.options.find((optionConfig) => optionConfig.key === typeConfig.initialSelectionOption);
             menu.append(
               new MenuItem({
-                label: typeConfig.display,
+                label: tType(prefix, typeConfig.key),
                 type: current ? "checkbox" : optionConfig !== undefined ? "submenu" : "normal",
                 checked: current,
                 submenu:
                   optionConfig === undefined
                     ? undefined
-                    : optionConfig.values.map((optionValue) => {
+                    : optionConfig.values.map((valueKey) => {
                         return {
-                          label: optionValue.display,
-                          icon: getIcon(optionValue.key),
+                          label: tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
+                          icon: getIcon(valueKey),
                           click() {
                             state.type = typeConfig.key;
                             let newOptions: { [key: string]: string } = {};
                             typeConfig.options.forEach((optionConfig) => {
                               if (
                                 optionConfig.key in state.options &&
-                                optionConfig.values
-                                  .map((valueConfig) => valueConfig.key)
-                                  .includes(state.options[optionConfig.key])
+                                optionConfig.values.includes(state.options[optionConfig.key])
                               ) {
                                 newOptions[optionConfig.key] = state.options[optionConfig.key];
                               } else {
-                                newOptions[optionConfig.key] = optionConfig.values[0].key;
+                                newOptions[optionConfig.key] = optionConfig.values[0];
                               }
                             });
                             state.options = newOptions;
-                            state.options[typeConfig.initialSelectionOption!] = optionValue.key;
+                            state.options[typeConfig.initialSelectionOption!] = valueKey;
                             respond();
                           }
                         };
@@ -806,13 +814,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                         typeConfig.options.forEach((optionConfig) => {
                           if (
                             optionConfig.key in state.options &&
-                            optionConfig.values
-                              .map((valueConfig) => valueConfig.key)
-                              .includes(state.options[optionConfig.key])
+                            optionConfig.values.includes(state.options[optionConfig.key])
                           ) {
                             newOptions[optionConfig.key] = state.options[optionConfig.key];
                           } else {
-                            newOptions[optionConfig.key] = optionConfig.values[0].key;
+                            newOptions[optionConfig.key] = optionConfig.values[0];
                           }
                         });
                         state.options = newOptions;
@@ -966,7 +972,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 editAxisMenu.append(
                   new MenuItem({
                     label:
-                      unit.charAt(0).toUpperCase() + unit.slice(1) + (unit === autoUnitDefault ? " [Default]" : ""),
+                      unit.charAt(0).toUpperCase() +
+                      unit.slice(1) +
+                      (unit === autoUnitDefault ? " [" + t("menu.file.default") + "]" : ""),
                     type: "checkbox",
                     checked: autoUnitSelected === unit,
                     click() {
@@ -1827,7 +1835,7 @@ function setupMenu() {
   menuTemplate = [
     {
       role: isMac ? "appMenu" : undefined,
-      label: isMac ? "" : "App",
+      label: isMac ? "" : t("menu.titles.app"),
       submenu: [
         {
           label: "About AdvantageScope",

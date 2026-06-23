@@ -10,10 +10,12 @@ import { ensureThemeContrast } from "../shared/Colors";
 import {
   SourceListConfig,
   SourceListItemState,
-  SourceListOptionValueConfig,
   SourceListState,
   SourceListTypeConfig,
-  SourceListTypeMemoryEntry
+  SourceListTypeMemoryEntry,
+  getSourceListPrefix,
+  tType,
+  tValue
 } from "../shared/SourceListConfig";
 import {
   grabChassisSpeeds,
@@ -47,6 +49,7 @@ export default class SourceList {
 
   private stopped = false;
   private config: SourceListConfig;
+  private prefix: string;
   private configStr: string;
   private state: SourceListState = [];
   private independentAllowedTypes: Set<string> = new Set(); // Types that are not only children
@@ -73,6 +76,7 @@ export default class SourceList {
     getNumberPreview?: (key: string, time: number) => string | null
   ) {
     this.config = jsonCopy(config);
+    this.prefix = getSourceListPrefix(this.config.title);
     this.configStr = JSON.stringify(config);
     this.supplementalStateSuppliers = supplementalStateSuppliers;
     this.getNumberPreview = getNumberPreview;
@@ -380,7 +384,7 @@ export default class SourceList {
   /**
    * Updates a set of option values and validates that all items are valid.
    */
-  setOptionValues(type: string, option: string, values: SourceListOptionValueConfig[]) {
+  setOptionValues(type: string, option: string, values: string[]) {
     let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === type);
     if (typeConfig === undefined) return;
     let optionConfig = typeConfig!.options.find((optionConfig) => optionConfig.key === option);
@@ -388,10 +392,9 @@ export default class SourceList {
     optionConfig.values = values;
 
     // Verify that all items have a valid selection
-    let possibleValues = values.map((x) => x.key);
     this.state.forEach((item, index) => {
-      if (item.type === type && !possibleValues.includes(item.options[option])) {
-        item.options[option] = values[0].key;
+      if (item.type === type && !values.includes(item.options[option])) {
+        item.options[option] = values[0];
         this.updateItem(this.LIST.children[index] as HTMLElement, item);
       }
     });
@@ -468,28 +471,25 @@ export default class SourceList {
       if (
         memory !== null &&
         optionConfig.key in memory.options &&
-        optionConfig.values.map((valueConfig) => valueConfig.key).includes(memory.options[optionConfig.key])
+        optionConfig.values.includes(memory.options[optionConfig.key])
       ) {
         // Select value from type memory
         options[optionConfig.key] = memory.options[optionConfig.key];
       } else if (this.config.autoAdvance !== optionConfig.key) {
         // Select first value
-        options[optionConfig.key] = optionConfig.values[0].key;
+        options[optionConfig.key] = optionConfig.values[0];
       } else {
         // Select least used value
-        let useCounts: { valueConfig: SourceListOptionValueConfig; uses: number }[] = optionConfig.values.map(
-          (valueConfig) => {
-            return {
-              valueConfig: valueConfig,
-              uses: stateWithSupplemental.filter(
-                (itemState) =>
-                  optionConfig.key in itemState.options && itemState.options[optionConfig.key] === valueConfig.key
-              ).length
-            };
-          }
-        );
+        let useCounts: { value: string; uses: number }[] = optionConfig.values.map((value) => {
+          return {
+            value: value,
+            uses: stateWithSupplemental.filter(
+              (itemState) => optionConfig.key in itemState.options && itemState.options[optionConfig.key] === value
+            ).length
+          };
+        });
         useCounts.sort((a, b) => a.uses - b.uses);
-        options[optionConfig.key] = useCounts[0].valueConfig.key;
+        options[optionConfig.key] = useCounts[0].value;
       }
     });
     let state: SourceListItemState = {
@@ -981,14 +981,14 @@ export default class SourceList {
     // Update type name
     let typeNameComponents: string[] = [];
     if (typeConfig.showInTypeName) {
-      typeNameComponents.push(typeConfig.display);
+      typeNameComponents.push(tType(this.prefix, typeConfig.key));
     }
     typeConfig.options.forEach((optionConfig) => {
       if (optionConfig.showInTypeName) {
         let valueKey = state.options[optionConfig.key];
-        let valueConfig = optionConfig.values.find((value) => value.key === valueKey);
-        if (valueConfig === undefined) return;
-        typeNameComponents.push(valueConfig.display);
+        if (optionConfig.values.includes(valueKey)) {
+          typeNameComponents.push(tValue(this.prefix, typeConfig.key, optionConfig.key, valueKey));
+        }
       }
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;

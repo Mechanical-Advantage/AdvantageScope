@@ -59,21 +59,21 @@ export async function checkHootIsPro(hootPath: string): Promise<boolean> {
 async function getOwletPath(hootPath: string): Promise<string> {
   // Check that owlet storage exists
   if (!fs.existsSync(OWLET_STORAGE)) {
-    throw new Error("The Hoot log file cannot be decoded because owlet is not available.");
+    throw new Error(t("main.owlet.noOwlet"));
   }
 
   // Get log file compliancy
   let compliancy = await new Promise<number>((resolve, reject) => {
     fs.open(hootPath, "r", (error, file) => {
       if (error) {
-        reject("The Hoot log file could not be opened.");
+        reject(t("main.owlet.openFailed"));
         return;
       }
 
       let buffer = Buffer.alloc(2);
       fs.read(file, buffer, 0, 2, 70, (error, bytesRead) => {
         if (error || bytesRead !== 2) {
-          reject("The Hoot log file cannot be decoded because compliancy cannot be retrieved.");
+          reject(t("main.owlet.noCompliancy"));
           return;
         }
         let view = new DataView(buffer.buffer);
@@ -84,7 +84,7 @@ async function getOwletPath(hootPath: string): Promise<string> {
 
   // Exit if too old
   if (compliancy < 6) {
-    throw new Error("The Hoot log file is too old to be decoded. Hoot logs must be produced by Phoenix 2024 or later.");
+    throw new Error(t("main.owlet.tooOld"));
   }
 
   // Find owlet version for compliancy
@@ -94,9 +94,7 @@ async function getOwletPath(hootPath: string): Promise<string> {
   owletFilenames = owletFilenames.filter((filename) => filename.startsWith("owlet-"));
   let finalOwletFilename = owletFilenames.find((filename) => filename.includes("-C" + compliancy.toString()));
   if (finalOwletFilename === undefined) {
-    throw new Error(
-      "The Hoot log cannot be decoded because of incompatible compliancy. Check the owlet download status in the menu bar for more information."
-    );
+    throw new Error(t("main.owlet.incompatibleCompliancy"));
   }
   return path.join(OWLET_STORAGE, finalOwletFilename);
 }

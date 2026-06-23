@@ -24,7 +24,15 @@ import Preferences, {
   mergePreferences,
   SUPPORTED_LANGS
 } from "../../shared/Preferences";
-import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../../shared/SourceListConfig";
+import {
+  getSourceListPrefix,
+  SourceListConfig,
+  SourceListItemState,
+  SourceListTypeMemory,
+  tOption,
+  tType,
+  tValue
+} from "../../shared/SourceListConfig";
 import {
   getAllTabTypes,
   getDefaultTabTitle,
@@ -505,7 +513,7 @@ async function handleHubMessage(message: NamedMessage) {
                       {
                         content: t("menu.app.setLanguage"),
                         items: [
-                          { name: "System Default", value: "" },
+                          { name: t("preferences.languageSystemDefault"), value: "" },
                           { name: "English (US)", value: "en-US" },
                           { name: "Español (Latinoamérica)", value: "es-419" },
                           { name: "Français", value: "fr" },
@@ -832,16 +840,20 @@ async function handleHubMessage(message: NamedMessage) {
           }
         };
 
+        let prefix = getSourceListPrefix(config.title);
+
         // Add options
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
-          optionConfig.values.forEach((optionValue) => {
+          optionConfig.values.forEach((valueKey) => {
             menuItems.push({
-              content: (optionValue.key === state.options[optionConfig.key] ? "\u2714 " : "") + optionValue.display,
-              style: getStyle(optionValue.key),
+              content:
+                (valueKey === state.options[optionConfig.key] ? "\u2714 " : "") +
+                tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
+              style: getStyle(valueKey),
               callback() {
-                state.options[optionConfig.key] = optionValue.key;
+                state.options[optionConfig.key] = valueKey;
                 respond();
               }
             });
@@ -849,13 +861,15 @@ async function handleHubMessage(message: NamedMessage) {
         } else {
           currentTypeConfig.options.forEach((optionConfig) => {
             menuItems.push({
-              content: optionConfig.display,
-              items: optionConfig.values.map((optionValue) => {
+              content: tOption(prefix, currentTypeConfig.key, optionConfig.key),
+              items: optionConfig.values.map((valueKey) => {
                 return {
-                  content: (optionValue.key === state.options[optionConfig.key] ? "\u2714 " : "") + optionValue.display,
-                  style: getStyle(optionValue.key),
+                  content:
+                    (valueKey === state.options[optionConfig.key] ? "\u2714 " : "") +
+                    tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
+                  style: getStyle(valueKey),
                   callback() {
-                    state.options[optionConfig.key] = optionValue.key;
+                    state.options[optionConfig.key] = valueKey;
                     respond();
                   }
                 };
@@ -880,20 +894,18 @@ async function handleHubMessage(message: NamedMessage) {
               : typeConfig.options.find((optionConfig) => optionConfig.key === typeConfig.initialSelectionOption);
             if (optionConfig === undefined) {
               menuItems.push({
-                content: (current ? "\u2714 " : "") + typeConfig.display,
+                content: (current ? "\u2714 " : "") + tType(prefix, typeConfig.key),
                 callback() {
                   state.type = typeConfig.key;
                   let newOptions: { [key: string]: string } = {};
                   typeConfig.options.forEach((optionConfig) => {
                     if (
                       optionConfig.key in state.options &&
-                      optionConfig.values
-                        .map((valueConfig) => valueConfig.key)
-                        .includes(state.options[optionConfig.key])
+                      optionConfig.values.includes(state.options[optionConfig.key])
                     ) {
                       newOptions[optionConfig.key] = state.options[optionConfig.key];
                     } else {
-                      newOptions[optionConfig.key] = optionConfig.values[0].key;
+                      newOptions[optionConfig.key] = optionConfig.values[0];
                     }
                   });
                   state.options = newOptions;
@@ -902,28 +914,26 @@ async function handleHubMessage(message: NamedMessage) {
               });
             } else {
               menuItems.push({
-                content: (current ? "\u2714 " : "") + typeConfig.display,
-                items: optionConfig.values.map((optionValue) => {
+                content: (current ? "\u2714 " : "") + tType(prefix, typeConfig.key),
+                items: optionConfig.values.map((valueKey) => {
                   return {
-                    content: optionValue.display,
-                    style: getStyle(optionValue.key),
+                    content: tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
+                    style: getStyle(valueKey),
                     callback() {
                       state.type = typeConfig.key;
                       let newOptions: { [key: string]: string } = {};
                       typeConfig.options.forEach((optionConfig) => {
                         if (
                           optionConfig.key in state.options &&
-                          optionConfig.values
-                            .map((valueConfig) => valueConfig.key)
-                            .includes(state.options[optionConfig.key])
+                          optionConfig.values.includes(state.options[optionConfig.key])
                         ) {
                           newOptions[optionConfig.key] = state.options[optionConfig.key];
                         } else {
-                          newOptions[optionConfig.key] = optionConfig.values[0].key;
+                          newOptions[optionConfig.key] = optionConfig.values[0];
                         }
                       });
                       state.options = newOptions;
-                      state.options[typeConfig.initialSelectionOption!] = optionValue.key;
+                      state.options[typeConfig.initialSelectionOption!] = valueKey;
                       respond();
                     }
                   };

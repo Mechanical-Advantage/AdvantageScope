@@ -246,11 +246,79 @@ sourceList:
   noUnits: "No Units" # Modifier label shown when unit handling are disabled
   differentiated: "Differentiated" # Modifier label shown when differentiate filter is active (the derivatives of the fields are being calculated and displayed)
   integrated: "Integrated" # Modifier label shown when integrate filter is active (the integrals of the fields are being calculated and displayed)
+  optionValues:
+    # Common colors (NeonColors / NeonColors_RedStart)
+    "#00ff00": "Green" # Green neon color option
+    "#ff0000": "Red" # Red neon color option
+    "#0000ff": "Blue" # Blue neon color option
+    "#ff8c00": "Orange" # Orange neon color option
+    "#00ffff": "Cyan" # Cyan neon color option
+    "#ffff00": "Yellow" # Yellow neon color option
+    "#ff00ff": "Magenta" # Magenta neon color option
+    # GraphColors
+    "#2b66a2": "Blue" # Blue graph color option
+    "#e5b31b": "Gold" # Gold graph color option
+    "#af2437": "Red" # Red graph color option
+    "#80588e": "Purple" # Purple graph color option
+    "#e48b32": "Orange" # Orange graph color option
+    "#c0b487": "Tan" # Tan graph color option
+    "#858584": "Gray" # Gray graph color option
+    "#3b875a": "Green" # Green graph color option
+    "#d993aa": "Pink" # Pink graph color option
+    "#5f4528": "Brown" # Brown graph color option
+    # Sizes
+    normal: "Normal" # Normal thickness/size option
+    bold: "Bold" # Bold thickness/size option
+    verybold: "Very Bold" # Very Bold thickness/size option
+    thin: "Thin" # Thin thickness/size option
+    medium: "Medium" # Medium thickness/size option
+    large: "Large" # Large thickness/size option
+    small: "Small" # Small thickness/size option
+    # Swerve Arrangement
+    "0,1,2,3": "FL/FR/BL/BR" # Swerve module layout FL/FR/BL/BR
+    "1,0,3,2": "FR/FL/BR/BL" # Swerve module layout FR/FL/BR/BL
+    "0,1,3,2": "FL/FR/BR/BL" # Swerve module layout FL/FR/BR/BL
+    "0,3,1,2": "FL/BL/BR/FR" # Swerve module layout FL/BL/BR/FR
+    "3,0,2,1": "FR/BR/BL/FL" # Swerve module layout FR/BR/BL/FL
+    "1,0,2,3": "FR/FL/BL/BR" # Swerve module layout FR/FL/BL/BR
 
 hub:
   title: "AdvantageScope" # Main application window title
   updateAvailable: "Update available" # Tooltip for app update button
   shareFeedback: "Share feedback" # Tooltip for developer feedback button
+
+  logs:
+    openErrorTitle: "Failed to open log" # Error title when log file open fails
+    openErrorCsv: "There was a problem while reading the log file. Please check the documentation for more information on the required format of CSV files." # Error message when CSV log file open fails
+    openErrorFallback: "There was a problem while reading the log file. Please try again." # Error message when log file open fails
+    cannotOpenTitle_one: "Cannot open file" # Title when opening one file fails due to active export
+    cannotOpenTitle_other: "Cannot open files" # Title when opening multiple files fails due to active export
+    waitExport: "Please wait for the export to finish, then try again." # Wait for export message
+    cannotInsertTitle_one: "Cannot insert file" # Title when inserting one file fails
+    cannotInsertTitle_other: "Cannot insert files" # Title when inserting multiple files fails
+    noLogsLoaded: 'No log files are currently loaded. Choose "Open Log(s)" to load new files.' # Help content when no logs are loaded
+
+  live:
+    statusSearching: "Searching" # Searching status for live connections
+    statusError: "Error" # Error status for live connections
+    connectErrorTitle: "Problem with live source" # Error title for live connection failure
+    connectErrorContent: "There was a problem while connecting to the live source. Please check your connection settings and try again." # Error content for live connection failure
+    nt4NoFieldsTitle: "Problem with NT4 connection" # Error title when NT4 connection has no fields
+    nt4NoFieldsContent: "No fields were received from the server. AdvantageKit mode is selected. Are you connecting to a server without AdvantageKit?" # Error content when NT4 connection has no fields
+    cannotConnectTitle: "Cannot connect" # Error title when connection cannot be established
+    cannotConnectContent: "Please wait for the export to finish, then try again." # Error content for connection during export
+    cannotPublishTitle: "Cannot publish" # Error title when publishing cannot start
+    cannotPublishLive: "Publishing is not allowed from a live source." # Error content for publishing from live source
+    cannotPublishNoNt: "Please open a log file with NetworkTables data, then try again." # Error content when publishing log has no NetworkTables data
+    publishSearching: "Searching" # Searching status for publishing
+    publishActive: "Publishing" # Publishing active status
+
+  export:
+    cannotExportTitle: "Cannot export data" # Error title when export fails to start
+    waitExport: "Please wait for the previous export to finish, then try again." # Wait for previous export message
+    noLogs: "Please open a log file or connect to a live source, then try again." # Error content when export has no logs
+    failedTitle: "Failed to export data" # Error title when conversion fails
+    failedContent: "There was a problem while converting to the export format. Please try again." # Error content when conversion fails
 
   playback:
     play: "Play" # Tooltip for playback play button
@@ -279,6 +347,8 @@ hub:
     label: "Field" # Field label for 2D/3D field select section
     selectTitle2d: "Select field image" # Tooltip for 2D field selector dropdown
     selectTitle3d: "Select field model" # Tooltip for 3D field selector dropdown
+    dsAlert: "Driver Station position</br>not available." # Alert shown in 3D view when driver station position is not available
+    cameraAlert: 'Robot pose not available</br>for camera "{{name}}".' # Alert shown in 3D view when robot/camera pose is missing
     frc: "FRC Fields" # Optgroup label for FRC fields
     ftc: "FTC Fields" # Optgroup label for FTC fields
     sourceTitle: "Open field image source URL" # Field image source link tooltip
@@ -292,13 +362,105 @@ hub:
     xrTitle: "XR" # Heading for XR options
     xrStart: "Start XR streaming" # Tooltip for start XR button
     source: "Source" # Label for video or field data source
+    types:
+      robot: "Robot" # Field robot object type
+      ghost: "Ghost" # Field ghost robot object type
+      vision: "Vision Target" # Field vision target object type
+      swerveStates: "Swerve States" # Field swerve states object type
+      rotationOverride: "Rotation Override" # Field rotation override object type
+      rotationOverrideLegacy: "Rotation Override" # Field rotation override legacy object type
+      trajectory: "Trajectory" # Field trajectory object type
+      heatmap: "Heatmap" # Field heatmap object type
+      arrow: "Arrow" # Field arrow object type
+      component: "Component" # 3D field component object type
+      mechanism: "Mechanism" # 3D field mechanism object type
+      gamePiece: "Game Piece" # 3D field game piece object type
+      aprilTag: "AprilTag" # 3D field AprilTag object type
+      aprilTagIDs: "AprilTag IDs" # 3D field AprilTag IDs object type
+      axes: "Axes" # 3D field axes object type
+      cone: "Cone" # 3D field cone object type
+      cameraOverride: "Camera Override" # 3D field camera override object type
+    options:
+      bumpers: "Bumpers" # Bumpers option label for field robot
+      color: "Color" # Color option label
+      size: "Thickness" # Thickness/size option label
+      arrangement: "Arrangement" # Arrangement option label
+      units: "Rotation Units" # Rotation units option label
+      timeRange: "Time Range" # Time range option label
+      position: "Position" # Position option label
+      model: "Model" # Model option label for 3D robot/ghost
+      plane: "Plane" # Plane option label for 3D mechanism
+      variant: "Variant" # Variant option label for 3D game piece or AprilTag
+    optionValues:
+      robot_bumpers_: "Alliance Color" # Default alliance color option for bumpers
+      radians: "Radians" # Radians unit option value
+      degrees: "Degrees" # Degrees unit option value
+      enabled: "Enabled" # Enabled time range option value
+      auto: "Auto" # Autonomous mode time range option value
+      teleop: "Teleop" # Teleoperated mode time range option value
+      teleop-no-endgame: "Teleop (No Endgame)" # Teleoperated no endgame time range option value
+      full: "Full Log" # Full log time range option value
+      visible: "Visible Range" # Visible time range option value
+      center: "Center" # Center position option value
+      back: "Back" # Back position option value
+      front: "Front" # Front position option value
+      xy: "XY" # XY plane option value
+      xz: "XZ" # XZ plane option value
+      yz: "YZ" # YZ plane option value
+      # AprilTag variants (FRC sizes vs FTC sizes)
+      variant_36h11-6.5in: "36h11" # 36h11 FRC AprilTag variant
+      variant_16h5-6in: "16h5" # 16h5 FRC AprilTag variant
+      variant_36h11-2in: "2 in" # 2 in FTC AprilTag variant
+      variant_36h11-3in: "3 in" # 3 in FTC AprilTag variant
+      variant_36h11-4in: "4 in" # 4 in FTC AprilTag variant
+      variant_36h11-5in: "5 in" # 5 in FTC AprilTag variant
 
   lineGraph:
     numericAxis: "Numeric Axis" # Title for the numeric axis source list in the line graph
     discreteFields: "Discrete Fields" # Title for the discrete fields source list in the line graph
+    types:
+      stepped: "Stepped Line" # Stepped line graph type
+      smooth: "Smooth Line" # Smooth line graph type
+      points: "Points" # Points graph type
+      stripes: "Stripes" # Stripes graph type
+      graph: "Graph" # Graph type
+      alerts: "Alerts" # Alerts graph type
 
   statistics:
     measurements: "Measurements" # Title for the measurements source list in statistics view
+    sections:
+      summary: "Summary" # Statistics Summary section header
+      center: "Center" # Statistics Center section header
+      spread: "Spread" # Statistics Spread section header
+      percentiles: "Percentiles" # Statistics Percentiles section header
+    metrics:
+      count: "Count" # Count metric name
+      min: "Min" # Minimum metric name
+      max: "Max" # Maximum metric name
+      mean: "Mean" # Mean metric name
+      median: "Median" # Median metric name
+      mode: "Mode" # Mode metric name
+      geometricMean: "Geometric Mean" # Geometric Mean metric name
+      harmonicMean: "Harmonic Mean" # Harmonic Mean metric name
+      quadraticMean: "Quadratic Mean" # Quadratic Mean metric name
+      standardDeviation: "Standard Deviation" # Standard Deviation metric name
+      medianAbsoluteDeviation: "Median Absolute Deviation" # Median Absolute Deviation metric name
+      interquartileRange: "Interquartile Range" # Interquartile Range metric name
+      skewness: "Skewness" # Skewness metric name
+      percentile01: "1st Percentile" # 1st Percentile metric name
+      percentile05: "5th Percentile" # 5th Percentile metric name
+      percentile10: "10th Percentile" # 10th Percentile metric name
+      percentile25: "25th Percentile" # 25th Percentile metric name
+      percentile50: "50th Percentile" # 50th Percentile metric name
+      percentile75: "75th Percentile" # 75th Percentile metric name
+      percentile90: "90th Percentile" # 90th Percentile metric name
+      percentile95: "95th Percentile" # 95th Percentile metric name
+      percentile99: "99th Percentile" # 99th Percentile metric name
+    types:
+      independent: "Independent" # Independent statistics type
+      reference: "Reference" # Reference statistics type
+      relativeError: "Relative Error" # Relative error statistics type
+      absoluteError: "Absolute Error" # Absolute error statistics type
     timeRange: "Time Range" # Label for statistics time range dropdown
     timeRangeSelectTitle: "Select time range" # Tooltip for statistics time range dropdown
     timeRangeVisible: "Visible Range" # Dropdown option for visible time range
@@ -327,12 +489,29 @@ hub:
     pause: "Pause video" # Tooltip for pause video button
     nextFrame: "Next frame" # Tooltip for next frame button
     goForward5s: "Go forward 5 seconds" # Tooltip for go forward 5 seconds button
+    noApiKeyTitle: "No API Key" # Error title when TBA API key is missing
+    noApiKeyContent: "Please enter an API key for The Blue Alliance in the AdvantageScope preferences. An API key can be obtained from the Account page on The Blue Alliance website." # Error content when TBA API key is missing
+    noMatchInfoTitle: "No Match Info" # Error title when match info cannot be read from the log
+    noMatchInfoContent: "Failed to read event and match info from the log. Please load the video using a YouTube URL or local file instead." # Error content when match info is missing
+    noPracticeTitle: "No Videos for Practice Match" # Error title when practice match video is requested
+    noPracticeContent: "This is a practice match. No data is available on The Blue Alliance for practice matches. Please load the video using a YouTube URL or local file instead." # Error content for practice match
 
   joysticks:
     selectTitle: "Select joystick data source" # Tooltip for joystick data source dropdown
+    noData: "No data for joystick." # Canvas message when joystick has no data
+    selectLayout: "Select a joystick layout to view data." # Canvas message when no layout is selected
 
   swerve:
     sources: "Sources" # Title for the sources source list in swerve view
+    types:
+      states: "Module States" # Swerve module states type
+      chassisSpeeds: "Chassis Speeds" # Swerve chassis speeds type
+      rotation: "Rotation" # Swerve rotation type
+      rotationLegacy: "Rotation" # Swerve legacy rotation type
+    options:
+      color: "Color" # Color option label
+      arrangement: "Arrangement" # Arrangement option label
+      units: "Rotation Units" # Rotation units option label
     maxSpeed: "Max Speed (m/s)" # Label for max speed setting
     maxSpeedTitle: "Maximum speed (meters per second)" # Tooltip for max speed setting
     frameSize: "Frame Size (m)" # Label for frame size settings
@@ -343,9 +522,21 @@ hub:
 
   mechanism:
     sources: "Sources" # Title for the sources source list in mechanism view
+    types:
+      mechanism: "Mechanism" # Mechanism type
 
   points:
     sources: "Sources" # Title for the sources source list in points view
+    types:
+      plus: "Plus" # Plus points type
+      cross: "Cross" # Cross points type
+      circle: "Circle" # Circle points type
+      semiCircle: "Semi-Circle" # Semi-Circle points type
+      square: "Square" # Square points type
+      triangle: "Triangle" # Triangle points type
+    options:
+      size: "Size" # Size option label
+      groupSize: "Group Size" # Group size option label
     width: "Coordinate system width (pixels)" # Tooltip for points width input
     height: "Coordinate system height (pixels)" # Tooltip for points height input
     orientation: "Coordinate system orientation" # Tooltip for points orientation dropdown
@@ -357,6 +548,8 @@ hub:
 
   console:
     exportLog: "Export console log" # Tooltip for exporting console logs
+    cannotExportTitle: "Cannot export console log" # Error title when console export fails
+    addConsoleData: "Please add a field with console data, then try again." # Error content when console export fails
 
 liveModeName:
   nt4: "NetworkTables" # Name for NetworkTables live mode
@@ -403,6 +596,7 @@ menu:
     connectRobot: "Connect to Robot" # Menu option to connect live to robot
     connectRobotShortcut: "Connect Live ({{shortcut}})" # Connect live menu option with shortcut in Lite
     default: "Default" # Default sub-option name
+    defaultWithMode: "Default: {{mode}}" # Label showing default option and current default live mode
     connectSim: "Connect to Simulator" # Menu option to connect live to simulator
     connectDs: "Connect to Driver Station" # Menu option to connect live to driver station
     downloadLogs: "Download Logs..." # Menu option to download log files from robot
@@ -448,6 +642,7 @@ menu:
 
   sidebar:
     clearAll: "Clear All" # Menu option to clear all items in source list
+    copyToClipboard: 'Copy "{{title}}" to clipboard' # Menu option to copy a field name to clipboard
 
   help:
     heading: "Help" # Help menu option or button label
@@ -497,6 +692,23 @@ main:
     reloadResetLite: "AdvantageScope Lite needs to reload and reset to switch languages. Continue?" # Lite reset layout and reload language message
     restart: "AdvantageScope needs to restart to switch languages." # Restart language message
     restartTitle: "Restart AdvantageScope?" # Title for restart confirmation dialog
+
+  assets:
+    downloadStarted: "Download started at {{time}}. Please wait a few minutes for the download to complete." # Status message when asset download starts
+    downloadFinished: "All assets downloaded. AdvantageScope will check for updates periodically." # Status message when all assets are downloaded
+    connectFailed: "Cannot connect to GitHub. Trying again soon." # Error message when GitHub connection fails
+    noDiskSpace: "Not enough disk space. Trying again soon." # Error message when disk space is low
+    readme: "This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the \"Custom Fields/Robots/Joysticks\" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets" # Content for custom assets folder readme file
+
+  owlet:
+    upToDate: "Owlet is up-to-date. AdvantageScope will check for updates periodically." # Status message when Owlet is fully updated
+    offlineCache: "Using offline Owlet cache. Checking for updates soon." # Status message when offline cache is used
+    noDiskSpace: "Not enough disk space. Trying again soon." # Error message when disk space is low
+    noOwlet: "The Hoot log file cannot be decoded because Owlet is not available." # Error message when Owlet is missing
+    openFailed: "The Hoot log file could not be opened." # Error message when file open fails
+    noCompliancy: "The Hoot log file cannot be decoded because compliancy cannot be retrieved." # Error message when compliancy version is missing
+    tooOld: "The Hoot log file is too old to be decoded. Hoot logs must be produced by Phoenix 2024 or later." # Error message when Hoot log version is too old
+    incompatibleCompliancy: "The Hoot log cannot be decoded because of incompatible compliancy. Check the Owlet download status in the menu bar for more information." # Error message for incompatible compliancy
 
   buttons:
     cancel: "Cancel" # Cancel button label

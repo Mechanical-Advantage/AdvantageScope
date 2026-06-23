@@ -471,7 +471,11 @@ export default class JoysticksRenderer implements TabRenderer {
           context.textAlign = "center";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-          context.fillText("No data for joystick.", joystickLeft + joystickWidth / 2, joystickTop + joystickHeight / 2);
+          context.fillText(
+            t("hub.joysticks.noData"),
+            joystickLeft + joystickWidth / 2,
+            joystickTop + joystickHeight / 2
+          );
         }
       }
     });
@@ -482,7 +486,7 @@ export default class JoysticksRenderer implements TabRenderer {
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-      context.fillText("Select a joystick layout to view data.", canvasWidth / 2, canvasHeight / 2);
+      context.fillText(t("hub.joysticks.selectLayout"), canvasWidth / 2, canvasHeight / 2);
     }
   }
 }

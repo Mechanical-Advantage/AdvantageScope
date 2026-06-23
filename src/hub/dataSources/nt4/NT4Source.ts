@@ -397,9 +397,8 @@ export default class NT4Source extends LiveDataSource {
           if (this.mode === NT4Mode.AdvantageKit) {
             this.noFieldsTimeout = setTimeout(() => {
               window.sendMainMessage("error", {
-                title: "Problem with NT4 connection",
-                content:
-                  "No fields were received from the server. AdvantageKit mode is selected. Are you connecting to a server without AdvantageKit?"
+                title: t("hub.live.nt4NoFieldsTitle"),
+                content: t("hub.live.nt4NoFieldsContent")
               });
             }, 5000);
           }

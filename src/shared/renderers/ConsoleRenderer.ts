@@ -95,8 +95,8 @@ export default class ConsoleRenderer implements TabRenderer {
       this.EXPORT_BUTTON.addEventListener("click", () => {
         if (this.lines.length === 0) {
           window.sendMainMessage("error", {
-            title: "Cannot export console log",
-            content: "Please add a field with console data, then try again."
+            title: t("hub.console.cannotExportTitle"),
+            content: t("hub.console.addConsoleData")
           });
         } else {
           window.sendMainMessage("export-console", this.lines.map((l) => l.value).join("\n"));

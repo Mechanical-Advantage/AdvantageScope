@@ -92,26 +92,23 @@ export default class VideoController implements TabController {
     this.TBA_SOURCE.addEventListener("click", () => {
       if (!window.preferences?.tbaApiKey) {
         window.sendMainMessage("error", {
-          title: "No API key",
-          content:
-            "Please enter an API key for The Blue Alliance in the AdvantageScope preferences. An API key can be obtained from the Account page on The Blue Alliance website."
+          title: t("hub.video.noApiKeyTitle"),
+          content: t("hub.video.noApiKeyContent")
         });
         return;
       }
       let matchInfo = getMatchInfo(window.log);
       if (matchInfo === null) {
         window.sendMainMessage("error", {
-          title: "No match info",
-          content:
-            "Failed to read event and match info from the log. Please load the video using a YouTube URL or local file instead."
+          title: t("hub.video.noMatchInfoTitle"),
+          content: t("hub.video.noMatchInfoContent")
         });
         return;
       }
       if (matchInfo.matchType === MatchType.Practice) {
         window.sendMainMessage("error", {
-          title: "No videos for practice match",
-          content:
-            "This is a practice match. No data is available on The Blue Alliance for practice matches, please load the video using a YouTube URL or local file instead."
+          title: t("hub.video.noPracticeTitle"),
+          content: t("hub.video.noPracticeContent")
         });
         return;
       }

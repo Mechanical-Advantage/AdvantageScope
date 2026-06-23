@@ -7,7 +7,7 @@
 
 import { ensureThemeContrast } from "./shared/Colors";
 import NamedMessage from "./shared/NamedMessage";
-import { SourceListConfig, SourceListOptionValueConfig } from "./shared/SourceListConfig";
+import { SourceListConfig, getSourceListPrefix, tOption, tType, tValue } from "./shared/SourceListConfig";
 import LoggableType from "./shared/log/LoggableType";
 
 let themeCallbacks: (() => void)[] = [];
@@ -26,12 +26,13 @@ window.addEventListener("message", (event) => {
 
       // Update title
       document.title = t("sourceListHelp.title", { name: t(config.title) });
+      let prefix = getSourceListPrefix(config.title);
 
       // Add items
       let usedColors: string[] = [];
       config.types.forEach((typeConfig) => {
         if (!typeConfig.showDocs) return;
-        let title = typeConfig.display;
+        let title = tType(prefix, typeConfig.key);
         let symbol = typeConfig.symbol;
 
         // Get colors
@@ -43,7 +44,7 @@ window.addEventListener("message", (event) => {
           if (colorOptionConfig !== undefined) {
             let i = 0;
             do {
-              lightColor = colorOptionConfig.values[i].key;
+              lightColor = colorOptionConfig.values[i];
               i++;
             } while (usedColors.includes(lightColor));
             usedColors.push(lightColor);
@@ -76,18 +77,26 @@ window.addEventListener("message", (event) => {
         let parentTypes: string[] = [];
         if (typeConfig.childOf !== undefined) {
           config.types.forEach((extraTypeConfig) => {
-            if (extraTypeConfig.parentKey === typeConfig.childOf && !parentTypes.includes(extraTypeConfig.display)) {
-              parentTypes.push(extraTypeConfig.display);
+            if (extraTypeConfig.parentKey === typeConfig.childOf) {
+              let extraTitle = tType(prefix, extraTypeConfig.key);
+              if (!parentTypes.includes(extraTitle)) {
+                parentTypes.push(extraTitle);
+              }
             }
           });
         }
 
         // Get options
-        let options: { name: string; values: SourceListOptionValueConfig[] }[] = typeConfig.options.map(
+        let options: { name: string; values: { key: string; display: string }[] }[] = typeConfig.options.map(
           (optionConfig) => {
             return {
-              name: optionConfig.display,
-              values: optionConfig.values
+              name: tOption(prefix, typeConfig.key, optionConfig.key),
+              values: optionConfig.values.map((valueKey) => {
+                return {
+                  key: valueKey,
+                  display: tValue(prefix, typeConfig.key, optionConfig.key, valueKey)
+                };
+              })
             };
           }
         );
@@ -120,7 +129,7 @@ function addItem(
   darkColor: string,
   sourceTypes: string[],
   parentTypes: string[],
-  options: { name: string; values: SourceListOptionValueConfig[] }[]
+  options: { name: string; values: { key: string; display: string }[] }[]
 ) {
   let typeHeader = document.createElement("div");
   typeHeader.classList.add("type-header");

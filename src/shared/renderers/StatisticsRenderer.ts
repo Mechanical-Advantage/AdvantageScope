@@ -116,24 +116,28 @@ export default class StatisticsRenderer implements TabRenderer {
       }
 
       // Add a new section header
-      let addSection = (title: string) => {
+      let addSection = (keySuffix: string) => {
         let row = document.createElement("tr");
         this.VALUES_TABLE_BODY.appendChild(row);
         row.classList.add("section");
         let cell = document.createElement("td");
         row.appendChild(cell);
         cell.colSpan = Math.max(1 + command.fields.length, 2);
-        cell.innerText = title;
+        cell.innerText = t("hub.statistics.sections." + keySuffix);
       };
 
       // Add a new row with data
-      let addValues = (title: string, digits: number, getValue: (stats: StatisticsRendererCommand_Stats) => number) => {
+      let addValues = (
+        keySuffix: string,
+        digits: number,
+        getValue: (stats: StatisticsRendererCommand_Stats) => number
+      ) => {
         let row = document.createElement("tr");
         this.VALUES_TABLE_BODY.appendChild(row);
         row.classList.add("values");
         let titleCell = document.createElement("td");
         row.appendChild(titleCell);
-        titleCell.innerText = title;
+        titleCell.innerText = t("hub.statistics.metrics." + keySuffix);
         command.fields.forEach((field) => {
           let color = ensureThemeContrast(field.color);
           let valueCell = document.createElement("td");
@@ -154,32 +158,32 @@ export default class StatisticsRenderer implements TabRenderer {
       };
 
       // Add all rows
-      addSection("Summary");
-      addValues("Count", 0, (x) => x.count);
-      addValues("Min", 3, (x) => x.min);
-      addValues("Max", 3, (x) => x.max);
-      addSection("Center");
-      addValues("Mean", 3, (x) => x.mean);
-      addValues("Median", 3, (x) => x.median);
-      addValues("Mode", 3, (x) => x.mode);
-      addValues("Geometric Mean", 3, (x) => x.geometricMean);
-      addValues("Harmonic Mean", 3, (x) => x.harmonicMean);
-      addValues("Quadratic Mean", 3, (x) => x.quadraticMean);
-      addSection("Spread");
-      addValues("Standard Deviation", 3, (x) => x.standardDeviation);
-      addValues("Median Absolute Deviation", 3, (x) => x.medianAbsoluteDeviation);
-      addValues("Interquartile Range", 3, (x) => x.interquartileRange);
-      addValues("Skewness", 3, (x) => x.skewness);
-      addSection("Percentiles");
-      addValues("1st Percentile", 3, (x) => x.percentile01);
-      addValues("5th Percentile", 3, (x) => x.percentile05);
-      addValues("10th Percentile", 3, (x) => x.percentile10);
-      addValues("25th Percentile", 3, (x) => x.percentile25);
-      addValues("50th Percentile", 3, (x) => x.percentile50);
-      addValues("75th Percentile", 3, (x) => x.percentile75);
-      addValues("90th Percentile", 3, (x) => x.percentile90);
-      addValues("95th Percentile", 3, (x) => x.percentile95);
-      addValues("99th Percentile", 3, (x) => x.percentile99);
+      addSection("summary");
+      addValues("count", 0, (x) => x.count);
+      addValues("min", 3, (x) => x.min);
+      addValues("max", 3, (x) => x.max);
+      addSection("center");
+      addValues("mean", 3, (x) => x.mean);
+      addValues("median", 3, (x) => x.median);
+      addValues("mode", 3, (x) => x.mode);
+      addValues("geometricMean", 3, (x) => x.geometricMean);
+      addValues("harmonicMean", 3, (x) => x.harmonicMean);
+      addValues("quadraticMean", 3, (x) => x.quadraticMean);
+      addSection("spread");
+      addValues("standardDeviation", 3, (x) => x.standardDeviation);
+      addValues("medianAbsoluteDeviation", 3, (x) => x.medianAbsoluteDeviation);
+      addValues("interquartileRange", 3, (x) => x.interquartileRange);
+      addValues("skewness", 3, (x) => x.skewness);
+      addSection("percentiles");
+      addValues("percentile01", 3, (x) => x.percentile01);
+      addValues("percentile05", 3, (x) => x.percentile05);
+      addValues("percentile10", 3, (x) => x.percentile10);
+      addValues("percentile25", 3, (x) => x.percentile25);
+      addValues("percentile50", 3, (x) => x.percentile50);
+      addValues("percentile75", 3, (x) => x.percentile75);
+      addValues("percentile90", 3, (x) => x.percentile90);
+      addValues("percentile95", 3, (x) => x.percentile95);
+      addValues("percentile99", 3, (x) => x.percentile99);
 
       // Update histogram data
       this.histogram.data.labels = command.bins.map((value) => value + command.stepSize / 2);

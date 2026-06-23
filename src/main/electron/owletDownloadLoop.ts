@@ -32,16 +32,16 @@ export async function startOwletDownloadLoop() {
         }
         downloadOwletInternal(OWLET_STORAGE, getElectronPlatform())
           .then(() => {
-            statusText = "Owlet is up-to-date. AdvantageScope will check for updates periodically.";
+            statusText = t("main.owlet.upToDate");
             setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
           })
           .catch(() => {
-            statusText = "Using offline owlet cache. Checking for updates soon.";
+            statusText = t("main.owlet.offlineCache");
             setTimeout(() => check(), FAILURE_TIMEOUT_MS);
           });
       })
       .catch(() => {
-        statusText = "Not enough disk space. Trying again soon.";
+        statusText = t("main.owlet.noDiskSpace");
         setTimeout(() => check(), FAILURE_TIMEOUT_MS);
       });
   };

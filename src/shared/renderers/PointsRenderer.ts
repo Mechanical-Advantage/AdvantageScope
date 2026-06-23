@@ -105,7 +105,7 @@ export default class PointsRenderer implements TabRenderer {
         if (set.groupSize < 1) {
           color = window.matchMedia("(prefers-color-scheme: dark)").matches ? "white" : "black";
         } else {
-          color = GraphColors[Math.floor(index / set.groupSize) % GraphColors.length].key;
+          color = GraphColors[Math.floor(index / set.groupSize) % GraphColors.length];
         }
         point.style.fill = color;
         point.style.stroke = color;

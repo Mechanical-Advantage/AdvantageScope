@@ -16,7 +16,6 @@ const StatisticsController_Config: SourceListConfig = {
   types: [
     {
       key: "independent",
-      display: "Independent",
       symbol: "line.3.horizontal",
       showInTypeName: true,
       color: "color",
@@ -25,7 +24,6 @@ const StatisticsController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -34,7 +32,6 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "reference",
-      display: "Reference",
       symbol: "line.horizontal.star.fill.line.horizontal",
       showInTypeName: true,
       color: "#000000",
@@ -47,7 +44,6 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "relativeError",
-      display: "Relative Error",
       symbol: "arrow.down.and.line.horizontal.and.arrow.up",
       showInTypeName: true,
       color: "color",
@@ -57,7 +53,6 @@ const StatisticsController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }
@@ -66,7 +61,6 @@ const StatisticsController_Config: SourceListConfig = {
     },
     {
       key: "absoluteError",
-      display: "Absolute Error",
       symbol: "arrow.down.to.line",
       showInTypeName: true,
       color: "color",
@@ -76,7 +70,6 @@ const StatisticsController_Config: SourceListConfig = {
       options: [
         {
           key: "color",
-          display: "Color",
           showInTypeName: false,
           values: GraphColors
         }

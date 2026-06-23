@@ -13,9 +13,6 @@ import Preferences from "../../shared/Preferences";
 import { filterAndSortAssets, parseField2d, parseField3d, parseJoystick, parseRobot } from "../assetUtil";
 import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
 
-const USER_ASSETS_README =
-  'This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the "Custom Fields/Robots/Joysticks" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets';
-
 /** Returns the path to the user assets folder. */
 export function getUserAssetsPath() {
   const prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
@@ -34,7 +31,7 @@ export function createAssetFolders() {
   if (!fs.existsSync(DEFAULT_USER_ASSETS)) {
     fs.mkdirSync(DEFAULT_USER_ASSETS);
   }
-  fs.writeFileSync(path.join(DEFAULT_USER_ASSETS, "README.txt"), USER_ASSETS_README);
+  fs.writeFileSync(path.join(DEFAULT_USER_ASSETS, "README.txt"), t("main.assets.readme"));
 }
 
 /** Loads all current assets (bundled, auto downloaded, and user). */

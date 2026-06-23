@@ -947,18 +947,17 @@ export default class Field3dRendererImpl implements TabRenderer {
       // Update camera alert
       if (this.cameraIndex === CameraIndexEnum.OrbitRobot) {
         this.alert.hidden = this.primaryRobotGroup.visible;
-        this.alert.innerHTML = 'Robot pose not available</br>for camera "Orbit Robot".';
+        this.alert.innerHTML = t("hub.field.cameraAlert", { name: t("menu.field3d.orbitRobot") });
       } else if (this.cameraIndex === CameraIndexEnum.DSAuto) {
         this.alert.hidden = command.autoDriverStation >= 0;
-        this.alert.innerHTML = "Driver Station position</br>not available.";
+        this.alert.innerHTML = t("hub.field.dsAlert");
       } else if (this.cameraIndex === CameraIndexEnum.OrbitField || dsCamera) {
         this.alert.hidden = true;
       } else {
         this.alert.hidden = this.primaryRobotGroup.visible || this.fixedCameraOverrideObj.visible;
-        this.alert.innerHTML =
-          'Robot pose not available</br>for camera "' +
-          (robotConfig ? robotConfig.cameras[this.cameraIndex].name : "???") +
-          '".';
+        this.alert.innerHTML = t("hub.field.cameraAlert", {
+          name: robotConfig ? robotConfig.cameras[this.cameraIndex].name : "???"
+        });
       }
 
       // Update camera FOV
