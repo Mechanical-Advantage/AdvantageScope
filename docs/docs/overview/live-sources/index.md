@@ -4,20 +4,26 @@ import PrefsImage from '../../img/prefs.png';
 
 All visualizations in AdvantageScope are designed to receive live data from a robot or simulator in addition to log files. This section describes how to connect to real time data sources. The following sources of live data are supported by AdvantageScope:
 
-- **NetworkTables 4:** This is WPILib's primary networking protocol. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details.
-- **NetworkTables 4 (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the `AdvantageKit` table in NetworkTables.
+- **NetworkTables:** This is WPILib's primary networking protocol. See the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) for more details.
+- **NetworkTables (AdvantageKit):** This mode is designed for use with robot code running AdvantageKit, which publishes to the `AdvantageKit` table in NetworkTables.
+- **Systemcore Diagnostics:** This mode connects to the built-in NetworkTables server used by the Systemcore OS, which includes diagnostic data like the robot state and device IO.
 - **Phoenix Diagnostics:** This mode uses HTTP to connect to a Phoenix [diagnostic server](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html), which allows for data streaming from CTRE CAN devices with [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). This is similar to the [plotting feature](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) in Phoenix Tuner. See [this page](/overview/live-sources/phoenix-diagnostics) for more information.
 - **RLOG Server:** This protocol is supported by AdvantageKit as an alternative to NetworkTables. The connection is initiated on port 5800 by default.
 - **FTC Dashboard:** This mode integrates with FTC robots publishing data to [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
 
+:::info
+AdvantageScope can connect to the FIRST Driver Station to view diagnostic data when running on the same device as the DS application. No configuration is required (see the instructions below).
+:::
+
 ## Starting the Connection
 
-To start the connection to a robot (using the configured "Robot Address") or a simulator (using "127.0.0.1"), follow these steps:
+To start the live connection, follow these steps:
 
 - **Robot:** Click `File` > `Connect to Robot` > `Default` or a specific live source
 - **Simulator:** Click `File` > `Connect to Simulator` > `Default` or a specific live source
+- **Driver Station:** Click `File` > `Connect to Driver Station`
 
-The window title displays the IP address and the text "Searching" until the robot/sim is connected. It attempts to reconnect automatically using the same settings after a disconnect.
+The window title displays the IP address and the text "Searching" until the target is connected. AdvantageScope attempts to reconnect automatically using the same settings after a disconnect.
 
 ## Viewing Live Data
 
@@ -37,7 +43,7 @@ Open the preferences window by clicking `App` > `Show Preferences...` (Windows/L
 
 ### Robot Address
 
-Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Click `File` > `Use USB roboRIO Address` to temporarily use the IP address `172.22.11.2` for all connections.
+Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). When connecting to Systemcore via USB or the built-in Wi-Fi access point, click `File` > `Use Systemcore USB Address`/`Use Systemcore Wi-Fi Address` to temporarily use the correct static IP address.
 
 ### Live Mode
 

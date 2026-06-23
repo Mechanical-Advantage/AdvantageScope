@@ -25,8 +25,6 @@ export type SourceListTypeConfig = {
   color: string;
   darkColor?: string;
   sourceTypes: string[];
-  /** Enable deprecation warning */
-  numberArrayDeprecated?: boolean;
   /** Identifies parents with shared children types */
   parentKey?: string;
   /** Parent key this child is attached to */

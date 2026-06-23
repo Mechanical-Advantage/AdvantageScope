@@ -33,40 +33,40 @@
     </div>
     <div class="title-bar-menu">
       <table>
-        <td><button>App</button></td>
-        <td><button>File</button></td>
-        <td><button>View</button></td>
-        <td><button>Tabs</button></td>
-        <td class="hide-lite"><button>Window</button></td>
-        <td><button>Help</button></td>
+        <td><button title="App menu">App</button></td>
+        <td><button title="File menu">File</button></td>
+        <td><button title="View menu">View</button></td>
+        <td><button title="Tabs menu">Tabs</button></td>
+        <td class="hide-lite"><button title="Window menu">Window</button></td>
+        <td><button title="Help menu">Help</button></td>
       </table>
     </div>
 
-    <button class="tab-control update" tabindex="-1" hidden>
+    <button class="tab-control update" title="Update available" hidden>
       <img src="symbols/exclamationmark.arrow.triangle.2.circlepath.svg" />
     </button>
-    <button class="tab-control feedback" tabindex="-1" hidden>
+    <button class="tab-control feedback" title="Share feedback" hidden>
       <img src="symbols/exclamationmark.bubble.svg" />
     </button>
-    <button class="tab-control play" tabindex="-1">
+    <button class="tab-control play" title="Play">
       <img src="symbols/play.fill.svg" />
     </button>
-    <button class="tab-control pause" tabindex="-1" hidden>
+    <button class="tab-control pause" title="Pause" hidden>
       <img src="symbols/pause.svg" />
     </button>
-    <button class="tab-control lock" tabindex="-1" hidden>
+    <button class="tab-control lock" title="Lock playback to real-time" hidden>
       <img src="symbols/forward.circle.svg" />
     </button>
-    <button class="tab-control unlock" tabindex="-1" hidden>
+    <button class="tab-control unlock" title="Unlock playback" hidden>
       <img src="symbols/forward.circle.svg" />
     </button>
-    <button class="tab-control close" tabindex="-1">
+    <button class="tab-control close" title="Close tab">
       <img src="symbols/xmark.octagon.svg" />
     </button>
-    <button class="tab-control popup" tabindex="-1">
+    <button class="tab-control popup" title="Pop out tab">
       <img src="symbols/plus.rectangle.on.rectangle.svg" />
     </button>
-    <button class="tab-control add-tab" tabindex="-1">
+    <button class="tab-control add-tab" title="Add tab">
       <img src="symbols/plus.svg" />
     </button>
 
@@ -82,12 +82,12 @@
     <div class="search-results" hidden></div>
 
     <div class="side-bar">
-      <div class="side-bar-title">No data available</div>
+      <div class="side-bar-title">Open a log or connect to view data</div>
 
       <div class="side-bar-search-container">
-        <input class="side-bar-search" type="search" placeholder="Search" />
+        <input class="side-bar-search" type="search" placeholder="Search" title="Search fields" />
         <img class="side-bar-search-icon" src="symbols/magnifyingglass.svg" />
-        <button class="side-bar-tuning-button" tabindex="-1" hidden>
+        <button class="side-bar-tuning-button" title="Toggle tuning mode" hidden>
           <img src="symbols/slider.horizontal.3.svg" />
         </button>
       </div>
@@ -112,13 +112,13 @@
       <div class="tab-bar-shadow-left"></div>
       <div class="tab-bar-shadow-right"></div>
       <div class="tab-bar-drag-highlight" hidden></div>
-      <div class="tab-bar-scroll">
+      <div class="tab-bar-scroll" tabindex="-1">
         <div class="tab-bar-scroll-content"></div>
       </div>
 
       <div class="timeline">
         <canvas class="timeline-canvas"></canvas>
-        <div class="timeline-scroll">
+        <div class="timeline-scroll" tabindex="-1">
           <div class="timeline-scroll-content"></div>
         </div>
       </div>
@@ -150,11 +150,11 @@
           </div>
           <div class="field input">
             <div>
-              <select class="field-select" tabindex="-1">
+              <select class="field-select" title="Select field image">
                 <optgroup label="FRC Fields"></optgroup>
                 <optgroup label="FTC Fields"></optgroup>
               </select>
-              <a class="field-source" href="#" tabindex="-1">Source</a>
+              <a class="field-source" href="#" title="Open field image source URL">Source</a>
             </div>
           </div>
 
@@ -165,25 +165,25 @@
           <div class="orientation input tall">
             <div class="half">
               <div class="orientation-switcher split split-2">
-                <div>
+                <div tabindex="0" title="Rotate field clockwise">
                   <img class="invertable" src="symbols/rotate.right.svg" />
                 </div>
-                <div>
+                <div tabindex="0" title="Rotate field counter-clockwise">
                   <img class="invertable" src="symbols/rotate.left.svg" />
                 </div>
               </div>
             </div>
             <div class="half">
               <div class="size-switcher split split-3">
-                <div>
+                <div tabindex="0" title="Large robot size">
                   <img class="invertable frc-only" src="symbols/30.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/18.square.fill.svg" />
                 </div>
-                <div>
+                <div tabindex="0" title="Medium robot size">
                   <img class="invertable frc-only" src="symbols/27.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/16.square.fill.svg" />
                 </div>
-                <div>
+                <div tabindex="0" title="Small robot size">
                   <img class="invertable frc-only" src="symbols/24.square.fill.svg" />
                   <img class="invertable ftc-only" src="symbols/14.square.fill.svg" />
                 </div>
@@ -202,7 +202,7 @@
           </div>
           <div class="field input">
             <div>
-              <select class="field-select" tabindex="-1">
+              <select class="field-select" title="Select field model">
                 <optgroup label="FRC Fields"></optgroup>
                 <optgroup label="FTC Fields"></optgroup>
               </select>
@@ -215,7 +215,7 @@
           <div class="xr-control input tall">
             <div class="full">
               <div class="split split-1">
-                <div class="xr-button">
+                <div class="xr-button" tabindex="0" title="Start XR streaming">
                   <img src="symbols/sparkles.square.filled.on.square.svg" />
                 </div>
               </div>
@@ -239,7 +239,7 @@
           </div>
           <div class="input">
             <div>
-              <select class="time-range">
+              <select class="time-range" title="Select time range">
                 <option value="visible">Visible Range</option>
                 <option value="full">Full Log</option>
                 <option value="enabled">Enabled</option>
@@ -256,10 +256,10 @@
           </div>
           <div class="input">
             <div class="half">
-              <input class="range-min" type="number" />
+              <input class="range-min" type="number" title="Minimum histogram value" />
             </div>
             <div class="half">
-              <input class="range-max" type="number" />
+              <input class="range-max" type="number" title="Maximum histogram value" />
             </div>
           </div>
 
@@ -268,7 +268,7 @@
           </div>
           <div class="input">
             <div>
-              <input class="step-size" type="number" />
+              <input class="step-size" type="number" title="Histogram step size" />
             </div>
           </div>
         </div>
@@ -277,24 +277,24 @@
       <!-- Video -->
       <div id="controller7">
         <div class="video-source">
-          <button tabindex="-1">
+          <button title="Open local video file">
             <img src="symbols/doc.fill.svg" />
           </button>
-          <button tabindex="-1">
+          <button title="Paste YouTube video URL">
             <img src="symbols/list.clipboard.fill.svg" />
             <svg><path /></svg>
           </button>
-          <button tabindex="-1">
+          <button title="Download match video from The Blue Alliance">
             <img src="symbols/tba_lamp.svg" />
             <svg><path /></svg>
           </button>
         </div>
         <div class="video-synchronization">
           <div class="video-timeline-section">
-            <button tabindex="-1">
+            <button title="Lock video timeline synchronization">
               <img src="symbols/lock.open.svg" />
             </button>
-            <button tabindex="-1" hidden>
+            <button title="Unlock video timeline synchronization" hidden>
               <img src="symbols/lock.svg" />
             </button>
             <div class="video-timeline-container">
@@ -306,7 +306,7 @@
                 min="1"
                 max="1"
                 step="1"
-                tabindex="-1"
+                title="Video timeline"
               />
               <div class="video-timeline-marker-container">
                 <div></div>
@@ -314,22 +314,22 @@
             </div>
           </div>
           <div class="video-timeline-controls">
-            <button tabindex="-1">
+            <button title="Go back 5 seconds">
               <img src="symbols/gobackward.5.svg" />
             </button>
-            <button tabindex="-1">
+            <button title="Previous frame">
               <img src="symbols/backward.frame.svg" />
             </button>
-            <button tabindex="-1">
+            <button title="Play video">
               <img src="symbols/play.fill.svg" />
             </button>
-            <button tabindex="-1" hidden>
+            <button title="Pause video" hidden>
               <img src="symbols/pause.svg" />
             </button>
-            <button tabindex="-1">
+            <button title="Next frame">
               <img src="symbols/forward.frame.svg" />
             </button>
-            <button tabindex="-1">
+            <button title="Go forward 5 seconds">
               <img src="symbols/goforward.5.svg" />
             </button>
           </div>
@@ -343,29 +343,29 @@
             <tr>
               <td>
                 0:
-                <select tabindex="-1"></select>
+                <select title="Select joystick data source"></select>
               </td>
               <td>
                 1:
-                <select tabindex="-1"></select>
+                <select title="Select joystick data source"></select>
               </td>
               <td>
                 2:
-                <select tabindex="-1"></select>
+                <select title="Select joystick data source"></select>
               </td>
             </tr>
             <tr>
               <td>
                 3:
-                <select tabindex="-1"></select>
+                <select title="Select joystick data source"></select>
               </td>
               <td>
                 4:
-                <select tabindex="-1"></select>
+                <select title="Select joystick data source"></select>
               </td>
               <td>
                 5:
-                <select tabindex="-1"></select>
+                <select title="Select joystick data source"></select>
               </td>
             </tr>
           </tbody>
@@ -381,7 +381,7 @@
           </div>
           <div class="input">
             <div>
-              <input class="max-speed" type="number" value="5" />
+              <input class="max-speed" type="number" value="5" title="Maximum speed (meters per second)" />
             </div>
           </div>
 
@@ -390,10 +390,10 @@
           </div>
           <div class="input">
             <div class="half">
-              <input class="size-x" type="number" value="0.65" step="0.01" />
+              <input class="size-x" type="number" value="0.65" step="0.01" title="Robot frame length (meters)" />
             </div>
             <div class="half">
-              <input class="size-y" type="number" value="0.65" step="0.01" />
+              <input class="size-y" type="number" value="0.65" step="0.01" title="Robot frame width (meters)" />
             </div>
           </div>
 
@@ -402,10 +402,10 @@
           </div>
           <div class="input">
             <div class="orientation-switcher split split-2">
-              <div>
+              <div tabindex="0" title="Rotate swerve module layout clockwise">
                 <img class="invertable" src="symbols/rotate.right.svg" />
               </div>
-              <div>
+              <div tabindex="0" title="Rotate swerve module layout counter-clockwise">
                 <img class="invertable" src="symbols/rotate.left.svg" />
               </div>
             </div>
@@ -427,10 +427,22 @@
           </div>
           <div class="input">
             <div class="half">
-              <input class="dimensions-width" type="number" value="960" step="1" />
+              <input
+                class="dimensions-width"
+                type="number"
+                value="960"
+                step="1"
+                title="Coordinate system width (pixels)"
+              />
             </div>
             <div class="half">
-              <input class="dimensions-height" type="number" value="720" step="1" />
+              <input
+                class="dimensions-height"
+                type="number"
+                value="720"
+                step="1"
+                title="Coordinate system height (pixels)"
+              />
             </div>
           </div>
 
@@ -439,7 +451,7 @@
           </div>
           <div class="input">
             <div>
-              <select class="orientation">
+              <select class="orientation" title="Coordinate system orientation">
                 <option value="xr,yd">+X right, +Y down</option>
                 <option value="xr,yu">+X right, +Y up</option>
                 <option value="xu,yl">+X up, +Y left</option>
@@ -452,7 +464,7 @@
           </div>
           <div class="input">
             <div>
-              <select class="origin">
+              <select class="origin" title="Coordinate system origin">
                 <option value="ul">upper left</option>
                 <option value="ur">upper right</option>
                 <option value="ll">lower left</option>
@@ -479,8 +491,20 @@
       <!-- Line Graph -->
       <div id="renderer1">
         <canvas class="line-graph-canvas"></canvas>
-        <div class="line-graph-scroll">
+        <div class="line-graph-scroll" tabindex="-1">
           <div class="line-graph-scroll-content"></div>
+        </div>
+        <div class="line-graph-help">
+          <div class="line-graph-help-container">
+            <div class="line-graph-help-row">
+              <img src="symbols/arrow.up.and.down.svg" class="line-graph-help-icon" />
+              <span>Scroll to zoom</span>
+            </div>
+            <div class="line-graph-help-row">
+              <img src="symbols/arrow.left.and.right.svg" class="line-graph-help-icon" />
+              <span>Drag to pan</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -518,7 +542,7 @@
           <div class="data-table-key-container">
             <span></span>
           </div>
-          <button class="data-table-key-delete" tabindex="-1">
+          <button class="data-table-key-delete" title="Remove from view">
             <img src="symbols/xmark.svg" />
           </button>
         </span>
@@ -528,8 +552,8 @@
             <tbody>
               <tr>
                 <th>
-                  <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                  <button class="data-table-jump-button" tabindex="-1">
+                  <input class="data-table-jump-input" type="number" placeholder="0.000" title="Go to timestamp" />
+                  <button class="data-table-jump-button" title="Go to timestamp">
                     <img src="symbols/arrow.down.to.line.svg" />
                   </button>
                 </th>
@@ -550,25 +574,25 @@
             <tbody>
               <tr>
                 <th>
-                  <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                  <button class="console-table-jump-button" tabindex="-1">
+                  <input class="console-table-jump-input" type="number" placeholder="0.000" title="Go to timestamp" />
+                  <button class="console-table-jump-button" title="Go to timestamp">
                     <img src="symbols/arrow.down.to.line.svg" />
                   </button>
                 </th>
                 <th>
                   <div>
                     <span></span>
-                    <button class="console-table-key-delete" tabindex="-1">
+                    <button class="console-table-key-delete" title="Remove from view">
                       <img src="symbols/xmark.svg" />
                     </button>
                   </div>
-                  <button class="export-button" tabindex="-1">
+                  <button class="export-button" title="Export console log">
                     <img src="symbols/square.and.arrow.down.svg" />
                   </button>
-                  <button class="highlight-button" tabindex="-1">
+                  <button class="highlight-button" title="Highlight warning/error messages">
                     <img src="symbols/paintpalette.fill.svg" />
                   </button>
-                  <input class="filter" type="search" placeholder="Filter" />
+                  <input class="filter" type="search" placeholder="Filter" title="Filter console log" />
                 </th>
               </tr>
             </tbody>
@@ -578,7 +602,7 @@
 
       <!-- Statistics -->
       <div id="renderer6">
-        <div class="stats-values-container">
+        <div class="stats-values-container" tabindex="-1">
           <table class="stats-values">
             <tbody></tbody>
           </table>
@@ -652,21 +676,18 @@
 
     <span id="sourceListItemTemplate" hidden>
       <div class="item">
-        <button class="type" tabindex="-1">
-          <object data="" type="image/svg+xml"></object>
-          <object data="" type="image/svg+xml" class="hidden"></object>
+        <button class="type" title="Edit field configuration">
+          <object data="" type="image/svg+xml" tabindex="-1"></object>
+          <object data="" type="image/svg+xml" class="hidden" tabindex="-1"></object>
         </button>
         <div class="type-name"></div>
         <div class="key-container">
           <span></span>
         </div>
-        <button class="warning" tabindex="-1" hidden>
-          <img src="symbols/exclamationmark.triangle.fill.svg" />
-        </button>
-        <button class="hide" tabindex="-1">
+        <button class="hide" title="Toggle field visibility">
           <img src="symbols/eye.svg" />
         </button>
-        <button class="remove" tabindex="-1">
+        <button class="remove" title="Remove field">
           <img src="symbols/xmark.svg" />
         </button>
         <img class="value-symbol" src="symbols/arrow.turn.down.right.svg" hidden />

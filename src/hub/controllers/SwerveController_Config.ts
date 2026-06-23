@@ -49,41 +49,6 @@ const SwerveController_Config: SourceListConfig = {
       previewType: "SwerveModuleState[]"
     },
     {
-      key: "statesLegacy",
-      display: "Module States",
-      symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
-      showInTypeName: true,
-      color: "color",
-      sourceTypes: ["NumberArray"],
-      showDocs: false,
-      options: [
-        {
-          key: "color",
-          display: "Color",
-          showInTypeName: false,
-          values: NeonColors_RedStart
-        },
-        {
-          key: "arrangement",
-          display: "Arrangement",
-          showInTypeName: false,
-          values: SwerveArrangementValues
-        },
-        {
-          key: "units",
-          display: "Rotation Units",
-          showInTypeName: false,
-          values: [
-            { key: "radians", display: "Radians" },
-            { key: "degrees", display: "Degrees" }
-          ]
-        }
-      ],
-      initialSelectionOption: "color",
-      numberArrayDeprecated: true,
-      previewType: "SwerveModuleState[]"
-    },
-    {
       key: "chassisSpeeds",
       display: "Chassis Speeds",
       symbol: "arrow.up.and.down.square.fill",

@@ -89,6 +89,7 @@ export default class SourceList {
     this.EDIT_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.EDIT_BUTTON);
     this.EDIT_BUTTON.classList.add("edit");
+    this.EDIT_BUTTON.title = "Edit settings";
     let editIcon = document.createElement("img");
     this.EDIT_BUTTON.appendChild(editIcon);
     editIcon.src = "symbols/ellipsis.svg";
@@ -97,6 +98,7 @@ export default class SourceList {
     this.CLEAR_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.CLEAR_BUTTON);
     this.CLEAR_BUTTON.classList.add("clear");
+    this.CLEAR_BUTTON.title = "Clear all fields";
     let clearButton = document.createElement("img");
     this.CLEAR_BUTTON.appendChild(clearButton);
     clearButton.src = "symbols/trash.fill.svg";
@@ -105,6 +107,7 @@ export default class SourceList {
     this.HELP_BUTTON = document.createElement("button");
     this.ROOT.appendChild(this.HELP_BUTTON);
     this.HELP_BUTTON.classList.add("help");
+    this.HELP_BUTTON.title = "Help";
     let helpIcon = document.createElement("img");
     this.HELP_BUTTON.appendChild(helpIcon);
     helpIcon.src = "symbols/questionmark.circle.svg";
@@ -748,6 +751,21 @@ export default class SourceList {
   /** Make a list item element and inserts it into the list. */
   private addListItem(state: SourceListItemState, insertIndex?: number) {
     let item = this.ITEM_TEMPLATE.cloneNode(true) as HTMLElement;
+    Array.from(item.getElementsByTagName("object")).forEach((objElement) => {
+      // Add a persistent load listener to re-apply the correct color.
+      // This is necessary because Safari may unload and reload the SVG when
+      // the element is detached or hidden (e.g. switching tabs).
+      objElement.addEventListener("load", () => {
+        let color = objElement.getAttribute("type-color");
+        if (color !== null && objElement.contentDocument !== null) {
+          let svgs = objElement.contentDocument.getElementsByTagName("svg");
+          if (svgs.length > 0) {
+            svgs[0].style.color = color;
+          }
+        }
+      });
+    });
+
     if (insertIndex === undefined) {
       this.LIST.appendChild(item);
       this.state.push(state);
@@ -764,6 +782,7 @@ export default class SourceList {
 
     // Type controls
     let typeButton = item.getElementsByClassName("type")[0] as HTMLButtonElement;
+    typeButton.title = "Edit field configuration";
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
     let promptType = (rect: ButtonRect) => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -820,20 +839,8 @@ export default class SourceList {
       });
     });
 
-    // Warning button
-    let warningButton = item.getElementsByClassName("warning")[0] as HTMLButtonElement;
-    let enableWarning = typeConfig?.numberArrayDeprecated === true;
-    warningButton.hidden = !enableWarning;
-    let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
-    keyContainer.style.setProperty("--has-warning", enableWarning ? "1" : "0");
-    warningButton.addEventListener("click", () => {
-      window.sendMainMessage("numeric-array-deprecation-warning", { force: true });
-    });
-    if (enableWarning) {
-      window.sendMainMessage("numeric-array-deprecation-warning", { force: false });
-    }
-
     // Hide button
+    let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let toggleHidden = () => {
       let index = Array.from(this.LIST.children).indexOf(item);
@@ -889,6 +896,8 @@ export default class SourceList {
 
     // Remove button
     let removeButton = item.getElementsByClassName("remove")[0] as HTMLButtonElement;
+    removeButton.title = "Remove field";
+    let removeIcon = removeButton.firstElementChild as HTMLElement;
     removeButton.addEventListener("click", () => {
       let index = Array.from(this.LIST.children).indexOf(item);
       let removeCount = 0;
@@ -941,26 +950,29 @@ export default class SourceList {
       }
     }
     color = ensureThemeContrast(color);
+    typeIconVisible.setAttribute("type-color", color);
+    typeIconHidden.setAttribute("type-color", color);
+
     let dataPath = "symbols/sourceList/" + typeConfig.symbol + ".svg";
     if (dataPath !== typeIconVisible.getAttribute("data")) {
       // Load new image on hidden icon
       typeIconHidden.data = dataPath;
-      typeIconHidden.addEventListener("load", () => {
-        if (typeIconHidden.contentDocument) {
-          typeIconHidden.contentDocument.getElementsByTagName("svg")[0].style.color = color;
-          typeIconHidden.setAttribute("type-color", color);
-
-          typeIconHidden.classList.remove("hidden");
-          typeIconVisible.classList.add("hidden");
-        }
-      });
+      typeIconHidden.addEventListener(
+        "load",
+        () => {
+          if (typeIconHidden.contentDocument) {
+            typeIconHidden.classList.remove("hidden");
+            typeIconVisible.classList.add("hidden");
+          }
+        },
+        { once: true }
+      );
     } else if (typeIconVisible.contentDocument !== null) {
       // Replace color on visible icon
       let svgs = typeIconVisible.contentDocument.getElementsByTagName("svg");
       if (svgs.length > 0) {
         svgs[0].style.color = color;
       }
-      typeIconVisible.setAttribute("type-color", color);
     }
 
     // Update type name
@@ -1001,6 +1013,8 @@ export default class SourceList {
     let hideButton = item.getElementsByClassName("hide")[0] as HTMLButtonElement;
     let hideIcon = hideButton.firstElementChild as HTMLImageElement;
     hideIcon.src = "symbols/" + (state.visible ? "eye.svg" : "eye.slash.svg");
+    let titleText = state.visible ? "Hide field" : "Show field";
+    hideButton.title = titleText;
     if (state.visible) {
       item.classList.remove("hidden");
     } else {
@@ -1055,32 +1069,13 @@ export default class SourceList {
         if (value !== null || logType === LoggableType.Empty) {
           if (typeConfig?.previewType !== undefined) {
             if (typeConfig?.previewType !== null) {
-              let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose3d";
-              let numberArrayUnits: "radians" | "degrees" = "radians";
-              if ("format" in state.options) {
-                let formatRaw = state.options.format;
-                numberArrayFormat =
-                  formatRaw === "Pose2d" ||
-                  formatRaw === "Pose3d" ||
-                  formatRaw === "Translation2d" ||
-                  formatRaw === "Translation3d"
-                    ? formatRaw
-                    : "Pose3d";
-              }
+              let numberRotationUnits: "radians" | "degrees" = "radians";
               if ("units" in state.options) {
-                numberArrayUnits = state.options.units === "degrees" ? "degrees" : "radians";
+                numberRotationUnits = state.options.units === "degrees" ? "degrees" : "radians";
               }
               let poseStrings: string[] = [];
               if (typeConfig?.previewType === "SwerveModuleState[]") {
-                let swerveStates = grabSwerveStates(
-                  window.log,
-                  state.logKey,
-                  state.logType,
-                  time,
-                  undefined,
-                  numberArrayUnits,
-                  this.UUID
-                );
+                let swerveStates = grabSwerveStates(window.log, state.logKey, time, undefined, this.UUID);
                 swerveStates.forEach((state) => {
                   poseStrings.push(
                     "\u03bd: " +
@@ -1108,8 +1103,7 @@ export default class SourceList {
                   state.logType,
                   time,
                   this.UUID,
-                  numberArrayFormat,
-                  numberArrayUnits
+                  numberRotationUnits
                 );
                 poseStrings = poses.map((annotatedPose) => {
                   switch (typeConfig?.previewType) {
