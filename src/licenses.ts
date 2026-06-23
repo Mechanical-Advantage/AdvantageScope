@@ -23,22 +23,30 @@ window.addEventListener("load", () => {
     let textElement = document.createElement("div");
     textElement.classList.add("license-text");
     let cleanText = license.text
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
       .replaceAll("\t", "")
-      .replaceAll("\r\n", "\n")
-      .replaceAll("\n\n", "<br><br>")
-      .replaceAll("\n&gt;", "<br>&gt;")
-      .replaceAll("\n-", "<br>-")
-      .replaceAll("\n", " ");
+      .replaceAll("\r\n", "\n");
     while (cleanText.includes("  ")) {
       cleanText = cleanText.replaceAll("  ", " ");
     }
     if (cleanText.startsWith(" ")) {
       cleanText = cleanText.slice(1);
     }
-    cleanText = cleanText.replaceAll("<br> ", "<br>");
-    textElement.innerHTML = cleanText;
+    const paragraphs = cleanText.split("\n\n");
+    paragraphs.forEach((paragraph, index) => {
+      if (index > 0) {
+        textElement.appendChild(document.createElement("br"));
+        textElement.appendChild(document.createElement("br"));
+      }
+      const lines = paragraph.split("\n");
+      lines.forEach((line, lineIndex) => {
+        if (lineIndex > 0) {
+          textElement.appendChild(document.createElement("br"));
+        }
+        const span = document.createElement("span");
+        span.textContent = line;
+        textElement.appendChild(span);
+      });
+    });
     document.body.appendChild(textElement);
   });
 });
