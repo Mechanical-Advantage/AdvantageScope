@@ -734,6 +734,11 @@ export namespace Units {
       ry: "radians",
       rz: "radians"
     },
+    ChassisVelocities: {
+      vx: "meters/second",
+      vy: "meters/second",
+      omega: "radians/second"
+    },
     ChassisSpeeds: {
       vx: "meters/second",
       vy: "meters/second",
@@ -768,6 +773,9 @@ export namespace Units {
     },
     SwerveModulePositionStruct: {
       distance: "meters"
+    },
+    SwerveModuleVelocity: {
+      speed: "meters/second"
     },
     SwerveModuleState: {
       speed: "meters/second"

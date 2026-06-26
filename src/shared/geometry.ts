@@ -54,8 +54,8 @@ export type PoseAnnotations = {
   visionSize?: string;
 };
 
-export type SwerveState = { speed: number; angle: Rotation2d };
-export type ChassisSpeeds = { vx: number; vy: number; omega: number };
+export type ModuleVelocity = { speed: number; angle: Rotation2d };
+export type RobotVelocities = { vx: number; vy: number; omega: number };
 
 export const APRIL_TAG_36H11_COUNT = 587;
 export const APRIL_TAG_16H5_COUNT = 30;
@@ -610,37 +610,37 @@ export function grabHeatmapData(
   return poses;
 }
 
-export function grabSwerveStates(
+export function grabModuleVelocities(
   log: Log,
   key: string,
   timestamp: number,
   arrangement?: string,
   uuid?: string
-): SwerveState[] {
-  let states: SwerveState[] = [];
+): ModuleVelocity[] {
+  let velocities: ModuleVelocity[] = [];
   let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
   for (let i = 0; i < length; i++) {
-    states.push({
+    velocities.push({
       speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
       angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
     });
   }
 
   // Apply arrangement
-  if (states.length === 4 && arrangement !== undefined) {
-    let originalStates = jsonCopy(states);
+  if (velocities.length === 4 && arrangement !== undefined) {
+    let originalStates = jsonCopy(velocities);
     arrangement
       .split(",")
       .map((x) => Number(x))
       .forEach((sourceIndex, targetIndex) => {
-        states[targetIndex] = originalStates[sourceIndex];
+        velocities[targetIndex] = originalStates[sourceIndex];
       });
   }
 
-  return states;
+  return velocities;
 }
 
-export function grabChassisSpeeds(log: Log, key: string, timestamp: number, uuid?: string): ChassisSpeeds {
+export function grabRobotVelocities(log: Log, key: string, timestamp: number, uuid?: string): RobotVelocities {
   return {
     vx: getOrDefault(log, key + "/vx", LoggableType.Number, timestamp, 0, uuid),
     vy: getOrDefault(log, key + "/vy", LoggableType.Number, timestamp, 0, uuid),

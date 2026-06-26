@@ -16,9 +16,9 @@ import {
   SourceListTypeMemoryEntry
 } from "../shared/SourceListConfig";
 import {
-  grabChassisSpeeds,
+  grabModuleVelocities,
   grabPosesAuto,
-  grabSwerveStates,
+  grabRobotVelocities,
   rotation3dTo2d,
   rotation3dToRPY
 } from "../shared/geometry";
@@ -1074,9 +1074,9 @@ export default class SourceList {
                 numberRotationUnits = state.options.units === "degrees" ? "degrees" : "radians";
               }
               let poseStrings: string[] = [];
-              if (typeConfig?.previewType === "SwerveModuleState[]") {
-                let swerveStates = grabSwerveStates(window.log, state.logKey, time, undefined, this.UUID);
-                swerveStates.forEach((state) => {
+              if (typeConfig?.previewType === "ModuleVelocities") {
+                let moduleVelocities = grabModuleVelocities(window.log, state.logKey, time, undefined, this.UUID);
+                moduleVelocities.forEach((state) => {
                   poseStrings.push(
                     "\u03bd: " +
                       state.speed.toFixed(2) +
@@ -1085,15 +1085,15 @@ export default class SourceList {
                       "\u00b0"
                   );
                 });
-              } else if (typeConfig?.previewType === "ChassisSpeeds") {
-                let chassisSpeeds = grabChassisSpeeds(window.log, state.logKey, time, this.UUID);
+              } else if (typeConfig?.previewType === "RobotVelocities") {
+                let robotVelocities = grabRobotVelocities(window.log, state.logKey, time, this.UUID);
                 poseStrings.push(
                   "\u03bdx: " +
-                    chassisSpeeds.vx.toFixed(2) +
+                    robotVelocities.vx.toFixed(2) +
                     "m/s, \u03bdy: " +
-                    chassisSpeeds.vy.toFixed(2) +
+                    robotVelocities.vy.toFixed(2) +
                     "m/s, \u03a9: " +
-                    Units.convert(chassisSpeeds.omega, "radians", "degrees").toFixed(2) +
+                    Units.convert(robotVelocities.omega, "radians", "degrees").toFixed(2) +
                     "\u00b0/s"
                 );
               } else {
