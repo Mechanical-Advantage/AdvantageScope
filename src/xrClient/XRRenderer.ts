@@ -669,8 +669,14 @@ export default class XRRenderer {
 
               // Save components
               scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              scene.position.set(...fieldConfig.position);
+
               carpet.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              carpet.position.set(...fieldConfig.position);
+
               stagedPieces.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              stagedPieces.position.set(...fieldConfig.position);
+
               this.field = scene;
               this.fieldCarpet = carpet;
               this.fieldStagedPieces = stagedPieces;
