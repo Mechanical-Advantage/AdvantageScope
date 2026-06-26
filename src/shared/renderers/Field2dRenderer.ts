@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { AnnotatedPose2d, Pose2d, SwerveState, Translation2d } from "../geometry";
+import { AnnotatedPose2d, ModuleVelocity, Pose2d, Translation2d } from "../geometry";
 import { Units } from "../units";
 import { scaleValue, transformPx } from "../util";
 import Heatmap from "./Heatmap";
@@ -157,8 +157,8 @@ export default class Field2dRenderer implements TabRenderer {
     // Function to draw robot
     let drawRobot = (
       pose: Pose2d,
-      swerveStates: {
-        values: SwerveState[];
+      swerveModuleVelocities: {
+        values: ModuleVelocity[];
         color: string;
       }[],
       bumperColor?: string,
@@ -206,7 +206,7 @@ export default class Field2dRenderer implements TabRenderer {
       context.lineTo(arrowRight[0], arrowRight[1]);
       context.stroke();
 
-      // Render swerve states
+      // Render swerve module velocities
       [
         [1, 1],
         [1, -1],
@@ -219,7 +219,7 @@ export default class Field2dRenderer implements TabRenderer {
         ]);
 
         // Draw module data
-        let drawModuleData = (state: SwerveState, color: string) => {
+        let drawModuleData = (state: ModuleVelocity, color: string) => {
           let fullRotation = rotation + state.angle;
           context.strokeStyle = color;
 
@@ -251,13 +251,36 @@ export default class Field2dRenderer implements TabRenderer {
           context.lineTo(...arrowRight);
           context.stroke();
         };
-        swerveStates.forEach((set) => {
+        swerveModuleVelocities.forEach((set) => {
           if (index < set.values.length) {
             drawModuleData(set.values[index], set.color);
           }
         });
       });
     };
+
+    // Draw FTC Grid
+    if (fieldData.isFTC && fieldData.useGrid) {
+      context.beginPath();
+
+      context.strokeStyle = `rgb(0 0 0 / 10%`;
+      context.lineWidth = 0.3 * pixelsPerInch;
+
+      for (let i = 1; i <= 5; i++) {
+        const lineDistance = (canvasFieldHeight / 6) * i;
+
+        // Draw Horizontal Line
+        context.moveTo(canvasFieldLeft, canvasFieldTop + lineDistance);
+        context.lineTo(canvasFieldLeft + canvasFieldWidth, canvasFieldTop + lineDistance);
+
+        // Draw Vertical Line
+        context.moveTo(canvasFieldLeft + lineDistance, canvasFieldTop);
+        context.lineTo(canvasFieldLeft + lineDistance, canvasFieldTop + canvasFieldHeight);
+      }
+
+      context.stroke();
+      context.closePath();
+    }
 
     // Update heatmap data
     let heatmapTranslations: Translation2d[] = [];
@@ -345,7 +368,7 @@ export default class Field2dRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.swerveStates, object.bumperColor);
+              drawRobot(pose.pose, object.swerveModuleVelocities, object.bumperColor);
             });
             break;
           case "ghost":
@@ -363,7 +386,7 @@ export default class Field2dRenderer implements TabRenderer {
               });
 
               // Draw main object
-              drawRobot(pose.pose, object.swerveStates, undefined, object.color);
+              drawRobot(pose.pose, object.swerveModuleVelocities, undefined, object.color);
             });
             break;
           case "arrow":
@@ -440,8 +463,8 @@ export type Field2dRendererCommand_RobotObj = {
   trails: Translation2d[][];
   bumperColor: string;
   visionTargets: AnnotatedPose2d[];
-  swerveStates: {
-    values: SwerveState[];
+  swerveModuleVelocities: {
+    values: ModuleVelocity[];
     color: string;
   }[];
 };
@@ -451,8 +474,8 @@ export type Field2dRendererCommand_GhostObj = {
   poses: AnnotatedPose2d[];
   color: string;
   visionTargets: AnnotatedPose2d[];
-  swerveStates: {
-    values: SwerveState[];
+  swerveModuleVelocities: {
+    values: ModuleVelocity[];
     color: string;
   }[];
 };
