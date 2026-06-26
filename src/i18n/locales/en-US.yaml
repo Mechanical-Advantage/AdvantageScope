@@ -503,7 +503,7 @@ hub:
   swerve:
     sources: "Sources" # Title for the sources source list in swerve view
     types:
-      moduleVelocities: "Module States" # Swerve module velocities type
+      moduleVelocities: "Module Velocities" # Swerve module velocities type
       robotVelocities: "Robot Velocities" # Swerve robot velocities type
       rotation: "Rotation" # Swerve rotation type
       rotationLegacy: "Rotation" # Swerve legacy rotation type
