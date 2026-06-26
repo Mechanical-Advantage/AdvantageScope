@@ -167,11 +167,14 @@ export default class JoysticksRenderer implements TabRenderer {
         let rowCount =
           Math.ceil(joystick.state.buttons.length / 6) +
           Math.ceil(joystick.state.axes.length / 6) +
-          Math.ceil(joystick.state.povs.length / 6);
+          Math.ceil(joystick.state.povs.length / 6) +
+          Math.ceil(joystick.state.touchpads.length / 6);
         let columnCount = Math.max(
           Math.min(joystick.state.buttons.length, 6),
           Math.min(joystick.state.axes.length, 6),
-          Math.min(joystick.state.povs.length, 6)
+          Math.min(joystick.state.povs.length, 6),
+          joystick.state.touchpads.length > 0 ? Math.min(joystick.state.touchpads.length * 2, 6) : 1,
+          1
         );
         backgroundWidth = 40 + columnCount * 100;
         backgroundHeight = 40 + rowCount * 100;
@@ -323,14 +326,18 @@ export default class JoysticksRenderer implements TabRenderer {
 
       // Draw all components
       if (config) {
+        let isSDL = joystick.state.mapping === "sdl";
         config.components.forEach((component) => {
           switch (component.type) {
             case "button":
               let active = false;
-              if (component.sourcePov) {
-                if (component.sourceIndex < joystick.state.povs.length) {
-                  let povValue = joystick.state.povs[component.sourceIndex];
-                  switch (component.sourcePov) {
+              let sourcePov = isSDL ? component.sdlSourcePov : component.niSourcePov;
+              let sourceIndex = isSDL ? component.sdlSourceIndex : component.niSourceIndex;
+              if (sourcePov !== undefined && sourceIndex !== undefined) {
+                let pov = joystick.state.povs.find((p) => p.id === sourceIndex);
+                if (pov) {
+                  let povValue = pov.angle;
+                  switch (sourcePov) {
                     case "up":
                       active = povValue === 315 || povValue === 0 || povValue === 45;
                       break;
@@ -345,8 +352,11 @@ export default class JoysticksRenderer implements TabRenderer {
                       break;
                   }
                 }
-              } else if (component.sourceIndex <= joystick.state.buttons.length) {
-                active = joystick.state.buttons[component.sourceIndex - 1];
+              } else if (sourceIndex !== undefined) {
+                let button = joystick.state.buttons.find((b) => b.id === sourceIndex);
+                if (button) {
+                  active = button.state;
+                }
               }
               drawButton(component.isYellow, component.isEllipse, component.centerPx, component.sizePx, active);
               break;
@@ -355,75 +365,114 @@ export default class JoysticksRenderer implements TabRenderer {
               let xValue = 0,
                 yValue = 0,
                 buttonActive = false;
-              if (component.xSourceIndex < joystick.state.axes.length) {
-                xValue = joystick.state.axes[component.xSourceIndex];
-                if (component.xSourceInverted) xValue *= -1;
+              let xSourceIndex = isSDL ? component.sdlXSourceIndex : component.niXSourceIndex;
+              let xSourceInverted = isSDL ? component.sdlXSourceInverted : component.niXSourceInverted;
+              let ySourceIndex = isSDL ? component.sdlYSourceIndex : component.niYSourceIndex;
+              let ySourceInverted = isSDL ? component.sdlYSourceInverted : component.niYSourceInverted;
+              let buttonSourceIndex = isSDL ? component.sdlButtonSourceIndex : component.niButtonSourceIndex;
+
+              if (xSourceIndex !== undefined) {
+                let xAxis = joystick.state.axes.find((a) => a.id === xSourceIndex);
+                if (xAxis) {
+                  xValue = xAxis.value;
+                  if (xSourceInverted) xValue *= -1;
+                }
               }
-              if (component.ySourceIndex < joystick.state.axes.length) {
-                yValue = joystick.state.axes[component.ySourceIndex];
-                if (component.ySourceInverted) yValue *= -1;
+              if (ySourceIndex !== undefined) {
+                let yAxis = joystick.state.axes.find((a) => a.id === ySourceIndex);
+                if (yAxis) {
+                  yValue = yAxis.value;
+                  if (ySourceInverted) yValue *= -1;
+                }
               }
-              if (component.buttonSourceIndex && component.buttonSourceIndex <= joystick.state.buttons.length) {
-                buttonActive = joystick.state.buttons[component.buttonSourceIndex - 1];
+              if (buttonSourceIndex !== undefined) {
+                let button = joystick.state.buttons.find((b) => b.id === buttonSourceIndex);
+                if (button) {
+                  buttonActive = button.state;
+                }
               }
               drawJoystick(component.isYellow, component.centerPx, component.radiusPx, xValue, yValue, buttonActive);
               break;
 
             case "axis":
               let scaledValue = 0;
-              if (component.sourceIndex < joystick.state.axes.length) {
-                scaledValue = scaleValue(joystick.state.axes[component.sourceIndex], component.sourceRange, [0, 1]);
+              let sourceIndexAxis = isSDL ? component.sdlSourceIndex : component.niSourceIndex;
+              let sourceRangeAxis = isSDL ? component.sdlSourceRange : component.niSourceRange;
+              if (sourceIndexAxis !== undefined) {
+                let axis = joystick.state.axes.find((a) => a.id === sourceIndexAxis);
+                if (axis) {
+                  let range = sourceRangeAxis ?? [-1, 1];
+                  scaledValue = scaleValue(axis.value, range, [0, 1]);
+                }
               }
               drawAxis(component.isYellow, component.centerPx, component.sizePx, scaledValue);
               break;
 
-            default:
+            case "touchpad":
+              if (isSDL && component.sdlSourceIndex !== undefined) {
+                let layout = drawButton(component.isYellow, false, component.centerPx, component.sizePx, false);
+                let touchpadState = joystick.state.touchpads[component.sdlSourceIndex];
+                if (touchpadState) {
+                  touchpadState.forEach((finger) => {
+                    if (finger.down && finger.x >= 0 && finger.x <= 1 && finger.y >= 0 && finger.y <= 1) {
+                      let canvasX = layout[0] - layout[2] / 2 + finger.x * layout[2];
+                      let canvasY = layout[1] - layout[3] / 2 + finger.y * layout[3];
+                      let color = component.isYellow
+                        ? this.YELLOW_COLOR
+                        : isLight
+                        ? this.BLACK_COLOR
+                        : this.WHITE_COLOR;
+                      context.fillStyle = color;
+                      context.beginPath();
+                      context.arc(canvasX, canvasY, 8, 0, Math.PI * 2);
+                      context.fill();
+                    }
+                  });
+                }
+              }
               break;
           }
         });
       } else {
         // Draw buttons
-        joystick.state.buttons.forEach((buttonValue, index) => {
+        let buttonRows = Math.ceil(joystick.state.buttons.length / 6);
+        joystick.state.buttons.forEach((button, index) => {
           let buttonLayout = drawButton(
             false,
             false,
             [70 + (index % 6) * 100, 70 + Math.floor(index / 6) * 100],
             [60, 60],
-            buttonValue
+            button.state
           );
           context.font = (buttonLayout[3] * 0.5).toString() + "px sans-serif";
           context.textAlign = "center";
           context.textBaseline = "middle";
-          context.fillStyle = isLight === buttonValue ? this.WHITE_COLOR : this.BLACK_COLOR;
-          context.fillText((index + 1).toString(), buttonLayout[0], buttonLayout[1]);
+          context.fillStyle = isLight === button.state ? this.WHITE_COLOR : this.BLACK_COLOR;
+          context.fillText(button.id.toString(), buttonLayout[0], buttonLayout[1]);
         });
 
         // Draw axes
-        joystick.state.axes.forEach((axisValue, index) => {
+        let axisRows = Math.ceil(joystick.state.axes.length / 6);
+        joystick.state.axes.forEach((axis, index) => {
           let axisLayout = drawAxis(
             false,
-            [95 + (index % 6) * 100, 70 + (Math.floor(index / 6) + Math.ceil(joystick.state.buttons.length / 6)) * 100],
+            [95 + (index % 6) * 100, 70 + (Math.floor(index / 6) + buttonRows) * 100],
             [30, 80],
-            scaleValue(axisValue, [-1, 1], [0, 1])
+            scaleValue(axis.value, [-1, 1], [0, 1])
           );
           context.font = (axisLayout[3] * 0.6).toString() + "px sans-serif";
           context.textAlign = "center";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-          context.fillText(index.toString(), axisLayout[0] - axisLayout[2], axisLayout[1] + axisLayout[3] / 2);
+          context.fillText(axis.id.toString(), axisLayout[0] - axisLayout[2], axisLayout[1] + axisLayout[3] / 2);
         });
 
         // Draw POVs
-        joystick.state.povs.forEach((povValue, index) => {
+        let povRows = Math.ceil(joystick.state.povs.length / 6);
+        joystick.state.povs.forEach((pov, index) => {
           // Draw POV buttons
-          let povCenter = [
-            70 + (index % 6) * 100,
-            70 +
-              (Math.floor(index / 6) +
-                Math.ceil(joystick.state.buttons.length / 6) +
-                Math.ceil(joystick.state.axes.length / 6)) *
-                100
-          ];
+          let povCenter = [70 + (index % 6) * 100, 70 + (Math.floor(index / 6) + buttonRows + axisRows) * 100];
+          let povValue = pov.angle;
           let upActive = povValue === 315 || povValue === 0 || povValue === 45;
           let rightActive = povValue === 45 || povValue === 90 || povValue === 135;
           let downActive = povValue === 135 || povValue === 180 || povValue === 225;
@@ -442,12 +491,48 @@ export default class JoysticksRenderer implements TabRenderer {
           context.textAlign = "center";
           context.textBaseline = "middle";
           context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-          context.fillText(index.toString(), scaledPovCenter[0], scaledPovCenter[1]);
+          context.fillText(pov.id.toString(), scaledPovCenter[0], scaledPovCenter[1]);
         });
+
+        // Draw touchpads
+        let touchpadRows = Math.ceil(joystick.state.touchpads.length / 6);
+        joystick.state.touchpads.forEach((touchpad, index) => {
+          let touchpadCenter: [number, number] = [
+            95 + index * 140,
+            70 + (Math.floor(index / 6) + buttonRows + axisRows + povRows) * 100
+          ];
+          let touchpadLayout = drawButton(false, false, touchpadCenter, [80, 80], false);
+
+          // Draw fingers
+          touchpad.forEach((finger) => {
+            if (finger.down && finger.x >= 0 && finger.x <= 1 && finger.y >= 0 && finger.y <= 1) {
+              let canvasX = touchpadLayout[0] - touchpadLayout[2] / 2 + finger.x * touchpadLayout[2];
+              let canvasY = touchpadLayout[1] - touchpadLayout[3] / 2 + finger.y * touchpadLayout[3];
+              let color = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
+              context.fillStyle = color;
+              context.beginPath();
+              context.arc(canvasX, canvasY, 8, 0, Math.PI * 2);
+              context.fill();
+            }
+          });
+
+          // Draw touchpad text just outside to the left
+          context.font = (touchpadLayout[3] * 0.4).toString() + "px sans-serif";
+          context.textAlign = "right";
+          context.textBaseline = "middle";
+          context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
+          context.fillText(
+            index.toString(),
+            touchpadLayout[0] - touchpadLayout[2] / 2 - touchpadLayout[2] * 0.2,
+            touchpadLayout[1]
+          );
+        });
+
         if (
           joystick.state.buttons.length === 0 &&
           joystick.state.axes.length === 0 &&
-          joystick.state.povs.length === 0
+          joystick.state.povs.length === 0 &&
+          joystick.state.touchpads.length === 0
         ) {
           context.font = "italic 16px sans-serif";
           context.textAlign = "center";
@@ -464,7 +549,7 @@ export default class JoysticksRenderer implements TabRenderer {
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.fillStyle = isLight ? this.BLACK_COLOR : this.WHITE_COLOR;
-      context.fillText("No joysticks selected.", canvasWidth / 2, canvasHeight / 2);
+      context.fillText("Select a joystick layout to view data.", canvasWidth / 2, canvasHeight / 2);
     }
   }
 }

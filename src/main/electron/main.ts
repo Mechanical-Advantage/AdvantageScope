@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { parseREVLOG } from "@rev-robotics/revlog-converter";
-import { FileInfo, Client as FTPClient, FTPError } from "basic-ftp";
 import { hex } from "color-convert";
 import {
   app,
@@ -32,6 +31,7 @@ import jsonfile from "jsonfile";
 import net from "net";
 import os from "os";
 import path from "path";
+import { Client, Stats } from "ssh2";
 import { Readable } from "stream";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
@@ -44,17 +44,18 @@ import { SourceListConfig, SourceListItemState, SourceListTypeMemory } from "../
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
-import { createUUID } from "../../shared/util";
+import { createUUID, formatDate } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
   AKIT_PATH_INPUT_PERIOD,
   AKIT_PATH_OUTPUT,
   APP_VERSION,
+  DOWNLOAD_CONNECT_TIMEOUT_MS,
+  DOWNLOAD_PASSWORD,
   DOWNLOAD_REFRESH_INTERVAL_MS,
   DOWNLOAD_RETRY_DELAY_MS,
-  DOWNLOAD_TIMEOUT_MS,
-  FRC_LOG_FOLDER,
+  DOWNLOAD_USERNAME,
   HUB_DEFAULT_HEIGHT,
   HUB_DEFAULT_WIDTH,
   PREFS_FILENAME,
@@ -108,7 +109,6 @@ let menuTemplate: (Electron.MenuItemConstructorOptions | Electron.MenuItem)[] | 
 
 let stateTracker = new StateTracker();
 let updateChecker = new UpdateChecker();
-let usingUsb = false; // Menu bar setting, bundled with other prefs for renderers
 let firstOpenPath: string | null = null; // Cache path to open immediately
 let advantageScopeAssets: AdvantageScopeAssets = {
   field2ds: [],
@@ -125,13 +125,12 @@ let rlogSocketTimeouts: { [id: number]: NodeJS.Timeout } = {};
 let rlogDataArrays: { [id: number]: Uint8Array } = {};
 
 // Download variables
-let downloadClient: FTPClient | null = null;
+let downloadClient: Client | null = null;
 let downloadRetryTimeout: NodeJS.Timeout | null = null;
 let downloadRefreshInterval: NodeJS.Timeout | null = null;
 let downloadAddress: string = "";
 let downloadPath: string = "";
 let downloadFileSizeCache: { [id: string]: number } = {};
-let downloadClientIsSaving = false;
 
 // WINDOW MESSAGE HANDLING
 
@@ -154,7 +153,6 @@ function sendMessage(window: BrowserWindow, name: string, data?: any): boolean {
 /** Sends the current preferences to all windows (including USB menu bar setting) */
 function sendAllPreferences() {
   let data: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  data.usb = usingUsb;
   nativeTheme.themeSource = data.theme;
   hubWindows.forEach((window) => {
     if (!window.isDestroyed()) {
@@ -180,8 +178,15 @@ function sendAllPreferences() {
         .submenu as Electron.MenuItemConstructorOptions[]
     )[0].label = autoString;
     (menuTemplate[0].submenu as Electron.MenuItemConstructorOptions[])[7].checked = data.userAssetsFolder !== null;
+    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[7].checked =
+      data.systemcoreStaticAddress === "usb";
+    (menuTemplate[1].submenu as Electron.MenuItemConstructorOptions[])[8].checked =
+      data.systemcoreStaticAddress === "wifi";
     let menu = Menu.buildFromTemplate(menuTemplate);
     Menu.setApplicationMenu(menu);
+    BrowserWindow.getAllWindows().forEach((w) => {
+      if (!hubWindows.includes(w)) w.setMenu(null);
+    });
   }
 }
 
@@ -273,6 +278,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       let newTypeMemoryStr = JSON.stringify(typeMemory);
       if (originalTypeMemoryStr !== newTypeMemoryStr) {
         jsonfile.writeFileSync(TYPE_MEMORY_FILENAME, typeMemory);
+      }
+      break;
+
+    case "update-preferences":
+      {
+        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+        mergePreferences(prefs, message.data);
+        jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+        sendAllPreferences();
       }
       break;
 
@@ -490,52 +504,6 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
           targetCount += 1;
           openPath(logPath, (buffer) => (results[0] = buffer));
         }
-      }
-      break;
-
-    case "numeric-array-deprecation-warning":
-      {
-        let shouldForce: boolean = message.data.force;
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (!shouldForce && prefs.skipNumericArrayDeprecationWarning) return;
-        if (!prefs.skipNumericArrayDeprecationWarning) {
-          prefs.skipNumericArrayDeprecationWarning = true;
-          jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-          sendAllPreferences();
-        }
-        dialog.showMessageBox(window, {
-          type: "info",
-          title: "Alert",
-          message: "Deprecated data format",
-          detail:
-            "The legacy numeric array format for structured data is deprecated and will be removed in 2027. Check the AdvantageScope documentation for details on migrating to a modern alternative.",
-          icon: WINDOW_ICON
-        });
-      }
-      break;
-
-    case "ftc-experimental-warning":
-      {
-        let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-        if (prefs.skipFTCExperimentalWarning) return;
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: "Alert",
-            message: "Experimental Feature",
-            detail:
-              "Support for FTC fields in AdvantageScope is an experimental feature, and may not function properly in all cases. Please report any problems via the GitHub issues page.",
-            buttons: ["OK"],
-            checkboxLabel: "Don't Show Again",
-            icon: WINDOW_ICON
-          })
-          .then((response) => {
-            if (response.checkboxChecked) {
-              prefs.skipFTCExperimentalWarning = true;
-              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-              sendAllPreferences();
-            }
-          });
       }
       break;
 
@@ -914,12 +882,15 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const editAxisMenu = new Menu();
 
         if (legend === "discrete") {
+          let showRobotMode: boolean = message.data.showRobotMode;
           // Discrete controls
           editAxisMenu.append(
             new MenuItem({
-              label: "Add Enabled State",
+              label: "Show Robot Mode",
+              type: "checkbox",
+              checked: showRobotMode,
               click() {
-                sendMessage(window, "add-discrete-enabled");
+                sendMessage(window, "set-robot-mode-visible", { showRobotMode: !showRobotMode });
               }
             })
           );
@@ -1244,7 +1215,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       dialog
         .showSaveDialog(window, {
           title: "Select export location for console log",
-          defaultPath: "Console " + new Date().toLocaleDateString().replaceAll("/", "-") + ".txt",
+          defaultPath: "Console " + formatDate() + ".txt",
           properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
           filters: [{ name: "Text files", extensions: ["txt"] }]
         })
@@ -1572,86 +1543,85 @@ function handleDownloadMessage(message: NamedMessage) {
   }
 }
 
-/** Starts a new FTP connection. */
-async function downloadStart() {
+/** Starts a new SSH connection. */
+function downloadStart() {
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
-  downloadClient?.trackProgress();
-  downloadClient?.close();
-  downloadClientIsSaving = false;
+  downloadClient?.end();
   downloadFileSizeCache = {};
-
-  // Connect to server
-  try {
-    downloadClient = await new FTPClient(DOWNLOAD_TIMEOUT_MS);
-    await downloadClient.access({
-      host: downloadAddress
-    });
-  } catch (error) {
-    downloadError((error as FTPError).message);
-  }
-
-  // Start periodic read
-  let readFiles = async () => {
-    if (downloadClientIsSaving) return;
-    let list: FileInfo[] | undefined = undefined;
-    try {
-      list = await downloadClient?.list(downloadPath);
-    } catch (error) {
-      downloadError((error as FTPError).message);
-    }
-    if (list !== undefined) {
-      // Send file list to window
-      if (downloadWindow) {
-        if (list.length === 0) {
-          downloadError("No files");
+  downloadClient = new Client()
+    .once("ready", () => {
+      // Successful SSH connection
+      downloadClient?.sftp((error, sftp) => {
+        if (error) {
+          // Failed to start SFTP
+          downloadError(error.message);
         } else {
-          const filesAndFolders = list.filter(
-            (file) =>
-              !file.name.startsWith(".") &&
-              (file.isDirectory ||
-                file.name.endsWith(".rlog") ||
-                file.name.endsWith(".wpilog") ||
-                file.name.endsWith(".wpilogxz") ||
-                file.name.endsWith(".hoot") ||
-                file.name.endsWith(".revlog"))
-          );
-          const listData: { name: string; size: number; isFolder: boolean }[] = [];
-          for (const file of filesAndFolders) {
-            if (file.isDirectory) {
-              let totalSize = 0;
-              try {
-                const subFiles = await downloadClient?.list(downloadPath + file.name);
-                if (subFiles) {
-                  subFiles.forEach((subFile) => {
-                    if (subFile.isFile) totalSize += subFile.size;
-                  });
+          // Successful SFTP connection
+          let readFiles = () => {
+            sftp.readdir(downloadPath, (error, list) => {
+              if (error) {
+                // Failed to read directory (not found?)
+                downloadError(error.message);
+              } else {
+                // Return list of files
+                if (downloadWindow) {
+                  sendMessage(
+                    downloadWindow,
+                    "set-list",
+                    list
+                      .map((file) => {
+                        return { name: file.filename, size: file.attrs.size };
+                      })
+                      .filter(
+                        (file) =>
+                          !file.name.startsWith(".") &&
+                          (file.name.endsWith(".rlog") ||
+                            file.name.endsWith(".wpilog") ||
+                            file.name.endsWith(".wpilogxz") ||
+                            file.name.endsWith(".revlog") ||
+                            file.name.endsWith(".hoot"))
+                      )
+                      .map((file) => {
+                        return {
+                          name: file.name,
+                          size: file.size
+                        };
+                      })
+                  );
                 }
-              } catch (e) {}
-              listData.push({ name: file.name, size: totalSize, isFolder: true });
-            } else {
-              listData.push({ name: file.name, size: file.size, isFolder: false });
-            }
-          }
-          sendMessage(downloadWindow, "set-list", listData);
-        }
-      }
 
-      // Save cache of file sizes
-      list.forEach((file) => {
-        downloadFileSizeCache[file.name] = file.size;
+                // Save cache of file sizes
+                list.forEach((file) => {
+                  downloadFileSizeCache[file.filename] = file.attrs.size;
+                });
+              }
+            });
+          };
+
+          // Start periodic read
+          downloadRefreshInterval = setInterval(readFiles, DOWNLOAD_REFRESH_INTERVAL_MS);
+          readFiles();
+        }
       });
-    }
-  };
-  downloadRefreshInterval = setInterval(readFiles, DOWNLOAD_REFRESH_INTERVAL_MS);
-  readFiles();
+    })
+    .on("error", (error) => {
+      // Failed SSH connection
+      downloadError(error.message);
+    })
+    .connect({
+      // Start connection
+      host: downloadAddress,
+      port: 22,
+      readyTimeout: DOWNLOAD_CONNECT_TIMEOUT_MS,
+      username: DOWNLOAD_USERNAME,
+      password: DOWNLOAD_PASSWORD
+    });
 }
 
 /** Closes the FTP connection. */
 function downloadStop() {
-  downloadClient?.trackProgress();
-  downloadClient?.close();
-  downloadClientIsSaving = false;
+  downloadClient?.end();
   if (downloadRetryTimeout) clearTimeout(downloadRetryTimeout);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
 }
@@ -1662,21 +1632,18 @@ function downloadError(errorMessage: string) {
   sendMessage(downloadWindow, "show-error", errorMessage);
   if (downloadRefreshInterval) clearInterval(downloadRefreshInterval);
   downloadRetryTimeout = setTimeout(downloadStart, DOWNLOAD_RETRY_DELAY_MS);
-  downloadClientIsSaving = false;
 }
 
 /** Guides the user through saving a set of files. */
 function downloadSave(files: string[]) {
   if (!downloadWindow) return;
-  downloadClientIsSaving = true;
   let selectPromise;
   let firstExtension = path.extname(files[0]);
   if (files.length > 1 || firstExtension === "") {
     selectPromise = dialog.showOpenDialog(downloadWindow, {
       title: "Select save location for robot logs",
       buttonLabel: "Save",
-      properties: ["openDirectory", "createDirectory", "dontAddToRecent"],
-      defaultPath: getDefaultLogPath()
+      properties: ["openDirectory", "createDirectory", "dontAddToRecent"]
     });
   } else {
     let extension = firstExtension.slice(1);
@@ -1707,7 +1674,7 @@ function downloadSave(files: string[]) {
   }
 
   // Handle selected save location
-  selectPromise.then(async (response) => {
+  selectPromise.then((response) => {
     if (response.canceled) return;
     let savePath: string = "";
     if (files.length > 1 || firstExtension === "") {
@@ -1716,124 +1683,134 @@ function downloadSave(files: string[]) {
       savePath = (response as Electron.SaveDialogReturnValue).filePath as string;
     }
     if (savePath !== "") {
-      // Set up transfer progress
-      if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
-      let sizeTotal = 0;
-      downloadClient?.trackProgress((info) => {
-        if (!downloadWindow) return;
-        sendMessage(downloadWindow, "set-progress", { current: info.bytesOverall, total: sizeTotal });
-      });
-
       // Start saving
-      if (files.length === 1 && firstExtension !== "") {
-        // Single file
-        if (files[0] in downloadFileSizeCache) {
-          sizeTotal = downloadFileSizeCache[files[0]];
-        }
-        try {
-          await downloadClient?.downloadTo(savePath, downloadPath + files[0]);
-          if (!downloadWindow) return;
-          sendMessage(downloadWindow, "set-progress", 1);
-
-          // Ask if the log should be opened
-          dialog
-            .showMessageBox(downloadWindow, {
-              type: "question",
-              message: "Open log?",
-              detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
-              icon: WINDOW_ICON,
-              buttons: ["Open", "Skip"],
-              defaultId: 0
-            })
-            .then((result) => {
-              if (result.response === 0) {
-                downloadWindow?.destroy();
-                downloadStop();
-                hubWindows[0].focus();
-                sendMessage(hubWindows[0], "open-files", { files: [savePath], merge: false });
-              }
-            });
-        } catch (error) {
-          downloadError((error as FTPError).message);
-        }
-      } else {
-        // Multiple files
-        let downloadTasks: { remote: string; local: string; size: number }[] = [];
-        for (const file of files) {
-          if (path.extname(file) === "") {
-            // Folder
-            try {
-              const subFiles = await downloadClient?.list(downloadPath + file);
-              if (subFiles) {
-                const localFolderPath = path.join(savePath, file);
-                if (!fs.existsSync(localFolderPath)) {
-                  fs.mkdirSync(localFolderPath);
+      downloadClient?.sftp((error, sftp) => {
+        if (error) {
+          downloadError(error.message);
+        } else {
+          if (downloadWindow) sendMessage(downloadWindow, "set-progress", 0);
+          if (files.length === 1) {
+            // Single file
+            sftp.fastGet(
+              downloadPath + files[0],
+              savePath,
+              {
+                step: (sizeTransferred, _, sizeTotal) => {
+                  if (!downloadWindow) return;
+                  sendMessage(downloadWindow, "set-progress", { current: sizeTransferred, total: sizeTotal });
                 }
-                for (const subFile of subFiles) {
-                  if (subFile.isFile) {
-                    downloadTasks.push({
-                      remote: downloadPath + file + "/" + subFile.name,
-                      local: path.join(localFolderPath, subFile.name),
-                      size: subFile.size
+              },
+              (error) => {
+                if (error) {
+                  downloadError(error.message);
+                } else {
+                  if (!downloadWindow) return;
+                  sendMessage(downloadWindow, "set-progress", 1);
+
+                  // Ask if the log should be opened
+                  dialog
+                    .showMessageBox(downloadWindow, {
+                      type: "question",
+                      message: "Open log?",
+                      detail: 'Would you like to open the log file "' + path.basename(savePath) + '"?',
+                      icon: WINDOW_ICON,
+                      buttons: ["Open", "Skip"],
+                      defaultId: 0
+                    })
+                    .then((result) => {
+                      if (result.response === 0) {
+                        downloadWindow?.destroy();
+                        downloadStop();
+                        hubWindows[0].focus();
+                        sendMessage(hubWindows[0], "open-files", { files: [savePath], merge: false });
+                      }
                     });
-                  }
                 }
               }
-            } catch (e) {
-              console.error(e);
-            }
+            );
           } else {
-            // File
-            let remoteSize = 0;
-            if (file in downloadFileSizeCache) remoteSize = downloadFileSizeCache[file];
-            downloadTasks.push({
-              remote: downloadPath + file,
-              local: path.join(savePath, file),
-              size: remoteSize
+            // Multiple files
+            let completeCount = 0;
+            let skipCount = 0;
+            let allSizesTransferred: number[] = new Array(files.length).fill(0);
+            let allSizesTotal = 0;
+            files.forEach((file, index) => {
+              let fileSize = file in downloadFileSizeCache ? downloadFileSizeCache[file] : 0;
+              allSizesTotal += fileSize;
+              fs.stat(savePath + "/" + file, async (statErr, stats) => {
+                let remoteStats = await new Promise<Stats>((resolve) => {
+                  sftp.stat(downloadPath + file, (_, stats) => {
+                    resolve(stats);
+                  });
+                });
+                if (statErr === null && stats.size >= remoteStats.size) {
+                  // File already downloaded, skip
+                  completeCount++;
+                  skipCount++;
+                  allSizesTotal -= fileSize; // Remove from total size of files
+                  if (skipCount === files.length) {
+                    // All files skipped
+                    if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
+                  }
+                } else {
+                  // File not downloaded or out of date, download
+                  sftp.fastGet(
+                    downloadPath + file,
+                    savePath + "/" + file,
+                    {
+                      step: (sizeTransferred) => {
+                        allSizesTransferred[index] = sizeTransferred;
+                        if (!downloadWindow) return;
+                        let sumSizeTransferred = allSizesTransferred.reduce((a, b) => a + b, 0);
+                        sendMessage(downloadWindow, "set-progress", {
+                          current: sumSizeTransferred,
+                          total: allSizesTotal
+                        });
+                      }
+                    },
+                    (error) => {
+                      if (error) {
+                        downloadError(error.message);
+                      } else {
+                        completeCount++;
+
+                        if (completeCount >= files.length) {
+                          let message: string;
+                          if (skipCount > 0) {
+                            let newCount = completeCount - skipCount;
+                            message =
+                              "Saved " +
+                              newCount.toString() +
+                              " new log" +
+                              (newCount === 1 ? "" : "s") +
+                              " (" +
+                              skipCount.toString() +
+                              " skipped) to <u>" +
+                              savePath +
+                              "</u>";
+                          } else {
+                            message =
+                              "Saved " +
+                              completeCount.toString() +
+                              " log" +
+                              (completeCount === 1 ? "" : "s") +
+                              " to <u>" +
+                              savePath +
+                              "</u>";
+                          }
+                          if (!downloadWindow) return;
+                          sendMessage(downloadWindow, "set-progress", 1);
+                          sendMessage(downloadWindow, "show-alert", message);
+                        }
+                      }
+                    }
+                  );
+                }
+              });
             });
           }
         }
-
-        // Filter existing
-        let totalCount = downloadTasks.length;
-        downloadTasks = downloadTasks.filter((task) => {
-          if (!fs.existsSync(task.local) || fs.statSync(task.local).size < task.size) {
-            sizeTotal += task.size;
-            return true;
-          }
-          return false;
-        });
-
-        if (downloadTasks.length === 0) {
-          // All files skipped
-          if (downloadWindow) sendMessage(downloadWindow, "show-alert", "No new logs found.");
-          return;
-        }
-        try {
-          for (const task of downloadTasks) {
-            await downloadClient?.downloadTo(task.local, task.remote);
-          }
-          if (!downloadWindow) return;
-          sendMessage(downloadWindow, "set-progress", 1);
-
-          // Send message
-          let message: string;
-          if (totalCount > downloadTasks.length) {
-            message = `Saved ${downloadTasks.length} new file${downloadTasks.length === 1 ? "" : "s"} (${
-              totalCount - downloadTasks.length
-            } skipped) to <u>${savePath}</u>`;
-          } else {
-            message = `Saved ${downloadTasks.length} new file${
-              downloadTasks.length === 1 ? "" : "s"
-            } to <u>${savePath}</u>`;
-          }
-          if (!downloadWindow) return;
-          sendMessage(downloadWindow, "set-progress", 1);
-          sendMessage(downloadWindow, "show-alert", message);
-        } catch (error) {
-          downloadError((error as FTPError).message);
-        }
-      }
+      });
     }
   });
 }
@@ -1974,8 +1951,7 @@ function setupMenu() {
                     name: "Robot logs",
                     extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
-                ],
-                defaultPath: getDefaultLogPath()
+                ]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -1999,8 +1975,7 @@ function setupMenu() {
                     name: "Robot logs",
                     extensions: ["rlog", "wpilog", "wpilogxz", "dslog", "dsevents", "hoot", "revlog", "log", "csv"]
                   }
-                ],
-                defaultPath: getDefaultLogPath()
+                ]
               })
               .then((files) => {
                 if (files.filePaths.length > 0) {
@@ -2019,25 +1994,27 @@ function setupMenu() {
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", false);
+                sendMessage(window, "start-live", "robot");
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "phoenix", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", false);
-                }
-              };
-              return item;
-            })
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+              (liveMode: LiveMode) => {
+                let item: Electron.MenuItemConstructorOptions = {
+                  label: getLiveModeName(liveMode),
+                  click(_, baseWindow) {
+                    const window = baseWindow as BrowserWindow | undefined;
+                    if (window === undefined || !hubWindows.includes(window)) return;
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.liveMode = liveMode;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                    sendMessage(window, "start-live", "robot");
+                  }
+                };
+                return item;
+              }
+            )
           ]
         },
         {
@@ -2050,26 +2027,37 @@ function setupMenu() {
               click(_, baseWindow) {
                 const window = baseWindow as BrowserWindow | undefined;
                 if (window === undefined || !hubWindows.includes(window)) return;
-                sendMessage(window, "start-live", true);
+                sendMessage(window, "start-live", "sim");
               }
             },
             { type: "separator" },
-            ...(["nt4", "nt4-akit", "phoenix", "rlog", "ftcdashboard"] as const).map((liveMode: LiveMode) => {
-              let item: Electron.MenuItemConstructorOptions = {
-                label: getLiveModeName(liveMode),
-                click(_, baseWindow) {
-                  const window = baseWindow as BrowserWindow | undefined;
-                  if (window === undefined || !hubWindows.includes(window)) return;
-                  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-                  prefs.liveMode = liveMode;
-                  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-                  sendAllPreferences();
-                  sendMessage(window, "start-live", true);
-                }
-              };
-              return item;
-            })
+            ...(["nt4", "nt4-akit", "nt4-systemcore", "phoenix", "rlog", "ftcdashboard"] as const).map(
+              (liveMode: LiveMode) => {
+                let item: Electron.MenuItemConstructorOptions = {
+                  label: getLiveModeName(liveMode),
+                  click(_, baseWindow) {
+                    const window = baseWindow as BrowserWindow | undefined;
+                    if (window === undefined || !hubWindows.includes(window)) return;
+                    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+                    prefs.liveMode = liveMode;
+                    jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+                    sendAllPreferences();
+                    sendMessage(window, "start-live", "sim");
+                  }
+                };
+                return item;
+              }
+            )
           ]
+        },
+        {
+          label: "Connect to Driver Station",
+          accelerator: "CmdOrCtrl+Alt+Shift+K",
+          click(_, baseWindow) {
+            const window = baseWindow as BrowserWindow | undefined;
+            if (window === undefined || !hubWindows.includes(window)) return;
+            sendMessage(window, "start-live", "ds");
+          }
         },
         {
           label: "Download Logs...",
@@ -2082,11 +2070,24 @@ function setupMenu() {
         },
         { type: "separator" },
         {
-          label: "Use USB roboRIO Address",
+          label: "Use Systemcore USB Address",
           type: "checkbox",
-          checked: false,
+          checked: prefs.systemcoreStaticAddress === "usb",
           click(item) {
-            usingUsb = item.checked;
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            prefs.systemcoreStaticAddress = item.checked ? "usb" : "";
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
+          }
+        },
+        {
+          label: "Use Systemcore Wi-Fi Address",
+          type: "checkbox",
+          checked: prefs.systemcoreStaticAddress === "wifi",
+          click(item) {
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            prefs.systemcoreStaticAddress = item.checked ? "wifi" : "";
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
             sendAllPreferences();
           }
         },
@@ -2139,7 +2140,7 @@ function setupMenu() {
             dialog
               .showSaveDialog({
                 title: "Select export location for layout file",
-                defaultPath: "AdvantageScope " + new Date().toLocaleDateString().replaceAll("/", "-") + ".json",
+                defaultPath: "AdvantageScope " + formatDate() + ".json",
                 properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
                 filters: [{ name: "JSON files", extensions: ["json"] }]
               })
@@ -2206,14 +2207,14 @@ function setupMenu() {
                     }
                   }
 
-                  // Check version compatability
+                  // Check version compatibility
                   if (app.isPackaged && data.version !== APP_VERSION) {
                     let result = dialog.showMessageBoxSync({
                       type: "warning",
                       title: "Warning",
                       message: "Version mismatch",
                       detail:
-                        "The layout file was generated by a different version of AdvantageScope. Compatability is not guaranteed.",
+                        "The layout file was generated by a different version of AdvantageScope. Compatibility is not guaranteed.",
                       buttons: ["Continue", "Cancel"],
                       icon: WINDOW_ICON
                     });
@@ -2473,6 +2474,9 @@ function setupMenu() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
+  BrowserWindow.getAllWindows().forEach((w) => {
+    if (!hubWindows.includes(w)) w.setMenu(null);
+  });
 }
 
 /** Creates the "About AdvantageScope" window. */
@@ -2539,7 +2543,7 @@ function createHubWindow(state?: WindowState) {
   switch (process.platform) {
     case "darwin":
       prefs.vibrancy = "sidebar";
-      if (Number(os.release().split(".")[0]) >= 20) prefs.titleBarStyle = "hiddenInset"; // macOS Big Sur
+      prefs.titleBarStyle = "hiddenInset";
       break;
     case "win32":
       let releaseSplit = os.release().split(".");
@@ -2767,6 +2771,7 @@ function createEditRangeWindow(
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
+
     parent: parentWindow,
     modal: true,
     webPreferences: {
@@ -2776,7 +2781,8 @@ function createEditRangeWindow(
 
   // Finish setup
   editWindow.setMenu(null);
-  editWindow.once("ready-to-show", parentWindow.show);
+  editWindow.setMenuBarVisibility(false);
+  editWindow.once("ready-to-show", editWindow.show);
   editWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2820,7 +2826,8 @@ function createUnitConversionWindow(
 
   // Finish setup
   unitConversionWindow.setMenu(null);
-  unitConversionWindow.once("ready-to-show", parentWindow.show);
+  unitConversionWindow.setMenuBarVisibility(false);
+  unitConversionWindow.once("ready-to-show", unitConversionWindow.show);
   unitConversionWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2864,7 +2871,8 @@ function createRenameTabWindow(
 
   // Finish setup
   renameTabWindow.setMenu(null);
-  renameTabWindow.once("ready-to-show", parentWindow.show);
+  renameTabWindow.setMenuBarVisibility(false);
+  renameTabWindow.once("ready-to-show", renameTabWindow.show);
   renameTabWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2895,6 +2903,7 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
+
     parent: parentWindow,
     modal: true,
     webPreferences: {
@@ -2904,7 +2913,8 @@ function createEditFovWindow(parentWindow: Electron.BrowserWindow, fov: number, 
 
   // Finish setup
   editFovWindow.setMenu(null);
-  editFovWindow.once("ready-to-show", parentWindow.show);
+  editFovWindow.setMenuBarVisibility(false);
+  editFovWindow.once("ready-to-show", editFovWindow.show);
   editFovWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
     const { port1, port2 } = new MessageChannelMain();
@@ -2939,6 +2949,7 @@ function createExportWindow(
     resizable: false,
     icon: WINDOW_ICON,
     show: false,
+
     parent: parentWindow,
     modal: true,
     webPreferences: {
@@ -2948,7 +2959,8 @@ function createExportWindow(
 
   // Finish setup
   exportWindow.setMenu(null);
-  exportWindow.once("ready-to-show", parentWindow.show);
+  exportWindow.setMenuBarVisibility(false);
+  exportWindow.once("ready-to-show", exportWindow.show);
   let isPreparingExport = false;
   exportWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
@@ -3060,11 +3072,13 @@ function createSatellite(
     resizable: true,
     icon: WINDOW_ICON,
     show: false,
+
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
   });
   satellite.setMenu(null);
+  satellite.setMenuBarVisibility(false);
   satellite.once("ready-to-show", satellite.show);
   satellite.loadFile(path.join(__dirname, "../www/satellite.html"));
   let firstLoad = true;
@@ -3113,6 +3127,15 @@ function createSatellite(
 
         case "save-state":
           stateTracker.saveRendererState(satellite, message.data);
+          break;
+
+        case "update-preferences":
+          {
+            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            mergePreferences(prefs, message.data);
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
+          }
           break;
 
         case "call-selection-setter":
@@ -3202,6 +3225,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   prefsWindow.setMenu(null);
+  prefsWindow.setMenuBarVisibility(false);
   prefsWindow.once("ready-to-show", prefsWindow.show);
   prefsWindow.webContents.on("dom-ready", () => {
     // Create ports on reload
@@ -3251,6 +3275,7 @@ function openDownload(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   downloadWindow.setMenu(null);
+  downloadWindow.setMenuBarVisibility(false);
   downloadWindow.once("ready-to-show", downloadWindow.show);
   downloadWindow.once("close", downloadStop);
   downloadWindow.webContents.on("dom-ready", () => {
@@ -3303,6 +3328,7 @@ function openLicenses(parentWindow: Electron.BrowserWindow) {
 
   // Finish setup
   licensesWindow.setMenu(null);
+  licensesWindow.setMenuBarVisibility(false);
   licensesWindow.once("ready-to-show", licensesWindow.show);
   licensesWindow.once("close", downloadStop);
   licensesWindow.loadFile(path.join(__dirname, "../www/licenses.html"));
@@ -3335,6 +3361,7 @@ function openSourceListHelp(parentWindow: Electron.BrowserWindow, config: Source
 
   // Finish setup
   helpWindow.setMenu(null);
+  helpWindow.setMenuBarVisibility(false);
   helpWindow.once("ready-to-show", helpWindow.show);
   helpWindow.once("close", downloadStop);
   helpWindow.webContents.on("dom-ready", () => {
@@ -3374,6 +3401,7 @@ function openBetaWelcome(parentWindow: Electron.BrowserWindow) {
   });
   // Finish setup
   betaWelcome.setMenu(null);
+  betaWelcome.setMenuBarVisibility(false);
   betaWelcome.on("close", () => {
     app.quit();
   });
@@ -3405,17 +3433,6 @@ function checkForUpdate(alwaysPrompt: boolean) {
       updateChecker.showPrompt();
     }
   });
-}
-
-/** Returns the default path to use for storing log files. */
-function getDefaultLogPath(): string | undefined {
-  if (process.platform !== "win32") return undefined;
-  let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-  if (prefs.skipFrcLogFolderDefault) return undefined;
-  prefs.skipFrcLogFolderDefault = true;
-  jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-  sendAllPreferences();
-  return FRC_LOG_FOLDER;
 }
 
 // "unsafe-eval" is required in the hub for protobufjs

@@ -21,13 +21,13 @@ AdvantageScope XR is supported on many iPhone and iPad models, but is more stabl
 <details>
 <summary>What about other platforms?</summary>
 
-AdvantageScope XR is only supported on iOS and iPadOS. We do not have any immediate plans to support alternative platforms. The client application requires tight integration with native APIs for augmented reality, video recording, web rendering, and more. We chose to prioritize iOS and iPadOS development and support for several reasons:
+AdvantageScope XR is only supported on iOS and iPadOS. There are no immediate plans to support alternative platforms. The client application requires tight integration with native APIs for augmented reality, video recording, web rendering, and more. iOS and iPadOS receive priority for development and support for several reasons:
 
 - **Consistency:** AdvantageScope XR is a demanding application. While Android devices vary widely in processing power and features, the iPhone and iPad provide a consistent development experience across generations. All recent iOS and iPadOS devices are powerful enough to run AdvantageScope XR, and newer devices support additional features AdvantageScope can utilize (such as LiDAR).
 
 - **Availability:** The iPhone remains the most common smartphone that students in the United States are likely to own or have easily accessible from peers, and is more widely available than any model of VR or mixed reality headset. Supporting iOS maximizes the number of users who have easy access to AdvantageScope XR.
 
-- **Tablet Support:** We think many users will want to take advantage of running AdvantageScope XR on a tablet, since tablets provide a larger display that is easier for multiple people to see at once. iPad is the most commonly used tablet worldwide, so supporting iPadOS makes the tablet experience as accessible as possible.
+- **Tablet Support:** Users can take advantage of running AdvantageScope XR on a tablet, since tablets provide a larger display that is easier for multiple people to see at once. iPad is the most commonly used tablet worldwide, so supporting iPadOS makes the tablet experience as accessible as possible.
 
 </details>
 
@@ -48,7 +48,7 @@ AdvantageScope XR is only supported on iOS and iPadOS. We do not have any immedi
 7. To quickly **record a video**, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
 
 :::warning
-Heatmaps and swerve states are not available yet in XR. All other object types are supported.
+Heatmaps and swerve module velocities are not available yet in XR. All other object types are supported.
 :::
 
 :::tip

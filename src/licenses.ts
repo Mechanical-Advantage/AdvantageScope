@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import licenses from "./licenses.json";
-import { Distribution, DISTRIBUTION } from "./shared/buildConstants";
+import { IS_LITE } from "./shared/buildConstants";
 
 window.addEventListener("load", () => {
   document.body.innerHTML = "";
@@ -14,7 +14,7 @@ window.addEventListener("load", () => {
     let moduleElement = document.createElement("div");
     moduleElement.classList.add("module-text");
     let moduleText = license.module;
-    if (DISTRIBUTION === Distribution.Lite && moduleText === "AdvantageScope") {
+    if (IS_LITE && moduleText === "AdvantageScope") {
       moduleText = "AdvantageScope Lite";
     }
     moduleElement.innerText = moduleText;
@@ -23,12 +23,10 @@ window.addEventListener("load", () => {
     let textElement = document.createElement("div");
     textElement.classList.add("license-text");
     let cleanText = license.text
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
       .replaceAll("\t", "")
       .replaceAll("\r\n", "\n")
       .replaceAll("\n\n", "<br><br>")
-      .replaceAll("\n&gt;", "<br>&gt;")
+      .replaceAll("\n>", "<br>>")
       .replaceAll("\n-", "<br>-")
       .replaceAll("\n", " ");
     while (cleanText.includes("  ")) {
@@ -38,7 +36,13 @@ window.addEventListener("load", () => {
       cleanText = cleanText.slice(1);
     }
     cleanText = cleanText.replaceAll("<br> ", "<br>");
-    textElement.innerHTML = cleanText;
+    const parts = cleanText.split("<br>");
+    parts.forEach((part, index) => {
+      if (index > 0) {
+        textElement.appendChild(document.createElement("br"));
+      }
+      textElement.appendChild(document.createTextNode(part));
+    });
     document.body.appendChild(textElement);
   });
 });

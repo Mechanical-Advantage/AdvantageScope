@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { ChassisSpeeds, Rotation2d, SwerveState } from "../geometry";
+import { ModuleVelocity, RobotVelocities, Rotation2d } from "../geometry";
 import { transformPx, wrapRadians } from "../util";
 import TabRenderer from "./TabRenderer";
 
@@ -96,7 +96,7 @@ export default class SwerveRenderer implements TabRenderer {
     // Draw arrow on robot
     context.strokeStyle = strokeColor;
     context.lineWidth = 4;
-    const hasSpeeds = command.speeds.length > 0;
+    const hasSpeeds = command.robotVelocities.length > 0;
     let arrowBack = transformPx(
       centerPx,
       command.rotation,
@@ -138,7 +138,7 @@ export default class SwerveRenderer implements TabRenderer {
       ]);
 
       // Draw module data
-      let drawModuleData = (state: SwerveState, color: string) => {
+      let drawModuleData = (state: ModuleVelocity, color: string) => {
         let fullRotation = command.rotation + state.angle;
         context.fillStyle = color;
         context.strokeStyle = color;
@@ -146,7 +146,7 @@ export default class SwerveRenderer implements TabRenderer {
 
         // Draw rotation
         context.beginPath();
-        if (command.states.length >= 2) {
+        if (command.moduleVelocities.length >= 2) {
           context.moveTo(...moduleCenterPx);
         } else {
           context.moveTo(...transformPx(moduleCenterPx, fullRotation, [moduleRadiusPx, 0]));
@@ -188,7 +188,7 @@ export default class SwerveRenderer implements TabRenderer {
         context.lineTo(...arrowRight);
         context.stroke();
       };
-      command.states.forEach((set) => {
+      command.moduleVelocities.forEach((set) => {
         if (index < set.values.length) {
           drawModuleData(set.values[index], set.color);
         }
@@ -202,8 +202,8 @@ export default class SwerveRenderer implements TabRenderer {
       context.stroke();
     });
 
-    // Draw chassis speeds
-    command.speeds.forEach((speed) => {
+    // Draw robot velocities
+    command.robotVelocities.forEach((speed) => {
       context.strokeStyle = speed.color;
       context.lineWidth = 4;
 
@@ -267,12 +267,12 @@ export default class SwerveRenderer implements TabRenderer {
 export type SwerveRendererCommand = {
   rotation: Rotation2d;
   frameAspectRatio: number;
-  states: {
-    values: SwerveState[];
+  moduleVelocities: {
+    values: ModuleVelocity[];
     color: string;
   }[];
-  speeds: {
-    value: ChassisSpeeds;
+  robotVelocities: {
+    value: RobotVelocities;
     color: string;
   }[];
 };

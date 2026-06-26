@@ -38,8 +38,20 @@
     <!-- Line Graph -->
     <div id="renderer1" hidden>
       <canvas class="line-graph-canvas"></canvas>
-      <div class="line-graph-scroll">
+      <div class="line-graph-scroll" tabindex="-1">
         <div class="line-graph-scroll-content"></div>
+      </div>
+      <div class="line-graph-help">
+        <div class="line-graph-help-container">
+          <div class="line-graph-help-row">
+            <img src="symbols/arrow.up.and.down.svg" class="line-graph-help-icon" />
+            <span>Scroll to zoom</span>
+          </div>
+          <div class="line-graph-help-row">
+            <img src="symbols/arrow.left.and.right.svg" class="line-graph-help-icon" />
+            <span>Drag to pan</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -77,7 +89,7 @@
         <div class="data-table-key-container">
           <span></span>
         </div>
-        <button class="data-table-key-delete" tabindex="-1">
+        <button class="data-table-key-delete" title="Remove from view">
           <img src="symbols/xmark.svg" />
         </button>
       </span>
@@ -87,8 +99,8 @@
           <tbody>
             <tr>
               <th>
-                <input class="data-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                <button class="data-table-jump-button" tabindex="-1">
+                <input class="data-table-jump-input" type="number" placeholder="0.000" title="Go to timestamp" />
+                <button class="data-table-jump-button" title="Go to timestamp">
                   <img src="symbols/arrow.down.to.line.svg" />
                 </button>
               </th>
@@ -109,22 +121,22 @@
           <tbody>
             <tr>
               <th>
-                <input class="console-table-jump-input" type="number" placeholder="0.000" tabindex="-1" />
-                <button class="console-table-jump-button" tabindex="-1">
+                <input class="console-table-jump-input" type="number" placeholder="0.000" title="Go to timestamp" />
+                <button class="console-table-jump-button" title="Go to timestamp">
                   <img src="symbols/arrow.down.to.line.svg" />
                 </button>
               </th>
               <th>
                 <div class="wide">
                   <span></span>
-                  <button class="console-table-key-delete" tabindex="-1">
+                  <button class="console-table-key-delete" title="Remove from view">
                     <img src="symbols/xmark.svg" />
                   </button>
                 </div>
-                <button class="highlight-button" tabindex="-1">
+                <button class="highlight-button" title="Highlight warning/error messages">
                   <img src="symbols/paintpalette.fill.svg" />
                 </button>
-                <input class="filter" type="search" placeholder="Filter" />
+                <input class="filter" type="search" placeholder="Filter" title="Filter console log" />
               </th>
             </tr>
           </tbody>

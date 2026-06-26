@@ -7,7 +7,7 @@
 
 import config from "./docusaurus.config";
 
-const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE";
+const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const configEmbed = Object.assign(config, {
   future: {
     experimental_router: "hash"

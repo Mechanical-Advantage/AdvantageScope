@@ -25,8 +25,8 @@
       <tbody>
         <tr>
           <td class="label">Format</td>
-          <td class="input" tabindex="-1">
-            <select id="format">
+          <td class="input">
+            <select id="format" title="Select export format">
               <option value="csv-table">CSV (Table)</option>
               <option value="csv-list">CSV (List)</option>
               <option value="wpilog">WPILOG</option>
@@ -36,8 +36,8 @@
         </tr>
         <tr>
           <td class="label">Timestamps</td>
-          <td class="input" tabindex="-1">
-            <select id="samplingMode">
+          <td class="input">
+            <select id="samplingMode" title="Select timestamp sampling mode">
               <option value="changes">All Changes</option>
               <option value="fixed">Fixed Period</option>
               <option value="akit">AdvantageKit Cycles</option>
@@ -46,20 +46,20 @@
         </tr>
         <tr>
           <td class="label">Period (ms)</td>
-          <td class="input" tabindex="-1">
-            <input type="number" id="samplingPeriod" value="20" />
+          <td class="input">
+            <input type="number" id="samplingPeriod" value="20" title="Enter sampling period in milliseconds" />
           </td>
         </tr>
         <tr>
           <td class="label">Prefixes</td>
-          <td class="input" tabindex="-1">
-            <input type="text" id="prefixes" />
+          <td class="input">
+            <input type="text" id="prefixes" title="Enter field prefixes to export, separated by commas (optional)" />
           </td>
         </tr>
         <tr>
           <td class="label">Field Set</td>
-          <td class="input" tabindex="-1">
-            <select id="includeGenerated">
+          <td class="input">
+            <select id="includeGenerated" title="Select whether to include generated fields in the export">
               <option value="true">Include Generated</option>
               <option value="false">Original Only</option>
             </select>
@@ -67,14 +67,14 @@
         </tr>
       </tbody>
     </table>
-    <button id="exit" tabindex="-1">
+    <button id="exit" title="Cancel">
       <img src="symbols/xmark.svg" />
     </button>
-    <button id="confirm" tabindex="-1">
+    <button id="confirm" title="Export">
       <img src="symbols/arrow.down.svg" />
     </button>
     <div class="help-div">
-      <a href="#" tabindex="-1">Help</a>
+      <a href="#" title="Open export documentation">Help</a>
     </div>
   </body>
 </html>
