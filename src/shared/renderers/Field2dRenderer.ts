@@ -259,6 +259,29 @@ export default class Field2dRenderer implements TabRenderer {
       });
     };
 
+    // Draw FTC Grid
+    if (fieldData.isFTC && fieldData.useGrid) {
+      context.beginPath();
+
+      context.strokeStyle = `rgb(0 0 0 / 10%`;
+      context.lineWidth = 0.3 * pixelsPerInch;
+
+      for (let i = 1; i <= 5; i++) {
+        const lineDistance = (canvasFieldHeight / 6) * i;
+
+        // Draw Horizontal Line
+        context.moveTo(canvasFieldLeft, canvasFieldTop + lineDistance);
+        context.lineTo(canvasFieldLeft + canvasFieldWidth, canvasFieldTop + lineDistance);
+
+        // Draw Vertical Line
+        context.moveTo(canvasFieldLeft + lineDistance, canvasFieldTop);
+        context.lineTo(canvasFieldLeft + lineDistance, canvasFieldTop + canvasFieldHeight);
+      }
+
+      context.stroke();
+      context.closePath();
+    }
+
     // Update heatmap data
     let heatmapTranslations: Translation2d[] = [];
     command.objects

@@ -50,6 +50,7 @@ export interface Config2d {
 
   isFTC: boolean;
   coordinateSystem: CoordinateSystem;
+  useGrid: boolean | undefined;
   sourceUrl?: string;
   topLeft: [number, number];
   bottomRight: [number, number];
@@ -64,6 +65,7 @@ export interface Config3dField {
 
   isFTC: boolean;
   coordinateSystem: CoordinateSystem;
+  useGrid: boolean | undefined;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   widthInches: number;
@@ -185,6 +187,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FRC:Evergreen",
     isFTC: false,
     coordinateSystem: "wall-blue",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
@@ -199,6 +202,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FTC:Evergreen",
     isFTC: true,
     coordinateSystem: "center-rotated",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
@@ -213,6 +217,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FRC:Axes",
     isFTC: false,
     coordinateSystem: "wall-blue",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
@@ -227,6 +232,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FTC:Axes",
     isFTC: true,
     coordinateSystem: "center-rotated",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
