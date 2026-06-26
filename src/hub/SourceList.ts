@@ -18,9 +18,9 @@ import {
   tValue
 } from "../shared/SourceListConfig";
 import {
-  grabChassisSpeeds,
+  grabModuleVelocities,
   grabPosesAuto,
-  grabSwerveStates,
+  grabRobotVelocities,
   rotation3dTo2d,
   rotation3dToRPY
 } from "../shared/geometry";
@@ -1081,9 +1081,9 @@ export default class SourceList {
                 numberRotationUnits = state.options.units === "degrees" ? "degrees" : "radians";
               }
               let poseStrings: string[] = [];
-              if (typeConfig?.previewType === "SwerveModuleState[]") {
-                let swerveStates = grabSwerveStates(window.log, state.logKey, time, undefined, this.UUID);
-                swerveStates.forEach((state) => {
+              if (typeConfig?.previewType === "ModuleVelocities") {
+                let moduleVelocities = grabModuleVelocities(window.log, state.logKey, time, undefined, this.UUID);
+                moduleVelocities.forEach((state) => {
                   poseStrings.push(
                     "\u03bd: " +
                       formatNumber(state.speed, 2) +
@@ -1092,15 +1092,15 @@ export default class SourceList {
                       "\u00b0"
                   );
                 });
-              } else if (typeConfig?.previewType === "ChassisSpeeds") {
-                let chassisSpeeds = grabChassisSpeeds(window.log, state.logKey, time, this.UUID);
+              } else if (typeConfig?.previewType === "RobotVelocities") {
+                let robotVelocities = grabRobotVelocities(window.log, state.logKey, time, this.UUID);
                 poseStrings.push(
                   "\u03bdx: " +
-                    formatNumber(chassisSpeeds.vx, 2) +
+                    formatNumber(robotVelocities.vx, 2) +
                     "m/s, \u03bdy: " +
-                    formatNumber(chassisSpeeds.vy, 2) +
+                    formatNumber(robotVelocities.vy, 2) +
                     "m/s, \u03a9: " +
-                    formatNumber(Units.convert(chassisSpeeds.omega, "radians", "degrees"), 2) +
+                    formatNumber(Units.convert(robotVelocities.omega, "radians", "degrees"), 2) +
                     "\u00b0/s"
                 );
               } else {

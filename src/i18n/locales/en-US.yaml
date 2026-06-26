@@ -351,7 +351,7 @@ hub:
       robot: "Robot" # Field robot object type
       ghost: "Ghost" # Field ghost robot object type
       vision: "Vision Target" # Field vision target object type
-      swerveStates: "Swerve States" # Field swerve states object type
+      swerveModuleVelocities: "Swerve Module Velocities" # Field swerve module velocities object type
       rotationOverride: "Rotation Override" # Field rotation override object type
       rotationOverrideLegacy: "Rotation Override" # Field rotation override legacy object type
       trajectory: "Trajectory" # Field trajectory object type
@@ -503,8 +503,8 @@ hub:
   swerve:
     sources: "Sources" # Title for the sources source list in swerve view
     types:
-      states: "Module States" # Swerve module states type
-      chassisSpeeds: "Chassis Speeds" # Swerve chassis speeds type
+      moduleVelocities: "Module States" # Swerve module velocities type
+      robotVelocities: "Robot Velocities" # Swerve robot velocities type
       rotation: "Rotation" # Swerve rotation type
       rotationLegacy: "Rotation" # Swerve legacy rotation type
     options:

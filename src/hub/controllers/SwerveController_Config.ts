@@ -17,11 +17,11 @@ const SwerveController_Config: SourceListConfig = {
   typeMemoryId: "swerve",
   types: [
     {
-      key: "states",
+      key: "moduleVelocities",
       symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
       showInTypeName: true,
       color: "color",
-      sourceTypes: ["SwerveModuleState[]"],
+      sourceTypes: ["SwerveModuleVelocity[]", "SwerveModuleState[]"],
       showDocs: true,
       options: [
         {
@@ -36,14 +36,14 @@ const SwerveController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
-      previewType: "SwerveModuleState[]"
+      previewType: "ModuleVelocities"
     },
     {
-      key: "chassisSpeeds",
+      key: "robotVelocities",
       symbol: "arrow.up.and.down.square.fill",
       showInTypeName: true,
       color: "color",
-      sourceTypes: ["ChassisSpeeds"],
+      sourceTypes: ["ChassisVelocities", "ChassisSpeeds"],
       showDocs: true,
       options: [
         {
@@ -53,7 +53,7 @@ const SwerveController_Config: SourceListConfig = {
         }
       ],
       initialSelectionOption: "color",
-      previewType: "ChassisSpeeds"
+      previewType: "RobotVelocities"
     },
     {
       key: "rotation",

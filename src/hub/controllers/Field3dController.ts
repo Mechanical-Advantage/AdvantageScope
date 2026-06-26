@@ -12,10 +12,10 @@ import {
   APRIL_TAG_16H5_COUNT,
   APRIL_TAG_36H11_COUNT,
   AnnotatedPose3d,
-  SwerveState,
+  ModuleVelocity,
   grabHeatmapData,
+  grabModuleVelocities,
   grabPosesAuto,
-  grabSwerveStates,
   rotationSequenceToQuaternion
 } from "../../shared/geometry";
 import {
@@ -261,8 +261,8 @@ export default class Field3dController implements TabController {
       let mechanismsXZ: MechanismState[] = [];
       let mechanismsYZ: MechanismState[] = [];
       let visionTargets: AnnotatedPose3d[] = [];
-      let swerveStates: {
-        values: SwerveState[];
+      let swerveModuleVelocities: {
+        values: ModuleVelocity[];
         color: string;
       }[] = [];
       if (time !== null) {
@@ -314,9 +314,9 @@ export default class Field3dController implements TabController {
               break;
             }
 
-            case "swerveStates": {
-              let states = grabSwerveStates(window.log, child.logKey, time!, child.options.arrangement, this.UUID);
-              swerveStates.push({
+            case "swerveModuleVelocities": {
+              let states = grabModuleVelocities(window.log, child.logKey, time!, child.options.arrangement, this.UUID);
+              swerveModuleVelocities.push({
                 values: states,
                 color: child.options.color
               });
@@ -348,7 +348,7 @@ export default class Field3dController implements TabController {
       let mechanismXZ = mechanismsXZ.length === 0 ? null : mergeMechanismStates(mechanismsXZ);
       let mechanismYZ = mechanismsYZ.length === 0 ? null : mergeMechanismStates(mechanismsYZ);
       visionTargets.reverse();
-      swerveStates.reverse();
+      swerveModuleVelocities.reverse();
 
       // Add object
       switch (source.type) {
@@ -363,7 +363,7 @@ export default class Field3dController implements TabController {
               yz: mechanismYZ
             },
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveModuleVelocities: swerveModuleVelocities
           });
           break;
         case "ghost":
@@ -378,7 +378,7 @@ export default class Field3dController implements TabController {
               yz: mechanismYZ
             },
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveModuleVelocities: swerveModuleVelocities
           });
           break;
         case "gamePiece":
