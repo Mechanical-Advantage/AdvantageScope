@@ -1154,7 +1154,7 @@ async function handleHubMessage(message: NamedMessage) {
               ...(recentUnits.length > 0
                 ? [
                     {
-                      content: t("menu.file.recentPresets"),
+                      content: t("menu.file.recentPresetsLite"),
                       className: "disabled"
                     }
                   ]

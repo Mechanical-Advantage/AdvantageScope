@@ -623,7 +623,8 @@ menu:
     importLayout: "Import Layout..." # Menu option to import window layout
     newWindow: "New Window" # Menu option to open a new window
     closeWindow: "Close Window" # Menu option to close window
-    recentPresets: "— Recent Presets —" # Heading for recent presets list
+    recentPresets: "Recent Presets" # Submenu for recent presets list on desktop
+    recentPresetsLite: "— Recent Presets —" # Heading for recent presets list in AdvantageScope XR
     defaultMode: "Default: {{mode}}" # Format template for default live mode submenu
 
   view:
