@@ -9,13 +9,13 @@ Please remember to behave with **Gracious Professionalism** in all interactions.
 - **Reliability is Paramount:** AdvantageScope is a critical tool for teams. Changes must not break existing visualization capabilities or log parsing.
 - **Backward Compatibility:** Changes should support existing log formats and configurations where possible. AdvantageScope is expected to continue opening logs generated in prior years (within reason). We may occasionally allow breaking changes to support long-term maintainability, but this should be avoided in most cases.
 - **Platform Parity:** AdvantageScope runs as a desktop application (Windows, macOS, and Linux) and a web application (AdvantageScope Lite). Most features should be supported in all environments unless prevented by technical limitations.
-- **Documentation:** Most code changes require corresponding updates to the documentation. Please ask us for help if you're not sure where to start.
+- **Documentation:** Most code changes require corresponding updates to the documentation. Please ask for help if you're not sure where to start.
 - **Broad Applicability:** Features should be useful to a wide range of teams. New logging formats should be broadly supported and useful to many users.
 
 ## What to Contribute
 
 - **Bug Reports & Fixes:** We welcome fixes for bugs found during or after the season. Please submit a GitHub issue first to track the bug.
-- **Feature Improvements:** Improvements to the AdvantageScope feature-set are welcome, but feature changes will generally not be merged until _after_ the competition season. For large changes, please open a GitHub issue or contact us at software@team6328.org before starting work.
+- **Feature Improvements:** Improvements to the AdvantageScope feature-set are welcome, but feature changes will generally not be merged until _after_ the competition season. For large changes, please open a GitHub issue or email software@team6328.org before starting work.
 
 ## Development Setup
 
@@ -61,6 +61,14 @@ export ASCOPE_DISTRIBUTION=WPILIB
 ```bash
 export ASCOPE_DISTRIBUTION=LITE
 ```
+
+- **Lite (Driver Station) Distribution:**
+
+```bash
+export ASCOPE_DISTRIBUTION=LITEDS
+```
+
+_For the Lite DS distribution, set the environment variable before running `npm install` to download the correct set of bundled assets._
 
 ## Available NPM Tasks
 
@@ -116,9 +124,9 @@ AdvantageScope assets are stored in multiple locations:
 
 - The `bundledAssets` folder includes assets bundled in all versions of AdvantageScope, for both desktop and web distributions.
 - The [`AdvantageScopeAssets`](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) repository includes additional assets downloaded by the desktop version of AdvantageScope. Bundled assets are also available, which can be added to AdvantageScope Lite after installation.
-- The `bundleLiteAssets.mjs` script defines specific assets from the remote repository (2) to be bundled in AdvantageScope Lite for offline use.
+- The `bundleLiteAssets.mjs` script defines specific assets from the `AdvantageScopeAssets` repository to be bundled in AdvantageScope Lite for offline use.
 
-Please contact us at software@team6328.org if you are interested in contributing to the set of built-in AdvantageScope assets, including the files stored in the `AdvantageScopeAssets` repository.
+Please email software@team6328.org if you are interested in contributing to the set of built-in AdvantageScope assets, including the files stored in the `AdvantageScopeAssets` repository.
 
 ## Coding Guidelines & Formatting
 
@@ -153,7 +161,7 @@ It is highly recommended to run `npm run format` before every commit.
 
 ### Review
 
-Your code will be reviewed by maintainers, and we may request changes to ensure code style consistency, API stability, or performance. AdvantageScope is developed by volunteers, so code reviews may be delayed (especially during the competition season). Please reach out to us via GitHub or email (software@team6328.org) if you have any questions or concerns about an open pull request.
+Your code will be reviewed by maintainers, and we may request changes to ensure code style consistency, API stability, or performance. AdvantageScope is developed by volunteers, so code reviews may be delayed (especially during the competition season). Please reach out via GitHub or email (software@team6328.org) if you have any questions or concerns about an open pull request.
 
 ### Licensing
 

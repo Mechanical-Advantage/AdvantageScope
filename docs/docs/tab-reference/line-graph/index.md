@@ -1,4 +1,4 @@
-import Image3 from './img/line-graph-3.png';
+import Image4 from './img/line-graph-4.png';
 
 # 📉 Line Graph
 
@@ -20,21 +20,21 @@ The delta between the selected and hovered times is displayed as an overlay on t
 
 To get started, drag a field to one of the three sections (left, right, or discrete). Delete a field using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all fields, click the three dots near the axis title and then `Clear All`. Fields can be rearranged in the list by clicking and dragging.
 
-:::info
-The color and line style of each field can be customized by clicking the colored icon or right-clicking on the field name.
-:::
-
-:::tip
-Data from the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API can be visualized by adding the alerts group as a discrete field. An example visualization is shown below.
+The color and line style of each field can be customized by clicking the colored icon or right-clicking on the field name. Data from the WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API can be visualized by adding the alerts group as a discrete field. An example visualization is shown below.
 
 ![Alerts visualization](./img/line-graph-2.png)
+
+:::tip
+To overlay the robot mode (autonomous, teleoperated, or utility), click the three dots next to "Discrete Fields" and click "Show Robot Mode".
+
+![Robot mode overlay](./img/line-graph-3.png)
 :::
 
 ### Adjusting Axes
 
 By default, each axis adjusts its range based on the visible data. To disable auto-ranging and lock the range to its current min and max, click the three dots near the axis title and then `Lock Axis`. To manually adjust the range, choose `Edit Range...` and enter the desired values.
 
-<img src={Image3} alt="Editing axis range" height="250" />
+<img src={Image4} alt="Editing axis range" height="250" />
 
 ### Integration & Differentiation
 

@@ -21,8 +21,11 @@ export default class LineGraphRenderer implements TabRenderer {
   private ROOT: HTMLElement;
   private CANVAS: HTMLCanvasElement;
   private SCROLL_OVERLAY: HTMLElement;
+  private HELP_OVERLAY: HTMLElement;
 
   private hasController: boolean;
+  private isFadingOut = false;
+  private zoomInAccumulator = 0;
   private scrollSensor: ScrollSensor;
   private lastRenderState = "";
   private mouseDownX = 0;
@@ -91,10 +94,25 @@ export default class LineGraphRenderer implements TabRenderer {
       window.selection.goIdle();
     });
 
+    this.HELP_OVERLAY = root.getElementsByClassName("line-graph-help")[0] as HTMLElement;
+
     // Scroll handling
     this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
       if (root.hidden) return;
       window.selection.applyTimelineScroll(dx, dy, this.SCROLL_OVERLAY.clientWidth);
+
+      if (window.preferences && !window.preferences.hasScrolledLineGraph && !this.isFadingOut) {
+        if (dy < 0) {
+          this.zoomInAccumulator += dy;
+          if (this.zoomInAccumulator <= -200) {
+            this.isFadingOut = true;
+            this.HELP_OVERLAY.classList.add("fading-out");
+            setTimeout(() => {
+              window.sendMainMessage("update-preferences", { hasScrolledLineGraph: true });
+            }, 1000);
+          }
+        }
+      }
     });
   }
 
@@ -116,6 +134,17 @@ export default class LineGraphRenderer implements TabRenderer {
 
   render(command: LineGraphRendererCommand): void {
     this.scrollSensor.periodic();
+
+    // Update help overlay
+    if (this.HELP_OVERLAY) {
+      const hasScrolled = window.preferences?.hasScrolledLineGraph ?? false;
+      this.HELP_OVERLAY.style.display = hasScrolled ? "none" : "flex";
+      if (hasScrolled) {
+        this.isFadingOut = false;
+        this.zoomInAccumulator = 0;
+        this.HELP_OVERLAY.classList.remove("fading-out");
+      }
+    }
 
     // Initial setup and scaling
     const timeRange = command.timeRange;
@@ -248,7 +277,15 @@ export default class LineGraphRenderer implements TabRenderer {
         // Draw shape
         toggle = !toggle;
         if (field.type === "stripes") {
-          context.fillStyle = toggle ? shiftColor(field.color, -30) : shiftColor(field.color, 30);
+          let baseColor =
+            field.colorMap && field.colorMap[field.values[i + skippedSamples]]
+              ? field.colorMap[field.values[i + skippedSamples]]
+              : field.color;
+          context.fillStyle = field.colorMap
+            ? baseColor
+            : toggle
+            ? shiftColor(baseColor, -30)
+            : shiftColor(baseColor, 30);
           context.fillRect(startX, topY, endX - startX, 15);
         } else {
           let startY = toggle ? topY + 15 : topY;
@@ -261,10 +298,18 @@ export default class LineGraphRenderer implements TabRenderer {
         // Draw text
         let adjustedStartX = startX < graphLeft ? graphLeft : startX;
         if (endX - adjustedStartX > 10) {
+          let baseColor =
+            field.colorMap && field.colorMap[field.values[i + skippedSamples]]
+              ? field.colorMap[field.values[i + skippedSamples]]
+              : field.color;
           if (field.type === "stripes") {
-            context.fillStyle = toggle ? shiftColor(field.color, 130) : shiftColor(field.color, -130);
+            context.fillStyle = field.colorMap
+              ? shiftColor(baseColor, light ? -130 : 130)
+              : toggle
+              ? shiftColor(baseColor, 130)
+              : shiftColor(baseColor, -130);
           } else {
-            context.fillStyle = field.color;
+            context.fillStyle = baseColor;
           }
           context.fillText(
             field.values[i + skippedSamples],
@@ -716,6 +761,7 @@ export type LineGraphRendererCommand_DiscreteField = {
   timestamps: number[];
   values: string[];
   color: string;
+  colorMap?: { [key: string]: string };
   type: "stripes" | "graph";
   toggleReference: boolean;
 };

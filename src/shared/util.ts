@@ -97,6 +97,14 @@ export function formatTimeWithMS(time: number): string {
   return seconds.toString() + "." + milliseconds.toString().padStart(3, "0");
 }
 
+/** Formats a date to YYYY-MM-DD in local time. */
+export function formatDate(date: Date = new Date()): string {
+  let year = date.getFullYear().toString();
+  let month = (date.getMonth() + 1).toString().padStart(2, "0");
+  let day = date.getDate().toString().padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 /** Converts a value between two ranges. */
 export function scaleValue(value: number, oldRange: [number, number], newRange: [number, number]): number {
   return ((value - oldRange[0]) / (oldRange[1] - oldRange[0])) * (newRange[1] - newRange[0]) + newRange[0];

@@ -12,7 +12,7 @@ import { LineMaterial } from "three/examples/jsm/lines/LineMaterial.js";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import WorkerManager from "../../../../hub/WorkerManager";
 import { AdvantageScopeAssets } from "../../../AdvantageScopeAssets";
-import { rotationSequenceToQuaternion, SwerveState } from "../../../geometry";
+import { ModuleVelocity, rotationSequenceToQuaternion } from "../../../geometry";
 import { MechanismState } from "../../../log/LogUtil";
 import { Units } from "../../../units";
 import { transformPx } from "../../../util";
@@ -69,7 +69,7 @@ export default class RobotManager extends ObjectManager<
   private hasNewAssets = false;
   private lastModel = "";
   private lastColor = "";
-  private lastHadSwerveStates = false;
+  private lastHadSwerveModuleVelocities = false;
   private lastHideRobotModels = false;
 
   constructor(
@@ -546,7 +546,7 @@ export default class RobotManager extends ObjectManager<
         ] as [number, number];
 
         // Draw module data
-        let drawModuleData = (state: SwerveState, color: string) => {
+        let drawModuleData = (state: ModuleVelocity, color: string) => {
           context.lineWidth = 0.03 * pxPerMeter;
           context.strokeStyle = color;
           context.lineCap = "round";
@@ -580,15 +580,15 @@ export default class RobotManager extends ObjectManager<
           context.lineTo(...arrowRight);
           context.stroke();
         };
-        object.swerveStates.forEach((set) => {
+        object.swerveModuleVelocities.forEach((set) => {
           if (index < set.values.length) {
             drawModuleData(set.values[index], set.color);
           }
         });
       });
-      let hasSwerveStates = object.swerveStates.length > 0;
-      this.swerveTexture!.needsUpdate = hasSwerveStates || this.lastHadSwerveStates;
-      this.lastHadSwerveStates = hasSwerveStates;
+      let hasSwerveModuleVelocities = object.swerveModuleVelocities.length > 0;
+      this.swerveTexture!.needsUpdate = hasSwerveModuleVelocities || this.lastHadSwerveModuleVelocities;
+      this.lastHadSwerveModuleVelocities = hasSwerveModuleVelocities;
     }
   }
 }

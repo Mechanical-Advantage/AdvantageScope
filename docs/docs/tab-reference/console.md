@@ -6,7 +6,7 @@ sidebar_position: 5
 
 The console view is designed to view a single string field with console data. Some suggested fields are listed below.
 
-- **DSEvents** - Robot log from a ".dsevents" file.
+- **DS:/Dscomm/Console** - Saved by the FIRST Driver Station.
 - **messages** - Saved by WPILib's built-in logging based on calls to the [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) method.
 - **/RealOutputs/Console** - Saved by AdvantageKit automatically during robot operation (use `System.out.println` as normal).
 - **/ReplayOutputs/Console** - Saved by AdvantageKit automatically during log replay (use `System.out.println` as normal).
@@ -16,7 +16,7 @@ Drag the desired field to the main view to get started. Each row represents an u
 ![Console view](./img/console-1.png)
 
 :::info
-Click the color palette icon to toggle highlighting for warning and error messages. Messages are highlighted if they contain the text "warning" or "error".
+Click the color palette icon to toggle highlighting for warning and error messages. For WPILib and AdvantageKit logs, messages are highlighted if they contain the text "warning" or "error".
 :::
 
 The controls are similar to the 🔢 [Table](../tab-reference/table) tab. The selected time is synchronized across all tabs. Click a row to select it, or hover over a row to preview it in any visible pop-up windows. Clicking the ↓ button jumps to the selected time (or the time entered in the box).

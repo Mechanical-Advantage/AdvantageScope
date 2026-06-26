@@ -16,7 +16,7 @@ The swerve tab shows the state of four swerve modules, including the velocity ve
 
 The timeline is used to control playback and visualization. Clicking on the timeline selects a time, and right-clicking deselects it. The selected time is synchronized across all tabs, making it easy to quickly find this location in other views.
 
-The green sections of the timeline indicate when the robot is autonomous, and the blue sections indicate when the robot is teleoperated.
+Yellow sections indicate when the robot is autonomous, blue sections indicate when the robot is teleoperated, and gray sections indicate when the robot is in utility mode.
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
@@ -30,17 +30,13 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 
 **To customize each source, click the colored icon or right-click on the field name.** AdvantageScope supports three sources types:
 
-- **Module States:** A set of four swerve module states, displayed as vectors on the diagram.
-- **Chassis Speeds:** Linear and angular speeds displayed in the center of the diagram.
+- **Module Velocities:** A set of four swerve module states, displayed as vectors on the diagram.
+- **Robot Velocities:** Linear and angular speeds displayed in the center of the diagram.
 - **Rotation:** Angular position used to rotate the diagram.
 
 ## Data Format
 
-Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleState[]`, `ChassisSpeeds`, `Rotation2d`, or `Rotation3d` types.
-
-:::warning
-The legacy number array format for swerve data is now deprecated. See [here](/overview/legacy-formats) for details.
-:::
+Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
 
 Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log swerve module states in Java.
 
@@ -48,15 +44,15 @@ Many libraries support the struct format, including WPILib and AdvantageKit. The
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SwerveModuleState[] states = new SwerveModuleState[] {
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState()
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
 }
 
-StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-.getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+StructArrayPublisher<SwerveModuleVelocity> publisher = NetworkTableInstance.getDefault()
+.getStructArrayTopic("MyStates", SwerveModuleVelocity.struct).publish();
 
 periodic() {
   publisher.set(states);
@@ -67,11 +63,11 @@ periodic() {
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-SwerveModuleState[] states = new SwerveModuleState[] {
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState()
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
 }
 
 Logger.recordOutput("MyStates", states);

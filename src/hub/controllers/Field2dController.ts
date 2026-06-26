@@ -9,13 +9,13 @@ import { SourceListItemState, SourceListState } from "../../shared/SourceListCon
 import {
   AnnotatedPose2d,
   AnnotatedPose3d,
-  SwerveState,
+  ModuleVelocity,
   Translation2d,
   annotatedPose3dTo2d,
   convertFromCoordinateSystem,
   grabHeatmapData,
+  grabModuleVelocities,
   grabPosesAuto,
-  grabSwerveStates,
   rotation3dTo2d
 } from "../../shared/geometry";
 import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
@@ -28,7 +28,7 @@ import { Units } from "../../shared/units";
 import { createUUID } from "../../shared/util";
 import SourceList from "../SourceList";
 import Field2dController_Config from "./Field2dController_Config";
-import TabController from "./TabController";
+import TabController, { setupKeyboardControls } from "./TabController";
 
 export default class Field2dController implements TabController {
   UUID = createUUID();
@@ -46,7 +46,6 @@ export default class Field2dController implements TabController {
 
   private orientationSetting = Orientation.DEG_0;
   private sizeSetting: "large" | "medium" | "small" = "large";
-  private lastIsFTCField = false;
 
   constructor(root: HTMLElement) {
     this.sourceList = new SourceList(
@@ -63,11 +62,6 @@ export default class Field2dController implements TabController {
     // Set up field select
     this.FIELD_SELECT.addEventListener("change", () => {
       this.updateFieldDependentControls();
-      let fieldConfig = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value);
-      if (fieldConfig !== undefined) {
-        if (fieldConfig.isFTC && !this.lastIsFTCField) window.sendMainMessage("ftc-experimental-warning");
-        this.lastIsFTCField = fieldConfig.isFTC;
-      }
     });
     this.FIELD_SOURCE.addEventListener("click", () => {
       window.sendMainMessage(
@@ -78,15 +72,18 @@ export default class Field2dController implements TabController {
     this.updateFieldOptions();
 
     // Set up switchers
+    setupKeyboardControls(this.ORIENTATION_SWITCHER.children[0] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[0].addEventListener("click", () => {
       this.orientationSetting--;
       if (this.orientationSetting < 0) this.orientationSetting = 3;
     });
+    setupKeyboardControls(this.ORIENTATION_SWITCHER.children[1] as HTMLElement);
     this.ORIENTATION_SWITCHER.children[1].addEventListener("click", () => {
       this.orientationSetting++;
       if (this.orientationSetting > 3) this.orientationSetting = 0;
     });
     (["large", "medium", "small"] as const).forEach((value, index) => {
+      setupKeyboardControls(this.SIZE_SWITCHER.children[index] as HTMLElement);
       this.SIZE_SWITCHER.children[index].addEventListener("click", () => {
         this.sizeSetting = value;
         this.updateSwitchers();
@@ -174,10 +171,6 @@ export default class Field2dController implements TabController {
       if (this.FIELD_SELECT.value === "") {
         this.FIELD_SELECT.selectedIndex = 0;
       }
-      let fieldConfig = window.assets?.field2ds.find((field) => field.id === this.FIELD_SELECT.value);
-      if (fieldConfig !== undefined) {
-        this.lastIsFTCField = fieldConfig.isFTC;
-      }
     }
     if (
       "orientation" in state &&
@@ -247,34 +240,11 @@ export default class Field2dController implements TabController {
       }
 
       // Get pose data
-      let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" = "Pose2d";
-      let numberArrayUnits: "radians" | "degrees" = "radians";
-      if ("format" in source.options) {
-        let formatRaw = source.options.format;
-        numberArrayFormat =
-          formatRaw === "Pose2d" ||
-          formatRaw === "Pose3d" ||
-          formatRaw === "Translation2d" ||
-          formatRaw === "Translation3d"
-            ? formatRaw
-            : "Pose2d";
-      }
-      if ("units" in source.options) {
-        numberArrayUnits = source.options.units === "degrees" ? "degrees" : "radians";
-      }
-      let isHeatmap = source.type === "heatmap" || source.type === "heatmapLegacy";
+      let isHeatmap = source.type === "heatmap";
       let pose3ds: AnnotatedPose3d[] = [];
       if (!isHeatmap) {
         if (time !== null) {
-          pose3ds = grabPosesAuto(
-            window.log,
-            source.logKey,
-            source.logType,
-            time,
-            this.UUID,
-            numberArrayFormat,
-            numberArrayUnits
-          );
+          pose3ds = grabPosesAuto(window.log, source.logKey, source.logType, time, this.UUID);
         }
       } else {
         let timeRange: "enabled" | "auto" | "teleop" | "teleop-no-endgame" | "full" | "visible" = "enabled";
@@ -290,22 +260,14 @@ export default class Field2dController implements TabController {
               ? timeRangeRaw
               : "enabled";
         }
-        pose3ds = grabHeatmapData(
-          window.log,
-          source.logKey,
-          source.logType,
-          timeRange,
-          this.UUID,
-          numberArrayFormat,
-          numberArrayUnits
-        );
+        pose3ds = grabHeatmapData(window.log, source.logKey, source.logType, timeRange, this.UUID);
       }
       let poses = pose3ds.map(annotatedPose3dTo2d);
 
       // Get trail data for robot
       let trails: Translation2d[][] = Array(poses.length).fill([]);
       if (time !== null) {
-        if (source.type === "robot" || source.type === "robotLegacy") {
+        if (source.type === "robot") {
           let startTime = Math.max(window.log.getTimestampRange()[0], time - Field2dController.TRAIL_LENGTH_SECS);
           let endTime = Math.min(window.log.getTimestampRange()[1], time + Field2dController.TRAIL_LENGTH_SECS);
 
@@ -319,15 +281,9 @@ export default class Field2dController implements TabController {
           }
           timestamps.push(endTime);
           timestamps.forEach((sampleTime) => {
-            let poses = grabPosesAuto(
-              window.log,
-              source.logKey,
-              source.logType,
-              sampleTime,
-              this.UUID,
-              numberArrayFormat,
-              numberArrayUnits
-            ).map((x) => annotatedPose3dTo2d(x));
+            let poses = grabPosesAuto(window.log, source.logKey, source.logType, sampleTime, this.UUID).map((x) =>
+              annotatedPose3dTo2d(x)
+            );
             if (poses.length !== trails.length) return;
             if (fieldData !== undefined) {
               poses = convertFromCoordinateSystem(
@@ -347,17 +303,17 @@ export default class Field2dController implements TabController {
 
       // Add data from children
       let visionTargets: AnnotatedPose2d[] = [];
-      let swerveStates: {
-        values: SwerveState[];
+      let swerveModuleVelocities: {
+        values: ModuleVelocity[];
         color: string;
       }[] = [];
       children.forEach((child) => {
         switch (child.type) {
           case "rotationOverride":
           case "rotationOverrideLegacy": {
-            let numberArrayUnits: "radians" | "degrees" = "radians";
+            let numberRotationUnits: "radians" | "degrees" = "radians";
             if ("units" in child.options) {
-              numberArrayUnits = child.options.units === "degrees" ? "degrees" : "radians";
+              numberRotationUnits = child.options.units === "degrees" ? "degrees" : "radians";
             }
             let rotations = grabPosesAuto(
               window.log,
@@ -365,8 +321,7 @@ export default class Field2dController implements TabController {
               child.logType,
               time!,
               this.UUID,
-              undefined,
-              numberArrayUnits
+              numberRotationUnits
             );
             if (rotations.length > 0) {
               poses.forEach((value) => {
@@ -376,28 +331,8 @@ export default class Field2dController implements TabController {
             break;
           }
 
-          case "vision":
-          case "visionLegacy": {
-            let numberArrayFormat: "Translation2d" | "Translation3d" | "Pose2d" | "Pose3d" | undefined = undefined;
-            if ("format" in child.options) {
-              let formatRaw = child.options.format;
-              numberArrayFormat =
-                formatRaw === "Pose2d" ||
-                formatRaw === "Pose3d" ||
-                formatRaw === "Translation2d" ||
-                formatRaw === "Translation3d"
-                  ? formatRaw
-                  : "Pose2d";
-            }
-            let visionPose3ds = grabPosesAuto(
-              window.log,
-              child.logKey,
-              child.logType,
-              time!,
-              this.UUID,
-              numberArrayFormat,
-              "radians"
-            );
+          case "vision": {
+            let visionPose3ds = grabPosesAuto(window.log, child.logKey, child.logType, time!, this.UUID);
             visionPose3ds.forEach((annotatedPose) => {
               annotatedPose.annotation.visionColor = child.options.color;
               annotatedPose.annotation.visionSize = child.options.size;
@@ -406,23 +341,16 @@ export default class Field2dController implements TabController {
             break;
           }
 
-          case "swerveStates":
-          case "swerveStatesLegacy": {
-            let numberArrayUnits: "radians" | "degrees" = "radians";
-            if ("units" in child.options) {
-              numberArrayUnits = child.options.units === "degrees" ? "degrees" : "radians";
-            }
-            let states = grabSwerveStates(
+          case "swerveModuleVelocities": {
+            let moduleVelocities = grabModuleVelocities(
               window.log,
               child.logKey,
-              child.logType,
               time!,
               child.options.arrangement,
-              numberArrayUnits,
               this.UUID
             );
-            swerveStates.push({
-              values: states,
+            swerveModuleVelocities.push({
+              values: moduleVelocities,
               color: child.options.color
             });
             break;
@@ -430,7 +358,7 @@ export default class Field2dController implements TabController {
         }
       });
       visionTargets.reverse();
-      swerveStates.reverse();
+      swerveModuleVelocities.reverse();
 
       // Apply coordinate system
       if (fieldData !== undefined) {
@@ -453,7 +381,6 @@ export default class Field2dController implements TabController {
       // Add object
       switch (source.type) {
         case "robot":
-        case "robotLegacy":
           objects.push({
             type: "robot",
             poses: poses,
@@ -461,21 +388,19 @@ export default class Field2dController implements TabController {
             bumperColor:
               source.options.bumpers === "" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumpers,
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveModuleVelocities: swerveModuleVelocities
           });
           break;
         case "ghost":
-        case "ghostLegacy":
           objects.push({
             type: "ghost",
             poses: poses,
             color: source.options.color,
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveModuleVelocities: swerveModuleVelocities
           });
           break;
         case "trajectory":
-        case "trajectoryLegacy":
           objects.push({
             type: "trajectory",
             color: source.options.color,
@@ -484,14 +409,12 @@ export default class Field2dController implements TabController {
           });
           break;
         case "heatmap":
-        case "heatmapLegacy":
           objects.push({
             type: "heatmap",
             poses: poses
           });
           break;
         case "arrow":
-        case "arrowLegacy":
           let positionRaw = source.options.position;
           let position: "center" | "back" | "front" =
             positionRaw === "center" || positionRaw === "back" || positionRaw === "front" ? positionRaw : "center";

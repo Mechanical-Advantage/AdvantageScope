@@ -62,3 +62,13 @@ export class NoopController implements TabController {
     return null;
   }
 }
+
+/** Sets up keyboard activation (Enter / Space) for a focusable custom element. */
+export function setupKeyboardControls(element: HTMLElement) {
+  element.addEventListener("keydown", (event: KeyboardEvent) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      element.click();
+    }
+  });
+}
