@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { TFunction } from "i18next";
 import { AdvantageScopeAssets } from "./shared/AdvantageScopeAssets";
 import NamedMessage from "./shared/NamedMessage";
 import Preferences from "./shared/Preferences";
@@ -31,6 +32,7 @@ const SAVE_PERIOD_MS = 250;
 
 declare global {
   interface Window {
+    t: TFunction;
     assets: AdvantageScopeAssets | null;
     preferences: Preferences | null;
     isBattery: boolean;

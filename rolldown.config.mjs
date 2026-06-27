@@ -17,6 +17,7 @@ const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
+const liteI18nLoader = "window.t = window.parent.t;";
 
 /**
  * @import { RolldownOptions } from "rolldown"
@@ -38,7 +39,7 @@ function bundle(input, isMain, isXRClient, external = []) {
       dir: (isLite ? "lite/static/" : "") + "bundles/",
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
-      banner: licenseHeader,
+      banner: licenseHeader + (isLite && !isMain ? liteI18nLoader : ""),
       minify: isXRClient || isLite || "dce-only",
       minifyInternalExports: isXRClient || isLite
     },

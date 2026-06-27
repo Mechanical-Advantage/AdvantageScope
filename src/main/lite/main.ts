@@ -104,7 +104,7 @@ function getLocale(prefs: Preferences | null = null): string {
   return "en-US";
 }
 
-t = setupI18n(lang);
+window.t = setupI18n(lang);
 translateHTML(document, t);
 
 // Set up RTL layout
