@@ -369,7 +369,7 @@ function startHistorical(path: string, clear = true, merge = false) {
       switch (status) {
         case HistoricalDataSourceStatus.Reading:
         case HistoricalDataSourceStatus.DecodingInitial:
-          setWindowTitle(logFriendlyName, "Loading");
+          setWindowTitle(logFriendlyName, t("hub.logs.statusLoading"));
           break;
         case HistoricalDataSourceStatus.DecodingField:
         case HistoricalDataSourceStatus.Idle:
@@ -388,7 +388,7 @@ function startHistorical(path: string, clear = true, merge = false) {
           }
           break;
         case HistoricalDataSourceStatus.Error:
-          setWindowTitle(logFriendlyName, "Error");
+          setWindowTitle(logFriendlyName, t("hub.logs.statusError"));
           sourceEntry.progress = null;
           updateLoading();
           let isCSV = path.endsWith(".csv");

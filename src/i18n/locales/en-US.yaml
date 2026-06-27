@@ -273,6 +273,8 @@ hub:
   timelineScrollToZoom: "Scroll timeline to zoom" # Help text explaining that the user should scroll up and down to zoom in on the timeline
 
   logs:
+    statusLoading: "Loading" # Loading status for log file
+    statusError: "Error" # Error status for log file loading
     openErrorTitle: "Failed to open log" # Error title when log file open fails
     openErrorCsv: "There was a problem while reading the log file. Please check the documentation for more information on the required format of CSV files." # Error message when CSV log file open fails
     openErrorFallback: "There was a problem while reading the log file. Please try again." # Error message when log file open fails
