@@ -132,6 +132,7 @@ function addItem(
 
   let typeIcon = document.createElement("object");
   typeIcon.classList.add("type-icon");
+  typeIcon.tabIndex = -1;
   typeIcon.type = "image/svg+xml";
   typeIcon.data = "symbols/sourceList/" + symbol + ".svg";
   typeIconContainer.appendChild(typeIcon);
