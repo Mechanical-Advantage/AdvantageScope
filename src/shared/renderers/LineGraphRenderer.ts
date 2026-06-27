@@ -124,10 +124,10 @@ export default class LineGraphRenderer implements TabRenderer {
     let valueClean = Math.abs(value) < this.MAX_DECIMAL_VALUE ? cleanFloat(value) : Math.round(value);
     let output = valueClean.toLocaleString(undefined, { useGrouping: false });
     if (units !== null) {
-      let suffix = Units.getSuffixForFilter(units.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && units.pluralizeSuffix && value !== 1) output += "s";
+      let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === units) ?? null;
+      if (unitKey !== null) {
+        return Units.modifySuffixForFilter(t(`units.values.${unitKey}`, { value: output, count: value }), filter);
+      }
     }
     return output;
   }
@@ -488,7 +488,10 @@ export default class LineGraphRenderer implements TabRenderer {
     // Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
     let formatMarkedTimestampText = (time: number): string => {
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
-      return formatNumber(time, fractionDigits) + "s";
+      return t("units.values.seconds", {
+        value: formatNumber(time, fractionDigits),
+        count: time
+      });
     };
 
     // Write formatted timestamp popups to graph view
@@ -701,7 +704,11 @@ export default class LineGraphRenderer implements TabRenderer {
         x = graphLeft + graphWidth;
       }
 
-      let text = cleanFloat(stepPos).toLocaleString(undefined, { useGrouping: false }) + "s";
+      let value = cleanFloat(stepPos);
+      let text = t("units.values.seconds", {
+        value: value.toLocaleString(undefined, { useGrouping: false }),
+        count: value
+      });
 
       context.globalAlpha = 1;
       context.fillText(text, x, graphTop + graphHeight + 15);

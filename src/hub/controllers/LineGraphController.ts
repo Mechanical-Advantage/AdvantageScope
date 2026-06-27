@@ -358,14 +358,17 @@ export default class LineGraphController implements TabController {
     if (index === -1) {
       return null;
     }
-    let output = this.PREVIEW_FORMAT.format(command.values[index]);
+    let formattedValue = this.PREVIEW_FORMAT.format(command.values[index]);
     if (unitCache !== null && command.hasUnit) {
-      let suffix = Units.getSuffixForFilter(unitCache.suffix, filter);
-      output += suffix.length > 1 ? " " : "";
-      output += suffix;
-      if (filter === LineGraphFilter.None && unitCache.pluralizeSuffix && command.values[index] !== 1) output += "s";
+      let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === unitCache) ?? null;
+      if (unitKey !== null) {
+        return Units.modifySuffixForFilter(
+          t(`units.values.${unitKey}`, { value: formattedValue, count: command.values[index] }),
+          filter
+        );
+      }
     }
-    return output;
+    return formattedValue;
   }
 
   /** Returns the auto target type for an axis, based on a manual override or field selection. */

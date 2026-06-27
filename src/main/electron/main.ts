@@ -981,9 +981,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 editAxisMenu.append(
                   new MenuItem({
                     label:
-                      unit.charAt(0).toUpperCase() +
-                      unit.slice(1) +
-                      (unit === autoUnitDefault ? " [" + t("menu.file.default") + "]" : ""),
+                      unit === autoUnitDefault
+                        ? t("units.defaultLabel", { unit: t(`units.names.${unit}`) })
+                        : t(`units.names.${unit}`),
                     type: "checkbox",
                     checked: autoUnitSelected === unit,
                     click() {
@@ -1049,16 +1049,22 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                   type: "submenu",
                   enabled: recentUnits.length > 0,
                   submenu: recentUnits.map((preset) => {
-                    let fromToText =
-                      preset.from === undefined || preset.to === undefined
-                        ? ""
-                        : preset.from?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase()) +
-                          " \u2192 " +
-                          preset.to?.replace(/(^\w|\s\w|\/\w)/g, (m) => m.toUpperCase());
-                    let factorText = preset.factor === 1 ? "" : "x" + preset.factor.toString();
-                    let bothPresent = fromToText.length > 0 && factorText.length > 0;
+                    let label = "";
+                    if (preset.from !== undefined && preset.to !== undefined) {
+                      let fromName = t("units.names." + preset.from);
+                      let toName = t("units.names." + preset.to);
+                      let fromToText = t("units.presetFormatting.fromTo", { from: fromName, to: toName });
+                      if (preset.factor !== 1) {
+                        let factorText = t("units.presetFormatting.factor", { factor: preset.factor });
+                        label = t("units.presetFormatting.both", { fromTo: fromToText, factor: factorText });
+                      } else {
+                        label = fromToText;
+                      }
+                    } else if (preset.factor !== 1) {
+                      label = t("units.presetFormatting.factor", { factor: preset.factor });
+                    }
                     return {
-                      label: fromToText + (bothPresent ? ", " : "") + factorText,
+                      label: label,
                       click() {
                         unitConversion.autoTarget = null;
                         unitConversion.preset = preset;
