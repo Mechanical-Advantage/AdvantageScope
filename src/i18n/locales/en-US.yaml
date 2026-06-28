@@ -743,9 +743,8 @@ main:
     noDiskSpace: "Not enough disk space. Trying again soon." # Error message when disk space is low
     noOwlet: "The Hoot log file cannot be decoded because Owlet is not available." # Error message when Owlet is missing
     openFailed: "The Hoot log file could not be opened." # Error message when file open fails
-    noCompliancy: "The Hoot log file cannot be decoded because compliancy cannot be retrieved." # Error message when compliancy version is missing
     tooOld: "The Hoot log file is too old to be decoded. Hoot logs must be produced by Phoenix 2024 or later." # Error message when Hoot log version is too old
-    incompatibleCompliancy: "The Hoot log cannot be decoded because of incompatible compliancy. Check the Owlet download status in the menu bar for more information." # Error message for incompatible compliancy
+    incompatible: "The Hoot log cannot be decoded because of a compatibility issue. Check the Owlet download status in the menu bar for more information." # Error message for incompatibility
 
   buttons:
     cancel: "Cancel" # Cancel button label

@@ -73,7 +73,7 @@ async function getOwletPath(hootPath: string): Promise<string> {
       let buffer = Buffer.alloc(2);
       fs.read(file, buffer, 0, 2, 70, (error, bytesRead) => {
         if (error || bytesRead !== 2) {
-          reject(t("main.owlet.noCompliancy"));
+          reject(t("main.owlet.openFailed"));
           return;
         }
         let view = new DataView(buffer.buffer);
@@ -94,7 +94,7 @@ async function getOwletPath(hootPath: string): Promise<string> {
   owletFilenames = owletFilenames.filter((filename) => filename.startsWith("owlet-"));
   let finalOwletFilename = owletFilenames.find((filename) => filename.includes("-C" + compliancy.toString()));
   if (finalOwletFilename === undefined) {
-    throw new Error(t("main.owlet.incompatibleCompliancy"));
+    throw new Error(t("main.owlet.incompatible"));
   }
   return path.join(OWLET_STORAGE, finalOwletFilename);
 }
