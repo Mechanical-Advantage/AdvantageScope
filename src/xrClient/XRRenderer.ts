@@ -367,11 +367,11 @@ export default class XRRenderer {
         isCalibrating = this.markedPoints.length < 2;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to place the ${isFTC ? "wall near the red alliance area" : "red alliance wall"}.`;
+            calibrationText = isFTC ? t("xrClient.miniature.placeRedFTC") : t("xrClient.miniature.placeRedFRC");
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to place the ${isFTC ? "wall near the blue alliance area" : "blue alliance wall"}.`;
+            calibrationText = isFTC ? t("xrClient.miniature.placeBlueFTC") : t("xrClient.miniature.placeBlueFRC");
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootMiniature(
@@ -397,19 +397,30 @@ export default class XRRenderer {
       case XRCalibrationMode.FullSizeBlue:
       case XRCalibrationMode.FullSizeRed:
         isCalibrating = this.markedPoints.length < 3;
-        let colorText = settings.calibration === XRCalibrationMode.FullSizeBlue ? "blue" : "red";
         let isRed = settings.calibration === XRCalibrationMode.FullSizeRed;
         switch (this.markedPoints.length) {
           case 0:
-            calibrationText = `Tap to place the base of the ${
-              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
-            }.`;
+            if (isFTC) {
+              calibrationText = isRed
+                ? t("xrClient.fullSize.placeFirstFTCRed")
+                : t("xrClient.fullSize.placeFirstFTCBlue");
+            } else {
+              calibrationText = isRed
+                ? t("xrClient.fullSize.placeFirstFRCRed")
+                : t("xrClient.fullSize.placeFirstFRCBlue");
+            }
             this.fieldRoot.visible = false;
             break;
           case 1:
-            calibrationText = `Tap to select another point on the base of the ${
-              isFTC ? `wall near the ${colorText} alliance area` : `${colorText} alliance wall`
-            }, at least ${isFTC ? "3" : "6"} feet away from the previous point.`;
+            if (isFTC) {
+              calibrationText = isRed
+                ? t("xrClient.fullSize.placeSecondFTCRed")
+                : t("xrClient.fullSize.placeSecondFTCBlue");
+            } else {
+              calibrationText = isRed
+                ? t("xrClient.fullSize.placeSecondFRCRed")
+                : t("xrClient.fullSize.placeSecondFRCBlue");
+            }
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               let position1 = this.markedPoints[0].getWorldPosition(new THREE.Vector3());
@@ -423,9 +434,7 @@ export default class XRRenderer {
             }
             break;
           case 2:
-            calibrationText = `Tap to select the base of one of the ${
-              isFTC ? "perpendicular" : "long"
-            } field barriers.`;
+            calibrationText = isFTC ? t("xrClient.fullSize.placeThirdFTC") : t("xrClient.fullSize.placeThirdFRC");
             this.fieldRoot.visible = !raycastUnreliable;
             if (this.fieldRoot.visible && renderState.raycast.isValid) {
               this.updateFieldRootFullSize(

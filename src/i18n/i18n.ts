@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import i18next, { TFunction } from "i18next";
+import { SUPPORTED_LANGS } from "../shared/Preferences";
 import enUSTranslations from "./locales/en-US.yaml";
 
 /**
@@ -23,6 +24,30 @@ export function setupI18n(lang: string): TFunction {
     }
   });
   return i18next.t.bind(i18next);
+}
+
+/** Given a set of preferred languages, returns the best language to use. */
+export function getBestLanguage(preferredLangs: readonly string[]): string {
+  for (const lang of preferredLangs) {
+    if (SUPPORTED_LANGS.includes(lang)) {
+      return lang;
+    }
+    const primaryLang = lang.split("-")[0];
+    if (SUPPORTED_LANGS.includes(primaryLang)) {
+      return primaryLang;
+    }
+    switch (primaryLang) {
+      case "en":
+        return "en-US";
+      case "es":
+        return "es-419";
+      case "pt":
+        return "pt-BR";
+      case "zh":
+        return "zh-CN";
+    }
+  }
+  return "en-US";
 }
 
 /**

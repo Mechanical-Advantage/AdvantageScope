@@ -7,7 +7,7 @@
 
 import { TFunction } from "i18next";
 import TinyPopupMenu, { MenuItem, Submenu } from "tiny-popup-menu";
-import { setupI18n, translateHTML } from "../../i18n/i18n";
+import { getBestLanguage, setupI18n, translateHTML } from "../../i18n/i18n";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import { BUILD_DATE, COPYRIGHT, Distribution, DISTRIBUTION, LITE_VERSION } from "../../shared/buildConstants";
 import ButtonRect from "../../shared/ButtonRect";
@@ -21,8 +21,7 @@ import Preferences, {
   getLiveModeName,
   LITE_ALLOWED_LIVE_MODES,
   LiveMode,
-  mergePreferences,
-  SUPPORTED_LANGS
+  mergePreferences
 } from "../../shared/Preferences";
 import {
   getSourceListPrefix,
@@ -80,28 +79,7 @@ function getLocale(prefs: Preferences | null = null): string {
   if (prefs !== null && prefs.language !== "") {
     return prefs.language;
   }
-
-  let preferredLangs = navigator.languages;
-  for (const lang of preferredLangs) {
-    if (SUPPORTED_LANGS.includes(lang)) {
-      return lang;
-    }
-    const primaryLang = lang.split("-")[0];
-    if (SUPPORTED_LANGS.includes(primaryLang)) {
-      return primaryLang;
-    }
-    switch (primaryLang) {
-      case "en":
-        return "en-US";
-      case "es":
-        return "es-419";
-      case "pt":
-        return "pt-BR";
-      case "zh":
-        return "zh-CN";
-    }
-  }
-  return "en-US";
+  return getBestLanguage(navigator.languages);
 }
 
 window.t = setupI18n(lang);

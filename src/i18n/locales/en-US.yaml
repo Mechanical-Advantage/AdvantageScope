@@ -566,6 +566,27 @@ hub:
     cannotExportTitle: "Cannot export console log" # Error title when console export fails
     addConsoleData: "Please add a field with console data, then try again." # Error content when console export fails
 
+xrClient:
+  # Banner text displayed when calibrating the position and size of a miniature version of field in augmented reality. FRC uses "alliance wall" and FTC uses "barrier near alliance area" since the alliance stations (Driver Stations) are only built-in to the wall in FRC. Some parts of the fields are short and can be stepped over ("barriers") and some parts of the field are tall ("walls").
+  miniature:
+    placeRedFRC: "Tap to place the red alliance wall."
+    placeBlueFRC: "Tap to place the blue alliance wall."
+    placeRedFTC: "Tap to place the barrier near the red alliance area."
+    placeBlueFTC: "Tap to place the barrier near the blue alliance area."
+
+  # Banner text displayed when calibrating the position of a full-size version of field in augmented reality. FRC uses "alliance wall" and FTC uses "wall near alliance area" since the alliance stations (Driver Stations) are only built-in to the wall in FRC. FRC fields are rectangular (so there are "long" field barriers) and FTC fields are square (so there are only "perpendicular" field barriers). Some parts of the fields are short and can be stepped over ("barriers") and some parts of the field are tall ("walls").
+  fullSize:
+    placeFirstFRCRed: "Tap to place the base of the red alliance wall."
+    placeFirstFRCBlue: "Tap to place the base of the blue alliance wall."
+    placeFirstFTCRed: "Tap to place the base of the barrier near the red alliance area."
+    placeFirstFTCBlue: "Tap to place the base of the barrier near the blue alliance area."
+    placeSecondFRCRed: "Tap to place another point on the base of the red alliance wall, at least 2 meters away from the previous point."
+    placeSecondFRCBlue: "Tap to place another point on the base of the blue alliance wall, at least 2 meters away from the previous point."
+    placeSecondFTCRed: "Tap to place another point on the base of the barrier near the red alliance area, at least 1 meter away from the previous point."
+    placeSecondFTCBlue: "Tap to place another point on the base of the barrier near the blue alliance area, at least 1 meter away from the previous point."
+    placeThirdFRC: "Tap to select the base of one of the long field barriers."
+    placeThirdFTC: "Tap to select the base of one of the perpendicular field barriers."
+
 liveModeName:
   nt4: "NetworkTables" # Name for NetworkTables live mode
   nt4Akit: "NetworkTables (AdvantageKit)" # Name for AdvantageKit NetworkTables live mode

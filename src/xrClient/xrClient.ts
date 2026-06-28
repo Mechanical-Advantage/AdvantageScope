@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import { Decoder } from "@msgpack/msgpack";
+import { getBestLanguage, setupI18n } from "../i18n/i18n";
 import { AdvantageScopeAssets } from "../shared/AdvantageScopeAssets";
 import NamedMessage from "../shared/NamedMessage";
 import { XRPacket, XRFrameState as XRRenderState, XRSettings, XRStreamingMode } from "../shared/XRTypes";
@@ -21,6 +22,8 @@ let command: Field3dRendererCommand | null = null;
 let assets: AdvantageScopeAssets | null = null;
 let isRendering = false;
 let serverTimeOffset: number | null = null;
+
+window.t = setupI18n(getBestLanguage(navigator.languages));
 
 window.addEventListener("load", () => {
   renderer = new XRRenderer();
