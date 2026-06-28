@@ -8,11 +8,46 @@
 import SwiftUI
 import ReplayKit
 
-class RecordingPreviewState : ObservableObject {
-    @Published var view: RPPreviewView!
-    @Published var showFullScreen = false
-    @Published var showSheet = false
+class PreviewContainerViewController: UIViewController {
+    let previewController: RPPreviewViewController
+    
+    init(previewController: RPPreviewViewController) {
+        self.previewController = previewController
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) { fatalError() }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .black
+        
+        addChild(previewController)
+        view.addSubview(previewController.view)
+        previewController.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            previewController.view.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
+            previewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            previewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            previewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        
+        previewController.didMove(toParent: self)
+    }
 }
+
+class RecordingPreviewState : NSObject, ObservableObject, RPPreviewViewControllerDelegate {
+    func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
+        if let container = previewController.parent {
+            container.dismiss(animated: true)
+        } else {
+            previewController.dismiss(animated: true)
+        }
+    }
+}
+
+
 
 struct RecordButton: View {
     @EnvironmentObject var appState: AppState
@@ -58,42 +93,35 @@ struct RecordButton: View {
     private func stopRecording() {
         RPScreenRecorder.shared().stopRecording { preview, error in
             guard let preview = preview else { return }
-            recordingPreviewState.view = RPPreviewView(controller: preview, showFullScreen: $recordingPreviewState.showFullScreen, showSheet: $recordingPreviewState.showSheet)
+            preview.previewControllerDelegate = self.recordingPreviewState
+            
+            let container = PreviewContainerViewController(previewController: preview)
             if (UIDevice.current.userInterfaceIdiom == .pad) {
-                recordingPreviewState.showSheet = true
+                container.modalPresentationStyle = .formSheet
             } else {
-                recordingPreviewState.showFullScreen = true
+                container.modalPresentationStyle = .pageSheet
+                if let sheet = container.sheetPresentationController {
+                    sheet.detents = [.large()]
+                    sheet.prefersGrabberVisible = true
+                    sheet.preferredCornerRadius = 24
+                }
+            }
+            
+            DispatchQueue.main.async {
+                guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                      let rootViewController = windowScene.windows.first(where: { $0.isKeyWindow })?.rootViewController else {
+                    return
+                }
+                
+                var topController = rootViewController
+                while let presented = topController.presentedViewController {
+                    topController = presented
+                }
+                
+                topController.present(container, animated: true)
             }
         }
     }
 }
 
-struct RPPreviewView: UIViewControllerRepresentable {
-    let controller: RPPreviewViewController
-    @Binding var showFullScreen: Bool
-    @Binding var showSheet: Bool
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func makeUIViewController(context: Context) -> RPPreviewViewController {
-        controller.previewControllerDelegate = context.coordinator
-        return controller
-    }
-    
-    func updateUIViewController(_ uiView: RPPreviewViewController, context: Context) {}
-    
-    class Coordinator: NSObject, RPPreviewViewControllerDelegate {
-        var parent: RPPreviewView
-           
-        init(_ parent: RPPreviewView) {
-            self.parent = parent
-        }
-           
-        func previewControllerDidFinish(_ previewController: RPPreviewViewController) {
-            parent.showFullScreen = false
-            parent.showSheet = false
-        }
-    }
-}
+
