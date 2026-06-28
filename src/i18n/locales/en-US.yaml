@@ -881,7 +881,7 @@ units:
     energy: "Energy"
     none: "None" # Dropdown choice name for no unit type
 
-  # Full names of units in dictionary form, displayed to the user in a dropdown. Always title case.
+  # Full names of units in dictionary form, displayed to the user in a dropdown. Always title case. Use a slash ("/") where applicable for compound units.
   names:
     meters: "Meters"
     inches: "Inches"
@@ -947,7 +947,7 @@ units:
     calorie: "Calories"
     potato: "Potatoes"
 
-  # Numeric values with units. Use SI symbols for applicable units, abbrevations when possible, and full names otherwise. Values with full unit names must include appropriate i18next keys to support pluralization. Always include a space between the value and symbol, except for °, ', and "
+  # Numeric values with units. Use SI symbols for applicable units, abbrevations when possible, and full names otherwise. Values with full unit names must include appropriate i18next keys to support pluralization. Always include a space between the value and symbol, except for ° (angles), ', and "
   values:
     meters: "{{value}} m"
     inches: '{{value}}"'
@@ -980,8 +980,8 @@ units:
     milliseconds: "{{value}} ms"
     microseconds: "{{value}} μs"
     nanoseconds: "{{value}} ns"
-    minutes: "{{value}} min"
-    hours: "{{value}} hr"
+    minutes: "{{value}} m"
+    hours: "{{value}} h"
     days_one: "{{value}} day"
     days_other: "{{value}} days"
     bytes: "{{value}} B"
@@ -1002,8 +1002,8 @@ units:
     hertz: "{{value}} Hz"
     kilohertz: "{{value}} kHz"
     megahertz: "{{value}} MHz"
-    celsius: "{{value}}°C"
-    fahrenheit: "{{value}}°F"
+    celsius: "{{value}} °C"
+    fahrenheit: "{{value}} °F"
     kelvin: "{{value}} K"
     volts: "{{value}} V"
     millivolts: "{{value}} mV"
