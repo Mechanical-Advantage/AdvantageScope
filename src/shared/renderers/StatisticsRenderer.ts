@@ -87,7 +87,14 @@ export default class StatisticsRenderer implements TabRenderer {
 
   render(command: StatisticsRendererCommand): void {
     // Update histogram layout
-    this.HISTOGRAM_CONTAINER.style.left = (this.VALUES_TABLE_CONTAINER.offsetWidth + 10).toString() + "px";
+    const isRtl = document.documentElement.dir === "rtl";
+    if (isRtl) {
+      this.HISTOGRAM_CONTAINER.style.right = (this.VALUES_TABLE_CONTAINER.offsetWidth + 10).toString() + "px";
+      this.HISTOGRAM_CONTAINER.style.left = "";
+    } else {
+      this.HISTOGRAM_CONTAINER.style.left = (this.VALUES_TABLE_CONTAINER.offsetWidth + 10).toString() + "px";
+      this.HISTOGRAM_CONTAINER.style.right = "";
+    }
 
     // Update histogram colors
     const isLight = !window.matchMedia("(prefers-color-scheme: dark)").matches;

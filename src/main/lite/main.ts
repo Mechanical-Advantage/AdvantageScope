@@ -1100,10 +1100,10 @@ async function handleHubMessage(message: NamedMessage) {
                 content: t("menu.lineGraph.editConversion"),
                 async callback() {
                   let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
+                    closePopupWindow();
                     if (message === null) return;
                     unitConversion.autoTarget = null;
                     unitConversion.preset = message;
-                    closePopupWindow();
                     sendMessage(hubPort, "edit-axis", {
                       legend: legend,
                       lockedRange: lockedRange,
