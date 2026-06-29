@@ -11,6 +11,7 @@ import { setupI18n, translateHTML } from "./i18n/i18n";
 // Set up locale
 const t = setupI18n(navigator.language);
 contextBridge.exposeInMainWorld("t", t);
+contextBridge.exposeInMainWorld("lang", navigator.language);
 window.addEventListener("DOMContentLoaded", () => {
   translateHTML(document, t);
 });

@@ -17,7 +17,8 @@ const isDS = process.env.ASCOPE_DISTRIBUTION === "LITEDS";
 const isLite = process.env.ASCOPE_DISTRIBUTION === "LITE" || isDS;
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
-const liteI18nLoader = "if (typeof window !== 'undefined' ) {window.t = window.parent.t;}";
+const liteI18nLoader =
+  "if (typeof window !== 'undefined' ) {window.t = window.parent.t; window.lang = window.parent.lang}";
 
 /**
  * @import { RolldownOptions } from "rolldown"

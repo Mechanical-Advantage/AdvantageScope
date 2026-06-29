@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { SUPPORTED_LANGS } from "../Preferences";
 import TabRenderer from "./TabRenderer";
 
 export default class DocumentationRenderer implements TabRenderer {
@@ -31,16 +32,52 @@ export default class DocumentationRenderer implements TabRenderer {
     window.requestAnimationFrame(periodic);
   }
 
+  private static cleanHash(hash: string): string {
+    let path = hash;
+    if (path.startsWith("#")) {
+      path = path.slice(1);
+    }
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
+    for (const locale of SUPPORTED_LANGS) {
+      if (locale === "en-US") continue;
+      if (path.startsWith("/" + locale + "/")) {
+        return path.slice(locale.length + 1);
+      } else if (path === "/" + locale) {
+        return "/";
+      }
+    }
+    return path;
+  }
+
+  private static getHashForLang(cleanPath: string, lang: string): string {
+    if (lang === "en-US") {
+      return "#" + cleanPath;
+    } else {
+      if (cleanPath === "/") {
+        return "#/" + lang;
+      } else {
+        return "#/" + lang + cleanPath;
+      }
+    }
+  }
+
   saveState(): unknown {
-    return this.IFRAME.contentWindow?.location.hash;
+    const hash = this.IFRAME.contentWindow?.location.hash;
+    if (typeof hash === "string") {
+      return DocumentationRenderer.cleanHash(hash);
+    }
+    return null;
   }
 
   restoreState(state: unknown): void {
     if (typeof state === "string") {
+      const correctHash = DocumentationRenderer.getHashForLang(state, window.lang);
       if (this.loaded) {
-        this.IFRAME.contentWindow!.location.hash = state;
+        this.IFRAME.contentWindow!.location.hash = correctHash;
       } else {
-        this.stateQueue = state;
+        this.stateQueue = correctHash;
       }
     }
   }
@@ -53,9 +90,83 @@ export default class DocumentationRenderer implements TabRenderer {
     // Load documentation page once visible
     if (this.firstRender) {
       this.firstRender = false;
-      this.IFRAME.src = "../docs/build/index.html";
+      if (window.lang === "en-US") {
+        this.IFRAME.src = "../docs/build/index.html";
+      } else {
+        this.IFRAME.src = `../docs/build/${window.lang}/index.html#/${window.lang}`;
+      }
       this.IFRAME.addEventListener("load", () => {
         this.loaded = true;
+
+        // Set up MutationObserver on the iframe's document to fix image paths
+        const iframeDocument = this.IFRAME.contentDocument;
+        if (iframeDocument) {
+          const fixImages = () => {
+            const imgs = iframeDocument.querySelectorAll("img");
+            imgs.forEach((img) => {
+              const src = img.getAttribute("src");
+              if (src && src.startsWith("/img/")) {
+                // Convert relative /img/... to the correct path relative to parent window
+                const newSrc = new URL("../docs/build" + src, window.location.href).href;
+                img.setAttribute("src", newSrc);
+              }
+            });
+          };
+
+          // Fix any images already in the initial DOM
+          fixImages();
+
+          // Observe future mutations
+          const observer = new MutationObserver((mutations) => {
+            let needsFix = false;
+            for (const mutation of mutations) {
+              if (mutation.type === "childList") {
+                for (const node of mutation.addedNodes) {
+                  if (node instanceof HTMLElement) {
+                    if (node.tagName === "IMG" || node.querySelector("img")) {
+                      needsFix = true;
+                      break;
+                    }
+                  }
+                }
+              } else if (mutation.type === "attributes" && mutation.attributeName === "src") {
+                const target = mutation.target as HTMLElement;
+                if (target.tagName === "IMG") {
+                  const src = target.getAttribute("src");
+                  if (src && src.startsWith("/img/")) {
+                    needsFix = true;
+                  }
+                }
+              }
+              if (needsFix) break;
+            }
+            if (needsFix) {
+              fixImages();
+            }
+          });
+
+          observer.observe(iframeDocument.documentElement, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["src"]
+          });
+
+          // Detect and fix incorrect hashes (e.g. homepage links)
+          const checkAndFixHash = () => {
+            const currentHash = iframeDocument.defaultView?.location.hash;
+            if (typeof currentHash === "string") {
+              const cleaned = DocumentationRenderer.cleanHash(currentHash);
+              const expectedHash = DocumentationRenderer.getHashForLang(cleaned, window.lang);
+              if (currentHash !== expectedHash && iframeDocument.defaultView) {
+                iframeDocument.defaultView.location.hash = expectedHash;
+              }
+            }
+          };
+
+          checkAndFixHash();
+          iframeDocument.defaultView?.addEventListener("hashchange", checkAndFixHash);
+        }
       });
     }
 

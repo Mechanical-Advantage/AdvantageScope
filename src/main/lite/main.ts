@@ -83,6 +83,7 @@ function getLocale(prefs: Preferences | null = null): string {
 }
 
 window.t = setupI18n(lang);
+window.lang = lang;
 translateHTML(document, t);
 
 // Set up RTL layout

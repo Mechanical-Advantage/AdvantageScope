@@ -41,6 +41,8 @@ const FEEDBACK_BUTTON = document.getElementsByClassName("feedback")[0] as HTMLEl
 declare global {
   interface Window {
     t: TFunction;
+    lang: string;
+
     log: Log;
     preferences: Preferences | null;
     assets: AdvantageScopeAssets | null;
