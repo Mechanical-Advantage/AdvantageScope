@@ -1,5 +1,3 @@
-import Image2 from './img/units-2.png';
-
 # Unit Support
 
 The line graph tab is unit-aware, which means that numeric values can be easily converted between compatible unit types. When unit information is available, all numeric values are also accurately labeled when displayed in the axes or legends. See [here](#supported-formats) for more information on publishing unit information. AdvantageScope provides several tools to quickly convert between units:
@@ -8,7 +6,7 @@ The line graph tab is unit-aware, which means that numeric values can be easily 
 - Click the three dots near the axis title to **quickly switch to alternative units**. This list includes the most common units that are compatible with the selected fields.
 - Enable **integration or differentiation** ([docs](/tab-reference/line-graph/#integration--differentiation)) to see the accurate integral or derivative units. The base unit can be adjusted using the menu to support filtering in non-native units.
 
-![Unit-aware graphing](./img/units-1.png)
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
 
 ## Supported Formats
 
@@ -56,4 +54,4 @@ To configure manual conversion, click the three dots near the axis title and the
 To quickly enable or disable unit conversion, click the three dots near the axis title and choose `Recent Presets` or `Reset Units`.
 :::
 
-<img src={Image2} alt="Editing unit conversion" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="Editing unit conversion" height="250" />

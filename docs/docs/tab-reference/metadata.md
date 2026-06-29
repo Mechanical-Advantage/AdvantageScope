@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 The metadata tab shows values published to the hidden "/Metadata" table or through AdvantageKit. The metadata keys are displayed to the left, and the columns separate data from different sources (e.g. real and replay when using AdvantageKit).
 
-![Overview of metadata tab](./img/metadata-1.png)
+<img src="/img/tab-reference/metadata-1.png" alt="Overview of metadata tab" />
 
 The example code below shows how to log metadata using Java.
 

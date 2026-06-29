@@ -8,7 +8,6 @@
 import Heading from "@theme/Heading";
 import type { Props } from "@theme/NotFound/Content";
 import clsx from "clsx";
-import Image404 from "./404.webp";
 
 export default function NotFoundContent({ className }: Props): JSX.Element {
   return (
@@ -26,7 +25,7 @@ export default function NotFoundContent({ className }: Props): JSX.Element {
             Try navigating to the <a href="/">homepage</a> and see if you can find what you're looking for there.
           </p>
           <p>
-            <img src={Image404} height="250" />
+            <img src="/img/404.webp" height="250" />
           </p>
         </div>
       </div>

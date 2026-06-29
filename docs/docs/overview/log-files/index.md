@@ -1,6 +1,3 @@
-import PrefsImage from '../../img/prefs.png';
-import Image2 from './img/open-file-2.png';
-
 # 📂 Log Files
 
 ## Supported Formats
@@ -25,7 +22,7 @@ In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log 
 If multiple files are opened simultaneously, the timestamps will be aligned automatically. This enables easy comparison of log files from multiple sources.
 :::
 
-![Opening a saved log](./img/open-file-1.png)
+<img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
 ## Adding New Logs
 
@@ -40,7 +37,7 @@ In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more 
 
 Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). Update the robot address and log folder.
 
-<img src={PrefsImage} alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
 </details>
 
 Click `File` > `Download Logs...` to open the download window. Once connected to the robot, available logs are shown with the newest at the top. Select one or more log files to download (shift-click to select a range or **cmd/ctrl + A** to select all). Then click the ↓ symbol and select a save location.
@@ -53,7 +50,7 @@ CTRE's [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-re
 When downloading multiple files, AdvantageScope skips any that already exist in the destination folder.
 :::
 
-<img src={Image2} alt="Downloading log files" height="350" />
+<img src="/img/overview/log-files/open-file-2.png" alt="Downloading log files" height="350" />
 
 ## CSV Formatting
 

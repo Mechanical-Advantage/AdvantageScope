@@ -1,12 +1,11 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import PrefsImage from '../../img/prefs.png';
 
 # 👀 3D Field
 
 The 3D field shows a 3D visualization of the robot and field. It can be used with regular 2D poses, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. [AdvantageScope XR](advantagescope-xr) allows this tab to be visualized using augmented reality. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
-![Example of 3D field tab](./img/3d-field-1.png)
+<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Example of 3D field tab" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -17,7 +16,7 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](../img/timeline.png)
+<img src="/img/tab-reference/timeline.png" alt="Timeline" />
 
 </details>
 
@@ -106,7 +105,7 @@ Mechanism data can be visualized using 2D mechanisms or articulated 3D component
 
 To visualize mechanism data logged using a [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ or YZ plane of the robot using simple boxes, as shown below. Click the gear icon or right-click on the field name to switch between the XZ and YZ planes. The robot's origin is centered on the bottom edge of the mechanism.
 
-![2D mechanism](./img/3d-field-2.png)
+<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
 
 ### 3D Components
 
@@ -118,7 +117,7 @@ Mechanisms can be visualized with articulated components by logging a set of 3D 
 
 Each component can be moved independently (like an elevator carriage, arm, or end effector). AdvantageKit users should consider using the [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) method to convert a Mechanism2d to an array of Pose3d objects. For more information on configuring robots with components, see [Custom Assets](/more-features/custom-assets).
 
-![3D mechanism](./img/3d-field-3.png)
+<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mechanism" />
 
 ## Game Piece Objects
 
@@ -138,7 +137,7 @@ The AdvantageKit KitBot 2024 example project includes a simple example of a [com
 
 </details>
 
-![2024 KitBot note visualization](./img/3d-field-4.png)
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
 
 ## Camera Options
 
@@ -172,7 +171,7 @@ Automatic selection of station number may be inaccurate when viewing log data pr
 
 Each robot model is configured with a set of fixed cameras, like vision and driver cameras. These cameras have fixed positions, aspect ratios, and FOVs. These views are often useful to check vision data or to simulate a driver camera view. In the example below, a driver camera is shown.
 
-![Fixed camera](./img/3d-field-5.png)
+<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Fixed camera" />
 
 If a "Camera Override" pose is provided, it replaces the default poses of all fixed cameras while retaining their configured FOVs and aspect ratios. This allows the robot code to provide the position of a moving camera, like one mounted to a turret or shooter hood.
 
@@ -196,8 +195,8 @@ The 3D field supports three rendering modes:
 - **Standard (Default):** Render with minimal lighting and simplified 3D models. Runs well on most devices.
 - **Low Power:** Lower the framerate, resolution, and model detail to reduce battery consumption and provide more consistent performance on low-end devices.
 
-![Comparion of rendering modes](./img/3d-field-6.png)
+<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparion of rendering modes" />
 
 To configure the rendering mode, open the preferences window by pressing clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS). The "3D Mode (Battery)" setting can be switched from the default to override the rendering mode used on a laptop when not charging. For example, this can be used to preserve battery while at competition.
 
-<img src={PrefsImage} alt="Diagram of preferences" height="350" />
+<img src="/img/prefs.png" alt="Diagram of preferences" height="350" />

@@ -6,7 +6,7 @@ sidebar_position: 8
 
 The joysticks tab shows the state of up to six connected controllers. The image below shows an example layout, with two Xbox controller and a generic joystick. Each button highlights when it is pressed, and the states of joysticks and other axes are displayed.
 
-![Overview of joystick tab](./img/joysticks-1.png)
+<img src="/img/tab-reference/joysticks-1.png" alt="Overview of joystick tab" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -17,7 +17,7 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.png" alt="Timeline" />
 
 </details>
 

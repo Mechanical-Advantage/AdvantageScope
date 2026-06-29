@@ -1,0 +1,18 @@
+{
+  "title": {
+    "message": "AdvantageScope құжаттамасы",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "AdvantageScope логотипі",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Downloads": {
+    "message": "Жүктеулер",
+    "description": "Navbar item with label Downloads"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

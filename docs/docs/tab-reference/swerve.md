@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, robot rotation, and chassis speeds.
 
-![Overview of swerve tab](./img/swerve-1.png)
+<img src="/img/tab-reference/swerve-1.png" alt="Overview of swerve tab" />
 
 <details>
 <summary>Timeline Controls</summary>
@@ -20,7 +20,7 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.png" alt="Timeline" />
 
 </details>
 

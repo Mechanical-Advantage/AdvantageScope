@@ -14,7 +14,7 @@ AdvantageScope provides three options for loading a video:
 2. **YouTube:** Copy a YouTube link to the clipboard, then click the red clipboard icon. After a few seconds, the video will begin to download.
 3. **The Blue Alliance:** Click the blue TBA icon to automatically load the match video based on the log file. If multiple videos are available, choose the video to download from the popup menu. This feature requires an API key for TBA, which should be obtained at [thebluealliance.com/account](https://www.thebluealliance.com/account) and copied to the AdvantageScope preferences page under "TBA API Key".
 
-![Source chooser](./img/video-1.png)
+<img src="/img/tab-reference/video-1.png" alt="Source chooser" />
 
 After choosing a video, the timeline on the bottom right begins turning blue to indicate the frames that have been cached (this step is necessary for smooth playback). This feature is intended for match-length videos only due to the frame conversion required.
 
@@ -36,7 +36,7 @@ When a video is initially loaded and has not yet been synchronized with the log 
 - \> = skip forward five seconds
 - < = skip backward five seconds
 
-![Video controls](./img/video-2.png)
+<img src="/img/tab-reference/video-2.png" alt="Video controls" />
 
 ## Automatic Synchronization
 
@@ -56,7 +56,7 @@ The cursor on the timeline snaps to the start and end of match periods, making i
 
 Once the video and log are aligned, click the lock icon next to the video timeline (or press **↑ or ↓**). The video controls are now disabled. Click the lock icon again to unlock the video playback.
 
-![Lock button](./img/video-3.png)
+<img src="/img/tab-reference/video-3.png" alt="Lock button" />
 
 ## Playback
 
@@ -71,7 +71,7 @@ Yellow sections indicate when the robot is autonomous, blue sections indicate wh
 
 To zoom, place the cursor over the timeline and scroll up or down. A range can also be selecting by clicking and dragging while holding `Shift`. Move left and right by scrolling horizontally (on supported devices), or by clicking and dragging on the timeline. When connected live, scrolling to the left unlocks from the current time, and scrolling all the way to the right locks to the current time again. Press `Ctrl+\` to zoom to the period where the robot is enabled.
 
-![Timeline](./img/timeline.png)
+<img src="/img/tab-reference/timeline.png" alt="Timeline" />
 
 </details>
 
@@ -79,4 +79,4 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 If desired, the camera FOV can be adjusted in the 3D field view to match the look of the video. For details, see "Camera Options" on the 👀 [3D Field](/tab-reference/3d-field) page.
 :::
 
-![Video snapshot with odometry](./img/video-4.png)
+<img src="/img/tab-reference/video-4.png" alt="Video snapshot with odometry" />

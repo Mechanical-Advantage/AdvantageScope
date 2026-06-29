@@ -1,0 +1,18 @@
+{
+  "title": {
+    "message": "AdvantageScope 文档",
+    "description": "The title in the navbar"
+  },
+  "logo.alt": {
+    "message": "AdvantageScope 标志",
+    "description": "The alt text of navbar logo"
+  },
+  "item.label.Downloads": {
+    "message": "下载",
+    "description": "Navbar item with label Downloads"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  }
+}

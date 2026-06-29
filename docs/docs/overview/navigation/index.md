@@ -2,7 +2,7 @@
 
 The screenshot below shows the important elements of the main AdvantageScope window. The exact appearance differs between operating systems.
 
-![Navigation diagram](./img/navigation-1.png)
+<img src="/img/overview/navigation/navigation-1.png" alt="Navigation diagram" />
 
 :::tip
 To view multiple log files simultaneously, click `File` > `New Window`.

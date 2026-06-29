@@ -6,7 +6,7 @@ sidebar_position: 6
 
 The statistics tab allows for deep statistical analysis of numerical fields, analyzing overall trends rather than changes over time. The selected fields are analyzed using a histogram and a variety of standard statistical measures.
 
-![Overview of statistics tab](./img/statistics-1.png)
+<img src="/img/tab-reference/statistics-1.png" alt="Overview of statistics tab" />
 
 ## Control Pane
 

@@ -11,7 +11,7 @@ import { themes as prismThemes } from "prism-react-renderer";
 
 const config: Config = {
   title: "AdvantageScope",
-  favicon: "img/favicon.ico",
+  favicon: "/icons/favicon.ico",
 
   // Set the production url of your site here
   url: "https://docs.advantagescope.org",
@@ -24,12 +24,26 @@ const config: Config = {
     hooks: { onBrokenMarkdownLinks: "throw", onBrokenMarkdownImages: "throw" }
   },
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: "en",
-    locales: ["en"]
+    defaultLocale: "en-US",
+    locales: ["en-US", "es-419", "fr", "pt-BR", "tr", "ro", "he", "kk", "ru", "ar", "zh-CN", "zh-TW"],
+    localeConfigs: {
+      "en-US": {
+        label: "English (US)"
+      },
+      "es-419": {
+        label: "Español (Latinoamérica)"
+      },
+      kk: {
+        label: "Қазақша"
+      },
+      "zh-CN": {
+        label: "简体中文"
+      },
+      "zh-TW": {
+        label: "繁體中文"
+      }
+    }
   },
 
   presets: [
@@ -99,14 +113,18 @@ const config: Config = {
   ],
 
   themeConfig: {
-    image: "img/social.png",
+    image: "/icons/social.png",
     navbar: {
       title: "AdvantageScope Documentation",
       logo: {
         alt: "AdvantageScope Logo",
-        src: "img/logo.png"
+        src: "/icons/logo.png"
       },
       items: [
+        {
+          type: "localeDropdown",
+          position: "left"
+        },
         {
           href: "https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest",
           label: "Downloads",
