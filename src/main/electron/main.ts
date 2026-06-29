@@ -34,20 +34,14 @@ import os from "os";
 import path from "path";
 import { Client, Stats } from "ssh2";
 import { Readable } from "stream";
-import { setupI18n } from "../../i18n/i18n";
+import { getBestLanguage, setupI18n } from "../../i18n/i18n";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
 import NamedMessage from "../../shared/NamedMessage";
-import Preferences, {
-  DEFAULT_PREFS,
-  getLiveModeName,
-  LiveMode,
-  mergePreferences,
-  SUPPORTED_LANGS
-} from "../../shared/Preferences";
+import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
 import {
   getSourceListPrefix,
   SourceListConfig,
@@ -3500,28 +3494,7 @@ function getLocale(prefs: Preferences | null = null): string {
   if (prefs !== null && prefs.language !== "") {
     return prefs.language;
   }
-
-  let preferredLangs = app.getPreferredSystemLanguages();
-  for (const lang of preferredLangs) {
-    if (SUPPORTED_LANGS.includes(lang)) {
-      return lang;
-    }
-    const primaryLang = lang.split("-")[0];
-    if (SUPPORTED_LANGS.includes(primaryLang)) {
-      return primaryLang;
-    }
-    switch (primaryLang) {
-      case "en":
-        return "en-US";
-      case "es":
-        return "es-419";
-      case "pt":
-        return "pt-BR";
-      case "zh":
-        return "zh-CN";
-    }
-  }
-  return "en-US";
+  return getBestLanguage(app.getPreferredSystemLanguages());
 }
 app.commandLine.appendSwitch("lang", getLocale());
 
