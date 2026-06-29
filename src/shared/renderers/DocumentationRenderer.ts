@@ -32,7 +32,7 @@ export default class DocumentationRenderer implements TabRenderer {
     window.requestAnimationFrame(periodic);
   }
 
-  private static cleanHash(hash: string): string {
+  private cleanHash(hash: string): string {
     let path = hash;
     if (path.startsWith("#")) {
       path = path.slice(1);
@@ -51,7 +51,7 @@ export default class DocumentationRenderer implements TabRenderer {
     return path;
   }
 
-  private static getHashForLang(cleanPath: string, lang: string): string {
+  private getHashForLang(cleanPath: string, lang: string): string {
     if (lang === "en-US") {
       return "#" + cleanPath;
     } else {
@@ -66,14 +66,14 @@ export default class DocumentationRenderer implements TabRenderer {
   saveState(): unknown {
     const hash = this.IFRAME.contentWindow?.location.hash;
     if (typeof hash === "string") {
-      return DocumentationRenderer.cleanHash(hash);
+      return this.cleanHash(hash);
     }
     return null;
   }
 
   restoreState(state: unknown): void {
     if (typeof state === "string") {
-      const correctHash = DocumentationRenderer.getHashForLang(state, window.lang);
+      const correctHash = this.getHashForLang(state, window.lang);
       if (this.loaded) {
         this.IFRAME.contentWindow!.location.hash = correctHash;
       } else {
@@ -156,8 +156,8 @@ export default class DocumentationRenderer implements TabRenderer {
           const checkAndFixHash = () => {
             const currentHash = iframeDocument.defaultView?.location.hash;
             if (typeof currentHash === "string") {
-              const cleaned = DocumentationRenderer.cleanHash(currentHash);
-              const expectedHash = DocumentationRenderer.getHashForLang(cleaned, window.lang);
+              const cleaned = this.cleanHash(currentHash);
+              const expectedHash = this.getHashForLang(cleaned, window.lang);
               if (currentHash !== expectedHash && iframeDocument.defaultView) {
                 iframeDocument.defaultView.location.hash = expectedHash;
               }
