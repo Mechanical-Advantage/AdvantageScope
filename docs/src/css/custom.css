@@ -45,8 +45,16 @@
   content: "\25C0  ";
 }
 
+[dir="rtl"] .pagination-nav__link--prev .pagination-nav__label:before {
+  content: "\25B6  ";
+}
+
 .pagination-nav__link--next .pagination-nav__label:after {
   content: "  \25B6";
+}
+
+[dir="rtl"] .pagination-nav__link--next .pagination-nav__label:after {
+  content: "  \25C0";
 }
 
 img {
