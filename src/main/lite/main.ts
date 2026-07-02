@@ -285,6 +285,7 @@ async function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
+  sendMessage(hubPort, "show-feedback-button", isBeta());
   let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
   let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -1375,6 +1376,7 @@ window.addEventListener("load", () => {
   if (isBeta()) {
     if (isBetaExpired()) {
       if (
+        DISTRIBUTION != Distribution.LiteDS &&
         confirm(
           `The AdvantageScope Lite ${
             isAlpha() ? "alpha" : "beta"
