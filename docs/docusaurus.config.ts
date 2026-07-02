@@ -8,6 +8,9 @@
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
+import { offlineInfoAnnouncement } from "./announcements";
+
+const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || "en-US";
 
 const config: Config = {
   title: "AdvantageScope",
@@ -170,9 +173,8 @@ const config: Config = {
       respectPrefersColorScheme: true
     },
     announcementBar: {
-      id: "offline_info",
-      content:
-        "This documentation is available <b>offline</b> by clicking the 📖 icon in the tab bar of AdvantageScope.",
+      id: "ascope_offline_info",
+      content: offlineInfoAnnouncement[locale] || offlineInfoAnnouncement["en-US"],
       backgroundColor: "#446ce3",
       textColor: "#ffffff",
       isCloseable: true
