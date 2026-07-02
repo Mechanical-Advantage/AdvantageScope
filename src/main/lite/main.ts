@@ -244,7 +244,7 @@ function openPreferences() {
     let newLang = getLocale(message);
     let reload = false;
     if (newLang !== lang) {
-      if (confirm("AdvantageScope Lite needs to reload to switch languages. Continue?")) {
+      if (confirm(t("main.language.reloadLite", { lng: newLang }) + "\n\n" + t("main.language.reloadLite"))) {
         reload = true;
       } else {
         return;
@@ -526,7 +526,13 @@ async function handleHubMessage(message: NamedMessage) {
                               let newLang = getLocale(newPrefs);
                               let reload = false;
                               if (newLang !== lang) {
-                                if (confirm(t("main.language.reloadResetLite"))) {
+                                if (
+                                  confirm(
+                                    t("main.language.reloadResetLite", { lng: newLang }) +
+                                      "\n\n" +
+                                      t("main.language.reloadResetLite")
+                                  )
+                                ) {
                                   reload = true;
                                 } else {
                                   return;

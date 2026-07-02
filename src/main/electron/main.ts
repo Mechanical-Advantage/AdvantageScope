@@ -3261,8 +3261,8 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
       if (newLang !== oldLang) {
         let result = dialog.showMessageBoxSync(prefsWindow!, {
           type: "info",
-          title: t("main.warnings.warning", { lng: newLang }) + " / " + t("main.warnings.warning"),
-          message: t("main.language.restartTitle", { lng: newLang }) + " / " + t("main.language.restartTitle"),
+          title: t("main.warnings.warning", { lng: newLang }),
+          message: t("main.language.restartTitle", { lng: newLang }),
           detail: t("main.language.restart", { lng: newLang }) + "\n\n" + t("main.language.restart"),
           buttons: [
             t("main.buttons.cancel", { lng: newLang }) + " / " + t("main.buttons.cancel"),
