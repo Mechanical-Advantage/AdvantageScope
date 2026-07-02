@@ -14,6 +14,7 @@ import {
   clipboard,
   dialog,
   FileFilter,
+  ipcMain,
   Menu,
   MenuItem,
   MessageChannelMain,
@@ -3254,7 +3255,7 @@ function openPreferences(parentWindow: Electron.BrowserWindow) {
     port2.postMessage({ platform: process.platform, prefs: jsonfile.readFileSync(PREFS_FILENAME) });
     port2.on("message", (event) => {
       // Check if language has changed
-      let oldLang = app.getLocale();
+      let oldLang = lang;
       let newLang = getLocale(event.data);
       let restart = false;
       if (newLang !== oldLang) {
@@ -3496,7 +3497,11 @@ function getLocale(prefs: Preferences | null = null): string {
   }
   return getBestLanguage(app.getPreferredSystemLanguages());
 }
-app.commandLine.appendSwitch("lang", getLocale());
+let lang = getLocale();
+app.commandLine.appendSwitch("lang", lang);
+ipcMain.on("get-locale", (event) => {
+  event.returnValue = lang;
+});
 
 // "unsafe-eval" is required in the hub for protobufjs
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
@@ -3514,7 +3519,7 @@ if (process.platform === "linux") {
 }
 
 app.whenReady().then(async () => {
-  t = setupI18n(app.getLocale());
+  t = setupI18n(lang);
 
   // Check preferences and set theme
   let prefs = DEFAULT_PREFS;

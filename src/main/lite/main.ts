@@ -511,7 +511,7 @@ async function handleHubMessage(message: NamedMessage) {
                           { name: "Türkçe", value: "tr" },
                           { name: "Românǎ", value: "ro" },
                           { name: "עִברִית", value: "he" },
-                          { name: "Қазақша", value: "kk" },
+                          { name: "Қазақ тілі", value: "kk" },
                           { name: "Русский", value: "ru" },
                           { name: "العربية", value: "ar" },
                           { name: "简体中文", value: "zh-CN" },

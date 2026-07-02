@@ -34,9 +34,6 @@ const config: Config = {
       "es-419": {
         label: "Español (Latinoamérica)"
       },
-      kk: {
-        label: "Қазақша"
-      },
       "zh-CN": {
         label: "简体中文"
       },

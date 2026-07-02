@@ -9,9 +9,10 @@ import { contextBridge, ipcRenderer, webUtils } from "electron";
 import { setupI18n, translateHTML } from "./i18n/i18n";
 
 // Set up locale
-const t = setupI18n(navigator.language);
+const lang = ipcRenderer.sendSync("get-locale");
+const t = setupI18n(lang);
 contextBridge.exposeInMainWorld("t", t);
-contextBridge.exposeInMainWorld("lang", navigator.language);
+contextBridge.exposeInMainWorld("lang", lang);
 window.addEventListener("DOMContentLoaded", () => {
   translateHTML(document, t);
 });
@@ -19,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
 // Set up RTL layout
 let isRtl = false;
 try {
-  const locale = new Intl.Locale(navigator.language) as any;
+  const locale = new Intl.Locale(lang) as any;
   const direction = locale.textInfo
     ? locale.textInfo.direction
     : locale.getTextInfo
