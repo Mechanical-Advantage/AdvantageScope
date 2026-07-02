@@ -8,8 +8,7 @@ betaWelcome:
   checkUnstable: "I understand that this is an unstable release, and I will encounter issues not present in stable releases." # Acknowledge instability
   checkReport: "I agree to report any issues I encounter to the developers, which will help to improve future releases." # Acknowledge reporting agreement
   checkFeedback: "I agree to provide feedback to the developers if asked about my experience using this release." # Acknowledge feedback agreement
-  helpDesktop: 'At any time, click the <span class="purple">purple icon</span> in the title bar to report an issue, request a feature, or ask a question.' # Desktop-specific instructions on how to report issues
-  helpLite: "You can report an issue, request a feature, or ask a question on the issues page of the AdvantageScope GitHub repository." # Lite-specific instructions on how to report issues
+  help: 'At any time, click the <span class="purple">purple icon</span> in the title bar to report an issue, request a feature, or ask a question.' # Instructions on how to report issues
   continue: "Continue" # Continue button text
 
 download:

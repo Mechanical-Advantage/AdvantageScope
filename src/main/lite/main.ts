@@ -346,6 +346,7 @@ async function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
+  sendMessage(hubPort, "show-feedback-button", isBeta());
   let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
   let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -1508,7 +1509,10 @@ window.addEventListener("load", () => {
   // Beta init
   if (isBeta()) {
     if (isBetaExpired()) {
-      if (confirm(isAlpha() ? t("main.survey.expiredLiteAlpha") : t("main.survey.expiredLiteBeta"))) {
+      if (
+        DISTRIBUTION != Distribution.LiteDS &&
+        confirm(isAlpha() ? t("main.survey.expiredLiteAlpha") : t("main.survey.expiredLiteBeta"))
+      ) {
         // Redirect to Systemcore home page
         location.href = "http://" + location.hostname;
       }
