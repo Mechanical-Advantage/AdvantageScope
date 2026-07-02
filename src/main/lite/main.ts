@@ -1349,6 +1349,7 @@ window.addEventListener("load", () => {
   if (isBeta()) {
     if (isBetaExpired()) {
       if (
+        DISTRIBUTION != Distribution.LiteDS &&
         confirm(
           `The AdvantageScope Lite ${
             isAlpha() ? "alpha" : "beta"
