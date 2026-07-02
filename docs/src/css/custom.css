@@ -99,3 +99,9 @@ img {
   margin: 0 5px;
   vertical-align: middle;
 }
+
+.footer__link-item {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
