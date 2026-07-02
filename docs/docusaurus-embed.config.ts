@@ -12,6 +12,7 @@ const configEmbed = Object.assign(config, {
   future: {
     experimental_router: "hash"
   },
+  headTags: [],
   themeConfig: Object.assign(config.themeConfig!, {
     navbar: Object.assign(config.themeConfig!.navbar!, { items: undefined }),
     footer: undefined,

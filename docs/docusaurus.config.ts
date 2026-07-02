@@ -43,6 +43,15 @@ const config: Config = {
     }
   },
 
+  headTags: [
+    {
+      tagName: "script",
+      attributes: {
+        src: "/js/redirect.js"
+      }
+    }
+  ],
+
   presets: [
     [
       "classic",
