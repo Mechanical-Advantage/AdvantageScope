@@ -7,6 +7,10 @@
     "message": "Logo d'AdvantageScope",
     "description": "The alt text of navbar logo"
   },
+  "item.label.Feedback": {
+    "message": "Commentaires",
+    "description": "Navbar item with label Feedback"
+  },
   "item.label.Downloads": {
     "message": "Téléchargements",
     "description": "Navbar item with label Downloads"

@@ -725,7 +725,7 @@ menu:
 main:
   language:
     welcomeMessage: "Welcome" # Title for dialog explaining how non-English translations are created
-    welcomeDetail: "AdvantageScope translations are created with the support of AI. Click the purple icon in the title bar to let us know about any issues." # Detail message explaining how non-English translations are created and asking for feedback. "English" is a placeholder and MUST be replaced with the language in which the text is written when translating.
+    welcomeDetail: "The English version of AdvantageScope is created with the support of AI. Click the purple icon in the title bar to let us know about any issues." # Detail message explaining how non-English translations are created and asking for feedback. "English" is a placeholder and MUST be replaced with the language in which the text is written when translating.
     reloadLite: "AdvantageScope Lite needs to reload to switch languages. Continue?" # Lite reload language message
     reloadResetLite: "AdvantageScope Lite needs to reload and reset to switch languages. Continue?" # Lite reset layout and reload language message
     restart: "AdvantageScope needs to restart to switch languages." # Restart language message

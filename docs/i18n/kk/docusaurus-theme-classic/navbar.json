@@ -7,6 +7,10 @@
     "message": "AdvantageScope логотипі",
     "description": "The alt text of navbar logo"
   },
+  "item.label.Feedback": {
+    "message": "Кері байланыс",
+    "description": "Navbar item with label Feedback"
+  },
   "item.label.Downloads": {
     "message": "Жүктеулер",
     "description": "Navbar item with label Downloads"

@@ -26,7 +26,7 @@ const configEmbed = Object.assign(config, {
     announcementBar: isLite
       ? {
           id: "ascope_lite_warning",
-          content: liteWarningAnnouncement[locale] || liteWarningAnnouncement["en-US"],
+          content: liteWarningAnnouncement[locale],
           backgroundColor: "#446ce3",
           textColor: "#ffffff",
           isCloseable: false

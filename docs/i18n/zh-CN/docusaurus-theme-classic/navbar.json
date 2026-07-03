@@ -7,6 +7,10 @@
     "message": "AdvantageScope 标志",
     "description": "The alt text of navbar logo"
   },
+  "item.label.Feedback": {
+    "message": "反馈",
+    "description": "Navbar item with label Feedback"
+  },
   "item.label.Downloads": {
     "message": "下载",
     "description": "Navbar item with label Downloads"

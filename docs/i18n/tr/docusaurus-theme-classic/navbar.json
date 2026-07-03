@@ -7,6 +7,10 @@
     "message": "AdvantageScope Logosu",
     "description": "The alt text of navbar logo"
   },
+  "item.label.Feedback": {
+    "message": "Geri bildirim",
+    "description": "Navbar item with label Feedback"
+  },
   "item.label.Downloads": {
     "message": "İndirmeler",
     "description": "Navbar item with label Downloads"

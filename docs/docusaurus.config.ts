@@ -8,7 +8,8 @@
 import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
-import { offlineInfoAnnouncement } from "./announcements";
+import { LOCALIZATION_FEEDBACK_FORMS } from "../src/shared/LocalizationFeedbackForms";
+import { localizationFeedbackAnnouncement, offlineInfoAnnouncement } from "./announcements";
 
 const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || "en-US";
 
@@ -134,6 +135,15 @@ const config: Config = {
           type: "localeDropdown",
           position: "left"
         },
+        ...(locale === "en-US"
+          ? []
+          : [
+              {
+                href: LOCALIZATION_FEEDBACK_FORMS[locale],
+                label: "Feedback",
+                position: "left"
+              } as const
+            ]),
         {
           href: "https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest",
           label: "Downloads",
@@ -147,7 +157,7 @@ const config: Config = {
       ]
     },
     footer: {
-      copyright: "Copyright © 2021-2026 Littleton Robotics",
+      copyright: "Copyright © 2021-2026 Littleton Robotics.",
       links: [
         {
           label: "Littleton Robotics",
@@ -173,8 +183,8 @@ const config: Config = {
       respectPrefersColorScheme: true
     },
     announcementBar: {
-      id: "ascope_offline_info",
-      content: offlineInfoAnnouncement[locale] || offlineInfoAnnouncement["en-US"],
+      id: locale === "en-US" ? "ascope_offline_info" : "ascope_localization_feedback",
+      content: locale === "en-US" ? offlineInfoAnnouncement[locale] : localizationFeedbackAnnouncement[locale],
       backgroundColor: "#446ce3",
       textColor: "#ffffff",
       isCloseable: true

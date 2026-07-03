@@ -21,6 +21,24 @@ export const offlineInfoAnnouncement: Record<string, string> = {
   "zh-TW": "這份文件可以透過點擊 AdvantageScope 頁籤列中的 📖 圖標<b>離線</b>使用。"
 };
 
+export const localizationFeedbackAnnouncement: Record<string, string> = {
+  "en-US":
+    "The English version of the AdvantageScope documentation is created with the support of AI. Click the link in the title bar to give us feedback.",
+  "es-419":
+    "La versión en español de la documentación de AdvantageScope se ha creado con el apoyo de IA. Haz clic en el enlace de la barra de título para darnos tu opinión.",
+  fr: "La version française de la documentation d'AdvantageScope est créée avec le soutien de l'IA. Cliquez sur le lien dans la barre de titre pour nous faire part de vos commentaires.",
+  "pt-BR":
+    "A versão em português da documentação do AdvantageScope é criada com o suporte de IA. Clique no link na barra de título para nos enviar seus comentários.",
+  tr: "AdvantageScope belgelerinin Türkçe sürümü yapay zeka desteğiyle oluşturulmuştur. Bize geri bildirimde bulunmak için başlık çubuğundaki bağlantıya tıklayın.",
+  ro: "Versiunea în limba română a documentației AdvantageScope este creată cu sprijinul IA. Fă clic pe linkul din bara de titlu pentru a ne oferi feedback.",
+  he: "הגרסה בעברית של תיעוד AdvantageScope נוצרה בתמיכת בינה מלאכותית. לחצו על הקישור בשורת הכותרת כדי לתת לנו משוב.",
+  kk: "AdvantageScope құжаттамасының қазақ тіліндегі нұсқасы жасанды интеллект қолдауымен жасалған. Бізге пікір қалдыру үшін тақырып жолағындағы сілтемені басыңыз.",
+  ru: "Русская версия документации AdvantageScope создана при поддержке ИИ. Нажмите на ссылку в строке заголовка, чтобы оставить отзыв.",
+  ar: "تم إنشاء النسخة العربية من وثائق AdvantageScope بدعم من الذكاء الاصطناعي. انقر على الرابط في شريط العنوان لتزويدنا بملاحظاتك.",
+  "zh-CN": "AdvantageScope 文档的中文版本是在 AI 的支持下创建的。点击标题栏中的链接向我们提供反馈。",
+  "zh-TW": "AdvantageScope 文件的中文版本是在 AI 的支援下建立的。點擊標題列中的連結向我們提供回饋。"
+};
+
 export const liteWarningAnnouncement: Record<string, string> = {
   "en-US":
     "This documentation describes the desktop version of AdvantageScope, which includes some features not available in AdvantageScope Lite.",

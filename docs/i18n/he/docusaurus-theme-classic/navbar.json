@@ -7,6 +7,10 @@
     "message": "לוגו AdvantageScope",
     "description": "The alt text of navbar logo"
   },
+  "item.label.Feedback": {
+    "message": "משוב",
+    "description": "Navbar item with label Feedback"
+  },
   "item.label.Downloads": {
     "message": "הורדות",
     "description": "Navbar item with label Downloads"

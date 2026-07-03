@@ -12,7 +12,7 @@
     "description": "The label of footer link with label=WPILib Docs linking to https://docs.wpilib.org"
   },
   "copyright": {
-    "message": "Copyright © 2021-2026 Littleton Robotics",
+    "message": "حقوق الطبع والنشر © 2021-2026 Littleton Robotics. تمت الترجمة بدعم من الذكاء الاصطناعي.",
     "description": "The footer copyright"
   }
 }
