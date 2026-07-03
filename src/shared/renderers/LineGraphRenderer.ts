@@ -564,7 +564,9 @@ export default class LineGraphRenderer implements TabRenderer {
         hoveredX = hoveredX as number;
         hoveredText = hoveredText as string;
 
-        let deltaText = "\u0394" + formatMarkedTimestampText(command.hoveredTime - command.selectedTime);
+        let deltaText = t("units.deltaValue", {
+          value: formatMarkedTimestampText(command.hoveredTime - command.selectedTime)
+        });
         let xSpace = clampValue(selectedX, graphLeft, graphLeft + graphWidth) - hoveredX;
         let textHalfWidths =
           (context.measureText(selectedText).width + 10) / 2 + (context.measureText(hoveredText).width + 10) / 2 + 4;

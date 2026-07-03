@@ -878,6 +878,7 @@ main:
 
 units:
   defaultLabel: "{{unit}} (Default)" # Label for the default unit in a list of units
+  deltaValue: "Δ {{value}}" # Text indicating a change in value, with the delta symbol (Δ) and the value
 
   presetFormatting:
     fromTo: "{{from}} → {{to}}" # A preset converting from one unit to another
@@ -968,7 +969,7 @@ units:
     calorie: "Calories"
     potato: "Potatoes"
 
-  # Numeric values with units. Use SI symbols for applicable units, abbrevations when possible, and full names otherwise. Values with full unit names must include appropriate i18next keys to support pluralization. Always include a space between the value and symbol, except for ° (angles), ', and "
+  # Numeric values with units. Use SI symbols for applicable units, abbrevations when possible, and full names otherwise. Values with full unit names must include appropriate i18next keys to support pluralization (these keys often will NOT match the original English keys). Always include a space between the value and symbol, except for ° (angles), ', and "
   values:
     meters: "{{value}} m"
     inches: '{{value}}"'
