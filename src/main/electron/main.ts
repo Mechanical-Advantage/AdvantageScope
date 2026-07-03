@@ -41,6 +41,7 @@ import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import ExportOptions from "../../shared/ExportOptions";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { LOCALIZATION_FEEDBACK_FORMS } from "../../shared/LocalizationFeedbackForms";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, { DEFAULT_PREFS, getLiveModeName, LiveMode, mergePreferences } from "../../shared/Preferences";
 import {
@@ -311,7 +312,11 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       break;
 
     case "open-feedback":
-      shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
+      if (lang !== "en-US") {
+        shell.openExternal(LOCALIZATION_FEEDBACK_FORMS[lang]);
+      } else {
+        shell.openExternal("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose");
+      }
       break;
 
     case "historical-start":
@@ -343,7 +348,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                     title: t("main.warnings.alert"),
                     message: t("main.logs.limitedSignals"),
                     detail: t("main.logs.limitedSignalsDetail"),
-                    checkboxLabel: t("main.logs.dontShowAgain"),
+                    checkboxLabel: t("main.buttons.dontShowAgain"),
                     icon: WINDOW_ICON
                   })
                   .then((response) => {
@@ -2698,8 +2703,10 @@ function createHubWindow(state?: WindowState) {
     firstLoad = false;
 
     // Beta init
+    let allowLocalizationPopup = true;
     if (isBeta()) {
       if (isBetaExpired()) {
+        allowLocalizationPopup = false;
         let expiredDetail = "";
         if (isAlpha()) {
           expiredDetail =
@@ -2725,8 +2732,13 @@ function createHubWindow(state?: WindowState) {
             if (result.response === 0) app.quit();
           });
       } else if (!isBetaWelcomeComplete()) {
-        openBetaWelcome(window);
+        if (lang === "en-US") {
+          // Skip beta welcome for non-English users, since there is a separate popup explaining how to provide feedback on translations (and we don't want to overwhelm the user with popups).
+          openBetaWelcome(window);
+        }
       } else if (shouldPromptBetaSurvey()) {
+        allowLocalizationPopup = false;
+
         dialog
           .showMessageBox(window, {
             type: "info",
@@ -2744,6 +2756,30 @@ function createHubWindow(state?: WindowState) {
             }
           });
       }
+    }
+
+    // Localization feedback popup
+    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+    if (lang !== "en-US" && !prefs.skipLanguageWarning && allowLocalizationPopup) {
+      dialog
+        .showMessageBox(window, {
+          type: "info",
+          title: t("main.warnings.alert"),
+          message: t("main.language.welcomeMessage"),
+          detail: t("main.language.welcomeDetail"),
+          checkboxLabel: t("main.buttons.dontShowAgain"),
+          buttons: [t("main.buttons.ok")],
+          defaultId: 0,
+          icon: WINDOW_ICON
+        })
+        .then((response) => {
+          saveBetaWelcomeComplete(); // Mark beta welcome as complete so that the user doesn't get another popup later
+          if (response.checkboxChecked) {
+            prefs.skipLanguageWarning = true;
+            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+            sendAllPreferences();
+          }
+        });
     }
   });
   window.on("close", (event) => {

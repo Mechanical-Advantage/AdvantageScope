@@ -25,6 +25,7 @@ export default interface Preferences {
   tbaApiKey: string;
   userAssetsFolder: string | null;
   skipHootNonProWarning: boolean;
+  skipLanguageWarning: boolean;
   ctreLicenseAccepted: boolean;
   systemcoreStaticAddress: "" | "usb" | "wifi";
   hasScrolledLineGraph: boolean;
@@ -50,6 +51,7 @@ export const DEFAULT_PREFS: Preferences = {
   tbaApiKey: "",
   userAssetsFolder: null,
   skipHootNonProWarning: false,
+  skipLanguageWarning: false,
   ctreLicenseAccepted: false,
   systemcoreStaticAddress: "",
   hasScrolledLineGraph: false,
@@ -192,6 +194,9 @@ export function mergePreferences(basePrefs: Preferences, newPrefs: object) {
   }
   if ("skipHootNonProWarning" in newPrefs && typeof newPrefs.skipHootNonProWarning === "boolean") {
     basePrefs.skipHootNonProWarning = newPrefs.skipHootNonProWarning;
+  }
+  if ("skipLanguageWarning" in newPrefs && typeof newPrefs.skipLanguageWarning === "boolean") {
+    basePrefs.skipLanguageWarning = newPrefs.skipLanguageWarning;
   }
   if ("ctreLicenseAccepted" in newPrefs && typeof newPrefs.ctreLicenseAccepted === "boolean") {
     basePrefs.ctreLicenseAccepted = newPrefs.ctreLicenseAccepted;

@@ -724,6 +724,8 @@ menu:
 
 main:
   language:
+    welcomeMessage: "Welcome" # Title for dialog explaining how non-English translations are created
+    welcomeDetail: "AdvantageScope translations are created with the support of AI. Click the purple icon in the title bar to let us know about any issues." # Detail message explaining how non-English translations are created and asking for feedback. "English" is a placeholder and MUST be replaced with the language in which the text is written when translating.
     reloadLite: "AdvantageScope Lite needs to reload to switch languages. Continue?" # Lite reload language message
     reloadResetLite: "AdvantageScope Lite needs to reload and reset to switch languages. Continue?" # Lite reset layout and reload language message
     restart: "AdvantageScope needs to restart to switch languages." # Restart language message
@@ -762,6 +764,7 @@ main:
     ok: "OK" # Standard OK button label
     stop: "Stop" # Stop button label (used in FFmpeg download dialog)
     skip: "Skip" # Skip button label
+    dontShowAgain: "Don't Show Again" # Checkbox label to suppress future warnings
 
   app:
     selectAssetsFolder: "Select folder containing custom AdvantageScope assets" # File dialog title for custom assets
@@ -811,7 +814,6 @@ main:
     openDetail: 'Would you like to open the log file "{{name}}"?' # Question detail with downloaded filename
     limitedSignals: "Limited Signals Available" # Warning message for limited Phoenix signals in a log file
     limitedSignalsDetail: "This log file includes a limited number of signals from Phoenix devices. Check the Phoenix documentation for details." # Detail warning for Phoenix signals
-    dontShowAgain: "Don't Show Again" # Checkbox label to suppress future warnings
 
   layout:
     exportTitle: "Select export location for layout file" # Save dialog title for exporting layouts

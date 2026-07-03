@@ -14,6 +14,7 @@ import ButtonRect from "../../shared/ButtonRect";
 import { ensureThemeContrast } from "../../shared/Colors";
 import { HubState } from "../../shared/HubState";
 import LineGraphFilter from "../../shared/LineGraphFilter";
+import { LOCALIZATION_FEEDBACK_FORMS } from "../../shared/LocalizationFeedbackForms";
 import NamedMessage from "../../shared/NamedMessage";
 import Preferences, {
   DEFAULT_PREFS,
@@ -438,7 +439,11 @@ async function handleHubMessage(message: NamedMessage) {
       break;
 
     case "open-feedback":
-      window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
+      if (lang !== "en-US") {
+        window.open(LOCALIZATION_FEEDBACK_FORMS[lang], "_blank");
+      } else {
+        window.open("https://github.com/" + GITHUB_REPOSITORY + "/issues/new/choose", "_blank");
+      }
       break;
 
     case "historical-start":
@@ -1507,8 +1512,10 @@ window.addEventListener("load", () => {
   }
 
   // Beta init
+  let allowLocalizationPopup = true;
   if (isBeta()) {
     if (isBetaExpired()) {
+      allowLocalizationPopup = false;
       if (
         DISTRIBUTION != Distribution.LiteDS &&
         confirm(isAlpha() ? t("main.survey.expiredLiteAlpha") : t("main.survey.expiredLiteBeta"))
@@ -1517,18 +1524,33 @@ window.addEventListener("load", () => {
         location.href = "http://" + location.hostname;
       }
     } else if (!isBetaWelcomeComplete()) {
-      openPopupWindow(
-        "www/betaWelcome.html",
-        [450, 490],
-        "pixels",
-        () => {
-          closePopupWindow(true); // Force close
-          saveBetaWelcomeComplete();
-        },
-        true // Require force close
-      ).then((port) => {
-        port.postMessage(isAlpha());
-      });
+      if (lang === "en-US") {
+        openPopupWindow(
+          "www/betaWelcome.html",
+          [450, 490],
+          "pixels",
+          () => {
+            closePopupWindow(true); // Force close
+            saveBetaWelcomeComplete();
+          },
+          true // Require force close
+        ).then((port) => {
+          port.postMessage(isAlpha());
+        });
+      }
     }
+  }
+
+  // Localization feedback popup
+  let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
+  let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+  if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+
+  if (lang !== "en-US" && !prefs.skipLanguageWarning && allowLocalizationPopup) {
+    alert(t("main.language.welcomeDetail"));
+    saveBetaWelcomeComplete(); // Mark beta welcome as complete so that the user doesn't get another popup later
+    prefs.skipLanguageWarning = true;
+    localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+    sendMessage(hubPort, "set-preferences", prefs);
   }
 });

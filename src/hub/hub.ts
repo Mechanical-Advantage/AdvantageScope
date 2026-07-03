@@ -546,6 +546,15 @@ FEEDBACK_BUTTON.addEventListener("click", () => {
   window.sendMainMessage("open-feedback");
 });
 
+if (window.lang !== "en-US") {
+  document.documentElement.style.setProperty("--show-feedback-button", "1");
+  FEEDBACK_BUTTON.hidden = false;
+  const img = FEEDBACK_BUTTON.querySelector("img");
+  if (img) {
+    img.src = "symbols/quote.bubble.svg";
+  }
+}
+
 // Update touch bar slider position
 setInterval(() => {
   if (window.platform === "darwin") {
@@ -729,8 +738,13 @@ async function handleMainMessage(message: NamedMessage) {
       break;
 
     case "show-feedback-button":
-      document.documentElement.style.setProperty("--show-feedback-button", message.data ? "1" : "0");
-      FEEDBACK_BUTTON.hidden = !message.data;
+      if (window.lang !== "en-US") {
+        document.documentElement.style.setProperty("--show-feedback-button", "1");
+        FEEDBACK_BUTTON.hidden = false;
+      } else {
+        document.documentElement.style.setProperty("--show-feedback-button", message.data ? "1" : "0");
+        FEEDBACK_BUTTON.hidden = !message.data;
+      }
       break;
 
     case "historical-data":

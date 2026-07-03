@@ -117,6 +117,7 @@ window.addEventListener("message", (event) => {
             tbaApiKey: TBA_API_KEY.value,
             userAssetsFolder: oldPrefs.userAssetsFolder,
             skipHootNonProWarning: oldPrefs.skipHootNonProWarning,
+            skipLanguageWarning: oldPrefs.skipLanguageWarning,
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,
             systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
