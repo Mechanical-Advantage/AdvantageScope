@@ -126,7 +126,8 @@ export default class LineGraphRenderer implements TabRenderer {
     if (units !== null) {
       let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === units) ?? null;
       if (unitKey !== null) {
-        return Units.modifySuffixForFilter(t(`units.values.${unitKey}`, { value: output, count: value }), filter);
+        let filteredKey = Units.getFilteredUnitKey(unitKey, filter);
+        return t(`units.values.${filteredKey}`, { value: output, count: value });
       }
     }
     return output;

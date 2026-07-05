@@ -362,10 +362,8 @@ export default class LineGraphController implements TabController {
     if (unitCache !== null && command.hasUnit) {
       let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === unitCache) ?? null;
       if (unitKey !== null) {
-        return Units.modifySuffixForFilter(
-          t(`units.values.${unitKey}`, { value: formattedValue, count: command.values[index] }),
-          filter
-        );
+        let filteredKey = Units.getFilteredUnitKey(unitKey, filter);
+        return t(`units.values.${filteredKey}`, { value: formattedValue, count: command.values[index] });
       }
     }
     return formattedValue;

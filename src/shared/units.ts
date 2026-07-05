@@ -561,19 +561,19 @@ export namespace Units {
       }
     },
     energy: {
-      joule: {
+      joules: {
         value: 1,
         names: ["j", "joule", "joules"]
       },
-      wattHour: {
+      wattHours: {
         value: 1 / 3600,
         names: ["wh", "watt hour", "watt hours"]
       },
-      calorie: {
+      calories: {
         value: 1 / 4.184,
         names: ["cal", "calorie", "calories"]
       },
-      potato: {
+      potatoes: {
         value: 1 / 4.184 / 1000 / 110,
         names: ["pot", "potato", "potatoes"]
       }
@@ -731,27 +731,29 @@ export namespace Units {
     }
   }
 
-  /** Returns a modified suffix for a differentiated or integrated unit type. */
-  export function modifySuffixForFilter(suffix: string, filter: LineGraphFilter): string {
+  /** Returns the unit key for a differentiated or integrated unit type. */
+  export function getFilteredUnitKey(unitKey: string, filter: LineGraphFilter): string {
     switch (filter) {
       case LineGraphFilter.Differentiate:
-        if (suffix.endsWith("²")) {
-          return suffix.slice(0, -1) + "³";
-        } else if (suffix.endsWith("ps") || suffix.endsWith("/s")) {
-          return suffix + "²";
+        if (unitKey.endsWith("PerSecondSquared")) {
+          return unitKey.slice(0, -"PerSecondSquared".length) + "PerSecondCubed";
+        } else if (unitKey.endsWith("PerSecond")) {
+          return unitKey + "Squared";
         } else {
-          return suffix + "/s";
+          return unitKey + "PerSecond";
         }
       case LineGraphFilter.Integrate:
-        if (suffix.endsWith("²")) {
-          return suffix.slice(0, -1);
-        } else if (suffix.endsWith("/s")) {
-          return suffix.slice(0, -2);
+        if (unitKey.endsWith("PerSecondCubed")) {
+          return unitKey.slice(0, -"PerSecondCubed".length) + "PerSecondSquared";
+        } else if (unitKey.endsWith("PerSecondSquared")) {
+          return unitKey.slice(0, -"Squared".length);
+        } else if (unitKey.endsWith("PerSecond")) {
+          return unitKey.slice(0, -"PerSecond".length);
         } else {
-          return suffix + "·s";
+          return unitKey + "Seconds";
         }
       default:
-        return suffix;
+        return unitKey;
     }
   }
 
