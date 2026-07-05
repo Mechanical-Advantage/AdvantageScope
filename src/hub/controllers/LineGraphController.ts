@@ -677,7 +677,7 @@ export default class LineGraphController implements TabController {
           let start = Math.max(range.start, timeRange[0]);
           if (timestamps.length === 0 || start > timestamps[timestamps.length - 1]) {
             timestamps.push(start);
-            values.push(range.mode.charAt(0).toUpperCase() + range.mode.slice(1));
+            values.push(t(`hub.lineGraph.robotMode.${range.mode}`));
           }
         });
 
@@ -689,12 +689,11 @@ export default class LineGraphController implements TabController {
         }
 
         let light = !window.matchMedia("(prefers-color-scheme: dark)").matches;
-        let colorMap: { [key: string]: string } = {
-          Disabled: light ? "#dddddd" : "#444444",
-          Teleop: light ? "#5a83ff" : "#3957dd",
-          Auto: light ? "#efab28" : "#c38615",
-          Utility: light ? "#888888" : "#777777"
-        };
+        let colorMap: { [key: string]: string } = {};
+        colorMap[t("hub.lineGraph.robotMode.disabled")] = light ? "#dddddd" : "#444444";
+        colorMap[t("hub.lineGraph.robotMode.teleop")] = light ? "#5a83ff" : "#3957dd";
+        colorMap[t("hub.lineGraph.robotMode.auto")] = light ? "#efab28" : "#c38615";
+        colorMap[t("hub.lineGraph.robotMode.utility")] = light ? "#888888" : "#777777";
 
         discreteFieldsCommand.push({
           timestamps: timestamps,

@@ -414,6 +414,12 @@ hub:
     integrated: "Integrated" # Modifier label shown when integrate filter is active (the integrals of the fields are being calculated and displayed)
     helpScrollToZoom: "Scroll to zoom" # Help text explaining that the user should scroll up and down to zoom in on the line graph
     helpDragToPan: "Drag to pan" # Help text explaining that the user should drag left and right to pan the line graph
+    # Labels used when annotating the line graph with the current robot mode
+    robotMode:
+      disabled: "Disabled" # Label for disabled mode
+      auto: "Auto" # Label for autonomous mode
+      teleop: "Teleop" # Label for teleoperated mode
+      utility: "Utility" # Label for utility mode mode
     types:
       stepped: "Stepped" # Stepped line graph type
       smooth: "Smooth" # Smooth line graph type
