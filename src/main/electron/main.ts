@@ -2508,6 +2508,7 @@ function createAboutWindow() {
   detailLines.push("Distribution: " + (DISTRIBUTION === Distribution.WPILib ? "WPILib" : "FRC 6328"));
   detailLines.push("Platform: " + process.platform + "-" + process.arch);
   detailLines.push("Build Date: " + BUILD_DATE);
+  detailLines.push("Language: " + lang);
   detailLines.push("Electron: " + process.versions.electron);
   detailLines.push("Chromium: " + process.versions.chrome);
   detailLines.push("Node: " + process.versions.node);
