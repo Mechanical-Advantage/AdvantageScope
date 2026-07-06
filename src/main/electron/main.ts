@@ -3576,7 +3576,7 @@ app.whenReady().then(async () => {
   }
 
   // Load assets
-  createAssetFolders();
+  createAssetFolders(lang);
   startAssetDownloadLoop(() => {
     advantageScopeAssets = loadAssets();
     sendAssets();

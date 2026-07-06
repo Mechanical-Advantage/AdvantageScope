@@ -295,3 +295,15 @@ export function getSpiralIndex(x: number, y: number): number {
     return interiorCount + offset;
   }
 }
+
+/**
+ * Localizes an online documentation URL by appending the language code if not English.
+ * @param url The documentation URL (must start with https://docs.advantagescope.org)
+ * @param lang The language code (e.g., "en-US", "es-419")
+ */
+export function getDocsUrl(url: string, lang: string): string {
+  if (lang === "en-US") {
+    return url;
+  }
+  return url.replace("https://docs.advantagescope.org", `https://docs.advantagescope.org/${lang}`);
+}

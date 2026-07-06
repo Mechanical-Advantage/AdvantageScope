@@ -10,6 +10,7 @@ import jsonfile from "jsonfile";
 import path from "path";
 import { AdvantageScopeAssets } from "../../shared/AdvantageScopeAssets";
 import Preferences from "../../shared/Preferences";
+import { getDocsUrl } from "../../shared/util";
 import { filterAndSortAssets, parseField2d, parseField3d, parseJoystick, parseRobot } from "../assetUtil";
 import { AUTO_ASSETS, BUNDLED_ASSETS, DEFAULT_USER_ASSETS, PREFS_FILENAME } from "./ElectronConstants";
 
@@ -24,14 +25,17 @@ export function getUserAssetsPath() {
 }
 
 /** Creates folders for user and automatic assets. */
-export function createAssetFolders() {
+export function createAssetFolders(lang: string) {
   if (!fs.existsSync(AUTO_ASSETS)) {
     fs.mkdirSync(AUTO_ASSETS);
   }
   if (!fs.existsSync(DEFAULT_USER_ASSETS)) {
     fs.mkdirSync(DEFAULT_USER_ASSETS);
   }
-  fs.writeFileSync(path.join(DEFAULT_USER_ASSETS, "README.txt"), t("main.assets.readme"));
+  fs.writeFileSync(
+    path.join(DEFAULT_USER_ASSETS, "README.txt"),
+    t("main.assets.readme") + "\n\n" + getDocsUrl("https://docs.advantagescope.org/more-features/custom-assets", lang)
+  );
 }
 
 /** Loads all current assets (bundled, auto downloaded, and user). */

@@ -41,6 +41,7 @@ import {
   LITE_COMPATIBLE_TABS
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
+import { getDocsUrl } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
@@ -62,6 +63,7 @@ let hubPort: MessagePort | null = null;
 declare global {
   interface Window {
     t: TFunction;
+    lang: string;
   }
 }
 
@@ -742,7 +744,7 @@ async function handleHubMessage(message: NamedMessage) {
                     {
                       content: t("menu.help.advantagescopeDocs"),
                       callback() {
-                        window.open("https://docs.advantagescope.org", "_blank");
+                        window.open(getDocsUrl("https://docs.advantagescope.org", window.lang), "_blank");
                       }
                     },
                     {
