@@ -616,7 +616,7 @@ async function handleHubMessage(message: NamedMessage) {
                         })
                       },
                       {
-                        content: t("uploadAsset.title"),
+                        content: t("uploadAsset.menuTitle"),
                         callback() {
                           openUploadAsset();
                         }

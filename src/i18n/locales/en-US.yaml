@@ -12,7 +12,7 @@ betaWelcome:
   continue: "Continue" # Continue button text
 
 download:
-  title: "Download Logs" # Window title for the log downloader dialog
+  title: "Download Logs &mdash; AdvantageScope" # Window title for the log downloader dialog
   cancel: "Cancel" # Cancel download button tooltip
   download: "Download" # Download button tooltip
   errorNoFolder: "Failed to open log folder at <u>{{path}}</u>" # Error shown when the log folder does not exist on the robot
@@ -30,14 +30,14 @@ download:
   alertSelectLog: "Please select a log to download." # Dialog alert when clicking download without selecting files
 
 editFov:
-  title: "Edit FOV" # Window title for camera FOV configuration
+  title: "Edit FOV &mdash; AdvantageScope" # Window title for camera FOV configuration
   label: "Camera FOV" # Field label for camera field of view input
   inputTitle: "Set camera field of view (degrees)" # Input field tooltip for FOV
   cancel: "Cancel" # Cancel button tooltip
   confirm: "Confirm" # Confirm button tooltip
 
 editRange:
-  title: "Edit Range" # Window title for line graph axis range configuration
+  title: "Edit Range &mdash; AdvantageScope" # Window title for line graph axis range configuration
   labelMax: "Maximum Value" # Field label for maximum range value
   inputMaxTitle: "Maximum value" # Input field tooltip for maximum value
   labelMin: "Minimum Value" # Field label for minimum range value
@@ -47,7 +47,7 @@ editRange:
   alertError: "Maximum must be greater than minimum." # Dialog alert when minimum value is greater than or equal to maximum
 
 export:
-  title: "Export" # Window title for exporting logs
+  title: "Export &mdash; AdvantageScope" # Window title for exporting logs
   format: "Format" # Field label for export format
   formatSelectTitle: "Select export format" # Dropdown tooltip for export format
   formatCsvTable: "CSV (Table)" # Dropdown option for exporting as CSV table
@@ -72,7 +72,7 @@ export:
   helpTitle: "Open export documentation" # Help link tooltip
 
 preferences:
-  title: "Preferences" # Window title for preferences window
+  title: "Preferences &mdash; AdvantageScope" # Window title for preferences window
   language: "Language 🌐" # Field label for language selector
   languageSelectTitle: "Select the application language" # Dropdown tooltip for language selector
   languageSystemDefault: "System Default" # Dropdown option to use the system default language
@@ -128,7 +128,7 @@ preferences:
   confirm: "Confirm" # Confirm button tooltip
 
 renameTab:
-  title: "Rename Tab" # Window title for renaming a tab
+  title: "Rename Tab &mdash; AdvantageScope" # Window title for renaming a tab
   label: "Tab Name" # Field label for tab name
   inputTitle: "Enter tab name" # Input tooltip for tab name
   cancel: "Cancel" # Cancel button tooltip
@@ -144,14 +144,15 @@ satellite:
   consoleHighlight: "Highlight warning/error messages" # Tooltip for console log highlight button
 
 sourceListHelp:
-  title: "{{name}} Help — AdvantageScope" # Title template for help window
+  title: "{{name}} Help &mdash; AdvantageScope" # Title template for help window
+  titleDefault: "Help &mdash; AdvantageScope" # Default window title for help window
   parentWarning: "Add to existing {{items, list(type: disjunction)}} item." # Instruction warning when parent field is required
   listOr: "{{list, list(type: disjunction)}}" # List of options formatted with disjunction
   sources_one: "Source: {{list, list(type: disjunction)}}" # Singular label for field source type
   sources_other: "Sources: {{list, list(type: disjunction)}}" # Plural label for field source types
 
 unitConversion:
-  title: "Unit Conversion" # Window title for unit conversion settings
+  title: "Unit Conversion &mdash; AdvantageScope" # Window title for unit conversion settings
   unitType: "Unit Type" # Field label for unit type
   unitTypeSelectTitle: "Select unit dimension type" # Dropdown tooltip for unit type
   fromUnit: "From Unit" # Field label for source unit
@@ -166,7 +167,8 @@ unitConversion:
   alertError: "Failed to parse extra factor." # Dialog alert when custom scale factor formula is invalid
 
 uploadAsset:
-  title: "Upload Asset" # Window title for asset uploader
+  title: "Upload Asset &mdash; AdvantageScope" # Window title for asset uploader
+  menuTitle: "Upload Asset" # Menu option for asset uploader
   inputTitle: "Choose zip file containing assets" # File input tooltip
   progressDefault: "Choose a zip file containing AdvantageScope assets.<br />Check the AdvantageScope Lite documentation for more information about supported file formats." # Default instruction description on uploader screen
   cancel: "Cancel" # Cancel button tooltip
@@ -176,7 +178,8 @@ uploadAsset:
   progressFailedWithStatus: "Upload failed: {{status}}" # Progress status when upload fails with status
 
 xrControls:
-  title: "Scan the code to start AdvantageScope XR" # Section title on screen
+  title: "XR Controls &mdash; AdvantageScope" # Window title for XR controls
+  header: "Scan the code to start AdvantageScope XR" # Section title on screen
   scanInstructions: "No app installation is needed." # Information text for XR app
   requirements: "Requires an iPhone or iPad connected to the same Wi-Fi network. Check the documentation for details." # Information description for XR app requirements
   calibration: "Calibration" # Field label for calibration mode
@@ -265,7 +268,7 @@ sourceList:
     small: "Small" # Small thickness/size option
 
 licenses:
-  title: "Licenses" # Window title for licenses page
+  title: "Licenses &mdash; AdvantageScope" # Window title for licenses page
 
 hub:
   title: "AdvantageScope" # Main application window title
