@@ -63,6 +63,8 @@ class Networking : WebSocketDelegate {
     private func disconnected() {
         if (appState.serverConnected) {
             appState.serverConnected = false
+            appState.isCalibrating = false
+            appState.calibrationText = ""
         }
         if (reconnecting) {
             return

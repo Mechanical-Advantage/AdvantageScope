@@ -102,6 +102,9 @@ class ScriptMessageHandler: NSObject, WKScriptMessageHandler {
         case "setCalibrationText":
             guard (appState != nil) else { return }
             appState!.calibrationText = data as! String
+        case "setIsCalibrating":
+            guard (appState != nil) else { return }
+            appState!.isCalibrating = data as! Bool
         case "showControls":
             appState!.showControls = data as! Bool
         case "recalibrate":

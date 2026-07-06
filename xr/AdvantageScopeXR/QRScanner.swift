@@ -73,9 +73,9 @@ class QRScanner {
             return
         }
         var incompatibilityValue: NativeHostIncompatibility = .none
-        if (nativeHostCompatibility! < Constants.nativeHostCompatibility) {
+        if (nativeHostCompatibility! < Constants.nativeHostCompatibilityMin) {
             incompatibilityValue = .serverTooOld
-        } else if (nativeHostCompatibility! > Constants.nativeHostCompatibility) {
+        } else if (nativeHostCompatibility! > Constants.nativeHostCompatibilityMax) {
             incompatibilityValue = .serverTooNew
         }
         

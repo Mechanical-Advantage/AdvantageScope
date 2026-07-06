@@ -467,6 +467,7 @@ export default class XRRenderer {
       calibrationText = "$TRACKING_WARNING"; // Special indicator to display warning about poor tracking
     }
     sendHostMessage("setCalibrationText", calibrationText);
+    sendHostMessage("setIsCalibrating", isCalibrating && calibrationText !== "$TRACKING_WARNING");
     if (!isCalibrating && this.lastIsCalibrating) {
       sendHostMessage("showControls", false);
     }

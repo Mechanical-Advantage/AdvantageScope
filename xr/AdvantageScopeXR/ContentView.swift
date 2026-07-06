@@ -12,6 +12,7 @@ class AppState : ObservableObject {
     @Published var showControls = true
     @Published var trackingReady = false
     @Published var calibrationText = ""
+    @Published var isCalibrating = false
     
 #if APPCLIP
     @Published var scanningQR = false
@@ -61,7 +62,7 @@ struct ContentView : View {
         
             // Event handling
             .onTapGesture(coordinateSpace: .global) { location in
-                if (appState.calibrationText.hasPrefix("Tap") && location.y > 350) {
+                if ((appState.isCalibrating || appState.calibrationText.hasPrefix("Tap")) && location.y > 350) {
                     webOverlay.userTap()
                 } else if (!appState.showControls || location.y > 150) {
                     appState.showControls.toggle()

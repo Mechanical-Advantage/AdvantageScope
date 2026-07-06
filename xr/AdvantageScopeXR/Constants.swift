@@ -6,7 +6,8 @@
 // at the root directory of this project.
 
 struct Constants {
-    static let nativeHostCompatibility = 0
+    static let nativeHostCompatibilityMin = 0;
+    static let nativeHostCompatibilityMax = 1;
     static let qrPrefix = "https://appclip.apple.com/id?p=org.littletonrobotics.advantagescopexr.Clip&c="
     static let serverPort = 56328
 }
