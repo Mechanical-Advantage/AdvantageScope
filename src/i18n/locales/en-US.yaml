@@ -264,6 +264,9 @@ sourceList:
     large: "Large" # Large thickness/size option
     small: "Small" # Small thickness/size option
 
+licenses:
+  title: "Licenses" # Window title for licenses page
+
 hub:
   title: "AdvantageScope" # Main application window title
   updateAvailable: "Update available" # Tooltip for app update button
@@ -742,7 +745,7 @@ main:
     downloadFinished: "All assets downloaded. AdvantageScope will check for updates periodically." # Status message when all assets are downloaded
     connectFailed: "Cannot connect to GitHub. Trying again soon." # Error message when GitHub connection fails
     noDiskSpace: "Not enough disk space. Trying again soon." # Error message when disk space is low
-    readme: "This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the \"Custom Fields/Robots/Joysticks\" page in the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets" # Content for custom assets folder readme file
+    readme: "This folder contains extra assets for the 2D field, 3D field, and joystick views. For more details, see the AdvantageScope documentation (available through the documentation tab in the app or the URL below).\n\nhttps://docs.advantagescope.org/more-features/custom-assets" # Content for custom assets folder readme file
 
   owlet:
     upToDate: "Owlet is up-to-date. AdvantageScope will check for updates periodically." # Status message when Owlet is fully updated
@@ -975,7 +978,7 @@ units:
     calories: "Calories"
     potatoes: "Potatoes"
 
-  # Numeric values with units. Use SI symbols for applicable units, abbrevations when possible, and full names otherwise. Values with full unit names must include appropriate i18next keys to support pluralization (DO NOT match the original set of keys unless required, ALWAYS add or remove pluralization keys if needed). Always include a space between the value and symbol, except for ° (angles), ', and "
+  # Numeric values with units. Values with full unit names must include appropriate i18next keys to support pluralization (DO NOT match the original set of keys unless required, ALWAYS add or remove pluralization keys if needed). Always include a space between the value and symbol, except for ° (angles), ', and "
   values:
     meters: "{{value}} m"
     inches: '{{value}}"'
