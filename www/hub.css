@@ -563,12 +563,6 @@ div.field-item-label > span {
   unicode-bidi: plaintext;
 }
 
-div.field-item-label > span:first-child {
-  flex-shrink: 1;
-  overflow: hidden;
-  text-overflow: clip;
-}
-
 div.field-item-label.full-key {
   cursor: grab;
   font-style: italic;
