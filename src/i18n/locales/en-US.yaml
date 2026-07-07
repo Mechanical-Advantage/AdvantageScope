@@ -1080,7 +1080,7 @@ units:
     degreesPerSecondCubed: "{{value}}°/s³"
     rotationsPerSecondCubed: "{{value}} rot/s³"
     secondsPerSecond: "{{value}} s/s"
-    secondsSeconds: "{{value}} s·s"
+    secondsSeconds: "{{value}} s²"
     millisecondsPerSecond: "{{value}} ms/s"
     millisecondsSeconds: "{{value}} ms·s"
     microsecondsPerSecond: "{{value}} μs/s"
