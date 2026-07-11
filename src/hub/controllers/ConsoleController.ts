@@ -108,7 +108,7 @@ export default class ConsoleController implements TabController {
           }
         }
       } else if (structuredType === "ConsoleData") {
-        // Structured string parsing: AvantageKit v27.0.0 and below.
+        // Structured string parsing: AvantageKit v27.0.0 and above.
         let fieldIndex = window.log.getField(this.field + "/index")?.getNumber(-Infinity, Infinity);
         let fieldData = window.log.getField(this.field + "/data")?.getString(-Infinity, Infinity);
 
