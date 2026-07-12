@@ -30,13 +30,13 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 
 **To customize each source, click the colored icon or right-click on the field name.** AdvantageScope supports three sources types:
 
-- **Module States:** A set of four swerve module states, displayed as vectors on the diagram.
-- **Chassis Speeds:** Linear and angular speeds displayed in the center of the diagram.
+- **Module Velocities:** A set of four swerve module states, displayed as vectors on the diagram.
+- **Robot Velocities:** Linear and angular speeds displayed in the center of the diagram.
 - **Rotation:** Angular position used to rotate the diagram.
 
 ## Data Format
 
-Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleState[]`, `ChassisSpeeds`, `Rotation2d`, or `Rotation3d` types.
+Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
 
 Many libraries support the struct format, including WPILib and AdvantageKit. The example code below shows how to log swerve module states in Java.
 
@@ -44,15 +44,15 @@ Many libraries support the struct format, including WPILib and AdvantageKit. The
 <TabItem value="wpilib" label="WPILib" default>
 
 ```java
-SwerveModuleState[] states = new SwerveModuleState[] {
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState()
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
 }
 
-StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-.getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+StructArrayPublisher<SwerveModuleVelocity> publisher = NetworkTableInstance.getDefault()
+.getStructArrayTopic("MyStates", SwerveModuleVelocity.struct).publish();
 
 periodic() {
   publisher.set(states);
@@ -63,11 +63,11 @@ periodic() {
 <TabItem value="advantagekit" label="AdvantageKit">
 
 ```java
-SwerveModuleState[] states = new SwerveModuleState[] {
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState(),
-  new SwerveModuleState()
+SwerveModuleVelocity[] states = new SwerveModuleVelocity[] {
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity(),
+  new SwerveModuleVelocity()
 }
 
 Logger.recordOutput("MyStates", states);

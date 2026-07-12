@@ -6,7 +6,6 @@
 // at the root directory of this project.
 
 import { getBabelOutputPlugin } from "@rollup/plugin-babel";
-import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import fs from "fs";
 import { replacePlugin } from "rolldown/plugins";
@@ -19,6 +18,14 @@ const enableSourcemap = process.env.ENABLE_SOURCEMAP === "true";
 const licenseHeader =
   "// Copyright (c) 2021-2026 Littleton Robotics\n// http://github.com/Mechanical-Advantage\n//\n// Use of this source code is governed by a BSD\n// license that can be found in the LICENSE file\n// at the resources directory of this application.\n";
 
+/**
+ * @import { RolldownOptions } from "rolldown"
+ * @param input {string[]}
+ * @param isMain {boolean}
+ * @param isXRClient {boolean}
+ * @param external {string[]}
+ * @returns {RolldownOptions}
+ */
 function bundle(input, isMain, isXRClient, external = []) {
   const packageJson = JSON.parse(
     fs.readFileSync("package.json", {
@@ -32,6 +39,8 @@ function bundle(input, isMain, isXRClient, external = []) {
       chunkFileNames: "chunk/[name].js",
       format: isMain ? "cjs" : "es",
       banner: licenseHeader,
+      minify: (isXRClient || isLite || "dce-only") && !enableSourcemap,
+      minifyInternalExports: (isXRClient || isLite) && !enableSourcemap,
       sourcemap: enableSourcemap
     },
     context: "this",
@@ -40,31 +49,20 @@ function bundle(input, isMain, isXRClient, external = []) {
       pluginTimings: false
     },
     plugins: [
-      typescript({
-        compilerOptions: {
-          sourceMap: enableSourcemap,
-          removeComments: !enableSourcemap
-        }
-      }),
-      ...(isXRClient
-        ? [
-            getBabelOutputPlugin({
-              presets: [["@babel/preset-env", { modules: false }]],
-              compact: !enableSourcemap,
-              targets: "iOS 16" // AdvantageScope XR is built for iOS 16
-            }),
-            enableSourcemap ? false : terser()
-          ]
+      typescript(),
+      isXRClient
+        ? getBabelOutputPlugin({
+            presets: [["@babel/preset-env", { modules: false }]],
+            compact: !enableSourcemap,
+            targets: "iOS 16" // AdvantageScope XR is built for iOS 16
+          })
         : isLite
-        ? [
-            getBabelOutputPlugin({
-              presets: [["@babel/preset-env", { modules: false }]],
-              compact: !enableSourcemap,
-              targets: "> 0.1%, not dead"
-            }),
-            enableSourcemap ? false : terser({ mangle: { reserved: ["Module"] } })
-          ]
-        : [cleanup()]),
+        ? getBabelOutputPlugin({
+            presets: [["@babel/preset-env", { modules: false }]],
+            compact: !enableSourcemap,
+            targets: "> 0.1%, not dead"
+          })
+        : cleanup(),
       replacePlugin(
         {
           __distribution__: isWpilib ? "WPILib" : isDS ? "LiteDS" : isLite ? "Lite" : "FRC6328",

@@ -6,7 +6,13 @@
 // at the root directory of this project.
 
 import { SourceListState } from "../../shared/SourceListConfig";
-import { Rotation2d, grabChassisSpeeds, grabPosesAuto, grabSwerveStates, rotation3dTo2d } from "../../shared/geometry";
+import {
+  Rotation2d,
+  grabModuleVelocities,
+  grabPosesAuto,
+  grabRobotVelocities,
+  rotation3dTo2d
+} from "../../shared/geometry";
 import { Orientation } from "../../shared/renderers/Field2dRenderer";
 import { SwerveRendererCommand } from "../../shared/renderers/SwerveRenderer";
 import { clampValue, createUUID } from "../../shared/util";
@@ -112,8 +118,8 @@ export default class SwerveController implements TabController {
     if (time === null) time = window.log.getTimestampRange()[1];
 
     let rotation: Rotation2d = 0;
-    let commandStates: SwerveRendererCommand["states"] = [];
-    let commandSpeeds: SwerveRendererCommand["speeds"] = [];
+    let commandModuleVelocities: SwerveRendererCommand["moduleVelocities"] = [];
+    let commandRobotVelocities: SwerveRendererCommand["robotVelocities"] = [];
     let sources = this.sourceList.getState(true);
     for (let i = 0; i < sources.length; i++) {
       let source = sources[i];
@@ -122,24 +128,30 @@ export default class SwerveController implements TabController {
         units = source.options.units === "degrees" ? "degrees" : "radians";
       }
 
-      if (source.type === "states") {
-        let states = grabSwerveStates(window.log, source.logKey, time, source.options.arrangement, this.UUID);
-        states.forEach((state) => {
+      if (source.type === "moduleVelocities") {
+        let moduleVelocities = grabModuleVelocities(
+          window.log,
+          source.logKey,
+          time,
+          source.options.arrangement,
+          this.UUID
+        );
+        moduleVelocities.forEach((state) => {
           // Normalize
           state.speed = clampValue(state.speed / Number(this.MAX_SPEED.value), -1, 1);
         });
-        commandStates.push({
-          values: states,
+        commandModuleVelocities.push({
+          values: moduleVelocities,
           color: source.options.color
         });
-      } else if (source.type === "chassisSpeeds") {
-        let speeds = grabChassisSpeeds(window.log, source.logKey, time, this.UUID);
+      } else if (source.type === "robotVelocities") {
+        let speeds = grabRobotVelocities(window.log, source.logKey, time, this.UUID);
         let angle = Math.atan2(speeds.vy, speeds.vx);
         let length = Math.hypot(speeds.vx, speeds.vy);
         length = clampValue(length / Number(this.MAX_SPEED.value), -1, 1);
         speeds.vx = Math.cos(angle) * length;
         speeds.vy = Math.sin(angle) * length;
-        commandSpeeds.push({
+        commandRobotVelocities.push({
           value: speeds,
           color: source.options.color
         });
@@ -152,13 +164,13 @@ export default class SwerveController implements TabController {
     }
     rotation += this.orientation * (Math.PI / 2);
 
-    commandStates.reverse();
-    commandSpeeds.reverse();
+    commandModuleVelocities.reverse();
+    commandRobotVelocities.reverse();
     return {
       rotation: rotation,
       frameAspectRatio: Number(this.SIZE_Y.value) / Number(this.SIZE_X.value),
-      states: commandStates,
-      speeds: commandSpeeds
+      moduleVelocities: commandModuleVelocities,
+      robotVelocities: commandRobotVelocities
     };
   }
 }

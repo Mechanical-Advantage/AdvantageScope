@@ -50,6 +50,7 @@ export interface Config2d {
 
   isFTC: boolean;
   coordinateSystem: CoordinateSystem;
+  useGrid: boolean | undefined;
   sourceUrl?: string;
   topLeft: [number, number];
   bottomRight: [number, number];
@@ -64,6 +65,7 @@ export interface Config3dField {
 
   isFTC: boolean;
   coordinateSystem: CoordinateSystem;
+  useGrid: boolean | undefined;
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   widthInches: number;
@@ -121,7 +123,7 @@ export interface ConfigJoystick {
   name: string;
   path: string;
 
-  components: (ConfigJoystick_Button | ConfigJoystick_Joystick | ConfigJoystick_Axis)[];
+  components: (ConfigJoystick_Button | ConfigJoystick_Joystick | ConfigJoystick_Axis | ConfigJoystick_Touchpad)[];
 }
 
 export interface ConfigJoystick_Button {
@@ -130,8 +132,12 @@ export interface ConfigJoystick_Button {
   isEllipse: boolean;
   centerPx: [number, number]; // X, Y
   sizePx: [number, number]; // width, height
-  sourceIndex: number; // button or POV index
-  sourcePov?: "up" | "right" | "down" | "left"; // If specified, read as POV
+
+  sdlSourceIndex?: number; // button or POV index
+  sdlSourcePov?: "up" | "right" | "down" | "left"; // If specified, read as POV
+
+  niSourceIndex?: number; // button or POV index
+  niSourcePov?: "up" | "right" | "down" | "left"; // If specified, read as POV
 }
 
 export interface ConfigJoystick_Joystick {
@@ -139,11 +145,18 @@ export interface ConfigJoystick_Joystick {
   isYellow: boolean;
   centerPx: [number, number]; // X, Y
   radiusPx: number;
-  xSourceIndex: number;
-  xSourceInverted: boolean; // Not inverted: right = positive
-  ySourceIndex: number;
-  ySourceInverted: boolean; // Not inverted: up = positive
-  buttonSourceIndex?: number;
+
+  sdlXSourceIndex?: number;
+  sdlXSourceInverted?: boolean; // Not inverted: right = positive
+  sdlYSourceIndex?: number;
+  sdlYSourceInverted?: boolean; // Not inverted: up = positive
+  sdlButtonSourceIndex?: number;
+
+  niXSourceIndex?: number;
+  niXSourceInverted?: boolean; // Not inverted: right = positive
+  niYSourceIndex?: number;
+  niYSourceInverted?: boolean; // Not inverted: up = positive
+  niButtonSourceIndex?: number;
 }
 
 export interface ConfigJoystick_Axis {
@@ -151,8 +164,20 @@ export interface ConfigJoystick_Axis {
   isYellow: boolean;
   centerPx: [number, number]; // X, Y
   sizePx: [number, number]; // width, height
-  sourceIndex: number;
-  sourceRange: [number, number]; // Min greater than max to invert
+
+  sdlSourceIndex?: number;
+  sdlSourceRange?: [number, number]; // Min greater than max to invert
+
+  niSourceIndex?: number;
+  niSourceRange?: [number, number]; // Min greater than max to invert
+}
+
+export interface ConfigJoystick_Touchpad {
+  type: "touchpad";
+  isYellow: boolean;
+  centerPx: [number, number]; // X, Y
+  sizePx: [number, number]; // width, height
+  sdlSourceIndex: number;
 }
 
 export const BuiltIn3dFields: Config3dField[] = [
@@ -162,6 +187,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FRC:Evergreen",
     isFTC: false,
     coordinateSystem: "wall-blue",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
@@ -176,6 +202,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FTC:Evergreen",
     isFTC: true,
     coordinateSystem: "center-rotated",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
@@ -190,6 +217,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FRC:Axes",
     isFTC: false,
     coordinateSystem: "wall-blue",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FRC_STANDARD_FIELD_LENGTH, "meters", "inches"),
@@ -204,6 +232,7 @@ export const BuiltIn3dFields: Config3dField[] = [
     id: "FTC:Axes",
     isFTC: true,
     coordinateSystem: "center-rotated",
+    useGrid: true,
     rotations: [],
     position: [0, 0, 0],
     widthInches: Units.convert(FTC_STANDARD_FIELD_LENGTH, "meters", "inches"),
