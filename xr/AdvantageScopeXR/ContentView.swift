@@ -57,13 +57,7 @@ struct ContentView : View {
             }
             .environmentObject(appState)
         
-            // Recording preview
-            .fullScreenCover(isPresented: $recordingPreviewState.showFullScreen) {
-                recordingPreviewState.view.ignoresSafeArea(.all)
-            }
-            .sheet(isPresented: $recordingPreviewState.showSheet) {
-                recordingPreviewState.view.ignoresSafeArea(.all)
-            }
+
         
             // Event handling
             .onTapGesture(coordinateSpace: .global) { location in

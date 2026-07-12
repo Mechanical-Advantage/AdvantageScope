@@ -9,13 +9,13 @@ import { SourceListItemState, SourceListState } from "../../shared/SourceListCon
 import {
   AnnotatedPose2d,
   AnnotatedPose3d,
-  SwerveState,
+  ModuleVelocity,
   Translation2d,
   annotatedPose3dTo2d,
   convertFromCoordinateSystem,
   grabHeatmapData,
+  grabModuleVelocities,
   grabPosesAuto,
-  grabSwerveStates,
   rotation3dTo2d
 } from "../../shared/geometry";
 import { ALLIANCE_KEYS, getIsRedAlliance } from "../../shared/log/LogUtil";
@@ -303,8 +303,8 @@ export default class Field2dController implements TabController {
 
       // Add data from children
       let visionTargets: AnnotatedPose2d[] = [];
-      let swerveStates: {
-        values: SwerveState[];
+      let swerveModuleVelocities: {
+        values: ModuleVelocity[];
         color: string;
       }[] = [];
       children.forEach((child) => {
@@ -341,10 +341,16 @@ export default class Field2dController implements TabController {
             break;
           }
 
-          case "swerveStates": {
-            let states = grabSwerveStates(window.log, child.logKey, time!, child.options.arrangement, this.UUID);
-            swerveStates.push({
-              values: states,
+          case "swerveModuleVelocities": {
+            let moduleVelocities = grabModuleVelocities(
+              window.log,
+              child.logKey,
+              time!,
+              child.options.arrangement,
+              this.UUID
+            );
+            swerveModuleVelocities.push({
+              values: moduleVelocities,
               color: child.options.color
             });
             break;
@@ -352,7 +358,7 @@ export default class Field2dController implements TabController {
         }
       });
       visionTargets.reverse();
-      swerveStates.reverse();
+      swerveModuleVelocities.reverse();
 
       // Apply coordinate system
       if (fieldData !== undefined) {
@@ -382,7 +388,7 @@ export default class Field2dController implements TabController {
             bumperColor:
               source.options.bumpers === "" ? (isRedAlliance ? "#ff0000" : "#0000ff") : source.options.bumpers,
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveModuleVelocities: swerveModuleVelocities
           });
           break;
         case "ghost":
@@ -391,7 +397,7 @@ export default class Field2dController implements TabController {
             poses: poses,
             color: source.options.color,
             visionTargets: visionTargets,
-            swerveStates: swerveStates
+            swerveModuleVelocities: swerveModuleVelocities
           });
           break;
         case "trajectory":

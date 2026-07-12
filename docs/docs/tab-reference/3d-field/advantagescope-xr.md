@@ -35,7 +35,7 @@ AdvantageScope XR is supported on many devices, but is more stable for devices w
 7. To quickly **record a video** on iOS, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
 
 :::warning
-Heatmaps and swerve states are not available yet in XR. All other object types are supported.
+Heatmaps and swerve module velocities are not available yet in XR. All other object types are supported.
 :::
 
 :::tip

@@ -263,6 +263,7 @@ async function initHub() {
     platformArch: "",
     appVersion: LITE_VERSION
   });
+  sendMessage(hubPort, "show-feedback-button", isBeta());
   let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
   let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
   if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
@@ -334,6 +335,17 @@ async function handleHubMessage(message: NamedMessage) {
       let newTypeMemoryStr = JSON.stringify(typeMemory);
       if ((typeMemoryRaw === null || originalTypeMemoryStr) !== newTypeMemoryStr) {
         localStorage.setItem(LocalStorageKeys.TYPE_MEMORY, JSON.stringify(typeMemory));
+      }
+      break;
+
+    case "update-preferences":
+      {
+        let prefs = DISTRIBUTION === Distribution.LiteDS ? DEFAULT_PREFS_LITEDS : DEFAULT_PREFS;
+        let prefsRaw = localStorage.getItem(LocalStorageKeys.PREFS);
+        if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
+        mergePreferences(prefs, message.data);
+        localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(prefs));
+        sendMessage(hubPort, "set-preferences", prefs);
       }
       break;
 
@@ -921,10 +933,10 @@ async function handleHubMessage(message: NamedMessage) {
                 content: "Edit Conversion",
                 async callback() {
                   let port = await openPopupWindow("www/unitConversion.html", [300, 162], "pixels", (message) => {
+                    closePopupWindow();
                     if (message === null) return;
                     unitConversion.autoTarget = null;
                     unitConversion.preset = message;
-                    closePopupWindow();
                     sendMessage(hubPort, "edit-axis", {
                       legend: legend,
                       lockedRange: lockedRange,
@@ -1337,6 +1349,7 @@ window.addEventListener("load", () => {
   if (isBeta()) {
     if (isBetaExpired()) {
       if (
+        DISTRIBUTION != Distribution.LiteDS &&
         confirm(
           `The AdvantageScope Lite ${
             isAlpha() ? "alpha" : "beta"

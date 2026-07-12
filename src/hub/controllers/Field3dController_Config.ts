@@ -155,12 +155,12 @@ const Field3dController_Config: SourceListConfig = {
       previewType: "Translation3d"
     },
     {
-      key: "swerveStates",
-      display: "Swerve States",
+      key: "swerveModuleVelocities",
+      display: "Swerve Module Velocities",
       symbol: "arrow.up.left.and.down.right.and.arrow.up.right.and.down.left",
       showInTypeName: true,
       color: "color",
-      sourceTypes: ["SwerveModuleState[]"],
+      sourceTypes: ["SwerveModuleVelocity[]", "SwerveModuleState[]"],
       showDocs: true,
       options: [
         {
@@ -178,7 +178,7 @@ const Field3dController_Config: SourceListConfig = {
       ],
       initialSelectionOption: "color",
       childOf: "robot",
-      previewType: "SwerveModuleState[]"
+      previewType: "ModuleVelocities"
     },
     {
       key: "rotationOverride",

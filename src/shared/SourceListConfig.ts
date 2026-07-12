@@ -38,8 +38,8 @@ export type SourceListTypeConfig = {
     | "Translation3d"
     | "Pose3d"
     | "Transform3d"
-    | "SwerveModuleState[]"
-    | "ChassisSpeeds"
+    | "ModuleVelocities"
+    | "RobotVelocities"
     | null; // Don't use preview
   initialSelectionOption?: string;
   showDocs: boolean;

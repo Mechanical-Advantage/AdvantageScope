@@ -6,7 +6,7 @@
 // at the root directory of this project.
 
 import { CoordinateSystem } from "../AdvantageScopeAssets";
-import { AnnotatedPose3d, SwerveState } from "../geometry";
+import { AnnotatedPose3d, ModuleVelocity } from "../geometry";
 import { MechanismState } from "../log/LogUtil";
 import Field3dRendererImpl from "./Field3dRendererImpl";
 import TabRenderer from "./TabRenderer";
@@ -147,8 +147,8 @@ export type Field3dRendererCommand_GenericRobotObj = {
     yz: MechanismState | null;
   };
   visionTargets: AnnotatedPose3d[];
-  swerveStates: {
-    values: SwerveState[];
+  swerveModuleVelocities: {
+    values: ModuleVelocity[];
     color: string;
   }[];
 };

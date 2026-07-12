@@ -120,6 +120,12 @@ An image must be included in the folder with the name "image.png". The config fi
 }
 ```
 
+:::info
+Buttons, joysticks, and axis values support both [SDL](https://www.libsdl.org) bindings (used by the current FIRST Driver Station) and NI bindings (used by the old NI FRC Driver Station). At least one set of bindings must be provided for each component.
+
+For NI bindings, AdvantageScope is backwards compatible with the old non-prefixed configuration keys (e.g. `sourceIndex`). **All new joysticks should use explicit SDL bindings (e.g. `sdlSourceIndex`) for compatibility with the current FIRST Driver Station.**
+:::
+
 ### Single Button / POV Value
 
 ```json
@@ -129,8 +135,12 @@ An image must be included in the folder with the name "image.png". The config fi
   "isEllipse": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
-  "sourceIndex": number
-  "sourcePov": string // Optional, can be "up", "right", "down", or "left". If provided, the "sourceIndex" will be the index of the POV to read.
+  "sdlSourceIndex": number
+  "sdlSourcePov": string // Optional, can be "up", "right", "down", or "left". If provided, the "sdlSourceIndex" will be the index of the POV to read.
+
+  // Alternative bindings for the NI Driver Station (optional)
+  "niSourceIndex": number
+  "niSourcePov": string
 }
 ```
 
@@ -142,11 +152,18 @@ An image must be included in the folder with the name "image.png". The config fi
   "isYellow": boolean
   "centerPx": [number, number]
   "radiusPx": number
-  "xSourceIndex": number
-  "xSourceInverted": boolean // Not inverted: right = positive
-  "ySourceIndex": number
-  "ySourceInverted": boolean // Not inverted: up = positive
-  "buttonSourceIndex": number // Optional
+  "sdlXSourceIndex": number
+  "sdlXSourceInverted": boolean // Not inverted: right = positive
+  "sdlYSourceIndex": number
+  "sdlYSourceInverted": boolean // Not inverted: up = positive
+  "sdlButtonSourceIndex": number // Optional
+
+  // Alternative bindings for the NI Driver Station (optional)
+  "niXSourceIndex": number
+  "niXSourceInverted": boolean
+  "niYSourceIndex": number
+  "niYSourceInverted": boolean
+  "niButtonSourceIndex": number
 }
 ```
 
@@ -158,8 +175,24 @@ An image must be included in the folder with the name "image.png". The config fi
   "isYellow": boolean
   "centerPx": [number, number]
   "sizePx": [number, number]
-  "sourceIndex": number,
-  "sourceRange": [number, number]; // Min greater than max to invert
+  "sdlSourceIndex": number,
+  "sdlSourceRange": [number, number] // Min greater than max to invert
+
+  // Alternative bindings for the NI Driver Station (optional)
+  "niSourceIndex": number,
+  "niSourceRange": [number, number]
+}
+```
+
+### Touchpad
+
+```json
+{
+  "type": "touchpad" // A touchpad
+  "isYellow": boolean
+  "centerPx": [number, number]
+  "sizePx": [number, number]
+  "sdlSourceIndex": number,
 }
 ```
 
@@ -176,6 +209,7 @@ An image must be included in the folder with the name "image.png". It should be 
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
       "center-red"       // Systemcore
+  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
   "sourceUrl": string // Link to the original file, optional
   "topLeft": [number, number] // Pixel coordinate (origin at upper left)
   "bottomRight": [number, number] // Pixel coordinate (origin at upper left)
@@ -199,6 +233,7 @@ The config file must be in the following format:
       "wall-blue" |      // FRC 2023-2026
       "center-rotated" | // FTC traditional
       "center-red"       // Systemcore
+  "useGrid": boolean // Whether to render grid lines if this field is an FTC one (default "true")
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
   "widthInches": number // Real width of the field (long side)
   "heightInches": number // Real height of the field (short side)

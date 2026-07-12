@@ -22,6 +22,8 @@ export default class Timeline {
   private grabZoomStartTime = 0;
   private lastCursorX: number | null = null;
   private lastCursorInRect = false;
+  private scrollTime: number | null = null;
+  private zoomInAccumulator = 0;
 
   constructor(container: HTMLElement) {
     this.CONTAINER = container;
@@ -86,6 +88,19 @@ export default class Timeline {
     this.scrollSensor = new ScrollSensor(this.SCROLL_OVERLAY, (dx: number, dy: number) => {
       if (this.isHidden()) return;
       window.selection.applyTimelineScroll(dx, dy, this.SCROLL_OVERLAY.clientWidth);
+
+      // Handle help overlay scrolling
+      if (window.preferences && !window.preferences.hasScrolledTimeline && this.scrollTime === null) {
+        if (dy < 0) {
+          this.zoomInAccumulator += dy;
+          if (this.zoomInAccumulator <= -200) {
+            this.scrollTime = Date.now();
+            setTimeout(() => {
+              window.sendMainMessage("update-preferences", { hasScrolledTimeline: true });
+            }, 1000);
+          }
+        }
+      }
     });
   }
 
@@ -108,7 +123,8 @@ export default class Timeline {
     this.CANVAS.height = height * devicePixelRatio;
     context.scale(devicePixelRatio, devicePixelRatio);
     context.clearRect(0, 0, width, height);
-    context.font = "200 12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+    let helpFont = "200 14px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
+    let labelFont = "200 12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate step size
     let stepSize = calcAxisStepSize(timeRange, width, this.STEP_TARGET_PX);
@@ -211,12 +227,37 @@ export default class Timeline {
     if (selectedTime !== null) markTime(selectedTime, 1);
 
     // Draw tick marks
+    let helpText = "Scroll timeline to zoom";
+    context.font = helpFont;
+    let helpTextWidth = context.measureText(helpText).width;
+
+    // Reset scrollTime once preference is set
+    let hasScrolledTimeline = window.preferences?.hasScrolledTimeline ?? false;
+    if (hasScrolledTimeline) {
+      this.scrollTime = null;
+      this.zoomInAccumulator = 0;
+    }
+
+    // Calculate opacity of help text
+    let helpTextOpacity = 0.5;
+    if (hasScrolledTimeline) {
+      helpTextOpacity = 0;
+    } else if (this.scrollTime !== null) {
+      let elapsed = Date.now() - this.scrollTime;
+      if (elapsed < 600) {
+        helpTextOpacity = 0.5;
+      } else if (elapsed < 1000) {
+        helpTextOpacity = 0.5 * (1 - (elapsed - 600) / 400);
+      } else {
+        helpTextOpacity = 0;
+      }
+    }
+
     context.lineWidth = 0.5;
     context.strokeStyle = light ? "#222" : "#eee";
     context.fillStyle = light ? "#222" : "#eee";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.globalAlpha = 0.5;
     let stepPos = Math.ceil(cleanFloat(timeRange[0] / stepSize)) * stepSize;
     let iterCount = 0;
     while (iterCount++ < 100) {
@@ -226,16 +267,37 @@ export default class Timeline {
       }
 
       let text = cleanFloat(stepPos).toString() + "s";
+      context.font = labelFont;
       let textWidth = context.measureText(text).width;
       let textX = clampValue(x, textWidth / 2 + 3, width - textWidth / 2 - 3);
       let textXRange = [textX - textWidth / 2, textX + textWidth / 2];
+
       let markDistance = markedXs.reduce((min, x) => {
         let dist = 0;
         if (x < textXRange[0]) dist = textXRange[0] - x;
         if (x > textXRange[1]) dist = x - textXRange[1];
         return dist < min ? dist : min;
       }, Infinity);
-      context.globalAlpha = clampValue(scaleValue(markDistance, [0, 20], [0.2, 0.5]), 0, 1);
+
+      let helpLeft = width / 2 - helpTextWidth / 2;
+      let helpRight = width / 2 + helpTextWidth / 2;
+      let helpDistance = Infinity;
+      if (helpRight < textXRange[0]) helpDistance = textXRange[0] - helpRight;
+      else if (helpLeft > textXRange[1]) helpDistance = helpLeft - textXRange[1];
+      else helpDistance = 0;
+
+      // Adjust min distance based on help text opacity.
+      let adjustedHelpDistance = helpDistance;
+      if (helpTextOpacity === 0) {
+        adjustedHelpDistance = Infinity;
+      } else {
+        let opacityRatio = helpTextOpacity / 0.5;
+        adjustedHelpDistance = helpDistance / opacityRatio;
+      }
+
+      let minDistance = Math.min(markDistance, adjustedHelpDistance);
+      let minAlpha = 0.5 - 0.45 * (helpTextOpacity / 0.5);
+      context.globalAlpha = clampValue(scaleValue(minDistance, [0, 30], [minAlpha, 0.5]), 0, 1);
       context.fillText(text, textX, height / 2);
 
       context.beginPath();
@@ -244,9 +306,18 @@ export default class Timeline {
       context.moveTo(x, height - 8);
       context.lineTo(x, height);
       context.stroke();
-      context.globalAlpha = 0.5;
 
       stepPos += stepSize;
+    }
+
+    // Draw help text in center
+    if (helpTextOpacity > 0) {
+      context.font = helpFont;
+      context.fillStyle = light ? "#222" : "#eee";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
+      context.globalAlpha = helpTextOpacity;
+      context.fillText(helpText, width / 2, height / 2);
     }
     context.globalAlpha = 1;
   }

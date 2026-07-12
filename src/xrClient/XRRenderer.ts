@@ -21,7 +21,7 @@ import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem 
 import { RaycastResult, XRCalibrationMode, XRFrameState, XRSettings } from "../shared/XRTypes";
 import { rotationSequenceToQuaternion, Translation3d } from "../shared/geometry";
 import { Field3dRendererCommand, Field3dRendererCommand_AnyObj } from "../shared/renderers/Field3dRenderer";
-import { disposeObject } from "../shared/renderers/Field3dRendererImpl";
+import { disposeObject, FTC_GRID_COLOR } from "../shared/renderers/Field3dRendererImpl";
 import makeAxesField from "../shared/renderers/field3d/AxesField";
 import makeEvergreenField from "../shared/renderers/field3d/EvergreenField";
 import ObjectManager from "../shared/renderers/field3d/ObjectManager";
@@ -66,12 +66,13 @@ export default class XRRenderer {
   private persistentAnchorPending = false;
   private persistentAnchorsRestoring = true;
   private markedPoints: THREE.Object3D[] = [];
-  private readonly cursor: THREE.Object3D;
+  private cursor: THREE.Object3D;
   private readonly cursorPlane: THREE.Object3D;
-  private readonly fieldRoot: THREE.Object3D;
-  private readonly fieldSizingReference: THREE.Object3D;
-  private readonly wpilibCoordinateGroup: THREE.Object3D;
-  private readonly wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
+  private grid: THREE.GridHelper | null = null;
+  private fieldRoot: THREE.Object3D;
+  private fieldSizingReference: THREE.Object3D;
+  private wpilibCoordinateGroup: THREE.Object3D;
+  private wpilibFieldCoordinateGroup: THREE.Group; // Field coordinates (origin at driver stations and flipped based on alliance)
   private field: THREE.Object3D | null = null;
   private fieldCarpet: THREE.Object3D | null = null;
   private fieldStagedPieces: THREE.Object3D | null = null;
@@ -1067,8 +1068,14 @@ export default class XRRenderer {
 
               // Save components
               scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              scene.position.set(...fieldConfig.position);
+
               carpet.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              carpet.position.set(...fieldConfig.position);
+
               stagedPieces.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
+              stagedPieces.position.set(...fieldConfig.position);
+
               this.field = scene;
               this.fieldCarpet = carpet;
               this.fieldStagedPieces = stagedPieces;
@@ -1088,6 +1095,26 @@ export default class XRRenderer {
           this.isFieldLoading = false;
         });
       }
+    }
+
+    // Reset the FTC grid.
+    if (this.grid !== null) {
+      this.wpilibCoordinateGroup.remove(this.grid);
+      this.grid.dispose();
+    }
+
+    // Create a new grid and render it if switching to an FTC field and the floor is visible.
+    if (fieldConfig.isFTC && fieldConfig.useGrid && settings.showCarpet) {
+      // Create new grid.
+      this.grid = new THREE.GridHelper(
+        fieldWidth, // Size of field
+        6, // Six divisions to a standard FTC field
+        FTC_GRID_COLOR,
+        FTC_GRID_COLOR
+      );
+      this.grid.rotateX(Math.PI / 2);
+
+      this.wpilibCoordinateGroup.add(this.grid);
     }
 
     // Update visible field elements
@@ -1145,7 +1172,7 @@ export default class XRRenderer {
             components: [],
             mechanisms: { xz: null, yz: null },
             visionTargets: [],
-            swerveStates: []
+            swerveModuleVelocities: []
           });
         }
       }
