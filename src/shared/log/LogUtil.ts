@@ -31,7 +31,7 @@ export const ENABLED_KEYS = [
   "NT:/AdvantageKit/DriverStation/Enabled", // AdvantageKit
   "DS:controlWord/enabled", // DataLog, post-2027
   "DS:enabled", // DataLog, pre-2027
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
   "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
@@ -45,7 +45,7 @@ export const AUTONOMOUS_KEYS = [
   "NT:/AdvantageKit/DriverStation/Autonomous", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:autonomous", // DataLog, pre-2027
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
   "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
@@ -58,7 +58,7 @@ export const UTILITY_KEYS = [
   "NT:/AdvantageKit/DriverStation/Test", // AdvantageKit, pre-2027
   "DS:controlWord/robotMode", // DataLog, post-2027
   "DS:test", // DataLog, pre-2027
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "RobotMode", // Phoenix
   "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
@@ -66,14 +66,14 @@ export const UTILITY_KEYS = [
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "NT:/FMSInfo/IsRedAlliance", // NT
   "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
-  "DS:/Dscomm/Control/ControlData/ControlWord", // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "NT:/FMSInfo/StationNumber", // NT
   "AllianceStation" // Phoenix
 ];
@@ -81,7 +81,7 @@ export const JOYSTICK_KEYS = [
   "/DriverStation/Joystick", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/Joystick", // AdvantageKit
   "DS:joystick", // DataLog
-  "DS:/Dscomm/Control/ControlData/Joysticks/" // FIRST DS
+  "DS:/Dscomm/Control/Robot/ControlData/Joysticks/" // FIRST DS
 ];
 export const SYSTEM_TIME_KEYS = [
   "/SystemStats/EpochTimeMicros", // AdvantageKit
@@ -100,21 +100,21 @@ export const METADATA_KEYS = [
 export const EVENT_KEYS = [
   "/DriverStation/EventName", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/EventName", // FIRST DS
+  "DS:/Dscomm/Control/Robot/MatchInfo/EventName", // FIRST DS
   "NT:/FMSInfo/EventName", // NT
   "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/MatchType", // FIRST DS
+  "DS:/Dscomm/Control/Robot/MatchInfo/MatchType", // FIRST DS
   "NT:/FMSInfo/MatchType", // NT
   "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
-  "DS:/Dscomm/Control/MatchInfo/MatchNumber", // FIRST DS
+  "DS:/Dscomm/Control/Robot/MatchInfo/MatchNumber", // FIRST DS
   "NT:/FMSInfo/MatchNumber", // NT
   "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
@@ -640,7 +640,7 @@ export function getJoystickState(log: Log, joystickId: number, time: number): Jo
           } else {
             mapping = "sdl";
           }
-        } else if (joystickKey.endsWith("DS:/Dscomm/Control/ControlData/Joysticks/")) {
+        } else if (joystickKey.endsWith("DS:/Dscomm/Control/Robot/ControlData/Joysticks/")) {
           sourceType = "ds";
           mapping = "sdl";
         }
