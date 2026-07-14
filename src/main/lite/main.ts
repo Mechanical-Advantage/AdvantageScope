@@ -550,6 +550,8 @@ async function handleHubMessage(message: NamedMessage) {
                               localStorage.setItem(LocalStorageKeys.PREFS, JSON.stringify(newPrefs));
                               sendMessage(hubPort, "set-preferences", newPrefs);
                               if (reload) {
+                                // Switch to new language to get updated DS layout strings
+                                window.t = setupI18n(newLang);
                                 localStorage.setItem(LocalStorageKeys.STATE, JSON.stringify(getDefaultDsLayout()));
                                 location.reload();
                               }
