@@ -2704,83 +2704,91 @@ function createHubWindow(state?: WindowState) {
     firstLoad = false;
 
     // Beta init
-    let allowLocalizationPopup = true;
-    if (isBeta()) {
-      if (isBetaExpired()) {
-        allowLocalizationPopup = false;
-        let expiredDetail = "";
-        if (isAlpha()) {
-          expiredDetail =
-            DISTRIBUTION === Distribution.WPILib
-              ? t("main.survey.expiredAlphaWpilib")
-              : t("main.survey.expiredAlphaGithub");
-        } else {
-          expiredDetail =
-            DISTRIBUTION === Distribution.WPILib
-              ? t("main.survey.expiredBetaWpilib")
-              : t("main.survey.expiredBetaGithub");
-        }
-        dialog
-          .showMessageBox(window, {
-            type: "info",
-            title: t("main.warnings.alert"),
-            message: isAlpha() ? t("main.survey.alphaComplete") : t("main.survey.betaComplete"),
-            detail: expiredDetail,
-            buttons: [t("main.buttons.quit"), t("main.buttons.ignore")],
-            defaultId: 0
-          })
-          .then((result) => {
-            if (result.response === 0) app.quit();
-          });
-      } else if (!isBetaWelcomeComplete()) {
-        if (lang === "en-US") {
-          // Skip beta welcome for non-English users, since there is a separate popup explaining how to provide feedback on translations (and we don't want to overwhelm the user with popups).
-          openBetaWelcome(window);
-        }
-      } else if (shouldPromptBetaSurvey()) {
-        allowLocalizationPopup = false;
+    let showStartupPopups = () => {
+      let allowLocalizationPopup = true;
+      if (isBeta()) {
+        if (isBetaExpired()) {
+          allowLocalizationPopup = false;
+          let expiredDetail = "";
+          if (isAlpha()) {
+            expiredDetail =
+              DISTRIBUTION === Distribution.WPILib
+                ? t("main.survey.expiredAlphaWpilib")
+                : t("main.survey.expiredAlphaGithub");
+          } else {
+            expiredDetail =
+              DISTRIBUTION === Distribution.WPILib
+                ? t("main.survey.expiredBetaWpilib")
+                : t("main.survey.expiredBetaGithub");
+          }
+          dialog
+            .showMessageBox(window, {
+              type: "info",
+              title: t("main.warnings.alert"),
+              message: isAlpha() ? t("main.survey.alphaComplete") : t("main.survey.betaComplete"),
+              detail: expiredDetail,
+              buttons: [t("main.buttons.quit"), t("main.buttons.ignore")],
+              defaultId: 0
+            })
+            .then((result) => {
+              if (result.response === 0) app.quit();
+            });
+        } else if (!isBetaWelcomeComplete()) {
+          if (lang === "en-US") {
+            // Skip beta welcome for non-English users, since there is a separate popup explaining how to provide feedback on translations (and we don't want to overwhelm the user with popups).
+            openBetaWelcome(window);
+          }
+        } else if (shouldPromptBetaSurvey()) {
+          allowLocalizationPopup = false;
 
+          dialog
+            .showMessageBox(window, {
+              type: "info",
+              title: t("main.warnings.alert"),
+              message: t("main.survey.feedbackQuery"),
+              detail: isAlpha() ? t("main.survey.feedbackAlphaDetail") : t("main.survey.feedbackBetaDetail"),
+              buttons: [t("main.buttons.open"), t("main.survey.notNow")],
+              defaultId: 0
+            })
+            .then((result) => {
+              if (result.response === 0) {
+                openBetaSurvey();
+              } else {
+                delayBetaSurvey();
+              }
+            });
+        }
+      }
+
+      // Localization feedback popup
+      let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+      if (lang !== "en-US" && !prefs.skipLanguageWarning && allowLocalizationPopup) {
         dialog
           .showMessageBox(window, {
             type: "info",
             title: t("main.warnings.alert"),
-            message: t("main.survey.feedbackQuery"),
-            detail: isAlpha() ? t("main.survey.feedbackAlphaDetail") : t("main.survey.feedbackBetaDetail"),
-            buttons: [t("main.buttons.open"), t("main.survey.notNow")],
-            defaultId: 0
+            message: t("main.language.welcomeMessage"),
+            detail: t("main.language.welcomeDetail"),
+            checkboxLabel: t("main.buttons.dontShowAgain"),
+            buttons: [t("main.buttons.ok")],
+            defaultId: 0,
+            icon: WINDOW_ICON
           })
-          .then((result) => {
-            if (result.response === 0) {
-              openBetaSurvey();
-            } else {
-              delayBetaSurvey();
+          .then((response) => {
+            saveBetaWelcomeComplete(); // Mark beta welcome as complete so that the user doesn't get another popup later
+            if (response.checkboxChecked) {
+              prefs.skipLanguageWarning = true;
+              jsonfile.writeFileSync(PREFS_FILENAME, prefs);
+              sendAllPreferences();
             }
           });
       }
-    }
+    };
 
-    // Localization feedback popup
-    let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
-    if (lang !== "en-US" && !prefs.skipLanguageWarning && allowLocalizationPopup) {
-      dialog
-        .showMessageBox(window, {
-          type: "info",
-          title: t("main.warnings.alert"),
-          message: t("main.language.welcomeMessage"),
-          detail: t("main.language.welcomeDetail"),
-          checkboxLabel: t("main.buttons.dontShowAgain"),
-          buttons: [t("main.buttons.ok")],
-          defaultId: 0,
-          icon: WINDOW_ICON
-        })
-        .then((response) => {
-          saveBetaWelcomeComplete(); // Mark beta welcome as complete so that the user doesn't get another popup later
-          if (response.checkboxChecked) {
-            prefs.skipLanguageWarning = true;
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            sendAllPreferences();
-          }
-        });
+    if (window.isVisible()) {
+      showStartupPopups();
+    } else {
+      window.once("show", showStartupPopups);
     }
   });
   window.on("close", (event) => {
