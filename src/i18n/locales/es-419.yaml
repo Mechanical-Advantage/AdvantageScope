@@ -324,7 +324,12 @@ hub:
     tuningTitle: "Alternar modo de ajuste"
     fields_one: "1 campo"
     fields_other: "{{count}} campos"
-    title: "{{fields}}, {{runtime}}{{unit}} tiempo de ejecución"
+    titleSeconds_one: "{{fields}}, {{duration}} segundo"
+    titleSeconds_other: "{{fields}}, {{duration}} segundos"
+    titleMinutes_one: "{{fields}}, {{duration}} minuto"
+    titleMinutes_other: "{{fields}}, {{duration}} minutos"
+    titleHours_one: "{{fields}}, {{duration}} hora"
+    titleHours_other: "{{fields}}, {{duration}} horas"
     conflictTitle: "Tipos conflictivos"
     conflictMessage: "Se han escrito valores con tipos conflictivos en este campo. Solo se pueden ver y exportar los valores compatibles con el tipo inicial."
 

@@ -344,20 +344,20 @@ export default class Sidebar {
       title = t("hub.sidebar.titleDefault");
     } else {
       let runtime = range[1] - range[0];
-      let runtimeUnit = "s";
+      let key = "hub.sidebar.titleSeconds";
       if (runtime > 120) {
         runtime /= 60;
-        runtimeUnit = "m";
-      }
-      if (runtime > 120) {
-        runtime /= 60;
-        runtimeUnit = "h";
+        key = "hub.sidebar.titleMinutes";
+        if (runtime > 120) {
+          runtime /= 60;
+          key = "hub.sidebar.titleHours";
+        }
       }
       let fieldsText = t("hub.sidebar.fields", { count: this.fieldCount });
-      title = t("hub.sidebar.title", {
+      title = t(key, {
         fields: fieldsText,
-        runtime: formatNumberAuto(Math.floor(runtime)),
-        unit: runtimeUnit
+        count: Math.floor(runtime),
+        duration: formatNumberAuto(Math.floor(runtime))
       });
     }
     if (title !== this.SIDEBAR_TITLE.innerText) {

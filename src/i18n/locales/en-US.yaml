@@ -329,7 +329,12 @@ hub:
     tuningTitle: "Toggle tuning mode" # Sidebar tuning button tooltip
     fields_one: "1 field" # Singular field count
     fields_other: "{{count}} fields" # Plural fields count
-    title: "{{fields}}, {{runtime}}{{unit}} runtime" # Pluralized sidebar title format
+    titleSeconds_one: "{{fields}}, {{duration}} second" # Sidebar title format for log duration measured in seconds
+    titleSeconds_other: "{{fields}}, {{duration}} seconds" # Sidebar title format for log duration measured in seconds
+    titleMinutes_one: "{{fields}}, {{duration}} minute" # Sidebar title format for log duration measured in minutes
+    titleMinutes_other: "{{fields}}, {{duration}} minutes" # Sidebar title format for log duration measured in minutes
+    titleHours_one: "{{fields}}, {{duration}} hour" # Sidebar title format for log duration measured in hours
+    titleHours_other: "{{fields}}, {{duration}} hours" # Sidebar title format for log duration measured in hours
     conflictTitle: "Conflicting types" # Title for conflicting types alert
     conflictMessage: "Values with conflicting types have been written to this field. Only values compatible with the initial type can be viewed and exported." # Description for conflicting types alert
 
