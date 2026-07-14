@@ -12,7 +12,7 @@ La pestaña de gráfico de líneas tiene reconocimiento de unidades, lo que sign
 
 AdvantageScope admite varios métodos para proporcionar información sobre la unidad para cada campo. Se admiten las unidades más comunes; para obtener una lista completa, consulta el menú emergente al configurar la [conversión manual](#manual-conversion).
 
-Para (2) y (3), los tipos de unidades se analizan mediante cadenas de texto. AdvantageScope admite una amplia variedad de nombres comunes para cada unidad, incluidas múltiples variaciones (por ejemplo, `ft` y `feet` están bien). Si un nombre de unidad no se analiza como se esperaba, por favor [abre un issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
+Para (2) y (3), los tipos de unidades se analizan mediante cadenas de texto. AdvantageScope admite múltiples nombres para cada unidad, incluyendo abreviaturas comunes (por ejemplo, `ft` y `feet` están bien). Ten en cuenta que los nombres de las unidades se deben proporcionar utilizando símbolos SI o inglés estadounidense, independientemente del idioma seleccionado en AdvantageScope. Si un nombre de unidad no se analiza como se esperaba, por favor [abre un issue](https://github.com/Mechanical-Advantage/AdvantageScope/issues).
 
 :::tip
 ¿No estás seguro de si las unidades se están analizando correctamente? Comprueba si se muestra un tipo de unidad en el eje Y al agregar un campo al gráfico de líneas.
