@@ -11,7 +11,8 @@ import { themes as prismThemes } from "prism-react-renderer";
 import { LOCALIZATION_FEEDBACK_FORMS } from "../src/shared/LocalizationFeedbackForms";
 import { localizationFeedbackAnnouncement, offlineInfoAnnouncement } from "./announcements";
 
-const locale = process.env.DOCUSAURUS_CURRENT_LOCALE || "en-US";
+const envLocale = process.env.DOCUSAURUS_CURRENT_LOCALE;
+const locale = envLocale && envLocale !== "undefined" ? envLocale : "en-US";
 
 const config: Config = {
   title: "AdvantageScope",
