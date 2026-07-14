@@ -3,7 +3,7 @@ title: ¿Qué hay de nuevo en 2026?
 sidebar_position: 2
 ---
 
-# 
+#
 
 <img src="/img/whats-new/banner-light.png" className="light-only" />
 <img src="/img/whats-new/banner-dark.png" className="dark-only" />
@@ -62,8 +62,8 @@ _Se puede encontrar más información sobre el soporte de unidades en la [docume
 
 La siguiente tabla muestra la velocidad de transferencia medida en los lanzamientos de 2025 y 2026 de AdvantageScope mientras está conectado a través de Ethernet (ancho de banda máximo de 100 Mb/s). Ten en cuenta que el rendimiento de la versión de 2025 se ve gravemente afectado por la carga de la CPU en el roboRIO.
 
-|                                                    | 2025 (SFTP) | 2026 (FTP) | Aceleración                                      |
-| -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
+|                                                              | 2025 (SFTP) | 2026 (FTP) | Aceleración                                      |
+| ------------------------------------------------------------ | ----------- | ---------- | ------------------------------------------------ |
 | Carga alta de CPU<br /><sub>Código de robot complejo</sub>   | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
 | Carga promedio de CPU<br /><sub>Código de robot normal</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
 | Carga mínima de CPU<br /><sub>Sin código de robot</sub>      | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |

@@ -53,8 +53,8 @@ La tabla de medidas estadísticas muestra los valores calculados de cada medida 
 #### Centro
 
 - **[Media](https://es.wikipedia.org/wiki/Media_aritm%C3%A9tica):** La media aritmética (promedio simple) de los datos.
-- **[Mediana](https://es.wikipedia.org/wiki/Mediana_(estad%C3%ADstica)):** El valor "medio" de los datos, o el percentil 50%.
-- **[Moda](https://es.wikipedia.org/wiki/Moda_(estad%C3%ADstica)):** El valor más común en los datos.
+- **[Mediana](<https://es.wikipedia.org/wiki/Mediana_(estad%C3%ADstica)>):** El valor "medio" de los datos, o el percentil 50%.
+- **[Moda](<https://es.wikipedia.org/wiki/Moda_(estad%C3%ADstica)>):** El valor más común en los datos.
 - **[Media geométrica](https://es.wikipedia.org/wiki/Media_geom%C3%A9trica):** Una medida de centro calculada usando el producto de los valores en lugar de la suma. Aplicable al medir _tasas de crecimiento exponencial_ (como el cambio porcentual entre ciclos).
 - **[Media armónica](https://es.wikipedia.org/wiki/Media_arm%C3%B3nica):** Una medida de centro calculada usando la suma de los recíprocos de los valores. Aplicable al medir _tasas o velocidades_.
 - **[Media cuadrática](https://es.wikipedia.org/wiki/Media_cuadr%C3%A1tica):** Una medida de centro calculada usando los cuadrados de los valores. Aplicable al medir datos con _valores tanto positivos como negativos_, como el movimiento periódico.
