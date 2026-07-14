@@ -28,7 +28,7 @@ export function getDefaultDsLayout(): HubState {
             leftSources: [
               {
                 type: "stepped",
-                logKey: "DS:/Dscomm/Status/Rtt",
+                logKey: "DS:/Dscomm/Status/Timing/Rtt",
                 logType: "Number",
                 visible: true,
                 options: { color: "#3b875a", size: "normal" }
@@ -37,7 +37,7 @@ export function getDefaultDsLayout(): HubState {
             rightSources: [
               {
                 type: "stepped",
-                logKey: "DS:/Dscomm/Status/LostPackets",
+                logKey: "DS:/Dscomm/Status/Timing/LostPackets",
                 logType: "Number",
                 visible: true,
                 options: { color: "#e5b31b", size: "normal" }
@@ -46,21 +46,21 @@ export function getDefaultDsLayout(): HubState {
             discreteSources: [
               {
                 type: "stripes",
-                logKey: "DS:/Dscomm/Status/HasTcpConn",
+                logKey: "DS:/Dscomm/Status/Connection/HasTcpConn",
                 logType: "Boolean",
                 visible: true,
                 options: { color: "#2b66a2" }
               },
               {
                 type: "stripes",
-                logKey: "DS:/Dscomm/Status/HasUserCode",
+                logKey: "DS:/Dscomm/Status/Robot/HasUserCode",
                 logType: "Boolean",
                 visible: true,
                 options: { color: "#80588e" }
               },
               {
                 type: "stripes",
-                logKey: "DS:/Dscomm/Status/HasUserCodeReady",
+                logKey: "DS:/Dscomm/Status/Robot/HasUserCodeReady",
                 logType: "Boolean",
                 visible: true,
                 options: { color: "#e48b32" }
@@ -85,7 +85,7 @@ export function getDefaultDsLayout(): HubState {
             leftSources: [
               {
                 type: "stepped",
-                logKey: "DS:/Dscomm/Status/Battery",
+                logKey: "DS:/Dscomm/Status/Power/Battery",
                 logType: "Number",
                 visible: true,
                 options: { color: "#e5b31b", size: "normal" }
@@ -112,14 +112,14 @@ export function getDefaultDsLayout(): HubState {
             leftSources: [
               {
                 type: "stepped",
-                logKey: "DS:/Dscomm/Status/CPU",
+                logKey: "DS:/Dscomm/Status/Resources/CPU",
                 logType: "Number",
                 visible: true,
                 options: { color: "#af2437", size: "bold" }
               },
               {
                 type: "stepped",
-                logKey: "DS:/Dscomm/Status/DsCpuUtilization",
+                logKey: "DS:/Dscomm/Status/DriverStation/DsCpuUtilization",
                 logType: "Number",
                 visible: true,
                 options: { color: "#80588e", size: "normal" }
