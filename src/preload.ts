@@ -14,6 +14,7 @@ const t = setupI18n(lang);
 contextBridge.exposeInMainWorld("t", t);
 contextBridge.exposeInMainWorld("lang", lang);
 window.addEventListener("DOMContentLoaded", () => {
+  document.documentElement.lang = lang;
   translateHTML(document, t);
 });
 
@@ -32,11 +33,9 @@ try {
 } catch (e) {
   // Ignore
 }
-if (isRtl) {
-  window.addEventListener("DOMContentLoaded", () => {
-    document.documentElement.dir = "rtl";
-  });
-}
+window.addEventListener("DOMContentLoaded", () => {
+  document.documentElement.dir = isRtl ? "rtl" : "ltr";
+});
 
 const windowLoaded = new Promise((resolve) => {
   window.onload = resolve;

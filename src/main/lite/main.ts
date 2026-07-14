@@ -87,6 +87,7 @@ function getLocale(prefs: Preferences | null = null): string {
 
 window.t = setupI18n(lang);
 window.lang = lang;
+document.documentElement.lang = lang;
 translateHTML(document, t);
 
 // Set up RTL layout
@@ -101,9 +102,7 @@ try {
     isRtl = true;
   }
 } catch (e) {}
-if (isRtl) {
-  document.documentElement.dir = "rtl";
-}
+document.documentElement.dir = isRtl ? "rtl" : "ltr";
 
 /**
  * Open a new popup menu
@@ -157,8 +156,9 @@ function openPopupWindow(
     POPUP_FRAME.style.width = size[0].toString() + (type === "pixels" ? "px" : "%");
     POPUP_FRAME.style.height = size[1].toString() + (type === "pixels" ? "px" : "%");
     POPUP_FRAME.onload = () => {
-      if (isRtl && POPUP_FRAME.contentDocument?.documentElement) {
-        POPUP_FRAME.contentDocument.documentElement.dir = "rtl";
+      if (POPUP_FRAME.contentDocument?.documentElement) {
+        POPUP_FRAME.contentDocument.documentElement.lang = lang;
+        POPUP_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
       }
       POPUP_FRAME.hidden = false;
       HUB_FRAME.classList.add("background");
@@ -391,9 +391,10 @@ async function initHub() {
     capture: true
   });
 
-  // Set up RTL layout
-  if (isRtl && HUB_FRAME.contentDocument?.documentElement) {
-    HUB_FRAME.contentDocument.documentElement.dir = "rtl";
+  // Set up document attributes
+  if (HUB_FRAME.contentDocument?.documentElement) {
+    HUB_FRAME.contentDocument.documentElement.lang = lang;
+    HUB_FRAME.contentDocument.documentElement.dir = isRtl ? "rtl" : "ltr";
   }
 }
 
