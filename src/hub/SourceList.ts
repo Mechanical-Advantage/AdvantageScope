@@ -992,11 +992,7 @@ export default class SourceList {
       }
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    if (document.documentElement.dir === "rtl") {
-      typeNameElement.innerText = (typeNameComponents.length > 0 ? ":" : "") + typeNameComponents.join("/");
-    } else {
-      typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
-    }
+    typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;
@@ -1201,7 +1197,7 @@ export default class SourceList {
                 let countText = t("sourceList.values", { count: poseStrings.length });
                 let arrayText = "[" + poseStrings.map((str) => "(" + str + ")").join(", ") + "]";
                 if (document.documentElement.dir === "rtl") {
-                  text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
+                  text = "\u2068" + countText + "\u2069 \u2014 \u2068" + arrayText + "\u2069";
                 } else {
                   text = countText + " \u2014 " + arrayText;
                 }
@@ -1251,7 +1247,7 @@ export default class SourceList {
             let countText = t("sourceList.values", { count: value.length });
             let arrayText = getLogValueText(value, logType, true);
             if (document.documentElement.dir === "rtl") {
-              text = "\u2066" + countText + "\u2069 \u2014 \u2066" + arrayText + "\u2069";
+              text = "\u2068" + countText + "\u2069 \u2014 \u2068" + arrayText + "\u2069";
             } else {
               text = countText + " \u2014 " + arrayText;
             }

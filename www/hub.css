@@ -1278,7 +1278,6 @@ div.source-list div.item.child div.key-container {
   right: calc(55px + var(--type-width));
 }
 
-div.source-list div.type-name,
 div.source-list div.key-container span {
   unicode-bidi: plaintext;
 }
