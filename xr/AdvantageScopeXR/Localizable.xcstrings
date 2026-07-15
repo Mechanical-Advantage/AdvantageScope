@@ -84,7 +84,7 @@
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mover %@ para detectar el entorno."
+            "value" : "Mueve %@ para detectar el entorno."
           }
         },
         "fr" : {
@@ -297,7 +297,7 @@
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Escanear el código QR mostrado en AdvantageScope."
+            "value" : "Escanea el código QR mostrado en AdvantageScope."
           }
         },
         "fr" : {
@@ -439,7 +439,7 @@
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualizar AdvantageScope a la última versión, luego intentar de nuevo."
+            "value" : "Actualiza AdvantageScope a la última versión e intenta de nuevo."
           }
         },
         "fr" : {
@@ -510,7 +510,7 @@
         "es-419" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Actualizar AdvantageScope XR a la última versión, luego intentar de nuevo."
+            "value" : "Actualiza AdvantageScope XR a la última versión e intenta de nuevo."
           }
         },
         "fr" : {
