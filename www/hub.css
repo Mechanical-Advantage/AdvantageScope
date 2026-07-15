@@ -73,8 +73,8 @@ body.fancy-title-bar-win div.title-bar-text {
 div.title-bar-menu {
   position: absolute;
   inset-inline-start: calc(var(--side-bar-width) * 0.5);
-  width: calc(var(--side-bar-width) - 20px);
-  max-width: 250px;
+  width: max-content;
+  max-width: calc(var(--side-bar-width) - 20px);
   top: 19px;
   height: 36px;
   padding: 4px;
@@ -102,17 +102,13 @@ body.fancy-title-bar-lite div.title-bar-menu {
   display: initial;
 }
 
-body.fancy-title-bar-lite div.title-bar-menu {
-  max-width: 180px;
-}
-
 body.fancy-title-bar-lite div.title-bar-menu .hide-lite {
   display: none;
 }
 
 div.title-bar-menu table {
   height: 100%;
-  width: 100%;
+  width: max-content;
   border-collapse: collapse;
 }
 
@@ -122,11 +118,12 @@ div.title-bar-menu td {
 }
 
 div.title-bar-menu button {
-  width: 100%;
+  width: auto;
+  white-space: nowrap;
   height: 28px; /* Firefox doesn't support using "100%" here */
   font-size: 12px;
-  padding-inline-start: 3px;
-  padding-inline-end: 3px;
+  padding-inline-start: 6px;
+  padding-inline-end: 6px;
 }
 
 div.title-bar-menu button:focus-visible,
