@@ -6,7 +6,7 @@ La pestaña de gráfico de líneas tiene reconocimiento de unidades, lo que sign
 - Haz clic en los tres puntos cerca del título del eje para **cambiar rápidamente a unidades alternativas**. Esta lista incluye las unidades más comunes que son compatibles con los campos seleccionados.
 - Habilita **la integración o diferenciación** ([documentación](/tab-reference/line-graph/#integration--differentiation)) para ver las unidades precisas de la integral o derivada. La unidad base se puede ajustar utilizando el menú para admitir el filtrado en unidades no nativas.
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Gráficos con reconocimiento de unidades" />
 
 ## Formatos compatibles {#supported-formats}
 
@@ -48,10 +48,10 @@ Si las unidades se analizan incorrectamente, haz clic en `Unidades manuales` > `
 
 Cuando los metadatos de las unidades no están disponibles o son inexactos, los ejes también se pueden configurar manualmente para convertir entre unidades (o ignorar los metadatos de las unidades por completo).
 
-Para configurar la conversión manual, haz clic en los tres puntos cerca del título del eje y luego en `Unidades manuales` > `Editar conversión...`. Selecciona el tipo de unidad, la unidad de origen y la unidad de destino. Cada valor también se multiplica por el "Factor extra", lo que permite conversiones personalizadas (como relaciones de transmisión, conversiones angulares a lineales u otras unidades no proporcionadas por AdvantageScope). El factor también se puede ingresar usando una expresión matemática como `1.5*pi`.
+Para configurar la conversión manual, haz clic en los tres puntos cerca del título del eje y luego en `Unidades manuales` > `Editar conversión...`. Selecciona el tipo de unidad, la unidad de origen y la unidad de destino. Cada valor también se multiplica por el "Factor adicional", lo que permite conversiones personalizadas (como relaciones de transmisión, conversiones angulares a lineales u otras unidades no proporcionadas por AdvantageScope). El factor también se puede ingresar usando una expresión matemática como `1.5*pi`.
 
 :::tip
 Para habilitar o deshabilitar rápidamente la conversión de unidades, haz clic en los tres puntos cerca del título del eje y elige `Ajustes preestablecidos recientes` o `Restablecer unidades`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.png" alt="Editing unit conversion" height="250" />
+<img src="/img/tab-reference/line-graph/units-2.png" alt="Edición de la conversión de unidades" height="250" />

@@ -5,7 +5,7 @@ import TabItem from '@theme/TabItem';
 
 El campo 3D muestra una visualización 3D del robot y del campo. Se puede utilizar con poses 2D regulares, pero es especialmente útil cuando se trabaja con cálculos 3D (como localizar con AprilTags). Hay varias vistas de cámara disponibles, relativas al campo, relativas al robot y fijas. [AdvantageScope XR](advantagescope-xr) permite visualizar esta pestaña mediante realidad aumentada. La línea de tiempo muestra cuándo el robot está habilitado y se puede utilizar para navegar a través de los datos del registro.
 
-<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Example of 3D field tab" />
+<img src="/img/tab-reference/3d-field/3d-field-1.png" alt="Ejemplo de pestaña de campo 3D" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -16,7 +16,7 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándose horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
 
 </details>
 
@@ -103,7 +103,7 @@ Los datos de los mecanismos se pueden visualizar utilizando mecanismos 2D o comp
 
 Para visualizar los datos del mecanismo registrados utilizando un [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), agrega el campo del mecanismo a un objeto de robot o fantasma existente. El mecanismo se proyecta en el plano XZ o YZ del robot utilizando cuadros simples, como se muestra a continuación. Haz clic en el icono de engranaje o haz clic derecho en el nombre del campo para cambiar entre los planos XZ e YZ. El origen del robot está centrado en el borde inferior del mecanismo.
 
-<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
+<img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mecanismo 2D" />
 
 ### Componentes 3D
 
@@ -115,7 +115,7 @@ Los mecanismos se pueden visualizar con componentes articulados registrando un c
 
 Cada componente se puede mover de forma independiente (como un carro elevador, un brazo o un actuador final). Los usuarios de AdvantageKit deben considerar el uso del método [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) para convertir un Mechanism2d en una matriz de objetos Pose3d. Para obtener más información sobre la configuración de robots con componentes, consulta [Recursos personalizados](/more-features/custom-assets).
 
-<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mechanism" />
+<img src="/img/tab-reference/3d-field/3d-field-3.png" alt="Mecanismo 3D" />
 
 ## Objetos de elementos de juego {#game-piece-objects}
 
@@ -131,11 +131,11 @@ Otro caso de uso simple es mostrar el estado de los elementos de juego dentro de
 <details>
 <summary>Ejemplo de código</summary>
 
-El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de un [comando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) que anima una nota viajando desde el robot hasta el altavoz. Este comando se incorpora a la [secuencia de lanzamiento](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) estándar, activando la animación cada vez que se suelta una nota. [Este video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) muestra cómo las animaciones de elementos de juego se pueden utilizar para visualizar rutinas automáticas para varios juegos diferentes.
+El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de un [comando](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/util/NoteVisualizer.java) que anima una nota viajando desde el robot hasta el altavoz. Este comando se incorpora a la [secuencia de lanzamiento](https://github.com/Mechanical-Advantage/AdvantageKit/blob/18a0219f60108e3dc1e8512d59fcba0e657770af/example_projects/kitbot_2024/src/main/java/frc/robot/subsystems/launcher/Launcher.java#L73) estándar, activando la animación cada vez que se suelta una nota. [Este video](https://youtube.com/shorts/-HxfDo9f19U?feature=share) muestra cómo las animaciones de elementos de juego se pueden utilizar para visualizar rutinas autónomas para varios juegos diferentes.
 
 </details>
 
-<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
+<img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualización de la nota del KitBot 2024" />
 
 ## Opciones de cámara
 
@@ -157,7 +157,7 @@ La cámara también se puede controlar utilizando el teclado. Las teclas **WASD*
 
 Este modo tiene los mismos controles que el modo "Orbitar campo", pero la posición de la cámara está bloqueada en relación con el robot. Esto permite tomas de "seguimiento" del movimiento del robot.
 
-### Driver Station
+### Estación del conductor
 
 Este modo bloquea la cámara detrás de una de las estaciones de control a la altura típica de los ojos. Elige manualmente la estación a visualizar o elige "Automático" para usar la alianza y el número de estación almacenados en los datos de registro.
 
@@ -169,9 +169,9 @@ La selección automática del número de estación puede ser inexacta cuando se 
 
 Cada modelo de robot está configurado con un conjunto de cámaras fijas, como cámaras de visión y de conductor. Estas cámaras tienen posiciones, relaciones de aspecto y FOV fijos. Estas vistas suelen ser útiles para comprobar los datos de visión o para simular la vista de cámara del conductor. En el siguiente ejemplo, se muestra una cámara de conductor.
 
-<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Fixed camera" />
+<img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Cámara fija" />
 
-Si se proporciona una pose de "Anulación de cámara", reemplaza las poses predeterminadas de todas las cámaras fijas y conserva sus FOV y relaciones de aspecto configurados. Esto permite que el código del robot preocupe la posición de una cámara en movimiento, como una montada en una torreta o campana de disparador.
+Si se proporciona una pose de "Anulación de cámara", reemplaza las poses predeterminadas de todas las cámaras fijas y conserva sus FOV y relaciones de aspecto configurados. Esto permite que el código del robot proporcione la posición de una cámara en movimiento, como una montada en una torreta o capota del disparador.
 
 :::info
 De acuerdo con otros datos de poses, la pose "Anulación de cámara" debe ser _relativa al campo_, no relativa al robot.
@@ -191,9 +191,9 @@ El campo 3D admite tres modos de renderizado:
 
 - **Cinemático:** Renderiza usando sombras, iluminación, reflejos y modelos 3D de gran detalle para un aspecto más realista. Requiere una GPU decentemente potente.
 - **Estándar:** Renderiza con iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de los dispositivos.
-- **Baja potencia:** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
+- **Bajo consumo:** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
 
-<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparion of rendering modes" />
+<img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparación de modos de renderizado" />
 
 Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `Aplicación` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
 

@@ -1,6 +1,6 @@
 # AdvantageScope XR
 
-AdvantageScope XR le da vida a la vista 👀 [Campo 3D](/tab-reference/3d-field) en realidad aumentada, lo que te permite visualizar datos de formas totalmente nuevas. ¡Mira un auto simulado en tamaño real, revisa la estrategia del partido con un modelo de campo de mesa, superpón información de diagnóstico en un robot real y mucho más! El siguiente video demuestra varios casos de uso para esta función:
+AdvantageScope XR le da vida a la vista 👀 [Campo 3D](/tab-reference/3d-field) en realidad aumentada, lo que te permite visualizar datos de formas totalmente nuevas. ¡Mira una rutina autónoma simulada a tamaño real, revisa la estrategia del partido con un modelo de campo de mesa, superpón información de diagnóstico en un robot real y mucho más! El siguiente video demuestra varios casos de uso para esta función:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -32,11 +32,11 @@ AdvantageScope XR solo es compatible con iOS y iPadOS. No hay planes inmediatos 
 
 1. En el sistema host, **haz clic en el botón "XR"** en cualquier pestaña de campo 3D. Solo una sesión de host de XR puede estar activa al mismo tiempo, por lo que hacer clic en este botón interrumpirá cualquier otra sesión activa.
 
-<img src="/img/tab-reference/3d-field/xr-1.png" alt="XR button" height="450" />
+<img src="/img/tab-reference/3d-field/xr-1.png" alt="Botón XR" height="450" />
 
 2. Se abrirá la **ventana de controles de XR**, con un código QR y [opciones](#options) para personalizar la experiencia de realidad aumentada. Para cancelar la sesión de XR y desconectar cualquier cliente, cierra la ventana de controles.
 
-<img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
+<img src="/img/tab-reference/3d-field/xr-2.png" alt="Ventana XR" height="350" />
 
 3. Escanea el código QR utilizando la **aplicación de cámara integrada** en el dispositivo cliente. No se requiere instalación de la aplicación.
 4. Toca "AdvantageScope XR" y luego "Abrir" para **iniciar la experiencia** y conectarte al host. Si se te solicita, permite que AdvantageScope XR acceda a la **cámara y red local**.
@@ -57,10 +57,10 @@ AdvantageScope XR es una aplicación exigente y puede experimentar problemas de 
 La ventana de controles XR presenta varias opciones que controlan cómo se muestra el modelo en la realidad aumentada:
 
 - **Calibración:**
-  - Elige _Miniature_ para visualizar una versión reducida del campo, adecuada para uso de mesa.
+  - Elige _Miniatura_ para visualizar una versión reducida del campo, adecuada para uso de mesa.
   - Elige _Tamaño completo_ para visualizar el campo con una escala precisa, posicionado en base a una barrera de campo real. Cambiar entre la _Alianza azul_ y la _Alianza roja_ controla qué lado del campo se usa para la calibración, pero se visualiza el campo completo en todos los casos.
 - **Transmisión:**
-  - Elige _Fluida_ para aplicaciones donde cierta latencia es aceptable a cambio de una transmisión más confiable, como simular rutinas automáticas o reproducir archivos de registro.
+  - Elige _Fluida_ para aplicaciones donde cierta latencia es aceptable a cambio de una transmisión más confiable, como simular rutinas autónomas o reproducir archivos de registro.
   - Elige _Baja latencia_ para aplicaciones en tiempo real donde cierto salto (jitter) es aceptable, como la superposición de datos en un robot real o conducir un robot simulado en teleop.
 - **Mostrar piso:** Muestra el modelo plano de alfombra/baldosa debajo del campo en lugar de superponerlo en una superficie real.
 - **Mostrar campo:** Muestra el modelo del campo, incluyendo la barrera del campo y los elementos específicos del juego. Los [objetos de elementos de juego](/tab-reference/3d-field#game-piece-objects) personalizados siempre se muestran.
@@ -73,5 +73,5 @@ AdvantageScope XR no requiere una conexión a Internet. Para asegurarse de que l
 [<img src="/img/tab-reference/3d-field/app-store.svg" alt="App Store" />](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
 
 :::note
-Even cuando se ejecuta sin conexión a Internet, los dispositivos host y cliente **deben estar conectados a la misma red** (como un robot, una red Wi-Fi personalizada o mediante conexión compartida USB).
+Incluso cuando se ejecuta sin conexión a Internet, los dispositivos host y cliente **deben estar conectados a la misma red** (como un robot, una red Wi-Fi personalizada o mediante conexión compartida USB).
 :::

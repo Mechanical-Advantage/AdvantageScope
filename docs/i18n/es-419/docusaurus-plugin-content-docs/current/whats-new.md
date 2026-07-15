@@ -14,7 +14,7 @@ sidebar_position: 2
 
 ## ✴️ Experimental: Soporte de FTC {#ftc-support}
 
-En preparación para el soporte completo con Systemcore en la temporada 2027-2028, este lanzamiento agrega varias características para mejorar la compatibilidad con el sistema de control existente de FIRST Tech Challenge:
+En preparación para el soporte completo con Systemcore en la temporada 2027-2028, este lanzamiento agrega varias características para mejorar la compatibilidad con el sistema de control existente de Reto Tecnológico FIRST (FTC):
 
 - Campos de FTC y modelos de robots en el 🗺️ [Campo 2D](/tab-reference/2d-field) y 👀 [Campo 3D](/tab-reference/3d-field)
 - Nuevas opciones de [sistemas de coordenadas](/more-features/coordinate-systems) para compatibilidad con [coordenadas estándar de FTC](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
@@ -54,7 +54,7 @@ La siguiente captura de pantalla muestra todas estas características en acción
 
 _Se puede encontrar más información sobre el soporte de unidades en la [documentación](/tab-reference/line-graph/units)._
 
-<img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
+<img src="/img/tab-reference/line-graph/units-1.png" alt="Gráficos con reconocimiento de unidades" />
 
 ## 🏁 Descargas de registros más rápidas {#faster-log-downloads}
 
@@ -72,17 +72,17 @@ La siguiente tabla muestra la velocidad de transferencia medida en los lanzamien
 
 La ventana de descarga ahora admite guardar registros que están almacenados en subcarpetas. Cada subcarpeta de registros se puede descargar como grupo, lo que proporciona un enfoque simplificado para descargar registros generados por la versión 2026 del [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (que usa subcarpetas como solución alternativa por no poder almacenar datos en un solo archivo de registro).
 
-<img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
+<img src="/img/whats-new/subfolders.png" alt="Descargando subcarpetas de registro" height="450" />
 
 ## 🌈 Nuevas opciones de visualización {#new-visualization-options}
 
 Se admiten varias opciones nuevas de visualización en el 🗺️ [Campo 2D](/tab-reference/2d-field) y el 👀 [Campo 3D](/tab-reference/3d-field):
 
-- Ahora está disponible una variedad más amplia de colores de parachoques (bumpers) de robots en el campo 2D, y cada objeto se puede configurar con su propio color. Esto permite una mayor flexibilidad al combinar fantasmas con múltiples objetos de robot.
+- Ahora está disponible una variedad más amplia de colores de parachoques de robots en el campo 2D, y cada objeto se puede configurar con su propio color. Esto permite una mayor flexibilidad al combinar fantasmas con múltiples objetos de robot.
 - Al [visualizar mecanismos 2D en el campo 3D](/tab-reference/3d-field/#2d-mechanisms), los mecanismos ahora se pueden colocar en el plano YZ además del plano XZ. Esto permite una visualización más fácil de mecanismos complejos con movimiento en múltiples ejes.
 - El campo 3D ahora admite anti-aliasing opcional para mejorar la calidad de los bordes renderizados.
 
-<img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
+<img src="/img/whats-new/field-viz.jpg" alt="Nuevas visualizaciones de campo" />
 
 ## 🪵 Soporte de Log de REV Robotics CAN {#rev-robotics-can-log-support}
 
@@ -90,19 +90,19 @@ Ahora puedes abrir archivos `.revlog` producidos por el [`StatusLogger`](https:/
 
 Tanto URCL como el `StatusLogger` oficial permanecerán disponibles durante la temporada 2026 para garantizar una transición sin problemas y proporcionar paridad de funciones con las temporadas anteriores. Tendremos más detalles para compartir sobre las opciones de registro en 2027 y más allá en una fecha posterior.
 
-<img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
+<img src="/img/whats-new/revlog.png" alt="Visualización de REVLOG" />
 
 ## 💿 Importaciones de archivos CSV {#csv-file-imports}
 
 Para una visualización más flexible de los datos producidos fuera de los marcos de registro del robot, AdvantageScope ahora incluye soporte básico para importar archivos CSV. Consulta la [documentación](/overview/log-files/#csv-formatting) para obtener más detalles sobre los formatos compatibles y otras limitaciones.
 
-<img src="/img/overview/log-files/export-2.png" alt="CSV data" />
+<img src="/img/overview/log-files/export-2.png" alt="Datos CSV" />
 
 ## 🤩 Mejoras estéticas {#aesthetic-improvements}
 
 La interfaz de usuario de AdvantageScope en Windows 11 se ha actualizado para admitir una barra lateral translúcida, que antes era exclusiva para los lanzamientos de macOS. También hay un ícono de aplicación actualizado para macOS Tahoe basado en el material Liquid Glass de Apple.
 
-<img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
+<img src="/img/whats-new/windows-ui.png" alt="Interfaz de usuario de Windows" />
 
 ## 📋 Menús optimizados {#streamlined-menus}
 

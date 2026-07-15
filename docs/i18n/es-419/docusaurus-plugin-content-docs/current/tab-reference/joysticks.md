@@ -6,7 +6,7 @@ sidebar_position: 8
 
 La pestaña de joysticks muestra el estado de hasta seis controladores conectados. La siguiente imagen muestra un diseño de ejemplo, con dos controladores de Xbox y un joystick genérico. Cada botón se resalta cuando se presiona, y se muestran los estados de los joysticks y otros ejes.
 
-<img src="/img/tab-reference/joysticks-1.png" alt="Overview of joystick tab" />
+<img src="/img/tab-reference/joysticks-1.png" alt="Resumen de la pestaña de joysticks" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -17,7 +17,7 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
 
 </details>
 

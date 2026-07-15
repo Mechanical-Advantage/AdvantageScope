@@ -30,7 +30,7 @@ label: "Más funciones",
 href: "/category/more-features"
 },
 {
-type: "category",
+type: "link",
 label: "Conferencia del campeonato",
 href: "/overview/champs-conference"
 }

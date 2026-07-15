@@ -4,7 +4,7 @@
     "description": "The label for version current"
   },
   "sidebar.sidebar.category.Overview": {
-    "message": "Vista general",
+    "message": "Descripción general",
     "description": "The label for category 'Overview' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Overview.link.generated-index.description": {
@@ -40,7 +40,7 @@
     "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.More Features": {
-    "message": "Más características",
+    "message": "Más funciones",
     "description": "The label for category 'More Features' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.⚙️ Custom Assets": {

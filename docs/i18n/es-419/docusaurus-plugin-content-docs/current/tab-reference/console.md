@@ -13,7 +13,7 @@ La vista de la consola está diseñada para ver un solo campo de cadena con dato
 
 Arrastra el campo deseado a la vista principal para comenzar. Cada fila representa una actualización del campo. Para los registros de WPILib, se crea una nueva fila por cada línea guardada. Para los registros de AdvantageKit, se crea una nueva fila por cada ciclo de bucle.
 
-<img src="/img/tab-reference/console-1.png" alt="Console view" />
+<img src="/img/tab-reference/console-1.png" alt="Vista de la consola" />
 
 :::info
 Haz clic en el icono de la paleta de colores para alternar el resaltado de los mensajes de advertencia y error. Para los registros de WPILib y AdvantageKit, los mensajes se resaltan si contienen el texto "warning" o "error".

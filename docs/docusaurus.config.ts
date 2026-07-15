@@ -10,6 +10,7 @@ import type { Config } from "@docusaurus/types";
 import { themes as prismThemes } from "prism-react-renderer";
 import { LOCALIZATION_FEEDBACK_FORMS } from "../src/shared/LocalizationFeedbackForms";
 import { localizationFeedbackAnnouncement, offlineInfoAnnouncement } from "./announcements";
+import youtubeLocaleRehypePlugin from "./youtubeLocales";
 
 const envLocale = process.env.DOCUSAURUS_CURRENT_LOCALE;
 const locale = envLocale && envLocale !== "undefined" ? envLocale : "en-US";
@@ -64,7 +65,8 @@ const config: Config = {
         docs: {
           routeBasePath: "/",
           sidebarPath: "./sidebars.ts",
-          sidebarCollapsed: true
+          sidebarCollapsed: true,
+          rehypePlugins: [youtubeLocaleRehypePlugin]
         },
         theme: {
           customCss: "./src/css/custom.css"

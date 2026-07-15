@@ -2,7 +2,7 @@
 
 La captura de pantalla a continuación muestra los elementos importantes de la ventana principal de AdvantageScope. La apariencia exacta difiere entre sistemas operativos.
 
-<img src="/img/overview/navigation/navigation-1.png" alt="Navigation diagram" />
+<img src="/img/overview/navigation/navigation-1.png" alt="Diagrama de navegación" />
 
 :::tip
 Para ver varios archivos de registro simultáneamente, haz clic en `Archivo` > `Nueva ventana`.
@@ -33,13 +33,13 @@ Las pestañas se pueden reorganizar haciendo clic y arrastrando, o se les puede 
 Los botones de navegación (verde) en la parte superior gestionan las pestañas y controlan la reproducción.
 
 - **Botón Más (+):** Abre un menú desplegable para crear una nueva pestaña.
-- **Botón Ventana:** Crea una nueva ventana emergente con la pestaña actual. Esta función se puede utilizar para ver datos de múltiples pestañas simultáneamente.
+- **Botón Ventana:** Separa la pestaña actual en una nueva ventana. Esta función se puede utilizar para ver datos de múltiples pestañas simultáneamente.
 - **Botón X:** Cierra la pestaña actual.
 - **Botón de reproducción:** Inicia y detiene la reproducción en tiempo real. _Haz clic derecho para cambiar la velocidad de reproducción o habilitar la repetición (loop)._
 
 ## Panel del visor
 
-El panel del visor es donde se presentan los datos para cada tipo de pestaña. Consulta la documentación de referencia de la pestaña para obtener detalles sobre el panel del visor para cada pestaña. Esta vista se puede mover a una ventana separada haciendo clic en el botón de ventana emergente en la barra de pestañas.
+El panel del visor es donde se presentan los datos para cada tipo de pestaña. Consulta la documentación de referencia de la pestaña para obtener detalles sobre el panel del visor para cada pestaña. Esta vista se puede mover a una ventana separada haciendo clic en el botón de separar en la barra de pestañas.
 
 ## Panel de control
 

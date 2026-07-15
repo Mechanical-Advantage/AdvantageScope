@@ -4,15 +4,15 @@ betaWelcome:
   betaRelease: "ESTA ES UNA VERSIÓN BETA"
   alphaRelease: "ESTA ES UNA VERSIÓN ALFA"
   descDesktop: "Gracias por ayudar a probar y mejorar las próximas funciones de AdvantageScope. Marca las casillas a continuación para confirmar cada declaración antes de continuar."
-  descLite: "Gracias por ayudar a probar y mejorar AdvantageScope Lite. Marca las casillas a continuación para confirmar cada declaración antes de continuar."
+  descLite: "¡Gracias por ayudar a probar y mejorar AdvantageScope Lite! Marca las casillas a continuación para confirmar cada declaración antes de continuar."
   checkUnstable: "Entiendo que esta es una versión inestable y que encontraré problemas que no están presentes en las versiones estables."
   checkReport: "Acepto informar cualquier problema que encuentre a los desarrolladores, lo cual ayudará a mejorar futuras versiones."
-  checkFeedback: "Acepto dar mis comentarios a los desarrolladores si me preguntan sobre mi experiencia al usar esta versión."
+  checkFeedback: "Acepto proporcionar comentarios a los desarrolladores si me preguntan sobre mi experiencia al usar esta versión."
   help: 'En cualquier momento, haz clic en el <span class="purple">ícono morado</span> en la barra de título para informar un problema, solicitar una función o hacer una pregunta.'
   continue: "Continuar"
 
 download:
-  title: "Descargar registros &mdash; AdvantageScope"
+  title: "Descargar registros — AdvantageScope"
   cancel: "Cancelar"
   download: "Descargar"
   errorNoFolder: "No se pudo abrir la carpeta de registros en <u>{{path}}</u>"
@@ -30,14 +30,14 @@ download:
   alertSelectLog: "Selecciona un registro para descargar."
 
 editFov:
-  title: "Editar FOV &mdash; AdvantageScope"
+  title: "Editar FOV — AdvantageScope"
   label: "FOV de la cámara"
   inputTitle: "Establecer FOV de la cámara (grados)"
   cancel: "Cancelar"
   confirm: "Confirmar"
 
 editRange:
-  title: "Editar rango &mdash; AdvantageScope"
+  title: "Editar rango — AdvantageScope"
   labelMax: "Valor máximo"
   inputMaxTitle: "Valor máximo"
   labelMin: "Valor mínimo"
@@ -47,11 +47,11 @@ editRange:
   alertError: "El valor máximo debe ser mayor que el mínimo."
 
 export:
-  title: "Exportar &mdash; AdvantageScope"
+  title: "Exportar — AdvantageScope"
   format: "Formato"
   formatSelectTitle: "Seleccionar formato de exportación"
-  formatCsvTable: "CSV (tabla)"
-  formatCsvList: "CSV (lista)"
+  formatCsvTable: "CSV (Tabla)"
+  formatCsvList: "CSV (Lista)"
   formatWpilog: "WPILOG"
   formatMcap: "MCAP"
   timestamps: "Marcas de tiempo"
@@ -72,7 +72,7 @@ export:
   helpTitle: "Abrir documentación de exportación"
 
 preferences:
-  title: "Preferencias &mdash; AdvantageScope"
+  title: "Preferencias — AdvantageScope"
   language: "Idioma 🌐"
   languageSelectTitle: "Seleccionar el idioma de la aplicación"
   languageSystemDefault: "Predeterminado del sistema"
@@ -128,7 +128,7 @@ preferences:
   confirm: "Confirmar"
 
 renameTab:
-  title: "Renombrar pestaña &mdash; AdvantageScope"
+  title: "Renombrar pestaña — AdvantageScope"
   label: "Nombre de la pestaña"
   inputTitle: "Ingresar nombre de la pestaña"
   cancel: "Cancelar"
@@ -144,30 +144,30 @@ satellite:
   consoleHighlight: "Resaltar mensajes de advertencia/error"
 
 sourceListHelp:
-  title: "Ayuda de {{name}} &mdash; AdvantageScope"
-  titleDefault: "Ayuda &mdash; AdvantageScope"
+  title: "Ayuda de {{name}} — AdvantageScope"
+  titleDefault: "Ayuda — AdvantageScope"
   parentWarning: "Agregar al elemento existente {{items, list(type: disjunction)}}."
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "Fuente: {{list, list(type: disjunction)}}"
   sources_other: "Fuentes: {{list, list(type: disjunction)}}"
 
 unitConversion:
-  title: "Conversión de unidades &mdash; AdvantageScope"
+  title: "Conversión de unidades — AdvantageScope"
   unitType: "Tipo de unidad"
   unitTypeSelectTitle: "Seleccionar el tipo de dimensión de unidad"
   fromUnit: "De unidad"
   fromUnitSelectTitle: "Seleccionar la unidad desde la cual convertir"
   toUnit: "A unidad"
   toUnitSelectTitle: "Seleccionar la unidad a la cual convertir"
-  extraFactor: "Factor extra"
+  extraFactor: "Factor adicional"
   extraFactorInputTitle: "Ingresar el factor de escala personalizado (multiplicador)"
   cancel: "Cancelar"
   confirm: "Confirmar"
   notAvailable: "N/D"
-  alertError: "No se pudo analizar el factor extra."
+  alertError: "No se pudo analizar el factor adicional."
 
 uploadAsset:
-  title: "Subir recurso &mdash; AdvantageScope"
+  title: "Subir recurso — AdvantageScope"
   menuTitle: "Subir recurso"
   inputTitle: "Elegir archivo zip con los recursos"
   progressDefault: "Elige un archivo zip que contenga los recursos de AdvantageScope.<br />Consulta la documentación de AdvantageScope Lite para obtener más información sobre los formatos de archivo compatibles."
@@ -178,7 +178,7 @@ uploadAsset:
   progressFailedWithStatus: "La subida falló: {{status}}"
 
 xrControls:
-  title: "Controles XR &mdash; AdvantageScope"
+  title: "Controles XR — AdvantageScope"
   header: "Escanea el código para iniciar AdvantageScope XR"
   scanInstructions: "No se necesita instalar ninguna aplicación."
   requirements: "Requiere un iPhone o iPad conectado a la misma red Wi-Fi. Consulta la documentación para obtener detalles."
@@ -263,7 +263,7 @@ sourceList:
     small: "Pequeña"
 
 licenses:
-  title: "Licencias &mdash; AdvantageScope"
+  title: "Licencias — AdvantageScope"
 
 hub:
   title: "AdvantageScope"
@@ -372,7 +372,7 @@ hub:
       cone: "Cono"
       cameraOverride: "Anulación de cámara"
     options:
-      bumpers: "Bumpers"
+      bumpers: "Parachoques"
       color: "Color"
       size: "Grosor"
       arrangement: "Disposición"
@@ -691,7 +691,7 @@ menu:
   help:
     heading: "Ayuda"
     reportProblem: "Informar un problema"
-    contactUs: "Contáctenos"
+    contactUs: "Contáctanos"
     githubRepo: "Repositorio de GitHub"
     advantagescopeDocs: "Documentación de AdvantageScope"
     dsDocs: "Documentación de la Driver Station"
@@ -844,9 +844,9 @@ main:
     failedProcessDetail: "Hubo un problema al procesar el video. Por favor, intenta de nuevo."
     copyUrl: "Copiar URL al portapapeles"
     copyUrlDetail: "Copia una URL de YouTube al portapapeles, luego intenta de nuevo."
-    youtubeFailed: "Fallo la descarga de YouTube"
+    youtubeFailed: "Falló la descarga de YouTube"
     youtubeFailedDetail: "Hubo un error al intentar abrir el video de YouTube. Ten en cuenta que esta función puede fallar inesperadamente debido a cambios en los servidores de YouTube. Busca actualizaciones o elige un archivo de video local en su lugar."
-    tbaFailed: "Fallo la descarga de TBA"
+    tbaFailed: "Falló la descarga de TBA"
     tbaFailedDetail: "Hubo un problema al encontrar el video de la partida en The Blue Alliance. Verifica tu clave API o carga el video usando una URL de YouTube o un archivo local en su lugar."
     openTitle: "Seleccionar un video para abrir"
     filter: "Videos"
@@ -983,7 +983,7 @@ units:
     kilometers: "{{value}} km"
     feet_one: "{{value}} pie"
     feet_other: "{{value}} pies"
-    yard_one: "{{value}} yarda"
+    yards_one: "{{value}} yarda"
     yards_other: "{{value}} yardas"
     miles_one: "{{value}} milla"
     miles_other: "{{value}} millas"
@@ -992,7 +992,8 @@ units:
     rotations: "{{value}} rot"
     metersPerSecond: "{{value}} m/s"
     inchesPerSecond: "{{value}} pulg/s"
-    feetPerSecond: "{{value}} pies/s"
+    feetPerSecond_one: "{{value}} pie/s"
+    feetPerSecond_other: "{{value}} pies/s"
     milesPerHour: "{{value}} mph"
     kilometersPerHour: "{{value}} kph"
     radiansPerSecond: "{{value}} rad/s"
@@ -1001,7 +1002,8 @@ units:
     rotationsPerMinute: "{{value}} rpm"
     metersPerSecondSquared: "{{value}} m/s²"
     inchesPerSecondSquared: "{{value}} pulg/s²"
-    feetPerSecondSquared: "{{value}} pies/s²"
+    feetPerSecondSquared_one: "{{value}} pie/s²"
+    feetPerSecondSquared_other: "{{value}} pies/s²"
     standardGravity: "{{value}} g"
     radiansPerSecondSquared: "{{value}} rad/s²"
     degreesPerSecondSquared: "{{value}}°/s²"
@@ -1053,11 +1055,16 @@ units:
     centimetersSeconds: "{{value}} cm·s"
     kilometersPerSecond: "{{value}} km/s"
     kilometersSeconds: "{{value}} km·s"
-    feetSeconds: "{{value}} pies·s"
-    yardsPerSecond: "{{value}} yardas/s"
-    yardsSeconds: "{{value}} yardas·s"
-    milesPerSecond: "{{value}} millas/s"
-    milesSeconds: "{{value}} millas·s"
+    feetSeconds_one: "{{value}} pie·s"
+    feetSeconds_other: "{{value}} pies·s"
+    yardsPerSecond_one: "{{value}} yarda/s"
+    yardsPerSecond_other: "{{value}} yardas/s"
+    yardsSeconds_one: "{{value}} yarda·s"
+    yardsSeconds_other: "{{value}} yardas·s"
+    milesPerSecond_one: "{{value}} milla/s"
+    milesPerSecond_other: "{{value}} millas/s"
+    milesSeconds_one: "{{value}} milla·s"
+    milesSeconds_other: "{{value}} millas·s"
     radiansSeconds: "{{value}} rad·s"
     degreesSeconds: "{{value}}°·s"
     rotationsSeconds: "{{value}} rot·s"
@@ -1069,7 +1076,8 @@ units:
     rotationsPerMinuteSeconds: "{{value}} rpm·s"
     metersPerSecondCubed: "{{value}} m/s³"
     inchesPerSecondCubed: "{{value}} pulg/s³"
-    feetPerSecondCubed: "{{value}} pies/s³"
+    feetPerSecondCubed_one: "{{value}} pie/s³"
+    feetPerSecondCubed_other: "{{value}} pies/s³"
     standardGravityPerSecond: "{{value}} g/s"
     standardGravitySeconds: "{{value}} g·s"
     radiansPerSecondCubed: "{{value}} rad/s³"

@@ -30,7 +30,7 @@ label: "More Features",
 href: "/category/more-features"
 },
 {
-type: "category",
+type: "link",
 label: "Championship Conference",
 href: "/overview/champs-conference"
 }

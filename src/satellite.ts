@@ -152,7 +152,7 @@ window.addEventListener("message", (event) => {
             titleElement.innerHTML =
               (type !== null ? getTabIcon(type) + " " : "") +
               htmlEncode(newTitle) +
-              " &mdash; " +
+              " — " +
               htmlEncode(windowTitleSuffix);
             title = newTitle;
           }

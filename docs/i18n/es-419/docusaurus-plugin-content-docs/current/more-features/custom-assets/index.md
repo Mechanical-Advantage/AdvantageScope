@@ -117,7 +117,7 @@ Se debe incluir una imagen en la carpeta con el nombre "image.png". El archivo d
 Los botones, joysticks y valores de los ejes son compatibles tanto con las vinculaciones de [SDL](https://www.libsdl.org) (usadas por la FIRST Driver Station actual) como con las vinculaciones de NI (usadas por la antigua NI FRC Driver Station). Se debe proporcionar al menos un conjunto de vinculaciones para cada componente. Para las vinculaciones de NI, AdvantageScope es compatible con versiones anteriores de las claves de configuración antiguas sin prefijo (por ejemplo, `sourceIndex`). **Todos los nuevos joysticks deben usar vinculaciones SDL explícitas (por ejemplo, `sdlSourceIndex`) para compatibilidad con la FIRST Driver Station actual.**
 :::
 
-### Un solo botón / Valor de POV
+### Un solo botón / valor de POV
 
 ```json
 {

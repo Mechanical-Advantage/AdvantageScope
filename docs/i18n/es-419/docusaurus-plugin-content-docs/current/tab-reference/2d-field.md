@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña de campo 2D muestra una visualización 2D del robot superpuesta en un mapa del campo. También puede mostrar datos adicionales, como el estado de puntería de visión y poses de referencia.
 
-<img src="/img/tab-reference/2d-field-1.png" alt="Overview of 2D field tab" />
+<img src="/img/tab-reference/2d-field-1.png" alt="Resumen de la pestaña de campo 2D" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -20,7 +20,7 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
 
 </details>
 
@@ -34,7 +34,7 @@ Los objetos se pueden reorganizar en la lista haciendo clic y arrastrando. **Par
 Para ver una lista completa de tipos de objetos compatibles, haz clic en el ícono `?`. Esta lista también incluye los tipos de datos compatibles y si los objetos deben agregarse como elementos secundarios.
 :::
 
-<img src="/img/tab-reference/2d-field-2.png" alt="2D field with objects" />
+<img src="/img/tab-reference/2d-field-2.png" alt="Campo 2D con objetos" />
 
 ## Formato de datos
 

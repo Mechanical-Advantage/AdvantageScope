@@ -36,7 +36,7 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Abrir el menú desplegable para agregar una nueva pestaña</td></tr>
-<tr><td>`Ctrl+Shift+T`</td><td>Crear una nueva ventana emergente (pop-out) para la pestaña actual</td></tr>
+<tr><td>`Ctrl+Shift+T`</td><td>Separar la pestaña actual</td></tr>
 <tr><td>`Ctrl+Left` y `Ctrl+Right`</td><td>Cambiar de pestaña</td></tr>
 <tr><td>`Ctrl+[` y `Ctrl+]`</td><td>Reordenar pestañas</td></tr>
 <tr><td>`Ctrl+W`</td><td>Cerrar la pestaña actual</td></tr>

@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña de puntos muestra una visualización 2D de puntos arbitrarios. Esta es una herramienta muy flexible, que permite visualizaciones personalizadas de datos/pipelines de visión, estados de mecanismos, etc.
 
-<img src="/img/tab-reference/points-1.png" alt="Point tab example" />
+<img src="/img/tab-reference/points-1.png" alt="Ejemplo de pestaña de puntos" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -20,7 +20,7 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándote horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
 
 </details>
 

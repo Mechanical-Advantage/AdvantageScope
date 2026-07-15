@@ -58,10 +58,8 @@ Los nombres de las columnas CSV deben ser "Timestamp, Key, Value" o "Timestamp, 
 
 - **Booleanos:** `true` o `false`
 - **Cadenas de texto (Strings):** `"(valor)"`
-- Ejemplo: `"Hola mundo"`
-
+  - Ejemplo: `"Hola mundo"`
 - **Arreglos:** `[(valor); (valor); (valor)]`
-- Ejemplo: `[1; 2; 3]`
-
+  - Ejemplo: `[1; 2; 3]`
 - **Bytes:** hexadecimal, separados por `-`
-- Ejemplo: `4d-41-36-33-32-38`
+  - Ejemplo: `4d-41-36-33-32-38`

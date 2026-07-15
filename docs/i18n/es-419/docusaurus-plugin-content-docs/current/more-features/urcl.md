@@ -163,7 +163,7 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 </TabItem>
 </Tabs>
 
-2. Ejecuta la rutina SysId en el robot. Los comandos SysId se pueden configurar como rutinas automáticas o conectarse a un activador de botón (trigger).
+2. Ejecuta la rutina SysId en el robot. Los comandos SysId se pueden configurar como rutinas autónomas o conectarse a un activador de botón (trigger).
 
 3. Descarga el archivo de registro y ábrelo en AdvantageScope. En la barra de menú, ve a `Archivo` > `Exportar datos...`. Establece el formato en "WPILOG" y el conjunto de campos en "Incluir generados". Haz clic en el ícono de guardar y elige una ubicación para guardar el registro.
 

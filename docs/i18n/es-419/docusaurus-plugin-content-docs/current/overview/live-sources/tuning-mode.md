@@ -23,7 +23,6 @@ Por ejemplo, un número ajustable se puede publicar usando la clase [`LoggedNetw
 
 ```java
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);
-
 ```
 
 :::warning

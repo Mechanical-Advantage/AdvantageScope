@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más objetos [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
-<img src="/img/tab-reference/mechanism-1.png" alt="Overview of mechanism tab" />
+<img src="/img/tab-reference/mechanism-1.png" alt="Resumen de la pestaña de mecanismo" />
 
 <details>
 <summary>Controles de la línea de tiempo</summary>
@@ -20,13 +20,13 @@ Las secciones amarillas indican cuando el robot es autónomo, las secciones azul
 
 Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia arriba o hacia abajo. También se puede seleccionar un rango haciendo clic y arrastrando mientras se mantiene presionada la tecla `Shift`. Muévete hacia la izquierda y hacia la derecha desplazándose horizontalmente (en dispositivos compatibles) o haciendo clic y arrastrando en la línea de tiempo. Cuando estás conectado en vivo, desplazarte hacia la izquierda desbloquea del tiempo actual, y desplazarte hasta la derecha vuelve a bloquear al tiempo actual. Presiona `Ctrl+\` para hacer zoom al período en el que el robot está habilitado.
 
-<img src="/img/tab-reference/timeline.png" alt="Timeline" />
+<img src="/img/tab-reference/timeline.png" alt="Línea de tiempo" />
 
 </details>
 
 ## Agregar mecanismos
 
-Para comenzar, arrastra un `Mechanism2d` al panel de control. Elimina un mecanismo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los mecanismos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`. Mecanismos pueden ser reorganizados en la lista haciendo clic y arrastrando.
+Para comenzar, arrastra un `Mechanism2d` al panel de control. Elimina un mecanismo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los mecanismos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`. Los mecanismos se pueden reorganizar en la lista haciendo clic y arrastrando.
 
 ## Publicación de datos
 

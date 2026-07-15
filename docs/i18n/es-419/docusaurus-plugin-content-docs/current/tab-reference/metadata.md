@@ -9,7 +9,7 @@ import TabItem from '@theme/TabItem';
 
 La pestaña de metadatos muestra los valores publicados en la tabla oculta "/Metadata" o a través de AdvantageKit. Las claves de metadatos se muestran a la izquierda, y las columnas separan los datos de diferentes fuentes (por ejemplo, real y repetición cuando se usa AdvantageKit).
 
-<img src="/img/tab-reference/metadata-1.png" alt="Overview of metadata tab" />
+<img src="/img/tab-reference/metadata-1.png" alt="Resumen de la pestaña de metadatos" />
 
 El código de ejemplo a continuación muestra cómo registrar metadatos usando Java.
 

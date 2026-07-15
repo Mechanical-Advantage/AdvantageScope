@@ -8,7 +8,7 @@ La versión oficialmente compatible de AdvantageScope está disponible directame
 
 ## Equipo 6328 {#team-6328}
 
-### Descargas: [Estable](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest), [Versión preliminar](https://github.com/Mechanical-Advantage/AdvantageScope/releases) {#6328-downloads}
+### Descargas: [estable](https://github.com/Mechanical-Advantage/AdvantageScope/releases/latest), [versión preliminar](https://github.com/Mechanical-Advantage/AdvantageScope/releases) {#6328-downloads}
 
 Descargar AdvantageScope directamente del Equipo 6328 proporciona:
 

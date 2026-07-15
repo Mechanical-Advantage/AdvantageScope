@@ -171,9 +171,9 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 The log file from the robot must be opened and exported by AdvantageScope _before opening it using the SysId analyzer_. This is required to convert the CAN data recorded by URCL to a format compatible with SysId.
 :::
 
-3. Open the SysId analyzer by searching for "WPILib: Start Tool" in the VSCode command palette and choosing "SysId" (or using the desktop launcher on Windows). Open the exported log file by clicking "Open data log file..."
+4. Open the SysId analyzer by searching for "WPILib: Start Tool" in the VSCode command palette and choosing "SysId" (or using the desktop launcher on Windows). Open the exported log file by clicking "Open data log file..."
 
-4. Choose the following fields below to run the analysis using the default encoder. Position and velocity data from secondary encoders can also be used (alternate, external, analog, absolute, etc).
+5. Choose the following fields below to run the analysis using the default encoder. Position and velocity data from secondary encoders can also be used (alternate, external, analog, absolute, etc).
 
    - Position = "NT:/URCL/&lt;Device&gt;/MotorPositionRotations"
    - Velocity = "NT:/URCL/&lt;Device&gt;/MotorVelocityRPM"
