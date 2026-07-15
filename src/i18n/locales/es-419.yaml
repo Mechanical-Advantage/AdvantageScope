@@ -289,7 +289,7 @@ hub:
     statusError: "Error"
     connectErrorTitle: "Problema con la fuente en vivo"
     connectErrorContent: "Hubo un problema al conectar con la fuente en vivo. Verifica tu configuración de conexión e intenta de nuevo."
-    nt4NoFieldsTitle: "Problema con la conexión de NT4"
+    nt4NoFieldsTitle: "Problema con la conexión de NetworkTables"
     nt4NoFieldsContent: "No se recibieron campos del servidor. El modo AdvantageKit está seleccionado. ¿Te estás conectando a un servidor sin AdvantageKit?"
     cannotConnectTitle: "No se puede conectar"
     cannotConnectContent: "Por favor espera a que termine la exportación, luego intenta de nuevo."

@@ -294,7 +294,7 @@ hub:
     statusError: "Error" # Error status for live connections
     connectErrorTitle: "Problem with live source" # Error title for live connection failure
     connectErrorContent: "There was a problem while connecting to the live source. Please check your connection settings and try again." # Error content for live connection failure
-    nt4NoFieldsTitle: "Problem with NT4 connection" # Error title when NT4 connection has no fields
+    nt4NoFieldsTitle: "Problem with NetworkTables connection" # Error title when NT4 connection has no fields
     nt4NoFieldsContent: "No fields were received from the server. AdvantageKit mode is selected. Are you connecting to a server without AdvantageKit?" # Error content when NT4 connection has no fields
     cannotConnectTitle: "Cannot connect" # Error title when connection cannot be established
     cannotConnectContent: "Please wait for the export to finish, then try again." # Error content for connection during export

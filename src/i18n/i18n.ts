@@ -9,6 +9,7 @@ import i18next, { TFunction } from "i18next";
 import { SUPPORTED_LANGS } from "../shared/Preferences";
 import enUSTranslations from "./locales/en-US.yaml";
 import es419Translations from "./locales/es-419.yaml";
+import heTranslations from "./locales/he.yaml";
 
 /**
  * Initializes i18next with the specified language and returns the bound translation function.
@@ -19,7 +20,8 @@ export function setupI18n(lang: string): TFunction {
     fallbackLng: "en-US",
     resources: {
       "en-US": { translation: enUSTranslations },
-      "es-419": { translation: es419Translations }
+      "es-419": { translation: es419Translations },
+      he: { translation: heTranslations }
     },
     interpolation: {
       escapeValue: false
