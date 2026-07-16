@@ -9,27 +9,14 @@ AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to li
 
 ## Requirements
 
-- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
-- **Client:** An iPhone or iPad running iOS/iPadOS 16 or later. No app installation is required.
+- **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall), or properly configured to whitelist ports 56328 and 56329.
+- **Client:** An iPhone or iPad running iOS/iPadOS 16 or later, an Android device running Chrome for Android 79+, a Meta Quest headset, or any VR device. No app installation is required.
 - **Network:** Both devices must be connected to the same network (Wi-Fi, USB tethering, etc). Subject to the requirement below, this network does not need to be connected to the internet.
 - **Internet:** If AdvantageScope XR has not been used recently, the mobile device must have an internet connection (e.g. cellular data). To eliminate this requirement, check the [offline usage](#offline-usage) section below.
 
 :::tip
-AdvantageScope XR is supported on many iPhone and iPad models, but is more stable for devices with a **LiDAR sensor**. This includes the iPhone Pro (starting with the iPhone 12 Pro) and iPad Pro (spring 2020 or later).
+AdvantageScope XR is supported on many devices, but is more stable for devices with a **LiDAR sensor**. This includes the iPhone Pro (starting with the iPhone 12 Pro) and iPad Pro (spring 2020 or later).
 :::
-
-<details>
-<summary>What about other platforms?</summary>
-
-AdvantageScope XR is only supported on iOS and iPadOS. There are no immediate plans to support alternative platforms. The client application requires tight integration with native APIs for augmented reality, video recording, web rendering, and more. iOS and iPadOS receive priority for development and support for several reasons:
-
-- **Consistency:** AdvantageScope XR is a demanding application. While Android devices vary widely in processing power and features, the iPhone and iPad provide a consistent development experience across generations. All recent iOS and iPadOS devices are powerful enough to run AdvantageScope XR, and newer devices support additional features AdvantageScope can utilize (such as LiDAR).
-
-- **Availability:** The iPhone remains the most common smartphone that students in the United States are likely to own or have easily accessible from peers, and is more widely available than any model of VR or mixed reality headset. Supporting iOS maximizes the number of users who have easy access to AdvantageScope XR.
-
-- **Tablet Support:** Users can take advantage of running AdvantageScope XR on a tablet, since tablets provide a larger display that is easier for multiple people to see at once. iPad is the most commonly used tablet worldwide, so supporting iPadOS makes the tablet experience as accessible as possible.
-
-</details>
 
 ## Setup
 
@@ -37,15 +24,15 @@ AdvantageScope XR is only supported on iOS and iPadOS. There are no immediate pl
 
 <img src={Image1} alt="XR button" height="450" />
 
-2. The **XR controls window** will open, with a QR code and [options](#options) to customize the AR experience. To cancel the XR session and disconnect any clients, close the controls window.
+2. The **XR controls window** will open, with a QR code and [options](#options) to customize the AR experience. Ensure that the 'Host IP' option is set to the correct IP for your network. To cancel the XR session and disconnect any clients, close the controls window.
+   <!-- TODO: Retake on a light mode Mac (I can't get light mode to work on Linux) -->
+   <img src={Image2} alt="XR window" height="350" />
 
-<img src={Image2} alt="XR window" height="350" />
-
-3. Scan the QR code using the **built-in camera app** on the client device. No app installation is required.
-4. Tap "AdvantageScope XR" and then "Open" to **start the experience** and connect to the host. If prompted, allow AdvantageScope XR to access the **camera and local network**.
+3. Scan the QR code using the **built-in camera app** on the client device, or press the Send to Meta Quest button. (For other VR headsets, manually type the displayed Host IP into the web browser, making sure to include the "http://" at the start.) No app installation is required.
+4. For iOS, tap "Open iOS App Clip", then tap "AdvantageScope XR" and then "Open" to **start the experience** and connect to the host. For Android, tap "Open Android App" and install the app if prompted, then click "Start XR" within the app. On other devices, select the "Self-signed page" option, then "Advanced" on the red warning screen. Then click "Proceed to ... (unsafe)", followed by "Start XR". <details><summary>Why the warning?</summary> Browser manufacturers only allow WebXR to be used on HTTPS encrypted websites, which is only possible for websites on public domains with servers directly exposed to the Internet. Since your computer is not, AdvantageScope generates a self-signed certificate which your browser considers untrustworthy. Because the connection is only across your local network, and because there is no need for secure encryption under these circumstances, manually trusting the certificate is perfectly acceptable. (If this warning appears while accessing a regular website, do not bypass it like this.)</details> If prompted, allow AdvantageScope XR to access the **camera and local network**.
 5. Follow the instructions on the device to **calibrate and position the field model**.
 6. Control the field model as normal using the host device, including **log playback and live streaming**. The state of the field model is displayed live on the client device.
-7. To quickly **record a video**, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
+7. To quickly **record a video** on iOS, tap the "Record" icon at the top of the screen. Tap it again to stop recording, then edit and save the clip.
 
 :::warning
 Heatmaps and swerve module velocities are not available yet in XR. All other object types are supported.
@@ -71,10 +58,13 @@ The XR controls window presents several options that control how the model is di
 
 ## Offline Usage
 
-AdvantageScope XR does not require an internet connection. To ensure that the app is available offline, download AdvantageScope XR from the App Store using the link below. To connect to the AdvantageScope desktop application, scan the QR code using the iOS camera app or tap the "Scan" button in the AdvantageScope XR app.
+AdvantageScope XR does not require an internet connection. To ensure that the app is available offline, download AdvantageScope XR from the App Store or Google Play Store using the link below. To connect to the AdvantageScope desktop application, scan the QR code using the iOS camera app or tap the "Scan" button in the AdvantageScope XR app.
 
 [![App Store](./img/app-store.svg)](https://apps.apple.com/us/app/advantagescope-xr/id6739718081)
 
+<!-- TODO: Update this link -->
+
+[![Play Store](./img/play-store.svg)](https://play.google.com/store/apps/details?id=org.advantagescope.advantagescopexr)
 :::note
 Even when running without an internet connection, the host and client devices **must be connected to the same network** (such as a robot, custom Wi-Fi network, or via USB tethering).
 :::

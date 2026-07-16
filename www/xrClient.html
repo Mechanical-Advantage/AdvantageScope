@@ -8,21 +8,27 @@
 -->
 
 <!doctype html>
-<html>
+<html lang="en-US">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self' blob:; script-src 'self'; connect-src 'self' blob: cdn.jsdelivr.net;"
+    />
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self' blob:; script-src 'self'" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="index.css" />
-    <script type="module" src="index.js"></script>
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="xrClient.css" />
+    <script type="module" src="xrClient.js"></script>
     <title>XR Client &mdash; AdvantageScope XR</title>
   </head>
   <body>
-    <div class="container">
+    <img class="banner" src="img/xr-logo.png" alt="AdvantageScope XR" />
+    <h2 hidden id="select-prompt">Select a platform.</h2>
+    <div class="container" id="container">
       <canvas></canvas>
     </div>
-    <div class="spinner-cubes-container">
+    <div class="spinner-cubes-container" id="spinner-cubes-container">
       <div class="spinner-cubes">
         <div></div>
         <div></div>
@@ -31,6 +37,20 @@
         <div></div>
         <div></div>
       </div>
+    </div>
+    <div hidden id="app-selection">
+      <div>
+        <a class="button" id="app-button-android"><img src="symbols/android-icon.svg" alt="" /></a>
+      </div>
+      <div>
+        <a class="button" id="app-button-ios"><img src="symbols/ios-icon.svg" alt="" /></a>
+      </div>
+      <div>
+        <a class="button" id="app-button-selfsigned"><img src="symbols/vr-icon.svg" alt="" /></a>
+      </div>
+    </div>
+    <div>
+      <a hidden class="button" id="start-xr"><img src="symbols/play.fill.svg" alt="" /></a>
     </div>
   </body>
 </html>

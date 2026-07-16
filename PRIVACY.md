@@ -26,7 +26,7 @@ Opening videos from The Blue Alliance or YouTube requires that the AdvantageScop
 
 Users of AdvantageScope alpha and beta releases who choose to fill out the feedback survey are interacting with Google Forms, which is also covered by Google's privacy policy.
 
-The AdvantageScope XR mobile application is distributed through Apple's App Store, which publishes a [privacy policy](https://www.apple.com/legal/privacy/data/en/app-store/) that applies when using this feature.
+The AdvantageScope XR mobile application is distributed through the Apple App Store, which publishes a [privacy policy](https://www.apple.com/legal/privacy/data/en/app-store/) that applies when using this feature. It is similarly published on the Google Play Store under [this policy](https://policies.google.com/privacy).
 
 ## Contact
 
