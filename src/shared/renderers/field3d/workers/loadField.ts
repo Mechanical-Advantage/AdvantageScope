@@ -6,8 +6,9 @@
 // at the root directory of this project.
 
 import * as THREE from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Config3dField } from "../../../AdvantageScopeAssets";
+import createGLTFLoader from "../../createGLTFLoader";
 import { rotationSequenceToQuaternion } from "../../../geometry";
 import optimizeGeometries from "../OptimizeGeometries";
 import { prepareTransfer } from "./prepareTransfer";
@@ -32,7 +33,7 @@ self.onmessage = (event) => {
   let fieldStagedPieces = new THREE.Object3D();
   let fieldPieces: { [key: string]: THREE.Mesh } = {};
 
-  const gltfLoader = new GLTFLoader();
+  const gltfLoader = createGLTFLoader();
   Promise.all([
     new Promise((resolve) => {
       gltfLoader.load(fieldConfig.path, resolve);
