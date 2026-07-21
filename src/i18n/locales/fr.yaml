@@ -86,10 +86,10 @@ preferences:
   coordinateSystem: "Système de coordonnées"
   coordinateSystemSelectTitle: "Sélectionner l'origine et l'orientation du système de coordonnées 3D"
   coordinateSystemAutomatic: "Automatique"
-  coordinateSystemCenterRed: "Centre/Rouge (Systemcore)"
+  coordinateSystemCenterRed: "Centre/rouge (Systemcore)"
   coordinateSystemWallBlue: "Mur bleu (FRC 2023-2026)"
   coordinateSystemWallAlliance: "Mur d'alliance (FRC 2022)"
-  coordinateSystemCenterRotated: "Centre/Pivoté (FTC traditionnel)"
+  coordinateSystemCenterRotated: "Centre/pivoté (FTC traditionnel)"
   tbaApiKey: "Clé API TBA"
   tbaApiKeyInputTitle: "Saisir votre clé API pour The Blue Alliance"
   networkingTitle: "Options de réseau"
@@ -168,10 +168,10 @@ unitConversion:
   alertError: "Échec de l'analyse du facteur supplémentaire."
 
 uploadAsset:
-  title: "Téléverser un actif — AdvantageScope"
-  menuTitle: "Téléverser un actif"
-  inputTitle: "Choisir un fichier zip contenant des actifs"
-  progressDefault: "Choisissez un fichier zip contenant des actifs AdvantageScope.<br />Consultez la documentation d'AdvantageScope Lite pour plus d'informations sur les formats de fichiers pris en charge."
+  title: "Téléverser une ressource — AdvantageScope"
+  menuTitle: "Téléverser une ressource"
+  inputTitle: "Choisir un fichier zip contenant des ressources"
+  progressDefault: "Choisissez un fichier zip contenant des ressources AdvantageScope.<br />Consultez la documentation d'AdvantageScope Lite pour plus d'informations sur les formats de fichiers pris en charge."
   cancel: "Annuler"
   upload: "Téléverser"
   progressUploading: "Téléversement du fichier en cours..."
@@ -360,19 +360,19 @@ hub:
       ghost: "Fantôme"
       vision: "Cible de vision"
       swerveModuleVelocities: "Vitesses des modules Swerve"
-      rotationOverride: "Remplacement de rotation"
-      rotationOverrideLegacy: "Remplacement de rotation"
+      rotationOverride: "Remplacement de la rotation"
+      rotationOverrideLegacy: "Remplacement de la rotation"
       trajectory: "Trajectoire"
       heatmap: "Carte thermique"
       arrow: "Flèche"
       component: "Composant"
       mechanism: "Mécanisme"
-      gamePiece: "Élément de jeu"
+      gamePiece: "Élément de pointage"
       aprilTag: "AprilTag"
       aprilTagIDs: "ID AprilTag"
       axes: "Axes"
       cone: "Cône"
-      cameraOverride: "Remplacement de caméra"
+      cameraOverride: "Remplacement de la caméra"
     options:
       bumpers: "Pare-chocs"
       color: "Couleur"
@@ -391,7 +391,7 @@ hub:
       enabled: "Activé"
       auto: "Auto"
       teleop: "Téléopéré"
-      teleop-no-endgame: "Téléopéré (sans fin de jeu)"
+      teleop-no-endgame: "Téléopéré (sans fin de match)"
       full: "Journal complet"
       visible: "Plage visible"
       center: "Centre"
@@ -504,8 +504,8 @@ hub:
     noApiKeyContent: "Veuillez saisir une clé API pour The Blue Alliance dans les préférences d'AdvantageScope. Une clé API peut être obtenue depuis la page de compte sur le site Web de The Blue Alliance."
     noMatchInfoTitle: "Aucune info de match"
     noMatchInfoContent: "Échec de la lecture des informations sur l'événement et le match depuis le journal. Veuillez charger la vidéo en utilisant une URL YouTube ou un fichier local à la place."
-    noPracticeTitle: "Aucune vidéo pour le match d'entraînement"
-    noPracticeContent: "Il s'agit d'un match d'entraînement. Aucune donnée n'est disponible sur The Blue Alliance pour les matchs d'entraînement. Veuillez charger la vidéo en utilisant une URL YouTube ou un fichier local à la place."
+    noPracticeTitle: "Aucune vidéo pour le match de pratique"
+    noPracticeContent: "Il s'agit d'un match de pratique. Aucune donnée n'est disponible sur The Blue Alliance pour les matchs de pratique. Veuillez charger la vidéo en utilisant une URL YouTube ou un fichier local à la place."
 
   joysticks:
     selectTitle: "Sélectionner la source de données des manettes"
@@ -631,9 +631,9 @@ menu:
     preferencesShortcut: "Afficher les préférences ({{shortcut}})"
     updates: "Rechercher des mises à jour..."
     licenses: "Afficher les licences..."
-    assetsFolder: "Afficher le dossier des actifs"
-    customAssetsFolder: "Utiliser un dossier d'actifs personnalisé"
-    assetDownloadStatus: "État de téléchargement des actifs..."
+    assetsFolder: "Afficher le dossier des ressources"
+    customAssetsFolder: "Utiliser un dossier de ressources personnalisé"
+    assetDownloadStatus: "État de téléchargement des ressources..."
     owletDownloadStatus: "État de téléchargement d'Owlet..."
     settings: "Paramètres..."
     setLanguage: "Définir la langue 🌐"
@@ -685,7 +685,7 @@ menu:
     shiftRightShortcut: "Déplacer vers la droite ({{shortcut}})"
     closeTab: "Fermer l'onglet"
     closeTabShortcut: "Fermer l'onglet ({{shortcut}})"
-    newTabShortcut: "Nouvel onglet (Raccourci)"
+    newTabShortcut: "Nouvel onglet (raccourci)"
     renameTab: "Renommer l'onglet"
 
   window:
@@ -721,8 +721,8 @@ menu:
     integrate: "Intégrer"
 
   field3d:
-    orbitField: "Orbite autour du terrain"
-    orbitRobot: "Orbite autour du robot"
+    orbitField: "Orbiter le terrain"
+    orbitRobot: "Orbiter le robot"
     driverView: "Vue de pilotage"
     driverStation: "Poste de pilotage"
     blueLeft: "Bleu gauche"
@@ -749,10 +749,10 @@ main:
 
   assets:
     downloadStarted: "Téléchargement démarré à {{time}}. Veuillez patienter quelques minutes jusqu'à la fin du téléchargement."
-    downloadFinished: "Tous les actifs ont été téléchargés. AdvantageScope vérifiera périodiquement les mises à jour."
+    downloadFinished: "Toutes les ressources ont été téléchargées. AdvantageScope vérifiera périodiquement les mises à jour."
     connectFailed: "Impossible de se connecter à GitHub. Nouvel essai prochainement."
     noDiskSpace: "Espace disque insuffisant. Nouvel essai prochainement."
-    readme: "Ce dossier contient des actifs supplémentaires pour les vues de terrain 2D, de terrain 3D et de manette. Pour plus de détails, consultez la documentation d'AdvantageScope (disponible via l'onglet documentation de l'application ou l'URL ci-dessous)."
+    readme: "Ce dossier contient des ressources supplémentaires pour les vues de terrain 2D, de terrain 3D et de manette. Pour plus de détails, consultez la documentation d'AdvantageScope (disponible via l'onglet documentation de l'application ou l'URL ci-dessous)."
 
   owlet:
     upToDate: "Owlet est à jour. AdvantageScope vérifiera périodiquement les mises à jour."
@@ -783,10 +783,10 @@ main:
     dontShowAgain: "Ne plus afficher"
 
   app:
-    selectAssetsFolder: "Sélectionnez le dossier contenant des actifs AdvantageScope personnalisés"
+    selectAssetsFolder: "Sélectionnez le dossier contenant des ressources AdvantageScope personnalisées"
 
   downloadStatus:
-    assetTitle: "État de téléchargement des actifs"
+    assetTitle: "État de téléchargement des ressources"
     owletTitle: "État de téléchargement d'Owlet"
 
   updates:
@@ -894,7 +894,7 @@ main:
     notNow: "Pas maintenant"
 
 units:
-  defaultLabel: "{{unit}} (Par défaut)"
+  defaultLabel: "{{unit}} (par défaut)"
   deltaValue: "Δ {{value}}"
 
   presetFormatting:

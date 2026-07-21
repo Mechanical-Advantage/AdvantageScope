@@ -16,7 +16,7 @@
     "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📂 Log Files": {
-    "message": "📂 Fichiers de log",
+    "message": "📂 Fichiers journaux",
     "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🛜 Live Sources": {
@@ -44,7 +44,7 @@
     "description": "The label for category 'More Features' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.⚙️ Custom Assets": {
-    "message": "⚙️ Actifs personnalisés",
+    "message": "⚙️ Ressources personnalisées",
     "description": "The label for category '⚙️ Custom Assets' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Legal": {
