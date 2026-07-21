@@ -8,7 +8,7 @@ AdvantageScope incluye soporte para varios sistemas de coordenadas comunes en la
 
 ### Personalización
 
-De forma predeterminada, el sistema de coordenadas se selecciona automáticamente en función de la imagen/modelo de campo elegido. Para seleccionar un sistema de coordenadas diferente para usar en todos los campos, abre la ventana de preferencias haciendo clic en `Aplicación` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS) y cambia la opción "Sistema de coordenadas" (Coordinate System).
+De forma predeterminada, el sistema de coordenadas se selecciona automáticamente en función de la imagen/modelo de campo elegido. Para seleccionar un sistema de coordenadas diferente para usar en todos los campos, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS) y cambia la opción "Sistema de coordenadas" (Coordinate System).
 
 :::tip
 Todas las opciones del sistema de coordenadas son compatibles con los campos de FRC y FTC.

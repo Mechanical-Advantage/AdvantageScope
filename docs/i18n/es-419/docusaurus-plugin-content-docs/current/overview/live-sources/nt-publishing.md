@@ -29,7 +29,7 @@ Para dejar de publicar, haz clic en `Archivo` > `Publicar datos NT` > `Detener p
 
 Por defecto, AdvantageScope publica todos los campos de NetworkTables almacenados en el archivo de registro (excepto los temas meta publicados por el servidor). Algunos casos de uso, como imitar un coprocesador, requieren solo publicar un conjunto limitado de campos o subtablas.
 
-Para ajustar el conjunto de prefijos de campos permitidos, abre la ventana de preferencias haciendo clic en `Aplicación` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La opción "Prefijos de publicación de NT" establece los prefijos permitidos para los campos publicados en NetworkTables. Si se deja en blanco, se incluirán todos los campos. De lo contrario, se puede proporcionar una lista de prefijos o campos separados por comas. A continuación se muestran algunos ejemplos.
+Para ajustar el conjunto de prefijos de campos permitidos, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La opción "Prefijos de publicación de NT" establece los prefijos permitidos para los campos publicados en NetworkTables. Si se deja en blanco, se incluirán todos los campos. De lo contrario, se puede proporcionar una lista de prefijos o campos separados por comas. A continuación se muestran algunos ejemplos.
 
 - "_SmartDashboard_": Incluye todos los campos en la tabla "SmartDashboard".
 - "_SmartDashboard/Auto Selector_": Incluye solo la tabla "SmartDashboard/Auto Selector".

@@ -35,7 +35,7 @@ En la barra de menú, haz clic en `Archivo` > `Agregar nuevo(s) registro(s)...`,
 <details>
 <summary>Configuración</summary>
 
-Abre la ventana de preferencias haciendo clic en `Aplicación` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). Actualiza la dirección del robot y la carpeta de registro.
+Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). Actualiza la dirección del robot y la carpeta de registro.
 
 <img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
 </details>

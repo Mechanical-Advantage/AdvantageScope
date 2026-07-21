@@ -35,7 +35,7 @@ Desplazarse hacia la izquierda en el gráfico de líneas o en la línea de tiemp
 
 ## Configuración
 
-Abre la ventana de preferencias haciendo clic en `Aplicación` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS).
+Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS).
 
 <img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
 

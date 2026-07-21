@@ -195,6 +195,6 @@ El campo 3D admite tres modos de renderizado:
 
 <img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparación de modos de renderizado" />
 
-Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `Aplicación` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
+Para configurar el modo de renderizado, abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). La configuración "Modo 3D (batería)" se puede cambiar desde la predeterminada para anular el modo de renderizado utilizado en una computadora portátil cuando no se está cargando. Por ejemplo, esto se puede usar para preservar la batería durante la competencia.
 
 <img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
