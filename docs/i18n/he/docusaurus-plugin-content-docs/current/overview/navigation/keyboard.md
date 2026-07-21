@@ -5,20 +5,20 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 ### מקורות נתונים
 
 <table>
-<tr><td>`Ctrl+O`</td><td>פתיחת קובץ לוג אחד או יותר</td></tr>
-<tr><td>`Ctrl+Shift+O`</td><td>הוספת קובץ לוג אחד או יותר לוויזואליזציה הנוכחית</td></tr>
+<tr><td>`Ctrl+O`</td><td>פתיחת קובץ יומן אחד או יותר</td></tr>
+<tr><td>`Ctrl+Shift+O`</td><td>הוספת קובץ יומן אחד או יותר לוויזואליזציה הנוכחית</td></tr>
 <tr><td>`Ctrl+K`</td><td>התחברות לרובוט כמקור חי</td></tr>
 <tr><td>`Ctrl+Shift+K`</td><td>התחברות לסימולטור כמקור חי</td></tr>
 <tr><td>`Ctrl+Option+Shift+K`</td><td>התחברות ל-Driver Station כמקור חי</td></tr>
-<tr><td>`Ctrl+D`</td><td>הורדת קובצי לוג מהרובוט</td></tr>
+<tr><td>`Ctrl+D`</td><td>הורדת קובצי יומן מהרובוט</td></tr>
 </table>
 
 ### ייצוא נתונים
 
 <table>
-<tr><td>`Ctrl+E`</td><td>ייצוא נתוני לוג</td></tr>
-<tr><td>`Ctrl+P`</td><td>פרסום נתוני לוג לשרת NetworkTables ברובוט</td></tr>
-<tr><td>`Ctrl+Shift+P`</td><td>פרסום נתוני לוג לשרת NetworkTables בסימולציה</td></tr>
+<tr><td>`Ctrl+E`</td><td>ייצוא נתוני יומן</td></tr>
+<tr><td>`Ctrl+P`</td><td>פרסום נתוני יומן לשרת NetworkTables ברובוט</td></tr>
+<tr><td>`Ctrl+Shift+P`</td><td>פרסום נתוני יומן לשרת NetworkTables בסימולציה</td></tr>
 <tr><td>`Option+Ctrl+P`</td><td>הפסקת פרסום ל-NetworkTables</td></tr>
 </table>
 
@@ -36,7 +36,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 
 <table>
 <tr><td>`Ctrl+T`</td><td>פתיחת תפריט נפתח להוספת כרטיסייה חדשה</td></tr>
-<tr><td>`Ctrl+Shift+T`</td><td>יצירת חלון נפרד חדש עבור הכרטיסייה הנוכחית</td></tr>
+<tr><td>`Ctrl+Shift+T`</td><td>יצירת חלץ כרטיסייה חדשה עבור הכרטיסייה הנוכחית</td></tr>
 <tr><td>`Ctrl+Left` ו-`Ctrl+Right`</td><td>מעבר בין כרטיסיות</td></tr>
 <tr><td>`Ctrl+[` ו-`Ctrl+]`</td><td>סידור מחדש של כרטיסיות</td></tr>
 <tr><td>`Ctrl+W`</td><td>סגירת הכרטיסייה הנוכחית</td></tr>
@@ -51,11 +51,11 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 </tr>
 <tr>
 <td>`Option+2`</td><td>[🗺 מגרש 2D](/tab-reference/2d-field)</td>
-<td>`Option+J`</td><td>[🎮 בקרים](/tab-reference/joysticks)</td>
+<td>`Option+J`</td><td>[🎮 ג'וייסטיקים](/tab-reference/joysticks)</td>
 </tr>
 <tr>
 <td>`Option+3`</td><td>[👀 מגרש 3D](/tab-reference/3d-field)</td>
-<td>`Option+D`</td><td>[🦀 סוורב](/tab-reference/swerve)</td>
+<td>`Option+D`</td><td>[🦀 סווארב](/tab-reference/swerve)</td>
 </tr>
 <tr>
 <td>`Option+T`</td><td>[🔢 טבלה](/tab-reference/table)</td>
@@ -75,14 +75,14 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 
 <table>
 <tr><td>`Space`</td><td>הפעלה/השהיה של הניגון</td></tr>
-<tr><td>`Left` ו-`Right`</td><td>מעבר צעד אחר צעד בקובץ הלוג</td></tr>
+<tr><td>`Left` ו-`Right`</td><td>מעבר צעד אחר צעד בקובץ היומן</td></tr>
 <tr><td>`L` או `Ctrl+L`</td><td>הפעלה/ביטול של נעילה בעת צפייה בנתונים חיים</td></tr>
 <tr><td>`Ctrl+\`</td><td>התקרבות (Zoom) בציר הזמן לטווח המופעל</td></tr>
 </table>
 
 ### Touch Bar
 
-בדגמי MacBook נתמכים, ניתן להשתמש ב-Touch Bar כדי לגלול בלוג ולהוסיף כרטיסיות חדשות.
+בדגמי MacBook נתמכים, ניתן להשתמש ב-Touch Bar כדי לגלול ביומן ולהוסיף כרטיסיות חדשות.
 
 <img src="/img/overview/navigation/keyboard-1.png" alt="Touch Bar scrubbing interface" />
 <img src="/img/overview/navigation/keyboard-2.png" alt="Touch Bar new tab interface" />

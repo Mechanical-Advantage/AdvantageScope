@@ -10,7 +10,7 @@ import DocCardList from "@theme/DocCardList";
 
 <img src="/img/banner.png" alt="AdvantageScope" />
 
-AdvantageScope היא אפליקציה לאבחון רובוטים, סקירה/ניתוח לוגים וויזואליזציית נתונים עבור קבוצות FIRST, שפותחה על ידי [Team 6328](https://littletonrobotics.org). האפליקציה קוראת לוגים בפורמטים WPILOG, DS log, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV ו-RLOG, ובנוסף מאפשרת צפייה בנתוני רובוט בזמן אמת באמצעות סטרימינג מ-NT4, Phoenix, RLOG או FTC Dashboard. ניתן להשתמש ב-AdvantageScope עם כל פרויקט WPILib, והיא גם מותאמת לשימוש עם מסגרת שחזור הלוגים שלנו [AdvantageKit](https://docs.advantagekit.org). שימו לב כי **אין צורך ב-AdvantageKit כדי להשתמש ב-AdvantageScope**.
+AdvantageScope היא אפליקציה לאבחון רובוטים, סקירה/ניתוח יומנים וויזואליזציית נתונים עבור קבוצות FIRST, שפותחה על ידי [Team 6328](https://littletonrobotics.org). האפליקציה קוראת יומנים בפורמטים WPILOG, DS log, Hoot (CTRE), REVLOG (REV Robotics), Road Runner, CSV ו-RLOG, ובנוסף מאפשרת צפייה בנתוני רובוט בזמן אמת באמצעות סטרימינג מ-NT4, Phoenix, RLOG או FTC Dashboard. ניתן להשתמש ב-AdvantageScope עם כל פרויקט WPILib, והיא גם מותאמת לשימוש עם מסגרת שחזור היומנים שלנו [AdvantageKit](https://docs.advantagekit.org). שימו לב כי **אין צורך ב-AdvantageKit כדי להשתמש ב-AdvantageScope**.
 
 <DocCardList
 items={[
@@ -42,10 +42,10 @@ AdvantageScope כוללת את הכלים הבאים:
 - מבחר רחב של גרפים ותתרשימים גמישים
 - ויזואליזציות מגרש 2D ו-3D של נתוני תנוחות (poses), עם רובוטים מבוססי CAD ניתנים להתאמה אישית
 - ניגון וידאו מסונכרן מסרטון משחק שנטען בנפרד
-- ויזואליזציית בקרים (Joysticks), המציגה את פעולות הנהג על גבי ייצוגי בקרים ניתנים להתאמה אישית
-- תצוגות וקטורים של מודולי הנעת סוורב (Swerve)
+- ויזואליזציית ג'וייסטיקים (Joysticks), המציגה את פעולות הנהג על גבי ייצוגי ג'וייסטיקים ניתנים להתאמה אישית
+- תצוגות וקטורים של מודולי הנעת סווארב (Swerve)
 - סקירת הודעות מסוף (Console)
-- ניתוח סטטיסטיקת לוגים
+- ניתוח סטטיסטיקת יומנים
 - אפשרויות ייצוא גמישות, עם תמיכה ב-CSV ו-WPILOG
 
 <Button

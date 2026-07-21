@@ -16,7 +16,7 @@ AdvantageScope תומכת בהזרמה חיה של אותות ממכשירי Pho
 - ניתוח נתונים מתקדם עם אפשרויות מובנות של אינטגרציה וגזירה ([תיעוד](/tab-reference/line-graph/#adjusting-axes))
 
 :::tip
-להתחברות, יש לבחור "אבחון Phoenix" בעת התחברות לרובוט או לסימולטור מסרגל התפריטים.
+להתחברות, יש לבחור "דיאגנוסטיקה Phoenix" בעת התחברות לרובוט או לסימולטור מסרגל התפריטים.
 :::
 
 <img src="/img/overview/live-sources/phoenix-1.png" alt="Line graph screenshot" />

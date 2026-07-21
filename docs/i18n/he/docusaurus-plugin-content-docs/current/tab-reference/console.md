@@ -9,14 +9,14 @@ sidebar_position: 5
 - **DS:/Dscomm/Console** - נשמר על ידי ה-FIRST Driver Station.
 - **messages** - נשמר על ידי הרישום המובנה של WPILib המבוסס על קריאות למתודה [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>).
 - **/RealOutputs/Console** - נשמר על ידי AdvantageKit באופן אוטומטי במהלך הפעלת הרובוט (שימוש ב-`System.out.println` כרגיל).
-- **/ReplayOutputs/Console** - נשמר על ידי AdvantageKit באופן אוטומטי במהלך שחזור לוג (שימוש ב-`System.out.println` כרגיל).
+- **/ReplayOutputs/Console** - נשמר על ידי AdvantageKit באופן אוטומטי במהלך שחזור יומן (שימוש ב-`System.out.println` כרגיל).
 
-יש לגרור את השדה הרצוי לתצוגה הראשית כדי להתחיל. כל שורה מייצגת עדכון לשדה. עבור לוגים של WPILib, נוצרת שורה חדשה עבור כל שורה שנשמרה. עבור לוגים של AdvantageKit, נוצרת שורה חדשה עבור כל מחזור לולאה.
+יש לגרור את השדה הרצוי לתצוגה הראשית כדי להתחיל. כל שורה מייצגת עדכון לשדה. עבור יומנים של WPILib, נוצרת שורה חדשה עבור כל שורה שנשמרה. עבור יומנים של AdvantageKit, נוצרת שורה חדשה עבור כל מחזור לולאה.
 
 <img src="/img/tab-reference/console-1.png" alt="Console view" />
 
 :::info
-יש ללחוץ על סמל פלטת הצבעים להפעלה/כיבוי של הדגשת הודעות אזהרה ושגיאה. עבור לוגים של WPILib ו-AdvantageKit, הודעות מודגשות אם הן מכילות את הטקסט "warning" או "error".
+יש ללחוץ על סמל פלטת הצבעים להפעלה/כיבוי של הדגשת הודעות אזהרה ושגיאה. עבור יומנים של WPILib ו-AdvantageKit, הודעות מודגשות אם הן מכילות את הטקסט "warning" או "error".
 :::
 
 הבקרות דומות לכרטיסיית 🔢 [טבלה](../tab-reference/table). הזמן שנבחר מסונכרן בכל הכרטיסיות. יש ללחוץ על שורה כדי לבחור אותה, או להרחיף מעל שורה כדי לצפות בה בתצוגה מקדימה בכל החלונות הקופצים הגלויים. לחיצה על לחצן ה-↓ עוברת לזמן שנבחר (או לזמן שהוזן בתיבה).

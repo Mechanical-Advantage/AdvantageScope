@@ -32,7 +32,7 @@ entry.append("MyValue");
 </TabItem>
 <TabItem value="advantagekit" label="AdvantageKit">
 
-ב-AdvantageKit, יש לקרוא למתודה למטה לפני הפעלת מקליט הלוגים (logger). מטא-דאטה מאוחסן בנפרד בעת הפעלה באמיתי ובשחזור להשוואה קלה.
+ב-AdvantageKit, יש לקרוא למתודה למטה לפני הפעלת מקליט היומנים (logger). מטא-דאטה מאוחסן בנפרד בעת הפעלה באמיתי ובשחזור להשוואה קלה.
 
 ```java
 Logger.recordMetadata("MyKey", "MyValue");

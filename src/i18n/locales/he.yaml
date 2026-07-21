@@ -12,10 +12,10 @@ betaWelcome:
   continue: "המשך"
 
 download:
-  title: "הורדת לוגים — AdvantageScope"
+  title: "הורדת יומנים — AdvantageScope"
   cancel: "ביטול"
   download: "הורדה"
-  errorNoFolder: "פתיחת תיקיית הלוגים בכתובת <u>{{path}}</u> נכשלה"
+  errorNoFolder: "פתיחת תיקיית היומנים בכתובת <u>{{path}}</u> נכשלה"
   errorNotFound: "הרובוט לא נמצא בכתובת <u>{{address}}</u> (יש לבדוק את החיבור)"
   errorUnknownAddress: "כתובת לא ידועה <u>{{address}}</u>"
   errorAuthFailed: "האימות מול הרובוט בכתובת <u>{{address}}</u> נכשל"
@@ -27,7 +27,7 @@ download:
   progressDetailed: '{{current}} מ"ב / {{total}} מ"ב ({{speed}} מגה-ביט/שנייה, {{minutes}} דק'' {{seconds}} שנ'')'
   sizeLessThanMinimum: '(<0.1 מ"ב)'
   sizeValue: '({{size}} מ"ב)'
-  alertSelectLog: "יש לבחור לוג להורדה."
+  alertSelectLog: "יש לבחור יומן להורדה."
 
 editFov:
   title: "עריכת שדה ראייה (FOV) — AdvantageScope"
@@ -96,12 +96,12 @@ preferences:
   networkingSubtitle: 'ניתן לשנות את המקור החי בתפריט "קובץ".'
   robotAddress: "כתובת הרובוט"
   robotAddressInputTitle: "הזנת כתובת IP או שם מארח של הרובוט"
-  robotLogPath: "נתיב לוגים ברובוט"
-  robotLogPathInputTitle: "הזנת נתיב לקובצי הלוג ברובוט"
+  robotLogPath: "נתיב יומנים ברובוט"
+  robotLogPathInputTitle: "הזנת נתיב לקובצי היומן ברובוט"
   liveMode: "מצב חי"
   liveModeSelectTitle: "בחירת מצב קבלת נתונים חיים"
   liveModeLowBandwidth: "רוחב פס נמוך"
-  liveModeLogging: "רישום לוגים"
+  liveModeLogging: "רישום יומן"
   discardLive: "מחיקת נתונים חיים"
   discardLiveSelectTitle: "בחירה כמה זמן לשמור נתונים חיים לפני מחיקתם"
   discardLive1Min: "אחרי דקה"
@@ -140,7 +140,7 @@ satellite:
   tableDelete: "הסרה מהתצוגה"
   tableJumpTitle: "מעבר אל חותמת זמן"
   consoleFilterPlaceholder: "סינון"
-  consoleFilterTitle: "סינון לוג המסוף (Console)"
+  consoleFilterTitle: "סינון יומן המסוף (Console)"
   consoleHighlight: "הדגשת הודעות אזהרה/שגיאה"
 
 sourceListHelp:
@@ -160,7 +160,7 @@ unitConversion:
   fromUnitSelectTitle: "בחירת היחידה שממנה ממירים"
   toUnit: "ליחידה"
   toUnitSelectTitle: "בחירת היחידה שאליה ממירים"
-  extraFactor: "מקדם נוסף"
+  extraFactor: "גורם נוסף"
   extraFactorInputTitle: "הזנת מקדם התאמה מותאם אישית (מכפלה)"
   cancel: "ביטול"
   confirm: "אישור"
@@ -191,7 +191,7 @@ xrControls:
   streaming: "סטרימינג"
   streamingSelectTitle: "בחירת מצב סטרימינג"
   streamingSmooth: "חלק"
-  streamingLowLatency: "השהיה נמוכה"
+  streamingLowLatency: "שיהוי נמוך"
   showFloor: "הצגת רצפה"
   showFloorTitle: "הפעלה/כיבוי של נראות שטיח הרצפה"
   showField: "הצגת מגרש"
@@ -201,14 +201,14 @@ xrControls:
 
 tabs:
   console: "מסוף"
-  joysticks: "בקרים"
+  joysticks: "ג'וייסטיקים"
   lineGraph: "גרף קווי"
   field2d: "מגרש 2D"
   field3d: "מגרש 3D"
   table: "טבלה"
   statistics: "סטטיסטיקה"
   video: "וידאו"
-  swerve: "סוורב"
+  swerve: "סווארב"
   mechanism: "מנגנון"
   points: "נקודות"
   metadata: "מטא-דאטה"
@@ -276,15 +276,15 @@ hub:
   logs:
     statusLoading: "טוען"
     statusError: "שגיאה"
-    openErrorTitle: "פתיחת הלוג נכשלה"
-    openErrorCsv: "אירעה בעיה במהלך קריאת קובץ הלוג. יש לעיין בתיעוד למידע נוסף על הפורמט הנדרש עבור קובצי CSV."
-    openErrorFallback: "אירעה בעיה במהלך קריאת קובץ הלוג. יש לנסות שוב."
+    openErrorTitle: "פתיחת היומן נכשלה"
+    openErrorCsv: "אירעה בעיה במהלך קריאת קובץ היומן. יש לעיין בתיעוד למידע נוסף על הפורמט הנדרש עבור קובצי CSV."
+    openErrorFallback: "אירעה בעיה במהלך קריאת קובץ היומן. יש לנסות שוב."
     cannotOpenTitle_one: "לא ניתן לפתוח את הקובץ"
     cannotOpenTitle_other: "לא ניתן לפתוח את הקבצים"
     waitExport: "יש להמתין לסיום הייצוא, ולאחר מכן לנסות שוב."
     cannotInsertTitle_one: "לא ניתן להכניס קובץ"
     cannotInsertTitle_other: "לא ניתן להכניס קבצים"
-    noLogsLoaded: 'כרגע לא טעונים קובצי לוג. יש לבחור "פתיחת לוג(ים)" כדי לטעון קבצים חדשים.'
+    noLogsLoaded: 'כרגע לא טעונים קובצי יומן. יש לבחור "פתיחת יומן(ים)" כדי לטעון קבצים חדשים.'
 
   live:
     statusSearching: "מחפש"
@@ -297,14 +297,14 @@ hub:
     cannotConnectContent: "יש להמתין לסיום הייצוא, ולאחר מכן לנסות שוב."
     cannotPublishTitle: "לא ניתן לפרסם"
     cannotPublishLive: "פרסום אינו מורשה ממקור חי."
-    cannotPublishNoNt: "יש לפתוח קובץ לוג המכיל נתוני NetworkTables, ולאחר מכן לנסות שוב."
+    cannotPublishNoNt: "יש לפתוח קובץ יומן המכיל נתוני NetworkTables, ולאחר מכן לנסות שוב."
     publishSearching: "מחפש"
     publishActive: "מפרסם"
 
   export:
     cannotExportTitle: "לא ניתן לייצא נתונים"
     waitExport: "יש להמתין לסיום הייצוא הקודם, ולאחר מכן לנסות שוב."
-    noLogs: "יש לפתוח קובץ לוג או להתחבר למקור חי, ולאחר מכן לנסות שוב."
+    noLogs: "יש לפתוח קובץ יומן או להתחבר למקור חי, ולאחר מכן לנסות שוב."
     failedTitle: "ייצוא הנתונים נכשל"
     failedContent: "אירעה בעיה במהלך ההמרה לפורמט הייצוא. יש לנסות שוב."
 
@@ -316,11 +316,11 @@ hub:
 
   tabs:
     close: "סגירת כרטיסייה"
-    popout: "פתיחת כרטיסייה בחלון נפרד"
+    popout: "חלץ כרטיסייה"
     add: "הוספת כרטיסייה"
 
   sidebar:
-    titleDefault: "יש לפתוח לוג או להתחבר כדי להציג נתונים"
+    titleDefault: "יש לפתוח יומן או להתחבר כדי להציג נתונים"
     searchPlaceholder: "חיפוש"
     searchTitle: "חיפוש שדות"
     tuningTitle: "הפעלה/כיבוי של מצב כוונון (Tuning)"
@@ -358,23 +358,23 @@ hub:
     types:
       robot: "רובוט"
       ghost: "רובוט רפאים"
-      vision: "מטרת ראייה"
-      swerveModuleVelocities: "מהירויות מודולי סוורב"
-      rotationOverride: "דריסת סיבוב"
-      rotationOverrideLegacy: "דריסת סיבוב"
-      trajectory: "מסלול"
+      vision: "יעד המצלמה"
+      swerveModuleVelocities: "מהירויות מודול סווארב"
+      rotationOverride: "דריסת רוטציה"
+      rotationOverrideLegacy: "דריסת רוטציה"
+      trajectory: "מסלול מתוכנן"
       heatmap: "מפת חום"
       arrow: "חץ"
       component: "רכיב"
       mechanism: "מנגנון"
-      gamePiece: "אלמנט משחק"
+      gamePiece: "אביזר משחק"
       aprilTag: "AprilTag"
       aprilTagIDs: "מזהי AprilTag"
       axes: "צירים"
       cone: "קונוס"
       cameraOverride: "דריסת מצלמה"
     options:
-      bumpers: "פגושים"
+      bumpers: "באמפרים"
       color: "צבע"
       size: "עובי"
       arrangement: "סידור"
@@ -392,7 +392,7 @@ hub:
       auto: "אוטונומי"
       teleop: "טלאופ"
       teleop-no-endgame: "טלאופ (ללא שלב סיום)"
-      full: "לוג מלא"
+      full: "יומן מלא"
       visible: "טווח גלוי"
       center: "מרכז"
       back: "אחורה"
@@ -455,7 +455,7 @@ hub:
       harmonicMean: "ממוצע הרמוני"
       quadraticMean: "ממוצע ריבועי"
       standardDeviation: "סטיית תקן"
-      medianAbsoluteDeviation: "סטייה מוחלטת חציונית"
+      medianAbsoluteDeviation: "חציון סטיות מוחלטות"
       interquartileRange: "טווח בין-רבעוני"
       skewness: "צידוד"
       percentile01: "אחוזון 1"
@@ -475,7 +475,7 @@ hub:
     timeRange: "טווח זמן"
     timeRangeSelectTitle: "בחירת טווח זמן"
     timeRangeVisible: "טווח גלוי"
-    timeRangeFull: "לוג מלא"
+    timeRangeFull: "יומן מלא"
     timeRangeEnabled: "מופעל"
     timeRangeAuto: "אוטונומי"
     timeRangeTeleop: "טלאופ"
@@ -502,8 +502,8 @@ hub:
     goForward5s: "קפיצה 5 שניות קדימה"
     noApiKeyTitle: "אין מפתח API"
     noApiKeyContent: "יש להזין מפתח API עבור The Blue Alliance בהעדפות של AdvantageScope. ניתן לקבל מפתח API מדף החשבון באתר The Blue Alliance."
-    noMatchInfoTitle: "אין מידע על המשחק"
-    noMatchInfoContent: "קריאת נתוני האירוע והמשחק מהלוג נכשלה. יש לטעון את הווידאו באמצעות כתובת URL של YouTube או קובץ מקומי במקום זאת."
+    noMatchInfoTitle: "אין פרטי משחק"
+    noMatchInfoContent: "קריאת נתוני האירוע והמשחק מהיומן נכשלה. יש לטעון את הווידאו באמצעות כתובת URL של YouTube או קובץ מקומי במקום זאת."
     noPracticeTitle: "אין סרטונים למשחק אימון"
     noPracticeContent: "זהו משחק אימון. אין נתונים זמינים ב-The Blue Alliance עבור משחקי אימון. יש לטעון את הווידאו באמצעות כתובת URL של YouTube או קובץ מקומי במקום זאת."
 
@@ -521,7 +521,7 @@ hub:
   swerve:
     sources: "מקורות"
     types:
-      moduleVelocities: "מהירויות מודולים"
+      moduleVelocities: "מהירויות מודול"
       robotVelocities: "מהירויות רובוט"
       rotation: "סיבוב"
       rotationLegacy: "סיבוב"
@@ -541,8 +541,8 @@ hub:
     frameSize: "גודל מסגרת (מ')"
     frameLengthTitle: "אורך מסגרת הרובוט (מטרים)"
     frameWidthTitle: "רוחב מסגרת הרובוט (מטרים)"
-    rotateModuleClockwise: "סיבוב פריסת מודולי הסוורב עם כיוון השעון"
-    rotateModuleCounterClockwise: "סיבוב פריסת מודולי הסוורב נגד כיוון השעון"
+    rotateModuleClockwise: "סיבוב פריסת מודולי הסווארב עם כיוון השעון"
+    rotateModuleCounterClockwise: "סיבוב פריסת מודולי הסווארב נגד כיוון השעון"
 
   mechanism:
     sources: "מקורות"
@@ -579,8 +579,8 @@ hub:
     replay: "שחזור"
 
   console:
-    exportLog: "ייצוא לוג המסוף"
-    cannotExportTitle: "לא ניתן לייצא את לוג המסוף"
+    exportLog: "ייצוא יומן המסוף"
+    cannotExportTitle: "לא ניתן לייצא את יומן המסוף"
     addConsoleData: "יש להוסיף שדה עם נתוני מסוף, ולאחר מכן לנסות שוב."
 
 xrClient:
@@ -605,8 +605,8 @@ xrClient:
 liveModeName:
   nt4: "NetworkTables"
   nt4Akit: "NetworkTables (AdvantageKit)"
-  nt4Systemcore: "אבחון Systemcore"
-  phoenix: "אבחון Phoenix"
+  nt4Systemcore: "דיאגנוסטיקה Systemcore"
+  phoenix: "דיאגנוסטיקה Phoenix"
   rlog: "שרת RLOG"
   ftcdashboard: "FTC Dashboard"
 
@@ -641,16 +641,16 @@ menu:
 
   file:
     heading: "קובץ"
-    openLog: "פתיחת לוג ({{shortcut}})"
-    openLogs: "פתיחת לוג(ים)..."
-    addNewLogs: "הוספת לוג(ים) חדשים..."
+    openLog: "פתיחת יומן ({{shortcut}})"
+    openLogs: "פתיחת יומן(ים)..."
+    addNewLogs: "הוספת יומן(ים) חדשים..."
     connectRobot: "התחברות לרובוט"
     connectRobotShortcut: "התחברות חיה ({{shortcut}})"
     default: "ברירת מחדל"
     defaultWithMode: "ברירת מחדל: {{mode}}"
     connectSim: "התחברות לסימולטור"
     connectDs: "התחברות ל-Driver Station"
-    downloadLogs: "הורדת לוגים..."
+    downloadLogs: "הורדת יומנים..."
     usbAddress: "שימוש בכתובת Systemcore USB"
     wifiAddress: "שימוש בכתובת Systemcore Wi-Fi"
     exportData: "ייצוא נתונים..."
@@ -674,7 +674,7 @@ menu:
   tabs:
     heading: "כרטיסיות"
     newTab: "כרטיסייה חדשה"
-    newPopOut: "חלון נפרד חדש"
+    newPopOut: "חלץ כרטיסייה חדשה"
     prevTab: "הכרטיסייה הקודמת"
     prevTabShortcut: "הכרטיסייה הקודמת ({{shortcut}})"
     nextTab: "הכרטיסייה הבאה"
@@ -758,10 +758,10 @@ main:
     upToDate: "Owlet מעודכן. AdvantageScope יבדוק עדכונים מעת לעת."
     offlineCache: "שימוש במטמון לא מקוון של Owlet. נבדוק עדכונים בקרוב."
     noDiskSpace: "אין מספיק מקום בדיסק. ננסה שוב בקרוב."
-    noOwlet: "לא ניתן לפענח את קובץ הלוג של Hoot מכיוון ש-Owlet אינו זמין."
-    openFailed: "לא ניתן היה לפתוח את קובץ הלוג של Hoot."
-    tooOld: "קובץ הלוג של Hoot ישן מדי ולא ניתן לפענחו. לוגים של Hoot חייבים להיווצר על ידי Phoenix 2024 או גרסאות מתקדמות יותר."
-    incompatible: "לא ניתן לפענח את הלוג של Hoot בגלל בעיית תאימות. יש לבדוק את סטטוס ההורדה של Owlet בשורת התפריטים למידע נוסף."
+    noOwlet: "לא ניתן לפענח את קובץ היומן של Hoot מכיוון ש-Owlet אינו זמין."
+    openFailed: "לא ניתן היה לפתוח את קובץ היומן של Hoot."
+    tooOld: "קובץ היומן של Hoot ישן מדי ולא ניתן לפענחו. יומנים של Hoot חייבים להיווצר על ידי Phoenix 2024 או גרסאות מתקדמות יותר."
+    incompatible: "לא ניתן לפענח את היומן של Hoot בגלל בעיית תאימות. יש לבדוק את סטטוס ההורדה של Owlet בשורת התפריטים למידע נוסף."
 
   buttons:
     cancel: "ביטול"
@@ -811,26 +811,26 @@ main:
     upToDateDetail: "כרגע פועלת גרסה {{currentVersion}} (שוחררה ב-{{latestDate}})."
 
   logs:
-    openTitle: "בחירת קובצי הלוג של הרובוט לפתיחה"
+    openTitle: "בחירת קובצי היומן של הרובוט לפתיחה"
     openMessage: "אם נבחרים מספר קבצים, חותמות הזמן ייושרו באופן אוטומטי"
-    robotLogsFilter: "לוגים של רובוט"
-    addTitle: "בחירת קובצי הלוג של הרובוט להוספה ללוג הנוכחי"
-    downloadFolderTitle: "בחירת מיקום שמירה ללוגים של הרובוט"
-    downloadFileTitle: "בחירת מיקום שמירה ללוג של הרובוט"
-    extensionWpilog: "לוג רובוט של WPILib"
-    extensionWpilogxz: "לוג רובוט דחוס של WPILib"
-    extensionRlog: "לוג רובוט"
-    extensionHoot: "לוג רובוט של Hoot"
-    extensionRevlog: "לוג REV Robotics CAN"
+    robotLogsFilter: "יומנים של רובוט"
+    addTitle: "בחירת קובצי היומן של הרובוט להוספה ליומן הנוכחי"
+    downloadFolderTitle: "בחירת מיקום שמירה ליומנים של הרובוט"
+    downloadFileTitle: "בחירת מיקום שמירה ליומן של הרובוט"
+    extensionWpilog: "יומן רובוט של WPILib"
+    extensionWpilogxz: "יומן רובוט דחוס של WPILib"
+    extensionRlog: "יומן רובוט"
+    extensionHoot: "יומן רובוט של Hoot"
+    extensionRevlog: "יומן REV CAN"
     csvFilter: "ערכים מופרדים בפסיקים (CSV)"
-    mcapFilter: "לוג MCAP"
-    exportConsoleTitle: "בחירת מיקום ייצוא עבור לוג המסוף"
+    mcapFilter: "יומן MCAP"
+    exportConsoleTitle: "בחירת מיקום ייצוא עבור יומן המסוף"
     exportConsoleFilename: "מסוף {{date}}.txt"
     textFilter: "קובצי טקסט"
-    openQuery: "לפתוח לוג?"
-    openDetail: 'האם ברצונך לפתוח את קובץ הלוג "{{name}}"?'
+    openQuery: "לפתוח יומן?"
+    openDetail: 'האם ברצונך לפתוח את קובץ היומן "{{name}}"?'
     limitedSignals: "אותות זמינים מוגבלים"
-    limitedSignalsDetail: "קובץ לוג זה כולל מספר מוגבל של אותות ממכשירי Phoenix. יש לבדוק את התיעוד של Phoenix לפרטים נוספים."
+    limitedSignalsDetail: "קובץ יומן זה כולל מספר מוגבל של אותות ממכשירי Phoenix. יש לבדוק את התיעוד של Phoenix לפרטים נוספים."
 
   layout:
     exportTitle: "בחירת מיקום ייצוא עבור קובץ פריסה"
@@ -867,7 +867,7 @@ main:
     exportInProgress: "ייצוא בתהליך"
     exportInProgressDetail: "האם אתם בטוחים שברצונכם לסגור את החלון בזמן שמתבצע ייצוא? הנתונים לא יישמרו."
     incompleteExport: "נתונים חלקיים לייצוא"
-    incompleteExportDetail: 'חלק מהשדות לא יהיו זמינים בנתונים המיוצאים. כדי לשמור את כל השדות מהשרת, יש לבחור במצב חי "רישום לוגים". יש לעיין בתיעוד של AdvantageScope לפרטים נוספים.'
+    incompleteExportDetail: 'חלק מהשדות לא יהיו זמינים בנתונים המיוצאים. כדי לשמור את כל השדות מהשרת, יש לבחור במצב חי "רישום יומן". יש לעיין בתיעוד של AdvantageScope לפרטים נוספים.'
 
   xr:
     stopServerQuery: "לעצור את שרת ה-XR?"
@@ -876,8 +876,8 @@ main:
 
   ctre:
     licenseTitle: "הסכם רישיון של CTRE"
-    licenseDetail: "פענוח קובצי לוג של Hoot דורש הסכמה להסכם הרישיון למשתמשי קצה של CTRE. יש ללחוץ על הכפתור למטה כדי להציג את הסכם הרישיון המלא, ולאחר מכן לסמן את התיבה אם אתם מסכימים לתנאים."
-    licenseRequired: "לא ניתן לפענח קובצי לוג של Hoot ללא הסכמה להסכם הרישיון למשתמשי קצה של CTRE."
+    licenseDetail: "פענוח קובצי יומן של Hoot דורש הסכמה להסכם הרישיון למשתמשי קצה של CTRE. יש ללחוץ על הכפתור למטה כדי להציג את הסכם הרישיון המלא, ולאחר מכן לסמן את התיבה אם אתם מסכימים לתנאים."
+    licenseRequired: "לא ניתן לפענח קובצי יומן של Hoot ללא הסכמה להסכם הרישיון למשתמשי קצה של CTRE."
 
   survey:
     alphaComplete: "האלפא הסתיימה"

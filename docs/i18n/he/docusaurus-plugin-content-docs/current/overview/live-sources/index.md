@@ -1,11 +1,11 @@
 # 🛜 מקורות חיים
 
-כל הוויזואליזציות ב-AdvantageScope מתוכננות לקבל נתונים חיים מרובוט או מסימולטור בנוסף לקובצי לוג. חלק זה מתאר כיצד להתחבר למקורות נתונים בזמן אמת. מקורות הנתונים החיים הבאים נתמכים על ידי AdvantageScope:
+כל הוויזואליזציות ב-AdvantageScope מתוכננות לקבל נתונים חיים מרובוט או מסימולטור בנוסף לקובצי יומן. חלק זה מתאר כיצד להתחבר למקורות נתונים בזמן אמת. מקורות הנתונים החיים הבאים נתמכים על ידי AdvantageScope:
 
 - **NetworkTables:** זהו פרוטוקול הרשת הראשי של WPILib. לעיין ב[תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) לפרטים נוספים.
 - **NetworkTables (AdvantageKit):** מצב זה מיועד לשימוש עם קוד רובוט המפעיל את AdvantageKit, המפרסמת לטבלה `AdvantageKit` ב-NetworkTables.
-- **אבחון Systemcore:** מצב זה מתחבר לשרת NetworkTables המובנה המשמש את מערכת ההפעלה Systemcore, הכולל נתוני אבחון כמו מצב הרובוט וקלט/פלט (IO) של המכשיר.
-- **אבחון Phoenix:** מצב זה משתמש ב-HTTP כדי להתחבר ל[שרת אבחון](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) של Phoenix, המאפשר הזרמת נתונים ממכשירי CTRE CAN עם [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). דבר זה דומה ל[תכונת השרטוט (plotting)](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ב-Phoenix Tuner. ראו [דף זה](/overview/live-sources/phoenix-diagnostics) למידע נוסף.
+- **דיאגנוסטיקה Systemcore:** מצב זה מתחבר לשרת NetworkTables המובנה המשמש את מערכת ההפעלה Systemcore, הכולל נתוני אבחון כמו מצב הרובוט וקלט/פלט (IO) של המכשיר.
+- **דיאגנוסטיקה Phoenix:** מצב זה משתמש ב-HTTP כדי להתחבר ל[שרת אבחון](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) של Phoenix, המאפשר הזרמת נתונים ממכשירי CTRE CAN עם [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). דבר זה דומה ל[תכונת השרטוט (plotting)](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ב-Phoenix Tuner. ראו [דף זה](/overview/live-sources/phoenix-diagnostics) למידע נוסף.
 - **שרת RLOG:** פרוטוקול זה נתמך על ידי AdvantageKit כחלופה ל-NetworkTables. החיבור מופעל בפורט 5800 כברירת מחדל.
 - **FTC Dashboard:** מצב זה משתלב עם רובוטי FTC המפרסמים נתונים ל-[FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard).
 
@@ -48,7 +48,7 @@ AdvantageScope יכולה להתחבר ל-FIRST Driver Station כדי להציג
 בעת שימוש ב-NetworkTables כמקור חי, ניתן לבחור את המצבים החיים הבאים:
 
 - **רוחב פס נמוך (ברירת מחדל):** AdvantageScope מבקשת נתונים מהשרת רק עבור שדות שנמצאים בשימוש פעיל. נתונים שפורסמו לפני שהשדה נבחר לא יהיו זמינים. מצב זה **מומלץ ביותר** בעת הפעלה בסביבה עם רוחב פס רשת מוגבל, או כאשר מספר רב של שדות מפורסמים.
-- **רישום לוגים:** AdvantageScope מבקשת נתונים עבור כל השדות ללא קשר אם הם נמצאים בשימוש פעיל. פירוש הדבר הוא שניתן לצפות בשדות בדיעבד על ידי השהיית זרם הנתונים החיים (ראו למטה). מצב זה שימושי לעיתים מזומנות במהלך פיתוח אך **אין להשתמש בו כאשר רוחב הפס מוגבל**.
+- **רישום יומן:** AdvantageScope מבקשת נתונים עבור כל השדות ללא קשר אם הם נמצאים בשימוש פעיל. פירוש הדבר הוא שניתן לצפות בשדות בדיעבד על ידי השהיית זרם הנתונים החיים (ראו למטה). מצב זה שימושי לעיתים מזומנות במהלך פיתוח אך **אין להשתמש בו כאשר רוחב הפס מוגבל**.
 
 ### מחיקת נתונים חיים
 

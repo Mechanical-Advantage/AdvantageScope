@@ -2,9 +2,9 @@
 sidebar_position: 8
 ---
 
-# 🎮 בקרים
+# 🎮 ג'וייסטיקים
 
-כרטיסיית הבקרים מציגה את המצב של עד שישה בקרים מחוברים. התמונה למטה מציגה פריסת דוגמה, עם שני בקרים מסוג Xbox ובקר כללי (joystick). כל לחצן מודגש בעת לחיצה עליו, ומצבי הבקרים וצירים אחרים מוצגים.
+כרטיסיית הג'וייסטיקים מציגה את המצב של עד שישה ג'וייסטיקים מחוברים. התמונה למטה מציגה פריסת דוגמה, עם שני ג'וייסטיקים מסוג Xbox ובקר כללי (joystick). כל לחצן מודגש בעת לחיצה עליו, ומצבי הבקרים וצירים אחרים מוצגים.
 
 <img src="/img/tab-reference/joysticks-1.png" alt="Overview of joystick tab" />
 
@@ -23,10 +23,10 @@ sidebar_position: 8
 
 ## חלונית בקרה
 
-יש לבחור את סוגי הבקרים בטבלה בתחתית הכרטיסייה. מזהי הבקרים (IDs) נעים מ-0 עד 5, ומתאימים למזהים ב-Driver Station וב-WPILib. מידע נוסף על בקרים ניתן למצוא ב[תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
+יש לבחור את סוגי הג'וייסטיקים בטבלה בתחתית הכרטיסייה. מזהי הג'וייסטיקים (IDs) נעים מ-0 עד 5, ומתאימים למזהים ב-Driver Station וב-WPILib. מידע נוסף על בקרים ניתן למצוא ב[תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 
-AdvantageScope כוללת סט של בקרים נפוצים, כולל "בקר כללי" (Generic Joystick) עם כל הלחצנים, הצירים וה-POVs בפורמט רשת (כפי שמוצג לעיל). להוספת בקר מותאם אישית, ראו [נכסים מותאמים אישית](/more-features/custom-assets).
+AdvantageScope כוללת סט של ג'וייסטיקים נפוצים, כולל "בקר כללי" (Generic Joystick) עם כל הלחצנים, הצירים וה-POVs בפורמט רשת (כפי שמוצג לעיל). להוספת בקר מותאם אישית, ראו [נכסים מותאמים אישית](/more-features/custom-assets).
 
 :::warning
-**נתוני בקרים אינם זמינים דרך חיבור NetworkTables ב-WPILib התקני.** קובצי לוג של WPILib (עם [רישום בקרים מופעל](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), לוגים של AdvantageKit וסטרימינג ב-AdvantageKit נתמכים.
+**נתוני ג'וייסטיקים אינם זמינים דרך חיבור NetworkTables ב-WPILib התקני.** קובצי יומן של WPILib (עם [רישום בקרים מופעל](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), יומנים של AdvantageKit וסטרימינג ב-AdvantageKit נתמכים.
 :::
