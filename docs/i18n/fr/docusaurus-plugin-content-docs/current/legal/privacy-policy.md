@@ -2,8 +2,6 @@
 sidebar_position: 2
 ---
 
-<!-- Note for translators: This page is a legal document and must be left in its original English form. Translate the title of the page but do not modify any other headers or text. -->
-
 # Politique de confidentialité
 
 AdvantageScope is a volunteer-run project that is owned and published by the Littleton STEM Educational Foundation ("Littleton Robotics"), a non-profit organization based in the United States.

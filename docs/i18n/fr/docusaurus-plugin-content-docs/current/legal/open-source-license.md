@@ -2,8 +2,6 @@
 sidebar_position: 1
 ---
 
-<!-- Note for translators: This page is a legal document and must be left in its original English form. Translate the title of the page but do not modify any other headers or text. -->
-
 # Licence open source
 
 Copyright (c) 2021-2026 Littleton Robotics. All rights reserved.
