@@ -191,7 +191,7 @@ El campo 3D admite tres modos de renderizado:
 
 - **Cinemático:** Renderiza usando sombras, iluminación, reflejos y modelos 3D de gran detalle para un aspecto más realista. Requiere una GPU decentemente potente.
 - **Estándar:** Renderiza con iluminación mínima y modelos 3D simplificados. Funciona bien en la mayoría de los dispositivos.
-- **Bajo consumo:** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
+- **Baja potencia:** Reduce la velocidad de fotogramas, la resolución y el detalle del modelo para reducir el consumo de la batería y proporcionar un rendimiento más consistente en dispositivos de gama baja.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparación de modos de renderizado" />
 

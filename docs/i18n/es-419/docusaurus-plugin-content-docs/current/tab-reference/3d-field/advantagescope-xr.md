@@ -42,7 +42,7 @@ AdvantageScope XR solo es compatible con iOS y iPadOS. No hay planes inmediatos 
 4. Toca "AdvantageScope XR" y luego "Abrir" para **iniciar la experiencia** y conectarte al host. Si se te solicita, permite que AdvantageScope XR acceda a la **cámara y red local**.
 5. Sigue las instrucciones en el dispositivo para **calibrar y posicionar el modelo de campo**.
 6. Controla el modelo de campo de forma normal usando el dispositivo host, incluyendo **reproducción de registros y transmisión en vivo**. El estado del modelo de campo se muestra en vivo en el dispositivo cliente.
-7. To **grabar un video** rápidamente, toca el ícono "Grabar" en la parte superior de la pantalla. Tócalo de nuevo para detener la grabación, luego edita y guarda el clip.
+7. Para **grabar un video** rápidamente, toca el ícono "Grabar" en la parte superior de la pantalla. Tócalo de nuevo para detener la grabación, luego edita y guarda el clip.
 
 :::warning
 Los mapas de calor y las velocidades del módulo swerve aún no están disponibles en XR. Se admiten todos los demás tipos de objetos.
