@@ -24,7 +24,7 @@ download:
   statusPreparing: "בהכנה"
   statusFinished: "הסתיים"
   progressSimple: '{{current}} מ"ב / {{total}} מ"ב'
-  progressDetailed: "{{current}} מ\"ב / {{total}} מ\"ב ({{speed}} מגה-ביט/שנייה, {{minutes}} דק' {{seconds}} שנ')"
+  progressDetailed: '{{current}} מ"ב / {{total}} מ"ב ({{speed}} מגה-ביט/שנייה, {{minutes}} דק'' {{seconds}} שנ'')'
   sizeLessThanMinimum: '(<0.1 מ"ב)'
   sizeValue: '({{size}} מ"ב)'
   alertSelectLog: "יש לבחור לוג להורדה."
@@ -1025,13 +1025,13 @@ units:
     bytesPerSecond_one: "{{value}} בית/שנ'"
     bytesPerSecond_other: "{{value}} בתים/שנ'"
     kilobitsPerSecond: "{{value}} קילו-ביט/שנ'"
-    kilobytesPerSecond: "{{value}} ק\"ב/שנ'"
+    kilobytesPerSecond: '{{value}} ק"ב/שנ'''
     megabitsPerSecond: "{{value}} מגה-ביט/שנ'"
-    megabytesPerSecond: "{{value}} מ\"ב/שנ'"
+    megabytesPerSecond: '{{value}} מ"ב/שנ'''
     gigabitsPerSecond: "{{value}} גיגה-ביט/שנ'"
-    gigabytesPerSecond: "{{value}} ג\"ב/שנ'"
+    gigabytesPerSecond: '{{value}} ג"ב/שנ'''
     terabitsPerSecond: "{{value}} טרה-ביט/שנ'"
-    terabytesPerSecond: "{{value}} ט\"ב/שנ'"
+    terabytesPerSecond: '{{value}} ט"ב/שנ'''
     hertz: "{{value}} הרץ"
     kilohertz: "{{value}} קילו-הרץ"
     megahertz: "{{value}} מגה-הרץ"
@@ -1050,12 +1050,12 @@ units:
 
     metersSeconds: "{{value}} מ'·שנ'"
     inchesSeconds: "{{value}} אינץ'·שנ'"
-    millimetersPerSecond: "{{value}} מ\"מ/שנ'"
-    millimetersSeconds: "{{value}} מ\"מ·שנ'"
-    centimetersPerSecond: "{{value}} ס\"מ/שנ'"
-    centimetersSeconds: "{{value}} ס\"מ·שנ'"
-    kilometersPerSecond: "{{value}} ק\"מ/שנ'"
-    kilometersSeconds: "{{value}} ק\"מ·שנ'"
+    millimetersPerSecond: '{{value}} מ"מ/שנ'''
+    millimetersSeconds: '{{value}} מ"מ·שנ'''
+    centimetersPerSecond: '{{value}} ס"מ/שנ'''
+    centimetersSeconds: '{{value}} ס"מ·שנ'''
+    kilometersPerSecond: '{{value}} ק"מ/שנ'''
+    kilometersSeconds: '{{value}} ק"מ·שנ'''
     feetSeconds: "{{value}} רגל·שנ'"
     yardsPerSecond: "{{value}} יארד/שנ'"
     yardsSeconds: "{{value}} יארד·שנ'"
@@ -1067,10 +1067,10 @@ units:
     rotationsSeconds_other: "{{value}} סיבובים·שנ'"
     milesPerHourPerSecond: "{{value}} מייל/שעה/שנ'"
     milesPerHourSeconds: "{{value}} מייל/שעה·שנ'"
-    kilometersPerHourPerSecond: "{{value}} קמ\"ש/שנ'"
-    kilometersPerHourSeconds: "{{value}} קמ\"ש·שנ'"
-    rotationsPerMinutePerSecond: "{{value}} סל\"ד/שנ'"
-    rotationsPerMinuteSeconds: "{{value}} סל\"ד·שנ'"
+    kilometersPerHourPerSecond: '{{value}} קמ"ש/שנ'''
+    kilometersPerHourSeconds: '{{value}} קמ"ש·שנ'''
+    rotationsPerMinutePerSecond: '{{value}} סל"ד/שנ'''
+    rotationsPerMinuteSeconds: '{{value}} סל"ד·שנ'''
     metersPerSecondCubed: "{{value}} מ'/שנ' בשלישית"
     inchesPerSecondCubed: "{{value}} אינץ'/שנ' בשלישית"
     feetPerSecondCubed: "{{value}} רגל/שנ' בשלישית"
@@ -1082,8 +1082,8 @@ units:
     rotationsPerSecondCubed_other: "{{value}} סיבובים/שנ' בשלישית"
     secondsPerSecond: "{{value}} שנ'/שנ'"
     secondsSeconds: "{{value}} שנ' בריבוע"
-    millisecondsPerSecond: "{{value}} מ\"ש/שנ'"
-    millisecondsSeconds: "{{value}} מ\"ש·שנ'"
+    millisecondsPerSecond: '{{value}} מ"ש/שנ'''
+    millisecondsSeconds: '{{value}} מ"ש·שנ'''
     microsecondsPerSecond: "{{value}} מיקרו-שנ'/שנ'"
     microsecondsSeconds: "{{value}} מיקרו-שנ'·שנ'"
     nanosecondsPerSecond: "{{value}} ננו-שנ'/שנ'"
@@ -1098,10 +1098,10 @@ units:
     daysSeconds_other: "{{value}} ימים·שנ'"
     bytesSeconds_one: "{{value}} בית·שנ'"
     bytesSeconds_other: "{{value}} בתים·שנ'"
-    kilobytesSeconds: "{{value}} ק\"ב·שנ'"
-    megabytesSeconds: "{{value}} מ\"ב·שנ'"
-    gigabytesSeconds: "{{value}} ג\"ב·שנ'"
-    terabytesSeconds: "{{value}} ט\"ב·שנ'"
+    kilobytesSeconds: '{{value}} ק"ב·שנ'''
+    megabytesSeconds: '{{value}} מ"ב·שנ'''
+    gigabytesSeconds: '{{value}} ג"ב·שנ'''
+    terabytesSeconds: '{{value}} ט"ב·שנ'''
     bits_one: "{{value}} ביט"
     bits_other: "{{value}} ביטים"
     bitsPerSecondSquared_one: "{{value}} ביט/שנ' בריבוע"
@@ -1110,16 +1110,16 @@ units:
     bytesPerSecondSquared_other: "{{value}} בתים/שנ' בריבוע"
     kilobits: "{{value}} קילו-ביט"
     kilobitsPerSecondSquared: "{{value}} קילו-ביט/שנ' בריבוע"
-    kilobytesPerSecondSquared: "{{value}} ק\"ב/שנ' בריבוע"
+    kilobytesPerSecondSquared: '{{value}} ק"ב/שנ'' בריבוע'
     megabits: "{{value}} מגה-ביט"
     megabitsPerSecondSquared: "{{value}} מגה-ביט/שנ' בריבוע"
-    megabytesPerSecondSquared: "{{value}} מ\"ב/שנ' בריבוע"
+    megabytesPerSecondSquared: '{{value}} מ"ב/שנ'' בריבוע'
     gigabits: "{{value}} גיגה-ביט"
     gigabitsPerSecondSquared: "{{value}} גיגה-ביט/שנ' בריבוע"
-    gigabytesPerSecondSquared: "{{value}} ג\"ב/שנ' בריבוע"
+    gigabytesPerSecondSquared: '{{value}} ג"ב/שנ'' בריבוע'
     terabits: "{{value}} טרה-ביט"
     terabitsPerSecondSquared: "{{value}} טרה-ביט/שנ' בריבוע"
-    terabytesPerSecondSquared: "{{value}} ט\"ב/שנ' בריבוע"
+    terabytesPerSecondSquared: '{{value}} ט"ב/שנ'' בריבוע'
     hertzPerSecond: "{{value}} הרץ/שנ'"
     hertzSeconds: "{{value}}"
     kilohertzPerSecond: "{{value}} קילו-הרץ/שנ'"

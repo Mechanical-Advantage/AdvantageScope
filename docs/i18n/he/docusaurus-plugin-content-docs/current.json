@@ -24,19 +24,19 @@
     "description": "The label for category '🛜 Live Sources' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference": {
-    "message": "מדריך לשוניות",
+    "message": "מדריך כרטיסיות",
     "description": "The label for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.Tab Reference.link.generated-index.description": {
-    "message": "AdvantageScope תומך בדרכים רבות להצגה וניתוח של נתונים, המאורגנים בלשוניות. ניתן לבחור את סוג הוויזואליזציה עבור כל לשונית חדשה שנפתחת, וניתן לפתוח מספר לשוניות מסוג מסוים בו-זמנית. ניתן לתת שמות ללשוניות לצורך ארגון קל, והן יכולות להיפתח בחלון נפרד לצורך צפייה סימולטנית ומסונכרנת בנתונים.",
+    "message": "AdvantageScope תומך בדרכים רבות להצגה וניתוח של נתונים, המאורגנים בכרטיסיות. ניתן לבחור את סוג הוויזואליזציה עבור כל כרטיסייה חדשה שנפתחת, וניתן לפתוח מספר כרטיסיות מסוג מסוים בו-זמנית. ניתן לתת שמות לכרטיסיות לצורך ארגון קל, והן יכולות להיפתח בחלון נפרד לצורך צפייה סימולטנית ומסונכרנת בנתונים.",
     "description": "The generated-index page description for category 'Tab Reference' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📉 Line Graph": {
-    "message": "📉 גרף קווים",
+    "message": "📉 גרף קווי",
     "description": "The label for category '📉 Line Graph' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.👀 3D Field": {
-    "message": "👀 מגרש תלת-ממדי",
+    "message": "👀 מגרש 3D",
     "description": "The label for category '👀 3D Field' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.More Features": {
