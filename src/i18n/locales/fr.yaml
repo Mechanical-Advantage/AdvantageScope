@@ -825,6 +825,7 @@ main:
     csvFilter: "Valeurs séparées par des virgules"
     mcapFilter: "Journal MCAP"
     exportConsoleTitle: "Sélectionner l'emplacement d'exportation pour le journal de la console"
+    exportConsoleFilename: "Console {{date}}.txt"
     textFilter: "Fichiers texte"
     openQuery: "Ouvrir le journal?"
     openDetail: "Souhaitez-vous ouvrir le fichier journal « {{name}} »?"

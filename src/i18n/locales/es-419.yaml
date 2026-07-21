@@ -825,6 +825,7 @@ main:
     csvFilter: "Valores separados por comas"
     mcapFilter: "Registro MCAP"
     exportConsoleTitle: "Seleccionar ubicación de exportación para el registro de la consola"
+    exportConsoleFilename: "Consola {{date}}.txt"
     textFilter: "Archivos de texto"
     openQuery: "¿Abrir registro?"
     openDetail: '¿Deseas abrir el archivo de registro "{{name}}"?'

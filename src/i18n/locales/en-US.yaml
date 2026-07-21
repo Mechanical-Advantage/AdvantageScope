@@ -834,6 +834,7 @@ main:
     csvFilter: "Comma-separated values" # File filter name for CSV export
     mcapFilter: "MCAP log" # File filter name for MCAP export
     exportConsoleTitle: "Select export location for console log" # Save dialog title for exporting console log
+    exportConsoleFilename: "Console {{date}}.txt" # Default filename when exporting console log
     textFilter: "Text files" # File extension filter name for text files
     openQuery: "Open log?" # Question title when download finishes
     openDetail: 'Would you like to open the log file "{{name}}"?' # Question detail with downloaded filename

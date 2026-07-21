@@ -825,6 +825,7 @@ main:
     csvFilter: "ערכים מופרדים בפסיקים (CSV)"
     mcapFilter: "לוג MCAP"
     exportConsoleTitle: "בחירת מיקום ייצוא עבור לוג המסוף"
+    exportConsoleFilename: "מסוף {{date}}.txt"
     textFilter: "קובצי טקסט"
     openQuery: "לפתוח לוג?"
     openDetail: 'האם ברצונך לפתוח את קובץ הלוג "{{name}}"?'

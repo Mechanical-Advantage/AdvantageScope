@@ -1241,7 +1241,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       dialog
         .showSaveDialog(window, {
           title: t("main.logs.exportConsoleTitle"),
-          defaultPath: "Console " + formatDate() + ".txt",
+          defaultPath: t("main.logs.exportConsoleFilename", { date: formatDate() }),
           properties: ["createDirectory", "showOverwriteConfirmation", "dontAddToRecent"],
           filters: [{ name: t("main.logs.textFilter"), extensions: ["txt"] }]
         })
