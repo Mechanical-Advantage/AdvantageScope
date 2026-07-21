@@ -15,6 +15,7 @@ const LIVE_SUBSCRIBE_MODE = document.getElementById("liveSubscribeMode") as HTML
 const LIVE_DISCARD = document.getElementById("liveDiscard") as HTMLInputElement;
 const PUBLISH_FILTER = document.getElementById("publishFilter") as HTMLInputElement;
 const COORDINATE_SYSTEM = document.getElementById("coordinateSystem") as HTMLInputElement;
+const TIMESTAMPS = document.getElementById("timestamps") as HTMLInputElement;
 const FIELD_3D_MODE_AC = document.getElementById("field3dModeAc") as HTMLInputElement;
 const FIELD_3D_MODE_AC_LABEL = document.getElementById("field3dModeAcLabel") as HTMLElement;
 const FIELD_3D_MODE_BATTERY = document.getElementById("field3dModeBattery") as HTMLInputElement;
@@ -63,6 +64,7 @@ window.addEventListener("message", (event) => {
       LIVE_DISCARD.value = oldPrefs.liveDiscard.toString();
       PUBLISH_FILTER.value = oldPrefs.publishFilter;
       COORDINATE_SYSTEM.value = oldPrefs.coordinateSystem;
+      TIMESTAMPS.value = oldPrefs.timestamps;
       FIELD_3D_MODE_AC.value = oldPrefs.field3dModeAc;
       FIELD_3D_MODE_BATTERY.value = oldPrefs.field3dModeBattery;
       FIELD_3D_ANTIALIASING.value = oldPrefs.field3dAntialiasing.toString();
@@ -98,6 +100,10 @@ window.addEventListener("message", (event) => {
           if (FIELD_3D_MODE_BATTERY.value === "standard") field3dModeBattery = "standard";
           if (FIELD_3D_MODE_BATTERY.value === "low-power") field3dModeBattery = "low-power";
 
+          let timestamps: "start-0" | "original" = "start-0";
+          if (TIMESTAMPS.value === "start-0") timestamps = "start-0";
+          if (TIMESTAMPS.value === "original") timestamps = "original";
+
           let newPrefs: Preferences = {
             theme: theme,
             robotAddress: ROBOT_ADDRESS.value,
@@ -117,7 +123,8 @@ window.addEventListener("message", (event) => {
             ctreLicenseAccepted: oldPrefs.ctreLicenseAccepted,
             systemcoreStaticAddress: oldPrefs.systemcoreStaticAddress,
             hasScrolledLineGraph: oldPrefs.hasScrolledLineGraph,
-            hasScrolledTimeline: oldPrefs.hasScrolledTimeline
+            hasScrolledTimeline: oldPrefs.hasScrolledTimeline,
+            timestamps: timestamps
           };
           messagePort.postMessage(newPrefs);
         } else {

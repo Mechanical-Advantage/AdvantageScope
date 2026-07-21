@@ -833,6 +833,7 @@ export default class LineGraphController implements TabController {
     rightFieldsCommand.reverse();
     return {
       timeRange: timeRange,
+      displayOffset: window.log ? window.log.getTimestampDisplayOffset() : 0,
       selectionMode: window.selection.getMode(),
       selectedTime: window.selection.getSelectedTime(),
       hoveredTime: window.selection.getHoveredTime(),

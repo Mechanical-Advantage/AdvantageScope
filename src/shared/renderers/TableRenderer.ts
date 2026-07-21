@@ -68,6 +68,7 @@ export default class TableRenderer implements TabRenderer {
 
     // Jump input handling
     let jump = () => {
+      let displayOffset = window.log.getTimestampDisplayOffset();
       let targetTime = Number(this.INPUT_FIELD.value);
       if (this.INPUT_FIELD.value === "") {
         if (this.selectionMode !== SelectionMode.Idle) {
@@ -77,6 +78,7 @@ export default class TableRenderer implements TabRenderer {
           window.selection.setSelectedTime(0);
         }
       } else {
+        targetTime = targetTime - displayOffset;
         window.selection.setSelectedTime(targetTime);
       }
       this.selectedTime = targetTime;
@@ -296,9 +298,16 @@ export default class TableRenderer implements TabRenderer {
     // Get cell text
     let cellText: string[][] = [];
     this.dataRowTimestamps = [];
+    let displayOffset = command.displayOffset;
+    let isStartAt0 = window.preferences?.timestamps !== "original";
     for (let i = dataRowStart; i < dataRowEnd; i++) {
       this.dataRowTimestamps.push(this.timestamps[i]);
-      cellText.push([formatTimeWithMS(this.timestamps[i])]);
+      let displayTime = this.timestamps[i] + displayOffset;
+      let text = formatTimeWithMS(displayTime);
+      if (isStartAt0) {
+        text = "(" + text + ")";
+      }
+      cellText.push([text]);
     }
     this.timestampRange =
       this.dataRowTimestamps.length > 0
@@ -377,7 +386,12 @@ export default class TableRenderer implements TabRenderer {
     }
     this.updateHighlights();
     let placeholder = this.selectedTime === null ? 0 : this.selectedTime;
-    this.INPUT_FIELD.placeholder = formatTimeWithMS(placeholder);
+    let displayPlaceholder = placeholder + displayOffset;
+    let placeholderText = formatTimeWithMS(displayPlaceholder);
+    if (isStartAt0) {
+      placeholderText = "(" + placeholderText + ")";
+    }
+    this.INPUT_FIELD.placeholder = placeholderText;
   }
 
   saveState(): unknown {
@@ -389,6 +403,7 @@ export default class TableRenderer implements TabRenderer {
 
 export type TableRendererCommand = {
   timestamps: number[];
+  displayOffset: number;
   fields: {
     key: string;
     isAvailable: boolean;

@@ -127,7 +127,9 @@ export default class Timeline {
     let labelFont = "200 12px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont";
 
     // Calculate step size
-    let stepSize = calcAxisStepSize(timeRange, width, this.STEP_TARGET_PX);
+    let displayOffset = window.log.getTimestampDisplayOffset();
+    let displayTimeRange: [number, number] = [timeRange[0] + displayOffset, timeRange[1] + displayOffset];
+    let stepSize = calcAxisStepSize(displayTimeRange, width, this.STEP_TARGET_PX);
 
     // Draw state ranges
     context.lineWidth = 1;
@@ -258,15 +260,19 @@ export default class Timeline {
     context.fillStyle = light ? "#222" : "#eee";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    let stepPos = Math.ceil(cleanFloat(timeRange[0] / stepSize)) * stepSize;
+    let isStartAt0 = window.preferences?.timestamps !== "original";
+    let stepPos = Math.ceil(cleanFloat(displayTimeRange[0] / stepSize)) * stepSize;
     let iterCount = 0;
     while (iterCount++ < 100) {
-      let x = scaleValue(stepPos, timeRange, [0, width]);
+      let x = scaleValue(stepPos, displayTimeRange, [0, width]);
       if (x > width + 1) {
         break;
       }
 
       let text = cleanFloat(stepPos).toString() + "s";
+      if (isStartAt0) {
+        text = "(" + text + ")";
+      }
       context.font = labelFont;
       let textWidth = context.measureText(text).width;
       let textX = clampValue(x, textWidth / 2 + 3, width - textWidth / 2 - 3);

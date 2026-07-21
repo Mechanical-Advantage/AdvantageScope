@@ -204,6 +204,7 @@ export default class ConsoleController implements TabController {
       key: this.field,
       keyAvailable: isAvailable,
       lines: lines,
+      displayOffset: window.log ? window.log.getTimestampDisplayOffset() : 0,
 
       selectionMode: window.selection.getMode(),
       selectedTime: window.selection.getSelectedTime(),
