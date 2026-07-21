@@ -41,4 +41,4 @@ L'option « Préfixes de publication NT » définit les préfixes autorisés pou
 
 - Les champs sont publiés toutes les 20 ms, de sorte que les données NetworkTables publiées à l'origine à une fréquence plus élevée ignoreront des échantillons.
 - Les horodatages des échantillons publiés ne sont pas conservés. Cela serait impossible lors du balayage d'avant en arrière dans le temps ou de la lecture à différentes vitesses.
-:::
+  :::

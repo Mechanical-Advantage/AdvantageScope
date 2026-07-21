@@ -62,11 +62,11 @@ Le [téléchargement des journaux depuis la roboRIO](/overview/log-files/#downlo
 
 Le tableau ci-dessous montre la vitesse de transfert mesurée sur les versions 2025 et 2026 d'AdvantageScope lors d'une connexion via Ethernet (bande passante maximale de 100 Mb/s). Notez que les performances de la version 2025 sont fortement impactées par la charge CPU sur la roboRIO.
 
-|                                                    | 2025 (SFTP) | 2026 (FTP) | Accélération                                     |
-| -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
+|                                                       | 2025 (SFTP) | 2026 (FTP) | Accélération                                     |
+| ----------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
 | Charge CPU élevée<br /><sub>Code robot complexe</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3,2x**</span> |
-| Charge CPU moyenne<br /><sub>Code robot normal</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
-| Charge CPU minimale<br /><sub>Sans code robot</sub> | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |
+| Charge CPU moyenne<br /><sub>Code robot normal</sub>  | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2,3x**</span> |
+| Charge CPU minimale<br /><sub>Sans code robot</sub>   | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1,1x**</span> |
 
 ## 📁 Télécharger les journaux depuis des sous-dossiers {#download-logs-from-subfolders}
 
