@@ -150,6 +150,7 @@ sourceListHelp:
   listOr: "{{list, list(type: disjunction)}}" # List of options formatted with disjunction
   sources_one: "Source: {{list, list(type: disjunction)}}" # Singular label for field source type
   sources_other: "Sources: {{list, list(type: disjunction)}}" # Plural label for field source types
+  optionName: "{{name}}:" # Template for option name label in help window
 
 unitConversion:
   title: "Unit Conversion — AdvantageScope" # Window title for unit conversion settings
@@ -238,6 +239,7 @@ sourceList:
   toggleVisibility: "Toggle field visibility" # Tooltip to hide/show a field
   hideField: "Hide field" # Tooltip to hide a field
   showField: "Show field" # Tooltip to show a field
+  typeName: "{{name}}:" # Template for field type name label
   optionValues:
     # Neon colors
     "#00ff00": "Green" # Green neon color option
@@ -516,6 +518,12 @@ hub:
     selectTitle: "Select joystick data source" # Tooltip for joystick data source dropdown
     noData: "No data for joystick." # Canvas message when joystick has no data
     selectLayout: "Select a joystick layout to view data." # Canvas message when no layout is selected
+    port0: "0:" # Port 0 label
+    port1: "1:" # Port 1 label
+    port2: "2:" # Port 2 label
+    port3: "3:" # Port 3 label
+    port4: "4:" # Port 4 label
+    port5: "5:" # Port 5 label
 
   swerve:
     sources: "Sources" # Title for the sources source list in swerve view

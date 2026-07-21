@@ -150,6 +150,7 @@ sourceListHelp:
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "Fuente: {{list, list(type: disjunction)}}"
   sources_other: "Fuentes: {{list, list(type: disjunction)}}"
+  optionName: "{{name}}:"
 
 unitConversion:
   title: "Conversión de unidades — AdvantageScope"
@@ -236,6 +237,7 @@ sourceList:
   toggleVisibility: "Alternar visibilidad del campo"
   hideField: "Ocultar campo"
   showField: "Mostrar campo"
+  typeName: "{{name}}:"
   optionValues:
     "#00ff00": "Verde"
     "#ff0000": "Rojo"
@@ -509,6 +511,12 @@ hub:
     selectTitle: "Seleccionar fuente de datos del joystick"
     noData: "No hay datos para el joystick."
     selectLayout: "Selecciona una disposición de joystick para ver los datos."
+    port0: "0:"
+    port1: "1:"
+    port2: "2:"
+    port3: "3:"
+    port4: "4:"
+    port5: "5:"
 
   swerve:
     sources: "Fuentes"

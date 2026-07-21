@@ -992,7 +992,8 @@ export default class SourceList {
       }
     });
     let typeNameElement = item.getElementsByClassName("type-name")[0] as HTMLElement;
-    typeNameElement.innerText = typeNameComponents.join("/") + (typeNameComponents.length > 0 ? ":" : "");
+    typeNameElement.innerText =
+      typeNameComponents.length > 0 ? t("sourceList.typeName", { name: typeNameComponents.join("/") }) : "";
 
     // Update log key
     let keyContainer = item.getElementsByClassName("key-container")[0] as HTMLElement;

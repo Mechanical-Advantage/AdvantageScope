@@ -184,7 +184,7 @@ function addItem(
 
       let nameCell = document.createElement("td");
       row.appendChild(nameCell);
-      nameCell.innerHTML = option.name + ":";
+      nameCell.innerHTML = t("sourceListHelp.optionName", { name: option.name });
 
       let valuesCell = document.createElement("td");
       row.appendChild(valuesCell);

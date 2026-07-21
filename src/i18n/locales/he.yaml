@@ -150,6 +150,7 @@ sourceListHelp:
   listOr: "{{list, list(type: disjunction)}}"
   sources_one: "מקור: {{list, list(type: disjunction)}}"
   sources_other: "מקורות: {{list, list(type: disjunction)}}"
+  optionName: "{{name}}:"
 
 unitConversion:
   title: "המרת יחידות — AdvantageScope"
@@ -236,6 +237,7 @@ sourceList:
   toggleVisibility: "הפעלה/כיבוי של נראות השדה"
   hideField: "הסתרת שדה"
   showField: "הצגת שדה"
+  typeName: "{{name}}:"
   optionValues:
     "#00ff00": "ירוק"
     "#ff0000": "אדום"
@@ -509,6 +511,12 @@ hub:
     selectTitle: "בחירת מקור נתוני בקר"
     noData: "אין נתונים עבור הבקר."
     selectLayout: "יש לבחור פריסת בקר כדי להציג נתונים."
+    port0: "0:"
+    port1: "1:"
+    port2: "2:"
+    port3: "3:"
+    port4: "4:"
+    port5: "5:"
 
   swerve:
     sources: "מקורות"
