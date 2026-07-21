@@ -8,6 +8,7 @@
 */
 
 body {
+  direction: ltr;
   overflow-x: hidden;
   overflow-y: auto;
   white-space: break-spaces;

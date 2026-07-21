@@ -4,6 +4,8 @@ sidebar_position: 2
 
 # מדיניות פרטיות
 
+<div dir="ltr">
+
 AdvantageScope is a volunteer-run project that is owned and published by the Littleton STEM Educational Foundation ("Littleton Robotics"), a non-profit organization based in the United States.
 
 _This policy was last modified on June 14th, 2026._
@@ -35,3 +37,5 @@ The AdvantageScope XR mobile application is distributed through Apple's App Stor
 ## Contact
 
 Questions about this policy can be directed to software@team6328.org.
+
+</div>
