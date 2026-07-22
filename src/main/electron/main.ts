@@ -277,7 +277,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
       });
       let newTypeMemoryStr = JSON.stringify(typeMemory);
       if (originalTypeMemoryStr !== newTypeMemoryStr) {
-        jsonfile.writeFileSync(TYPE_MEMORY_FILENAME, typeMemory);
+        await jsonfile.writeFile(TYPE_MEMORY_FILENAME, typeMemory);
       }
       break;
 
@@ -304,7 +304,7 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         const uuid: string = message.data.uuid;
         const logPath: string = message.data.path;
         app.addRecentDocument(logPath);
-        fs.writeFile(AKIT_PATH_OUTPUT, logPath, () => {});
+        await fs.promises.writeFile(AKIT_PATH_OUTPUT, logPath);
 
         // Send data if all file reads finished
         let completedCount = 0;
@@ -377,21 +377,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             if (ctreLicensePrompt === null) {
               ctreLicensePrompt = new Promise(async (resolve) => {
                 while (true) {
-                  let response = await new Promise<Electron.MessageBoxReturnValue>((resolve) =>
-                    dialog
-                      .showMessageBox(window, {
-                        type: "question",
-                        title: "Alert",
-                        message: "CTRE License Agreement",
-                        detail:
-                          "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
-                        checkboxLabel: "I Agree",
-                        buttons: ["View License", "OK"],
-                        defaultId: 1,
-                        icon: WINDOW_ICON
-                      })
-                      .then((response) => resolve(response))
-                  );
+                  let response = await dialog.showMessageBox(window, {
+                    type: "question",
+                    title: "Alert",
+                    message: "CTRE License Agreement",
+                    detail:
+                      "Hoot log file decoding requires agreement to CTRE's end user license agreement. Please click the button below to view the full license agreement, then check the box if you agree to the terms.",
+                    checkboxLabel: "I Agree",
+                    buttons: ["View License", "OK"],
+                    defaultId: 1,
+                    icon: WINDOW_ICON
+                  });
                   if (response.response === 1) {
                     if (response.checkboxChecked) {
                       prefs.ctreLicenseAccepted = true;
@@ -446,18 +442,17 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
 
           // Save WPILOG in temporary folder
           let wpilogPath = path.join(app.getPath("temp"), "revlog_" + createUUID() + ".wpilog");
-          parseREVLOG(logPath, wpilogPath)
-            .then(() => {
-              openPath(wpilogPath, (buffer) => {
-                results[0] = buffer;
-                fs.rmSync(wpilogPath);
-              });
-            })
-            .catch((err) => {
-              errorMessage = err.message;
-              completedCount++;
-              sendIfReady();
+          try {
+            await parseREVLOG(logPath, wpilogPath);
+            openPath(wpilogPath, (buffer) => {
+              results[0] = buffer;
+              fs.rmSync(wpilogPath);
             });
+          } catch (err: any) {
+            errorMessage = err.message;
+            completedCount++;
+            sendIfReady();
+          }
         } else if (logPath.endsWith(".wpilogxz")) {
           // Externally compressed WPILOG, decompress
           targetCount += 1;
@@ -1873,7 +1868,7 @@ function setupMenu() {
           type: "checkbox",
           async click(item) {
             const isCustom = item.checked;
-            let prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
+            let prefs: Preferences = await jsonfile.readFile(PREFS_FILENAME);
             if (isCustom) {
               let result = await dialog.showOpenDialog({
                 title: "Select folder containing custom AdvantageScope assets",
@@ -1886,8 +1881,8 @@ function setupMenu() {
             } else {
               prefs.userAssetsFolder = null;
             }
-            jsonfile.writeFileSync(PREFS_FILENAME, prefs);
-            advantageScopeAssets = loadAssets();
+            await jsonfile.writeFile(PREFS_FILENAME, prefs);
+            advantageScopeAssets = await loadAssets();
             sendAllPreferences();
             sendAssets();
           }
@@ -3450,7 +3445,7 @@ if (process.platform === "linux") {
   }
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Check preferences and set theme
   let prefs = DEFAULT_PREFS;
   if (process.platform === "linux") {
@@ -3470,16 +3465,16 @@ app.whenReady().then(() => {
 
   // Load assets
   createAssetFolders();
-  startAssetDownloadLoop(() => {
-    advantageScopeAssets = loadAssets();
+  startAssetDownloadLoop(async () => {
+    advantageScopeAssets = await loadAssets();
     sendAssets();
   });
-  setInterval(() => {
+  setInterval(async () => {
     // Periodically load assets in case they are updated
-    advantageScopeAssets = loadAssets();
+    advantageScopeAssets = await loadAssets();
     sendAssets();
   }, 5000);
-  advantageScopeAssets = loadAssets();
+  advantageScopeAssets = await loadAssets();
 
   // Start owlet download
   startOwletDownloadLoop();

@@ -54,15 +54,21 @@ export namespace XRServer {
           switch (url.pathname) {
             case "/":
               response.writeHead(200, { "Content-Type": "text/html" });
-              response.end(fs.readFileSync(path.join(__dirname, "../www/xrClient.html"), { encoding: "utf-8" }));
+              response.end(
+                await fs.promises.readFile(path.join(__dirname, "../www/xrClient.html"), { encoding: "utf-8" })
+              );
               return;
             case "/index.css":
               response.writeHead(200, { "Content-Type": "text/css" });
-              response.end(fs.readFileSync(path.join(__dirname, "../www/xrClient.css"), { encoding: "utf-8" }));
+              response.end(
+                await fs.promises.readFile(path.join(__dirname, "../www/xrClient.css"), { encoding: "utf-8" })
+              );
               return;
             case "/index.js":
               response.writeHead(200, { "Content-Type": "text/javascript" });
-              response.end(fs.readFileSync(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" }));
+              response.end(
+                await fs.promises.readFile(path.join(__dirname, "../bundles/xrClient.js"), { encoding: "utf-8" })
+              );
               return;
             case "/apriltag":
               let family = url.searchParams.get("family");
@@ -75,7 +81,7 @@ export namespace XRServer {
 
               const imgPath = path.join(__dirname, "../www/textures/apriltag-" + family + "/" + name + ".png");
               try {
-                let imgData = fs.readFileSync(imgPath);
+                let imgData = await fs.promises.readFile(imgPath);
                 response.writeHead(200, { "Content-Type": "image/png" });
                 response.end(imgData);
               } catch {
@@ -127,7 +133,7 @@ export namespace XRServer {
 
               // Read file
               response.writeHead(200, { "Content-Type": "application/octet-stream" });
-              response.end(fs.readFileSync(decodeURIComponent(assetPath)));
+              response.end(await fs.promises.readFile(decodeURIComponent(assetPath)));
               return;
           }
         }

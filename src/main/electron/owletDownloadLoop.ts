@@ -24,32 +24,30 @@ let statusText = "No status available.";
 
 /** Updates the stored copies of owlet and retries periodically in case of network issues */
 export async function startOwletDownloadLoop() {
-  let check: () => void = () => {
-    checkDiskSpace(OWLET_STORAGE)
-      .then((diskSpace) => {
-        if (diskSpace.free / 1e9 < REQUIRED_SPACE_GB) {
-          throw new Error();
-        }
-        downloadOwletInternal(OWLET_STORAGE, getElectronPlatform())
-          .then(() => {
-            statusText = "Owlet is up-to-date. AdvantageScope will check for updates periodically.";
-            setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
-          })
-          .catch(() => {
-            statusText = "Using offline owlet cache. Checking for updates soon.";
-            setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-          });
-      })
-      .catch(() => {
-        statusText = "Not enough disk space. Trying again soon.";
-        setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-      });
+  let check: () => Promise<void> = async () => {
+    try {
+      const diskSpace = await checkDiskSpace(OWLET_STORAGE);
+      if (diskSpace.free / 1e9 < REQUIRED_SPACE_GB) {
+        throw new Error();
+      }
+    } catch {
+      statusText = "Not enough disk space. Trying again soon.";
+      setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+    }
+    try {
+      downloadOwletInternal(OWLET_STORAGE, getElectronPlatform());
+      statusText = "Owlet is up-to-date. AdvantageScope will check for updates periodically.";
+      setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
+    } catch {
+      statusText = "Using offline owlet cache. Checking for updates soon.";
+      setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+    }
   };
 
   try {
     await copyBundledOwlet();
   } catch {}
-  check();
+  await check();
 }
 
 /** Returns a string for the current status of the download. */
@@ -65,9 +63,7 @@ export async function copyBundledOwlet(): Promise<void> {
   }
 
   // Loop through bundled files
-  let bundledFiles = await new Promise<string[]>((resolve) =>
-    fs.readdir(OWLET_BUNDLED_STORAGE, (_, files) => resolve(files))
-  );
+  let bundledFiles = await fs.promises.readdir(OWLET_BUNDLED_STORAGE);
   for (let i = 0; i < bundledFiles.length; i++) {
     let filename = bundledFiles[i];
     let bundledVersion = filename.split("-")[1];
@@ -75,23 +71,19 @@ export async function copyBundledOwlet(): Promise<void> {
 
     // Copy bundled file to storage folder
     let copy = async () => {
-      await new Promise<void>((resolve) => {
-        fs.copyFile(path.join(OWLET_BUNDLED_STORAGE, filename), path.join(OWLET_STORAGE, filename), () => resolve());
-      });
-      fs.chmodSync(path.join(OWLET_STORAGE, filename), 0o755);
+      await fs.promises.copyFile(path.join(OWLET_BUNDLED_STORAGE, filename), path.join(OWLET_STORAGE, filename));
+      await fs.promises.chmod(path.join(OWLET_STORAGE, filename), 0o755);
     };
 
     // Look for stored version with same compliancy
-    let storedFilenames = await new Promise<string[]>((resolve) =>
-      fs.readdir(OWLET_STORAGE, (_, files) => resolve(files))
-    );
+    let storedFilenames = await fs.promises.readdir(OWLET_STORAGE);
     let storedFilename = storedFilenames.find((filename) => getCompliancy(filename) === compliancy);
     if (storedFilename !== undefined) {
       // Existing version found, check if bundled version is newer
       let storedVersion = storedFilename.split("-")[1];
       if (compareVersions(bundledVersion, storedVersion) > 0) {
         // Delete older version
-        fs.unlinkSync(path.join(OWLET_STORAGE, storedFilename));
+        await fs.promises.unlink(path.join(OWLET_STORAGE, storedFilename));
 
         // Copy bundled version
         await copy();
