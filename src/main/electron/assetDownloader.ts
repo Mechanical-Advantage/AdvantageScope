@@ -20,41 +20,38 @@ const SUCCESS_TIMEOUT_MS = 6 * 60 * 60 * 1000; // 6 hours
 let statusText = "No status available.";
 
 /** Updates the local set of automatic assets and retries periodically in case of network issues. */
-export function startAssetDownloadLoop(updateCallback: () => void) {
-  let check: () => void = () => {
-    checkDiskSpace(AUTO_ASSETS)
-      .then((diskSpace) => {
-        if (diskSpace.free / 1e9 < REQUIRED_SPACE_GB) {
-          throw new Error();
-        }
-        getAssetInfo()
-          .then((assetInfo) => {
-            statusText =
-              "Download started at " +
-              new Date().toLocaleTimeString() +
-              ". Please wait a few minutes for the download to complete.";
-            updateLocalAssets(assetInfo)
-              .then(() => {
-                statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
-                updateCallback();
-                setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
-              })
-              .catch(() => {
-                statusText = "Cannot connect to GitHub. Trying again soon.";
-                setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-              });
-          })
-          .catch(() => {
-            statusText = "Cannot connect to GitHub. Trying again soon.";
-            setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-          });
-      })
-      .catch(() => {
-        statusText = "Not enough disk space. Trying again soon.";
+export async function startAssetDownloadLoop(updateCallback: () => Promise<void>) {
+  let check: () => Promise<void> = async () => {
+    try {
+      const diskSpace = await checkDiskSpace(AUTO_ASSETS);
+      if (diskSpace.free / 1e9 < REQUIRED_SPACE_GB) {
+        throw new Error();
+      }
+    } catch {
+      statusText = "Not enough disk space. Trying again soon.";
+      setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+    }
+    try {
+      const assetInfo = await getAssetInfo();
+      statusText =
+        "Download started at " +
+        new Date().toLocaleTimeString() +
+        ". Please wait a few minutes for the download to complete.";
+      try {
+        updateLocalAssets(assetInfo);
+        statusText = "All assets downloaded. AdvantageScope will check for updates periodically.";
+        await updateCallback();
+        setTimeout(() => check(), SUCCESS_TIMEOUT_MS);
+      } catch {
+        statusText = "Cannot connect to GitHub. Trying again soon.";
         setTimeout(() => check(), FAILURE_TIMEOUT_MS);
-      });
+      }
+    } catch {
+      statusText = "Cannot connect to GitHub. Trying again soon.";
+      setTimeout(() => check(), FAILURE_TIMEOUT_MS);
+    }
   };
-  check();
+  await check();
 }
 
 /** Returns a string for the current status of the download. */
@@ -120,7 +117,7 @@ async function updateLocalAssets(downloadInfo: AssetDownloadInfo[]) {
   );
 
   // Delete old assets
-  fs.readdirSync(AUTO_ASSETS).forEach((folder) => {
+  (await fs.promises.readdir(AUTO_ASSETS)).forEach((folder) => {
     let folderPath = path.join(AUTO_ASSETS, folder);
     if (!downloadInfo.some((assetInfo) => assetInfo.target === folderPath)) {
       fs.rmSync(folderPath, { recursive: true });

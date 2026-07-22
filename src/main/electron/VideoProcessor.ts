@@ -266,17 +266,17 @@ export class VideoProcessor {
     // Verify hash
     let hash = crypto
       .createHash("sha256")
-      .update(fs.readFileSync(path.join(folder, filenameTemp)))
+      .update(await fs.promises.readFile(path.join(folder, filenameTemp)))
       .digest("hex");
     if (hash !== downloadInfo.sha256) {
       console.warn("FFmpeg hash violation!");
       console.warn("\tFound: " + hash);
       console.warn("\tExpected: " + downloadInfo.sha256);
-      fs.rmSync(path.join(folder, filenameTemp));
+      await fs.promises.unlink(path.join(folder, filenameTemp));
       throw "Failed";
     }
-    fs.renameSync(path.join(folder, filenameTemp), path.join(folder, filename));
-    fs.chmodSync(path.join(folder, filename), 0o755);
+    await fs.promises.rename(path.join(folder, filenameTemp), path.join(folder, filename));
+    await fs.promises.chmod(path.join(folder, filename), 0o755);
     return ffmpegPath;
   }
 
@@ -571,7 +571,7 @@ export class VideoProcessor {
   }
 
   private static async readTimerText(imagePath: string, width: number, height: number): Promise<string> {
-    const image = fs.readFileSync(imagePath);
+    const image = await fs.promises.readFile(imagePath);
     let result = "";
     for (let i = 0; i < this.TIMER_RECTS.length; i++) {
       let rect = this.TIMER_RECTS[i];

@@ -38,7 +38,7 @@ export function createAssetFolders() {
 }
 
 /** Loads all current assets (bundled, auto downloaded, and user). */
-export function loadAssets(): AdvantageScopeAssets {
+export async function loadAssets(): Promise<AdvantageScopeAssets> {
   let assets: AdvantageScopeAssets = {
     field2ds: [],
     field3ds: [],
@@ -48,86 +48,89 @@ export function loadAssets(): AdvantageScopeAssets {
   };
 
   // Highest priority is first
-  [getUserAssetsPath(), AUTO_ASSETS, BUNDLED_ASSETS].forEach((parentFolder) => {
-    if (!fs.existsSync(parentFolder)) return;
-    fs.readdirSync(parentFolder, { withFileTypes: true })
-      .sort((a, b) => (a.name < b.name ? 1 : a.name > b.name ? -1 : 0)) // Inverse order so newer versions take priority
-      .forEach((object) => {
-        if (!object.isDirectory() || object.name.startsWith(".")) return;
-        assets.loadFailures.push(object.name); // Assume failure, remove if successful
-        let isField2d = object.name.startsWith("Field2d_");
-        let isField3d = object.name.startsWith("Field3d_");
-        let isRobot = object.name.startsWith("Robot_");
-        let isJoystick = object.name.startsWith("Joystick_");
+  await Promise.all(
+    [getUserAssetsPath(), AUTO_ASSETS, BUNDLED_ASSETS].map(async (parentFolder) => {
+      try {
+        for (const object of (await fs.promises.readdir(parentFolder, { withFileTypes: true })).sort((a, b) =>
+          a.name < b.name ? 1 : a.name > b.name ? -1 : 0
+        )) {
+          // Inverse order so newer versions take priority
+          if (!object.isDirectory() || object.name.startsWith(".")) return;
+          assets.loadFailures.push(object.name); // Assume failure, remove if successful
+          let isField2d = object.name.startsWith("Field2d_");
+          let isField3d = object.name.startsWith("Field3d_");
+          let isRobot = object.name.startsWith("Robot_");
+          let isJoystick = object.name.startsWith("Joystick_");
 
-        let configPath = path.join(parentFolder, object.name, "config.json");
-        if (!fs.existsSync(configPath)) return;
-        let configRaw: unknown;
-        try {
-          configRaw = jsonfile.readFileSync(configPath);
-        } catch {
-          return;
-        }
+          let configPath = path.join(parentFolder, object.name, "config.json");
+          let configRaw: unknown;
+          try {
+            configRaw = await jsonfile.readFile(configPath);
+          } catch {
+            return;
+          }
 
-        if (isField2d) {
-          // ***** 2D FIELD *****
-          let config = parseField2d(configRaw);
-          if (config === "skip") {
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-            return;
-          } else if (config === "invalid") {
-            return;
-          }
-          config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
-          if (fs.existsSync(decodeURIComponent(config.path))) {
-            assets.field2ds.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isField3d) {
-          // ***** 3D FIELD *****
-          let config = parseField3d(configRaw);
-          if (config === "skip") {
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-            return;
-          } else if (config === "invalid") {
-            return;
-          }
-          config.path = encodePath(path.join(parentFolder, object.name, "model.glb"));
-          if (
-            fs.existsSync(decodeURIComponent(config.path)) &&
-            config.gamePieces.every((_, index) =>
-              fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
-            )
-          ) {
-            assets.field3ds.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isRobot) {
-          // ***** 3D ROBOT *****
-          let config = parseRobot(configRaw);
-          if (config === "invalid") return;
-          config.path = encodePath(path.join(parentFolder, object.name, "model.glb"));
-          if (
-            fs.existsSync(decodeURIComponent(config.path)) &&
-            config.components.every((_, index) =>
-              fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
-            )
-          ) {
-            assets.robots.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
-          }
-        } else if (isJoystick) {
-          // ***** JOYSTICK *****
-          let config = parseJoystick(configRaw);
-          if (config === "invalid") return;
-          config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
-          if (fs.existsSync(decodeURIComponent(config.path))) {
-            assets.joysticks.push(config);
-            assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+          if (isField2d) {
+            // ***** 2D FIELD *****
+            let config = parseField2d(configRaw);
+            if (config === "skip") {
+              assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+              return;
+            } else if (config === "invalid") {
+              return;
+            }
+            config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
+            if (fs.existsSync(decodeURIComponent(config.path))) {
+              assets.field2ds.push(config);
+              assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+            }
+          } else if (isField3d) {
+            // ***** 3D FIELD *****
+            let config = parseField3d(configRaw);
+            if (config === "skip") {
+              assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+              return;
+            } else if (config === "invalid") {
+              return;
+            }
+            config.path = encodePath(path.join(parentFolder, object.name, "model.glb"));
+            if (
+              fs.existsSync(decodeURIComponent(config.path)) &&
+              config.gamePieces.every((_, index) =>
+                fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
+              )
+            ) {
+              assets.field3ds.push(config);
+              assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+            }
+          } else if (isRobot) {
+            // ***** 3D ROBOT *****
+            let config = parseRobot(configRaw);
+            if (config === "invalid") return;
+            config.path = encodePath(path.join(parentFolder, object.name, "model.glb"));
+            if (
+              fs.existsSync(decodeURIComponent(config.path)) &&
+              config.components.every((_, index) =>
+                fs.existsSync(decodeURIComponent(config.path).slice(0, -4) + "_" + index.toString() + ".glb")
+              )
+            ) {
+              assets.robots.push(config);
+              assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+            }
+          } else if (isJoystick) {
+            // ***** JOYSTICK *****
+            let config = parseJoystick(configRaw);
+            if (config === "invalid") return;
+            config.path = encodePath(path.join(parentFolder, object.name, "image.png"));
+            if (fs.existsSync(decodeURIComponent(config.path))) {
+              assets.joysticks.push(config);
+              assets.loadFailures.splice(assets.loadFailures.indexOf(object.name), 1);
+            }
           }
         }
-      });
-  });
+      } catch {}
+    })
+  );
 
   return filterAndSortAssets(assets);
 }
