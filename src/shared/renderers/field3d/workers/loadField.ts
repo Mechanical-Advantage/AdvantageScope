@@ -34,16 +34,11 @@ self.onmessage = (event) => {
 
   const gltfLoader = new GLTFLoader();
   Promise.all([
-    new Promise((resolve) => {
-      gltfLoader.load(fieldConfig.path, resolve);
-    }),
-    ...fieldConfig.gamePieces.map(
-      (_, index) =>
-        new Promise((resolve) => {
-          gltfLoader.load(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb", resolve);
-        })
+    gltfLoader.loadAsync(fieldConfig.path),
+    ...fieldConfig.gamePieces.map((_, index) =>
+      gltfLoader.loadAsync(fieldConfig.path.slice(0, -4) + "_" + index.toString() + ".glb")
     )
-  ]).then(async (gltfs) => {
+  ]).then((gltfs) => {
     let gltfScenes = (gltfs as GLTF[]).map((gltf) => gltf.scene);
     if (fieldConfig === undefined) return;
     let loadCount = 0;
@@ -67,7 +62,7 @@ self.onmessage = (event) => {
 
         stagedPieces.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
         stagedPieces.position.set(...fieldConfig.position);
-        let fieldStagedPiecesMeshes = await optimizeGeometries(
+        let fieldStagedPiecesMeshes = optimizeGeometries(
           stagedPieces,
           mode,
           materialSpecular,
@@ -83,7 +78,7 @@ self.onmessage = (event) => {
 
         scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(fieldConfig.rotations));
         scene.position.set(...fieldConfig.position);
-        let fieldMeshes = await optimizeGeometries(
+        let fieldMeshes = optimizeGeometries(
           scene,
           mode,
           materialSpecular,
@@ -101,8 +96,13 @@ self.onmessage = (event) => {
         let gamePieceConfig = fieldConfig.gamePieces[index - 1];
         scene.rotation.setFromQuaternion(rotationSequenceToQuaternion(gamePieceConfig.rotations));
         scene.position.set(...gamePieceConfig.position);
-        let meshes = (
-          await optimizeGeometries(scene, mode, materialSpecular, materialShininess, false, fieldConfig.isFTC)
+        let meshes = optimizeGeometries(
+          scene,
+          mode,
+          materialSpecular,
+          materialShininess,
+          false,
+          fieldConfig.isFTC
         ).normal;
         if (meshes.length > 0) {
           fieldPieces[gamePieceConfig.name] = meshes[0];

@@ -114,9 +114,7 @@ export async function downloadOwletInternal(target: string, platform: string, st
       // Download if necessary
       if (shouldDownload) {
         // Get list of existing files to delete
-        const existingFiles = await new Promise<string[]>((resolve) =>
-          fs.readdir(target, (_, files) => resolve(files))
-        );
+        const existingFiles = await fs.promises.readdir(target);
         const toDelete = existingFiles.filter((filename) =>
           filename.includes("-C" + downloadVersion.Compliancy.toString())
         );
@@ -129,16 +127,16 @@ export async function downloadOwletInternal(target: string, platform: string, st
         hash.update(fs.readFileSync(path.join(target, tempFilename)));
         const hex = hash.digest("hex");
         if (hex === downloadVersion.Urls[owletPlatform + "-sha1"]) {
-          fs.chmodSync(path.join(target, tempFilename), 0o755);
+          await fs.promises.chmod(path.join(target, tempFilename), 0o755);
 
           // Delete older versions
-          toDelete.forEach((filename) => fs.unlinkSync(path.join(target, filename)));
+          await Promise.all(toDelete.map((filename) => fs.promises.unlink(path.join(target, filename))));
 
           // Move to final location
-          fs.renameSync(path.join(target, tempFilename), path.join(target, filename));
+          await fs.promises.rename(path.join(target, tempFilename), path.join(target, filename));
         } else {
           // Delete temporary file
-          fs.unlinkSync(path.join(target, tempFilename));
+          await fs.promises.unlink(path.join(target, tempFilename));
         }
       }
     }
