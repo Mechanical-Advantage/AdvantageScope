@@ -631,7 +631,7 @@ export function grabModuleVelocities(
     velocities.push({
       velocity: getOrDefault(
         log,
-        key + "/" + i.toString() + `/${velocityKey}`,
+        key + "/" + i.toString() + "/" + velocityKey,
         LoggableType.Number,
         timestamp,
         0,
