@@ -54,7 +54,7 @@ export type PoseAnnotations = {
   visionSize?: string;
 };
 
-export type ModuleVelocity = { speed: number; angle: Rotation2d };
+export type ModuleVelocity = { velocity: number; angle: Rotation2d };
 export type RobotVelocities = { vx: number; vy: number; omega: number };
 
 export const APRIL_TAG_36H11_COUNT = 587;
@@ -619,9 +619,24 @@ export function grabModuleVelocities(
 ): ModuleVelocity[] {
   let velocities: ModuleVelocity[] = [];
   let length = getOrDefault(log, key + "/length", LoggableType.Number, timestamp, 0, uuid);
+
+  let velocityKey = "velocity";
+
+  // Legacy type support for pre-2027 module velocities.
+  if (log.getStructuredType(key) === "SwerveModuleState[]") {
+    velocityKey = "speed";
+  }
+
   for (let i = 0; i < length; i++) {
     velocities.push({
-      speed: getOrDefault(log, key + "/" + i.toString() + "/speed", LoggableType.Number, timestamp, 0, uuid),
+      velocity: getOrDefault(
+        log,
+        key + "/" + i.toString() + `/${velocityKey}`,
+        LoggableType.Number,
+        timestamp,
+        0,
+        uuid
+      ),
       angle: getOrDefault(log, key + "/" + i.toString() + "/angle/value", LoggableType.Number, timestamp, 0, uuid)
     });
   }
