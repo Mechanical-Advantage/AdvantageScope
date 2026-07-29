@@ -7,7 +7,7 @@ sidebar_position: 5
 Konsol görünümü, konsol verilerini içeren tek bir metin alanını görüntülemek için tasarlanmıştır. Önerilen bazı alanlar aşağıda listelenmiştir.
 
 - **DS:/Dscomm/Console** - FIRST Sürücü İstasyonu tarafından kaydedilir.
-- **messages** - [`DataLogManager.log`](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String))>) yöntemine yapılan çağrılara dayalı olarak WPILib'in yerleşik loglaması tarafından kaydedilir.
+- **messages** - [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) yöntemine yapılan çağrılara dayalı olarak WPILib'in yerleşik loglaması tarafından kaydedilir.
 - **/RealOutputs/Console** - Robot çalışması sırasında AdvantageKit tarafından otomatik olarak kaydedilir (normal şekilde `System.out.println` kullanın).
 - **/ReplayOutputs/Console** - Log yeniden oynatma sırasında AdvantageKit tarafından otomatik olarak kaydedilir (normal şekilde `System.out.println` kullanın).
 

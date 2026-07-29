@@ -62,11 +62,11 @@ _Birim desteği hakkında daha fazla bilgi [dokümantasyonda](/tab-reference/lin
 
 Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant genişliği) AdvantageScope'un 2025 ve 2026 sürümlerinde ölçülen aktarım hızını göstermektedir. 2025 sürümünün performansının roboRIO üzerindeki CPU yükünden ciddi şekilde etkilendiğini unutmayın.
 
-|                                                    | 2025 (SFTP) | 2026 (FTP) | Hızlanma                                         |
-| -------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| Yüksek CPU yükü<br /><sub>Karmaşık robot kodu</sub>| 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
+|                                                     | 2025 (SFTP) | 2026 (FTP) | Hızlanma                                         |
+| --------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
+| Yüksek CPU yükü<br /><sub>Karmaşık robot kodu</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
 | Ortalama CPU yükü<br /><sub>Normal robot kodu</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| Minimum CPU yükü<br /><sub>Robot kodu yok</sub>    | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
+| Minimum CPU yükü<br /><sub>Robot kodu yok</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
 
 ## 📁 Alt Klasörlerden Log İndirme {#download-logs-from-subfolders}
 

@@ -41,4 +41,4 @@ Varsayılan olarak AdvantageScope, log dosyasında saklanan tüm NetworkTables a
 
 - Alanlar her 20 ms'de bir yayınlanır, bu nedenle orijinal olarak daha yüksek bir frekansta yayınlanan NetworkTables verileri örnekleri atlayacaktır.
 - Yayınlanan örneklerin zaman damgaları korunmaz. Zaman içinde ileri geri gezinirken veya farklı hızlarda oynatırken bu imkansız olurdu.
-:::
+  :::

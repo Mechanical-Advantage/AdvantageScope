@@ -54,7 +54,7 @@ Histogram, belirli aralık dahilinde her bir aralığa düşen örneklerin sayı
 
 - [**Mean:**](https://en.wikipedia.org/wiki/Arithmetic_mean) Verilerin aritmetik ortalaması (basit ortalama).
 - [**Median:**](https://en.wikipedia.org/wiki/Median) Verilerin "orta" değeri veya %50 yüzdelik dilimi.
-- [**Mode:**](https://en.wikipedia.org/wiki/Mode_(statistics))>) Verilerde en sık rastlanan değer.
+- [**Mode:**](<https://en.wikipedia.org/wiki/Mode_(statistics)>)>) Verilerde en sık rastlanan değer.
 - [**Geometrik Ortalama:**](https://en.wikipedia.org/wiki/Geometric_mean) Toplam yerine değerlerin çarpımı kullanılarak hesaplanan bir merkez ölçümü. Üstel büyüme oranlarını (döngüler arasındaki yüzde değişimi gibi) ölçerken geçerlidir.
 - [**Harmonik Ortalama:**](https://en.wikipedia.org/wiki/Harmonic_mean) Değerlerin çarpmaya göre terslerinin toplamı kullanılarak hesaplanan bir merkez ölçümü. Oranları veya hızları ölçerken geçerlidir.
 - [**Karesel Ortalama:**](https://en.wikipedia.org/wiki/Root_mean_square) Değerlerin kareleri kullanılarak hesaplanan bir merkez ölçümü. Periyodik hareket gibi hem pozitif hem negatif değerlere sahip verileri ölçerken geçerlidir.
