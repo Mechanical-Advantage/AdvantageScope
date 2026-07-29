@@ -24,11 +24,11 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Mekanizmalar Ekleme
+## Mekanizmalar ekleme
 
 Başlamak için bir `Mechanism2d` nesnesini kontrol paneline sürükleyin. X düğmesini kullanarak bir mekanizmayı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm mekanizmaları kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Mekanizmalar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
-## Veri Yayınlama
+## Veri yayınlama
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

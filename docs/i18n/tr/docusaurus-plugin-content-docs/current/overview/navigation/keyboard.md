@@ -1,8 +1,8 @@
-# Klavye Kısayolları
+# Klavye kısayolları
 
 AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu içerir. `ctrl` tuşunu kullanan kısayollar macOS'ta ⌘ tuşu ile değiştirilir.
 
-### Veri Kaynakları
+### Veri kaynakları
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Bir veya daha fazla log dosyasını aç</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 <tr><td>`Ctrl+D`</td><td>Robottan log dosyalarını indir</td></tr>
 </table>
 
-### Veri Dışa Aktarma
+### Veri dışa aktarma
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Log verilerini dışa aktar</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 <tr><td>`Option+Ctrl+P`</td><td>NetworkTables yayınını durdur</td></tr>
 </table>
 
-### Pencere Kontrolleri
+### Pencere kontrolleri
 
 <table>
 <tr><td>`Ctrl+N`</td><td>Yeni bir pencere oluştur</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope, daha hızlı navigasyon sağlayan çok sayıda klavye kısayolu 
 <tr><td>`Ctrl+Slaş`</td><td>Kontrol paneli görünürlüğünü değiştir</td></tr>
 </table>
 
-### Sekme Kontrolleri
+### Sekme kontrolleri
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Yeni bir sekme eklemek için açılır menüyü aç</td></tr>

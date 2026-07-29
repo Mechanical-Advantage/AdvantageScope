@@ -25,7 +25,7 @@ Tüm alanlar, birçok AdvantageScope sekmesi tarafından kullanılan _seçili za
 
 Yayınlamayı durdurmak için `Dosya` > `NT verilerini yayınla` > `Yayınlamayı durdur` seçeneğine tıklayın.
 
-## Alanları Filtreleme
+## Alanları filtreleme
 
 Varsayılan olarak AdvantageScope, log dosyasında saklanan tüm NetworkTables alanlarını yayınlar (sunucu tarafından yayınlanan meta başlıklar hariç). Bir yan işlemciyi taklit etmek gibi bazı kullanım durumları, yalnızca sınırlı bir alan veya alt tablo kümesinin yayınlanmasını gerektirir. İzin verilen alan ön ekleri kümesini ayarlamak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın.
 

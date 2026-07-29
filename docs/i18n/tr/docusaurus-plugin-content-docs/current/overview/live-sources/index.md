@@ -1,4 +1,4 @@
-# 🛜 Canlı Kaynaklar
+# 🛜 Canlı kaynaklar
 
 AdvantageScope'taki tüm görselleştirmeler, log dosyalarının yanı sıra bir robottan veya simülatörden canlı veri almak üzere tasarlanmıştır. Bu bölüm, gerçek zamanlı veri kaynaklarına nasıl bağlanılacağını açıklamaktadır. AdvantageScope tarafından aşağıdaki canlı veri kaynakları desteklenmektedir:
 
@@ -13,7 +13,7 @@ AdvantageScope'taki tüm görselleştirmeler, log dosyalarının yanı sıra bir
 AdvantageScope, Driver Station (DS) uygulamasıyla aynı cihazda çalışırken tanılama verilerini görüntülemek için FIRST Driver Station'a bağlanabilir. Herhangi bir yapılandırma gerekmez (aşağıdaki talimatlara bakın).
 :::
 
-## Bağlantıyı Başlatma
+## Bağlantıyı başlatma
 
 Canlı bağlantıyı başlatmak için şu adımları izleyin:
 
@@ -23,7 +23,7 @@ Canlı bağlantıyı başlatmak için şu adımları izleyin:
 
 Pencere başlığı, hedef bağlanana kadar IP adresini ve "Aranıyor" metnini gösterir. AdvantageScope, bağlantı kesildikten sonra aynı ayarları kullanarak otomatik olarak yeniden bağlanmaya çalışır.
 
-## Canlı Verileri Görüntüleme
+## Canlı verileri görüntüleme
 
 Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm sekmeleri mevcut zamana kilitler. 📉 [Çizgi grafik](/tab-reference/line-graph) ve 🔢 [Tablo](/tab-reference/table) gibi görünümler otomatik kaydırılır ve saha ile joystick gibi görünümler her alanın mevcut değerlerini görüntüler. Gezinme çubuğundaki kırmızı ok düğmesine tıklamak bu kilidi açıp kapatır ve geçmiş verilerin görüntülenmesini ve yeniden oynatılmasını sağlar.
 
@@ -39,17 +39,17 @@ Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm se
 
 <img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
 
-### Robot Adresi
+### Robot adresi
 
 [WPILib dokümantasyonunda](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) açıklandığı şekilde bir 10.TE.AM.2 IP adresi kullanarak robot adresini girin. Systemcore'a USB veya yerleşik Wi-Fi erişim noktası aracılığıyla bağlanırken, doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB Adresini Kullan`/`Systemcore Wi-Fi Adresini Kullan` seçeneğine tıklayın.
 
-### Canlı Mod
+### Canlı mod
 
 Canlı kaynak olarak NetworkTables kullanıldığında aşağıdaki canlı modlar seçilebilir:
 
 - **Düşük Bant Genişliği (Varsayılan):** AdvantageScope yalnızca aktif olarak kullanılan alanlar için sunucudan veri talep eder. Bir alan seçilmeden önce yayınlanan veriler mevcut olmayacaktır. Bu mod, sınırlı ağ bant genişliğine sahip bir ortamda çalışırken veya çok sayıda alan yayınlanırken **şiddetle tavsiye edilir**.
 - **Loglama:** AdvantageScope, aktif olarak kullanılıp kullanılmadıklarına bakılmaksızın tüm alanlar için veri talep eder. Bu, canlı veri akışını duraklatarak alanların geriye dönük olarak görüntülenebileceği anlamına gelir (aşağıya bakın). Bu mod genellikle geliştirme sırasında kullanışlıdır, ancak **bant genişliği sınırlı olduğunda KULLANILMAMALIDIR**.
 
-### Canlı Verileri Sil
+### Canlı verileri sil
 
 Canlı bir bağlantı sırasında veriler, geçmiş verilerin yeniden oynatılmasına izin vermek için yerel olarak saklanır (aşağıdaki "Canlı Verileri Görüntüleme" bölümüne bakın). Çok yüksek bellek kullanımını önlemek için veriler varsayılan olarak 20 dakika sonra silinir. Bellek kullanımını azaltmak için daha kısa bir periyot seçilebilir veya canlı verileri süresiz olarak saklamak için "Hiçbir zaman" seçilebilir.

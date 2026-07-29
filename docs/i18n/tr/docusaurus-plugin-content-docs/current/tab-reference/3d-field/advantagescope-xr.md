@@ -66,7 +66,7 @@ XR kontrolleri penceresi, modelin artırılmış gerçeklikte nasıl görüntül
 - **Sahayı Göster:** Saha bariyeri ve oyuna özel öğeler dahil olmak üzere saha modelini görüntüleyin. Özel [oyun objesi nesneleri](/tab-reference/3d-field#game-piece-objects) her zaman görüntülenir.
 - **Robotları Göster:** Robot modellerini görüntüleyin; gerçek bir robot üzerine veri çakıştırırken (kamera hedefleri veya 2B mekanizmalar gibi) devre dışı bırakılabilir.
 
-## Çevrimdışı Kullanım {#offline-usage}
+## Çevrimdışı kullanım {#offline-usage}
 
 AdvantageScope XR bir internet bağlantısı gerektirmez. Uygulamanın çevrimdışı olarak kullanılabilir olduğundan emin olmak için aşağıdaki bağlantıyı kullanarak App Store'dan AdvantageScope XR'ı indirin. AdvantageScope masaüstü uygulamasına bağlanmak için iOS kamera uygulamasını kullanarak QR kodunu tarayın veya AdvantageScope XR uygulamasındaki "Tara" düğmesine dokunun.
 

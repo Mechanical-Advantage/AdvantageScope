@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Phoenix Tanılama
+# Phoenix tanılama
 
 AdvantageScope, **kullanıcı kodunda herhangi bir kurulum gerektirmeden** Phoenix 6 cihazlarından gelen sinyallerin canlı akışını destekler. Bu, AdvantageScope'un tanıdık arayüzü ve tüm gücü kullanılarak Phoenix cihazlarının kolayca hata ayıklanmasını ve ayarlanmasını sağlar:
 

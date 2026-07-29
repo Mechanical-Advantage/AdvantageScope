@@ -4,7 +4,7 @@
 
 <img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
 
-## Görüntüleyici Paneli
+## Görüntüleyici paneli
 
 Yakınlaştırmak için imleci ana grafiğin üzerine getirin ve yukarı veya aşağı kaydırın. `Shift` tuşunu basılı tutarken tıklayıp sürükleyerek bir aralık da seçilebilir. Yatay olarak kaydırarak (desteklenen cihazlarda) veya grafik üzerinde tıklayıp sürükleyerek sola ve sağa hareket edin. Canlı bağlandığında sola kaydırmak mevcut zamandan kilidi kaldırır ve en sağa kadar kaydırmak tekrar mevcut zamana kilitler.
 
@@ -14,7 +14,7 @@ Grafiğe tıklamak bir zaman seçer ve sağ tıklamak seçimi kaldırır. O zama
 Seçilen zaman ile üzerine gelinen zaman arasındaki fark grafik üzerinde bir kaplama olarak görüntülenir, bu da zaman aralıklarını ölçmeyi kolaylaştırır.
 :::
 
-## Kontrol Paneli
+## Kontrol paneli
 
 Başlamak için bir alanı üç bölümden birine (sol, sağ veya ayrık) sürükleyin. X düğmesini kullanarak bir alanı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm alanları kaldırmak için eksen başlığının yanındaki üç noktaya ve ardından `Tümünü Temizle` seçeneğine tıklayın. Alanlar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -28,13 +28,13 @@ Robot modunu (otonom, teleoperasyon veya test) çakıştırmak için "Ayrık Ala
 <img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Robot mode overlay" />
 :::
 
-### Eksenleri Ayarlama {#adjusting-axes}
+### Eksenleri ayarlama {#adjusting-axes}
 
 Varsayılan olarak her eksen aralığını görünür verilere göre ayarlar. Otomatik aralık belirlemeyi devre dışı bırakmak ve aralığı mevcut minimum ve maksimum değerlerine kilitlemek için eksen başlığının yanındaki üç noktaya ve ardından `Ekseni Kilitle` seçeneğine tıklayın. Aralığı manuel olarak ayarlamak için `Aralığı Düzenle...` seçin ve istenen değerleri girin.
 
 <img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
 
-### İntegral & Türev {#integration--differentiation}
+### İntegral & türev {#integration--differentiation}
 
 Değerler AdvantageScope tarafından otomatik olarak integrali veya türevi alınabilir. Delta zamanı her zaman saniye cinsinden ölçülür. Eksen başlığının yanındaki üç noktaya tıklayın ve ardından `Türev Al` veya `İntegral Al` seçeneğini seçin.
 

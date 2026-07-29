@@ -24,7 +24,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 2026 FRC saha modeli, **kaynaklı** saha için AprilTag düzeniyle tutarlıdır. Kaynaklı ve AndyMark sahaları arasındaki farklar çok küçüktür, ancak AndyMark saha düzenine dayalı AprilTag pozları görselleştirilirken küçük (~0.5 inç) hizalama hataları olabilir.
 :::
 
-## Nesneler Ekleme
+## Nesneler ekleme
 
 Başlamak için bir alanı "Pozlar" bölümüne sürükleyin. X düğmesini kullanarak bir nesneyi silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Nesneler listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -38,7 +38,7 @@ Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklay�
 AdvantageScope, FTC sahaları için AprilTag'lerin çeşitli boyutlarını destekler. Boyutlar, gerekli beyaz kenarlık hariç, **AprilTag'in siyah bölümünün kenar uzunluğu** olarak ölçülür.
 :::
 
-## Veri Formatı
+## Veri formatı
 
 Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenmektedir.
 
@@ -97,17 +97,17 @@ packet.put("Pose heading (deg)", 180.0); // Derece
 </TabItem>
 </Tabs>
 
-## Mekanizmalar & Bileşenler
+## Mekanizmalar & bileşenler
 
 Mekanizma verileri 2B mekanizmalar veya eklemli 3B bileşenler kullanılarak görselleştirilebilir.
 
-### 2B Mekanizmalar {#2d-mechanisms}
+### 2B mekanizmalar {#2d-mechanisms}
 
 Bir [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) kullanılarak loglanan mekanizma verilerini görselleştirmek için mekanizma alanını mevcut bir robot veya hayalet nesnesine ekleyin. Mekanizma, aşağıda gösterildiği gibi basit kutular kullanılarak robotun XZ veya YZ düzlemine yansıtılır. XZ ve YZ düzlemleri arasında geçiş yapmak için dişli simgesine tıklayın veya alan adına sağ tıklayın. Robotun orijini mekanizmanın alt kenarında merkezlenmiştir.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
 
-### 3B Bileşenler
+### 3B bileşenler
 
 :::warning
 3B bileşenlerin kurulumu karmaşık ve zaman alıcı olabilir. 3B sahada mekanizmaları görselleştirmek için daha kolaylaştırılmış bir yaklaşım sunan yukarıda açıklandığı gibi AdvantageScope'un `Mechanism2d` desteğinden yararlanmayı düşünün.
@@ -119,7 +119,7 @@ Her bileşen bağımsız olarak hareket ettirilebilir (asansör taşıyıcısı,
 
 <img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mechanism" />
 
-## Oyun Objesi Nesneleri {#game-piece-objects}
+## Oyun objesi nesneleri {#game-piece-objects}
 
 Her saha bir dizi oyun objesi nesne türü içerir; bu da oyun objelerinin robot kodu tarafından yayınlanan veriler kullanılarak sahadaki herhangi bir konumda işlenmesine olanak tanır. Bunun aşağıdakiler dahil çeşitli uygulamaları vardır:
 
@@ -139,7 +139,7 @@ AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre seyahat eden bir no
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
 
-## Kamera Seçenekleri
+## Kamera seçenekleri
 
 Seçilen kamera modunu değiştirmek için işlenen saha görünümüne sağ tıklayın. Kamera modu ve konumu her ayrılmış pencere için bağımsız olarak kontrol edilir, bu da çoklu kamera görünümlerinin kolayca oluşturulmasına olanak tanır.
 
@@ -147,7 +147,7 @@ Seçilen kamera modunu değiştirmek için işlenen saha görünümüne sağ tı
 Yörünge ve Sürücü İstasyonu kameralarının FOV değerini ayarlamak için işlenen saha görünümüne sağ tıklayın ve "FOV Düzenle..."ye tıklayın.
 :::
 
-### Yörünge Saha
+### Yörünge saha
 
 Bu, kameranın sahaya göre serbestçe hareket ettirilebildiği varsayılan kamera modudur. **Sol tıkla + sürükle** kamerayı döndürür ve **sağ tıkla + sürükle** kamerayı kaydırır. Yakınlaştırmak ve uzaklaştırmak için **kaydırın**.
 
@@ -155,7 +155,7 @@ Bu, kameranın sahaya göre serbestçe hareket ettirilebildiği varsayılan kame
 Kamera klavye kullanılarak da kontrol edilebilir. **WASD** tuşları ötelemek, **IJKL** tuşları döndürmek ve **E** ile **Q** tuşları dikey olarak ötelemek için kullanılır.
 :::
 
-### Yörünge Robot
+### Yörünge robot
 
 Bu mod "Yörünge Saha" moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlenmiştir. Bu, robotun hareketinin takip çekimlerine olanak tanır.
 
@@ -167,7 +167,7 @@ Bu mod, kamerayı sürücü istasyonlarından birinin arkasına tipik göz hizas
 İstasyon numarasının otomatik seçimi AdvantageKit 2023 veya öncesi tarafından üretilen log verileri görüntülenirken yanlış olabilir.
 :::
 
-### Sabit Kamera
+### Sabit kamera
 
 Her robot modeli, görüş ve sürücü kameraları gibi bir dizi sabit kamera ile yapılandırılmıştır. Bu kameralar sabit konumlara, en boy oranlarına ve FOV değerlerine sahiptir. Bu görünümler genellikle görüş verilerini kontrol etmek veya bir sürücü kamerası görünümünü simüle etmek için kullanışlıdır. Aşağıdaki örnekte bir sürücü kamerası gösterilmektedir.
 
@@ -187,7 +187,7 @@ Saha modeli açılır menü kullanılarak yapılandırılabilir. Son dönemdeki 
 Bu sekmede kullanılan koordinat sistemi özelleştirilebilir. Ayrıntılar için [koordinat sistemi](/more-features/coordinate-systems) sayfasına bakın.
 :::
 
-### İşleme Modları {#rendering-modes}
+### İşleme modları {#rendering-modes}
 
 3B saha üç işleme modunu destekler:
 

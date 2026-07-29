@@ -24,7 +24,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Kaynaklar Ekleme
+## Kaynaklar ekleme
 
 Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini kullanarak bir kaynağı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Kaynaklar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -34,7 +34,7 @@ Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini k
 Desteklenen kaynak türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu liste ayrıca desteklenen veri türlerini de içerir.
 :::
 
-## Veri Formatı
+## Veri formatı
 
 Nokta verileri, `Translation2d[]` türü kullanılarak bayt kodlu struct veya protobuf olarak yayınlanmalıdır. WPILib ve AdvantageKit dahil birçok kütüphane bu formatı destekler. Aşağıdaki örnek kod Java'da nokta verilerinin nasıl loglanacağını göstermektedir.
 

@@ -21,7 +21,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Kontrol Paneli
+## Kontrol paneli
 
 Sekmenin altındaki tabloda joystick türlerini seçin. Joystick ID'leri 0 ile 5 arasında değişir ve Sürücü İstasyonu ile WPILib'deki ID'lerle eşleşir. Joystickler hakkında daha fazla bilgi [WPILib dokümantasyonunda](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html) bulunabilir.
 

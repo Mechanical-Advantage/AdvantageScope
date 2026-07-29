@@ -1,5 +1,5 @@
 ---
-title: 2026'da Neler Yeni?
+title: 2026'da neler yeni?
 sidebar_position: 2
 ---
 
@@ -12,7 +12,7 @@ AdvantageScope'un 2026 sürümü yayınlandı! Detaylar için [kurulum belgeleri
 
 **Geri bildirimlerinize değer veriyoruz! Geri bildirimler, özellik istekleri ve hata raporları [sorunlar sayfasında](https://github.com/Mechanical-Advantage/AdvantageScope/issues) memnuniyetle karşılanır.**
 
-## ✴️ Deneysel: FTC Desteği {#ftc-support}
+## ✴️ Deneysel: FTC desteği {#ftc-support}
 
 2027-2028 sezonunda Systemcore ile tam desteğe hazırlık amacıyla, bu sürüm mevcut FIRST Tech Challenge kontrol sistemiyle uyumluluğu artırmak için birkaç özellik eklemektedir:
 
@@ -41,7 +41,7 @@ AdvantageScope, WPILlib çerçevesi ve ilgili loglama araçlarıyla birlikte kul
 AdvantageScope'un tüm özellikleri, 2027-2028 sezonunda Systemcore'a geçişten sonra FTC'de resmi olarak desteklenecektir.
 :::
 
-## 🧮 Birim Duyarlı Grafikleme {#unit-aware-graphing}
+## 🧮 Birim duyarlı grafikleme {#unit-aware-graphing}
 
 📉 [Çizgi Grafiği](/tab-reference/line-graph/) sekmesi, tamamen birim duyarlı olacak şekilde yeniden tasarlandı. Bu, sayısal alanları grafiklerken birkaç yeni yetenek sağlar:
 
@@ -56,7 +56,7 @@ _Birim desteği hakkında daha fazla bilgi [dokümantasyonda](/tab-reference/lin
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
 
-## 🏁 Daha Hızlı Log İndirmeleri {#faster-log-downloads}
+## 🏁 Daha hızlı log indirmeleri {#faster-log-downloads}
 
 [roboRIO'dan log indirme](/overview/log-files/#downloading-from-the-robot) işlemi artık önceki sürümlere göre **2-4 kat daha hızlı**. Bu, roboRIO'nun daha az CPU yükü ile log verilerini aktarmasına olanak tanıyan yeni bir protokole (FTP) geçilerek sağlandı.
 
@@ -68,13 +68,13 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 | Ortalama CPU yükü<br /><sub>Normal robot kodu</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
 | Minimum CPU yükü<br /><sub>Robot kodu yok</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
 
-## 📁 Alt Klasörlerden Log İndirme {#download-logs-from-subfolders}
+## 📁 Alt klasörlerden log indirme {#download-logs-from-subfolders}
 
 İndirme penceresi artık alt klasörlerde saklanan logların kaydedilmesini desteklemektedir. Log içeren her bir alt klasör bir grup olarak indirilebilir; bu da CTRE'nin [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümü tarafından oluşturulan logları indirmek için kolaylaştırılmış bir yaklaşım sunar (bu sürüm, tek bir log dosyasında veri saklayamama sorununa çözüm olarak alt klasörleri kullanır).
 
 <img src="/img/whats-new/subfolders.png" alt="Downloading log subfolders" height="450" />
 
-## 🌈 Yeni Görselleştirme Seçenekleri {#new-visualization-options}
+## 🌈 Yeni görselleştirme seçenekleri {#new-visualization-options}
 
 🗺️ [2B saha](/tab-reference/2d-field) ve 👀 [3B saha](/tab-reference/3d-field) sekmelerinde birkaç yeni görselleştirme seçeneği desteklenmektedir:
 
@@ -84,7 +84,7 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 
 <img src="/img/whats-new/field-viz.jpg" alt="New field visualizations" />
 
-## 🪵 REV Robotics CAN Log Desteği {#rev-robotics-can-log-support}
+## 🪵 REV Robotics CAN log desteği {#rev-robotics-can-log-support}
 
 REV Robotics'in [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) yazılımı tarafından üretilen `.revlog` dosyalarını artık doğrudan AdvantageScope'ta açabilirsiniz. Bu dosyalar Spark Max ve Spark Flex cihazlarından gelen CAN sinyallerini kaydederek AdvantageScope'un [URCL](/more-features/urcl) kütüphanesine resmi bir alternatif sunar.
 
@@ -92,19 +92,19 @@ Hem URCL hem de resmi `StatusLogger`, sorunsuz bir geçiş sağlamak ve önceki 
 
 <img src="/img/whats-new/revlog.png" alt="REVLOG visualization" />
 
-## 💿 CSV Dosyası İçe Aktarmaları {#csv-file-imports}
+## 💿 CSV dosyası içe aktarmaları {#csv-file-imports}
 
 Robot loglama çerçevelerinin dışında üretilen verilerin daha esnek görselleştirilmesi için AdvantageScope artık CSV dosyalarını içe aktarmak için temel destek içeriyor. Desteklenen formatlar ve diğer sınırlamalar hakkında daha fazla ayrıntı için [dokümantasyonu](/overview/log-files/#csv-formatting) kontrol edin.
 
 <img src="/img/overview/log-files/export-2.png" alt="CSV data" />
 
-## 🤩 Estetik İyileştirmeler {#aesthetic-improvements}
+## 🤩 Estetik iyileştirmeler {#aesthetic-improvements}
 
 Windows 11'deki AdvantageScope UI, daha önce yalnızca macOS sürümlerine özel olan yarı saydam bir kenar çubuğunu destekleyecek şekilde güncellendi. macOS Tahoe için Apple'ın Sıvı Cam (Liquid Glass) malzemesini temel alan güncellenmiş bir uygulama simgesi de mevcuttur.
 
 <img src="/img/whats-new/windows-ui.png" alt="Windows UI" />
 
-## 📋 Yalınlaştırılmış Menüler {#streamlined-menus}
+## 📋 Yalınlaştırılmış menüler {#streamlined-menus}
 
 Menü çubuğu ve ilgili kontroller, kontrolleri tüm platformlarda daha erişilebilir ve tutarlı hale getirmek için yalınlaştırıldı ve yeniden düzenlendi. Göze çarpan özellikler şunlardır:
 
@@ -118,7 +118,7 @@ Menü çubuğu ve ilgili kontroller, kontrolleri tüm platformlarda daha erişil
   <img src="/img/prefs.png" />
 </div>
 
-## 🐛 Kararlılık İyileştirmeleri {#stability-improvements}
+## 🐛 Kararlılık iyileştirmeleri {#stability-improvements}
 
 Bu sürüm, uygulama genelinde çeşitli hata düzeltmeleri ve kararlılık iyileştirmeleri içerir. Tam liste sürüm [değişiklik günlüğünde](https://github.com/Mechanical-Advantage/AdvantageScope/releases) bulunabilir, ancak bazı önemli düzeltmeler aşağıda listelenmiştir:
 

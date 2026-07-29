@@ -30,7 +30,7 @@ AdvantageScope'un her bir ana sürümü, FRC başlangıcından (kickoff) önce O
 
 WPILib yükleyicisi AdvantageScope'un yakın tarihli bir sürümünü içerir, ancak doğrudan indirme için mevcut olan en son sürümün gerisinde kalabilir. AdvantageScope'u VSCode'un WPILib sürümünden başlatma dokümantasyonu [burada](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html) bulunabilir.
 
-## Resmi Olmayan Dağıtımlar
+## Resmi olmayan dağıtımlar
 
 AdvantageScope'un resmi olmayan dağıtımları, AdvantageScope/WPILib geliştiricileri tarafından resmi olarak desteklenmeyen çeşitli kaynaklardan edinilebilir. Bu dağıtımlar resmi kaynaklardan edinilebilen en son AdvantageScope sürümünün gerisinde kalabilir. Sorun olması durumunda lütfen doğrudan bakımı yapan kişilerle iletişime geçin.
 

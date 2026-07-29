@@ -1,10 +1,10 @@
 {
   "title": {
-    "message": "AdvantageScope Dokümantasyonu",
+    "message": "AdvantageScope dokümantasyonu",
     "description": "The title in the navbar"
   },
   "logo.alt": {
-    "message": "AdvantageScope Logosu",
+    "message": "AdvantageScope logosu",
     "description": "The alt text of navbar logo"
   },
   "item.label.Feedback": {

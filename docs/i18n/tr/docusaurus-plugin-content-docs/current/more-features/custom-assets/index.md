@@ -1,4 +1,4 @@
-# ⚙️ Özel Varlıklar
+# ⚙️ Özel varlıklar
 
 AdvantageScope düz saha görselleri, saha modelleri, robot modelleri ve joystick yapılandırmalarından oluşan varsayılan bir küme kullanır. Basit varlıklar (örneğin evergreen sahaları) ilk kuruluma dahildir. Detaylı varlıklar (örneğin sezona özel sahalar), AdvantageScope internete bağlı olduğunda arka planda otomatik olarak indirilir. Bu indirmelerin durumunu kontrol etmek için `Uygulama`/`AdvantageScope` > `Varlık indirme durumu...` seçeneğine tıklayın.
 
@@ -8,7 +8,7 @@ Varlık kümesi istenirse daha fazla seçenek eklemek üzere özelleştirilebili
 Varlıkları alternatif bir konumdan yüklemek için `Uygulama`/`AdvantageScope` > `Özel varlıklar klasörünü kullan` seçeneğine tıklayın. Seçilen klasör, ayrı alt klasörlerde birden fazla varlığın yerleştirilebileceği _üst klasör_ olmalıdır. Bu özellik, özel varlıklarin robot koduyla birlikte sürüm kontrolü altında saklanmasına olanak tanır.
 :::
 
-## Genel Format
+## Genel format
 
 Tüm varlıklar "TÜR_AD" adlandırma kuralına sahip klasörlerde saklanır. Klasör için kullanılan AD, AdvantageScope tarafından görüntülenmez. Olası varlık türleri şunlardır:
 
@@ -30,13 +30,13 @@ Bu klasör aşağıda açıklandığı gibi "config.json" adlı bir dosya ve bir
 }
 ```
 
-## 3B Robot Modelleri
+## 3B robot modelleri
 
-### Video Öğreticisi
+### Video öğreticisi
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Genel Bakış
+### Genel bakış
 
 Klasörde "model.glb" adında bir model bulunmalıdır. CAD dosyaları glTF formatına dönüştürülmelidir; ayrıntılar için [bu sayfaya](gltf-convert) bakın. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
@@ -70,7 +70,7 @@ AdvantageScope, detay seviyesinin seçilen [işleme moduna](/tab-reference/3d-fi
 
 :::
 
-### Eklemli Bileşenler
+### Eklemli bileşenler
 
 :::warning
 Eklemli bileşenlerin kurulumu karmaşık ve zaman alıcı olabilir. **3B sahada mekanizmaları görselleştirmek** için daha kolaylaştırılmış bir yaklaşım sunan AdvantageScope'un 3B [`Mechanism2d` desteğini](/tab-reference/3d-field#2d-mechanisms) kullanmayı düşünün.
@@ -93,7 +93,7 @@ Bileşen yapılandırması robotun yapılandırma dosyasında sağlanır. "compo
 ]
 ```
 
-#### Kurulum Süreci
+#### Kurulum süreci
 
 Eklemli bileşenlerin konumlarını kalibre etmek için aşağıdaki süreci öneririz:
 
@@ -126,7 +126,7 @@ Düğmeler, joystickler ve eksen değerleri hem [SDL](https://www.libsdl.org) ba
 NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarlarıyla (örneğin `sourceIndex`) geriye dönük uyumludur. **Tüm yeni joystickler, mevcut FIRST Sürücü İstasyonu ile uyumluluk için açık SDL bağlamaları (örneğin `sdlSourceIndex`) kullanmalıdır.**
 :::
 
-### Tek Düğme / POV Değeri
+### Tek düğme / POV değeri
 
 ```json
 {
@@ -144,7 +144,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-### İki Eksenli Joystick
+### İki eksenli joystick
 
 ```json
 {
@@ -167,7 +167,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-### Tek Eksen
+### Tek eksen
 
 ```json
 {
@@ -184,7 +184,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-### Dokunmatik Yüzey
+### Dokunmatik yüzey
 
 ```json
 {
@@ -196,7 +196,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-## Düz Saha Görselleri
+## Düz saha görselleri
 
 Klasörde "image.png" adında bir görsel bulunmalıdır. Kırmızı ittifak solda olacak şekilde yönlendirilmelidir. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
@@ -218,7 +218,7 @@ Klasörde "image.png" adında bir görsel bulunmalıdır. Kırmızı ittifak sol
 }
 ```
 
-## 3B Saha Modelleri
+## 3B saha modelleri
 
 Klasörde "model.glb" adında bir model bulunmalıdır. Tüm rotasyonlar uygulandıktan sonra saha kırmızı ittifak solda olacak şekilde yönlendirilmelidir. CAD dosyaları glTF formatına dönüştürülmelidir; ayrıntılar için [bu sayfaya](gltf-convert) bakın. Oyun objesi modelleri "gamePieces" dizisinde görünme sırasına göre "model_DİZİN.glb" adlandırma kuralını izler. Burada bildirilen AprilTag'ler diğer yapılandırma seçeneklerinden bağımsız olarak her zaman bir [merkez/kırmızı](/more-features/coordinate-systems#centerred-systemcore) koordinat sistemi kullanılarak konumlandırılır.
 

@@ -8,7 +8,7 @@ sidebar_position: 6
 
 <img src="/img/tab-reference/statistics-1.png" alt="Overview of statistics tab" />
 
-## Kontrol Paneli
+## Kontrol paneli
 
 Başlamak için bir alanı "Ölçümler" bölümüne sürükleyin. X düğmesini kullanarak bir alanı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm alanları kaldırmak için eksen başlığının yanındaki üç noktaya ve ardından `Tümünü Temizle` seçeneğine tıklayın. Alanlar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -34,13 +34,13 @@ Her alanın rengi, renkli simgeye tıklanarak veya alan adına sağ tıklanarak 
 
 **Adım Boyutu** seçeneği, her bir histogram aralığının boyutunu seçer. Daha küçük değerler daha ayrıntılı grafikler üretir, ancak aynı zamanda daha fazla gürültüyü ortaya çıkarır.
 
-## Görüntüleyici Paneli
+## Görüntüleyici paneli
 
 ### Histogram
 
 Histogram, belirli aralık dahilinde her bir aralığa düşen örneklerin sayısını gösterir. Belirtilen aralığın dışındaki verilerin atıldığını (ayrı bir aralıkta gruplandırılmak yerine) unutmayın.
 
-### İstatistiksel Ölçümler
+### İstatistiksel ölçümler
 
 İstatistiksel ölçümler tablosu, sağlanan alanlar için hesaplanan her bir ölçüm değerini gösterir. Her ölçüm hakkında daha fazla bilgi aşağıda verilmiştir.
 

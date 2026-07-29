@@ -1,4 +1,4 @@
-# Log Verilerini Dışa Aktarma
+# Log verilerini dışa aktarma
 
 AdvantageScope, log verilerini CSV, WPILOG veya MCAP dosyası olarak dışa aktarmak için esnek bir sistem içerir. Dışa aktarma işlevleri, bir log dosyası görüntülenirken veya bir canlı veri kaynağına bağlıyken çalışır. Olası kullanım durumları şunlardır:
 
