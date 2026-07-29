@@ -8,13 +8,13 @@ AdvantageScope is a volunteer-run project that is owned and published by the Lit
 
 _This policy was last modified on June 14th, 2026._
 
-## Information we collect
+## Information We Collect
 
 Littleton Robotics does not collect data from users of the AdvantageScope application, AdvantageScope XR mobile application, AdvantageScope Lite software, or online documentation site ([docs.advantagescope.org](https://docs.advantagescope.org)).
 
 Users of AdvantageScope alpha and beta releases may be asked to complete an online feedback survey. Responses to this survey may be retained by Littleton Robotics for the purpose of improving future releases. Personally identifying information will never be shared outside of Littleton Robotics without the user's consent.
 
-## Third-Party data collection
+## Third-Party Data Collection
 
 The AdvantageScope repository and documentation site are hosted by GitHub, which publishes a [privacy policy](https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement) that applies when interacting with these services.
 

@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# NetworkTables Verilerini Yayınlama
+# NetworkTables verilerini yayınlama
 
 AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simülatör veya robot gibi bir NetworkTables sunucusuna tekrar yayınlamayı destekler. Olası kullanım durumları şunlardır:
 

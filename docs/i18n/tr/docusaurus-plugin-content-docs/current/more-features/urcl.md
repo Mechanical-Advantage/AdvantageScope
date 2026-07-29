@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Gayriresmi REV-Uyumlu loglayıcı (URCL)
+# 📝 Gayriresmi REV-uyumlu loglayıcı (URCL)
 
 :::info
 2026'da yeni bir özellik olarak REVLib, Spark Max ve Spark Flex'ten gelen verileri bir REV CAN loguna (`.revlog`) kaydetmek için resmi bir loglama çözümü içerir. Ayrıntılar için [buraya](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) bakın. Bu dosyalar doğrudan AdvantageScope'ta açılabilir, ancak diğer veri kaynaklarıyla tam olarak senkronize edilemez.
