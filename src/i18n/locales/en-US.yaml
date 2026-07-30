@@ -325,7 +325,7 @@ hub:
     add: "Add tab" # Tooltip for add tab button
 
   sidebar:
-    titleDefault: "Open a log or connect to view data" # Default sidebar title text
+    titleDefault: "Open a log or connect to view data" # Default sidebar title text. If the translated text is longer than the English string, translate it as "Open a log or connect" to prevent truncation.
     searchPlaceholder: "Search" # Sidebar search field placeholder
     searchTitle: "Search fields" # Sidebar search field tooltip
     tuningTitle: "Toggle tuning mode" # Sidebar tuning button tooltip

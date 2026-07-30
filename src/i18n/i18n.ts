@@ -11,6 +11,7 @@ import enUSTranslations from "./locales/en-US.yaml";
 import es419Translations from "./locales/es-419.yaml";
 import frTranslations from "./locales/fr.yaml";
 import heTranslations from "./locales/he.yaml";
+import ptBRTranslations from "./locales/pt-BR.yaml";
 import trTranslations from "./locales/tr.yaml";
 
 /**
@@ -24,6 +25,7 @@ export function setupI18n(lang: string): TFunction {
       "en-US": { translation: enUSTranslations },
       "es-419": { translation: es419Translations },
       fr: { translation: frTranslations },
+      "pt-BR": { translation: ptBRTranslations },
       tr: { translation: trTranslations },
       he: { translation: heTranslations }
     },

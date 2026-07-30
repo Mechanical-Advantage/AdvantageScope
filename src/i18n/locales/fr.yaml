@@ -612,7 +612,7 @@ liveModeName:
 
 menu:
   titles:
-    app: "Application"
+    app: "App"
     appTooltip: "Menu de l'application"
     file: "Fichier"
     fileTooltip: "Menu fichier"
