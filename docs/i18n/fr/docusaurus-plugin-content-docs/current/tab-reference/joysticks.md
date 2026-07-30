@@ -25,7 +25,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 Sélectionnez les types de manettes dans le tableau au bas de l'onglet. Les identifiants de manette vont de 0 à 5 et correspondent aux identifiants dans la console de pilotage et WPILib. Plus d'informations sur les manettes se trouvent dans la [documentation WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 
-AdvantageScope comprend un ensemble de manettes courantes, y compris une « Manette générique » avec tous les boutons, axes et POV dans un format de grille (visible ci-dessus). Pour ajouter une manette personnalisée, voir [Ressources personnalisées](/more-features/custom-assets).
+AdvantageScope comprend un ensemble de manettes courantes, y compris une « Manette générique » avec tous les boutons, axes et POV dans un format de grille (visible ci-dessus). Pour ajouter une manette personnalisée, voir [Ressources personnalisées](/more-features/custom-assets).
 
 :::warning
 **Les données de manette ne sont PAS disponibles via une connexion NetworkTables avec WPILib de base.** Les fichiers journaux WPILib (avec la [journalisation des manettes activée](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), les journaux AdvantageKit et la diffusion en direct AdvantageKit sont pris en charge.

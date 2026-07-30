@@ -28,10 +28,10 @@ Les onglets peuvent être réorganisés en les faisant glisser, ou renommés en 
 
 Les boutons de navigation (verts) en haut gèrent les onglets et contrôlent la lecture.
 
-- **Bouton Plus :** Ouvre un menu déroulant pour créer un nouvel onglet.
-- **Bouton Fenêtre :** Crée une nouvelle fenêtre détachée avec l'onglet. Cette fonctionnalité peut être utilisée pour visualiser simultanément des données provenant de plusieurs onglets.
-- **Bouton X :** Ferme l'onglet actuel.
-- **Bouton Lecture :** Démarre et arrête la lecture en temps réel. _Faites un clic droit pour modifier la vitesse de lecture ou activer la lecture en boucle._
+- **Bouton Plus :** Ouvre un menu déroulant pour créer un nouvel onglet.
+- **Bouton Fenêtre :** Crée une nouvelle fenêtre détachée avec l'onglet. Cette fonctionnalité peut être utilisée pour visualiser simultanément des données provenant de plusieurs onglets.
+- **Bouton X :** Ferme l'onglet actuel.
+- **Bouton Lecture :** Démarre et arrête la lecture en temps réel. _Faites un clic droit pour modifier la vitesse de lecture ou activer la lecture en boucle._
 
 ## Volet de visualisation
 

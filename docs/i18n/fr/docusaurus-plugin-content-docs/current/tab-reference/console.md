@@ -16,12 +16,12 @@ Faites glisser le champ souhaité vers la vue principale pour commencer. Chaque 
 <img src="/img/tab-reference/console-1.png" alt="Vue console" />
 
 :::info
-Cliquez sur l'icône de palette de couleurs pour activer ou désactiver la mise en surbrillance des messages d'avertissement et d'erreur. Pour les journaux WPILib et AdvantageKit, les messages sont mis en surbrillance s'ils contiennent le texte « warning » ou « error ».
+Cliquez sur l'icône de palette de couleurs pour activer ou désactiver la mise en surbrillance des messages d'avertissement et d'erreur. Pour les journaux WPILib et AdvantageKit, les messages sont mis en surbrillance s'ils contiennent le texte « warning » ou « error ».
 :::
 
 Les contrôles sont similaires à l'onglet 🔢 [Tableau](../tab-reference/table). L'heure sélectionnée est synchronisée sur tous les onglets. Cliquez sur une ligne pour la sélectionner, ou survolez une ligne pour prévisualiser ce moment dans n'importe quelle fenêtre détachée visible. Cliquer sur le bouton ↓ permet d'aller à l'heure sélectionnée (ou à l'heure saisie dans la zone).
 
-Saisissez du texte dans la zone « Filtrer » pour n'afficher que les lignes qui contiennent le texte du filtre. Appuyez sur `Ctrl+F` pour sélectionner rapidement la zone « Filtrer ». Ajoutez un « ! » au début du texte du filtre pour _exclure_ les messages correspondants de la vue principale.
+Saisissez du texte dans la zone « Filtrer » pour n'afficher que les lignes qui contiennent le texte du filtre. Appuyez sur `Ctrl+F` pour sélectionner rapidement la zone « Filtrer ». Ajoutez un « ! » au début du texte du filtre pour _exclure_ les messages correspondants de la vue principale.
 
 :::tip
 Cliquez sur l'icône d'enregistrement pour exporter les données de la console vers un fichier texte.

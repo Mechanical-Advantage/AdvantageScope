@@ -19,7 +19,7 @@ Après la configuration, les trames CAN périodiques de tous les appareils Spark
 
 - **Tous les signaux** sont capturés automatiquement, avec **aucune configuration manuelle pour les nouveaux appareils**.
 - **Chaque trame est capturée**, même lorsque la période de trame d'état est plus rapide que le cycle de boucle du robot.
-- Les trames sont enregistrées avec des **horodatages basés sur l'heure de réception CAN RX**, ce qui permet une caractérisation de l'accélération plus précise avec [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) par rapport à la journalisation traditionnelle dans le code utilisateur (voir « Utilisation de SysId » ci-dessous).
+- Les trames sont enregistrées avec des **horodatages basés sur l'heure de réception CAN RX**, ce qui permet une caractérisation de l'accélération plus précise avec [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) par rapport à la journalisation traditionnelle dans le code utilisateur (voir « Utilisation de SysId » ci-dessous).
 - La journalisation est **hautement efficace**; les opérations sont exécutées sur des threads séparés pour moins de 80 µs par cycle périodique de 20 ms, même lors de la journalisation d'un grand nombre d'appareils.
 - **Toutes les fonctions de REVLib ne sont pas affectées.**
 
@@ -29,7 +29,7 @@ Comme cette bibliothèque n'est pas un outil officiel de REV, les demandes d'ass
 
 ## Configuration
 
-Installez la dépendance vendordep URCL en suivant les instructions d'installation des [bibliothèques tierces](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) à l'aide du gestionnaire de dépendances dans VSCode. Alternativement, vous pouvez utiliser l'URL JSON du fournisseur suivante :
+Installez la dépendance vendordep URCL en suivant les instructions d'installation des [bibliothèques tierces](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) à l'aide du gestionnaire de dépendances dans VSCode. Alternativement, vous pouvez utiliser l'URL JSON du fournisseur suivante :
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json
@@ -165,13 +165,13 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
 
 2. Exécutez la routine SysId sur le robot. Les commandes SysId peuvent être configurées comme des routines autonomes ou connectées à un déclencheur de bouton.
 
-3. Téléchargez le fichier journal et ouvrez-le dans AdvantageScope. Dans la barre de menu, allez dans `Fichier` > `Exporter les données...`. Définissez le format sur « WPILOG » et l'ensemble de champs sur « Inclure les champs générés ». Cliquez sur l'icône d'enregistrement et choisissez un emplacement pour enregistrer le journal.
+3. Téléchargez le fichier journal et ouvrez-le dans AdvantageScope. Dans la barre de menu, allez dans `Fichier` > `Exporter les données...`. Définissez le format sur « WPILOG » et l'ensemble de champs sur « Inclure les champs générés ». Cliquez sur l'icône d'enregistrement et choisissez un emplacement pour enregistrer le journal.
 
 :::warning
 Le fichier journal du robot doit être ouvert et exporté par AdvantageScope _avant de l'ouvrir à l'aide de l'analyseur SysId_. Cela est nécessaire pour convertir les données CAN enregistrées par URCL dans un format compatible avec SysId.
 :::
 
-4. Ouvrez l'analyseur SysId en recherchant « WPILib: Start Tool » dans la palette de commandes VSCode et en choisissant « SysId » (ou en utilisant le lanceur de bureau sur Windows). Ouvrez le fichier journal exporté en cliquant sur « Open data log file... »
+4. Ouvrez l'analyseur SysId en recherchant « WPILib: Start Tool » dans la palette de commandes VSCode et en choisissant « SysId » (ou en utilisant le lanceur de bureau sur Windows). Ouvrez le fichier journal exporté en cliquant sur « Open data log file... »
 
 5. Choisissez les champs suivants ci-dessous pour exécuter l'analyse à l'aide de l'encodeur par défaut. Les données de position et de vitesse des encodeurs secondaires peuvent également être utilisées (alternatif, externe, analogique, absolu, etc.).
 

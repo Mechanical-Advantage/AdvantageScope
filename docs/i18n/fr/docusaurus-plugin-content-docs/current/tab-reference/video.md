@@ -8,11 +8,11 @@ L'onglet vidéo permet de comparer côte à côte les données de journal avec u
 
 ## Chargement de la vidéo
 
-AdvantageScope propose trois options pour charger une vidéo :
+AdvantageScope propose trois options pour charger une vidéo :
 
-1. **Fichier local :** Cliquez sur l'icône de fichier grise, puis choisissez le fichier vidéo à charger. La plupart des formats vidéo courants sont pris en charge.
-2. **YouTube :** Copiez un lien YouTube dans le presse-papiers, puis cliquez sur l'icône de presse-papiers rouge. Après quelques secondes, le téléchargement de la vidéo commencera.
-3. **The Blue Alliance :** Cliquez sur l'icône bleue TBA pour charger automatiquement la vidéo du match sur la base du fichier journal. Si plusieurs vidéos sont disponibles, choisissez la vidéo à télécharger dans le menu surgissant. Cette fonctionnalité nécessite une clé API pour TBA, qui doit être obtenue sur [thebluealliance.com/account](https://www.thebluealliance.com/account) et copiée dans la page des préférences d'AdvantageScope sous « Clé API TBA ».
+1. **Fichier local :** Cliquez sur l'icône de fichier grise, puis choisissez le fichier vidéo à charger. La plupart des formats vidéo courants sont pris en charge.
+2. **YouTube :** Copiez un lien YouTube dans le presse-papiers, puis cliquez sur l'icône de presse-papiers rouge. Après quelques secondes, le téléchargement de la vidéo commencera.
+3. **The Blue Alliance :** Cliquez sur l'icône bleue TBA pour charger automatiquement la vidéo du match sur la base du fichier journal. Si plusieurs vidéos sont disponibles, choisissez la vidéo à télécharger dans le menu surgissant. Cette fonctionnalité nécessite une clé API pour TBA, qui doit être obtenue sur [thebluealliance.com/account](https://www.thebluealliance.com/account) et copiée dans la page des préférences d'AdvantageScope sous « Clé API TBA ».
 
 <img src="/img/tab-reference/video-1.png" alt="Sélecteur de source" />
 
@@ -28,7 +28,7 @@ AdvantageScope nécessite [FFmpeg](https://ffmpeg.org) pour traiter les fichiers
 
 ## Navigation dans la vidéo
 
-Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisée avec les données du journal, les contrôles de lecture pour la vidéo et le journal sont encore indépendants. Utilisez la chronologie et les boutons en bas à droite pour contrôler la lecture de la vidéo. Les raccourcis clavier suivants sont également pris en charge :
+Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisée avec les données du journal, les contrôles de lecture pour la vidéo et le journal sont encore indépendants. Utilisez la chronologie et les boutons en bas à droite pour contrôler la lecture de la vidéo. Les raccourcis clavier suivants sont également pris en charge :
 
 - / = activer ou désactiver la lecture
 - → = avancer d'une image
@@ -40,7 +40,7 @@ Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisé
 
 ## Synchronisation automatique
 
-La plupart des vidéos de match seront synchronisées automatiquement avec le journal peu de temps après le chargement des images de la période autonome du match. Aucune action n'est requise; si la synchronisation réussit, les contrôles vidéo seront verrouillés automatiquement (voir « Lecture » ci-dessous).
+La plupart des vidéos de match seront synchronisées automatiquement avec le journal peu de temps après le chargement des images de la période autonome du match. Aucune action n'est requise; si la synchronisation réussit, les contrôles vidéo seront verrouillés automatiquement (voir « Lecture » ci-dessous).
 
 :::warning
 La synchronisation automatique fonctionne uniquement sur les vidéos de match qui incluent des superpositions de scores et peut ne pas réussir dans tous les cas. Si les contrôles vidéo ne sont pas verrouillés automatiquement une fois toutes les images chargées, une synchronisation manuelle est requise.
@@ -76,7 +76,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 </details>
 
 :::tip
-Si vous le souhaitez, le champ de vision de la caméra peut être ajusté dans la vue du terrain 3D pour correspondre à l'apparence de la vidéo. Pour plus de détails, consultez « Options de caméra » sur la page 👀 [Terrain 3D](/tab-reference/3d-field).
+Si vous le souhaitez, le champ de vision de la caméra peut être ajusté dans la vue du terrain 3D pour correspondre à l'apparence de la vidéo. Pour plus de détails, consultez « Options de caméra » sur la page 👀 [Terrain 3D](/tab-reference/3d-field).
 :::
 
 <img src="/img/tab-reference/video-4.png" alt="Instantane vidéo avec odométrie" />

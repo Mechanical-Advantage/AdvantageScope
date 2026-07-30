@@ -37,7 +37,7 @@ href: "/overview/champs-conference"
 ]}
 />
 
-AdvantageScope comprend les outils suivants :
+AdvantageScope comprend les outils suivants :
 
 - Une vaste sélection de graphiques et de diagrammes flexibles
 - Des visualisations de terrain 2D et 3D des données de pose, avec des robots personnalisables basés sur la CAO

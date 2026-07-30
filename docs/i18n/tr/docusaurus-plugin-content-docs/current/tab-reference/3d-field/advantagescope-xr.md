@@ -20,7 +20,7 @@ AdvantageScope XR birçok iPhone ve iPad modelinde desteklenir, ancak **LiDAR se
 
 AdvantageScope XR yalnızca iOS ve iPadOS üzerinde desteklenmektedir. Alternatif platformları desteklemek için yakın bir plan bulunmamaktadır. İstemci uygulaması artırılmış gerçeklik, video kaydı, web işleme ve daha fazlası için yerel API'lerle sıkı bir entegrasyon gerektirir. iOS ve iPadOS, çeşitli nedenlerle geliştirme ve destek önceliği alır:
 
-- **Tutarlılık:** AdvantageScope XR talepkar bir uygulamadır. Android cihazlar işlem gücü ve özellikler bakımından büyük farklılıklar gösterirken, iPhone ve iPad nesiller boyunca tutarlı bir geliştirme deneyimi sunar. Tüm yeni iOS ve iPadOS cihazları AdvantageScope XR'ı çalıştıracak kadar güçlüdür ve daha yeni cihazlar AdvantageScope'un kullanabileceği ek özellikleri (LiDAR gibi) destekler.
+- **Tutarlılık:** AdvantageScope XR talepkar bir uygulamadır. Android cihazlar işlem gücü ve özellikler bakımından büyük farklılıklar gösterirken, iPhone ve iPad nesiller boyunca tutarlı bir geliştirme deneyimi sunar. Tüm yeni iOS ve iPadOS cihazları AdvantageScope XR'yi çalıştıracak kadar güçlüdür ve daha yeni cihazlar AdvantageScope'un kullanabileceği ek özellikleri (LiDAR gibi) destekler.
 
 - **Erişilebilirlik:** iPhone, Amerika Birleşik Devletleri'ndeki öğrencilerin sahip olma veya akranlarından kolayca erişebilme olasılığı en yüksek akıllı telefon olmaya devam etmektedir ve herhangi bir VR veya karma gerçeklik kulaklığı modelinden daha yaygın olarak mevcuttur. iOS'u desteklemek, AdvantageScope XR'a kolay erişimi olan kullanıcı sayısını en üst düzeye çıkarır.
 
@@ -39,7 +39,7 @@ AdvantageScope XR yalnızca iOS ve iPadOS üzerinde desteklenmektedir. Alternati
 <img src="/img/tab-reference/3d-field/xr-2.png" alt="XR window" height="350" />
 
 3. İstemci cihazındaki **yerleşik kamera uygulamasını** kullanarak QR kodunu tarayın. Herhangi bir uygulama kurulumu gerekmez.
-4. Deneyimi başlatmak ve ana bilgisayara bağlanmak için "AdvantageScope XR"a ve ardından "Aç"a dokunun. İstendiğinde AdvantageScope XR'ın **kamera ve yerel ağa** erişmesine izin verin.
+4. Deneyimi başlatmak ve ana bilgisayara bağlanmak için "AdvantageScope XR"a ve ardından "Aç"a dokunun. İstendiğinde AdvantageScope XR'nin **kamera ve yerel ağa** erişmesine izin verin.
 5. **Saha modelini kalibre etmek ve konumlandırmak** için cihazdaki talimatları izleyin.
 6. **Log yeniden oynatma ve canlı akış** dahil olmak üzere ana bilgisayarı kullanarak saha modelini normal şekilde kontrol edin. Saha modelinin durumu istemci cihazında canlı olarak görüntülenir.
 7. Hızlıca **bir video kaydetmek** için ekranın üst kısmındaki "Kaydet" simgesine dokunun. Kaydı durdurmak için tekrar dokunun, ardından klibi düzenleyin ve kaydedin.

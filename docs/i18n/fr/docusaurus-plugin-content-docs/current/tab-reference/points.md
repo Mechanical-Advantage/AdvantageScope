@@ -26,7 +26,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Ajout de sources
 
-Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
 
 **Pour personnaliser chaque source, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** Le symbole, la couleur et la taille de chaque source peuvent être ajustés.
 
@@ -77,8 +77,8 @@ Logger.recordOutput("MyTranslations",
 
 ## Configuration
 
-Les options de configuration suivantes sont disponibles :
+Les options de configuration suivantes sont disponibles :
 
-- **Dimensions :** La taille de la zone d'affichage. Cela peut utiliser n'importe quelle unité correspondant aux points publiés. Lors de l'affichage des données de vision, il s'agit de la résolution de la caméra.
-- **Orientation :** Le système de coordonnées à utiliser (orientation des axes X et Y).
-- **Origine :** La position de l'origine dans le système de coordonnées.
+- **Dimensions :** La taille de la zone d'affichage. Cela peut utiliser n'importe quelle unité correspondant aux points publiés. Lors de l'affichage des données de vision, il s'agit de la résolution de la caméra.
+- **Orientation :** Le système de coordonnées à utiliser (orientation des axes X et Y).
+- **Origine :** La position de l'origine dans le système de coordonnées.

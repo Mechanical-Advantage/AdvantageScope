@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # 🔍 Métadonnées
 
-L'onglet métadonnées montre les valeurs publiées dans la table cachée « /Metadata » ou via AdvantageKit. Les clés de métadonnées sont affichées à gauche, et les colonnes séparent les données provenant de différentes sources (par ex. réel et relecture lors de l'utilisation d'AdvantageKit).
+L'onglet métadonnées montre les valeurs publiées dans la table cachée « /Metadata » ou via AdvantageKit. Les clés de métadonnées sont affichées à gauche, et les colonnes séparent les données provenant de différentes sources (par ex. réel et relecture lors de l'utilisation d'AdvantageKit).
 
 <img src="/img/tab-reference/metadata-1.png" alt="Aperçu de l'onglet métadonnées" />
 
@@ -16,7 +16,7 @@ L'exemple de code ci-dessous montre comment enregistrer des métadonnées en uti
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>
 
-Dans WPILib, les valeurs doivent être enregistrées dans la table « /Metadata » sous forme de chaînes de caractères.
+Dans WPILib, les valeurs doivent être enregistrées dans la table « /Metadata » sous forme de chaînes de caractères.
 
 ```java
 // NetworkTables (also saved to DataLog by default)

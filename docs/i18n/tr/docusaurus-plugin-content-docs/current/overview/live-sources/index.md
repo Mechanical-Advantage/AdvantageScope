@@ -10,7 +10,7 @@ AdvantageScope'taki tüm görselleştirmeler, log dosyalarının yanı sıra bir
 - **FTC Dashboard:** Bu mod, [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard) platformuna veri yayınlayan FTC robotlarıyla entegre olur.
 
 :::info
-AdvantageScope, Driver Station (DS) uygulamasıyla aynı cihazda çalışırken tanılama verilerini görüntülemek için FIRST Driver Station'a bağlanabilir. Herhangi bir yapılandırma gerekmez (aşağıdaki talimatlara bakın).
+AdvantageScope, Sürücü İstasyonu (DS) uygulamasıyla aynı cihazda çalışırken tanılama verilerini görüntülemek için FIRST Sürücü İstasyonu'na bağlanabilir. Herhangi bir yapılandırma gerekmez (aşağıdaki talimatlara bakın).
 :::
 
 ## Bağlantıyı başlatma
@@ -19,7 +19,7 @@ Canlı bağlantıyı başlatmak için şu adımları izleyin:
 
 - **Robot:** `Dosya` > `Robota bağlan` > `Varsayılan` veya belirli bir canlı kaynağa tıklayın
 - **Simülatör:** `Dosya` > `Simülatöre bağlan` > `Varsayılan` veya belirli bir canlı kaynağa tıklayın
-- **Driver Station:** `Dosya` > `Driver Station'a bağlan` seçeneğine tıklayın
+- **Sürücü İstasyonu:** `Dosya` > `Sürücü İstasyonuna bağlan` seçeneğine tıklayın
 
 Pencere başlığı, hedef bağlanana kadar IP adresini ve "Aranıyor" metnini gösterir. AdvantageScope, bağlantı kesildikten sonra aynı ayarları kullanarak otomatik olarak yeniden bağlanmaya çalışır.
 

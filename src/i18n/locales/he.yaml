@@ -408,7 +408,7 @@ hub:
       variant_36h11-5in: "5 אינץ'"
 
   lineGraph:
-    numericAxis: "ציר מספרי"
+    numericAxis: "ציר נומרי"
     discreteFields: "שדות בדידים"
     leftAxis: "ציר שמאלי"
     rightAxis: "ציר ימני"
@@ -772,7 +772,7 @@ main:
     close: "סגירה"
     save: "שמירה"
     continue: "המשך"
-    dontClose: "אל תסגור"
+    dontClose: "לא לסגור"
     copyCloseWin: "העתקה וסגירה"
     copyCloseMac: "העתקה וסגירה"
     iAgree: "אני מסכים\\ה"
@@ -780,7 +780,7 @@ main:
     ok: "אישור"
     stop: "עצירה"
     skip: "דילוג"
-    dontShowAgain: "אל תציג שוב"
+    dontShowAgain: "לא להציג שוב"
 
   app:
     selectAssetsFolder: "בחירת תיקייה המכילה נכסי AdvantageScope מותאמים אישית"
@@ -865,7 +865,7 @@ main:
     warning: "אזהרה"
     alert: "התראה"
     exportInProgress: "ייצוא בתהליך"
-    exportInProgressDetail: "האם אתם בטוחים שברצונכם לסגור את החלון בזמן שמתבצע ייצוא? הנתונים לא יישמרו."
+    exportInProgressDetail: "האם ברצונך לסגור את החלון בזמן שמתבצע ייצוא? הנתונים לא יישמרו."
     incompleteExport: "נתונים חלקיים לייצוא"
     incompleteExportDetail: 'חלק מהשדות לא יהיו זמינים בנתונים המיוצאים. כדי לשמור את כל השדות מהשרת, יש לבחור במצב חי "רישום יומן". יש לעיין בתיעוד של AdvantageScope לפרטים נוספים.'
 
@@ -876,7 +876,7 @@ main:
 
   ctre:
     licenseTitle: "הסכם רישיון של CTRE"
-    licenseDetail: "פענוח קובצי יומן של Hoot דורש הסכמה להסכם הרישיון למשתמשי קצה של CTRE. יש ללחוץ על הכפתור למטה כדי להציג את הסכם הרישיון המלא, ולאחר מכן לסמן את התיבה אם אתם מסכימים לתנאים."
+    licenseDetail: "פענוח קובצי יומן של Hoot דורש הסכמה להסכם הרישיון למשתמשי קצה (EULA) של CTRE. יש ללחוץ על הכפתור למטה כדי להציג את הסכם הרישיון המלא, ולאחר מכן לסמן את התיבה אם אתם מסכימים לתנאים."
     licenseRequired: "לא ניתן לפענח קובצי יומן של Hoot ללא הסכמה להסכם הרישיון למשתמשי קצה של CTRE."
 
   survey:

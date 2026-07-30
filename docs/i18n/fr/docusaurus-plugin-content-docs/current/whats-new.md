@@ -12,9 +12,9 @@ La version 2026 d'AdvantageScope est maintenant disponible! Consultez la [docume
 
 **Nous accordons de la valeur à vos commentaires! Les commentaires, demandes de fonctionnalités et rapports de bogues sont les bienvenus sur la [page des problèmes](https://github.com/Mechanical-Advantage/AdvantageScope/issues).**
 
-## ✴️ Expérimental : Prise en charge de FTC {#ftc-support}
+## ✴️ Expérimental : Prise en charge de FTC {#ftc-support}
 
-En préparation d'une prise en charge complète de Systemcore pour la saison 2027-2028, cette version ajoute plusieurs fonctionnalités pour améliorer la compatibilité avec le système de contrôle FIRST Tech Challenge existant :
+En préparation d'une prise en charge complète de Systemcore pour la saison 2027-2028, cette version ajoute plusieurs fonctionnalités pour améliorer la compatibilité avec le système de contrôle FIRST Tech Challenge existant :
 
 - Les terrains et modèles de robots FTC sur le 🗺️ [Terrain 2D](/tab-reference/2d-field) et le 👀 [Terrain 3D](/tab-reference/3d-field)
 - De nouvelles options de [système de coordonnées](/more-features/coordinate-systems) pour la compatibilité avec les [coordonnées FTC standard](https://ftc-docs.firstinspires.org/en/latest/game_specific_resources/field_coordinate_system/field-coordinate-system.html)
@@ -43,7 +43,7 @@ Toutes les fonctionnalités d'AdvantageScope seront officiellement prises en cha
 
 ## 🧮 Graphiques avec unités {#unit-aware-graphing}
 
-L'onglet 📉 [Graphique linéaire](/tab-reference/line-graph/) a été repensé pour prendre entièrement en compte les unités. Cela permet plusieurs nouvelles capacités lors du tracé de champs numériques :
+L'onglet 📉 [Graphique linéaire](/tab-reference/line-graph/) a été repensé pour prendre entièrement en compte les unités. Cela permet plusieurs nouvelles capacités lors du tracé de champs numériques :
 
 - L'étiquetage précis des axes Y et de l'affichage des valeurs
 - La conversion rapide vers des unités compatibles (sans fenêtre surgissante)
@@ -76,7 +76,7 @@ La fenêtre de téléchargement prend désormais en charge l'enregistrement des 
 
 ## 🌈 Nouvelles options de visualisation {#new-visualization-options}
 
-Plusieurs nouvelles options de visualisation sont prises en charge sur le 🗺️ [Terrain 2D](/tab-reference/2d-field) et le 👀 [Terrain 3D](/tab-reference/3d-field) :
+Plusieurs nouvelles options de visualisation sont prises en charge sur le 🗺️ [Terrain 2D](/tab-reference/2d-field) et le 👀 [Terrain 3D](/tab-reference/3d-field) :
 
 - Une plus grande variété de couleurs de pare-chocs de robot est désormais disponible sur le terrain 2D, et chaque objet peut être configuré avec sa propre couleur. Cela permet une plus grande flexibilité lors de la combinaison de fantômes avec plusieurs objets de robot.
 - Lors de la [visualisation de mécanismes 2D sur le terrain 3D](/tab-reference/3d-field/#2d-mechanisms), les mécanismes peuvent désormais être placés sur le plan YZ en plus du plan XZ. Cela permet une visualisation plus facile de mécanismes complexes avec des mouvements sur plusieurs axes.
@@ -106,7 +106,7 @@ L'interface utilisateur d'AdvantageScope sur Windows 11 a été mise à jour pou
 
 ## 📋 Menus simplifiés {#streamlined-menus}
 
-La barre de menu et les contrôles associés ont été simplifiés et réorganisés pour rendre les contrôles plus accessibles et cohérents sur toutes les plates-formes. Les fonctionnalités notables incluent :
+La barre de menu et les contrôles associés ont été simplifiés et réorganisés pour rendre les contrôles plus accessibles et cohérents sur toutes les plates-formes. Les fonctionnalités notables incluent :
 
 - Un basculement plus rapide entre les sources en direct (par exemple NetworkTables et les [Diagnostics Phoenix](/overview/live-sources/phoenix-diagnostics)), sans avoir besoin d'ouvrir la fenêtre des préférences.
 - Faites un clic droit sur la barre latérale pour copier rapidement le nom d'un champ (ou la clé de champ complète).
@@ -120,7 +120,7 @@ La barre de menu et les contrôles associés ont été simplifiés et réorganis
 
 ## 🐛 Améliorations de la stabilité {#stability-improvements}
 
-Cette version comprend une variété de corrections de bogues et d'améliorations de la stabilité dans toute l'application. La liste complète se trouve dans le [journal des modifications](https://github.com/Mechanical-Advantage/AdvantageScope/releases) de la version, mais certaines corrections notables sont énumérées ci-dessous :
+Cette version comprend une variété de corrections de bogues et d'améliorations de la stabilité dans toute l'application. La liste complète se trouve dans le [journal des modifications](https://github.com/Mechanical-Advantage/AdvantageScope/releases) de la version, mais certaines corrections notables sont énumérées ci-dessous :
 
 - Les performances d'AdvantageScope lors de la diffusion de données pendant de longues périodes ont été grandement améliorées, en particulier lors de l'utilisation de l'onglet graphique linéaire.
 - AdvantageScope est désormais plus tolérante aux données de journal inhabituelles, y compris les grands fichiers journaux et les grandes valeurs de champ.

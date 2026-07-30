@@ -10,18 +10,18 @@ Pour charger des ressources depuis un autre emplacement, cliquez sur `Applicatio
 
 ## Format général
 
-Toutes les ressources sont stockées dans des dossiers avec la convention de nommage « TYPE_NAME ». Le NAME utilisé pour le dossier n'est pas affiché par AdvantageScope. Les types de ressources possibles sont :
+Toutes les ressources sont stockées dans des dossiers avec la convention de nommage « TYPE_NAME ». Le NAME utilisé pour le dossier n'est pas affiché par AdvantageScope. Les types de ressources possibles sont :
 
-- « Field2d »
-- « Field3d »
-- « Robot »
-- « Joystick »
+- « Field2d »
+- « Field3d »
+- « Robot »
+- « Joystick »
 
 :::info
-Des exemples de noms de dossiers seraient « Field2d_2023Field », « Joystick_OperatorButtons » ou « Robot_Dozer ».
+Des exemples de noms de dossiers seraient « Field2d_2023Field », « Joystick_OperatorButtons » ou « Robot_Dozer ».
 :::
 
-Ce dossier doit contenir un fichier nommé « config.json » et un ou plusieurs fichiers de ressources, comme décrit ci-dessous. Le fichier de configuration comprend toujours le nom de la ressource à afficher par AdvantageScope. Ce nom doit être unique pour chaque type de ressource.
+Ce dossier doit contenir un fichier nommé « config.json » et un ou plusieurs fichiers de ressources, comme décrit ci-dessous. Le fichier de configuration comprend toujours le nom de la ressource à afficher par AdvantageScope. Ce nom doit être unique pour chaque type de ressource.
 
 ```json
 {
@@ -38,7 +38,7 @@ Ce dossier doit contenir un fichier nommé « config.json » et un ou plusieurs 
 
 ### Aperçu
 
-Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Le fichier de configuration doit être au format suivant :
+Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Le fichier de configuration doit être au format suivant :
 
 ```json
 {
@@ -63,7 +63,7 @@ Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Les fi
 La façon la plus simple de déterminer les valeurs de position et de rotation appropriées est par essais et erreurs. Nous recommandons d'ajuster la rotation avant la position car les transformations sont appliquées dans cet ordre.
 
 :::info
-AdvantageScope simplifie automatiquement la géométrie du modèle pour améliorer les performances, où le niveau de détail dépend du [mode de rendu](/tab-reference/3d-field#rendering-modes) sélectionné. Dans les cas où la simplification du modèle produit des effets indésirables avec des ressources personnalisées, deux solutions peuvent être utilisées :
+AdvantageScope simplifie automatiquement la géométrie du modèle pour améliorer les performances, où le niveau de détail dépend du [mode de rendu](/tab-reference/3d-field#rendering-modes) sélectionné. Dans les cas où la simplification du modèle produit des effets indésirables avec des ressources personnalisées, deux solutions peuvent être utilisées :
 
 - Pour désactiver la suppression automatique d'un maillage particulier, incluez la chaîne `NOSIMPLIFY` dans le nom du maillage.
 - Pour désactiver la simplification du modèle pour l'ensemble d'un modèle de robot, définissez l'option `disableSimplification` dans la configuration sur `true`.
@@ -76,9 +76,9 @@ AdvantageScope simplifie automatiquement la géométrie du modèle pour amélior
 La configuration des composants articulés peut être complexe et prendre du temps. Envisagez d'utiliser la prise en charge de `Mechanism2d` 3D d'AdvantageScope [/tab-reference/3d-field#2d-mechanisms], qui offre une approche plus simple pour **visualiser les mécanismes sur le terrain 3D**.
 :::
 
-Les modèles de robots peuvent contenir des composants articulés pour visualiser les données de mécanisme (voir [ici](/tab-reference/3d-field) pour plus de détails). Le modèle glTF de base ne doit contenir aucun composant, puis chaque composant doit être exporté sous forme de modèle glTF distinct. Les modèles de composants suivent la convention de nommage « model_INDEX.glb », de sorte que le premier composant articulé serait « model_0.glb ».
+Les modèles de robots peuvent contenir des composants articulés pour visualiser les données de mécanisme (voir [ici](/tab-reference/3d-field) pour plus de détails). Le modèle glTF de base ne doit contenir aucun composant, puis chaque composant doit être exporté sous forme de modèle glTF distinct. Les modèles de composants suivent la convention de nommage « model_INDEX.glb », de sorte que le premier composant articulé serait « model_0.glb ».
 
-La configuration des composants est fournie dans le fichier de configuration du robot. Un tableau de composants doit être fourni sous la clé « components ». Lorsque le composant ne fournit pas de poses dans AdvantageScope, les modèles de composants seront positionnés en utilisant les rotations et la position par défaut du robot (voir ci-dessus). Lorsque des poses de composants sont fournies par l'utilisateur, les rotations et la position « zéro » sont appliquées à la place pour amener chaque composant à l'origine du robot. Les poses de l'utilisateur sont ensuite appliquées pour déplacer chaque composant vers le bon emplacement sur le robot.
+La configuration des composants est fournie dans le fichier de configuration du robot. Un tableau de composants doit être fourni sous la clé « components ». Lorsque le composant ne fournit pas de poses dans AdvantageScope, les modèles de composants seront positionnés en utilisant les rotations et la position par défaut du robot (voir ci-dessus). Lorsque des poses de composants sont fournies par l'utilisateur, les rotations et la position « zéro » sont appliquées à la place pour amener chaque composant à l'origine du robot. Les poses de l'utilisateur sont ensuite appliquées pour déplacer chaque composant vers le bon emplacement sur le robot.
 
 :::tip
 Lors du positionnement des composants 3D par rapport au robot, l'origine du système de coordonnées correspond à la pose publiée du robot. Notez que cette pose utilise généralement une hauteur de zéro, qui est le plan du sol et NON le fond du châssis du robot (pour le mouvement de robot 2D typique).
@@ -95,11 +95,11 @@ Lors du positionnement des composants 3D par rapport au robot, l'origine du syst
 
 #### Procédure de configuration
 
-Pour étalonner les positions des composants articulés, nous recommandons la procédure suivante :
+Pour étalonner les positions des composants articulés, nous recommandons la procédure suivante :
 
-1. Exportez le modèle de base et les composants dans leurs positions « par défaut » correctes. C'est ainsi qu'ils doivent être rendus si aucune pose de composant n'est fournie dans AdvantageScope.
+1. Exportez le modèle de base et les composants dans leurs positions « par défaut » correctes. C'est ainsi qu'ils doivent être rendus si aucune pose de composant n'est fournie dans AdvantageScope.
 
-2. Publiez une pose 2D mise à zéro à partir du code robot, puis sélectionnez-la comme pose du robot dans AdvantageScope. Basculez vers le terrain 3D « Axes », qui montre l'origine du terrain.
+2. Publiez une pose 2D mise à zéro à partir du code robot, puis sélectionnez-la comme pose du robot dans AdvantageScope. Basculez vers le terrain 3D « Axes », qui montre l'origine du terrain.
 
 3. Ajustez les rotations globales du robot (pas des composants) jusqu'à ce que le robot complet soit orienté correctement. Ensuite, ajustez la position globale pour amener le robot complet à l'origine. Les composants doivent être rendus dans les mêmes positions par défaut tout au long de ce processus.
 
@@ -111,7 +111,7 @@ Pour étalonner les positions des composants articulés, nous recommandons la pr
 
 ## Manettes
 
-Une image doit être incluse dans le dossier avec le nom « image.png ». Le fichier de configuration doit être au format suivant :
+Une image doit être incluse dans le dossier avec le nom « image.png ». Le fichier de configuration doit être au format suivant :
 
 ```json
 {
@@ -198,7 +198,7 @@ Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes cl�
 
 ## Images de terrain plates
 
-Une image doit être incluse dans le dossier avec le nom « image.png ». Elle doit être orientée avec l'alliance rouge sur la gauche. Le fichier de configuration doit être au format suivant :
+Une image doit être incluse dans le dossier avec le nom « image.png ». Elle doit être orientée avec l'alliance rouge sur la gauche. Le fichier de configuration doit être au format suivant :
 
 ```json
 {
@@ -220,9 +220,9 @@ Une image doit être incluse dans le dossier avec le nom « image.png ». Elle d
 
 ## Modèles 3D de terrain
 
-Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Une fois toutes les rotations appliquées, le terrain doit être orienté avec l'alliance rouge sur la gauche. Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Les modèles d'éléments de pointage suivent la convention de nommage « model_INDEX.glb » basée sur l'ordre dans lequel ils apparaissent dans le tableau « gamePieces ». Les AprilTags déclarés ici sont toujours positionnés en utilisant un système de coordonnées [centre/rouge](/more-features/coordinate-systems#centerred-systemcore), quelles que soient les autres options de configuration.
+Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Une fois toutes les rotations appliquées, le terrain doit être orienté avec l'alliance rouge sur la gauche. Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Les modèles d'éléments de pointage suivent la convention de nommage « model_INDEX.glb » basée sur l'ordre dans lequel ils apparaissent dans le tableau « gamePieces ». Les AprilTags déclarés ici sont toujours positionnés en utilisant un système de coordonnées [centre/rouge](/more-features/coordinate-systems#centerred-systemcore), quelles que soient les autres options de configuration.
 
-Le fichier de configuration doit être au format suivant :
+Le fichier de configuration doit être au format suivant :
 
 ```json
 {

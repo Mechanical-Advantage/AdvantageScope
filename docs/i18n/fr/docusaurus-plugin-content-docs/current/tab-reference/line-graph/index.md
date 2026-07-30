@@ -23,7 +23,7 @@ La couleur et le style de ligne de chaque champ peuvent être personnalisés en 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Visualisation des alertes" />
 
 :::tip
-Pour superposer le mode du robot (autonome, téléopéré ou utilitaire), cliquez sur les trois points à côté de « Champs discrets » et cliquez sur « Afficher le mode du robot ».
+Pour superposer le mode du robot (autonome, téléopéré ou utilitaire), cliquez sur les trois points à côté de « Champs discrets » et cliquez sur « Afficher le mode du robot ».
 
 <img src="/img/tab-reference/line-graph/line-graph-3.png" alt="Superposition du mode robot" />
 :::

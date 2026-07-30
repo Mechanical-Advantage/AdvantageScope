@@ -26,13 +26,13 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Ajout de sources
 
-Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer toutes les sources, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer toutes les sources, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
 
-**Pour personnaliser chaque source, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge trois types de sources :
+**Pour personnaliser chaque source, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge trois types de sources :
 
-- **Vitesses des modules :** Un ensemble de quatre états de modules Swerve, affichés sous forme de vecteurs sur le schéma.
-- **Vitesses du robot :** Les vitesses linéaires et angulaires affichées au centre du schéma.
-- **Rotation :** La position angulaire utilisée pour faire pivoter le schéma.
+- **Vitesses des modules :** Un ensemble de quatre états de modules Swerve, affichés sous forme de vecteurs sur le schéma.
+- **Vitesses du robot :** Les vitesses linéaires et angulaires affichées au centre du schéma.
+- **Rotation :** La position angulaire utilisée pour faire pivoter le schéma.
 
 ## Format des données
 
@@ -78,11 +78,11 @@ Logger.recordOutput("MyStates", states);
 
 ## Configuration
 
-Les options de configuration suivantes sont disponibles :
+Les options de configuration suivantes sont disponibles :
 
-- **Vitesse max :** La vitesse maximale atteignable par les modules, utilisée pour ajuster la taille des vecteurs.
-- **Taille du châssis :** Les distances entre les modules Swerve gauche-droite et avant-arrière. Modifie le rapport d'aspect du schéma du robot.
-- **Orientation :** Ajuste la direction dans laquelle le schéma du robot est pointé. Cette option est souvent utile pour s'aligner avec les données de pose ou les vidéos de match.
+- **Vitesse max :** La vitesse maximale atteignable par les modules, utilisée pour ajuster la taille des vecteurs.
+- **Taille du châssis :** Les distances entre les modules Swerve gauche-droite et avant-arrière. Modifie le rapport d'aspect du schéma du robot.
+- **Orientation :** Ajuste la direction dans laquelle le schéma du robot est pointé. Cette option est souvent utile pour s'aligner avec les données de pose ou les vidéos de match.
 
 :::note
 [🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀 🦀](https://www.youtube.com/watch?v=IbbwtyM8Dxs)

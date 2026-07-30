@@ -11,7 +11,7 @@
 - **RLOG (.rlog)** - פורמט ישן, מופק על ידי AdvantageKit 2022.
 
 :::info
-קובצי יומן של Hoot ניתנים לפתיחה רק לאחר הסכמה ל[הסכם רישיון משתמש קצה](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) של CTRE. AdvantageScope מציגה הודעה לאישור התנאים הללו בעת פתיחת קובץ יומן של Hoot בפעם הראשונה.
+קובצי יומן של Hoot ניתנים לפתיחה רק לאחר הסכמה ל[הסכם הרישיון למשתמשי קצה (EULA)](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) של CTRE. AdvantageScope מציגה הודעה לאישור התנאים הללו בעת פתיחת קובץ יומן של Hoot בפעם הראשונה.
 :::
 
 ## פתיחת יומנים

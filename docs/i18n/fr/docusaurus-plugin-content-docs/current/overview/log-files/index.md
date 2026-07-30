@@ -7,7 +7,7 @@
 - **Hoot (.hoot)** - Produit par le [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de Phoenix 6 de CTRE.
 - **REVLOG (.revlog)** - Produit par le [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) de REV Robotics.
 - **Road Runner (.log)** - Produit par la bibliothèque [Road Runner](https://github.com/acmerobotics/road-runner) pour FTC.
-- **CSV (.csv)** - Valeurs séparées par des virgules, correspondant au format [exporté](/overview/log-files/export) par AdvantageScope dans les modes « CSV (Tableau) » ou « CSV (Liste) ». Voir [ici](#csv-formatting) pour plus de détails.
+- **CSV (.csv)** - Valeurs séparées par des virgules, correspondant au format [exporté](/overview/log-files/export) par AdvantageScope dans les modes « CSV (Tableau) » ou « CSV (Liste) ». Voir [ici](#csv-formatting) pour plus de détails.
 - **RLOG (.rlog)** - Hérité, produit par AdvantageKit 2022.
 
 :::info
@@ -54,12 +54,12 @@ Lors du téléchargement de plusieurs fichiers, AdvantageScope ignore ceux qui e
 
 ## Formatage CSV {#csv-formatting}
 
-Les noms de colonnes CSV doivent être soit « Timestamp, Key, Value » soit « Timestamp, (Key), (Key), etc. ». Les valeurs d'horodatage sont en secondes. La liste ci-dessous montre le format attendu des types de valeurs courants. Notez que l'exportation et la réimportation de données de journal sous forme de CSV entraînent une _perte de données_, car le format CSV ne prend pas en charge les types de champs complexes.
+Les noms de colonnes CSV doivent être soit « Timestamp, Key, Value » soit « Timestamp, (Key), (Key), etc. ». Les valeurs d'horodatage sont en secondes. La liste ci-dessous montre le format attendu des types de valeurs courants. Notez que l'exportation et la réimportation de données de journal sous forme de CSV entraînent une _perte de données_, car le format CSV ne prend pas en charge les types de champs complexes.
 
-- **Booléens :** `true` ou `false`
-- **Chaînes de caractères :** `"(valeur)"`
-  - Exemple : `"Bonjour le monde"`
-- **Tableaux :** `[(valeur); (valeur); (valeur)]`
-  - Exemple : `[1; 2; 3]`
-- **Octets :** hexadécimal, séparés par `-`
-  - Exemple : `4d-41-36-33-32-38`
+- **Booléens :** `true` ou `false`
+- **Chaînes de caractères :** `"(valeur)"`
+  - Exemple : `"Bonjour le monde"`
+- **Tableaux :** `[(valeur); (valeur); (valeur)]`
+  - Exemple : `[1; 2; 3]`
+- **Octets :** hexadécimal, séparés par `-`
+  - Exemple : `4d-41-36-33-32-38`

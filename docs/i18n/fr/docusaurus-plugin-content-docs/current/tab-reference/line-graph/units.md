@@ -1,6 +1,6 @@
 # Prise en charge des unités
 
-L'onglet graphique linéaire prend en compte les unités, ce qui signifie que les valeurs numériques peuvent être facilement converties entre des types d'unités compatibles. Lorsque les informations d'unité sont disponibles, toutes les valeurs numériques sont également étiquetées avec précision lorsqu'elles sont affichées dans les axes ou les légendes. Voir [ici](#supported-formats) pour plus d'informations sur la publication des informations d'unité. AdvantageScope fournit plusieurs outils pour convertir rapidement entre les unités :
+L'onglet graphique linéaire prend en compte les unités, ce qui signifie que les valeurs numériques peuvent être facilement converties entre des types d'unités compatibles. Lorsque les informations d'unité sont disponibles, toutes les valeurs numériques sont également étiquetées avec précision lorsqu'elles sont affichées dans les axes ou les légendes. Voir [ici](#supported-formats) pour plus d'informations sur la publication des informations d'unité. AdvantageScope fournit plusieurs outils pour convertir rapidement entre les unités :
 
 - Lors de l'ajout de **champs sur le même axe avec des types d'unités compatibles**, AdvantageScope convertit automatiquement les deux champs dans la même unité. Cela se reflète dans l'étiquetage de l'axe Y et de la légende.
 - Cliquez sur les trois points près du titre de l'axe pour **passer rapidement à d'autres unités**. Cette liste comprend les unités les plus courantes qui sont compatibles avec les champs sélectionnés.
@@ -24,7 +24,7 @@ AdvantageScope utilise automatiquement les unités natives pour les types de don
 
 ### 🥈 Métadonnées de champ
 
-Les formats WPILOG et NetworkTables prennent en charge la publication de « métadonnées » supplémentaires pour chaque champ. AdvantageScope recherche les champs JSON nommés « unit » ou « units » contenant un nom de chaîne pour le type d'unité (en utilisant des espaces, camel-case, pascal-case ou snake-case). Pour vérifier les métadonnées de chaque champ, survolez le nom du champ dans la barre latérale.
+Les formats WPILOG et NetworkTables prennent en charge la publication de « métadonnées » supplémentaires pour chaque champ. AdvantageScope recherche les champs JSON nommés « unit » ou « units » contenant un nom de chaîne pour le type d'unité (en utilisant des espaces, camel-case, pascal-case ou snake-case). Pour vérifier les métadonnées de chaque champ, survolez le nom du champ dans la barre latérale.
 
 :::tip
 AdvantageKit inclut la prise en charge des métadonnées d'unité lors de l'enregistrement des entrées et des sorties, y compris la journalisation des annotations. Consultez la documentation [ici](https://docs.advantagekit.org/data-flow/supported-types#units) pour plus de détails.
@@ -32,7 +32,7 @@ AdvantageKit inclut la prise en charge des métadonnées d'unité lors de l'enre
 
 ### 🥉 Nommage des champs
 
-En cas de repli, AdvantageScope tente de déterminer le type d'unité correct en analysant le nom de chaque champ. **Le type d'unité doit être inclus en tant que suffixe.** AdvantageScope prend en charge une variété de schémas de nommage. Certaines options valides sont énumérées ci-dessous :
+En cas de repli, AdvantageScope tente de déterminer le type d'unité correct en analysant le nom de chaque champ. **Le type d'unité doit être inclus en tant que suffixe.** AdvantageScope prend en charge une variété de schémas de nommage. Certaines options valides sont énumérées ci-dessous :
 
 - **Camel/pascal-case**, comme `PositionMeters`, `velocityRadPerSec` et `TimestampS`
 - **Snake-case**, comme `position_meters`, `velocity_rad_per_sec` et `timestamp_s`
@@ -48,7 +48,7 @@ Si les unités sont mal analysées, cliquez sur `Unités manuelles` > `Désactiv
 
 Lorsque les métadonnées d'unité ne sont pas disponibles ou sont inexactes, les axes peuvent également être configurés manuellement pour convertir entre les unités (or ignorer complètement les métadonnées d'unité).
 
-Pour configurer la conversion manuelle, cliquez sur les trois points près du titre de l'axe, puis sur `Unités manuelles` > `Modifier la conversion...`. Sélectionnez le type d'unité, l'unité source et l'unité de destination. Chaque valeur est également multipliée par le « Facteur supplémentaire », permettant des conversions personnalisées (comme les rapports de démultiplication, les conversions angulaires en linéaires, ou d'autres unités non fournies par AdvantageScope). Le facteur peut également être saisi à l'aide d'une expression mathématique telle que `1.5*pi`.
+Pour configurer la conversion manuelle, cliquez sur les trois points près du titre de l'axe, puis sur `Unités manuelles` > `Modifier la conversion...`. Sélectionnez le type d'unité, l'unité source et l'unité de destination. Chaque valeur est également multipliée par le « Facteur supplémentaire », permettant des conversions personnalisées (comme les rapports de démultiplication, les conversions angulaires en linéaires, ou d'autres unités non fournies par AdvantageScope). Le facteur peut également être saisi à l'aide d'une expression mathématique telle que `1.5*pi`.
 
 :::tip
 Pour activer ou désactiver rapidement la conversion d'unités, cliquez sur les trois points près du titre de l'axe et choisissez `Préréglages récents` ou `Réinitialiser les unités`.

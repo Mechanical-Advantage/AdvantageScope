@@ -159,7 +159,7 @@ Kamera klavye kullanılarak da kontrol edilebilir. **WASD** tuşları ötelemek,
 
 Bu mod "Yörünge Saha" moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlenmiştir. Bu, robotun hareketinin takip çekimlerine olanak tanır.
 
-### Driver Station
+### Sürücü İstasyonu
 
 Bu mod, kamerayı sürücü istasyonlarından birinin arkasına tipik göz hizasında kilitler. Görüntülenecek istasyonu manuel olarak seçin veya log verilerinde saklanan ittifak ve istasyon numarasını kullanmak için "Otomatik"yi seçin.
 

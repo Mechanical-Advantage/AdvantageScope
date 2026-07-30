@@ -26,7 +26,7 @@ Le modèle de terrain FRC 2026 est cohérent avec la disposition d'AprilTag pour
 
 ## Ajout d'objets
 
-Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
 
 **Pour personnaliser chaque objet, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge un grand nombre de types d'objets, dont beaucoup peuvent être personnalisés (comme la modification des couleurs et des modèles de robots). Certains objets doivent être ajoutés en tant qu'enfants à un objet existant.
 
@@ -113,7 +113,7 @@ Pour visualiser des données de mécanisme enregistrées à l'aide d'un [`Mechan
 La configuration des composants 3D peut être complexe et prendre du temps. Envisagez d'utiliser la prise en charge de `Mechanism2d` d'AdvantageScope comme décrit ci-dessus, qui offre une approche plus simple pour visualiser les mécanismes sur le terrain 3D.
 :::
 
-Les mécanismes peuvent être visualisés avec des composants articulés en enregistrant un ensemble de poses 3D qui représentent les emplacements relatifs au robot de chaque composant. Ajoutez les poses à un objet robot ou fantôme existant et définissez le type d'objet sur « Composant ».
+Les mécanismes peuvent être visualisés avec des composants articulés en enregistrant un ensemble de poses 3D qui représentent les emplacements relatifs au robot de chaque composant. Ajoutez les poses à un objet robot ou fantôme existant et définissez le type d'objet sur « Composant ».
 
 Chaque composant peut être déplacé indépendamment (comme un chariot d'élévateur, un bras ou un effecteur terminal). Les utilisateurs d'AdvantageKit doivent envisager d'utiliser la méthode [`generate3dMechanism()`](https://docs.advantagekit.org/data-flow/supported-types#mechanisms-output-only) pour convertir un Mechanism2d en un tableau d'objets Pose3d. Pour plus d'informations sur la configuration des robots avec des composants, voir [Ressources personnalisées](/more-features/custom-assets).
 
@@ -121,7 +121,7 @@ Chaque composant peut être déplacé indépendamment (comme un chariot d'élév
 
 ## Objets d'éléments de pointage {#game-piece-objects}
 
-Chaque terrain comprend un ensemble de types d'objets d'éléments de pointage, permettant de rendre des éléments de pointage à n'importe quelle position sur le terrain à l'aide de données publiées par le code robot. Cela présente une variété d'applications, notamment :
+Chaque terrain comprend un ensemble de types d'objets d'éléments de pointage, permettant de rendre des éléments de pointage à n'importe quelle position sur le terrain à l'aide de données publiées par le code robot. Cela présente une variété d'applications, notamment :
 
 - La visualisation des actions des routines autonomes simulées à l'aide d'animations simples
 - L'affichage des emplacements détectés des éléments de pointage sur le terrain
@@ -144,7 +144,7 @@ Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une 
 Pour changer le mode de caméra sélectionné, faites un clic droit sur la vue du terrain rendu. Le mode et la position de la caméra sont contrôlés indépendamment pour chaque fenêtre détachée, permettant la création facile de vues multi-caméras.
 
 :::info
-Faites un clic droit sur la vue du terrain rendu et cliquez sur « Définir le champ de vision... » pour ajuster le champ de vision des caméras d'orbite et du poste de pilotage.
+Faites un clic droit sur la vue du terrain rendu et cliquez sur « Définir le champ de vision... » pour ajuster le champ de vision des caméras d'orbite et du poste de pilotage.
 :::
 
 ### Orbiter le terrain
@@ -157,11 +157,11 @@ La caméra peut également être contrôlée à l'aide du clavier. Les touches *
 
 ### Orbiter le robot
 
-Ce mode possède les mêmes contrôles que le mode « Orbiter le terrain », mais la position de la caméra est verrouillée par rapport au robot. Cela permet des prises de vue de « suivi » du mouvement du robot.
+Ce mode possède les mêmes contrôles que le mode « Orbiter le terrain », mais la position de la caméra est verrouillée par rapport au robot. Cela permet des prises de vue de « suivi » du mouvement du robot.
 
 ### Poste de pilotage
 
-Ce mode verrouille la caméra derrière l'un des postes de pilotage à hauteur d'yeux typique. Choisissez manuellement le poste à visualiser ou choisissez « Auto » pour utiliser l'alliance et le numéro de poste stockés dans les données du journal.
+Ce mode verrouille la caméra derrière l'un des postes de pilotage à hauteur d'yeux typique. Choisissez manuellement le poste à visualiser ou choisissez « Auto » pour utiliser l'alliance et le numéro de poste stockés dans les données du journal.
 
 :::warning
 La sélection automatique du numéro de poste peut être inexacte lors de la visualisation de données de journal produites par AdvantageKit 2023 ou version antérieure.
@@ -173,15 +173,15 @@ Chaque modèle de robot est configuré avec un ensemble de caméras fixes, comme
 
 <img src="/img/tab-reference/3d-field/3d-field-5.png" alt="Caméra fixe" />
 
-Si une pose de « Remplacement de la caméra » est fournie, elle remplace les poses par défaut de toutes les caméras fixes tout en conservant leurs champs de vision et rapports d'aspect configurés. Cela permet au code robot de fournir la position d'une caméra mobile, comme une caméra montée sur une tourelle ou un capot de lanceur.
+Si une pose de « Remplacement de la caméra » est fournie, elle remplace les poses par défaut de toutes les caméras fixes tout en conservant leurs champs de vision et rapports d'aspect configurés. Cela permet au code robot de fournir la position d'une caméra mobile, comme une caméra montée sur une tourelle ou un capot de lanceur.
 
 :::info
-En cohérence avec d'autres données de pose, la pose de « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
+En cohérence avec d'autres données de pose, la pose de « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
 :::
 
 ## Configuration
 
-Le modèle de terrain peut être configuré à l'aide du menu déroulant. Tous les jeux FRC et FTC récents sont pris en charge. Nous recommandons d'utiliser les terrains « Evergreen » pour les appareils ayant des performances graphiques limitées. Les terrains « Axes » affichent uniquement les axes XYZ à l'origine avec un contour de terrain pour l'échelle.
+Le modèle de terrain peut être configuré à l'aide du menu déroulant. Tous les jeux FRC et FTC récents sont pris en charge. Nous recommandons d'utiliser les terrains « Evergreen » pour les appareils ayant des performances graphiques limitées. Les terrains « Axes » affichent uniquement les axes XYZ à l'origine avec un contour de terrain pour l'échelle.
 
 :::info
 Le système de coordonnées utilisé sur cet onglet est personnalisable. Consultez la page [système de coordonnées](/more-features/coordinate-systems) pour plus de détails.
@@ -189,14 +189,14 @@ Le système de coordonnées utilisé sur cet onglet est personnalisable. Consult
 
 ### Modes de rendu {#rendering-modes}
 
-Le terrain 3D prend en charge trois modes de rendu :
+Le terrain 3D prend en charge trois modes de rendu :
 
-- **Cinématique :** Rendu avec ombres, éclairage, réflexions et modèles 3D hautement détaillés pour un aspect plus réaliste. Nécessite un GPU assez puissant.
-- **Standard (Par défaut) :** Rendu avec un éclairage minimal et des modèles 3D simplifiés. S'exécute bien sur la plupart des appareils.
-- **Basse consommation :** Diminue la fréquence d'images, la résolution et les détails du modèle pour réduire la consommation de la batterie et offrir des performances plus cohérentes sur les appareils bas de gamme.
+- **Cinématique :** Rendu avec ombres, éclairage, réflexions et modèles 3D hautement détaillés pour un aspect plus réaliste. Nécessite un GPU assez puissant.
+- **Standard (Par défaut) :** Rendu avec un éclairage minimal et des modèles 3D simplifiés. S'exécute bien sur la plupart des appareils.
+- **Basse consommation :** Diminue la fréquence d'images, la résolution et les détails du modèle pour réduire la consommation de la batterie et offrir des performances plus cohérentes sur les appareils bas de gamme.
 
 <img src="/img/tab-reference/3d-field/3d-field-6.png" alt="Comparaison des modes de rendu" />
 
-Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
+Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
 
 <img src="/img/prefs.png" alt="Schéma des préférences" height="350" />

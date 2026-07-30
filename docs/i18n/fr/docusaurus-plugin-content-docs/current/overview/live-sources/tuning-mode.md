@@ -8,7 +8,7 @@ Certaines sources en direct prennent en charge le réglage en direct des valeurs
 
 Par défaut, toutes les valeurs dans AdvantageScope sont en lecture seule. Pour activer ou désactiver le mode de réglage, **cliquez sur l'icône de curseur** à droite de la barre de recherche lorsqu'il est connecté à une source en direct prise en charge. Lorsque l'icône est violette, le mode de réglage est actif et la modification des champs est activée.
 
-- Pour modifier un **champ numérique**, saisissez une nouvelle valeur à l'aide de la zone de texte à droite du champ dans la barre latérale. La valeur est publiée après la désélection de la saisie ou lorsque la touche « Entrée » est enfoncée. Laissez la zone de texte vide pour utiliser la valeur publiée par le robot.
+- Pour modifier un **champ numérique**, saisissez une nouvelle valeur à l'aide de la zone de texte à droite du champ dans la barre latérale. La valeur est publiée après la désélection de la saisie ou lorsque la touche « Entrée » est enfoncée. Laissez la zone de texte vide pour utiliser la valeur publiée par le robot.
 - Pour basculer un **champ booléen**, cliquez sur le cercle rouge ou vert à droite du champ dans la barre latérale.
 
 :::warning
@@ -17,9 +17,9 @@ Cette fonctionnalité n'est pas destinée à contrôler le robot sur le terrain.
 
 ## Réglage avec AdvantageKit
 
-Les champs publiés par AdvantageKit dans la sous-table `AdvantageKit` sont en sortie uniquement et ne peuvent pas être modifiés. Cependant, les utilisateurs peuvent publier des champs à partir du code utilisateur qui sont réglables depuis AdvantageScope. **Tous les champs publiés dans la table « /Tuning » sur NetworkTables apparaîtront sous la table « Tuning » lors de l'utilisation de la source en direct « NetworkTables (AdvantageKit) ».**
+Les champs publiés par AdvantageKit dans la sous-table `AdvantageKit` sont en sortie uniquement et ne peuvent pas être modifiés. Cependant, les utilisateurs peuvent publier des champs à partir du code utilisateur qui sont réglables depuis AdvantageScope. **Tous les champs publiés dans la table « /Tuning » sur NetworkTables apparaîtront sous la table « Tuning » lors de l'utilisation de la source en direct « NetworkTables (AdvantageKit) ».**
 
-Par exemple, un nombre réglable peut être publié en utilisant la classe [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs) :
+Par exemple, un nombre réglable peut être publié en utilisant la classe [`LoggedNetworkNumber`](https://docs.advantagekit.org/data-flow/recording-inputs/dashboard-inputs) :
 
 ```java
 LoggedNetworkNumber tunableNumber = new LoggedNetworkNumber("/Tuning/MyTunableNumber", 0.0);

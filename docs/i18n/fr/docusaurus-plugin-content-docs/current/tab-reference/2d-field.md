@@ -26,7 +26,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 ## Ajout d'objets
 
-Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
+Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
 
 **Pour personnaliser chaque objet, cliquez sur l'icône colorée ou faites un clic droit sur le nom du champ.** AdvantageScope prend en charge un grand nombre de types d'objets, dont beaucoup peuvent être personnalisés (comme la modification des couleurs). Certains objets doivent être ajoutés en tant qu'enfants à un objet existant.
 
@@ -116,9 +116,9 @@ telemetry.update();
 
 ## Configuration
 
-- **Terrain :** L'image du terrain à utiliser. Tous les jeux FRC et FTC récents sont pris en charge. Pour ajouter une image de terrain personnalisée, voir [Ressources personnalisées](/more-features/custom-assets).
-- **Orientation :** L'orientation de l'image du terrain dans le volet de visualisation.
-- **Taille :** La longueur de côté du robot (30/27/24 pouces pour la FRC, 18/16/14 pouces pour le FTC).
+- **Terrain :** L'image du terrain à utiliser. Tous les jeux FRC et FTC récents sont pris en charge. Pour ajouter une image de terrain personnalisée, voir [Ressources personnalisées](/more-features/custom-assets).
+- **Orientation :** L'orientation de l'image du terrain dans le volet de visualisation.
+- **Taille :** La longueur de côté du robot (30/27/24 pouces pour la FRC, 18/16/14 pouces pour le FTC).
 
 :::info
 Le système de coordonnées utilisé sur cet onglet est personnalisable. Consultez la page [système de coordonnées](/more-features/coordinate-systems) pour plus de détails.

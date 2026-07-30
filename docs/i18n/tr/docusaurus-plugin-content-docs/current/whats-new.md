@@ -127,4 +127,4 @@ Bu sürüm, uygulama genelinde çeşitli hata düzeltmeleri ve kararlılık iyil
 - Log verilerine göz atarken, özellikle Çizgi grafik sekmesinde filtreler kullanılırken oluşan çeşitli görsel aksaklıklar düzeltildi.
 - İndirme penceresindeki AdvantageKit log dosyalarının sıralaması düzeltildi; zaman damgası olmayan loglar artık diğer formatlara benzer şekilde listenin en altındadır.
 - 3B saha sekmesinde, yalpalama (roll) ekseninde sıfır olmayan bir rotasyona sahip robot kameraları artık doğru şekilde görselleştirilmektedir.
-- Özellikle iOS/iPadOS 26 üzerinde çalışırken AdvantageScope XR'ın kararlılığı artırıldı. Çevrimdışı kurulumlar için mevcut güncellemeler için App Store'u kontrol edin.
+- Özellikle iOS/iPadOS 26 üzerinde çalışırken AdvantageScope XR'nin kararlılığı artırıldı. Çevrimdışı kurulumlar için mevcut güncellemeler için App Store'u kontrol edin.

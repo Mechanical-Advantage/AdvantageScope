@@ -8,7 +8,7 @@ AdvantageScope prend en charge plusieurs systèmes de coordonnées courants sur 
 
 ### Personnalisation
 
-Par défaut, le système de coordonnées est sélectionné automatiquement en fonction de l'image/modèle de terrain choisi. Pour sélectionner un système de coordonnées différent à utiliser sur tous les terrains, ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS) et modifiez l'option « Système de coordonnées ».
+Par défaut, le système de coordonnées est sélectionné automatiquement en fonction de l'image/modèle de terrain choisi. Pour sélectionner un système de coordonnées différent à utiliser sur tous les terrains, ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS) et modifiez l'option « Système de coordonnées ».
 
 :::tip
 Toutes les options de système de coordonnées sont compatibles avec les terrains FRC et FTC.

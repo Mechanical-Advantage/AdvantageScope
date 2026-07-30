@@ -42,7 +42,7 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 <tr><td>`Ctrl+W`</td><td>Fermer l'onglet actuel</td></tr>
 </table>
 
-**Les raccourcis ci-dessous peuvent être utilisés pour créer rapidement de nouveaux onglets :**
+**Les raccourcis ci-dessous peuvent être utilisés pour créer rapidement de nouveaux onglets :**
 
 <table>
 <tr>
