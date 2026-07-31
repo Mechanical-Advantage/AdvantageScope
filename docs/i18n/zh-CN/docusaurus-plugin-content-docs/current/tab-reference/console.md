@@ -7,7 +7,7 @@ sidebar_position: 5
 控制台视图旨在查看包含控制台数据的单个字符串字段。下面列出了一些建议的字段：
 
 - **DS:/Dscomm/Console** - 由 FIRST Driver Station 保存。
-- **messages** - 由 WPILib 基于对 [`DataLogManager.log`](https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)) 方法调用的内置日志记录生成。
+- **messages** - 由 WPILib 基于对 [`DataLogManager.log`](<https://github.wpilib.org/allwpilib/docs/release/java/edu/wpi/first/wpilibj/DataLogManager.html#log(java.lang.String)>) 方法调用的内置日志记录生成。
 - **/RealOutputs/Console** - 在机器人运行期间由 AdvantageKit 自动保存（按正常方式使用 `System.out.println`）。
 - **/ReplayOutputs/Console** - 在日志重放期间由 AdvantageKit 自动保存（按正常方式使用 `System.out.println`）。
 

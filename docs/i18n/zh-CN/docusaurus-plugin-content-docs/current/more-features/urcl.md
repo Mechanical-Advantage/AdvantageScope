@@ -180,5 +180,5 @@ sysIdRoutine.dynamic(SysIdRoutine.Direction.kReverse);
    - Voltage = "NT:/URCL/&lt;Device&gt;/AppliedOutputVoltage"
 
 :::tip
-SysId 生成的增益将使用配置 Spark Max/Flex 报告的单位（使用 [`setPositionConversionFactor`](https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)) 和 [`setVelocityConversionFactor`](https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double))）。默认情况下，这些是没有应用齿轮比的圈数 (rotations) 和 RPM。如果记录数据时使用的单位与所需单位不匹配，可以在分析期间在 SysId 中调整缩放比例。
+SysId 生成的增益将使用配置 Spark Max/Flex 报告的单位（使用 [`setPositionConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setPositionConversionFactor(double)>) 和 [`setVelocityConversionFactor`](<https://codedocs.revrobotics.com/java/com/revrobotics/relativeencoder#setVelocityConversionFactor(double)>)）。默认情况下，这些是没有应用齿轮比的圈数 (rotations) 和 RPM。如果记录数据时使用的单位与所需单位不匹配，可以在分析期间在 SysId 中调整缩放比例。
 :::

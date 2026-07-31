@@ -54,7 +54,7 @@ sidebar_position: 6
 
 - [**平均值：**](https://en.wikipedia.org/wiki/Arithmetic_mean) 数据的算术平均数（简单平均值）。
 - [**中位数：**](https://en.wikipedia.org/wiki/Median) 数据的“中间”值，即 50% 百分位数。
-- [**众数：**](https://en.wikipedia.org/wiki/Mode_(statistics)) 数据中最常见的值。
+- [**众数：**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) 数据中最常见的值。
 - [**几何平均数：**](https://en.wikipedia.org/wiki/Geometric_mean) 使用数值的乘积而非和计算出的中心测量指标。适用于测量 _指数增长率_（例如循环之间的百分比变化）。
 - [**调和平均数：**](https://en.wikipedia.org/wiki/Harmonic_mean) 使用数值倒数之和计算出的中心测量指标。适用于测量 _变化率或速度_。
 - [**平方平均数：**](https://en.wikipedia.org/wiki/Root_mean_square) 使用数值平方计算出的中心测量指标。适用于测量同时具有 _正值和负值_ 的数据，例如周期性运动。
