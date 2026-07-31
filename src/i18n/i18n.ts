@@ -13,6 +13,7 @@ import frTranslations from "./locales/fr.yaml";
 import heTranslations from "./locales/he.yaml";
 import ptBRTranslations from "./locales/pt-BR.yaml";
 import trTranslations from "./locales/tr.yaml";
+import zhCNTranslations from "./locales/zh-CN.yaml";
 
 /**
  * Initializes i18next with the specified language and returns the bound translation function.
@@ -27,7 +28,8 @@ export function setupI18n(lang: string): TFunction {
       fr: { translation: frTranslations },
       "pt-BR": { translation: ptBRTranslations },
       tr: { translation: trTranslations },
-      he: { translation: heTranslations }
+      he: { translation: heTranslations },
+      "zh-CN": { translation: zhCNTranslations }
     },
     interpolation: {
       escapeValue: false
