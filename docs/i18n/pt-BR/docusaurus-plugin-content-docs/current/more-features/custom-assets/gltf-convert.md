@@ -1,0 +1,43 @@
+# Convertendo arquivos Onshape e STEP para glTF
+
+A visualização 3D do AdvantageScope aceita modelos personalizados para campos e robôs, que podem ser instalados usando o processo descrito [aqui](/more-features/custom-assets). Todos os modelos devem usar o formato de arquivo [glTF](https://www.khronos.org/gltf/), escolhido por sua eficiência ao armazenar e carregar modelos. Observe que o AdvantageScope usa a forma binária (.glb), que inclui todos os recursos em um único arquivo, em vez da forma JSON pura (.gltf).
+
+## Convertendo Onshape para STEP
+
+Embora o Onshape inclua uma opção de exportação para glTF, isso frequentemente produz arquivos muito grandes que são difíceis de gerenciar. Em vez disso, recomenda-se exportar do Onshape para STEP e, em seguida, seguir as instruções na próxima seção para converter para glTF.
+
+1. Após abrir o arquivo no Onshape, clique com o botão direito na montagem principal e escolha "Export...":
+
+<img src="/img/more-features/custom-assets/gltf-convert-1.png" alt="Selecting the &quot;Export...&quot; option" />
+
+2. Na janela pop-up de opções, garanta que o formato de exportação seja "STEP" e clique em "Export":
+
+<img src="/img/more-features/custom-assets/gltf-convert-2.png" alt="Export options pop-up" />
+
+3. Aguarde o arquivo converter e baixar. Isso pode levar alguns minutos.
+
+## Convertendo STEP para glTF
+
+1. Baixe o [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). Este aplicativo gratuito é capaz de converter entre muitos formatos 3D, incluindo STEP e glTF.
+
+2. Abra o CAD Assistant e selecione o arquivo STEP a ser convertido:
+
+<img src="/img/more-features/custom-assets/gltf-convert-3.png" alt="Opening STEP file in CAD Assistant" />
+
+3. Aguarde o arquivo STEP ser importado. Isso pode levar alguns minutos.
+
+4. Clique no ícone "Save":
+
+<img src="/img/more-features/custom-assets/gltf-convert-4.png" alt="Clicking the &quot;Save&quot; icon" />
+
+5. Escolha um local de salvamento e use o menu suspenso para alterar o formato de exportação para "glb":
+
+<img src="/img/more-features/custom-assets/gltf-convert-5.png" alt="Switching the export format" />
+
+6. Clique no ícone de engrenagem, depois habilite "Merge faces within the same part":
+
+<img src="/img/more-features/custom-assets/gltf-convert-6.png" alt="Enabling &quot;Merge faces within the same part&quot;" />
+
+7. Clique no ícone "Save" e aguarde a exportação terminar:
+
+<img src="/img/more-features/custom-assets/gltf-convert-7.png" alt="Clicking the &quot;Save&quot; icon" />
