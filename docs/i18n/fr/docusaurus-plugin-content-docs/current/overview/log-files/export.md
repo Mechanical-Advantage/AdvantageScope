@@ -37,9 +37,9 @@ Les options suivantes sont fournies lors de l'exportation :
   - _Cycles AdvantageKit :_ Crée une nouvelle ligne/entrée pour chaque cycle de boucle synchronisé d'AdvantageKit. Notez que toutes les valeurs sont incluses, qu'il y ait eu ou non un changement entre les cycles de boucle.
 - **Période :** Uniquement lorsque « Période fixe » est sélectionné. Définit la période en millisecondes entre chaque échantillon. En règle générale, cela doit correspondre à la période de cycle de boucle du code robot.
 - **Préfixes :** Si vide, inclut tous les champs. Sinon, n'inclut que les champs qui correspondent aux préfixes fournis (séparés par des virgules). Voir les exemples ci-dessous.
-  - « _/DriverStation/Joystick0_ » : Inclut tous les champs commençant par « /DriverStation/Joystick0 » (données de la première manette).
-  - « _Flywheels,DS:enabled_ » : Inclut tous les champs commençant par « /Flywheels » ou « DS:enabled » (toutes les données du volant d'inertie, plus l'état d'activation du robot).
-  - « _Drive/LeftPosition,Drive/RightPosition_ » : N'inclut que les champs « /Drive/LeftPosition » et « /Drive/RightPosition ».
+  - « */DriverStation/Joystick0* » : Inclut tous les champs commençant par « /DriverStation/Joystick0 » (données de la première manette).
+  - « *Flywheels,DS:enabled* » : Inclut tous les champs commençant par « /Flywheels » ou « DS:enabled » (toutes les données du volant d'inertie, plus l'état d'activation du robot).
+  - « *Drive/LeftPosition,Drive/RightPosition* » : N'inclut que les champs « /Drive/LeftPosition » et « /Drive/RightPosition ».
 - **Ensemble de champs :** Voir les options ci-dessous. Les champs générés sont créés par AdvantageScope pour décomposer des types complexes et sont affichés avec un texte gris dans la barre latérale. Cela comprend les composants individuels des tableaux, structs et autres schémas.
   - _Inclure les champs générés :_ Exporte tous les champs visualisables, ce qui inclut les champs générés. Recommandé si les données exportées seront ouvertes dans une application non capable d'analyser des types complexes.
   - _Originaux uniquement :_ Exporte uniquement les champs qui étaient présents dans le fichier journal d'origine, ce qui exclut les champs générés. Recommandé si les données exportées seront ouvertes dans AdvantageScope ou une autre application capable d'analyser des types complexes.
