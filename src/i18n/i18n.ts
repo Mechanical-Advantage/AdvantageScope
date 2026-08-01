@@ -7,6 +7,7 @@
 
 import i18next, { TFunction } from "i18next";
 import { SUPPORTED_LANGS } from "../shared/Preferences";
+import arTranslation from "./locales/ar.yaml";
 import enUSTranslations from "./locales/en-US.yaml";
 import es419Translations from "./locales/es-419.yaml";
 import frTranslations from "./locales/fr.yaml";
@@ -31,6 +32,7 @@ export function setupI18n(lang: string): TFunction {
       tr: { translation: trTranslations },
       ro: { translation: roTranslations },
       he: { translation: heTranslations },
+      ar: { translation: arTranslation },
       "zh-CN": { translation: zhCNTranslations }
     },
     interpolation: {

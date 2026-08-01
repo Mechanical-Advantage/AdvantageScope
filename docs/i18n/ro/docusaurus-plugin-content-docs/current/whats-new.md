@@ -62,11 +62,11 @@ _Mai multe informații despre suportul pentru unități pot fi găsite în [docu
 
 Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2026 ale AdvantageScope când este conectat prin Ethernet (lățime de bandă maximă de 100 Mb/s). Rețineți că performanța versiunii 2025 este puternic afectată de încărcarea CPU-ului pe roboRIO.
 
-|                                                         | 2025 (SFTP) | 2026 (FTP) | Accelerare                                       |
-| ------------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
-| Încărcare mare CPU<br /><sub>Cod robot complex</sub>    | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
-| Încărcare medie CPU<br /><sub>Cod robot normal</sub>    | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
-| Încărcare minimă CPU<br /><sub>Fără cod robot</sub>     | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
+|                                                      | 2025 (SFTP) | 2026 (FTP) | Accelerare                                       |
+| ---------------------------------------------------- | ----------- | ---------- | ------------------------------------------------ |
+| Încărcare mare CPU<br /><sub>Cod robot complex</sub> | 25 Mb/s     | 80 Mb/s    | <span style={{fontSize: '24px'}}>**3.2x**</span> |
+| Încărcare medie CPU<br /><sub>Cod robot normal</sub> | 40 Mb/s     | 90 Mb/s    | <span style={{fontSize: '22px'}}>**2.3x**</span> |
+| Încărcare minimă CPU<br /><sub>Fără cod robot</sub>  | 90 Mb/s     | 95 Mb/s    | <span style={{fontSize: '20px'}}>**1.1x**</span> |
 
 ## 📁 Descărcare loguri din subfoldere {#download-logs-from-subfolders}
 
