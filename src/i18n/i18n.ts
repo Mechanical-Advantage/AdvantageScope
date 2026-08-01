@@ -12,6 +12,7 @@ import es419Translations from "./locales/es-419.yaml";
 import frTranslations from "./locales/fr.yaml";
 import heTranslations from "./locales/he.yaml";
 import ptBRTranslations from "./locales/pt-BR.yaml";
+import roTranslations from "./locales/ro.yaml";
 import trTranslations from "./locales/tr.yaml";
 import zhCNTranslations from "./locales/zh-CN.yaml";
 
@@ -28,6 +29,7 @@ export function setupI18n(lang: string): TFunction {
       fr: { translation: frTranslations },
       "pt-BR": { translation: ptBRTranslations },
       tr: { translation: trTranslations },
+      ro: { translation: roTranslations },
       he: { translation: heTranslations },
       "zh-CN": { translation: zhCNTranslations }
     },
