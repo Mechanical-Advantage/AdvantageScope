@@ -12,6 +12,7 @@ import enUSTranslations from "./locales/en-US.yaml";
 import es419Translations from "./locales/es-419.yaml";
 import frTranslations from "./locales/fr.yaml";
 import heTranslations from "./locales/he.yaml";
+import kkTranslations from "./locales/kk.yaml";
 import ptBRTranslations from "./locales/pt-BR.yaml";
 import roTranslations from "./locales/ro.yaml";
 import trTranslations from "./locales/tr.yaml";
@@ -32,6 +33,7 @@ export function setupI18n(lang: string): TFunction {
       tr: { translation: trTranslations },
       ro: { translation: roTranslations },
       he: { translation: heTranslations },
+      kk: { translation: kkTranslations },
       ar: { translation: arTranslation },
       "zh-CN": { translation: zhCNTranslations }
     },
