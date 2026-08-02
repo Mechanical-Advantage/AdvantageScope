@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 3B saha
+# 👀 3B saha {#3d-field}
 
 3B saha, robotun ve sahanın 3B görselleştirmesini gösterir. Normal 2B pozlarla kullanılabilir, ancak özellikle 3B hesaplamalarıyla çalışırken (AprilTag'ler ile konum belirleme gibi) son derece yararlıdır. Sahaya göre, robota göre ve sabit dahil olmak üzere birden fazla kamera görünümü mevcuttur. [AdvantageScope XR](advantagescope-xr) bu sekmenin artırılmış gerçeklik kullanılarak görselleştirilmesine olanak tanır. Zaman çizelgesi robotun ne zaman etkin olduğunu gösterir ve log verileri arasında gezinmek için kullanılabilir.
 
@@ -24,7 +24,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 2026 FRC saha modeli, **kaynaklı** saha için AprilTag düzeniyle tutarlıdır. Kaynaklı ve AndyMark sahaları arasındaki farklar çok küçüktür, ancak AndyMark saha düzenine dayalı AprilTag pozları görselleştirilirken küçük (~0.5 inç) hizalama hataları olabilir.
 :::
 
-## Nesneler ekleme
+## Nesneler ekleme {#adding-objects}
 
 Başlamak için bir alanı "Pozlar" bölümüne sürükleyin. X düğmesini kullanarak bir nesneyi silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Nesneler listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -38,7 +38,7 @@ Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklay�
 AdvantageScope, FTC sahaları için AprilTag'lerin çeşitli boyutlarını destekler. Boyutlar, gerekli beyaz kenarlık hariç, **AprilTag'in siyah bölümünün kenar uzunluğu** olarak ölçülür.
 :::
 
-## Veri formatı
+## Veri formatı {#data-format}
 
 Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenmektedir.
 
@@ -97,7 +97,7 @@ packet.put("Pose heading (deg)", 180.0); // Derece
 </TabItem>
 </Tabs>
 
-## Mekanizmalar & bileşenler
+## Mekanizmalar & bileşenler {#mechanisms-and-components}
 
 Mekanizma verileri 2B mekanizmalar veya eklemli 3B bileşenler kullanılarak görselleştirilebilir.
 
@@ -107,7 +107,7 @@ Bir [`Mechanism2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/g
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
 
-### 3B bileşenler
+### 3B bileşenler {#3d-components}
 
 :::warning
 3B bileşenlerin kurulumu karmaşık ve zaman alıcı olabilir. 3B sahada mekanizmaları görselleştirmek için daha kolaylaştırılmış bir yaklaşım sunan yukarıda açıklandığı gibi AdvantageScope'un `Mechanism2d` desteğinden yararlanmayı düşünün.
@@ -139,7 +139,7 @@ AdvantageKit KitBot 2024 örnek projesi, robottan hoparlöre seyahat eden bir no
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
 
-## Kamera seçenekleri
+## Kamera seçenekleri {#camera-options}
 
 Seçilen kamera modunu değiştirmek için işlenen saha görünümüne sağ tıklayın. Kamera modu ve konumu her ayrılmış pencere için bağımsız olarak kontrol edilir, bu da çoklu kamera görünümlerinin kolayca oluşturulmasına olanak tanır.
 
@@ -147,7 +147,7 @@ Seçilen kamera modunu değiştirmek için işlenen saha görünümüne sağ tı
 Yörünge ve Sürücü İstasyonu kameralarının FOV değerini ayarlamak için işlenen saha görünümüne sağ tıklayın ve "FOV Düzenle..."ye tıklayın.
 :::
 
-### Yörünge saha
+### Yörünge saha {#orbit-field}
 
 Bu, kameranın sahaya göre serbestçe hareket ettirilebildiği varsayılan kamera modudur. **Sol tıkla + sürükle** kamerayı döndürür ve **sağ tıkla + sürükle** kamerayı kaydırır. Yakınlaştırmak ve uzaklaştırmak için **kaydırın**.
 
@@ -155,11 +155,11 @@ Bu, kameranın sahaya göre serbestçe hareket ettirilebildiği varsayılan kame
 Kamera klavye kullanılarak da kontrol edilebilir. **WASD** tuşları ötelemek, **IJKL** tuşları döndürmek ve **E** ile **Q** tuşları dikey olarak ötelemek için kullanılır.
 :::
 
-### Yörünge robot
+### Yörünge robot {#orbit-robot}
 
 Bu mod "Yörünge Saha" moduyla aynı kontrollere sahiptir, ancak kameranın konumu robota göre kilitlenmiştir. Bu, robotun hareketinin takip çekimlerine olanak tanır.
 
-### Sürücü İstasyonu
+### Sürücü İstasyonu {#driver-station}
 
 Bu mod, kamerayı sürücü istasyonlarından birinin arkasına tipik göz hizasında kilitler. Görüntülenecek istasyonu manuel olarak seçin veya log verilerinde saklanan ittifak ve istasyon numarasını kullanmak için "Otomatik"yi seçin.
 
@@ -167,7 +167,7 @@ Bu mod, kamerayı sürücü istasyonlarından birinin arkasına tipik göz hizas
 İstasyon numarasının otomatik seçimi AdvantageKit 2023 veya öncesi tarafından üretilen log verileri görüntülenirken yanlış olabilir.
 :::
 
-### Sabit kamera
+### Sabit kamera {#fixed-camera}
 
 Her robot modeli, görüş ve sürücü kameraları gibi bir dizi sabit kamera ile yapılandırılmıştır. Bu kameralar sabit konumlara, en boy oranlarına ve FOV değerlerine sahiptir. Bu görünümler genellikle görüş verilerini kontrol etmek veya bir sürücü kamerası görünümünü simüle etmek için kullanışlıdır. Aşağıdaki örnekte bir sürücü kamerası gösterilmektedir.
 
@@ -179,7 +179,7 @@ Bir "Kamera Geçersiz Kılma" pozisyonu sağlanırsa, yapılandırılmış FOV d
 Diğer poz verileriyle tutarlı olarak, "Kamera Geçersiz Kılma" pozu robota göre değil, _sahaya göre_ olmalıdır.
 :::
 
-## Yapılandırma
+## Yapılandırma {#configuration}
 
 Saha modeli açılır menü kullanılarak yapılandırılabilir. Son dönemdeki tüm FRC ve FTC oyunları desteklenmektedir. Sınırlı grafik performansına sahip cihazlar için "Evergreen" sahalarını kullanmanızı öneririz. "Eksenler" sahaları, ölçek için bir saha taslağı ile yalnızca orijinde XYZ eksenlerini görüntüler.
 

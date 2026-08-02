@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 Joystick-uri
+# 🎮 Joystick-uri {#joysticks}
 
 Fila joystick-uri afișează starea a până la șase controlere conectate. Imaginea de mai jos prezintă un exemplu de aranjament, cu două controlere Xbox și un joystick generic. Fiecare buton este evidențiat când este apăsat, și sunt afișate stările joystick-urilor și ale altor axe.
 
@@ -21,7 +21,7 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
-## Panoul de control
+## Panoul de control {#control-pane}
 
 Selectați tipurile de joystick-uri din tabelul din partea de jos a filei. ID-urile joystick-urilor variază de la 0 la 5 și se potrivesc cu ID-urile din Driver Station și WPILib. Mai multe informații despre joystick-uri pot fi găsite în [documentația WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 

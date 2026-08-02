@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Mecanismo
+# ⚙️ Mecanismo {#mechanism}
 
 La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más objetos [Mechanism2d](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
@@ -24,11 +24,11 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 </details>
 
-## Agregar mecanismos
+## Agregar mecanismos {#adding-mechanisms}
 
 Para comenzar, arrastra un `Mechanism2d` al panel de control. Elimina un mecanismo usando el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los mecanismos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`. Los mecanismos se pueden reorganizar en la lista haciendo clic y arrastrando.
 
-## Publicación de datos
+## Publicación de datos {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

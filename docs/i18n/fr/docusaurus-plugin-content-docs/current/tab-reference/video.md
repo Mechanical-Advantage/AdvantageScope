@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 Vidéo
+# 🎬 Vidéo {#video}
 
 L'onglet vidéo permet de comparer côte à côte les données de journal avec une vidéo de match qui a été enregistrée séparément. Les étapes ci-dessous montrent comment charger une vidéo et la synchroniser avec le journal.
 
-## Chargement de la vidéo
+## Chargement de la vidéo {#loading-the-video}
 
 AdvantageScope propose trois options pour charger une vidéo :
 
@@ -26,7 +26,7 @@ Le téléchargement de vidéos YouTube et TBA peut échouer de manière inattend
 AdvantageScope nécessite [FFmpeg](https://ffmpeg.org) pour traiter les fichiers vidéo. Si une copie valide de FFmpeg n'est pas trouvée sur le PATH de votre système, AdvantageScope vous invitera à télécharger FFmpeg depuis Internet lors du premier chargement d'une vidéo. L'installation automatique de FFmpeg est uniquement prise en charge sur Windows et macOS; les utilisateurs de Linux devront peut-être installer manuellement FFmpeg et l'ajouter au PATH du système.
 :::
 
-## Navigation dans la vidéo
+## Navigation dans la vidéo {#navigating-the-video}
 
 Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisée avec les données du journal, les contrôles de lecture pour la vidéo et le journal sont encore indépendants. Utilisez la chronologie et les boutons en bas à droite pour contrôler la lecture de la vidéo. Les raccourcis clavier suivants sont également pris en charge :
 
@@ -38,7 +38,7 @@ Lorsqu'une vidéo est initialement chargée et n'a pas encore été synchronisé
 
 <img src="/img/tab-reference/video-2.png" alt="Contrôles vidéo" />
 
-## Synchronisation automatique
+## Synchronisation automatique {#automatic-synchronization}
 
 La plupart des vidéos de match seront synchronisées automatiquement avec le journal peu de temps après le chargement des images de la période autonome du match. Aucune action n'est requise; si la synchronisation réussit, les contrôles vidéo seront verrouillés automatiquement (voir « Lecture » ci-dessous).
 
@@ -46,7 +46,7 @@ La plupart des vidéos de match seront synchronisées automatiquement avec le jo
 La synchronisation automatique fonctionne uniquement sur les vidéos de match qui incluent des superpositions de scores et peut ne pas réussir dans tous les cas. Si les contrôles vidéo ne sont pas verrouillés automatiquement une fois toutes les images chargées, une synchronisation manuelle est requise.
 :::
 
-## Synchronisation manuelle
+## Synchronisation manuelle {#manual-synchronization}
 
 Tout d'abord, utilisez les contrôles vidéo pour naviguer vers un emplacement connu du match comme le début de l'auto. Ensuite, sélectionnez l'heure dans le fichier journal qui s'aligne avec l'image actuelle de la vidéo.
 
@@ -58,7 +58,7 @@ Une fois la vidéo et le journal alignés, cliquez sur l'icône de cadenas à c�
 
 <img src="/img/tab-reference/video-3.png" alt="Bouton de verrouillage" />
 
-## Lecture
+## Lecture {#playback}
 
 Une fois verrouillée, la lecture vidéo reste alignée avec l'heure sélectionnée dans le journal. Notez que la lecture du son n'est pas prise en charge car la vidéo d'origine est convertie en une représentation image par image pour prendre en charge la synchronisation du journal.
 

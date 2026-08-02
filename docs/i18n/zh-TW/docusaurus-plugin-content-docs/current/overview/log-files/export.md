@@ -1,4 +1,4 @@
-# 匯出日誌資料
+# 匯出日誌資料 {#exporting-log-data}
 
 AdvantageScope 包含一個彈性的系統，用於將日誌資料匯出為 CSV、WPILOG 或 MCAP 檔案。匯出功能在檢視日誌檔案或連線到即時資料來源時均可使用。可能的用途包括：
 
@@ -22,7 +22,7 @@ AdvantageScope 包含一個彈性的系統，用於將日誌資料匯出為 CSV�
 _此警告**不適用**於由 AdvantageKit 產生的日誌，透過選擇「AdvantageKit 週期」選項匯出這些日誌不會有任何資料損失。有關詳細資訊，請參閱[此頁面](https://docs.advantagekit.org/data-flow/sysid-compatibility)。_
 :::
 
-## 選項
+## 選項 {#options}
 
 匯出時提供以下選項：
 

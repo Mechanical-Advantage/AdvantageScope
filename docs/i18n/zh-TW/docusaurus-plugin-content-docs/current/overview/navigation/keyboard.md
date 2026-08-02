@@ -1,8 +1,8 @@
-# 鍵盤快捷鍵
+# 鍵盤快捷鍵 {#keyboard-shortcuts}
 
 AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macOS 上，使用 `ctrl` 鍵的快捷鍵被 ⌘ 鍵取代。
 
-### 資料來源
+### 資料來源 {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>開啟一個或多個日誌檔案</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 <tr><td>`Ctrl+D`</td><td>從機器人下載日誌檔案</td></tr>
 </table>
 
-### 資料匯出
+### 資料匯出 {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>匯出日誌資料</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 <tr><td>`Option+Ctrl+P`</td><td>停止發布到 NetworkTables</td></tr>
 </table>
 
-### 視窗控制
+### 視窗控制 {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>建立新視窗</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 <tr><td>`Ctrl+Slash`</td><td>切換控制面板可見度</td></tr>
 </table>
 
-### 分頁控制
+### 分頁控制 {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>開啟下拉式選單以新增分頁</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 </tr>
 </table>
 
-### 播放
+### 播放 {#playback}
 
 <table>
 <tr><td>`Space`</td><td>切換播放</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope 包含多個鍵盤快捷鍵，可實現更快的導覽。在 macO
 <tr><td>`Ctrl+\`</td><td>縮放時間軸至已啟用範圍</td></tr>
 </table>
 
-### 觸控列 (Touch Bar)
+### 觸控列 (Touch Bar) {#touch-bar}
 
 在受支援的 MacBook 機型上，觸控列可用於滾動瀏覽日誌並新增新分頁。
 

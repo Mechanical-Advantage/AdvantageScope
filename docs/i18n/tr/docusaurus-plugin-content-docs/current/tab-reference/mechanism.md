@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Mekanizma
+# ⚙️ Mekanizma {#mechanism}
 
 Mekanizma sekmesi, bir veya daha fazla [Mechanism2d](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) nesnesi ile oluşturulmuş eklemli bir mekanizmayı görüntüler.
 
@@ -24,11 +24,11 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Mekanizmalar ekleme
+## Mekanizmalar ekleme {#adding-mechanisms}
 
 Başlamak için bir `Mechanism2d` nesnesini kontrol paneline sürükleyin. X düğmesini kullanarak bir mekanizmayı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm mekanizmaları kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Mekanizmalar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
-## Veri yayınlama
+## Veri yayınlama {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

@@ -1,4 +1,4 @@
-# ⚙️ Ressources personnalisées
+# ⚙️ Ressources personnalisées {#custom-assets}
 
 AdvantageScope utilise un ensemble par défaut d'images de terrain plates, de modèles de terrain, de modèles de robots et de configurations de manettes. Les ressources simples (par ex. les terrains evergreen) sont incluses dans l'installation initiale. Les ressources détaillées (par ex. les terrains spécifiques à la saison) sont téléchargées automatiquement en arrière-plan lorsque AdvantageScope est connectée à Internet. Pour vérifier l'état de ces téléchargements, cliquez sur `Application`/`AdvantageScope` > `État de téléchargement des ressources...`.
 
@@ -8,7 +8,7 @@ L'ensemble de ressources peut être personnalisé pour ajouter plus d'options si
 Pour charger des ressources depuis un autre emplacement, cliquez sur `Application`/`AdvantageScope` > `Utiliser un dossier de ressources personnalisé`. Le dossier sélectionné doit être le _dossier parent_ dans lequel plusieurs ressources dans des sous-dossiers distincts pourraient être placées. Cette fonctionnalité permet de stocker des ressources personnalisées sous contrôle de version aux côtés du code robot.
 :::
 
-## Format général
+## Format général {#general-format}
 
 Toutes les ressources sont stockées dans des dossiers avec la convention de nommage « TYPE_NAME ». Le NAME utilisé pour le dossier n'est pas affiché par AdvantageScope. Les types de ressources possibles sont :
 
@@ -30,13 +30,13 @@ Ce dossier doit contenir un fichier nommé « config.json » et un ou plusieur
 }
 ```
 
-## Modèles 3D de robot
+## Modèles 3D de robot {#3d-robot-models}
 
-### Tutoriel vidéo
+### Tutoriel vidéo {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Aperçu
+### Aperçu {#overview}
 
 Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Le fichier de configuration doit être au format suivant :
 
@@ -70,7 +70,7 @@ AdvantageScope simplifie automatiquement la géométrie du modèle pour amélior
 
 :::
 
-### Composants articulés
+### Composants articulés {#articulated-components}
 
 :::warning
 La configuration des composants articulés peut être complexe et prendre du temps. Envisagez d'utiliser la prise en charge de `Mechanism2d` 3D d'AdvantageScope [/tab-reference/3d-field#2d-mechanisms], qui offre une approche plus simple pour **visualiser les mécanismes sur le terrain 3D**.
@@ -93,7 +93,7 @@ Lors du positionnement des composants 3D par rapport au robot, l'origine du syst
 ]
 ```
 
-#### Procédure de configuration
+#### Procédure de configuration {#setup-process}
 
 Pour étalonner les positions des composants articulés, nous recommandons la procédure suivante :
 
@@ -109,7 +109,7 @@ Pour étalonner les positions des composants articulés, nous recommandons la pr
 
 6. Publiez les vraies poses de composants à partir du code robot, qui seront basées sur les origines nouvellement définies pour chaque composant. Par exemple, la pose d'un segment de bras serait positionnée au niveau de l'articulation du bras, pointée dans la direction du segment.
 
-## Manettes
+## Manettes {#joysticks}
 
 Une image doit être incluse dans le dossier avec le nom « image.png ». Le fichier de configuration doit être au format suivant :
 
@@ -126,7 +126,7 @@ Les boutons, joysticks et valeurs d'axes prennent en charge les liaisons [SDL](h
 Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes clés de configuration sans préfixe (par ex. `sourceIndex`). **Toutes les nouvelles manettes doivent utiliser des liaisons SDL explicites (par ex. `sdlSourceIndex`) pour la compatibilité avec la console de pilotage FIRST actuelle.**
 :::
 
-### Bouton unique / Valeur POV
+### Bouton unique / Valeur POV {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +144,7 @@ Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes cl�
 }
 ```
 
-### Manette à deux axes
+### Manette à deux axes {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +167,7 @@ Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes cl�
 }
 ```
 
-### Axe unique
+### Axe unique {#single-axis}
 
 ```json
 {
@@ -184,7 +184,7 @@ Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes cl�
 }
 ```
 
-### Pavé tactile
+### Pavé tactile {#touchpad}
 
 ```json
 {
@@ -196,7 +196,7 @@ Pour les liaisons NI, AdvantageScope est rétrocompatible avec les anciennes cl�
 }
 ```
 
-## Images de terrain plates
+## Images de terrain plates {#flat-field-images}
 
 Une image doit être incluse dans le dossier avec le nom « image.png ». Elle doit être orientée avec l'alliance rouge sur la gauche. Le fichier de configuration doit être au format suivant :
 
@@ -218,9 +218,9 @@ Une image doit être incluse dans le dossier avec le nom « image.png ». Elle
 }
 ```
 
-## Modèles 3D de terrain
+## Modèles 3D de terrain {#3d-field-models}
 
-Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Une fois toutes les rotations appliquées, le terrain doit être orienté avec l'alliance rouge sur la gauche. Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Les modèles d'éléments de pointage suivent la convention de nommage « model_INDEX.glb » basée sur l'ordre dans lequel ils apparaissent dans le tableau « gamePieces ». Les AprilTags déclarés ici sont toujours positionnés en utilisant un système de coordonnées [centre/rouge](/more-features/coordinate-systems#centerred-systemcore), quelles que soient les autres options de configuration.
+Un modèle doit être inclus dans le dossier avec le nom « model.glb ». Une fois toutes les rotations appliquées, le terrain doit être orienté avec l'alliance rouge sur la gauche. Les fichiers CAO doivent être convertis en glTF; voir [cette page](gltf-convert) pour plus de détails. Les modèles d'éléments de pointage suivent la convention de nommage « model_INDEX.glb » basée sur l'ordre dans lequel ils apparaissent dans le tableau « gamePieces ». Les AprilTags déclarés ici sont toujours positionnés en utilisant un système de coordonnées [centre/rouge](/more-features/coordinate-systems#center-red), quelles que soient les autres options de configuration.
 
 Le fichier de configuration doit être au format suivant :
 

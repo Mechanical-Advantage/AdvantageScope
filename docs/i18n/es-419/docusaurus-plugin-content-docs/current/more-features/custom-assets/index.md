@@ -1,4 +1,4 @@
-# ⚙️ Recursos personalizados
+# ⚙️ Recursos personalizados {#custom-assets}
 
 AdvantageScope usa un conjunto predeterminado de imágenes planas de campo, modelos de campo, modelos de robot y configuraciones de joysticks. Los recursos simples (por ejemplo, los campos de hoja perenne) se incluyen en la instalación inicial. Los recursos detallados (por ejemplo, campos específicos de la temporada) se descargan automáticamente en segundo plano cuando AdvantageScope está conectado a Internet. Para verificar el estado de estas descargas, haz clic en `App`/`AdvantageScope` > `Estado de descarga de recursos...`. El conjunto de recursos se puede personalizar para agregar más opciones si se desea. Para abrir la carpeta de recursos del usuario, haz clic en `App`/`AdvantageScope` > `Mostrar carpeta de recursos`. Los formatos esperados para los recursos se definen a continuación. Consulta el conjunto predeterminado de [recursos detallados](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) y [recursos agrupados](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) como referencia.
 
@@ -6,7 +6,7 @@ AdvantageScope usa un conjunto predeterminado de imágenes planas de campo, mode
 Para cargar recursos desde una ubicación alternativa, haz clic en `App`/`AdvantageScope` > `Usar carpeta de recursos personalizada`. La carpeta seleccionada debe ser la _carpeta principal_ donde se podrían colocar múltiples recursos en subcarpetas separadas. Esta función permite almacenar recursos personalizados bajo control de versiones junto con el código del robot.
 :::
 
-## Formato general
+## Formato general {#general-format}
 
 Todos los recursos se almacenan en carpetas con la convención de nomenclatura "TIPO_NOMBRE". El NOMBRE utilizado para la carpeta no es mostrado por AdvantageScope. Los posibles tipos de recursos son:
 
@@ -28,13 +28,13 @@ Esta carpeta debe contener un archivo llamado "config.json" y uno o más archivo
 }
 ```
 
-## Modelos de robots 3D
+## Modelos de robots 3D {#3d-robot-models}
 
-### Tutorial en video
+### Tutorial en video {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Descripción general
+### Descripción general {#overview}
 
 Se debe incluir un modelo en la carpeta con el nombre "model.glb". Los archivos CAD deben convertirse a glTF; consulta [esta página](gltf-convert) para obtener más detalles. El archivo de configuración debe tener el siguiente formato:
 
@@ -68,7 +68,7 @@ AdvantageScope simplifica la geometría del modelo automáticamente para mejorar
 
 :::
 
-### Componentes articulados
+### Componentes articulados {#articulated-components}
 
 :::warning
 Configurar componentes articulados puede ser complejo y llevar mucho tiempo. Considera utilizar el soporte 3D [`Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) de AdvantageScope, que ofrece un enfoque más simplificado para **visualizar mecanismos en el campo 3D**.
@@ -91,7 +91,7 @@ Al colocar componentes 3D relativos al robot, el origen del sistema de coordenad
 ]
 ```
 
-#### Proceso de configuración
+#### Proceso de configuración {#setup-process}
 
 Para calibrar las posiciones de los componentes articulados, recomendamos el siguiente proceso:
 
@@ -102,7 +102,7 @@ Para calibrar las posiciones de los componentes articulados, recomendamos el sig
 5. Ajusta las rotaciones, seguidas de las posiciones, para cada componente hasta que estén alineados con el origen. Por ejemplo, un segmento de brazo se alinearía con el pivote en el origen mientras apunta hacia adelante a lo largo del eje X.
 6. Publica las poses de los componentes reales desde el código del robot, que se basarán en los orígenes recién definidos para cada componente. Por ejemplo, la pose para un segmento de brazo se colocaría en la articulación del brazo apuntando en la dirección del segmento.
 
-## Joysticks
+## Joysticks {#joysticks}
 
 Se debe incluir una imagen en la carpeta con el nombre "image.png". El archivo de configuración debe tener el siguiente formato:
 
@@ -117,7 +117,7 @@ Se debe incluir una imagen en la carpeta con el nombre "image.png". El archivo d
 Los botones, joysticks y valores de los ejes son compatibles tanto con las vinculaciones de [SDL](https://www.libsdl.org) (usadas por la FIRST Driver Station actual) como con las vinculaciones de NI (usadas por la antigua NI FRC Driver Station). Se debe proporcionar al menos un conjunto de vinculaciones para cada componente. Para las vinculaciones de NI, AdvantageScope es compatible con versiones anteriores de las claves de configuración antiguas sin prefijo (por ejemplo, `sourceIndex`). **Todos los nuevos joysticks deben usar vinculaciones SDL explícitas (por ejemplo, `sdlSourceIndex`) para compatibilidad con la FIRST Driver Station actual.**
 :::
 
-### Un solo botón / valor de POV
+### Un solo botón / valor de POV {#single-button-pov-value}
 
 ```json
 {
@@ -135,7 +135,7 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 }
 ```
 
-### Joystick de dos ejes
+### Joystick de dos ejes {#two-axis-joystick}
 
 ```json
 {
@@ -158,7 +158,7 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 }
 ```
 
-### Un solo eje
+### Un solo eje {#single-axis}
 
 ```json
 {
@@ -175,7 +175,7 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 }
 ```
 
-### Panel táctil
+### Panel táctil {#touchpad}
 
 ```json
 {
@@ -187,7 +187,7 @@ Los botones, joysticks y valores de los ejes son compatibles tanto con las vincu
 }
 ```
 
-## Imágenes planas del campo
+## Imágenes planas del campo {#flat-field-images}
 
 Se debe incluir una imagen en la carpeta con el nombre "image.png". Debe orientarse con la alianza roja a la izquierda. El archivo de configuración debe tener el siguiente formato:
 
@@ -209,9 +209,9 @@ Se debe incluir una imagen en la carpeta con el nombre "image.png". Debe orienta
 }
 ```
 
-## Modelos de campos 3D
+## Modelos de campos 3D {#3d-field-models}
 
-Se debe incluir un modelo en la carpeta con el nombre "model.glb". Después de aplicar todas las rotaciones, el campo debe orientarse con la alianza roja a la izquierda. Los archivos CAD deben convertirse a glTF; consulta [esta página](gltf-convert) para obtener más detalles. Los modelos de elementos de juego siguen la convención de nomenclatura "model_INDEX.glb" según el orden en que aparecen en el arreglo "gamePieces". Las AprilTags declaradas aquí siempre se colocan utilizando un sistema de coordenadas [centro/rojo](/more-features/coordinate-systems#centerred-systemcore), independientemente de cualquier otra opción de configuración. El archivo de configuración debe tener el siguiente formato:
+Se debe incluir un modelo en la carpeta con el nombre "model.glb". Después de aplicar todas las rotaciones, el campo debe orientarse con la alianza roja a la izquierda. Los archivos CAD deben convertirse a glTF; consulta [esta página](gltf-convert) para obtener más detalles. Los modelos de elementos de juego siguen la convención de nomenclatura "model_INDEX.glb" según el orden en que aparecen en el arreglo "gamePieces". Las AprilTags declaradas aquí siempre se colocan utilizando un sistema de coordenadas [centro/rojo](/more-features/coordinate-systems#center-red), independientemente de cualquier otra opción de configuración. El archivo de configuración debe tener el siguiente formato:
 
 ```json
 {

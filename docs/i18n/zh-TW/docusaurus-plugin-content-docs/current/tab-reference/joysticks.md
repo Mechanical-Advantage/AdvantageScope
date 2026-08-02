@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 搖桿
+# 🎮 搖桿 {#joysticks}
 
 搖桿分頁顯示多達六個已連線控制器的狀態。下圖顯示了一個範例佈局，包含兩個 Xbox 控制器和一個通用搖桿。每個按鈕在按下時都會高亮顯示，並顯示搖桿和其他軸的狀態。
 
@@ -21,7 +21,7 @@ sidebar_position: 8
 
 </details>
 
-## 控制面板
+## 控制面板 {#control-pane}
 
 在分頁底部的表格中選擇搖桿類型。搖桿 ID 範圍從 0 到 5，並與 Driver Station 和 WPILib 中的 ID 相匹配。有關搖桿的更多資訊可以在 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/software/basic-programming/joystick.html)中找到。
 

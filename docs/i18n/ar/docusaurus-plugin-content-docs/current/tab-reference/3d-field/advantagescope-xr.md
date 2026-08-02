@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 يجلب AdvantageScope XR عرض 👀 [ملعب ثلاثي الأبعاد](/tab-reference/3d-field) إلى الحياة في الواقع الممتد (AR)، مما يتيح لك عرض البيانات بطرق جديدة تماماً. شاهد محاكاة آلية بالحجم الطبيعي، وراجع استراتيجية المباراة باستخدام نموذج ملعب على الطاولة، واعريض معلومات تشخيصية فوق روبوت حقيقي، وغير ذلك الكثير! يوضح الفيديو أدناه عدة حالات استخدام لهذه الميزة:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## المتطلبات
+## المتطلبات {#requirements}
 
 - **المضيف (Host):** تطبيق AdvantageScope لسطح المكتب على Windows أو macOS أو Linux (الإصدار v4.1.0 أو أحدث). يجب أن تكون أي جدران حماية على الجهاز [معطلة](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **العميل (Client):** جهاز iPhone أو iPad يعمل بنظام iOS/iPadOS 16 أو أحدث. لا يلزم تثبيت تطبيق.
@@ -28,7 +28,7 @@ AdvantageScope XR مدعوم فقط على iOS و iPadOS. لا توجد خطط �
 
 </details>
 
-## الإعداد
+## الإعداد {#setup}
 
 1. على النظام المضيف، **انقر فوق زر "XR"** في أي علامة تبويب ملعب ثلاثي الأبعاد. يمكن أن تكون جلسة مضيف XR واحدة فقط نشطة في نفس الوقت، لذا فإن النقر فوق هذا الزر سيقطع أي جلسات نشطة أخرى.
 

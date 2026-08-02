@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 🔢 Table
+# 🔢 Table {#table}
 
 The table view is designed to show the specific value changes for a set of fields in detail. To add a field, drag it to the main view. To delete a field, click the "X" button next to its name. Fields can be rearranged by clicking and dragging.
 

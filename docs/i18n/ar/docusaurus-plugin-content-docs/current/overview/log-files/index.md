@@ -1,6 +1,6 @@
-# 📂 ملفات السجل
+# 📂 ملفات السجل {#log-files}
 
-## التنسيقات المدعومة
+## التنسيقات المدعومة {#supported-formats}
 
 - **WPILOG (.wpilog)** - يُنتج بواسطة [تسجيل البيانات المدمج](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) لـ WPILib و AdvantageKit. يمكن استخدام [URCL](/more-features/urcl) لالتقاط الإشارات من أجهزة تحكم محركات REV إلى ملف WPILOG.
 - **سجلات محطة السائق (.dslog و .dsevents)** - تُنتج بواسطة [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). يفيض AdvantageScope بالبحث تلقائياً عن ملف السجل المقابل عند فتح أي من نوعي السجلات.
@@ -14,7 +14,7 @@
 لا يمكن فتح ملفات سجل Hoot إلا بعد الموافقة على [اتفاقية ترخيص المستخدم النهائي](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) لـ CTRE. يعرض AdvantageScope مطالبة لتأكيد الموافقة على هذه الشروط عند فتح ملف سجل Hoot للمرة الأولى.
 :::
 
-## فتح السجلات
+## فتح السجلات {#opening-logs}
 
 في شريط القوائم، انقر فوق `ملف` > `فتح السجل (سجلات)...`، ثم اختر ملف سجل واحد أو أكثر من القرص المحلي. يؤدي سحب ملف سجل من متصفح ملفات النظام إلى أيقونة أو نافذة AdvantageScope أيضاً إلى فتحه.
 
@@ -24,7 +24,7 @@
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## إضافة سجلات جديدة
+## إضافة سجلات جديدة {#adding-new-logs}
 
 بعد فتح ملف سجل، يمكن إضافة سجلات إضافية بسهولة إلى العرض المرئي. سيتم إعادة محاذاة الطوابع الزمنية تلقائياً للمزامنة مع البيانات الحالية.
 

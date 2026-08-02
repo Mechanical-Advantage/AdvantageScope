@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 🔢 Tablo
+# 🔢 Tablo {#table}
 
 Tablo görünümü, bir dizi alandaki belirli değer değişikliklerini ayrıntılı olarak göstermek için tasarlanmıştır. Bir alan eklemek için ana görünüme sürükleyin. Bir alanı silmek için adının yanındaki "X" düğmesine tıklayın. Alanlar tıklanıp sürüklenerek yeniden düzenlenebilir.
 

@@ -1,4 +1,4 @@
-# ⚙️ Recursos personalizados
+# ⚙️ Recursos personalizados {#custom-assets}
 
 O AdvantageScope usa um conjunto padrão de imagens de campo planas, modelos de campo, modelos de robôs e configurações de joysticks. Recursos simples (por exemplo, campos evergreen) estão incluídos na instalação inicial. Recursos detalhados (por exemplo, campos específicos da temporada) são baixados automaticamente em segundo plano quando o AdvantageScope está conectado à internet. Para verificar o status desses downloads, clique em `App`/`AdvantageScope` > `Status do download de recursos...`.
 
@@ -8,7 +8,7 @@ O conjunto de recursos pode ser personalizado para adicionar mais opções, se d
 Para carregar recursos de um local alternativo, clique em `App`/`AdvantageScope` > `Usar pasta de recursos personalizada`. A pasta selecionada deve ser a _pasta pai_ onde múltiplos recursos em subpastas separadas podem ser colocados. Este recurso permite que recursos personalizados sejam armazenados sob controle de versão junto com o código do robô.
 :::
 
-## Formato geral
+## Formato geral {#general-format}
 
 Todos os recursos são armazenados em pastas com a convenção de nomenclatura "TIPO_NOME". O NOME usado para a pasta não é exibido pelo AdvantageScope. Os tipos de recursos possíveis são:
 
@@ -30,13 +30,13 @@ Esta pasta deve conter um arquivo chamado "config.json" e um ou mais arquivos de
 }
 ```
 
-## Modelos de robôs 3D
+## Modelos de robôs 3D {#3d-robot-models}
 
-### Tutorial em vídeo
+### Tutorial em vídeo {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Visão geral
+### Visão geral {#overview}
 
 Um modelo deve ser incluído na pasta com o nome "model.glb". Arquivos CAD devem ser convertidos para glTF; consulte [esta página](gltf-convert) para mais detalhes. O arquivo de configuração deve estar no seguinte formato:
 
@@ -70,7 +70,7 @@ O AdvantageScope simplifica a geometria do modelo automaticamente para melhorar 
 
 :::
 
-### Componentes articulados
+### Componentes articulados {#articulated-components}
 
 :::warning
 A configuração de componentes articulados pode ser complexa e demorada. Considere utilizar o suporte a `Mechanism2d` 3D do AdvantageScope ([docs](/tab-reference/3d-field#2d-mechanisms)), que oferece uma abordagem mais simplificada para **visualizar mecanismos no campo 3D**.
@@ -93,7 +93,7 @@ Ao posicionar componentes 3D em relação ao robô, a origem do sistema de coord
 ]
 ```
 
-#### Processo de configuração
+#### Processo de configuração {#setup-process}
 
 Para calibrar as posições dos componentes articulados, recomendamos o seguinte processo:
 
@@ -109,7 +109,7 @@ Para calibrar as posições dos componentes articulados, recomendamos o seguinte
 
 6. Publique as poses reais dos componentes a partir do código do robô, que serão baseadas nas origens recém-definidas para cada componente. Por exemplo, a pose para um segmento de braço seria posicionada na articulação do braço apontada na direção do segmento.
 
-## Joysticks
+## Joysticks {#joysticks}
 
 Uma imagem deve ser incluída na pasta com o nome "image.png". O arquivo de configuração deve estar no seguinte formato:
 
@@ -126,7 +126,7 @@ Botões, joysticks e valores de eixos suportam tanto associações (bindings) [S
 Para associações NI, o AdvantageScope é compatível com as antigas chaves de configuração sem prefixo (por exemplo, `sourceIndex`). **Todos os novos joysticks devem usar associações SDL explícitas (por exemplo, `sdlSourceIndex`) para compatibilidade com a Driver Station atual da FIRST.**
 :::
 
-### Botão único / Valor de POV
+### Botão único / Valor de POV {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +144,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
 }
 ```
 
-### Joystick de dois eixos
+### Joystick de dois eixos {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +167,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
 }
 ```
 
-### Eixo único
+### Eixo único {#single-axis}
 
 ```json
 {
@@ -184,7 +184,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
 }
 ```
 
-### Touchpad
+### Touchpad {#touchpad}
 
 ```json
 {
@@ -196,7 +196,7 @@ Para associações NI, o AdvantageScope é compatível com as antigas chaves de 
 }
 ```
 
-## Imagens de campo planas
+## Imagens de campo planas {#flat-field-images}
 
 Uma imagem deve ser incluída na pasta com o nome "image.png". Ela deve ser orientada com a aliança vermelha à esquerda. O arquivo de configuração deve estar no seguinte formato:
 
@@ -218,9 +218,9 @@ Uma imagem deve ser incluída na pasta com o nome "image.png". Ela deve ser orie
 }
 ```
 
-## Modelos de campo 3D
+## Modelos de campo 3D {#3d-field-models}
 
-Um modelo deve ser incluído na pasta com o nome "model.glb". Após todas as rotações serem aplicadas, o campo deve estar orientado com a aliança vermelha à esquerda. Arquivos CAD devem ser convertidos para glTF; consulte [esta página](gltf-convert) para mais detalhes. Os modelos de peças do jogo seguem a convenção de nomenclatura "model_INDEX.glb" com base na ordem em que aparecem no array "gamePieces". AprilTags declaradas aqui são sempre posicionadas usando um sistema de coordenadas [centro/vermelho](/more-features/coordinate-systems#centerred-systemcore), independentemente de quaisquer outras opções de configuração.
+Um modelo deve ser incluído na pasta com o nome "model.glb". Após todas as rotações serem aplicadas, o campo deve estar orientado com a aliança vermelha à esquerda. Arquivos CAD devem ser convertidos para glTF; consulte [esta página](gltf-convert) para mais detalhes. Os modelos de peças do jogo seguem a convenção de nomenclatura "model_INDEX.glb" com base na ordem em que aparecem no array "gamePieces". AprilTags declaradas aqui são sempre posicionadas usando um sistema de coordenadas [centro/vermelho](/more-features/coordinate-systems#center-red), independentemente de quaisquer outras opções de configuração.
 
 O arquivo de configuração deve estar no seguinte formato:
 

@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 Fila swerve afișează starea a patru module swerve, inclusiv vectorii de viteză, pozițiile de repaus, rotația robotului și vitezele șasiului.
 
@@ -24,7 +24,7 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
-## Adăugarea surselor
+## Adăugarea surselor {#adding-sources}
 
 Pentru a începe, trageți un câmp în secțiunea „Surse”. Ștergeți o sursă folosind butonul X sau ascundeți-o temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate sursele, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Sursele pot fi reorganizate în listă prin clic și tragere.
 
@@ -34,7 +34,7 @@ Pentru a începe, trageți un câmp în secțiunea „Surse”. Ștergeți o sur
 - **Vitezele robotului:** Viteze liniare și unghiulare afișate în centrul diagramei.
 - **Rotație:** Poziția unghiulară utilizată pentru a roti diagrama.
 
-## Formatul datelor
+## Formatul datelor {#data-format}
 
 Datele ar trebui publicate ca o structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipurile `SwerveModuleState[]`, `ChassisSpeeds`, `Rotation2d` sau `Rotation3d`.
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## Configurare
+## Configurare {#configuration}
 
 Următoarele opțiuni de configurare sunt disponibile:
 

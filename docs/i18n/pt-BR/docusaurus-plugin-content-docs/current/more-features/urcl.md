@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Logger não oficial compatível com REV
+# 📝 Logger não oficial compatível com REV {#unofficial-rev-compatible-logger}
 
 :::info
 Novidade em 2026, a REVLib inclui uma solução oficial de logging para salvar dados do Spark Max e Spark Flex em um log CAN da REV (`.revlog`). Veja [aqui](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) para mais detalhes. Esses arquivos podem ser abertos diretamente no AdvantageScope, mas não podem ser precisamente sincronizados com outras fontes de dados.
@@ -27,7 +27,7 @@ Após a configuração, os quadros CAN periódicos de todos os dispositivos Spar
 Como esta biblioteca não é uma ferramenta oficial da REV, dúvidas de suporte devem ser direcionadas à [página de problemas do URCL](https://github.com/Mechanical-Advantage/URCL/issues) ou para software@team6328.org em vez do contato de suporte da REV.
 :::
 
-## Configuração
+## Configuração {#setup}
 
 Instale o vendordep do URCL seguindo as instruções para instalar [bibliotecas de terceiros](https://docs.wpilib.org/pt/stable/docs/software/vscode-overview/3rd-party-libraries.html) usando o gerenciador de dependências no VSCode. Alternativamente, você pode usar o seguinte URL JSON do fornecedor:
 
@@ -111,7 +111,7 @@ Para minimizar o uso da rede CAN, a maioria dos quadros de status para dispositi
 Para mais detalhes, consulte a [documentação da REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Recomendamos o uso de [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) ao configurar o Spark para habilitar manualmente quaisquer sinais que você deseja incluir no arquivo de log.
 :::
 
-## Uso do SysId
+## Uso do SysId {#sysid-usage}
 
 1. Após configurar o URCL conforme mostrado acima, configure a rotina do SysId usando `null` para o consumidor de log de mecanismo. Um exemplo é mostrado abaixo para Java. Esta configuração pode ser realizada dentro da classe de subsistema.
 

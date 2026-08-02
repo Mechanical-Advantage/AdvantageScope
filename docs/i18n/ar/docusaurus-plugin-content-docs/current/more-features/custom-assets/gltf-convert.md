@@ -1,8 +1,8 @@
-# تحويل ملفات Onshape و STEP إلى glTF
+# تحويل ملفات Onshape و STEP إلى glTF {#converting-onshape-and-step-files-to-gltf}
 
 يقبل العرض ثلاثي الأبعاد لـ AdvantageScope نماذج مخصصة للملاعب والروبوتات، والتي يمكن تثبيتها باستخدام العملية المشروحة [هنا](/more-features/custom-assets). يجب أن تستخدم جميع النماذج تنسيق ملفات [glTF](https://www.khronos.org/gltf/)، والذي تم اختياره لكفاءته عند تخزين النماذج وتحميلها. لاحظ أن AdvantageScope يستخدم الشكل الثنائي (.glb)، الذي يتضمن جميع الموارد في ملف واحد، بدلاً من الشكل الخالص لـ JSON (.gltf).
 
-## تحويل Onshape إلى STEP
+## تحويل Onshape إلى STEP {#converting-onshape-to-step}
 
 بينما يتضمن Onshape خيار تصدير لـ glTF، فغالباً ما ينتج عن ذلك ملفات كبيرة جداً يصعب إدارتها. بدلاً من ذلك، يُوصى بالتصدير من Onshape إلى STEP، ثم اتباع التعليمات في القسم التالي للتحويل إلى glTF.
 
@@ -16,7 +16,7 @@
 
 3. انتظر حتى يتم تحويل الملف وتنزيله. قد يستغرق هذا بضع دقائق.
 
-## تحويل STEP إلى glTF
+## تحويل STEP إلى glTF {#converting-step-to-gltf}
 
 1. قم بتنزيل [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). هذا التطبيق المجاني قادر على التحويل بين العديد من التنسيقات ثلاثية الأبعاد، بما في ذلك STEP و glTF.
 

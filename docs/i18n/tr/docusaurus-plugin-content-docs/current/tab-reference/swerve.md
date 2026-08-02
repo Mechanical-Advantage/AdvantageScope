@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 Swerve sekmesi; vektör hızları, boşta olma konumları, robot rotasyonu ve şasi hızları dahil olmak üzere dört swerve modülünün durumunu gösterir.
 
@@ -24,7 +24,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Kaynaklar ekleme
+## Kaynaklar ekleme {#adding-sources}
 
 Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini kullanarak bir kaynağı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm kaynakları kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Kaynaklar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -34,7 +34,7 @@ Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini k
 - **Robot Hızları:** Diyagramın merkezinde görüntülenen doğrusal ve açısal hızlar.
 - **Rotasyon:** Diyagramı döndürmek için kullanılan açısal konum.
 
-## Veri formatı
+## Veri formatı {#data-format}
 
 Veriler `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` veya `Rotation3d` türleri kullanılarak bayt kodlu struct veya protobuf olarak yayınlanmalıdır.
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## Yapılandırma
+## Yapılandırma {#configuration}
 
 Aşağıdaki yapılandırma seçenekleri mevcuttur:
 

@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 Joystickler
+# 🎮 Joystickler {#joysticks}
 
 Joystickler sekmesi altı adede kadar bağlı kontrolcünün durumunu gösterir. Aşağıdaki resim iki Xbox kontrolcüsü ve genel bir joystick içeren örnek bir düzeni göstermektedir. Her düğme basıldığında vurgulanır ve joysticklerin ve diğer eksenlerin durumları görüntülenir.
 
@@ -21,7 +21,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Kontrol paneli
+## Kontrol paneli {#control-pane}
 
 Sekmenin altındaki tabloda joystick türlerini seçin. Joystick ID'leri 0 ile 5 arasında değişir ve Sürücü İstasyonu ile WPILib'deki ID'lerle eşleşir. Joystickler hakkında daha fazla bilgi [WPILib dokümantasyonunda](https://docs.wpilib.org/tr/stable/docs/software/basic-programming/joystick.html) bulunabilir.
 

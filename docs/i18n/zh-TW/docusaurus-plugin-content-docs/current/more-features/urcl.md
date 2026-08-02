@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 非官方 REV 相容記錄器
+# 📝 非官方 REV 相容記錄器 {#unofficial-rev-compatible-logger}
 
 :::info
 2026 年最新功能，REVLib 包含官方記錄解決方案，用於將來自 Spark Max 與 Spark Flex 的資料儲存至 REV CAN 日誌 (`.revlog`)。有關詳細資訊，請參閱[此處](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger)。這些檔案可以直接在 AdvantageScope 中開啟，但無法與其他資料來源精確同步。
@@ -27,7 +27,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger，非官方 REV 相容記
 由於此函式庫並非 REV 官方工具，支援諮詢應發送至 URCL [issues 頁面](https://github.com/Mechanical-Advantage/URCL/issues) 或 software@team6328.org，而非 REV 的支援聯絡方式。
 :::
 
-## 設定
+## 設定 {#setup}
 
 按照在 VSCode 中使用依賴項管理員安裝[第三方函式庫](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html)的說明安裝 URCL vendordep。或者，您可以使用以下廠商 JSON URL：
 
@@ -111,7 +111,7 @@ URCL 與 AdvantageKit 的相容性僅為方便提供；記錄到日誌中的資�
 有關更多詳細資訊，請查看 [REVLib 文件](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods)。我們建議在設定 Spark 時使用 [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) 以手動啟用要在日誌檔案中包含的任何訊號。
 :::
 
-## SysId 使用
+## SysId 使用 {#sysid-usage}
 
 1. 如上所示設定 URCL 後，將 SysId 常規程序設定為使用 `null` 作為機構日誌消費者。Java 的範例顯示如下。此設定可在次系統類別內部執行。
 

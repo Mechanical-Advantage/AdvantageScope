@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# وضع الضبط
+# وضع الضبط {#tuning-mode}
 
 تدعم بعض المصادر المباشرة الضبط المباشر للقيم الرقمية والمنطقية (boolean). على سبيل المثال، يمكن استخدام هذه الميزة لـ [ضبط كاسب وحدة التحكم](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) عند الاتصال بمصدر NetworkTables. لاحظ أنه يجب أن يدعم كود الروبوت استقبال الكاسب عبر NetworkTables.
 
@@ -15,7 +15,7 @@ sidebar_position: 1
 هذه الميزة ليست مخصصة للتحكم في الروبوت على الملعب. الإدخالات بأسلوب لوحة القيادة مثل أجهزة الاختيار (choosers)، وأزرار المشغلات، إلخ، غير مدعومة.
 :::
 
-## الضبط باستخدام AdvantageKit
+## الضبط باستخدام AdvantageKit {#tuning-with-advantagekit}
 
 الحقول المنشورة بواسطة AdvantageKit في الجدول الفرعي `AdvantageKit` هي للإخراج فقط ولا يمكن تعديلها. ومع ذلك، يمكن للمستخدمين نشر حقول من كود المستخدم قابلة للضبط من AdvantageScope. **أي حقول تنشر إلى جدول "/Tuning" على NetworkTables ستظهر تحت جدول "Tuning« عند استخدام مصدر البيانات المباشر »NetworkTables (AdvantageKit)".**
 

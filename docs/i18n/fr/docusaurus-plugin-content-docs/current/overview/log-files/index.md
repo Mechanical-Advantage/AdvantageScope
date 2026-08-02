@@ -1,6 +1,6 @@
-# 📂 Fichiers journaux
+# 📂 Fichiers journaux {#log-files}
 
-## Formats pris en charge
+## Formats pris en charge {#supported-formats}
 
 - **WPILOG (.wpilog)** - Produit par la [journalisation intégrée](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib et AdvantageKit. [URCL](/more-features/urcl) peut être utilisé pour capturer les signaux des contrôleurs de moteur REV dans un fichier WPILOG.
 - **Journaux de la console de pilotage (.dslog et .dsevents)** - Produits par la [console de pilotage FRC](https://docs.wpilib.org/fr/stable/docs/software/driverstation/driver-station.html). AdvantageScope recherche automatiquement le fichier journal correspondant lors de l'ouverture de l'un ou l'autre type de journal.
@@ -14,7 +14,7 @@
 Les fichiers journaux Hoot ne peuvent être ouverts qu'après avoir accepté le [contrat de licence utilisateur final](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) de CTRE. AdvantageScope affiche une invite pour confirmer l'acceptation de ces conditions lors de l'ouverture d'un fichier journal Hoot pour la première fois.
 :::
 
-## Ouverture de journaux
+## Ouverture de journaux {#opening-logs}
 
 Dans la barre de menu, cliquez sur `Fichier` > `Ouvrir un ou plusieurs journaux...`, puis choisissez un ou plusieurs fichiers journaux sur le disque local. Faire glisser un fichier journal depuis le navigateur de fichiers du système vers l'icône ou la fenêtre d'AdvantageScope provoque également son ouverture.
 
@@ -24,7 +24,7 @@ Si plusieurs fichiers sont ouverts simultanément, les horodatages seront align�
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Ouverture d'un journal enregistré" />
 
-## Ajout de nouveaux journaux
+## Ajout de nouveaux journaux {#adding-new-logs}
 
 Après avoir ouvert un fichier journal, des journaux supplémentaires peuvent être facilement ajoutés à la visualisation. Les horodatages seront réalignés automatiquement pour se synchroniser avec les données existantes.
 

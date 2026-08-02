@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR оживляет вид 👀 [3D-поле](/tab-reference/3d-field) в дополненной реальности, позволяя вам визуализировать данные совершенно новыми способами. Увидьте симулированную автопрограмму в полный рост, просмотрите стратегию матча с помощью настольной модели поля, наложите диагностическую информацию на реального робота и многое другое! Видео ниже демонстрирует несколько вариантов использования этой функции:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Требования
+## Требования {#requirements}
 
 - **Хост:** Десктопное приложение AdvantageScope на Windows, macOS или Linux (v4.1.0 или более поздняя). Любые брандмауэры на устройстве должны быть [отключены](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Клиент:** iPhone или iPad под управлением iOS/iPadOS 16 или более поздней версии. Установка приложения не требуется.
@@ -28,7 +28,7 @@ AdvantageScope XR поддерживается только на iOS и iPadOS. 
 
 </details>
 
-## Настройка
+## Настройка {#setup}
 
 1. На хост-системе **нажмите кнопку «XR»** на любой вкладке 3D-поля. Одновременно может быть активен только один сеанс хоста XR, поэтому нажатие этой кнопки прервет любые другие активные сеансы.
 

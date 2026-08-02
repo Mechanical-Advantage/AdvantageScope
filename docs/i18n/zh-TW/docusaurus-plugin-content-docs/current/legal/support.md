@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# 支援
+# 支援 {#support}
 
 如需取得 AdvantageScope 或 AdvantageScope XR 的支援，請使用以下聯絡方式之一。
 

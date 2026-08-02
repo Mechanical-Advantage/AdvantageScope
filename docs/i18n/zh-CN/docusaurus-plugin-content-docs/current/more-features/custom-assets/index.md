@@ -1,4 +1,4 @@
-# ⚙️ 自定义资源
+# ⚙️ 自定义资源 {#custom-assets}
 
 AdvantageScope 使用一组默认的平面场地图像、场地模型、机器人模型和控制器配置。简单资源（例如常青场地）包含在初始安装中。当 AdvantageScope 连接到互联网时，详细资源（例如特定赛季的场地）会在后台自动下载。要检查这些下载的状态，请点击 `应用程序`/`AdvantageScope` > `资源下载状态...`。
 
@@ -8,7 +8,7 @@ AdvantageScope 使用一组默认的平面场地图像、场地模型、机器�
 要从替代位置加载资源，请点击 `应用程序`/`AdvantageScope` > `使用自定义资源文件夹`。所选文件夹应该是可以放置位于不同子文件夹中的多个资源的 _父文件夹_。此功能允许将自定义资源与机器人代码一起存储在版本控制之下。
 :::
 
-## 常规格式
+## 常规格式 {#general-format}
 
 所有资源都存储在具有命名规范 "TYPE_NAME" 的文件夹中。AdvantageScope 不会显示文件夹使用的 NAME。可能的资源类型为：
 
@@ -30,13 +30,13 @@ AdvantageScope 使用一组默认的平面场地图像、场地模型、机器�
 }
 ```
 
-## 3D 机器人模型
+## 3D 机器人模型 {#3d-robot-models}
 
-### 视频教程
+### 视频教程 {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### 概述
+### 概述 {#overview}
 
 文件夹中必须包含名为“model.glb”的模型。CAD 文件必须转换为 glTF；有关详细信息，请参阅 [此页面](gltf-convert)。配置文件必须采用以下格式：
 
@@ -70,7 +70,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 
 :::
 
-### 铰接组件
+### 铰接组件 {#articulated-components}
 
 :::warning
 设置铰接组件可能非常复杂且耗时。可考虑使用 AdvantageScope 的 3D [`Mechanism2d` 支持](/tab-reference/3d-field#2d-mechanisms)，它提供了在 **3D 场地上可视化机构** 的更简化方法。
@@ -93,7 +93,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 ]
 ```
 
-#### 设置过程
+#### 设置过程 {#setup-process}
 
 要校准铰接组件的位置，我们推荐以下过程：
 
@@ -109,7 +109,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 
 6. 从机器人代码发布真实的组件位姿，这些位姿将基于每个组件新定义的原点。例如，机械臂段的位姿将放置在机械臂的关节处，并指向该段的方向。
 
-## 控制器
+## 控制器 {#joysticks}
 
 文件夹中必须包含名为 "image.png" 的图像。配置文件必须采用以下格式：
 
@@ -126,7 +126,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 对于 NI 绑定，AdvantageScope 反向兼容旧的不带前缀的配置键（例如 `sourceIndex`）。**所有新控制器都应使用显式的 SDL 绑定（例如 `sdlSourceIndex`），以兼容当前的 FIRST Driver Station。**
 :::
 
-### 单个按钮 / POV 值
+### 单个按钮 / POV 值 {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +144,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 }
 ```
 
-### 双轴摇杆
+### 双轴摇杆 {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +167,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 }
 ```
 
-### 单轴
+### 单轴 {#single-axis}
 
 ```json
 {
@@ -184,7 +184,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 }
 ```
 
-### 触控板
+### 触控板 {#touchpad}
 
 ```json
 {
@@ -196,7 +196,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 }
 ```
 
-## 平面场地图像
+## 平面场地图像 {#flat-field-images}
 
 文件夹中必须包含名为 "image.png" 的图像。它的方向应该是红方联盟在左侧。配置文件必须采用以下格式：
 
@@ -218,9 +218,9 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 }
 ```
 
-## 3D 场地模型
+## 3D 场地模型 {#3d-field-models}
 
-文件夹中必须包含名为“model.glb”的模型。应用所有旋转后，场地的方向应该是红方联盟在左侧。CAD 文件必须转换为 glTF；有关详细信息，请参阅 [此页面](gltf-convert)。游戏元素模型根据它们在 “gamePieces”数组中出现的顺序，遵循命名规范“model_INDEX.glb”。无论任何其他配置选项如何，此处声明的 AprilTag 始终使用 [中心/红色](/more-features/coordinate-systems#centerred-systemcore) 坐标系进行定位。
+文件夹中必须包含名为“model.glb”的模型。应用所有旋转后，场地的方向应该是红方联盟在左侧。CAD 文件必须转换为 glTF；有关详细信息，请参阅 [此页面](gltf-convert)。游戏元素模型根据它们在 “gamePieces”数组中出现的顺序，遵循命名规范“model_INDEX.glb”。无论任何其他配置选项如何，此处声明的 AprilTag 始终使用 [中心/红色](/more-features/coordinate-systems#center-red) 坐标系进行定位。
 
 配置文件必须采用以下格式：
 

@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# תמיכה
+# תמיכה {#support}
 
 כדי לקבל תמיכה עבור AdvantageScope או AdvantageScope XR, יש להשתמש באחת מדרכי היצירת קשר למטה.
 

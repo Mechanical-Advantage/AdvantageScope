@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 📦 Kurulum
+# 📦 Kurulum {#installation}
 
 AdvantageScope'un resmi olarak desteklenen sürümü doğrudan Takım 6328'den veya WPILib yükleyicisi aracılığıyla edinilebilir. Çeşitli resmi olmayan dağıtımlar da mevcuttur.
 
@@ -24,13 +24,13 @@ Ubuntu 23.10 veya sonraki sürümlerde AppImage derlemelerini çalıştırmadan 
 AdvantageScope'un her bir ana sürümü, FRC başlangıcından (kickoff) önce Ocak ayında, yıla karşılık gelen bir sürüm numarasıyla yayınlanır (örneğin v26.0.0, Ocak 2026'da yayınlanacaktır). AdvantageScope'un beta ve alfa sürümleri, yeni özellikleri denemek ve geri bildirim sağlamak isteyen takımlar için her sürüm öncesindeki aylarda mevcut olabilir. **Bu ön sürümleri kullanan takımlar, kararlı sürümlerde bulunmayan sorunlar ve hatalarla karşılaşmayı beklemelidir.**
 :::
 
-## WPILib
+## WPILib {#wpilib}
 
 ### Kurulum: [WPILib dokümantasyonu](https://docs.wpilib.org/tr/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
 WPILib yükleyicisi AdvantageScope'un yakın tarihli bir sürümünü içerir, ancak doğrudan indirme için mevcut olan en son sürümün gerisinde kalabilir. AdvantageScope'u VSCode'un WPILib sürümünden başlatma dokümantasyonu [burada](https://docs.wpilib.org/tr/stable/docs/software/dashboards/advantagescope.html) bulunabilir.
 
-## Resmi olmayan dağıtımlar
+## Resmi olmayan dağıtımlar {#unofficial-distributions}
 
 AdvantageScope'un resmi olmayan dağıtımları, AdvantageScope/WPILib geliştiricileri tarafından resmi olarak desteklenmeyen çeşitli kaynaklardan edinilebilir. Bu dağıtımlar resmi kaynaklardan edinilebilen en son AdvantageScope sürümünün gerisinde kalabilir. Sorun olması durumunda lütfen doğrudan bakımı yapan kişilerle iletişime geçin.
 

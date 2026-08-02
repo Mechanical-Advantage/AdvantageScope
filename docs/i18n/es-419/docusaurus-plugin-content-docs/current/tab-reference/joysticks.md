@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 Joysticks
+# 🎮 Joysticks {#joysticks}
 
 La pestaña de joysticks muestra el estado de hasta seis controladores conectados. La siguiente imagen muestra un diseño de ejemplo, con dos controladores de Xbox y un joystick genérico. Cada botón se resalta cuando se presiona, y se muestran los estados de los joysticks y otros ejes.
 
@@ -21,7 +21,7 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 </details>
 
-## Panel de control
+## Panel de control {#control-pane}
 
 Selecciona los tipos de joysticks en la tabla en la parte inferior de la pestaña. Los ID de los joysticks varían de 0 a 5, y coinciden con los ID en la Driver Station y WPILib. Puedes encontrar más información sobre joysticks en la [documentación de WPILib](https://docs.wpilib.org/es/stable/docs/software/basic-programming/joystick.html).
 

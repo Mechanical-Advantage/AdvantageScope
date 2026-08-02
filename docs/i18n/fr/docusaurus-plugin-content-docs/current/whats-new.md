@@ -48,7 +48,7 @@ L'onglet 📉 [Graphique linéaire](/tab-reference/line-graph/) a été repensé
 - L'étiquetage précis des axes Y et de l'affichage des valeurs
 - La conversion rapide vers des unités compatibles (sans fenêtre surgissante)
 - La conversion implicite des types d'unités compatibles au sein d'un seul axe
-- L'affichage précis des unités [intégrées et différenciées](/tab-reference/line-graph/#integration--differentiation)
+- L'affichage précis des unités [intégrées et différenciées](/tab-reference/line-graph/#integration-and-differentiation)
 
 La capture d'écran ci-dessous montre toutes ces fonctionnalités en action. Notez que l'axe gauche comprend des champs avec différentes unités de vitesse angulaire, et que l'axe droit comprend des valeurs différenciées et affichées dans une unité non native (degrés). La sélection des unités est également plus facile que jamais, avec des options d'unités compatibles intégrées directement dans le menu de contrôle de chaque axe.
 

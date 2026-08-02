@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Механизм
+# ⚙️ Механизм {#mechanism}
 
 Вкладка механизма отображает сочлененный механизм, созданный с помощью одного или нескольких объектов [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
@@ -24,11 +24,11 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## Добавление механизмов
+## Добавление механизмов {#adding-mechanisms}
 
 Чтобы начать работу, перетащите `Mechanism2d` на панель управления. Удалите механизм с помощью кнопки X или временно скройте его, нажав иконку глаза или дважды щелкнув имя поля. Чтобы удалить все механизмы, нажмите на мусорную корзину рядом с заголовком оси, а затем `Очистить все`. Механизмы можно переупорядочивать в списке путем щелчка и перетаскивания.
 
-## Публикация данных
+## Публикация данных {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

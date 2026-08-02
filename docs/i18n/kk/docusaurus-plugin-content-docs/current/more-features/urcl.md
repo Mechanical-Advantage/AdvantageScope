@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 URCL (Бейресми REV-үйлесімді тіркеуші)
+# 📝 URCL (Бейресми REV-үйлесімді тіркеуші) {#unofficial-rev-compatible-logger}
 
 :::info
 2026 жылдың жаңалығы ретінде, REVLib құрамына Spark Max және Spark Flex құрылғыларынан деректерді REV CAN журналына (`.revlog`) сақтауға арналған ресми журналдау шешімі кіреді. Толығырақ [осы жерден](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) қараңыз. Бұл файлдарды AdvantageScope ішінде тікелей ашуға болады, бірақ басқа дереккөздермен дәл синхрондау мүмкін емес.
@@ -27,7 +27,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) — бұл Spark Max ж�
 Бұл кітапхана ресми REV құралы болмағандықтан, қолдау сұрауларын REV қолдау қызметіне емес, URCL [мәселелер бетіне](https://github.com/Mechanical-Advantage/URCL/issues) немесе software@team6328.org мекенжайына жіберу керек.
 :::
 
-## Баптау
+## Баптау {#setup}
 
 VSCode ішіндегі тәуелділіктер менеджерін пайдаланып [үшінші тарап кітапханаларын](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) орнату нұсқауларын орындай отырып, URCL vendordep кітапханасын орнатыңыз. Балама ретінде келесі vendor JSON URL мекенжайын пайдалануға болады:
 
@@ -111,7 +111,7 @@ CAN пайдалануды барынша азайту үшін Spark құрыл
 Қосымша мәліметтер алу үшін [REVLib құжаттамасын](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods) тексеріңіз. Журнал файлына қосуды қалайтын кез келген сигналдарды қолмен қосу үшін Spark құрылғысын конфигурациялау кезінде [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) пайдалануды ұсынамыз.
 :::
 
-## SysId пайдалану
+## SysId пайдалану {#sysid-usage}
 
 1. Жоғарыда көрсетілгендей URCL баптағаннан кейін, механизм журналын тұтынушы үшін `null` пайдаланып SysId процедурасын конфигурациялаңыз. Төменде Java үшін мысал көрсетілген. Бұл конфигурацияны ішкі жүйе (subsystem) класы ішінде орындауға болады.
 

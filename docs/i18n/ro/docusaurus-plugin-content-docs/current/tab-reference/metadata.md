@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 Metadate
+# 🔍 Metadate {#metadata}
 
 Fila metadate afișează valorile publicate în tabelul ascuns „/Metadata” sau prin AdvantageKit. Cheile de metadate sunt afișate în stânga, iar coloanele separă datele din surse diferite (de ex. real și reluare când se utilizează AdvantageKit).
 

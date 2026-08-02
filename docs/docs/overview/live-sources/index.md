@@ -1,4 +1,4 @@
-# 🛜 Live Sources
+# 🛜 Live Sources {#live-sources}
 
 All visualizations in AdvantageScope are designed to receive live data from a robot or simulator in addition to log files. This section describes how to connect to real time data sources. The following sources of live data are supported by AdvantageScope:
 
@@ -13,7 +13,7 @@ All visualizations in AdvantageScope are designed to receive live data from a ro
 AdvantageScope can connect to the FIRST Driver Station to view diagnostic data when running on the same device as the DS application. No configuration is required (see the instructions below).
 :::
 
-## Starting the Connection
+## Starting the Connection {#starting-the-connection}
 
 To start the live connection, follow these steps:
 
@@ -23,7 +23,7 @@ To start the live connection, follow these steps:
 
 The window title displays the IP address and the text "Searching" until the target is connected. AdvantageScope attempts to reconnect automatically using the same settings after a disconnect.
 
-## Viewing Live Data
+## Viewing Live Data {#viewing-live-data}
 
 When connected to a live source, AdvantageScope locks all tabs to the current time by default. Views like the 📉 [Line Graph](/tab-reference/line-graph) and 🔢 [Table](/tab-reference/table) autoscroll, and views like field and joysticks display the current values of each field. Clicking the red arrow button in the navigation bar toggles this lock, enabling viewing and replay of past data.
 
@@ -33,23 +33,23 @@ When connected to a live source, AdvantageScope locks all tabs to the current ti
 Scrolling to the left in the line graph or timeline unlocks from the current time, and scrolling all the way to the right locks to the current time again.
 :::
 
-## Configuration
+## Configuration {#configuration}
 
 Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
 <img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
 
-### Robot Address
+### Robot Address {#robot-address}
 
 Enter the robot address using a 10.TE.AM.2 IP address as described in the [WPILib docs](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). When connecting to Systemcore via USB or the built-in Wi-Fi access point, click `File` > `Use Systemcore USB Address`/`Use Systemcore Wi-Fi Address` to temporarily use the correct static IP address.
 
-### Live Mode
+### Live Mode {#live-mode}
 
 When NetworkTables is used as the live source, the following live modes can be selected:
 
 - **Low Bandwidth (Default):** AdvantageScope only requests data from the server for fields that are actively being used. Data published before a field was selected will not be available. This mode is **highly recommended** when running in an environment with limited network bandwidth, or when a large number of fields are being published.
 - **Logging:** AdvantageScope requests data for all fields regardless of whether they are actively being used. This means that fields can be viewed retroactively by pausing the stream of live data (see below). This mode is often useful during development but **should NOT be used when bandwidth is limited**.
 
-### Discard Live Data
+### Discard Live Data {#discard-live-data}
 
 During a live connection, data is stored locally to allow for replay of past data (see "Viewing Live Data" below). To avoid very high memory usage, data is discarded after 20 minutes by default. A shorter period can be selected to reduce memory usage, or "Never" can be selected to store live data indefinitely.

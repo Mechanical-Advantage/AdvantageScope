@@ -48,7 +48,7 @@ AdvantageScope 旨在与 WPILib 框架及相关日志工具配合使用时提供
 - Y 轴和数值显示的精确标记
 - 快速转换为兼容单位（无需弹窗）
 - 单个轴内兼容单位类型的隐式转换
-- [积分与求导](/tab-reference/line-graph/#integration--differentiation) 单位的准确显示
+- [积分与求导](/tab-reference/line-graph/#integration-and-differentiation) 单位的准确显示
 
 下面的截图展示了所有这些功能的实际应用。请注意，左轴包含具有不同角速度单位的字段，而右轴包含已求导并以非原生单位（度）显示的数值。选择单位也比以往任何时候都更加容易，每个轴的控制菜单中都直接集成了兼容的单位选项。
 

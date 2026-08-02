@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# 💡 AdvantageScope Lite
+# 💡 AdvantageScope Lite {#advantagescope-lite}
 
 AdvantageScope Lite היא גרסה מבוססת דפדפן של AdvantageScope הנגישה ממשק ה-Web של FIRST Driver Station ו-Systemcore. רוב התכונות הבסיסיות של אפליקציית שולחן העבודה של AdvantageScope כלולות ב-AdvantageScope Lite. עם זאת, מספר תכונות הושמטו בשל מגבלות תאימות (כולל סוגי כרטיסיות מסוימים, פורמטי יומנים ותכונות קשורות).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## התקנה ונכסים
+## התקנה ונכסים {#installation-and-assets}
 
 AdvantageScope Lite עבור Systemcore ניתנת להתקנה ולעדכון על ידי הורדת גרסת "Systemcore" של AdvantageScope מדף ההפצות ב-GitHub. יש לבחור את כרטיס ה-"Add Package" בממשק ה-Web של Systemcore להעלאת החבילה לרובוט.
 

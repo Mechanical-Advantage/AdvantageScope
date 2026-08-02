@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 La pestaña swerve muestra el estado de cuatro módulos swerve, incluidos los vectores de velocidad, las posiciones de inactividad, la rotación del robot y las velocidades del chasis.
 
@@ -24,7 +24,7 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 </details>
 
-## Agregar fuentes
+## Agregar fuentes {#adding-sources}
 
 Para comenzar, arrastra un campo a la sección "Fuentes" (Sources). Elimina una fuente usando el botón X, u ocúltala temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todas las fuentes, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
 
@@ -34,7 +34,7 @@ Las fuentes se pueden reorganizar en la lista haciendo clic y arrastrando. **Par
 - **Velocidades del robot:** Velocidades lineales y angulares mostradas en el centro del diagrama.
 - **Rotación:** Posición angular utilizada para rotar el diagrama.
 
-## Formato de datos
+## Formato de datos {#data-format}
 
 Los datos deben publicarse como un struct o protobuf codificado en bytes, utilizando los tipos `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d` o `Rotation3d`.
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## Configuración
+## Configuración {#configuration}
 
 Las siguientes opciones de configuración están disponibles:
 

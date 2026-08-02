@@ -1,6 +1,6 @@
-# 📂 Файлы логов
+# 📂 Файлы логов {#log-files}
 
-## Поддерживаемые форматы
+## Поддерживаемые форматы {#supported-formats}
 
 - **WPILOG (.wpilog)** - Создаются встроенным [логированием данных](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) WPILib и AdvantageKit. [URCL](/more-features/urcl) можно использовать для захвата сигналов от контроллеров двигателей REV в файл WPILOG.
 - **Логи Driver Station (.dslog и .dsevents)** - Создаются [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope автоматически ищет соответствующий файл лога при открытии любого типа лога.
@@ -14,7 +14,7 @@
 Файлы логов Hoot можно открыть только после принятия [лицензионного соглашения конечного пользователя](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) CTRE. AdvantageScope отображает запрос для подтверждения согласия с этими условиями при первом открытии файла лога Hoot.
 :::
 
-## Открытие логов
+## Открытие логов {#opening-logs}
 
 В панели меню нажмите **Файл > Открыть лог(и)...**, затем выберите один или несколько файлов логов с локального диска. Перетаскивание файла лога из файлового браузера системы на иконку или окно AdvantageScope также приводит к его открытию.
 
@@ -24,7 +24,7 @@
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## Добавление новых логов
+## Добавление новых логов {#adding-new-logs}
 
 После открытия файла лога в визуализацию можно легко добавить дополнительные логи. Метки времени будут автоматически перевыровнены для синхронизации с существующими данными.
 

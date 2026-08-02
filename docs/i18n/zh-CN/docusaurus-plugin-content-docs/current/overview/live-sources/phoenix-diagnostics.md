@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Phoenix 诊断
+# Phoenix 诊断 {#phoenix-diagnostics}
 
 AdvantageScope 支持从 Phoenix 6 设备实时串流信号，**无需在用户代码中进行设置**。这使得利用熟悉的界面和 AdvantageScope 的强大功能可以轻松进行 Phoenix 设备的调试与调参：
 

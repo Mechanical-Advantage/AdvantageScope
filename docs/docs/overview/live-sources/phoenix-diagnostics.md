@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Phoenix Diagnostics
+# Phoenix Diagnostics {#phoenix-diagnostics}
 
 AdvantageScope supports live-streaming of signals from Phoenix 6 devices with **no setup in user code**. This enables easy debugging and tuning of Phoenix devices using the familiar interface and full power of AdvantageScope:
 

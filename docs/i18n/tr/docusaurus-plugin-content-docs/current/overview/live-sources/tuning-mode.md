@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Ayar modu
+# Ayar modu {#tuning-mode}
 
 Bazı canlı kaynaklar sayısal ve boole değerlerinin canlı ayarlanmasını destekler. Örneğin bu özellik, bir NetworkTables kaynağına bağlıyken [kontrolcü kazançlarını ayarlamak](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) için kullanılabilir. Robot kodunun NetworkTables üzerinden kazanç almayı desteklemesi gerektiğini unutmayın.
 
@@ -15,7 +15,7 @@ Varsayılan olarak AdvantageScope'taki tüm değerler salt okunurdur. Ayar modun
 Bu özellik robotu sahada kontrol etmek için tasarlanmamıştır. Seçiciler, tetikleyici düğmeler vb. gibi gösterge paneli tarzı girdiler desteklenmez.
 :::
 
-## AdvantageKit ile ayarlama
+## AdvantageKit ile ayarlama {#tuning-with-advantagekit}
 
 AdvantageKit tarafından `AdvantageKit` alt tablosuna yayınlanan alanlar yalnızca çıkış amaçlıdır ve düzenlenemez. Ancak kullanıcılar, kullanıcı kodundan AdvantageScope'tan ayarlanabilir alanlar yayınlayabilir. **NetworkTables üzerindeki "/Tuning" tablosuna yayınlanan tüm alanlar, "NetworkTables (AdvantageKit)" canlı kaynağı kullanılırken "Tuning" tablosu altında görünecektir.**
 

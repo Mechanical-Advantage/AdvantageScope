@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Механизм
+# ⚙️ Механизм {#mechanism}
 
 Механизм қойындысы бір немесе бірнеше [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) объектілері арқылы жасалған топсалы механизмді көрсетеді.
 
@@ -24,11 +24,11 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## Механизмдерді қосу
+## Механизмдерді қосу {#adding-mechanisms}
 
 Бастау үшін `Mechanism2d` объектісін басқару тақтасына сүйреңіз. X түймесін пайдаланып механизмді жойыңыз немесе көз белгішесін басу не өріс атауын екі рет басу арқылы оны уақытша жасырыңыз. Барлық механизмдерді жою үшін ось тақырыбының жанындағы қоқыс жәшігін басып, содан кейін «Барлығын тазарту» түймесін басыңыз. Механизмдерді тізімде басып сүйреу арқылы қайта орналастыруға болады.
 
-## Деректерді жариялау
+## Деректерді жариялау {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

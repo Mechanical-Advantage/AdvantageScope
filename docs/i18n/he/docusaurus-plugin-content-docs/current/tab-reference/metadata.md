@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 מטא-דאטה
+# 🔍 מטא-דאטה {#metadata}
 
 כרטיסיית המטא-דאטה מציגה ערכים שפורסמו לטבלה המוסתרת "/Metadata" או דרך AdvantageKit. מפתחות המטא-דאטה מוצגים משמאל, והעמודות מפרידות נתונים ממקורות שונים (למשל אמיתי ושחזור בעת שימוש ב-AdvantageKit).
 

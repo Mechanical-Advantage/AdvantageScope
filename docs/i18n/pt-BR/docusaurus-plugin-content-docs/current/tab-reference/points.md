@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Pontos
+# 📍 Pontos {#points}
 
 A guia de pontos mostra uma visualização 2D de pontos arbitrários. Esta é uma ferramenta muito flexível, permitindo visualizações personalizadas de dados/pipelines de visão, estados de mecanismos, etc.
 
@@ -24,7 +24,7 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 </details>
 
-## Adicionando fontes
+## Adicionando fontes {#adding-sources}
 
 Para começar, arraste um campo para a seção "Fontes". Exclua uma fonte usando o botão X ou oculte-a temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os objetos, clique na lixeira perto do título do eixo e depois em `Limpar tudo`. As fontes podem ser reorganizadas na lista clicando e arrastando.
 
@@ -34,7 +34,7 @@ Para começar, arraste um campo para a seção "Fontes". Exclua uma fonte usando
 Para ver uma lista completa de tipos de fontes suportadas, clique no ícone `?`. Esta lista também inclui os tipos de dados suportados.
 :::
 
-## Formato dos dados
+## Formato dos dados {#data-format}
 
 Os dados de pontos devem ser publicados como um struct ou protobuf codificado em bytes, usando o tipo `Translation2d[]`. Muitas bibliotecas suportam este formato, incluindo WPILib e AdvantageKit. O código de exemplo abaixo mostra como registrar dados de pontos em Java.
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Configuração
+## Configuração {#configuration}
 
 As seguintes opções de configuração estão disponíveis:
 

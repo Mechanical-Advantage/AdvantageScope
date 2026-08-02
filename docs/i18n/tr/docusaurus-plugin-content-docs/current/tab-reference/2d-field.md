@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 2B saha
+# 🗺 2B saha {#2d-field}
 
 2B saha sekmesi, sahanın bir haritası üzerine çakıştırılmış robotun 2B görselleştirmesini gösterir. Ayrıca görüş hedefleme durumu ve referans pozları gibi ek verileri de gösterebilir.
 
@@ -24,7 +24,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Nesneler ekleme
+## Nesneler ekleme {#adding-objects}
 
 Başlamak için bir alanı "Pozlar" bölümüne sürükleyin. X düğmesini kullanarak bir nesneyi silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Nesneler listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -36,7 +36,7 @@ Desteklenen nesne türlerinin tam listesini görmek için `?` simgesine tıklay�
 
 <img src="/img/tab-reference/2d-field-2.png" alt="2D field with objects" />
 
-## Veri formatı
+## Veri formatı {#data-format}
 
 Geometri verileri bayt kodlu struct veya protobuf olarak yayınlanmalıdır. `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` ve daha fazlası dahil olmak üzere çeşitli 2B ve 3B geometri türleri desteklenmektedir.
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Yapılandırma
+## Yapılandırma {#configuration}
 
 - **Saha:** Kullanılacak saha görseli. Son dönemdeki tüm FRC ve FTC oyunları desteklenmektedir. Özel bir saha görseli eklemek için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
 - **Yönelim:** Görüntüleyici panelindeki saha görselinin yönelimi.

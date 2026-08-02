@@ -1,8 +1,8 @@
-# Converting Onshape & STEP Files to glTF
+# Converting Onshape & STEP Files to glTF {#converting-onshape-and-step-files-to-gltf}
 
 AdvantageScope's 3D view accepts custom models for fields and robots, which can be installed using the process described [here](/more-features/custom-assets). All models must use the [glTF](https://www.khronos.org/gltf/) file format, chosen for its efficiency when storing and loading models. Note that AdvantageScope uses the binary form (.glb), which includes all resources in a single file, rather than the pure JSON form (.gltf).
 
-## Converting Onshape to STEP
+## Converting Onshape to STEP {#converting-onshape-to-step}
 
 While Onshape includes an export option for glTF, this often produces very large files that are difficult to manage. Instead, it is recommended to export from Onshape to STEP, then follow the instructions in the next section to convert to glTF.
 
@@ -16,7 +16,7 @@ While Onshape includes an export option for glTF, this often produces very large
 
 3. Wait for the file to convert and download. This may take a few minutes.
 
-## Converting STEP to glTF
+## Converting STEP to glTF {#converting-step-to-gltf}
 
 1. Download [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). This free application is able to convert between many 3D formats, including STEP and glTF.
 

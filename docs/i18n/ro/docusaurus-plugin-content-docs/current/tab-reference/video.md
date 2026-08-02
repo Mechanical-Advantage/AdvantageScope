@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 Video
+# 🎬 Video {#video}
 
 Fila video permite ca datele de log să fie comparate alăturat cu un videoclip al meciului înregistrat separat. Pașii de mai jos arată cum se încarcă un videoclip și cum se sincronizează cu logul.
 
-## Încărcarea videoclipului
+## Încărcarea videoclipului {#loading-the-video}
 
 AdvantageScope oferă trei opțiuni pentru încărcarea unui videoclip:
 
@@ -26,7 +26,7 @@ Descărcarea videoclipurilor YouTube și TBA poate eșua în mod neașteptat din
 AdvantageScope necesită [FFmpeg](https://ffmpeg.org) pentru procesarea fișierelor video. Dacă o copie validă a FFmpeg nu este găsită în PATH-ul sistemului dumneavoastră, AdvantageScope va solicita descărcarea FFmpeg de pe internet când încărcați un videoclip pentru prima dată. Instalarea automată FFmpeg este suportată doar pe Windows și macOS; utilizatorii Linux pot avea nevoie să instaleze manual FFmpeg și să îl adauge la PATH-ul sistemului.
 :::
 
-## Navigarea în videoclip
+## Navigarea în videoclip {#navigating-the-video}
 
 Când un videoclip este încărcat inițial și nu a fost încă sincronizat cu datele de log, controalele de redare pentru videoclip și log sunt încă independente. Utilizați cronologia și butoanele din dreapta jos pentru a controla redarea video. Următoarele scurtături de tastatură sunt de asemenea suportate:
 
@@ -38,7 +38,7 @@ Când un videoclip este încărcat inițial și nu a fost încă sincronizat cu 
 
 <img src="/img/tab-reference/video-2.png" alt="Video controls" />
 
-## Sincronizare automată
+## Sincronizare automată {#automatic-synchronization}
 
 Majoritatea videoclipurilor de meci vor fi sincronizate automat cu logul la scurt timp după ce cadrele pentru perioada autonomă a meciului sunt încărcate. Nu este necesară nicio acțiune; dacă sincronizarea reușește, controalele video vor fi blocate automat (consultați „Redare” mai jos).
 
@@ -46,7 +46,7 @@ Majoritatea videoclipurilor de meci vor fi sincronizate automat cu logul la scur
 Sincronizarea automată funcționează numai pe videoclipurile de meci care includ suprapuneri de scor și poate să nu reușească în toate cazurile. Dacă controalele video nu sunt blocate automat după încărcarea tuturor cadrelor, este necesară o sincronizare manuală.
 :::
 
-## Sincronizare manuală
+## Sincronizare manuală {#manual-synchronization}
 
 Mai întâi, utilizați controalele video pentru a naviga la o locație cunoscută din meci, cum ar fi începutul perioadei autonome. Apoi, selectați timpul din fișierul log care se aliniază cu cadrul curent al videoclipului.
 
@@ -58,7 +58,7 @@ Odată ce videoclipul și logul sunt aliniate, dați clic pe pictograma lacăt d
 
 <img src="/img/tab-reference/video-3.png" alt="Lock button" />
 
-## Redare
+## Redare {#playback}
 
 Odată blocată, redarea video rămâne aliniată cu timpul selectat în log. Rețineți că redarea sunetului nu este suportată, deoarece videoclipul original este convertit într-o reprezentare cadru cu cadru pentru a suporta sincronizarea cu logul.
 

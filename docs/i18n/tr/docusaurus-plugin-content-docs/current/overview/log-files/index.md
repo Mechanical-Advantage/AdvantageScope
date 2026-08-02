@@ -1,6 +1,6 @@
-# 📂 Log dosyaları
+# 📂 Log dosyaları {#log-files}
 
-## Desteklenen formatlar
+## Desteklenen formatlar {#supported-formats}
 
 - **WPILOG (.wpilog)** - WPILib'in [yerleşik veri loglaması](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) ve AdvantageKit tarafından üretilir. REV motor kontrolcülerinden gelen sinyalleri bir WPILOG dosyasına kaydetmek için [URCL](/more-features/urcl) kullanılabilir.
 - **Sürücü İstasyonu logları (.dslog ve .dsevents)** - [FRC Sürücü İstasyonu](https://docs.wpilib.org/tr/stable/docs/software/driverstation/driver-station.html) tarafından üretilir. AdvantageScope, her iki log türü açıldığında karşılık gelen log dosyasını otomatik olarak arar.
@@ -14,7 +14,7 @@
 Hoot log dosyaları yalnızca CTRE'nin [son kullanıcı lisans sözleşmesini](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) kabul ettikten sonra açılabilir. AdvantageScope, bir Hoot log dosyasını ilk kez açarken bu koşullara kabulü onaylamak için bir bildirim görüntüler.
 :::
 
-## Logları açma
+## Logları açma {#opening-logs}
 
 Menü çubuğunda `Dosya` > `Log aç...` seçeneğine tıklayın, ardından yerel diskten bir veya daha fazla log dosyası seçin. Sistem dosya tarayıcısından bir log dosyasını AdvantageScope simgesine veya penceresine sürüklemek de dosyanın açılmasını sağlar.
 
@@ -24,7 +24,7 @@ Birden fazla dosya aynı anda açılırsa, zaman damgaları otomatik olarak hiza
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## Yeni loglar ekleme
+## Yeni loglar ekleme {#adding-new-logs}
 
 Bir log dosyası açtıktan sonra görselleştirmeye kolayca ek loglar eklenebilir. Zaman damgaları mevcut verilerle senkronize edilmek üzere otomatik olarak yeniden hizalanacaktır.
 

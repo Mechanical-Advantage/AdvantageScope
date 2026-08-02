@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 3D 場地
+# 👀 3D 場地 {#3d-field}
 
 3D 場地顯示機器人與場地的 3D 視覺化。它可以與一般的 2D 姿態搭配使用，但在處理 3D 計算時特別有幫助（例如使用 AprilTag 進行定位）。提供多種攝影機視角，包括相對於場地、相對於機器人以及固定視角。[AdvantageScope XR](advantagescope-xr) 允許使用擴增實境來視覺化此分頁。時間軸顯示機器人何時啟用，並可用於導覽日誌資料。
 
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 2026 FRC 場地模型與**焊接**場地的 AprilTag 佈局一致。焊接場地與 AndyMark 場地之間的差異非常微小，但在根據 AndyMark 場地佈局視覺化 AprilTag 姿態時，可能會出現微小的（約 0.5 英吋）偏差。
 :::
 
-## 新增物件
+## 新增物件 {#adding-objects}
 
 要開始，請將欄位拖曳到「姿態」區段。使用 X 按鈕刪除物件，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有物件，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列物件。
 
@@ -38,7 +38,7 @@ import TabItem from '@theme/TabItem';
 AdvantageScope 支援 FTC 場地的多種尺寸 AprilTag。尺寸以 AprilTag **黑色部分的邊長**為準，不包含必要的白色邊框。
 :::
 
-## 資料格式
+## 資料格式 {#data-format}
 
 幾何資料應作為位元組編碼的 struct 或 protobuf 發布。支援各種 2D 與 3D 幾何類型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
@@ -97,7 +97,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 </TabItem>
 </Tabs>
 
-## 機構與組件
+## 機構與組件 {#mechanisms-and-components}
 
 機構資料可以使用 2D 機構或關節 3D 組件進行視覺化。
 
@@ -107,7 +107,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D 機構" />
 
-### 3D 組件
+### 3D 組件 {#3d-components}
 
 :::warning
 設定 3D 組件可能複雜且耗時。請考慮使用如上所述的 AdvantageScope `Mechanism2d` 支援，它提供了一種更簡化的方法來在 3D 場地上視覺化機構。
@@ -139,7 +139,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot 音符視覺化" />
 
-## 攝影機選項
+## 攝影機選項 {#camera-options}
 
 要切換選取的攝影機模式，請在渲染的場地視圖上按右鍵。每個快顯視窗的攝影機模式與位置都是獨立控制的，可以輕鬆建立多攝影機視圖。
 
@@ -147,7 +147,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 在渲染的場地視圖上按右鍵，然後點擊「設定 FOV...」以調整環繞與駕駛站攝影機的 FOV。
 :::
 
-### 環繞場地
+### 環繞場地 {#orbit-field}
 
 這是預設的攝影機模式，攝影機可以相對於場地自由移動。**滑鼠左鍵 + 拖曳**旋轉攝影機，**滑鼠右鍵 + 拖曳**平移攝影機。**滾動**以縮放。
 
@@ -155,11 +155,11 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 攝影機也可以使用鍵盤控制。**WASD** 鍵用於平移，**IJKL** 鍵用於旋轉，**E** 與 **Q** 鍵用於垂直平移。
 :::
 
-### 環繞機器人
+### 環繞機器人 {#orbit-robot}
 
 此模式具有與「環繞場地」模式相同的控制項，但攝影機的位置相對於機器人是鎖定的。這允許對機器人的移動進行「追蹤」拍攝。
 
-### 駕駛站
+### 駕駛站 {#driver-station}
 
 此模式將攝影機鎖定在典型眼高度的其中一個駕駛站後方。可以手動選擇要查看的站台，或選擇「自動」以使用日誌資料中儲存的聯盟與站台號碼。
 
@@ -167,7 +167,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 當查看 AdvantageKit 2023 或更早版本產生的日誌資料時，站台號碼的自動選擇可能不準確。
 :::
 
-### 固定攝影機
+### 固定攝影機 {#fixed-camera}
 
 每個機器人模型都設定了一組固定攝影機，如視覺與駕駛攝影機。這些攝影機具有固定的位置、長寬比與 FOV。這些視圖通常用於檢查視覺資料或模擬駕駛攝影機視角。下例中顯示了一個駕駛攝影機。
 
@@ -179,7 +179,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 與其他姿態資料一致，「攝影機覆蓋」姿態必須是*相對於場地*的，而非相對於機器人的。
 :::
 
-## 設定
+## 設定 {#configuration}
 
 可以使用下拉式選單設定場地模型。支援所有近期的 FRC 與 FTC 比賽。我們建議圖形效能有限的裝置使用「Evergreen」場地。「Axes」場地僅顯示原點處的 XYZ 軸以及用於縮放的場地輪廓。
 

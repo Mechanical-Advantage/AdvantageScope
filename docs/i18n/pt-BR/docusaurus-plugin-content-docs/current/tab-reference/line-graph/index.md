@@ -1,10 +1,10 @@
-# 📉 Gráfico de linha
+# 📉 Gráfico de linha {#line-graph}
 
 O gráfico de linha é a visualização padrão no AdvantageScope. Ele suporta tanto campos contínuos (numéricos) quanto discretos.
 
 <img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
 
-## Painel de visualização
+## Painel de visualização {#viewer-pane}
 
 Para dar zoom, posicione o cursor sobre o gráfico principal e role para cima ou para baixo. Um intervalo também pode ser selecionado clicando e arrastando enquanto mantém `Shift` pressionado. Mova para a esquerda e para a direita rolando horizontalmente (em dispositivos suportados) ou clicando e arrastando no gráfico. Quando conectado ao vivo, rolar para a esquerda desbloqueia do tempo atual, e rolar totalmente para a direita bloqueia no tempo atual novamente.
 
@@ -14,7 +14,7 @@ Clicar no gráfico seleciona um tempo, e clicar com o botão direito desmarca. O
 A variação (delta) entre o tempo selecionado e o tempo sob o ponteiro é exibida como uma sobreposição no gráfico, tornando fácil medir intervalos de tempo.
 :::
 
-## Painel de controle
+## Painel de controle {#control-pane}
 
 Para começar, arraste um campo para uma das três seções (esquerdo, direito ou discreto). Exclua um campo usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os campos, clique nos três pontos perto do título do eixo e depois em `Limpar tudo`. Os campos podem ser reorganizados na lista clicando e arrastando.
 
@@ -34,7 +34,7 @@ Por padrão, cada eixo ajusta seu intervalo com base nos dados visíveis. Para d
 
 <img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
 
-### Integração e diferenciação {#integration--differentiation}
+### Integração e diferenciação {#integration-and-differentiation}
 
 Valores podem ser integrados ou diferenciados automaticamente pelo AdvantageScope. O tempo delta é sempre medido em segundos. Clique nos três pontos perto do título do eixo e selecione `Diferenciar` ou `Integrar`.
 

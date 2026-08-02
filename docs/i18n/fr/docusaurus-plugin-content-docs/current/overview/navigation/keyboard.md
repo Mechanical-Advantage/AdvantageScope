@@ -1,8 +1,8 @@
-# Raccourcis clavier
+# Raccourcis clavier {#keyboard-shortcuts}
 
 AdvantageScope comprend de nombreux raccourcis clavier qui permettent une navigation plus rapide. Les raccourcis qui utilisent la touche `ctrl` sont remplacés par la touche ⌘ sur macOS.
 
-### Sources de données
+### Sources de données {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Ouvrir un ou plusieurs fichiers journaux</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 <tr><td>`Ctrl+D`</td><td>Télécharger les fichiers journaux depuis le robot</td></tr>
 </table>
 
-### Exportation de données
+### Exportation de données {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Exporter les données de journal</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 <tr><td>`Option+Ctrl+P`</td><td>Arrêter la publication sur NetworkTables</td></tr>
 </table>
 
-### Contrôles de fenêtre
+### Contrôles de fenêtre {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>Créer une nouvelle fenêtre</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 <tr><td>`Ctrl+Barre oblique`</td><td>Afficher ou masquer le panneau de contrôle</td></tr>
 </table>
 
-### Contrôles d'onglets
+### Contrôles d'onglets {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Ouvrir le menu déroulant pour ajouter un nouvel onglet</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 </tr>
 </table>
 
-### Lecture
+### Lecture {#playback}
 
 <table>
 <tr><td>`Espace`</td><td>Activer ou désactiver la lecture</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope comprend de nombreux raccourcis clavier qui permettent une naviga
 <tr><td>`Ctrl+\`</td><td>Zoomer la chronologie sur la plage activée</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 Sur les modèles MacBook pris en charge, la Touch Bar peut être utilisée pour défiler dans le journal et ajouter de nouveaux onglets.
 

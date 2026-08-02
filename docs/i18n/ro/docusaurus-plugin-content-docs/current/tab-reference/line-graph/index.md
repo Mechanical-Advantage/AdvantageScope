@@ -1,10 +1,10 @@
-# 📉 Grafic liniar
+# 📉 Grafic liniar {#line-graph}
 
 Graficul liniar este vizualizarea implicită în AdvantageScope. Acesta suportă atât câmpuri continue (numerice), cât și câmpuri discrete.
 
 <img src="/img/tab-reference/line-graph/line-graph-1.png" alt="Line graph demo" />
 
-## Panoul de vizualizare
+## Panoul de vizualizare {#viewer-pane}
 
 Pentru a mări, plasați cursorul peste graficul principal și derulați în sus sau în jos. Un interval poate fi de asemenea selectat prin clic și tragere în timp ce țineți apăsată tasta `Shift`. Mutați-vă la stânga și la dreapta prin derulare orizontală (pe dispozitivele suportate) sau prin clic și tragere pe grafic. Când sunteți conectat live, derularea spre stânga deblochează timpul curent, iar derularea până la capăt în dreapta blochează din nou timpul curent.
 
@@ -14,7 +14,7 @@ Dând clic pe grafic se selectează un timp, iar dând clic dreapta se deselecte
 Diferența (delta) dintre timpul selectat și timpul survolat este afișată ca o suprapunere pe grafic, făcând ușoară măsurarea intervalelor de timp.
 :::
 
-## Panoul de control
+## Panoul de control {#control-pane}
 
 Pentru a începe, trageți un câmp într-una dintre cele trei secțiuni (stânga, dreapta sau discret). Ștergeți un câmp folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate câmpurile, dați clic pe cele trei puncte de lângă titlul axei și apoi pe `Șterge tot`. Câmpurile pot fi reorganizate în listă prin clic și tragere.
 
@@ -34,7 +34,7 @@ Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dați cli
 
 <img src="/img/tab-reference/line-graph/line-graph-4.png" alt="Editing axis range" height="250" />
 
-### Integrare și diferențiere {#integration--differentiation}
+### Integrare și diferențiere {#integration-and-differentiation}
 
 Valorile pot fi integrate sau diferențiate automat de AdvantageScope. Timpul delta este măsurat întotdeauna în secunde. Dați clic pe cele trei puncte de lângă titlul axei și apoi selectați `Diferențiază` sau `Integrează`.
 

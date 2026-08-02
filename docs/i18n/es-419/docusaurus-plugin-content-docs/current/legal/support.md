@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Soporte
+# Soporte {#support}
 
 Para recibir soporte para AdvantageScope o AdvantageScope XR, utiliza uno de los métodos de contacto a continuación.
 

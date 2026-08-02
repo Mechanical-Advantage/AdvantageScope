@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 Video
+# 🎬 Video {#video}
 
 Video sekmesi, ayrı olarak kaydedilmiş bir maç videosuyla log verilerinin yan yana karşılaştırılmasına olanak tanır. Aşağıdaki adımlar bir videonun nasıl yükleneceğini ve log ile nasıl senkronize edileceğini gösterir.
 
-## Videoyu yükleme
+## Videoyu yükleme {#loading-the-video}
 
 AdvantageScope bir video yüklemek için üç seçenek sunar:
 
@@ -26,7 +26,7 @@ YouTube ve TBA video indirmeleri, YouTube'un sunucularındaki değişiklikler ne
 AdvantageScope video dosyalarını işlemek için [FFmpeg](https://ffmpeg.org) gerektirir. Sisteminizin PATH ortam değişkeninde FFmpeg'in geçerli bir kopyası bulunamazsa AdvantageScope, ilk kez bir video yüklerken internetten FFmpeg indirmek için bir bildirim görüntüler. Otomatik FFmpeg kurulumu yalnızca Windows ve macOS'ta desteklenmektedir; Linux kullanıcılarının FFmpeg'i manuel olarak kurmaları ve sistem PATH değişkenine eklemeleri gerekebilir.
 :::
 
-## Videoda gezinme
+## Videoda gezinme {#navigating-the-video}
 
 Bir video başlangıçta yüklendiğinde ve henüz log verileriyle senkronize edilmediğinde video ve log için oynatma kontrolleri hâlâ bağımsızdır. Video oynatımını kontrol etmek için sağ alttaki zaman çizelgesini ve düğmeleri kullanın. Aşağıdaki klavye kısayolları da desteklenmektedir:
 
@@ -38,7 +38,7 @@ Bir video başlangıçta yüklendiğinde ve henüz log verileriyle senkronize ed
 
 <img src="/img/tab-reference/video-2.png" alt="Video controls" />
 
-## Otomatik senkronizasyon
+## Otomatik senkronizasyon {#automatic-synchronization}
 
 Çoğu maç videosu, maçın otonom periyoduna ait kareler yüklendikten kısa bir süre sonra log ile otomatik olarak senkronize edilecektir. Eylem gerekmez; senkronizasyon başarılı olursa video kontrolleri otomatik olarak kilitlenecektir (aşağıdaki "Oynatma" bölümüne bakın).
 
@@ -46,7 +46,7 @@ Bir video başlangıçta yüklendiğinde ve henüz log verileriyle senkronize ed
 Otomatik senkronizasyon yalnızca skor kaplamalarını içeren maç videolarında çalışır ve her durumda başarılı olamayabilir. Tüm kareler yüklendikten sonra video kontrolleri otomatik olarak kilitlenmezse manuel senkronizasyon gereklidir.
 :::
 
-## Manuel senkronizasyon
+## Manuel senkronizasyon {#manual-synchronization}
 
 Öncelikle video kontrollerini kullanarak maçta otonom başlangıcı gibi bilinen bir konuma gidin. Ardından log dosyasında videonun mevcut karesiyle hizalanan zamanı seçin.
 
@@ -58,7 +58,7 @@ Video ve log hizalandıktan sonra video zaman çizelgesinin yanındaki kilit sim
 
 <img src="/img/tab-reference/video-3.png" alt="Lock button" />
 
-## Oynatma
+## Oynatma {#playback}
 
 Kilitlendikten sonra video oynatımı logda seçilen zamanla hizalanmış olarak kalır. Orijinal video log senkronizasyonunu desteklemek için kareden kareye bir gösterime dönüştürüldüğünden ses oynatımının desteklenmediğini unutmayın.
 

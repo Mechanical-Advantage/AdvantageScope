@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 控制器
+# 🎮 控制器 {#joysticks}
 
 控制器选项卡显示最多六个已连接控制器的状态。下图显示了一个示例布局，包含两个 Xbox 控制器和一个通用控制器。按键在按住时会高亮显示，并显示控制器和其他轴的状态。
 
@@ -21,7 +21,7 @@ sidebar_position: 8
 
 </details>
 
-## 控制面板
+## 控制面板 {#control-pane}
 
 在选项卡底部的表格中选择控制器类型。控制器 ID 范围从 0 到 5，与 操控站 和 WPILib 中的 ID 匹配。有关控制器的更多信息，请参阅 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/software/basic-programming/joystick.html)。
 

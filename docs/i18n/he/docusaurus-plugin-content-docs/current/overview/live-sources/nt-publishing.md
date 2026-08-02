@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# פרסום נתוני NetworkTables
+# פרסום נתוני NetworkTables {#publishing-networktables-data}
 
 AdvantageScope תומכת בפרסום נתוני NetworkTables המאוחסנים בקובץ יומן בחזרה לשרת NetworkTables, כגון סימולטור או רובוט. מקרי שימוש אפשריים כוללים:
 
@@ -12,7 +12,7 @@ AdvantageScope תומכת בפרסום נתוני NetworkTables המאוחסני
 
 תכונה זו דורשת קובץ יומן עם לכידה מלאה של נתוני NetworkTables, אותו ניתן להפיק באמצעות [מקליט הנתונים המובנה](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib. שימו לב כי AdvantageKit אינה תומכת בתכונה זו, מכיוון שהיא מאפשרת ניגון דטרמיניסטי מלא יותר בסימולציה.
 
-## תחילת העבודה
+## תחילת העבודה {#getting-started}
 
 כדי להתחיל בפרסום, קובץ יומן המכיל נתוני NetworkTables חייב להיות פתוח. לאחר מכן, יש לבצע את הצעדים הבאים:
 
@@ -25,7 +25,7 @@ AdvantageScope תומכת בפרסום נתוני NetworkTables המאוחסני
 
 להפסקת הפרסום, יש ללחוץ על `קובץ` > `פרסום נתוני NT` > `הפסקת פרסום`.
 
-## סינון שדות
+## סינון שדות {#filtering-fields}
 
 כברירת מחדל, AdvantageScope מפרסמת את כל שדות NetworkTables המאוחסנים בקובץ היומן (למעט נושאי מטא שפורסמו על ידי השרת). מקרי שימוש מסוימים, כמו חיקוי מעבד עזר, דורשים פרסום של סט מוגבל בלבד של שדות או תת-טבלאות. להתאמת סט קידומות השדות המורשות, יש לפתוח את חלון ההעדפות על ידי לחיצה על `אפליקציה` > `הצגת העדפות...` (Windows/Linux) או `AdvantageScope` > `הגדרות...` (macOS).
 
@@ -35,7 +35,7 @@ AdvantageScope תומכת בפרסום נתוני NetworkTables המאוחסני
 - "_SmartDashboard/Auto Selector_": כולל רק את הטבלה "SmartDashboard/Auto Selector".
 - "_limelight/tx,limelight/ty_": כולל רק את השדות "limelight/tx" ו-"limelight/ty".
 
-## מגבלות
+## מגבלות {#limitations}
 
 :::warning
 

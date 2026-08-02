@@ -1,6 +1,6 @@
-# 📂 日誌檔案
+# 📂 日誌檔案 {#log-files}
 
-## 支援的格式
+## 支援的格式 {#supported-formats}
 
 - **WPILOG (.wpilog)** - 由 WPILib 的[內建資料記錄](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html)與 AdvantageKit 產生。[URCL](/more-features/urcl) 可用於將來自 REV 馬達控制器的訊號擷取到 WPILOG 檔案中。
 - **駕駛站日誌 (.dslog 與 .dsevents)** - 由 [FRC Driver Station](https://docs.wpilib.org/zh-cn/stable/docs/software/driverstation/driver-station.html) 產生。開啟任一日誌類型時，AdvantageScope 會自動搜尋對應的日誌檔案。
@@ -14,7 +14,7 @@
 只有在同意 CTRE 的[最終使用者授權合約](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt)後才能開啟 Hoot 日誌檔案。首次開啟 Hoot 日誌檔案時，AdvantageScope 會顯示提示以確認同意這些條款。
 :::
 
-## 開啟日誌
+## 開啟日誌 {#opening-logs}
 
 在選單列中，點擊 `檔案` > `開啟日誌...`，然後從本機磁碟選擇一個或多個日誌檔案。將日誌檔案從系統檔案瀏覽器拖曳到 AdvantageScope 圖示或視窗也會將其開啟。
 
@@ -24,7 +24,7 @@
 
 <img src="/img/overview/log-files/open-file-1.png" alt="開啟儲存的日誌" />
 
-## 新增新日誌
+## 新增新日誌 {#adding-new-logs}
 
 開啟日誌檔案後，可以輕鬆將額外的日誌新增到視覺化中。時間戳記將自動重新對齊以與現有資料同步。
 

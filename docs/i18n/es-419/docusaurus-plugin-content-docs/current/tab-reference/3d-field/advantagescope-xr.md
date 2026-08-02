@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR le da vida a la vista 👀 [Campo 3D](/tab-reference/3d-field) en realidad aumentada, lo que te permite visualizar datos de formas totalmente nuevas. ¡Mira una rutina autónoma simulada a tamaño real, revisa la estrategia del partido con un modelo de campo de mesa, superpón información de diagnóstico en un robot real y mucho más! El siguiente video demuestra varios casos de uso para esta función:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Requisitos
+## Requisitos {#requirements}
 
 - **Host:** La aplicación de escritorio AdvantageScope en Windows, macOS o Linux (v4.1.0 o posterior). Cualquier firewall en el dispositivo debe estar [deshabilitado](https://docs.wpilib.org/es/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Cliente:** Un iPhone o iPad con iOS/iPadOS 16 o posterior. No se requiere instalación de la aplicación.
@@ -28,7 +28,7 @@ AdvantageScope XR solo es compatible con iOS y iPadOS. No hay planes inmediatos 
 
 </details>
 
-## Configuración
+## Configuración {#setup}
 
 1. En el sistema host, **haz clic en el botón "XR"** en cualquier pestaña de campo 3D. Solo una sesión de host de XR puede estar activa al mismo tiempo, por lo que hacer clic en este botón interrumpirá cualquier otra sesión activa.
 

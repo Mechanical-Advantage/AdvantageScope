@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 📦 התקנה
+# 📦 התקנה {#installation}
 
 הגרסה הנתמכת באופן רשמי של AdvantageScope זמינה ישירות מ-Team 6328 או דרך מתקין WPILib. מספר הפצות לא רשמיות זמינות גם כן.
 
@@ -24,13 +24,13 @@ sidebar_position: 1
 כל גרסה ראשית של AdvantageScope מופצת בינואר לפני אירוע ה-kickoff של FRC, כאשר מספר הגרסה תואם לשנה (למשל v26.0.0 תופץ בינואר 2026). גרסאות בטא ואלפא של AdvantageScope עשויות להיות זמינות בחודשים שלפני כל הפצה, עבור קבוצות המעוניינות להתנסות בתכונות חדשות ולספק משוב. **קבוצות המשתמשות בגרסאות מוקדמות אלו צריכות לצפות לראות בעיות ובאגים שאינם קיימים בהפצות יציבות.**
 :::
 
-## WPILib
+## WPILib {#wpilib}
 
 ### התקנה: [תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
 מתקין WPILib כולל גרסה עדכנית של AdvantageScope, אך עשוי לפגר אחרי הגרסה החדשה ביותר הזמינה להורדה ישירה. תיעוד להפעלת AdvantageScope מגרסת WPILib של VSCode ניתן למצוא [כאן](https://docs.wpilib.org/he/stable/docs/software/dashboards/advantagescope.html).
 
-## הפצות לא רשמיות
+## הפצות לא רשמיות {#unofficial-distributions}
 
 הפצות לא רשמיות של AdvantageScope זמינות מספר מקורות, אשר אינם נתמכים באופן רשמי על ידי מפתחי AdvantageScope/WPILib. הפצות אלו עשויות לפגר אחרי הגרסה החדשה ביותר של AdvantageScope הזמינה ממקורות רשמיים. יש ליצור קשר ישירות עם המתחזקים במקרה של בעיות.
 

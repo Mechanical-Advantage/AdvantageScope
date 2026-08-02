@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Diagnósticos do Phoenix
+# Diagnósticos do Phoenix {#phoenix-diagnostics}
 
 O AdvantageScope suporta transmissão ao vivo de sinais de dispositivos Phoenix 6 **sem nenhuma configuração no código do usuário**. Isso permite fácil depuração e ajuste de dispositivos Phoenix usando a interface familiar e o poder total do AdvantageScope:
 

@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Publishing NetworkTables Data
+# Publishing NetworkTables Data {#publishing-networktables-data}
 
 AdvantageScope supports publishing NetworkTables data stored in a log file back to a NetworkTables server such as a simulator or robot. Possible use cases include:
 
@@ -12,7 +12,7 @@ AdvantageScope supports publishing NetworkTables data stored in a log file back 
 
 This feature requires a log file with a full capture of NetworkTables data, which can be generated using WPILib's [built-in data logger](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html). Note that AdvantageKit does not support this feature as it instead enables more complete deterministic replay in simulation.
 
-## Getting Started
+## Getting Started {#getting-started}
 
 To start publishing, a log file containing NetworkTables data must be open. Then, follow these steps:
 
@@ -25,7 +25,7 @@ All fields will be published using their stored values at the _selected timestam
 
 To stop publishing, click `File` > `Publish NT Data` > `Stop Publishing`.
 
-## Filtering Fields
+## Filtering Fields {#filtering-fields}
 
 By default, AdvantageScope publishes all NetworkTables fields stored in the log file (except server-published meta topics). Some use cases, like mimicking a coprocessor, require only publishing a limited set of fields or subtables. To adjust the set of allowed field prefixes, open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
@@ -35,7 +35,7 @@ The "NT Publish Prefixes" option sets the allowable prefixes for fields publishe
 - "_SmartDashboard/Auto Selector_": Include only the "SmartDashboard/Auto Selector" table.
 - "_limelight/tx,limelight/ty_": Include only the "limelight/tx" and "limelight/ty" fields.
 
-## Limitations
+## Limitations {#limitations}
 
 :::warning
 

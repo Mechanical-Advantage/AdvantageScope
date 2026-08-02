@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ מנגנון
+# ⚙️ מנגנון {#mechanism}
 
 כרטיסיית המנגנון מציגה מנגנון מפרקי שנוצר באמצעות אובייקט [Mechanism2d](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/mech2d-widget.html) אחד או יותר.
 
@@ -24,11 +24,11 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## הוספת מנגנונים
+## הוספת מנגנונים {#adding-mechanisms}
 
 כדי להתחיל, יש לגרור `Mechanism2d` לחלונית הבקרה. ניתן למחוק מנגנון באמצעות לחצן ה-X, או להסתירו זמנית על ידי לחיצה על סמל העין או לחיצה כפולה על שם השדה. להסרת כל המנגנונים, יש ללחוץ על פח האשפה ליד כותרת הציר ולאחר מכן על `ניקוי הכול`. ניתן לסדר מחדש מנגנונים ברשימה על ידי לחיצה וגרירה.
 
-## פרסום נתונים
+## פרסום נתונים {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

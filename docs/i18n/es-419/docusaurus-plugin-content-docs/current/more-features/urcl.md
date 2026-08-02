@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 URCL
+# 📝 URCL {#unofficial-rev-compatible-logger}
 
 :::info
 Nuevo en 2026, REVLib incluye una solución de registro oficial para guardar datos del Spark Max y Spark Flex a un log de REV CAN (`.revlog`). Consulta [aquí](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) para obtener más detalles. Estos archivos se pueden abrir directamente en AdvantageScope, pero no se pueden sincronizar con precisión con otras fuentes de datos.
@@ -27,7 +27,7 @@ Después de la configuración, las tramas de CAN periódicas de todos los dispos
 Como esta biblioteca no es una herramienta oficial de REV, las consultas de soporte deben dirigirse a la [página de issues](https://github.com/Mechanical-Advantage/URCL/issues) de URCL o a software@team6328.org en lugar del contacto de soporte de REV.
 :::
 
-## Configuración
+## Configuración {#setup}
 
 Instala la dependencia de proveedor (vendordep) de URCL siguiendo las instrucciones para instalar [bibliotecas de terceros](https://docs.wpilib.org/es/stable/docs/software/vscode-overview/3rd-party-libraries.html) utilizando el administrador de dependencias en VSCode. Alternativamente, puedes usar la siguiente URL JSON de proveedor:
 
@@ -111,7 +111,7 @@ Para minimizar el uso de CAN, la mayoría de las tramas de estado para los dispo
 Para obtener más detalles, consulta la [documentación de REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Recomendamos usar el [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) al configurar el Spark para habilitar manualmente cualquier señal que desees incluir en el archivo de registro.
 :::
 
-## Uso de SysId
+## Uso de SysId {#sysid-usage}
 
 1. Después de configurar URCL como se muestra arriba, configura la rutina SysId usando `null` para el consumidor del registro del mecanismo. A continuación se muestra un ejemplo para Java. Esta configuración se puede realizar dentro de la clase del subsistema.
 

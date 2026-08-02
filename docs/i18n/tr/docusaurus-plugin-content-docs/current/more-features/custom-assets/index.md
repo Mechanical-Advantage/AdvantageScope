@@ -1,4 +1,4 @@
-# ⚙️ Özel varlıklar
+# ⚙️ Özel varlıklar {#custom-assets}
 
 AdvantageScope düz saha görselleri, saha modelleri, robot modelleri ve joystick yapılandırmalarından oluşan varsayılan bir küme kullanır. Basit varlıklar (örneğin evergreen sahaları) ilk kuruluma dahildir. Detaylı varlıklar (örneğin sezona özel sahalar), AdvantageScope internete bağlı olduğunda arka planda otomatik olarak indirilir. Bu indirmelerin durumunu kontrol etmek için `Uygulama`/`AdvantageScope` > `Varlık indirme durumu...` seçeneğine tıklayın.
 
@@ -8,7 +8,7 @@ Varlık kümesi istenirse daha fazla seçenek eklemek üzere özelleştirilebili
 Varlıkları alternatif bir konumdan yüklemek için `Uygulama`/`AdvantageScope` > `Özel varlıklar klasörünü kullan` seçeneğine tıklayın. Seçilen klasör, ayrı alt klasörlerde birden fazla varlığın yerleştirilebileceği _üst klasör_ olmalıdır. Bu özellik, özel varlıklarin robot koduyla birlikte sürüm kontrolü altında saklanmasına olanak tanır.
 :::
 
-## Genel format
+## Genel format {#general-format}
 
 Tüm varlıklar "TÜR_AD" adlandırma kuralına sahip klasörlerde saklanır. Klasör için kullanılan AD, AdvantageScope tarafından görüntülenmez. Olası varlık türleri şunlardır:
 
@@ -30,13 +30,13 @@ Bu klasör aşağıda açıklandığı gibi "config.json" adlı bir dosya ve bir
 }
 ```
 
-## 3B robot modelleri
+## 3B robot modelleri {#3d-robot-models}
 
-### Video öğreticisi
+### Video öğreticisi {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Genel bakış
+### Genel bakış {#overview}
 
 Klasörde "model.glb" adında bir model bulunmalıdır. CAD dosyaları glTF formatına dönüştürülmelidir; ayrıntılar için [bu sayfaya](gltf-convert) bakın. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
@@ -70,7 +70,7 @@ AdvantageScope, detay seviyesinin seçilen [işleme moduna](/tab-reference/3d-fi
 
 :::
 
-### Eklemli bileşenler
+### Eklemli bileşenler {#articulated-components}
 
 :::warning
 Eklemli bileşenlerin kurulumu karmaşık ve zaman alıcı olabilir. **3B sahada mekanizmaları görselleştirmek** için daha kolaylaştırılmış bir yaklaşım sunan AdvantageScope'un 3B [`Mechanism2d` desteğini](/tab-reference/3d-field#2d-mechanisms) kullanmayı düşünün.
@@ -93,7 +93,7 @@ Bileşen yapılandırması robotun yapılandırma dosyasında sağlanır. "compo
 ]
 ```
 
-#### Kurulum süreci
+#### Kurulum süreci {#setup-process}
 
 Eklemli bileşenlerin konumlarını kalibre etmek için aşağıdaki süreci öneririz:
 
@@ -109,7 +109,7 @@ Eklemli bileşenlerin konumlarını kalibre etmek için aşağıdaki süreci ön
 
 6. Robot kodundan her bileşen için yeni tanımlanan orijinlere dayalı olacak gerçek bileşen pozlarını yayınlayın. Örneğin bir kol segmentinin pozu, segment yönünde yönlendirilmiş kol ekleminde konumlandırılacaktır.
 
-## Joystickler
+## Joystickler {#joysticks}
 
 Klasörde "image.png" adında bir görsel bulunmalıdır. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
@@ -126,7 +126,7 @@ Düğmeler, joystickler ve eksen değerleri hem [SDL](https://www.libsdl.org) ba
 NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarlarıyla (örneğin `sourceIndex`) geriye dönük uyumludur. **Tüm yeni joystickler, mevcut FIRST Sürücü İstasyonu ile uyumluluk için açık SDL bağlamaları (örneğin `sdlSourceIndex`) kullanmalıdır.**
 :::
 
-### Tek düğme / POV değeri
+### Tek düğme / POV değeri {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +144,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-### İki eksenli joystick
+### İki eksenli joystick {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +167,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-### Tek eksen
+### Tek eksen {#single-axis}
 
 ```json
 {
@@ -184,7 +184,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-### Dokunmatik yüzey
+### Dokunmatik yüzey {#touchpad}
 
 ```json
 {
@@ -196,7 +196,7 @@ NI bağlamaları için AdvantageScope eski ön eksiz yapılandırma anahtarları
 }
 ```
 
-## Düz saha görselleri
+## Düz saha görselleri {#flat-field-images}
 
 Klasörde "image.png" adında bir görsel bulunmalıdır. Kırmızı ittifak solda olacak şekilde yönlendirilmelidir. Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 
@@ -218,9 +218,9 @@ Klasörde "image.png" adında bir görsel bulunmalıdır. Kırmızı ittifak sol
 }
 ```
 
-## 3B saha modelleri
+## 3B saha modelleri {#3d-field-models}
 
-Klasörde "model.glb" adında bir model bulunmalıdır. Tüm rotasyonlar uygulandıktan sonra saha kırmızı ittifak solda olacak şekilde yönlendirilmelidir. CAD dosyaları glTF formatına dönüştürülmelidir; ayrıntılar için [bu sayfaya](gltf-convert) bakın. Oyun objesi modelleri "gamePieces" dizisinde görünme sırasına göre "model_DİZİN.glb" adlandırma kuralını izler. Burada bildirilen AprilTag'ler diğer yapılandırma seçeneklerinden bağımsız olarak her zaman bir [merkez/kırmızı](/more-features/coordinate-systems#centerred-systemcore) koordinat sistemi kullanılarak konumlandırılır.
+Klasörde "model.glb" adında bir model bulunmalıdır. Tüm rotasyonlar uygulandıktan sonra saha kırmızı ittifak solda olacak şekilde yönlendirilmelidir. CAD dosyaları glTF formatına dönüştürülmelidir; ayrıntılar için [bu sayfaya](gltf-convert) bakın. Oyun objesi modelleri "gamePieces" dizisinde görünme sırasına göre "model_DİZİN.glb" adlandırma kuralını izler. Burada bildirilen AprilTag'ler diğer yapılandırma seçeneklerinden bağımsız olarak her zaman bir [merkez/kırmızı](/more-features/coordinate-systems#center-red) koordinat sistemi kullanılarak konumlandırılır.
 
 Yapılandırma dosyası aşağıdaki formatta olmalıdır:
 

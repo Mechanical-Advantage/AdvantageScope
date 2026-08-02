@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# NetworkTables verilerini yayınlama
+# NetworkTables verilerini yayınlama {#publishing-networktables-data}
 
 AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simülatör veya robot gibi bir NetworkTables sunucusuna tekrar yayınlamayı destekler. Olası kullanım durumları şunlardır:
 
@@ -12,7 +12,7 @@ AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simül
 
 Bu özellik, NetworkTables verilerinin tam bir kaydını içeren bir log dosyası gerektirir; bu kayıt WPILib'in [yerleşik veri loglayıcısı](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) kullanılarak oluşturulabilir. AdvantageKit'in bunun yerine simülasyonda daha eksiksiz deterministik yeniden oynatmaya olanak tanıdığından bu özelliği desteklemediğini unutmayın.
 
-## Başlarken
+## Başlarken {#getting-started}
 
 Yayınlamaya başlamak için NetworkTables verilerini içeren bir log dosyası açık olmalıdır. Ardından şu adımları izleyin:
 
@@ -25,7 +25,7 @@ Tüm alanlar, birçok AdvantageScope sekmesi tarafından kullanılan _seçili za
 
 Yayınlamayı durdurmak için `Dosya` > `NT verilerini yayınla` > `Yayınlamayı durdur` seçeneğine tıklayın.
 
-## Alanları filtreleme
+## Alanları filtreleme {#filtering-fields}
 
 Varsayılan olarak AdvantageScope, log dosyasında saklanan tüm NetworkTables alanlarını yayınlar (sunucu tarafından yayınlanan meta başlıklar hariç). Bir yan işlemciyi taklit etmek gibi bazı kullanım durumları, yalnızca sınırlı bir alan veya alt tablo kümesinin yayınlanmasını gerektirir. İzin verilen alan ön ekleri kümesini ayarlamak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın.
 
@@ -35,7 +35,7 @@ Varsayılan olarak AdvantageScope, log dosyasında saklanan tüm NetworkTables a
 - "_SmartDashboard/Auto Selector_": Yalnızca "SmartDashboard/Auto Selector" tablosunu dahil et.
 - "_limelight/tx,limelight/ty_": Yalnızca "limelight/tx" ve "limelight/ty" alanlarını dahil et.
 
-## Sınırlamalar
+## Sınırlamalar {#limitations}
 
 :::warning
 

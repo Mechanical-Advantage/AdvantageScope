@@ -1,14 +1,14 @@
-# Unit Support
+# Unit Support {#unit-support}
 
 The line graph tab is unit-aware, which means that numeric values can be easily converted between compatible unit types. When unit information is available, all numeric values are also accurately labeled when displayed in the axes or legends. See [here](#supported-formats) for more information on publishing unit information. AdvantageScope provides several tools to quickly convert between units:
 
 - When adding **fields on the same axis with compatible unit types**, AdvantageScope automatically converts both fields to the same unit. This is reflected in the labeling of the Y axis and legend.
 - Click the three dots near the axis title to **quickly switch to alternative units**. This list includes the most common units that are compatible with the selected fields.
-- Enable **integration or differentiation** ([docs](/tab-reference/line-graph/#integration--differentiation)) to see the accurate integral or derivative units. The base unit can be adjusted using the menu to support filtering in non-native units.
+- Enable **integration or differentiation** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) to see the accurate integral or derivative units. The base unit can be adjusted using the menu to support filtering in non-native units.
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
 
-## Supported Formats
+## Supported Formats {#supported-formats}
 
 AdvantageScope supports several methods to provide unit information about each field. Most common units are supported; for a complete list, check the popup menu when configuring [manual conversion](#manual-conversion).
 
@@ -18,11 +18,11 @@ For (2) and (3), unit types are parsed using strings. AdvantageScope supports mu
 Not sure whether units are being parsed correctly? Check whether a unit type is displayed on the Y axis when adding a field to the line graph.
 :::
 
-### 🥇 Struct Units
+### 🥇 Struct Units {#struct-units}
 
 AdvantageScope automatically uses the native units for common structured data types like `Rotation2d` and `Translation3d`. Publishing applicable values using these formats is **always the best way to publish data** and ensures maximum compatibility when visualizing geometry data.
 
-### 🥈 Field Metadata
+### 🥈 Field Metadata {#field-metadata}
 
 The WPILOG and NetworkTables formats support publishing additional "metadata" for each field. AdvantageScope looks for JSON fields named "unit" or "units" containing a string name for the unit type (using spaces, camel-case, pascal-case, or snake-case). To check the metadata for each field, hover the cursor over the field name in the sidebar.
 
@@ -30,7 +30,7 @@ The WPILOG and NetworkTables formats support publishing additional "metadata" fo
 AdvantageKit includes support for unit metadata when logging inputs and outputs, including annotation logging. Check the documentation [here](https://docs.advantagekit.org/data-flow/supported-types#units) for details.
 :::
 
-### 🥉 Field Naming
+### 🥉 Field Naming {#field-naming}
 
 As a fallback, AdvantageScope attempts to determine the correct unit type by parsing the name of each field. **The unit type must be included as a suffix.** AdvantageScope supports a variety of naming schemes. Some valid options are listed below:
 
@@ -44,7 +44,7 @@ Naming is _not_ case-sensitive when using snake-case or space separators.
 If units are parsed incorrectly, click `Manual Units` > `Disable Automatic Units` to ignore unit information. Manual conversion can then be used to switch to alternative units.
 :::
 
-## Manual Conversion
+## Manual Conversion {#manual-conversion}
 
 When unit metadata is unavailable or inaccurate, axes can also be manually configured to convert between units (or ignore unit metadata entirely).
 

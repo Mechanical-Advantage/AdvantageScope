@@ -1,8 +1,8 @@
-# המרת קובצי Onshape ו-STEP ל-glTF
+# המרת קובצי Onshape ו-STEP ל-glTF {#converting-onshape-and-step-files-to-gltf}
 
 תצוגת ה-3D של AdvantageScope מקבלת מודלים מותאמים אישית עבור מגרשים ורובוטים, אותם ניתן להתקין תוך שימוש בתהליך המתואר [כאן](/more-features/custom-assets). כל המודלים חייבים להשתמש בפורמט הקבצים [glTF](https://www.khronos.org/gltf/), שנבחר בשל יעילותו בעת אחסון וטעינת מודלים. שימו לב כי AdvantageScope משתמשת בגרסה הבינארית (.glb), הכוללת את כל המשאבים בקובץ יחיד, ולא בפורמט ה-JSON הטהור (.gltf).
 
-## המרת Onshape ל-STEP
+## המרת Onshape ל-STEP {#converting-onshape-to-step}
 
 בעוד Onshape כוללת אפשרות ייצוא ל-glTF, נתון זה מייצר לעיתים מזומנות קבצים גדולים מאוד שקשה לנהלם. במקום זאת, מומלץ לייצא מ-Onshape ל-STEP, ולאחר מכן לעקוב אחר ההוראות בקטע הבא להמרה ל-glTF.
 
@@ -16,7 +16,7 @@
 
 3. המתינו להמרת הקובץ ולהורדתו. נתון זה עשוי לקחת מספר דקות.
 
-## המרת STEP ל-glTF
+## המרת STEP ל-glTF {#converting-step-to-gltf}
 
 1. הורידו את [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). אפליקציה חינמית זו מסוגלת להמיר בין פורמטי 3D רבים, כולל STEP ו-glTF.
 

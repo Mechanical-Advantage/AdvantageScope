@@ -1,10 +1,10 @@
-# 單位支援
+# 單位支援 {#unit-support}
 
 折線圖分頁具有單位感知功能，這表示數值可以輕鬆在相容的單位類型之間進行轉換。當單位資訊可用時，所有數值在顯示於軸或圖例時也會有精確的標籤。有關發布單位資訊的更多資訊，請參閱[此處](#supported-formats)。AdvantageScope 提供了幾種工具來快速在單位之間進行轉換：
 
 - 在**同一軸上新增具有相容單位類型的欄位**時，AdvantageScope 會自動將兩個欄位轉換為相同的單位。這會反映在 Y 軸與圖例的標籤中。
 - 點擊軸標題附近的三個點，以**快速切換至替代單位**。此清單包含與選取欄位相容的最常見單位。
-- 啟用**積分或微分**（[文件](/tab-reference/line-graph/#integration--differentiation)）以查看精確的積分或導數單位。可以使用選單調整基礎單位以支援在非原生單位中進行篩選。
+- 啟用**積分或微分**（[文件](/tab-reference/line-graph/#integration-and-differentiation)）以查看精確的積分或導數單位。可以使用選單調整基礎單位以支援在非原生單位中進行篩選。
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="單位感知圖表" />
 
@@ -18,11 +18,11 @@ AdvantageScope 支援幾種方法來提供每個欄位的單位資訊。支援�
 不確定單位是否正確解析？請在將欄位新增至折線圖時，確認 Y 軸上是否顯示了單位類型。
 :::
 
-### 🥇 Struct 單位
+### 🥇 Struct 單位 {#struct-units}
 
 AdvantageScope 自動使用常見結構化資料類型（如 `Rotation2d` 與 `Translation3d`）的原生單位。使用這些格式發布適用的數值**始終是發布資料的最佳方式**，並確保在視覺化幾何資料時的最大相容性。
 
-### 🥈 欄位中繼資料
+### 🥈 欄位中繼資料 {#field-metadata}
 
 WPILOG 與 NetworkTables 格式支援為每個欄位發布額外的「中繼資料」。AdvantageScope 會尋找名為「unit」或「units」的 JSON 欄位，其中包含單位類型的字串名稱（使用空格、駝峰式大小寫、帕斯卡大小寫或下底線格式）。要檢查每個欄位的中繼資料，請將游標懸停於側邊欄中的欄位名稱上。
 
@@ -30,7 +30,7 @@ WPILOG 與 NetworkTables 格式支援為每個欄位發布額外的「中繼資�
 AdvantageKit 在記錄輸入與輸出（包括注釋記錄）時支援單位中繼資料。請在[此處](https://docs.advantagekit.org/data-flow/supported-types#units)查看文件了解詳細資訊。
 :::
 
-### 🥉 欄位命名
+### 🥉 欄位命名 {#field-naming}
 
 作為後備方案，AdvantageScope 會嘗試透過解析每個欄位的名稱來確定正確的單位類型。**單位類型必須作為後綴包含在內。** AdvantageScope 支援各種命名方案。下面列出了一些有效選項：
 

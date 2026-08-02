@@ -48,7 +48,7 @@ AdvantageScope'un tüm özellikleri, 2027-2028 sezonunda Systemcore'a geçişten
 - Y eksenlerinin ve değer göstergelerinin hassas etiketlenmesi
 - Uyumlu birimlere hızlı dönüştürme (açılır pencere yok)
 - Tek bir eksen içinde uyumlu birim türlerinin örtük dönüştürülmesi
-- [İntegrali ve türevi alınmış](/tab-reference/line-graph/#integration--differentiation) birimlerin doğru gösterimi
+- [İntegrali ve türevi alınmış](/tab-reference/line-graph/#integration-and-differentiation) birimlerin doğru gösterimi
 
 Aşağıdaki ekran görüntüsü tüm bu özellikleri çalışırken göstermektedir. Sol eksenin farklı açısal hız birimlerine sahip alanları içerdiğini ve sağ eksenin türevi alınmış ve yerel olmayan bir birimde (derece) görüntülenen değerleri içerdiğini unutmayın. Birim seçimi de her bir eksen için doğrudan kontrol menüsüne entegre edilen uyumlu birim seçenekleriyle artık her zamankinden daha kolay.
 

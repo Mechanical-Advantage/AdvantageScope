@@ -1,6 +1,6 @@
-# 📂 קובצי יומן
+# 📂 קובצי יומן {#log-files}
 
-## פורמטים נתמכים
+## פורמטים נתמכים {#supported-formats}
 
 - **WPILOG (.wpilog)** - מופק על ידי [תיעוד הנתונים המובנה](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib ו-AdvantageKit. ניתן להשתמש ב-[URCL](/more-features/urcl) כדי ללכוד אותות מבקרי המנוע של REV לקובץ WPILOG.
 - **יומנים של Driver Station (.dslog ו-.dsevents)** - מופקים על ידי ה-[FRC Driver Station](https://docs.wpilib.org/he/stable/docs/software/driverstation/driver-station.html). AdvantageScope מחפשת באופן אוטומטי את קובץ היומן התואם בעת פתיחת כל אחד מסוגי היומנים.
@@ -14,7 +14,7 @@
 קובצי יומן של Hoot ניתנים לפתיחה רק לאחר הסכמה ל[הסכם הרישיון למשתמשי קצה (EULA)](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) של CTRE. AdvantageScope מציגה הודעה לאישור התנאים הללו בעת פתיחת קובץ יומן של Hoot בפעם הראשונה.
 :::
 
-## פתיחת יומנים
+## פתיחת יומנים {#opening-logs}
 
 בסרגל התפריטים, יש ללחוץ על `קובץ` > `פתיחת יומן(ים)...`, ולאחר מכן לבחור קובץ יומן אחד או יותר מהדיסק המקומי. גרירת קובץ יומן בדפדפן הקבצים של המערכת אל הסמל או החלון של AdvantageScope תגרום גם היא לפתיחתו.
 
@@ -24,7 +24,7 @@
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## הוספת יומנים חדשים
+## הוספת יומנים חדשים {#adding-new-logs}
 
 לאחר פתיחת קובץ יומן, ניתן להוסיף בקלות יומנים נוספים לוויזואליזציה. חותמות הזמן ייושרו מחדש באופן אוטומטי לסנכרון עם הנתונים הקיימים.
 

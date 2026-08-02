@@ -1,10 +1,10 @@
-# Prise en charge des unités
+# Prise en charge des unités {#unit-support}
 
 L'onglet graphique linéaire prend en compte les unités, ce qui signifie que les valeurs numériques peuvent être facilement converties entre des types d'unités compatibles. Lorsque les informations d'unité sont disponibles, toutes les valeurs numériques sont également étiquetées avec précision lorsqu'elles sont affichées dans les axes ou les légendes. Voir [ici](#supported-formats) pour plus d'informations sur la publication des informations d'unité. AdvantageScope fournit plusieurs outils pour convertir rapidement entre les unités :
 
 - Lors de l'ajout de **champs sur le même axe avec des types d'unités compatibles**, AdvantageScope convertit automatiquement les deux champs dans la même unité. Cela se reflète dans l'étiquetage de l'axe Y et de la légende.
 - Cliquez sur les trois points près du titre de l'axe pour **passer rapidement à d'autres unités**. Cette liste comprend les unités les plus courantes qui sont compatibles avec les champs sélectionnés.
-- Activez l'**intégration ou la différenciation** ([docs](/tab-reference/line-graph/#integration--differentiation)) pour voir les unités intégrales ou dérivées précises. L'unité de base peut être ajustée à l'aide du menu pour prendre en charge le filtrage dans des unités non natives.
+- Activez l'**intégration ou la différenciation** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) pour voir les unités intégrales ou dérivées précises. L'unité de base peut être ajustée à l'aide du menu pour prendre en charge le filtrage dans des unités non natives.
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="Graphiques avec unités" />
 
@@ -18,11 +18,11 @@ Pour (2) et (3), les types d'unités sont analysés à l'aide de chaînes. Advan
 Vous ne savez pas si les unités sont correctement analysées? Vérifiez si un type d'unité est affiché sur l'axe Y lors de l'ajout d'un champ au graphique linéaire.
 :::
 
-### 🥇 Unités de structure
+### 🥇 Unités de structure {#struct-units}
 
 AdvantageScope utilise automatiquement les unités natives pour les types de données structurées courants comme `Rotation2d` et `Translation3d`. La publication de valeurs applicables à l'aide de ces formats est **toujours le meilleur moyen de publier des données** et garantit une compatibilité maximale lors de la visualisation des données géométriques.
 
-### 🥈 Métadonnées de champ
+### 🥈 Métadonnées de champ {#field-metadata}
 
 Les formats WPILOG et NetworkTables prennent en charge la publication de « métadonnées » supplémentaires pour chaque champ. AdvantageScope recherche les champs JSON nommés « unit » ou « units » contenant un nom de chaîne pour le type d'unité (en utilisant des espaces, camel-case, pascal-case ou snake-case). Pour vérifier les métadonnées de chaque champ, survolez le nom du champ dans la barre latérale.
 
@@ -30,7 +30,7 @@ Les formats WPILOG et NetworkTables prennent en charge la publication de « mé
 AdvantageKit inclut la prise en charge des métadonnées d'unité lors de l'enregistrement des entrées et des sorties, y compris la journalisation des annotations. Consultez la documentation [ici](https://docs.advantagekit.org/data-flow/supported-types#units) pour plus de détails.
 :::
 
-### 🥉 Nommage des champs
+### 🥉 Nommage des champs {#field-naming}
 
 En cas de repli, AdvantageScope tente de déterminer le type d'unité correct en analysant le nom de chaque champ. **Le type d'unité doit être inclus en tant que suffixe.** AdvantageScope prend en charge une variété de schémas de nommage. Certaines options valides sont énumérées ci-dessous :
 

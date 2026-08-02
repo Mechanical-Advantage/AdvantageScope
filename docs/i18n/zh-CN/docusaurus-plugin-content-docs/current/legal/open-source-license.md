@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 开源许可证
+# 开源许可证 {#open-source-license}
 
 Copyright (c) 2021-2026 Littleton Robotics. All rights reserved.
 

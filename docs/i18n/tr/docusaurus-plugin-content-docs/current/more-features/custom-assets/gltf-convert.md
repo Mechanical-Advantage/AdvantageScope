@@ -1,8 +1,8 @@
-# Onshape ve STEP dosyalarını glTF'ye dönüştürme
+# Onshape ve STEP dosyalarını glTF'ye dönüştürme {#converting-onshape-and-step-files-to-gltf}
 
 AdvantageScope'un 3B görünümü, [burada](/more-features/custom-assets) açıklanan süreç kullanılarak kurulabilen sahalar ve robotlar için özel modelleri kabul eder. Tüm modeller, modelleri saklarken ve yüklerken verimliliği nedeniyle seçilen [glTF](https://www.khronos.org/gltf/) dosya formatını kullanmalıdır. AdvantageScope'un saf JSON formu (.gltf) yerine tüm kaynakları tek bir dosyada içeren ikili formu (.glb) kullandığını unutmayın.
 
-## Onshape'i STEP'e dönüştürme
+## Onshape'i STEP'e dönüştürme {#converting-onshape-to-step}
 
 Onshape, glTF için bir dışa aktarma seçeneği içerse de bu genellikle yönetilmesi zor çok büyük dosyalar üretir. Bunun yerine Onshape'ten STEP'e dışa aktarılması, ardından glTF'ye dönüştürmek için bir sonraki bölümdeki talimatların izlenmesi önerilir.
 
@@ -16,7 +16,7 @@ Onshape, glTF için bir dışa aktarma seçeneği içerse de bu genellikle yöne
 
 3. Dosyanın dönüştürülmesini ve indirilmesini bekleyin. Bu birkaç dakika sürebilir.
 
-## STEP'i glTF'ye dönüştürme
+## STEP'i glTF'ye dönüştürme {#converting-step-to-gltf}
 
 1. [CAD Assistant](https://www.opencascade.com/products/cad-assistant/) uygulamasını indirin. Bu ücretsiz uygulama, STEP ve glTF dahil birçok 3B format arasında dönüşüm yapabilir.
 

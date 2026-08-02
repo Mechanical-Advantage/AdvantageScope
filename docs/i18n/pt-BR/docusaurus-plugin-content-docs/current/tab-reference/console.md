@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Console
+# 💬 Console {#console}
 
 A visualização do console é projetada para visualizar um único campo de texto com dados do console. Alguns campos sugeridos estão listados abaixo.
 

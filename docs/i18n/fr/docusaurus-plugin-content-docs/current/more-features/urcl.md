@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Unofficial REV-Compatible Logger
+# 📝 Unofficial REV-Compatible Logger {#unofficial-rev-compatible-logger}
 
 :::info
 Nouveauté 2026, REVLib inclut une solution de journalisation officielle pour enregistrer des données du Spark Max et du Spark Flex dans un journal REV CAN (`.revlog`). Voir [ici](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) pour plus de détails. Ces fichiers peuvent être ouverts directement dans AdvantageScope, mais ne peuvent pas être synchronisés avec précision avec d'autres sources de données.
@@ -27,7 +27,7 @@ Après la configuration, les trames CAN périodiques de tous les appareils Spark
 Comme cette bibliothèque n'est pas un outil officiel de REV, les demandes d'assistance doivent être adressées à la [page des problèmes](https://github.com/Mechanical-Advantage/URCL/issues) d'URCL ou à software@team6328.org plutôt qu'au contact d'assistance de REV.
 :::
 
-## Configuration
+## Configuration {#setup}
 
 Installez la dépendance vendordep URCL en suivant les instructions d'installation des [bibliothèques tierces](https://docs.wpilib.org/fr/stable/docs/software/vscode-overview/3rd-party-libraries.html) à l'aide du gestionnaire de dépendances dans VSCode. Alternativement, vous pouvez utiliser l'URL JSON du fournisseur suivante :
 
@@ -111,7 +111,7 @@ Pour minimiser l'utilisation du bus CAN, la plupart des trames d'état pour les 
 Pour plus de détails, consultez la [documentation REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Nous recommandons d'utiliser la [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) lors de la configuration du Spark pour activer manuellement les signaux que vous souhaitez inclure dans le fichier journal.
 :::
 
-## Utilisation de SysId
+## Utilisation de SysId {#sysid-usage}
 
 1. Après avoir configuré URCL comme illustré ci-dessus, configurez la routine SysId en utilisant `null` pour le consommateur de journal de mécanisme. Un exemple est illustré ci-dessous pour Java. Cette configuration peut être effectuée dans la classe de sous-système.
 

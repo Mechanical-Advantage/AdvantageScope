@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR מפיחה חיים בתצוגת 👀 [מגרש 3D](/tab-reference/3d-field) במציאות רבודה (AR), ומאפשרת לכם לבצע ויזואליזציה של נתונים בדרכים חדשות לחלוטין. צפו במסלול אוטונומי בסימולציה בגודל טבעי, סקרו אסטרטגיית משחק עם מודל מגרש שולחני, שלבו מידע דיאגנוסטי על גבי רובוט אמיתי, ועוד הרבה יותר! הסרטון למטה מדגים מספר מקרי שימוש עבור תכונה זו:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## דרישות
+## דרישות {#requirements}
 
 - **מארח (Host):** אפליקציית שולחן העבודה של AdvantageScope ב-Windows, macOS, או Linux (גרסה v4.1.0 או מתקדמת יותר). כל חומת אש (firewall) במכשיר צריכה להיות [מושבתת](https://docs.wpilib.org/he/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **לקוח (Client):** מכשיר iPhone או iPad המפעיל iOS/iPadOS 16 או גרסה מתקדמת יותר. אין צורך בהתקנת אפליקציה.
@@ -28,7 +28,7 @@ AdvantageScope XR נתמכת ב-iOS וב-iPadOS בלבד. אין תוכניות 
 
 </details>
 
-## הגדרה
+## הגדרה {#setup}
 
 1. במערכת המארחת, **יש ללחוץ על לחצן "XR"** בכל כרטיסיית מגרש 3D. רק הפעלות מארח XR אחת יכולה להיות פעילה בו-זמנית, כך שלחיצה על לחצן זה תפסיק הפעלות פעילות אחרות.
 

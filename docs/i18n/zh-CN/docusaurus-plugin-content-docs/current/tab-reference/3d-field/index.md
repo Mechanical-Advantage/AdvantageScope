@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 3D 场地
+# 👀 3D 场地 {#3d-field}
 
 3D 场地展示机器人和场地的 3D 可视化效果。它可以用于常规 2D 位姿，但在处理 3D 计算（例如利用 AprilTag 定位）时特别有用。提供多种相机视图，包括场地相对、机器人相对和固定视图。[AdvantageScope XR](advantagescope-xr) 允许使用增强现实来可视化此选项卡。时间轴显示机器人何时处于启用状态，并可用于在日志数据中进行导航。
 
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 2026 FRC 场地模型与 **焊接版** 场地的 AprilTag 布局一致。焊接版和 AndyMark 场地之间的差异非常微小，但在基于 AndyMark 场地布局可视化 AprilTag 位姿时可能会有轻微（~0.5 英寸）的不对齐。
 :::
 
-## 添加对象
+## 添加对象 {#adding-objects}
 
 要开始使用，请将字段拖动到“位姿”部分。使用 X 按钮删除对象，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有对象，请点击轴标题附近的垃圾桶图标，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列对象。
 
@@ -38,7 +38,7 @@ import TabItem from '@theme/TabItem';
 AdvantageScope 支持用于 FTC 场地的多种尺寸的 AprilTag。尺寸以 **AprilTag 黑色部分的边长** 进行测量，不包括所需的白色边框。
 :::
 
-## 数据格式
+## 数据格式 {#data-format}
 
 几何数据应作为字节编码的结构体或 protobuf 进行发布。支持各种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
@@ -97,7 +97,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 </TabItem>
 </Tabs>
 
-## 机构与组件
+## 机构与组件 {#mechanisms-and-components}
 
 机构数据可以使用 2D 机构或铰接的 3D 组件进行可视化。
 
@@ -107,7 +107,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D 机构" />
 
-### 3D 组件
+### 3D 组件 {#3d-components}
 
 :::warning
 设置 3D 组件可能非常复杂且耗时。可考虑使用如上所述的 AdvantageScope 的 `Mechanism2d` 支持，它提供了在 3D 场地上可视化机构的更简化方法。
@@ -139,7 +139,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot Note 可视化" />
 
-## 相机选项
+## 相机选项 {#camera-options}
 
 要切换选定的相机模式，请右键单击渲染的场地视图。每个弹出窗口的相机模式和位置均独立控制，从而可以轻松创建多相机视图。
 
@@ -147,7 +147,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 右键单击渲染的场地视图并点击“设置 FOV...”以调整环绕相机和操控站相机的视野 (FOV)。
 :::
 
-### 环绕场地
+### 环绕场地 {#orbit-field}
 
 这是默认的相机模式，相机可以相对于场地自由移动。**左键点击 + 拖动** 旋转相机，**右键点击 + 拖动** 平移相机。**滚动** 放大和缩小。
 
@@ -155,11 +155,11 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 相机也可以使用键盘控制。**WASD** 键用于平移，**IJKL** 键用于旋转，**E** 和 **Q** 键用于垂直平移。
 :::
 
-### 环绕机器人
+### 环绕机器人 {#orbit-robot}
 
 此模式与“环绕场地”模式具有相同的控制方式，但相机的位姿锁定在相对于机器人的位置。这允许对机器人的运动进行“追踪”拍摄。
 
-### 操控站
+### 操控站 {#driver-station}
 
 此模式将相机锁定在其中一个操控站后方的典型眼高位置。可以手动选择要查看的操控站，或者选择“自动”以使用日志数据中存储的联盟和操控站编号。
 
@@ -167,7 +167,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 查看由 AdvantageKit 2023 或更早版本生成的日志数据时，自动选择操控站编号可能会不准确。
 :::
 
-### 固定相机
+### 固定相机 {#fixed-camera}
 
 每个机器人模型都配置了一组固定相机，例如视觉相机和驾驶员相机。这些相机具有固定的位置、宽高比和 FOV。这些视图通常有助于检查视觉数据或模拟驾驶员相机视图。在下面的示例中，显示了一个驾驶员相机。
 
@@ -179,7 +179,7 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 与其它位姿数据一致，“相机覆盖”位姿必须是 _场地相对_ 的，而不是机器人相对的。
 :::
 
-## 配置
+## 配置 {#configuration}
 
 可以使用下拉菜单配置场地模型。支持所有近期的 FRC 和 FTC 比赛。我们建议在图形性能有限的设备上使用“Evergreen”场地。“Axes”场地仅在原点显示 XYZ 轴，并带有场地外框以供参考标尺。
 

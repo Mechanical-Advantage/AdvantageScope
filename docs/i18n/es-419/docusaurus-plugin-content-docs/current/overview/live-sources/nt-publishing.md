@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Publicación de datos de NetworkTables
+# Publicación de datos de NetworkTables {#publishing-networktables-data}
 
 AdvantageScope admite la publicación de datos de NetworkTables almacenados en un archivo de registro de vuelta a un servidor NetworkTables como un simulador o un robot. Los posibles casos de uso incluyen:
 
@@ -12,7 +12,7 @@ AdvantageScope admite la publicación de datos de NetworkTables almacenados en u
 
 Esta función requiere un archivo de registro con una captura completa de datos de NetworkTables, que se puede generar utilizando el [registrador de datos incorporado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib. Ten en cuenta que AdvantageKit no admite esta función, ya que permite una reproducción determinista más completa en la simulación.
 
-## Empezando
+## Empezando {#getting-started}
 
 Para comenzar a publicar, debe haber un archivo de registro abierto que contenga datos de NetworkTables. Luego, sigue estos pasos:
 
@@ -25,7 +25,7 @@ Todos los campos se publicarán utilizando sus valores almacenados en la _marca 
 
 Para dejar de publicar, haz clic en `Archivo` > `Publicar datos NT` > `Detener publicación`.
 
-## Filtrado de campos
+## Filtrado de campos {#filtering-fields}
 
 Por defecto, AdvantageScope publica todos los campos de NetworkTables almacenados en el archivo de registro (excepto los temas meta publicados por el servidor). Algunos casos de uso, como imitar un coprocesador, requieren solo publicar un conjunto limitado de campos o subtablas.
 
@@ -35,7 +35,7 @@ Para ajustar el conjunto de prefijos de campos permitidos, abre la ventana de pr
 - "_SmartDashboard/Auto Selector_": Incluye solo la tabla "SmartDashboard/Auto Selector".
 - "_limelight/tx,limelight/ty_": Incluye solo los campos "limelight/tx" y "limelight/ty".
 
-## Limitaciones
+## Limitaciones {#limitations}
 
 :::warning
 

@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Diagnostice Phoenix
+# Diagnostice Phoenix {#phoenix-diagnostics}
 
 AdvantageScope suportă streaming live al semnalelor de la dispozitivele Phoenix 6 fără **nicio configurare în codul utilizatorului**. Acest lucru permite depanarea și ajustarea ușoară a dispozitivelor Phoenix folosind interfața familiară și întreaga putere a AdvantageScope:
 

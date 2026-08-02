@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 Campo 2D
+# 🗺 Campo 2D {#2d-field}
 
 La pestaña de campo 2D muestra una visualización 2D del robot superpuesta en un mapa del campo. También puede mostrar datos adicionales, como el estado de puntería de visión y poses de referencia.
 
@@ -24,7 +24,7 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 </details>
 
-## Agregar objetos
+## Agregar objetos {#adding-objects}
 
 Para comenzar, arrastra un campo a la sección "Poses". Elimina un objeto con el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
 
@@ -36,7 +36,7 @@ Para ver una lista completa de tipos de objetos compatibles, haz clic en el íco
 
 <img src="/img/tab-reference/2d-field-2.png" alt="Campo 2D con objetos" />
 
-## Formato de datos
+## Formato de datos {#data-format}
 
 Los datos de geometría deben publicarse como un struct o protobuf codificado en bytes. Se admiten varios tipos de geometría 2D y 3D, incluidos `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` y más.
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Configuración
+## Configuración {#configuration}
 
 - **Campo:** La imagen del campo a usar. Se admiten todos los juegos recientes de FRC y FTC. Para agregar una imagen de campo personalizada, consulta [Recursos personalizados](/more-features/custom-assets).
 - **Orientación:** La orientación de la imagen del campo en el panel del visor.

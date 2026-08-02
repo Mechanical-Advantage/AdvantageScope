@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR brings the 👀 [3D Field](/tab-reference/3d-field) view to life in augmented reality, enabling you to visualize data in all new ways. See a simulated auto in life size, review match strategy with a tabletop field model, overlay diagnostic information on a real robot, and so much more! The video below demonstrates several use cases for this feature:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Requirements
+## Requirements {#requirements}
 
 - **Host:** The AdvantageScope desktop application on Windows, macOS, or Linux (v4.1.0 or later). Any firewalls on the device should be [disabled](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client:** An iPhone or iPad running iOS/iPadOS 16 or later. No app installation is required.
@@ -28,7 +28,7 @@ AdvantageScope XR is only supported on iOS and iPadOS. There are no immediate pl
 
 </details>
 
-## Setup
+## Setup {#setup}
 
 1. On the host system, **click the "XR" button** on any 3D field tab. Only one XR host session may be active at the same time, so clicking this button will interrupt any other active sessions.
 
@@ -52,7 +52,7 @@ Heatmaps and swerve module velocities are not available yet in XR. All other obj
 AdvantageScope XR is a demanding application, and may experience performance issues depending on the complexity of the 3D scene. Consider using simpler robot models or fewer objects if necessary.
 :::
 
-## Options
+## Options {#options}
 
 The XR controls window presents several options that control how the model is displayed in augmented reality:
 
@@ -66,7 +66,7 @@ The XR controls window presents several options that control how the model is di
 - **Show Field:** Display the field model, including the field barrier and game-specific elements. Custom [game piece objects](/tab-reference/3d-field#game-piece-objects) are always displayed.
 - **Show Robots:** Display the robot models, can be disabled when overlaying data on a real robot (such as vision targets or 2D mechanisms).
 
-## Offline Usage
+## Offline Usage {#offline-usage}
 
 AdvantageScope XR does not require an internet connection. To ensure that the app is available offline, download AdvantageScope XR from the App Store using the link below. To connect to the AdvantageScope desktop application, scan the QR code using the iOS camera app or tap the "Scan" button in the AdvantageScope XR app.
 

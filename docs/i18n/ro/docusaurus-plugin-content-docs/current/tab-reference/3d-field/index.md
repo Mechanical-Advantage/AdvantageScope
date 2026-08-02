@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 Teren 3D
+# 👀 Teren 3D {#3d-field}
 
 Terenul 3D prezintă o vizualizare 3D a robotului și a terenului. Poate fi utilizat cu pose-uri 2D obișnuite, dar este deosebit de util când se lucrează cu calcule 3D (cum ar fi localizarea cu AprilTags). Sunt disponibile mai multe vizualizări de cameră, inclusiv relativă la teren, relativă la robot și fixă. [AdvantageScope XR](advantagescope-xr) permite ca această filă să fie vizualizată folosind realitatea augmentată. Cronologia arată când robotul este activat și poate fi utilizată pentru a naviga prin datele de log.
 
@@ -24,7 +24,7 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 Modelul terenului FRC 2026 este consecvent cu configurarea AprilTag pentru terenul **sudat** (welded). Diferențele dintre terenurile sudate și AndyMark sunt foarte minore, dar pot exista mici alinieri eronate (~0,5 inchi) la vizualizarea pose-urilor AprilTag bazate pe configurarea terenului AndyMark.
 :::
 
-## Adăugarea obiectelor
+## Adăugarea obiectelor {#adding-objects}
 
 Pentru a începe, trageți un câmp în secțiunea „Pose-uri”. Ștergeți un obiect folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate obiectele, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Obiectele pot fi reorganizate în listă prin clic și tragere.
 
@@ -38,7 +38,7 @@ Pentru a vedea o listă completă a tipurilor de obiecte suportate, dați clic p
 AdvantageScope suportă mai multe dimensiuni de AprilTags pentru terenurile FTC. Dimensiunile sunt măsurate ca **lungimea laturii secțiunii negre a AprilTag-ului**, fără a include bordura albă obligatorie.
 :::
 
-## Formatul datelor
+## Formatul datelor {#data-format}
 
 Datele de geometrie ar trebui publicate ca o structură codificată pe octeți (byte-encoded struct) sau protobuf. Diverse tipuri de geometrie 2D și 3D sunt suportate, inclusiv `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` și multe altele.
 
@@ -97,7 +97,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 </TabItem>
 </Tabs>
 
-## Mecanisme și componente
+## Mecanisme și componente {#mechanisms-and-components}
 
 Datele mecanismelor pot fi vizualizate folosind mecanisme 2D sau componente 3D articulate.
 
@@ -147,7 +147,7 @@ Pentru a comuta modul de cameră selectat, dați clic dreapta pe vizualizarea te
 Dați clic dreapta pe vizualizarea terenului randat și dați clic pe „Setează FOV...” pentru a ajusta FOV-ul camerelor de orbitare și Driver Station.
 :::
 
-### Orbitare teren
+### Orbitare teren {#orbit-field}
 
 Acesta este modul de cameră implicit, în care camera poate fi mutată liber relativ la teren. **Clic stânga + tragere** rotește camera, iar **clic dreapta + tragere** panoramează camera. **Derulați** pentru a mări și micșora.
 
@@ -155,11 +155,11 @@ Acesta este modul de cameră implicit, în care camera poate fi mutată liber re
 Camera poate fi de asemenea controlată folosind tastatura. Tastele **WASD** sunt utilizate pentru translație, tastele **IJKL** sunt utilizate pentru rotație, iar tastele **E** și **Q** sunt utilizate pentru translație verticală.
 :::
 
-### Orbitare robot
+### Orbitare robot {#orbit-robot}
 
 Acest mod are aceleași controale ca modul „Orbitare teren”, dar poziția camerei este blocată relativ la robot. Acest lucru permite cadre de urmărire ale mișcării robotului.
 
-### Driver Station
+### Driver Station {#driver-station}
 
 Acest mod blochează camera în spatele uneia dintre stațiile de conducere (Driver Station) la înălțimea tipică a ochilor. Fie alegeți manual stația de vizualizat, fie alegeți „Auto” pentru a utiliza alianța și numărul stației stocate în datele de log.
 
@@ -167,7 +167,7 @@ Acest mod blochează camera în spatele uneia dintre stațiile de conducere (Dri
 Selectarea automată a numărului stației poate fi inexactă la vizualizarea datelor de log produse de AdvantageKit 2023 sau anterior.
 :::
 
-### Cameră fixă
+### Cameră fixă {#fixed-camera}
 
 Fiecare model de robot este configurat cu un set de camere fixe, cum ar fi camerele de viziune și camerele șoferului. Aceste camere au poziții, raporturi de aspect și FOV-uri fixe. Aceste vizualizări sunt adesea utile pentru a verifica datele de viziune sau pentru a simula o vizualizare a camerei șoferului. În exemplul de mai jos este prezentată o cameră a șoferului.
 

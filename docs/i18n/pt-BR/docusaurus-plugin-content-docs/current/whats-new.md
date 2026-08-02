@@ -48,7 +48,7 @@ A guia 📉 [Gráfico de linha](/tab-reference/line-graph/) foi redesenhada para
 - Rotulagem precisa dos eixos Y e exibições de valores
 - Conversão rápida para unidades compatíveis (sem janelas pop-up)
 - Conversão implícita de tipos de unidades compatíveis em um único eixo
-- Exibição precisa de unidades [integradas e diferenciadas](/tab-reference/line-graph/#integration--differentiation)
+- Exibição precisa de unidades [integradas e diferenciadas](/tab-reference/line-graph/#integration-and-differentiation)
 
 A captura de tela abaixo mostra todos esses recursos em ação. Observe que o eixo esquerdo inclui campos com diferentes unidades de velocidade angular, e o eixo direito inclui valores que são diferenciados e exibidos em uma unidade não nativa (graus). Selecionar unidades também é mais fácil do que nunca, com opções de unidades compatíveis integradas diretamente no menu de controle de cada eixo.
 

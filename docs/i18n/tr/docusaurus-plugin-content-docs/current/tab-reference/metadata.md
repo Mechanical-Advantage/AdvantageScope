@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 Üst veri
+# 🔍 Üst veri {#metadata}
 
 Üst veri sekmesi, gizli "/Metadata" tablosuna veya AdvantageKit aracılığıyla yayınlanan değerleri gösterir. Üst veri anahtarları solda görüntülenir ve sütunlar farklı kaynaklardan (örneğin AdvantageKit kullanılırken gerçek ve yeniden oynatma) gelen verileri ayırır.
 

@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 🔢 Tableau
+# 🔢 Tableau {#table}
 
 La vue en tableau est conçue pour afficher en détail les changements de valeur spécifiques pour un ensemble de champs. Pour ajouter un champ, faites-le glisser vers la vue principale. Pour supprimer un champ, cliquez sur le bouton « X » à côté de son nom. Les champs peuvent être réorganisés en les faisant glisser.
 

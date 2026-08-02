@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Неофициальный логгер, совместимый с REV
+# 📝 Неофициальный логгер, совместимый с REV {#unofficial-rev-compatible-logger}
 
 :::info
 Новинка 2026 года: REVLib включает официальное решение для логирования для сохранения данных от Spark Max и Spark Flex в CAN-лог REV (`.revlog`). Подробности см. [здесь](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). Эти файлы можно открывать напрямую в AdvantageScope, но их нельзя точно синхронизировать с другими источниками данных.
@@ -27,7 +27,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) — это библио�
 Поскольку эта библиотека не является официальным инструментом REV, запросы в службу поддержки следует направлять на [страницу проблем](https://github.com/Mechanical-Advantage/URCL/issues) URCL или по адресу software@team6328.org, а не контактам поддержки REV.
 :::
 
-## Настройка
+## Настройка {#setup}
 
 Установите vendordep URCL, следуя инструкциям по установке [сторонних библиотек](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) с использованием менеджера зависимостей в VSCode. Альтернативно вы можете использовать следующий URL-адрес JSON поставщика:
 
@@ -111,7 +111,7 @@ public Robot() {
 Для получения более подробной информации ознакомьтесь с [документацией REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Мы рекомендуем использовать [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) при настройке Spark для ручного включения любых сигналов, которые вы хотите включить в файл лога.
 :::
 
-## Использование SysId
+## Использование SysId {#sysid-usage}
 
 1. После настройки URCL, как показано выше, настройте процедуру SysId, используя `null` для потребителя логов механизма. Пример показан ниже для Java. Эта конфигурация может быть выполнена внутри класса подсистемы.
 

@@ -1,10 +1,10 @@
-# Suport pentru unități
+# Suport pentru unități {#unit-support}
 
 Fila grafic liniar este conștientă de unități, ceea ce înseamnă că valorile numerice pot fi ușor convertite între tipuri de unități compatibile. Când informațiile despre unități sunt disponibile, toate valorile numerice sunt de asemenea etichetate cu precizie la afișarea pe axe sau în legende. Consultați [aici](#supported-formats) pentru mai multe informații despre publicarea informațiilor despre unități. AdvantageScope oferă mai multe instrumente pentru a converti rapid între unități:
 
 - Când adăugați **câmpuri pe aceeași axă cu tipuri de unități compatibile**, AdvantageScope convertește automat ambele câmpuri la aceeași unitate. Acest lucru se reflectă în etichetarea axei Y și a legendei.
 - Dați clic pe cele trei puncte de lângă titlul axei pentru a **comuta rapid la unități alternative**. Această listă include cele mai comune unități care sunt compatibile cu câmpurile selectate.
-- Activați **integrarea sau diferențierea** ([docs](/tab-reference/line-graph/#integration--differentiation)) pentru a vedea unitățile exacte ale integralei sau derivatei. Unitatea de bază poate fi ajustată folosind meniul pentru a suporta filtrarea în unități non-native.
+- Activați **integrarea sau diferențierea** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) pentru a vedea unitățile exacte ale integralei sau derivatei. Unitatea de bază poate fi ajustată folosind meniul pentru a suporta filtrarea în unități non-native.
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
 
@@ -18,11 +18,11 @@ Pentru (2) și (3), tipurile de unități sunt parsate folosind șiruri de carac
 Nu sunteți sigur dacă unitățile sunt parsează corect? Verificați dacă un tip de unitate este afișat pe axa Y când adăugați un câmp la graficul liniar.
 :::
 
-### 🥇 Unități Struct
+### 🥇 Unități Struct {#struct-units}
 
 AdvantageScope utilizează automat unitățile native pentru tipurile de date structurate comune, cum ar fi `Rotation2d` și `Translation3d`. Publicarea valorilor aplicabile folosind aceste formate este **întotdeauna cea mai bună cale de a publica date** și asigură compatibilitatea maximă la vizualizarea datelor de geometrie.
 
-### 🥈 Metadate câmp
+### 🥈 Metadate câmp {#field-metadata}
 
 Formatele WPILOG și NetworkTables suportă publicarea de „metadate” suplimentare pentru fiecare câmp. AdvantageScope caută câmpuri JSON numite „unit” sau „units” care conțin un nume de șir pentru tipul de unitate (folosind spații, camel-case, pascal-case sau snake-case). Pentru a verifica metadatele pentru fiecare câmp, treceți cursorul peste numele câmpului în bara laterală.
 
@@ -30,7 +30,7 @@ Formatele WPILOG și NetworkTables suportă publicarea de „metadate” suplime
 AdvantageKit include suport pentru metadatele unităților la înregistrarea intrărilor și ieșirilor, inclusiv înregistrarea adnotărilor. Consultați documentația [aici](https://docs.advantagekit.org/data-flow/supported-types#units) pentru detalii.
 :::
 
-### 🥉 Denumirea câmpurilor
+### 🥉 Denumirea câmpurilor {#field-naming}
 
 Ca o rezervă (fallback), AdvantageScope încearcă să determine tipul corect de unitate prin parsarea numelui fiecărui câmp. **Tipul unității trebuie inclus ca sufix.** AdvantageScope suportă o varietate de scheme de denumire. Câteva opțiuni valide sunt enumerate mai jos:
 

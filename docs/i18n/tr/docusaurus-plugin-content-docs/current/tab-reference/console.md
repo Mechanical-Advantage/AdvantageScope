@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Konsol
+# 💬 Konsol {#console}
 
 Konsol görünümü, konsol verilerini içeren tek bir metin alanını görüntülemek için tasarlanmıştır. Önerilen bazı alanlar aşağıda listelenmiştir.
 

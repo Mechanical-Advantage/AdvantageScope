@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 Manettes
+# 🎮 Manettes {#joysticks}
 
 L'onglet manettes montre l'état de jusqu'à six manettes connectées. L'image ci-dessous montre un exemple de disposition, avec deux manettes Xbox et une manette générique. Chaque bouton est mis en surbrillance lorsqu'il est enfoncé, et les états des joysticks et des autres axes sont affichés.
 
@@ -21,7 +21,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 </details>
 
-## Panneau de contrôle
+## Panneau de contrôle {#control-pane}
 
 Sélectionnez les types de manettes dans le tableau au bas de l'onglet. Les identifiants de manette vont de 0 à 5 et correspondent aux identifiants dans la console de pilotage et WPILib. Plus d'informations sur les manettes se trouvent dans la [documentation WPILib](https://docs.wpilib.org/fr/stable/docs/software/basic-programming/joystick.html).
 

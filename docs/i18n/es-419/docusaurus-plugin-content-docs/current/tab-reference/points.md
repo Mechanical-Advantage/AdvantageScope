@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Puntos
+# 📍 Puntos {#points}
 
 La pestaña de puntos muestra una visualización 2D de puntos arbitrarios. Esta es una herramienta muy flexible, que permite visualizaciones personalizadas de datos/pipelines de visión, estados de mecanismos, etc.
 
@@ -24,7 +24,7 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 
 </details>
 
-## Agregar fuentes
+## Agregar fuentes {#adding-sources}
 
 Para comenzar, arrastra un campo a la sección "Fuentes" (Sources). Elimina una fuente usando el botón X, u ocúltala temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
 
@@ -34,7 +34,7 @@ Las fuentes se pueden reorganizar en la lista haciendo clic y arrastrando. **Par
 Para ver una lista completa de tipos de fuentes admitidas, haz clic en el ícono `?`. Esta lista también incluye los tipos de datos compatibles.
 :::
 
-## Formato de datos
+## Formato de datos {#data-format}
 
 Los datos de puntos deben publicarse como un struct o protobuf codificado en bytes, utilizando el tipo `Translation2d[]`. Muchas bibliotecas admiten este formato, incluidas WPILib y AdvantageKit. El código de ejemplo a continuación muestra cómo registrar datos de puntos en Java.
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Configuración
+## Configuración {#configuration}
 
 Las siguientes opciones de configuración están disponibles:
 

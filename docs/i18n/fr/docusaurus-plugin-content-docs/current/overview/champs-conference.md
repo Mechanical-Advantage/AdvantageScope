@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 📽️ Conférence du championnat
+# 📽️ Conférence du championnat {#championship-conference}
 
 La conférence suivante a été présentée par l'Équipe 6328 lors du Championnat FIRST 2025, et offre un aperçu accessible des capacités et des cas d'utilisation d'AdvantageScope.
 

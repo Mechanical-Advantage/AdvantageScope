@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 点位
+# 📍 点位 {#points}
 
 点位选项卡展示任意点的 2D 可视化。这是一个非常灵活的工具，允许对视觉数据/管道、机构状态等进行自定义可视化。
 
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## 添加数据源
+## 添加数据源 {#adding-sources}
 
 要开始使用，请将字段拖动到“来源”部分。使用 X 按钮删除数据源，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有对象，请点击轴标题附近的垃圾桶图标，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列数据源。
 
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
 要查看受支持数据源类型的完整列表，请点击 `?` 图标。该列表还包含受支持的数据类型。
 :::
 
-## 数据格式
+## 数据格式 {#data-format}
 
 点位数据应作为使用 `Translation2d[]` 类型的字节编码结构体或 protobuf 进行发布。许多库都支持这种格式，包括 WPILib 和 AdvantageKit。下面的示例代码展示了如何在 Java 中记录点位数据。
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## 配置
+## 配置 {#configuration}
 
 提供以下配置选项：
 

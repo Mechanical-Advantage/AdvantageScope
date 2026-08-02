@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# מצב כוונון
+# מצב כוונון {#tuning-mode}
 
 חלק מהמקורות החיים תומכים בכוונון חי של ערכים נומריים ובוליאניים. לדוגמה, ניתן להשתמש בתכונה זו כדי [לכוונן מקדמי בקר (controller gains)](https://docs.wpilib.org/he/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) בעת התחברות למקור NetworkTables. שימו לב כי קוד הרובוט חייב לתמוך בקבלת מקדמים דרך NetworkTables.
 
@@ -15,7 +15,7 @@ sidebar_position: 1
 תכונה זו אינה מיועדת שליטה ברובוט במגרש. קלטי עמדת נהגים כמו בוררים, לחצני הפעלה וכו' אינם נתמכים.
 :::
 
-## כוונון עם AdvantageKit
+## כוונון עם AdvantageKit {#tuning-with-advantagekit}
 
 שדות שמפורסמים על ידי AdvantageKit לתת-הטבלה `AdvantageKit` הם לפלט בלבד ואינם ניתנים לעריכה. עם זאת, משתמשים יכולים לפרסם שדות מקוד המשתמש שניתנים לכוונון מ-AdvantageScope. **כל השדות שמפורסמים לטבלה "/Tuning" ב-NetworkTables יופיעו תחת הטבלה "Tuning" בעת שימוש במקור החי "NetworkTables (AdvantageKit)".**
 

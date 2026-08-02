@@ -2,13 +2,13 @@
 sidebar_position: 6
 ---
 
-# 📊 Statistiques
+# 📊 Statistiques {#statistics}
 
 L'onglet statistiques permet une analyse statistique approfondie des champs numériques, en analysant les tendances globales plutôt que les changements au fil du temps. Les champs sélectionnés sont analysés à l'aide d'un histogramme et d'une variété de mesures statistiques standard.
 
 <img src="/img/tab-reference/statistics-1.png" alt="Aperçu de l'onglet statistiques" />
 
-## Panneau de contrôle
+## Panneau de contrôle {#control-pane}
 
 Pour commencer, faites glisser un champ vers la section « Mesures ». Supprimez un champ à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les champs, cliquez sur les trois points près du titre de l'axe, puis sur `Tout effacer`. Les champs peuvent être réorganisés dans la liste en les faisant glisser.
 
@@ -18,7 +18,7 @@ Pour analyser la différence entre les champs, basculez un champ en mode « Ré
 La couleur de chaque champ peut être personnalisée en cliquant sur l'icône colorée ou en faisant un clic droit sur le nom du champ.
 :::
 
-### Configuration
+### Configuration {#configuration}
 
 L'option **Plage de temps** sélectionne les parties du journal utilisées pour l'analyse :
 
@@ -34,23 +34,23 @@ L'option **Plage de données** sélectionne les valeurs minimale et maximale à 
 
 L'option **Taille du pas** sélectionne la taille de chaque intervalle de l'histogramme. Des valeurs plus petites produisent des graphiques plus détaillés, mais révèlent également plus de bruit.
 
-## Volet de visualisation
+## Volet de visualisation {#viewer-pane}
 
-### Histogramme
+### Histogramme {#histogram}
 
 L'histogramme montre le nombre d'échantillons qui tombent dans chaque intervalle, dans la plage spécifique. Notez que les données en dehors de la plage spécifiée sont ignorées (plutôt que d'être regroupées dans un intervalle séparé).
 
-### Mesures statistiques
+### Mesures statistiques {#statistical-measures}
 
 Le tableau des mesures statistiques montre les valeurs calculées de chaque mesure pour les champs fournis. Plus d'informations sur chaque mesure sont fournies ci-dessous.
 
-#### Résumé
+#### Résumé {#summary}
 
 - **Nombre :** Le nombre d'échantillons discrets générés.
 - **Min :** La plus petite valeur dans les données.
 - **Max :** La plus grande valeur dans les données.
 
-#### Centre
+#### Centre {#center}
 
 - [**Moyenne :**](https://fr.wikipedia.org/wiki/Moyenne_arithm%C3%A9tique) La moyenne arithmétique (moyenne simple) des données.
 - [**Médiane :**](<https://fr.wikipedia.org/wiki/M%C3%A9diane_(statistiques)>) La valeur « du milieu » des données, ou le 50e centile.
@@ -59,14 +59,14 @@ Le tableau des mesures statistiques montre les valeurs calculées de chaque mesu
 - [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) Une mesure du centre calculée en utilisant la somme des inverses des valeurs. Applicable lors de la mesure de _taux ou de vitesses_.
 - [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) Une mesure du centre calculée en utilisant les carrés des valeurs. Applicable lors de la mesure de données avec des _valeurs positives et négatives_, comme un mouvement périodique.
 
-#### Écart
+#### Écart {#spread}
 
 - [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) La mesure statistique de variation la plus courante, où une valeur plus faible indique moins de variation. 68 % des données se situent à moins d'un écart-type de la moyenne.
 - [**Écart absolu moyen :**](https://fr.wikipedia.org/wiki/Valeur_absolue_des_%C3%A9carts) La distance moyenne entre chaque valeur et la moyenne. Il s'agit d'une alternative à l'écart-type.
 - [**Écart interquartile :**](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) La différence entre le troisième et le premier quartile (75e centile et 25e centile), moins affectée par les valeurs aberrantes que l'écart-type ou l'écart absolu moyen.
 - [**Asymétrie :**](<https://fr.wikipedia.org/wiki/Asym%C3%A9trie_(statistiques)>) Une mesure de l'asymétrie des données. Une valeur négative indique une queue vers la gauche, une valeur positive indique une queue vers la droite, et une valeur nulle suggère une distribution symétrique.
 
-#### Centiles
+#### Centiles {#percentiles}
 
 Les [centiles](https://fr.wikipedia.org/wiki/Centile) mesurent les valeurs en dessous desquelles se situent le pourcentage donné d'autres valeurs. Par exemple, 10 % des valeurs se situent en dessous du 10e centile. Les centiles suivants sont également connus sous le nom de :
 

@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 بيانات وصفية
+# 🔍 بيانات وصفية {#metadata}
 
 تعرض علامة تبويب البيانات الوصفية القيم المنشورة في جدول "/Metadata" المخفي أو من خلال AdvantageKit. تُعرض مفاتيح البيانات الوصفية إلى اليسار، وتفصل الأعمدة البيانات من المصادر المختلفة (مثل حقيقي وإعادة عند استخدام AdvantageKit).
 

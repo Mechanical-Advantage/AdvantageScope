@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 📽️ הרצאת באליפות
+# 📽️ הרצאת באליפות {#championship-conference}
 
 ההרצאה הבאה הוצגה על ידי Team 6328 באליפות FIRST 2025, ומספקת סקירה נגישה של היכולות ומקרי השימוש של AdvantageScope.
 

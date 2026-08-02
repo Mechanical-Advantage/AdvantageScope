@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 影片
+# 🎬 影片 {#video}
 
 影片分頁允許將日誌資料與單獨錄製的比賽影片進行並排比較。下面的步驟展示了如何載入影片並將其與日誌同步。
 
-## 載入影片
+## 載入影片 {#loading-the-video}
 
 AdvantageScope 提供三種載入影片的選項：
 
@@ -26,7 +26,7 @@ AdvantageScope 提供三種載入影片的選項：
 AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如果在系統的 PATH 中未找到有效的 FFmpeg 副本，AdvantageScope 將會在首次載入影片時提示從網際網路下載 FFmpeg。自動安裝 FFmpeg 僅在 Windows 與 macOS 上支援；Linux 使用者可能需要手動安裝 FFmpeg 並將其新增至系統 PATH。
 :::
 
-## 導覽影片
+## 導覽影片 {#navigating-the-video}
 
 當影片初始載入且尚未與日誌資料同步時，影片與日誌的播放控制項仍然是獨立的。使用右下角的時間軸與按鈕來控制影片播放。還支援以下鍵盤快捷鍵：
 
@@ -38,7 +38,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 
 <img src="/img/tab-reference/video-2.png" alt="影片控制項" />
 
-## 自動同步
+## 自動同步 {#automatic-synchronization}
 
 在載入比賽自動階段的影格後不久，大多數比賽影片將會與日誌自動同步。無需進行任何操作；如果同步成功，影片控制項將會自動鎖定（請參閱下方的「播放」）。
 
@@ -46,7 +46,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 自動同步僅適用於包含比分覆蓋的比賽影片，並且可能不會在所有情況下都成功。如果在載入所有影格後影片控制項未自動鎖定，則需要手動同步。
 :::
 
-## 手動同步
+## 手動同步 {#manual-synchronization}
 
 首先，使用影片控制項導覽至比賽中已知的位置，例如自動階段的開始。然後，在日誌檔案中選擇與影片目前影格對齊的時間。
 
@@ -58,7 +58,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 來處理影片檔案。如�
 
 <img src="/img/tab-reference/video-3.png" alt="鎖定按鈕" />
 
-## 播放
+## 播放 {#playback}
 
 一旦鎖定，影片播放將與日誌中選取的時間保持對齊。請注意，不支援聲音播放，因為原始影片已轉換為逐影格表示以支援日誌同步。
 

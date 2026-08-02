@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Înregistrator neoficial compatibil REV
+# 📝 Înregistrator neoficial compatibil REV {#unofficial-rev-compatible-logger}
 
 :::info
 Nou în 2026, REVLib include o soluție oficială de logare pentru salvarea datelor de la Spark Max și Spark Flex într-un log CAN REV (`.revlog`). Consultați [aici](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) pentru detalii. Aceste fișiere pot fi deschise direct în AdvantageScope, dar nu pot fi sincronizate precis cu alte surse de date.
@@ -27,7 +27,7 @@ După configurare, cadrele periodice CAN de la toate dispozitivele Spark Max și
 Deoarece această bibliotecă nu este un instrument oficial REV, întrebările de suport ar trebui trimise pe [pagina de probleme URCL](https://github.com/Mechanical-Advantage/URCL/issues) sau la software@team6328.org, mai degrabă decât la contactul de suport REV.
 :::
 
-## Configurare
+## Configurare {#setup}
 
 Instalați dependența vendor URCL urmând instrucțiunile pentru instalarea [bibliotecilor terțe](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) folosind managerul de dependențe din VSCode. Alternativ, puteți utiliza următorul URL vendor JSON:
 
@@ -111,7 +111,7 @@ Pentru a minimiza utilizarea CAN, majoritatea cadrelor de stare pentru dispoziti
 Pentru mai multe detalii, verificați [documentația REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). Recomandăm utilizarea [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) la configurarea Spark pentru a activa manual orice semnale pe care doriți să le includeți în fișierul log.
 :::
 
-## Utilizarea SysId
+## Utilizarea SysId {#sysid-usage}
 
 1. După configurarea URCL așa cum este arătat mai sus, configurați rutina SysId folosind `null` pentru consumatorul de log al mecanismului. Un exemplu este prezentat mai jos pentru Java. Această configurare poate fi efectuată în cadrul clasei subsistemului.
 

@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# דיאגנוסטיקה Phoenix
+# דיאגנוסטיקה Phoenix {#phoenix-diagnostics}
 
 AdvantageScope תומכת בהזרמה חיה של אותות ממכשירי Phoenix 6 **ללא כל הגדרה בקוד המשתמש**. דבר זה מאפשר דיבאגינג וכוונון קלים של מכשירי Phoenix תוך שימוש בממשק המוכר ובכל העוצמה של AdvantageScope:
 

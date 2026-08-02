@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 🔢 Tabela
+# 🔢 Tabela {#table}
 
 A visualização em tabela foi projetada para mostrar as alterações de valores específicos de um conjunto de campos em detalhes. Para adicionar um campo, arraste-o para a visualização principal. Para excluir um campo, clique no botão "X" ao lado de seu nome. Os campos podem ser reorganizados clicando e arrastando.
 

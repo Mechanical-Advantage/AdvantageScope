@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 Métadonnées
+# 🔍 Métadonnées {#metadata}
 
 L'onglet métadonnées montre les valeurs publiées dans la table cachée « /Metadata » ou via AdvantageKit. Les clés de métadonnées sont affichées à gauche, et les colonnes séparent les données provenant de différentes sources (par ex. réel et relecture lors de l'utilisation d'AdvantageKit).
 

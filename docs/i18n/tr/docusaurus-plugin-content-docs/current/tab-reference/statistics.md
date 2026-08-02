@@ -2,13 +2,13 @@
 sidebar_position: 6
 ---
 
-# 📊 İstatistikler
+# 📊 İstatistikler {#statistics}
 
 İstatistikler sekmesi, zaman içindeki değişikliklerden ziyade genel eğilimleri analiz ederek sayısal alanların derin istatistiksel analizine olanak tanır. Seçilen alanlar bir histogram ve çeşitli standart istatistiksel ölçümler kullanılarak analiz edilir.
 
 <img src="/img/tab-reference/statistics-1.png" alt="Overview of statistics tab" />
 
-## Kontrol paneli
+## Kontrol paneli {#control-pane}
 
 Başlamak için bir alanı "Ölçümler" bölümüne sürükleyin. X düğmesini kullanarak bir alanı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm alanları kaldırmak için eksen başlığının yanındaki üç noktaya ve ardından `Tümünü Temizle` seçeneğine tıklayın. Alanlar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -18,7 +18,7 @@ Alanlar arasındaki farkı analiz etmek için bir alanı "Referans" moduna geçi
 Her alanın rengi, renkli simgeye tıklanarak veya alan adına sağ tıklanarak özelleştirilebilir.
 :::
 
-### Yapılandırma
+### Yapılandırma {#configuration}
 
 **Zaman Aralığı** seçeneği, log dosyasının hangi bölümlerinin analiz için kullanılacağını seçer:
 
@@ -34,23 +34,23 @@ Her alanın rengi, renkli simgeye tıklanarak veya alan adına sağ tıklanarak 
 
 **Adım Boyutu** seçeneği, her bir histogram aralığının boyutunu seçer. Daha küçük değerler daha ayrıntılı grafikler üretir, ancak aynı zamanda daha fazla gürültüyü ortaya çıkarır.
 
-## Görüntüleyici paneli
+## Görüntüleyici paneli {#viewer-pane}
 
-### Histogram
+### Histogram {#histogram}
 
 Histogram, belirli aralık dahilinde her bir aralığa düşen örneklerin sayısını gösterir. Belirtilen aralığın dışındaki verilerin atıldığını (ayrı bir aralıkta gruplandırılmak yerine) unutmayın.
 
-### İstatistiksel ölçümler
+### İstatistiksel ölçümler {#statistical-measures}
 
 İstatistiksel ölçümler tablosu, sağlanan alanlar için hesaplanan her bir ölçüm değerini gösterir. Her ölçüm hakkında daha fazla bilgi aşağıda verilmiştir.
 
-#### Özet
+#### Özet {#summary}
 
 - **Count:** Üretilen ayrık örneklerin sayısı.
 - **Min:** Verideki en küçük değer.
 - **Max:** Verideki en büyük değer.
 
-#### Merkez
+#### Merkez {#center}
 
 - [**Mean:**](https://tr.wikipedia.org/wiki/Aritmetik_ortalama) Verilerin aritmetik ortalaması (basit ortalama).
 - [**Median:**](https://tr.wikipedia.org/wiki/Medyan) Verilerin "orta" değeri veya %50 yüzdelik dilimi.
@@ -59,14 +59,14 @@ Histogram, belirli aralık dahilinde her bir aralığa düşen örneklerin sayı
 - [**Harmonik Ortalama:**](https://tr.wikipedia.org/wiki/Harmonik_ortalama) Değerlerin çarpmaya göre terslerinin toplamı kullanılarak hesaplanan bir merkez ölçümü. Oranları veya hızları ölçerken geçerlidir.
 - [**Karesel Ortalama:**](https://tr.wikipedia.org/wiki/Karek%C3%B6k_ortalama) Değerlerin kareleri kullanılarak hesaplanan bir merkez ölçümü. Periyodik hareket gibi hem pozitif hem negatif değerlere sahip verileri ölçerken geçerlidir.
 
-#### Yayılım
+#### Yayılım {#spread}
 
 - [**Standart Sapma:**](https://tr.wikipedia.org/wiki/Standart_sapma) Düşük değerin daha az varyasyonu belirttiği en yaygın istatistiksel varyasyon ölçümü. Verilerin %68'i ortalamanın bir standart sapması içinde kalır.
 - [**Ortalama Mutlak Sapma:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) Her bir değer ile ortalama arasındaki ortalama mesafe. Bu, standart sapmaya bir alternatiftir.
 - [**Çeyrekler Açıklığı:**](https://tr.wikipedia.org/wiki/%C3%87eyrekler_a%C3%A7%C4%B1kl%C4%B1%C4%9F%C4%B1) Üçüncü ve birinci çeyrekler (%75 yüzdelik dilim ve %25 yüzdelik dilim) arasındaki fark, aykırı değerlerden standart sapma veya ortalama mutlak sapmaya göre daha az etkilenir.
 - [**Çarpıklık:**](https://tr.wikipedia.org/wiki/%C3%87arp%C4%B1kl%C4%B1k) Verilerin asimetrik eğikliğinin bir ölçümü. Negatif değer sola doğru bir kuyruk belirtir, pozitif değer sağa doğru bir kuyruk belirtir ve sıfır değeri simetrik bir dağılımı gösterir.
 
-#### Yüzdelikler
+#### Yüzdelikler {#percentiles}
 
 [Yüzdelikler](https://tr.wikipedia.org/wiki/Y%C3%BCzdebirlik), verilen diğer değerlerin yüzdesinin altında kaldığı değerleri ölçer. Örneğin, değerlerin %10'u 10. yüzdelik dilimin altında kalır. Aşağıdaki yüzdelikler ayrıca şu şekilde bilinir:
 

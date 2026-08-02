@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 The swerve tab shows the state of four swerve modules, including the velocity vectors, idle positions, robot rotation, and chassis speeds.
 
@@ -24,7 +24,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-## Adding Sources
+## Adding Sources {#adding-sources}
 
 To get started, drag a field to the "Sources" section. Delete a source using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all sources, click the trash can near the axis title and then `Clear All`. Sources can be rearranged in the list by clicking and dragging.
 
@@ -34,7 +34,7 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 - **Robot Velocities:** Linear and angular speeds displayed in the center of the diagram.
 - **Rotation:** Angular position used to rotate the diagram.
 
-## Data Format
+## Data Format {#data-format}
 
 Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 The following configuration options are available:
 

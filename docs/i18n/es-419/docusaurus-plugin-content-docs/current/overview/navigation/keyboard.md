@@ -1,8 +1,8 @@
-# Atajos de teclado
+# Atajos de teclado {#keyboard-shortcuts}
 
 AdvantageScope incluye numerosos atajos de teclado que permiten una navegación más rápida. Los atajos que utilizan la tecla `Ctrl` se reemplazan por la tecla ⌘ en macOS.
 
-### Fuentes de datos
+### Fuentes de datos {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Abrir uno o más archivos de registro</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 <tr><td>`Ctrl+D`</td><td>Descargar archivos de registro desde el robot</td></tr>
 </table>
 
-### Exportación de datos
+### Exportación de datos {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Exportar datos de registro</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 <tr><td>`Option+Ctrl+P`</td><td>Detener la publicación en NetworkTables</td></tr>
 </table>
 
-### Controles de ventana
+### Controles de ventana {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>Crear una nueva ventana</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 <tr><td>`Ctrl+Slash`</td><td>Alternar la visibilidad del panel de control</td></tr>
 </table>
 
-### Controles de pestañas
+### Controles de pestañas {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Abrir el menú desplegable para agregar una nueva pestaña</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 </tr>
 </table>
 
-### Reproducción
+### Reproducción {#playback}
 
 <table>
 <tr><td>`Space`</td><td>Alternar reproducción</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope incluye numerosos atajos de teclado que permiten una navegación 
 <tr><td>`Ctrl+\`</td><td>Ajustar el zoom de la línea de tiempo al rango habilitado</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 En los modelos MacBook compatibles, el Touch Bar se puede utilizar para desplazarse por el registro y agregar nuevas pestañas.
 

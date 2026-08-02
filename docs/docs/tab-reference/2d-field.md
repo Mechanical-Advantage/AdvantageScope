@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 2D Field
+# 🗺 2D Field {#2d-field}
 
 The 2D field tab shows a 2D visualization of the robot overlayed on a map of the field. It can also show extra data like vision targeting status and reference poses.
 
@@ -24,7 +24,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-## Adding Objects
+## Adding Objects {#adding-objects}
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
 
@@ -36,7 +36,7 @@ To see a full list of supported object types, click the `?` icon. This list also
 
 <img src="/img/tab-reference/2d-field-2.png" alt="2D field with objects" />
 
-## Data Format
+## Data Format {#data-format}
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 - **Field:** The field image to use. All recent FRC and FTC games are supported. To add a custom field image, see [Custom Assets](/more-features/custom-assets).
 - **Orientation:** The orientation of the field image in the viewer pane.

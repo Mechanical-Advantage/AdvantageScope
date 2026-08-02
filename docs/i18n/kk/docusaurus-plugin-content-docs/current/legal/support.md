@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Қолдау
+# Қолдау {#support}
 
 AdvantageScope немесе AdvantageScope XR бойынша қолдау алу үшін төмендегі байланыс әдістерінің бірін пайдаланыңыз.
 

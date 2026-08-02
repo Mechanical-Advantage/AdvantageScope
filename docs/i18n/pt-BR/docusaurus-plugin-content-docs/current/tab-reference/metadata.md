@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 Metadados
+# 🔍 Metadados {#metadata}
 
 A guia de metadados mostra valores publicados na tabela oculta "/Metadata" ou através do AdvantageKit. As chaves de metadados são exibidas à esquerda, e as colunas separam dados de diferentes fontes (por exemplo, real e repetição ao usar o AdvantageKit).
 

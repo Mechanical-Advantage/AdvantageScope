@@ -48,7 +48,7 @@ Fila 📉 [Grafic liniar](/tab-reference/line-graph/) a fost reproiectată pentr
 - Etichetarea precisă a axelor Y și afișarea valorilor
 - Conversie rapidă la unități compatibile (fără ferestre pop-up)
 - Conversie implicită a tipurilor de unități compatibile în cadrul unei singure axe
-- Afișarea exactă a unităților [integrate și diferențiate](/tab-reference/line-graph/#integration--differentiation)
+- Afișarea exactă a unităților [integrate și diferențiate](/tab-reference/line-graph/#integration-and-differentiation)
 
 Captura de ecran de mai jos prezintă toate aceste caracteristici în acțiune. Rețineți că axa stângă include câmpuri cu unități diferite de viteză unghiulară, iar axa dreaptă include valori care sunt diferențiate și afișate într-o unitate non-nativă (grade). Selectarea unităților este de asemenea mai ușoară ca niciodată, cu opțiuni de unități compatibile integrate direct în meniul de control pentru fiecare axă.
 

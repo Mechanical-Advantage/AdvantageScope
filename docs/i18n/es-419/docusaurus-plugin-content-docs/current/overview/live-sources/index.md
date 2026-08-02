@@ -1,4 +1,4 @@
-# 🛜 Fuentes en vivo
+# 🛜 Fuentes en vivo {#live-sources}
 
 Todas las visualizaciones en AdvantageScope están diseñadas para recibir datos en vivo de un robot o simulador, además de archivos de registro. Esta sección describe cómo conectarse a fuentes de datos en tiempo real. AdvantageScope admite las siguientes fuentes de datos en vivo:
 
@@ -13,7 +13,7 @@ Todas las visualizaciones en AdvantageScope están diseñadas para recibir datos
 AdvantageScope puede conectarse a la FIRST Driver Station para ver datos de diagnóstico cuando se ejecuta en el mismo dispositivo que la aplicación DS. No se requiere configuración (consulta las instrucciones a continuación).
 :::
 
-## Iniciar la conexión
+## Iniciar la conexión {#starting-the-connection}
 
 Para iniciar la conexión en vivo, sigue estos pasos:
 
@@ -23,7 +23,7 @@ Para iniciar la conexión en vivo, sigue estos pasos:
 
 El título de la ventana muestra la dirección IP y el texto "Buscando" (Searching) hasta que el objetivo se conecte. AdvantageScope intenta volver a conectarse automáticamente usando la misma configuración después de una desconexión.
 
-## Visualización de datos en vivo
+## Visualización de datos en vivo {#viewing-live-data}
 
 Cuando se conecta a una fuente en vivo, AdvantageScope bloquea todas las pestañas a la hora actual de forma predeterminada. Las vistas como el 📉 [Gráfico de líneas](/tab-reference/line-graph) y la 🔢 [Tabla](/tab-reference/table) se desplazan automáticamente, y las vistas como el campo y los joysticks muestran los valores actuales de cada campo. Al hacer clic en el botón de flecha roja en la barra de navegación se alterna este bloqueo, lo que permite ver y reproducir datos pasados.
 
@@ -33,23 +33,23 @@ Cuando se conecta a una fuente en vivo, AdvantageScope bloquea todas las pestañ
 Desplazarse hacia la izquierda en el gráfico de líneas o en la línea de tiempo desbloquea la vista del tiempo actual, y desplazarse completamente hacia la derecha la vuelve a bloquear al tiempo actual.
 :::
 
-## Configuración
+## Configuración {#configuration}
 
 Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS).
 
 <img src="/img/prefs.png" alt="Diagram of preferences" height="350" />
 
-### Dirección del robot
+### Dirección del robot {#robot-address}
 
 Ingresa la dirección del robot usando una dirección IP 10.TE.AM.2 como se describe en la [documentación de WPILib](https://docs.wpilib.org/es/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Cuando te conectes a Systemcore por USB o al punto de acceso Wi-Fi incorporado, haz clic en `Archivo` > `Usar dirección USB de Systemcore`/`Usar dirección Wi-Fi de Systemcore` para usar temporalmente la dirección IP estática correcta.
 
-### Modo en vivo
+### Modo en vivo {#live-mode}
 
 Cuando se utiliza NetworkTables como fuente en vivo, se pueden seleccionar los siguientes modos en vivo:
 
 - **Bajo ancho de banda (Predeterminado):** AdvantageScope solo solicita datos del servidor para los campos que se están utilizando activamente. Los datos publicados antes de que se seleccionara un campo no estarán disponibles. Este modo es **muy recomendado** cuando se ejecuta en un entorno con ancho de banda de red limitado o cuando se publica una gran cantidad de campos.
 - **Registro:** AdvantageScope solicita datos para todos los campos independientemente de si se están utilizando activamente. Esto significa que los campos se pueden ver de forma retroactiva pausando el flujo de datos en vivo (ver a continuación). Este modo suele ser útil durante el desarrollo, pero **NO debe utilizarse cuando el ancho de banda es limitado**.
 
-### Descartar datos en vivo
+### Descartar datos en vivo {#discard-live-data}
 
 Durante una conexión en vivo, los datos se almacenan localmente para permitir la reproducción de datos pasados (consulta "Visualización de datos en vivo" a continuación). Para evitar un uso de memoria muy alto, los datos se descartan después de 20 minutos de forma predeterminada. Se puede seleccionar un período más corto para reducir el uso de la memoria, o se puede seleccionar "Nunca" (Never) para almacenar datos en vivo de forma indefinida.

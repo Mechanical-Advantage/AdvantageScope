@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Console
+# 💬 Console {#console}
 
 The console view is designed to view a single string field with console data. Some suggested fields are listed below.
 

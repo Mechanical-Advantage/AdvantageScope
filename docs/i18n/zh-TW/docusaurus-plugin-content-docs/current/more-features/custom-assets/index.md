@@ -1,4 +1,4 @@
-# ⚙️ 自訂資源
+# ⚙️ 自訂資源 {#custom-assets}
 
 AdvantageScope 使用一組預設的平面場地圖片、場地模型、機器人模型與搖桿設定。初次安裝中包含簡單資源（例如常青場地）。當 AdvantageScope 連線到網際網路時，會在背景自動下載詳細資源（例如特定賽季的場地）。要檢查這些下載的狀態，請點擊 `應用程式`/`AdvantageScope` > `資源下載狀態...`。
 
@@ -8,7 +8,7 @@ AdvantageScope 使用一組預設的平面場地圖片、場地模型、機器�
 要從替代位置載入資源，請點擊 `應用程式`/`AdvantageScope` > `使用自訂資源資料夾`。選取的資料夾應為*父資料夾*，其中可以在單獨的子資料夾中放置多個資源。此功能允許自訂資源與機器人程式碼一起儲存在版本控制之下。
 :::
 
-## 通用格式
+## 通用格式 {#general-format}
 
 所有資源都儲存在命名慣例為「TYPE_NAME」的資料夾中。資料夾使用的 NAME 不會由 AdvantageScope 顯示。可能的資源類型為：
 
@@ -30,13 +30,13 @@ AdvantageScope 使用一組預設的平面場地圖片、場地模型、機器�
 }
 ```
 
-## 3D 機器人模型
+## 3D 機器人模型 {#3d-robot-models}
 
-### 影片教學
+### 影片教學 {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### 概述
+### 概述 {#overview}
 
 資料夾中必須包含名為「model.glb」的模型。CAD 檔案必須轉換為 glTF；有關詳細資訊，請參閱[此頁面](gltf-convert)。設定檔必須採用以下格式：
 
@@ -70,7 +70,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 
 :::
 
-### 關節組件
+### 關節組件 {#articulated-components}
 
 :::warning
 設定關節組件可能複雜且耗時。請考慮利用 AdvantageScope 的 3D [`Mechanism2d` 支援](/tab-reference/3d-field#2d-mechanisms)，它提供了一種更簡化的方法來**在 3D 場地上視覺化機構**。
@@ -93,7 +93,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 ]
 ```
 
-#### 設定流程
+#### 設定流程 {#setup-process}
 
 要校準關節組件的位置，我們建議採用以下流程：
 
@@ -109,7 +109,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 
 6. 發布來自機器人程式碼的真實組件姿態，這些姿態將基於每個組件新定義的原點。例如，手臂區段的姿態將位於手臂關節處，指向區段的方向。
 
-## 搖桿
+## 搖桿 {#joysticks}
 
 資料夾中必須包含名為「image.png」的圖片。設定檔必須採用以下格式：
 
@@ -126,7 +126,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 對於 NI 綁定，AdvantageScope 反向相容舊的無前綴設定鍵名（例如 `sourceIndex`）。**所有新搖桿都應使用明確的 SDL 綁定（例如 `sdlSourceIndex`），以相容目前的 FIRST Driver Station。**
 :::
 
-### 單一按鈕 / POV 值
+### 單一按鈕 / POV 值 {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +144,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 }
 ```
 
-### 雙軸搖桿
+### 雙軸搖桿 {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +167,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 }
 ```
 
-### 單軸
+### 單軸 {#single-axis}
 
 ```json
 {
@@ -184,7 +184,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 }
 ```
 
-### 觸控板
+### 觸控板 {#touchpad}
 
 ```json
 {
@@ -196,7 +196,7 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 }
 ```
 
-## 平面場地圖片
+## 平面場地圖片 {#flat-field-images}
 
 資料夾中必須包含名為「image.png」的圖片。方向應設定為紅方聯盟在左側。設定檔必須採用以下格式：
 
@@ -218,9 +218,9 @@ AdvantageScope 會自動簡化模型幾何形狀以提升效能，其中詳細�
 }
 ```
 
-## 3D 場地模型
+## 3D 場地模型 {#3d-field-models}
 
-資料夾中必須包含名為「model.glb」的模型。應用所有旋轉後，場地方向應設定為紅方聯盟在左側。CAD 檔案必須轉換為 glTF；有關詳細資訊，請參閱[此頁面](gltf-convert)。遊戲物件模型根據其在「gamePieces」陣列中出現的順序，遵循命名慣例「model_INDEX.glb」。此處宣告的 AprilTag 總是使用[中心/紅方](/more-features/coordinate-systems#centerred-systemcore)座標系進行定位，無論是否有任何其他設定選項。
+資料夾中必須包含名為「model.glb」的模型。應用所有旋轉後，場地方向應設定為紅方聯盟在左側。CAD 檔案必須轉換為 glTF；有關詳細資訊，請參閱[此頁面](gltf-convert)。遊戲物件模型根據其在「gamePieces」陣列中出現的順序，遵循命名慣例「model_INDEX.glb」。此處宣告的 AprilTag 總是使用[中心/紅方](/more-features/coordinate-systems#center-red)座標系進行定位，無論是否有任何其他設定選項。
 
 設定檔必須採用以下格式：
 

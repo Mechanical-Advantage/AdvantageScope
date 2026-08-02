@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 2D 場地
+# 🗺 2D 場地 {#2d-field}
 
 2D 場地分頁顯示了覆蓋在場地地圖上的機器人 2D 視覺化。它還可以顯示視覺目標狀態與參考姿態等額外資料。
 
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## 新增物件
+## 新增物件 {#adding-objects}
 
 要開始，請將欄位拖曳到「姿態」區段。使用 X 按鈕刪除物件，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有物件，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列物件。
 
@@ -36,7 +36,7 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-2.png" alt="帶有物件的 2D 場地" />
 
-## 資料格式
+## 資料格式 {#data-format}
 
 幾何資料應作為位元組編碼的 struct 或 protobuf 發布。支援各種 2D 與 3D 幾何類型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## 設定
+## 設定 {#configuration}
 
 - **場地：** 要使用的場地圖片。支援所有近期的 FRC 與 FTC 比賽。要新增自訂場地圖片，請參閱[自訂資源](/more-features/custom-assets)。
 - **方向：** 檢視器面板中場地圖片的方向。

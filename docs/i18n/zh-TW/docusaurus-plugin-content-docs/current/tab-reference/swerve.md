@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 Swerve 分頁顯示四個 Swerve 模組的狀態，包括速度向量、空閒位置、機器人旋轉與底盤速度。
 
@@ -24,7 +24,7 @@ Swerve 分頁顯示四個 Swerve 模組的狀態，包括速度向量、空閒�
 
 </details>
 
-## 新增來源
+## 新增來源 {#adding-sources}
 
 要開始，請將欄位拖曳到「來源」區段。使用 X 按鈕刪除來源，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有來源，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列來源。
 
@@ -34,7 +34,7 @@ Swerve 分頁顯示四個 Swerve 模組的狀態，包括速度向量、空閒�
 - **機器人速度：** 在圖表中心顯示的線速度與角速度。
 - **旋轉：** 用於旋轉圖表的角度位置。
 
-## 資料格式
+## 資料格式 {#data-format}
 
 資料應使用 `SwerveModuleVelocity[]`、`ChassisVelocities`、`Rotation2d` 或 `Rotation3d` 類型作為位元組編碼的 struct 或 protobuf 發布。
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## 設定
+## 設定 {#configuration}
 
 以下是可用的設定選項：
 

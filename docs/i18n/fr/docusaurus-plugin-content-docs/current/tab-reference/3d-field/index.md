@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 Terrain 3D
+# 👀 Terrain 3D {#3d-field}
 
 Le terrain 3D montre une visualisation 3D du robot et du terrain. Il peut être utilisé avec des poses 2D régulières, mais il est particulièrement utile lors du travail avec des calculs 3D (comme la localisation avec AprilTags). Plusieurs vues de caméra sont disponibles, y compris relatives au terrain, relatives au robot et fixes. [AdvantageScope XR](advantagescope-xr) permet de visualiser cet onglet à l'aide de la réalité augmentée. La chronologie indique quand le robot est activé et peut être utilisée pour naviguer dans les données du journal.
 
@@ -24,7 +24,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 Le modèle de terrain FRC 2026 est cohérent avec la disposition d'AprilTag pour le terrain **soudé**. Les différences entre les terrains soudés et AndyMark sont très mineures, mais il peut y avoir de légers désalignements (~0,5 pouce) lors de la visualisation des poses d'AprilTag basées sur la disposition du terrain AndyMark.
 :::
 
-## Ajout d'objets
+## Ajout d'objets {#adding-objects}
 
 Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
 
@@ -38,7 +38,7 @@ Pour voir une liste complète des types d'objets pris en charge, cliquez sur l'i
 AdvantageScope prend en charge plusieurs tailles d'AprilTags pour les terrains FTC. Les tailles sont mesurées en tant que **longueur de côté de la section noire de l'AprilTag**, sans inclure la bordure blanche requise.
 :::
 
-## Format des données
+## Format des données {#data-format}
 
 Les données de géométrie doivent être publiées sous forme de struct ou protobuf codé en octets. Divers types de géométrie 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, et plus encore.
 
@@ -97,7 +97,7 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 </TabItem>
 </Tabs>
 
-## Mécanismes et composants
+## Mécanismes et composants {#mechanisms-and-components}
 
 Les données de mécanisme peuvent être visualisées à l'aide de mécanismes 2D ou de composants 3D articulés.
 
@@ -107,7 +107,7 @@ Pour visualiser des données de mécanisme enregistrées à l'aide d'un [`Mechan
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mécanisme 2D" />
 
-### Composants 3D
+### Composants 3D {#3d-components}
 
 :::warning
 La configuration des composants 3D peut être complexe et prendre du temps. Envisagez d'utiliser la prise en charge de `Mechanism2d` d'AdvantageScope comme décrit ci-dessus, qui offre une approche plus simple pour visualiser les mécanismes sur le terrain 3D.
@@ -139,7 +139,7 @@ Le projet d'exemple KitBot 2024 d'AdvantageKit comprend un exemple simple d'une 
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualisation de note KitBot 2024" />
 
-## Options de caméra
+## Options de caméra {#camera-options}
 
 Pour changer le mode de caméra sélectionné, faites un clic droit sur la vue du terrain rendu. Le mode et la position de la caméra sont contrôlés indépendamment pour chaque fenêtre détachée, permettant la création facile de vues multi-caméras.
 
@@ -147,7 +147,7 @@ Pour changer le mode de caméra sélectionné, faites un clic droit sur la vue d
 Faites un clic droit sur la vue du terrain rendu et cliquez sur « Définir le champ de vision... » pour ajuster le champ de vision des caméras d'orbite et du poste de pilotage.
 :::
 
-### Orbiter le terrain
+### Orbiter le terrain {#orbit-field}
 
 Il s'agit du mode de caméra par défaut, où la caméra peut être déplacée librement par rapport au terrain. **Clic gauche + glisser** fait pivoter la caméra, et **clic droit + glisser** déplace la caméra. **Faites défiler** pour zoomer avant et arrière.
 
@@ -155,11 +155,11 @@ Il s'agit du mode de caméra par défaut, où la caméra peut être déplacée l
 La caméra peut également être contrôlée à l'aide du clavier. Les touches **WASD** sont utilisées pour les déplacements horizontaux, les touches **IJKL** sont utilisées pour pivoter, et les touches **E** et **Q** sont utilisées pour les déplacements verticaux.
 :::
 
-### Orbiter le robot
+### Orbiter le robot {#orbit-robot}
 
 Ce mode possède les mêmes contrôles que le mode « Orbiter le terrain », mais la position de la caméra est verrouillée par rapport au robot. Cela permet des prises de vue de « suivi » du mouvement du robot.
 
-### Poste de pilotage
+### Poste de pilotage {#driver-station}
 
 Ce mode verrouille la caméra derrière l'un des postes de pilotage à hauteur d'yeux typique. Choisissez manuellement le poste à visualiser ou choisissez « Auto » pour utiliser l'alliance et le numéro de poste stockés dans les données du journal.
 
@@ -167,7 +167,7 @@ Ce mode verrouille la caméra derrière l'un des postes de pilotage à hauteur d
 La sélection automatique du numéro de poste peut être inexacte lors de la visualisation de données de journal produites par AdvantageKit 2023 ou version antérieure.
 :::
 
-### Caméra fixe
+### Caméra fixe {#fixed-camera}
 
 Chaque modèle de robot est configuré avec un ensemble de caméras fixes, comme les caméras de vision et les caméras de pilotage. Ces caméras ont des positions, des rapports d'aspect et des champs de vision fixes. Ces vues sont souvent utiles pour vérifier les données de vision ou pour simuler une vue de caméra de pilotage. Dans l'exemple ci-dessous, une caméra de pilotage est illustrée.
 
@@ -179,7 +179,7 @@ Si une pose de « Remplacement de la caméra » est fournie, elle remplace les
 En cohérence avec d'autres données de pose, la pose de « Remplacement de la caméra » doit être _relative au terrain_, et non relative au robot.
 :::
 
-## Configuration
+## Configuration {#configuration}
 
 Le modèle de terrain peut être configuré à l'aide du menu déroulant. Tous les jeux FRC et FTC récents sont pris en charge. Nous recommandons d'utiliser les terrains « Evergreen » pour les appareils ayant des performances graphiques limitées. Les terrains « Axes » affichent uniquement les axes XYZ à l'origine avec un contour de terrain pour l'échelle.
 

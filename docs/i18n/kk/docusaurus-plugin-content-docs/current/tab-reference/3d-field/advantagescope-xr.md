@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR толықтырылған шынайылықта 👀 [3D алаңы](/tab-reference/3d-field) көрінісіне жан бітіріп, деректерді мүлдем жаңа тәсілдермен визуализациялауға мүмкіндік береді. Модельденген автономды режимді шынайы өлшемде көріңіз, үстел үстіндегі алаң үлгісімен матч стратегиясын қарастырыңыз, нақты роботтың үстіне диагностикалық ақпаратты орналастырыңыз және т.б.! Төмендегі бейне бұл мүмкіндікті пайдаланудың бірнеше жағдайын көрсетеді:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Талаптар
+## Талаптар {#requirements}
 
 - **Хост:** Windows, macOS немесе Linux жүйесіндегі AdvantageScope жұмыс үстелі қолданбасы (v4.1.0 немесе одан кейінгі). Құрылғыдағы кез келген брандмауэрлер [өшірілуі](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall) керек.
 - **Клиент:** iOS/iPadOS 16 немесе одан кейінгі нұсқасы жұмыс істейтін iPhone немесе iPad. Қолданбаны орнату қажет емес.
@@ -28,7 +28,7 @@ AdvantageScope XR тек iOS және iPadOS жүйелерінде қолдау
 
 </details>
 
-## Баптау
+## Баптау {#setup}
 
 1. Хост жүйесінде кез келген 3D алаңы қойындысындағы **«XR» түймесін басыңыз**. Тек бір XR хост сеансы белсенді бола алады, сондықтан бұл түймені басу басқа белсенді сеанстарды үзеді.
 

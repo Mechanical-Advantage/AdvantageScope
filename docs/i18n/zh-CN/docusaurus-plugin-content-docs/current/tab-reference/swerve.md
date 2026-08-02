@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 Swerve 选项卡显示四个 Swerve 模块的状态，包括速度矢量、空闲位置、机器人旋转和底盘速度。
 
@@ -24,7 +24,7 @@ Swerve 选项卡显示四个 Swerve 模块的状态，包括速度矢量、空�
 
 </details>
 
-## 添加数据源
+## 添加数据源 {#adding-sources}
 
 要开始使用，请将字段拖动到“来源”部分。使用 X 按钮删除数据源，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有数据源，请点击轴标题附近的垃圾桶图标，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列数据源。
 
@@ -34,7 +34,7 @@ Swerve 选项卡显示四个 Swerve 模块的状态，包括速度矢量、空�
 - **机器人速度：** 在图示中心显示的线速度和角速度。
 - **旋转：** 用于旋转图示的角度位置。
 
-## 数据格式
+## 数据格式 {#data-format}
 
 数据应作为字节编码的结构体或 protobuf 进行发布，使用 `SwerveModuleState[]`、`ChassisSpeeds`、`Rotation2d` 或 `Rotation3d` 类型。
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## 配置
+## 配置 {#configuration}
 
 提供以下配置选项：
 

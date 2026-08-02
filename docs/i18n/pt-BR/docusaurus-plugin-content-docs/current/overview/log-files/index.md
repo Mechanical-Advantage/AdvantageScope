@@ -1,6 +1,6 @@
-# 📂 Arquivos de log
+# 📂 Arquivos de log {#log-files}
 
-## Formatos suportados
+## Formatos suportados {#supported-formats}
 
 - **WPILOG (.wpilog)** - Produzido pelo [logging de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib e pelo AdvantageKit. O [URCL](/more-features/urcl) pode ser usado para capturar sinais de controladores de motor da REV em um arquivo WPILOG.
 - **Logs da Driver Station (.dslog e .dsevents)** - Produzidos pela [Driver Station da FRC](https://docs.wpilib.org/pt/stable/docs/software/driverstation/driver-station.html). O AdvantageScope pesquisa automaticamente o arquivo de log correspondente ao abrir qualquer um dos tipos de log.
@@ -14,7 +14,7 @@
 Arquivos de log Hoot só podem ser abertos após concordar com o [contrato de licença de usuário final](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) da CTRE. O AdvantageScope exibe um aviso para confirmar a concordância com estes termos ao abrir um arquivo de log Hoot pela primeira vez.
 :::
 
-## Abrindo logs
+## Abrindo logs {#opening-logs}
 
 Na barra de menus, clique em `Arquivo` > `Abrir log(s)...`, depois escolha um ou mais arquivos de log do disco local. Arrastar um arquivo de log do navegador de arquivos do sistema para o ícone ou janela do AdvantageScope também faz com que ele seja aberto.
 
@@ -24,7 +24,7 @@ Se múltiplos arquivos forem abertos simultaneamente, os timestamps serão alinh
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## Adicionando novos logs
+## Adicionando novos logs {#adding-new-logs}
 
 Após abrir um arquivo de log, logs adicionais podem ser facilmente adicionados à visualização. Os timestamps serão realinhados automaticamente para sincronização com os dados existentes.
 

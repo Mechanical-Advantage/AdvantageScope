@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 🔢 Tabel
+# 🔢 Tabel {#table}
 
 Vizualizarea sub formă de tabel este concepută pentru a afișa în detaliu modificările specifice de valoare pentru un set de câmpuri. Pentru a adăuga un câmp, trageți-l în vizualizarea principală. Pentru a șterge un câmp, dați clic pe butonul „X” de lângă numele acestuia. Câmpurile pot fi reorganizate prin clic și tragere.
 

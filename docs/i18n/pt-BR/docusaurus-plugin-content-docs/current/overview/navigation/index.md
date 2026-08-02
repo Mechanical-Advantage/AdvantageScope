@@ -1,4 +1,4 @@
-# 🧭 Navegação do aplicativo
+# 🧭 Navegação do aplicativo {#app-navigation}
 
 A captura de tela abaixo mostra os elementos importantes da janela principal do AdvantageScope. A aparência exata difere entre os sistemas operacionais.
 
@@ -8,7 +8,7 @@ A captura de tela abaixo mostra os elementos importantes da janela principal do 
 Para visualizar múltiplos arquivos de log simultaneamente, clique em `Arquivo` > `Nova janela`.
 :::
 
-## Barra lateral
+## Barra lateral {#sidebar}
 
 À esquerda está a barra lateral com a lista de tabelas e campos disponíveis. Campos selecionáveis são exibidos em _itálico_ e tabelas integradas (da WPILib ou AdvantageKit) estão <u>sublinhadas</u>. Clique na seta para expandir tabelas aninhadas. **Arraste um único campo** para selecioná-lo ou **mantenha cmd/ctrl pressionado** para selecionar uma coleção de campos clicando em cada um deles. Comece a arrastar a coleção de campos para finalizar a seleção.
 
@@ -18,7 +18,7 @@ Para pesquisar um campo, comece a digitar na caixa de pesquisa. Um menu suspenso
 Clique e arraste na borda direita para redimensionar ou ocultar a barra lateral. Dê um duplo clique para alternar a visibilidade da barra lateral.
 :::
 
-## Barra de guias
+## Barra de guias {#tab-bar}
 
 Use a barra de guias (azul) para alternar entre diferentes visualizações. Esta documentação está disponível a qualquer momento clicando no ícone 📖 à esquerda. Para exportar o layout atual da guia (e configurações associadas), clique em `Arquivo` > `Exportar layout...` Para importar um layout de um arquivo, clique em `Arquivo` > `Importar layout...`
 
@@ -33,11 +33,11 @@ Os botões de navegação (verdes) na parte superior gerenciam as guias e contro
 - **Botão X:** Fecha a guia atual.
 - **Botão Reproduzir:** Inicia e para a reprodução em tempo real. _Clique com o botão direito para alterar a velocidade de reprodução ou ativar o loop._
 
-## Painel de visualização
+## Painel de visualização {#viewer-pane}
 
 O painel de visualização é onde os dados são apresentados para cada tipo de guia. Verifique a documentação de referência de guias para obter detalhes sobre o painel de visualização de cada guia. Esta visualização pode ser movida para uma janela separada clicando no botão destacar na barra de guias.
 
-## Painel de controle
+## Painel de controle {#control-pane}
 
 O painel de controle é usado para selecionar campos para visualização e gerenciar outras opções. Verifique a documentação de referência de guias para obter detalhes sobre as opções disponíveis para cada guia.
 

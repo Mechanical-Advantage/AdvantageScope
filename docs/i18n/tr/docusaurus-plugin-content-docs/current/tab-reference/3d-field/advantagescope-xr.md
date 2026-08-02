@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR, 👀 [3B saha](/tab-reference/3d-field) görünümünü artırılmış gerçeklikte hayata geçirerek verileri yepyeni yollarla görselleştirmenizi sağlar. Gerçek boyutta simüle edilmiş bir otonomu görün, bir masaüstü saha modeliyle maç stratejisini inceleyin, tanılama bilgilerini gerçek bir robot üzerine çakıştırın ve çok daha fazlasını yapın! Aşağıdaki video bu özelliğin çeşitli kullanım durumlarını göstermektedir:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Gereksinimler
+## Gereksinimler {#requirements}
 
 - **Ana Bilgisayar:** Windows, macOS veya Linux üzerinde AdvantageScope masaüstü uygulaması (v4.1.0 veya üzeri). Cihazdaki tüm güvenlik duvarları [devre dışı bırakılmalıdır](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **İstemci:** iOS/iPadOS 16 veya üzerini çalıştıran bir iPhone veya iPad. Herhangi bir uygulama kurulumu gerekmez.
@@ -28,7 +28,7 @@ AdvantageScope XR yalnızca iOS ve iPadOS üzerinde desteklenmektedir. Alternati
 
 </details>
 
-## Kurulum
+## Kurulum {#setup}
 
 1. Ana bilgisayarda, herhangi bir 3B saha sekmesindeki **"XR" düğmesine tıklayın**. Aynı anda yalnızca bir XR ana bilgisayar oturumu aktif olabilir, bu nedenle bu düğmeye tıklamak diğer tüm aktif oturumları kesecektir.
 

@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# 💡 AdvantageScope Lite
+# 💡 AdvantageScope Lite {#advantagescope-lite}
 
 AdvantageScope Lite هو إصدار يعتمد على المتصفح من AdvantageScope يمكن الوصول إليه من واجهة ويب FIRST Driver Station و Systemcore. يتضمن AdvantageScope Lite معظم الميزات الأساسية لتطبيق سطح المكتب AdvantageScope. ومع ذلك، تم حذف العديد من الميزات بسبب قيود التوافق (بما في ذلك بعض أنواع علامات التبويب، وتنسيقات التسجيل، والميزات ذات الصلة).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## التثبيت والأصول
+## التثبيت والأصول {#installation-and-assets}
 
 يمكن تثبيت وتحديث AdvantageScope Lite لـ Systemcore عن طريق تنزيل إصدار "Systemcore" من AdvantageScope من صفحة إصدارات GitHub. حدد بطاقة «إضافة حزمة» (Add Package) على واجهة ويب Systemcore لتحميل الحزمة إلى الروبوت.
 

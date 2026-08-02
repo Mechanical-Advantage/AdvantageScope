@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Publication de données NetworkTables
+# Publication de données NetworkTables {#publishing-networktables-data}
 
 AdvantageScope prend en charge la publication de données NetworkTables stockées dans un fichier journal vers un serveur NetworkTables tel qu'un simulateur ou un robot. Les cas d'utilisation possibles incluent :
 
@@ -12,7 +12,7 @@ AdvantageScope prend en charge la publication de données NetworkTables stockée
 
 Cette fonctionnalité nécessite un fichier journal avec une capture complète des données NetworkTables, qui peut être généré à l'aide de l'[enregistreur de données intégré](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib. Notez qu'AdvantageKit ne prend pas en charge cette fonctionnalité, car il permet à la place une relecture déterministe plus complète en simulation.
 
-## Prise en main
+## Prise en main {#getting-started}
 
 Pour commencer la publication, un fichier journal contenant des données NetworkTables doit être ouvert. Ensuite, suivez ces étapes :
 
@@ -25,7 +25,7 @@ Tous les champs seront publiés en utilisant leurs valeurs stockées à l'_horod
 
 Pour arrêter la publication, cliquez sur `Fichier` > `Publier les données NT` > `Arrêter la publication`.
 
-## Filtrage des champs
+## Filtrage des champs {#filtering-fields}
 
 Par défaut, AdvantageScope publie tous les champs NetworkTables stockés dans le fichier journal (à l'exception des métas-sujets publiés par le serveur). Certains cas d'utilisation, comme l'imitation d'un coprocesseur, nécessitent uniquement la publication d'un ensemble limité de champs ou sous-tables. Pour ajuster l'ensemble des préfixes de champ autorisés, ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS).
 
@@ -35,7 +35,7 @@ L'option « Préfixes de publication NT » définit les préfixes autorisés p
 - « *SmartDashboard/Auto Selector* » : Inclut uniquement la table « SmartDashboard/Auto Selector ».
 - « *limelight/tx,limelight/ty* » : Inclut uniquement les champs « limelight/tx » et « limelight/ty ».
 
-## Limitations
+## Limitations {#limitations}
 
 :::warning
 

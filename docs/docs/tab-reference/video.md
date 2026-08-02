@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 Video
+# 🎬 Video {#video}
 
 The video tab allows for the log data to be compared side-by-side with a match video that was separately recorded. The steps below show how to load a video and synchronize it with the log.
 
-## Loading the Video
+## Loading the Video {#loading-the-video}
 
 AdvantageScope provides three options for loading a video:
 
@@ -26,7 +26,7 @@ YouTube and TBA video download may failed unexpectedly due to changes on YouTube
 AdvantageScope requires [FFmpeg](https://ffmpeg.org) to process video files. If a valid copy of FFmpeg is not found on your system's PATH, AdvantageScope will prompt to download FFmpeg from the internet when loading a video for the first time. Automatic FFmpeg installation is only supported on Windows and macOS; Linux users may need to manually install FFmpeg and add it to the system PATH.
 :::
 
-## Navigating the Video
+## Navigating the Video {#navigating-the-video}
 
 When a video is initially loaded and has not yet been synchronized with the log data, the playback controls for the video and log are still independent. Use the timeline and buttons on the bottom right to control the video playback. The following keyboard shortcuts are also supported:
 
@@ -38,7 +38,7 @@ When a video is initially loaded and has not yet been synchronized with the log 
 
 <img src="/img/tab-reference/video-2.png" alt="Video controls" />
 
-## Automatic Synchronization
+## Automatic Synchronization {#automatic-synchronization}
 
 Most match videos will be synchronized automatically with the log shortly after the frames for the autonomous period of the match are loaded. No action is required; if synchronization succeeds, the video controls will be locked automatically (see "Playback" below).
 
@@ -46,7 +46,7 @@ Most match videos will be synchronized automatically with the log shortly after 
 Automatic synchronization only works on match videos that include score overlays, and may not succeed in all cases. If the video controls are not locked automatically once all frames are loaded, manual synchronization is required.
 :::
 
-## Manual Synchronization
+## Manual Synchronization {#manual-synchronization}
 
 First, use the video controls to navigate to a known location in the match like the start of auto. Then, select the time in the log file that aligns with the current frame of the video.
 
@@ -58,7 +58,7 @@ Once the video and log are aligned, click the lock icon next to the video timeli
 
 <img src="/img/tab-reference/video-3.png" alt="Lock button" />
 
-## Playback
+## Playback {#playback}
 
 Once locked, the video playback stays aligned with the selected time in the log. Note that sound playback is not supported since the original video is converted to a frame-by-frame representation to support log synchronization.
 

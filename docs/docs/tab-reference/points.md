@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Points
+# 📍 Points {#points}
 
 The points tab shows a 2D visualization of arbitrary points. This is a very flexible tool, allowing for custom visualizations of vision data/pipelines, mechanism states, etc.
 
@@ -24,7 +24,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-## Adding Sources
+## Adding Sources {#adding-sources}
 
 To get started, drag a field to the "Sources" section. Delete a source using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Sources can be rearranged in the list by clicking and dragging.
 
@@ -34,7 +34,7 @@ To get started, drag a field to the "Sources" section. Delete a source using the
 To see a full list of supported sources types, click the `?` icon. This list also includes the supported data types.
 :::
 
-## Data Format
+## Data Format {#data-format}
 
 Point data should be published as a byte-encoded struct or protobuf, using the `Translation2d[]` type. Many libraries support this format, including WPILib and AdvantageKit. The example code below shows how to log point data in Java.
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 The following configuration options are available:
 

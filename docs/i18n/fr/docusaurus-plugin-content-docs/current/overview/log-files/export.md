@@ -1,4 +1,4 @@
-# Exportation de données de journal
+# Exportation de données de journal {#exporting-log-data}
 
 AdvantageScope comprend un système flexible pour exporter des données de journal sous forme de fichier CSV, WPILOG ou MCAP. Les fonctions d'exportation fonctionnent lors de la visualisation d'un fichier journal ou lors de la connexion à une source de données en direct. Les cas d'utilisation possibles incluent :
 
@@ -22,7 +22,7 @@ Nous ne recommandons pas d'utiliser cette fonctionnalité pour exporter des donn
 _Cet avertissement **ne s'applique pas** aux journaux produits par AdvantageKit, qui peuvent être exportés sans aucune perte de données en sélectionnant l'option « Cycles AdvantageKit ». Consultez [cette page](https://docs.advantagekit.org/data-flow/sysid-compatibility) pour plus de détails._
 :::
 
-## Options
+## Options {#options}
 
 Les options suivantes sont fournies lors de l'exportation :
 

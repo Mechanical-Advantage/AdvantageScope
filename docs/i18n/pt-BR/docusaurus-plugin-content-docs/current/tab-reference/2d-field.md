@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 Campo 2D
+# 🗺 Campo 2D {#2d-field}
 
 A guia de campo 2D mostra uma visualização 2D do robô sobreposta em um mapa do campo. Ela também pode mostrar dados extras, como status de alvos de visão e poses de referência.
 
@@ -24,7 +24,7 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 </details>
 
-## Adicionando objetos
+## Adicionando objetos {#adding-objects}
 
 Para começar, arraste um campo para a seção "Poses". Exclua um objeto usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os objetos, clique na lixeira perto do título do eixo e depois em `Limpar tudo`. Os objetos podem ser reorganizados na lista clicando e arrastando.
 
@@ -36,7 +36,7 @@ Para ver uma lista completa de tipos de objetos suportados, clique no ícone `?`
 
 <img src="/img/tab-reference/2d-field-2.png" alt="2D field with objects" />
 
-## Formato dos dados
+## Formato dos dados {#data-format}
 
 Os dados de geometria devem ser publicados como um struct ou protobuf codificado em bytes. Vários tipos de geometria 2D e 3D são suportados, incluindo `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` e mais.
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Configuração
+## Configuração {#configuration}
 
 - **Campo:** A imagem do campo a ser usada. Todos os jogos recentes da FRC e do FTC são suportados. Para adicionar uma imagem de campo personalizada, consulte [Recursos personalizados](/more-features/custom-assets).
 - **Orientação:** A orientação da imagem do campo no painel de visualização.

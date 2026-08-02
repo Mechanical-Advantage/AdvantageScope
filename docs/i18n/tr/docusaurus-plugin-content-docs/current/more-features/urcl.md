@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Gayriresmi REV-uyumlu loglayıcı (URCL)
+# 📝 Gayriresmi REV-uyumlu loglayıcı (URCL) {#unofficial-rev-compatible-logger}
 
 :::info
 2026'da yeni bir özellik olarak REVLib, Spark Max ve Spark Flex'ten gelen verileri bir REV CAN loguna (`.revlog`) kaydetmek için resmi bir loglama çözümü içerir. Ayrıntılar için [buraya](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) bakın. Bu dosyalar doğrudan AdvantageScope'ta açılabilir, ancak diğer veri kaynaklarıyla tam olarak senkronize edilemez.
@@ -27,7 +27,7 @@ Kurulumdan sonra tüm Spark Max ve Spark Flex cihazlarından gelen periyodik CAN
 Bu kütüphane resmi bir REV aracı olmadığından, destek soruları REV'in destek kişisi yerine URCL [sorunlar sayfasına](https://github.com/Mechanical-Advantage/URCL/issues) veya software@team6328.org adresine yönlendirilmelidir.
 :::
 
-## Kurulum
+## Kurulum {#setup}
 
 VSCode'daki bağımlılık yöneticisini kullanarak [üçüncü taraf kütüphaneleri](https://docs.wpilib.org/tr/stable/docs/software/vscode-overview/3rd-party-libraries.html) kurma talimatlarını izleyerek URCL vendordep'ini kurun. Alternatif olarak aşağıdaki satıcı JSON URL'sini kullanabilirsiniz:
 
@@ -111,7 +111,7 @@ CAN kullanımını en aza indirmek için Spark cihazları için çoğu durum kar
 Daha fazla ayrıntı için [REVLib dokümantasyonunu](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods) kontrol edin. Spark'ı yapılandırırken log dosyasına dahil etmek istediğiniz sinyalleri manuel olarak etkinleştirmek için [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) kullanılmasını öneririz.
 :::
 
-## SysId kullanımı
+## SysId kullanımı {#sysid-usage}
 
 1. URCL'yi yukarıda gösterildiği gibi kurduktan sonra mekanizma log tüketicisi için `null` kullanarak SysId rutinini yapılandırın. Java için örnek bir gösterim aşağıdadır. Bu yapılandırma alt sistem sınıfı içinde gerçekleştirilebilir.
 

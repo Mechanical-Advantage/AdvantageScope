@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 3D Field
+# 👀 3D Field {#3d-field}
 
 The 3D field shows a 3D visualization of the robot and field. It can be used with regular 2D poses, but is especially helpful when working with 3D calculations (like localizing with AprilTags). Multiple camera views are available, including field relative, robot relative, and fixed. [AdvantageScope XR](advantagescope-xr) allows this tab to be visualized using augmented reality. The timeline shows when the robot is enabled and can be used to navigate through the log data.
 
@@ -24,7 +24,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 The 2026 FRC field model is consistent with the AprilTag layout for the **welded** field. The differences between the welded and AndyMark fields are very minor, but there may be small (~0.5 inch) misalignments when visualizing AprilTag poses based on the AndyMark field layout.
 :::
 
-## Adding Objects
+## Adding Objects {#adding-objects}
 
 To get started, drag a field to the "Poses" section. Delete an object using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all objects, click the trash can near the axis title and then `Clear All`. Objects can be rearranged in the list by clicking and dragging.
 
@@ -38,7 +38,7 @@ To see a full list of supported object types, click the `?` icon. This list also
 AdvantageScope supports several sizes of AprilTags for FTC fields. Sizes are measured as the **side length of the black section of the AprilTag**, not including the required white border.
 :::
 
-## Data Format
+## Data Format {#data-format}
 
 Geometry data should be published as a byte-encoded struct or protobuf. Various 2D and 3D geometry types are supported, including `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, and more.
 
@@ -97,17 +97,17 @@ packet.put("Pose heading (deg)", 180.0); // Degrees
 </TabItem>
 </Tabs>
 
-## Mechanisms & Components
+## Mechanisms & Components {#mechanisms-and-components}
 
 Mechanism data can be visualized using 2D mechanisms or articulated 3D components.
 
-### 2D Mechanisms
+### 2D Mechanisms {#2d-mechanisms}
 
 To visualize mechanism data logged using a [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), add the mechanism field to an existing robot or ghost object. The mechanism is projected onto the XZ or YZ plane of the robot using simple boxes, as shown below. Click the gear icon or right-click on the field name to switch between the XZ and YZ planes. The robot's origin is centered on the bottom edge of the mechanism.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
 
-### 3D Components
+### 3D Components {#3d-components}
 
 :::warning
 Setting up 3D components can be complex and time-consuming. Consider utilizing AdvantageScope's `Mechanism2d` support as described above, which offers a more streamlined approach to visualize mechanisms on the 3D field.
@@ -119,7 +119,7 @@ Each component can be moved independently (like an elevator carriage, arm, or en
 
 <img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D mechanism" />
 
-## Game Piece Objects
+## Game Piece Objects {#game-piece-objects}
 
 Each field includes a set of game piece object types, allowing game pieces to be rendered at any position on the field using data published by the robot code. This has a variety of applications, including:
 
@@ -139,7 +139,7 @@ The AdvantageKit KitBot 2024 example project includes a simple example of a [com
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="2024 KitBot note visualization" />
 
-## Camera Options
+## Camera Options {#camera-options}
 
 To switch the selected camera mode, right-click on the rendered field view. The camera mode and position is controlled independently for every pop-up window, allowing for the easy creation of multi-camera views.
 
@@ -147,7 +147,7 @@ To switch the selected camera mode, right-click on the rendered field view. The 
 Right-click the rendered field view and click "Set FOV..." to adjust the FOV of the orbiting and Driver Station cameras.
 :::
 
-### Orbit Field
+### Orbit Field {#orbit-field}
 
 This is the default camera mode, where the camera can be freely moved relative to the field. **Left-click + drag** rotates the camera, and **right-click + drag** pans the camera. **Scroll** to zoom in and out.
 
@@ -155,11 +155,11 @@ This is the default camera mode, where the camera can be freely moved relative t
 The camera can also be controlled using the keyboard. The **WASD** keys are used to translate, the **IJKL** keys are used to rotate, and the **E** and **Q** keys are used to translate vertically.
 :::
 
-### Orbit Robot
+### Orbit Robot {#orbit-robot}
 
 This mode has the same controls as the "Orbit Field" mode, but the camera's position is locked relative to the robot. This allows for "tracking" shots of the robot's movement.
 
-### Driver Station
+### Driver Station {#driver-station}
 
 This mode locks the camera behind one of the driver stations at typical eye-height. Either manually choose the station to view or choose "Auto" to use the alliance and station number stored in the log data.
 
@@ -167,7 +167,7 @@ This mode locks the camera behind one of the driver stations at typical eye-heig
 Automatic selection of station number may be inaccurate when viewing log data produced by AdvantageKit 2023 or earlier.
 :::
 
-### Fixed Camera
+### Fixed Camera {#fixed-camera}
 
 Each robot model is configured with a set of fixed cameras, like vision and driver cameras. These cameras have fixed positions, aspect ratios, and FOVs. These views are often useful to check vision data or to simulate a driver camera view. In the example below, a driver camera is shown.
 
@@ -179,7 +179,7 @@ If a "Camera Override" pose is provided, it replaces the default poses of all fi
 Consistent with other pose data, the "Camera Override" pose must be _field relative_, not robot relative.
 :::
 
-## Configuration
+## Configuration {#configuration}
 
 The field model can be configured using the dropdown. All recent FRC and FTC games are supported. We recommend using the "Evergreen" fields for devices with limited graphical performance. The "Axes" fields display only XYZ axes at the origin with a field outline for scale.
 
@@ -187,7 +187,7 @@ The field model can be configured using the dropdown. All recent FRC and FTC gam
 The coordinate system used on the this tab is customizable. See the [coordinate system](/more-features/coordinate-systems) page for details.
 :::
 
-### Rendering Modes
+### Rendering Modes {#rendering-modes}
 
 The 3D field supports three rendering modes:
 

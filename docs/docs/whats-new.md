@@ -48,7 +48,7 @@ The 📉 [Line Graph](/tab-reference/line-graph/) tab has been redesigned to be 
 - Precise labeling of Y axes and value displays
 - Quick conversion to compatible units (no popup windows)
 - Implicit conversion of compatible unit types within a single axis
-- Accurate display of [integrated and differentiated](/tab-reference/line-graph/#integration--differentiation) units
+- Accurate display of [integrated and differentiated](/tab-reference/line-graph/#integration-and-differentiation) units
 
 The screenshot below shows all of these features in action. Note that the left axis includes fields with different angular velocity units, and the right axis includes values that are differentiated and displayed in a non-native unit (degrees). Selecting units is also easier than ever before, with compatible unit options integrated directly in the control menu for each axis.
 

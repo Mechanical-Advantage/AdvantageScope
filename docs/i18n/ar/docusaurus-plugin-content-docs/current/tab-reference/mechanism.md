@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ آلية
+# ⚙️ آلية {#mechanism}
 
 تعرض علامة تبويب الآلية آلية مفصلية تم إنشاؤها باستخدام كائن واحد أو أكثر من كائنات [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
@@ -24,11 +24,11 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## إضافة الآليات
+## إضافة الآليات {#adding-mechanisms}
 
 للأدء، اسحب `Mechanism2d` إلى جزء التحكم. احذف آلية باستخدام زر X، أو أخفها مؤقتاً بالنقر فوق أيقونة العين أو النقر المزدوج على اسم الحقل. لإزالة جميع الآليات، انقر فوق سلة المهملات بالقرب من عنوان المحور ثم `مسح الكل`. يمكن إعادة ترتيب الآليات في القائمة بالنقر والسحب.
 
-## نشر البيانات
+## نشر البيانات {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

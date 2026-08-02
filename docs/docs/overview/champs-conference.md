@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 📽️ Championship Conference
+# 📽️ Championship Conference {#championship-conference}
 
 The following conference was presented by Team 6328 at the 2025 FIRST Championship, and provides an accessible overview of the capabilities and use cases of AdvantageScope.
 

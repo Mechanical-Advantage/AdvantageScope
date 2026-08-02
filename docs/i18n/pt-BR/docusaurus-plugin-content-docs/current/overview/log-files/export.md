@@ -1,4 +1,4 @@
-# Exportando dados de log
+# Exportando dados de log {#exporting-log-data}
 
 O AdvantageScope inclui um sistema flexível para exportar dados de log como um arquivo CSV, WPILOG ou MCAP. As funções de exportação funcionam ao visualizar um arquivo de log ou quando conectado a uma fonte de dados ao vivo. Os casos de uso possíveis incluem:
 
@@ -22,7 +22,7 @@ Não recomendamos o uso deste recurso para exportar dados de log **gerados em si
 _Este aviso **não se aplica** aos logs produzidos pelo AdvantageKit, que podem ser exportados sem perda de dados selecionando a opção "Ciclos do AdvantageKit". Consulte [esta página](https://docs.advantagekit.org/data-flow/sysid-compatibility) para mais detalhes._
 :::
 
-## Opções
+## Opções {#options}
 
 As seguintes opções são fornecidas ao exportar:
 

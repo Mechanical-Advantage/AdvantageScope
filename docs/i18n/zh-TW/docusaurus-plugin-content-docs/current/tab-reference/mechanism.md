@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ 機構
+# ⚙️ 機構 {#mechanism}
 
 機構分頁顯示使用一個或多個 [Mechanism2d](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 物件建立的關節機構。
 
@@ -24,11 +24,11 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## 新增機構
+## 新增機構 {#adding-mechanisms}
 
 要開始，請將 `Mechanism2d` 拖曳到控制面板。使用 X 按鈕刪除機構，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有機構，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列機構。
 
-## 發布資料
+## 發布資料 {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

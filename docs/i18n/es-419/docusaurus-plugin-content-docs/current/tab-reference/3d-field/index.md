@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 👀 Campo 3D
+# 👀 Campo 3D {#3d-field}
 
 El campo 3D muestra una visualización 3D del robot y del campo. Se puede utilizar con poses 2D regulares, pero es especialmente útil cuando se trabaja con cálculos 3D (como localizar con AprilTags). Hay varias vistas de cámara disponibles, relativas al campo, relativas al robot y fijas. [AdvantageScope XR](advantagescope-xr) permite visualizar esta pestaña mediante realidad aumentada. La línea de tiempo muestra cuándo el robot está habilitado y se puede utilizar para navegar a través de los datos del registro.
 
@@ -24,7 +24,7 @@ Para hacer zoom, coloca el cursor sobre la línea de tiempo y desplázate hacia 
 El modelo de campo de FRC 2026 es consistente con el diseño de AprilTag para el campo **soldado**. Las diferencias entre los campos soldados y los campos de AndyMark son muy menores, pero puede haber pequeñas desalineaciones (~0.5 pulgadas) al visualizar poses de AprilTag basadas en el diseño del campo de AndyMark.
 :::
 
-## Agregar objetos
+## Agregar objetos {#adding-objects}
 
 Para comenzar, arrastra un campo a la sección "Poses". Elimina un objeto con el botón X, u ocúltalo temporalmente haciendo clic en el ícono del ojo o haciendo doble clic en el nombre del campo. Para eliminar todos los objetos, haz clic en la papelera cerca del título del eje y luego en `Borrar todo`.
 
@@ -38,7 +38,7 @@ Para ver una lista completa de tipos de objetos compatibles, haz clic en el íco
 AdvantageScope admite varios tamaños de AprilTags para campos de FTC. Los tamaños se miden como la **longitud del lado de la sección negra del AprilTag**, sin incluir el borde blanco requerido.
 :::
 
-## Formato de datos
+## Formato de datos {#data-format}
 
 Los datos de geometría deben publicarse como un struct o protobuf codificado en bytes. Se admiten varios tipos de geometría 2D y 3D, incluidos `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` y más. Muchas bibliotecas admiten el formato struct, incluidas WPILib y AdvantageKit. El código de ejemplo a continuación muestra cómo registrar datos de pose 3D en Java.
 
@@ -95,7 +95,7 @@ packet.put("Pose heading (deg)", 180.0); // Grados
 </TabItem>
 </Tabs>
 
-## Mecanismos y componentes
+## Mecanismos y componentes {#mechanisms-and-components}
 
 Los datos de los mecanismos se pueden visualizar utilizando mecanismos 2D o componentes 3D articulados.
 
@@ -105,7 +105,7 @@ Para visualizar los datos del mecanismo registrados utilizando un [`Mechanism2d`
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mecanismo 2D" />
 
-### Componentes 3D
+### Componentes 3D {#3d-components}
 
 :::warning
 Configurar componentes 3D puede ser complejo y llevar mucho tiempo. Considera utilizar el soporte `Mechanism2d` de AdvantageScope como se describe anteriormente, que ofrece un enfoque más simplificado para visualizar mecanismos en el campo 3D.
@@ -137,7 +137,7 @@ El proyecto de ejemplo KitBot 2024 de AdvantageKit incluye un ejemplo simple de 
 
 <img src="/img/tab-reference/3d-field/3d-field-4.png" alt="Visualización de la nota del KitBot 2024" />
 
-## Opciones de cámara
+## Opciones de cámara {#camera-options}
 
 Para cambiar el modo de cámara seleccionado, haz clic derecho en la vista del campo renderizado. El modo de cámara y la posición se controlan de forma independiente para cada ventana emergente, lo que permite la fácil creación de vistas multicámara.
 
@@ -145,7 +145,7 @@ Para cambiar el modo de cámara seleccionado, haz clic derecho en la vista del c
 Haz clic derecho en la vista de campo renderizada y haz clic en "Establecer FOV..." para ajustar el campo de visión de las cámaras en órbita y de la Driver Station.
 :::
 
-### Orbitar campo
+### Orbitar campo {#orbit-field}
 
 Este es el modo de cámara predeterminado, donde la cámara se puede mover libremente en relación con el campo. **Hacer clic izquierdo + arrastrar** gira la cámara, y **hacer clic derecho + arrastrar** mueve la cámara (paneo). **Desplázate (scroll)** para acercar y alejar.
 
@@ -153,11 +153,11 @@ Este es el modo de cámara predeterminado, donde la cámara se puede mover libre
 La cámara también se puede controlar utilizando el teclado. Las teclas **WASD** se utilizan para trasladar, las teclas **IJKL** se utilizan para rotar y las teclas **E** y **Q** se utilizan para la traslación vertical.
 :::
 
-### Orbitar robot
+### Orbitar robot {#orbit-robot}
 
 Este modo tiene los mismos controles que el modo "Orbitar campo", pero la posición de la cámara está bloqueada en relación con el robot. Esto permite tomas de "seguimiento" del movimiento del robot.
 
-### Estación del conductor
+### Estación del conductor {#driver-station}
 
 Este modo bloquea la cámara detrás de una de las estaciones de control a la altura típica de los ojos. Elige manualmente la estación a visualizar o elige "Automático" para usar la alianza y el número de estación almacenados en los datos de registro.
 
@@ -165,7 +165,7 @@ Este modo bloquea la cámara detrás de una de las estaciones de control a la al
 La selección automática del número de estación puede ser inexacta cuando se visualizan datos de registro producidos por AdvantageKit 2023 o anterior.
 :::
 
-### Cámara fija
+### Cámara fija {#fixed-camera}
 
 Cada modelo de robot está configurado con un conjunto de cámaras fijas, como cámaras de visión y de conductor. Estas cámaras tienen posiciones, relaciones de aspecto y FOV fijos. Estas vistas suelen ser útiles para comprobar los datos de visión o para simular la vista de cámara del conductor. En el siguiente ejemplo, se muestra una cámara de conductor.
 
@@ -177,7 +177,7 @@ Si se proporciona una pose de "Anulación de cámara", reemplaza las poses prede
 De acuerdo con otros datos de poses, la pose "Anulación de cámara" debe ser _relativa al campo_, no relativa al robot.
 :::
 
-## Configuración
+## Configuración {#configuration}
 
 El modelo de campo se puede configurar utilizando el menú desplegable. Se admiten todos los juegos recientes de FRC y FTC. Recomendamos usar los campos "Evergreen" (hoja perenne) para dispositivos con rendimiento gráfico limitado. Los campos "Ejes" muestran solo los ejes XYZ en el origen con un contorno de campo para la escala.
 

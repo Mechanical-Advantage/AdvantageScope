@@ -48,7 +48,7 @@ AdvantageScope 旨在配合 WPILib 框架及相關日誌工具使用時提供最
 - 精確標示 Y 軸與數值顯示
 - 快速轉換為相容單位（無快顯視窗）
 - 在單一軸內隱式轉換相容單位類型
-- 精確顯示[積分與微分](/tab-reference/line-graph/#integration--differentiation)單位
+- 精確顯示[積分與微分](/tab-reference/line-graph/#integration-and-differentiation)單位
 
 下方螢幕截圖展示了所有這些功能的實際運作情況。請注意，左軸包含具有不同角速度單位的欄位，而右軸包含經過微分並以非原生單位（度）顯示的值。選擇單位也比以往更加輕鬆，相容的單位選項已直接整合到每個軸的控制選單中。
 

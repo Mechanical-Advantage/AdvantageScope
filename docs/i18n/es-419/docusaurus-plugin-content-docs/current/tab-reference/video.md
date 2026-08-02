@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 Video
+# 🎬 Video {#video}
 
 La pestaña de video permite que los datos del registro se comparen de lado a lado con un video del partido que se grabó por separado. Los pasos a continuación muestran cómo cargar un video y sincronizarlo con el registro.
 
-## Cargar el video
+## Cargar el video {#loading-the-video}
 
 AdvantageScope proporciona tres opciones para cargar un video:
 
@@ -26,7 +26,7 @@ La descarga de videos de YouTube y TBA puede fallar inesperadamente debido a cam
 AdvantageScope requiere [FFmpeg](https://ffmpeg.org) para procesar archivos de video. Si no se encuentra una copia válida de FFmpeg en el PATH de tu sistema, AdvantageScope te pedirá que descargues FFmpeg de Internet al cargar un video por primera vez. La instalación automática de FFmpeg solo se admite en Windows y macOS; es posible que los usuarios de Linux deban instalar FFmpeg manualmente y agregarlo al PATH del sistema.
 :::
 
-## Navegación del video
+## Navegación del video {#navigating-the-video}
 
 Cuando se carga un video por primera vez y aún no se ha sincronizado con los datos de registro, los controles de reproducción para el video y el registro siguen siendo independientes. Usa la línea de tiempo y los botones en la parte inferior derecha para controlar la reproducción de video. También se admiten los siguientes atajos de teclado:
 
@@ -38,7 +38,7 @@ Cuando se carga un video por primera vez y aún no se ha sincronizado con los da
 
 <img src="/img/tab-reference/video-2.png" alt="Controles de video" />
 
-## Sincronización automática
+## Sincronización automática {#automatic-synchronization}
 
 La mayoría de los videos de los partidos se sincronizarán automáticamente con el registro poco después de que se carguen los fotogramas para el período autónomo del partido. No se requiere ninguna acción; si la sincronización tiene éxito, los controles de video se bloquearán automáticamente (consulta "Reproducción" a continuación).
 
@@ -46,7 +46,7 @@ La mayoría de los videos de los partidos se sincronizarán automáticamente con
 La sincronización automática solo funciona en videos de partidos que incluyen superposiciones de puntuación y es posible que no tenga éxito en todos los casos. Si los controles de video no se bloquean automáticamente una vez que se cargan todos los fotogramas, se requiere sincronización manual.
 :::
 
-## Sincronización manual
+## Sincronización manual {#manual-synchronization}
 
 Primero, usa los controles de video para navegar a una ubicación conocida en el partido, como el inicio del autónomo. Luego, selecciona el tiempo en el archivo de registro que se alinee con el fotograma actual del video.
 
@@ -58,7 +58,7 @@ Una vez que el video y el registro estén alineados, haz clic en el ícono de ca
 
 <img src="/img/tab-reference/video-3.png" alt="Botón de bloqueo" />
 
-## Reproducción
+## Reproducción {#playback}
 
 Una vez bloqueada, la reproducción del video se mantiene alineada con la hora seleccionada en el registro. Ten en cuenta que no se admite la reproducción de sonido ya que el video original se convierte en una representación fotograma por fotograma para admitir la sincronización del registro.
 

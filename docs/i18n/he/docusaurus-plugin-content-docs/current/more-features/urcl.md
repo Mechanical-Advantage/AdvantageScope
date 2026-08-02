@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 Unofficial REV-Compatible Logger
+# 📝 Unofficial REV-Compatible Logger {#unofficial-rev-compatible-logger}
 
 :::info
 חדש ב-2026, REVLib כוללת פתרון תיעוד רשמי לשמירת נתונים מ-Spark Max ו-Spark Flex ליומן REV CAN (`.revlog`). ראו [כאן](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) לפרטים. קבצים אלה ניתנים לפתיחה ישירות ב-AdvantageScope, אך אינם ניתנים לסנכרון מדויק למקורות נתונים אחרים.
@@ -27,7 +27,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) היא ספריית תי
 מכיוון שספרייה זו אינה כלי רשמי של REV, פניות תמיכה צריכות להיות מופנות ל[דף ה-issues](https://github.com/Mechanical-Advantage/URCL/issues) של URCL או ל-software@team6328.org ולא לאנשי הקשר של תמיכת REV.
 :::
 
-## הגדרה
+## הגדרה {#setup}
 
 יש להתקין את ה-vendordep של URCL בהתאם להוראות להתקנת [ספריות צד שלישי](https://docs.wpilib.org/he/stable/docs/software/vscode-overview/3rd-party-libraries.html) תוך שימוש במנהל התלויות ב-VSCode. כחלופה, ניתן להשתמש בכתובת ה-URL הבאה של vendor JSON:
 
@@ -111,7 +111,7 @@ public Robot() {
 לפרטים נוספים, עיינו ב[תיעוד REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). אנו ממליצים להשתמש ב-[`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) בעת הגדרת ה-Spark להפעלה ידנית של אותות שתרצו לכלול בקובץ היומן.
 :::
 
-## שימוש ב-SysId
+## שימוש ב-SysId {#sysid-usage}
 
 1. לאחר הגדרת URCL כפי שמוצג לעיל, יש להגדיר את שגרת SysId תוך שימוש ב-`null` עבור צרכן יומן המנגנון. דוגמה מוצגת למטה עבור Java. הגדרה זו ניתנת לביצוע בתוך מחלקת תת-המערכת (subsystem).
 

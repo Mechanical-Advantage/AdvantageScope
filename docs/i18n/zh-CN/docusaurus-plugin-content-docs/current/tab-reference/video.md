@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 视频
+# 🎬 视频 {#video}
 
 视频选项卡允许将日志数据与单独录制的比赛视频进行逐帧对比。以下步骤展示了如何加载视频并将其与日志保持同步。
 
-## 加载视频
+## 加载视频 {#loading-the-video}
 
 AdvantageScope 提供了三种加载视频的选项：
 
@@ -26,7 +26,7 @@ AdvantageScope 提供了三种加载视频的选项：
 AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如果在系统的 PATH 中未找到有效的 FFmpeg 副本，AdvantageScope 会在首次加载视频时提示从互联网下载 FFmpeg。仅在 Windows 和 macOS 上支持自动 FFmpeg 安装；Linux 用户可能需要手动安装 FFmpeg 并将其添加到系统 PATH。
 :::
 
-## 浏览视频
+## 浏览视频 {#navigating-the-video}
 
 当视频初始加载且尚未与日志数据同步时，视频和日志的播放控制仍相互独立。使用右下角的时间轴和按钮控制视频播放。还支持以下键盘快捷键：
 
@@ -38,7 +38,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 
 <img src="/img/tab-reference/video-2.png" alt="视频控制" />
 
-## 自动同步
+## 自动同步 {#automatic-synchronization}
 
 在加载比赛自动阶段的帧后不久，大多数比赛视频将自动与日志进行同步。无需采取任何操作；如果同步成功，视频控制将自动锁定（参见下文“播放”）。
 
@@ -46,7 +46,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 自动同步仅适用于包含比分叠加层的比赛视频，且并非在所有情况下都能成功。如果加载所有帧后视频控制没有自动锁定，则需要进行手动同步。
 :::
 
-## 手动同步
+## 手动同步 {#manual-synchronization}
 
 首先，使用视频控制导航到比赛中的已知位置，例如自动阶段的开始。然后，在日志文件中选择与视频当前帧对齐的时间。
 
@@ -58,7 +58,7 @@ AdvantageScope 需要 [FFmpeg](https://ffmpeg.org) 来处理视频文件。如�
 
 <img src="/img/tab-reference/video-3.png" alt="锁定按钮" />
 
-## 播放
+## 播放 {#playback}
 
 一旦锁定，视频播放就会保持与日志中所选时间的对齐。请注意，不支持声音播放，因为原始视频已转换为逐帧表示以支持日志同步。
 

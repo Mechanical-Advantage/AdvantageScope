@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 Joysticks
+# 🎮 Joysticks {#joysticks}
 
 The joysticks tab shows the state of up to six connected controllers. The image below shows an example layout, with two Xbox controller and a generic joystick. Each button highlights when it is pressed, and the states of joysticks and other axes are displayed.
 
@@ -21,7 +21,7 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-## Control Pane
+## Control Pane {#control-pane}
 
 Select the joystickstypes in the table at the bottom of the tab. Joystick IDs range from 0 to 5, and match the IDs in the Driver Station and WPILib. More information about joysticks can be found in the [WPILib documentation](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
 

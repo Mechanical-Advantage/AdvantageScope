@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Modo de ajuste
+# Modo de ajuste {#tuning-mode}
 
 Algunas fuentes en vivo admiten el ajuste en vivo de valores numéricos y booleanos. Por ejemplo, esta función se puede usar para [ajustar ganancias del controlador](https://docs.wpilib.org/es/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) cuando está conectado a una fuente de NetworkTables. Ten en cuenta que el código del robot debe admitir la recepción de ganancias a través de NetworkTables.
 
@@ -15,7 +15,7 @@ Por defecto, todos los valores en AdvantageScope son de solo lectura. Para activ
 Esta función no está destinada a controlar el robot en el campo. No se admiten las entradas de estilo de panel (dashboard) como selectores, botones de activación, etc.
 :::
 
-## Ajuste con AdvantageKit
+## Ajuste con AdvantageKit {#tuning-with-advantagekit}
 
 Los campos publicados por AdvantageKit en la subtabla `AdvantageKit` son de solo salida y no se pueden editar. Sin embargo, los usuarios pueden publicar campos del código del usuario que sean ajustables desde AdvantageScope. **Cualquier campo publicado en la tabla "/Tuning" en NetworkTables aparecerá bajo la tabla "Tuning" cuando se use la fuente en vivo "NetworkTables (AdvantageKit)".**
 

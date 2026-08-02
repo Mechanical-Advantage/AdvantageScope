@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📝 مسجل متوافق مع REV غير رسمي
+# 📝 مسجل متوافق مع REV غير رسمي {#unofficial-rev-compatible-logger}
 
 :::info
 جديد في عام 2026، يتضمن REVLib حل تسجيل رسمي لحفظ البيانات من Spark Max و Spark Flex إلى سجل REV CAN (`.revlog`). راجع التفاصيل [هنا](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger). يمكن فتح هذه الملفات مباشرة في AdvantageScope، ولكن لا يمكن مزامنتها بدقة مع مصادر البيانات الأخرى.
@@ -27,7 +27,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) هي مكتبة تسجي
 نظراً لأن هذه المكتبة ليست أداة رسمية من REV، يجب توجيه استفسارات الدعم إلى [صفحة مشكلات URCL](https://github.com/Mechanical-Advantage/URCL/issues) أو software@team6328.org بدلاً من جهة اتصال دعم REV.
 :::
 
-## الإعداد
+## الإعداد {#setup}
 
 قم بتثبيت vendordep لـ URCL باتباع التعليمات لتثبيت [مكتبات الطرف الثالث](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) باستخدام مدير التبعيات في VSCode. بدلاً من ذلك، يمكنك استخدام عنوان URL التالي لـ vendor JSON:
 
@@ -111,7 +111,7 @@ public Robot() {
 لمزيد من التفاصيل، تحقق من [وثائق REVLib](https://docs.revrobotics.com/revlib/24-to-25#setting-status-periods). نوصي باستخدام [`SignalsConfig`](https://codedocs.revrobotics.com/java/com/revrobotics/spark/config/signalsconfig) عند تكوين Spark لتمكين أي إشارات ترغب في تضمينها في ملف السجل يدوياً.
 :::
 
-## استخدام SysId
+## استخدام SysId {#sysid-usage}
 
 1. بعد إعداد URCL كما هو موضح أعلاه، قم بتكوين روتين SysId باستخدام `null` للمستهلك سجل الآلية. يظهر مثال أدناه لـ Java. يمكن تنفيذ هذا التكوين داخل فئة النظام الفرعي.
 

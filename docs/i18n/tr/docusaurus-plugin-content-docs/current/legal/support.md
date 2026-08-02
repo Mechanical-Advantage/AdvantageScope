@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Destek
+# Destek {#support}
 
 AdvantageScope veya AdvantageScope XR için destek almak üzere lütfen aşağıdaki iletişim yöntemlerinden birini kullanın.
 

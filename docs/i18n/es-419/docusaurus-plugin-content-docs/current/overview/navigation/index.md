@@ -1,4 +1,4 @@
-# 🧭 Navegación en la aplicación
+# 🧭 Navegación en la aplicación {#app-navigation}
 
 La captura de pantalla a continuación muestra los elementos importantes de la ventana principal de AdvantageScope. La apariencia exacta difiere entre sistemas operativos.
 
@@ -8,7 +8,7 @@ La captura de pantalla a continuación muestra los elementos importantes de la v
 Para ver varios archivos de registro simultáneamente, haz clic en `Archivo` > `Nueva ventana`.
 :::
 
-## Barra lateral
+## Barra lateral {#sidebar}
 
 A la izquierda está la barra lateral con la lista de tablas y campos disponibles. Los campos seleccionables se muestran en _cursiva_ y las tablas integradas (de WPILib o AdvantageKit) están <u>subrayadas</u>.
 
@@ -20,7 +20,7 @@ Para buscar un campo, comienza a escribir en el cuadro de búsqueda. Se mostrar�
 Haz clic y arrastra en el borde derecho para cambiar el tamaño u ocultar la barra lateral. Haz doble clic para alternar la visibilidad de la barra lateral.
 :::
 
-## Barra de pestañas
+## Barra de pestañas {#tab-bar}
 
 Usa la barra de pestañas (azul) para cambiar entre diferentes vistas. Esta documentación está disponible en cualquier momento haciendo clic en el icono 📖 de la izquierda.
 
@@ -37,11 +37,11 @@ Los botones de navegación (verde) en la parte superior gestionan las pestañas 
 - **Botón X:** Cierra la pestaña actual.
 - **Botón de reproducción:** Inicia y detiene la reproducción en tiempo real. _Haz clic derecho para cambiar la velocidad de reproducción o habilitar la repetición (loop)._
 
-## Panel del visor
+## Panel del visor {#viewer-pane}
 
 El panel del visor es donde se presentan los datos para cada tipo de pestaña. Consulta la documentación de referencia de la pestaña para obtener detalles sobre el panel del visor para cada pestaña. Esta vista se puede mover a una ventana separada haciendo clic en el botón de separar en la barra de pestañas.
 
-## Panel de control
+## Panel de control {#control-pane}
 
 El panel de control se usa para seleccionar campos para su visualización y gestionar otras opciones. Consulta la documentación de referencia de la pestaña para obtener detalles sobre las opciones disponibles para cada pestaña.
 

@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# تشخيصات Phoenix
+# تشخيصات Phoenix {#phoenix-diagnostics}
 
 يدعم AdvantageScope البث المباشر للإشارات من أجهزة Phoenix 6 مع **عدم وجود إعداد في كود المستخدم**. يتيح ذلك سهولة تصحيح الأخطاء وضبط أجهزة Phoenix باستخدام الواجهة المألوفة والقوة الكاملة لـ AdvantageScope:
 

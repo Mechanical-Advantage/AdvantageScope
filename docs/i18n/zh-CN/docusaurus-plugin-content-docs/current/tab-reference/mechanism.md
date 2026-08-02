@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ 机构
+# ⚙️ 机构 {#mechanism}
 
 机构选项卡显示由一个或多个 [Mechanism2d](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 对象创建的铰接机构。
 
@@ -24,11 +24,11 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## 添加机构
+## 添加机构 {#adding-mechanisms}
 
 要开始使用，请将 `Mechanism2d` 拖动到控制面板。使用 X 按钮删除机构，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有机构，请点击轴标题附近的垃圾桶图标，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列机构。
 
-## 发布数据
+## 发布数据 {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

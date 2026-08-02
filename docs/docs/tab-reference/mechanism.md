@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Mechanism
+# ⚙️ Mechanism {#mechanism}
 
 The mechanism tab displays a a jointed mechanism created with one or more [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) objects.
 
@@ -24,11 +24,11 @@ To zoom, place the cursor over the timeline and scroll up or down. A range can a
 
 </details>
 
-## Adding Mechanisms
+## Adding Mechanisms {#adding-mechanisms}
 
 To get started, drag a `Mechanism2d` to the control pane. Delete a mechanism using the X button, or hide it temporarily by clicking the eye icon or double-clicking the field name. To remove all mechanisms, click the trash can near the axis title and then `Clear All`. Mechanisms can be rearranged in the list by clicking and dragging.
 
-## Publishing Data
+## Publishing Data {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

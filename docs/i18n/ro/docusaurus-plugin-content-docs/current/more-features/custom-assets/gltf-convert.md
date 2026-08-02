@@ -1,8 +1,8 @@
-# Conversia fișierelor Onshape & STEP în glTF
+# Conversia fișierelor Onshape & STEP în glTF {#converting-onshape-and-step-files-to-gltf}
 
 Vizualizarea 3D a AdvantageScope acceptă modele personalizate pentru terenuri și roboți, care pot fi instalate folosind procesul descris [aici](/more-features/custom-assets). Toate modelele trebuie să utilizeze formatul de fișier [glTF](https://www.khronos.org/gltf/), ales pentru eficiența sa la stocarea și încărcarea modelelor. Rețineți că AdvantageScope utilizează forma binară (.glb), care include toate resursele într-un singur fișier, mai degrabă decât forma JSON pură (.gltf).
 
-## Conversia Onshape în STEP
+## Conversia Onshape în STEP {#converting-onshape-to-step}
 
 Deși Onshape include o opțiune de export pentru glTF, aceasta produce adesea fișiere foarte mari care sunt dificil de gestionat. În schimb, se recomandă să exportați din Onshape în STEP, apoi să urmați instrucțiunile din secțiunea următoare pentru a converti în glTF.
 
@@ -16,7 +16,7 @@ Deși Onshape include o opțiune de export pentru glTF, aceasta produce adesea f
 
 3. Așteptați ca fișierul să se convertească și să se descarce. Acest lucru poate dura câteva minute.
 
-## Conversia STEP în glTF
+## Conversia STEP în glTF {#converting-step-to-gltf}
 
 1. Descărcați [CAD Assistant](https://www.opencascade.com/products/cad-assistant/). Această aplicație gratuită poate converti între multe formate 3D, inclusiv STEP și glTF.
 

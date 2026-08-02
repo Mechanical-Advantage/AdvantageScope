@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 Terrain 2D
+# 🗺 Terrain 2D {#2d-field}
 
 L'onglet terrain 2D montre une visualisation 2D du robot superposée sur une carte du terrain. Il peut également afficher des données supplémentaires telles que l'état de ciblage de vision et les poses de référence.
 
@@ -24,7 +24,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 </details>
 
-## Ajout d'objets
+## Ajout d'objets {#adding-objects}
 
 Pour commencer, faites glisser un champ vers la section « Poses ». Supprimez un objet à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les objets peuvent être réorganisés dans la liste en les faisant glisser.
 
@@ -36,7 +36,7 @@ Pour voir une liste complète des types d'objets pris en charge, cliquez sur l'i
 
 <img src="/img/tab-reference/2d-field-2.png" alt="Terrain 2D avec objets" />
 
-## Format des données
+## Format des données {#data-format}
 
 Les données de géométrie doivent être publiées sous forme de struct ou protobuf codé en octets. Divers types de géométrie 2D et 3D sont pris en charge, notamment `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d`, et plus encore.
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 - **Terrain :** L'image du terrain à utiliser. Tous les jeux FRC et FTC récents sont pris en charge. Pour ajouter une image de terrain personnalisée, voir [Ressources personnalisées](/more-features/custom-assets).
 - **Orientation :** L'orientation de l'image du terrain dans le volet de visualisation.

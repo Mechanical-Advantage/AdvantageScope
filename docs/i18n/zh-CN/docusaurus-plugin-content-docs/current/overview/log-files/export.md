@@ -1,4 +1,4 @@
-# 导出日志数据
+# 导出日志数据 {#exporting-log-data}
 
 AdvantageScope 包含一个灵活的系统，可将日志数据导出为 CSV、WPILOG 或 MCAP 文件。导出功能在查看日志文件或连接到实时数据源时均可使用。可能的使用场景包括：
 
@@ -22,7 +22,7 @@ AdvantageScope 包含一个灵活的系统，可将日志数据导出为 CSV、W
 _此警告 **不适用于** 由 AdvantageKit 生成的日志，选择“AdvantageKit 周期”选项导出此类日志不会造成数据损失。有关细节，请参阅 [此页面](https://docs.advantagekit.org/data-flow/sysid-compatibility)。_
 :::
 
-## 选项
+## 选项 {#options}
 
 导出时提供以下选项：
 

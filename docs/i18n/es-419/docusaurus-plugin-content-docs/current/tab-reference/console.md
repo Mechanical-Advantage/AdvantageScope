@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Consola
+# 💬 Consola {#console}
 
 La vista de la consola está diseñada para ver un solo campo de cadena con datos de la consola. Algunos campos sugeridos se enumeran a continuación.
 

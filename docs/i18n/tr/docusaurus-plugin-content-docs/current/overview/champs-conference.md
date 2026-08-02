@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 📽️ Şampiyona konferansı
+# 📽️ Şampiyona konferansı {#championship-conference}
 
 Aşağıdaki konferans 2025 FIRST Şampiyonası'nda Takım 6328 tarafından sunulmuştur ve AdvantageScope'un yetenekleri ve kullanım durumları hakkında erişilebilir bir genel bakış sunmaktadır.
 

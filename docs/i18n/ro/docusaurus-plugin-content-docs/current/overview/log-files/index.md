@@ -1,6 +1,6 @@
-# 📂 Fișiere de log
+# 📂 Fișiere de log {#log-files}
 
-## Formate suportate
+## Formate suportate {#supported-formats}
 
 - **WPILOG (.wpilog)** - Produs de [înregistrarea de date integrată](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) din WPILib și AdvantageKit. [URCL](/more-features/urcl) poate fi utilizat pentru a captura semnale de la motoarele REV într-un fișier WPILOG.
 - **Loguri Driver Station (.dslog și .dsevents)** - Produse de [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope caută automat fișierul log corespunzător la deschiderea oricărui tip de log.
@@ -14,7 +14,7 @@
 Fișierele log Hoot pot fi deschise numai după ce sunteți de acord cu [acordul de licență pentru utilizatorul final](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) de la CTRE. AdvantageScope afișează o solicitare pentru a confirma acordul cu acești termeni când deschideți un fișier log Hoot pentru prima dată.
 :::
 
-## Deschiderea logurilor
+## Deschiderea logurilor {#opening-logs}
 
 În bara de meniu, dați clic pe `Fișier` > `Deschidere log(uri)...`, apoi alegeți unul sau mai multe fișiere log de pe discul local. Tragerea unui fișier log din managerul de fișiere al sistemului pe pictograma sau fereastra AdvantageScope determină de asemenea deschiderea acestuia.
 
@@ -24,7 +24,7 @@ Dacă sunt deschise mai multe fișiere simultan, marcajele de timp vor fi alinia
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## Adăugarea de loguri noi
+## Adăugarea de loguri noi {#adding-new-logs}
 
 După deschiderea unui fișier log, loguri suplimentare pot fi adăugate cu ușurință în vizualizare. Marcajele de timp vor fi realiniate automat pentru a se sincroniza cu datele existente.
 

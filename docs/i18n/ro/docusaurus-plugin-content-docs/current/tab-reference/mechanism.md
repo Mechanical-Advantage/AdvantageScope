@@ -5,7 +5,7 @@ sidebar_position: 10
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# ⚙️ Mecanism
+# ⚙️ Mecanism {#mechanism}
 
 Fila mecanism afișează un mecanism articulat creat cu unul sau mai multe obiecte [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
@@ -24,11 +24,11 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
-## Adăugarea mecanismelor
+## Adăugarea mecanismelor {#adding-mechanisms}
 
 Pentru a începe, trageți un `Mechanism2d` în panoul de control. Ștergeți un mecanism folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate mecanismele, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Mecanismele pot fi reorganizate în listă prin clic și tragere.
 
-## Publicarea datelor
+## Publicarea datelor {#publishing-data}
 
 <Tabs groupId="library">
 <TabItem value="wpilib" label="WPILib" default>

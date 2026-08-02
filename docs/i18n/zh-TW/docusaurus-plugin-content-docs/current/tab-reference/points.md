@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 點
+# 📍 點 {#points}
 
 點分頁顯示任意點的 2D 視覺化。這是一個非常彈性的工具，允許對視覺資料/管線、機構狀態等進行自訂視覺化。
 
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## 新增來源
+## 新增來源 {#adding-sources}
 
 要開始，請將欄位拖曳到「來源」區段。使用 X 按鈕刪除來源，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有物件，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列來源。
 
@@ -34,7 +34,7 @@ import TabItem from '@theme/TabItem';
 要檢視受支援來源類型的完整清單，請點擊 `?` 圖示。該清單還包含受支援的資料類型。
 :::
 
-## 資料格式
+## 資料格式 {#data-format}
 
 點資料應使用 `Translation2d[]` 類型作為位元組編碼的 struct 或 protobuf 發布。許多函式庫都支援此格式，包括 WPILib 與 AdvantageKit。下面的範例程式碼展示了如何在 Java 中記錄點資料。
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## 設定
+## 設定 {#configuration}
 
 以下是可用的設定選項：
 

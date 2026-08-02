@@ -2,7 +2,7 @@
 sidebar_position: 8
 ---
 
-# 🎮 Joysticks
+# 🎮 Joysticks {#joysticks}
 
 A guia de joysticks mostra o estado de até seis controles conectados. A imagem abaixo mostra um exemplo de layout, com dois controles de Xbox e um joystick genérico. Cada botão é destacado quando pressionado, e os estados dos joysticks e outros eixos são exibidos.
 
@@ -21,7 +21,7 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 </details>
 
-## Painel de controle
+## Painel de controle {#control-pane}
 
 Selecione os tipos de joysticks na tabela na parte inferior da guia. Os IDs de joystick variam de 0 a 5 e correspondem aos IDs na Driver Station e na WPILib. Mais informações sobre joysticks podem ser encontradas na [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/software/basic-programming/joystick.html).
 

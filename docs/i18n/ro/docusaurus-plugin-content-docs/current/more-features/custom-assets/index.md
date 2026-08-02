@@ -1,4 +1,4 @@
-# ⚙️ Resurse personalizate
+# ⚙️ Resurse personalizate {#custom-assets}
 
 AdvantageScope utilizează un set implicit de imagini plate ale terenului, modele ale terenului, modele ale robotului și configurații de joystick-uri. Resursele simple (de ex. terenurile evergreen) sunt incluse în instalarea inițială. Resursele detaliate (de ex. terenurile specifice sezonului) sunt descărcate automat în fundal când AdvantageScope este conectat la internet. Pentru a verifica starea acestor descărcări, dați clic pe `Aplicație`/`AdvantageScope` > `Stare descărcare resursă...`.
 
@@ -8,7 +8,7 @@ Setul de resurse poate fi personalizat pentru a adăuga mai multe opțiuni dacă
 Pentru a încărca resurse dintr-o locație alternativă, dați clic pe `Aplicație`/`AdvantageScope` > `Utilizează folderul cu resurse personalizate`. Folderul selectat ar trebui să fie _folderul părinte_ în care pot fi plasate mai multe resurse în subfoldere separate. Această caracteristică permite ca resursele personalizate să fie stocate sub controlul versiunilor alături de codul robotului.
 :::
 
-## Format general
+## Format general {#general-format}
 
 Toate resursele sunt stocate în foldere cu convenția de denumire „TIP_NUME”. NUMELE utilizat pentru folder nu este afișat de AdvantageScope. Tipurile posibile de resurse sunt:
 
@@ -30,13 +30,13 @@ Acest folder ar trebui să conțină un fișier numit „config.json” și unul
 }
 ```
 
-## Modele de roboți 3D
+## Modele de roboți 3D {#3d-robot-models}
 
-### Tutorial video
+### Tutorial video {#video-tutorial}
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/unX1PsPi0VA" title="Configuring Custom Robot Models for AdvantageScope" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-### Prezentare generală
+### Prezentare generală {#overview}
 
 Un model trebuie să fie inclus în folder cu numele „model.glb”. Fișierele CAD trebuie convertite în glTF; consultați [această pagină](gltf-convert) pentru detalii. Fișierul de configurare trebuie să fie în următorul format:
 
@@ -70,7 +70,7 @@ AdvantageScope simplifică automat geometria modelului pentru a îmbunătăți p
 
 :::
 
-### Componente articulate
+### Componente articulate {#articulated-components}
 
 :::warning
 Configurarea componentelor articulate poate fi complexă și necesită timp. Luați în considerare utilizarea suportului [3D `Mechanism2d`](/tab-reference/3d-field#2d-mechanisms) al AdvantageScope, care oferă o abordare mai simplificată pentru **vizualizarea mecanismelor pe terenul 3D**.
@@ -93,7 +93,7 @@ La poziționarea componentelor 3D relativ la robot, originea sistemului de coord
 ]
 ```
 
-#### Procesul de configurare
+#### Procesul de configurare {#setup-process}
 
 Pentru a calibra pozițiile componentelor articulate, recomandăm următorul proces:
 
@@ -109,7 +109,7 @@ Pentru a calibra pozițiile componentelor articulate, recomandăm următorul pro
 
 6. Publicați pose-urile reale ale componentelor din codul robotului, care se vor baza pe originile nou definite pentru fiecare componentă. De exemplu, pose-ul pentru un segment de braț ar fi poziționat la articulația brațului îndreptat în direcția segmentului.
 
-## Joystick-uri
+## Joystick-uri {#joysticks}
 
 O imagine trebuie inclusă în folder cu numele „image.png”. Fișierul de configurare trebuie să fie în următorul format:
 
@@ -126,7 +126,7 @@ Butoanele, joystick-urile și valorile axelor suportă atât legături [SDL](htt
 Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei de configurare fără prefix (de ex. `sourceIndex`). **Toate joystick-urile noi ar trebui să utilizeze legături explicite SDL (de ex. `sdlSourceIndex`) pentru compatibilitate cu actualul FIRST Driver Station.**
 :::
 
-### Buton unic / valoare POV
+### Buton unic / valoare POV {#single-button-pov-value}
 
 ```json
 {
@@ -144,7 +144,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 }
 ```
 
-### Joystick cu două axe
+### Joystick cu două axe {#two-axis-joystick}
 
 ```json
 {
@@ -167,7 +167,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 }
 ```
 
-### Axă unică
+### Axă unică {#single-axis}
 
 ```json
 {
@@ -184,7 +184,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 }
 ```
 
-### Touchpad
+### Touchpad {#touchpad}
 
 ```json
 {
@@ -196,7 +196,7 @@ Pentru legăturile NI, AdvantageScope este compatibil retroactiv cu vechile chei
 }
 ```
 
-## Imagini plate de teren
+## Imagini plate de teren {#flat-field-images}
 
 O imagine trebuie inclusă în folder cu numele „image.png”. Aceasta ar trebui orientată cu alianța roșie în stânga. Fișierul de configurare trebuie să fie în următorul format:
 
@@ -218,9 +218,9 @@ O imagine trebuie inclusă în folder cu numele „image.png”. Aceasta ar treb
 }
 ```
 
-## Modele de teren 3D
+## Modele de teren 3D {#3d-field-models}
 
-Un model trebuie inclus în folder cu numele „model.glb”. După aplicarea tuturor rotațiilor, terenul ar trebui să fie orientat cu alianța roșie în stânga. Fișierele CAD trebuie convertite în glTF; consultați [această pagină](gltf-convert) pentru detalii. Modelele pieselor de joc urmează convenția de denumire „model_INDEX.glb” pe baza ordinii în care apar în tabloul „gamePieces”. AprilTag-urile declarate aici sunt întotdeauna poziționate folosind un sistem de coordonate [centru/roșu](/more-features/coordinate-systems#centerred-systemcore), indiferent de orice alte opțiuni de configurare.
+Un model trebuie inclus în folder cu numele „model.glb”. După aplicarea tuturor rotațiilor, terenul ar trebui să fie orientat cu alianța roșie în stânga. Fișierele CAD trebuie convertite în glTF; consultați [această pagină](gltf-convert) pentru detalii. Modelele pieselor de joc urmează convenția de denumire „model_INDEX.glb” pe baza ordinii în care apar în tabloul „gamePieces”. AprilTag-urile declarate aici sunt întotdeauna poziționate folosind un sistem de coordonate [centru/roșu](/more-features/coordinate-systems#center-red), indiferent de orice alte opțiuni de configurare.
 
 Fișierul de configurare trebuie să fie în următorul format:
 

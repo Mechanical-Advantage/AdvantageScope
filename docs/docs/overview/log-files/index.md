@@ -1,6 +1,6 @@
-# 📂 Log Files
+# 📂 Log Files {#log-files}
 
-## Supported Formats
+## Supported Formats {#supported-formats}
 
 - **WPILOG (.wpilog)** - Produced by WPILib's [built-in data logging](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) and AdvantageKit. [URCL](/more-features/urcl) can be used to capture signals from REV motor controllers to a WPILOG file.
 - **Driver Station logs (.dslog and .dsevents)** - Produced by the [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope automatically searches for the corresponding log file when opening either log type.
@@ -14,7 +14,7 @@
 Hoot log files can only be opened after agreeing to CTRE's [end user license agreement](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt). AdvantageScope displays a prompt to confirm agreement to these terms when opening a Hoot log file for the first time.
 :::
 
-## Opening Logs
+## Opening Logs {#opening-logs}
 
 In the menu bar, click `File` > `Open Log(s)...`, then choose a one or more log files from the local disk. Dragging a log file from the system file browser to the AdvantageScope icon or window also causes it to open.
 
@@ -24,13 +24,13 @@ If multiple files are opened simultaneously, the timestamps will be aligned auto
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## Adding New Logs
+## Adding New Logs {#adding-new-logs}
 
 After opening a log file, additional logs can be easily added to the visualization. Timestamps will be realigned automatically to synchronize with existing data.
 
 In the menu bar, click `File` > `Add News Log(s)...`, then choose a one or more log files to add to the current visualization. The fields from each log will be recorded under tables named `Log0`, `Log1`, etc.
 
-## Downloading From the Robot
+## Downloading From the Robot {#downloading-from-the-robot}
 
 <details>
 <summary>Configuration</summary>
@@ -52,7 +52,7 @@ When downloading multiple files, AdvantageScope skips any that already exist in 
 
 <img src="/img/overview/log-files/open-file-2.png" alt="Downloading log files" height="350" />
 
-## CSV Formatting
+## CSV Formatting {#csv-formatting}
 
 CSV column names must be either "Timestamp, Key, Value" or "Timestamp, (Key), (Key), etc". Timestamp values are in seconds. The list below shows the expected format of common value types. Note that exporting and reimporting log data as a CSV is _lossy_, since CSV does not support complex field types.
 

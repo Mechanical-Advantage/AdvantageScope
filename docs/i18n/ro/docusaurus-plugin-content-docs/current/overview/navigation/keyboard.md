@@ -1,8 +1,8 @@
-# Scurtături de tastatură
+# Scurtături de tastatură {#keyboard-shortcuts}
 
 AdvantageScope include numeroase scurtături de tastatură care permit o navigare mai rapidă. Scurtăturile care folosesc tasta `ctrl` sunt înlocuite de tasta ⌘ pe macOS.
 
-### Surse de date
+### Surse de date {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Deschide unul sau mai multe fișiere log</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <tr><td>`Ctrl+D`</td><td>Descarcă fișierele log de pe robot</td></tr>
 </table>
 
-### Export de date
+### Export de date {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Exportă datele de log</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <tr><td>`Option+Ctrl+P`</td><td>Oprește publicarea pe NetworkTables</td></tr>
 </table>
 
-### Controale fereastră
+### Controale fereastră {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>Creează o fereastră nouă</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <tr><td>`Ctrl+Bară înclinată`</td><td>Comută vizibilitatea panoului de control</td></tr>
 </table>
 
-### Controale file
+### Controale file {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Deschide meniul derulant pentru a adăuga o filă nouă</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 </tr>
 </table>
 
-### Redare
+### Redare {#playback}
 
 <table>
 <tr><td>`Spațiu`</td><td>Comută redarea</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope include numeroase scurtături de tastatură care permit o navigar
 <tr><td>`Ctrl+\`</td><td>Mărește cronologia la intervalul activat</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 Pe modelele de MacBook suportate, Touch Bar-ul poate fi utilizat pentru derularea prin log și adăugarea de file noi.
 

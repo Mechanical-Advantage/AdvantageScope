@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR aduce la viață vizualizarea 👀 [Teren 3D](/tab-reference/3d-field) în realitate augmentată, permițându-vă să vizualizați datele în moduri complet noi. Vedeți o simulare a autonomului în mărime naturală, revizuiți strategia de meci cu un model de teren de masă, suprapuneți informații de diagnosticare pe un robot real și multe altele! Videoclipul de mai jos demonstrează mai multe cazuri de utilizare pentru această caracteristică:
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Cerințe
+## Cerințe {#requirements}
 
 - **Gazdă (Host):** Aplicația desktop AdvantageScope pe Windows, macOS sau Linux (v4.1.0 sau mai recentă). Orice firewall-uri de pe dispozitiv ar trebui să fie [dezactivate](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client:** Un iPhone sau iPad care rulează iOS/iPadOS 16 sau mai recent. Nu este necesară instalarea unei aplicații.
@@ -28,7 +28,7 @@ AdvantageScope XR este suportat doar pe iOS și iPadOS. Nu există planuri imedi
 
 </details>
 
-## Configurare
+## Configurare {#setup}
 
 1. Pe sistemul gazdă, **dați clic pe butonul „XR”** pe orice filă de teren 3D. Doar o singură sesiune gazdă XR poate fi activă în același timp, astfel încât dând clic pe acest buton se vor întrerupe orice alte sesiuni active.
 

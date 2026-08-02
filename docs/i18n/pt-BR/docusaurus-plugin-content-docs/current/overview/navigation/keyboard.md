@@ -1,8 +1,8 @@
-# Atalhos de teclado
+# Atalhos de teclado {#keyboard-shortcuts}
 
 O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegação mais rápida. Os atalhos que usam a tecla `ctrl` são substituídos pela tecla ⌘ no macOS.
 
-### Fontes de dados
+### Fontes de dados {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Abrir um ou mais arquivos de log</td></tr>
@@ -13,7 +13,7 @@ O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegaçã
 <tr><td>`Ctrl+D`</td><td>Baixar arquivos de log do robô</td></tr>
 </table>
 
-### Exportação de dados
+### Exportação de dados {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Exportar dados de log</td></tr>
@@ -22,7 +22,7 @@ O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegaçã
 <tr><td>`Option+Ctrl+P`</td><td>Parar de publicar no NetworkTables</td></tr>
 </table>
 
-### Controles de janela
+### Controles de janela {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>Criar uma nova janela</td></tr>
@@ -32,7 +32,7 @@ O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegaçã
 <tr><td>`Ctrl+Barra`</td><td>Alternar visibilidade do painel de controle</td></tr>
 </table>
 
-### Controles de guias
+### Controles de guias {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Abrir menu suspenso para adicionar uma nova guia</td></tr>
@@ -71,7 +71,7 @@ O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegaçã
 </tr>
 </table>
 
-### Reprodução
+### Reprodução {#playback}
 
 <table>
 <tr><td>`Espaço`</td><td>Alternar reprodução</td></tr>
@@ -80,7 +80,7 @@ O AdvantageScope inclui inúmeros atalhos de teclado que permitem uma navegaçã
 <tr><td>`Ctrl+\`</td><td>Dar zoom na linha do tempo para o intervalo habilitado</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 Em modelos de MacBook suportados, a Touch Bar pode ser usada para percorrer o log e adicionar novas guias.
 

@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 📦 Installation
+# 📦 Installation {#installation}
 
 La version officiellement prise en charge d'AdvantageScope est disponible directement auprès de l'Équipe 6328 ou via l'installateur WPILib. Plusieurs distributions non officielles sont également disponibles.
 
@@ -24,13 +24,13 @@ Avant d'exécuter des builds AppImage sur Ubuntu 23.10 ou version ultérieure, v
 Chaque version majeure d'AdvantageScope est publiée en janvier avant le lancement de la FRC, avec un numéro de version correspondant à l'année (par ex., la v26.0.0 sera publiée en janvier 2026). Des versions bêta et alpha d'AdvantageScope peuvent être disponibles au cours des mois précédant chaque publication, pour les équipes qui souhaitent expérimenter de nouvelles fonctionnalités et fournir des commentaires. **Les équipes utilisant ces versions préliminaires doivent s'attendre à voir des problèmes et des bogues non présents dans les versions stables.**
 :::
 
-## WPILib
+## WPILib {#wpilib}
 
 ### Installation : [Documentation WPILib](https://docs.wpilib.org/fr/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
 L'installateur WPILib inclut une version récente d'AdvantageScope, mais peut prendre du retard par rapport à la dernière version disponible en téléchargement direct. La documentation pour lancer AdvantageScope depuis la version WPILib de VSCode se trouve [ici](https://docs.wpilib.org/fr/stable/docs/software/dashboards/advantagescope.html).
 
-## Distributions non officielles
+## Distributions non officielles {#unofficial-distributions}
 
 Des distributions non officielles d'AdvantageScope sont disponibles auprès de plusieurs sources, qui ne sont pas officiellement prises en charge par les développeurs d'AdvantageScope/WPILib. Ces distributions peuvent prendre du retard par rapport à la dernière version d'AdvantageScope disponible auprès des sources officielles. Veuillez contacter directement les mainteneurs en cas de problème.
 

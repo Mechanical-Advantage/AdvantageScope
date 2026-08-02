@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 2D 场地
+# 🗺 2D 场地 {#2d-field}
 
 2D 场地选项卡展示了叠加在场地地图上的机器人 2D 可视化效果。它还可以显示诸如视觉目标状态和参考位姿等额外数据。
 
@@ -24,7 +24,7 @@ import TabItem from '@theme/TabItem';
 
 </details>
 
-## 添加对象
+## 添加对象 {#adding-objects}
 
 要开始使用，请将字段拖动到“位姿”部分。使用 X 按钮删除对象，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有对象，请点击轴标题附近的垃圾桶图标，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列对象。
 
@@ -36,7 +36,7 @@ import TabItem from '@theme/TabItem';
 
 <img src="/img/tab-reference/2d-field-2.png" alt="包含对象的 2D 场地" />
 
-## 数据格式
+## 数据格式 {#data-format}
 
 几何数据应作为字节编码的结构体或 protobuf 进行发布。支持各种 2D 和 3D 几何类型，包括 `Pose2d`、`Pose3d`、`Translation2d`、`Translation3d` 等。
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## 配置
+## 配置 {#configuration}
 
 - **场地：** 要使用的场地图像。支持所有近期 FRC 和 FTC 比赛。要添加自定义场地图像，请参阅 [自定义资源](/more-features/custom-assets)。
 - **方向：** 视图面板中场地图像的方向。

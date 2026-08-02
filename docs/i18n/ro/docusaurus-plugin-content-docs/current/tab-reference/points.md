@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Puncte
+# 📍 Puncte {#points}
 
 Fila puncte afișează o vizualizare 2D a unor puncte arbitrare. Acesta este un instrument foarte flexibil, permițând vizualizări personalizate ale datelor/pipeline-urilor de viziune, stărilor mecanismelor etc.
 
@@ -24,7 +24,7 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
-## Adăugarea surselor
+## Adăugarea surselor {#adding-sources}
 
 Pentru a începe, trageți un câmp în secțiunea „Surse”. Ștergeți o sursă folosind butonul X sau ascundeți-o temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate obiectele, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Sursele pot fi reorganizate în listă prin clic și tragere.
 
@@ -34,7 +34,7 @@ Pentru a începe, trageți un câmp în secțiunea „Surse”. Ștergeți o sur
 Pentru a vedea o listă completă a tipurilor de surse suportate, dați clic pe pictograma `?`. Această listă include de asemenea tipurile de date suportate.
 :::
 
-## Formatul datelor
+## Formatul datelor {#data-format}
 
 Datele punctelor ar trebui publicate ca o structură codificată pe octeți (byte-encoded struct) sau protobuf, folosind tipul `Translation2d[]`. Multe biblioteci suportă acest format, inclusiv WPILib și AdvantageKit. Codul de exemplu de mai jos arată cum se înregistrează datele de puncte în Java.
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Configurare
+## Configurare {#configuration}
 
 Următoarele opțiuni de configurare sunt disponibile:
 

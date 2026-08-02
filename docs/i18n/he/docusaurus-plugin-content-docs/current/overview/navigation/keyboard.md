@@ -1,8 +1,8 @@
-# קיצורי מקלדת
+# קיצורי מקלדת {#keyboard-shortcuts}
 
 AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ניווט מהיר יותר. קיצורים המשתמשים במקש `ctrl` מוחלפים במקש ⌘ ב-macOS.
 
-### מקורות נתונים
+### מקורות נתונים {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>פתיחת קובץ יומן אחד או יותר</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 <tr><td>`Ctrl+D`</td><td>הורדת קובצי יומן מהרובוט</td></tr>
 </table>
 
-### ייצוא נתונים
+### ייצוא נתונים {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>ייצוא נתוני יומן</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 <tr><td>`Option+Ctrl+P`</td><td>הפסקת פרסום ל-NetworkTables</td></tr>
 </table>
 
-### בקרות חלון
+### בקרות חלון {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>יצירת חלון חדש</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 <tr><td>`Ctrl+Slash`</td><td>הפעלה/כיבוי של נראות חלונית הבקרה</td></tr>
 </table>
 
-### בקרות כרטיסיות
+### בקרות כרטיסיות {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>פתיחת תפריט נפתח להוספת כרטיסייה חדשה</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 </tr>
 </table>
 
-### ניגון
+### ניגון {#playback}
 
 <table>
 <tr><td>`Space`</td><td>הפעלה/השהיה של הניגון</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope כוללת קיצורי מקלדת רבים המאפשרים ני
 <tr><td>`Ctrl+\`</td><td>התקרבות (Zoom) בציר הזמן לטווח המופעל</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 בדגמי MacBook נתמכים, ניתן להשתמש ב-Touch Bar כדי לגלול ביומן ולהוסיף כרטיסיות חדשות.
 

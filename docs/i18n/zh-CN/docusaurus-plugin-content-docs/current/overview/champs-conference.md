@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 📽️ 锦标赛研讨会
+# 📽️ 锦标赛研讨会 {#championship-conference}
 
 以下讲座由 6328 团队在 2025 FIRST 锦标赛上展示，简要概述了 AdvantageScope 的功能和使用场景。
 

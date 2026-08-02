@@ -5,7 +5,7 @@ sidebar_position: 12
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🔍 Metadatos
+# 🔍 Metadatos {#metadata}
 
 La pestaña de metadatos muestra los valores publicados en la tabla oculta "/Metadata" o a través de AdvantageKit. Las claves de metadatos se muestran a la izquierda, y las columnas separan los datos de diferentes fuentes (por ejemplo, real y repetición cuando se usa AdvantageKit).
 

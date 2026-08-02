@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 📦 Instalare
+# 📦 Instalare {#installation}
 
 Versiunea suportată oficial a AdvantageScope este disponibilă direct de la Echipa 6328 sau prin intermediul instalatorului WPILib. Sunt disponibile și câteva distribuții neoficiale.
 
@@ -24,13 +24,13 @@ Descărcarea AdvantageScope direct de la Echipa 6328 oferă:
 Fiecare versiune majoră a AdvantageScope este lansată în ianuarie înainte de lansarea sezonului FRC, cu un număr de versiune corespunzător anului (de ex. v26.0.0 va fi lansată în ianuarie 2026). Versiunile beta și alpha ale AdvantageScope pot fi disponibile în lunile premergătoare fiecărei lansări, pentru echipele care doresc să experimenteze caracteristici noi și să ofere feedback. **Echipele care utilizează aceste versiuni prealabile ar trebui să se aștepte să întâmpine probleme și erori care nu sunt prezente în versiunile stabile.**
 :::
 
-## WPILib
+## WPILib {#wpilib}
 
 ### Instalare: [Documentația WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
 Instalatorul WPILib include o versiune recentă a AdvantageScope, dar poate fi în urma celei mai recente versiuni disponibile pentru descărcare directă. Documentația pentru lansarea AdvantageScope din versiunea WPILib a VSCode poate fi găsită [aici](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
 
-## Distribuții neoficiale
+## Distribuții neoficiale {#unofficial-distributions}
 
 Distribuțiile neoficiale ale AdvantageScope sunt disponibile din mai multe surse, care nu sunt suportate oficial de dezvoltatorii AdvantageScope/WPILib. Aceste distribuții pot fi în urma celei mai recente versiuni de AdvantageScope disponibile din surse oficiale. Vă rugăm să contactați direct administratorii în caz de probleme.
 

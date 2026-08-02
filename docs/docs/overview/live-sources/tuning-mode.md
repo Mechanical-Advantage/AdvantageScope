@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Tuning Mode
+# Tuning Mode {#tuning-mode}
 
 Some live sources support live tuning of numeric and boolean values. For example, this feature can be used to [tune controller gains](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) when connected to a NetworkTables source. Note that the robot code must support receiving gains via NetworkTables.
 
@@ -15,7 +15,7 @@ By default, all values in AdvantageScope are read-only. To toggle tuning mode, *
 This feature is not intended for controlling the robot on the field. Dashboard-style inputs like choosers, trigger buttons, etc. are not supported.
 :::
 
-## Tuning With AdvantageKit
+## Tuning With AdvantageKit {#tuning-with-advantagekit}
 
 Fields published by AdvantageKit to the `AdvantageKit` subtable are output-only and cannot be edited. However, users can publish fields from user code that are tunable from AdvantageScope. **Any fields published to the "/Tuning" table on NetworkTables will appear under the "Tuning" table when using the "NetworkTables (AdvantageKit)" live source.**
 

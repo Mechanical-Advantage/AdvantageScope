@@ -1,4 +1,4 @@
-# 🧭 App Navigation
+# 🧭 App Navigation {#app-navigation}
 
 The screenshot below shows the important elements of the main AdvantageScope window. The exact appearance differs between operating systems.
 
@@ -8,7 +8,7 @@ The screenshot below shows the important elements of the main AdvantageScope win
 To view multiple log files simultaneously, click `File` > `New Window`.
 :::
 
-## Sidebar
+## Sidebar {#sidebar}
 
 To the left is the sidebar with the list of available tables and fields. Selectable fields are shown in _italics_ and built-in tables (from WPILib or AdvantageKit) are <u>underlined</u>. Click the arrow to expand nested tables. **Drag a single field** to select it or **hold cmd/ctrl** to select a collection of fields by clicking each one. Start dragging the collection of fields to finish the selection.
 
@@ -18,7 +18,7 @@ To search for a field, begin typing in the search box. A dropdown of fields will
 Click and drag on the right edge to resize or hide the sidebar. Double-click to toggle the sidebar visibility.
 :::
 
-## Tab Bar
+## Tab Bar {#tab-bar}
 
 Use the tab bar (blue) to switch between different views. This documentation is available at any time by clicking the 📖 icon to the left. To export the current tab layout (and associated settings), click `File` > `Export Layout...` To import a layout from a file, click `File` > `Import Layout...`
 
@@ -33,11 +33,11 @@ The navigation buttons (green) on the top manage the tabs and control playback.
 - **X Button:** Closes the current tab.
 - **Play Button:** Start and stop real-time playback. _Right-click to change playback speed or enable looping._
 
-## Viewer Pane
+## Viewer Pane {#viewer-pane}
 
 The viewer pane is where data is presented for each tab type. Check the tab reference documentation for details on the viewer pane for tab. This view can be moved to a separate window by clicking the pop-out button in the tab bar.
 
-## Control Pane
+## Control Pane {#control-pane}
 
 The control pane is used to select fields for visualization and manage other options. Check the tab reference documentation for details on the options available for each tab.
 

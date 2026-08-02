@@ -2,11 +2,11 @@
 sidebar_position: 7
 ---
 
-# 🎬 Vídeo
+# 🎬 Vídeo {#video}
 
 A guia de vídeo permite que os dados de log sejam comparados lado a lado com um vídeo da partida gravado separadamente. As etapas abaixo mostram como carregar um vídeo e sincronizá-lo com o log.
 
-## Carregando o vídeo
+## Carregando o vídeo {#loading-the-video}
 
 O AdvantageScope oferece três opções para carregar um vídeo:
 
@@ -26,7 +26,7 @@ O download de vídeos do YouTube e do TBA pode falhar inesperadamente devido a a
 O AdvantageScope requer o [FFmpeg](https://ffmpeg.org) para processar arquivos de vídeo. Se uma cópia válida do FFmpeg não for encontrada no PATH do seu sistema, o AdvantageScope solicitará o download do FFmpeg da internet ao carregar um vídeo pela primeira vez. A instalação automática do FFmpeg é suportada apenas no Windows e macOS; usuários de Linux podem precisar instalar o FFmpeg manualmente e adicioná-lo ao PATH do sistema.
 :::
 
-## Navegando pelo vídeo
+## Navegando pelo vídeo {#navigating-the-video}
 
 Quando um vídeo é carregado inicialmente e ainda não foi sincronizado com os dados do log, os controles de reprodução do vídeo e do log continuam independentes. Use a linha do tempo e os botões no canto inferior direito para controlar a reprodução do vídeo. Os seguintes atalhos de teclado também são suportados:
 
@@ -38,7 +38,7 @@ Quando um vídeo é carregado inicialmente e ainda não foi sincronizado com os 
 
 <img src="/img/tab-reference/video-2.png" alt="Video controls" />
 
-## Sincronização automática
+## Sincronização automática {#automatic-synchronization}
 
 A maioria dos vídeos de partidas será sincronizada automaticamente com o log logo após os quadros para o período autônomo da partida serem carregados. Nenhuma ação é necessária; se a sincronização for bem-sucedida, os controles do vídeo serão bloqueados automaticamente (veja "Reprodução" abaixo).
 
@@ -46,7 +46,7 @@ A maioria dos vídeos de partidas será sincronizada automaticamente com o log l
 A sincronização automática funciona apenas em vídeos de partidas que incluem overlays de pontuação e pode não ser bem-sucedida em todos os casos. Se os controles do vídeo não forem bloqueados automaticamente assim que todos os quadros forem carregados, a sincronização manual será necessária.
 :::
 
-## Sincronização manual
+## Sincronização manual {#manual-synchronization}
 
 Primeiro, use os controles do vídeo para navegar até um local conhecido na partida, como o início do autônomo. Em seguida, selecione o tempo no arquivo de log que se alinha com o quadro atual do vídeo.
 
@@ -58,7 +58,7 @@ Assim que o vídeo e o log estiverem alinhados, clique no ícone de cadeado ao l
 
 <img src="/img/tab-reference/video-3.png" alt="Lock button" />
 
-## Reprodução
+## Reprodução {#playback}
 
 Uma vez bloqueada, a reprodução do vídeo permanece alinhada com o tempo selecionado no log. Observe que a reprodução de som não é suportada, pois o vídeo original é convertido em uma representação quadro a quadro para suportar a sincronização de logs.
 

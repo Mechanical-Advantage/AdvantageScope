@@ -1,10 +1,10 @@
-# Birim desteği
+# Birim desteği {#unit-support}
 
 Çizgi grafik sekmesi birim duyarlıdır, yani sayısal değerler uyumlu birim türleri arasında kolayca dönüştürülebilir. Birim bilgisi mevcut olduğunda, tüm sayısal değerler eksenlerde veya göstergelerde görüntülendiğinde doğru şekilde etiketlenir. Birim bilgilerini yayınlama hakkında daha fazla bilgi için [buraya](#supported-formats) bakın. AdvantageScope birimler arasında hızlıca dönüşüm yapmak için birkaç araç sunar:
 
 - Uyumlu birim türlerine sahip **aynı eksene alanlar** eklenirken AdvantageScope her iki alanı da otomatik olarak aynı birime dönüştürür. Bu, Y ekseninin ve göstergenin etiketlenmesine yansıtılır.
 - **Alternatif birimlere hızlıca geçiş yapmak** için eksen başlığının yanındaki üç noktaya tıklayın. Bu liste, seçilen alanlarla uyumlu en yaygın birimleri içerir.
-- Doğru integral veya türev birimlerini görmek için **integral veya türevi** ([dokümantasyon](/tab-reference/line-graph/#integration--differentiation)) etkinleştirin. Taban birim, yerel olmayan birimlerde filtrelemeyi desteklemek için menü kullanılarak ayarlanabilir.
+- Doğru integral veya türev birimlerini görmek için **integral veya türevi** ([dokümantasyon](/tab-reference/line-graph/#integration-and-differentiation)) etkinleştirin. Taban birim, yerel olmayan birimlerde filtrelemeyi desteklemek için menü kullanılarak ayarlanabilir.
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
 
@@ -18,11 +18,11 @@ AdvantageScope, her alan hakkında birim bilgisi sağlamak için birkaç yöntem
 Birimlerin doğru şekilde ayrıştırılıp ayrıştırılmadığından emin değil misiniz? Çizgi grafiğine bir alan eklerken Y ekseninde bir birim türünün görüntülenip görüntülenmediğini kontrol edin.
 :::
 
-### 🥇 Struct birimleri
+### 🥇 Struct birimleri {#struct-units}
 
 AdvantageScope, `Rotation2d` ve `Translation3d` gibi yaygın yapılandırılmış veri türleri için yerel birimleri otomatik olarak kullanır. Uygulanabilir değerleri bu formatları kullanarak yayınlamak **veri yayınlamanın her zaman en iyi yoludur** ve geometri verilerini görselleştirirken maksimum uyumluluk sağlar.
 
-### 🥈 Alan üst verisi
+### 🥈 Alan üst verisi {#field-metadata}
 
 WPILOG ve NetworkTables formatları, her alan için ek "üst veri" yayınlamayı destekler. AdvantageScope, birim türü için bir dize adı içeren "unit" veya "units" adlı JSON alanlarını arar (boşluklar, camel-case, pascal-case veya snake-case kullanarak). Her alanın üst verisini kontrol etmek için imleci kenar çubuğundaki alan adının üzerine getirin.
 
@@ -30,7 +30,7 @@ WPILOG ve NetworkTables formatları, her alan için ek "üst veri" yayınlamayı
 AdvantageKit, açıklama loglaması dahil olmak üzere girdileri ve çıktıları loglarken birim üst verisi desteği içerir. Ayrıntılar için dokümantasyonu [buradan](https://docs.advantagekit.org/data-flow/supported-types#units) kontrol edin.
 :::
 
-### 🥉 Alan adlandırması
+### 🥉 Alan adlandırması {#field-naming}
 
 Bir geri dönüş seçeneği olarak AdvantageScope, her alanın adını ayrıştırarak doğru birim türünü belirlemeye çalışır. **Birim türü bir son ek olarak dahil edilmelidir.** AdvantageScope çeşitli adlandırma düzenlerini destekler. Bazı geçerli seçenekler aşağıda listelenmiştir:
 

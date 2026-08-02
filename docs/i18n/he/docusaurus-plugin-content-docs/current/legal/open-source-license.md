@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# רישיון קוד פתוח
+# רישיון קוד פתוח {#open-source-license}
 
 <div dir="ltr">
 

@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Consolă
+# 💬 Consolă {#console}
 
 Vizualizarea de consolă este concepută pentru a vizualiza un singur câmp de tip șir de caractere (string) cu date de consolă. Câteva câmpuri sugerate sunt enumerate mai jos.
 

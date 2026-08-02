@@ -1,8 +1,8 @@
-# 將 Onshape 與 STEP 檔案轉換為 glTF
+# 將 Onshape 與 STEP 檔案轉換為 glTF {#converting-onshape-and-step-files-to-gltf}
 
 AdvantageScope 的 3D 視圖接受用於場地與機器人的自訂模型，這些模型可以透過[此處](/more-features/custom-assets)描述的流程進行安裝。所有模型都必須使用 [glTF](https://www.khronos.org/gltf/) 檔案格式，選擇該格式是因為其在儲存與載入模型時的高效性。請注意，AdvantageScope 使用二進位形式 (.glb)，該形式在單一檔案中包含所有資源，而非純 JSON 形式 (.gltf)。
 
-## 將 Onshape 轉換為 STEP
+## 將 Onshape 轉換為 STEP {#converting-onshape-to-step}
 
 雖然 Onshape 包含 glTF 的匯出選項，但這通常會產生非常大且難以管理的檔案。相反地，建議從 Onshape 匯出為 STEP，然後按照下一節中的說明轉換為 glTF。
 
@@ -16,7 +16,7 @@ AdvantageScope 的 3D 視圖接受用於場地與機器人的自訂模型，這�
 
 3. 等待檔案轉換與下載。這可能需要幾分鐘的時間。
 
-## 將 STEP 轉換為 glTF
+## 將 STEP 轉換為 glTF {#converting-step-to-gltf}
 
 1. 下載 [CAD Assistant](https://www.opencascade.com/products/cad-assistant/)。這款免費應用程式可以在許多 3D 格式之間進行轉換，包括 STEP 和 glTF。
 

@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Publicarea datelor NetworkTables
+# Publicarea datelor NetworkTables {#publishing-networktables-data}
 
 AdvantageScope suportă publicarea datelor NetworkTables stocate într-un fișier log înapoi către un server NetworkTables, cum ar fi un simulator sau un robot. Cazurile posibile de utilizare includ:
 
@@ -12,7 +12,7 @@ AdvantageScope suportă publicarea datelor NetworkTables stocate într-un fișie
 
 Această caracteristică necesită un fișier log cu o captură completă a datelor NetworkTables, care poate fi generată folosind [înregistratorul integrat de date](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) al WPILib. Rețineți că AdvantageKit nu suportă această caracteristică, deoarece activează în schimb o reluare deterministă mai completă în simulare.
 
-## Ghid de inițiere
+## Ghid de inițiere {#getting-started}
 
 Pentru a începe publicarea, trebuie deschis un fișier log care conține date NetworkTables. Apoi, urmați acești pași:
 
@@ -25,7 +25,7 @@ Toate câmpurile vor fi publicate folosind valorile lor stocate la _marcajul de 
 
 Pentru a opri publicarea, dați clic pe `Fișier` > `Publică datele NT` > `Oprește publicarea`.
 
-## Filtrarea câmpurilor
+## Filtrarea câmpurilor {#filtering-fields}
 
 În mod implicit, AdvantageScope publică toate câmpurile NetworkTables stocate în fișierul log (cu excepția meta-topicurilor publicate de server). Unele cazuri de utilizare, cum ar fi imitarea unui coprocesor, necesită publicarea doar a unui set limitat de câmpuri sau subtabele. Pentru a ajusta setul de prefixuri de câmp permise, deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS).
 
@@ -35,7 +35,7 @@ Opțiunea „Prefixuri publicare NT” setează prefixurile permise pentru câmp
 - „_SmartDashboard/Auto Selector_”: Include doar tabelul „SmartDashboard/Auto Selector”.
 - „_limelight/tx,limelight/ty_”: Include doar câmpurile „limelight/tx” și „limelight/ty”.
 
-## Limitări
+## Limitări {#limitations}
 
 :::warning
 

@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 🔢 Tabla
+# 🔢 Tabla {#table}
 
 La vista de tabla está diseñada para mostrar en detalle los cambios de valores específicos para un conjunto de campos. Para agregar un campo, arrástralo a la vista principal. Para eliminar un campo, haz clic en el botón "X" al lado de su nombre. Los campos se pueden reorganizar haciendo clic y arrastrando.
 

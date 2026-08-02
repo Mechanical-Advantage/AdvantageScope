@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Mod de ajustare
+# Mod de ajustare {#tuning-mode}
 
 Unele surse live suportă ajustarea în timp real a valorilor numerice și booleene. De exemplu, această caracteristică poate fi utilizată pentru a [ajusta amplificările controllerului](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) când sunteți conectat la o sursă NetworkTables. Rețineți că codul robotului trebuie să suporte primirea amplificărilor prin NetworkTables.
 
@@ -15,7 +15,7 @@ Unele surse live suportă ajustarea în timp real a valorilor numerice și boole
 Această caracteristică nu este destinată controlului robotului pe teren. Intrările în stil panou de bord (dashboard), cum ar fi opțiunile de selecție (choosers), butoanele de declanșare etc. nu sunt suportate.
 :::
 
-## Ajustarea cu AdvantageKit
+## Ajustarea cu AdvantageKit {#tuning-with-advantagekit}
 
 Câmpurile publicate de AdvantageKit în subtabelul `AdvantageKit` sunt doar pentru ieșire și nu pot fi editate. Cu toate acestea, utilizatorii pot publica câmpuri din codul utilizatorului care pot fi ajustate din AdvantageScope. **Orice câmpuri publicate în tabelul „/Tuning” pe NetworkTables vor apărea sub tabelul „Tuning” când se utilizează sursa live „NetworkTables (AdvantageKit)”.**
 

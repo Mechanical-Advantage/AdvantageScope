@@ -1,8 +1,8 @@
-# 快捷键
+# 快捷键 {#keyboard-shortcuts}
 
 AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctrl` 键的快捷键在 macOS 上将被 ⌘ 键取代。
 
-### 数据源
+### 数据源 {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>打开一个或多个日志文件</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 <tr><td>`Ctrl+D`</td><td>从机器人下载日志文件</td></tr>
 </table>
 
-### 数据导出
+### 数据导出 {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>导出日志数据</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 <tr><td>`Option+Ctrl+P`</td><td>停止发布到 NetworkTables</td></tr>
 </table>
 
-### 窗口控制
+### 窗口控制 {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>新建窗口</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 <tr><td>`Ctrl+Slash`</td><td>切换控制面板可见性</td></tr>
 </table>
 
-### 选项卡控制
+### 选项卡控制 {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>打开下拉菜单以添加新选项卡</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 </tr>
 </table>
 
-### 播放控制
+### 播放控制 {#playback}
 
 <table>
 <tr><td>`Space`</td><td>切换播放状态</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 <tr><td>`Ctrl+\`</td><td>将时间轴缩放到启用状态范围</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 在支持的 MacBook 机型上，可以使用 Touch Bar 滚动日志并添加新的选项卡。
 

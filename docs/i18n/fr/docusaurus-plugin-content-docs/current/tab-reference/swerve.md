@@ -5,7 +5,7 @@ sidebar_position: 9
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🦀 Swerve
+# 🦀 Swerve {#swerve}
 
 L'onglet Swerve montre l'état de quatre modules Swerve, y compris les vecteurs de vitesse, les positions au repos, la rotation du robot et les vitesses du châssis.
 
@@ -24,7 +24,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 </details>
 
-## Ajout de sources
+## Ajout de sources {#adding-sources}
 
 Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer toutes les sources, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
 
@@ -34,7 +34,7 @@ Pour commencer, faites glisser un champ vers la section « Sources ». Supprim
 - **Vitesses du robot :** Les vitesses linéaires et angulaires affichées au centre du schéma.
 - **Rotation :** La position angulaire utilisée pour faire pivoter le schéma.
 
-## Format des données
+## Format des données {#data-format}
 
 Data should be published as a byte-encoded struct or protobuf, using the `SwerveModuleVelocity[]`, `ChassisVelocities`, `Rotation2d`, or `Rotation3d` types.
 
@@ -76,7 +76,7 @@ Logger.recordOutput("MyStates", states);
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 Les options de configuration suivantes sont disponibles :
 

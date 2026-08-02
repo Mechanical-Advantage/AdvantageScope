@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# ترخيص المصدر المفتوح
+# ترخيص المصدر المفتوح {#open-source-license}
 
 Copyright (c) 2021-2026 Littleton Robotics. All rights reserved.
 

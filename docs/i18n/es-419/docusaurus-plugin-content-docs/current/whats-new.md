@@ -48,7 +48,7 @@ La pestaña del 📉 [Gráfico de líneas](/tab-reference/line-graph/) ha sido r
 - Etiquetado preciso de los ejes Y y pantallas de valores
 - Conversión rápida a unidades compatibles (sin ventanas emergentes)
 - Conversión implícita de tipos de unidades compatibles dentro de un solo eje
-- Visualización precisa de unidades [integradas y diferenciadas](/tab-reference/line-graph/#integration--differentiation)
+- Visualización precisa de unidades [integradas y diferenciadas](/tab-reference/line-graph/#integration-and-differentiation)
 
 La siguiente captura de pantalla muestra todas estas características en acción. Ten en cuenta que el eje izquierdo incluye campos con diferentes unidades de velocidad angular, y el eje derecho incluye valores que están diferenciados y se muestran en una unidad no nativa (grados). Seleccionar unidades también es más fácil que nunca, con opciones de unidades compatibles integradas directamente en el menú de control para cada eje.
 

@@ -1,4 +1,4 @@
-# Log verilerini dışa aktarma
+# Log verilerini dışa aktarma {#exporting-log-data}
 
 AdvantageScope, log verilerini CSV, WPILOG veya MCAP dosyası olarak dışa aktarmak için esnek bir sistem içerir. Dışa aktarma işlevleri, bir log dosyası görüntülenirken veya bir canlı veri kaynağına bağlıyken çalışır. Olası kullanım durumları şunlardır:
 
@@ -22,7 +22,7 @@ SysId, AdvantageScope'un varsayılan dışa aktarma seçenekleriyle uyumsuz ek z
 _Bu uyarı, "AdvantageKit döngüleri" seçeneği seçilerek hiçbir veri kaybı olmadan dışa aktarılabilen AdvantageKit tarafından üretilen loglar için **geçerli değildir**. Detaylar için [bu sayfaya](https://docs.advantagekit.org/data-flow/sysid-compatibility) bakın._
 :::
 
-## Seçenekler
+## Seçenekler {#options}
 
 Dışa aktarma sırasında aşağıdaki seçenekler sunulur:
 

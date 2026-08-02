@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# 发布 NetworkTables 数据
+# 发布 NetworkTables 数据 {#publishing-networktables-data}
 
 AdvantageScope 支持将存储在日志文件中的 NetworkTables 数据发布回 NetworkTables 服务器（例如仿真器或机器人）。可能的使用场景包括：
 
@@ -12,7 +12,7 @@ AdvantageScope 支持将存储在日志文件中的 NetworkTables 数据发布�
 
 此功能需要包含完整 NetworkTables 数据捕获的日志文件，可使用 WPILib 的 [内置数据日志记录器](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html) 生成。请注意，AdvantageKit 不支持此功能，因为它在仿真中提供了更完整的确定性重放。
 
-## 入门指南
+## 入门指南 {#getting-started}
 
 要开始发布，必须打开一个包含 NetworkTables 数据的日志文件。然后按以下步骤操作：
 
@@ -25,7 +25,7 @@ AdvantageScope 支持将存储在日志文件中的 NetworkTables 数据发布�
 
 要停止发布，点击 `文件` > `发布 NT 数据` > `停止发布`。
 
-## 过滤字段
+## 过滤字段 {#filtering-fields}
 
 默认情况下，AdvantageScope 会发布日志文件中存储的所有 NetworkTables 字段（服务器发布的元话题除外）。某些使用场景（例如模拟协处理器）仅需要发布限定的字段集或子表。要调整允许的字段前缀集，请点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。
 
@@ -35,7 +35,7 @@ AdvantageScope 支持将存储在日志文件中的 NetworkTables 数据发布�
 - “_SmartDashboard/Auto Selector_”：仅包含“SmartDashboard/Auto Selector”表。
 - “_limelight/tx,limelight/ty_”：仅包含“limelight/tx”和“limelight/ty”字段。
 
-## 限制
+## 限制 {#limitations}
 
 :::warning
 

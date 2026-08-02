@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# אי-אפליה
+# אי-אפליה {#nondiscrimination}
 
 <div dir="ltr">
 

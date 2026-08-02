@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Points
+# 📍 Points {#points}
 
 L'onglet points montre une visualisation 2D de points arbitraires. Il s'agit d'un outil très flexible, permettant des visualisations personnalisées de données/pipelines de vision, d'états de mécanismes, etc.
 
@@ -24,7 +24,7 @@ Pour zoomer, placez le curseur sur la chronologie et faites défiler vers le hau
 
 </details>
 
-## Ajout de sources
+## Ajout de sources {#adding-sources}
 
 Pour commencer, faites glisser un champ vers la section « Sources ». Supprimez une source à l'aide du bouton X, ou masquez-la temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour supprimer tous les objets, cliquez sur la corbeille près du titre de l'axe, puis sur `Tout effacer`. Les sources peuvent être réorganisées dans la liste en les faisant glisser.
 
@@ -34,7 +34,7 @@ Pour commencer, faites glisser un champ vers la section « Sources ». Supprim
 Pour voir une liste complète des types de sources pris en charge, cliquez sur l'icône `?`. Cette liste comprend également les types de données pris en charge.
 :::
 
-## Format des données
+## Format des données {#data-format}
 
 Les données de points doivent être publiées sous forme de struct ou protobuf codé en octets, en utilisant le type `Translation2d[]`. De nombreuses bibliothèques prennent en charge ce format, notamment WPILib et AdvantageKit. L'exemple de code ci-dessous montre comment enregistrer des données de points en Java.
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Configuration
+## Configuration {#configuration}
 
 Les options de configuration suivantes sont disponibles :
 

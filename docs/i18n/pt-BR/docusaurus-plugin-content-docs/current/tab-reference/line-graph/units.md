@@ -1,10 +1,10 @@
-# Suporte a unidades
+# Suporte a unidades {#unit-support}
 
 A guia de gráfico de linha é consciente de unidades, o que significa que valores numéricos podem ser facilmente convertidos entre tipos de unidades compatíveis. Quando informações de unidade estão disponíveis, todos os valores numéricos também são rotulados com precisão quando exibidos nos eixos ou legendas. Veja [aqui](#supported-formats) para mais informações sobre publicação de informações de unidades. O AdvantageScope fornece várias ferramentas para converter rapidamente entre unidades:
 
 - Ao adicionar **campos no mesmo eixo com tipos de unidades compatíveis**, o AdvantageScope converte automaticamente ambos os campos para a mesma unidade. Isso se reflete na rotulagem do eixo Y e da legenda.
 - Clique nos três pontos perto do título do eixo para **alternar rapidamente para unidades alternativas**. Esta lista inclui as unidades mais comuns que são compatíveis com os campos selecionados.
-- Habilite a **integração ou diferenciação** ([docs](/tab-reference/line-graph/#integration--differentiation)) para ver as unidades de integral ou derivada precisas. A unidade base pode ser ajustada usando o menu para suportar filtragem em unidades não nativas.
+- Habilite a **integração ou diferenciação** ([docs](/tab-reference/line-graph/#integration-and-differentiation)) para ver as unidades de integral ou derivada precisas. A unidade base pode ser ajustada usando o menu para suportar filtragem em unidades não nativas.
 
 <img src="/img/tab-reference/line-graph/units-1.png" alt="Unit-aware graphing" />
 
@@ -18,11 +18,11 @@ Para (2) e (3), os tipos de unidades são analisados usando strings. O Advantage
 Não tem certeza se as unidades estão sendo analisadas corretamente? Verifique se um tipo de unidade é exibido no eixo Y ao adicionar um campo ao gráfico de linha.
 :::
 
-### 🥇 Unidades em Structs
+### 🥇 Unidades em Structs {#struct-units}
 
 O AdvantageScope usa automaticamente as unidades nativas para tipos de dados estruturados comuns como `Rotation2d` e `Translation3d`. Publicar valores aplicáveis usando esses formatos é **sempre a melhor maneira de publicar dados** e garante a máxima compatibilidade ao visualizar dados de geometria.
 
-### 🥈 Metadados do campo
+### 🥈 Metadados do campo {#field-metadata}
 
 Os formatos WPILOG e NetworkTables suportam a publicação de "metadados" adicionais para cada campo. O AdvantageScope procura por campos JSON chamados "unit" ou "units" contendo um nome em string para o tipo de unidade (usando espaços, camel-case, pascal-case ou snake-case). Para verificar os metadados de cada campo, passe o cursor sobre o nome do campo na barra lateral.
 
@@ -30,7 +30,7 @@ Os formatos WPILOG e NetworkTables suportam a publicação de "metadados" adicio
 O AdvantageKit inclui suporte para metadados de unidades ao registrar entradas e saídas, incluindo registro de anotações. Consulte a documentação [aqui](https://docs.advantagekit.org/data-flow/supported-types#units) para mais detalhes.
 :::
 
-### 🥉 Nomenclatura dos campos
+### 🥉 Nomenclatura dos campos {#field-naming}
 
 Como alternativa final, o AdvantageScope tenta determinar o tipo de unidade correto analisando o nome de cada campo. **O tipo de unidade deve ser incluído como um sufixo.** O AdvantageScope suporta uma variedade de esquemas de nomenclatura. Algumas opções válidas estão listadas abaixo:
 

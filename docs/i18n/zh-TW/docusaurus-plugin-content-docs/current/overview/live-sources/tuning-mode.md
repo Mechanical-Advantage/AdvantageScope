@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 微調模式
+# 微調模式 {#tuning-mode}
 
 某些即時來源支援對數值與布林值進行即時微調。例如，連線到 NetworkTables 來源時，此功能可用於[微調控制器增益](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/introduction/tutorial-intro.html)。請注意，機器人程式碼必須支援透過 NetworkTables 接收增益。
 
@@ -15,7 +15,7 @@ sidebar_position: 1
 此功能並非旨在於場地上控制機器人。不支援儀表板樣式的輸入，如選擇器 (chooser)、觸發按鈕等。
 :::
 
-## 使用 AdvantageKit 進行微調
+## 使用 AdvantageKit 進行微調 {#tuning-with-advantagekit}
 
 由 AdvantageKit 發布到 `AdvantageKit` 子表格的欄位僅供輸出，無法編輯。但是，使用者可以從使用者程式碼發布可在 AdvantageScope 中微調的欄位。**在使用「NetworkTables (AdvantageKit)」即時來源時，發布到 NetworkTables 上「/Tuning」表格的任何欄位都將顯示在「Tuning」表格下。**
 

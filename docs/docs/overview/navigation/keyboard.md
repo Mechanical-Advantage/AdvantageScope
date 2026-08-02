@@ -1,8 +1,8 @@
-# Keyboard Shortcuts
+# Keyboard Shortcuts {#keyboard-shortcuts}
 
 AdvantageScope includes numerous keyboard shortcuts that allow for faster navigation. Shortcuts that use the `ctrl` key are replaced by the ⌘ key on macOS.
 
-### Data Sources
+### Data Sources {#data-sources}
 
 <table>
 <tr><td>`Ctrl+O`</td><td>Open one or more log files</td></tr>
@@ -13,7 +13,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <tr><td>`Ctrl+D`</td><td>Download log files from the robot</td></tr>
 </table>
 
-### Data Export
+### Data Export {#data-export}
 
 <table>
 <tr><td>`Ctrl+E`</td><td>Export log data</td></tr>
@@ -22,7 +22,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <tr><td>`Option+Ctrl+P`</td><td>Stop publishing to NetworkTables</td></tr>
 </table>
 
-### Window Controls
+### Window Controls {#window-controls}
 
 <table>
 <tr><td>`Ctrl+N`</td><td>Create a new window</td></tr>
@@ -32,7 +32,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <tr><td>`Ctrl+Slash`</td><td>Toggle control pane visibility</td></tr>
 </table>
 
-### Tab Controls
+### Tab Controls {#tab-controls}
 
 <table>
 <tr><td>`Ctrl+T`</td><td>Open dropdown to add a new tab</td></tr>
@@ -71,7 +71,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 </tr>
 </table>
 
-### Playback
+### Playback {#playback}
 
 <table>
 <tr><td>`Space`</td><td>Toggle playback</td></tr>
@@ -80,7 +80,7 @@ AdvantageScope includes numerous keyboard shortcuts that allow for faster naviga
 <tr><td>`Ctrl+\`</td><td>Zoom timeline to enabled range</td></tr>
 </table>
 
-### Touch Bar
+### Touch Bar {#touch-bar}
 
 On supported MacBook models, the Touch Bar can be used to scrub through the log and add new tabs.
 

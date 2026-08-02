@@ -1,6 +1,6 @@
-# 📂 Archivos de registro
+# 📂 Archivos de registro {#log-files}
 
-## Formatos compatibles
+## Formatos compatibles {#supported-formats}
 
 - **WPILOG (.wpilog)** - Producido por el [registro de datos integrado](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib y AdvantageKit. [URCL](/more-features/urcl) se puede utilizar para capturar señales de los controladores de motores REV a un archivo WPILOG.
 - **Registros de Driver Station (.dslog y .dsevents)** - Producido por la [Driver Station de FRC](https://docs.wpilib.org/es/stable/docs/software/driverstation/driver-station.html). AdvantageScope busca automáticamente el archivo de registro correspondiente al abrir cualquier tipo de registro.
@@ -14,7 +14,7 @@
 Los archivos de registro de Hoot solo se pueden abrir después de aceptar el [acuerdo de licencia de usuario final](https://raw.githubusercontent.com/CrossTheRoadElec/Phoenix-Releases/refs/heads/master/CTRE_LICENSE.txt) de CTRE. AdvantageScope muestra un mensaje para confirmar la aceptación de estos términos al abrir un archivo de registro de Hoot por primera vez.
 :::
 
-## Apertura de registros
+## Apertura de registros {#opening-logs}
 
 En la barra de menú, haz clic en `Archivo` > `Abrir registro(s)...` (File > Open Log(s)...), luego elige uno o más archivos de registro del disco local. Arrastrar un archivo de registro desde el explorador de archivos del sistema al ícono o a la ventana de AdvantageScope también hace que se abra.
 
@@ -24,7 +24,7 @@ Si se abren varios archivos simultáneamente, las marcas de tiempo se alinearán
 
 <img src="/img/overview/log-files/open-file-1.png" alt="Opening a saved log" />
 
-## Agregar nuevos registros
+## Agregar nuevos registros {#adding-new-logs}
 
 Después de abrir un archivo de registro, se pueden agregar fácilmente registros adicionales a la visualización. Las marcas de tiempo se realinearán automáticamente para sincronizarse con los datos existentes.
 

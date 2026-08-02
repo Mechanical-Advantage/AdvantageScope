@@ -5,7 +5,7 @@ sidebar_position: 11
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 📍 Noktalar
+# 📍 Noktalar {#points}
 
 Noktalar sekmesi keyfi noktaların 2B görselleştirmesini gösterir. Bu, görüş verilerinin/borularının, mekanizma durumlarının vb. özel görselleştirmelerine olanak tanıyan son derece esnek bir araçtır.
 
@@ -24,7 +24,7 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 </details>
 
-## Kaynaklar ekleme
+## Kaynaklar ekleme {#adding-sources}
 
 Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini kullanarak bir kaynağı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm nesneleri kaldırmak için eksen başlığının yanındaki çöp kutusuna ve ardından `Tümünü Temizle` seçeneğine tıklayın. Kaynaklar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
@@ -34,7 +34,7 @@ Başlamak için bir alanı "Kaynaklar" bölümüne sürükleyin. X düğmesini k
 Desteklenen kaynak türlerinin tam listesini görmek için `?` simgesine tıklayın. Bu liste ayrıca desteklenen veri türlerini de içerir.
 :::
 
-## Veri formatı
+## Veri formatı {#data-format}
 
 Nokta verileri, `Translation2d[]` türü kullanılarak bayt kodlu struct veya protobuf olarak yayınlanmalıdır. WPILib ve AdvantageKit dahil birçok kütüphane bu formatı destekler. Aşağıdaki örnek kod Java'da nokta verilerinin nasıl loglanacağını göstermektedir.
 
@@ -75,7 +75,7 @@ Logger.recordOutput("MyTranslations",
 </TabItem>
 </Tabs>
 
-## Yapılandırma
+## Yapılandırma {#configuration}
 
 Aşağıdaki yapılandırma seçenekleri mevcuttur:
 

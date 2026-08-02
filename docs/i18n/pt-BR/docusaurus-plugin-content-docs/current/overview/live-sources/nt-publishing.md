@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# Publicando dados NetworkTables
+# Publicando dados NetworkTables {#publishing-networktables-data}
 
 O AdvantageScope suporta a publicação de dados NetworkTables armazenados em um arquivo de log de volta para um servidor NetworkTables, como um simulador ou robô. Os casos de uso possíveis incluem:
 
@@ -12,7 +12,7 @@ O AdvantageScope suporta a publicação de dados NetworkTables armazenados em um
 
 Este recurso requer um arquivo de log com uma captura completa dos dados do NetworkTables, que pode ser gerado usando o [logger de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib. Observe que o AdvantageKit não suporta este recurso, pois ele habilita uma reprodução determinística mais completa em simulação.
 
-## Primeiros passos
+## Primeiros passos {#getting-started}
 
 Para iniciar a publicação, um arquivo de log contendo dados do NetworkTables deve estar aberto. Em seguida, siga estas etapas:
 
@@ -25,7 +25,7 @@ Todos os campos serão publicados usando seus valores armazenados no _timestamp 
 
 Para parar de publicar, clique em `Arquivo` > `Publicar dados NT` > `Parar de publicar`.
 
-## Filtrando campos
+## Filtrando campos {#filtering-fields}
 
 Por padrão, o AdvantageScope publica todos os campos do NetworkTables armazenados no arquivo de log (exceto tópicos meta publicados pelo servidor). Alguns casos de uso, como simular um coprocessador, exigem a publicação de apenas um conjunto limitado de campos ou subtabelas. Para ajustar o conjunto de prefixos de campos permitidos, abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS).
 
@@ -35,7 +35,7 @@ A opção "Prefixos de publicação NT" define os prefixos permitidos para campo
 - "_SmartDashboard/Auto Selector_": Inclui apenas a tabela "SmartDashboard/Auto Selector".
 - "_limelight/tx,limelight/ty_": Inclui apenas os campos "limelight/tx" e "limelight/ty".
 
-## Limitações
+## Limitações {#limitations}
 
 :::warning
 

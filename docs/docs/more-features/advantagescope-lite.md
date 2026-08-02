@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# 💡 AdvantageScope Lite
+# 💡 AdvantageScope Lite {#advantagescope-lite}
 
 AdvantageScope Lite is a browser-based version of AdvantageScope accessible from the FIRST Driver Station and Systemcore web interface. Most basic features of the AdvantageScope desktop app are included in AdvantageScope Lite. However, several features are omitted due to compatibility restrictions (including some tab types, logging formats, and related features).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Installation & Assets
+## Installation & Assets {#installation-and-assets}
 
 AdvantageScope Lite for Systemcore can be installed and updated by downloading the "Systemcore" version of AdvantageScope from the GitHub releases page. Select the "Add Package" card on the Systemcore web interface to upload the package to the robot.
 

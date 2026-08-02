@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR donne vie à la vue 👀 [Terrain 3D](/tab-reference/3d-field) en réalité augmentée, vous permettant de visualiser les données de toutes nouvelles manières. Voyez un mode autonome simulé en taille réelle, révisez la stratégie de match avec un modèle de terrain sur table, superposez des informations de diagnostic sur un vrai robot, et bien plus encore! La vidéo ci-dessous démontre plusieurs cas d'utilisation pour cette fonctionnalité :
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Exigences
+## Exigences {#requirements}
 
 - **Hôte :** L'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou version ultérieure). Tous les pare-feu sur l'appareil doivent être [désactivés](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client :** Un iPhone ou iPad exécutant iOS/iPadOS 16 ou version ultérieure. Aucune installation d'application n'est requise.
@@ -28,7 +28,7 @@ AdvantageScope XR n'est prise en charge que sur iOS et iPadOS. Il n'y a pas de p
 
 </details>
 
-## Configuration
+## Configuration {#setup}
 
 1. Sur le système hôte, **cliquez sur le bouton « XR »** sur n'importe quel onglet terrain 3D. Une seule session hôte XR peut être active à la fois, donc cliquer sur ce bouton interrompra toute autre session active.
 
@@ -52,7 +52,7 @@ Les cartes thermiques et les vitesses des modules Swerve ne sont pas encore disp
 AdvantageScope XR est une application exigeante et peut rencontrer des problèmes de performances en fonction de la complexité de la scène 3D. Envisagez d'utiliser des modèles de robots plus simples ou moins d'objets si nécessaire.
 :::
 
-## Options
+## Options {#options}
 
 La fenêtre de contrôles XR présente plusieurs options qui contrôlent la façon dont le modèle est affiché en réalité augmentée :
 

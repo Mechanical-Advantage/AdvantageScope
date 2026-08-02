@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR 将 👀 [3D 场地](/tab-reference/3d-field) 视图在增强现实 (AR) 中生动呈现，让你能够以全新的方式可视化数据。看生命等大的模拟自动阶段、用桌面场地模型复盘比赛策略、在真实机器人上叠加诊断信息等等！下面的视频展示了此功能的多个使用场景：
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## 要求
+## 要求 {#requirements}
 
 - **主机：** 运行在 Windows、macOS 或 Linux（v4.1.0 或更高版本）上的 AdvantageScope 桌面应用程序。设备上的任何防火墙都应处于 [禁用状态](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)。
 - **客户端：** 运行 iOS/iPadOS 16 或更高版本的 iPhone 或 iPad。无需安装应用程序。
@@ -28,7 +28,7 @@ AdvantageScope XR 仅在 iOS 和 iPadOS 上受到支持。目前没有支持其�
 
 </details>
 
-## 设置
+## 设置 {#setup}
 
 1. 在主机系统上，在任何 3D 场地选项卡上 **点击 "XR" 按钮**。同一时间只能激活一个 XR 主机会话，因此点击此按钮将打断任何其他活动会话。
 

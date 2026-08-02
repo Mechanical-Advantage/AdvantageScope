@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 💬 Console
+# 💬 Console {#console}
 
 La vue console est conçue pour afficher un champ de chaîne de caractères unique contenant des données de console. Certains champs suggérés sont énumérés ci-dessous.
 

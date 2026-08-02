@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# 💡 AdvantageScope Lite
+# 💡 AdvantageScope Lite {#advantagescope-lite}
 
 AdvantageScope Lite 是 AdvantageScope 的網頁版，可從 FIRST Driver Station 與 Systemcore 網頁介面存取。AdvantageScope 桌面應用程式的大多數基本功能都包含在 AdvantageScope Lite 中。但是，由於相容性限制，省略了一些功能（包括某些分頁類型、日誌格式與相關功能）。
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## 安裝與資源
+## 安裝與資源 {#installation-and-assets}
 
 用於 Systemcore 的 AdvantageScope Lite 可以透過從 GitHub releases 頁面下載 AdvantageScope 的「Systemcore」版本來進行安裝與更新。在 Systemcore 網頁介面上選擇「Add Package」卡片，將套件上傳到機器人。
 

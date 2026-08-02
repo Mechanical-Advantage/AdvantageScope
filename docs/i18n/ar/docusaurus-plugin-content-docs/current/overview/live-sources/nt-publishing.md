@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# نشر بيانات NetworkTables
+# نشر بيانات NetworkTables {#publishing-networktables-data}
 
 يدعم AdvantageScope نشر بيانات NetworkTables المخزنة في ملف سجل إلى خادم NetworkTables مثل المحاكي أو الروبوت. تتضمن حالات الاستخدام المحتملة:
 
@@ -12,7 +12,7 @@ sidebar_position: 3
 
 تتطلب هذه الميزة ملف سجل يلتقط بيانات NetworkTables بالكامل، والتي يمكن إنشاؤها باستخدام [مسجل البيانات المدمج](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) في WPILib. لاحظ أن AdvantageKit لا يدعم هذه الميزة لأنه بدلاً من ذلك يتيح إعادة تشغيل محددة أكثر اكتمالاً في المحاكاة.
 
-## البدء
+## البدء {#getting-started}
 
 لبدء النشر، يجب فتح ملف سجل يحتوي على بيانات NetworkTables. بعد ذلك، اتبع الخطوات التالية:
 
@@ -25,7 +25,7 @@ sidebar_position: 3
 
 لإيقاف النشر، انقر فوق `ملف` > `نشر بيانات NT` > `إيقاف النشر`.
 
-## تصفية الحقول
+## تصفية الحقول {#filtering-fields}
 
 بشكل افتراضي، ينشر AdvantageScope جميع حقول NetworkTables المخزنة في ملف السجل (باستثناء الموضوعات الوصفية المنشورة من الخادم). تطلب بعض حالات الاستخدام، مثل محاكاة معالج مساعد، نشر مجموعة محدودة فقط من الحقول أو الجداول الفرعية. لضبط مجموعة بادئات الحقول المسموح بها، افتح نافذة التفضيلات بالنقر فوق `التطبيق` > `إظهار التفضيلات...` (Windows/Linux) أو `AdvantageScope` > `الإعدادات...` (macOS).
 
@@ -35,7 +35,7 @@ sidebar_position: 3
 - "_SmartDashboard/Auto Selector_": تضمين جدول "SmartDashboard/Auto Selector" فقط.
 - "_limelight/tx,limelight/ty_": تضمين الحقلين "limelight/tx« و »limelight/ty" فقط.
 
-## القيود
+## القيود {#limitations}
 
 :::warning
 

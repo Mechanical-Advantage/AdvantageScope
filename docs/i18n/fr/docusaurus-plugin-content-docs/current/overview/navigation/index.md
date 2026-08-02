@@ -1,4 +1,4 @@
-# 🧭 Navigation dans l'application
+# 🧭 Navigation dans l'application {#app-navigation}
 
 La capture d'écran ci-dessous montre les éléments importants de la fenêtre principale d'AdvantageScope. L'apparence exacte diffère selon les systèmes d'exploitation.
 
@@ -8,7 +8,7 @@ La capture d'écran ci-dessous montre les éléments importants de la fenêtre p
 Pour visualiser plusieurs fichiers journaux simultanément, cliquez sur `Fichier` > `Nouvelle fenêtre`.
 :::
 
-## Barre latérale
+## Barre latérale {#sidebar}
 
 À gauche se trouve la barre latérale avec la liste des tables et des champs disponibles. Les champs sélectionnables sont affichés en _italique_ et les tables intégrées (provenant de WPILib ou d'AdvantageKit) sont <u>soulignées</u>. Cliquez sur la flèche pour développer les tables imbriquées. **Faites glisser un champ unique** pour le sélectionner ou **maintenez la touche cmd/ctrl** enfoncée pour sélectionner une collection de champs en cliquant sur chacun d'eux. Commencez à faire glisser la collection de champs pour terminer la sélection.
 
@@ -18,7 +18,7 @@ Pour rechercher un champ, commencez à taper dans la zone de recherche. Une list
 Cliquez et faites glisser sur le bord droit pour redimensionner ou masquer la barre latérale. Double-cliquez pour activer ou désactiver la visibilité de la barre latérale.
 :::
 
-## Barre d'onglets
+## Barre d'onglets {#tab-bar}
 
 Utilisez la barre d'onglets (bleue) pour basculer entre les différentes vues. Cette documentation est disponible à tout moment en cliquant sur l'icône 📖 à gauche. Pour exporter la disposition actuelle de l'onglet (et les paramètres associés), cliquez sur `Fichier` > `Exporter la disposition...` Pour importer une disposition à partir d'un fichier, cliquez sur `Fichier` > `Importer la disposition...`
 
@@ -33,11 +33,11 @@ Les boutons de navigation (verts) en haut gèrent les onglets et contrôlent la 
 - **Bouton X :** Ferme l'onglet actuel.
 - **Bouton Lecture :** Démarre et arrête la lecture en temps réel. _Faites un clic droit pour modifier la vitesse de lecture ou activer la lecture en boucle._
 
-## Volet de visualisation
+## Volet de visualisation {#viewer-pane}
 
 Le volet de visualisation est l'endroit où les données sont présentées pour chaque type d'onglet. Consultez la documentation de référence des onglets pour plus de détails sur le volet de visualisation de chaque onglet. Cette vue peut être déplacée vers une fenêtre distincte en cliquant sur le bouton de détachement dans la barre d'onglets.
 
-## Panneau de contrôle
+## Panneau de contrôle {#control-pane}
 
 Le panneau de contrôle est utilisé pour sélectionner des champs à visualiser et gérer d'autres options. Consultez la documentation de référence des onglets pour plus de détails sur les options disponibles pour chaque onglet.
 

@@ -5,7 +5,7 @@ sidebar_position: 2
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# 🗺 Teren 2D
+# 🗺 Teren 2D {#2d-field}
 
 Fila teren 2D prezintă o vizualizare 2D a robotului suprapusă pe o hartă a terenului. De asemenea, poate afișa date suplimentare, cum ar fi starea țintirii vizuale și pose-uri de referință.
 
@@ -24,7 +24,7 @@ Pentru a mări, plasați cursorul peste cronologie și derulați în sus sau în
 
 </details>
 
-## Adăugarea obiectelor
+## Adăugarea obiectelor {#adding-objects}
 
 Pentru a începe, trageți un câmp în secțiunea „Pose-uri”. Ștergeți un obiect folosind butonul X sau ascundeți-l temporar dând clic pe pictograma ochi sau dând dublu clic pe numele câmpului. Pentru a elimina toate obiectele, dați clic pe coșul de gunoi de lângă titlul axei și apoi pe `Șterge tot`. Obiectele pot fi reorganizate în listă prin clic și tragere.
 
@@ -36,7 +36,7 @@ Pentru a vedea o listă completă a tipurilor de obiecte suportate, dați clic p
 
 <img src="/img/tab-reference/2d-field-2.png" alt="2D field with objects" />
 
-## Formatul datelor
+## Formatul datelor {#data-format}
 
 Datele de geometrie ar trebui publicate ca o structură codificată pe octeți (byte-encoded struct) sau protobuf. Diverse tipuri de geometrie 2D și 3D sunt suportate, inclusiv `Pose2d`, `Pose3d`, `Translation2d`, `Translation3d` și multe altele.
 
@@ -114,7 +114,7 @@ telemetry.update();
 </TabItem>
 </Tabs>
 
-## Configurare
+## Configurare {#configuration}
 
 - **Teren:** Imaginea terenului de utilizat. Toate jocurile recente FRC și FTC sunt suportate. Pentru a adăuga o imagine de teren personalizată, consultați [Resurse personalizate](/more-features/custom-assets).
 - **Orientare:** Orientarea imaginii terenului în panoul de vizualizare.

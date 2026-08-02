@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# 📦 安裝
+# 📦 安裝 {#installation}
 
 官方支援的 AdvantageScope 版本可直接從 6328 團隊取得或透過 WPILib 安裝程式取得。此外還提供多個非官方發行版本。
 
@@ -24,13 +24,13 @@ sidebar_position: 1
 AdvantageScope 的每個主要版本都會在每年 1 月 FRC kickoff 之前發布，版本號與年份對應（例如 v26.0.0 將於 2026 年 1 月發布）。在每次正式發布前的幾個月內，可能會面向希望體驗新功能並提供回饋的隊伍提供 AdvantageScope 的 Beta 與 Alpha 版本。**使用這些預先發布版本的隊伍可能會遇到穩定版本中不存在的問題與 Bug。**
 :::
 
-## WPILib
+## WPILib {#wpilib}
 
 ### 安裝：[WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
 WPILib 安裝程式包含 AdvantageScope 的近期版本，但可能會落後於可供直接下載的最新版本。有關從 WPILib 版 VSCode 啟動 AdvantageScope 的文件可以在[此處](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/advantagescope.html)找到。
 
-## 非官方發行版
+## 非官方發行版 {#unofficial-distributions}
 
 來自多個來源的非官方 AdvantageScope 發行版並非由 AdvantageScope/WPILib 開發人員官方支援。這些發行版可能會落後於官方提供的最新 AdvantageScope 版本。如果遇到問題，請直接與相關維護者聯絡。
 

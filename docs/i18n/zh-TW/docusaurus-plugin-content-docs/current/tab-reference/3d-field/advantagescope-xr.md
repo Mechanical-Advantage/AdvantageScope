@@ -1,10 +1,10 @@
-# AdvantageScope XR
+# AdvantageScope XR {#advantagescope-xr}
 
 AdvantageScope XR 將 👀 [3D 場地](/tab-reference/3d-field)視圖帶入擴增實境，讓您能以全新的方式視覺化資料。以實際尺寸觀看模擬自動程序、用桌面場地模型複習比賽策略、在真實機器人上疊加診斷資訊等等！下面的影片展示了此功能的幾個使用案例：
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/gWPhQyB66DQ" title="AdvantageScope XR: Feature Overview" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## 系統需求
+## 系統需求 {#requirements}
 
 - **主機：** Windows、macOS 或 Linux 上的 AdvantageScope 桌面應用程式（v4.1.0 或更高版本）。裝置上的任何防火牆都應[停用](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)。
 - **客戶端：** 搭載 iOS/iPadOS 16 或更高版本的 iPhone 或 iPad。無需安裝應用程式。
@@ -28,7 +28,7 @@ AdvantageScope XR 僅在 iOS 與 iPadOS 上受支援。目前沒有支援其他�
 
 </details>
 
-## 設定
+## 設定 {#setup}
 
 1. 在主機系統上，**點擊任何 3D 場地分頁上的「XR」按鈕**。同一時間只能有一個 XR 主機工作階段處於活動狀態，因此點擊此按鈕將中斷任何其他活動工作階段。
 

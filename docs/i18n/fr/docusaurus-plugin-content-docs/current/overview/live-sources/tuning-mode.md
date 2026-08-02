@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Mode de réglage
+# Mode de réglage {#tuning-mode}
 
 Certaines sources en direct prennent en charge le réglage en direct des valeurs numériques et booléennes. Par exemple, cette fonctionnalité peut être utilisée pour [régler les gains du contrôleur](https://docs.wpilib.org/fr/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) lors de la connexion à une source NetworkTables. Notez que le code robot doit prendre en charge la réception de gains via NetworkTables.
 
@@ -15,7 +15,7 @@ Par défaut, toutes les valeurs dans AdvantageScope sont en lecture seule. Pour 
 Cette fonctionnalité n'est pas destinée à contrôler le robot sur le terrain. Les saisies de type tableau de bord comme les sélecteurs, boutons de déclenchement, etc. ne sont pas prises en charge.
 :::
 
-## Réglage avec AdvantageKit
+## Réglage avec AdvantageKit {#tuning-with-advantagekit}
 
 Les champs publiés par AdvantageKit dans la sous-table `AdvantageKit` sont en sortie uniquement et ne peuvent pas être modifiés. Cependant, les utilisateurs peuvent publier des champs à partir du code utilisateur qui sont réglables depuis AdvantageScope. **Tous les champs publiés dans la table « /Tuning » sur NetworkTables apparaîtront sous la table « Tuning » lors de l'utilisation de la source en direct « NetworkTables (AdvantageKit) ».**
 

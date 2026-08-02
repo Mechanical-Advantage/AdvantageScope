@@ -2,13 +2,13 @@
 sidebar_position: 1
 ---
 
-# 💡 AdvantageScope Lite
+# 💡 AdvantageScope Lite {#advantagescope-lite}
 
 AdvantageScope Lite — бұл FIRST Driver Station және Systemcore веб-интерфейсінен қолжетімді AdvantageScope бағдарламасының браузерлік нұсқасы. AdvantageScope жұмыс үстелі қолданбасының негізгі мүмкіндіктерінің көпшілігі AdvantageScope Lite құрамына кіреді. Дегенмен, үйлесімділік шектеулеріне байланысты кейбір мүмкіндіктер алынып тасталған (соның ішінде кейбір қойынды түрлері, журналдау пішімдері және олармен байланысты мүмкіндіктер).
 
 <iframe width="100%" style={{"aspect-ratio": "16 / 9"}} src="https://www.youtube.com/embed/lHsak9Mmx2M" title="AdvantageScope Lite Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-## Орнату және активтер
+## Орнату және активтер {#installation-and-assets}
 
 Systemcore арналған AdvantageScope Lite бағдарламасын GitHub шығарылымдар бетінен AdvantageScope бағдарламасының «Systemcore» нұсқасын жүктеп алу арқылы орнатуға және жаңартуға болады. Пакетті роботқа жүктеп салу үшін Systemcore веб-интерфейсіндегі «Add Package» карточкасын таңдаңыз.
 

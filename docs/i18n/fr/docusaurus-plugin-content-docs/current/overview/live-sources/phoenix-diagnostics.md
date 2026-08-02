@@ -2,7 +2,7 @@
 sidebar_position: 2
 ---
 
-# Diagnostics Phoenix
+# Diagnostics Phoenix {#phoenix-diagnostics}
 
 AdvantageScope prend en charge la diffusion en direct de signaux depuis des appareils Phoenix 6 **sans aucune configuration dans le code utilisateur**. Cela permet un débogage et un réglage faciles des appareils Phoenix à l'aide de l'interface familière et de toute la puissance d'AdvantageScope :
 

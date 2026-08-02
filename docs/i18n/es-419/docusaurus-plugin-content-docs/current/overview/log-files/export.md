@@ -1,4 +1,4 @@
-# Exportación de datos de registro
+# Exportación de datos de registro {#exporting-log-data}
 
 AdvantageScope incluye un sistema flexible para exportar datos de registro como un archivo CSV, WPILOG o MCAP. Las funciones de exportación funcionan cuando se visualiza un archivo de registro o cuando se conecta a una fuente de datos en vivo. Los posibles casos de uso incluyen:
 
@@ -22,7 +22,7 @@ No recomendamos el uso de esta función para exportar datos de registro **genera
 _Esta advertencia **no se aplica** a los registros producidos por AdvantageKit, que se pueden exportar sin pérdida de datos seleccionando la opción "AdvantageKit Cycles". Consulta [esta página](https://docs.advantagekit.org/data-flow/sysid-compatibility) para obtener detalles._
 :::
 
-## Opciones
+## Opciones {#options}
 
 Se proporcionan las siguientes opciones al exportar:
 
