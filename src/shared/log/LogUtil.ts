@@ -34,7 +34,7 @@ export const ENABLED_KEYS = [
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSDisabled", // NI DS
   "RobotEnable", // Phoenix
-  "NT:/FMSInfo/ControlWord/enabled", // NT, post-2027
+  "NT:/DriverStation/ControlWord/enabled", // NT, post-2027
   "NT:/FMSInfo/FMSControlData", // NT, pre-2027
   "RUNNING" // Roadrunner
 ];
@@ -48,7 +48,7 @@ export const AUTONOMOUS_KEYS = [
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "/DSLog/Status/DSTeleop", // NI DS
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const UTILITY_KEYS = [
@@ -60,21 +60,23 @@ export const UTILITY_KEYS = [
   "DS:test", // DataLog, pre-2027
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
   "RobotMode", // Phoenix
-  "NT:/FMSInfo/ControlWord/robotMode", // NT, post-2027
+  "NT:/DriverStation/ControlWord/robotMode", // NT, post-2027
   "NT:/FMSInfo/FMSControlData" // NT, pre-2027
 ];
 export const ALLIANCE_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
-  "NT:/FMSInfo/IsRedAlliance", // NT
+  "NT:/DriverStation/IsRedAlliance", // NT, post-2027
+  "NT:/FMSInfo/IsRedAlliance", // NT, pre-2027
   "AllianceStation" // Phoenix
 ];
 export const DRIVER_STATION_KEYS = [
   "/DriverStation/AllianceStation", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/AllianceStation", // AdvantageKit
   "DS:/Dscomm/Control/Robot/ControlData/ControlWord", // FIRST DS
-  "NT:/FMSInfo/StationNumber", // NT
+  "NT:/DriverStation/StationNumber", // NT, post-2027
+  "NT:/FMSInfo/StationNumber", // NT, pre-2027
   "AllianceStation" // Phoenix
 ];
 export const JOYSTICK_KEYS = [
@@ -101,21 +103,24 @@ export const EVENT_KEYS = [
   "/DriverStation/EventName", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/EventName", // AdvantageKit
   "DS:/Dscomm/Control/Robot/MatchInfo/EventName", // FIRST DS
-  "NT:/FMSInfo/EventName", // NT
+  "NT:/DriverStation/EventName", // NT, post-2027
+  "NT:/FMSInfo/EventName", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/EventName" // Systemcore
 ];
 export const MATCH_TYPE_KEYS = [
   "/DriverStation/MatchType", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchType", // AdvantageKit
   "DS:/Dscomm/Control/Robot/MatchInfo/MatchType", // FIRST DS
-  "NT:/FMSInfo/MatchType", // NT
+  "NT:/DriverStation/MatchType", // NT, post-2027
+  "NT:/FMSInfo/MatchType", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/MatchType" // Systemcore
 ];
 export const MATCH_NUMBER_KEYS = [
   "/DriverStation/MatchNumber", // AdvantageKit
   "NT:/AdvantageKit/DriverStation/MatchNumber", // AdvantageKit
   "DS:/Dscomm/Control/Robot/MatchInfo/MatchNumber", // FIRST DS
-  "NT:/FMSInfo/MatchNumber", // NT
+  "NT:/DriverStation/MatchNumber", // NT, post-2027
+  "NT:/FMSInfo/MatchNumber", // NT, pre-2027
   "NT:/Netcomm/Control/MatchInfo/MatchNumber" // Systemcore
 ];
 

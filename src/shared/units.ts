@@ -680,6 +680,32 @@ export namespace Units {
         names: ["ma", "milliamp", "milliamps"]
       }
     },
+    power: {
+      watts: {
+        value: 1,
+        suffix: "W",
+        pluralizeSuffix: false,
+        names: ["w", "watt", "watts", "power"]
+      },
+      milliwatts: {
+        value: 1000,
+        suffix: "mW",
+        pluralizeSuffix: false,
+        names: ["mw", "milliwatt", "milliwatts"]
+      },
+      kilowatts: {
+        value: 0.001,
+        suffix: "kW",
+        pluralizeSuffix: false,
+        names: ["kw", "kilowatt", "kilowatts"]
+      },
+      horsepower: {
+        value: 1 / 745.6998715822702,
+        suffix: "hp",
+        pluralizeSuffix: false,
+        names: ["hp", "horsepower"]
+      }
+    },
     energy: {
       joule: {
         value: 1,
