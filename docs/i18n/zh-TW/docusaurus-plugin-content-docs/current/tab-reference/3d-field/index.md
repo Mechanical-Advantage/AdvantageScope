@@ -101,7 +101,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 機構資料可以使用 2D 機構或關節 3D 組件進行視覺化。
 
-### 2D 機構
+### 2D 機構 {#2d-mechanisms}
 
 要視覺化使用 [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) 記錄的機構資料，請將機構欄位新增至現有的機器人或幽靈物件。機構使用簡單的方塊投影到機器人的 XZ 或 YZ 平面上，如下所示。點擊齒輪圖示或在欄位名稱上按右鍵以在 XZ 和 YZ 平面之間切換。機器人的原點位於機構底部邊緣的中心。
 
@@ -119,7 +119,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 <img src="/img/tab-reference/3d-field/3d-field-3.png" alt="3D 機構" />
 
-## 遊戲物件
+## 遊戲物件 {#game-piece-objects}
 
 每個場地都包含一組遊戲物件類型，允許使用機器人程式碼發布的資料，將遊戲物件渲染在場地上的任何位置。這有各種應用，包括：
 
@@ -187,7 +187,7 @@ AdvantageKit KitBot 2024 範例專案包含一個簡單的[命令](https://githu
 在此分頁上使用的座標系是可自訂的。有關詳細資訊，請參閱[座標系](/more-features/coordinate-systems)頁面。
 :::
 
-### 渲染模式
+### 渲染模式 {#rendering-modes}
 
 3D 場地支援三種渲染模式：
 

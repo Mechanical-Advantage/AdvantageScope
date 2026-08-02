@@ -28,13 +28,13 @@
 <img src="/img/tab-reference/line-graph/line-graph-3.png" alt="機器人模式覆蓋層" />
 :::
 
-### 調整軸
+### 調整軸 {#adjusting-axes}
 
 預設情況下，每個軸會根據可見資料調整其範圍。要停用自動範圍調整並將範圍鎖定到目前的最小值與最大值，請點擊軸標題附近的三個點，然後點擊 `鎖定軸`。要手動調整範圍，請選擇 `編輯範圍...` 並輸入所需的數值。
 
 <img src="/img/tab-reference/line-graph/line-graph-4.png" alt="編輯軸範圍" height="250" />
 
-### 積分與微分
+### 積分與微分 {#integration--differentiation}
 
 AdvantageScope 可以自動對數值進行積分或微分。時間差總是以秒為單位測量。點擊軸標題附近的三個點，然後選擇 `微分` 或 `積分`。
 

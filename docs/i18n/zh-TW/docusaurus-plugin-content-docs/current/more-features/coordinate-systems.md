@@ -14,7 +14,7 @@ AdvantageScope 在 [🗺️ 2D 場地](/tab-reference/2d-field) 與 [👀 3D 場
 所有座標系選項均與 FRC 和 FTC 場地相容。
 :::
 
-## 中心/紅方 (Systemcore)
+## 中心/紅方 (Systemcore) {#centerred-systemcore}
 
 原點位於場地中心，+X 軸背對紅方聯盟牆，如下圖所示。**這是自 2027 年起的 FRC 場地與自 2027-2028 年起的 FTC 場地的預設座標系。**
 

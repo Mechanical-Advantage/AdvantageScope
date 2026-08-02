@@ -30,7 +30,7 @@
 
 在選單列中，點擊 `檔案` > `新增日誌...`，然後選擇一個或多個要新增到目前視覺化中的日誌檔案。來自每個日誌的欄位將記錄在名為 `Log0`、`Log1` 等表格中。
 
-## 從機器人下載
+## 從機器人下載 {#downloading-from-the-robot}
 
 <details>
 <summary>設定</summary>
@@ -52,7 +52,7 @@ CTRE 的[訊號記錄器](https://v6.docs.ctr-electronics.com/en/stable/docs/api
 
 <img src="/img/overview/log-files/open-file-2.png" alt="下載日誌檔案" height="350" />
 
-## CSV 格式化
+## CSV 格式化 {#csv-formatting}
 
 CSV 欄位名稱必須是「Timestamp, Key, Value」或「Timestamp, (Key), (Key), etc」。時間戳記數值以秒為單位。下表顯示了常見數值類型的預期格式。請注意，將日誌資料作為 CSV 匯出與重新匯入是*有損的*，因為 CSV 不支援複雜欄位類型。
 

@@ -52,7 +52,7 @@ AdvantageScope XR 僅在 iOS 與 iPadOS 上受支援。目前沒有支援其他�
 AdvantageScope XR 是一個要求較高的應用程式，根據 3D 場景的複雜程度，可能會出現效能問題。如有必要，請考慮使用更簡單的機器人模型或更少的物件。
 :::
 
-## 選項
+## 選項 {#options}
 
 XR 控制視窗提供了幾個選項，用於控制模型在擴增實境中的顯示方式：
 
@@ -66,7 +66,7 @@ XR 控制視窗提供了幾個選項，用於控制模型在擴增實境中的�
 - **顯示場地：** 顯示場地模型，包括場地護欄與比賽特定元素。自訂[遊戲物件](/tab-reference/3d-field#game-piece-objects)始終顯示。
 - **顯示機器人：** 顯示機器人模型，在真實機器人上疊加資料時可停用（例如視覺目標或 2D 機構）。
 
-## 離線使用
+## 離線使用 {#offline-usage}
 
 AdvantageScope XR 不需要網際網路連線。要確保應用程式在離線狀態下可用，請使用下面的連結從 App Store 下載 AdvantageScope XR。要連線到 AdvantageScope 桌面應用程式，請使用 iOS 相機應用程式掃描 QR 碼，或點擊 AdvantageScope XR 應用程式中的「掃描」按鈕。
 
