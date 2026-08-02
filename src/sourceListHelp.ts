@@ -67,7 +67,9 @@ window.addEventListener("message", (event) => {
         });
         sourceTypes = sourceTypes.map((type) => {
           if (Object.values(LoggableType).includes(type)) {
-            return type.replaceAll("Array", "[]").toLowerCase();
+            let key = type.charAt(0).toLowerCase() + type.slice(1);
+            let res = t("sourceListHelp.logTypes." + key);
+            return res !== "sourceListHelp.logTypes." + key ? res : type.replaceAll("Array", "[]").toLowerCase();
           } else {
             return type.split(":")[0];
           }

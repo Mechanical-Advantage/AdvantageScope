@@ -151,6 +151,14 @@ sourceListHelp:
   sources_one: "Source: {{list, list(type: disjunction)}}" # Singular label for field source type
   sources_other: "Sources: {{list, list(type: disjunction)}}" # Plural label for field source types
   optionName: "{{name}}:" # Template for option name label in help window
+  logTypes:
+    raw: "raw" # Log type label for raw binary data
+    boolean: "boolean" # Log type label for boolean values
+    number: "number" # Log type label for numeric values
+    string: "string" # Log type label for string values
+    booleanArray: "boolean[]" # Log type label for boolean array values
+    numberArray: "number[]" # Log type label for numeric array values
+    stringArray: "string[]" # Log type label for string array values
 
 unitConversion:
   title: "Unit Conversion — AdvantageScope" # Window title for unit conversion settings
