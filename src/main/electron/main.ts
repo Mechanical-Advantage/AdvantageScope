@@ -56,7 +56,7 @@ import {
 import TabType, { getAllTabTypes, getDefaultTabTitle, getTabAccelerator, getTabIcon } from "../../shared/TabType";
 import { BUILD_DATE, COPYRIGHT, DISTRIBUTION, Distribution } from "../../shared/buildConstants";
 import { Units } from "../../shared/units";
-import { createUUID, formatDate } from "../../shared/util";
+import { createUUID, formatDate, getWpilibDocsUrl } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import {
   AKIT_PATH_INPUT,
@@ -2481,7 +2481,7 @@ function setupMenu() {
         {
           label: t("menu.help.wpilibDocs"),
           click() {
-            shell.openExternal("https://docs.wpilib.org");
+            shell.openExternal(getWpilibDocsUrl("https://docs.wpilib.org", lang));
           }
         },
         {

@@ -307,3 +307,28 @@ export function getDocsUrl(url: string, lang: string): string {
   }
   return url.replace("https://docs.advantagescope.org", `https://docs.advantagescope.org/${lang}`);
 }
+
+/**
+ * Localizes a WPILib documentation URL based on the current language.
+ * @param url The WPILib documentation URL (e.g. https://docs.wpilib.org)
+ * @param lang The language code (e.g. "es-419", "fr")
+ */
+export function getWpilibDocsUrl(url: string, lang: string): string {
+  const wpilibLangMap: Record<string, string> = {
+    "es-419": "es",
+    fr: "fr",
+    he: "he",
+    "pt-BR": "pt",
+    tr: "tr",
+    "zh-CN": "zh-cn",
+    "zh-TW": "zh-cn"
+  };
+  const wpilibLang = wpilibLangMap[lang];
+  if (wpilibLang) {
+    if (url === "https://docs.wpilib.org" || url === "https://docs.wpilib.org/") {
+      return `https://docs.wpilib.org/${wpilibLang}/stable/index.html`;
+    }
+    return url.replace("https://docs.wpilib.org/en/", `https://docs.wpilib.org/${wpilibLang}/`);
+  }
+  return url;
+}

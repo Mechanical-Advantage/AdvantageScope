@@ -41,7 +41,7 @@ import {
   LITE_COMPATIBLE_TABS
 } from "../../shared/TabType";
 import { Units } from "../../shared/units";
-import { getDocsUrl } from "../../shared/util";
+import { getDocsUrl, getWpilibDocsUrl } from "../../shared/util";
 import { GITHUB_REPOSITORY } from "../github";
 import { loadAssets } from "./assetLoader";
 import { isAlpha, isBeta, isBetaExpired, isBetaWelcomeComplete, saveBetaWelcomeComplete } from "./betaUtil";
@@ -761,7 +761,7 @@ async function handleHubMessage(message: NamedMessage) {
               {
                 content: t("menu.help.wpilibDocs"),
                 callback() {
-                  window.open("https://docs.wpilib.org", "_blank");
+                  window.open(getWpilibDocsUrl("https://docs.wpilib.org", window.lang), "_blank");
                 }
               },
               ...((DISTRIBUTION === Distribution.LiteDS ? ["-"] : []) as (MenuItem | Submenu | "-")[]),
