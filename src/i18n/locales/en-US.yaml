@@ -362,8 +362,8 @@ hub:
     label: "Field" # Field label for 2D/3D field select section
     selectTitle2d: "Select field image" # Tooltip for 2D field selector dropdown
     selectTitle3d: "Select field model" # Tooltip for 3D field selector dropdown
-    dsAlert: "Driver Station position</br>not available." # Alert shown in 3D view when driver station position is not available
-    cameraAlert: 'Robot pose not available</br>for camera "{{name}}".' # Alert shown in 3D view when robot/camera pose is missing
+    dsAlert: "Driver Station position<br>not available." # Alert shown in 3D view when driver station position is not available
+    cameraAlert: 'Robot pose not available<br>for camera "{{name}}".' # Alert shown in 3D view when robot/camera pose is missing
     frc: "FRC Fields" # Optgroup label for FRC fields
     ftc: "FTC Fields" # Optgroup label for FTC fields
     sourceTitle: "Open field image source URL" # Field image source link tooltip
