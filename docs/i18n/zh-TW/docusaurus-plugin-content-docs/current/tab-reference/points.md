@@ -1,0 +1,84 @@
+---
+sidebar_position: 11
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# 📍 點
+
+點分頁顯示任意點的 2D 視覺化。這是一個非常彈性的工具，允許對視覺資料/管線、機構狀態等進行自訂視覺化。
+
+<img src="/img/tab-reference/points-1.png" alt="點分頁範例" />
+
+<details>
+<summary>時間軸控制項</summary>
+
+時間軸用於控制播放與視覺化。點擊時間軸會選擇一個時間，按右鍵取消選擇。選取的時間在所有分頁中保持同步，從而可以輕鬆在其他視圖中快速找到此位置。
+
+黃色區域表示機器人在自動階段，藍色區域表示機器人在遙控階段，灰色區域表示機器人在實用工具模式。
+
+要縮放，請將游標置於時間軸上方並向上或向下滾動。也可以透過按住 `Shift` 的同時點擊並拖曳來選擇範圍。透過水平滾動（在受支援的裝置上）或透過在時間軸上點擊並拖曳來左右移動。當即時連線時，向左滾動會解鎖目前時間，滾動到最右側會再次鎖定到目前時間。按下 `Ctrl+\` 可縮放至機器人啟用的時間段。
+
+<img src="/img/tab-reference/timeline.png" alt="時間軸" />
+
+</details>
+
+## 新增來源
+
+要開始，請將欄位拖曳到「來源」區段。使用 X 按鈕刪除來源，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有物件，請點擊軸標題附近的垃圾桶，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列來源。
+
+**要自訂每個來源，請點擊彩色圖示或在欄位名稱上按右鍵。** 可以調整每個來源的符號、顏色與大小。
+
+:::tip
+要檢視受支援來源類型的完整清單，請點擊 `?` 圖示。該清單還包含受支援的資料類型。
+:::
+
+## 資料格式
+
+點資料應使用 `Translation2d[]` 類型作為位元組編碼的 struct 或 protobuf 發布。許多函式庫都支援此格式，包括 WPILib 與 AdvantageKit。下面的範例程式碼展示了如何在 Java 中記錄點資料。
+
+<Tabs groupId="library">
+<TabItem value="wpilib" label="WPILib" default>
+
+```java
+StructArrayPublisher<Translation2d> publisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("MyTranslations", Translation2d.struct).publish();
+
+periodic() {
+  publisher.set(new Translation2d[] {
+    new Translation2d(0.0, 1.0),
+    new Translation2d(2.0, 3.0)
+  });
+  publisher.set(
+    new Translation2d(0.0, 1.0),
+    new Translation2d(2.0, 3.0)
+  );
+}
+```
+
+</TabItem>
+<TabItem value="advantagekit" label="AdvantageKit">
+
+```java
+Logger.recordOutput("MyTranslations",
+  new Translation2d[] {
+    new Translation2d(0.0, 1.0),
+    new Translation2d(2.0, 3.0)
+  });
+Logger.recordOutput("MyTranslations",
+  new Translation2d(0.0, 1.0),
+  new Translation2d(2.0, 3.0)
+);
+```
+
+</TabItem>
+</Tabs>
+
+## 設定
+
+以下是可用的設定選項：
+
+- **尺寸：** 顯示區域的大小。可以使用與發布點匹配的任何單位。顯示視覺資料時，這是攝影機的解析度。
+- **座標系方向：** 要使用的座標系（X 軸和 Y 軸的方向）。
+- **座標系原點：** 原點在座標系中的位置。

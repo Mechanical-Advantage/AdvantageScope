@@ -37,7 +37,7 @@ _此警告 **不适用于** 由 AdvantageKit 生成的日志，选择“Advantag
   - _AdvantageKit 周期：_ 为每个 AdvantageKit 同步循环周期创建一个新的行/条目。请注意，无论循环周期之间是否有更改，都会包含所有值。
 - **周期：** 仅当选择“固定周期”时适用。设置每个采样点之间的周期（以毫秒为单位）。通常，这应该与机器人代码的循环周期匹配。
 - **前缀：** 如果留空，则包含所有字段。否则，仅包含与所提供的前缀匹配的字段（用逗号分隔）。参阅以下示例：
-  - “_/DriverStation/Joystick0_”：包含以“/DriverStation/Joystick0”开头的所有字段（来自第一个操纵杆的数据）。
+  - “_/DriverStation/Joystick0_”：包含以“/DriverStation/Joystick0”开头的所有字段（来自第一个控制器的数据）。
   - “_Flywheels,DS:enabled_”：包含以“/Flywheels”或“DS:enabled”开头的所有字段（来自飞轮的所有数据，加上机器人的启用状态）。
   - “_Drive/LeftPosition,Drive/RightPosition_”：仅包含“/Drive/LeftPosition”和“/Drive/RightPosition”字段。
 - **字段集：** 参阅以下选项。生成字段由 AdvantageScope 创建以拆分复杂类型，并在侧边栏中以灰色文本显示。这包括数组、结构体和其他 Schema 的各个组成部分。

@@ -16,7 +16,7 @@
     "description": "The label for category '🧭 App Navigation' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.📂 Log Files": {
-    "message": "📂 記錄檔",
+    "message": "📂 日誌檔案",
     "description": "The label for category '📂 Log Files' in sidebar 'sidebar'"
   },
   "sidebar.sidebar.category.🛜 Live Sources": {

@@ -2,11 +2,11 @@
 sidebar_position: 8
 ---
 
-# 🎮 操纵杆
+# 🎮 控制器
 
-操纵杆选项卡显示最多六个已连接控制器的状态。下图显示了一个示例布局，包含两个 Xbox 控制器和一个通用操纵杆。按键在按住时会高亮显示，并显示操纵杆和其他轴的状态。
+控制器选项卡显示最多六个已连接控制器的状态。下图显示了一个示例布局，包含两个 Xbox 控制器和一个通用控制器。按键在按住时会高亮显示，并显示控制器和其他轴的状态。
 
-<img src="/img/tab-reference/joysticks-1.png" alt="操纵杆选项卡概述" />
+<img src="/img/tab-reference/joysticks-1.png" alt="控制器选项卡概述" />
 
 <details>
 <summary>时间轴控制</summary>
@@ -23,10 +23,10 @@ sidebar_position: 8
 
 ## 控制面板
 
-在选项卡底部的表格中选择操纵杆类型。操纵杆 ID 范围从 0 到 5，与 Driver Station 和 WPILib 中的 ID 匹配。有关操纵杆的更多信息，请参阅 [WPILib 文档](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html)。
+在选项卡底部的表格中选择控制器类型。控制器 ID 范围从 0 到 5，与 操控站 和 WPILib 中的 ID 匹配。有关控制器的更多信息，请参阅 [WPILib 文档](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html)。
 
-AdvantageScope 包含一组常见操纵杆，包括以网格格式显示所有按钮、轴和 POV 的“通用操纵杆”（如上图所示）。要添加自定义操纵杆，请参阅 [自定义资源](/more-features/custom-assets)。
+AdvantageScope 包含一组常见控制器，包括以网格格式显示所有按钮、轴和 POV 的“通用控制器”（如上图所示）。要添加自定义控制器，请参阅 [自定义资源](/more-features/custom-assets)。
 
 :::warning
-**原生 WPILib 中，操纵杆数据在 NetworkTables 连接下不可用。** 支持 WPILib 日志文件（需 [启用操纵杆日志记录](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日志以及 AdvantageKit 实时串流。
+**原生 WPILib 中，控制器数据在 NetworkTables 连接下不可用。** 支持 WPILib 日志文件（需 [启用控制器日志记录](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日志以及 AdvantageKit 实时串流。
 :::

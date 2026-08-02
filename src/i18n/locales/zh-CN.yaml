@@ -200,7 +200,7 @@ xrControls:
 
 tabs:
   console: "控制台"
-  joysticks: "操纵杆"
+  joysticks: "控制器"
   lineGraph: "折线图"
   field2d: "2D 场地"
   field3d: "3D 场地"
@@ -328,7 +328,7 @@ hub:
     label: "场地"
     selectTitle2d: "选择场地图像"
     selectTitle3d: "选择场地模型"
-    dsAlert: "驾驶站位置</br>不可用。"
+    dsAlert: "操控站位置</br>不可用。"
     cameraAlert: "相机“{{name}}”的</br>机器人位姿不可用。"
     frc: "FRC 场地"
     ftc: "FTC 场地"
@@ -496,9 +496,9 @@ hub:
     noPracticeContent: "这是一场练习赛。The Blue Alliance 上没有关于练习赛的数据。请改用 YouTube URL 或本地文件加载视频。"
 
   joysticks:
-    selectTitle: "选择操纵杆数据源"
-    noData: "没有操纵杆数据。"
-    selectLayout: "选择一个操纵杆布局以查看数据。"
+    selectTitle: "选择控制器数据源"
+    noData: "没有控制器数据。"
+    selectLayout: "选择一个控制器布局以查看数据。"
     port0: "0："
     port1: "1："
     port2: "2："
@@ -636,7 +636,7 @@ menu:
     default: "默认"
     defaultWithMode: "默认：{{mode}}"
     connectSim: "连接到模拟器"
-    connectDs: "连接到驾驶站"
+    connectDs: "连接到操控站"
     downloadLogs: "下载日志..."
     usbAddress: "使用 Systemcore USB 地址"
     wifiAddress: "使用 Systemcore Wi-Fi 地址"
@@ -689,7 +689,7 @@ menu:
     contactUs: "联系我们"
     githubRepo: "GitHub 仓库"
     advantagescopeDocs: "AdvantageScope 文档"
-    dsDocs: "驾驶站文档"
+    dsDocs: "操控站文档"
     wpilibDocs: "WPILib 文档"
     littletonRobotics: "Littleton Robotics"
     noOptions: "无选项"
@@ -711,7 +711,7 @@ menu:
     orbitField: "环绕场地"
     orbitRobot: "环绕机器人"
     driverView: "驾驶员视角"
-    driverStation: "驾驶站"
+    driverStation: "操控站"
     blueLeft: "蓝方左侧"
     blueRight: "蓝方右侧"
     redLeft: "红方左侧"
@@ -739,7 +739,7 @@ main:
     downloadFinished: "所有资源已下载。AdvantageScope 将定期检查更新。"
     connectFailed: "无法连接到 GitHub。稍后重试。"
     noDiskSpace: "磁盘空间不足。稍后重试。"
-    readme: "此文件夹包含 2D 场地、3D 场地和操纵杆视图的额外资源。有关更多详细信息，请参阅 AdvantageScope 文档（可通过应用程序中的文档选项卡或以下 URL 获取）。"
+    readme: "此文件夹包含 2D 场地、3D 场地和控制器视图的额外资源。有关更多详细信息，请参阅 AdvantageScope 文档（可通过应用程序中的文档选项卡或以下 URL 获取）。"
 
   owlet:
     upToDate: "Owlet 是最新的。AdvantageScope 将定期检查更新。"

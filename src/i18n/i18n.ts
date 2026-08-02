@@ -18,6 +18,7 @@ import roTranslations from "./locales/ro.yaml";
 import ruTranslations from "./locales/ru.yaml";
 import trTranslations from "./locales/tr.yaml";
 import zhCNTranslations from "./locales/zh-CN.yaml";
+import zhTWTranslations from "./locales/zh-TW.yaml";
 
 /**
  * Initializes i18next with the specified language and returns the bound translation function.
@@ -37,7 +38,8 @@ export function setupI18n(lang: string): TFunction {
       kk: { translation: kkTranslations },
       ru: { translation: ruTranslations },
       ar: { translation: arTranslation },
-      "zh-CN": { translation: zhCNTranslations }
+      "zh-CN": { translation: zhCNTranslations },
+      "zh-TW": { translation: zhTWTranslations }
     },
     interpolation: {
       escapeValue: false

@@ -1,6 +1,6 @@
 # ⚙️ 自定义资源
 
-AdvantageScope 使用一组默认的平面场地图像、场地模型、机器人模型和操纵杆配置。简单资源（例如常青场地）包含在初始安装中。当 AdvantageScope 连接到互联网时，详细资源（例如特定赛季的场地）会在后台自动下载。要检查这些下载的状态，请点击 `应用程序`/`AdvantageScope` > `资源下载状态...`。
+AdvantageScope 使用一组默认的平面场地图像、场地模型、机器人模型和控制器配置。简单资源（例如常青场地）包含在初始安装中。当 AdvantageScope 连接到互联网时，详细资源（例如特定赛季的场地）会在后台自动下载。要检查这些下载的状态，请点击 `应用程序`/`AdvantageScope` > `资源下载状态...`。
 
 如果需要，可以自定义资源集以添加更多选项。要打开用户资源文件夹，请点击 `应用程序`/`AdvantageScope` > `显示资源文件夹`。资源的预期格式定义如下。作为参考，请参阅 [详细资源](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases) 和 [内置资源](https://github.com/Mechanical-Advantage/AdvantageScope/tree/main/bundledAssets) 的默认集合。
 
@@ -109,7 +109,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 
 6. 从机器人代码发布真实的组件位姿，这些位姿将基于每个组件新定义的原点。例如，机械臂段的位姿将放置在机械臂的关节处，并指向该段的方向。
 
-## 操纵杆
+## 控制器
 
 文件夹中必须包含名为 "image.png" 的图像。配置文件必须采用以下格式：
 
@@ -121,9 +121,9 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 ```
 
 :::info
-按钮、操纵杆和轴数值支持 [SDL](https://www.libsdl.org) 绑定（当前的 FIRST Driver Station 使用）和 NI 绑定（旧的 NI FRC Driver Station 使用）。必须为每个组件提供至少一套绑定。
+按钮、摇杆和轴数值支持 [SDL](https://www.libsdl.org) 绑定（当前的 FIRST Driver Station 使用）和 NI 绑定（旧的 NI FRC Driver Station 使用）。必须为每个组件提供至少一套绑定。
 
-对于 NI 绑定，AdvantageScope 反向兼容旧的不带前缀的配置键（例如 `sourceIndex`）。**所有新操纵杆都应使用显式的 SDL 绑定（例如 `sdlSourceIndex`），以兼容当前的 FIRST Driver Station。**
+对于 NI 绑定，AdvantageScope 反向兼容旧的不带前缀的配置键（例如 `sourceIndex`）。**所有新控制器都应使用显式的 SDL 绑定（例如 `sdlSourceIndex`），以兼容当前的 FIRST Driver Station。**
 :::
 
 ### 单个按钮 / POV 值
@@ -144,11 +144,11 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
 }
 ```
 
-### 双轴操纵杆
+### 双轴摇杆
 
 ```json
 {
-  "type": "joystick" // 在两个维度上移动的操纵杆
+  "type": "joystick" // 在两个维度上移动的摇杆
   "isYellow": boolean
   "centerPx": [number, number]
   "radiusPx": number
@@ -239,7 +239,7 @@ AdvantageScope 会自动简化模型几何形状以提高性能，其中细节�
   "heightInches": number // 场地的实际高度（短边）
   "defaultOrigin": "auto" | "blue" | "red" // 默认原点位置，若未指定则为 "auto"
   "driverStations": [
-    [number, number] // 驾驶站位置（相对于场地中心的 X 和 Y，单位为米）
+    [number, number] // 操控站位置（相对于场地中心的 X 和 Y，单位为米）
     ...              // 对于 FRC，6 个元素排序为 [B1, B2, B3, R1, R2, R3]。对于 FTC，4 个元素排序为 [BL, BR, RL, RR]。
   ]
   "gamePieces": [ // 游戏元素类型列表

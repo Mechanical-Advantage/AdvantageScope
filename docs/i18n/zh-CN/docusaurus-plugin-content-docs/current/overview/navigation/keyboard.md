@@ -9,7 +9,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 <tr><td>`Ctrl+Shift+O`</td><td>添加一个或多个日志文件到当前可视化</td></tr>
 <tr><td>`Ctrl+K`</td><td>连接到机器人作为实时数据源</td></tr>
 <tr><td>`Ctrl+Shift+K`</td><td>连接到模拟器作为实时数据源</td></tr>
-<tr><td>`Ctrl+Option+Shift+K`</td><td>连接到驾驶站作为实时数据源</td></tr>
+<tr><td>`Ctrl+Option+Shift+K`</td><td>连接到操控站作为实时数据源</td></tr>
 <tr><td>`Ctrl+D`</td><td>从机器人下载日志文件</td></tr>
 </table>
 
@@ -51,7 +51,7 @@ AdvantageScope 包含众多允许更快速导航的键盘快捷键。使用 `ctr
 </tr>
 <tr>
 <td>`Option+2`</td><td>[🗺 2D 场地](/tab-reference/2d-field)</td>
-<td>`Option+J`</td><td>[🎮 操纵杆](/tab-reference/joysticks)</td>
+<td>`Option+J`</td><td>[🎮 控制器](/tab-reference/joysticks)</td>
 </tr>
 <tr>
 <td>`Option+3`</td><td>[👀 3D 场地](/tab-reference/3d-field)</td>

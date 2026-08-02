@@ -17,8 +17,8 @@ AdvantageScope Lite 是 AdvantageScope 的网页版，可从 FIRST Driver Statio
 :::info
 包含常用资源集合的 Zip 文件可以通过点击下方链接进行下载：
 
-- [**默认 FRC 资源**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): FRC 场地、FRC 示例机器人以及所有操纵杆布局。
-- [**默认 FTC 资源**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): FTC 场地、FTC 示例机器人以及所有操纵杆布局。
+- [**默认 FRC 资源**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFRC.zip): FRC 场地、FRC 示例机器人以及所有控制器布局。
+- [**默认 FTC 资源**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsDefaultFTC.zip): FTC 场地、FTC 示例机器人以及所有控制器布局。
 - [**FRC 6328 资源**](https://github.com/Mechanical-Advantage/AdvantageScopeAssets/releases/download/bundles-v1/AllAssetsFRC6328.zip): [6328 团队分发版](/overview/installation#team-6328) 独有的 AdvantageScope 资源。
 
 :::
