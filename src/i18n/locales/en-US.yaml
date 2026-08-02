@@ -233,16 +233,16 @@ sourceList:
   editConfig: "Edit field configuration" # Tooltip for source list item configuration editor
   removeField: "Remove field" # Tooltip for source list item delete button
   noValues: "No values" # Fallback value description when no array values exist
-  segments_one: "1 segment" # Singular description for mechanism segments
+  segments_one: "{{count}} segment" # Singular description for mechanism segments
   segments_other: "{{count}} segments" # Plural description for mechanism segments
-  errors_one: "1 error" # Singular errors description
+  errors_one: "{{count}} error" # Singular errors description
   errors_other: "{{count}} errors" # Plural errors description
-  warnings_one: "1 warning" # Singular warnings description
+  warnings_one: "{{count}} warning" # Singular warnings description
   warnings_other: "{{count}} warnings" # Plural warnings description
-  infos_one: "1 info" # Singular infos description
+  infos_one: "{{count}} info" # Singular infos description
   infos_other: "{{count}} infos" # Plural infos description
   alerts: "{{errors}}, {{warnings}}, {{infos}}" # Combined alerts list description
-  values_one: "1 value" # Singular description for array values
+  values_one: "{{count}} value" # Singular description for array values
   values_other: "{{count}} values" # Plural description for array values
   toggleVisibility: "Toggle field visibility" # Tooltip to hide/show a field
   hideField: "Hide field" # Tooltip to hide a field
@@ -346,7 +346,7 @@ hub:
     searchPlaceholder: "Search" # Sidebar search field placeholder
     searchTitle: "Search fields" # Sidebar search field tooltip
     tuningTitle: "Toggle tuning mode" # Sidebar tuning button tooltip
-    fields_one: "1 field" # Singular field count
+    fields_one: "{{count}} field" # Singular field count
     fields_other: "{{count}} fields" # Plural fields count
     titleSeconds_one: "{{fields}}, {{duration}} second" # Sidebar title format for log duration measured in seconds
     titleSeconds_other: "{{fields}}, {{duration}} seconds" # Sidebar title format for log duration measured in seconds

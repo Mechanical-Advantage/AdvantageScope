@@ -6,6 +6,7 @@
 // at the root directory of this project.
 
 import ScrollSensor from "../../hub/ScrollSensor";
+import { isolateValue } from "../bidi";
 import { ensureThemeContrast } from "../Colors";
 import LineGraphFilter from "../LineGraphFilter";
 import { SelectionMode } from "../Selection";
@@ -127,10 +128,10 @@ export default class LineGraphRenderer implements TabRenderer {
       let unitKey = Object.keys(Units.ALL_UNITS).find((k) => Units.ALL_UNITS[k] === units) ?? null;
       if (unitKey !== null) {
         let filteredKey = Units.getFilteredUnitKey(unitKey, filter);
-        return t(`units.values.${filteredKey}`, { value: output, count: value });
+        return isolateValue(t(`units.values.${filteredKey}`, { value: output, count: value }));
       }
     }
-    return output;
+    return isolateValue(output);
   }
 
   render(command: LineGraphRendererCommand): void {
@@ -489,10 +490,12 @@ export default class LineGraphRenderer implements TabRenderer {
     // Use similar logic as main axes but with an extra decimal point of precision to format the popup timestamps
     let formatMarkedTimestampText = (time: number): string => {
       let fractionDigits = Math.max(0, -Math.floor(Math.log10(timeStepSize / 10)));
-      return t("units.values.seconds", {
-        value: formatNumber(time, fractionDigits),
-        count: time
-      });
+      return isolateValue(
+        t("units.values.seconds", {
+          value: formatNumber(time, fractionDigits),
+          count: time
+        })
+      );
     };
 
     // Write formatted timestamp popups to graph view
@@ -708,10 +711,12 @@ export default class LineGraphRenderer implements TabRenderer {
       }
 
       let value = cleanFloat(stepPos);
-      let text = t("units.values.seconds", {
-        value: value.toLocaleString(undefined, { useGrouping: false }),
-        count: value
-      });
+      let text = isolateValue(
+        t("units.values.seconds", {
+          value: value.toLocaleString(undefined, { useGrouping: false }),
+          count: value
+        })
+      );
 
       context.globalAlpha = 1;
       context.fillText(text, x, graphTop + graphHeight + 15);

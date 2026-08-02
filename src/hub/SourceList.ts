@@ -17,6 +17,7 @@ import {
   tType,
   tValue
 } from "../shared/SourceListConfig";
+import { isolateAuto, isolateListComponents, isolateRtl, isolateValue } from "../shared/bidi";
 import {
   grabModuleVelocities,
   grabPosesAuto,
@@ -1077,16 +1078,32 @@ export default class SourceList {
               if ("units" in state.options) {
                 numberRotationUnits = state.options.units === "degrees" ? "degrees" : "radians";
               }
+              // The number in each value is isolated so that a minus sign or attached
+              // symbol cannot be reordered away from its digits, while a unit written as a
+              // separate word still flows with the interface direction
+              let metersText = (meters: number) =>
+                isolateValue(t("units.values.meters", { value: formatNumber(meters, 3) }));
+              let degreesText = (radians: number) =>
+                isolateValue(
+                  t("units.values.degrees", { value: formatNumber(Units.convert(radians, "radians", "degrees"), 2) })
+                );
+              let metersPerSecondText = (metersPerSecond: number) =>
+                isolateValue(t("units.values.metersPerSecond", { value: formatNumber(metersPerSecond, 2) }));
+              let degreesPerSecondText = (radiansPerSecond: number) =>
+                isolateValue(
+                  t("units.values.degreesPerSecond", {
+                    value: formatNumber(Units.convert(radiansPerSecond, "radians", "degrees"), 2)
+                  })
+                );
+
               let poseStrings: string[] = [];
               if (typeConfig?.previewType === "ModuleVelocities") {
                 let moduleVelocities = grabModuleVelocities(window.log, state.logKey, time, undefined, this.UUID);
                 moduleVelocities.forEach((state) => {
                   poseStrings.push(
                     t("sourceList.previews.moduleVelocities", {
-                      speed: t("units.values.metersPerSecond", { value: formatNumber(state.speed, 2) }),
-                      angle: t("units.values.degrees", {
-                        value: formatNumber(Units.convert(state.angle, "radians", "degrees"), 2)
-                      })
+                      speed: metersPerSecondText(state.speed),
+                      angle: degreesText(state.angle)
                     })
                   );
                 });
@@ -1094,11 +1111,9 @@ export default class SourceList {
                 let robotVelocities = grabRobotVelocities(window.log, state.logKey, time, this.UUID);
                 poseStrings.push(
                   t("sourceList.previews.robotVelocities", {
-                    vx: t("units.values.metersPerSecond", { value: formatNumber(robotVelocities.vx, 2) }),
-                    vy: t("units.values.metersPerSecond", { value: formatNumber(robotVelocities.vy, 2) }),
-                    omega: t("units.values.degreesPerSecond", {
-                      value: formatNumber(Units.convert(robotVelocities.omega, "radians", "degrees"), 2)
-                    })
+                    vx: metersPerSecondText(robotVelocities.vx),
+                    vy: metersPerSecondText(robotVelocities.vy),
+                    omega: degreesPerSecondText(robotVelocities.omega)
                   })
                 );
               } else {
@@ -1114,69 +1129,47 @@ export default class SourceList {
                   switch (typeConfig?.previewType) {
                     case "Rotation2d": {
                       return t("sourceList.previews.rotation2d", {
-                        rotation: t("units.values.degrees", {
-                          value: formatNumber(
-                            Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
-                            2
-                          )
-                        })
+                        rotation: degreesText(rotation3dTo2d(annotatedPose.pose.rotation))
                       });
                     }
                     case "Translation2d": {
                       return t("sourceList.previews.translation2d", {
-                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
-                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) })
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1])
                       });
                     }
                     case "Pose2d":
                     case "Transform2d": {
                       return t("sourceList.previews.pose2d", {
-                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
-                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) }),
-                        rotation: t("units.values.degrees", {
-                          value: formatNumber(
-                            Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
-                            2
-                          )
-                        })
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1]),
+                        rotation: degreesText(rotation3dTo2d(annotatedPose.pose.rotation))
                       });
                     }
                     case "Rotation3d": {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return t("sourceList.previews.rotation3d", {
-                        roll: t("units.values.degrees", {
-                          value: formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2)
-                        }),
-                        pitch: t("units.values.degrees", {
-                          value: formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2)
-                        }),
-                        yaw: t("units.values.degrees", {
-                          value: formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2)
-                        })
+                        roll: degreesText(rpy[0]),
+                        pitch: degreesText(rpy[1]),
+                        yaw: degreesText(rpy[2])
                       });
                     }
                     case "Translation3d": {
                       return t("sourceList.previews.translation3d", {
-                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
-                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) }),
-                        z: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[2], 3) })
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1]),
+                        z: metersText(annotatedPose.pose.translation[2])
                       });
                     }
                     case "Pose3d": {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
                       return t("sourceList.previews.pose3d", {
-                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
-                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) }),
-                        z: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[2], 3) }),
-                        roll: t("units.values.degrees", {
-                          value: formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2)
-                        }),
-                        pitch: t("units.values.degrees", {
-                          value: formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2)
-                        }),
-                        yaw: t("units.values.degrees", {
-                          value: formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2)
-                        })
+                        x: metersText(annotatedPose.pose.translation[0]),
+                        y: metersText(annotatedPose.pose.translation[1]),
+                        z: metersText(annotatedPose.pose.translation[2]),
+                        roll: degreesText(rpy[0]),
+                        pitch: degreesText(rpy[1]),
+                        yaw: degreesText(rpy[2])
                       });
                     }
                     default: {
@@ -1185,6 +1178,10 @@ export default class SourceList {
                   }
                 });
               }
+
+              // Isolate each component so that bidi reordering cannot separate a label
+              // from its value, or a value from its unit
+              poseStrings = poseStrings.map(isolateListComponents);
               if (poseStrings.length === 1) {
                 text = poseStrings[0];
               } else if (poseStrings.length === 0) {
@@ -1192,11 +1189,9 @@ export default class SourceList {
               } else {
                 let countText = t("sourceList.values", { count: poseStrings.length });
                 let arrayText = "[" + poseStrings.map((str) => "(" + str + ")").join(", ") + "]";
-                if (document.documentElement.dir === "rtl") {
-                  text = "\u2068" + countText + "\u2069 \u2014 \u2068" + arrayText + "\u2069";
-                } else {
-                  text = countText + " \u2014 " + arrayText;
-                }
+                // The array flows in the interface direction so that a single pose and an
+                // array of poses are read in the same order
+                text = isolateAuto(countText) + " \u2014 " + isolateRtl(arrayText);
               }
             }
           } else if (structuredType === "Mechanism2d") {
@@ -1230,11 +1225,13 @@ export default class SourceList {
             let errorsText = t("sourceList.errors", { count: errorCount });
             let warningsText = t("sourceList.warnings", { count: warningCount });
             let infosText = t("sourceList.infos", { count: infoCount });
-            text = t("sourceList.alerts", {
-              errors: errorsText,
-              warnings: warningsText,
-              infos: infosText
-            });
+            text = isolateListComponents(
+              t("sourceList.alerts", {
+                errors: errorsText,
+                warnings: warningsText,
+                infos: infosText
+              })
+            );
           } else if (
             logType === LoggableType.BooleanArray ||
             logType === LoggableType.NumberArray ||
@@ -1242,11 +1239,9 @@ export default class SourceList {
           ) {
             let countText = t("sourceList.values", { count: value.length });
             let arrayText = getLogValueText(value, logType, true);
-            if (document.documentElement.dir === "rtl") {
-              text = "\u2068" + countText + "\u2069 \u2014 \u2068" + arrayText + "\u2069";
-            } else {
-              text = countText + " \u2014 " + arrayText;
-            }
+            // Raw log values keep their own direction, which leaves them left-to-right to
+            // match the table view, the exported CSV, and the source code they came from
+            text = isolateAuto(countText) + " \u2014 " + isolateAuto(arrayText);
           } else {
             text = getLogValueText(value, logType);
           }
