@@ -1960,10 +1960,11 @@ table.joystick-selector {
 table.joystick-selector td {
   text-align: center;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 table.joystick-selector select {
-  width: calc(100% - 30px);
+  width: calc(100% - 40px);
 }
 
 /* Swerve */
