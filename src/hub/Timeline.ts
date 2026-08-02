@@ -296,8 +296,7 @@ export default class Timeline {
       }
 
       let minDistance = Math.min(markDistance, adjustedHelpDistance);
-      let minAlpha = 0.5 - 0.45 * (helpTextOpacity / 0.5);
-      context.globalAlpha = clampValue(scaleValue(minDistance, [0, 30], [minAlpha, 0.5]), 0, 1);
+      context.globalAlpha = clampValue(scaleValue(minDistance, [0, 20], [0.2, 0.5]), 0, 1);
       context.fillText(text, textX, height / 2);
 
       context.beginPath();
