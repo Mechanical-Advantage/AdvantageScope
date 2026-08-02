@@ -52,23 +52,23 @@ Le tableau des mesures statistiques montre les valeurs calculées de chaque mesu
 
 #### Centre
 
-- [**Moyenne :**](https://en.wikipedia.org/wiki/Arithmetic_mean) La moyenne arithmétique (moyenne simple) des données.
-- [**Médiane :**](https://en.wikipedia.org/wiki/Median) La valeur « du milieu » des données, ou le 50e centile.
-- [**Mode :**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) La valeur la plus courante dans les données.
-- [**Moyenne géométrique :**](https://en.wikipedia.org/wiki/Geometric_mean) Une mesure du centre calculée en utilisant le produit des valeurs plutôt que la somme. Applicable lors de la mesure des _taux de croissance exponentiels_ (comme le pourcentage de changement entre les cycles).
-- [**Moyenne harmonique :**](https://en.wikipedia.org/wiki/Harmonic_mean) Une mesure du centre calculée en utilisant la somme des inverses des valeurs. Applicable lors de la mesure de _taux ou de vitesses_.
-- [**Moyenne quadratique :**](https://en.wikipedia.org/wiki/Root_mean_square) Une mesure du centre calculée en utilisant les carrés des valeurs. Applicable lors de la mesure de données avec des _valeurs positives et négatives_, comme un mouvement périodique.
+- [**Moyenne :**](https://fr.wikipedia.org/wiki/Moyenne_arithm%C3%A9tique) La moyenne arithmétique (moyenne simple) des données.
+- [**Médiane :**](<https://fr.wikipedia.org/wiki/M%C3%A9diane_(statistiques)>) La valeur « du milieu » des données, ou le 50e centile.
+- [**Mode :**](<https://fr.wikipedia.org/wiki/Mode_(statistiques)>) La valeur la plus courante dans les données.
+- [**Moyenne géométrique :**](https://fr.wikipedia.org/wiki/Moyenne_g%C3%A9om%C3%A9trique) Une mesure du centre calculée en utilisant le produit des valeurs plutôt que la somme. Applicable lors de la mesure des _taux de croissance exponentiels_ (comme le pourcentage de changement entre les cycles).
+- [**Moyenne harmonique :**](https://fr.wikipedia.org/wiki/Moyenne_harmonique) Une mesure du centre calculée en utilisant la somme des inverses des valeurs. Applicable lors de la mesure de _taux ou de vitesses_.
+- [**Moyenne quadratique :**](https://fr.wikipedia.org/wiki/Moyenne_quadratique) Une mesure du centre calculée en utilisant les carrés des valeurs. Applicable lors de la mesure de données avec des _valeurs positives et négatives_, comme un mouvement périodique.
 
 #### Écart
 
-- [**Écart-type :**](https://en.wikipedia.org/wiki/Standard_deviation) La mesure statistique de variation la plus courante, où une valeur plus faible indique moins de variation. 68 % des données se situent à moins d'un écart-type de la moyenne.
-- [**Écart absolu moyen :**](https://en.wikipedia.org/wiki/Average_absolute_deviation) La distance moyenne entre chaque valeur et la moyenne. Il s'agit d'une alternative à l'écart-type.
-- [**Écart interquartile :**](https://en.wikipedia.org/wiki/Interquartile_range) La différence entre le troisième et le premier quartile (75e centile et 25e centile), moins affectée par les valeurs aberrantes que l'écart-type ou l'écart absolu moyen.
-- [**Asymétrie :**](https://en.wikipedia.org/wiki/Skewness) Une mesure de l'asymétrie des données. Une valeur négative indique une queue vers la gauche, une valeur positive indique une queue vers la droite, et une valeur nulle suggère une distribution symétrique.
+- [**Écart-type :**](https://fr.wikipedia.org/wiki/%C3%89cart_type) La mesure statistique de variation la plus courante, où une valeur plus faible indique moins de variation. 68 % des données se situent à moins d'un écart-type de la moyenne.
+- [**Écart absolu moyen :**](https://fr.wikipedia.org/wiki/Valeur_absolue_des_%C3%A9carts) La distance moyenne entre chaque valeur et la moyenne. Il s'agit d'une alternative à l'écart-type.
+- [**Écart interquartile :**](https://fr.wikipedia.org/wiki/%C3%89cart_interquartile) La différence entre le troisième et le premier quartile (75e centile et 25e centile), moins affectée par les valeurs aberrantes que l'écart-type ou l'écart absolu moyen.
+- [**Asymétrie :**](<https://fr.wikipedia.org/wiki/Asym%C3%A9trie_(statistiques)>) Une mesure de l'asymétrie des données. Une valeur négative indique une queue vers la gauche, une valeur positive indique une queue vers la droite, et une valeur nulle suggère une distribution symétrique.
 
 #### Centiles
 
-Les [centiles](https://en.wikipedia.org/wiki/Percentile) mesurent les valeurs en dessous desquelles se situent le pourcentage donné d'autres valeurs. Par exemple, 10 % des valeurs se situent en dessous du 10e centile. Les centiles suivants sont également connus sous le nom de :
+Les [centiles](https://fr.wikipedia.org/wiki/Centile) mesurent les valeurs en dessous desquelles se situent le pourcentage donné d'autres valeurs. Par exemple, 10 % des valeurs se situent en dessous du 10e centile. Les centiles suivants sont également connus sous le nom de :
 
 - 25e centile = 1er quartile (Q1)
 - 50e centile = 2e quartile (Q2) = médiane

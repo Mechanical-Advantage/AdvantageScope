@@ -52,19 +52,19 @@ Tabelul de măsurători statistice afișează valorile calculate pentru fiecare 
 
 #### Centru
 
-- [**Medie:**](https://en.wikipedia.org/wiki/Arithmetic_mean) Media aritmetică (media simplă) a datelor.
-- [**Mediană:**](https://en.wikipedia.org/wiki/Median) Valoarea din „mijloc” a datelor, sau percentila 50%.
+- [**Medie:**](https://ro.wikipedia.org/wiki/Medie_aritmetic%C4%83) Media aritmetică (media simplă) a datelor.
+- [**Mediană:**](<https://ro.wikipedia.org/wiki/Median%C4%83_(statistic%C4%83)>) Valoarea din „mijloc” a datelor, sau percentila 50%.
 - [**Mod:**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) Cea mai frecventă valoare din date.
-- [**Medie geometrică:**](https://en.wikipedia.org/wiki/Geometric_mean) O măsurătoare a centrului calculată folosind produsul valorilor mai degrabă decât suma. Aplicabilă la măsurarea _ratelor de creștere exponențială_ (cum ar fi procentul de modificare între cicluri).
-- [**Medie armonică:**](https://en.wikipedia.org/wiki/Harmonic_mean) O măsurătoare a centrului calculată folosind suma inverselor valorilor. Aplicabilă la măsurarea _ratelor sau vitezelor_.
-- [**Medie pătratică:**](https://en.wikipedia.org/wiki/Root_mean_square) O măsurătoare a centrului calculată folosind pătratele valorilor. Aplicabilă la măsurarea datelor cu _valori atât pozitive, cât și negative_, cum ar fi mișcarea periodică.
+- [**Medie geometrică:**](https://ro.wikipedia.org/wiki/Medie_geometric%C4%83) O măsurătoare a centrului calculată folosind produsul valorilor mai degrabă decât suma. Aplicabilă la măsurarea _ratelor de creștere exponențială_ (cum ar fi procentul de modificare între cicluri).
+- [**Medie armonică:**](https://ro.wikipedia.org/wiki/Medie_armonic%C4%83) O măsurătoare a centrului calculată folosind suma inverselor valorilor. Aplicabilă la măsurarea _ratelor sau vitezelor_.
+- [**Medie pătratică:**](https://ro.wikipedia.org/wiki/Medie_p%C4%83tratic%C4%83) O măsurătoare a centrului calculată folosind pătratele valorilor. Aplicabilă la măsurarea datelor cu _valori atât pozitive, cât și negative_, cum ar fi mișcarea periodică.
 
 #### Răspândire
 
-- [**Deviație standard:**](https://en.wikipedia.org/wiki/Standard_deviation) Cea mai comună măsurătoare statistică a variației, unde o valoare mai mică indică o variație mai mică. 68% din date se încadrează în limita unei deviații standard față de medie.
+- [**Deviație standard:**](https://ro.wikipedia.org/wiki/Abatere_standard) Cea mai comună măsurătoare statistică a variației, unde o valoare mai mică indică o variație mai mică. 68% din date se încadrează în limita unei deviații standard față de medie.
 - [**Deviație absolută medie:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) Distanța medie dintre fiecare valoare și medie. Aceasta este o alternativă la deviația standard.
-- [**Interval intercuartilic:**](https://en.wikipedia.org/wiki/Interquartile_range) Diferența dintre cuartila a treia și prima cuartilă (percentila 75 și percentila 25), mai puțin afectată de valorile aberante (outliers) decât deviația standard sau deviația absolută medie.
-- [**Asimetrie:**](https://en.wikipedia.org/wiki/Skewness) O măsurătoare a asimetriei datelor. O valoare negativă indică o coadă spre stânga, o valoare pozitivă indică o coadă spre dreapta, iar o valoare zero sugerează o distribuție simetrică.
+- [**Interval intercuartilic:**](https://ro.wikipedia.org/wiki/Interval_intercuartilic) Diferența dintre cuartila a treia și prima cuartilă (percentila 75 și percentila 25), mai puțin afectată de valorile aberante (outliers) decât deviația standard sau deviația absolută medie.
+- [**Asimetrie:**](https://ro.wikipedia.org/wiki/Asimetrie_statistic%C4%83) O măsurătoare a asimetriei datelor. O valoare negativă indică o coadă spre stânga, o valoare pozitivă indică o coadă spre dreapta, iar o valoare zero sugerează o distribuție simetrică.
 
 #### Percentile
 

@@ -52,23 +52,23 @@ sidebar_position: 6
 
 #### 中心
 
-- [**平均數：**](https://en.wikipedia.org/wiki/Arithmetic_mean) 資料的算術平均數（簡單平均值）。
-- [**中位數：**](https://en.wikipedia.org/wiki/Median) 資料的「中間」值，或 50% 百分位數。
-- [**眾數：**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) 資料中最常見的值。
-- [**幾何平均：**](https://en.wikipedia.org/wiki/Geometric_mean) 使用值的乘積而非總和計算出的中心測量值。適用於測量*指數成長率*（如週期之間的百分比變化）。
-- [**調和平均：**](https://en.wikipedia.org/wiki/Harmonic_mean) 使用值倒數的總和計算出的中心測量值。適用於測量*速率或速度*。
-- [**平方平均：**](https://en.wikipedia.org/wiki/Root_mean_square) 使用值的平方計算出的中心測量值。適用於測量包含*正值與負值*的資料，例如週期性運動。
+- [**平均數：**](https://zh.wikipedia.org/wiki/%E7%AE%97%E6%9C%AF%E5%B9%B3%E5%9D%87%E6%95%B0) 資料的算術平均數（簡單平均值）。
+- [**中位數：**](https://zh.wikipedia.org/wiki/%E4%B8%AD%E4%BD%8D%E6%95%B8) 資料的「中間」值，或 50% 百分位數。
+- [**眾數：**](<https://zh.wikipedia.org/wiki/%E4%BC%97%E6%95%B0_(%E6%95%B0%E5%AD%A6)>) 資料中最常見的值。
+- [**幾何平均：**](https://zh.wikipedia.org/wiki/%E5%87%A0%E4%BD%95%E5%B9%B3%E5%9D%87%E6%95%B0) 使用值的乘積而非總和計算出的中心測量值。適用於測量*指數成長率*（如週期之間的百分比變化）。
+- [**調和平均：**](https://zh.wikipedia.org/wiki/%E8%B0%83%E5%92%8C%E5%B9%B3%E5%9D%87%E6%95%B0) 使用值倒數的總和計算出的中心測量值。適用於測量*速率或速度*。
+- [**平方平均：**](https://zh.wikipedia.org/wiki/%E5%B9%B3%E6%96%B9%E5%B9%B3%E5%9D%87%E6%95%B0) 使用值的平方計算出的中心測量值。適用於測量包含*正值與負值*的資料，例如週期性運動。
 
 #### 分佈
 
-- [**標準差：**](https://en.wikipedia.org/wiki/Standard_deviation) 最常見的變異統計測量值，較低的值表示較小的變異。68% 的資料落於平均數的一個標準差範圍內。
-- [**平均絕對偏差：**](https://en.wikipedia.org/wiki/Average_absolute_deviation) 每個值與平均數之間的平均距離。這是標準差的替代方案。
-- [**四分位距：**](https://en.wikipedia.org/wiki/Interquartile_range) 第三與第一四分位數（第 75 百分位數與第 25 百分位數）之間的差值，比標準差或平均絕對偏差受離群值的影響更小。
-- [**偏度：**](https://en.wikipedia.org/wiki/Skewness) 資料不對稱偏斜的測量值。負值表示左側長尾，正值表示右側長尾，零值表示對稱分佈。
+- [**標準差：**](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E5%81%8F%E5%B7%AE) 最常見的變異統計測量值，較低的值表示較小的變異。68% 的資料落於平均數的一個標準差範圍內。
+- [**平均絕對偏差：**](https://zh.wikipedia.org/wiki/%E5%B9%B3%E5%9D%87%E5%B7%AE) 每個值與平均數之間的平均距離。這是標準差的替代方案。
+- [**四分位距：**](https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%88%86%E4%BD%8D%E8%B7%9D) 第三與第一四分位數（第 75 百分位數與第 25 百分位數）之間的差值，比標準差或平均絕對偏差受離群值的影響更小。
+- [**偏度：**](https://zh.wikipedia.org/wiki/%E5%81%8F%E5%BA%A6) 資料不對稱偏斜的測量值。負值表示左側長尾，正值表示右側長尾，零值表示對稱分佈。
 
 #### 百分位數
 
-[百分位數](https://en.wikipedia.org/wiki/Percentile)測量低於給定百分比其他值的數值。例如，10% 的值低於第 10 百分位數。以下百分位數也被稱為：
+[百分位數](https://zh.wikipedia.org/wiki/%E7%99%BE%E5%88%86%E4%BD%8D%E6%95%B0)測量低於給定百分比其他值的數值。例如，10% 的值低於第 10 百分位數。以下百分位數也被稱為：
 
 - 第 25 百分位數 = 第一四分位數 (Q1)
 - 第 50 百分位數 = 第二四分位數 (Q2) = 中位數

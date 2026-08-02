@@ -39,5 +39,5 @@
 ערכים ניתנים לאינטגרציה או גזירה באופן אוטומטי על ידי AdvantageScope. הפרש הזמן (Delta time) נמדד תמיד בשניות. יש ללחוץ על שלוש הנקודות ליד כותרת הציר ולאחר מכן לבחור `גזירה` או `אינטגרציה`.
 
 :::info
-נגזרות מחושבות תוך שימוש ב[הפרש סופי (finite difference)](https://en.wikipedia.org/wiki/Finite_difference) של דגימות סמוכות. אינטגרלים מחושבים תוך שימוש ב[אינטגרציה טרפזית (trapezoidal integration)](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+נגזרות מחושבות תוך שימוש ב[הפרש סופי (finite difference)](https://en.wikipedia.org/wiki/Finite_difference) של דגימות סמוכות. אינטגרלים מחושבים תוך שימוש ב[אינטגרציה טרפזית (trapezoidal integration)](https://he.wikipedia.org/wiki/%D7%A9%D7%99%D7%98%D7%AA_%D7%94%D7%98%D7%A8%D7%A4%D7%96).
 :::

@@ -52,23 +52,23 @@ Histogram, belirli aralık dahilinde her bir aralığa düşen örneklerin sayı
 
 #### Merkez
 
-- [**Mean:**](https://en.wikipedia.org/wiki/Arithmetic_mean) Verilerin aritmetik ortalaması (basit ortalama).
-- [**Median:**](https://en.wikipedia.org/wiki/Median) Verilerin "orta" değeri veya %50 yüzdelik dilimi.
-- [**Mode:**](<https://en.wikipedia.org/wiki/Mode_(statistics)>)>) Verilerde en sık rastlanan değer.
-- [**Geometrik Ortalama:**](https://en.wikipedia.org/wiki/Geometric_mean) Toplam yerine değerlerin çarpımı kullanılarak hesaplanan bir merkez ölçümü. Üstel büyüme oranlarını (döngüler arasındaki yüzde değişimi gibi) ölçerken geçerlidir.
-- [**Harmonik Ortalama:**](https://en.wikipedia.org/wiki/Harmonic_mean) Değerlerin çarpmaya göre terslerinin toplamı kullanılarak hesaplanan bir merkez ölçümü. Oranları veya hızları ölçerken geçerlidir.
-- [**Karesel Ortalama:**](https://en.wikipedia.org/wiki/Root_mean_square) Değerlerin kareleri kullanılarak hesaplanan bir merkez ölçümü. Periyodik hareket gibi hem pozitif hem negatif değerlere sahip verileri ölçerken geçerlidir.
+- [**Mean:**](https://tr.wikipedia.org/wiki/Aritmetik_ortalama) Verilerin aritmetik ortalaması (basit ortalama).
+- [**Median:**](https://tr.wikipedia.org/wiki/Medyan) Verilerin "orta" değeri veya %50 yüzdelik dilimi.
+- [**Mode:**](https://tr.wikipedia.org/wiki/Mod)>) Verilerde en sık rastlanan değer.
+- [**Geometrik Ortalama:**](https://tr.wikipedia.org/wiki/Geometrik_ortalama) Toplam yerine değerlerin çarpımı kullanılarak hesaplanan bir merkez ölçümü. Üstel büyüme oranlarını (döngüler arasındaki yüzde değişimi gibi) ölçerken geçerlidir.
+- [**Harmonik Ortalama:**](https://tr.wikipedia.org/wiki/Harmonik_ortalama) Değerlerin çarpmaya göre terslerinin toplamı kullanılarak hesaplanan bir merkez ölçümü. Oranları veya hızları ölçerken geçerlidir.
+- [**Karesel Ortalama:**](https://tr.wikipedia.org/wiki/Karek%C3%B6k_ortalama) Değerlerin kareleri kullanılarak hesaplanan bir merkez ölçümü. Periyodik hareket gibi hem pozitif hem negatif değerlere sahip verileri ölçerken geçerlidir.
 
 #### Yayılım
 
-- [**Standart Sapma:**](https://en.wikipedia.org/wiki/Standard_deviation) Düşük değerin daha az varyasyonu belirttiği en yaygın istatistiksel varyasyon ölçümü. Verilerin %68'i ortalamanın bir standart sapması içinde kalır.
+- [**Standart Sapma:**](https://tr.wikipedia.org/wiki/Standart_sapma) Düşük değerin daha az varyasyonu belirttiği en yaygın istatistiksel varyasyon ölçümü. Verilerin %68'i ortalamanın bir standart sapması içinde kalır.
 - [**Ortalama Mutlak Sapma:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) Her bir değer ile ortalama arasındaki ortalama mesafe. Bu, standart sapmaya bir alternatiftir.
-- [**Çeyrekler Açıklığı:**](https://en.wikipedia.org/wiki/Interquartile_range) Üçüncü ve birinci çeyrekler (%75 yüzdelik dilim ve %25 yüzdelik dilim) arasındaki fark, aykırı değerlerden standart sapma veya ortalama mutlak sapmaya göre daha az etkilenir.
-- [**Çarpıklık:**](https://en.wikipedia.org/wiki/Skewness) Verilerin asimetrik eğikliğinin bir ölçümü. Negatif değer sola doğru bir kuyruk belirtir, pozitif değer sağa doğru bir kuyruk belirtir ve sıfır değeri simetrik bir dağılımı gösterir.
+- [**Çeyrekler Açıklığı:**](https://tr.wikipedia.org/wiki/%C3%87eyrekler_a%C3%A7%C4%B1kl%C4%B1%C4%9F%C4%B1) Üçüncü ve birinci çeyrekler (%75 yüzdelik dilim ve %25 yüzdelik dilim) arasındaki fark, aykırı değerlerden standart sapma veya ortalama mutlak sapmaya göre daha az etkilenir.
+- [**Çarpıklık:**](https://tr.wikipedia.org/wiki/%C3%87arp%C4%B1kl%C4%B1k) Verilerin asimetrik eğikliğinin bir ölçümü. Negatif değer sola doğru bir kuyruk belirtir, pozitif değer sağa doğru bir kuyruk belirtir ve sıfır değeri simetrik bir dağılımı gösterir.
 
 #### Yüzdelikler
 
-[Yüzdelikler](https://en.wikipedia.org/wiki/Percentile), verilen diğer değerlerin yüzdesinin altında kaldığı değerleri ölçer. Örneğin, değerlerin %10'u 10. yüzdelik dilimin altında kalır. Aşağıdaki yüzdelikler ayrıca şu şekilde bilinir:
+[Yüzdelikler](https://tr.wikipedia.org/wiki/Y%C3%BCzdebirlik), verilen diğer değerlerin yüzdesinin altında kaldığı değerleri ölçer. Örneğin, değerlerin %10'u 10. yüzdelik dilimin altında kalır. Aşağıdaki yüzdelikler ayrıca şu şekilde bilinir:
 
 - 25. Yüzdelik = 1. çeyrek (Q1)
 - 50. Yüzdelik = 2. çeyrek (Q2) = medyan

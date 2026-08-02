@@ -52,23 +52,23 @@ sidebar_position: 6
 
 #### 中心
 
-- [**平均值：**](https://en.wikipedia.org/wiki/Arithmetic_mean) 数据的算术平均数（简单平均值）。
-- [**中位数：**](https://en.wikipedia.org/wiki/Median) 数据的“中间”值，即 50% 百分位数。
-- [**众数：**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) 数据中最常见的值。
-- [**几何平均数：**](https://en.wikipedia.org/wiki/Geometric_mean) 使用数值的乘积而非和计算出的中心测量指标。适用于测量 _指数增长率_（例如循环之间的百分比变化）。
-- [**调和平均数：**](https://en.wikipedia.org/wiki/Harmonic_mean) 使用数值倒数之和计算出的中心测量指标。适用于测量 _变化率或速度_。
-- [**平方平均数：**](https://en.wikipedia.org/wiki/Root_mean_square) 使用数值平方计算出的中心测量指标。适用于测量同时具有 _正值和负值_ 的数据，例如周期性运动。
+- [**平均值：**](https://zh.wikipedia.org/wiki/%E7%AE%97%E6%9C%AF%E5%B9%B3%E5%9D%87%E6%95%B0) 数据的算术平均数（简单平均值）。
+- [**中位数：**](https://zh.wikipedia.org/wiki/%E4%B8%AD%E4%BD%8D%E6%95%B8) 数据的“中间”值，即 50% 百分位数。
+- [**众数：**](<https://zh.wikipedia.org/wiki/%E4%BC%97%E6%95%B0_(%E6%95%B0%E5%AD%A6)>) 数据中最常见的值。
+- [**几何平均数：**](https://zh.wikipedia.org/wiki/%E5%87%A0%E4%BD%95%E5%B9%B3%E5%9D%87%E6%95%B0) 使用数值的乘积而非和计算出的中心测量指标。适用于测量 _指数增长率_（例如循环之间的百分比变化）。
+- [**调和平均数：**](https://zh.wikipedia.org/wiki/%E8%B0%83%E5%92%8C%E5%B9%B3%E5%9D%87%E6%95%B0) 使用数值倒数之和计算出的中心测量指标。适用于测量 _变化率或速度_。
+- [**平方平均数：**](https://zh.wikipedia.org/wiki/%E5%B9%B3%E6%96%B9%E5%B9%B3%E5%9D%87%E6%95%B0) 使用数值平方计算出的中心测量指标。适用于测量同时具有 _正值和负值_ 的数据，例如周期性运动。
 
 #### 分布
 
-- [**标准差：**](https://en.wikipedia.org/wiki/Standard_deviation) 最常见的变异性统计测量指标，数值越小表示变异性越小。68% 的数据落在平均值的一个标准差以内。
-- [**绝对中位差：**](https://en.wikipedia.org/wiki/Average_absolute_deviation) 每个数值与平均值之间的平均距离。这是标准差的另一种替代方案。
-- [**四分位距：**](https://en.wikipedia.org/wiki/Interquartile_range) 第三分位数与第一四分位数（第 75 百分位数和第 25 百分位数）之间的差值，受异常值的影响小于标准差或绝对中位差。
-- [**偏度：**](https://en.wikipedia.org/wiki/Skewness) 数据不对称偏斜度的测量指标。负值表示左侧拖尾，正值表示右侧拖尾，零值表示对称分布。
+- [**标准差：**](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E5%81%8F%E5%B7%AE) 最常见的变异性统计测量指标，数值越小表示变异性越小。68% 的数据落在平均值的一个标准差以内。
+- [**绝对中位差：**](https://zh.wikipedia.org/wiki/%E5%B9%B3%E5%9D%87%E5%B7%AE) 每个数值与平均值之间的平均距离。这是标准差的另一种替代方案。
+- [**四分位距：**](https://zh.wikipedia.org/wiki/%E5%9B%9B%E5%88%86%E4%BD%8D%E8%B7%9D) 第三分位数与第一四分位数（第 75 百分位数和第 25 百分位数）之间的差值，受异常值的影响小于标准差或绝对中位差。
+- [**偏度：**](https://zh.wikipedia.org/wiki/%E5%81%8F%E5%BA%A6) 数据不对称偏斜度的测量指标。负值表示左侧拖尾，正值表示右侧拖尾，零值表示对称分布。
 
 #### 百分位数
 
-[百分位数](https://en.wikipedia.org/wiki/Percentile) 测量给定百分比的其他数值落在其下方的数值。例如，10% 的数值落在第 10 百分位数下方。以下百分位数也称为：
+[百分位数](https://zh.wikipedia.org/wiki/%E7%99%BE%E5%88%86%E4%BD%8D%E6%95%B0) 测量给定百分比的其他数值落在其下方的数值。例如，10% 的数值落在第 10 百分位数下方。以下百分位数也称为：
 
 - 第 25 百分位数 = 第 1 四分位数 (Q1)
 - 第 50 百分位数 = 第 2 四分位数 (Q2) = 中位数

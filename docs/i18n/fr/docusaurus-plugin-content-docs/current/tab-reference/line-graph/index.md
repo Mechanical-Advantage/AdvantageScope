@@ -39,5 +39,5 @@ Par défaut, chaque axe ajuste sa plage en fonction des données visibles. Pour 
 Les valeurs peuvent être automatiquement intégrées ou différenciées par AdvantageScope. Le delta de temps est toujours mesuré en secondes. Cliquez sur les trois points près du titre de l'axe puis sélectionnez `Différencier` ou `Intégrer`.
 
 :::info
-Les dérivées sont calculées en utilisant la [différence finie](https://en.wikipedia.org/wiki/Finite_difference) d'échantillons adjacents. Les intégrales sont calculées en utilisant l'[intégration trapézoïdale](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+Les dérivées sont calculées en utilisant la [différence finie](https://fr.wikipedia.org/wiki/Diff%C3%A9rence_finie) d'échantillons adjacents. Les intégrales sont calculées en utilisant l'[intégration trapézoïdale](https://fr.wikipedia.org/wiki/M%C3%A9thode_des_trap%C3%A8zes).
 :::

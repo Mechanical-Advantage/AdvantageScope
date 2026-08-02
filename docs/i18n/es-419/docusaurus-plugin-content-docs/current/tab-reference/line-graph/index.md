@@ -41,5 +41,5 @@ Por defecto, cada eje ajusta su rango en función de los datos visibles. Para de
 Los valores se pueden integrar o diferenciar automáticamente en AdvantageScope. El tiempo delta siempre se mide en segundos. Haz clic en los tres puntos cerca del título del eje y luego selecciona `Diferenciar` o `Integrar`.
 
 :::info
-Las derivadas se calculan usando la [diferencia finita](https://en.wikipedia.org/wiki/Finite_difference) de muestras adyacentes. Las integrales se calculan usando la [integración trapezoidal](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+Las derivadas se calculan usando la [diferencia finita](https://es.wikipedia.org/wiki/Diferencia_finita) de muestras adyacentes. Las integrales se calculan usando la [integración trapezoidal](https://es.wikipedia.org/wiki/Regla_del_trapecio).
 :::

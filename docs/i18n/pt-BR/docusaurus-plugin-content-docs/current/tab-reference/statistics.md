@@ -52,23 +52,23 @@ A tabela de medidas estatísticas mostra os valores calculados de cada medida pa
 
 #### Centro
 
-- [**Média:**](https://en.wikipedia.org/wiki/Arithmetic_mean) A média aritmética (média simples) dos dados.
-- [**Mediana:**](https://en.wikipedia.org/wiki/Median) O valor "central" dos dados, ou o percentil 50%.
-- [**Moda:**](<https://en.wikipedia.org/wiki/Mode_(statistics)>) O valor mais comum nos dados.
-- [**Média geométrica:**](https://en.wikipedia.org/wiki/Geometric_mean) Uma medida de centro calculada usando o produto dos valores em vez da soma. Aplicável ao medir _taxas de crescimento exponencial_ (como porcentagem de alteração entre ciclos).
-- [**Média harmônica:**](https://en.wikipedia.org/wiki/Harmonic_mean) Uma medida de centro calculada usando a soma dos inversos dos valores. Aplicável ao medir _taxas ou velocidades_.
-- [**Média quadrática:**](https://en.wikipedia.org/wiki/Root_mean_square) Uma medida de centro calculada usando os quadrados dos valores. Aplicável ao medir dados com _valores positivos e negativos_, como movimento periódico.
+- [**Média:**](https://pt.wikipedia.org/wiki/M%C3%A9dia_aritm%C3%A9tica) A média aritmética (média simples) dos dados.
+- [**Mediana:**](<https://pt.wikipedia.org/wiki/Mediana_(estat%C3%ADstica)>) O valor "central" dos dados, ou o percentil 50%.
+- [**Moda:**](<https://pt.wikipedia.org/wiki/Moda_(estat%C3%ADstica)>) O valor mais comum nos dados.
+- [**Média geométrica:**](https://pt.wikipedia.org/wiki/M%C3%A9dia_geom%C3%A9trica) Uma medida de centro calculada usando o produto dos valores em vez da soma. Aplicável ao medir _taxas de crescimento exponencial_ (como porcentagem de alteração entre ciclos).
+- [**Média harmônica:**](https://pt.wikipedia.org/wiki/M%C3%A9dia_harm%C3%B4nica) Uma medida de centro calculada usando a soma dos inversos dos valores. Aplicável ao medir _taxas ou velocidades_.
+- [**Média quadrática:**](https://pt.wikipedia.org/wiki/Valor_eficaz) Uma medida de centro calculada usando os quadrados dos valores. Aplicável ao medir dados com _valores positivos e negativos_, como movimento periódico.
 
 #### Dispersão
 
-- [**Desvio padrão:**](https://en.wikipedia.org/wiki/Standard_deviation) A medida estatística de variação mais comum, onde um valor menor indica menor variação. 68% dos dados caem dentro de um desvio padrão da média.
+- [**Desvio padrão:**](https://pt.wikipedia.org/wiki/Desvio_padr%C3%A3o) A medida estatística de variação mais comum, onde um valor menor indica menor variação. 68% dos dados caem dentro de um desvio padrão da média.
 - [**Desvio absoluto mediano:**](https://en.wikipedia.org/wiki/Average_absolute_deviation) A distância média entre cada valor e a média. Esta é uma alternativa ao desvio padrão.
-- [**Intervalo interquartil:**](https://en.wikipedia.org/wiki/Interquartile_range) A diferença entre o terceiro e o primeiro quartil (percentil 75 e percentil 25), menos afetado por valores discrepantes (outliers) do que o desvio padrão ou o desvio absoluto mediano.
-- [**Assimetria:**](https://en.wikipedia.org/wiki/Skewness) Uma medida da assimetria dos dados. Um valor negativo indica uma cauda para a esquerda, um valor positivo indica uma cauda para a direita e um valor zero sugere uma distribuição simétrica.
+- [**Intervalo interquartil:**](https://pt.wikipedia.org/wiki/Amplitude_interquartil) A diferença entre o terceiro e o primeiro quartil (percentil 75 e percentil 25), menos afetado por valores discrepantes (outliers) do que o desvio padrão ou o desvio absoluto mediano.
+- [**Assimetria:**](<https://pt.wikipedia.org/wiki/Assimetria_(estat%C3%ADstica)>) Uma medida da assimetria dos dados. Um valor negativo indica uma cauda para a esquerda, um valor positivo indica uma cauda para a direita e um valor zero sugere uma distribuição simétrica.
 
 #### Percentis
 
-Os [percentis](https://en.wikipedia.org/wiki/Percentile) medem os valores abaixo dos quais cai a porcentagem fornecida de outros valores. Por exemplo, 10% dos valores caem abaixo do percentil 10. Os seguintes percentis também são conhecidos como:
+Os [percentis](https://pt.wikipedia.org/wiki/Percentil) medem os valores abaixo dos quais cai a porcentagem fornecida de outros valores. Por exemplo, 10% dos valores caem abaixo do percentil 10. Os seguintes percentis também são conhecidos como:
 
 - Percentil 25 = 1º quartil (Q1)
 - Percentil 50 = 2º quartil (Q2) = mediana

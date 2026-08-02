@@ -39,5 +39,5 @@ Por padrão, cada eixo ajusta seu intervalo com base nos dados visíveis. Para d
 Valores podem ser integrados ou diferenciados automaticamente pelo AdvantageScope. O tempo delta é sempre medido em segundos. Clique nos três pontos perto do título do eixo e selecione `Diferenciar` ou `Integrar`.
 
 :::info
-As derivadas são calculadas usando a [diferença finita](https://en.wikipedia.org/wiki/Finite_difference) de amostras adjacentes. As integrais são calculadas usando [integração trapezoidal](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+As derivadas são calculadas usando a [diferença finita](https://pt.wikipedia.org/wiki/Operador_de_diferen%C3%A7a) de amostras adjacentes. As integrais são calculadas usando [integração trapezoidal](https://en.wikipedia.org/wiki/Trapezoidal_rule).
 :::

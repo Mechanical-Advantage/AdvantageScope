@@ -39,5 +39,5 @@
 值可以由 AdvantageScope 自动积分或求导。Delta 时间始终以秒为单位测量。点击轴标题附近的三个点，然后选择 `求导` 或 `积分`。
 
 :::info
-导数是使用相邻采样的 [有限差分](https://en.wikipedia.org/wiki/Finite_difference) 计算出来的。积分是使用 [梯形积分](https://en.wikipedia.org/wiki/Trapezoidal_rule) 计算出来的。
+导数是使用相邻采样的 [有限差分](https://zh.wikipedia.org/wiki/%E5%B7%AE%E5%88%86) 计算出来的。积分是使用 [梯形积分](https://zh.wikipedia.org/wiki/%E6%A2%AF%E5%BD%A2%E5%85%AC%E5%BC%8F) 计算出来的。
 :::

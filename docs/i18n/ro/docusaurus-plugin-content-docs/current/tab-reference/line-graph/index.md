@@ -39,5 +39,5 @@ Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dați cli
 Valorile pot fi integrate sau diferențiate automat de AdvantageScope. Timpul delta este măsurat întotdeauna în secunde. Dați clic pe cele trei puncte de lângă titlul axei și apoi selectați `Diferențiază` sau `Integrează`.
 
 :::info
-Derivatele sunt calculate folosind [diferența finită](https://en.wikipedia.org/wiki/Finite_difference) a eșantioanelor adiacente. Integralele sunt calculate folosind [integrarea trapezoidală](https://en.wikipedia.org/wiki/Trapezoidal_rule).
+Derivatele sunt calculate folosind [diferența finită](https://ro.wikipedia.org/wiki/Diferen%C8%9B%C4%83_finit%C4%83) a eșantioanelor adiacente. Integralele sunt calculate folosind [integrarea trapezoidală](https://en.wikipedia.org/wiki/Trapezoidal_rule).
 :::

@@ -39,5 +39,5 @@ Varsayılan olarak her eksen aralığını görünür verilere göre ayarlar. Ot
 Değerler AdvantageScope tarafından otomatik olarak integrali veya türevi alınabilir. Delta zamanı her zaman saniye cinsinden ölçülür. Eksen başlığının yanındaki üç noktaya tıklayın ve ardından `Türev Al` veya `İntegral Al` seçeneğini seçin.
 
 :::info
-Türevler bitişik örneklerin [sonlu farkı](https://en.wikipedia.org/wiki/Finite_difference) kullanılarak hesaplanır. İntegraller [yamuk integrali](https://en.wikipedia.org/wiki/Trapezoidal_rule) kullanılarak hesaplanır.
+Türevler bitişik örneklerin [sonlu farkı](https://tr.wikipedia.org/wiki/Sonlu_fark) kullanılarak hesaplanır. İntegraller [yamuk integrali](https://en.wikipedia.org/wiki/Trapezoidal_rule) kullanılarak hesaplanır.
 :::

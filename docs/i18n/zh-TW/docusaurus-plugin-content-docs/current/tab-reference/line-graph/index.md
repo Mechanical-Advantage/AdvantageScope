@@ -39,5 +39,5 @@
 AdvantageScope 可以自動對數值進行積分或微分。時間差總是以秒為單位測量。點擊軸標題附近的三個點，然後選擇 `微分` 或 `積分`。
 
 :::info
-導數使用相鄰取樣的[有限差分](https://en.wikipedia.org/wiki/Finite_difference)計算。積分使用[梯形積分](https://en.wikipedia.org/wiki/Trapezoidal_rule)計算。
+導數使用相鄰取樣的[有限差分](https://zh.wikipedia.org/wiki/%E5%B7%AE%E5%88%86)計算。積分使用[梯形積分](https://zh.wikipedia.org/wiki/%E6%A2%AF%E5%BD%A2%E5%85%AC%E5%BC%8F)計算。
 :::
