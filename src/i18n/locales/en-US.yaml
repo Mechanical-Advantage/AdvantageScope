@@ -943,6 +943,7 @@ units:
     temperature: "Temperature"
     voltage: "Voltage"
     current: "Current"
+    power: "Power"
     energy: "Energy"
     none: "None" # Dropdown choice name for no unit type
 
@@ -1007,6 +1008,10 @@ units:
     millivolts: "Millivolts"
     amps: "Amps"
     milliamps: "Milliamps"
+    watts: "Watts"
+    milliwatts: "Milliwatts"
+    kilowatts: "Kilowatts"
+    horsepower: "Horsepower"
     joules: "Joules"
     wattHours: "Watt Hours"
     calories: "Calories"
@@ -1074,6 +1079,10 @@ units:
     millivolts: "{{value}} mV"
     amps: "{{value}} A"
     milliamps: "{{value}} mA"
+    watts: "{{value}} W"
+    milliwatts: "{{value}} mW"
+    kilowatts: "{{value}} kW"
+    horsepower: "{{value}} hp"
     joules: "{{value}} J"
     wattHours: "{{value}} Wh"
     calories: "{{value}} cal"
@@ -1166,6 +1175,14 @@ units:
     ampsSeconds: "{{value}} C" # Coulombs
     milliampsPerSecond: "{{value}} mA/s"
     milliampsSeconds: "{{value}} mC" # Millicoulombs
+    wattsPerSecond: "{{value}} W/s"
+    wattsSeconds: "{{value}} J" # Joules
+    milliwattsPerSecond: "{{value}} mW/s"
+    milliwattsSeconds: "{{value}} mJ" # Millijoules
+    kilowattsPerSecond: "{{value}} kW/s"
+    kilowattsSeconds: "{{value}} kJ" # Kilojoules
+    horsepowerPerSecond: "{{value}} hp/s"
+    horsepowerSeconds: "{{value}} hp·s"
     joulesPerSecond: "{{value}} W" # Watts
     joulesSeconds: "{{value}} J·s"
     wattHoursPerSecond: "{{value}} Wh/s"
