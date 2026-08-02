@@ -1082,23 +1082,24 @@ export default class SourceList {
                 let moduleVelocities = grabModuleVelocities(window.log, state.logKey, time, undefined, this.UUID);
                 moduleVelocities.forEach((state) => {
                   poseStrings.push(
-                    "\u03bd: " +
-                      formatNumber(state.speed, 2) +
-                      "m/s, \u03b8: " +
-                      formatNumber(Units.convert(state.angle, "radians", "degrees"), 2) +
-                      "\u00b0"
+                    t("sourceList.previews.moduleVelocities", {
+                      speed: t("units.values.metersPerSecond", { value: formatNumber(state.speed, 2) }),
+                      angle: t("units.values.degrees", {
+                        value: formatNumber(Units.convert(state.angle, "radians", "degrees"), 2)
+                      })
+                    })
                   );
                 });
               } else if (typeConfig?.previewType === "RobotVelocities") {
                 let robotVelocities = grabRobotVelocities(window.log, state.logKey, time, this.UUID);
                 poseStrings.push(
-                  "\u03bdx: " +
-                    formatNumber(robotVelocities.vx, 2) +
-                    "m/s, \u03bdy: " +
-                    formatNumber(robotVelocities.vy, 2) +
-                    "m/s, \u03a9: " +
-                    formatNumber(Units.convert(robotVelocities.omega, "radians", "degrees"), 2) +
-                    "\u00b0/s"
+                  t("sourceList.previews.robotVelocities", {
+                    vx: t("units.values.metersPerSecond", { value: formatNumber(robotVelocities.vx, 2) }),
+                    vy: t("units.values.metersPerSecond", { value: formatNumber(robotVelocities.vy, 2) }),
+                    omega: t("units.values.degreesPerSecond", {
+                      value: formatNumber(Units.convert(robotVelocities.omega, "radians", "degrees"), 2)
+                    })
+                  })
                 );
               } else {
                 let poses = grabPosesAuto(
@@ -1112,77 +1113,71 @@ export default class SourceList {
                 poseStrings = poses.map((annotatedPose) => {
                   switch (typeConfig?.previewType) {
                     case "Rotation2d": {
-                      return (
-                        formatNumber(
-                          Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
-                          2
-                        ) + "\u00b0"
-                      );
+                      return t("sourceList.previews.rotation2d", {
+                        rotation: t("units.values.degrees", {
+                          value: formatNumber(
+                            Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
+                            2
+                          )
+                        })
+                      });
                     }
                     case "Translation2d": {
-                      return (
-                        "X: " +
-                        formatNumber(annotatedPose.pose.translation[0], 3) +
-                        "m, Y: " +
-                        formatNumber(annotatedPose.pose.translation[1], 3) +
-                        "m"
-                      );
+                      return t("sourceList.previews.translation2d", {
+                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
+                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) })
+                      });
                     }
                     case "Pose2d":
                     case "Transform2d": {
-                      return (
-                        "X: " +
-                        formatNumber(annotatedPose.pose.translation[0], 3) +
-                        "m, Y: " +
-                        formatNumber(annotatedPose.pose.translation[1], 3) +
-                        "m, \u03b8: " +
-                        formatNumber(
-                          Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
-                          2
-                        ) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.pose2d", {
+                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
+                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) }),
+                        rotation: t("units.values.degrees", {
+                          value: formatNumber(
+                            Units.convert(rotation3dTo2d(annotatedPose.pose.rotation), "radians", "degrees"),
+                            2
+                          )
+                        })
+                      });
                     }
                     case "Rotation3d": {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                      return (
-                        "Roll: " +
-                        formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2) +
-                        "\u00b0, Pitch: " +
-                        formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2) +
-                        "\u00b0, Yaw: " +
-                        formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.rotation3d", {
+                        roll: t("units.values.degrees", {
+                          value: formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2)
+                        }),
+                        pitch: t("units.values.degrees", {
+                          value: formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2)
+                        }),
+                        yaw: t("units.values.degrees", {
+                          value: formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2)
+                        })
+                      });
                     }
                     case "Translation3d": {
-                      return (
-                        "X: " +
-                        formatNumber(annotatedPose.pose.translation[0], 3) +
-                        "m, Y: " +
-                        formatNumber(annotatedPose.pose.translation[1], 3) +
-                        "m, Z: " +
-                        formatNumber(annotatedPose.pose.translation[2], 3) +
-                        "m"
-                      );
+                      return t("sourceList.previews.translation3d", {
+                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
+                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) }),
+                        z: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[2], 3) })
+                      });
                     }
                     case "Pose3d": {
                       let rpy = rotation3dToRPY(annotatedPose.pose.rotation);
-                      return (
-                        "X: " +
-                        formatNumber(annotatedPose.pose.translation[0], 3) +
-                        "m, Y: " +
-                        formatNumber(annotatedPose.pose.translation[1], 3) +
-                        "m, Z: " +
-                        formatNumber(annotatedPose.pose.translation[2], 3) +
-                        "m, Roll: " +
-                        formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2) +
-                        "\u00b0, Pitch: " +
-                        formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2) +
-                        "\u00b0, Yaw: " +
-                        formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2) +
-                        "\u00b0"
-                      );
+                      return t("sourceList.previews.pose3d", {
+                        x: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[0], 3) }),
+                        y: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[1], 3) }),
+                        z: t("units.values.meters", { value: formatNumber(annotatedPose.pose.translation[2], 3) }),
+                        roll: t("units.values.degrees", {
+                          value: formatNumber(Units.convert(rpy[0], "radians", "degrees"), 2)
+                        }),
+                        pitch: t("units.values.degrees", {
+                          value: formatNumber(Units.convert(rpy[1], "radians", "degrees"), 2)
+                        }),
+                        yaw: t("units.values.degrees", {
+                          value: formatNumber(Units.convert(rpy[2], "radians", "degrees"), 2)
+                        })
+                      });
                     }
                     default: {
                       return "";

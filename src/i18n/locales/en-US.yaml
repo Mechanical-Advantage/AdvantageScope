@@ -248,6 +248,15 @@ sourceList:
   hideField: "Hide field" # Tooltip to hide a field
   showField: "Show field" # Tooltip to show a field
   typeName: "{{name}}:" # Template for field type name label
+  previews:
+    moduleVelocities: "ν: {{speed}}, θ: {{angle}}" # Preview template for swerve module velocities
+    robotVelocities: "νx: {{vx}}, νy: {{vy}}, Ω: {{omega}}" # Preview template for robot velocities
+    rotation2d: "{{rotation}}" # Preview template for 2D rotation
+    translation2d: "X: {{x}}, Y: {{y}}" # Preview template for 2D translation
+    pose2d: "X: {{x}}, Y: {{y}}, θ: {{rotation}}" # Preview template for 2D pose/transform
+    rotation3d: "Roll: {{roll}}, Pitch: {{pitch}}, Yaw: {{yaw}}" # Preview template for 3D rotation
+    translation3d: "X: {{x}}, Y: {{y}}, Z: {{z}}" # Preview template for 3D translation
+    pose3d: "X: {{x}}, Y: {{y}}, Z: {{z}}, Roll: {{roll}}, Pitch: {{pitch}}, Yaw: {{yaw}}" # Preview template for 3D pose
   optionValues:
     # Neon colors
     "#00ff00": "Green" # Green neon color option
