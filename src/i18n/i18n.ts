@@ -15,6 +15,7 @@ import heTranslations from "./locales/he.yaml";
 import kkTranslations from "./locales/kk.yaml";
 import ptBRTranslations from "./locales/pt-BR.yaml";
 import roTranslations from "./locales/ro.yaml";
+import ruTranslations from "./locales/ru.yaml";
 import trTranslations from "./locales/tr.yaml";
 import zhCNTranslations from "./locales/zh-CN.yaml";
 
@@ -34,6 +35,7 @@ export function setupI18n(lang: string): TFunction {
       ro: { translation: roTranslations },
       he: { translation: heTranslations },
       kk: { translation: kkTranslations },
+      ru: { translation: ruTranslations },
       ar: { translation: arTranslation },
       "zh-CN": { translation: zhCNTranslations }
     },
