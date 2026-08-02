@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ 机构
 
-机构选项卡显示由一个或多个 [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) 对象创建的铰接机构。
+机构选项卡显示由一个或多个 [Mechanism2d](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 对象创建的铰接机构。
 
 <img src="/img/tab-reference/mechanism-1.png" alt="机构选项卡概述" />
 

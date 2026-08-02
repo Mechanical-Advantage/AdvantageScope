@@ -10,7 +10,7 @@ AdvantageScope prend en charge la publication de données NetworkTables stockée
 - L'imitation de données à partir d'un coprocesseur sur un vrai robot.
 - Le débogage d'applications de tableau de bord de pilotage à l'aide de données de match réalistes.
 
-Cette fonctionnalité nécessite un fichier journal avec une capture complète des données NetworkTables, qui peut être généré à l'aide de l'[enregistreur de données intégré](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) de WPILib. Notez qu'AdvantageKit ne prend pas en charge cette fonctionnalité, car il permet à la place une relecture déterministe plus complète en simulation.
+Cette fonctionnalité nécessite un fichier journal avec une capture complète des données NetworkTables, qui peut être généré à l'aide de l'[enregistreur de données intégré](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib. Notez qu'AdvantageKit ne prend pas en charge cette fonctionnalité, car il permet à la place une relecture déterministe plus complète en simulation.
 
 ## Prise en main
 

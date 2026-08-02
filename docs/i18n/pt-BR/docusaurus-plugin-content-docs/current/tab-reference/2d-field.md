@@ -61,7 +61,7 @@ periodic() {
 ```
 
 :::tip
-A classe [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) da WPILib também pode ser usada para registrar vários conjuntos de dados de pose 2D juntos.
+A classe [`Field2d`](https://docs.wpilib.org/pt/stable/docs/software/dashboards/glass/field2d-widget.html) da WPILib também pode ser usada para registrar vários conjuntos de dados de pose 2D juntos.
 :::
 
 </TabItem>

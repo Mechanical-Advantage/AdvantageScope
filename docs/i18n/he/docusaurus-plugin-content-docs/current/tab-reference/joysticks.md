@@ -23,10 +23,10 @@ sidebar_position: 8
 
 ## חלונית בקרה
 
-יש לבחור את סוגי הג'וייסטיקים בטבלה בתחתית הכרטיסייה. מזהי הג'וייסטיקים (IDs) נעים מ-0 עד 5, ומתאימים למזהים ב-Driver Station וב-WPILib. מידע נוסף על בקרים ניתן למצוא ב[תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
+יש לבחור את סוגי הג'וייסטיקים בטבלה בתחתית הכרטיסייה. מזהי הג'וייסטיקים (IDs) נעים מ-0 עד 5, ומתאימים למזהים ב-Driver Station וב-WPILib. מידע נוסף על בקרים ניתן למצוא ב[תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/software/basic-programming/joystick.html).
 
 AdvantageScope כוללת סט של ג'וייסטיקים נפוצים, כולל "בקר כללי" (Generic Joystick) עם כל הלחצנים, הצירים וה-POVs בפורמט רשת (כפי שמוצג לעיל). להוספת בקר מותאם אישית, ראו [נכסים מותאמים אישית](/more-features/custom-assets).
 
 :::warning
-**נתוני ג'וייסטיקים אינם זמינים דרך חיבור NetworkTables ב-WPILib התקני.** קובצי יומן של WPILib (עם [רישום בקרים מופעל](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), יומנים של AdvantageKit וסטרימינג ב-AdvantageKit נתמכים.
+**נתוני ג'וייסטיקים אינם זמינים דרך חיבור NetworkTables ב-WPILib התקני.** קובצי יומן של WPILib (עם [רישום בקרים מופעל](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), יומנים של AdvantageKit וסטרימינג ב-AdvantageKit נתמכים.
 :::

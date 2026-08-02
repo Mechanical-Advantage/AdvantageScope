@@ -2,8 +2,8 @@
 
 ## Formatos suportados
 
-- **WPILOG (.wpilog)** - Produzido pelo [logging de dados integrado](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) da WPILib e pelo AdvantageKit. O [URCL](/more-features/urcl) pode ser usado para capturar sinais de controladores de motor da REV em um arquivo WPILOG.
-- **Logs da Driver Station (.dslog e .dsevents)** - Produzidos pela [Driver Station da FRC](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). O AdvantageScope pesquisa automaticamente o arquivo de log correspondente ao abrir qualquer um dos tipos de log.
+- **WPILOG (.wpilog)** - Produzido pelo [logging de dados integrado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib e pelo AdvantageKit. O [URCL](/more-features/urcl) pode ser usado para capturar sinais de controladores de motor da REV em um arquivo WPILOG.
+- **Logs da Driver Station (.dslog e .dsevents)** - Produzidos pela [Driver Station da FRC](https://docs.wpilib.org/pt/stable/docs/software/driverstation/driver-station.html). O AdvantageScope pesquisa automaticamente o arquivo de log correspondente ao abrir qualquer um dos tipos de log.
 - **Hoot (.hoot)** - Produzido pelo [signal logger](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) do Phoenix 6 da CTRE.
 - **REVLOG (.revlog)** - Produzido pelo [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) da REV Robotics.
 - **Road Runner (.log)** - Produzido pela biblioteca [Road Runner](https://github.com/acmerobotics/road-runner) para o FTC.

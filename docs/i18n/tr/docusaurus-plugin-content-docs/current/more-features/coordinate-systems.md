@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # 📐 Koordinat sistemleri
 
-AdvantageScope, [🗺️ 2B saha](/tab-reference/2d-field) ve [👀 3B saha](/tab-reference/3d-field) sekmelerinde birkaç yaygın koordinat sistemi için destek içerir. AdvantageScope tarafından kullanılan eksen ve rotasyon kuralları hakkında daha fazla bilgi için lütfen [WPILib koordinat sistemi dokümantasyonuna](https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) bakın.
+AdvantageScope, [🗺️ 2B saha](/tab-reference/2d-field) ve [👀 3B saha](/tab-reference/3d-field) sekmelerinde birkaç yaygın koordinat sistemi için destek içerir. AdvantageScope tarafından kullanılan eksen ve rotasyon kuralları hakkında daha fazla bilgi için lütfen [WPILib koordinat sistemi dokümantasyonuna](https://docs.wpilib.org/tr/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) bakın.
 
 ### Özelleştirme
 

@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mecanismo
 
-La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más objetos [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
+La pestaña del mecanismo muestra un mecanismo articulado creado con uno o más objetos [Mechanism2d](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
 <img src="/img/tab-reference/mechanism-1.png" alt="Resumen de la pestaña de mecanismo" />
 

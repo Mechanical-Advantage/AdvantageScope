@@ -23,10 +23,10 @@ Yakınlaştırmak için imleci zaman çizelgesinin üzerine getirin ve yukarı v
 
 ## Kontrol paneli
 
-Sekmenin altındaki tabloda joystick türlerini seçin. Joystick ID'leri 0 ile 5 arasında değişir ve Sürücü İstasyonu ile WPILib'deki ID'lerle eşleşir. Joystickler hakkında daha fazla bilgi [WPILib dokümantasyonunda](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html) bulunabilir.
+Sekmenin altındaki tabloda joystick türlerini seçin. Joystick ID'leri 0 ile 5 arasında değişir ve Sürücü İstasyonu ile WPILib'deki ID'lerle eşleşir. Joystickler hakkında daha fazla bilgi [WPILib dokümantasyonunda](https://docs.wpilib.org/tr/stable/docs/software/basic-programming/joystick.html) bulunabilir.
 
 AdvantageScope, bir ızgara formatında tüm düğmeleri, eksenleri ve POV'leri içeren bir "Genel Joystick" (yukarıda görülen) dahil olmak üzere bir dizi yaygın joystick içerir. Özel bir joystick eklemek için [Özel Varlıklar](/more-features/custom-assets) bölümüne bakın.
 
 :::warning
-**Joystick verileri varsayılan WPILib ile NetworkTables bağlantısı üzerinden MEVCUT DEĞİLDİR.** WPILib log dosyaları ([joystick loglaması etkinleştirilmiş](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data) olarak), AdvantageKit logları ve AdvantageKit akışı desteklenmektedir.
+**Joystick verileri varsayılan WPILib ile NetworkTables bağlantısı üzerinden MEVCUT DEĞİLDİR.** WPILib log dosyaları ([joystick loglaması etkinleştirilmiş](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html#logging-joystick-data) olarak), AdvantageKit logları ve AdvantageKit akışı desteklenmektedir.
 :::

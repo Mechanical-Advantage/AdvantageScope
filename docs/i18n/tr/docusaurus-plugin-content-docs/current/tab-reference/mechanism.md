@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mekanizma
 
-Mekanizma sekmesi, bir veya daha fazla [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) nesnesi ile oluşturulmuş eklemli bir mekanizmayı görüntüler.
+Mekanizma sekmesi, bir veya daha fazla [Mechanism2d](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) nesnesi ile oluşturulmuş eklemli bir mekanizmayı görüntüler.
 
 <img src="/img/tab-reference/mechanism-1.png" alt="Overview of mechanism tab" />
 

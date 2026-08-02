@@ -61,7 +61,7 @@ periodic() {
 ```
 
 :::tip
-La clase [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) de WPILib también se puede utilizar para registrar varios conjuntos de datos de pose 2D juntos.
+La clase [`Field2d`](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/field2d-widget.html) de WPILib también se puede utilizar para registrar varios conjuntos de datos de pose 2D juntos.
 :::
 
 </TabItem>
@@ -101,7 +101,7 @@ Los datos de los mecanismos se pueden visualizar utilizando mecanismos 2D o comp
 
 ### Mecanismos 2D {#2d-mechanisms}
 
-Para visualizar los datos del mecanismo registrados utilizando un [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), agrega el campo del mecanismo a un objeto de robot o fantasma existente. El mecanismo se proyecta en el plano XZ o YZ del robot utilizando cuadros simples, como se muestra a continuación. Haz clic en el icono de engranaje o haz clic derecho en el nombre del campo para cambiar entre los planos XZ e YZ. El origen del robot está centrado en el borde inferior del mecanismo.
+Para visualizar los datos del mecanismo registrados utilizando un [`Mechanism2d`](https://docs.wpilib.org/es/stable/docs/software/dashboards/glass/mech2d-widget.html), agrega el campo del mecanismo a un objeto de robot o fantasma existente. El mecanismo se proyecta en el plano XZ o YZ del robot utilizando cuadros simples, como se muestra a continuación. Haz clic en el icono de engranaje o haz clic derecho en el nombre del campo para cambiar entre los planos XZ e YZ. El origen del robot está centrado en el borde inferior del mecanismo.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mecanismo 2D" />
 

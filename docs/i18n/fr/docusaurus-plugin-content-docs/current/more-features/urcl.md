@@ -15,11 +15,11 @@ L'enrégistreur non officiel compatible REV (_Unofficial_ REV-Compatible Logger 
 
 URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) est une bibliothèque de journalisation disponible pour Java, C++ et Python qui enregistre automatiquement les données du Spark Max et du Spark Flex. Cela permet le tracé en direct et la journalisation de tous les appareils de manière similaire à la [fonctionnalité de tracé Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) et au [signal logger Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) de CTRE.
 
-Après la configuration, les trames CAN périodiques de tous les appareils Spark Max et Spark Flex sont publiées sur NetworkTables ou DataLog. Lors de l'utilisation de NetworkTables, le [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) de WPILib peut être utilisé pour capturer les données dans un fichier journal. Ces trames sont visualisables dans AdvantageScope (voir [Gestion des fichiers journaux](/overview/log-files) et [Connexion à des sources en direct](/overview/live-sources)).
+Après la configuration, les trames CAN périodiques de tous les appareils Spark Max et Spark Flex sont publiées sur NetworkTables ou DataLog. Lors de l'utilisation de NetworkTables, le [DataLogManager](https://docs.wpilib.org/fr/stable/docs/software/telemetry/datalog.html) de WPILib peut être utilisé pour capturer les données dans un fichier journal. Ces trames sont visualisables dans AdvantageScope (voir [Gestion des fichiers journaux](/overview/log-files) et [Connexion à des sources en direct](/overview/live-sources)).
 
 - **Tous les signaux** sont capturés automatiquement, avec **aucune configuration manuelle pour les nouveaux appareils**.
 - **Chaque trame est capturée**, même lorsque la période de trame d'état est plus rapide que le cycle de boucle du robot.
-- Les trames sont enregistrées avec des **horodatages basés sur l'heure de réception CAN RX**, ce qui permet une caractérisation de l'accélération plus précise avec [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) par rapport à la journalisation traditionnelle dans le code utilisateur (voir « Utilisation de SysId » ci-dessous).
+- Les trames sont enregistrées avec des **horodatages basés sur l'heure de réception CAN RX**, ce qui permet une caractérisation de l'accélération plus précise avec [SysId](https://docs.wpilib.org/fr/stable/docs/software/pathplanning/system-identification/introduction.html) par rapport à la journalisation traditionnelle dans le code utilisateur (voir « Utilisation de SysId » ci-dessous).
 - La journalisation est **hautement efficace**; les opérations sont exécutées sur des threads séparés pour moins de 80 µs par cycle périodique de 20 ms, même lors de la journalisation d'un grand nombre d'appareils.
 - **Toutes les fonctions de REVLib ne sont pas affectées.**
 
@@ -29,7 +29,7 @@ Comme cette bibliothèque n'est pas un outil officiel de REV, les demandes d'ass
 
 ## Configuration
 
-Installez la dépendance vendordep URCL en suivant les instructions d'installation des [bibliothèques tierces](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) à l'aide du gestionnaire de dépendances dans VSCode. Alternativement, vous pouvez utiliser l'URL JSON du fournisseur suivante :
+Installez la dépendance vendordep URCL en suivant les instructions d'installation des [bibliothèques tierces](https://docs.wpilib.org/fr/stable/docs/software/vscode-overview/3rd-party-libraries.html) à l'aide du gestionnaire de dépendances dans VSCode. Alternativement, vous pouvez utiliser l'URL JSON du fournisseur suivante :
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

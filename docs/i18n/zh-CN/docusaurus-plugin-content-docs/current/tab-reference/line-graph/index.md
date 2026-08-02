@@ -18,7 +18,7 @@
 
 要开始使用，请将字段拖动到三个部分之一（左轴、右轴或离散字段）。使用 X 按钮删除字段，或通过点击眼睛图标或双击字段名称临时隐藏它。要移除所有字段，请点击轴标题附近的三个点，然后点击 `清除所有字段`。可以在列表中通过点击并拖动来重新排列字段。
 
-可以通过点击彩色图标或右键单击字段名称来自定义每个字段的颜色和线条样式。来自 WPILib [持久警告](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API 的数据可以通过将警告组添加为离散字段来进行可视化。示例可视化如下图所示。
+可以通过点击彩色图标或右键单击字段名称来自定义每个字段的颜色和线条样式。来自 WPILib [持久警告](https://docs.wpilib.org/zh-cn/latest/docs/software/telemetry/persistent-alerts.html) API 的数据可以通过将警告组添加为离散字段来进行可视化。示例可视化如下图所示。
 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="警告可视化" />
 

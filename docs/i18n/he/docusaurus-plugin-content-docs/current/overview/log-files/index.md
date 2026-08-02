@@ -2,8 +2,8 @@
 
 ## פורמטים נתמכים
 
-- **WPILOG (.wpilog)** - מופק על ידי [תיעוד הנתונים המובנה](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib ו-AdvantageKit. ניתן להשתמש ב-[URCL](/more-features/urcl) כדי ללכוד אותות מבקרי המנוע של REV לקובץ WPILOG.
-- **יומנים של Driver Station (.dslog ו-.dsevents)** - מופקים על ידי ה-[FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html). AdvantageScope מחפשת באופן אוטומטי את קובץ היומן התואם בעת פתיחת כל אחד מסוגי היומנים.
+- **WPILOG (.wpilog)** - מופק על ידי [תיעוד הנתונים המובנה](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib ו-AdvantageKit. ניתן להשתמש ב-[URCL](/more-features/urcl) כדי ללכוד אותות מבקרי המנוע של REV לקובץ WPILOG.
+- **יומנים של Driver Station (.dslog ו-.dsevents)** - מופקים על ידי ה-[FRC Driver Station](https://docs.wpilib.org/he/stable/docs/software/driverstation/driver-station.html). AdvantageScope מחפשת באופן אוטומטי את קובץ היומן התואם בעת פתיחת כל אחד מסוגי היומנים.
 - **Hoot (.hoot)** - מופק על ידי [מקליט האותות](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) Phoenix 6 של CTRE.
 - **REVLOG (.revlog)** - מופק על ידי [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) של REV Robotics.
 - **Road Runner (.log)** - מופק על ידי ספריית [Road Runner](https://github.com/acmerobotics/road-runner) עבור FTC.

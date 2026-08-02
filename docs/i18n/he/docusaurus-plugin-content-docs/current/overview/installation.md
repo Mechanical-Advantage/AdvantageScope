@@ -26,9 +26,9 @@ sidebar_position: 1
 
 ## WPILib
 
-### התקנה: [תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
+### התקנה: [תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-מתקין WPILib כולל גרסה עדכנית של AdvantageScope, אך עשוי לפגר אחרי הגרסה החדשה ביותר הזמינה להורדה ישירה. תיעוד להפעלת AdvantageScope מגרסת WPILib של VSCode ניתן למצוא [כאן](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
+מתקין WPILib כולל גרסה עדכנית של AdvantageScope, אך עשוי לפגר אחרי הגרסה החדשה ביותר הזמינה להורדה ישירה. תיעוד להפעלת AdvantageScope מגרסת WPILib של VSCode ניתן למצוא [כאן](https://docs.wpilib.org/he/stable/docs/software/dashboards/advantagescope.html).
 
 ## הפצות לא רשמיות
 

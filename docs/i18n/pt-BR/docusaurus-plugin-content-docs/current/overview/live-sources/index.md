@@ -2,7 +2,7 @@
 
 Todas as visualizações no AdvantageScope foram projetadas para receber dados ao vivo de um robô ou simulador, além de arquivos de log. Esta seção descreve como se conectar a fontes de dados em tempo real. As seguintes fontes de dados ao vivo são suportadas pelo AdvantageScope:
 
-- **NetworkTables:** Este é o protocolo de rede principal da WPILib. Consulte a [documentação da WPILib](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) para mais detalhes.
+- **NetworkTables:** Este é o protocolo de rede principal da WPILib. Consulte a [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/software/networktables/index.html) para mais detalhes.
 - **NetworkTables (AdvantageKit):** Este modo é projetado para uso com código de robô executando o AdvantageKit, que publica na tabela `AdvantageKit` no NetworkTables.
 - **Diagnósticos do Systemcore:** Este modo conecta-se ao servidor NetworkTables integrado usado pelo Systemcore OS, que inclui dados de diagnóstico como o estado do robô e E/S de dispositivos.
 - **Diagnósticos do Phoenix:** Este modo usa HTTP para se conectar a um [servidor de diagnósticos](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) do Phoenix, o que permite a transmissão de dados de dispositivos CAN da CTRE com o [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). Isso é semelhante ao [recurso de plotagem](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) no Phoenix Tuner. Consulte [esta página](/overview/live-sources/phoenix-diagnostics) para mais informações.
@@ -41,7 +41,7 @@ Abra a janela de preferências clicando em `App` > `Mostrar preferências...` (W
 
 ### Endereço do robô
 
-Insira o endereço do robô usando um endereço IP 10.TE.AM.2 conforme descrito na [documentação da WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Ao se conectar ao Systemcore via USB ou pelo ponto de acesso Wi-Fi integrado, clique em `Arquivo` > `Usar endereço USB do Systemcore`/`Usar endereço Wi-Fi do Systemcore` para usar temporariamente o endereço IP estático correto.
+Insira o endereço do robô usando um endereço IP 10.TE.AM.2 conforme descrito na [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Ao se conectar ao Systemcore via USB ou pelo ponto de acesso Wi-Fi integrado, clique em `Arquivo` > `Usar endereço USB do Systemcore`/`Usar endereço Wi-Fi do Systemcore` para usar temporariamente o endereço IP estático correto.
 
 ### Modo ao vivo
 

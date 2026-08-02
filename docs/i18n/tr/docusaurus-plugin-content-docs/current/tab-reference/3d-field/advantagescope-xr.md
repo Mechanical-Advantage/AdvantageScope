@@ -6,7 +6,7 @@ AdvantageScope XR, 👀 [3B saha](/tab-reference/3d-field) görünümünü artı
 
 ## Gereksinimler
 
-- **Ana Bilgisayar:** Windows, macOS veya Linux üzerinde AdvantageScope masaüstü uygulaması (v4.1.0 veya üzeri). Cihazdaki tüm güvenlik duvarları [devre dışı bırakılmalıdır](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Ana Bilgisayar:** Windows, macOS veya Linux üzerinde AdvantageScope masaüstü uygulaması (v4.1.0 veya üzeri). Cihazdaki tüm güvenlik duvarları [devre dışı bırakılmalıdır](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **İstemci:** iOS/iPadOS 16 veya üzerini çalıştıran bir iPhone veya iPad. Herhangi bir uygulama kurulumu gerekmez.
 - **Ağ:** Her iki cihaz da aynı ağa bağlı olmalıdır (Wi-Fi, USB internet paylaşımı vb.). Aşağıdaki gereksinime tabi olarak, bu ağın internete bağlı olması gerekmez.
 - **İnternet:** AdvantageScope XR son zamanlarda kullanılmadıysa, mobil cihazın bir internet bağlantısı olmalıdır (örneğin hücresel veri). Bu gereksinimi ortadan kaldırmak için aşağıdaki [çevrimdışı kullanım](#offline-usage) bölümünü kontrol edin.

@@ -17,7 +17,7 @@ Además de la exportación del registro completo que se describe aquí, la pesta
 :::warning
 **Exportación de datos para SysId**
 
-No recomendamos el uso de esta función para exportar datos de registro **generados en simulación** para su uso en [SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html), ya que SysId requiere datos de marcas de tiempo adicionales incompatibles con las opciones de exportación predeterminadas de AdvantageScope. Ten en cuenta que los datos de registro **generados _fuera_ de la simulación** se pueden exportar para su uso en SysId con una pérdida mínima de datos (aunque la máxima precisión se puede lograr utilizando el registro de datos _original_ directamente en SysId).
+No recomendamos el uso de esta función para exportar datos de registro **generados en simulación** para su uso en [SysId](https://docs.wpilib.org/es/stable/docs/software/advanced-controls/system-identification/introduction.html), ya que SysId requiere datos de marcas de tiempo adicionales incompatibles con las opciones de exportación predeterminadas de AdvantageScope. Ten en cuenta que los datos de registro **generados _fuera_ de la simulación** se pueden exportar para su uso en SysId con una pérdida mínima de datos (aunque la máxima precisión se puede lograr utilizando el registro de datos _original_ directamente en SysId).
 
 _Esta advertencia **no se aplica** a los registros producidos por AdvantageKit, que se pueden exportar sin pérdida de datos seleccionando la opción "AdvantageKit Cycles". Consulta [esta página](https://docs.advantagekit.org/data-flow/sysid-compatibility) para obtener detalles._
 :::

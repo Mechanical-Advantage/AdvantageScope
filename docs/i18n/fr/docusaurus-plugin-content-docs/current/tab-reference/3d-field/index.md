@@ -63,7 +63,7 @@ periodic() {
 ```
 
 :::tip
-La classe [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) de WPILib peut également être utilisée pour enregistrer plusieurs ensembles de données de pose 2D ensemble.
+La classe [`Field2d`](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/field2d-widget.html) de WPILib peut également être utilisée pour enregistrer plusieurs ensembles de données de pose 2D ensemble.
 :::
 
 </TabItem>
@@ -103,7 +103,7 @@ Les données de mécanisme peuvent être visualisées à l'aide de mécanismes 2
 
 ### Mécanismes 2D {#2d-mechanisms}
 
-Pour visualiser des données de mécanisme enregistrées à l'aide d'un [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), ajoutez le champ de mécanisme à un objet robot ou fantôme existant. Le mécanisme est projeté sur le plan XZ ou YZ du robot à l'aide de simples boîtes, comme illustré ci-dessous. Cliquez sur l'icône d'engrenage ou faites un clic droit sur le nom du champ pour basculer entre les plans XZ et YZ. L'origine du robot est centrée sur le bord inférieur du mécanisme.
+Pour visualiser des données de mécanisme enregistrées à l'aide d'un [`Mechanism2d`](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html), ajoutez le champ de mécanisme à un objet robot ou fantôme existant. Le mécanisme est projeté sur le plan XZ ou YZ du robot à l'aide de simples boîtes, comme illustré ci-dessous. Cliquez sur l'icône d'engrenage ou faites un clic droit sur le nom du champ pour basculer entre les plans XZ et YZ. L'origine du robot est centrée sur le bord inférieur du mécanisme.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="Mécanisme 2D" />
 

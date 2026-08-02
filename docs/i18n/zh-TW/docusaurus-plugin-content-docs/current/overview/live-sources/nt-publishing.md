@@ -10,7 +10,7 @@ AdvantageScope 支援將儲存在日誌檔案中的 NetworkTables 資料發布�
 - 在真實機器人上模仿來自協同處理器 (coprocessor) 的資料。
 - 使用真實比賽資料對駕駛員儀表板應用程式進行偵錯。
 
-此功能需要包含 NetworkTables 資料完整擷取的日誌檔案，可以使用 WPILib 的[內建資料記錄器](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html)來產生。請注意，AdvantageKit 不支援此功能，因為它在模擬中啟用了更完整的確定性重播。
+此功能需要包含 NetworkTables 資料完整擷取的日誌檔案，可以使用 WPILib 的[內建資料記錄器](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html)來產生。請注意，AdvantageKit 不支援此功能，因為它在模擬中啟用了更完整的確定性重播。
 
 ## 開始使用
 

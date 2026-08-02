@@ -17,7 +17,7 @@ AdvantageScope כוללת מערכת גמישה לייצוא נתוני יומן
 :::warning
 **ייצוא נתונים עבור SysId**
 
-איננו ממליצים להשתמש בתכונה זו לייצוא נתוני יומן **שנוצרו בסימולציה** לשימוש ב-[SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html), מכיוון ש-SysId דורש נתוני חותמות זמן נוספים שאינם עקביים עם אפשרויות ברירת המחדל לייצוא ב-AdvantageScope. שימו לב כי נתוני יומן **שנוצרו _מחוץ_ לסימולציה** ניתנים לייצוא לשימוש ב-SysId עם אובדן נתונים מזערי (אם כי ניתן להשיג דיוק מרבי על ידי שימוש ביומן הנתונים _המקורי_ ישירות ב-SysId).
+איננו ממליצים להשתמש בתכונה זו לייצוא נתוני יומן **שנוצרו בסימולציה** לשימוש ב-[SysId](https://docs.wpilib.org/he/stable/docs/software/advanced-controls/system-identification/introduction.html), מכיוון ש-SysId דורש נתוני חותמות זמן נוספים שאינם עקביים עם אפשרויות ברירת המחדל לייצוא ב-AdvantageScope. שימו לב כי נתוני יומן **שנוצרו _מחוץ_ לסימולציה** ניתנים לייצוא לשימוש ב-SysId עם אובדן נתונים מזערי (אם כי ניתן להשיג דיוק מרבי על ידי שימוש ביומן הנתונים _המקורי_ ישירות ב-SysId).
 
 _אזהרה זו **אינה חלה** על יומנים שנוצרו על ידי AdvantageKit, אותם ניתן לייצא ללא אובדן נתונים על ידי בחירת האפשרות "מחזורי AdvantageKit". ראו [דף זה](https://docs.advantagekit.org/data-flow/sysid-compatibility) לפרטים._
 :::

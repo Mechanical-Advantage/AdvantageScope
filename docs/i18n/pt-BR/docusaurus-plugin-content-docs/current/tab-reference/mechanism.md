@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mecanismo
 
-A guia de mecanismo exibe um mecanismo articulado criado com um ou mais objetos [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
+A guia de mecanismo exibe um mecanismo articulado criado com um ou mais objetos [Mechanism2d](https://docs.wpilib.org/pt/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
 <img src="/img/tab-reference/mechanism-1.png" alt="Overview of mechanism tab" />
 

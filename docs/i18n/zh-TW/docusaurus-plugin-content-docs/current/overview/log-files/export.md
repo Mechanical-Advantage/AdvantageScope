@@ -17,7 +17,7 @@ AdvantageScope 包含一個彈性的系統，用於將日誌資料匯出為 CSV�
 :::warning
 **為 SysId 匯出資料**
 
-我們不建議使用此功能匯出**在模擬中產生**的日誌資料以在 [SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html) 中使用，因為 SysId 需要與 AdvantageScope 預設匯出選項不一致的額外時間戳記資料。請注意，**在模擬*之外*產生**的日誌資料可以匯出並在 SysId 中使用，且資料損失極小（不過透過直接在 SysId 中使用*原始*資料日誌可以獲得最大準確度）。
+我們不建議使用此功能匯出**在模擬中產生**的日誌資料以在 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/system-identification/introduction.html) 中使用，因為 SysId 需要與 AdvantageScope 預設匯出選項不一致的額外時間戳記資料。請注意，**在模擬*之外*產生**的日誌資料可以匯出並在 SysId 中使用，且資料損失極小（不過透過直接在 SysId 中使用*原始*資料日誌可以獲得最大準確度）。
 
 _此警告**不適用**於由 AdvantageKit 產生的日誌，透過選擇「AdvantageKit 週期」選項匯出這些日誌不會有任何資料損失。有關詳細資訊，請參閱[此頁面](https://docs.advantagekit.org/data-flow/sysid-compatibility)。_
 :::

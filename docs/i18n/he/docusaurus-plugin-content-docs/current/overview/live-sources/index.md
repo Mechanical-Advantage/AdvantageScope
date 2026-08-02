@@ -2,7 +2,7 @@
 
 כל הוויזואליזציות ב-AdvantageScope מתוכננות לקבל נתונים חיים מרובוט או מסימולטור בנוסף לקובצי יומן. חלק זה מתאר כיצד להתחבר למקורות נתונים בזמן אמת. מקורות הנתונים החיים הבאים נתמכים על ידי AdvantageScope:
 
-- **NetworkTables:** זהו פרוטוקול הרשת הראשי של WPILib. לעיין ב[תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) לפרטים נוספים.
+- **NetworkTables:** זהו פרוטוקול הרשת הראשי של WPILib. לעיין ב[תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/software/networktables/index.html) לפרטים נוספים.
 - **NetworkTables (AdvantageKit):** מצב זה מיועד לשימוש עם קוד רובוט המפעיל את AdvantageKit, המפרסמת לטבלה `AdvantageKit` ב-NetworkTables.
 - **דיאגנוסטיקה Systemcore:** מצב זה מתחבר לשרת NetworkTables המובנה המשמש את מערכת ההפעלה Systemcore, הכולל נתוני אבחון כמו מצב הרובוט וקלט/פלט (IO) של המכשיר.
 - **דיאגנוסטיקה Phoenix:** מצב זה משתמש ב-HTTP כדי להתחבר ל[שרת אבחון](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) של Phoenix, המאפשר הזרמת נתונים ממכשירי CTRE CAN עם [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). דבר זה דומה ל[תכונת השרטוט (plotting)](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ב-Phoenix Tuner. ראו [דף זה](/overview/live-sources/phoenix-diagnostics) למידע נוסף.
@@ -41,7 +41,7 @@ AdvantageScope יכולה להתחבר ל-FIRST Driver Station כדי להציג
 
 ### כתובת הרובוט
 
-יש להזין את כתובת הרובוט תוך שימוש בכתובת IP בפורמט 10.TE.AM.2 כמתואר ב[תיעוד WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). בעת התחברות ל-Systemcore דרך USB או נקודת הגישה המובנית של ה-Wi-Fi, יש ללחוץ על `קובץ` > `שימוש בכתובת Systemcore USB`/`שימוש בכתובת Systemcore Wi-Fi` כדי להשתמש זמנית בכתובת ה-IP הסטטית הנכונה.
+יש להזין את כתובת הרובוט תוך שימוש בכתובת IP בפורמט 10.TE.AM.2 כמתואר ב[תיעוד WPILib](https://docs.wpilib.org/he/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). בעת התחברות ל-Systemcore דרך USB או נקודת הגישה המובנית של ה-Wi-Fi, יש ללחוץ על `קובץ` > `שימוש בכתובת Systemcore USB`/`שימוש בכתובת Systemcore Wi-Fi` כדי להשתמש זמנית בכתובת ה-IP הסטטית הנכונה.
 
 ### מצב חי
 

@@ -2,7 +2,7 @@
 
 AdvantageScope 中的所有視覺化除了支援日誌檔案外，還被設計為可以接收來自機器人或模擬器的即時資料。本節介紹如何連線到實時資料來源。AdvantageScope 支援以下即時資料來源：
 
-- **NetworkTables：** 這是 WPILib 的主要網路協定。有關詳細資訊，請參閱 [WPILib 文件](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html)。
+- **NetworkTables：** 這是 WPILib 的主要網路協定。有關詳細資訊，請參閱 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/software/networktables/index.html)。
 - **NetworkTables (AdvantageKit)：** 此模式旨在配合執行 AdvantageKit 的機器人程式碼使用，AdvantageKit 會發布到 NetworkTables 中的 `AdvantageKit` 表格。
 - **Systemcore 診斷：** 此模式連線到 Systemcore OS 使用的內建 NetworkTables 伺服器，其中包含機器人狀態與裝置 IO 等診斷資料。
 - **Phoenix 診斷：** 此模式使用 HTTP 連線到 Phoenix [診斷伺服器](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html)，允許使用 [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) 串流來自 CTRE CAN 裝置的資料。這類似於 Phoenix Tuner 中的[繪圖功能](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)。有關詳細資訊，請參閱[此頁面](/overview/live-sources/phoenix-diagnostics)。
@@ -41,7 +41,7 @@ AdvantageScope 中的所有視覺化除了支援日誌檔案外，還被設計�
 
 ### 機器人位址
 
-如 [WPILib 文件](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用 10.TE.AM.2 IP 位址輸入機器人位址。當透過 USB 或內建 Wi-Fi 無線基地台連線到 Systemcore 時，點擊 `檔案` > `使用 Systemcore USB 位址`/`使用 Systemcore Wi-Fi 位址` 以暫時使用正確的靜態 IP 位址。
+如 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用 10.TE.AM.2 IP 位址輸入機器人位址。當透過 USB 或內建 Wi-Fi 無線基地台連線到 Systemcore 時，點擊 `檔案` > `使用 Systemcore USB 位址`/`使用 Systemcore Wi-Fi 位址` 以暫時使用正確的靜態 IP 位址。
 
 ### 即時模式
 

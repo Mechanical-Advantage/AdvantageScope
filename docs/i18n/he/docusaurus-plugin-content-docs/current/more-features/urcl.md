@@ -15,11 +15,11 @@ import TabItem from '@theme/TabItem';
 
 URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) היא ספריית תיעוד הזמינה עבור Java, C++, ו-Python אשר מקליטה באופן אוטומטי נתונים מ-Spark Max ו-Spark Flex. דבר זה מאפשר שרטוט ותיעוד חי של כל המכשירים בדומה ל[תכונת השרטוט ב-Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ו[מקליט האותות Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) מבית CTRE.
 
-לאחר ההגדרה, פריימי CAN מחזוריים מכל מכשירי Spark Max ו-Spark Flex מפורסמים ל-NetworkTables או ל-DataLog. בעת שימוש ב-NetworkTables, ניתן להשתמש ב-[DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib ללכידת הנתונים לקובץ יומן. פריימים אלה ניתנים לצפייה ב-AdvantageScope (ראו [ניהול קובצי יומן](/overview/log-files) ו-[התחברות למקורות חיים](/overview/live-sources)).
+לאחר ההגדרה, פריימי CAN מחזוריים מכל מכשירי Spark Max ו-Spark Flex מפורסמים ל-NetworkTables או ל-DataLog. בעת שימוש ב-NetworkTables, ניתן להשתמש ב-[DataLogManager](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib ללכידת הנתונים לקובץ יומן. פריימים אלה ניתנים לצפייה ב-AdvantageScope (ראו [ניהול קובצי יומן](/overview/log-files) ו-[התחברות למקורות חיים](/overview/live-sources)).
 
 - **כל האותות** נלכדים באופן אוטומטי, **ללא הגדרה ידנית עבור מכשירים חדשים**.
 - **כל פריים נלכד**, גם כאשר פרק הזמן של פריים הסטטוס מהיר יותר ממחזור לולאת הרובוט.
-- פריימים מתועדים עם **חותמות זמן המבוססות על זמן ה-CAN RX**, מה שמאפשר אפיון תאוצה מדויק יותר עם [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) בהשוואה לתיעוד מסורתי בקוד המשתמש (ראו "שימוש ב-SysId" למטה).
+- פריימים מתועדים עם **חותמות זמן המבוססות על זמן ה-CAN RX**, מה שמאפשר אפיון תאוצה מדויק יותר עם [SysId](https://docs.wpilib.org/he/stable/docs/software/pathplanning/system-identification/introduction.html) בהשוואה לתיעוד מסורתי בקוד המשתמש (ראו "שימוש ב-SysId" למטה).
 - התיעוד הוא **יעיל ביותר**; הפעולות מבוצעות בתהליכונים (threaded) ופועלות מתחת ל-80 מיקרו-שניות לכל מחזור מחזורי של 20 מ"ש, גם בעת תיעוד מספר רב של מכשירים.
 - **כל הפונקציות של REVLib אינן מושפעות.**
 
@@ -29,7 +29,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) היא ספריית תי
 
 ## הגדרה
 
-יש להתקין את ה-vendordep של URCL בהתאם להוראות להתקנת [ספריות צד שלישי](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) תוך שימוש במנהל התלויות ב-VSCode. כחלופה, ניתן להשתמש בכתובת ה-URL הבאה של vendor JSON:
+יש להתקין את ה-vendordep של URCL בהתאם להוראות להתקנת [ספריות צד שלישי](https://docs.wpilib.org/he/stable/docs/software/vscode-overview/3rd-party-libraries.html) תוך שימוש במנהל התלויות ב-VSCode. כחלופה, ניתן להשתמש בכתובת ה-URL הבאה של vendor JSON:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

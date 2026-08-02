@@ -26,9 +26,9 @@ Cada versión principal de AdvantageScope se lanza en enero antes del inicio de 
 
 ## WPILib
 
-### Instalación: [Documentos de WPILib](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
+### Instalación: [Documentos de WPILib](https://docs.wpilib.org/es/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-El instalador de WPILib incluye una versión reciente de AdvantageScope, pero puede estar rezagada respecto a la última versión disponible para descarga directa. La documentación para iniciar AdvantageScope desde la versión WPILib de VSCode se puede encontrar [aquí](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html).
+El instalador de WPILib incluye una versión reciente de AdvantageScope, pero puede estar rezagada respecto a la última versión disponible para descarga directa. La documentación para iniciar AdvantageScope desde la versión WPILib de VSCode se puede encontrar [aquí](https://docs.wpilib.org/es/stable/docs/software/dashboards/advantagescope.html).
 
 ## Distribuciones no oficiales
 

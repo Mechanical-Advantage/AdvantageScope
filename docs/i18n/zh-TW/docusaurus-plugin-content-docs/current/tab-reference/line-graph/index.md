@@ -18,7 +18,7 @@
 
 要開始，請將欄位拖曳到三個區段之一（左側、右側或離散）。使用 X 按鈕刪除欄位，或透過點擊眼睛圖示或雙擊欄位名稱暫時隱藏它。要移除所有欄位，請點擊軸標題附近的三個點，然後點擊 `全部清除`。可以透過點擊並拖曳在清單中重新排列欄位。
 
-可以透過點擊彩色圖示或在欄位名稱上按右鍵來自訂每個欄位的顏色與線條樣式。來自 WPILib [持久性警示](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API 的資料可以透過將警示群組作為離散欄位新增來視覺化。下面顯示了一個範例視覺化。
+可以透過點擊彩色圖示或在欄位名稱上按右鍵來自訂每個欄位的顏色與線條樣式。來自 WPILib [持久性警示](https://docs.wpilib.org/zh-cn/latest/docs/software/telemetry/persistent-alerts.html) API 的資料可以透過將警示群組作為離散欄位新增來視覺化。下面顯示了一個範例視覺化。
 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="警示視覺化" />
 

@@ -17,7 +17,7 @@ AdvantageScope 包含一个灵活的系统，可将日志数据导出为 CSV、W
 :::warning
 **为 SysId 导出数据**
 
-我们不建议使用此功能导出 **在仿真中生成的** 日志数据用于 [SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html)，因为 SysId 需要与 AdvantageScope 默认导出选项不一致的附加时间戳数据。请注意，**在仿真 _之外_ 生成的** 日志数据可以导出用于 SysId，数据损失极小（尽管通过在 SysId 中直接使用 _原始_ 数据日志可以获得最大的准确性）。
+我们不建议使用此功能导出 **在仿真中生成的** 日志数据用于 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/system-identification/introduction.html)，因为 SysId 需要与 AdvantageScope 默认导出选项不一致的附加时间戳数据。请注意，**在仿真 _之外_ 生成的** 日志数据可以导出用于 SysId，数据损失极小（尽管通过在 SysId 中直接使用 _原始_ 数据日志可以获得最大的准确性）。
 
 _此警告 **不适用于** 由 AdvantageKit 生成的日志，选择“AdvantageKit 周期”选项导出此类日志不会造成数据损失。有关细节，请参阅 [此页面](https://docs.advantagekit.org/data-flow/sysid-compatibility)。_
 :::

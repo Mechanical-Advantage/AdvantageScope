@@ -17,7 +17,7 @@ Burada açıklanan tam log dışa aktarımına ek olarak, 💬 [Konsol](/tab-ref
 :::warning
 **SysId İçin Veri Dışa Aktarma**
 
-SysId, AdvantageScope'un varsayılan dışa aktarma seçenekleriyle uyumsuz ek zaman damgası verileri gerektirdiğinden, [SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html) uygulamasında kullanılmak üzere **simülasyonda üretilen** log verilerini dışa aktarmak için bu özelliğin kullanılmasını önermiyoruz. **Simülasyon _dışında_ üretilen** log verilerinin SysId'de kullanılmak üzere minimum veri kaybıyla dışa aktarılabileceğini unutmayın (bununla birlikte maksimum doğruluk doğrudan SysId'de _orijinal_ veri logu kullanılarak elde edilebilir).
+SysId, AdvantageScope'un varsayılan dışa aktarma seçenekleriyle uyumsuz ek zaman damgası verileri gerektirdiğinden, [SysId](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/system-identification/introduction.html) uygulamasında kullanılmak üzere **simülasyonda üretilen** log verilerini dışa aktarmak için bu özelliğin kullanılmasını önermiyoruz. **Simülasyon _dışında_ üretilen** log verilerinin SysId'de kullanılmak üzere minimum veri kaybıyla dışa aktarılabileceğini unutmayın (bununla birlikte maksimum doğruluk doğrudan SysId'de _orijinal_ veri logu kullanılarak elde edilebilir).
 
 _Bu uyarı, "AdvantageKit döngüleri" seçeneği seçilerek hiçbir veri kaybı olmadan dışa aktarılabilen AdvantageKit tarafından üretilen loglar için **geçerli değildir**. Detaylar için [bu sayfaya](https://docs.advantagekit.org/data-flow/sysid-compatibility) bakın._
 :::

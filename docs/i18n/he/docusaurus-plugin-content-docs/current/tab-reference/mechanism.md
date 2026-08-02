@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ מנגנון
 
-כרטיסיית המנגנון מציגה מנגנון מפרקי שנוצר באמצעות אובייקט [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) אחד או יותר.
+כרטיסיית המנגנון מציגה מנגנון מפרקי שנוצר באמצעות אובייקט [Mechanism2d](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/mech2d-widget.html) אחד או יותר.
 
 <img src="/img/tab-reference/mechanism-1.png" alt="Overview of mechanism tab" />
 

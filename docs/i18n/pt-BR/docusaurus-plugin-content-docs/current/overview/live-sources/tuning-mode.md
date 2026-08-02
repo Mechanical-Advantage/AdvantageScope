@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Modo de ajuste (tuning)
 
-Algumas fontes ao vivo suportam o ajuste ao vivo de valores numéricos e booleanos. Por exemplo, este recurso pode ser usado para [ajustar ganhos de controladores](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) quando conectado a uma fonte NetworkTables. Observe que o código do robô deve suportar o recebimento de ganhos via NetworkTables.
+Algumas fontes ao vivo suportam o ajuste ao vivo de valores numéricos e booleanos. Por exemplo, este recurso pode ser usado para [ajustar ganhos de controladores](https://docs.wpilib.org/pt/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) quando conectado a uma fonte NetworkTables. Observe que o código do robô deve suportar o recebimento de ganhos via NetworkTables.
 
 Por padrão, todos os valores no AdvantageScope são somente leitura. Para alternar o modo de ajuste, **clique no ícone de controle deslizante** à direita da barra de pesquisa quando conectado a uma fonte ao vivo suportada. Quando o ícone estiver roxo, o modo de ajuste estará ativo e a edição de campos estará habilitada.
 

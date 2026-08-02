@@ -23,10 +23,10 @@ sidebar_position: 8
 
 ## 控制面板
 
-在分頁底部的表格中選擇搖桿類型。搖桿 ID 範圍從 0 到 5，並與 Driver Station 和 WPILib 中的 ID 相匹配。有關搖桿的更多資訊可以在 [WPILib 文件](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html)中找到。
+在分頁底部的表格中選擇搖桿類型。搖桿 ID 範圍從 0 到 5，並與 Driver Station 和 WPILib 中的 ID 相匹配。有關搖桿的更多資訊可以在 [WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/software/basic-programming/joystick.html)中找到。
 
 AdvantageScope 包含一組常見的搖桿，包括以網格格式包含所有按鈕、軸與 POV 的「通用搖桿」（見上圖）。要新增自訂搖桿，請參閱[自訂資源](/more-features/custom-assets)。
 
 :::warning
-**使用原生 WPILib 的 NetworkTables 連線時，搖桿資料不可用。** 支援 WPILib 日誌檔案（[已啟用搖桿記錄](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日誌以及 AdvantageKit 串流。
+**使用原生 WPILib 的 NetworkTables 連線時，搖桿資料不可用。** 支援 WPILib 日誌檔案（[已啟用搖桿記錄](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日誌以及 AdvantageKit 串流。
 :::

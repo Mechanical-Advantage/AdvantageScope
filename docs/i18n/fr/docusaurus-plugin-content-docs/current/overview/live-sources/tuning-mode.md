@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Mode de réglage
 
-Certaines sources en direct prennent en charge le réglage en direct des valeurs numériques et booléennes. Par exemple, cette fonctionnalité peut être utilisée pour [régler les gains du contrôleur](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) lors de la connexion à une source NetworkTables. Notez que le code robot doit prendre en charge la réception de gains via NetworkTables.
+Certaines sources en direct prennent en charge le réglage en direct des valeurs numériques et booléennes. Par exemple, cette fonctionnalité peut être utilisée pour [régler les gains du contrôleur](https://docs.wpilib.org/fr/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) lors de la connexion à une source NetworkTables. Notez que le code robot doit prendre en charge la réception de gains via NetworkTables.
 
 Par défaut, toutes les valeurs dans AdvantageScope sont en lecture seule. Pour activer ou désactiver le mode de réglage, **cliquez sur l'icône de curseur** à droite de la barre de recherche lorsqu'il est connecté à une source en direct prise en charge. Lorsque l'icône est violette, le mode de réglage est actif et la modification des champs est activée.
 

@@ -2,8 +2,8 @@
 
 ## 受支持的格式
 
-- **WPILOG (.wpilog)** - 由 WPILib 的 [内置数据日志记录](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) 和 AdvantageKit 生成。[URCL](/more-features/urcl) 可用于将来自 REV 电机控制器的信号捕获到 WPILOG 文件中。
-- **操控站日志 (.dslog 和 .dsevents)** - 由 [FRC Driver Station](https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html) 生成。打开任何一种日志类型时，AdvantageScope 都会自动搜索相应的日志文件。
+- **WPILOG (.wpilog)** - 由 WPILib 的 [内置数据日志记录](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html) 和 AdvantageKit 生成。[URCL](/more-features/urcl) 可用于将来自 REV 电机控制器的信号捕获到 WPILOG 文件中。
+- **操控站日志 (.dslog 和 .dsevents)** - 由 [FRC Driver Station](https://docs.wpilib.org/zh-cn/stable/docs/software/driverstation/driver-station.html) 生成。打开任何一种日志类型时，AdvantageScope 都会自动搜索相应的日志文件。
 - **Hoot (.hoot)** - 由 CTRE 的 Phoenix 6 [信号日志记录器](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) 生成。
 - **REVLOG (.revlog)** - 由 REV Robotics 的 [`StatusLogger`](https://codedocs.revrobotics.com/java/com/revrobotics/util/statuslogger) 生成。
 - **Road Runner (.log)** - 由 FTC 的 [Road Runner](https://github.com/acmerobotics/road-runner) 库生成。

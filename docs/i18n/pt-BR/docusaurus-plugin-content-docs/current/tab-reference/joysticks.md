@@ -23,10 +23,10 @@ Para dar zoom, posicione o cursor sobre a linha do tempo e role para cima ou par
 
 ## Painel de controle
 
-Selecione os tipos de joysticks na tabela na parte inferior da guia. Os IDs de joystick variam de 0 a 5 e correspondem aos IDs na Driver Station e na WPILib. Mais informações sobre joysticks podem ser encontradas na [documentação da WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html).
+Selecione os tipos de joysticks na tabela na parte inferior da guia. Os IDs de joystick variam de 0 a 5 e correspondem aos IDs na Driver Station e na WPILib. Mais informações sobre joysticks podem ser encontradas na [documentação da WPILib](https://docs.wpilib.org/pt/stable/docs/software/basic-programming/joystick.html).
 
 O AdvantageScope inclui um conjunto de joysticks comuns, incluindo um "Joystick genérico" com todos os botões, eixos e POVs em formato de grade (visto acima). Para adicionar um joystick personalizado, consulte [Recursos personalizados](/more-features/custom-assets).
 
 :::warning
-**Dados de joystick NÃO estão disponíveis via conexão NetworkTables com a WPILib padrão.** Arquivos de log da WPILib (com [logging de joystick habilitado](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logs do AdvantageKit e transmissão do AdvantageKit são suportados.
+**Dados de joystick NÃO estão disponíveis via conexão NetworkTables com a WPILib padrão.** Arquivos de log da WPILib (com [logging de joystick habilitado](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html#logging-joystick-data)), logs do AdvantageKit e transmissão do AdvantageKit são suportados.
 :::

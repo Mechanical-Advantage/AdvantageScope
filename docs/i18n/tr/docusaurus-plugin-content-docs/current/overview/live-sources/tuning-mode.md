@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Ayar modu
 
-Bazı canlı kaynaklar sayısal ve boole değerlerinin canlı ayarlanmasını destekler. Örneğin bu özellik, bir NetworkTables kaynağına bağlıyken [kontrolcü kazançlarını ayarlamak](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) için kullanılabilir. Robot kodunun NetworkTables üzerinden kazanç almayı desteklemesi gerektiğini unutmayın.
+Bazı canlı kaynaklar sayısal ve boole değerlerinin canlı ayarlanmasını destekler. Örneğin bu özellik, bir NetworkTables kaynağına bağlıyken [kontrolcü kazançlarını ayarlamak](https://docs.wpilib.org/tr/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) için kullanılabilir. Robot kodunun NetworkTables üzerinden kazanç almayı desteklemesi gerektiğini unutmayın.
 
 Varsayılan olarak AdvantageScope'taki tüm değerler salt okunurdur. Ayar modunu açıp kapatmak için, desteklenen bir canlı kaynağa bağlıyken arama çubuğunun sağındaki **kaydırıcı simgesine tıklayın**. Simge mor olduğunda ayar modu aktiftir ve alan düzenleme etkindir.
 

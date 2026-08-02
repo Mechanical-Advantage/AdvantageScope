@@ -6,7 +6,7 @@ AdvantageScope XR 将 👀 [3D 场地](/tab-reference/3d-field) 视图在增强�
 
 ## 要求
 
-- **主机：** 运行在 Windows、macOS 或 Linux（v4.1.0 或更高版本）上的 AdvantageScope 桌面应用程序。设备上的任何防火墙都应处于 [禁用状态](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)。
+- **主机：** 运行在 Windows、macOS 或 Linux（v4.1.0 或更高版本）上的 AdvantageScope 桌面应用程序。设备上的任何防火墙都应处于 [禁用状态](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall)。
 - **客户端：** 运行 iOS/iPadOS 16 或更高版本的 iPhone 或 iPad。无需安装应用程序。
 - **网络：** 两台设备必须连接到同一个网络（Wi-Fi、USB 共享网络等）。受下文要求约束，该网络无需连接到互联网。
 - **互联网：** 如果近期未使用过 AdvantageScope XR，移动设备必须具备互联网连接（例如蜂窝数据）。要取消此要求，请查看下文的 [离线使用](#offline-usage) 部分。

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # 📐 Systèmes de coordonnées
 
-AdvantageScope prend en charge plusieurs systèmes de coordonnées courants sur les onglets [🗺️ Terrain 2D](/tab-reference/2d-field) et [👀 Terrain 3D](/tab-reference/3d-field). Veuillez consulter la [documentation sur le système de coordonnées WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) pour plus d'informations sur les conventions d'axe et de rotation utilisées par AdvantageScope.
+AdvantageScope prend en charge plusieurs systèmes de coordonnées courants sur les onglets [🗺️ Terrain 2D](/tab-reference/2d-field) et [👀 Terrain 3D](/tab-reference/3d-field). Veuillez consulter la [documentation sur le système de coordonnées WPILib](https://docs.wpilib.org/fr/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) pour plus d'informations sur les conventions d'axe et de rotation utilisées par AdvantageScope.
 
 ### Personnalisation
 

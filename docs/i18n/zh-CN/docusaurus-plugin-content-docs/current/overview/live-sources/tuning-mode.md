@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # 调参模式
 
-某些实时数据源支持数值和布尔值的实时调参。例如，当连接到 NetworkTables 数据源时，此功能可用于 [调整控制器增益](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html)。请注意，机器人代码必须支持通过 NetworkTables 接收增益。
+某些实时数据源支持数值和布尔值的实时调参。例如，当连接到 NetworkTables 数据源时，此功能可用于 [调整控制器增益](https://docs.wpilib.org/zh-cn/stable/docs/software/advanced-controls/introduction/tutorial-intro.html)。请注意，机器人代码必须支持通过 NetworkTables 接收增益。
 
 默认情况下，AdvantageScope 中的所有值都是只读的。要切换调参模式，请在连接到支持的实时数据源时 **点击搜索栏右侧的滑块图标**。当图标变为紫色时，调参模式处于活动状态，并且字段编辑已被启用。
 

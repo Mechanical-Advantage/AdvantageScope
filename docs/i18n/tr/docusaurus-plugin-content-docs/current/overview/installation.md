@@ -26,9 +26,9 @@ AdvantageScope'un her bir ana sürümü, FRC başlangıcından (kickoff) önce O
 
 ## WPILib
 
-### Kurulum: [WPILib dokümantasyonu](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
+### Kurulum: [WPILib dokümantasyonu](https://docs.wpilib.org/tr/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-WPILib yükleyicisi AdvantageScope'un yakın tarihli bir sürümünü içerir, ancak doğrudan indirme için mevcut olan en son sürümün gerisinde kalabilir. AdvantageScope'u VSCode'un WPILib sürümünden başlatma dokümantasyonu [burada](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html) bulunabilir.
+WPILib yükleyicisi AdvantageScope'un yakın tarihli bir sürümünü içerir, ancak doğrudan indirme için mevcut olan en son sürümün gerisinde kalabilir. AdvantageScope'u VSCode'un WPILib sürümünden başlatma dokümantasyonu [burada](https://docs.wpilib.org/tr/stable/docs/software/dashboards/advantagescope.html) bulunabilir.
 
 ## Resmi olmayan dağıtımlar
 

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # 📐 Sistemas de coordenadas
 
-AdvantageScope incluye soporte para varios sistemas de coordenadas comunes en las pestañas [🗺️ Campo 2D](/tab-reference/2d-field) y [👀 Campo 3D](/tab-reference/3d-field). Consulta la [documentación de sistemas de coordenadas de WPILib](https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) para obtener más información sobre las convenciones de ejes y rotación utilizadas por AdvantageScope.
+AdvantageScope incluye soporte para varios sistemas de coordenadas comunes en las pestañas [🗺️ Campo 2D](/tab-reference/2d-field) y [👀 Campo 3D](/tab-reference/3d-field). Consulta la [documentación de sistemas de coordenadas de WPILib](https://docs.wpilib.org/es/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) para obtener más información sobre las convenciones de ejes y rotación utilizadas por AdvantageScope.
 
 ### Personalización
 

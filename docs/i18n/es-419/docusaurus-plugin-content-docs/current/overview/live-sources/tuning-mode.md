@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Modo de ajuste
 
-Algunas fuentes en vivo admiten el ajuste en vivo de valores numéricos y booleanos. Por ejemplo, esta función se puede usar para [ajustar ganancias del controlador](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) cuando está conectado a una fuente de NetworkTables. Ten en cuenta que el código del robot debe admitir la recepción de ganancias a través de NetworkTables.
+Algunas fuentes en vivo admiten el ajuste en vivo de valores numéricos y booleanos. Por ejemplo, esta función se puede usar para [ajustar ganancias del controlador](https://docs.wpilib.org/es/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) cuando está conectado a una fuente de NetworkTables. Ten en cuenta que el código del robot debe admitir la recepción de ganancias a través de NetworkTables.
 
 Por defecto, todos los valores en AdvantageScope son de solo lectura. Para activar y desactivar el modo de ajuste, **haz clic en el ícono del control deslizante** a la derecha de la barra de búsqueda cuando estés conectado a una fuente en vivo compatible. Cuando el icono es violeta, el modo de ajuste está activo y la edición de campos está habilitada.
 

@@ -61,7 +61,7 @@ periodic() {
 ```
 
 :::tip
-המחלקה [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) של WPILib יכולה לשמש גם לתיעוד של מספר סטים של נתוני תנוחת 2D יחד.
+המחלקה [`Field2d`](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/field2d-widget.html) של WPILib יכולה לשמש גם לתיעוד של מספר סטים של נתוני תנוחת 2D יחד.
 :::
 
 </TabItem>

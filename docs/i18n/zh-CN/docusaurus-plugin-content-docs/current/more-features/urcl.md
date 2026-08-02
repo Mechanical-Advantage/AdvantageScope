@@ -15,11 +15,11 @@ AdvantageScope 的 _非官方_ REV 兼容日志记录器 (URCL) 在 2026 赛季�
 
 URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) 是一个适用于 Java、C++ 和 Python 的日志记录库，可自动记录来自 Spark Max 和 Spark Flex 的数据。这使得能够实现类似于 CTRE 的 [Tuner X 绘图功能](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) 和 [Phoenix 6 信号日志记录器](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) 的所有设备的实时绘图和日志记录。
 
-设置完成后，来自所有 Spark Max 和 Spark Flex 设备的周期性 CAN 帧都会发布到 NetworkTables 或 DataLog。当使用 NetworkTables 时，WPILib 的 [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) 可用于将数据捕获到日志文件中。这些帧可在 AdvantageScope 中查看（参阅 [管理日志文件](/overview/log-files) 和 [连接到实时数据源](/overview/live-sources)）。
+设置完成后，来自所有 Spark Max 和 Spark Flex 设备的周期性 CAN 帧都会发布到 NetworkTables 或 DataLog。当使用 NetworkTables 时，WPILib 的 [DataLogManager](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html) 可用于将数据捕获到日志文件中。这些帧可在 AdvantageScope 中查看（参阅 [管理日志文件](/overview/log-files) 和 [连接到实时数据源](/overview/live-sources)）。
 
 - **自动捕获所有信号**，**新设备无需手动设置**。
 - **捕获每一个帧**，即使状态帧周期比机器人循环周期更快。
-- 记录的帧带有 **基于 CAN RX 时间的时间戳**，与用户代码中的传统日志记录相比，能够使用 [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) 实现更准确的加速度表征（见下文“SysId 使用”）。
+- 记录的帧带有 **基于 CAN RX 时间的时间戳**，与用户代码中的传统日志记录相比，能够使用 [SysId](https://docs.wpilib.org/zh-cn/stable/docs/software/pathplanning/system-identification/introduction.html) 实现更准确的加速度表征（见下文“SysId 使用”）。
 - 日志记录 **高度高效**；操作采用多线程，每个 20 毫秒周期运行时间低于 80µs，即使在记录大量设备时也是如此。
 - **REVLib 的所有功能均不受影响。**
 
@@ -29,7 +29,7 @@ URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) 是一个适用于 Java�
 
 ## 设置
 
-在 VSCode 中使用依赖项管理器，按照安装 [第三方库](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) 的说明安装 URCL vendordep。或者，可以使用以下 vendor JSON URL：
+在 VSCode 中使用依赖项管理器，按照安装 [第三方库](https://docs.wpilib.org/zh-cn/stable/docs/software/vscode-overview/3rd-party-libraries.html) 的说明安装 URCL vendordep。或者，可以使用以下 vendor JSON URL：
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

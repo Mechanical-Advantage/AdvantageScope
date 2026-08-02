@@ -10,7 +10,7 @@ AdvantageScope 支持将存储在日志文件中的 NetworkTables 数据发布�
 - 在真实机器人上模拟协处理器的数据。
 - 使用真实的比赛数据调试驾驶员仪表盘应用程序。
 
-此功能需要包含完整 NetworkTables 数据捕获的日志文件，可使用 WPILib 的 [内置数据日志记录器](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) 生成。请注意，AdvantageKit 不支持此功能，因为它在仿真中提供了更完整的确定性重放。
+此功能需要包含完整 NetworkTables 数据捕获的日志文件，可使用 WPILib 的 [内置数据日志记录器](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html) 生成。请注意，AdvantageKit 不支持此功能，因为它在仿真中提供了更完整的确定性重放。
 
 ## 入门指南
 

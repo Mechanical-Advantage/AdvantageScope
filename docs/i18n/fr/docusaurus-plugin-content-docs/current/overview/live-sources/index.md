@@ -2,7 +2,7 @@
 
 Toutes les visualisations dans AdvantageScope sont conçues pour recevoir des données en direct d'un robot ou d'un simulateur en plus des fichiers journaux. Cette section décrit comment se connecter à des sources de données en temps réel. Les sources de données en direct suivantes sont prises en charge par AdvantageScope :
 
-- **NetworkTables :** Il s'agit du protocole réseau principal de WPILib. Consultez la [documentation WPILib](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) pour plus de détails.
+- **NetworkTables :** Il s'agit du protocole réseau principal de WPILib. Consultez la [documentation WPILib](https://docs.wpilib.org/fr/stable/docs/software/networktables/index.html) pour plus de détails.
 - **NetworkTables (AdvantageKit) :** Ce mode est conçu pour une utilisation avec le code robot exécutant AdvantageKit, qui publie dans la table `AdvantageKit` dans NetworkTables.
 - **Diagnostics Systemcore :** Ce mode se connecte au serveur NetworkTables intégré utilisé par le système d'exploitation Systemcore, qui comprend des données de diagnostic telles que l'état du robot et les E/S d'appareils.
 - **Diagnostics Phoenix :** Ce mode utilise HTTP pour se connecter à un serveur de [diagnostics](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) Phoenix, qui permet la diffusion de données à partir d'appareils CAN CTRE avec [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/). Cela est similaire à la [fonctionnalité de tracé](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) dans Phoenix Tuner. Consultez [cette page](/overview/live-sources/phoenix-diagnostics) pour plus d'informations.
@@ -41,7 +41,7 @@ Ouvrez la fenêtre des préférences en cliquant sur `Application` > `Afficher l
 
 ### Adresse du robot
 
-Saisissez l'adresse du robot en utilisant une adresse IP 10.TE.AM.2 comme décrit dans la [documentation WPILib](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Lors de la connexion à Systemcore via USB ou le point d'accès Wi-Fi intégré, cliquez sur `Fichier` > `Utiliser l'adresse USB Systemcore`/`Utiliser l'adresse Wi-Fi Systemcore` pour utiliser temporairement l'adresse IP statique correcte.
+Saisissez l'adresse du robot en utilisant une adresse IP 10.TE.AM.2 comme décrit dans la [documentation WPILib](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation). Lors de la connexion à Systemcore via USB ou le point d'accès Wi-Fi intégré, cliquez sur `Fichier` > `Utiliser l'adresse USB Systemcore`/`Utiliser l'adresse Wi-Fi Systemcore` pour utiliser temporairement l'adresse IP statique correcte.
 
 ### Mode en direct
 

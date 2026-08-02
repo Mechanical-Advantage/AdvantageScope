@@ -15,11 +15,11 @@ AdvantageScope'un _Gayriresmi_ REV-Uyumlu Loglayıcısı (URCL), sorunsuz bir ge
 
 URCL (**G**ayriresmi **R**EV-**U**yumlu **L**oglayıcı / **U**nofficial **R**EV-**C**ompatible **L**ogger), Spark Max ve Spark Flex cihazlarından gelen verileri otomatik olarak kaydeden Java, C++ ve Python için mevcut bir loglama kütüphanesidir. Bu, CTRE'nin [Tuner X grafik çizme mevcudiyetine](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) ve [Phoenix 6 sinyal loglayıcısına](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) benzer şekilde tüm cihazların canlı grafiklenmesini ve loglanmasını sağlar.
 
-Kurulumdan sonra tüm Spark Max ve Spark Flex cihazlarından gelen periyodik CAN kareleri NetworkTables veya DataLog'a yayınlanır. NetworkTables kullanılırken verileri bir log dosyasına kaydetmek için WPILib'in [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) aracı kullanılabilir. Bu kareler AdvantageScope'ta görüntülenebilir ([Log Dosyalarını Yönetme](/overview/log-files/index.md) ve [Canlı Kaynaklara Bağlanma](/overview/live-sources/index.md) bölümlerine bakın).
+Kurulumdan sonra tüm Spark Max ve Spark Flex cihazlarından gelen periyodik CAN kareleri NetworkTables veya DataLog'a yayınlanır. NetworkTables kullanılırken verileri bir log dosyasına kaydetmek için WPILib'in [DataLogManager](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) aracı kullanılabilir. Bu kareler AdvantageScope'ta görüntülenebilir ([Log Dosyalarını Yönetme](/overview/log-files/index.md) ve [Canlı Kaynaklara Bağlanma](/overview/live-sources/index.md) bölümlerine bakın).
 
 - **Tüm sinyaller** otomatik olarak yakalanır, **yeni cihazlar için manuel kurulum gerekmez**.
 - Durum karesi periyodu robot döngü periyodundan daha hızlı olsa bile **her kare yakalanır**.
-- Kareler, kullanıcı kodundaki geleneksel loglamaya kıyasla [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) ile daha doğru ivme karakterizasyonu sağlayacak şekilde **CAN RX zamanına dayalı zaman damgalarıyla** loglanır (aşağıdaki "SysId Kullanımı" bölümüne bakın).
+- Kareler, kullanıcı kodundaki geleneksel loglamaya kıyasla [SysId](https://docs.wpilib.org/tr/stable/docs/software/pathplanning/system-identification/introduction.html) ile daha doğru ivme karakterizasyonu sağlayacak şekilde **CAN RX zamanına dayalı zaman damgalarıyla** loglanır (aşağıdaki "SysId Kullanımı" bölümüne bakın).
 - Loglama **son derece verimlidir**; işlemler iş parçacıklı olarak çalışır ve çok sayıda cihaz loglanırken bile 20 ms'lik periyodik döngü başına 80µs'nin altında çalışır.
 - **REVLib'in tüm işlevleri etkilenmez.**
 
@@ -29,7 +29,7 @@ Bu kütüphane resmi bir REV aracı olmadığından, destek soruları REV'in des
 
 ## Kurulum
 
-VSCode'daki bağımlılık yöneticisini kullanarak [üçüncü taraf kütüphaneleri](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) kurma talimatlarını izleyerek URCL vendordep'ini kurun. Alternatif olarak aşağıdaki satıcı JSON URL'sini kullanabilirsiniz:
+VSCode'daki bağımlılık yöneticisini kullanarak [üçüncü taraf kütüphaneleri](https://docs.wpilib.org/tr/stable/docs/software/vscode-overview/3rd-party-libraries.html) kurma talimatlarını izleyerek URCL vendordep'ini kurun. Alternatif olarak aşağıdaki satıcı JSON URL'sini kullanabilirsiniz:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

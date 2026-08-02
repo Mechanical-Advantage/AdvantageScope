@@ -61,7 +61,7 @@ periodic() {
 ```
 
 :::tip
-WPILib 的 [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) 類別也可以用於一起記錄數組 2D 姿態資料。
+WPILib 的 [`Field2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/field2d-widget.html) 類別也可以用於一起記錄數組 2D 姿態資料。
 :::
 
 </TabItem>

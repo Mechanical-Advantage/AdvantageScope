@@ -6,7 +6,7 @@ AdvantageScope XR donne vie à la vue 👀 [Terrain 3D](/tab-reference/3d-field)
 
 ## Exigences
 
-- **Hôte :** L'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou version ultérieure). Tous les pare-feu sur l'appareil doivent être [désactivés](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Hôte :** L'application de bureau AdvantageScope sur Windows, macOS ou Linux (v4.1.0 ou version ultérieure). Tous les pare-feu sur l'appareil doivent être [désactivés](https://docs.wpilib.org/fr/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Client :** Un iPhone ou iPad exécutant iOS/iPadOS 16 ou version ultérieure. Aucune installation d'application n'est requise.
 - **Réseau :** Les deux appareils doivent être connectés au même réseau (Wi-Fi, partage de connexion USB, etc.). Sous réserve de la condition ci-dessous, ce réseau n'a pas besoin d'être connecté à Internet.
 - **Internet :** Si AdvantageScope XR n'a pas été utilisée récemment, l'appareil mobile doit disposer d'une connexion Internet (par ex., données cellulaires). Pour éliminer cette exigence, consultez la section [utilisation hors ligne](#offline-usage) ci-dessous.

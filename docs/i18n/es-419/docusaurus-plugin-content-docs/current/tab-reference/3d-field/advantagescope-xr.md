@@ -6,7 +6,7 @@ AdvantageScope XR le da vida a la vista 👀 [Campo 3D](/tab-reference/3d-field)
 
 ## Requisitos
 
-- **Host:** La aplicación de escritorio AdvantageScope en Windows, macOS o Linux (v4.1.0 o posterior). Cualquier firewall en el dispositivo debe estar [deshabilitado](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **Host:** La aplicación de escritorio AdvantageScope en Windows, macOS o Linux (v4.1.0 o posterior). Cualquier firewall en el dispositivo debe estar [deshabilitado](https://docs.wpilib.org/es/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **Cliente:** Un iPhone o iPad con iOS/iPadOS 16 o posterior. No se requiere instalación de la aplicación.
 - **Red:** Ambos dispositivos deben estar conectados a la misma red (Wi-Fi, conexión USB, etc.). Sujeto al requisito a continuación, esta red no necesita estar conectada a Internet.
 - **Internet:** Si AdvantageScope XR no se ha utilizado recientemente, el dispositivo móvil debe tener una conexión a Internet (por ejemplo, datos móviles). Para eliminar este requisito, verifica la sección [uso sin conexión](#offline-usage) a continuación.

@@ -15,11 +15,11 @@ El Registrador no oficial compatible con REV (URCL) de AdvantageScope también p
 
 URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) es una biblioteca de registro disponible para Java, C++ y Python que registra datos automáticamente de los dispositivos Spark Max y Spark Flex. Esto permite la creación de gráficos en vivo y el registro de todos los dispositivos de manera similar a la [función de gráficos Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) de CTRE y el [registrador de señales de Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html).
 
-Después de la configuración, las tramas de CAN periódicas de todos los dispositivos Spark Max y Spark Flex se publican en NetworkTables o DataLog. Al usar NetworkTables, se puede usar el [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) de WPILib para capturar los datos en un archivo de registro. Estas tramas se pueden ver en AdvantageScope (consulta [Administración de archivos de registro](/overview/log-files) y [Conexión a fuentes en vivo](/overview/live-sources)).
+Después de la configuración, las tramas de CAN periódicas de todos los dispositivos Spark Max y Spark Flex se publican en NetworkTables o DataLog. Al usar NetworkTables, se puede usar el [DataLogManager](https://docs.wpilib.org/es/stable/docs/software/telemetry/datalog.html) de WPILib para capturar los datos en un archivo de registro. Estas tramas se pueden ver en AdvantageScope (consulta [Administración de archivos de registro](/overview/log-files) y [Conexión a fuentes en vivo](/overview/live-sources)).
 
 - **Todas las señales** se capturan automáticamente, **sin configuración manual para nuevos dispositivos**.
 - **Cada trama es capturada**, incluso cuando el período de la trama de estado es más rápido que el ciclo del bucle del robot.
-- Las tramas se registran con **marcas de tiempo basadas en el tiempo de recepción de CAN (RX time)**, lo que permite una caracterización de aceleración más precisa con [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) en comparación con el registro tradicional en el código del usuario (consulta "Uso de SysId" a continuación).
+- Las tramas se registran con **marcas de tiempo basadas en el tiempo de recepción de CAN (RX time)**, lo que permite una caracterización de aceleración más precisa con [SysId](https://docs.wpilib.org/es/stable/docs/software/pathplanning/system-identification/introduction.html) en comparación con el registro tradicional en el código del usuario (consulta "Uso de SysId" a continuación).
 - El registro es **altamente eficiente**; las operaciones son subprocesadas y se ejecutan en menos de 80µs por ciclo periódico de 20ms, incluso cuando se registra una gran cantidad de dispositivos.
 - **Todas las funciones de REVLib no se ven afectadas.**
 
@@ -29,7 +29,7 @@ Como esta biblioteca no es una herramienta oficial de REV, las consultas de sopo
 
 ## Configuración
 
-Instala la dependencia de proveedor (vendordep) de URCL siguiendo las instrucciones para instalar [bibliotecas de terceros](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) utilizando el administrador de dependencias en VSCode. Alternativamente, puedes usar la siguiente URL JSON de proveedor:
+Instala la dependencia de proveedor (vendordep) de URCL siguiendo las instrucciones para instalar [bibliotecas de terceros](https://docs.wpilib.org/es/stable/docs/software/vscode-overview/3rd-party-libraries.html) utilizando el administrador de dependencias en VSCode. Alternativamente, puedes usar la siguiente URL JSON de proveedor:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

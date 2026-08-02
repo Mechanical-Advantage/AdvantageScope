@@ -26,9 +26,9 @@ AdvantageScope 的每個主要版本都會在每年 1 月 FRC kickoff 之前發�
 
 ## WPILib
 
-### 安裝：[WPILib 文件](https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
+### 安裝：[WPILib 文件](https://docs.wpilib.org/zh-cn/stable/docs/zero-to-robot/step-2/wpilib-setup.html) {#wpilib-installation}
 
-WPILib 安裝程式包含 AdvantageScope 的近期版本，但可能會落後於可供直接下載的最新版本。有關從 WPILib 版 VSCode 啟動 AdvantageScope 的文件可以在[此處](https://docs.wpilib.org/en/stable/docs/software/dashboards/advantagescope.html)找到。
+WPILib 安裝程式包含 AdvantageScope 的近期版本，但可能會落後於可供直接下載的最新版本。有關從 WPILib 版 VSCode 啟動 AdvantageScope 的文件可以在[此處](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/advantagescope.html)找到。
 
 ## 非官方發行版
 

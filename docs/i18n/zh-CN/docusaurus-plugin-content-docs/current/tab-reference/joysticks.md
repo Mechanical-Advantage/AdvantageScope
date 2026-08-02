@@ -23,10 +23,10 @@ sidebar_position: 8
 
 ## 控制面板
 
-在选项卡底部的表格中选择控制器类型。控制器 ID 范围从 0 到 5，与 操控站 和 WPILib 中的 ID 匹配。有关控制器的更多信息，请参阅 [WPILib 文档](https://docs.wpilib.org/en/stable/docs/software/basic-programming/joystick.html)。
+在选项卡底部的表格中选择控制器类型。控制器 ID 范围从 0 到 5，与 操控站 和 WPILib 中的 ID 匹配。有关控制器的更多信息，请参阅 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/software/basic-programming/joystick.html)。
 
 AdvantageScope 包含一组常见控制器，包括以网格格式显示所有按钮、轴和 POV 的“通用控制器”（如上图所示）。要添加自定义控制器，请参阅 [自定义资源](/more-features/custom-assets)。
 
 :::warning
-**原生 WPILib 中，控制器数据在 NetworkTables 连接下不可用。** 支持 WPILib 日志文件（需 [启用控制器日志记录](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日志以及 AdvantageKit 实时串流。
+**原生 WPILib 中，控制器数据在 NetworkTables 连接下不可用。** 支持 WPILib 日志文件（需 [启用控制器日志记录](https://docs.wpilib.org/zh-cn/stable/docs/software/telemetry/datalog.html#logging-joystick-data)）、AdvantageKit 日志以及 AdvantageKit 实时串流。
 :::

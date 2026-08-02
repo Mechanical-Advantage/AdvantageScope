@@ -63,7 +63,7 @@ periodic() {
 ```
 
 :::tip
-WPILib 的 [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) 类也可以用于将多组 2D 位姿数据记录在一起。
+WPILib 的 [`Field2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/field2d-widget.html) 类也可以用于将多组 2D 位姿数据记录在一起。
 :::
 
 </TabItem>
@@ -103,7 +103,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 ### 2D 机构 {#2d-mechanisms}
 
-要可视化使用 [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) 记录的机构数据，请将机构字段添加到现有的机器人或幽灵模型对象中。机构使用简单的方框投影到机器人的 XZ 或 YZ 平面上（如下所示）。点击齿轮图标或右键单击字段名称可以在 XZ 和 YZ 平面之间切换。机器人的原点位于机构底边的中心。
+要可视化使用 [`Mechanism2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 记录的机构数据，请将机构字段添加到现有的机器人或幽灵模型对象中。机构使用简单的方框投影到机器人的 XZ 或 YZ 平面上（如下所示）。点击齿轮图标或右键单击字段名称可以在 XZ 和 YZ 平面之间切换。机器人的原点位于机构底边的中心。
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D 机构" />
 

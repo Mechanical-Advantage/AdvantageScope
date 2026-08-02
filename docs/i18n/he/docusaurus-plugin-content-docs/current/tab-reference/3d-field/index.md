@@ -63,7 +63,7 @@ periodic() {
 ```
 
 :::tip
-המחלקה [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) של WPILib יכולה לשמש גם לתיעוד של מספר סטים של נתוני תנוחת 2D יחד.
+המחלקה [`Field2d`](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/field2d-widget.html) של WPILib יכולה לשמש גם לתיעוד של מספר סטים של נתוני תנוחת 2D יחד.
 :::
 
 </TabItem>
@@ -103,7 +103,7 @@ packet.put("Pose heading (deg)", 180.0); // מעלות
 
 ### מנגנוני 2D {#2d-mechanisms}
 
-לוויזואליזציה של נתוני מנגנון שתועדו באמצעות [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html), יש להוסיף את שדה המנגנון לאובייקט רובוט או רובוט רפאים קיים. המנגנון מוקרן על מישור XZ או YZ של הרובוט תוך שימוש בתתי-תיבות פשוטות, כפי שמוצג למטה. יש ללחוץ על סמל גלגל השיניים או לחיצה ימנית על שם השדה כדי לעבור בין מישורי XZ ו-YZ. מקור הרובוט ממורכז בקצה התחתון של המנגנון.
+לוויזואליזציה של נתוני מנגנון שתועדו באמצעות [`Mechanism2d`](https://docs.wpilib.org/he/stable/docs/software/dashboards/glass/mech2d-widget.html), יש להוסיף את שדה המנגנון לאובייקט רובוט או רובוט רפאים קיים. המנגנון מוקרן על מישור XZ או YZ של הרובוט תוך שימוש בתתי-תיבות פשוטות, כפי שמוצג למטה. יש ללחוץ על סמל גלגל השיניים או לחיצה ימנית על שם השדה כדי לעבור בין מישורי XZ ו-YZ. מקור הרובוט ממורכז בקצה התחתון של המנגנון.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
 

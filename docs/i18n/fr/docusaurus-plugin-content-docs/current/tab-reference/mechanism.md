@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ Mécanisme
 
-L'onglet mécanisme affiche un mécanisme articulé créé avec un ou plusieurs objets [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html).
+L'onglet mécanisme affiche un mécanisme articulé créé avec un ou plusieurs objets [Mechanism2d](https://docs.wpilib.org/fr/stable/docs/software/dashboards/glass/mech2d-widget.html).
 
 <img src="/img/tab-reference/mechanism-1.png" alt="Aperçu de l'onglet mécanisme" />
 

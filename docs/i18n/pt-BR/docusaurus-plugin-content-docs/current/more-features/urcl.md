@@ -15,11 +15,11 @@ O Logger _não oficial_ compatível com REV (URCL) do AdvantageScope também per
 
 O URCL (**U**nofficial **R**EV-**C**ompatible **L**ogger) é uma biblioteca de logging disponível para Java, C++ e Python que grava automaticamente dados do Spark Max e Spark Flex. Isso habilita a plotagem ao vivo e o registro de todos os dispositivos de forma semelhante ao [recurso de plotagem do Tuner X](https://v6.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) e ao [logger de sinais do Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/docs/api-reference/api-usage/signal-logging.html) da CTRE.
 
-Após a configuração, os quadros CAN periódicos de todos os dispositivos Spark Max e Spark Flex são publicados no NetworkTables ou DataLog. Ao usar o NetworkTables, o [DataLogManager](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) da WPILib pode ser usado para capturar os dados em um arquivo de log. Esses quadros podem ser visualizados no AdvantageScope (consulte [Gerenciando arquivos de log](/overview/log-files) e [Conectando a fontes ao vivo](/overview/live-sources)).
+Após a configuração, os quadros CAN periódicos de todos os dispositivos Spark Max e Spark Flex são publicados no NetworkTables ou DataLog. Ao usar o NetworkTables, o [DataLogManager](https://docs.wpilib.org/pt/stable/docs/software/telemetry/datalog.html) da WPILib pode ser usado para capturar os dados em um arquivo de log. Esses quadros podem ser visualizados no AdvantageScope (consulte [Gerenciando arquivos de log](/overview/log-files) e [Conectando a fontes ao vivo](/overview/live-sources)).
 
 - **Todos os sinais** são capturados automaticamente, **sem configuração manual para novos dispositivos**.
 - **Cada quadro é capturado**, mesmo quando o período do quadro de status for mais rápido do que o ciclo de loop do robô.
-- Os quadros são registrados com **timestamps baseados no horário de recepção CAN (RX)**, permitindo uma caracterização de aceleração mais precisa com o [SysId](https://docs.wpilib.org/en/stable/docs/software/pathplanning/system-identification/introduction.html) em comparação com o logging tradicional no código do usuário (veja "Uso do SysId" abaixo).
+- Os quadros são registrados com **timestamps baseados no horário de recepção CAN (RX)**, permitindo uma caracterização de aceleração mais precisa com o [SysId](https://docs.wpilib.org/pt/stable/docs/software/pathplanning/system-identification/introduction.html) em comparação com o logging tradicional no código do usuário (veja "Uso do SysId" abaixo).
 - O logging é **altamente eficiente**; as operações usam threads e são executadas em menos de 80 µs por ciclo periódico de 20 ms, mesmo ao registrar um grande número de dispositivos.
 - **Todas as funções da REVLib permanecem inalteradas.**
 
@@ -29,7 +29,7 @@ Como esta biblioteca não é uma ferramenta oficial da REV, dúvidas de suporte 
 
 ## Configuração
 
-Instale o vendordep do URCL seguindo as instruções para instalar [bibliotecas de terceiros](https://docs.wpilib.org/en/stable/docs/software/vscode-overview/3rd-party-libraries.html) usando o gerenciador de dependências no VSCode. Alternativamente, você pode usar o seguinte URL JSON do fornecedor:
+Instale o vendordep do URCL seguindo as instruções para instalar [bibliotecas de terceiros](https://docs.wpilib.org/pt/stable/docs/software/vscode-overview/3rd-party-libraries.html) usando o gerenciador de dependências no VSCode. Alternativamente, você pode usar o seguinte URL JSON do fornecedor:
 
 ```
 https://raw.githubusercontent.com/Mechanical-Advantage/URCL/main/URCL.json

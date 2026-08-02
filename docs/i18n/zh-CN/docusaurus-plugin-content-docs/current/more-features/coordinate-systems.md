@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # 📐 坐标系
 
-AdvantageScope 在 [🗺️ 2D 场地](/tab-reference/2d-field) 和 [👀 3D 场地](/tab-reference/3d-field) 选项卡上支持几种常见的坐标系。请参阅 [WPILib 坐标系文档](https://docs.wpilib.org/en/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) 以了解有关 AdvantageScope 所使用的轴与旋转约定的更多信息。
+AdvantageScope 在 [🗺️ 2D 场地](/tab-reference/2d-field) 和 [👀 3D 场地](/tab-reference/3d-field) 选项卡上支持几种常见的坐标系。请参阅 [WPILib 坐标系文档](https://docs.wpilib.org/zh-cn/stable/docs/software/basic-programming/coordinate-system.html#wpilib-coordinate-system) 以了解有关 AdvantageScope 所使用的轴与旋转约定的更多信息。
 
 ### 自定义
 

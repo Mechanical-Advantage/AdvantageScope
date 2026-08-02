@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 # ⚙️ 機構
 
-機構分頁顯示使用一個或多個 [Mechanism2d](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) 物件建立的關節機構。
+機構分頁顯示使用一個或多個 [Mechanism2d](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 物件建立的關節機構。
 
 <img src="/img/tab-reference/mechanism-1.png" alt="機構分頁概述" />
 

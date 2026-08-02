@@ -61,7 +61,7 @@ periodic() {
 ```
 
 :::tip
-WPILib'in [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) sınıfı birden fazla 2B poz verisi kümesini birlikte loglamak için de kullanılabilir.
+WPILib'in [`Field2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/field2d-widget.html) sınıfı birden fazla 2B poz verisi kümesini birlikte loglamak için de kullanılabilir.
 :::
 
 </TabItem>

@@ -20,7 +20,7 @@ Para comenzar, arrastra un campo a una de las tres secciones (izquierda, derecha
 
 Los campos se pueden reorganizar en la lista haciendo clic y arrastrando. El color y el estilo de línea de cada campo se pueden personalizar haciendo clic en el icono de color o haciendo clic derecho en el nombre del campo.
 
-Los datos de la API de [alertas persistentes](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) de WPILib se pueden visualizar agregando el grupo de alertas como un campo discreto. A continuación se muestra un ejemplo de visualización.
+Los datos de la API de [alertas persistentes](https://docs.wpilib.org/es/latest/docs/software/telemetry/persistent-alerts.html) de WPILib se pueden visualizar agregando el grupo de alertas como un campo discreto. A continuación se muestra un ejemplo de visualización.
 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Visualización de alertas" />
 

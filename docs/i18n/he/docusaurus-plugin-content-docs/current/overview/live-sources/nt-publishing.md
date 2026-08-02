@@ -10,7 +10,7 @@ AdvantageScope תומכת בפרסום נתוני NetworkTables המאוחסני
 - חיקוי נתונים ממעבד עזר (coprocessor) ברובוט אמיתי.
 - דיבאגינג של אפליקציות עמדת נהגים (dashboard) תוך שימוש בנתוני משחק מציאותיים.
 
-תכונה זו דורשת קובץ יומן עם לכידה מלאה של נתוני NetworkTables, אותו ניתן להפיק באמצעות [מקליט הנתונים המובנה](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) של WPILib. שימו לב כי AdvantageKit אינה תומכת בתכונה זו, מכיוון שהיא מאפשרת ניגון דטרמיניסטי מלא יותר בסימולציה.
+תכונה זו דורשת קובץ יומן עם לכידה מלאה של נתוני NetworkTables, אותו ניתן להפיק באמצעות [מקליט הנתונים המובנה](https://docs.wpilib.org/he/stable/docs/software/telemetry/datalog.html) של WPILib. שימו לב כי AdvantageKit אינה תומכת בתכונה זו, מכיוון שהיא מאפשרת ניגון דטרמיניסטי מלא יותר בסימולציה.
 
 ## תחילת העבודה
 

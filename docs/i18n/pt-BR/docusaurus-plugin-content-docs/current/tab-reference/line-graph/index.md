@@ -18,7 +18,7 @@ A variação (delta) entre o tempo selecionado e o tempo sob o ponteiro é exibi
 
 Para começar, arraste um campo para uma das três seções (esquerdo, direito ou discreto). Exclua um campo usando o botão X ou oculte-o temporariamente clicando no ícone de olho ou dando um duplo clique no nome do campo. Para remover todos os campos, clique nos três pontos perto do título do eixo e depois em `Limpar tudo`. Os campos podem ser reorganizados na lista clicando e arrastando.
 
-A cor e o estilo da linha de cada campo podem ser personalizados clicando no ícone colorido ou clicando com o botão direito no nome do campo. Dados da API de [alertas persistentes](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) da WPILib podem ser visualizados adicionando o grupo de alertas como um campo discreto. Um exemplo de visualização é mostrado abaixo.
+A cor e o estilo da linha de cada campo podem ser personalizados clicando no ícone colorido ou clicando com o botão direito no nome do campo. Dados da API de [alertas persistentes](https://docs.wpilib.org/pt/latest/docs/software/telemetry/persistent-alerts.html) da WPILib podem ser visualizados adicionando o grupo de alertas como um campo discreto. Um exemplo de visualização é mostrado abaixo.
 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
 

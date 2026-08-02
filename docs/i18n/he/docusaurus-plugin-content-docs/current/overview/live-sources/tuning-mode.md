@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # מצב כוונון
 
-חלק מהמקורות החיים תומכים בכוונון חי של ערכים נומריים ובוליאניים. לדוגמה, ניתן להשתמש בתכונה זו כדי [לכוונן מקדמי בקר (controller gains)](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) בעת התחברות למקור NetworkTables. שימו לב כי קוד הרובוט חייב לתמוך בקבלת מקדמים דרך NetworkTables.
+חלק מהמקורות החיים תומכים בכוונון חי של ערכים נומריים ובוליאניים. לדוגמה, ניתן להשתמש בתכונה זו כדי [לכוונן מקדמי בקר (controller gains)](https://docs.wpilib.org/he/stable/docs/software/advanced-controls/introduction/tutorial-intro.html) בעת התחברות למקור NetworkTables. שימו לב כי קוד הרובוט חייב לתמוך בקבלת מקדמים דרך NetworkTables.
 
 כברירת מחדל, כל הערכים ב-AdvantageScope הם לקריאה בלבד. להפעלת/ביטול מצב כוונון, **יש ללחוץ על סמל המחוון** מימין לסרגל החיפוש בעת התחברות למקור חי נתמך. כאשר הסמל סגול, מצב כוונון פעיל ועריכת שדות מופעלת.
 

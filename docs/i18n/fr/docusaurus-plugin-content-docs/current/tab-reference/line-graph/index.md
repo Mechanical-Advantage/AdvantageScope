@@ -18,7 +18,7 @@ Le delta entre l'heure sélectionnée et l'heure survolée est affiché sous for
 
 Pour commencer, faites glisser un champ vers l'une des trois sections (gauche, droite ou discret). Supprimez un champ à l'aide du bouton X, ou masquez-le temporairement en cliquant sur l'icône de l'œil ou en double-cliquant sur le nom du champ. Pour tout effacer, cliquez sur les trois points près du titre de l'axe, puis sur `Tout effacer`. Les champs peuvent être réorganisés dans la liste en les faisant glisser.
 
-La couleur et le style de ligne de chaque champ peuvent être personnalisés en cliquant sur l'icône colorée ou en faisant un clic droit sur le nom du champ. Les données de l'API d'alertes persistantes de WPILib [persistent alerts](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) peuvent être visualisées en ajoutant le groupe d'alertes en tant que champ discret. Un exemple de visualisation est illustré ci-dessous.
+La couleur et le style de ligne de chaque champ peuvent être personnalisés en cliquant sur l'icône colorée ou en faisant un clic droit sur le nom du champ. Les données de l'API d'alertes persistantes de WPILib [persistent alerts](https://docs.wpilib.org/fr/latest/docs/software/telemetry/persistent-alerts.html) peuvent être visualisées en ajoutant le groupe d'alertes en tant que champ discret. Un exemple de visualisation est illustré ci-dessous.
 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Visualisation des alertes" />
 

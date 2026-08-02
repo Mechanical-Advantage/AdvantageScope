@@ -6,7 +6,7 @@ AdvantageScope XR מפיחה חיים בתצוגת 👀 [מגרש 3D](/tab-refer
 
 ## דרישות
 
-- **מארח (Host):** אפליקציית שולחן העבודה של AdvantageScope ב-Windows, macOS, או Linux (גרסה v4.1.0 או מתקדמת יותר). כל חומת אש (firewall) במכשיר צריכה להיות [מושבתת](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
+- **מארח (Host):** אפליקציית שולחן העבודה של AdvantageScope ב-Windows, macOS, או Linux (גרסה v4.1.0 או מתקדמת יותר). כל חומת אש (firewall) במכשיר צריכה להיות [מושבתת](https://docs.wpilib.org/he/stable/docs/networking/networking-introduction/windows-firewall-configuration.html#disabling-windows-firewall).
 - **לקוח (Client):** מכשיר iPhone או iPad המפעיל iOS/iPadOS 16 או גרסה מתקדמת יותר. אין צורך בהתקנת אפליקציה.
 - **רשת:** שני המכשירים חייבים להיות מחוברים לאותה רשת (Wi-Fi, חיבור אינטרנט ב-USB וכו'). בכפוף לדרישה למטה, רשת זו אינה חייבת להיות מחוברת לאינטרנט.
 - **אינטרנט:** אם לא נעשה שימוש ב-AdvantageScope XR לאחרונה, המכשיר הנייד חייב להיות מחובר לאינטרנט (כגון נתונים סלולריים). לביטול דרישה זו, עיינו בקטע [שימוש לא מקוון](#offline-usage) למטה.

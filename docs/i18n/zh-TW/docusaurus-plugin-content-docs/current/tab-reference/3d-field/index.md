@@ -63,7 +63,7 @@ periodic() {
 ```
 
 :::tip
-WPILib 的 [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) 類別也可以用於一起記錄數組 2D 姿態資料。
+WPILib 的 [`Field2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/field2d-widget.html) 類別也可以用於一起記錄數組 2D 姿態資料。
 :::
 
 </TabItem>
@@ -103,7 +103,7 @@ packet.put("Pose heading (deg)", 180.0); // 度
 
 ### 2D 機構 {#2d-mechanisms}
 
-要視覺化使用 [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) 記錄的機構資料，請將機構欄位新增至現有的機器人或幽靈物件。機構使用簡單的方塊投影到機器人的 XZ 或 YZ 平面上，如下所示。點擊齒輪圖示或在欄位名稱上按右鍵以在 XZ 和 YZ 平面之間切換。機器人的原點位於機構底部邊緣的中心。
+要視覺化使用 [`Mechanism2d`](https://docs.wpilib.org/zh-cn/stable/docs/software/dashboards/glass/mech2d-widget.html) 記錄的機構資料，請將機構欄位新增至現有的機器人或幽靈物件。機構使用簡單的方塊投影到機器人的 XZ 或 YZ 平面上，如下所示。點擊齒輪圖示或在欄位名稱上按右鍵以在 XZ 和 YZ 平面之間切換。機器人的原點位於機構底部邊緣的中心。
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D 機構" />
 

@@ -2,7 +2,7 @@
 
 AdvantageScope'taki tüm görselleştirmeler, log dosyalarının yanı sıra bir robottan veya simülatörden canlı veri almak üzere tasarlanmıştır. Bu bölüm, gerçek zamanlı veri kaynaklarına nasıl bağlanılacağını açıklamaktadır. AdvantageScope tarafından aşağıdaki canlı veri kaynakları desteklenmektedir:
 
-- **NetworkTables:** Bu, WPILib'in birincil ağ protokolüdür. Detaylar için [WPILib dokümantasyonuna](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html) bakın.
+- **NetworkTables:** Bu, WPILib'in birincil ağ protokolüdür. Detaylar için [WPILib dokümantasyonuna](https://docs.wpilib.org/tr/stable/docs/software/networktables/index.html) bakın.
 - **NetworkTables (AdvantageKit):** Bu mod, NetworkTables'daki `AdvantageKit` tablosunda yayın yapan AdvantageKit çalıştıran robot kodları ile kullanım için tasarlanmıştır.
 - **Systemcore Tanılama:** Bu mod, robot durumu ve cihaz G/Ç gibi tanılama verilerini içeren Systemcore OS tarafından kullanılan yerleşik NetworkTables sunucusuna bağlanır.
 - **Phoenix Tanılama:** Bu mod, [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) ile CTRE CAN cihazlarından veri akışına izin veren bir Phoenix [tanılama sunucusuna](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html) bağlanmak için HTTP kullanır. Bu, Phoenix Tuner'daki [grafik çizme özelliğine](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html) benzer. Daha fazla bilgi için [bu sayfaya](/overview/live-sources/phoenix-diagnostics) bakın.
@@ -41,7 +41,7 @@ Canlı bir kaynağa bağlandığında AdvantageScope, varsayılan olarak tüm se
 
 ### Robot adresi
 
-[WPILib dokümantasyonunda](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) açıklandığı şekilde bir 10.TE.AM.2 IP adresi kullanarak robot adresini girin. Systemcore'a USB veya yerleşik Wi-Fi erişim noktası aracılığıyla bağlanırken, doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB Adresini Kullan`/`Systemcore Wi-Fi Adresini Kullan` seçeneğine tıklayın.
+[WPILib dokümantasyonunda](https://docs.wpilib.org/tr/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) açıklandığı şekilde bir 10.TE.AM.2 IP adresi kullanarak robot adresini girin. Systemcore'a USB veya yerleşik Wi-Fi erişim noktası aracılığıyla bağlanırken, doğru statik IP adresini geçici olarak kullanmak için `Dosya` > `Systemcore USB Adresini Kullan`/`Systemcore Wi-Fi Adresini Kullan` seçeneğine tıklayın.
 
 ### Canlı mod
 

@@ -18,7 +18,7 @@ Seçilen zaman ile üzerine gelinen zaman arasındaki fark grafik üzerinde bir 
 
 Başlamak için bir alanı üç bölümden birine (sol, sağ veya ayrık) sürükleyin. X düğmesini kullanarak bir alanı silin veya göz simgesine tıklayarak ya da alan adına çift tıklayarak geçici olarak gizleyin. Tüm alanları kaldırmak için eksen başlığının yanındaki üç noktaya ve ardından `Tümünü Temizle` seçeneğine tıklayın. Alanlar listede tıklanıp sürüklenerek yeniden düzenlenebilir.
 
-Her alanın rengi ve çizgi stili, renkli simgeye tıklanarak veya alan adına sağ tıklanarak özelleştirilebilir. WPILib [kalıcı uyarılar](https://docs.wpilib.org/en/latest/docs/software/telemetry/persistent-alerts.html) API'sinden gelen veriler, uyarı grubu ayrık bir alan olarak eklenerek görselleştirilebilir. Örnek bir görselleştirme aşağıda gösterilmiştir.
+Her alanın rengi ve çizgi stili, renkli simgeye tıklanarak veya alan adına sağ tıklanarak özelleştirilebilir. WPILib [kalıcı uyarılar](https://docs.wpilib.org/tr/latest/docs/software/telemetry/persistent-alerts.html) API'sinden gelen veriler, uyarı grubu ayrık bir alan olarak eklenerek görselleştirilebilir. Örnek bir görselleştirme aşağıda gösterilmiştir.
 
 <img src="/img/tab-reference/line-graph/line-graph-2.png" alt="Alerts visualization" />
 

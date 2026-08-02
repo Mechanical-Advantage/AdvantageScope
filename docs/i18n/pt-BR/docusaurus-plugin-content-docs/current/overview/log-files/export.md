@@ -17,7 +17,7 @@ Além da exportação completa do log descrita aqui, a guia 💬 [Console](/tab-
 :::warning
 **Exportando dados para SysId**
 
-Não recomendamos o uso deste recurso para exportar dados de log **gerados em simulação** para uso no [SysId](https://docs.wpilib.org/en/stable/docs/software/advanced-controls/system-identification/introduction.html), pois o SysId requer dados de timestamp adicionais inconsistentes com as opções de exportação padrão do AdvantageScope. Observe que os dados de log **gerados _fora_ da simulação** podem ser exportados para uso no SysId com perda mínima de dados (embora a precisão máxima possa ser alcançada usando o log de dados _original_ diretamente no SysId).
+Não recomendamos o uso deste recurso para exportar dados de log **gerados em simulação** para uso no [SysId](https://docs.wpilib.org/pt/stable/docs/software/advanced-controls/system-identification/introduction.html), pois o SysId requer dados de timestamp adicionais inconsistentes com as opções de exportação padrão do AdvantageScope. Observe que os dados de log **gerados _fora_ da simulação** podem ser exportados para uso no SysId com perda mínima de dados (embora a precisão máxima possa ser alcançada usando o log de dados _original_ diretamente no SysId).
 
 _Este aviso **não se aplica** aos logs produzidos pelo AdvantageKit, que podem ser exportados sem perda de dados selecionando a opção "Ciclos do AdvantageKit". Consulte [esta página](https://docs.advantagekit.org/data-flow/sysid-compatibility) para mais detalhes._
 :::

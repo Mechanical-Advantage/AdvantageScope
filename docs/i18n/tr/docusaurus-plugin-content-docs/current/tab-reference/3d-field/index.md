@@ -63,7 +63,7 @@ periodic() {
 ```
 
 :::tip
-WPILib'in [`Field2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/field2d-widget.html) sınıfı birden fazla 2B poz verisi kümesini birlikte loglamak için de kullanılabilir.
+WPILib'in [`Field2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/field2d-widget.html) sınıfı birden fazla 2B poz verisi kümesini birlikte loglamak için de kullanılabilir.
 :::
 
 </TabItem>
@@ -103,7 +103,7 @@ Mekanizma verileri 2B mekanizmalar veya eklemli 3B bileşenler kullanılarak gö
 
 ### 2B mekanizmalar {#2d-mechanisms}
 
-Bir [`Mechanism2d`](https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/mech2d-widget.html) kullanılarak loglanan mekanizma verilerini görselleştirmek için mekanizma alanını mevcut bir robot veya hayalet nesnesine ekleyin. Mekanizma, aşağıda gösterildiği gibi basit kutular kullanılarak robotun XZ veya YZ düzlemine yansıtılır. XZ ve YZ düzlemleri arasında geçiş yapmak için dişli simgesine tıklayın veya alan adına sağ tıklayın. Robotun orijini mekanizmanın alt kenarında merkezlenmiştir.
+Bir [`Mechanism2d`](https://docs.wpilib.org/tr/stable/docs/software/dashboards/glass/mech2d-widget.html) kullanılarak loglanan mekanizma verilerini görselleştirmek için mekanizma alanını mevcut bir robot veya hayalet nesnesine ekleyin. Mekanizma, aşağıda gösterildiği gibi basit kutular kullanılarak robotun XZ veya YZ düzlemine yansıtılır. XZ ve YZ düzlemleri arasında geçiş yapmak için dişli simgesine tıklayın veya alan adına sağ tıklayın. Robotun orijini mekanizmanın alt kenarında merkezlenmiştir.
 
 <img src="/img/tab-reference/3d-field/3d-field-2.png" alt="2D mechanism" />
 

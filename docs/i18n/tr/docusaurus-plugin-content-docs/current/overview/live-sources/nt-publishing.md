@@ -10,7 +10,7 @@ AdvantageScope, bir log dosyasında saklanan NetworkTables verilerini bir simül
 - Gerçek bir robot üzerinde bir yan işlemciden gelen verileri taklit etme.
 - Gerçekçi maç verilerini kullanarak sürücü gösterge paneli uygulamalarında hata ayıklama.
 
-Bu özellik, NetworkTables verilerinin tam bir kaydını içeren bir log dosyası gerektirir; bu kayıt WPILib'in [yerleşik veri loglayıcısı](https://docs.wpilib.org/en/stable/docs/software/telemetry/datalog.html) kullanılarak oluşturulabilir. AdvantageKit'in bunun yerine simülasyonda daha eksiksiz deterministik yeniden oynatmaya olanak tanıdığından bu özelliği desteklemediğini unutmayın.
+Bu özellik, NetworkTables verilerinin tam bir kaydını içeren bir log dosyası gerektirir; bu kayıt WPILib'in [yerleşik veri loglayıcısı](https://docs.wpilib.org/tr/stable/docs/software/telemetry/datalog.html) kullanılarak oluşturulabilir. AdvantageKit'in bunun yerine simülasyonda daha eksiksiz deterministik yeniden oynatmaya olanak tanıdığından bu özelliği desteklemediğini unutmayın.
 
 ## Başlarken
 

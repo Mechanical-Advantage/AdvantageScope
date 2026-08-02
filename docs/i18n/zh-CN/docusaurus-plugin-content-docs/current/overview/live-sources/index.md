@@ -2,7 +2,7 @@
 
 AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨在接收来自机器人或仿真器的实时数据。本节描述如何连接到实时数据源。AdvantageScope 支持以下实时数据源：
 
-- **NetworkTables:** 这是 WPILib 的主要网络协议。有关更多详细信息，请参阅 [WPILib 文档](https://docs.wpilib.org/en/stable/docs/software/networktables/index.html)。
+- **NetworkTables:** 这是 WPILib 的主要网络协议。有关更多详细信息，请参阅 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/software/networktables/index.html)。
 - **NetworkTables (AdvantageKit):** 此模式专为运行 AdvantageKit 的机器人代码设计，该代码发布到 NetworkTables 中的 `AdvantageKit` 表。
 - **Systemcore Diagnostics:** 此模式连接到 Systemcore OS 使用的内置 NetworkTables 服务器，其中包括机器人状态和设备 IO 等诊断数据。
 - **Phoenix Diagnostics:** 此模式使用 HTTP 连接到 Phoenix [诊断服务器](https://pro.docs.ctr-electronics.com/en/latest/docs/troubleshooting/running-diagnostics.html)，允许通过 [Phoenix 6](https://pro.docs.ctr-electronics.com/en/latest/) 从 CTRE CAN 设备串流数据。这类似于 Phoenix Tuner 中的 [绘图功能](https://pro.docs.ctr-electronics.com/en/latest/docs/tuner/plotting.html)。有关更多信息，请参阅 [此页面](/overview/live-sources/phoenix-diagnostics)。
@@ -41,7 +41,7 @@ AdvantageScope 中的所有可视化功能除了处理日志文件外，均旨�
 
 ### 机器人地址
 
-按照 [WPILib 文档](https://docs.wpilib.org/en/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用 10.TE.AM.2 格式的 IP 地址输入机器人地址。通过 USB 或内置 Wi-Fi 热点连接到 Systemcore 时，点击 `文件` > `使用 Systemcore USB 地址`/`使用 Systemcore Wi-Fi 地址` 以临时使用正确的静态 IP 地址。
+按照 [WPILib 文档](https://docs.wpilib.org/zh-cn/stable/docs/networking/networking-introduction/ip-configurations.html#te-am-ip-notation) 中所述，使用 10.TE.AM.2 格式的 IP 地址输入机器人地址。通过 USB 或内置 Wi-Fi 热点连接到 Systemcore 时，点击 `文件` > `使用 Systemcore USB 地址`/`使用 Systemcore Wi-Fi 地址` 以临时使用正确的静态 IP 地址。
 
 ### 实时模式
 
