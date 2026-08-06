@@ -98,6 +98,7 @@ import {
   saveBetaWelcomeComplete,
   shouldPromptBetaSurvey
 } from "./betaUtil";
+import { buildAppMenuSystemItems, buildEditMenu, buildViewMenu, buildWindowMenu } from "./menuBuilder";
 import { getOwletDownloadStatus, startOwletDownloadLoop } from "./owletDownloadLoop";
 import { checkHootIsPro, convertHoot, CTRE_LICENSE_URL } from "./owletInterface";
 
@@ -1845,6 +1846,7 @@ function downloadSave(files: string[]) {
 /** Create the app menu. */
 function setupMenu() {
   const isMac = process.platform === "darwin";
+  const isEnglish = lang.startsWith("en");
   const prefs: Preferences = jsonfile.readFileSync(PREFS_FILENAME);
 
   menuTemplate = [
@@ -1853,7 +1855,7 @@ function setupMenu() {
       label: isMac ? "" : t("menu.titles.app"),
       submenu: [
         {
-          label: "About AdvantageScope",
+          label: t("menu.app.aboutApp"),
           click() {
             createAboutWindow();
           }
@@ -1922,7 +1924,7 @@ function setupMenu() {
           click() {
             dialog.showMessageBox({
               type: "info",
-              title: "About",
+              title: t("menu.app.aboutTitle"),
               message: t("main.downloadStatus.assetTitle"),
               detail: getAssetDownloadStatus(),
               buttons: [t("main.buttons.close")],
@@ -1935,7 +1937,7 @@ function setupMenu() {
           click() {
             dialog.showMessageBox({
               type: "info",
-              title: "About",
+              title: t("menu.app.aboutTitle"),
               message: t("main.downloadStatus.owletTitle"),
               detail: getOwletDownloadStatus(),
               buttons: [t("main.buttons.close")],
@@ -1943,18 +1945,7 @@ function setupMenu() {
             });
           }
         },
-        ...(isMac
-          ? ([
-              { type: "separator" },
-              { role: "services" },
-              { type: "separator" },
-              { role: "hide" },
-              { role: "hideOthers" },
-              { role: "unhide" },
-              { type: "separator" },
-              { role: "quit" }
-            ] as const)
-          : [])
+        ...buildAppMenuSystemItems(isMac, isEnglish)
       ]
     },
     {
@@ -2286,49 +2277,37 @@ function setupMenu() {
         }
       ]
     },
-    { role: "editMenu" },
-
-    {
-      role: "viewMenu",
-      submenu: [
-        { role: "reload" },
-        { role: "toggleDevTools" },
-        { type: "separator" },
-        { role: "resetZoom" },
-        { role: "zoomIn" },
-        { role: "zoomOut" },
-        { type: "separator" },
-        {
-          label: t("menu.lineGraph.zoomEnabled"),
-          accelerator: "CmdOrCtrl+\\",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "zoom-enabled");
-          }
-        },
-        { type: "separator" },
-        {
-          label: t("menu.view.toggleSidebar"),
-          accelerator: "CmdOrCtrl+.",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "toggle-sidebar");
-          }
-        },
-        {
-          label: t("menu.view.toggleControls"),
-          accelerator: "CmdOrCtrl+/",
-          click(_, baseWindow) {
-            const window = baseWindow as BrowserWindow | undefined;
-            if (window === undefined || !hubWindows.includes(window)) return;
-            sendMessage(window, "toggle-controls");
-          }
-        },
-        { role: "togglefullscreen" }
-      ]
-    },
+    buildEditMenu(isEnglish),
+    buildViewMenu(isEnglish, [
+      {
+        label: t("menu.lineGraph.zoomEnabled"),
+        accelerator: "CmdOrCtrl+\\",
+        click(_, baseWindow) {
+          const window = baseWindow as BrowserWindow | undefined;
+          if (window === undefined || !hubWindows.includes(window)) return;
+          sendMessage(window, "zoom-enabled");
+        }
+      },
+      { type: "separator" },
+      {
+        label: t("menu.view.toggleSidebar"),
+        accelerator: "CmdOrCtrl+.",
+        click(_, baseWindow) {
+          const window = baseWindow as BrowserWindow | undefined;
+          if (window === undefined || !hubWindows.includes(window)) return;
+          sendMessage(window, "toggle-sidebar");
+        }
+      },
+      {
+        label: t("menu.view.toggleControls"),
+        accelerator: "CmdOrCtrl+/",
+        click(_, baseWindow) {
+          const window = baseWindow as BrowserWindow | undefined;
+          if (window === undefined || !hubWindows.includes(window)) return;
+          sendMessage(window, "toggle-controls");
+        }
+      }
+    ]),
     {
       label: t("menu.tabs.heading"),
       submenu: [
@@ -2426,39 +2405,27 @@ function setupMenu() {
         }
       ]
     },
-    isMac
-      ? { role: "windowMenu" }
-      : {
-          label: t("menu.window.heading"),
-          submenu: [
-            { role: "minimize" },
-            {
-              label: t("menu.window.bringFront"),
-              accelerator: "Ctrl+B",
-              click(_, window) {
-                hubWindows.forEach((window) => {
-                  if (!window.isDestroyed()) {
-                    window.moveTop();
-                  }
-                });
-                if (downloadWindow && !downloadWindow.isDestroyed()) downloadWindow.moveTop();
-                if (prefsWindow && !prefsWindow.isDestroyed()) prefsWindow?.moveTop();
-                if (licensesWindow && !licensesWindow.isDestroyed()) licensesWindow?.moveTop();
-                Object.values(satelliteWindows).forEach((windows) =>
-                  windows.forEach((window) => {
-                    if (!window.isDestroyed()) {
-                      window.moveTop();
-                    }
-                  })
-                );
-                window?.moveTop();
-              }
-            },
-            { type: "separator" }
-          ]
-        },
+    buildWindowMenu(isMac, isEnglish, (baseWindow) => {
+      hubWindows.forEach((window) => {
+        if (!window.isDestroyed()) {
+          window.moveTop();
+        }
+      });
+      if (downloadWindow && !downloadWindow.isDestroyed()) downloadWindow.moveTop();
+      if (prefsWindow && !prefsWindow.isDestroyed()) prefsWindow?.moveTop();
+      if (licensesWindow && !licensesWindow.isDestroyed()) licensesWindow?.moveTop();
+      Object.values(satelliteWindows).forEach((windows) =>
+        windows.forEach((window) => {
+          if (!window.isDestroyed()) {
+            window.moveTop();
+          }
+        })
+      );
+      baseWindow?.moveTop();
+    }),
     {
       role: "help",
+      label: t("menu.titles.help"),
       submenu: [
         {
           label: t("menu.help.reportProblem"),
@@ -2516,7 +2483,7 @@ function createAboutWindow() {
   dialog
     .showMessageBox({
       type: "info",
-      title: "About",
+      title: t("menu.app.aboutTitle"),
       message: "AdvantageScope",
       detail: COPYRIGHT + "\n\n" + detail,
       buttons: ["Close", process.platform === "win32" ? "Copy and Close" : "Copy & Close"],

@@ -652,6 +652,9 @@ menu:
     helpTooltip: "Help menu" # Help menu button tooltip
 
   app:
+    aboutApp: "About AdvantageScope" # About AdvantageScope menu option
+    aboutAppLite: "About AdvantageScope Lite" # About AdvantageScope Lite menu option
+    aboutTitle: "About" # Title for About dialog window
     preferences: "Preferences" # Menu option for preferences
     preferencesEllipsis: "Show Preferences..." # Menu option for preferences with ellipsis
     preferencesShortcut: "Show Preferences ({{shortcut}})" # Menu option with shortcut in Lite
@@ -664,6 +667,20 @@ menu:
     settings: "Settings..." # Menu option for application settings
     setLanguage: "Set Language 🌐" # Set language menu option in Lite
     setLiveMode: "Set Live Mode" # Set live mode menu option in Lite
+    services: "Services" # Menu option for macOS system services submenu
+    hide: "Hide AdvantageScope" # Menu option to hide AdvantageScope on macOS
+    hideOthers: "Hide Others" # Menu option to hide other applications on macOS
+    unhide: "Show All" # Menu option to show all applications on macOS
+    quit: "Quit AdvantageScope" # Menu option to quit AdvantageScope on macOS
+
+  edit:
+    heading: "Edit" # Edit menu heading
+    undo: "Undo" # Menu option to undo action
+    redo: "Redo" # Menu option to redo action
+    cut: "Cut" # Menu option to cut text/selection
+    copy: "Copy" # Menu option to copy text/selection
+    paste: "Paste" # Menu option to paste text/selection
+    selectAll: "Select All" # Menu option to select all text/content
 
   file:
     heading: "File" # File menu heading
@@ -696,6 +713,12 @@ menu:
     resetLayout: "Reset Layout" # Menu option to reset DS layout in Lite
     loopVisible: "Loop Visible Range" # Checkbox menu option to loop playback range
     showRobotMode: "Show Robot Mode" # Checkbox menu option to show robot mode overlay
+    reload: "Reload" # Menu option to reload the window
+    toggleDevTools: "Toggle Developer Tools" # Menu option to toggle developer tools
+    resetZoom: "Actual Size" # Menu option to reset zoom
+    zoomIn: "Zoom In" # Menu option to zoom in
+    zoomOut: "Zoom Out" # Menu option to zoom out
+    toggleFullscreen: "Toggle Full Screen" # Menu option to toggle full screen
 
   tabs:
     heading: "Tabs" # Tabs menu heading
@@ -717,6 +740,8 @@ menu:
   window:
     heading: "Window" # Window menu heading
     bringFront: "Bring All to Front" # Menu option to bring all windows to front
+    minimize: "Minimize" # Menu option to minimize window
+    zoom: "Zoom" # Menu option to zoom window on macOS
 
   sidebar:
     clearAll: "Clear All" # Menu option to clear all items in source list

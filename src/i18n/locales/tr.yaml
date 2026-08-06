@@ -634,6 +634,9 @@ menu:
     helpTooltip: "Yardım menüsü"
 
   app:
+    aboutApp: "AdvantageScope Hakkında"
+    aboutAppLite: "AdvantageScope Lite Hakkında"
+    aboutTitle: "Hakkında"
     preferences: "Tercihler"
     preferencesEllipsis: "Tercihleri göster..."
     preferencesShortcut: "Tercihleri göster ({{shortcut}})"
@@ -646,6 +649,20 @@ menu:
     settings: "Ayarlar..."
     setLanguage: "Dili ayarla 🌐"
     setLiveMode: "Canlı modu ayarla"
+    services: "Servisler"
+    hide: "AdvantageScope'u Gizle"
+    hideOthers: "Diğerlerini Gizle"
+    unhide: "Tümünü Göster"
+    quit: "AdvantageScope'tan Çık"
+
+  edit:
+    heading: "Düzen"
+    undo: "Geri Al"
+    redo: "Yinele"
+    cut: "Kes"
+    copy: "Kopyala"
+    paste: "Yapıştır"
+    selectAll: "Tümünü Seç"
 
   file:
     heading: "Dosya"
@@ -678,6 +695,12 @@ menu:
     resetLayout: "Düzeni sıfırla"
     loopVisible: "Görünür aralığı döngüye al"
     showRobotMode: "Robot modunu göster"
+    reload: "Yeniden Yükle"
+    toggleDevTools: "Geliştirici araçlarını aç/kapat"
+    resetZoom: "Gerçek Boyut"
+    zoomIn: "Yakınlaştır"
+    zoomOut: "Uzaklaştır"
+    toggleFullscreen: "Tam ekranı aç/kapat"
 
   tabs:
     heading: "Sekmeler"
@@ -699,6 +722,8 @@ menu:
   window:
     heading: "Pencere"
     bringFront: "Hepsini öne getir"
+    minimize: "Simge durumuna küçült"
+    zoom: "Büyüt"
 
   sidebar:
     clearAll: "Tümünü temizle"

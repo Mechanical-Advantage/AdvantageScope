@@ -690,6 +690,9 @@ menu:
     helpTooltip: "قائمة المساعدة"
 
   app:
+    aboutApp: "حول AdvantageScope"
+    aboutAppLite: "حول AdvantageScope Lite"
+    aboutTitle: "حول"
     preferences: "التفضيلات"
     preferencesEllipsis: "إظهار التفضيلات..."
     preferencesShortcut: "إظهار التفضيلات ({{shortcut}})"
@@ -702,6 +705,20 @@ menu:
     settings: "الإعدادات..."
     setLanguage: "تعيين اللغة 🌐"
     setLiveMode: "تعيين الوضع المباشر"
+    services: "الخدمات"
+    hide: "إخفاء AdvantageScope"
+    hideOthers: "إخفاء الآخرين"
+    unhide: "إظهار الكل"
+    quit: "إنهاء AdvantageScope"
+
+  edit:
+    heading: "تحرير"
+    undo: "تراجع"
+    redo: "إعادة"
+    cut: "قص"
+    copy: "نسخ"
+    paste: "لصق"
+    selectAll: "تحديد الكل"
 
   file:
     heading: "ملف"
@@ -734,6 +751,12 @@ menu:
     resetLayout: "إعادة تعيين التخطيط"
     loopVisible: "تكرار النطاق المرئي"
     showRobotMode: "إظهار وضع الروبوت"
+    reload: "إعادة تحميل"
+    toggleDevTools: "تبديل أدوات المطور"
+    resetZoom: "الحجم الأصلي"
+    zoomIn: "تكبير"
+    zoomOut: "تصغير"
+    toggleFullscreen: "تبديل الشاشة الكاملة"
 
   tabs:
     heading: "علامات التبويب"
@@ -755,6 +778,8 @@ menu:
   window:
     heading: "نافذة"
     bringFront: "إحضار الكل للمقدمة"
+    minimize: "تصغير"
+    zoom: "تكبير/تصغير"
 
   sidebar:
     clearAll: "مسح الكل"

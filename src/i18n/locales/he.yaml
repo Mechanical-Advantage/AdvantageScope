@@ -655,6 +655,9 @@ menu:
     helpTooltip: "תפריט עזרה"
 
   app:
+    aboutApp: "אודות AdvantageScope"
+    aboutAppLite: "אודות AdvantageScope Lite"
+    aboutTitle: "אודות"
     preferences: "העדפות"
     preferencesEllipsis: "הצגת העדפות..."
     preferencesShortcut: "הצגת העדפות ({{shortcut}})"
@@ -667,6 +670,20 @@ menu:
     settings: "הגדרות..."
     setLanguage: "הגדרת שפה 🌐"
     setLiveMode: "הגדרת מצב חי"
+    services: "שירותים"
+    hide: "הסתרת AdvantageScope"
+    hideOthers: "הסתרת שאר היישומים"
+    unhide: "הצגת הכול"
+    quit: "יציאה מ-AdvantageScope"
+
+  edit:
+    heading: "עריכה"
+    undo: "ביטול"
+    redo: "ביצוע שוב"
+    cut: "גזירה"
+    copy: "העתקה"
+    paste: "הדבקה"
+    selectAll: "בחירת הכול"
 
   file:
     heading: "קובץ"
@@ -699,6 +716,12 @@ menu:
     resetLayout: "איפוס פריסה"
     loopVisible: "ניגון מחזורי של הטווח הגלוי"
     showRobotMode: "הצגת מצב רובוט"
+    reload: "טעינה מחדש"
+    toggleDevTools: "הפעלה/כיבוי של כלי פיתוח"
+    resetZoom: "גודל מקורי"
+    zoomIn: "הגדלה"
+    zoomOut: "הקטנה"
+    toggleFullscreen: "הפעלה/כיבוי של מסך מלא"
 
   tabs:
     heading: "כרטיסיות"
@@ -720,6 +743,8 @@ menu:
   window:
     heading: "חלון"
     bringFront: "העברת הכול לחזית"
+    minimize: "מזעור"
+    zoom: "זום"
 
   sidebar:
     clearAll: "ניקוי הכול"

@@ -630,6 +630,9 @@ menu:
     helpTooltip: "帮助菜单"
 
   app:
+    aboutApp: "关于 AdvantageScope"
+    aboutAppLite: "关于 AdvantageScope Lite"
+    aboutTitle: "关于"
     preferences: "首选项"
     preferencesEllipsis: "显示首选项..."
     preferencesShortcut: "显示首选项 ({{shortcut}})"
@@ -642,6 +645,20 @@ menu:
     settings: "设置..."
     setLanguage: "设置语言 🌐"
     setLiveMode: "设置实时模式"
+    services: "服务"
+    hide: "隐藏 AdvantageScope"
+    hideOthers: "隐藏其他"
+    unhide: "显示全部"
+    quit: "退出 AdvantageScope"
+
+  edit:
+    heading: "编辑"
+    undo: "撤销"
+    redo: "重做"
+    cut: "剪切"
+    copy: "复制"
+    paste: "粘贴"
+    selectAll: "全选"
 
   file:
     heading: "文件"
@@ -674,6 +691,12 @@ menu:
     resetLayout: "重置布局"
     loopVisible: "循环可见范围"
     showRobotMode: "显示机器人模式"
+    reload: "重新加载"
+    toggleDevTools: "切换开发者工具"
+    resetZoom: "实际大小"
+    zoomIn: "放大"
+    zoomOut: "缩小"
+    toggleFullscreen: "切换全屏"
 
   tabs:
     heading: "选项卡"
@@ -695,6 +718,8 @@ menu:
   window:
     heading: "窗口"
     bringFront: "全部前置"
+    minimize: "最小化"
+    zoom: "缩放"
 
   sidebar:
     clearAll: "全部清除"

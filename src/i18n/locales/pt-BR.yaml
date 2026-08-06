@@ -642,6 +642,9 @@ menu:
     helpTooltip: "Menu ajuda"
 
   app:
+    aboutApp: "Sobre o AdvantageScope"
+    aboutAppLite: "Sobre o AdvantageScope Lite"
+    aboutTitle: "Sobre"
     preferences: "Preferências"
     preferencesEllipsis: "Mostrar preferências..."
     preferencesShortcut: "Mostrar preferências ({{shortcut}})"
@@ -654,6 +657,20 @@ menu:
     settings: "Configurações..."
     setLanguage: "Definir idioma 🌐"
     setLiveMode: "Definir modo ao vivo"
+    services: "Serviços"
+    hide: "Ocultar AdvantageScope"
+    hideOthers: "Ocultar outros"
+    unhide: "Mostrar tudo"
+    quit: "Encerrar o AdvantageScope"
+
+  edit:
+    heading: "Editar"
+    undo: "Desfazer"
+    redo: "Refazer"
+    cut: "Recortar"
+    copy: "Copiar"
+    paste: "Colar"
+    selectAll: "Selecionar tudo"
 
   file:
     heading: "Arquivo"
@@ -686,6 +703,12 @@ menu:
     resetLayout: "Redefinir layout"
     loopVisible: "Fazer loop no intervalo visível"
     showRobotMode: "Mostrar modo do robô"
+    reload: "Recarregar"
+    toggleDevTools: "Alternar ferramentas de desenvolvedor"
+    resetZoom: "Tamanho real"
+    zoomIn: "Ampliar"
+    zoomOut: "Reduzir"
+    toggleFullscreen: "Alternar tela cheia"
 
   tabs:
     heading: "Guias"
@@ -707,6 +730,8 @@ menu:
   window:
     heading: "Janela"
     bringFront: "Trazer tudo para frente"
+    minimize: "Minimizar"
+    zoom: "Zoom"
 
   sidebar:
     clearAll: "Limpar tudo"

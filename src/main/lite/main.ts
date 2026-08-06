@@ -494,7 +494,7 @@ async function handleHubMessage(message: NamedMessage) {
               if (prefsRaw !== null) mergePreferences(prefs, JSON.parse(prefsRaw));
               menuItems = [
                 {
-                  content: "About AdvantageScope Lite",
+                  content: t("menu.app.aboutAppLite"),
                   callback() {
                     let detailLines: string[] = [];
                     detailLines.push("Version: " + LITE_VERSION);

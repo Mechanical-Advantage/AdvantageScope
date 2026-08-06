@@ -667,6 +667,9 @@ menu:
     helpTooltip: "Меню помощи"
 
   app:
+    aboutApp: "О программе AdvantageScope"
+    aboutAppLite: "О программе AdvantageScope Lite"
+    aboutTitle: "О программе"
     preferences: "Настройки"
     preferencesEllipsis: "Показать настройки..."
     preferencesShortcut: "Показать настройки ({{shortcut}})"
@@ -679,6 +682,20 @@ menu:
     settings: "Настройки..."
     setLanguage: "Установить язык 🌐"
     setLiveMode: "Установить режим реального времени"
+    services: "Службы"
+    hide: "Скрыть AdvantageScope"
+    hideOthers: "Скрыть остальные"
+    unhide: "Показать все"
+    quit: "Завершить AdvantageScope"
+
+  edit:
+    heading: "Правка"
+    undo: "Отменить"
+    redo: "Повторить"
+    cut: "Вырезать"
+    copy: "Копировать"
+    paste: "Вставить"
+    selectAll: "Выделить всё"
 
   file:
     heading: "Файл"
@@ -711,6 +728,12 @@ menu:
     resetLayout: "Сбросить макет"
     loopVisible: "Зациклить видимый диапазон"
     showRobotMode: "Показывать режим робота"
+    reload: "Перезагрузить"
+    toggleDevTools: "Переключить инструменты разработчика"
+    resetZoom: "Реальный размер"
+    zoomIn: "Увеличить"
+    zoomOut: "Уменьшить"
+    toggleFullscreen: "Переключить полноэкранный режим"
 
   tabs:
     heading: "Вкладки"
@@ -732,6 +755,8 @@ menu:
   window:
     heading: "Окно"
     bringFront: "Переместить все на передний план"
+    minimize: "Свернуть"
+    zoom: "Изменить масштаб"
 
   sidebar:
     clearAll: "Очистить все"

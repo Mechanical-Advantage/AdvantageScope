@@ -641,6 +641,9 @@ menu:
     helpTooltip: "Анықтама мәзірі"
 
   app:
+    aboutApp: "AdvantageScope туралы"
+    aboutAppLite: "AdvantageScope Lite туралы"
+    aboutTitle: "Туралы"
     preferences: "Қалаулар"
     preferencesEllipsis: "Қалауларды көрсету..."
     preferencesShortcut: "Қалауларды көрсету ({{shortcut}})"
@@ -653,6 +656,20 @@ menu:
     settings: "Параметрлер..."
     setLanguage: "Тілді орнату 🌐"
     setLiveMode: "Тікелей режимді орнату"
+    services: "Қызметтер"
+    hide: "AdvantageScope қолданбасын жасыру"
+    hideOthers: "Басқаларын жасыру"
+    unhide: "Барлығын көрсету"
+    quit: "AdvantageScope қолданбасынан шығу"
+
+  edit:
+    heading: "Өңдеу"
+    undo: "Болдырмау"
+    redo: "Қайталау"
+    cut: "Қиып алу"
+    copy: "Көшіру"
+    paste: "Қою"
+    selectAll: "Барлығын таңдау"
 
   file:
     heading: "Файл"
@@ -685,6 +702,12 @@ menu:
     resetLayout: "Орналасуды қалпына келтіру"
     loopVisible: "Көрінетін ауқымды қайталау"
     showRobotMode: "Робот режимін көрсету"
+    reload: "Қайта жүктеу"
+    toggleDevTools: "Әзірлеуші құралдарын қосу/өшіру"
+    resetZoom: "Нақты өлшемі"
+    zoomIn: "Үлкейту"
+    zoomOut: "Кішірейту"
+    toggleFullscreen: "Толық экран режимін қосу/өшіру"
 
   tabs:
     heading: "Қойындылар"
@@ -706,6 +729,8 @@ menu:
   window:
     heading: "Терезе"
     bringFront: "Барлығын алдыңғы жоспарға шығару"
+    minimize: "Жию"
+    zoom: "Масштаб"
 
   sidebar:
     clearAll: "Барлығын тазарту"

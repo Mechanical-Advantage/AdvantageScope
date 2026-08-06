@@ -632,6 +632,9 @@ menu:
     helpTooltip: "說明選單"
 
   app:
+    aboutApp: "關於 AdvantageScope"
+    aboutAppLite: "關於 AdvantageScope Lite"
+    aboutTitle: "關於"
     preferences: "偏好設定"
     preferencesEllipsis: "顯示偏好設定..."
     preferencesShortcut: "顯示偏好設定 ({{shortcut}})"
@@ -644,6 +647,20 @@ menu:
     settings: "設定..."
     setLanguage: "設定語言 🌐"
     setLiveMode: "設定即時模式"
+    services: "服務"
+    hide: "隱藏 AdvantageScope"
+    hideOthers: "隱藏其他"
+    unhide: "顯示全部"
+    quit: "結束 AdvantageScope"
+
+  edit:
+    heading: "編輯"
+    undo: "復原"
+    redo: "重做"
+    cut: "剪下"
+    copy: "複製"
+    paste: "貼上"
+    selectAll: "全選"
 
   file:
     heading: "檔案"
@@ -676,6 +693,12 @@ menu:
     resetLayout: "重設佈局"
     loopVisible: "循環可見範圍"
     showRobotMode: "顯示機器人模式"
+    reload: "重新載入"
+    toggleDevTools: "切換開發者工具"
+    resetZoom: "實際大小"
+    zoomIn: "放大"
+    zoomOut: "縮小"
+    toggleFullscreen: "切換全螢幕"
 
   tabs:
     heading: "分頁"
@@ -697,6 +720,8 @@ menu:
   window:
     heading: "視窗"
     bringFront: "將全部移至最上層"
+    minimize: "縮小"
+    zoom: "縮放"
 
   sidebar:
     clearAll: "全部清除"

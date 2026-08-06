@@ -643,6 +643,9 @@ menu:
     helpTooltip: "Menu aide"
 
   app:
+    aboutApp: "À propos de AdvantageScope"
+    aboutAppLite: "À propos de AdvantageScope Lite"
+    aboutTitle: "À propos"
     preferences: "Préférences"
     preferencesEllipsis: "Afficher les préférences..."
     preferencesShortcut: "Afficher les préférences ({{shortcut}})"
@@ -655,6 +658,20 @@ menu:
     settings: "Paramètres..."
     setLanguage: "Définir la langue 🌐"
     setLiveMode: "Définir le mode en direct"
+    services: "Services"
+    hide: "Masquer AdvantageScope"
+    hideOthers: "Masquer les autres"
+    unhide: "Tout afficher"
+    quit: "Quitter AdvantageScope"
+
+  edit:
+    heading: "Édition"
+    undo: "Annuler"
+    redo: "Rétablir"
+    cut: "Couper"
+    copy: "Copier"
+    paste: "Coller"
+    selectAll: "Tout sélectionner"
 
   file:
     heading: "Fichier"
@@ -687,6 +704,12 @@ menu:
     resetLayout: "Réinitialiser la disposition"
     loopVisible: "Mettre en boucle la plage visible"
     showRobotMode: "Afficher le mode du robot"
+    reload: "Recharger"
+    toggleDevTools: "Activer/désactiver les outils de développement"
+    resetZoom: "Taille réelle"
+    zoomIn: "Zoom avant"
+    zoomOut: "Zoom arrière"
+    toggleFullscreen: "Activer le mode plein écran"
 
   tabs:
     heading: "Onglets"
@@ -708,6 +731,8 @@ menu:
   window:
     heading: "Fenêtre"
     bringFront: "Tout mettre au premier plan"
+    minimize: "Réduire"
+    zoom: "Zoom"
 
   sidebar:
     clearAll: "Tout effacer"

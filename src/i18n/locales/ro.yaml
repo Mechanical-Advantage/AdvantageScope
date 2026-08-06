@@ -655,6 +655,9 @@ menu:
     helpTooltip: "Meniu ajutor"
 
   app:
+    aboutApp: "Despre AdvantageScope"
+    aboutAppLite: "Despre AdvantageScope Lite"
+    aboutTitle: "Despre"
     preferences: "Preferințe"
     preferencesEllipsis: "Afișează preferințele..."
     preferencesShortcut: "Afișează preferințele ({{shortcut}})"
@@ -667,6 +670,20 @@ menu:
     settings: "Setări..."
     setLanguage: "Setare limbă 🌐"
     setLiveMode: "Setare mod live"
+    services: "Servicii"
+    hide: "Ascunde AdvantageScope"
+    hideOthers: "Ascunde celelalte"
+    unhide: "Afișează tot"
+    quit: "Părăsește AdvantageScope"
+
+  edit:
+    heading: "Editare"
+    undo: "Anulează"
+    redo: "Refă"
+    cut: "Decupează"
+    copy: "Copiază"
+    paste: "Lipește"
+    selectAll: "Selectează tot"
 
   file:
     heading: "Fișier"
@@ -699,6 +716,12 @@ menu:
     resetLayout: "Resetează aranjamentul"
     loopVisible: "Redă în buclă intervalul vizibil"
     showRobotMode: "Afișează modul robotului"
+    reload: "Reîncarcă"
+    toggleDevTools: "Comutare instrumente de dezvoltare"
+    resetZoom: "Dimensiune reală"
+    zoomIn: "Mărește"
+    zoomOut: "Micșorează"
+    toggleFullscreen: "Comutare ecran complet"
 
   tabs:
     heading: "File"
@@ -720,6 +743,8 @@ menu:
   window:
     heading: "Fereastră"
     bringFront: "Adu totul în față"
+    minimize: "Minimizează"
+    zoom: "Zoom"
 
   sidebar:
     clearAll: "Șterge tot"
