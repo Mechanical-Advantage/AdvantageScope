@@ -294,7 +294,7 @@ hub:
   title: "AdvantageScope"
   updateAvailable: "עדכון זמין"
   shareFeedback: "שיתוף משוב"
-  timelineScrollToZoom: "יש לגלול על ציר הזמן כדי להתקרב/להתרחק (Zoom)"
+  timelineScrollToZoom: "יש לגלול על ציר הזמן כדי להתקרב/להתרחק"
 
   logs:
     statusLoading: "טוען"
