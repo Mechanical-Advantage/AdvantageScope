@@ -257,6 +257,7 @@ sourceList:
     translation3d: "X: {{x}}, Y: {{y}}, Z: {{z}}"
     pose3d: "X: {{x}}, Y: {{y}}, Z: {{z}}, Тангаж: {{pitch}}, Крен: {{roll}}, Рыскание: {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "Жасыл"
     "#ff0000": "Қызыл"
     "#0000ff": "Көк"
@@ -526,6 +527,8 @@ hub:
     selectTitle: "Джойстик дереккөзін таңдау"
     noData: "Джойстик үшін деректер жоқ."
     selectLayout: "Деректерді көру үшін джойстик орналасуын таңдаңыз."
+    none: "Жоқ"
+    generic: "Әмбебап джойстик"
     port0: "0:"
     port1: "1:"
     port2: "2:"

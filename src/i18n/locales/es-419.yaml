@@ -256,6 +256,7 @@ sourceList:
     translation3d: "X: {{x}}, Y: {{y}}, Z: {{z}}"
     pose3d: "X: {{x}}, Y: {{y}}, Z: {{z}}, Alabeo: {{roll}}, Cabeceo: {{pitch}}, Guiñada: {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "Verde"
     "#ff0000": "Rojo"
     "#0000ff": "Azul"
@@ -528,6 +529,8 @@ hub:
     selectTitle: "Seleccionar fuente de datos del joystick"
     noData: "No hay datos para el joystick."
     selectLayout: "Selecciona una disposición de joystick para ver los datos."
+    none: "Ninguno"
+    generic: "Joystick genérico"
     port0: "0:"
     port1: "1:"
     port2: "2:"

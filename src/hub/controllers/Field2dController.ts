@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { getAssetName } from "../../shared/AdvantageScopeAssets";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import {
   AnnotatedPose2d,
@@ -107,7 +108,7 @@ export default class Field2dController implements TabController {
     if (window.assets !== null) {
       window.assets.field2ds.forEach((field) => {
         let option = document.createElement("option");
-        option.innerText = field.name;
+        option.innerText = getAssetName(field, window.lang);
         option.value = field.id;
         options.push(field.id);
         (field.isFTC ? ftcGroup : frcGroup).appendChild(option);

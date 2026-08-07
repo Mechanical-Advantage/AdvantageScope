@@ -385,12 +385,13 @@ export default class SourceList {
   /**
    * Updates a set of option values and validates that all items are valid.
    */
-  setOptionValues(type: string, option: string, values: string[]) {
+  setOptionValues(type: string, option: string, values: string[], titles?: (string | null)[]) {
     let typeConfig = this.config.types.find((typeConfig) => typeConfig.key === type);
     if (typeConfig === undefined) return;
     let optionConfig = typeConfig!.options.find((optionConfig) => optionConfig.key === option);
     if (optionConfig === undefined) return;
     optionConfig.values = values;
+    optionConfig.titles = titles;
 
     // Verify that all items have a valid selection
     this.state.forEach((item, index) => {
@@ -987,8 +988,13 @@ export default class SourceList {
     typeConfig.options.forEach((optionConfig) => {
       if (optionConfig.showInTypeName) {
         let valueKey = state.options[optionConfig.key];
-        if (optionConfig.values.includes(valueKey)) {
-          typeNameComponents.push(tValue(this.prefix, typeConfig.key, optionConfig.key, valueKey));
+        let index = optionConfig.values.indexOf(valueKey);
+        if (index !== -1) {
+          if (optionConfig.titles && optionConfig.titles[index]) {
+            typeNameComponents.push(optionConfig.titles[index] as string);
+          } else {
+            typeNameComponents.push(tValue(this.prefix, typeConfig.key, optionConfig.key, valueKey));
+          }
         }
       }
     });

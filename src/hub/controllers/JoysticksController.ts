@@ -5,6 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
+import { getAssetName } from "../../shared/AdvantageScopeAssets";
 import { BlankJoystickState, JOYSTICK_KEYS, getJoystickState } from "../../shared/log/LogUtil";
 import { JoysticksRendererCommand } from "../../shared/renderers/JoysticksRenderer";
 import { checkArrayType, createUUID } from "../../shared/util";
@@ -22,24 +23,33 @@ export default class JoysticksController implements TabController {
 
   /** Clears all options for the layout selectors then updates them with the latest options. */
   private resetLayoutOptions() {
-    let options = ["None", "Generic Joystick"];
+    let options: { title: string; value: string }[] = [
+      { title: t("hub.joysticks.none"), value: "None" },
+      { title: t("hub.joysticks.generic"), value: "Generic Joystick" }
+    ];
     if (window.assets !== null) {
-      options = [...options, ...window.assets.joysticks.map((joystick) => joystick.name)];
+      options.push(
+        ...window.assets.joysticks.map((joystick) => ({
+          title: getAssetName(joystick, window.lang),
+          value: joystick.name
+        }))
+      );
     }
     this.SELECTS.forEach((select) => {
       let value = select.value;
       while (select.firstChild) {
         select.removeChild(select.firstChild);
       }
-      options.forEach((title) => {
+      options.forEach((item) => {
         let option = document.createElement("option");
-        option.innerText = title;
+        option.innerText = item.title;
+        option.value = item.value;
         select.appendChild(option);
       });
-      if (options.includes(value)) {
+      if (options.some((item) => item.value === value)) {
         select.value = value;
       } else {
-        select.value = options[0];
+        select.value = options[0].value;
       }
     });
   }

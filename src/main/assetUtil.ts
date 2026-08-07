@@ -22,7 +22,26 @@ import {
   DEFAULT_DRIVER_STATIONS_FRC,
   DEFAULT_DRIVER_STATIONS_FTC
 } from "../shared/AdvantageScopeAssets";
+import { SUPPORTED_LANGS } from "../shared/Preferences";
 import { checkArrayType } from "../shared/util";
+
+function parseLocales(configRaw: unknown): { [key: string]: string } | undefined {
+  if (configRaw !== null && typeof configRaw === "object" && "locales" in configRaw) {
+    let localesRaw = (configRaw as any).locales;
+    if (localesRaw !== null && typeof localesRaw === "object" && !Array.isArray(localesRaw)) {
+      let locales: { [key: string]: string } = {};
+      for (let [key, value] of Object.entries(localesRaw)) {
+        if (SUPPORTED_LANGS.includes(key) && typeof value === "string") {
+          locales[key] = value;
+        }
+      }
+      if (Object.keys(locales).length > 0) {
+        return locales;
+      }
+    }
+  }
+  return undefined;
+}
 
 export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" {
   if (configRaw === null || typeof configRaw !== "object") return "invalid";
@@ -40,6 +59,10 @@ export function parseField2d(configRaw: unknown): Config2d | "invalid" | "skip" 
   };
   if ("name" in configRaw && typeof configRaw.name === "string") {
     config.name = configRaw.name;
+  }
+  let locales = parseLocales(configRaw);
+  if (locales !== undefined) {
+    config.locales = locales;
   }
   if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
     config.isFTC = configRaw.isFTC;
@@ -118,6 +141,10 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
   if ("name" in configRaw && typeof configRaw.name === "string") {
     config.name = configRaw.name;
   }
+  let locales = parseLocales(configRaw);
+  if (locales !== undefined) {
+    config.locales = locales;
+  }
   if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
     config.isFTC = configRaw.isFTC;
     if (config.isFTC) {
@@ -186,6 +213,10 @@ export function parseField3d(configRaw: unknown): Config3dField | "invalid" | "s
       config.gamePieces.push(gamePiece);
       if ("name" in gamePieceRaw && typeof gamePieceRaw.name === "string") {
         gamePiece.name = gamePieceRaw.name;
+      }
+      let gamePieceLocales = parseLocales(gamePieceRaw);
+      if (gamePieceLocales !== undefined) {
+        gamePiece.locales = gamePieceLocales;
       }
       if (
         "rotations" in gamePieceRaw &&
@@ -312,6 +343,10 @@ export function parseRobot(configRaw: unknown): Config3dRobot | "invalid" {
   if ("name" in configRaw && typeof configRaw.name === "string") {
     config.name = configRaw.name;
   }
+  let locales = parseLocales(configRaw);
+  if (locales !== undefined) {
+    config.locales = locales;
+  }
   if ("isFTC" in configRaw && typeof configRaw.isFTC === "boolean") {
     config.isFTC = configRaw.isFTC;
   }
@@ -351,6 +386,10 @@ export function parseRobot(configRaw: unknown): Config3dRobot | "invalid" {
       config.cameras.push(camera);
       if ("name" in cameraRaw && typeof cameraRaw.name === "string") {
         camera.name = cameraRaw.name;
+      }
+      let cameraLocales = parseLocales(cameraRaw);
+      if (cameraLocales !== undefined) {
+        camera.locales = cameraLocales;
       }
       if (
         "rotations" in cameraRaw &&
@@ -426,6 +465,10 @@ export function parseJoystick(configRaw: unknown): ConfigJoystick | "invalid" {
   };
   if ("name" in configRaw && typeof configRaw.name === "string") {
     config.name = configRaw.name;
+  }
+  let locales = parseLocales(configRaw);
+  if (locales !== undefined) {
+    config.locales = locales;
   }
   if ("components" in configRaw && Array.isArray(configRaw.components)) {
     configRaw.components.forEach((componentRaw: object) => {

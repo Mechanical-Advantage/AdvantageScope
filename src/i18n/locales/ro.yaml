@@ -262,6 +262,7 @@ sourceList:
     translation3d: "X: {{x}}, Y: {{y}}, Z: {{z}}"
     pose3d: "X: {{x}}, Y: {{y}}, Z: {{z}}, Ruliu: {{roll}}, Tangaj: {{pitch}}, Girație: {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "Verde"
     "#ff0000": "Roșu"
     "#0000ff": "Albastru"
@@ -540,6 +541,8 @@ hub:
     selectTitle: "Selectează sursa de date pentru joystick"
     noData: "Fără date pentru joystick."
     selectLayout: "Selectează un aranjament de joystick pentru a vizualiza datele."
+    none: "Niciunul"
+    generic: "Joystick generic"
     port0: "0:"
     port1: "1:"
     port2: "2:"

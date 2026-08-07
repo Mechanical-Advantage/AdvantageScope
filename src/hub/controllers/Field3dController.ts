@@ -5,7 +5,7 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-import { BuiltIn3dFields } from "../../shared/AdvantageScopeAssets";
+import { BuiltIn3dFields, getAssetName } from "../../shared/AdvantageScopeAssets";
 import { SourceListItemState, SourceListState } from "../../shared/SourceListConfig";
 import { IS_LITE } from "../../shared/buildConstants";
 import {
@@ -97,7 +97,7 @@ export default class Field3dController implements TabController {
     if (window.assets !== null) {
       [...window.assets.field3ds, ...BuiltIn3dFields].forEach((field) => {
         let option = document.createElement("option");
-        option.innerText = field.name;
+        option.innerText = getAssetName(field, window.lang);
         option.value = field.id;
         options.push(field.id);
         (field.isFTC ? ftcGroup : frcGroup).appendChild(option);
@@ -119,14 +119,21 @@ export default class Field3dController implements TabController {
     );
     let isFTC = fieldConfig !== undefined && fieldConfig.isFTC;
     let robotList: string[] = [];
+    let robotTitles: (string | null)[] = [];
     if (window.assets !== null) {
-      robotList = window.assets.robots.filter((robot) => robot.isFTC === isFTC).map((robot) => robot.name);
+      window.assets.robots
+        .filter((robot) => robot.isFTC === isFTC)
+        .forEach((robot) => {
+          robotList.push(robot.name);
+          robotTitles.push(getAssetName(robot, window.lang));
+        });
     }
     if (robotList.length === 0) {
       robotList.push("KitBot");
+      robotTitles.push(null);
     }
-    this.sourceList.setOptionValues("robot", "model", robotList);
-    this.sourceList.setOptionValues("ghost", "model", robotList);
+    this.sourceList.setOptionValues("robot", "model", robotList, robotTitles);
+    this.sourceList.setOptionValues("ghost", "model", robotList, robotTitles);
   }
 
   /** Updates the robots, source button, and other options based on the selected value. */
@@ -138,13 +145,18 @@ export default class Field3dController implements TabController {
 
     // Update game piece options
     let gamePieces: string[] = [];
+    let gamePieceTitles: (string | null)[] = [];
     if (fieldConfig !== undefined) {
-      gamePieces = fieldConfig.gamePieces.map((x) => x.name);
+      fieldConfig.gamePieces.forEach((x) => {
+        gamePieces.push(x.name);
+        gamePieceTitles.push(getAssetName(x, window.lang));
+      });
     }
     if (gamePieces.length === 0) {
       gamePieces.push("None");
+      gamePieceTitles.push(null);
     }
-    this.sourceList.setOptionValues("gamePiece", "variant", gamePieces);
+    this.sourceList.setOptionValues("gamePiece", "variant", gamePieces, gamePieceTitles);
 
     // Update AprilTag variants
     let aprilTagVariants: string[] = fieldConfig?.isFTC

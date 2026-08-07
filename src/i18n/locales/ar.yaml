@@ -280,6 +280,7 @@ sourceList:
     translation3d: "X: {{x}}، Y: {{y}}، Z: {{z}}"
     pose3d: "X: {{x}}، Y: {{y}}، Z: {{z}}، دحرجة: {{roll}}، خطو: {{pitch}}، انحراف: {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "أخضر"
     "#ff0000": "أحمر"
     "#0000ff": "أزرق"
@@ -576,6 +577,8 @@ hub:
     selectTitle: "تحديد مصدر بيانات ذراع التحكم"
     noData: "لا توجد بيانات لذراع التحكم."
     selectLayout: "حدد تخطيط ذراع التحكم لعرض البيانات."
+    none: "لا يوجد"
+    generic: "مقبض تحكم عام"
     port0: "0:"
     port1: "1:"
     port2: "2:"

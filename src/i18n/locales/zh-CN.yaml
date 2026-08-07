@@ -250,6 +250,7 @@ sourceList:
     translation3d: "X：{{x}}，Y：{{y}}，Z：{{z}}"
     pose3d: "X：{{x}}，Y：{{y}}，Z：{{z}}，横滚角：{{roll}}，俯仰角：{{pitch}}，偏航角：{{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "绿色"
     "#ff0000": "红色"
     "#0000ff": "蓝色"
@@ -516,6 +517,8 @@ hub:
     selectTitle: "选择控制器数据源"
     noData: "没有控制器数据。"
     selectLayout: "选择一个控制器布局以查看数据。"
+    none: "无"
+    generic: "通用控制器"
     port0: "0："
     port1: "1："
     port2: "2："

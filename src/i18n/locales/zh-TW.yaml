@@ -251,6 +251,7 @@ sourceList:
     translation3d: "X：{{x}}，Y：{{y}}，Z：{{z}}"
     pose3d: "X：{{x}}，Y：{{y}}，Z：{{z}}，滾轉：{{roll}}，俯仰：{{pitch}}，偏航：{{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "綠色"
     "#ff0000": "紅色"
     "#0000ff": "藍色"
@@ -517,6 +518,8 @@ hub:
     selectTitle: "選擇搖桿資料來源"
     noData: "沒有搖桿資料。"
     selectLayout: "選擇搖桿佈局以檢視資料。"
+    none: "無"
+    generic: "通用搖桿"
     port0: "0："
     port1: "1："
     port2: "2："

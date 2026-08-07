@@ -8,7 +8,13 @@
 import CameraControls from "camera-controls";
 import * as THREE from "three";
 import WorkerManager from "../../hub/WorkerManager";
-import { AdvantageScopeAssets, BuiltIn3dFields, Config3dField, CoordinateSystem } from "../AdvantageScopeAssets";
+import {
+  AdvantageScopeAssets,
+  BuiltIn3dFields,
+  Config3dField,
+  CoordinateSystem,
+  getAssetName
+} from "../AdvantageScopeAssets";
 import { Rotation3d, rotationSequenceToQuaternion } from "../geometry";
 import { Units } from "../units";
 import { checkArrayType, clampValue } from "../util";
@@ -180,7 +186,8 @@ export default class Field3dRendererImpl implements TabRenderer {
     canvas.addEventListener("mouseup", (event) => {
       if (startPx && event.clientX === startPx[0] && event.clientY === startPx[1]) {
         let robotConfig = window.assets?.robots.find((robotData) => robotData.name === this.primaryRobotModel);
-        let cameraList = robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => camera.name);
+        let cameraList =
+          robotConfig === undefined ? [] : robotConfig.cameras.map((camera) => getAssetName(camera, window.lang));
         window.sendMainMessage("ask-3d-camera", {
           options: cameraList,
           position: [event.clientX, event.clientY],

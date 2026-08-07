@@ -262,6 +262,7 @@ sourceList:
     translation3d: "X: {{x}}, Y: {{y}}, Z: {{z}}"
     pose3d: "X: {{x}}, Y: {{y}}, Z: {{z}}, גלגול: {{roll}}, עלרוד: {{pitch}}, סבסוב: {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "ירוק"
     "#ff0000": "אדום"
     "#0000ff": "כחול"
@@ -540,6 +541,8 @@ hub:
     selectTitle: "בחירת מקור נתוני בקר"
     noData: "אין נתונים עבור הבקר."
     selectLayout: "יש לבחור פריסת בקר כדי להציג נתונים."
+    none: "ללא"
+    generic: "ג'ויסטיק גנרי"
     port0: "0:"
     port1: "1:"
     port2: "2:"

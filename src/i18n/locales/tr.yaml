@@ -251,6 +251,7 @@ sourceList:
     translation3d: "X: {{x}}, Y: {{y}}, Z: {{z}}"
     pose3d: "X: {{x}}, Y: {{y}}, Z: {{z}}, Yalpalama: {{roll}}, Yunuslama: {{pitch}}, Sapma: {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "Yeşil"
     "#ff0000": "Kırmızı"
     "#0000ff": "Mavi"
@@ -519,6 +520,8 @@ hub:
     selectTitle: "Joystick veri kaynağını seçin"
     noData: "Joystick için veri yok."
     selectLayout: "Verileri görüntülemek için bir joystick düzeni seçin."
+    none: "Yok"
+    generic: "Genel Joystick"
     port0: "0:"
     port1: "1:"
     port2: "2:"

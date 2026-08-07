@@ -277,6 +277,8 @@ sourceList:
     "#3b875a": "Green" # Green graph color option
     "#d993aa": "Pink" # Pink graph color option
     "#5f4528": "Brown" # Brown graph color option
+    # Robot Models
+    KitBot: "KitBot" # Fallback 3D robot model name
     # Sizes
     normal: "Normal" # Normal thickness/size option
     bold: "Bold" # Bold thickness/size option
@@ -535,6 +537,8 @@ hub:
     selectTitle: "Select joystick data source" # Tooltip for joystick data source dropdown
     noData: "No data for joystick." # Canvas message when joystick has no data
     selectLayout: "Select a joystick layout to view data." # Canvas message when no layout is selected
+    none: "None" # Option for no joystick layout
+    generic: "Generic Joystick" # Option for generic joystick layout
     port0: "0:" # Port 0 label
     port1: "1:" # Port 1 label
     port2: "2:" # Port 2 label

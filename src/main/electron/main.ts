@@ -730,10 +730,10 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
         let currentTypeConfig = config.types.find((typeConfig) => typeConfig.key === state.type)!;
         if (currentTypeConfig.options.length === 1) {
           let optionConfig = currentTypeConfig.options[0];
-          optionConfig.values.forEach((valueKey) => {
+          optionConfig.values.forEach((valueKey, index) => {
             menu.append(
               new MenuItem({
-                label: tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
+                label: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
                 type: "checkbox",
                 checked: valueKey === state.options[optionConfig.key],
                 icon: getIcon(valueKey),
@@ -749,9 +749,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
             menu.append(
               new MenuItem({
                 label: tOption(prefix, currentTypeConfig.key, optionConfig.key),
-                submenu: optionConfig.values.map((valueKey) => {
+                submenu: optionConfig.values.map((valueKey, index) => {
                   return {
-                    label: tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
+                    label: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, currentTypeConfig.key, optionConfig.key, valueKey),
                     type: "checkbox",
                     checked: valueKey === state.options[optionConfig.key],
                     icon: getIcon(valueKey),
@@ -792,9 +792,9 @@ async function handleHubMessage(window: BrowserWindow, message: NamedMessage) {
                 submenu:
                   optionConfig === undefined
                     ? undefined
-                    : optionConfig.values.map((valueKey) => {
+                    : optionConfig.values.map((valueKey, index) => {
                         return {
-                          label: tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
+                          label: optionConfig.titles && optionConfig.titles[index] ? optionConfig.titles[index]! : tValue(prefix, typeConfig.key, optionConfig.key, valueKey),
                           icon: getIcon(valueKey),
                           click() {
                             state.type = typeConfig.key;

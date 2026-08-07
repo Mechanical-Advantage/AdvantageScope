@@ -256,6 +256,7 @@ sourceList:
     translation3d: "X : {{x}}, Y : {{y}}, Z : {{z}}"
     pose3d: "X : {{x}}, Y : {{y}}, Z : {{z}}, Roulis : {{roll}}, Tangage : {{pitch}}, Lacet : {{yaw}}"
   optionValues:
+    KitBot: "KitBot"
     "#00ff00": "Vert"
     "#ff0000": "Rouge"
     "#0000ff": "Bleu"
@@ -528,6 +529,8 @@ hub:
     selectTitle: "Sélectionner la source de données des manettes"
     noData: "Aucune donnée pour la manette."
     selectLayout: "Sélectionnez une disposition de manette pour afficher les données."
+    none: "Aucun"
+    generic: "Manette générique"
     port0: "0 :"
     port1: "1 :"
     port2: "2 :"

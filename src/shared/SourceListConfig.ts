@@ -49,6 +49,7 @@ export type SourceListOptionConfig = {
   key: string;
   showInTypeName: boolean;
   values: string[];
+  titles?: (string | null)[];
 };
 
 export function getSourceListPrefix(titleKey: string): string {

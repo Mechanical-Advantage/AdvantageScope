@@ -11,14 +11,39 @@
       "degrees": 90
     }
   ],
-  "position": [0, 0, 0.037],
+  "position": [
+    0,
+    0,
+    0.037
+  ],
   "cameras": [
     {
       "name": "Front Camera",
       "rotations": [],
-      "position": [0.2, 0, 0.2],
-      "resolution": [640, 480],
-      "fov": 54.5
+      "position": [
+        0.2,
+        0,
+        0.2
+      ],
+      "resolution": [
+        640,
+        480
+      ],
+      "fov": 54.5,
+      "locales": {
+        "en-US": "Front Camera",
+        "es-419": "Cámara frontal",
+        "fr": "Caméra avant",
+        "pt-BR": "Câmera frontal",
+        "tr": "Ön Kamera",
+        "ro": "Cameră frontală",
+        "he": "מצלמה קדמית",
+        "kk": "Алдыңғы камера",
+        "ru": "Передняя камера",
+        "ar": "كاميرا أمامية",
+        "zh-CN": "前置相机",
+        "zh-TW": "前置攝影機"
+      }
     },
     {
       "name": "Back Camera",
@@ -28,10 +53,45 @@
           "degrees": 180
         }
       ],
-      "position": [-0.2, 0, 0.2],
-      "resolution": [640, 480],
-      "fov": 54.5
+      "position": [
+        -0.2,
+        0,
+        0.2
+      ],
+      "resolution": [
+        640,
+        480
+      ],
+      "fov": 54.5,
+      "locales": {
+        "en-US": "Back Camera",
+        "es-419": "Cámara trasera",
+        "fr": "Caméra arrière",
+        "pt-BR": "Câmera traseira",
+        "tr": "Arka Kamera",
+        "ro": "Cameră spate",
+        "he": "מצלמה אחורית",
+        "kk": "Артқы камера",
+        "ru": "Задняя камера",
+        "ar": "كاميرا خلفية",
+        "zh-CN": "后置相机",
+        "zh-TW": "後置攝影機"
+      }
     }
   ],
-  "components": []
+  "components": [],
+  "locales": {
+    "en-US": "Drive Base (Simple)",
+    "es-419": "Base motriz (simple)",
+    "fr": "Base motrice (simple)",
+    "pt-BR": "Base motriz (simples)",
+    "tr": "Sürüş Tabanı (Basit)",
+    "ro": "Bază de deplasare (simplă)",
+    "he": "בסיס הנעה (פשוט)",
+    "kk": "Жетек базасы (қарапайым)",
+    "ru": "Приводная база (простая)",
+    "ar": "قاعدة التسيير (بسيطة)",
+    "zh-CN": "底盘 (简单)",
+    "zh-TW": "底盤 (簡單)"
+  }
 }

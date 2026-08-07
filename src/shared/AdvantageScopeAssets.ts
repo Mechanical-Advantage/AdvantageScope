@@ -45,6 +45,7 @@ export type CoordinateSystem =
 
 export interface Config2d {
   name: string;
+  locales?: { [key: string]: string };
   path: string;
   id: string;
 
@@ -60,6 +61,7 @@ export interface Config2d {
 
 export interface Config3dField {
   name: string;
+  locales?: { [key: string]: string };
   path: string;
   id: string;
 
@@ -77,6 +79,7 @@ export interface Config3dField {
 
 export interface Config3dField_GamePiece {
   name: string;
+  locales?: { [key: string]: string };
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   stagedObjects: string[];
@@ -91,6 +94,7 @@ export interface Config3dField_AprilTag {
 
 export interface Config3dRobot {
   name: string;
+  locales?: { [key: string]: string };
   path: string;
 
   isFTC: boolean;
@@ -103,6 +107,7 @@ export interface Config3dRobot {
 
 export interface Config3dRobot_Camera {
   name: string;
+  locales?: { [key: string]: string };
   rotations: Config3d_Rotation[];
   position: [number, number, number];
   resolution: [number, number];
@@ -121,9 +126,20 @@ export interface Config3d_Rotation {
 
 export interface ConfigJoystick {
   name: string;
+  locales?: { [key: string]: string };
   path: string;
 
   components: (ConfigJoystick_Button | ConfigJoystick_Joystick | ConfigJoystick_Axis | ConfigJoystick_Touchpad)[];
+}
+
+/**
+ * Returns the localized name of an asset, falling back to the default if no translation is found for the given language.
+ */
+export function getAssetName(asset: { name: string; locales?: { [key: string]: string } }, lang: string): string {
+  if (asset.locales && lang && asset.locales[lang]) {
+    return asset.locales[lang];
+  }
+  return asset.name;
 }
 
 export interface ConfigJoystick_Button {
@@ -183,6 +199,20 @@ export interface ConfigJoystick_Touchpad {
 export const BuiltIn3dFields: Config3dField[] = [
   {
     name: "Evergreen",
+    locales: {
+      "en-US": "Evergreen",
+      "es-419": "Perenne",
+      "fr": "Permanent",
+      "pt-BR": "Perene",
+      "tr": "Kalıcı",
+      "ro": "Permanent",
+      "he": "רב-שנתי",
+      "kk": "Тұрақты",
+      "ru": "Постоянное",
+      "ar": "دائم",
+      "zh-CN": "常青",
+      "zh-TW": "常青"
+    },
     path: "",
     id: "FRC:Evergreen",
     isFTC: false,
@@ -198,6 +228,20 @@ export const BuiltIn3dFields: Config3dField[] = [
   },
   {
     name: "Evergreen",
+    locales: {
+      "en-US": "Evergreen",
+      "es-419": "Perenne",
+      "fr": "Permanent",
+      "pt-BR": "Perene",
+      "tr": "Kalıcı",
+      "ro": "Permanent",
+      "he": "רב-שנתי",
+      "kk": "Тұрақты",
+      "ru": "Постоянное",
+      "ar": "دائم",
+      "zh-CN": "常青",
+      "zh-TW": "常青"
+    },
     path: "",
     id: "FTC:Evergreen",
     isFTC: true,
@@ -213,6 +257,20 @@ export const BuiltIn3dFields: Config3dField[] = [
   },
   {
     name: "Axes",
+    locales: {
+      "en-US": "Axes",
+      "es-419": "Ejes",
+      "fr": "Axes",
+      "pt-BR": "Eixos",
+      "tr": "Eksenler",
+      "ro": "Axe",
+      "he": "צירים",
+      "kk": "Осьтер",
+      "ru": "Оси",
+      "ar": "محاور",
+      "zh-CN": "坐标轴",
+      "zh-TW": "座標軸"
+    },
     path: "",
     id: "FRC:Axes",
     isFTC: false,
@@ -228,6 +286,20 @@ export const BuiltIn3dFields: Config3dField[] = [
   },
   {
     name: "Axes",
+    locales: {
+      "en-US": "Axes",
+      "es-419": "Ejes",
+      "fr": "Axes",
+      "pt-BR": "Eixos",
+      "tr": "Eksenler",
+      "ro": "Axe",
+      "he": "צירים",
+      "kk": "Осьтер",
+      "ru": "Оси",
+      "ar": "محاور",
+      "zh-CN": "坐标轴",
+      "zh-TW": "座標軸"
+    },
     path: "",
     id: "FTC:Axes",
     isFTC: true,

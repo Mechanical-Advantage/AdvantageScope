@@ -21,11 +21,12 @@ All assets are stored in folders with the naming convention "TYPE_NAME". The NAM
 Example folder names would be "Field2d_2023Field", "Joystick_OperatorButtons", or "Robot_Dozer".
 :::
 
-This folder should contain a file named "config.json" and one or more asset files, as described below. The config file always includes the name of the asset to be displayed by AdvantageScope. This name must be unique for each asset type.
+This folder should contain a file named "config.json" and one or more asset files, as described below. The config file always includes the name of the asset to be displayed by AdvantageScope. This name must be unique for each asset type. Assets can also optionally include a "locales" object mapping locale keys (e.g. "es-419", "fr", "zh-CN") to translated names. The root-level "name" is treated as the default name if the selected locale is not provided or "locales" is omitted.
 
 ```json
 {
-  "name": string // Unique name, required for all asset types
+  "name": string, // Unique default name, required for all asset types
+  "locales": { [locale: string]: string } // Optional localized names mapping language codes (e.g. "es-419", "fr") to translations
   ... // Type-dependent configuration, described below
 }
 ```
@@ -43,6 +44,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "isFTC": boolean // Whether the model is intended for use on FTC fields instead of FRC fields (default "false")
   "disableSimplification": boolean // Whether to disable model simplification, optional
   "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
@@ -50,6 +52,7 @@ A model must be included in the folder with the name "model.glb". CAD files must
   "cameras": [ // Fixed camera positions, can be empty
     {
       "name": string // Camera name
+      "locales": { [locale: string]: string } // Optional translations for camera name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters relative to the robot, applied after rotation
       "resolution": [number, number] // Resolution in pixels, used to set the fixed aspect ratio
@@ -116,6 +119,7 @@ An image must be included in the folder with the name "image.png". The config fi
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "components": [...] // Array of component configurations, see below
 }
 ```
@@ -203,6 +207,7 @@ An image must be included in the folder with the name "image.png". It should be 
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -227,6 +232,7 @@ The config file must be in the following format:
 ```json
 {
   "name": string // Unique name, required for all asset types
+  "locales": { [locale: string]: string } // Optional translations for asset name
   "isFTC": boolean // Whether this is an FTC field instead of an FRC field
   "coordinateSystem": // The default coordinate system to use (see below)
       "wall-alliance" |  // FRC 2022
@@ -245,6 +251,7 @@ The config file must be in the following format:
   "gamePieces": [ // List of game piece types
     {
       "name": string // Game piece name
+      "locales": { [locale: string]: string } // Optional translations for game piece name
       "rotations": { "axis": "x" | "y" | "z", "degrees": number }[] // Sequence of rotations along the x, y, and z axes
       "position": [number, number, number] // Position offset in meters, applied after rotation
       "stagedObjects": string[] // Names of staged game piece objects, to hide if user poses are supplied

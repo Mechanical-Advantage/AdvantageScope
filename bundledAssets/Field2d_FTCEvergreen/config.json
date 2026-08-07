@@ -2,8 +2,28 @@
   "name": "Evergreen",
   "isFTC": true,
   "coordinateSystem": "center-rotated",
-  "topLeft": [134, 134],
-  "bottomRight": [2368, 2366],
+  "topLeft": [
+    134,
+    134
+  ],
+  "bottomRight": [
+    2368,
+    2366
+  ],
   "widthInches": 144,
-  "heightInches": 144
+  "heightInches": 144,
+  "locales": {
+    "en-US": "Evergreen",
+    "es-419": "Perenne",
+    "fr": "Permanent",
+    "pt-BR": "Perene",
+    "tr": "Kalıcı",
+    "ro": "Permanent",
+    "he": "רב-שנתי",
+    "kk": "Тұрақты",
+    "ru": "Постоянное",
+    "ar": "دائم",
+    "zh-CN": "常青",
+    "zh-TW": "常青"
+  }
 }
