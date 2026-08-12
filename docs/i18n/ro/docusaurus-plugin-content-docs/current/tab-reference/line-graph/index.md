@@ -32,7 +32,7 @@ Pentru a suprapune modul robotului (autonom, teleoperat sau utilitar), dați cli
 
 În mod implicit, fiecare axă își ajustează intervalul pe baza datelor vizibile. Pentru a dezactiva ajustarea automată și a bloca intervalul la valorile curente minimă și maximă, dați clic pe cele trei puncte de lângă titlul axei și apoi pe `Blochează axa`. Pentru a ajusta manual intervalul, alegeți `Editează intervalul...` și introduceți valorile dorite.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editarea intervalului axei" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editarea intervalului axei" height="250" />
 
 ### Integrare și diferențiere {#integration-and-differentiation}
 

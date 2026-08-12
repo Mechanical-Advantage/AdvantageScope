@@ -8,7 +8,7 @@ AdvantageScope incluye un sistema flexible para exportar datos de registro como 
 
 Para ver opciones de exportación, haz clic en `Archivo` > `Exportar datos...`.
 
-<img src="/img/overview/log-files/export-1.webp" alt="Opciones de exportación" />
+<img src="/img/overview/log-files/export-1.webp" alt="Opciones de exportación" height="250" />
 
 :::tip
 Además de la exportación del registro completo que se describe aquí, la pestaña 💬 [Consola](/tab-reference/console) permite que los datos de la consola se exporten a un archivo de texto.

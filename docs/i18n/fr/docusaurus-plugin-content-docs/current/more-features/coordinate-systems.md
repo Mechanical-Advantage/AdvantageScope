@@ -36,4 +36,4 @@ L'origine se trouve dans le coin le plus à droite du mur d'alliance pour l'_all
 
 L'origine se trouve au centre du terrain avec l'axe +X pointé vers la droite du point de vue du mur d'alliance rouge, comme illustré ci-dessous. **Il s'agit du système de coordonnées par défaut pour les terrains FTC de 2024-2025 à 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Système de coordonnées centre/pivoté" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Système de coordonnées centre/pivoté" height="400" />

@@ -37,7 +37,7 @@ Menü çubuğunda `Dosya` > `Yeni log ekle...` seçeneğine tıklayın, ardında
 
 `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. Robot adresini ve log klasörünü güncelleyin.
 
-<img src="/img/prefs.webp" alt="Tercihler diyagramı" />
+<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="350" />
 </details>
 
 `Dosya` > `Logları indir...` seçeneğine tıklayarak indirme penceresini açın. Robota bağlandıktan sonra mevcut loglar en yenisi en üstte olacak şekilde gösterilir. İndirmek için bir veya daha fazla log dosyası seçin (bir aralık seçmek için shift-tıkla veya tümünü seçmek için **cmd/ctrl + A** kullanın). Ardından ↓ simgesine tıklayın ve bir kaydetme konumu seçin.
@@ -50,7 +50,7 @@ CTRE'nin [sinyal loglayıcısı](https://v6.docs.ctr-electronics.com/en/stable/d
 Birden fazla dosya indirirken AdvantageScope, hedef klasörde zaten mevcut olan tüm dosyaları atlar.
 :::
 
-<img src="/img/overview/log-files/open-file-2.webp" alt="Log dosyalarını indirme" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Log dosyalarını indirme" height="350" />
 
 ## CSV biçimlendirme {#csv-formatting}
 

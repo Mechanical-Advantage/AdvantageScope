@@ -8,7 +8,7 @@
 
 لعرض خيارات التصدير، انقر فوق `ملف` > `تصدير البيانات...`.
 
-<img src="/img/overview/log-files/export-1.webp" alt="خيارات التصدير" />
+<img src="/img/overview/log-files/export-1.webp" alt="خيارات التصدير" height="250" />
 
 :::tip
 بالإضافة إلى تصدير السجل الكامل المشروح هنا، تتيح علامة تبويب 💬 [وحدة التحكم](/tab-reference/console) تصدير بيانات وحدة التحكم إلى ملف نصي.

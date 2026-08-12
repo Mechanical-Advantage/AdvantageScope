@@ -72,7 +72,7 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 
 تدعم نافذة التنزيل الآن حفظ السجلات المخزنة في مجلدات فرعية. يمكن تنزيل كل مجلد فرعي من السجلات كمجموعة، مما يوفر نهجاً مبسطاً لتنزيل السجلات المُنشأة بواسطة إصدار 2026 من [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) لـ CTRE (الذي يستخدم المجلدات الفرعية كحل بديل لعدم القدرة على تخزين البيانات في ملف سجل واحد).
 
-<img src="/img/whats-new/subfolders.webp" alt="تنزيل المجلدات الفرعية للسجل" />
+<img src="/img/whats-new/subfolders.webp" alt="تنزيل المجلدات الفرعية للسجل" height="450" />
 
 ## 🌈 خيارات عرض مرئي جديدة {#new-visualization-options}
 
@@ -115,7 +115,7 @@ _يمكن العثور على مزيد من المعلومات حول دعم ا�
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_ar.webp" />
 </div>
 
 ## 🐛 تحسينات الاستقرار {#stability-improvements}

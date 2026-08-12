@@ -37,7 +37,7 @@ Derularea spre stânga în graficul liniar sau cronologie deblochează timpul cu
 
 Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS).
 
-<img src="/img/prefs.webp" alt="Diagramă de preferințe" />
+<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="350" />
 
 ### Adresă robot {#robot-address}
 

@@ -32,7 +32,7 @@ Para sobrepor o modo do robô (autônomo, teleoperado ou utility), clique nos tr
 
 Por padrão, cada eixo ajusta seu intervalo com base nos dados visíveis. Para desativar o ajuste automático de escala e bloquear o intervalo em seus mínimo e máximo atuais, clique nos três pontos perto do título do eixo e depois em `Bloquear eixo`. Para ajustar manualmente o intervalo, escolha `Editar intervalo...` e insira os valores desejados.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editando o intervalo do eixo" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Editando o intervalo do eixo" height="250" />
 
 ### Integração e diferenciação {#integration-and-differentiation}
 

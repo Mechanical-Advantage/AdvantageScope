@@ -32,11 +32,11 @@ AdvantageScope XR مدعوم فقط على iOS و iPadOS. لا توجد خطط �
 
 1. على النظام المضيف، **انقر فوق زر "XR"** في أي علامة تبويب ملعب ثلاثي الأبعاد. يمكن أن تكون جلسة مضيف XR واحدة فقط نشطة في نفس الوقت، لذا فإن النقر فوق هذا الزر سيقطع أي جلسات نشطة أخرى.
 
-<img src="/img/tab-reference/3d-field/xr-1.webp" alt="زر XR" />
+<img src="/img/tab-reference/3d-field/xr-1.webp" alt="زر XR" height="450" />
 
 2. ستفتح **نافذة عناصر تحكم XR**، مع رمز QR و [خيارات](#options) لتخصيص تجربة AR. لإلغاء جلسة XR وفصل أي عملاء، اغلق نافذة عناصر التحكم.
 
-<img src="/img/tab-reference/3d-field/xr-2.webp" alt="نافذة XR" />
+<img src="/img/tab-reference/3d-field/xr-2.webp" alt="نافذة XR" height="350" />
 
 3. امسح رمز QR ضوئياً باستخدام **تطبيق الكاميرا المدمج** على جهاز العميل. لا يلزم تثبيت تطبيق.
 4. اضغط على "AdvantageScope XR« ثم »Open" لـ **بدء التجربة** والاتصال بالمضيف. إذا سُئلت، اسمح لـ AdvantageScope XR بالوصول إلى **الكاميرا والشبكة المحلية**.

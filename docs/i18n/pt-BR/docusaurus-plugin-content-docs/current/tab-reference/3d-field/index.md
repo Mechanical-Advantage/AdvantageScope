@@ -199,4 +199,4 @@ O campo 3D suporta três modos de renderização:
 
 Para configurar o modo de renderização, abra a janela de preferências clicando em `App` > `Mostrar preferências...` (Windows/Linux) ou `AdvantageScope` > `Configurações...` (macOS). A configuração "Modo 3D (na bateria)" pode ser alterada a partir do padrão para sobrescrever o modo de renderização usado em um notebook quando não estiver carregando. Por exemplo, isso pode ser usado para preservar a bateria durante competições.
 
-<img src="/img/prefs.webp" alt="Diagrama de preferências" />
+<img src="/img/prefs_pt-BR.webp" alt="Diagrama de preferências" height="350" />

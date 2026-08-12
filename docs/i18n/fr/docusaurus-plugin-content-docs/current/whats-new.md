@@ -72,7 +72,7 @@ Le tableau ci-dessous montre la vitesse de transfert mesurée sur les versions 2
 
 La fenêtre de téléchargement prend désormais en charge l'enregistrement des journaux stockés dans des sous-dossiers. Chaque sous-dossier de journaux peut être téléchargé sous forme de groupe, offrant une approche simplifiée pour télécharger les journaux générés par la version 2026 du [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (qui utilise des sous-dossiers pour contourner l'impossibilité de stocker des données dans un seul fichier journal).
 
-<img src="/img/whats-new/subfolders.webp" alt="Téléchargement des sous-dossiers de journaux" />
+<img src="/img/whats-new/subfolders.webp" alt="Téléchargement des sous-dossiers de journaux" height="450" />
 
 ## 🌈 Nouvelles options de visualisation {#new-visualization-options}
 
@@ -115,7 +115,7 @@ La barre de menu et les contrôles associés ont été simplifiés et réorganis
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_fr.webp" />
 </div>
 
 ## 🐛 Améliorations de la stabilité {#stability-improvements}

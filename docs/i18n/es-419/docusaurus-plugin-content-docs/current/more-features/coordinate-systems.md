@@ -36,4 +36,4 @@ El origen está en la esquina más a la derecha de la pared de la alianza para l
 
 El origen está en el centro del campo con el eje +X apuntando hacia la derecha desde la perspectiva de la pared de la alianza roja, como se muestra a continuación. **Este es el sistema de coordenadas predeterminado para los campos de FTC de 2024-2025 a 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistema de coordenadas centro/rotado" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistema de coordenadas centro/rotado" height="400" />

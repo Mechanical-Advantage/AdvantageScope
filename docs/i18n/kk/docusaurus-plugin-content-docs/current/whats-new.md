@@ -72,7 +72,7 @@ _Өлшем бірліктерін қолдау туралы қосымша ақ
 
 Жүктеп алу терезесі енді ішкі қалталарда сақталған журналдарды сақтауды қолдайды. Журналдардың әрбір ішкі қалтасын топ ретінде жүктеп алуға болады, бұл CTRE компаниясының [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) (деректерді бір журнал файлында сақтай алмау мәселесін шешу үшін ішкі қалталарды пайдаланатын) 2026 жылғы шығарылымы арқылы жасалған журналдарды жүктеп алудың оңтайландырылған тәсілін ұсынады.
 
-<img src="/img/whats-new/subfolders.webp" alt="Журнал ішкі қалталарын жүктеу" />
+<img src="/img/whats-new/subfolders.webp" alt="Журнал ішкі қалталарын жүктеу" height="450" />
 
 ## 🌈 Жаңа визуализация опциялары {#new-visualization-options}
 
@@ -115,7 +115,7 @@ Windows 11 жүйесіндегі AdvantageScope пайдаланушы инте
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_kk.webp" />
 </div>
 
 ## 🐛 Тұрақтылықты жақсартулар {#stability-improvements}

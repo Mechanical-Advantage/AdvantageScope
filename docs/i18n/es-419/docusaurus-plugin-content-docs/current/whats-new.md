@@ -72,7 +72,7 @@ La siguiente tabla muestra la velocidad de transferencia medida en los lanzamien
 
 La ventana de descarga ahora admite guardar registros que están almacenados en subcarpetas. Cada subcarpeta de registros se puede descargar como grupo, lo que proporciona un enfoque simplificado para descargar registros generados por la versión 2026 del [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de CTRE (que usa subcarpetas como solución alternativa por no poder almacenar datos en un solo archivo de registro).
 
-<img src="/img/whats-new/subfolders.webp" alt="Descarga de subcarpetas de registro" />
+<img src="/img/whats-new/subfolders.webp" alt="Descarga de subcarpetas de registro" height="450" />
 
 ## 🌈 Nuevas opciones de visualización {#new-visualization-options}
 
@@ -115,7 +115,7 @@ La barra de menú y los controles relacionados se han optimizado y reorganizado 
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_es-419.webp" />
 </div>
 
 ## 🐛 Mejoras de estabilidad {#stability-improvements}

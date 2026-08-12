@@ -37,7 +37,7 @@ Scrolling to the left in the line graph or timeline unlocks from the current tim
 
 Open the preferences window by clicking `App` > `Show Preferences...` (Windows/Linux) or `AdvantageScope` > `Settings...` (macOS).
 
-<img src="/img/prefs.webp" alt="Diagram of preferences" height="350" />
+<img src="/img/prefs_en-US.webp" alt="Diagram of preferences" height="350" />
 
 ### Robot Address {#robot-address}
 

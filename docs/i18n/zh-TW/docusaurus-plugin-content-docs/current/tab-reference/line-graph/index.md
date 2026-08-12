@@ -32,7 +32,7 @@
 
 預設情況下，每個軸會根據可見資料調整其範圍。要停用自動範圍調整並將範圍鎖定到目前的最小值與最大值，請點擊軸標題附近的三個點，然後點擊 `鎖定軸`。要手動調整範圍，請選擇 `編輯範圍...` 並輸入所需的數值。
 
-<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="編輯軸範圍" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="編輯軸範圍" height="250" />
 
 ### 積分與微分 {#integration-and-differentiation}
 

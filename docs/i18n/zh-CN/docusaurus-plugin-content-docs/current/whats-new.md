@@ -72,7 +72,7 @@ _有关单位支持的更多信息，请参阅 [文档](/tab-reference/line-grap
 
 下载窗口现在支持保存存储在子文件夹中的日志。每个日志子文件夹都可以作为一组进行下载，为下载 CTRE 的 2026 版本 [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 生成的日志提供了一种简化的方法（该日志库使用子文件夹作为无法将数据存储在单个日志文件中的变通方案）。
 
-<img src="/img/whats-new/subfolders.webp" alt="下载日志子文件夹" />
+<img src="/img/whats-new/subfolders.webp" alt="下载日志子文件夹" height="450" />
 
 ## 🌈 新的可视化选项 {#new-visualization-options}
 
@@ -115,7 +115,7 @@ Windows 11 上的 AdvantageScope UI 已更新，支持半透明侧边栏，这�
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_zh-CN.webp" />
 </div>
 
 ## 🐛 稳定性改进 {#stability-improvements}

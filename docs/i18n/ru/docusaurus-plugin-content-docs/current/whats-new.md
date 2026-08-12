@@ -72,7 +72,7 @@ _Дополнительную информацию о поддержке еди�
 
 Окно скачивания теперь поддерживает сохранение логов, хранящихся в подпапках. Каждую подпапку с логами можно скачать как группу, что обеспечивает оптимизированный подход для скачивания логов, сгенерированных релизом 2026 года CTRE [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) (который использует подпапки в качестве обходного пути из-за невозможности сохранения данных в одном файле лога).
 
-<img src="/img/whats-new/subfolders.webp" alt="Загрузка подпапок логов" />
+<img src="/img/whats-new/subfolders.webp" alt="Загрузка подпапок логов" height="450" />
 
 ## 🌈 Новые опции визуализации {#new-visualization-options}
 
@@ -115,7 +115,7 @@ _Дополнительную информацию о поддержке еди�
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_ru.webp" />
 </div>
 
 ## 🐛 Улучшения стабильности {#stability-improvements}

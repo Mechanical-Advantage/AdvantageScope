@@ -32,11 +32,11 @@ AdvantageScope XR 仅在 iOS 和 iPadOS 上受到支持。目前没有支持其�
 
 1. 在主机系统上，在任何 3D 场地选项卡上 **点击 "XR" 按钮**。同一时间只能激活一个 XR 主机会话，因此点击此按钮将打断任何其他活动会话。
 
-<img src="/img/tab-reference/3d-field/xr-1.webp" alt="XR 按钮" />
+<img src="/img/tab-reference/3d-field/xr-1.webp" alt="XR 按钮" height="450" />
 
 2. 将打开 **XR 控制窗口**，其中包含二维码和自定义 AR 体验的 [选项](#options)。要取消 XR 会话并断开所有客户端，请关闭控制窗口。
 
-<img src="/img/tab-reference/3d-field/xr-2.webp" alt="XR 窗口" />
+<img src="/img/tab-reference/3d-field/xr-2.webp" alt="XR 窗口" height="350" />
 
 3. 使用客户端设备上的 **内置相机应用** 扫描二维码。无需安装应用程序。
 4. 轻点“AdvantageScope XR”然后轻点“打开”以 **启动体验** 并连接到主机。如果弹出提示，请允许 AdvantageScope XR 访问 **相机和本地网络**。

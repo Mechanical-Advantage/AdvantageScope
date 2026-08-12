@@ -199,4 +199,4 @@ Bu sekmede kullanılan koordinat sistemi özelleştirilebilir. Ayrıntılar içi
 
 İşleme modunu yapılandırmak için `Uygulama` > `Tercihleri göster...` (Windows/Linux) veya `AdvantageScope` > `Ayarlar...` (macOS) seçeneğine tıklayarak tercihler penceresini açın. "3B modu (Pil)" ayarı, şarj olmuyorken bir dizüstü bilgisayarda kullanılan işleme modunu geçersiz kılmak için varsayılandan değiştirilebilir. Örneğin bu, yarışmadayken pili korumak için kullanılabilir.
 
-<img src="/img/prefs.webp" alt="Tercihler diyagramı" />
+<img src="/img/prefs_tr.webp" alt="Tercihler diyagramı" height="350" />

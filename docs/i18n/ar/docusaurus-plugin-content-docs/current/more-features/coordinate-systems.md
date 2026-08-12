@@ -36,4 +36,4 @@ sidebar_position: 3
 
 تكون نقطة الأصل في مركز الملعب مع توجيه المحور X+ إلى اليمين من منظور جدار التحالف الأحمر، كما هو موضح أدناه. **هذا هو نظام الإحداثيات الافتراضي لملاعب FTC من موسم 2024-2025 إلى 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="المركز/مُدار (نظام الإحداثيات)" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="المركز/مُدار (نظام الإحداثيات)" height="400" />

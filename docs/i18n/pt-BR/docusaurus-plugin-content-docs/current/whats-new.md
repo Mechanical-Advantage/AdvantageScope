@@ -72,7 +72,7 @@ A tabela abaixo mostra a velocidade de transferência medida nas versões 2025 e
 
 A janela de download agora suporta o salvamento de logs armazenados em subpastas. Cada subpasta de logs pode ser baixada como um grupo, fornecendo uma abordagem simplificada para baixar logs gerados pela versão 2026 do [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) da CTRE (que usa subpastas como alternativa para não conseguir armazenar dados em um único arquivo de log).
 
-<img src="/img/whats-new/subfolders.webp" alt="Baixando subpastas de log" />
+<img src="/img/whats-new/subfolders.webp" alt="Baixando subpastas de log" height="450" />
 
 ## 🌈 Novas opções de visualização {#new-visualization-options}
 
@@ -115,7 +115,7 @@ A barra de menus e os controles relacionados foram simplificados e reorganizados
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_pt-BR.webp" />
 </div>
 
 ## 🐛 Melhorias de estabilidade {#stability-improvements}

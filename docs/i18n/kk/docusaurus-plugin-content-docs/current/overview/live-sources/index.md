@@ -37,7 +37,7 @@ AdvantageScope қолданбасы DS қолданбасы сияқты бір 
 
 Таңдаулар терезесін `Қолданба` > `Қалауларды көрсету...` (Windows/Linux) немесе `AdvantageScope` > `Параметрлер...` (macOS) басу арқылы ашыңыз.
 
-<img src="/img/prefs.webp" alt="Параметрлер диаграммасы" />
+<img src="/img/prefs_kk.webp" alt="Параметрлер диаграммасы" height="350" />
 
 ### Робот мекенжайы {#robot-address}
 

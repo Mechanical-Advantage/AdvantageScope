@@ -115,7 +115,7 @@ The menu bar and related controls have been streamlined and reorganized to make 
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_en-US.webp" />
 </div>
 
 ## 🐛 Stability Improvements {#stability-improvements}

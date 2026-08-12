@@ -72,7 +72,7 @@ Aşağıdaki tablo, Ethernet üzerinden bağlıyken (maksimum 100 Mb/s bant geni
 
 İndirme penceresi artık alt klasörlerde saklanan logların kaydedilmesini desteklemektedir. Log içeren her bir alt klasör bir grup olarak indirilebilir; bu da CTRE'nin [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 2026 sürümü tarafından oluşturulan logları indirmek için kolaylaştırılmış bir yaklaşım sunar (bu sürüm, tek bir log dosyasında veri saklayamama sorununa çözüm olarak alt klasörleri kullanır).
 
-<img src="/img/whats-new/subfolders.webp" alt="Log alt klasörlerini indirme" />
+<img src="/img/whats-new/subfolders.webp" alt="Log alt klasörlerini indirme" height="450" />
 
 ## 🌈 Yeni görselleştirme seçenekleri {#new-visualization-options}
 
@@ -115,7 +115,7 @@ Menü çubuğu ve ilgili kontroller, kontrolleri tüm platformlarda daha erişil
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_tr.webp" />
 </div>
 
 ## 🐛 Kararlılık iyileştirmeleri {#stability-improvements}

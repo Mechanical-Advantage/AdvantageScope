@@ -36,4 +36,4 @@ Orijin, aşağıda gösterildiği gibi +X ekseni karşı ittifak duvarına bakac
 
 Orijin, aşağıda gösterildiği gibi +X ekseni kırmızı ittifak duvarının perspektifinden sağa bakacak şekilde sahanın merkezindedir. **Bu, 2024-2025'ten 2026-2027'ye kadar FTC sahaları için varsayılan koordinat sistemidir.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Merkez/döndürülmüş坐标系" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Merkez/döndürülmüş坐标系" height="400" />

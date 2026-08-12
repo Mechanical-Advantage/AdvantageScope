@@ -54,4 +54,4 @@ Manuel dönüştürmeyi yapılandırmak için eksen başlığının yanındaki �
 Birim dönüştürmeyi hızlıca etkinleştirmek veya devre dışı bırakmak için eksen başlığının yanındaki üç noktaya tıklayın ve `Son Ön Ayarlar` veya `Birimleri Sıfırla` seçeneğini seçin.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.webp" alt="Birim dönüşümünü düzenleme" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="Birim dönüşümünü düzenleme" height="250" />

@@ -37,7 +37,7 @@ Desplazarse hacia la izquierda en el gráfico de líneas o en la línea de tiemp
 
 Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS).
 
-<img src="/img/prefs.webp" alt="Diagrama de preferencias" />
+<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="350" />
 
 ### Dirección del robot {#robot-address}
 

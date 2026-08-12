@@ -36,4 +36,4 @@ A origem fica no canto mais à direita da parede da aliança para a _aliança at
 
 A origem fica no centro do campo com o eixo +X apontando para a direita da perspectiva da parede da aliança vermelha, como mostrado abaixo. **Este é o sistema de coordenadas padrão para campos do FTC de 2024-2025 a 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistema de coordenadas centro/rotacionado" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistema de coordenadas centro/rotacionado" height="400" />

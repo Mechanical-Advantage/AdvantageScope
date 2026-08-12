@@ -199,4 +199,4 @@ Terenul 3D suportă trei moduri de randare:
 
 Pentru a configura modul de randare, deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Setarea „Mod 3D (baterie)” poate fi comutată de la valoarea implicită pentru a suprascrie modul de randare utilizat pe un laptop când nu se încarcă. De exemplu, aceasta poate fi utilizată pentru a economisi bateria în timpul competiției.
 
-<img src="/img/prefs.webp" alt="Diagramă de preferințe" />
+<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="350" />

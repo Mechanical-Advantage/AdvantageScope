@@ -8,7 +8,7 @@ AdvantageScope, log verilerini CSV, WPILOG veya MCAP dosyası olarak dışa akta
 
 Dışa aktarma seçeneklerini görüntülemek için `Dosya` > `Verileri dışa aktar...` seçeneğine tıklayın.
 
-<img src="/img/overview/log-files/export-1.webp" alt="Dışa aktarma seçenekleri" />
+<img src="/img/overview/log-files/export-1.webp" alt="Dışa aktarma seçenekleri" height="250" />
 
 :::tip
 Burada açıklanan tam log dışa aktarımına ek olarak, 💬 [Konsol](/tab-reference/console) sekmesi konsol verilerinin bir metin dosyasına dışa aktarılmasına olanak tanır.

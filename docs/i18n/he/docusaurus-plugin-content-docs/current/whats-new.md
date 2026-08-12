@@ -72,7 +72,7 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 
 חלון ההורדה תומך כעת בשמירת יומנים המאוחסנים בתתי-תיקיות. כל תת-תיקייה של יומנים ניתנת להורדה כקבוצה, מה שמספק גישה יעילה להורדת יומנים שנוצרו על ידי גרסת 2026 של [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) מבית CTRE (המשתמשת בתתי-תיקיות כפתרון לעקיפת המגבלה של שמירת נתונים בקובץ יומן יחיד).
 
-<img src="/img/whats-new/subfolders.webp" alt="הורדת תת-תיקיות יומן" />
+<img src="/img/whats-new/subfolders.webp" alt="הורדת תת-תיקיות יומן" height="450" />
 
 ## 🌈 אפשרויות ויזואליזציה חדשות {#new-visualization-options}
 
@@ -115,7 +115,7 @@ _מידע נוסף על תמיכה ביחידות ניתן למצוא ב[תיע�
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_he.webp" />
 </div>
 
 ## 🐛 שיפורי יציבות {#stability-improvements}

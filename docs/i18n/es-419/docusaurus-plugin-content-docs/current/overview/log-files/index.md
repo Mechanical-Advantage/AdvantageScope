@@ -37,7 +37,7 @@ En la barra de menú, haz clic en `Archivo` > `Agregar nuevo(s) registro(s)...`,
 
 Abre la ventana de preferencias haciendo clic en `App` > `Mostrar preferencias...` (Windows/Linux) o `AdvantageScope` > `Configuración...` (macOS). Actualiza la dirección del robot y la carpeta de registro.
 
-<img src="/img/prefs.webp" alt="Diagrama de preferencias" />
+<img src="/img/prefs_es-419.webp" alt="Diagrama de preferencias" height="350" />
 </details>
 
 Haz clic en `Archivo` > `Descargar registros...` para abrir la ventana de descarga. Una vez conectado al robot, los registros disponibles se muestran con el más reciente en la parte superior. Selecciona uno o más archivos de registro para descargar (haz clic y presiona shift para seleccionar un rango o **cmd/ctrl + A** para seleccionar todos). Luego haz clic en el símbolo ↓ y selecciona una ubicación de guardado.
@@ -50,7 +50,7 @@ El [registrador de señales](https://v6.docs.ctr-electronics.com/en/stable/docs/
 Al descargar varios archivos, AdvantageScope omite cualquiera que ya exista en la carpeta de destino.
 :::
 
-<img src="/img/overview/log-files/open-file-2.webp" alt="Descarga de archivos de registro" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Descarga de archivos de registro" height="350" />
 
 ## Formato CSV {#csv-formatting}
 

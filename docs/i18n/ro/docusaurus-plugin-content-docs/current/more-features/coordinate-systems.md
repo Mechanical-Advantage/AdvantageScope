@@ -36,4 +36,4 @@ Originea se află în colțul cel mai din dreapta al peretelui alianței pentru 
 
 Originea se află în centrul terenului, cu axa +X orientată spre dreapta din perspectiva peretelui alianței roșii, așa cum se arată mai jos. **Acesta este sistemul de coordonate implicit pentru terenurile FTC din 2024-2025 până în 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistem de coordonate centru/rotit" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Sistem de coordonate centru/rotit" height="400" />

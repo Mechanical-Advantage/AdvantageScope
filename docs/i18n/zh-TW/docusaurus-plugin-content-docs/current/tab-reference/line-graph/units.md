@@ -54,4 +54,4 @@ AdvantageKit 在記錄輸入與輸出（包括注釋記錄）時支援單位中�
 要快速啟用或停用單位轉換，請點擊軸標題附近的三個點，然後選擇 `最近的預設值` 或 `重設單位`。
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.webp" alt="編輯單位轉換" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="編輯單位轉換" height="250" />

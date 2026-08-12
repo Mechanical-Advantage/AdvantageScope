@@ -72,7 +72,7 @@ _有關單位支援的更多資訊可以在[文件](/tab-reference/line-graph/un
 
 下載視窗現在支援儲存儲存在子資料夾中的日誌。每個日誌子資料夾都可以作為一組下載，為下載 CTRE 2026 版本 [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) 產生的日誌提供了一種簡化的方法（該軟體使用子資料夾作為無法將資料儲存在單一日誌檔案中的通融辦法）。
 
-<img src="/img/whats-new/subfolders.webp" alt="下載日誌子資料夾" />
+<img src="/img/whats-new/subfolders.webp" alt="下載日誌子資料夾" height="450" />
 
 ## 🌈 全新視覺化選項 {#new-visualization-options}
 
@@ -115,7 +115,7 @@ Windows 11 上的 AdvantageScope UI 已更新以支援半透明側邊欄，此�
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_zh-TW.webp" />
 </div>
 
 ## 🐛 穩定性提升 {#stability-improvements}

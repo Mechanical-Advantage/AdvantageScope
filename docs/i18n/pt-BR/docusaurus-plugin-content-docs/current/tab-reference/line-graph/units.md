@@ -54,4 +54,4 @@ Para configurar a conversão manual, clique nos três pontos perto do título do
 Para habilitar ou desabilitar rapidamente a conversão de unidades, clique nos três pontos perto do título do eixo e escolha `Predefinições recentes` ou `Redefinir unidades`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.webp" alt="Editando conversão de unidades" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="Editando conversão de unidades" height="250" />

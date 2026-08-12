@@ -72,7 +72,7 @@ Tabelul de mai jos arată viteza de transfer măsurată pe versiunile 2025 și 2
 
 Fereastra de descărcare acceptă acum salvarea logurilor care sunt stocate în subfoldere. Fiecare subfolder de loguri poate fi descărcat ca un grup, oferind o abordare simplificată pentru descărcarea logurilor generate de versiunea 2026 a [Signal Logger](https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/api-usage/signal-logging.html) de la CTRE (care folosește subfoldere ca o soluție pentru imposibilitatea de a stoca date într-un singur fișier log).
 
-<img src="/img/whats-new/subfolders.webp" alt="Descărcarea subdosarelor de log" />
+<img src="/img/whats-new/subfolders.webp" alt="Descărcarea subdosarelor de log" height="450" />
 
 ## 🌈 Opțiuni noi de vizualizare {#new-visualization-options}
 
@@ -115,7 +115,7 @@ Bara de meniu și controalele conexe au fost simplificate și reorganizate pentr
 <div className="image-gallery">
   <img src="/img/whats-new/menus-1.webp" />
   <img src="/img/whats-new/menus-2.webp" />
-  <img src="/img/prefs.webp" />
+  <img src="/img/prefs_ro.webp" />
 </div>
 
 ## 🐛 Îmbunătățiri ale stabilității {#stability-improvements}

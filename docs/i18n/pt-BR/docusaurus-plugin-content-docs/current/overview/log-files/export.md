@@ -8,7 +8,7 @@ O AdvantageScope inclui um sistema flexível para exportar dados de log como um 
 
 Para ver as opções de exportação, clique em `Arquivo` > `Exportar dados...`.
 
-<img src="/img/overview/log-files/export-1.webp" alt="Opções de exportação" />
+<img src="/img/overview/log-files/export-1.webp" alt="Opções de exportação" height="250" />
 
 :::tip
 Além da exportação completa do log descrita aqui, a guia 💬 [Console](/tab-reference/console) permite que dados do console sejam exportados para um arquivo de texto.

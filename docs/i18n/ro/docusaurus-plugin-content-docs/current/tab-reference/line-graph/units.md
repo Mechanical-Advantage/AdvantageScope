@@ -54,4 +54,4 @@ Pentru a configura conversia manuală, dați clic pe cele trei puncte de lângă
 Pentru a activa sau dezactiva rapid conversia unităților, dați clic pe cele trei puncte de lângă titlul axei și alegeți `Presetări recente` sau `Resetează unitățile`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.webp" alt="Editarea conversiei unităților" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="Editarea conversiei unităților" height="250" />

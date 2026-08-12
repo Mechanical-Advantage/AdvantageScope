@@ -32,7 +32,7 @@ Robot modunu (otonom, teleoperasyon veya test) çakıştırmak için "Ayrık Ala
 
 Varsayılan olarak her eksen aralığını görünür verilere göre ayarlar. Otomatik aralık belirlemeyi devre dışı bırakmak ve aralığı mevcut minimum ve maksimum değerlerine kilitlemek için eksen başlığının yanındaki üç noktaya ve ardından `Ekseni Kilitle` seçeneğine tıklayın. Aralığı manuel olarak ayarlamak için `Aralığı Düzenle...` seçin ve istenen değerleri girin.
 
-<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Eksen aralığını düzenleme" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="Eksen aralığını düzenleme" height="250" />
 
 ### İntegral & türev {#integration-and-differentiation}
 

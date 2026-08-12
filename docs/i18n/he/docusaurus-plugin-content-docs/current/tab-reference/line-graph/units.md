@@ -54,4 +54,4 @@ AdvantageKit כוללת תמיכה במטא-דאטה של יחידות בעת ת
 להפעלה או השבתה מהירה של המרת יחידות, יש ללחוץ על שלוש הנקודות ליד כותרת הציר ולבחור `הגדרות קבועות אחרונות` או `איפוס יחידות`.
 :::
 
-<img src="/img/tab-reference/line-graph/units-2.webp" alt="עריכת המרת יחידות" />
+<img src="/img/tab-reference/line-graph/units-2.webp" alt="עריכת המרת יחידות" height="250" />

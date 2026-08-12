@@ -36,4 +36,4 @@ AdvantageScope бағдарламасы [🗺️ 2D алаңы](/tab-reference/2
 
 Бас нүкте алаңның ортасында орналасқан, ал +X осі төменде көрсетілгендей қызыл альянс қабырғасы ракурсынан оңға бағытталған. **Бұл 2024-2025 жылдардан 2026-2027 жылдарға дейінгі FTC алаңдары үшін әдепкі координаттар жүйесі.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Орталық/бұрылған координаттар жүйесі" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="Орталық/бұрылған координаттар жүйесі" height="400" />

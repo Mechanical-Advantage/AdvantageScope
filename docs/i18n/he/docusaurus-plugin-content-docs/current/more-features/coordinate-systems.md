@@ -36,4 +36,4 @@ AdvantageScope כוללת תמיכה במספר מערכות צירים נפוצ
 
 המקור נמצא במרכז המגרש כאשר ציר ה-+X פונה ימינה מזווית הראייה של קיר הברית האדומה, כפי שמוצג למטה. **זוהי מערכת הצירים כברירת מחדל עבור מגרשי FTC מ-2024-2025 עד 2026-2027.**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="מערכת צירים מרכז/מסובב" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="מערכת צירים מרכז/מסובב" height="400" />

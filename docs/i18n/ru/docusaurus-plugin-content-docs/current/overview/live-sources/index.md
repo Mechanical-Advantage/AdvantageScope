@@ -37,7 +37,7 @@ AdvantageScope может подключаться к FIRST Driver Station дл�
 
 Откройте окно настроек, нажав **Приложение > Показать настройки...** (Windows/Linux) или **AdvantageScope > Настройки...** (macOS).
 
-<img src="/img/prefs.webp" alt="Диаграмма настроек" />
+<img src="/img/prefs_ru.webp" alt="Диаграмма настроек" height="350" />
 
 ### Адрес робота {#robot-address}
 

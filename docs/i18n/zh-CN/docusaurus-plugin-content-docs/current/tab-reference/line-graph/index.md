@@ -32,7 +32,7 @@
 
 默认情况下，每个轴都会根据可见数据调整其范围。要禁用自动调程并将范围锁定到其当前的最小值和最大值，请点击轴标题附近的三个点，然后点击 `锁定轴`。要手动调整范围，请选择 `编辑范围...` 并输入所需的值。
 
-<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="编辑轴范围" />
+<img src="/img/tab-reference/line-graph/line-graph-4.webp" alt="编辑轴范围" height="250" />
 
 ### 积分与求导 {#integration-and-differentiation}
 

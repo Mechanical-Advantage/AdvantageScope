@@ -199,4 +199,4 @@ AdvantageKit KitBot 2024 示例项目包含一个 [命令](https://github.com/Me
 
 要配置渲染模式，请按点击 `应用程序` > `显示首选项...` (Windows/Linux) 或 `AdvantageScope` > `设置...` (macOS) 打开首选项窗口。“3D 模式（电池供电）”设置可以从默认值切换，以覆盖笔记本电脑未充电时使用的渲染模式。例如，这可用于在比赛现场节省电量。
 
-<img src="/img/prefs.webp" alt="偏好设置图解" />
+<img src="/img/prefs_zh-CN.webp" alt="偏好设置图解" height="350" />

@@ -199,4 +199,4 @@ Le terrain 3D prend en charge trois modes de rendu :
 
 Pour configurer le mode de rendu, ouvrez la fenêtre des préférences en appuyant sur `Application` > `Afficher les préférences...` (Windows/Linux) ou `AdvantageScope` > `Paramètres...` (macOS). Le paramètre « Mode 3D (batterie) » peut être remplacé de la valeur par défaut pour ignorer le mode de rendu utilisé sur un ordinateur portable lorsqu'il n'est pas en charge. Par exemple, cela peut être utilisé pour préserver la batterie lors d'une compétition.
 
-<img src="/img/prefs.webp" alt="Schéma des préférences" />
+<img src="/img/prefs_fr.webp" alt="Schéma des préférences" height="350" />

@@ -37,7 +37,7 @@ După deschiderea unui fișier log, loguri suplimentare pot fi adăugate cu ușu
 
 Deschideți fereastra de preferințe dând clic pe `Aplicație` > `Afișează preferințele...` (Windows/Linux) sau `AdvantageScope` > `Setări...` (macOS). Actualizați adresa robotului și folderul de loguri.
 
-<img src="/img/prefs.webp" alt="Diagramă de preferințe" />
+<img src="/img/prefs_ro.webp" alt="Diagramă de preferințe" height="350" />
 </details>
 
 Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de descărcare. Odată conectat la robot, logurile disponibile sunt afișate cu cele mai noi în partea de sus. Selectați unul sau mai multe fișiere log de descărcat (shift-clic pentru a selecta un interval sau **cmd/ctrl + A** pentru a selecta tot). Apoi dați clic pe simbolul ↓ și selectați o locație de salvare.
@@ -50,7 +50,7 @@ Dați clic pe `Fișier` > `Descărcare loguri...` pentru a deschide fereastra de
 La descărcarea mai multor fișiere, AdvantageScope omite orice fișiere care există deja în folderul de destinație.
 :::
 
-<img src="/img/overview/log-files/open-file-2.webp" alt="Descărcarea fișierelor log" />
+<img src="/img/overview/log-files/open-file-2.webp" alt="Descărcarea fișierelor log" height="350" />
 
 ## Formatarea CSV {#csv-formatting}
 

@@ -36,4 +36,4 @@ AdvantageScope 在 [🗺️ 2D 场地](/tab-reference/2d-field) 和 [👀 3D 场
 
 原点位于场地中心，从红方联盟墙的视角看 +X 轴指向右侧，如下图所示。**这是 2024-2025 至 2026-2027 赛季 FTC 场地的默认坐标系。**
 
-<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="中心/旋转坐标系" />
+<img src="/img/more-features/coordinate-system-center-rotated.webp" alt="中心/旋转坐标系" height="400" />

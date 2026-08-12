@@ -8,7 +8,7 @@ AdvantageScope include un sistem flexibil pentru exportul datelor de log sub for
 
 Pentru a vizualiza opțiunile de export, dați clic pe `Fișier` > `Exportă datele...`.
 
-<img src="/img/overview/log-files/export-1.webp" alt="Opțiuni de export" />
+<img src="/img/overview/log-files/export-1.webp" alt="Opțiuni de export" height="250" />
 
 :::tip
 Pe lângă exportul complet de log descris aici, fila 💬 [Consolă](/tab-reference/console) permite exportul datelor de consolă într-un fișier text.
